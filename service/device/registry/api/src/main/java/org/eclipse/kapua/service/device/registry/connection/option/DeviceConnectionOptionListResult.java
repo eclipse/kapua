@@ -22,6 +22,6 @@ import org.eclipse.kapua.model.query.KapuaListResult;
  * @since 1.0.0
  */
 @XmlRootElement(name = "deviceConnectionOptions")
-@XmlType(factoryClass = DeviceConnectionOptionXmlRegistry.class, factoryMethod = "newDeviceConnectionOptionsListResult")
+@XmlType(factoryClass = DeviceConnectionOptionXmlRegistry.class, factoryMethod = "newDeviceConnectionOptionListResult")
 public interface DeviceConnectionOptionListResult extends KapuaListResult<DeviceConnectionOption> {
 }

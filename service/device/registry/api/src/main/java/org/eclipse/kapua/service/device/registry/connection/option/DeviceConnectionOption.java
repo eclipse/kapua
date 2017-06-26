@@ -28,17 +28,17 @@ import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
  *
  * @since 1.0.0
  */
-@XmlRootElement(name = "deviceConnectionOptions")
+@XmlRootElement(name = "deviceConnectionOption")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = {
         "userCouplingMode",
         "reservedUserId",
 }, //
         factoryClass = DeviceConnectionOptionXmlRegistry.class, //
-        factoryMethod = "newDeviceConnectionOptions")
+        factoryMethod = "newDeviceConnectionOption")
 public interface DeviceConnectionOption extends KapuaUpdatableEntity {
 
-    public static final String TYPE = "deviceConnectionOptions";
+    public static final String TYPE = "deviceConnectionOption";
 
     public default String getType() {
         return TYPE;
