@@ -17,20 +17,19 @@ import java.util.List;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.client.ui.tab.KapuaTabItem;
-import org.eclipse.kapua.app.console.client.ui.view.EntityView;
+import org.eclipse.kapua.app.console.client.ui.view.AbstractGwtEntityView;
 import org.eclipse.kapua.app.console.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 
-public class GroupView extends EntityView<GwtGroup> {
+public class GroupView  extends AbstractGwtEntityView<GwtGroup> {
 
     private GroupGrid groupGrid;
 
     public GroupView(GwtSession gwtSession) {
         super(gwtSession);
     }
-
     @Override
-    public List<KapuaTabItem<GwtGroup>> getTabs(EntityView<GwtGroup> entityView,
+    public List<KapuaTabItem<GwtGroup>> getTabs(AbstractGwtEntityView<GwtGroup> entityView,
             GwtSession currentSession) {
         List<KapuaTabItem<GwtGroup>> tabs = new ArrayList<KapuaTabItem<GwtGroup>>();
         tabs.add(new GroupTabDescription());
@@ -38,7 +37,7 @@ public class GroupView extends EntityView<GwtGroup> {
     }
 
     @Override
-    public EntityGrid<GwtGroup> getEntityGrid(EntityView<GwtGroup> entityView,
+    public EntityGrid<GwtGroup> getEntityGrid(AbstractGwtEntityView<GwtGroup> entityView,
             GwtSession currentSession) {
         if (groupGrid == null) {
             groupGrid = new GroupGrid(entityView, currentSession);
@@ -47,7 +46,7 @@ public class GroupView extends EntityView<GwtGroup> {
     }
 
     @Override
-    public EntityFilterPanel<GwtGroup> getEntityFilterPanel(EntityView<GwtGroup> entityView,
+    public EntityFilterPanel<GwtGroup> getEntityFilterPanel(AbstractGwtEntityView<GwtGroup> entityView,
             GwtSession currentSession2) {
 
         return new GroupFilterPanel(this, currentSession2);

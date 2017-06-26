@@ -14,7 +14,7 @@ package org.eclipse.kapua.app.console.client.ui.widget;
 import java.util.Date;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.client.util.DateUtils;
+import org.eclipse.kapua.app.console.commons.utils.DateUtils;
 
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;

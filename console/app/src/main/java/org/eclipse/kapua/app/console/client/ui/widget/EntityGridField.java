@@ -16,7 +16,7 @@ import java.util.List;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.ui.grid.KapuaEditableGrid;
 import org.eclipse.kapua.app.console.client.ui.panel.ContentPanel;
-import org.eclipse.kapua.app.console.shared.model.GwtEntityModel;
+import org.eclipse.kapua.app.console.commons.shared.models.GwtEntityModel;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 
 import com.extjs.gxt.ui.client.Style.SelectionMode;

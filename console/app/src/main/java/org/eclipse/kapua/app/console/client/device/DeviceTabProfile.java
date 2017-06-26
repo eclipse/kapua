@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.client.util.DateUtils;
+import org.eclipse.kapua.app.console.commons.utils.DateUtils;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;

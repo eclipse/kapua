@@ -14,7 +14,7 @@ package org.eclipse.kapua.app.console.client.device;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.util.Constants;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.client.util.KapuaSafeHtmlUtils;
+import org.eclipse.kapua.app.console.commons.utils.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;

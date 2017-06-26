@@ -15,7 +15,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.kapua.app.console.shared.model.KapuaBaseModel;
+import org.eclipse.kapua.app.console.commons.shared.models.KapuaBaseModel;
 
 public class GwtDeviceAsset extends KapuaBaseModel implements Serializable {
 

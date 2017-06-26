@@ -14,7 +14,7 @@ package org.eclipse.kapua.app.console.client.group;
 import org.eclipse.kapua.app.console.client.messages.ConsoleGroupMessages;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.panel.EntityFilterPanel;
-import org.eclipse.kapua.app.console.client.ui.view.EntityView;
+import org.eclipse.kapua.app.console.client.ui.view.AbstractGwtEntityView;
 import org.eclipse.kapua.app.console.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 
@@ -31,7 +31,7 @@ public class GroupFilterPanel extends EntityFilterPanel<GwtGroup> {
     private final TextField<String> nameField;
     private static final ConsoleGroupMessages MSGS = GWT.create(ConsoleGroupMessages.class);
 
-    public GroupFilterPanel(EntityView<GwtGroup> entityView, GwtSession currentSession) {
+    public GroupFilterPanel(AbstractGwtEntityView<GwtGroup> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
         entityGrid = entityView.getEntityGrid(entityView, currentSession);
         this.currentSession = currentSession;

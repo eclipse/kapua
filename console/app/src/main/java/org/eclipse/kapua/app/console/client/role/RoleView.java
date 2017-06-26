@@ -17,11 +17,11 @@ import java.util.List;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.client.ui.tab.KapuaTabItem;
-import org.eclipse.kapua.app.console.client.ui.view.EntityView;
+import org.eclipse.kapua.app.console.client.ui.view.AbstractGwtEntityView;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 
-public class RoleView extends EntityView<GwtRole> {
+public class RoleView extends AbstractGwtEntityView<GwtRole> {
 
     private RoleGrid roleGrid;
     private RoleTabDescription roleTabDescription;
@@ -36,7 +36,7 @@ public class RoleView extends EntityView<GwtRole> {
     }
 
     @Override
-    public List<KapuaTabItem<GwtRole>> getTabs(EntityView<GwtRole> entityView, GwtSession currentSession) {
+    public List<KapuaTabItem<GwtRole>> getTabs(AbstractGwtEntityView<GwtRole> entityView, GwtSession currentSession) {
         List<KapuaTabItem<GwtRole>> tabs = new ArrayList<KapuaTabItem<GwtRole>>();
         tabs.add(roleTabDescription);
         tabs.add(roleTabPermissionGrid);
@@ -45,7 +45,7 @@ public class RoleView extends EntityView<GwtRole> {
     }
 
     @Override
-    public EntityGrid<GwtRole> getEntityGrid(EntityView<GwtRole> entityView, GwtSession currentSession) {
+    public EntityGrid<GwtRole> getEntityGrid(AbstractGwtEntityView<GwtRole> entityView, GwtSession currentSession) {
         if (roleGrid == null) {
             roleGrid = new RoleGrid(entityView, currentSession);
         }
@@ -53,7 +53,7 @@ public class RoleView extends EntityView<GwtRole> {
     }
 
     @Override
-    public EntityFilterPanel<GwtRole> getEntityFilterPanel(EntityView<GwtRole> entityView, GwtSession currentSession) {
+    public EntityFilterPanel<GwtRole> getEntityFilterPanel(AbstractGwtEntityView<GwtRole> entityView, GwtSession currentSession) {
         return new RoleFilterPanel(this, currentSession);
     }
 

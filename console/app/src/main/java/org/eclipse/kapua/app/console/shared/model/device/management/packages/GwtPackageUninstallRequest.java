@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.model.device.management.packages;
 
-import org.eclipse.kapua.app.console.shared.model.KapuaBaseModel;
+import org.eclipse.kapua.app.console.commons.shared.models.KapuaBaseModel;
 
 public class GwtPackageUninstallRequest extends KapuaBaseModel {
 

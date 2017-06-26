@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.ui.grid;
 
-import org.eclipse.kapua.app.console.shared.model.KapuaBaseModel;
+import org.eclipse.kapua.app.console.commons.shared.models.KapuaBaseModel;
 
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;

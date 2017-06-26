@@ -19,7 +19,7 @@ import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.misc.color.Color;
-import org.eclipse.kapua.app.console.client.ui.view.EntityView;
+import org.eclipse.kapua.app.console.client.ui.view.AbstractGwtEntityView;
 import org.eclipse.kapua.app.console.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.query.GwtQuery;
@@ -49,7 +49,7 @@ public class UserGrid extends EntityGrid<GwtUser> {
 
     private final static ConsoleUserMessages MSGS = GWT.create(ConsoleUserMessages.class);
 
-    public UserGrid(EntityView<GwtUser> entityView, final GwtSession currentSession) {
+    public UserGrid(AbstractGwtEntityView<GwtUser> entityView, final GwtSession currentSession) {
         super(entityView, currentSession);
         query = new GwtUserQuery();
         query.setScopeId(currentSession.getSelectedAccount().getId());

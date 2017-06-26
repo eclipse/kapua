@@ -38,6 +38,8 @@
     <inherits name='com.extjs.gxt.ui.GXT' />
     <inherits name="com.google.gwt.i18n.I18N" />
 
+    <inherits name="org.eclipse.kapua.app.console.commons.admin-commons" />
+
     <!-- Locales: English language, independent of country              -->
     <extend-property name="locale" values="en" />
 

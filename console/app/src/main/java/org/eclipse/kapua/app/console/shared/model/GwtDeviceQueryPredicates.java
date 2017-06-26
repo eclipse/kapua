@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.shared.model;
 import java.io.Serializable;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import org.eclipse.kapua.app.console.commons.shared.models.KapuaBaseModel;
 
 public class GwtDeviceQueryPredicates extends KapuaBaseModel implements Serializable {
 

@@ -17,7 +17,7 @@ import java.util.List;
 import org.eclipse.kapua.app.console.client.account.toolbar.AccountGridToolbar;
 import org.eclipse.kapua.app.console.client.messages.ConsoleAccountMessages;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
-import org.eclipse.kapua.app.console.client.ui.view.EntityView;
+import org.eclipse.kapua.app.console.client.ui.view.AbstractGwtEntityView;
 import org.eclipse.kapua.app.console.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
@@ -43,7 +43,7 @@ public class AccountGrid extends EntityGrid<GwtAccount> {
     private GwtAccountQuery filterQuery;
     private AccountGridToolbar toolbar;
 
-    AccountGrid(EntityView<GwtAccount> entityView, GwtSession currentSession) {
+    AccountGrid(AbstractGwtEntityView<GwtAccount> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
         filterQuery = new GwtAccountQuery();
         filterQuery.setScopeId(currentSession.getSelectedAccount().getId());

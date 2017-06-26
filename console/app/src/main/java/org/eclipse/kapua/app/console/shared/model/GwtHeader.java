@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.shared.model;
 import java.io.Serializable;
 
 import org.eclipse.kapua.app.console.client.util.HeaderTypeUtils;
+import org.eclipse.kapua.app.console.commons.shared.models.KapuaBaseModel;
 
 public class GwtHeader extends KapuaBaseModel implements Serializable {
     private static final long serialVersionUID = -6683882186670183772L;

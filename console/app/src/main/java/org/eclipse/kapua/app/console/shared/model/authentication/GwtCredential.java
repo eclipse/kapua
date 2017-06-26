@@ -11,8 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.model.authentication;
 
-import org.eclipse.kapua.app.console.client.util.DateUtils;
-import org.eclipse.kapua.app.console.shared.model.GwtUpdatableEntityModel;
+import org.eclipse.kapua.app.console.commons.shared.models.GwtUpdatableEntityModel;
 
 import java.util.Date;
 

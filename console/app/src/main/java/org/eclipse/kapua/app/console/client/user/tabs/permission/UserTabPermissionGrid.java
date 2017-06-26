@@ -17,7 +17,7 @@ import java.util.List;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.messages.ConsoleUserMessages;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
-import org.eclipse.kapua.app.console.client.ui.view.EntityView;
+import org.eclipse.kapua.app.console.client.ui.view.AbstractGwtEntityView;
 import org.eclipse.kapua.app.console.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessPermission;
@@ -47,7 +47,7 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
 
     private UserTabPermissionToolbar toolbar;
 
-    public UserTabPermissionGrid(EntityView<GwtAccessPermission> entityView, GwtSession currentSession) {
+    public UserTabPermissionGrid(AbstractGwtEntityView<GwtAccessPermission> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
     }
 

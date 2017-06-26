@@ -20,7 +20,7 @@ import org.eclipse.kapua.app.console.client.ui.dialog.ActionDialog;
 import org.eclipse.kapua.app.console.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.util.ConsoleInfo;
-import org.eclipse.kapua.app.console.shared.model.GwtEntityModel;
+import org.eclipse.kapua.app.console.commons.shared.models.GwtEntityModel;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;

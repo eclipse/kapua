@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.model.authorization;
 
-import org.eclipse.kapua.app.console.shared.model.GwtUpdatableEntityModel;
+import org.eclipse.kapua.app.console.commons.shared.models.GwtUpdatableEntityModel;
 
 public class GwtAccessRole extends GwtUpdatableEntityModel {
 

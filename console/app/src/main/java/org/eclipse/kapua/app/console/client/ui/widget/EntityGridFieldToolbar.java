@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.ui.widget;
 
-import org.eclipse.kapua.app.console.shared.model.GwtEntityModel;
+import org.eclipse.kapua.app.console.commons.shared.models.GwtEntityModel;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;

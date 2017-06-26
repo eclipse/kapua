@@ -19,8 +19,8 @@ import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.client.ui.grid.KapuaGrid;
-import org.eclipse.kapua.app.console.client.util.DateUtils;
-import org.eclipse.kapua.app.console.shared.model.GwtEntityModel;
+import org.eclipse.kapua.app.console.commons.shared.models.GwtEntityModel;
+import org.eclipse.kapua.app.console.commons.utils.DateUtils;
 import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
 
 import com.extjs.gxt.ui.client.data.BaseListLoader;

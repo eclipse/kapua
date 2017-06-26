@@ -12,12 +12,12 @@
 package org.eclipse.kapua.app.console.client.ui.tab;
 
 import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.shared.model.GwtEntityModel;
 
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import org.eclipse.kapua.app.console.commons.shared.models.GwtEntityModel;
 
 public abstract class KapuaTabItem<M extends GwtEntityModel> extends TabItem {
 

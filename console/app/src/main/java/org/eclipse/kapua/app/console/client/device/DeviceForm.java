@@ -18,7 +18,7 @@ import org.eclipse.kapua.app.console.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.client.util.Constants;
 import org.eclipse.kapua.app.console.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.client.util.KapuaSafeHtmlUtils;
+import org.eclipse.kapua.app.console.commons.utils.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.client.util.TextFieldValidator;
 import org.eclipse.kapua.app.console.client.util.TextFieldValidator.FieldType;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;

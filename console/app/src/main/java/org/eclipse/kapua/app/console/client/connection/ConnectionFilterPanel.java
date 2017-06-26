@@ -14,7 +14,7 @@ package org.eclipse.kapua.app.console.client.connection;
 import org.eclipse.kapua.app.console.client.messages.ConsoleConnectionMessages;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.panel.EntityFilterPanel;
-import org.eclipse.kapua.app.console.client.ui.view.EntityView;
+import org.eclipse.kapua.app.console.client.ui.view.AbstractGwtEntityView;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceQueryPredicates;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnection;
@@ -38,7 +38,7 @@ public class ConnectionFilterPanel extends EntityFilterPanel<GwtDeviceConnection
     private final TextField<String> clientIdField;
     private final SimpleComboBox<GwtDeviceQueryPredicates.GwtDeviceConnectionStatus> connectionStatusCombo;
 
-    public ConnectionFilterPanel(EntityView<GwtDeviceConnection> entityView, GwtSession currentSession) {
+    public ConnectionFilterPanel(AbstractGwtEntityView<GwtDeviceConnection> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
         entityGrid = entityView.getEntityGrid(entityView, currentSession);
         this.currentSession = currentSession;

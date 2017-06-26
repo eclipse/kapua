@@ -16,6 +16,7 @@ import java.io.Serializable;
 import org.eclipse.kapua.app.console.client.messages.ValidationMessages;
 
 import com.google.gwt.core.client.GWT;
+import org.eclipse.kapua.app.console.commons.shared.models.KapuaBaseModel;
 
 public class GwtGroupedNVPair extends KapuaBaseModel implements Serializable {
 

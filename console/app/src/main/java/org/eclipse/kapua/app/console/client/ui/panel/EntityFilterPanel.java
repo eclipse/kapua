@@ -13,8 +13,8 @@ package org.eclipse.kapua.app.console.client.ui.panel;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
-import org.eclipse.kapua.app.console.client.ui.view.EntityView;
-import org.eclipse.kapua.app.console.shared.model.GwtEntityModel;
+import org.eclipse.kapua.app.console.client.ui.view.AbstractGwtEntityView;
+import org.eclipse.kapua.app.console.commons.shared.models.GwtEntityModel;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -39,7 +39,7 @@ public abstract class EntityFilterPanel<M extends GwtEntityModel> extends Conten
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     private static final int WIDTH = 200;
 
-    public EntityFilterPanel(EntityView<M> entityView, GwtSession currentSession) {
+    public EntityFilterPanel(AbstractGwtEntityView<M> entityView, GwtSession currentSession) {
         super();
 
         setScrollMode(Scroll.AUTOY);

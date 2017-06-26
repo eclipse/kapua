@@ -16,7 +16,7 @@ import java.util.List;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleGroupMessages;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
-import org.eclipse.kapua.app.console.client.ui.view.EntityView;
+import org.eclipse.kapua.app.console.client.ui.view.AbstractGwtEntityView;
 import org.eclipse.kapua.app.console.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.query.GwtQuery;
@@ -35,7 +35,7 @@ public class GroupGrid extends EntityGrid<GwtGroup> {
     private static final ConsoleGroupMessages MSGS = GWT.create(ConsoleGroupMessages.class);
     private GwtGroupQuery query;
 
-    protected GroupGrid(EntityView<GwtGroup> entityView, GwtSession currentSession) {
+    protected GroupGrid(AbstractGwtEntityView<GwtGroup> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
         query = new GwtGroupQuery();
         query.setScopeId(currentSession.getSelectedAccount().getId());

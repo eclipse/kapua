@@ -12,10 +12,10 @@
 package org.eclipse.kapua.app.console.client.ui.grid;
 
 import org.eclipse.kapua.app.console.client.util.KapuaLoadListener;
-import org.eclipse.kapua.app.console.shared.model.GwtEntityModel;
 
 import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
+import org.eclipse.kapua.app.console.commons.shared.models.GwtEntityModel;
 
 public class EntityGridLoadListener<M extends GwtEntityModel> extends KapuaLoadListener {
 

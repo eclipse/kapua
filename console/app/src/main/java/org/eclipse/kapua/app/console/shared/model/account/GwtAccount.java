@@ -14,7 +14,7 @@ package org.eclipse.kapua.app.console.shared.model.account;
 import java.io.Serializable;
 
 import org.eclipse.kapua.app.console.shared.model.GwtOrganization;
-import org.eclipse.kapua.app.console.shared.model.GwtUpdatableEntityModel;
+import org.eclipse.kapua.app.console.commons.shared.models.GwtUpdatableEntityModel;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 

@@ -11,7 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.model;
 
-import org.eclipse.kapua.app.console.client.util.DateUtils;
+import org.eclipse.kapua.app.console.commons.utils.DateUtils;
+import org.eclipse.kapua.app.console.commons.shared.models.KapuaBaseModel;
 
 import java.io.Serializable;
 import java.util.Date;

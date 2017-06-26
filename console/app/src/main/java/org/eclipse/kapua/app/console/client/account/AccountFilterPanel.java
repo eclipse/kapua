@@ -14,7 +14,7 @@ package org.eclipse.kapua.app.console.client.account;
 import org.eclipse.kapua.app.console.client.messages.ConsoleAccountMessages;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.panel.EntityFilterPanel;
-import org.eclipse.kapua.app.console.client.ui.view.EntityView;
+import org.eclipse.kapua.app.console.client.ui.view.AbstractGwtEntityView;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccountQuery;
@@ -36,7 +36,7 @@ public class AccountFilterPanel extends EntityFilterPanel<GwtAccount> {
     private final TextField<String> accountOrgNameField;
     private final TextField<String> accountOrgEmailField;
 
-    public AccountFilterPanel(EntityView<GwtAccount> entityView, GwtSession currentSession) {
+    public AccountFilterPanel(AbstractGwtEntityView<GwtAccount> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
         entityGrid = entityView.getEntityGrid(entityView, currentSession);
         this.currentSession = currentSession;

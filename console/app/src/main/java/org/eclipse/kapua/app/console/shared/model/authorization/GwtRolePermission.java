@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.model.authorization;
 
-import org.eclipse.kapua.app.console.shared.model.GwtEntityModel;
+import org.eclipse.kapua.app.console.commons.shared.models.GwtEntityModel;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtAction;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtDomain;
 

@@ -16,7 +16,7 @@ import java.util.List;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
-import org.eclipse.kapua.app.console.client.ui.view.EntityView;
+import org.eclipse.kapua.app.console.client.ui.view.AbstractGwtEntityView;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleQuery;
@@ -39,7 +39,7 @@ public class RoleGrid extends EntityGrid<GwtRole> {
 
     private GwtRoleQuery query;
 
-    public RoleGrid(EntityView<GwtRole> entityView, GwtSession currentSession) {
+    public RoleGrid(AbstractGwtEntityView<GwtRole> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
         query = new GwtRoleQuery();
         query.setScopeId(currentSession.getSelectedAccount().getId());

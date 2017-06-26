@@ -14,7 +14,8 @@ package org.eclipse.kapua.app.console.shared.model;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.eclipse.kapua.app.console.client.util.DateUtils;
+import org.eclipse.kapua.app.console.commons.utils.DateUtils;
+import org.eclipse.kapua.app.console.commons.shared.models.KapuaBaseModel;
 
 public class GwtTask extends KapuaBaseModel implements Serializable {
     private static final long serialVersionUID = -1665104446637357480L;

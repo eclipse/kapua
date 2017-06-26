@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,19 +9,19 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.util;
+package org.eclipse.kapua.app.console.commons.utils;
 
 import java.util.Date;
 
 import com.google.gwt.i18n.client.TimeZone;
-import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 
 public class DateUtils {
 
-    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
+//    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
+
+    private static final String NONE = "None";
 
     private DateUtils() {
     }
@@ -31,7 +31,7 @@ public class DateUtils {
      */
     public static String formatDateTime(Date d) {
         if (d == null) {
-            return MSGS.none();
+            return NONE;
         }
 
         TimeZone utcTimeZione = TimeZone.createTimeZone(0);

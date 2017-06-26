@@ -13,8 +13,8 @@ package org.eclipse.kapua.app.console.shared.model.device.management.assets;
 
 import java.util.Date;
 
-import org.eclipse.kapua.app.console.client.util.DateUtils;
-import org.eclipse.kapua.app.console.shared.model.KapuaBaseModel;
+import org.eclipse.kapua.app.console.commons.utils.DateUtils;
+import org.eclipse.kapua.app.console.commons.shared.models.KapuaBaseModel;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 

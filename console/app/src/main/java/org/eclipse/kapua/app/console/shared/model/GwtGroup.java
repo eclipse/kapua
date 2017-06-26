@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.model;
 
+import org.eclipse.kapua.app.console.commons.shared.models.GwtUpdatableEntityModel;
+
 public class GwtGroup extends GwtUpdatableEntityModel {
 
     private static final long serialVersionUID = 1L;

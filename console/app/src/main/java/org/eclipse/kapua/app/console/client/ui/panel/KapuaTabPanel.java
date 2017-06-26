@@ -12,10 +12,10 @@
 package org.eclipse.kapua.app.console.client.ui.panel;
 
 import org.eclipse.kapua.app.console.client.ui.tab.KapuaTabItem;
-import org.eclipse.kapua.app.console.shared.model.GwtEntityModel;
 
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
+import org.eclipse.kapua.app.console.commons.shared.models.GwtEntityModel;
 
 public class KapuaTabPanel<M extends GwtEntityModel> extends TabPanel {
 

@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.shared.model;
 import java.io.Serializable;
 import java.util.Set;
 
+import org.eclipse.kapua.app.console.commons.shared.models.KapuaBaseModel;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
 

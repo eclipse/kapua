@@ -20,15 +20,15 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.kapua.app.console.client.group.GwtGroupQuery;
+import org.eclipse.kapua.app.console.commons.shared.models.GwtEntityModel;
 import org.eclipse.kapua.app.console.client.tag.GwtTagQuery;
 import org.eclipse.kapua.app.console.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.shared.model.GwtConfigParameter;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceQueryPredicates.GwtDeviceConnectionStatus;
-import org.eclipse.kapua.app.console.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtAction;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtDomain;
-import org.eclipse.kapua.app.console.shared.model.GwtUpdatableEntityModel;
+import org.eclipse.kapua.app.console.commons.shared.models.GwtUpdatableEntityModel;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccountQuery;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredential;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredentialCreator;

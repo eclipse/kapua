@@ -13,6 +13,8 @@ package org.eclipse.kapua.app.console.shared.model;
 
 
 
+import org.eclipse.kapua.app.console.commons.shared.models.KapuaBaseModel;
+
 import java.io.Serializable;
 
 public class GwtBundleInfo extends KapuaBaseModel implements Serializable {

@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.client.util;
 import com.extjs.gxt.ui.client.util.Params;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.InfoConfig;
+import org.eclipse.kapua.app.console.commons.utils.KapuaSafeHtmlUtils;
 
 public class ConsoleInfo extends Info {
     private static final int CHAR_STEP = 20;

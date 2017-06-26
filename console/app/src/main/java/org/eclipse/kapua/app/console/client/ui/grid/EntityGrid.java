@@ -15,10 +15,10 @@ import java.util.List;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.ui.panel.ContentPanel;
-import org.eclipse.kapua.app.console.client.ui.view.EntityView;
+import org.eclipse.kapua.app.console.client.ui.view.AbstractGwtEntityView;
 import org.eclipse.kapua.app.console.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.client.ui.widget.KapuaPagingToolBar;
-import org.eclipse.kapua.app.console.shared.model.GwtEntityModel;
+import org.eclipse.kapua.app.console.commons.shared.models.GwtEntityModel;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.query.GwtQuery;
 
@@ -45,7 +45,7 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
     private static final int ENTITY_PAGE_SIZE = 100;
 
     protected GwtSession currentSession;
-    protected EntityView<M> parentEntityView;
+    protected AbstractGwtEntityView<M> parentEntityView;
 
     protected EntityCRUDToolbar<M> entityCRUDToolbar;
     protected KapuaGrid<M> entityGrid;
@@ -53,7 +53,7 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
     protected ListStore<M> entityStore;
     protected PagingToolBar entityPagingToolbar;
 
-    protected EntityGrid(EntityView<M> entityView, GwtSession currentSession) {
+    protected EntityGrid(AbstractGwtEntityView<M> entityView, GwtSession currentSession) {
         super(new FitLayout());
         //
         // Set other properties

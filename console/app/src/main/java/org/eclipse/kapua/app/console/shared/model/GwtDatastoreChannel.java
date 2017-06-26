@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.model;
 
+import org.eclipse.kapua.app.console.commons.shared.models.KapuaBaseModel;
+
 public class GwtDatastoreChannel extends KapuaBaseModel {
 
     private static final long serialVersionUID = 1L;
