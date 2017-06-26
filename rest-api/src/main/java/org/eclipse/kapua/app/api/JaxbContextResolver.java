@@ -20,6 +20,8 @@ import javax.ws.rs.ext.Provider;
 import javax.xml.bind.JAXBContext;
 
 import org.eclipse.kapua.app.api.exception.model.EntityNotFoundExceptionInfo;
+import org.eclipse.kapua.app.api.exception.model.IllegalArgumentExceptionInfo;
+import org.eclipse.kapua.app.api.exception.model.IllegalNullArgumentExceptionInfo;
 import org.eclipse.kapua.app.api.exception.model.ThrowableInfo;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
@@ -163,6 +165,8 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     // REST API exception models
                     ThrowableInfo.class,
                     EntityNotFoundExceptionInfo.class,
+                    IllegalArgumentExceptionInfo.class,
+                    IllegalNullArgumentExceptionInfo.class,
 
                     // Tocds
                     KapuaTocd.class,
