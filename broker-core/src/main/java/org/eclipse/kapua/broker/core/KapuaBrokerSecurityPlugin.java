@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.broker.core;
 
@@ -19,6 +20,7 @@ import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_SCHEM
 import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_USERNAME;
 
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 import org.apache.activemq.broker.Broker;
@@ -66,7 +68,7 @@ public class KapuaBrokerSecurityPlugin implements BrokerPlugin {
         try {
             // initialize shiro context for broker plugin from shiro ini file
             URL shiroIniUrl = getClass().getResource("/shiro.ini");
-            String shiroIniStr = ResourceUtils.readResource(shiroIniUrl);
+            String shiroIniStr = ResourceUtils.readResource(shiroIniUrl, StandardCharsets.UTF_8);
             Ini shiroIni = new Ini();
             shiroIni.load(shiroIniStr);
 
