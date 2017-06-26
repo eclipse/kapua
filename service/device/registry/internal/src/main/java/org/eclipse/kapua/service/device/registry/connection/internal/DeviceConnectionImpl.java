@@ -56,6 +56,10 @@ public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implement
     })
     private KapuaEid userId;
 
+    @Basic
+    @Column(name = "allow_user_change", nullable = false, updatable = true)
+    private boolean allowUserChange;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "user_coupling_mode", nullable = false)
     private ConnectionUserCouplingMode userCouplingMode;
@@ -100,6 +104,7 @@ public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implement
         setStatus(deviceConnection.getStatus());
         setClientId(deviceConnection.getClientId());
         setUserId(deviceConnection.getUserId());
+        setAllowUserChange(deviceConnection.getAllowUserChange());
         setUserCouplingMode(deviceConnection.getUserCouplingMode());
         setReservedUserId(deviceConnection.getReservedUserId());
         setProtocol(deviceConnection.getProtocol());
@@ -135,6 +140,14 @@ public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implement
     @Override
     public void setUserId(KapuaId userId) {
         this.userId = KapuaEid.parseKapuaId(userId);
+    }
+
+    public boolean getAllowUserChange() {
+        return allowUserChange;
+    }
+
+    public void setAllowUserChange(boolean allowUserChange) {
+        this.allowUserChange = allowUserChange;
     }
 
     public ConnectionUserCouplingMode getUserCouplingMode() {
