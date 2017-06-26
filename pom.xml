@@ -93,7 +93,7 @@
         <sql-maven-plugin.version>1.5</sql-maven-plugin.version>
 
         <jacoco.version>0.7.9</jacoco.version>
-        <surefire.version>2.12.4</surefire.version>
+        <surefire.version>2.20</surefire.version>
 
         <!-- Docker configuration -->
         <maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
