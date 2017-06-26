@@ -30,9 +30,12 @@ import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
  */
 @XmlRootElement(name = "deviceConnection")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "status",
+@XmlType(propOrder = {
+        "status",
         "clientId",
         "userId",
+        "userCouplingMode",
+        "reservedUserId",
         "protocol",
         "clientIp",
         "serverIp" }, //
