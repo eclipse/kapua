@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.client.transport;
 
@@ -215,7 +216,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
     public InsertResponse insert(InsertRequest insertRequest) throws ClientException {
         checkClient();
         Map<String, Object> storableMap = modelContext.marshal(insertRequest.getStorable());
-        logger.debug("Insert - converted object: '{}'", storableMap.toString());
+        logger.debug("Insert - converted object: '{}'", storableMap);
         IndexRequest idxRequest = new IndexRequest(insertRequest.getTypeDescriptor().getIndex(), insertRequest.getTypeDescriptor().getType()).source(storableMap);
         IndexResponse response = esClientProvider.getClient().index(idxRequest).actionGet(getQueryTimeout());
         return new InsertResponse(response.getId(), insertRequest.getTypeDescriptor());
@@ -225,7 +226,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
     public UpdateResponse upsert(UpdateRequest upsertRequest) throws ClientException {
         checkClient();
         Map<String, Object> storableMap = modelContext.marshal(upsertRequest.getStorable());
-        logger.debug("Upsert - converted object: '{}'", storableMap.toString());
+        logger.debug("Upsert - converted object: '{}'", storableMap);
         IndexRequest idxRequest = new IndexRequest(upsertRequest.getTypeDescriptor().getIndex(), upsertRequest.getTypeDescriptor().getType(), upsertRequest.getId()).source(storableMap);
         org.elasticsearch.action.update.UpdateRequest updateRequest = new org.elasticsearch.action.update.UpdateRequest(upsertRequest.getTypeDescriptor().getIndex(),
                 upsertRequest.getTypeDescriptor().getType(), upsertRequest.getId()).doc(storableMap);
@@ -242,7 +243,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
             String index = upsertRequest.getTypeDescriptor().getIndex();
             String id = upsertRequest.getId();
             Map<String, Object> mappedObject = modelContext.marshal(upsertRequest.getStorable());
-            logger.debug("Upsert - converted object: '{}'", mappedObject.toString());
+            logger.debug("Upsert - converted object: '{}'", mappedObject);
             IndexRequest idxRequest = new IndexRequest(index, type, id).source(mappedObject);
             org.elasticsearch.action.update.UpdateRequest updateRequest = new org.elasticsearch.action.update.UpdateRequest(index, type, id).doc(mappedObject);
             updateRequest.upsert(idxRequest);
@@ -261,12 +262,12 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
                 if (bulkItemResponse.isFailed()) {
                     String failureMessage = bulkItemResponse.getFailureMessage();
                     response.add(new UpdateResponse(metricId, new TypeDescriptor(indexName, typeName), failureMessage));
-                    logger.info("Upsert failed [{}, {}, {}]", new Object[] { indexName, typeName, failureMessage });
+                    logger.info("Upsert failed [{}, {}, {}]", indexName, typeName, failureMessage);
                     continue;
                 }
                 metricId = ((org.elasticsearch.action.update.UpdateResponse) bulkItemResponse.getResponse()).getId();
                 response.add(new UpdateResponse(metricId, new TypeDescriptor(indexName, typeName)));
-                logger.debug("Upsert on channel metric succesfully executed [{}.{}, {}]", new Object[] { indexName, typeName, metricId });
+                logger.debug("Upsert on channel metric succesfully executed [{}.{}, {}]",indexName, typeName, metricId );
             }
         }
         return response;
@@ -287,7 +288,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
         checkClient();
         JsonNode queryMap = queryConverter.convertQuery(query);
         Object queryFetchStyle = queryConverter.getFetchStyle(query);
-        logger.debug("Query - converted query: '{}'", queryMap.toString());
+        logger.debug("Query - converted query: '{}'", queryMap);
         SearchResponse response = null;
         ObjectNode fetchSourceFields = (ObjectNode) queryMap.path(KEY_SOURCE);
         String[] includesFields = toIncludedExcludedFields(fetchSourceFields.path(KEY_INCLUDES));
@@ -460,7 +461,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
         ImmutableOpenMap<String, MappingMetaData> map = mappings.get(typeDescriptor.getIndex());
         MappingMetaData metadata = map.get(typeDescriptor.getType());
         if (metadata == null) {
-            logger.debug("Put mapping: '{}'", mapping.toString());
+            logger.debug("Put mapping: '{}'", mapping);
             esClientProvider.getClient().admin().indices().preparePutMapping(typeDescriptor.getIndex()).setType(typeDescriptor.getType()).setSource(mapping.toString(), XContentType.JSON)
                     .execute().actionGet(getQueryTimeout());
             logger.trace("Put mapping - mapping {} created! ", typeDescriptor.getType());
@@ -493,7 +494,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
             XContentParser parser = XContentFactory.xContent(XContentType.JSON)
                     .createParser(new NamedXContentRegistry(searchModule.getNamedXContents()), content);
             searchSourceBuilder.parseXContent(new QueryParseContext(parser));
-            logger.debug(searchSourceBuilder.toString());
+            logger.debug("Search builder: {}", searchSourceBuilder);
             return searchSourceBuilder;
         } catch (Throwable t) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR, t, CLIENT_QUERY_PARSING_ERROR_MSG);
