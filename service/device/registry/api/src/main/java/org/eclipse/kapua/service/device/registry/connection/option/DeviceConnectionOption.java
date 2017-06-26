@@ -22,6 +22,7 @@ import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 
 /**
  * Device connection options entity definition.
@@ -31,6 +32,7 @@ import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
 @XmlRootElement(name = "deviceConnectionOption")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = {
+        "allowUserChange",
         "userCouplingMode",
         "reservedUserId",
 }, //
@@ -43,6 +45,21 @@ public interface DeviceConnectionOption extends KapuaUpdatableEntity {
     public default String getType() {
         return TYPE;
     }
+
+    /**
+     * Gets whether or not the {@link DeviceConnection} can change user on the next login.
+     * 
+     * @return <code>true</code> if device can changhe user to connect, <code>false</code> if not.
+     */
+    @XmlElement(name = "allowUserChange")
+    public boolean getAllowUserChange();
+
+    /**
+     * Sets whether or not the {@link DeviceConnection} can change user on the next login.
+     * 
+     * @param allowUserChange
+     */
+    public void setAllowUserChange(boolean allowUserChange);
 
     /**
      * Get the device connection user coupling mode.
