@@ -26,10 +26,9 @@ trap 'on_error' ERR
 bash -c "while true; do echo Building Kapua...; sleep 30; done" &
 HEARTBEAT_PROCESS_PID=$!
 
-### Build itself
+### Run
 
-"$M2_HOME"/bin/mvn -v
-"$M2_HOME"/bin/mvn -B -Dorg.eclipse.kapua.qa.waitMultiplier=2.0 -Dgwt.compiler.localWorkers=2 -Pjavadoc,console >> $OUTPUT 2>&1
+"$@" >> $OUTPUT 2>&1
 tail_log
 
 ### Cleaning up heartbeat process
