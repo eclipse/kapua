@@ -28,7 +28,7 @@ public class ScopedTranasactionInterceptor implements MethodInterceptor {
     private static final Logger logger = LoggerFactory.getLogger(ScopedTranasactionInterceptor.class);
     
     @Inject private EntityManagerFactoryRegistry emfRegistry;
-    @Inject private ScopedTransactionService persistenceService;
+    @Inject private TransactionScope transactionScope;
     
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
@@ -40,32 +40,32 @@ public class ScopedTranasactionInterceptor implements MethodInterceptor {
         Object obj = null;
         try {
             
-            persistenceService.begin(factory);
+            transactionScope.begin(factory);
             
             // If the invocation is inside an "externally" started transaction scope,
             // forward the invocation and delegate the external transaction scope the
             // responsibility to manage possible exceptions thrown
-            if (persistenceService.get().isTransactionActive()) {
+            if (transactionScope.get().isTransactionActive()) {
                 obj = invocation.proceed();
                 return obj;
             }
             
             // Start a new transaction scope and hence manage possible exceptions
             // thrown by this invocation as well as nested invocations.
-            persistenceService.get().beginTransaction();
+            transactionScope.get().beginTransaction();
             invocation.proceed();
-            persistenceService.get().commit();
+            transactionScope.get().commit();
         } catch (Throwable t) {
             transactionAnnotation = invocation.getMethod().getAnnotation(Transactional.class);
             Class<?>[] exceptions = transactionAnnotation.rollbackOn();
             for(Class<?> exception:exceptions) {
                 if (exception.isAssignableFrom(t.getClass())) {
-                    persistenceService.get().rollback();
+                    transactionScope.get().rollback();
                     break;
                 }
             }
         } finally {
-            persistenceService.end();
+            transactionScope.end();
         }
         
         return obj;

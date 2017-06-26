@@ -9,13 +9,15 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.jpa;
+package org.eclipse.kapua.commons.event;
 
 import org.eclipse.kapua.KapuaException;
 
-public interface ScopedTransactionService {
+public interface EventContextScope {
 
-    public void begin(EntityManagerFactory factory) throws KapuaException;
-    public EntityManager get();
+    public boolean isInProgress();
+    public void begin();
+    public void begin(EventContext eventCtx) throws KapuaException;
+    public String get();
     public void end();
 }

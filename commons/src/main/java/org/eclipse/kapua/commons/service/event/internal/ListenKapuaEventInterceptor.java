@@ -18,7 +18,7 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.event.EventContextImpl;
-import org.eclipse.kapua.commons.event.EventContextService;
+import org.eclipse.kapua.commons.event.EventContextScope;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.locator.inject.Interceptor;
 import org.eclipse.kapua.service.KapuaService;
@@ -29,7 +29,7 @@ import org.eclipse.kapua.service.event.ListenKapuaEvent;
 @Interceptor(matchAnnotatedWith = ListenKapuaEvent.class, matchSubclassOf = KapuaService.class)
 public class ListenKapuaEventInterceptor implements MethodInterceptor {
 
-    @Inject private EventContextService eventContextService;
+    @Inject private EventContextScope eventContextService;
     
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {

@@ -18,8 +18,8 @@ import org.eclipse.kapua.commons.core.ComponentProvider;
 import org.eclipse.kapua.locator.inject.Service;
 
 @ComponentProvider
-@Service(provides = { EventContext.class, EventContextService.class })
-public class EventContextServiceImpl implements EventContext, EventContextService {
+@Service(provides = { EventContext.class, EventContextScope.class })
+public class EventContextScopeImpl implements EventContext, EventContextScope {
 
     ThreadLocal<EventContext> eventContextThdLocal = new ThreadLocal<>();
     ThreadLocal<Integer> referenceCountThdLocal = new ThreadLocal<Integer>() {
@@ -55,8 +55,8 @@ public class EventContextServiceImpl implements EventContext, EventContextServic
     }
 
     @Override
-    public EventContext get() {
-        return eventContextThdLocal.get();
+    public String get() {
+        return eventContextThdLocal.get().getId();
     }
 
     @Override

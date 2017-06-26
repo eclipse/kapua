@@ -24,10 +24,10 @@ import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 
 @ComponentProvider
-@Service(provides = {EntityManager.class, ScopedTransactionService.class})
-public class ScopedTransactionServiceImpl implements EntityManager, ScopedTransactionService {
+@Service(provides = {EntityManager.class, TransactionScope.class})
+public class TransactionScopeImpl implements EntityManager, TransactionScope {
     
-    ThreadLocal<ScopedTransactionContext> txnContextThdLocal = new ThreadLocal<>();
+    ThreadLocal<TransactionContext> txnContextThdLocal = new ThreadLocal<>();
     ThreadLocal<Integer> referenceCountThdLocal = new ThreadLocal<Integer>() {
         @Override
         protected Integer initialValue() {
@@ -35,17 +35,17 @@ public class ScopedTransactionServiceImpl implements EntityManager, ScopedTransa
         }
     };
     
-    public ScopedTransactionServiceImpl() {    
+    public TransactionScopeImpl() {    
     }
     
     @Override
     public void begin(EntityManagerFactory factory) throws KapuaException {
         if (txnContextThdLocal.get() == null) {
             EntityManager em = factory.createEntityManager();
-            txnContextThdLocal.set(new ScopedTransactionContext(factory, em));
+            txnContextThdLocal.set(new TransactionContext(factory, em));
         }
         
-        ScopedTransactionContext ctx = txnContextThdLocal.get();
+        TransactionContext ctx = txnContextThdLocal.get();
         if (!ctx.getEntityManagerFactory().getClass().equals(factory.getClass())) {
             throw KapuaRuntimeException.internalError(
                     String.format("Detected a tentative to open a nested transaction using %s,"
@@ -57,7 +57,7 @@ public class ScopedTransactionServiceImpl implements EntityManager, ScopedTransa
     
     @Override
     public EntityManager get() {
-        ScopedTransactionContext ctx = txnContextThdLocal.get();
+        TransactionContext ctx = txnContextThdLocal.get();
         return ctx.getEntityManager();
     }
 
@@ -67,7 +67,7 @@ public class ScopedTransactionServiceImpl implements EntityManager, ScopedTransa
             referenceCountThdLocal.set(referenceCountThdLocal.get()-1);
             if (referenceCountThdLocal.get() == 0) {
                 if (txnContextThdLocal.get() != null) {
-                    ScopedTransactionContext ctx = txnContextThdLocal.get();
+                    TransactionContext ctx = txnContextThdLocal.get();
                     ctx.getEntityManager().close();
                     txnContextThdLocal.set(null);
                 }
@@ -77,91 +77,91 @@ public class ScopedTransactionServiceImpl implements EntityManager, ScopedTransa
 
     @Override
     public void beginTransaction() throws KapuaException {
-        ScopedTransactionContext ctx = txnContextThdLocal.get();
+        TransactionContext ctx = txnContextThdLocal.get();
         ctx.getEntityManager().beginTransaction();
     }
 
     @Override
     public void commit() throws KapuaException {
-        ScopedTransactionContext ctx = txnContextThdLocal.get();
+        TransactionContext ctx = txnContextThdLocal.get();
         ctx.getEntityManager().commit();
     }
 
     @Override
     public void rollback() {
-        ScopedTransactionContext ctx = txnContextThdLocal.get();
+        TransactionContext ctx = txnContextThdLocal.get();
         ctx.getEntityManager().rollback();
     }
 
     @Override
     public boolean isTransactionActive() {
-        ScopedTransactionContext ctx = txnContextThdLocal.get();
+        TransactionContext ctx = txnContextThdLocal.get();
         return ctx.getEntityManager().isTransactionActive();
     }
 
     @Override
     public void close() {
-        ScopedTransactionContext ctx = txnContextThdLocal.get();
+        TransactionContext ctx = txnContextThdLocal.get();
         ctx.getEntityManager().close();
     }
 
     @Override
     public <E extends KapuaEntity> void persist(E entity) {
-        ScopedTransactionContext ctx = txnContextThdLocal.get();
+        TransactionContext ctx = txnContextThdLocal.get();
         ctx.getEntityManager().persist(entity);
     }
 
     @Override
     public void flush() {
-        ScopedTransactionContext ctx = txnContextThdLocal.get();
+        TransactionContext ctx = txnContextThdLocal.get();
         ctx.getEntityManager().flush();
     }
 
     @Override
     public <E extends KapuaEntity> E find(Class<E> clazz, KapuaId id) {
-        ScopedTransactionContext ctx = txnContextThdLocal.get();
+        TransactionContext ctx = txnContextThdLocal.get();
         return ctx.getEntityManager().find(clazz, id);
     }
 
     @Override
     public <E extends KapuaEntity> void merge(E entity) {
-        ScopedTransactionContext ctx = txnContextThdLocal.get();
+        TransactionContext ctx = txnContextThdLocal.get();
         ctx.getEntityManager().merge(entity);
     }
 
     @Override
     public <E extends KapuaEntity> void refresh(E entity) {
-        ScopedTransactionContext ctx = txnContextThdLocal.get();
+        TransactionContext ctx = txnContextThdLocal.get();
         ctx.getEntityManager().refresh(entity);
     }
 
     @Override
     public <E extends KapuaEntity> void remove(E entity) {
-        ScopedTransactionContext ctx = txnContextThdLocal.get();
+        TransactionContext ctx = txnContextThdLocal.get();
         ctx.getEntityManager().remove(entity);
     }
 
     @Override
     public CriteriaBuilder getCriteriaBuilder() {
-        ScopedTransactionContext ctx = txnContextThdLocal.get();
+        TransactionContext ctx = txnContextThdLocal.get();
         return ctx.getEntityManager().getCriteriaBuilder();
     }
 
     @Override
     public <E> TypedQuery<E> createQuery(CriteriaQuery<E> criteriaSelectQuery) {
-        ScopedTransactionContext ctx = txnContextThdLocal.get();
+        TransactionContext ctx = txnContextThdLocal.get();
         return ctx.getEntityManager().createQuery(criteriaSelectQuery);
     }
 
     @Override
     public <E> TypedQuery<E> createNamedQuery(String queryName, Class<E> clazz) {
-        ScopedTransactionContext ctx = txnContextThdLocal.get();
+        TransactionContext ctx = txnContextThdLocal.get();
         return ctx.getEntityManager().createNamedQuery(queryName, clazz);
     }
 
     @Override
     public <E> Query createNativeQuery(String querySelectUuidShort) {
-        ScopedTransactionContext ctx = txnContextThdLocal.get();
+        TransactionContext ctx = txnContextThdLocal.get();
         return ctx.getEntityManager().createNativeQuery(querySelectUuidShort);
     }
 }

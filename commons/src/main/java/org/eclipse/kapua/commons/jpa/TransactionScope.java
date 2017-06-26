@@ -11,22 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.jpa;
 
+import org.eclipse.kapua.KapuaException;
 
-public class ScopedTransactionContext {
+public interface TransactionScope {
 
-    private EntityManagerFactory emf;
-    private EntityManager em;
-    
-    public ScopedTransactionContext(EntityManagerFactory emf, EntityManager em) {
-        this.emf = emf;
-        this.em = em;
-    }
-    
-    public EntityManagerFactory getEntityManagerFactory() {
-        return this.emf;
-    }
-    
-    public EntityManager getEntityManager() {
-        return this.em;
-    }
+    public void begin(EntityManagerFactory factory) throws KapuaException;
+    public EntityManager get();
+    public void end();
 }

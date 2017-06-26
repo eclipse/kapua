@@ -9,15 +9,24 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.event;
+package org.eclipse.kapua.commons.jpa;
 
-import org.eclipse.kapua.KapuaException;
 
-public interface EventContextService {
+public class TransactionContext {
 
-    public boolean isInProgress();
-    public void begin();
-    public void begin(EventContext eventCtx) throws KapuaException;
-    public EventContext get();
-    public void end();
+    private EntityManagerFactory emf;
+    private EntityManager em;
+    
+    public TransactionContext(EntityManagerFactory emf, EntityManager em) {
+        this.emf = emf;
+        this.em = em;
+    }
+    
+    public EntityManagerFactory getEntityManagerFactory() {
+        return this.emf;
+    }
+    
+    public EntityManager getEntityManager() {
+        return this.em;
+    }
 }

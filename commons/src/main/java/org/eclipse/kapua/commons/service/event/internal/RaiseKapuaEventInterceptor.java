@@ -15,7 +15,7 @@ import javax.inject.Inject;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.eclipse.kapua.commons.event.EventContextService;
+import org.eclipse.kapua.commons.event.EventContextScope;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.locator.inject.Interceptor;
 import org.eclipse.kapua.service.KapuaService;
@@ -35,7 +35,7 @@ public class RaiseKapuaEventInterceptor implements MethodInterceptor {
     
     private static final Logger logger = LoggerFactory.getLogger(RaiseKapuaEventInterceptor.class);
 
-    @Inject EventContextService eventCtxService;
+    @Inject EventContextScope eventCtxScope;
     
     public RaiseKapuaEventInterceptor() {
         logger.info("***** Interceptor {} created !!", RaiseKapuaEventInterceptor.class.getName());
@@ -57,13 +57,13 @@ public class RaiseKapuaEventInterceptor implements MethodInterceptor {
         }
 
         try {
-            eventCtxService.begin();
-            String contextId = eventCtxService.get().getId();
+            eventCtxScope.begin();
+            String contextId = eventCtxScope.get();
             returnObject = invocation.proceed();
         } catch (Throwable t) {
             executionThrowable = t;
         } finally {
-            eventCtxService.end();            
+            eventCtxScope.end();            
         }
 
         if (ActionPerformedOn.AFTER.equals(raiseWorkflowEvents.eventActionPerformedOn())) {
