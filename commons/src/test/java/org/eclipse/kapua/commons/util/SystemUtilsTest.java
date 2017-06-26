@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.commons.util;
 
@@ -23,7 +24,7 @@ public class SystemUtilsTest extends Assert {
     public void testConstructor() throws Exception {
         Constructor<SystemUtils> systemUtils = SystemUtils.class.getDeclaredConstructor();
         systemUtils.setAccessible(true);
-        SystemUtils systemUtilsTest = systemUtils.newInstance();
+        systemUtils.newInstance();
     }
     
     @Test

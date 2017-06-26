@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *     
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.commons.util;
 
@@ -24,7 +24,7 @@ public class KapuaDateUtilsTest extends Assert {
     public void testConstructor() throws Exception {
         Constructor<KapuaDateUtils> dateUtils = KapuaDateUtils.class.getDeclaredConstructor();
         dateUtils.setAccessible(true);
-        KapuaDateUtils dateUtilsTest = dateUtils.newInstance();
+        dateUtils.newInstance();
     }
 
     @Test

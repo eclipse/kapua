@@ -24,7 +24,7 @@ public class CryptoUtilTest extends Assert {
     public void testConstructor() throws Exception{
     Constructor<CryptoUtil> crypto = CryptoUtil.class.getDeclaredConstructor();
         crypto.setAccessible(true);
-        CryptoUtil cryptoTest = crypto.newInstance();
+        crypto.newInstance();
     }
     
     @Test
