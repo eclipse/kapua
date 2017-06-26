@@ -389,7 +389,8 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire.version}</version>
                 <configuration>
-                    <!-- no argLine here -->
+                    <!-- Travis has an overall 3GB limit -->
+                    <argLine>@{argLine} -Xmx1024m</argLine>
                 </configuration>
             </plugin>
             <plugin>
