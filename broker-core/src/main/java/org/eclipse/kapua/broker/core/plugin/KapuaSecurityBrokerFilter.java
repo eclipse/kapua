@@ -72,6 +72,7 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.datastore.DatastoreDomain;
 import org.eclipse.kapua.service.device.management.commons.DeviceManagementDomain;
+import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCreator;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
@@ -394,6 +395,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                     deviceConnectionCreator.setProtocol("MQTT");
                     deviceConnectionCreator.setServerIp(null);// TODO to be filled with the proper value
                     deviceConnectionCreator.setUserId(userId);
+                    deviceConnectionCreator.setUserCouplingMode(ConnectionUserCouplingMode.LOOSE);
                     deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.create(deviceConnectionCreator));
                 } else {
                     deviceConnection.setClientIp(clientIp);

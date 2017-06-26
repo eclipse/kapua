@@ -301,7 +301,6 @@ public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
         assertEquals(connectionCreator.getScopeId(), connection.getScopeId());
         assertEquals(connectionCreator.getClientId(), connection.getClientId());
         assertEquals(connectionCreator.getUserId(), connection.getUserId());
-        assertEquals(connectionCreator.getUserId(), connection.getUserId());
         assertEquals(connectionCreator.getUserCouplingMode(), connection.getUserCouplingMode());
         assertEquals(connectionCreator.getReservedUserId(), connection.getReservedUserId());
         assertEquals(connectionCreator.getClientIp(), connection.getClientIp());
