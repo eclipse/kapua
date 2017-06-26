@@ -22,7 +22,6 @@
     </parent>
 
     <artifactId>kapua-qa</artifactId>
-    <name>${project.artifactId}</name>
 
     <dependencies>
         <!-- Required service interfaces -->
