@@ -13,6 +13,7 @@ package org.eclipse.kapua.service.device.registry.connection.option.internal;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -40,6 +41,10 @@ public class DeviceConnectionOptionImpl extends AbstractKapuaUpdatableEntity imp
 
     private static final long serialVersionUID = 8928343233144731836L;
 
+    @Basic
+    @Column(name = "allow_user_change", nullable = false, updatable = true)
+    private boolean allowUserChange;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "user_coupling_mode", nullable = false)
     private ConnectionUserCouplingMode userCouplingMode;
@@ -66,11 +71,20 @@ public class DeviceConnectionOptionImpl extends AbstractKapuaUpdatableEntity imp
         super(scopeId);
     }
 
-    public DeviceConnectionOptionImpl(DeviceConnectionOption deviceConnection) throws KapuaException {
-        super((KapuaUpdatableEntity) deviceConnection);
+    public DeviceConnectionOptionImpl(DeviceConnectionOption deviceConnectionOptions) throws KapuaException {
+        super((KapuaUpdatableEntity) deviceConnectionOptions);
 
-        setUserCouplingMode(deviceConnection.getUserCouplingMode());
-        setReservedUserId(deviceConnection.getReservedUserId());
+        setAllowUserChange(deviceConnectionOptions.getAllowUserChange());
+        setUserCouplingMode(deviceConnectionOptions.getUserCouplingMode());
+        setReservedUserId(deviceConnectionOptions.getReservedUserId());
+    }
+
+    public boolean getAllowUserChange() {
+        return allowUserChange;
+    }
+
+    public void setAllowUserChange(boolean allowUserChange) {
+        this.allowUserChange = allowUserChange;
     }
 
     public ConnectionUserCouplingMode getUserCouplingMode() {
