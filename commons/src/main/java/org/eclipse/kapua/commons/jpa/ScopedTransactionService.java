@@ -13,7 +13,7 @@ package org.eclipse.kapua.commons.jpa;
 
 import org.eclipse.kapua.KapuaException;
 
-public interface PersistenceService {
+public interface ScopedTransactionService {
 
     public void begin(EntityManagerFactory factory) throws KapuaException;
     public EntityManager get();

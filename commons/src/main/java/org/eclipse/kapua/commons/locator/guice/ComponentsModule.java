@@ -78,7 +78,6 @@ public class ComponentsModule extends PrivateModule {
                 }
 
                 // Bind interceptors
-                logger.info("Binding interceptors ..");
                 Interceptor interceptorAnnotation = componentProvider.getAnnotation(Interceptor.class);
                 if (interceptorAnnotation != null) {
                     if (MethodInterceptor.class.isAssignableFrom(componentProvider)) {

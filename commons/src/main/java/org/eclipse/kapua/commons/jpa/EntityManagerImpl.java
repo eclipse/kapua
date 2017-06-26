@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  */
 public class EntityManagerImpl implements EntityManager {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityManagerFactory.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EntityManagerImpl.class);
 
     private javax.persistence.EntityManager javaxPersitenceEntityManager;
 

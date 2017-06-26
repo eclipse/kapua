@@ -15,7 +15,6 @@ import javax.inject.Inject;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.eclipse.kapua.commons.locator.ComponentLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.locator.inject.Interceptor;
 import org.eclipse.kapua.service.KapuaService;
@@ -24,18 +23,19 @@ import org.slf4j.LoggerFactory;
 
 @KapuaProvider
 @Interceptor(matchAnnotatedWith = Transactional.class, matchSubclassOf = KapuaService.class)
-public class JPATranasactionInterceptor implements MethodInterceptor {
+public class ScopedTranasactionInterceptor implements MethodInterceptor {
     
-    private static final Logger logger = LoggerFactory.getLogger(JPATranasactionInterceptor.class);
+    private static final Logger logger = LoggerFactory.getLogger(ScopedTranasactionInterceptor.class);
     
-    @Inject private PersistenceService persistenceService;
+    @Inject private EntityManagerFactoryRegistry emfRegistry;
+    @Inject private ScopedTransactionService persistenceService;
     
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
         
         Transactional transactionAnnotation = invocation.getMethod().getAnnotation(Transactional.class);
         Class<? extends EntityManagerFactory> factoryClass = transactionAnnotation.factory();
-        EntityManagerFactory factory = ComponentLocator.getInstance().getComponent(factoryClass);
+        EntityManagerFactory factory = emfRegistry.getFactory(factoryClass);
 
         Object obj = null;
         try {
