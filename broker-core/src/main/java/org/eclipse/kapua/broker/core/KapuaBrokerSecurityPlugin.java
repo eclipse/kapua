@@ -19,8 +19,8 @@ import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_SCHEM
 import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_SCHEMA_ENV;
 import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_USERNAME;
 
+import java.io.InputStream;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 import org.apache.activemq.broker.Broker;
@@ -31,7 +31,6 @@ import org.apache.shiro.config.IniSecurityManagerFactory;
 import org.apache.shiro.mgt.SecurityManager;
 import org.eclipse.kapua.broker.core.plugin.KapuaSecurityBrokerFilter;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.util.ResourceUtils;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +54,8 @@ public class KapuaBrokerSecurityPlugin implements BrokerPlugin {
 
     private static final Logger logger = LoggerFactory.getLogger(KapuaBrokerSecurityPlugin.class);
 
-    public Broker installPlugin(Broker broker) throws Exception {
+    @Override
+    public Broker installPlugin(final Broker broker) throws Exception {
         logger.info("Installing Kapua broker plugin.");
 
         logger.debug("Starting Liquibase embedded client.");
@@ -67,10 +67,11 @@ public class KapuaBrokerSecurityPlugin implements BrokerPlugin {
 
         try {
             // initialize shiro context for broker plugin from shiro ini file
-            URL shiroIniUrl = getClass().getResource("/shiro.ini");
-            String shiroIniStr = ResourceUtils.readResource(shiroIniUrl, StandardCharsets.UTF_8);
+            final URL shiroIniUrl = getClass().getResource("/shiro.ini");
             Ini shiroIni = new Ini();
-            shiroIni.load(shiroIniStr);
+            try (final InputStream input = shiroIniUrl.openStream()) {
+                shiroIni.load(input);
+            }
 
             SecurityManager securityManager = new IniSecurityManagerFactory(shiroIni).getInstance();
             SecurityUtils.setSecurityManager(securityManager);
