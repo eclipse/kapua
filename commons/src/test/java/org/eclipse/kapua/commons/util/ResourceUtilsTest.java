@@ -17,6 +17,7 @@ import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
 
@@ -29,8 +30,8 @@ public class ResourceUtilsTest {
     public void testRead1() throws IOException {
         final URL url = ResourceUtils.getResource("test.properties");
         assertNotNull(url);
-        
-        final String string = ResourceUtils.readResource(url);
+
+        final String string = ResourceUtils.readResource(url, StandardCharsets.UTF_8);
         assertNotNull(string);
         assertFalse(string.isEmpty());
     }
@@ -43,12 +44,12 @@ public class ResourceUtilsTest {
         final URL url = ResourceUtils.getResource("does-not-exist");
         assertNull(url);
     }
-    
+
     /**
      * Test reading a resource which does not exists
      */
-    @Test(expected=IOException.class)
-    public void testRead3 () throws IOException {
-        ResourceUtils.readResource(new URL("file:/does-not-exists"));
+    @Test(expected = IOException.class)
+    public void testRead3() throws IOException {
+        ResourceUtils.readResource(new URL("file:/does-not-exists"), StandardCharsets.UTF_8);
     }
 }

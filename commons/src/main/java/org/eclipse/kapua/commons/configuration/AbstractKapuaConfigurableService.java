@@ -12,17 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration;
 
-import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Properties;
-
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLStreamException;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
@@ -71,26 +68,20 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * Reads metadata for the service pid
      *
      * @param pid
-     * @return
-     * @throws IOException
+     *            the persistent ID of the service
+     * @return the metadata
      * @throws Exception
-     * @throws XMLStreamException
-     * @throws FactoryConfigurationError
+     *             In case of an error
      */
-    private static KapuaTmetadata readMetadata(String pid)
-            throws Exception, FactoryConfigurationError {
-        KapuaTmetadata metaData = null;
-        StringBuilder sbMetatypeXmlName = new StringBuilder();
-        sbMetatypeXmlName.append("META-INF/metatypes/").append(pid).append(".xml");
+    private static KapuaTmetadata readMetadata(final String pid) throws Exception {
+        final URL url = ResourceUtils.getResource(String.format("META-INF/metatypes/%s.xml", pid));
 
-        String metatypeXmlName = sbMetatypeXmlName.toString();
-        URL metatypeXmlURL = ResourceUtils.getResource(metatypeXmlName);
-        if (metatypeXmlURL != null) {
-            String metatypeXml = ResourceUtils.readResource(metatypeXmlURL);
-            metaData = XmlUtil.unmarshal(metatypeXml, KapuaTmetadata.class);
+        if (url == null) {
+            return null;
         }
 
-        return metaData;
+        final String xml = ResourceUtils.readResource(url, StandardCharsets.UTF_8);
+        return XmlUtil.unmarshal(xml, KapuaTmetadata.class);
     }
 
     /**

@@ -12,16 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.util;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.Charset;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.io.CharStreams;
+import com.google.common.io.Resources;
 
 /**
  * Resource utilities
@@ -67,21 +65,30 @@ public class ResourceUtils {
     }
 
     /**
-     * Reads a resource fully and returns it as a string.
+     * Reads a resource fully and returns it as a string
      *
      * @param resourceUrl
-     * @return
+     *            The URL to read from
+     * @param charset
+     *            the character set used to read the file
+     * @return the resource content as string
      * @throws IOException
+     *             in case of an I/O error
      */
-    public static String readResource(URL resourceUrl) throws IOException {
-        try (BufferedReader resourceBr = new BufferedReader(new InputStreamReader(resourceUrl.openStream()))) {
-            return CharStreams.toString(resourceBr);
-        }
+    public static String readResource(final URL resourceUrl, final Charset charset) throws IOException {
+        return Resources.toString(resourceUrl, charset);
     }
 
-    public static byte[] readResourceAsByteArray(URL resourceUrl) throws IOException {
-        try (BufferedReader resourceBr = new BufferedReader(new InputStreamReader(resourceUrl.openStream()))) {
-            return IOUtils.toByteArray(resourceBr);
-        }
+    /**
+     * Reads a resource fully and returns it as a byte array
+     * 
+     * @param resourceUrl
+     *            The URL to read from
+     * @return the resource content as byte array
+     * @throws IOException
+     *             in case of an I/O error
+     */
+    public static byte[] readResourceAsByteArray(final URL resourceUrl) throws IOException {
+        return Resources.toByteArray(resourceUrl);
     }
 }
