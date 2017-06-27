@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.setting;
 
-import java.lang.reflect.Constructor;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -21,13 +19,13 @@ public class SimpleSettingKeyTest extends Assert {
 
     @Test
     public void testConstructor() throws Exception {
-        Constructor<SimpleSettingKey> settingKey = SimpleSettingKey.class.getDeclaredConstructor();
-        settingKey.setAccessible(true);
-        settingKey.newInstance();
+
+        SimpleSettingKey settingKey = new SimpleSettingKey("string");
+        Assert.assertEquals("string", settingKey.key());
     }
 
     @Test
-    public void test2() {
+    public void testKey() {
         SimpleSettingKey key1 = new SimpleSettingKey("key");
         Assert.assertSame("key", key1.key());
     }
