@@ -1,0 +1,34 @@
+/*******************************************************************************
+ * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *     Red Hat Inc
+ *******************************************************************************/
+package org.eclipse.kapua.commons.setting;
+
+import java.lang.reflect.Constructor;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+public class SimpleSettingKeyTest extends Assert {
+
+    @Test
+    public void testConstructor() throws Exception {
+        Constructor<SimpleSettingKey> settingKey = SimpleSettingKey.class.getDeclaredConstructor();
+        settingKey.setAccessible(true);
+        settingKey.newInstance();
+    }
+
+    @Test
+    public void test2() {
+        SimpleSettingKey key1 = new SimpleSettingKey("key");
+        Assert.assertSame("key", key1.key());
+    }
+}
