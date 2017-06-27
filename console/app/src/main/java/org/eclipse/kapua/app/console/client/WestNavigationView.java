@@ -32,7 +32,8 @@ import org.eclipse.kapua.app.console.commons.client.ui.panel.ContentPanel;
 import org.eclipse.kapua.app.console.client.tag.TagView;
 import org.eclipse.kapua.app.console.client.user.UserView;
 import org.eclipse.kapua.app.console.client.welcome.WelcomeView;
-import org.eclipse.kapua.app.console.commons.client.views.EntityView;
+import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractGwtEntityView;
+import org.eclipse.kapua.app.console.commons.client.views.EntityViewDescriptor;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtAccount;
@@ -84,7 +85,7 @@ public class WestNavigationView extends LayoutContainer {
     private boolean dashboardSelected;
     private KapuaIcon imgRefreshLabel;
     private WelcomeView welcomeView;
-    private List<EntityView<? extends GwtEntityModel>> entityViewList;
+    private List<EntityViewDescriptor<? extends GwtEntityModel>> entityViewList;
 
     private final GwtSession currentSession;
 
@@ -115,7 +116,7 @@ public class WestNavigationView extends LayoutContainer {
     protected void onRender(final Element parent, int index) {
         super.onRender(parent, index);
 
-        CONSOLE_SERVICE.getCustomEntityViews(new AsyncCallback<List<EntityView<? extends GwtEntityModel>>>() {
+        CONSOLE_SERVICE.getCustomEntityViews(new AsyncCallback<List<EntityViewDescriptor<? extends GwtEntityModel>>>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -123,129 +124,129 @@ public class WestNavigationView extends LayoutContainer {
             }
 
             @Override
-            public void onSuccess(final List<EntityView<? extends GwtEntityModel>> additionalViews) {
-        setLayout(new FitLayout());
-        setBorders(false);
+            public void onSuccess(final List<EntityViewDescriptor<? extends GwtEntityModel>> additionalViews) {
+                setLayout(new FitLayout());
+                setBorders(false);
 
-        //
-        // Accordion Panel
-        AccordionLayout accordionLayout = new AccordionLayout();
-        accordionLayout.setFill(true);
+                //
+                // Accordion Panel
+                AccordionLayout accordionLayout = new AccordionLayout();
+                accordionLayout.setFill(true);
 
-        accordionPanel = new ContentPanel(accordionLayout);
-        accordionPanel.setBorders(false);
-        accordionPanel.setBodyBorder(false);
-        accordionPanel.setHeaderVisible(false);
-        add(accordionPanel);
+                accordionPanel = new ContentPanel(accordionLayout);
+                accordionPanel.setBorders(false);
+                accordionPanel.setBodyBorder(false);
+                accordionPanel.setHeaderVisible(false);
+                add(accordionPanel);
 
-        //
-        // Top managing panel
-        cloudResourcesPanel = new ContentPanel();
-        cloudResourcesPanel.setAnimCollapse(false);
-        cloudResourcesPanel.setBorders(false);
-        cloudResourcesPanel.setBodyBorder(true);
-        cloudResourcesPanel.setHeaderVisible(false);
-        cloudResourcesPanel.setScrollMode(Scroll.AUTOY);
+                //
+                // Top managing panel
+                cloudResourcesPanel = new ContentPanel();
+                cloudResourcesPanel.setAnimCollapse(false);
+                cloudResourcesPanel.setBorders(false);
+                cloudResourcesPanel.setBodyBorder(true);
+                cloudResourcesPanel.setHeaderVisible(false);
+                cloudResourcesPanel.setScrollMode(Scroll.AUTOY);
 
-        //
-        // Bottom manage panel
-        accountManagementPanel = new ContentPanel();
-        accountManagementPanel.setBorders(false);
-        accountManagementPanel.setBodyBorder(false);
-        accountManagementPanel.setHeading(MSGS.manageHeading());
+                //
+                // Bottom manage panel
+                accountManagementPanel = new ContentPanel();
+                accountManagementPanel.setBorders(false);
+                accountManagementPanel.setBodyBorder(false);
+                accountManagementPanel.setHeading(MSGS.manageHeading());
 
-        cloudResourcesTreeStore = new TreeStore<ModelData>();
-        accountManagementTreeStore = new TreeStore<ModelData>();
+                cloudResourcesTreeStore = new TreeStore<ModelData>();
+                accountManagementTreeStore = new TreeStore<ModelData>();
 
-        //
-        // Adding item to stores
-        //
+                //
+                // Adding item to stores
+                //
                 addMenuItems(additionalViews);
 
-        ColumnConfig name = new ColumnConfig("name", "Name", 200);
-        name.setRenderer(treeCellRenderer);
+                ColumnConfig name = new ColumnConfig("name", "Name", 200);
+                name.setRenderer(treeCellRenderer);
 
-        ColumnModel cm = new ColumnModel(Arrays.asList(name));
+                ColumnModel cm = new ColumnModel(Arrays.asList(name));
 
-        cloudResourcesTreeGrid = new TreeGrid<ModelData>(cloudResourcesTreeStore, cm);
-        cloudResourcesTreeGrid.setBorders(false);
-        cloudResourcesTreeGrid.setHideHeaders(true);
-        cloudResourcesTreeGrid.setAutoExpandColumn("name");
-        cloudResourcesTreeGrid.getTreeView().setRowHeight(36);
-        cloudResourcesTreeGrid.getTreeView().setForceFit(true);
+                cloudResourcesTreeGrid = new TreeGrid<ModelData>(cloudResourcesTreeStore, cm);
+                cloudResourcesTreeGrid.setBorders(false);
+                cloudResourcesTreeGrid.setHideHeaders(true);
+                cloudResourcesTreeGrid.setAutoExpandColumn("name");
+                cloudResourcesTreeGrid.getTreeView().setRowHeight(36);
+                cloudResourcesTreeGrid.getTreeView().setForceFit(true);
 
-        cloudResourcesTreeGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        cloudResourcesTreeGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<ModelData>() {
+                cloudResourcesTreeGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+                cloudResourcesTreeGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<ModelData>() {
 
-            @Override
-            public void selectionChanged(SelectionChangedEvent<ModelData> se) {
-                ModelData selected = se.getSelectedItem();
-                if (selected == null) {
-                    return;
-                }
+                    @Override
+                    public void selectionChanged(SelectionChangedEvent<ModelData> se) {
+                        ModelData selected = se.getSelectedItem();
+                        if (selected == null) {
+                            return;
+                        }
 
-                if (dashboardSelected && ((String) selected.get("id")).equals("welcome")) {
-                    return;
-                }
+                        if (dashboardSelected && ((String) selected.get("id")).equals("welcome")) {
+                            return;
+                        }
 
-                accountManagementTreeGrid.getSelectionModel().deselectAll();
+                        accountManagementTreeGrid.getSelectionModel().deselectAll();
 
-                centerPanel.removeAll();
+                        centerPanel.removeAll();
 
-                ContentPanel panel = new ContentPanel(new FitLayout());
-                panel.setBorders(false);
-                panel.setBodyBorder(false);
+                        ContentPanel panel = new ContentPanel(new FitLayout());
+                        panel.setBorders(false);
+                        panel.setBodyBorder(false);
 
-                String selectedId = (String) selected.get("id");
-                if ("welcome".equals(selectedId)) {
+                        String selectedId = (String) selected.get("id");
+                        if ("welcome".equals(selectedId)) {
 
-                    welcomeView = new WelcomeView(currentSession);
+                            welcomeView = new WelcomeView(currentSession);
 
-                    panel.setBodyBorder(true);
-                    panel.setIcon(new KapuaIcon(IconSet.INFO));
-                    panel.setHeading(MSGS.welcome());
-                    panel.add(welcomeView);
+                            panel.setBodyBorder(true);
+                            panel.setIcon(new KapuaIcon(IconSet.INFO));
+                            panel.setHeading(MSGS.welcome());
+                            panel.add(welcomeView);
 
-                    centerPanel.add(panel);
-                    centerPanel.layout();
-                    dashboardSelected = false;
-                } else  if ("about".equals(selectedId)) {
-                    AboutView aboutView = new AboutView();
+                            centerPanel.add(panel);
+                            centerPanel.layout();
+                            dashboardSelected = false;
+                        } else  if ("about".equals(selectedId)) {
+                            AboutView aboutView = new AboutView();
 
-                    panel.setBodyBorder(true);
-                    panel.setIcon(new KapuaIcon(IconSet.INFO));
-                    panel.setHeading(MSGS.about());
-                    panel.add(aboutView);
+                            panel.setBodyBorder(true);
+                            panel.setIcon(new KapuaIcon(IconSet.INFO));
+                            panel.setHeading(MSGS.about());
+                            panel.add(aboutView);
 
-                    centerPanel.add(panel);
-                    centerPanel.layout();
-                    dashboardSelected = false;
-                } else if ("devices".equals(selectedId)) {
-                    DevicesView deviceView = new DevicesView(currentSession);
+                            centerPanel.add(panel);
+                            centerPanel.layout();
+                            dashboardSelected = false;
+                        } else if ("devices".equals(selectedId)) {
+                            DevicesView deviceView = new DevicesView(currentSession);
 
-                    panel.setHeaderVisible(false);
-                    panel.add(deviceView);
+                            panel.setHeaderVisible(false);
+                            panel.add(deviceView);
 
-                    centerPanel.add(panel);
-                    centerPanel.layout();
-                    dashboardSelected = false;
-                } else if ("connection".equals(selectedId)) {
-                    ConnectionView connectionView = new ConnectionView(currentSession);
+                            centerPanel.add(panel);
+                            centerPanel.layout();
+                            dashboardSelected = false;
+                        } else if ("connection".equals(selectedId)) {
+                            ConnectionView connectionView = new ConnectionView(currentSession);
 
-                    panel.setHeaderVisible(false);
-                    panel.add(connectionView);
+                            panel.setHeaderVisible(false);
+                            panel.add(connectionView);
 
-                    centerPanel.add(panel);
-                    centerPanel.layout();
-                    dashboardSelected = false;
-                } else if ("data".equals(selectedId)) {
-                    DataView dataView = new DataView(currentSession);
-                    panel.setHeaderVisible(false);
-                    panel.add(dataView);
+                            centerPanel.add(panel);
+                            centerPanel.layout();
+                            dashboardSelected = false;
+                        } else if ("data".equals(selectedId)) {
+                            DataView dataView = new DataView(currentSession);
+                            panel.setHeaderVisible(false);
+                            panel.add(dataView);
 
-                    centerPanel.add(panel);
-                    centerPanel.layout();
-                    dashboardSelected = false;
+                            centerPanel.add(panel);
+                            centerPanel.layout();
+                            dashboardSelected = false;
                 } else if ("tags".equals(selectedId)) {
                     panel.setIcon(new KapuaIcon(IconSet.TAGS));
                     panel.setHeading(MSGS.tags());
@@ -256,129 +257,131 @@ public class WestNavigationView extends LayoutContainer {
                     centerPanel.add(panel);
                     centerPanel.layout();
                     dashboardSelected = false;
-                } else if ("user".equals(selectedId)) {
+                        } else if ("user".equals(selectedId)) {
 
-                    UserView userView = new UserView(currentSession);
-                    // userView.setAccount(m_currentSession.getSelectedAccount());
+                            UserView userView = new UserView(currentSession);
+                            // userView.setAccount(m_currentSession.getSelectedAccount());
 
-                    panel.setIcon(new KapuaIcon(IconSet.USERS));
-                    panel.setHeading(MSGS.users());
-                    panel.add(userView);
+                            panel.setIcon(new KapuaIcon(IconSet.USERS));
+                            panel.setHeading(MSGS.users());
+                            panel.add(userView);
 
-                    centerPanel.add(panel);
-                    centerPanel.layout();
-                    dashboardSelected = false;
+                            centerPanel.add(panel);
+                            centerPanel.layout();
+                            dashboardSelected = false;
 
-                    // userView.refresh();
-                } else if ("role".equals(selectedId)) {
+                            // userView.refresh();
+                        } else if ("role".equals(selectedId)) {
 
-                    panel.setIcon(new KapuaIcon(IconSet.STREET_VIEW));
-                    panel.setHeading(MSGS.roles());
+                            panel.setIcon(new KapuaIcon(IconSet.STREET_VIEW));
+                            panel.setHeading(MSGS.roles());
 
-                    RoleView userView = new RoleView(currentSession);
-                    panel.add(userView);
+                            RoleView userView = new RoleView(currentSession);
+                            panel.add(userView);
 
-                    centerPanel.add(panel);
-                    centerPanel.layout();
-                    dashboardSelected = false;
-                } else if ("groups".equals(selectedId)) {
-                    panel.setIcon(new KapuaIcon(IconSet.OBJECT_GROUP));
-                    panel.setHeading(MSGS.groups());
+                            centerPanel.add(panel);
+                            centerPanel.layout();
+                            dashboardSelected = false;
+                        } else if ("groups".equals(selectedId)) {
+                            panel.setIcon(new KapuaIcon(IconSet.OBJECT_GROUP));
+                            panel.setHeading(MSGS.groups());
 
-                    GroupView groupView = new GroupView(currentSession);
-                    panel.add(groupView);
+                            GroupView groupView = new GroupView(currentSession);
+                            panel.add(groupView);
 
-                    centerPanel.add(panel);
-                    centerPanel.layout();
-                    dashboardSelected = false;
-                } else if ("mysettings".equals(selectedId)) {
+                            centerPanel.add(panel);
+                            centerPanel.layout();
+                            dashboardSelected = false;
+                        } else if ("mysettings".equals(selectedId)) {
 
-                    AccountDetailsView settingView = new AccountDetailsView(null, currentSession);
-                    settingView.setAccount(currentSession.getSelectedAccount());
+                            AccountDetailsView settingView = new AccountDetailsView(null, currentSession);
+                            settingView.setAccount(currentSession.getSelectedAccount());
 
-                    panel.setIcon(new KapuaIcon(IconSet.COG));
-                    panel.setHeading(MSGS.settings());
-                    panel.add(settingView);
+                            panel.setIcon(new KapuaIcon(IconSet.COG));
+                            panel.setHeading(MSGS.settings());
+                            panel.add(settingView);
 
-                    centerPanel.add(panel);
-                    centerPanel.layout();
+                            centerPanel.add(panel);
+                            centerPanel.layout();
 
-                    settingView.refresh();
+                            settingView.refresh();
                         } else {
-                            for (EntityView<? extends GwtEntityModel> entityView : additionalViews) {
-                                if (entityView.getId().equals(selectedId)) {
-                                    panel.setIcon(new KapuaIcon(entityView.getIcon()));
-                                    panel.setHeading(entityView.getName());
-                                    panel.add((LayoutContainer)entityView);
+                            for (EntityViewDescriptor<? extends GwtEntityModel> entityViewDescriptor : additionalViews) {
+                                if (entityViewDescriptor.getId().equals(selectedId)) {
+                                    panel.setIcon(new KapuaIcon(entityViewDescriptor.getIcon()));
+                                    panel.setHeading(entityViewDescriptor.getName());
+                                    try {
+                                        panel.add((AbstractGwtEntityView)entityViewDescriptor.getViewInstance());
+                                    } catch (Exception ignored) { }
 
                                     centerPanel.add(panel);
                                     centerPanel.layout();
                                 }
-                }
-            }
+                            }
+                        }
                     }
-        });
+                });
 
-        ColumnConfig name1 = new ColumnConfig("name", "Name", 200);
-        name1.setRenderer(treeCellRenderer);
+                ColumnConfig name1 = new ColumnConfig("name", "Name", 200);
+                name1.setRenderer(treeCellRenderer);
 
-        ColumnModel cm1 = new ColumnModel(Arrays.asList(name1));
+                ColumnModel cm1 = new ColumnModel(Arrays.asList(name1));
 
-        accountManagementTreeGrid = new TreeGrid<ModelData>(accountManagementTreeStore, cm1);
-        accountManagementTreeGrid.setBorders(false);
-        accountManagementTreeGrid.setHideHeaders(true);
-        accountManagementTreeGrid.setAutoExpandColumn("name");
-        accountManagementTreeGrid.getTreeView().setRowHeight(36);
-        accountManagementTreeGrid.getTreeView().setForceFit(true);
-        accountManagementTreeGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        accountManagementTreeGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<ModelData>() {
+                accountManagementTreeGrid = new TreeGrid<ModelData>(accountManagementTreeStore, cm1);
+                accountManagementTreeGrid.setBorders(false);
+                accountManagementTreeGrid.setHideHeaders(true);
+                accountManagementTreeGrid.setAutoExpandColumn("name");
+                accountManagementTreeGrid.getTreeView().setRowHeight(36);
+                accountManagementTreeGrid.getTreeView().setForceFit(true);
+                accountManagementTreeGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+                accountManagementTreeGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<ModelData>() {
 
-            @Override
-            public void selectionChanged(SelectionChangedEvent<ModelData> se) {
+                    @Override
+                    public void selectionChanged(SelectionChangedEvent<ModelData> se) {
 
-                ModelData selected = se.getSelectedItem();
-                if (selected == null) {
-                    return;
-                }
+                        ModelData selected = se.getSelectedItem();
+                        if (selected == null) {
+                            return;
+                        }
 
-                cloudResourcesTreeGrid.getSelectionModel().deselectAll();
+                        cloudResourcesTreeGrid.getSelectionModel().deselectAll();
 
-                centerPanel.removeAll();
-                ContentPanel panel = new ContentPanel(new FitLayout());
-                panel.setBorders(false);
-                panel.setBodyBorder(false);
+                        centerPanel.removeAll();
+                        ContentPanel panel = new ContentPanel(new FitLayout());
+                        panel.setBorders(false);
+                        panel.setBodyBorder(false);
 
-                String selectedId = (String) selected.get("id");
-                if ("childaccounts".equals(selectedId)) {
-                    AccountView accountView = new AccountView(currentSession);
+                        String selectedId = (String) selected.get("id");
+                        if ("childaccounts".equals(selectedId)) {
+                            AccountView accountView = new AccountView(currentSession);
 
-                    panel.setIcon(new KapuaIcon(IconSet.SITEMAP));
-                    panel.setHeading(MSGS.childaccounts());
-                    panel.add(accountView);
+                            panel.setIcon(new KapuaIcon(IconSet.SITEMAP));
+                            panel.setHeading(MSGS.childaccounts());
+                            panel.add(accountView);
 
-                    dashboardSelected = false;
-                }
-                // imgRefreshLabel.setVisible(dashboardSelected);
+                            dashboardSelected = false;
+                        }
+                        // imgRefreshLabel.setVisible(dashboardSelected);
 
-                centerPanel.add(panel);
-                centerPanel.layout();
+                        centerPanel.add(panel);
+                        centerPanel.layout();
+                    }
+                });
+
+                cloudResourcesPanel.add(cloudResourcesTreeGrid);
+                cloudResourcesPanel.add(accountManagementPanel);
+                cloudResourcesPanel.add(accountManagementTreeGrid);
+
+                cloudResourcesTreeGrid.getSelectionModel().select(0, false);
+
+                accordionPanel.add(cloudResourcesPanel);
             }
         });
 
-        cloudResourcesPanel.add(cloudResourcesTreeGrid);
-        cloudResourcesPanel.add(accountManagementPanel);
-        cloudResourcesPanel.add(accountManagementTreeGrid);
-
-        cloudResourcesTreeGrid.getSelectionModel().select(0, false);
-
-        accordionPanel.add(cloudResourcesPanel);
-    }
-        });
-
 
     }
 
-    public void addMenuItems(List<EntityView<? extends GwtEntityModel>> additionalViews) {
+    public void addMenuItems(List<EntityViewDescriptor<? extends GwtEntityModel>> additionalViews) {
 
         ModelData selectedAccountItem = null;
         ModelData selectedManageItem = null;
@@ -427,12 +430,12 @@ public class WestNavigationView extends LayoutContainer {
             if (currentSession.hasAccountReadPermission()) {
                 accountManagementTreeStore.add(newItem("childaccounts", MSGS.childaccounts(), IconSet.SITEMAP), false);
             }
-            
+
             cloudResourcesTreeStore.add(newItem("about", MSGS.about(), IconSet.INFO), false);
         }
 
         if (additionalViews != null) {
-            for (EntityView entityView : additionalViews) {
+            for (EntityViewDescriptor entityView : additionalViews) {
                 cloudResourcesTreeStore.add(newItem(entityView.getId(), entityView.getName(), entityView.getIcon()), false);
             }
         }
@@ -458,6 +461,8 @@ public class WestNavigationView extends LayoutContainer {
                 }
             }
         }
+
+        cloudResourcesPanel.layout(true);
     }
 
     public void setDashboardSelected(boolean isSelected) {

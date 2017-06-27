@@ -19,7 +19,6 @@ import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.commons.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractGwtEntityView;
-import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtAccount;
 
@@ -67,15 +66,5 @@ public class AccountView extends AbstractGwtEntityView<GwtAccount> {
             filterPanel = new AccountFilterPanel(entityView, currentSession);
         }
         return filterPanel;
-    }
-
-    @Override
-    public String getName() {
-        return null;
-    }
-
-    @Override
-    public IconSet getIcon() {
-        return null;
     }
 }

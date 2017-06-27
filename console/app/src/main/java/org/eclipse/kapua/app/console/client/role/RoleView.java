@@ -18,7 +18,6 @@ import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.commons.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractGwtEntityView;
-import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 
@@ -56,15 +55,5 @@ public class RoleView extends AbstractGwtEntityView<GwtRole> {
     @Override
     public EntityFilterPanel<GwtRole> getEntityFilterPanel(AbstractGwtEntityView<GwtRole> entityView, GwtSession currentSession) {
         return new RoleFilterPanel(this, currentSession);
-    }
-
-    @Override
-    public String getName() {
-        return null;
-    }
-
-    @Override
-    public IconSet getIcon() {
-        return null;
     }
 }

@@ -22,7 +22,6 @@ import org.eclipse.kapua.app.console.client.user.tabs.credentials.UserTabItemCre
 import org.eclipse.kapua.app.console.client.user.tabs.description.UserTabDescription;
 import org.eclipse.kapua.app.console.client.user.tabs.permission.UserTabItemPermission;
 import org.eclipse.kapua.app.console.client.user.tabs.role.UserTabItemAccessRole;
-import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtUser;
 
@@ -72,23 +71,5 @@ public class UserView extends AbstractGwtEntityView<GwtUser> {
     @Override
     public EntityFilterPanel<GwtUser> getEntityFilterPanel(AbstractGwtEntityView<GwtUser> entityView, GwtSession currentSession) {
         return new UserFilterPanel(this, currentSession);
-    }
-
-    public UserTabItemAccessRole getAccessRoleTab() {
-        return accessRoleTab;
-    }
-
-    public UserTabItemPermission getPermissionTab() {
-        return permissionTab;
-    }
-
-    @Override
-    public String getName() {
-        return null;
-    }
-
-    @Override
-    public IconSet getIcon() {
-        return null;
     }
 }

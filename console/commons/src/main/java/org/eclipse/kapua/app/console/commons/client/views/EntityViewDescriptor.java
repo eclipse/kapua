@@ -11,8 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.commons.client.views;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtEntityModel;
 
-public interface EntityView<M extends GwtEntityModel> {
+public interface EntityViewDescriptor<M extends GwtEntityModel> extends IsSerializable {
+    String getId();
 
+    String getName();
+
+    IconSet getIcon();
+
+    EntityView<M> getViewInstance();
 }

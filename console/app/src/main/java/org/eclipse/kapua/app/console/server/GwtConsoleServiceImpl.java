@@ -11,8 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.server;
 
-import org.eclipse.kapua.app.console.commons.client.views.EntityView;
+import org.eclipse.kapua.app.console.commons.client.views.EntityViewDescriptor;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtEntityModel;
+import org.eclipse.kapua.app.console.module.device.client.DeviceViewDescriptor;
 import org.eclipse.kapua.app.console.shared.service.GwtConsoleService;
 
 import java.util.ArrayList;
@@ -20,13 +21,13 @@ import java.util.List;
 
 public class GwtConsoleServiceImpl extends KapuaRemoteServiceServlet implements GwtConsoleService {
 
-    private static final String CLASSNAME = "org.eclipse.kapua.app.console.module.device.client.DeviceView";
+    private static final String CLASSNAME = "org.eclipse.kapua.app.console.module.device.client.DeviceViewDescriptor";
 
     @Override
-    public List<EntityView<? extends GwtEntityModel>> getCustomEntityViews() {
-        List<EntityView<? extends GwtEntityModel>> views = new ArrayList<EntityView<? extends GwtEntityModel>>();
+    public List<EntityViewDescriptor<? extends GwtEntityModel>> getCustomEntityViews() {
+        List<EntityViewDescriptor<? extends GwtEntityModel>> views = new ArrayList<EntityViewDescriptor<? extends GwtEntityModel>>();
         try {
-            EntityView<GwtEntityModel> entityView = (EntityView<GwtEntityModel>)Class.forName(CLASSNAME).newInstance();
+            DeviceViewDescriptor entityView = (DeviceViewDescriptor)Class.forName(CLASSNAME).newInstance();
             views.add(entityView);
         } catch (InstantiationException e) {
             e.printStackTrace();
