@@ -13,6 +13,8 @@ package org.eclipse.kapua.service.device.registry.connection.option.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaRuntimeErrorCodes;
+import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -48,7 +50,7 @@ public class DeviceConnectionOptionServiceImpl extends AbstractKapuaService impl
     @Override
     public DeviceConnectionOption create(DeviceConnectionOptionCreator deviceConnectionCreator)
             throws KapuaException {
-        return null;
+        throw new KapuaRuntimeException(KapuaRuntimeErrorCodes.SERVICE_OPERATION_NOT_SUPPORTED);
     }
 
     @Override
@@ -97,18 +99,42 @@ public class DeviceConnectionOptionServiceImpl extends AbstractKapuaService impl
     @Override
     public DeviceConnectionOptionListResult query(KapuaQuery<DeviceConnectionOption> query)
             throws KapuaException {
-        return null;
+        //
+        // Argument Validation
+        ArgumentValidator.notNull(query, "query");
+        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
+
+        //
+        // Check Access
+        KapuaLocator locator = KapuaLocator.getInstance();
+        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
+        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
+        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_CONNECTION_DOMAIN, Actions.read, query.getScopeId()));
+
+        return entityManagerSession.onResult(em -> DeviceConnectionOptionDAO.query(em, query));
     }
 
     @Override
     public long count(KapuaQuery<DeviceConnectionOption> query)
             throws KapuaException {
-        return 0;
+        //
+        // Argument Validation
+        ArgumentValidator.notNull(query, "query");
+        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
+
+        //
+        // Check Access
+        KapuaLocator locator = KapuaLocator.getInstance();
+        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
+        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
+        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_CONNECTION_DOMAIN, Actions.read, query.getScopeId()));
+
+        return entityManagerSession.onResult(em -> DeviceConnectionOptionDAO.count(em, query));
     }
 
     @Override
     public void delete(KapuaId scopeId, KapuaId deviceConnectionOptionsId)
             throws KapuaException {
-        return;
+        throw new KapuaRuntimeException(KapuaRuntimeErrorCodes.SERVICE_OPERATION_NOT_SUPPORTED);
     }
 }
