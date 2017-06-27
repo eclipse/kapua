@@ -95,8 +95,6 @@ import com.codahale.metrics.Timer.Context;
  * <br>
  * 
  * This filter is added inside ActiveMQ filter chain plugin by {@link org.eclipse.kapua.broker.core.KapuaBrokerSecurityPlugin}
- * 
- * @since 1.0
  */
 public class KapuaSecurityBrokerFilter extends BrokerFilter {
 
@@ -127,7 +125,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     private Timer metricLoginShiroLogoutTime;
     private Timer metricLoginSendLoginUpdateMsgTime;
     private Timer metricLoginRemoveConnectionTime;
-    // publish/subscibe
+    // publish/subscribe
     private Counter metricPublishAllowedMessages;
     private Counter metricPublishNotAllowedMessages;
     private Timer metricPublishTime;
@@ -139,7 +137,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     private Counter metricClientConnectedKapuasys;
     private Counter metricClientDisconnectionClient;
     private Counter metricClientDisconnectionKapuasys;
-    // mesage size
+    // message size
     private Histogram metricPublishMessageSizeAllowed;
     private Histogram metricPublishMessageSizeNotAllowed;
 
