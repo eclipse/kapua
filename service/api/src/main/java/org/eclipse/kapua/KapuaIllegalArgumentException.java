@@ -21,6 +21,9 @@ public class KapuaIllegalArgumentException extends KapuaException {
 
     private static final long serialVersionUID = -7067191169730223113L;
 
+    private String argumentName;
+    private String argumentValue;
+
     /**
      * Constructor
      *
@@ -28,7 +31,10 @@ public class KapuaIllegalArgumentException extends KapuaException {
      * @param argValue
      */
     public KapuaIllegalArgumentException(String argName, String argValue) {
-        super(KapuaErrorCodes.ILLEGAL_ARGUMENT, argName, argValue);
+        this(KapuaErrorCodes.ILLEGAL_ARGUMENT, argName, argValue);
+
+        this.argumentName = argName;
+        this.argumentValue = argValue;
     }
 
     /**
@@ -40,5 +46,13 @@ public class KapuaIllegalArgumentException extends KapuaException {
      */
     protected KapuaIllegalArgumentException(KapuaErrorCodes code, String argName, String argValue) {
         super(code, argName, argValue);
+    }
+
+    public String getArgumentName() {
+        return argumentName;
+    }
+
+    public String getArgumentValue() {
+        return argumentValue;
     }
 }
