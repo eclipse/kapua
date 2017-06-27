@@ -86,6 +86,7 @@
                 <exclude>lib/optional/proton-j*</exclude>
                 <exclude>lib/optional/scala-library*</exclude>
                 <exclude>lib/optional/shiro*</exclude>
+                <exclude>lib/optional/slf4j-log4j*</exclude>
                 <exclude>lib/optional/snappy-*</exclude>
                 <exclude>lib/optional/spring-oxm-*</exclude>
                 <exclude>lib/optional/velocity*</exclude>
