@@ -23,6 +23,11 @@ public enum KapuaRuntimeErrorCodes implements KapuaErrorCode {
      */
     SERVICE_LOCATOR_UNAVAILABLE,
     /**
+     * Service operation non supported
+     */
+    SERVICE_OPERATION_NOT_SUPPORTED,
+
+    /**
      * Translator not found
      */
     TRANSLATOR_NOT_FOUND,
@@ -39,4 +44,5 @@ public enum KapuaRuntimeErrorCodes implements KapuaErrorCode {
      * Entity creation error
      */
     ENTITY_CREATION_ERROR,
+
 }
