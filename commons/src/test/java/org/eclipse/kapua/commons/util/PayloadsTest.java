@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.util;
 
+import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashMap;
@@ -41,6 +42,13 @@ public class PayloadsTest {
         TEST_DATA = Collections.unmodifiableMap(metrics);
     }
 
+    @Test
+    public void testConstructor() throws Exception{
+    Constructor<Payloads> payload = Payloads.class.getDeclaredConstructor();
+        payload.setAccessible(true);
+        Payloads payloadTest = payload.newInstance();
+    }
+    
     @Test
     public void testNull() {
         Assert.assertEquals("", Payloads.toDisplayString(null));
