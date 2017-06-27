@@ -14,7 +14,7 @@ package org.eclipse.kapua.app.console.shared.model;
 import org.eclipse.kapua.app.console.client.util.ImageUtils;
 
 import com.google.gwt.resources.client.ImageResource;
-import org.eclipse.kapua.app.console.commons.shared.models.KapuaBaseModel;
+import org.eclipse.kapua.app.console.commons.shared.model.KapuaBaseModel;
 
 public class GwtKapuaLanguage extends KapuaBaseModel {
 

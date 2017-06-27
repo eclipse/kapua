@@ -13,7 +13,7 @@
 package org.eclipse.kapua.app.console.client.welcome;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleWelcomeMessages;
-import org.eclipse.kapua.app.console.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.VerticalAlignment;

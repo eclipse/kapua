@@ -17,7 +17,7 @@ import java.util.List;
 import org.eclipse.kapua.app.console.client.messages.ConsoleDataMessages;
 import org.eclipse.kapua.app.console.client.util.SwappableListStore;
 import org.eclipse.kapua.app.console.shared.model.GwtDatastoreDevice;
-import org.eclipse.kapua.app.console.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.service.GwtDataService;
 import org.eclipse.kapua.app.console.shared.service.GwtDataServiceAsync;
 

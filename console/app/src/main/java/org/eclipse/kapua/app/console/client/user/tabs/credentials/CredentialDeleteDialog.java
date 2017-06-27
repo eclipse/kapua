@@ -12,7 +12,7 @@
 package org.eclipse.kapua.app.console.client.user.tabs.credentials;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleCredentialMessages;
-import org.eclipse.kapua.app.console.client.ui.dialog.entity.EntityDeleteDialog;
+import org.eclipse.kapua.app.console.commons.client.ui.dialog.entity.EntityDeleteDialog;
 import org.eclipse.kapua.app.console.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredential;
 import org.eclipse.kapua.app.console.shared.service.GwtCredentialService;

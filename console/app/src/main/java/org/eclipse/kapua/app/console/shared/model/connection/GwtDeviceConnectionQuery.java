@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.model.connection;
 
-import org.eclipse.kapua.app.console.shared.model.query.GwtQuery;
+import org.eclipse.kapua.app.console.commons.shared.model.query.GwtQuery;
 
 public class GwtDeviceConnectionQuery extends GwtQuery {
 

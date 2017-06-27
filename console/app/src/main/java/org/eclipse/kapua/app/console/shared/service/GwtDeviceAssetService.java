@@ -13,8 +13,8 @@ package org.eclipse.kapua.app.console.shared.service;
 
 import java.util.List;
 
-import org.eclipse.kapua.app.console.shared.GwtKapuaException;
-import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAsset;
 import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAssetChannel;
 import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAssets;

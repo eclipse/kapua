@@ -13,13 +13,13 @@ package org.eclipse.kapua.app.console.shared.service;
 
 import java.util.Date;
 
-import org.eclipse.kapua.app.console.shared.GwtKapuaException;
+import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceCreator;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceEvent;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceQueryPredicates;
-import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
-import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtGroupedNVPair;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtXSRFToken;
 
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;

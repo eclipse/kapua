@@ -12,7 +12,7 @@
 package org.eclipse.kapua.app.console.client.user.tabs.role;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleUserMessages;
-import org.eclipse.kapua.app.console.client.ui.dialog.entity.EntityDeleteDialog;
+import org.eclipse.kapua.app.console.commons.client.ui.dialog.entity.EntityDeleteDialog;
 import org.eclipse.kapua.app.console.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessRole;
 import org.eclipse.kapua.app.console.shared.service.GwtAccessRoleService;

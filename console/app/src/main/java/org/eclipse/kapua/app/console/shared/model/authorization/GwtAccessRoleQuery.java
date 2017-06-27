@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.model.authorization;
 
-import org.eclipse.kapua.app.console.shared.model.query.GwtQuery;
+import org.eclipse.kapua.app.console.commons.shared.model.query.GwtQuery;
 
 public class GwtAccessRoleQuery extends GwtQuery {
 

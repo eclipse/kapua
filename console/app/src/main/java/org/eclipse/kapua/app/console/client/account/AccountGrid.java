@@ -16,13 +16,13 @@ import java.util.List;
 
 import org.eclipse.kapua.app.console.client.account.toolbar.AccountGridToolbar;
 import org.eclipse.kapua.app.console.client.messages.ConsoleAccountMessages;
-import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
-import org.eclipse.kapua.app.console.client.ui.view.AbstractGwtEntityView;
-import org.eclipse.kapua.app.console.client.ui.widget.EntityCRUDToolbar;
-import org.eclipse.kapua.app.console.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
+import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
+import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractGwtEntityView;
+import org.eclipse.kapua.app.console.commons.client.ui.widget.EntityCRUDToolbar;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccountQuery;
-import org.eclipse.kapua.app.console.shared.model.query.GwtQuery;
+import org.eclipse.kapua.app.console.commons.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountServiceAsync;
 

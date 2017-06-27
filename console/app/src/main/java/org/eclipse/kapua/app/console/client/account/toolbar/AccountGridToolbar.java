@@ -11,10 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.account.toolbar;
 
-import org.eclipse.kapua.app.console.client.ui.dialog.KapuaDialog;
-import org.eclipse.kapua.app.console.client.ui.widget.EntityCRUDToolbar;
-import org.eclipse.kapua.app.console.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
+import org.eclipse.kapua.app.console.commons.client.ui.dialog.KapuaDialog;
+import org.eclipse.kapua.app.console.commons.client.ui.widget.EntityCRUDToolbar;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtAccount;
 
 import com.google.gwt.user.client.Element;
 

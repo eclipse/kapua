@@ -38,7 +38,7 @@ import org.eclipse.kapua.KapuaUnauthenticatedException;
 import org.eclipse.kapua.app.console.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.setting.ConsoleSettingKeys;
-import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.model.KapuaFormFields;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.locator.KapuaLocator;

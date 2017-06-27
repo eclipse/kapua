@@ -13,9 +13,9 @@ package org.eclipse.kapua.app.console.client.user.tabs.credentials;
 
 import org.eclipse.kapua.app.console.client.util.ConfirmPasswordUpdateFieldValidator;
 import org.eclipse.kapua.app.console.client.util.PasswordUpdateFieldValidator;
-import org.eclipse.kapua.app.console.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredential;
-import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtUser;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;

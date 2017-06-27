@@ -14,16 +14,17 @@ package org.eclipse.kapua.app.console.client.user;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
-import org.eclipse.kapua.app.console.client.ui.panel.EntityFilterPanel;
-import org.eclipse.kapua.app.console.client.ui.tab.KapuaTabItem;
-import org.eclipse.kapua.app.console.client.ui.view.AbstractGwtEntityView;
+import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
+import org.eclipse.kapua.app.console.commons.client.ui.panel.EntityFilterPanel;
+import org.eclipse.kapua.app.console.commons.client.ui.tab.KapuaTabItem;
+import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractGwtEntityView;
 import org.eclipse.kapua.app.console.client.user.tabs.credentials.UserTabItemCredentials;
 import org.eclipse.kapua.app.console.client.user.tabs.description.UserTabDescription;
 import org.eclipse.kapua.app.console.client.user.tabs.permission.UserTabItemPermission;
 import org.eclipse.kapua.app.console.client.user.tabs.role.UserTabItemAccessRole;
-import org.eclipse.kapua.app.console.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
+import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtUser;
 
 public class UserView extends AbstractGwtEntityView<GwtUser> {
 
@@ -81,4 +82,13 @@ public class UserView extends AbstractGwtEntityView<GwtUser> {
         return permissionTab;
     }
 
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public IconSet getIcon() {
+        return null;
+    }
 }

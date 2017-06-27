@@ -147,6 +147,24 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-commons</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-console-commons</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+            <classifier>sources</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-console-module-device</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-console-module-device</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+            <classifier>sources</classifier>
         </dependency>
 
         <!-- External dependencies -->

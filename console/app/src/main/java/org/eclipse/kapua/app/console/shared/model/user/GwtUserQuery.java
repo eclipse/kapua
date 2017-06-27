@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.model.user;
 
-import org.eclipse.kapua.app.console.shared.model.query.GwtQuery;
+import org.eclipse.kapua.app.console.commons.shared.model.query.GwtQuery;
 
 public class GwtUserQuery extends GwtQuery {
 

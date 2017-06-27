@@ -11,14 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client;
 
-import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.client.ui.dialog.SimpleDialog;
-import org.eclipse.kapua.app.console.client.ui.panel.FormPanel;
+import org.eclipse.kapua.app.console.commons.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.commons.client.ui.dialog.SimpleDialog;
+import org.eclipse.kapua.app.console.commons.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.client.util.ConfirmPasswordFieldValidator;
-import org.eclipse.kapua.app.console.client.util.ConsoleInfo;
+import org.eclipse.kapua.app.console.commons.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.client.util.PasswordFieldValidator;
-import org.eclipse.kapua.app.console.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.service.GwtCredentialService;
 import org.eclipse.kapua.app.console.shared.service.GwtCredentialServiceAsync;
 

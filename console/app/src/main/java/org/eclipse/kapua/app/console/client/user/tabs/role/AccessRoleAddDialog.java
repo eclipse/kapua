@@ -12,10 +12,10 @@
 package org.eclipse.kapua.app.console.client.user.tabs.role;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleUserMessages;
-import org.eclipse.kapua.app.console.client.ui.dialog.entity.EntityAddEditDialog;
-import org.eclipse.kapua.app.console.client.ui.panel.FormPanel;
+import org.eclipse.kapua.app.console.commons.client.ui.dialog.entity.EntityAddEditDialog;
+import org.eclipse.kapua.app.console.commons.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.client.util.DialogUtils;
-import org.eclipse.kapua.app.console.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessInfo;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessRoleCreator;

@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
-import org.eclipse.kapua.app.console.shared.GwtKapuaException;
-import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
+import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnection;
 import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnection.GwtConnectionUserCouplingMode;
 import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnectionQuery;

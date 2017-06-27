@@ -12,15 +12,15 @@
 package org.eclipse.kapua.app.console.client.account.toolbar;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleAccountMessages;
-import org.eclipse.kapua.app.console.client.ui.dialog.entity.EntityAddEditDialog;
-import org.eclipse.kapua.app.console.client.ui.panel.FormPanel;
-import org.eclipse.kapua.app.console.client.util.ConsoleInfo;
+import org.eclipse.kapua.app.console.commons.client.ui.dialog.entity.EntityAddEditDialog;
+import org.eclipse.kapua.app.console.commons.client.ui.panel.FormPanel;
+import org.eclipse.kapua.app.console.commons.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.client.util.DialogUtils;
-import org.eclipse.kapua.app.console.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.client.util.TextFieldValidator;
 import org.eclipse.kapua.app.console.client.util.TextFieldValidator.FieldType;
-import org.eclipse.kapua.app.console.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccountCreator;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountServiceAsync;

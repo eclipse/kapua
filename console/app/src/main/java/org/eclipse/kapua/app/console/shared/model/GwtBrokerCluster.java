@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.eclipse.kapua.app.console.commons.utils.DateUtils;
+import org.eclipse.kapua.app.console.commons.client.util.DateUtils;
 
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.google.gwt.user.client.rpc.IsSerializable;

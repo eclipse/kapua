@@ -11,11 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.account;
 
-import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.client.ui.tab.KapuaTabItem;
-import org.eclipse.kapua.app.console.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
+import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.commons.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.commons.client.ui.tab.KapuaTabItem;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtAccount;
 
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;

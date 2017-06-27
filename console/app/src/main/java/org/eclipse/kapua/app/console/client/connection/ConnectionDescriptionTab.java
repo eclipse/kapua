@@ -11,8 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.connection;
 
-import org.eclipse.kapua.app.console.client.ui.tab.EntityDescriptionTabItem;
-import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
+import org.eclipse.kapua.app.console.commons.client.ui.tab.EntityDescriptionTabItem;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnection;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceConnectionService;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceConnectionServiceAsync;

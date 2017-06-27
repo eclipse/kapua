@@ -15,12 +15,12 @@ import org.eclipse.kapua.app.console.client.device.DeviceTabs;
 import org.eclipse.kapua.app.console.client.device.management.packages.button.PackageInstallButton;
 import org.eclipse.kapua.app.console.client.device.management.packages.button.PackageUninstallButton;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.client.ui.button.RefreshButton;
-import org.eclipse.kapua.app.console.client.ui.dialog.InfoDialog;
-import org.eclipse.kapua.app.console.client.ui.dialog.InfoDialog.InfoDialogType;
+import org.eclipse.kapua.app.console.commons.client.ui.button.RefreshButton;
+import org.eclipse.kapua.app.console.commons.client.ui.dialog.InfoDialog;
+import org.eclipse.kapua.app.console.commons.client.ui.dialog.InfoDialog.InfoDialogType;
 import org.eclipse.kapua.app.console.shared.model.GwtDeploymentPackage;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
-import org.eclipse.kapua.app.console.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.BaseEvent;

@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleAboutMessages;
-import org.eclipse.kapua.app.console.client.util.ConsoleInfo;
+import org.eclipse.kapua.app.console.commons.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.shared.model.GwtAboutDependency;
 import org.eclipse.kapua.app.console.shared.model.GwtAboutInformation;
 import org.eclipse.kapua.app.console.shared.service.GwtAboutService;

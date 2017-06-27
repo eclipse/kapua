@@ -19,9 +19,16 @@
         <version>0.2.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
+    <packaging>jar</packaging>
     <artifactId>kapua-console-commons</artifactId>
     <dependencies>
+        <!-- External dependencies -->
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-servlet</artifactId>
+            <version>2.4.0</version>
+            <scope>runtime</scope>
+        </dependency>
         <dependency>
             <groupId>com.extjs</groupId>
             <artifactId>gxt</artifactId>
@@ -29,10 +36,104 @@
         </dependency>
         <dependency>
             <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-servlet</artifactId>
+            <artifactId>gwt-user</artifactId>
             <version>2.4.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.allen-sauer.gwt.log</groupId>
+            <artifactId>gwt-log</artifactId>
+            <version>3.1.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-to-slf4j</artifactId>
+        </dependency>
+        <dependency>
+            <!-- Apache shiro security framework web support -->
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-web</artifactId>
+            <version>${shiro.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-commons</artifactId>
+        </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <!-- GWT 2.4 is limited to Java 6 -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <jdkToolchain>
+                        <version>6</version>
+                    </jdkToolchain>
+                </configuration>
+            </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <!-- GWT Maven Plugin -->
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <version>2.4.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generateAsync</goal> <!-- Generate Async RPC interfaces -->
+                            <goal>i18n</goal> <!-- Generate internationalization files -->
+                            <goal>compile</goal> <!-- Compile permutations -->
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <configuration>
+                    <module>org.eclipse.kapua.app.console.commons.adminCommons</module>
+
+                    <extraJvmArgs>-Xmx2048m -XX:+UseParallelGC</extraJvmArgs>
+                    <!--<webappDirectory>${project.build.directory}</webappDirectory>-->
+                    <!--<hostedWebapp>${site.basedir}</hostedWebapp>-->
+
+                    <i18nConstantsWithLookupBundle>org.eclipse.kapua.app.console.commons.client.messages.ValidationMessages</i18nConstantsWithLookupBundle>
+                    <i18nMessagesBundles>
+                        <i18nMessagesBundle>org.eclipse.kapua.app.console.commons.client.messages.ConsoleMessages</i18nMessagesBundle>
+                        <!--<i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleAboutMessages</i18nMessagesBundle>-->
+                        <!--<i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleRoleMessages</i18nMessagesBundle>-->
+                        <!--<i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleUserMessages</i18nMessagesBundle>-->
+                        <!--<i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleGroupMessages</i18nMessagesBundle>-->
+                        <!--<i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleCredentialMessages</i18nMessagesBundle>-->
+                        <!--<i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleWelcomeMessages</i18nMessagesBundle>-->
+                        <!--<i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleAccountMessages</i18nMessagesBundle>-->
+                        <!--<i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleDataMessages</i18nMessagesBundle>-->
+                        <!--<i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleConnectionMessages</i18nMessagesBundle>-->
+                    </i18nMessagesBundles>
+
+                    <optimizationLevel>9</optimizationLevel>
+                    <!--<runTarget>console.jsp</runTarget>-->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

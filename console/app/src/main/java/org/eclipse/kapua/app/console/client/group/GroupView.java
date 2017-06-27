@@ -14,12 +14,13 @@ package org.eclipse.kapua.app.console.client.group;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
-import org.eclipse.kapua.app.console.client.ui.panel.EntityFilterPanel;
-import org.eclipse.kapua.app.console.client.ui.tab.KapuaTabItem;
-import org.eclipse.kapua.app.console.client.ui.view.AbstractGwtEntityView;
+import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
+import org.eclipse.kapua.app.console.commons.client.ui.panel.EntityFilterPanel;
+import org.eclipse.kapua.app.console.commons.client.ui.tab.KapuaTabItem;
+import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractGwtEntityView;
+import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.shared.model.GwtGroup;
-import org.eclipse.kapua.app.console.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 
 public class GroupView  extends AbstractGwtEntityView<GwtGroup> {
 
@@ -52,4 +53,13 @@ public class GroupView  extends AbstractGwtEntityView<GwtGroup> {
         return new GroupFilterPanel(this, currentSession2);
     }
 
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public IconSet getIcon() {
+        return null;
+    }
 }

@@ -15,16 +15,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleConnectionMessages;
-import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
-import org.eclipse.kapua.app.console.client.ui.misc.color.Color;
-import org.eclipse.kapua.app.console.client.ui.view.AbstractGwtEntityView;
-import org.eclipse.kapua.app.console.client.ui.widget.EntityCRUDToolbar;
-import org.eclipse.kapua.app.console.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.commons.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
+import org.eclipse.kapua.app.console.commons.client.ui.color.Color;
+import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractGwtEntityView;
+import org.eclipse.kapua.app.console.commons.client.ui.widget.EntityCRUDToolbar;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnection;
 import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnectionQuery;
-import org.eclipse.kapua.app.console.shared.model.query.GwtQuery;
+import org.eclipse.kapua.app.console.commons.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceConnectionService;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceConnectionServiceAsync;
 

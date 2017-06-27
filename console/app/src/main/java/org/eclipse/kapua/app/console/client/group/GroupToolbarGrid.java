@@ -11,10 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.group;
 
-import org.eclipse.kapua.app.console.client.ui.dialog.KapuaDialog;
-import org.eclipse.kapua.app.console.client.ui.widget.EntityCRUDToolbar;
+import org.eclipse.kapua.app.console.commons.client.ui.dialog.KapuaDialog;
+import org.eclipse.kapua.app.console.commons.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.shared.model.GwtGroup;
-import org.eclipse.kapua.app.console.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 
 public class GroupToolbarGrid extends EntityCRUDToolbar<GwtGroup> {
 

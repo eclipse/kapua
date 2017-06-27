@@ -19,9 +19,9 @@ import java.util.concurrent.Callable;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
-import org.eclipse.kapua.app.console.shared.GwtKapuaException;
-import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
-import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtGroupedNVPair;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredential;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredentialCreator;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredentialQuery;

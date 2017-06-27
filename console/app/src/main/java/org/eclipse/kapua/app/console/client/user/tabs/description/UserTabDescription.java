@@ -11,9 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.user.tabs.description;
 
-import org.eclipse.kapua.app.console.client.ui.tab.EntityDescriptionTabItem;
-import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
-import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
+import org.eclipse.kapua.app.console.commons.client.ui.tab.EntityDescriptionTabItem;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtGroupedNVPair;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtUser;
 import org.eclipse.kapua.app.console.shared.service.GwtUserService;
 import org.eclipse.kapua.app.console.shared.service.GwtUserServiceAsync;
 

@@ -18,20 +18,21 @@ import org.eclipse.kapua.app.console.client.device.button.SnapshotDownloadButton
 import org.eclipse.kapua.app.console.client.device.button.SnapshotRollbackButton;
 import org.eclipse.kapua.app.console.client.device.button.SnapshotUploadButton;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.client.ui.button.RefreshButton;
-import org.eclipse.kapua.app.console.client.ui.dialog.FileUploadDialog;
-import org.eclipse.kapua.app.console.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.client.util.KapuaLoadListener;
+import org.eclipse.kapua.app.console.commons.client.ui.button.RefreshButton;
+import org.eclipse.kapua.app.console.commons.client.ui.dialog.FileUploadDialog;
+import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.commons.client.util.KapuaLoadListener;
+import org.eclipse.kapua.app.console.client.util.UserAgentUtils;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
-import org.eclipse.kapua.app.console.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.GwtSnapshot;
-import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceManagementService;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceManagementServiceAsync;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceService;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceServiceAsync;
-import org.eclipse.kapua.app.console.shared.service.GwtSecurityTokenService;
-import org.eclipse.kapua.app.console.shared.service.GwtSecurityTokenServiceAsync;
+import org.eclipse.kapua.app.console.commons.shared.service.GwtSecurityTokenService;
+import org.eclipse.kapua.app.console.commons.shared.service.GwtSecurityTokenServiceAsync;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Scroll;
@@ -385,7 +386,7 @@ public class DeviceConfigSnapshots extends LayoutContainer {
         if (selectedDevice != null && snapshot != null) {
 
             StringBuilder sbUrl = new StringBuilder();
-            sbUrl.append("device_snapshots?");
+                sbUrl.append("device_snapshots?");
             sbUrl.append("&scopeId=")
                     .append(URL.encodeQueryString(currentSession.getSelectedAccount().getId()))
                     .append("&deviceId=")

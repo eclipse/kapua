@@ -30,7 +30,7 @@
 
     <filter>
         <filter-name>ShiroFilter</filter-name>
-        <filter-class>org.eclipse.kapua.app.console.filter.KapuaWebFilter</filter-class>
+        <filter-class>org.eclipse.kapua.app.console.commons.filter.KapuaWebFilter</filter-class>
     </filter>
 
     <filter-mapping>
@@ -66,6 +66,7 @@
         <url-pattern>/tag/*</url-pattern>
         <url-pattern>/credential/*</url-pattern>
         <url-pattern>/asset/*</url-pattern>
+        <url-pattern>/console/*</url-pattern>
         <url-pattern>/file/*</url-pattern>
         <url-pattern>/image/*</url-pattern>
     </filter-mapping>
@@ -93,17 +94,6 @@
     <servlet-mapping>
         <servlet-name>KapuaErrorHandlerServlet</servlet-name>
         <url-pattern>/errorHandler/*</url-pattern>
-    </servlet-mapping>
-
-    <!-- XSRF servlet support -->
-    <servlet>
-        <servlet-name>GwtSecurityTokenServiceImpl</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.server.GwtSecurityTokenServiceImpl
-        </servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>GwtSecurityTokenServiceImpl</servlet-name>
-        <url-pattern>/xsrf/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -314,6 +304,15 @@
     <servlet-mapping>
         <servlet-name>org.eclipse.kapua.app.console.console GwtCredentialService</servlet-name>
         <url-pattern>/credential</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>GwtConsoleService</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.server.GwtConsoleServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GwtConsoleService</servlet-name>
+        <url-pattern>/console</url-pattern>
     </servlet-mapping>
 
     <listener>

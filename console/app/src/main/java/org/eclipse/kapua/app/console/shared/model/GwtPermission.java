@@ -12,7 +12,8 @@
 package org.eclipse.kapua.app.console.shared.model;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import org.eclipse.kapua.app.console.commons.shared.models.KapuaBaseModel;
+import org.eclipse.kapua.app.console.commons.shared.model.Enum;
+import org.eclipse.kapua.app.console.commons.shared.model.KapuaBaseModel;
 
 public class GwtPermission extends KapuaBaseModel {
 

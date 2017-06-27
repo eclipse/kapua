@@ -16,17 +16,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.client.ui.button.ExportButton;
-import org.eclipse.kapua.app.console.client.ui.button.RefreshButton;
-import org.eclipse.kapua.app.console.client.ui.widget.DateRangeSelector;
-import org.eclipse.kapua.app.console.client.ui.widget.DateRangeSelectorListener;
-import org.eclipse.kapua.app.console.client.ui.widget.KapuaMenuItem;
-import org.eclipse.kapua.app.console.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.client.util.KapuaLoadListener;
+import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.commons.client.ui.button.ExportButton;
+import org.eclipse.kapua.app.console.commons.client.ui.button.RefreshButton;
+import org.eclipse.kapua.app.console.commons.client.ui.widget.DateRangeSelector;
+import org.eclipse.kapua.app.console.commons.client.ui.widget.DateRangeSelectorListener;
+import org.eclipse.kapua.app.console.commons.client.ui.widget.KapuaMenuItem;
+import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.commons.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceEvent;
-import org.eclipse.kapua.app.console.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceService;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceServiceAsync;
 

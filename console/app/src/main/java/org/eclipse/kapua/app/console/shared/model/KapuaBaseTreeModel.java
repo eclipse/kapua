@@ -13,7 +13,7 @@ package org.eclipse.kapua.app.console.shared.model;
 
 import java.io.Serializable;
 
-import org.eclipse.kapua.app.console.commons.utils.KapuaSafeHtmlUtils;
+import org.eclipse.kapua.app.console.commons.client.util.KapuaSafeHtmlUtils;
 
 import com.extjs.gxt.ui.client.data.BaseTreeModel;
 

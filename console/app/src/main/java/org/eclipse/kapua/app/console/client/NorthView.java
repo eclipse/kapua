@@ -13,16 +13,16 @@
 package org.eclipse.kapua.app.console.client;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.client.ui.widget.KapuaMenuItem;
-import org.eclipse.kapua.app.console.client.util.ConsoleInfo;
-import org.eclipse.kapua.app.console.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.commons.client.ui.widget.KapuaMenuItem;
+import org.eclipse.kapua.app.console.commons.client.util.ConsoleInfo;
+import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.client.util.Logout;
 import org.eclipse.kapua.app.console.client.util.UserAgentUtils;
-import org.eclipse.kapua.app.console.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccountStringListItem;
-import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtUser;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountServiceAsync;
 import org.eclipse.kapua.app.console.shared.service.GwtAuthorizationService;
@@ -310,7 +310,7 @@ public class NorthView extends LayoutContainer {
                 updateUserActionButtonLabel();
 
                 // Force the west view (which contains the navigation menu) to reload available components
-                parent.getWestView().addMenuItems();
+                parent.getWestView().addMenuItems(null);
                 parent.getWestView().setDashboardSelected(false);
 
                 // Unmask the whole page

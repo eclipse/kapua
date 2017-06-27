@@ -13,7 +13,9 @@
 package org.eclipse.kapua.app.console.client;
 
 import java.util.Arrays;
+import java.util.List;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.client.about.AboutView;
 import org.eclipse.kapua.app.console.client.account.AccountDetailsView;
 import org.eclipse.kapua.app.console.client.account.AccountView;
@@ -22,16 +24,18 @@ import org.eclipse.kapua.app.console.client.data.DataView;
 import org.eclipse.kapua.app.console.client.device.DevicesView;
 import org.eclipse.kapua.app.console.client.group.GroupView;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.commons.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.client.role.RoleView;
+import org.eclipse.kapua.app.console.commons.client.ui.color.Color;
+import org.eclipse.kapua.app.console.commons.client.ui.panel.ContentPanel;
 import org.eclipse.kapua.app.console.client.tag.TagView;
-import org.eclipse.kapua.app.console.client.ui.misc.color.Color;
-import org.eclipse.kapua.app.console.client.ui.panel.ContentPanel;
 import org.eclipse.kapua.app.console.client.user.UserView;
 import org.eclipse.kapua.app.console.client.welcome.WelcomeView;
-import org.eclipse.kapua.app.console.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
+import org.eclipse.kapua.app.console.commons.client.views.EntityView;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtEntityModel;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtAccount;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.Scroll;
@@ -60,6 +64,8 @@ import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
+import org.eclipse.kapua.app.console.shared.service.GwtConsoleService;
+import org.eclipse.kapua.app.console.shared.service.GwtConsoleServiceAsync;
 
 public class WestNavigationView extends LayoutContainer {
 
@@ -78,8 +84,11 @@ public class WestNavigationView extends LayoutContainer {
     private boolean dashboardSelected;
     private KapuaIcon imgRefreshLabel;
     private WelcomeView welcomeView;
+    private List<EntityView<? extends GwtEntityModel>> entityViewList;
 
     private final GwtSession currentSession;
+
+    private static final GwtConsoleServiceAsync CONSOLE_SERVICE = GWT.create(GwtConsoleService.class);
 
     public WestNavigationView(GwtSession currentSession, LayoutContainer center) {
         this.currentSession = currentSession;
@@ -106,6 +115,15 @@ public class WestNavigationView extends LayoutContainer {
     protected void onRender(final Element parent, int index) {
         super.onRender(parent, index);
 
+        CONSOLE_SERVICE.getCustomEntityViews(new AsyncCallback<List<EntityView<? extends GwtEntityModel>>>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                System.out.println("");
+            }
+
+            @Override
+            public void onSuccess(final List<EntityView<? extends GwtEntityModel>> additionalViews) {
         setLayout(new FitLayout());
         setBorders(false);
 
@@ -142,7 +160,7 @@ public class WestNavigationView extends LayoutContainer {
         //
         // Adding item to stores
         //
-        addMenuItems();
+                addMenuItems(additionalViews);
 
         ColumnConfig name = new ColumnConfig("name", "Name", 200);
         name.setRenderer(treeCellRenderer);
@@ -191,7 +209,7 @@ public class WestNavigationView extends LayoutContainer {
                     centerPanel.add(panel);
                     centerPanel.layout();
                     dashboardSelected = false;
-                } else if ("about".equals(selectedId)) {
+                } else  if ("about".equals(selectedId)) {
                     AboutView aboutView = new AboutView();
 
                     panel.setBodyBorder(true);
@@ -286,8 +304,19 @@ public class WestNavigationView extends LayoutContainer {
                     centerPanel.layout();
 
                     settingView.refresh();
+                        } else {
+                            for (EntityView<? extends GwtEntityModel> entityView : additionalViews) {
+                                if (entityView.getId().equals(selectedId)) {
+                                    panel.setIcon(new KapuaIcon(entityView.getIcon()));
+                                    panel.setHeading(entityView.getName());
+                                    panel.add((LayoutContainer)entityView);
+
+                                    centerPanel.add(panel);
+                                    centerPanel.layout();
+                                }
                 }
             }
+                    }
         });
 
         ColumnConfig name1 = new ColumnConfig("name", "Name", 200);
@@ -344,8 +373,13 @@ public class WestNavigationView extends LayoutContainer {
 
         accordionPanel.add(cloudResourcesPanel);
     }
+        });
 
-    public void addMenuItems() {
+
+    }
+
+    public void addMenuItems(List<EntityView<? extends GwtEntityModel>> additionalViews) {
+
         ModelData selectedAccountItem = null;
         ModelData selectedManageItem = null;
 
@@ -393,8 +427,14 @@ public class WestNavigationView extends LayoutContainer {
             if (currentSession.hasAccountReadPermission()) {
                 accountManagementTreeStore.add(newItem("childaccounts", MSGS.childaccounts(), IconSet.SITEMAP), false);
             }
-
+            
             cloudResourcesTreeStore.add(newItem("about", MSGS.about(), IconSet.INFO), false);
+        }
+
+        if (additionalViews != null) {
+            for (EntityView entityView : additionalViews) {
+                cloudResourcesTreeStore.add(newItem(entityView.getId(), entityView.getName(), entityView.getIcon()), false);
+            }
         }
 
         if (selectedAccountItem != null) {

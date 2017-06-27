@@ -494,7 +494,7 @@
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.eclipse.paho</groupId>
-                                    <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+                                    <artifactId>org.eclipse.paho.org.eclipse.kapua.app.console.module.device.shared.model.client.mqttv3</artifactId>
                                     <version>${paho.version}</version>
                                     <type>jar</type>
                                     <overWrite>true</overWrite>

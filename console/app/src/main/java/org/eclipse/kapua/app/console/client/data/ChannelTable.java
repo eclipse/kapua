@@ -19,7 +19,7 @@ import org.eclipse.kapua.app.console.client.util.SwappableListStore;
 import org.eclipse.kapua.app.console.shared.model.GwtDatastoreAsset;
 import org.eclipse.kapua.app.console.shared.model.GwtDatastoreChannel;
 import org.eclipse.kapua.app.console.shared.model.GwtDatastoreDevice;
-import org.eclipse.kapua.app.console.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;

@@ -12,12 +12,12 @@
 package org.eclipse.kapua.app.console.client.group;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleGroupMessages;
-import org.eclipse.kapua.app.console.client.ui.dialog.entity.EntityAddEditDialog;
-import org.eclipse.kapua.app.console.client.ui.panel.FormPanel;
+import org.eclipse.kapua.app.console.commons.client.ui.dialog.entity.EntityAddEditDialog;
+import org.eclipse.kapua.app.console.commons.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.client.util.DialogUtils;
-import org.eclipse.kapua.app.console.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.shared.model.GwtGroup;
-import org.eclipse.kapua.app.console.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.service.GwtGroupService;
 import org.eclipse.kapua.app.console.shared.service.GwtGroupServiceAsync;
 

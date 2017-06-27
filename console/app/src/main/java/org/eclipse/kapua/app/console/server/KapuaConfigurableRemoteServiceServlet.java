@@ -14,9 +14,9 @@ package org.eclipse.kapua.app.console.server;
 import java.util.Map;
 
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
-import org.eclipse.kapua.app.console.shared.GwtKapuaException;
+import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtConfigComponent;
-import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.util.GwtKapuaModelConverter;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;

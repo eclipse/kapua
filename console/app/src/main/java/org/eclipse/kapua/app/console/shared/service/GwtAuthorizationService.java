@@ -11,8 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.service;
 
-import org.eclipse.kapua.app.console.shared.GwtKapuaException;
-import org.eclipse.kapua.app.console.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtJwtCredential;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtLoginCredential;
 

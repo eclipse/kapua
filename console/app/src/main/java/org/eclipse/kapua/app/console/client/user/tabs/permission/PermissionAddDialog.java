@@ -14,14 +14,14 @@ package org.eclipse.kapua.app.console.client.user.tabs.permission;
 import java.util.List;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleUserMessages;
-import org.eclipse.kapua.app.console.client.ui.dialog.entity.EntityAddEditDialog;
-import org.eclipse.kapua.app.console.client.ui.panel.FormPanel;
+import org.eclipse.kapua.app.console.commons.client.ui.dialog.entity.EntityAddEditDialog;
+import org.eclipse.kapua.app.console.commons.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtAction;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtDomain;
-import org.eclipse.kapua.app.console.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessInfo;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessPermission;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessPermissionCreator;

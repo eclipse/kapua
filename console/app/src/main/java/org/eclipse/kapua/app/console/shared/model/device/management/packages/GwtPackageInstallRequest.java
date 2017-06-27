@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.model.device.management.packages;
 
-import org.eclipse.kapua.app.console.commons.shared.models.KapuaBaseModel;
+import org.eclipse.kapua.app.console.commons.shared.model.KapuaBaseModel;
 
 public class GwtPackageInstallRequest extends KapuaBaseModel {
 

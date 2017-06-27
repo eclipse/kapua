@@ -11,9 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.connection.toolbar;
 
-import org.eclipse.kapua.app.console.client.ui.dialog.KapuaDialog;
-import org.eclipse.kapua.app.console.client.ui.widget.EntityCRUDToolbar;
-import org.eclipse.kapua.app.console.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.commons.client.ui.dialog.KapuaDialog;
+import org.eclipse.kapua.app.console.commons.client.ui.widget.EntityCRUDToolbar;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnection;
 
 import com.google.gwt.user.client.Element;

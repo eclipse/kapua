@@ -12,7 +12,7 @@
 package org.eclipse.kapua.app.console.shared.model.device.management.bundles;
 
 import org.eclipse.kapua.app.console.client.messages.ValidationMessages;
-import org.eclipse.kapua.app.console.commons.shared.models.KapuaBaseModel;
+import org.eclipse.kapua.app.console.commons.shared.model.KapuaBaseModel;
 
 import com.google.gwt.core.client.GWT;
 

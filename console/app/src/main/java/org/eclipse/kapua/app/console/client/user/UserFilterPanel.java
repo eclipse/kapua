@@ -12,11 +12,11 @@
 package org.eclipse.kapua.app.console.client.user;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleUserMessages;
-import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
-import org.eclipse.kapua.app.console.client.ui.panel.EntityFilterPanel;
-import org.eclipse.kapua.app.console.client.ui.view.AbstractGwtEntityView;
-import org.eclipse.kapua.app.console.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
+import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
+import org.eclipse.kapua.app.console.commons.client.ui.panel.EntityFilterPanel;
+import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractGwtEntityView;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtUser;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUserQuery;
 
 import com.extjs.gxt.ui.client.widget.Label;

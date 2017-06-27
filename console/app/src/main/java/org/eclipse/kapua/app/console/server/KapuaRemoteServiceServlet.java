@@ -20,9 +20,10 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.eclipse.kapua.app.console.shared.GwtKapuaErrorCode;
-import org.eclipse.kapua.app.console.shared.GwtKapuaException;
-import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.commons.server.GwtSecurityTokenServiceImpl;
+import org.eclipse.kapua.app.console.commons.client.GwtKapuaErrorCode;
+import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtXSRFToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

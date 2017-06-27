@@ -15,11 +15,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.client.ui.misc.color.Color;
-import org.eclipse.kapua.app.console.client.ui.tab.TabItem;
-import org.eclipse.kapua.app.console.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.commons.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.commons.client.ui.color.Color;
+import org.eclipse.kapua.app.console.commons.client.ui.tab.TabItem;
+import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.shared.model.GwtBundleInfo;
 import org.eclipse.kapua.app.console.shared.model.GwtDeploymentPackage;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;

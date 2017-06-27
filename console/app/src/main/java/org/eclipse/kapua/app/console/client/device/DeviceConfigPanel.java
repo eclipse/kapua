@@ -19,9 +19,9 @@ import java.util.Map;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.util.Constants;
-import org.eclipse.kapua.app.console.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.client.util.FormUtils;
-import org.eclipse.kapua.app.console.commons.utils.KapuaSafeHtmlUtils;
+import org.eclipse.kapua.app.console.commons.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.client.util.MessageUtils;
 import org.eclipse.kapua.app.console.client.util.UserAgentUtils;
 import org.eclipse.kapua.app.console.shared.model.GwtConfigComponent;

@@ -11,8 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.role;
 
-import org.eclipse.kapua.app.console.client.ui.tab.EntityDescriptionTabItem;
-import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
+import org.eclipse.kapua.app.console.commons.client.ui.tab.EntityDescriptionTabItem;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 import org.eclipse.kapua.app.console.shared.service.GwtRoleService;
 import org.eclipse.kapua.app.console.shared.service.GwtRoleServiceAsync;

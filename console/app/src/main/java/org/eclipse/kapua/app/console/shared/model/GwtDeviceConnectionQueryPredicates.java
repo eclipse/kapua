@@ -13,7 +13,7 @@ package org.eclipse.kapua.app.console.shared.model;
 
 import java.io.Serializable;
 
-import org.eclipse.kapua.app.console.commons.shared.models.KapuaBaseModel;
+import org.eclipse.kapua.app.console.commons.shared.model.KapuaBaseModel;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceQueryPredicates.GwtSortAttribute;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceQueryPredicates.GwtSortOrder;
 
