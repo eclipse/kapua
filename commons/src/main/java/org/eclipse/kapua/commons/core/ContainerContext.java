@@ -11,12 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core;
 
+import org.eclipse.kapua.commons.locator.ComponentLocator;
 
-/**
- * @since 0.3.0
- */
-public interface LifecyleListener {
-
-    public void onStartup(ContainerContext context);
-    public void onShutdown(ContainerContext context);
+public interface ContainerContext {
+    public ComponentLocator getComponentLocator();
 }

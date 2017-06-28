@@ -19,7 +19,6 @@ import java.math.BigInteger;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
-import org.eclipse.kapua.commons.locator.ComponentLocator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.id.KapuaIdFactoryImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -342,7 +341,7 @@ public class DeviceRegistryValidationTestSteps extends AbstractKapuaSteps {
         }
         
         if (deviceRegistryService == null) {
-            DeviceEntityManagerFactory factory = ComponentLocator.getInstance().getComponent(DeviceEntityManagerFactory.class);
+            DeviceEntityManagerFactory factory = container.getComponentLocator().getComponent(DeviceEntityManagerFactory.class);
             deviceRegistryService = new DeviceRegistryServiceImpl(factory);
         }
         
