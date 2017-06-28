@@ -11,11 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.event;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.service.event.KapuaEvent;
 import org.eclipse.kapua.service.event.KapuaEventListener;
 import org.slf4j.Logger;
@@ -30,22 +31,22 @@ public class EventListenerImpl implements EventListener {
 
     private KapuaEventListener kapuaEventListner;
     private List<Method> listenerMethods = new ArrayList<>();
-    
+
     public EventListenerImpl(KapuaEventListener kapuaEventListner, List<Method> methods) {
         this.kapuaEventListner = kapuaEventListner;
         listenerMethods.addAll(methods);
     }
-    
+
     public void addListener(Method method) {
         listenerMethods.add(method);
     }
-    
+
     @Override
     public void onKapuaEvent(KapuaEvent event) {
-        for(Method method:listenerMethods) {
+        for (Method method : listenerMethods) {
             try {
-                method.invoke(kapuaEventListner, event);
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                KapuaSecurityUtils.doPrivileged(() -> method.invoke(kapuaEventListner, event));
+            } catch (KapuaException e) {
                 logger.error("Unable to process KapuaEvent", e);
             }
         }
