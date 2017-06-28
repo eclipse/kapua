@@ -75,7 +75,7 @@
                         <configuration>
                             <skip>${maven.test.skip}</skip>
                             <executable>./startup.sh</executable>
-                            <workingDirectory>${basedir}/../dev-tools/src/main/vagrant/integrationTestScript/</workingDirectory>
+                            <workingDirectory>${basedir}/../dev-tools/src/main/vagrant/integrationTestScripts/</workingDirectory>
                         </configuration>
                     </execution>
                     <execution>
@@ -87,7 +87,7 @@
                         <configuration>
                             <skip>${maven.test.skip}</skip>
                             <executable>./shutdown.sh</executable>
-                            <workingDirectory>${basedir}/../dev-tools/src/main/vagrant/integrationTestScript/</workingDirectory>
+                            <workingDirectory>${basedir}/../dev-tools/src/main/vagrant/integrationTestScripts/</workingDirectory>
                         </configuration>
                     </execution>
                 </executions>

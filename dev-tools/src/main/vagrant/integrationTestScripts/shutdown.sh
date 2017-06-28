@@ -10,7 +10,7 @@
 #     Eurotech - initial API and implementation
 #
 #*******************************************************************************
-echo 'VARGRANT UP......'
-vagrant box list | grep -q kapua-dev-box/0.5 || ../start.sh base-box
-vagrant up
-echo 'VARGRANT UP...... DONE'
+
+echo 'VARGRANT DESTROY......'
+vagrant destroy -f
+echo 'VARGRANT DESTROY......' DONE

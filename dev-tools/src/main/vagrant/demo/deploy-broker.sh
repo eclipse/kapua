@@ -10,7 +10,7 @@
 #     Eurotech - initial API and implementation
 #
 #*******************************************************************************
-vagrant ssh -c "echo 'deploying the Kapua broker'
+vagrant ssh demo -c "echo 'deploying the Kapua broker'
     cd /usr/local/kapua
     rm -rf apache-activemq*
     tar -xvzf /kapua/assembly/broker/target/kapua-broker*

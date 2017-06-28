@@ -1,0 +1,187 @@
+#*******************************************************************************
+# Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     Eurotech - initial API and implementation
+#
+#*******************************************************************************
+
+network_address = '192.168.33.10'
+
+# Environment variables used in the scripts
+env_vars = {
+  'BINDING_IP'            => network_address,
+  'ELASTICSEARCH_VERSION' => '5.4.0',
+  'H2DB_VERSION'          => '1.4.192',
+  'ACTIVEMQ_VERSION'      => '5.14.5',
+  'TOMCAT_VERSION'        => '8.0.41',
+  'KAPUA_VERSION'         => '0.2.0-SNAPSHOT'
+}
+
+Vagrant.configure("2") do |config|
+
+  # Share the kapua directory with the vagrant machine to allow
+  # the ActiveMQ broker to access the kapua code (jars)
+  config.vm.synced_folder "../../../../", "/kapua",
+    owner: "vagrant", group: "vagrant",
+    mount_options: ["dmode=775", "fmode=664"]
+
+  config.vm.box = "kapua-dev-box/0.5"
+  config.vm.box_check_update = false
+
+  # DBMS
+  config.vm.network "forwarded_port", guest: 3306, host: 3306
+
+  # ActiveMQ
+  config.vm.network "forwarded_port", guest: 1883, host: 1883
+  config.vm.network "forwarded_port", guest: 8883, host: 8883
+  config.vm.network "forwarded_port", guest: 61614, host: 61614
+  config.vm.network "forwarded_port", guest: 5005, host: 5005
+
+  # Elasticsearch
+  config.vm.network "forwarded_port", guest: 9200, host: 9200
+  config.vm.network "forwarded_port", guest: 9300, host: 9300
+
+  # Tomcat
+  config.vm.network "forwarded_port", guest: 8000, host: 8000
+  config.vm.network "forwarded_port", guest: 8080, host: 8080
+  config.vm.network "forwarded_port", guest: 8443, host: 8443
+
+  config.vm.network "private_network", ip: network_address
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = false
+    vb.memory = "4096"
+  end
+
+  config.vm.provision "shell", env: env_vars, inline: <<-SHELL
+
+    ###########################
+    ### H2 database startup ###
+    ###########################
+
+    # Run the database engine
+    su --login -c "java -cp /usr/local/h2database/h2database-${H2DB_VERSION}/h2*.jar org.h2.tools.Server -baseDir /home/vagrant/H2/kapua -webAllowOthers -tcpAllowOthers -tcpPort 3306 &" vagrant
+
+    # Create the initial database
+    java -cp /usr/local/h2database/h2database-${H2DB_VERSION}/h2*.jar org.h2.tools.Shell -url jdbc:h2:tcp://localhost:3306/kapuadb -user "root" -password "password" -sql "CREATE SCHEMA IF NOT EXISTS kapuadb; \
+    CREATE USER IF NOT EXISTS kapua PASSWORD 'kapua'; \
+    GRANT ALL ON SCHEMA kapuadb TO kapua;"
+
+    ############################
+    ### Elasticsearch Engine ###
+    ############################
+
+    # needed by the elasticsearch 5.4.0
+    sudo bash -c "echo 'cluster.name: kapua-datastore' >> /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/config/elasticsearch.yml"
+    sudo bash -c "echo 'transport.host: ${BINDING_IP}' >> /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/config/elasticsearch.yml"
+    sudo bash -c "echo 'transport.tcp.port: 9300' >> /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/config/elasticsearch.yml"
+    sudo bash -c "echo 'transport.tcp.connect_timeout: 30s' >> /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/config/elasticsearch.yml"
+    sudo bash -c "echo 'http.host: ${BINDING_IP}' >> /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/config/elasticsearch.yml"
+    sudo bash -c "echo 'http.port: 9200' >> /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/config/elasticsearch.yml"
+    sudo bash -c "echo 'transport.ping_schedule: -1' >> /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/config/elasticsearch.yml"
+
+    # needed when using OpenJDK
+    sudo bash -c "echo '-XX:-AssumeMP' >> /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/config/jvm.options"
+
+    # Set folder permissions
+    sudo chown -R vagrant /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}
+  SHELL
+
+  config.vm.define "demo", autostart: false do |demo|
+
+    config.vm.provider "virtualbox" do |vb|
+      vb.name = "kapua-demo"
+    end
+
+    config.vm.provision "shell", env: env_vars, inline: <<-SHELL
+
+      # Run the datastore engine
+      su --login -c "/usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/bin/elasticsearch -d" vagrant
+
+      # Changing ActiveMQ and Tomcat directories from those used by the develop machine
+      sudo mkdir -p /usr/local/kapua
+      sudo mv /usr/local/tomcat/apache-tomcat-${TOMCAT_VERSION} /usr/local/kapua/
+      sudo mv /usr/local/activemq/apache-activemq-${ACTIVEMQ_VERSION} /usr/local/kapua/
+      sudo rm -rf /usr/local/tomcat
+      sudo rm -rf /usr/local/activemq
+      sudo chown -R vagrant:vagrant /usr/local/kapua
+    SHELL
+
+  end
+
+  config.vm.define "develop", primary: true, autostart: true do |develop|
+
+    config.vm.provider "virtualbox" do |vb|
+      vb.name = "kapua-develop"
+    end
+
+    config.vm.provision "shell", env: env_vars, inline: <<-SHELL
+
+      # Stop H2 instance
+      pkill -f h2database
+
+      ######################
+      ### ActiveMQ setup ###
+      ######################
+
+      # ActiveMQ post-install setup
+      cd /usr/local/activemq/apache-activemq-${ACTIVEMQ_VERSION}
+      rm conf/activemq.xml
+      ln -s /kapua/org.eclipse.kapua.kapua-docker-broker/src/main/resources/conf/broker/activemq.xml conf/activemq.xml
+      ln -s /kapua/org.eclipse.kapua.kapua-docker-broker/src/main/resources/conf/broker/camel.xml conf/camel.xml
+      echo 'configuring conf/log4j.properties'
+      sudo sed -i 's/log4j.appender.logfile.layout.ConversionPattern=%d | %-5p | %m | %c | %t%n/log4j.appender.logfile.layout.ConversionPattern=%d | %-5p | %t | %c | %m%n/g' conf/log4j.properties
+      sudo sed -i 's/log4j.appender.audit.layout.ConversionPattern=%-5p | %m | %t%n/log4j.appender.audit.layout.ConversionPattern=%-5p | %t%n | %m/g' conf/log4j.properties
+
+      cp /kapua/dev-tools/src/main/vagrant/develop/broker/*.sh .
+      chmod 555 update-kapua-jars-cfg.sh
+      chmod 555 start-broker.sh
+
+      # Enable debug
+      sudo sed -i 's/\#ACTIVEMQ_DEBUG_OPTS=/ACTIVEMQ_DEBUG_OPTS=/g' bin/env
+      sudo sed -i 's/ACTIVEMQ_VERSION/'"$ACTIVEMQ_VERSION"'/g' update-kapua-jars-cfg.sh
+      sudo chown -R vagrant:vagrant /usr/local/activemq/apache-activemq-${ACTIVEMQ_VERSION}
+
+      ###########################
+      ### Tomcat post install ###
+      ###########################
+
+      # Allow remote manager application
+      cd /usr/local/tomcat/apache-tomcat-${TOMCAT_VERSION}
+      echo 'configuring webapps/manager/META-INF/context.xml'
+      MANAGER_CONTEXT_LN=$(sudo wc -l < /usr/local/tomcat/apache-tomcat-${TOMCAT_VERSION}/webapps/manager/META-INF/context.xml)
+      TOMCAT_CONTEXT_L1='<Valve className=\"org.apache.catalina.valves.RemoteAddrValve\"'
+      TOMCAT_CONTEXT_L2='allow="\\\\d+\\\\.\\\\d+\\\\.\\\\d+\\\\.\\\\d+\\|::1\\|0:0:0:0:0:0:0:1" />'
+      sudo sed -i "$((MANAGER_CONTEXT_LN))i \\ \\ $TOMCAT_CONTEXT_L1" /usr/local/tomcat/apache-tomcat-${TOMCAT_VERSION}/webapps/manager/META-INF/context.xml
+      sudo sed -i "$((MANAGER_CONTEXT_LN+1))i \\ \\ \\ \\ \\ \\ $TOMCAT_CONTEXT_L2" /usr/local/tomcat/apache-tomcat-${TOMCAT_VERSION}/webapps/manager/META-INF/context.xml
+
+      echo 'configuring conf/tomcat-users.xml'
+      TOMCAT_USER_LN=$(sudo wc -l < /usr/local/tomcat/apache-tomcat-${TOMCAT_VERSION}/conf/tomcat-users.xml)
+      sudo sed -i "$((TOMCAT_USER_LN))i \\ \\ <role rolename=\\"manager-gui\\"/>" /usr/local/tomcat/apache-tomcat-${TOMCAT_VERSION}/conf/tomcat-users.xml
+      sudo sed -i "$((TOMCAT_USER_LN+1))i \\ \\ <role rolename=\\"manager-script\\"/>" /usr/local/tomcat/apache-tomcat-${TOMCAT_VERSION}/conf/tomcat-users.xml
+      sudo sed -i "$((TOMCAT_USER_LN+2))i \\ \\ <role rolename=\\"manager-jmx\\"/>" /usr/local/tomcat/apache-tomcat-${TOMCAT_VERSION}/conf/tomcat-users.xml
+      sudo sed -i "$((TOMCAT_USER_LN+3))i \\ \\ <role rolename=\\"manager-status\\"/>" /usr/local/tomcat/apache-tomcat-${TOMCAT_VERSION}/conf/tomcat-users.xml
+      sudo sed -i "$((TOMCAT_USER_LN+4))i \\ \\ <user username=\\"tomcat\\" password=\\"tomcat\\" roles=\\"manager-gui,manager-script,manager-jmx,manager-status\\"/>" /usr/local/tomcat/apache-tomcat-${TOMCAT_VERSION}/conf/tomcat-users.xml
+
+      cp /kapua/dev-tools/src/main/vagrant/develop/tomcat/*.sh .
+      chmod 555 start-tomcat.sh
+      chmod 555 update-kapua-war.sh
+      sudo sed -i 's/KAPUA_VERSION/'"$KAPUA_VERSION"'/g' update-kapua-war.sh
+
+      sudo chown -R vagrant /usr/local/tomcat/apache-tomcat-${TOMCAT_VERSION}
+    SHELL
+
+    config.vm.provision "shell", env: env_vars, run: "always", inline: <<-SHELL
+      setsid su --login -c "/usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/bin/elasticsearch -d" vagrant
+      setsid su --login -c "java -cp /usr/local/h2database/h2database-${H2DB_VERSION}/h2*.jar org.h2.tools.Server -baseDir /home/vagrant/H2/kapua -webAllowOthers -tcpAllowOthers -tcpPort 3306 &" vagrant
+    SHELL
+
+  end
+
+end

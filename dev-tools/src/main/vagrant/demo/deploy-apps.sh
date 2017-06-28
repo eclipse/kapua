@@ -9,7 +9,7 @@
 # Contributors:
 #      Eurotech - initial API and implementation
 #*******************************************************************************
-vagrant ssh -c "echo 'deploying the Kapua broker'
+vagrant ssh demo -c "echo 'deploying the Kapua broker'
 	cd /usr/local/kapua/apache-tomcat-${TOMCAT_VERSION}
 	sudo rm -rf webapp/admin*
 	sudo rm -rf webapp/api*
