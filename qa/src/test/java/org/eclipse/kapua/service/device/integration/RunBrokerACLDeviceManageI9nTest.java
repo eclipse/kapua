@@ -17,17 +17,17 @@ import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-        features = {"classpath:features/broker/acl/BrokerACLI9n.feature"
-                   },
+        features = {"classpath:features/broker/acl/BrokerACLDeviceManageI9n.feature"
+        },
         glue = {"org.eclipse.kapua.qa.steps",
                 "org.eclipse.kapua.service.user.steps",
                 "org.eclipse.kapua.service.device.steps"
-               },
-        plugin = {"pretty", 
-                  "html:target/cucumber/BrokerACLI9n",
-                  "json:target/BrokerACLI9n_cucumber.json"
-                 },
+        },
+        plugin = {"pretty",
+                "html:target/cucumber/BrokerACLDeviceManageI9n",
+                "json:target/BrokerACLDeviceManageI9n_cucumber.json"
+        },
         monochrome = true )
 
-public class RunBrokerACLI9nTest {
+public class RunBrokerACLDeviceManageI9nTest {
 }

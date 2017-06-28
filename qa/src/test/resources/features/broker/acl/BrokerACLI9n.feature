@@ -38,7 +38,6 @@ Feature: Broker ACL tests
   ACL_DATA_ACC = {0}.>
   ACL_DATA_ACC_CLI = {0}.{1}.>
   ACL_CTRL_ACC_NOTIFY = $EDC.{0}.*.*.NOTIFY.{1}.>
-
 #
 #  Admin
 #
