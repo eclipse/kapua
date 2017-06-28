@@ -18,82 +18,134 @@ import org.eclipse.kapua.service.event.KapuaEvent;
 
 public class KapuaEventImpl implements KapuaEvent {
 
-        @Override
-        public String getContextId() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public Date getTimestamp() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public KapuaId getUserId() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public String getService() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public String getEntityType() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public KapuaId getEntityId() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public String getOperation() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public OperationStatus getOperationStatus() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public String getFailureMessage() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public String getInputs() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public String getOutputs() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public String getProperties() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public String getNote() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-        
+    private String contextId;
+    private Date timestamp;
+    private KapuaId userId;
+    private String service;
+    private String entityType;
+    private KapuaId entityId;
+    private String operation;
+    private OperationStatus operationStatus;
+    private String failureMessage;
+    private String inputs;
+    private String outputs;
+    private String properties;
+    private String note;
+    
+    @Override
+    public String getContextId() {
+        return contextId;
     }
+    
+    public void setContextId(String contextId) {
+        this.contextId = contextId;
+    }
+    
+    @Override
+    public Date getTimestamp() {
+        return timestamp;
+    }
+    
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
+    }
+    
+    @Override
+    public KapuaId getUserId() {
+        return userId;
+    }
+    
+    public void setUserId(KapuaId userId) {
+        this.userId = userId;
+    }
+    
+    @Override
+    public String getService() {
+        return service;
+    }
+    
+    public void setService(String service) {
+        this.service = service;
+    }
+    
+    @Override
+    public String getEntityType() {
+        return entityType;
+    }
+    
+    public void setEntityType(String entityType) {
+        this.entityType = entityType;
+    }
+    
+    @Override
+    public KapuaId getEntityId() {
+        return entityId;
+    }
+    
+    public void setEntityId(KapuaId entityId) {
+        this.entityId = entityId;
+    }
+    
+    @Override
+    public String getOperation() {
+        return operation;
+    }
+    
+    public void setOperation(String operation) {
+        this.operation = operation;
+    }
+    
+    @Override
+    public OperationStatus getOperationStatus() {
+        return operationStatus;
+    }
+    
+    public void setOperationStatus(OperationStatus operationStatus) {
+        this.operationStatus = operationStatus;
+    }
+    
+    @Override
+    public String getFailureMessage() {
+        return failureMessage;
+    }
+    
+    public void setFailureMessage(String failureMessage) {
+        this.failureMessage = failureMessage;
+    }
+    
+    @Override
+    public String getInputs() {
+        return inputs;
+    }
+    
+    public void setInputs(String inputs) {
+        this.inputs = inputs;
+    }
+    
+    @Override
+    public String getOutputs() {
+        return outputs;
+    }
+    
+    public void setOutputs(String outputs) {
+        this.outputs = outputs;
+    }
+    
+    @Override
+    public String getProperties() {
+        return properties;
+    }
+    
+    public void setProperties(String properties) {
+        this.properties = properties;
+    }
+    
+    @Override
+    public String getNote() {
+        return note;
+    }
+    
+    public void setNote(String note) {
+        this.note = note;
+    }
+}

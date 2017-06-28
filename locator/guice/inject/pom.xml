@@ -17,6 +17,10 @@
 
 	<dependencies>
 		<!-- Internal dependencies -->
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-locator-inject</artifactId>
+		</dependency>
 
 		<!-- External dependencies -->
 		<dependency>

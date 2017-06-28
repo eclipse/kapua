@@ -24,6 +24,7 @@ import org.eclipse.kapua.locator.inject.Interceptor;
 import org.eclipse.kapua.locator.inject.LocatorConfig;
 import org.eclipse.kapua.locator.inject.ManagedObjectPool;
 import org.eclipse.kapua.locator.inject.MultiService;
+import org.eclipse.kapua.locator.inject.ObjectInspector;
 import org.eclipse.kapua.locator.inject.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +59,8 @@ public class ComponentsModule extends PrivateModule {
     protected void configure() {
 
         try {
+            bind(ObjectInspector.class).to(GuiceObjectInspector.class).in(Singleton.class);
+
             multibinders = new HashMap<>();
             
             Set<Class<?>> componentProviders = locatorConfig.getAnnotatedWith(ComponentProvider.class);

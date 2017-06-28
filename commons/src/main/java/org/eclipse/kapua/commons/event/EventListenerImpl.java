@@ -18,7 +18,6 @@ import java.util.List;
 
 import org.eclipse.kapua.service.event.KapuaEvent;
 import org.eclipse.kapua.service.event.KapuaEventListener;
-import org.eclipse.kapua.service.event.ListenKapuaEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,20 +31,13 @@ public class EventListenerImpl implements EventListener {
     private KapuaEventListener kapuaEventListner;
     private List<Method> listenerMethods = new ArrayList<>();
     
-    private EventListenerImpl(KapuaEventListener kapuaEventListner) {
+    public EventListenerImpl(KapuaEventListener kapuaEventListner, List<Method> methods) {
         this.kapuaEventListner = kapuaEventListner;
+        listenerMethods.addAll(methods);
     }
     
-    public static EventListenerImpl newInstance(KapuaEventListener kapuaEventListner) {
-        EventListenerImpl eventListener = new EventListenerImpl(kapuaEventListner);
-        Method[] methods = kapuaEventListner.getClass().getMethods();
-        for(Method method:methods) {
-            ListenKapuaEvent[] listenEnnotations = method.getAnnotationsByType(ListenKapuaEvent.class);
-            if(listenEnnotations != null && listenEnnotations.length > 0) {
-                eventListener.listenerMethods.add(method);
-            }
-        }
-        return eventListener;
+    public void addListener(Method method) {
+        listenerMethods.add(method);
     }
     
     @Override
