@@ -1123,6 +1123,7 @@
             </activation>
             <properties>
                 <jacoco.version>0.7.4.201502262128</jacoco.version>
+                <jacoco.extras.skip>true</jacoco.extras.skip>
             </properties>
             <build>
                 <pluginManagement>
