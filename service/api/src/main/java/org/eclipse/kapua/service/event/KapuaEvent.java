@@ -31,6 +31,8 @@ public interface KapuaEvent {
 
     public String getEntityType();
 
+    public KapuaId getScopeId();
+
     public KapuaId getEntityId();
 
     public String getOperation();
