@@ -18,7 +18,7 @@ Vagrant.configure("2") do |config|
      group: "vagrant",
      mount_options: ["dmode=775,fmode=664"]
 
-  config.vm.box = "trusty64/kapua-dev-box-0.4"
+  config.vm.box = "kapua-dev-box/0.5"
 
   config.vm.box_check_update = false
 
@@ -57,7 +57,7 @@ Vagrant.configure("2") do |config|
 	 export ACTIVEMQ_VERSION="5.14.5"
 	 export TOMCAT_VERSION="8.0.41"
 	 export KAPUA_VERSION="0.2.0-SNAPSHOT"
-	 
+
 	 #########################
      ### H2 database setup ###
 	 #########################
@@ -68,7 +68,7 @@ Vagrant.configure("2") do |config|
 	 java -cp /usr/local/h2database/h2database-${H2DB_VERSION}/h2*.jar org.h2.tools.Shell -url jdbc:h2:tcp://localhost:3306/kapuadb -user "root" -password "password" -sql "CREATE SCHEMA IF NOT EXISTS kapuadb; \
 		CREATE USER IF NOT EXISTS kapua PASSWORD 'kapua'; \
 		GRANT ALL ON SCHEMA kapuadb TO kapua;"
-		
+
 	 pkill -f h2database
 
 	 ############################
@@ -82,7 +82,10 @@ Vagrant.configure("2") do |config|
      sudo bash -c "echo 'http.host: 192.168.33.10' >> /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/config/elasticsearch.yml"
      sudo bash -c "echo 'http.port: 9200' >> /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/config/elasticsearch.yml"
      sudo bash -c "echo 'transport.ping_schedule: -1' >> /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/config/elasticsearch.yml"
-	 
+
+    ### needed when using OpenJDK ###
+    sudo bash -c "echo '-XX:-AssumeMP' >> /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/config/jvm.options"
+
      # Run the datastore engine
      sudo chown -R vagrant /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}
 
@@ -137,7 +140,7 @@ Vagrant.configure("2") do |config|
   SHELL
 
   config.vm.provision "shell", run: "always", inline: <<-SHELL
-  	  export DEBIAN_FRONTEND=noninteractive
+    export DEBIAN_FRONTEND=noninteractive
 	  export ELASTICSEARCH_VERSION="5.4.0"
 	  export H2DB_VERSION="1.4.192"
 	  setsid su --login -c "/usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/bin/elasticsearch -d" vagrant
