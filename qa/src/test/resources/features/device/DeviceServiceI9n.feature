@@ -9,7 +9,6 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@integration
 Feature: Device Registry Integration
     Device Registy integration test scenarios. These scenarios test higher level device service functionality
     with all services live.

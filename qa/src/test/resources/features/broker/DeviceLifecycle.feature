@@ -9,7 +9,6 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@integration
 Feature: Device lifecycle scenarios
 
 Scenario: Starting and stopping the simulator should create a device entry and properly set its status

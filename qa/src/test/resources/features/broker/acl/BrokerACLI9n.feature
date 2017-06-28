@@ -9,7 +9,6 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@integration
 Feature: Broker ACL tests
   These tests are validating correct access control rights of broker security.
   User with one or more profile connects to the broker and tries to issue actions such as

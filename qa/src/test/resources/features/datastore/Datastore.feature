@@ -10,7 +10,7 @@
 #     Eurotech - initial API and implementation
 #
 ###############################################################################
-@integration
+
 Feature: Datastore tests
 
   Scenario: Query before schema search
