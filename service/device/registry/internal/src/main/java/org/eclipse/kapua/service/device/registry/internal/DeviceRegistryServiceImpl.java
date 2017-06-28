@@ -18,6 +18,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -31,6 +32,7 @@ import org.eclipse.kapua.service.device.registry.DevicePredicates;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.common.DeviceValidation;
+import org.eclipse.kapua.service.event.KapuaEvent;
 
 /**
  * {@link DeviceRegistryService} implementation.
@@ -49,7 +51,8 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
      *
      * @param deviceEntityManagerFactory
      */
-    @Inject public DeviceRegistryServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory) {
+    @Inject
+    public DeviceRegistryServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory) {
         super(DeviceRegistryService.class.getName(), DEVICE_DOMAIN, deviceEntityManagerFactory, DeviceRegistryService.class, DeviceFactory.class);
     }
 
@@ -147,6 +150,39 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
         }
 
         return device;
+    }
+
+    public void onAccountDelete(KapuaEvent kapuaEvent) throws KapuaException {
+        KapuaId scopeId = kapuaEvent.getEntityId();
+
+        KapuaLocator locator = KapuaLocator.getInstance();
+        DeviceFactory deviceFactory = locator.getFactory(DeviceFactory.class);
+
+        DeviceQuery query = deviceFactory.newQuery(scopeId);
+
+        DeviceListResult devicesToDelete = query(query);
+
+        for (Device d : devicesToDelete.getItems()) {
+            delete(d.getScopeId(), d.getId());
+        }
+    }
+
+    public void onGroupDelete(KapuaEvent kapuaEvent) throws KapuaException {
+        KapuaId scopeId = kapuaEvent.getScopeId();
+        KapuaId groupId = kapuaEvent.getEntityId();
+
+        KapuaLocator locator = KapuaLocator.getInstance();
+        DeviceFactory deviceFactory = locator.getFactory(DeviceFactory.class);
+
+        DeviceQuery query = deviceFactory.newQuery(scopeId);
+        query.setPredicate(new AttributePredicate<>(DevicePredicates.GROUP_ID, groupId));
+
+        DeviceListResult devicesToDelete = query(query);
+
+        for (Device d : devicesToDelete.getItems()) {
+            d.setGroupId(null);
+            update(d);
+        }
     }
 
 }
