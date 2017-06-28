@@ -85,7 +85,6 @@ public class WestNavigationView extends LayoutContainer {
     private boolean dashboardSelected;
     private KapuaIcon imgRefreshLabel;
     private WelcomeView welcomeView;
-    private List<EntityViewDescriptor<? extends GwtEntityModel>> entityViewList;
 
     private final GwtSession currentSession;
 
@@ -185,7 +184,7 @@ public class WestNavigationView extends LayoutContainer {
                             return;
                         }
 
-                        if (dashboardSelected && ((String) selected.get("id")).equals("welcome")) {
+                        if (dashboardSelected && (selected.get("id")).equals("welcome")) {
                             return;
                         }
 
@@ -197,7 +196,7 @@ public class WestNavigationView extends LayoutContainer {
                         panel.setBorders(false);
                         panel.setBodyBorder(false);
 
-                        String selectedId = (String) selected.get("id");
+                        String selectedId = selected.get("id");
                         if ("welcome".equals(selectedId)) {
 
                             welcomeView = new WelcomeView(currentSession);
@@ -310,9 +309,7 @@ public class WestNavigationView extends LayoutContainer {
                                 if (entityViewDescriptor.getId().equals(selectedId)) {
                                     panel.setIcon(new KapuaIcon(entityViewDescriptor.getIcon()));
                                     panel.setHeading(entityViewDescriptor.getName());
-                                    try {
-                                        panel.add((AbstractGwtEntityView)entityViewDescriptor.getViewInstance());
-                                    } catch (Exception ignored) { }
+                                    panel.add((AbstractGwtEntityView)entityViewDescriptor.getViewInstance(currentSession));
 
                                     centerPanel.add(panel);
                                     centerPanel.layout();
@@ -375,10 +372,10 @@ public class WestNavigationView extends LayoutContainer {
                 cloudResourcesTreeGrid.getSelectionModel().select(0, false);
 
                 accordionPanel.add(cloudResourcesPanel);
+                layout(true);
             }
         });
-
-
+        
     }
 
     public void addMenuItems(List<EntityViewDescriptor<? extends GwtEntityModel>> additionalViews) {
@@ -461,8 +458,6 @@ public class WestNavigationView extends LayoutContainer {
                 }
             }
         }
-
-        cloudResourcesPanel.layout(true);
     }
 
     public void setDashboardSelected(boolean isSelected) {

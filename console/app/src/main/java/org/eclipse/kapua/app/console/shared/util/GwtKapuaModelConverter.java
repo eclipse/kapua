@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.eclipse.kapua.app.console.client.group.GwtGroupQuery;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtEntityModel;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtUser.GwtUserStatus;
 import org.eclipse.kapua.app.console.client.tag.GwtTagQuery;
 import org.eclipse.kapua.app.console.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.shared.model.GwtConfigParameter;
@@ -49,7 +50,6 @@ import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDe
 import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAssetChannel;
 import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAssetChannel.GwtDeviceAssetChannelMode;
 import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAssets;
-import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUserQuery;
 import org.eclipse.kapua.broker.core.BrokerDomain;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -816,7 +816,7 @@ public class GwtKapuaModelConverter {
         return parameters;
     }
 
-    public static UserStatus convertUserStatus(GwtUser.GwtUserStatus gwtUserStatus) {
+    public static UserStatus convertUserStatus(GwtUserStatus gwtUserStatus) {
         return UserStatus.valueOf(gwtUserStatus.toString());
     }
 

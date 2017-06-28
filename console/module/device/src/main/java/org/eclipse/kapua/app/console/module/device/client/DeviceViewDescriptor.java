@@ -15,6 +15,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.commons.client.views.EntityView;
 import org.eclipse.kapua.app.console.commons.client.views.EntityViewDescriptor;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 
 public class DeviceViewDescriptor implements EntityViewDescriptor<GwtDevice>, IsSerializable {
@@ -35,8 +36,8 @@ public class DeviceViewDescriptor implements EntityViewDescriptor<GwtDevice>, Is
     }
 
     @Override
-    public EntityView<GwtDevice> getViewInstance() {
-        return new DeviceView();
+    public EntityView<GwtDevice> getViewInstance(GwtSession currentSession) {
+        return new DeviceView(currentSession);
     }
 
 }

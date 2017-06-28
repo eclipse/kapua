@@ -16,6 +16,4 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public enum GwtDeviceConnectionStatus implements IsSerializable {
     CONNECTED, DISCONNECTED, MISSING, ANY;
 
-    GwtDeviceConnectionStatus() {
-    };
 }

@@ -201,7 +201,7 @@
                 <include>org.hdrhistogram:HdrHistogram</include>
                 <include>io.netty:netty</include>
 
-                <include>org.eclipse.paho:org.eclipse.paho.org.eclipse.kapua.app.console.module.device.shared.model.client.mqttv3</include>
+                <include>org.eclipse.paho:org.eclipse.paho.client.mqttv3</include>
                 <include>org.apache.commons:commons-pool2</include>
                 <include>org.bitbucket.b_c:jose4j</include>
                 <include>org.reflections:reflections</include>

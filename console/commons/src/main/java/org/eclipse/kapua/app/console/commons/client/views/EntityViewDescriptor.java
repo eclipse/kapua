@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.commons.client.views;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtEntityModel;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 
 public interface EntityViewDescriptor<M extends GwtEntityModel> extends IsSerializable {
     String getId();
@@ -22,5 +23,5 @@ public interface EntityViewDescriptor<M extends GwtEntityModel> extends IsSerial
 
     IconSet getIcon();
 
-    EntityView<M> getViewInstance();
+    EntityView<M> getViewInstance(GwtSession currentSession);
 }

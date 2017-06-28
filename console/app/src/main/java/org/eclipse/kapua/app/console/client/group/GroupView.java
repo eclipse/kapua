@@ -28,6 +28,7 @@ public class GroupView  extends AbstractGwtEntityView<GwtGroup> {
     public GroupView(GwtSession gwtSession) {
         super(gwtSession);
     }
+
     @Override
     public List<KapuaTabItem<GwtGroup>> getTabs(AbstractGwtEntityView<GwtGroup> entityView,
             GwtSession currentSession) {

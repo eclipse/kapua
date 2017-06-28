@@ -25,5 +25,11 @@
     <modules>
         <module>device</module>
     </modules>
+    <dependencies>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-console-commons</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

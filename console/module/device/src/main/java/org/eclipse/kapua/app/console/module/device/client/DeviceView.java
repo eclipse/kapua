@@ -18,18 +18,23 @@ import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractGwtEntityVie
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DeviceView extends AbstractGwtEntityView<GwtDevice> {
 
+    public DeviceView(GwtSession currentSession) {
+        super(currentSession);
+    }
+
     @Override
     public List<KapuaTabItem<GwtDevice>> getTabs(AbstractGwtEntityView<GwtDevice> entityView, GwtSession currentSession) {
-        return null;
+        return new ArrayList<KapuaTabItem<GwtDevice>>();
     }
 
     @Override
     public EntityGrid<GwtDevice> getEntityGrid(AbstractGwtEntityView<GwtDevice> entityView, GwtSession currentSession) {
-        return null;
+        return new DeviceGrid(entityView, currentSession);
     }
 
     @Override
