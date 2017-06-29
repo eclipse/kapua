@@ -122,6 +122,11 @@ public class AssetTable extends LayoutContainer {
         }
     }
     
+    public void clearTable(){
+        assetGrid.getStore().removeAll();
+        this.selectedDevice = null;
+    }
+    
     private void refresh(){
         assetGrid.getStore().getLoader().load();
     }

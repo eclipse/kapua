@@ -223,7 +223,11 @@ public class ResultsTable extends LayoutContainer {
         pagingToolBar.enable();
     }
 
-    private void refresh(List<GwtHeader> headers) {
+    public void refresh(){
+        resultsGrid.getStore().removeAll();
+    }
+    
+    public void refresh(List<GwtHeader> headers) {
         resultsGrid.getColumnModel().getColumns().clear();
         resultsGrid.getColumnModel().getColumns().add(timestampColumn);
         selectedMetrics = headers;

@@ -46,11 +46,13 @@ public class TopicsTabItem extends TabItem {
     private GwtSession currentSession;
 
     private Button queryButton;
+    private Button refreshButton;
 
     private TopicsTable topicTable;
 
     private MetricsTable metricsTable;
     private ResultsTable resultsTable;
+    
 
     public TopicsTabItem(GwtSession currentSession) {
         super(MSGS.topicTabItemTitle(), null);
@@ -76,7 +78,25 @@ public class TopicsTabItem extends TabItem {
         tablesLayout.setMargins(new Margins(0, 5, 0, 5));
         tablesLayout.setMinSize(250);
         add(tables, tablesLayout);
+        
+        BorderLayoutData refreshButtonLayout = new BorderLayoutData(LayoutRegion.NORTH, 0.1f);
+        refreshButtonLayout.setMargins(new Margins(5));
+        refreshButton = new Button(MSGS.refresh(), new KapuaIcon(IconSet.REFRESH), new SelectionListener<ButtonEvent>() {
 
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                topicTable.refresh();
+                metricsTable.clearTable();
+                resultsTable.refresh();
+            }
+        });
+        refreshButton.disable();
+        TableLayout refreshButtonTL = new TableLayout();
+        refreshButtonTL.setCellPadding(0);
+        LayoutContainer refreshButtonContainer = new LayoutContainer(refreshButtonTL);
+        refreshButtonContainer.add(refreshButton, new TableData());
+        tables.add(refreshButtonContainer, refreshButtonLayout);
+        
         BorderLayoutData topicLayout = new BorderLayoutData(LayoutRegion.WEST, 0.5f);
         topicTable = new TopicsTable(currentSession);
         topicTable.setBorders(false);
@@ -86,6 +106,7 @@ public class TopicsTabItem extends TabItem {
 
             @Override
             public void selectionChanged(SelectionChangedEvent<GwtTopic> selectedTopic) {
+                refreshButton.enable();
                 metricsTable.refresh(selectedTopic.getSelectedItem());
             }
         });
@@ -118,13 +139,12 @@ public class TopicsTabItem extends TabItem {
                 resultsTable.refresh(topic, metrics);
             }
         });
-        queryButton.disable();
         TableLayout queryButtonTL = new TableLayout();
         queryButtonTL.setCellPadding(0);
         LayoutContainer queryButtonContainer = new LayoutContainer(queryButtonTL);
         queryButtonContainer.add(queryButton, new TableData());
         tables.add(queryButtonContainer, queryButtonLayout);
-
+        
         BorderLayoutData resultsLayout = new BorderLayoutData(LayoutRegion.SOUTH, 0.5f);
         resultsLayout.setSplit(true);
 
