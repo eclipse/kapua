@@ -11,6 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user.steps;
 
+import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+
 /**
  * Data object used in Gherkin to transfer Credentials data.
  */
@@ -19,6 +28,10 @@ public class TestCredentials {
     private String name;
 
     private String password;
+
+    private boolean enabled;
+
+    private String expirationDate;
 
     public String getName() {
         return name;
@@ -34,5 +47,55 @@ public class TestCredentials {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public CredentialStatus getStatus() {
+        if (isEnabled()) {
+            return CredentialStatus.ENABLED;
+        } else {
+            return CredentialStatus.DISABLED;
+        }
+    }
+
+    public Date getExpirationDate() {
+        DateFormat df = new SimpleDateFormat("dd/mm/yyyy");
+        Date expDate = null;
+        LocalDateTime now = LocalDateTime.now();
+
+        if (expirationDate == null) {
+            return null;
+        }
+        // Special keywords for date
+        switch (expirationDate) {
+            case "yesterday":
+                expDate = Date.from(now.minusDays(1).atZone(ZoneId.systemDefault()).toInstant());
+                break;
+            case "today":
+                expDate = Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
+                break;
+            case "tomorrow":
+                expDate = Date.from(now.plusDays(1).atZone(ZoneId.systemDefault()).toInstant());
+                break;
+        }
+        // Just parse date
+        try {
+            expDate = df.parse(expirationDate);
+        } catch (ParseException | NullPointerException e) {
+            // skip, leave date null
+        }
+
+        return expDate;
+    }
+
+    public void setExpirationDate(String expirationDate) {
+        this.expirationDate = expirationDate;
     }
 }
