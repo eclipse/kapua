@@ -44,8 +44,8 @@ Feature: User Service Integration
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
     And Credentials
-      | name    | password          |
-      | kapua-a | ToManySecrets123# |
+      | name    | password          | enabled |
+      | kapua-a | ToManySecrets123# | true    |
     And Permissions
       | domain | action |
       | user   | read   |
@@ -116,8 +116,8 @@ Feature: User Service Integration
       | name    | displayName  | email             | phoneNumber     | status  | userType |
      | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
     And Credentials
-      | name    | password          |
-      | kapua-a | ToManySecrets123# |
+      | name    | password          | enabled |
+      | kapua-a | ToManySecrets123# | true    |
     And Permissions
      | domain | action |
       | user   | read   |

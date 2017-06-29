@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.user.steps;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -209,7 +210,12 @@ public class UserServiceSteps extends AbstractKapuaSteps {
         char[] passwd = password.toCharArray();
         LoginCredentials credentials = new UsernamePasswordCredentialsImpl(userName, passwd);
         authenticationService.logout();
-        authenticationService.login(credentials);
+        try {
+            authenticationService.login(credentials);
+        } catch (KapuaException e) {
+            stepData.put("ExceptionCaught", true);
+            stepData.put("Exception", e);
+        }
     }
 
     @Then("^I try to delete user \"(.*)\"$")
@@ -302,8 +308,9 @@ public class UserServiceSteps extends AbstractKapuaSteps {
                     String email = userItem.getEmail();
                     String phone = userItem.getPhoneNumber();
                     KapuaEid scopeId = (KapuaEid) account.getId();
+                    Date expirationDate = userItem.getExpirationDate();
 
-                    UserCreator userCreator = userCreatorCreator(name, displayName, email, phone, scopeId);
+                    UserCreator userCreator = userCreatorCreator(name, displayName, email, phone, scopeId, expirationDate);
                     User user = userService.create(userCreator);
                     users.add(new ComparableUser(user));
                 }
@@ -362,7 +369,8 @@ public class UserServiceSteps extends AbstractKapuaSteps {
                 User user = userService.findByName(testCredentials.getName());
 
                 Credential credential = credentialService.create(credentialCreatorCreator(user.getScopeId(),
-                        user.getId(), testCredentials.getPassword()));
+                        user.getId(), testCredentials.getPassword(),
+                        testCredentials.getStatus(), testCredentials.getExpirationDate()));
                 credentialList.add(credential);
             } catch (KapuaException ke) {
                 stepData.put("ExceptionCaught", true);
@@ -431,12 +439,14 @@ public class UserServiceSteps extends AbstractKapuaSteps {
      *            userId for which credetntials are set
      * @param password
      *            open password as credetntials
+     * @param status status of credentials enabled or disabled
+     * @param expirationDate credential expiration date
      * @return credential creator used for creating credentials
      */
-    private CredentialCreator credentialCreatorCreator(KapuaId scopeId, KapuaId userId, String password) {
+    private CredentialCreator credentialCreatorCreator(KapuaId scopeId, KapuaId userId, String password, CredentialStatus status, Date expirationDate) {
         CredentialCreator credentialCreator;
 
-        credentialCreator = new CredentialFactoryImpl().newCreator(scopeId, userId, CredentialType.PASSWORD, password, CredentialStatus.ENABLED, null);
+        credentialCreator = new CredentialFactoryImpl().newCreator(scopeId, userId, CredentialType.PASSWORD, password, status, expirationDate);
 
         return credentialCreator;
     }
@@ -446,13 +456,14 @@ public class UserServiceSteps extends AbstractKapuaSteps {
      *
      * @return UserCreator instance for creating user
      */
-    private UserCreator userCreatorCreator(String name, String displayName, String email, String phone, KapuaEid scopeId) {
+    private UserCreator userCreatorCreator(String name, String displayName, String email, String phone, KapuaEid scopeId, Date expirationDate) {
         UserCreator userCreator = new UserFactoryImpl().newCreator(scopeId, name);
 
         userCreator.setName(name);
         userCreator.setDisplayName(displayName);
         userCreator.setEmail(email);
         userCreator.setPhoneNumber(phone);
+        userCreator.setExpirationDate(expirationDate);
 
         return userCreator;
     }
