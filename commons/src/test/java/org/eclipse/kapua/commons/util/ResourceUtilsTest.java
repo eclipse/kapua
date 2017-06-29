@@ -16,10 +16,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
+
+import com.google.common.io.CharStreams;
 
 public class ResourceUtilsTest {
 
@@ -31,9 +34,11 @@ public class ResourceUtilsTest {
         final URL url = ResourceUtils.getResource("test.properties");
         assertNotNull(url);
 
-        final String string = ResourceUtils.readResource(url, StandardCharsets.UTF_8);
-        assertNotNull(string);
-        assertFalse(string.isEmpty());
+        try (final Reader reader = ResourceUtils.openAsReader(url, StandardCharsets.UTF_8)) {
+            final String string = CharStreams.toString(reader);
+            assertNotNull(string);
+            assertFalse(string.isEmpty());
+        }
     }
 
     /**
@@ -50,6 +55,6 @@ public class ResourceUtilsTest {
      */
     @Test(expected = IOException.class)
     public void testRead3() throws IOException {
-        ResourceUtils.readResource(new URL("file:/does-not-exists"), StandardCharsets.UTF_8);
+        ResourceUtils.openAsReader(new URL("file:/does-not-exists"), StandardCharsets.UTF_8);
     }
 }

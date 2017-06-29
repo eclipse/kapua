@@ -13,13 +13,14 @@
 package org.eclipse.kapua.commons.util;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.io.Resources;
 
 /**
  * Resource utilities
@@ -41,7 +42,7 @@ public class ResourceUtils {
      *            to locate
      * @return The URL to the resource, or {@code null} if it cannot be found
      */
-    public static URL getResource(String resource) {
+    public static URL getResource(final String resource) {
         // Try with the Thread Context Loader.
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         if (classLoader != null) {
@@ -65,30 +66,20 @@ public class ResourceUtils {
     }
 
     /**
-     * Reads a resource fully and returns it as a string
-     *
-     * @param resourceUrl
-     *            The URL to read from
-     * @param charset
-     *            the character set used to read the file
-     * @return the resource content as string
-     * @throws IOException
-     *             in case of an I/O error
-     */
-    public static String readResource(final URL resourceUrl, final Charset charset) throws IOException {
-        return Resources.toString(resourceUrl, charset);
-    }
-
-    /**
-     * Reads a resource fully and returns it as a byte array
+     * Open a URL as {@link Reader}
      * 
-     * @param resourceUrl
-     *            The URL to read from
-     * @return the resource content as byte array
+     * @param url
+     *            the URL to open
+     * @param charset
+     *            the character set to use
+     * @return the reader
      * @throws IOException
-     *             in case of an I/O error
+     *             If any I/O error occurs
      */
-    public static byte[] readResourceAsByteArray(final URL resourceUrl) throws IOException {
-        return Resources.toByteArray(resourceUrl);
+    public static Reader openAsReader(final URL url, final Charset charset) throws IOException {
+        Objects.requireNonNull(url);
+        Objects.requireNonNull(charset);
+
+        return new InputStreamReader(url.openStream(), charset);
     }
 }

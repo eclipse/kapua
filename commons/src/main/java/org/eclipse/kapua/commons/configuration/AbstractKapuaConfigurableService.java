@@ -80,8 +80,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
             return null;
         }
 
-        final String xml = ResourceUtils.readResource(url, StandardCharsets.UTF_8);
-        return XmlUtil.unmarshal(xml, KapuaTmetadata.class);
+        return XmlUtil.unmarshal(ResourceUtils.openAsReader(url, StandardCharsets.UTF_8), KapuaTmetadata.class);
     }
 
     /**
