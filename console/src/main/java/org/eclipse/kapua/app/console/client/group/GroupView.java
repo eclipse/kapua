@@ -21,13 +21,14 @@ import org.eclipse.kapua.app.console.client.ui.view.EntityView;
 import org.eclipse.kapua.app.console.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 
-public class GroupView  extends EntityView<GwtGroup>{
+public class GroupView extends EntityView<GwtGroup> {
 
-        private GroupGrid groupGrid;
-        
-        public GroupView(GwtSession gwtSession) {
-            super(gwtSession);
-        }
+    private GroupGrid groupGrid;
+
+    public GroupView(GwtSession gwtSession) {
+        super(gwtSession);
+    }
+
     @Override
     public List<KapuaTabItem<GwtGroup>> getTabs(EntityView<GwtGroup> entityView,
             GwtSession currentSession) {
@@ -48,7 +49,7 @@ public class GroupView  extends EntityView<GwtGroup>{
     @Override
     public EntityFilterPanel<GwtGroup> getEntityFilterPanel(EntityView<GwtGroup> entityView,
             GwtSession currentSession2) {
-       
+
         return new GroupFilterPanel(this, currentSession2);
     }
 

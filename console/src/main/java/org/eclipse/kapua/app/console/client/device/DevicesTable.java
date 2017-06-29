@@ -610,7 +610,7 @@ public class DevicesTable extends LayoutContainer {
     public void refresh() {
         loader.load();
         pagingToolBar.enable();
-    };
+    }
 
     private void deleteDevice(GwtDevice device) {
         final GwtDevice toDeleteDevice = device;

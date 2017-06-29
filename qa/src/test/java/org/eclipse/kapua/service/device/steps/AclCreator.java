@@ -92,26 +92,29 @@ public class AclCreator {
      * @param credentialService
      */
     public AclCreator(AccountService accountService,
-                      AccountFactory accountFactory,
-                      UserService userService,
-                      AccessInfoService accessInfoService,
-                      CredentialService credentialService) {
+            AccountFactory accountFactory,
+            UserService userService,
+            AccessInfoService accessInfoService,
+            CredentialService credentialService) {
         this.accountService = accountService;
         this.accountFactory = accountFactory;
         this.userService = userService;
         this.accessInfoService = accessInfoService;
         this.credentialService = credentialService;
     }
+
     /**
      * Configure user service with reasonable default values.
      *
-     * @param accId account id
-     * @param scopeId scope id
+     * @param accId
+     *            account id
+     * @param scopeId
+     *            scope id
      */
     private void configureUserService(KapuaId accId, KapuaId scopeId) {
 
         Map<String, Object> valueMap = new HashMap<>();
-        valueMap.put("infiniteChildEntities", true );
+        valueMap.put("infiniteChildEntities", true);
         valueMap.put("maxNumberChildEntities", 5);
         valueMap.put("lockoutPolicy.enabled", false);
         valueMap.put("lockoutPolicy.maxFailures", 3);
@@ -128,13 +131,15 @@ public class AclCreator {
     /**
      * Configure account service with reasonable default values.
      *
-     * @param accId account id
-     * @param scopeId scope id
+     * @param accId
+     *            account id
+     * @param scopeId
+     *            scope id
      */
     private void configureAccountService(KapuaId accId, KapuaId scopeId) {
 
         Map<String, Object> valueMap = new HashMap<>();
-        valueMap.put("infiniteChildEntities", true );
+        valueMap.put("infiniteChildEntities", true);
         valueMap.put("maxNumberChildEntities", 5);
 
         try {
@@ -164,7 +169,7 @@ public class AclCreator {
                 accessInfoService.create(accessInfoCreatorCreator(permissionList, user, account));
             } catch (KapuaException ke) {
                 ke.printStackTrace();
-                //skip
+                // skip
             }
 
             return null;
@@ -184,7 +189,7 @@ public class AclCreator {
      * @return AccessInfoCreator instance for creating user permissions
      */
     private AccessInfoCreator accessInfoCreatorCreator(List<PermissionData> permissionList,
-                                                       User user, Account account) {
+            User user, Account account) {
 
         PermissionFactory permissionFactory = new PermissionFactoryImpl();
         AccessInfoCreator accessInfoCreator = new AccessInfoFactoryImpl().newCreator(account.getId());

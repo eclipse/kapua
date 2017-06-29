@@ -23,7 +23,7 @@ public class GwtUser extends GwtUpdatableEntityModel implements IsSerializable {
         ENABLED, DISABLED;
 
         GwtUserStatus() {
-        };
+        }
     }
 
     @Override

@@ -32,7 +32,7 @@ public class GwtAccount extends GwtUpdatableEntityModel implements Serializable 
         BEING_PROVISIONED, ENABLED, DISABLED, BEING_DELETED;
 
         GwtAccountStatus() {
-        };
+        }
     }
 
     public enum GwtAccountProvisioningStatus implements IsSerializable {

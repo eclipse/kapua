@@ -38,14 +38,17 @@ import static org.eclipse.kapua.service.datastore.model.query.SortField.descendi
  */
 public class DatastoreQueryFactory {
 
-    private DatastoreQueryFactory(){
+    private DatastoreQueryFactory() {
         // Hiding utility class constructor.
     }
+
     /**
      * Creating query for data messages with reasonable defaults.
      *
-     * @param scopeId scope
-     * @param limit limit results
+     * @param scopeId
+     *            scope
+     * @param limit
+     *            limit results
      * @return query
      */
     public static MessageQuery createBaseMessageQuery(KapuaId scopeId, int limit) {
@@ -65,8 +68,10 @@ public class DatastoreQueryFactory {
     /**
      * Creating query for channel info with reasonable defaults.
      *
-     * @param scopeId scope
-     * @param limit limit results
+     * @param scopeId
+     *            scope
+     * @param limit
+     *            limit results
      * @return query
      */
     public static ChannelInfoQuery createBaseChannelInfoQuery(KapuaId scopeId, int limit) {
@@ -86,8 +91,10 @@ public class DatastoreQueryFactory {
     /**
      * Creating query for metric info with reasonable defaults.
      *
-     * @param scopeId scope
-     * @param limit limit results
+     * @param scopeId
+     *            scope
+     * @param limit
+     *            limit results
      * @return query
      */
     public static MetricInfoQuery createBaseMetricInfoQuery(KapuaId scopeId, int limit) {
@@ -107,8 +114,10 @@ public class DatastoreQueryFactory {
     /**
      * Creating query for client info with reasonable defaults.
      *
-     * @param scopeId scope
-     * @param limit limit results
+     * @param scopeId
+     *            scope
+     * @param limit
+     *            limit results
      * @return query
      */
     public static ClientInfoQuery createBaseClientInfoQuery(KapuaId scopeId, int limit) {

@@ -23,21 +23,21 @@ public class GwtDeviceQueryPredicates extends KapuaBaseModel implements Serializ
         ENABLED, DISABLED, ANY;
 
         GwtDeviceStatus() {
-        };
+        }
     }
 
     public enum GwtDeviceCertificateStatus implements IsSerializable {
         ANY, NOT_INSTALLED, INSTALLED_OUT_OF_DATE, INSTALLED_UP_TO_DATE;
 
         GwtDeviceCertificateStatus() {
-        };
+        }
     }
 
     public enum GwtDeviceConnectionStatus implements IsSerializable {
         CONNECTED, DISCONNECTED, MISSING, ANY;
 
         GwtDeviceConnectionStatus() {
-        };
+        }
     }
 
     public enum GwtSortOrder implements IsSerializable {

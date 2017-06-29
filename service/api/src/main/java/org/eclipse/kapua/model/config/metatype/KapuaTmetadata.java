@@ -116,6 +116,7 @@ public interface KapuaTmetadata {
     public List<KapuaTdesignate> getDesignate();
 
     public void setDesignate(List<KapuaTdesignate> designate);
+
     /**
      * Gets the value of the any property.
      *
@@ -143,6 +144,7 @@ public interface KapuaTmetadata {
     public List<Object> getAny();
 
     public void setAny(List<Object> any);
+
     /**
      * Gets the value of the localization property.
      *

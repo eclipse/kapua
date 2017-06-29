@@ -17,51 +17,69 @@
 <module name="Checker">
 
     <module name="SuppressionFilter">
-        <property name="file" value="${checkstyle.suppressions.file}"/>
-        <property name="optional" value="false"/>
+        <property name="file" value="${checkstyle.suppressions.file}" />
+        <property name="optional" value="false" />
     </module>
 
     <module name="TreeWalker">
-        <module name="AvoidStarImport"/>
-        <module name="UnusedImports"/>
 
-        <module name="ExplicitInitialization"/>
-        <module name="HideUtilityClassConstructor"/>
-        <module name="StringLiteralEquality"/>
+        <!-- imports -->
+
+        <module name="AvoidStarImport" />
+        <module name="UnusedImports" />
+
+        <!-- others -->
+
+        <module name="ExplicitInitialization" />
+        <module name="HideUtilityClassConstructor" />
+        <module name="StringLiteralEquality" />
 
         <module name="FallThrough">
-           <property name="reliefPattern" value="\$FALL-THROUGH\$"/>
+            <property name="reliefPattern" value="\$FALL-THROUGH\$" />
         </module>
-        <module name="OneStatementPerLine"/>
+        <module name="OneStatementPerLine" />
 
-        <module name="NeedBraces"/>
-        <module name="LeftCurly"/>
+        <!-- braces -->
+
+        <module name="NeedBraces" />
+        <module name="LeftCurly" />
+
+        <!-- names -->
 
         <module name="ConstantName">
-            <property name="format" value="^logger|[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$"/>
+            <property name="format"
+                value="^logger|[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$" />
         </module>
-        <module name="LocalFinalVariableName"/>
-        <module name="LocalVariableName"/>
-        <module name="MemberName"/>
-        <module name="MethodName"/>
-        <module name="PackageName"/>
-        <module name="ParameterName"/>
-        <module name="StaticVariableName"/>
+        <module name="LocalFinalVariableName" />
+        <module name="LocalVariableName" />
+        <module name="MemberName" />
+        <module name="MethodName" />
+        <module name="PackageName" />
+        <module name="ParameterName" />
+        <module name="StaticVariableName" />
 
+        <!-- whitespaces and lines -->
+
+        <module name="EmptyLineSeparator">
+            <property name="allowMultipleEmptyLinesInsideClassMembers" value="false"/>
+            <property name="tokens" value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, STATIC_INIT, INSTANCE_INIT, METHOD_DEF, CTOR_DEF"/>
+        </module>
     </module>
 
-    <module name="FileTabCharacter"/>
+    <module name="FileTabCharacter" />
     <module name="RegexpHeader">
-        <property name="header" value="^/\*{79}$\n^ \* Copyright \(c\) \d{4}(|, \d{4}) (.*) and others\.?$\n^ \*$\n^ \* All rights reserved. This program and the accompanying materials$\n^ \* are made available under the terms of the Eclipse Public License v1.0$\n^ \* which accompanies this distribution, and is available at$\n^ \* http://www.eclipse.org/legal/epl-v10.html$\n^ \*$\n^ \* Contributors:$\n^ \*     (.*)(| - .*)$\n^ \*{79}/\n^package"/>
-        <property name="charset" value="UTF-8"/>
-        <property name="multiLines" value="10"/>
-        <property name="fileExtensions" value="java"/>
+        <property name="header"
+            value="^/\*{79}$\n^ \* Copyright \(c\) \d{4}(|, \d{4}) (.*) and others\.?$\n^ \*$\n^ \* All rights reserved. This program and the accompanying materials$\n^ \* are made available under the terms of the Eclipse Public License v1.0$\n^ \* which accompanies this distribution, and is available at$\n^ \* http://www.eclipse.org/legal/epl-v10.html$\n^ \*$\n^ \* Contributors:$\n^ \*     (.*)(| - .*)$\n^ \*{79}/\n^package" />
+        <property name="charset" value="UTF-8" />
+        <property name="multiLines" value="10" />
+        <property name="fileExtensions" value="java" />
     </module>
 
     <!-- Check for CRLF line endings -->
     <module name="RegexpMultiline">
-        <property name="format" value="(?s:\r\n.*)"/>
-        <property name="fileExtensions" value="java,md,xml"/>
-        <property name="message" value="Only Unix-style line endings are allowed"/>
+        <property name="format" value="(?s:\r\n.*)" />
+        <property name="fileExtensions" value="java,md,xml" />
+        <property name="message"
+            value="Only Unix-style line endings are allowed" />
     </module>
 </module>

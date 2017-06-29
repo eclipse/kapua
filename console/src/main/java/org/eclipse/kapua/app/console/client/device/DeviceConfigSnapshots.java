@@ -314,9 +314,8 @@ public class DeviceConfigSnapshots extends LayoutContainer {
     // --------------------------------------------------------------------------------------
 
     private static final int PERIOD_MILLIS = 1000;
-    
+
     public void refreshWhenOnline() {
-        
 
         Timer timer = new Timer() {
 

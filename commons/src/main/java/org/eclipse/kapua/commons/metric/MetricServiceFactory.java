@@ -23,6 +23,7 @@ public class MetricServiceFactory {
     private MetricServiceFactory() {
 
     }
+
     /**
      * Get the {@link MetricsService} singleton instance
      * 

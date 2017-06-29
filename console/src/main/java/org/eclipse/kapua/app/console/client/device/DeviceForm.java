@@ -96,14 +96,15 @@ public class DeviceForm extends Window {
     private TextField<String> customAttribute5Field;
 
     private NumberField optlock;
-    
+
     private static final GwtGroup NO_GROUP;
-    
+
     static {
         NO_GROUP = new GwtGroup();
         NO_GROUP.setGroupName(MSGS.deviceFormNoGroup());
         NO_GROUP.setId(null);
     }
+
     public DeviceForm(GwtSession currentSession) {
         this(null, currentSession);
     }
@@ -119,7 +120,7 @@ public class DeviceForm extends Window {
                 : MSGS.deviceFormHeadingEdit(this.selectedDevice.getDisplayName() != null ? this.selectedDevice.getDisplayName() : this.selectedDevice.getClientId()));
 
         DialogUtils.resizeDialog(this, 550, 570);
-        
+
     }
 
     protected void onRender(Element parent, int index) {
@@ -195,7 +196,7 @@ public class DeviceForm extends Window {
 
             @Override
             public void onFailure(Throwable caught) {
-                FailureHandler.handle(caught);                
+                FailureHandler.handle(caught);
             }
 
             @Override
@@ -537,7 +538,7 @@ public class DeviceForm extends Window {
             } else {
                 groupCombo.setValue(NO_GROUP);
             }
-//            // Custom attributes data
+            // // Custom attributes data
             customAttribute1Field.setValue(selectedDevice.getUnescapedCustomAttribute1());
             customAttribute2Field.setValue(selectedDevice.getUnescapedCustomAttribute2());
             customAttribute4Field.setValue(selectedDevice.getUnescapedCustomAttribute4());
