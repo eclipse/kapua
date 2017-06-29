@@ -28,7 +28,7 @@ public class PayloadsTest {
 
     static {
         final Map<String, Object> metrics = new HashMap<>();
-        
+
         metrics.put("Float", Float.valueOf(42.42f));
         metrics.put("Double", Double.valueOf(42.42d));
         metrics.put("Integer", Integer.valueOf(42));
@@ -43,12 +43,12 @@ public class PayloadsTest {
     }
 
     @Test
-    public void testConstructor() throws Exception{
-    Constructor<Payloads> payload = Payloads.class.getDeclaredConstructor();
+    public void testConstructor() throws Exception {
+        Constructor<Payloads> payload = Payloads.class.getDeclaredConstructor();
         payload.setAccessible(true);
-        Payloads payloadTest = payload.newInstance();
+        payload.newInstance();
     }
-    
+
     @Test
     public void testNull() {
         Assert.assertEquals("", Payloads.toDisplayString(null));
