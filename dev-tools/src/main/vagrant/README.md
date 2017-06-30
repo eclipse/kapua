@@ -18,7 +18,7 @@ The machines assigned IP is:
 
 The ports exposed are documented per service within the Vagrant files.
 
-**Note:** Before proceeding, check that Vagrant is installed in your PC, otherwise install it. In order to run Vagrant machines, VirtualBox or other virtualization software supported by Vagrant needs also to be installed.
+**Note:** Before proceeding, check that Vagrant is installed in your PC, otherwise install it. In order to run Vagrant machines, VirtualBox or other virtualization software supported by Vagrant needs also to be installed. When using VirtualBox vagrant vagrant-vbguest plugin should also be installed.
 
 ## Demo machine quick start
 It is possible to create the **demo machine in only one step** (so create the base box, the demo vagrant machine, compile the Kapua project and start the services inside the vagrant demo machine) just using this script
@@ -36,14 +36,14 @@ $ cd $KAPUA_GITHUB_HOME_DIR/dev-tools/src/main/vagrant
 $ ./start.sh base-box
 ```
 
-After a while a new box, called ***trusty64/kapua-dev-box-0.x***, will be created on the system. To check it please refer to the command showed in the ***Helpful Vagrant commands*** section
+After a while a new box, called ***kapua-dev-box/0.x***, will be created on the system. To check it please refer to the command showed in the ***Helpful Vagrant commands*** section
 
-**Note 1:** this step may take few minutes due to the components to be downloaded.   
+**Note 1:** this step may take few minutes due to the components to be downloaded.
 **Note 2:** the script will delete a previous created kapua-box, so due to Note 1, be careful before run this step.
 
 ## Creating the Kapua dev-box
 
-Once the base-box is created, from the same directory, it's possible to invoke the same script with a different value (as the first parameter) to create and start the development Vagrant machine.   
+Once the base-box is created, from the same directory, it's possible to invoke the same script with a different value (as the first parameter) to create and start the development Vagrant machine.
 
 ```
 $ cd $KAPUA_GITHUB_HOME_DIR
@@ -51,7 +51,7 @@ $ cd dev-tools/src/main/vagrant
 $ ./start.sh develop
 ```
 
-The machine can be recreated every time you need (running the same commands) or, alternatively, it's possible to freeze it and start it again later (see ***Helpful Vagrant commands*** section).   
+The machine can be recreated every time you need (running the same commands) or, alternatively, it's possible to freeze it and start it again later (see ***Helpful Vagrant commands*** section).
 If you choose to start it again instead of recreating, you should enter the Vagrant machine and start manually the H2 service (please replace ${H2DB_VERSION} with the correct value):
 ```
 $ cd $KAPUA_GITHUB_HOME_DIR
@@ -83,7 +83,7 @@ There is script to start the broker
 ```
 $ ./start-broker.sh
 ```
-The script recreates the link between all the libraries and Kapua jars (inside Kapua workspace) needed by the broker at runtime, recreate configuration links and then start the broker.   
+The script recreates the link between all the libraries and Kapua jars (inside Kapua workspace) needed by the broker at runtime, recreate configuration links and then start the broker.
 To stop the broker type:
 ```
 bin/activemq stop
@@ -136,7 +136,7 @@ Password: kapua-password
 ```
 
 ## Creating the Kapua demo-box
-As for the development machine, once the base-box is created, from the same directory, it's possible to invoke the same script with a different value (as the first parameter) to create and start the demo Vagrant machine.   
+As for the development machine, once the base-box is created, from the same directory, it's possible to invoke the same script with a different value (as the first parameter) to create and start the demo Vagrant machine.
 
 ```
 $ cd $KAPUA_GITHUB_HOME_DIR
@@ -144,7 +144,7 @@ $ cd dev-tools/src/main/vagrant
 $ ./start.sh demo
 ```
 
-The machine can be recreated every time you need (running the same commands) or, alternatively, it's possible to freeze it and start it again later (see ***Helpful Vagrant commands*** section).   
+The machine can be recreated every time you need (running the same commands) or, alternatively, it's possible to freeze it and start it again later (see ***Helpful Vagrant commands*** section).
 If you choose to start it again instead of recreating, you should enter the Vagrant machine and start manually the H2 service (please replace ${H2DB_VERSION} with the correct value):
 ```
 $ cd $KAPUA_GITHUB_HOME_DIR
@@ -161,7 +161,7 @@ As for the development machine, once the demo machine has been created (or start
 $ vagrant ssh
 ```
 
-The fresh machine has both the ActiveMQ and Tomcat installed, but please don't use them, it's just due to the reuse of the base-box.   
+The fresh machine has both the ActiveMQ and Tomcat installed, but please don't use them, it's just due to the reuse of the base-box.
 To start ***using properly the demo machine*** run a full Kapua build as follow:
 
 ```
