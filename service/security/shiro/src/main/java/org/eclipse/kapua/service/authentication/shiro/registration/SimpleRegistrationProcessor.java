@@ -83,8 +83,6 @@ public class SimpleRegistrationProcessor implements RegistrationProcessor {
             return empty();
         }
 
-        System.out.println(context.getJwtClaims().getRawJson());
-
         final String email = context.getJwtClaims().getClaimValue("email", String.class);
         if (email == null || email.isEmpty()) {
             return empty();
