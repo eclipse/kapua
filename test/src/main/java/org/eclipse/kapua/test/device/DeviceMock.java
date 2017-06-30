@@ -463,10 +463,10 @@ public class DeviceMock implements Device {
         // TODO Auto-generated method stub
         return null;
     }
+
     @Override
     public void setTagIds(Set<KapuaId> tagIds) {
         // TODO Auto-generated method stub
-
     }
 
     @Override
