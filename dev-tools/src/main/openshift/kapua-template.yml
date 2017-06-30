@@ -278,6 +278,7 @@ objects:
         - env:
           - name: JAVA_OPTS
             value:
+              -Xmx1G
               -Dcommons.db.connection.host=$SQL_SERVICE_HOST
               -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT
               -Dbroker.host=$KAPUA_BROKER_SERVICE_HOST
@@ -330,6 +331,7 @@ objects:
         - env:
           - name: JAVA_OPTS
             value:
+              -Xmx1G
               -Dcommons.db.connection.host=$SQL_SERVICE_HOST
               -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT
               -Dbroker.host=$KAPUA_BROKER_SERVICE_HOST
