@@ -73,6 +73,8 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
             deviceCreator.setJvmVersion(payload.getJvmVersion());
             deviceCreator.setOsgiFrameworkVersion(payload.getContainerFrameworkVersion());
             deviceCreator.setApplicationFrameworkVersion(payload.getApplicationFrameworkVersion());
+            deviceCreator.setConnectionInterface(payload.getConnectionInterface());
+            deviceCreator.setConnectionIp(payload.getConnectionIp());
             deviceCreator.setApplicationIdentifiers(payload.getApplicationIdentifiers());
             deviceCreator.setAcceptEncoding(payload.getAcceptEncoding());
             deviceCreator.setCredentialsMode(DeviceCredentialsMode.LOOSE);
@@ -95,6 +97,8 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
             device.setJvmVersion(payload.getJvmVersion());
             device.setOsgiFrameworkVersion(payload.getContainerFrameworkVersion());
             device.setApplicationFrameworkVersion(payload.getApplicationFrameworkVersion());
+            device.setConnectionInterface(payload.getConnectionInterface());
+            device.setConnectionIp(payload.getConnectionIp());
             device.setApplicationIdentifiers(payload.getApplicationIdentifiers());
             device.setAcceptEncoding(payload.getAcceptEncoding());
 

@@ -66,9 +66,7 @@ import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
 /**
- * 
  * The server side implementation of the Device RPC service.
- * 
  */
 public class GwtDeviceServiceImpl extends KapuaConfigurableRemoteServiceServlet<DeviceRegistryService> implements GwtDeviceService {
 
@@ -116,14 +114,20 @@ public class GwtDeviceServiceImpl extends KapuaConfigurableRemoteServiceServlet<
                 if (device.getConnectionId() != null) {
                     deviceConnection = deviceConnectionService.find(scopeId, device.getConnectionId());
                     if (deviceConnection != null) {
+                        pairs.add(new GwtGroupedNVPair("netInfo", "netConnIface", device.getConnectionInterface()));
                         pairs.add(new GwtGroupedNVPair("netInfo", "netConnIp", deviceConnection.getClientIp()));
+                        pairs.add(new GwtGroupedNVPair("netInfo", "netConnIfaceIp", device.getConnectionIp()));
                         pairs.add(new GwtGroupedNVPair("devInfo", "devConnectionStatus", deviceConnection.getStatus().toString()));
                     } else {
+                        pairs.add(new GwtGroupedNVPair("netInfo", "netConnIface", null));
                         pairs.add(new GwtGroupedNVPair("netInfo", "netConnIp", null));
+                        pairs.add(new GwtGroupedNVPair("netInfo", "netConnIfaceIp", null));
                         pairs.add(new GwtGroupedNVPair("devInfo", "devConnectionStatus", DeviceConnectionStatus.DISCONNECTED.toString()));
                     }
                 } else {
+                    pairs.add(new GwtGroupedNVPair("netInfo", "netConnIface", null));
                     pairs.add(new GwtGroupedNVPair("netInfo", "netConnIp", null));
+                    pairs.add(new GwtGroupedNVPair("netInfo", "netConnIfaceIp", null));
                     pairs.add(new GwtGroupedNVPair("devInfo", "devConnectionStatus", DeviceConnectionStatus.DISCONNECTED.toString()));
                 }
 
@@ -293,14 +297,15 @@ public class GwtDeviceServiceImpl extends KapuaConfigurableRemoteServiceServlet<
 
                 // Connection info
                 gwtDevice.setGwtDeviceConnectionStatus(GwtDeviceConnectionStatus.DISCONNECTED.name());
-                if (d.getConnection() != null) {
-                    DeviceConnection deviceConnection = d.getConnection();
-                    if (deviceConnection != null) {
-                        gwtDevice.setConnectionIp(deviceConnection.getClientIp());
-                        gwtDevice.setGwtDeviceConnectionStatus(deviceConnection.getStatus().name());
-                        gwtDevice.setLastEventOn(deviceConnection.getModifiedOn());
-                        gwtDevice.setLastEventType(deviceConnection.getStatus().name());
-                    }
+                gwtDevice.setConnectionIp(d.getConnectionIp());
+                gwtDevice.setConnectionInterface(d.getConnectionInterface());
+
+                DeviceConnection deviceConnection = d.getConnection();
+                if (deviceConnection != null) {
+                    gwtDevice.setClientIp(deviceConnection.getClientIp());
+                    gwtDevice.setGwtDeviceConnectionStatus(deviceConnection.getStatus().name());
+                    gwtDevice.setLastEventOn(deviceConnection.getModifiedOn());
+                    gwtDevice.setLastEventType(deviceConnection.getStatus().name());
                 }
 
                 if (d.getLastEvent() != null) {

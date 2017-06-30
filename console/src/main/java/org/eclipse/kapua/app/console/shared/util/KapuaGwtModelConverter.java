@@ -98,8 +98,7 @@ public class KapuaGwtModelConverter {
     /**
      * Converts a {@link Role} into a {@link GwtRole} object for GWT usage.
      *
-     * @param role
-     *            The {@link Role} to convert.
+     * @param role The {@link Role} to convert.
      * @return The converted {@link GwtRole}.
      * @since 1.0.0
      */
@@ -122,10 +121,8 @@ public class KapuaGwtModelConverter {
     /**
      * Merges a {@link Role} and a {@link AccessRole} into a {@link GwtAccessRole} object for GWT usage.
      *
-     * @param role
-     *            The {@link Role} to merge.
-     * @param accessRole
-     *            The {@link AccessRole} to merge.
+     * @param role       The {@link Role} to merge.
+     * @param accessRole The {@link AccessRole} to merge.
      * @return The converted {@link GwtAccessRole}.
      * @since 1.0.0
      */
@@ -149,8 +146,7 @@ public class KapuaGwtModelConverter {
     /**
      * Converts a {@link AccessRole} into a {@link GwtAccessRole} object for GWT usage.
      *
-     * @param accessRole
-     *            The {@link AccessRole} to convert.
+     * @param accessRole The {@link AccessRole} to convert.
      * @return The converted {@link GwtAccessRole}.
      * @since 1.0.0
      */
@@ -172,8 +168,7 @@ public class KapuaGwtModelConverter {
     /**
      * Converts a {@link AccessPermission} into a {@link GwtAccessPermission} object for GWT usage.
      *
-     * @param accessPermission
-     *            The {@link AccessPermission} to convert.
+     * @param accessPermission The {@link AccessPermission} to convert.
      * @return The converted {@link GwtAccessPermission}.
      * @since 1.0.0
      */
@@ -215,8 +210,7 @@ public class KapuaGwtModelConverter {
     /**
      * Converts a {@link AccessInfo} into a {@link GwtAccessInfo} object for GWT usage.
      *
-     * @param accessInfo
-     *            The {@link AccessInfo} to convert.
+     * @param accessInfo The {@link AccessInfo} to convert.
      * @return The converted {@link GwtAccessInfo}.
      * @since 1.0.0
      */
@@ -236,8 +230,7 @@ public class KapuaGwtModelConverter {
     /**
      * Converts a {@link RolePermission} into a {@link GwtRolePermission} object for GWT usage.
      *
-     * @param rolePermission
-     *            The {@link RolePermission} to convert
+     * @param rolePermission The {@link RolePermission} to convert
      * @return The converted {@link GwtRolePermission}
      * @since 1.0.0
      */
@@ -267,8 +260,7 @@ public class KapuaGwtModelConverter {
     /**
      * Converts a {@link Permission} into a {@link GwtPermission} object for GWT usage.
      *
-     * @param permission
-     *            The {@link Permission} to convert.
+     * @param permission The {@link Permission} to convert.
      * @return The converted {@link GwtPermission}.
      * @since 1.0.0
      */
@@ -283,8 +275,7 @@ public class KapuaGwtModelConverter {
     /**
      * Converts a {@link Action} into a {@link GwtAction}
      *
-     * @param action
-     *            The {@link Action} to convert
+     * @param action The {@link Action} to convert
      * @return The converted {@link GwtAction}
      * @since 1.0.0
      */
@@ -316,8 +307,7 @@ public class KapuaGwtModelConverter {
     /**
      * Converts a {@link Group} into a {@link GwtGroup}
      *
-     * @param group
-     *            The {@link Group} to convert
+     * @param group The {@link Group} to convert
      * @return The converted {@link GwtGroup}
      * @since 1.0.0
      */
@@ -338,8 +328,7 @@ public class KapuaGwtModelConverter {
     /**
      * Converts a {@link String} domain into a {@link GwtDomain}
      *
-     * @param domain
-     *            The {@link String} domain to convert
+     * @param domain The {@link String} domain to convert
      * @return The converted {@link GwtDomain}
      * @since 1.0.0
      */
@@ -384,8 +373,7 @@ public class KapuaGwtModelConverter {
     /**
      * Converts a {@link String} action into a {@link GwtAction}
      *
-     * @param action
-     *            The {@link String} action to convert
+     * @param action The {@link String} action to convert
      * @return The converted {@link GwtAction}
      * @since 1.0.0
      */
@@ -396,8 +384,7 @@ public class KapuaGwtModelConverter {
     /**
      * Converts a {@link Action} action into a {@link GwtAction}
      *
-     * @param action
-     *            The {@link Action} action to convert
+     * @param action The {@link Action} action to convert
      * @return The converted {@link GwtAction}
      * @since 1.0.0
      */
@@ -411,8 +398,7 @@ public class KapuaGwtModelConverter {
      * Example: 1 =&gt; AQ
      * </p>
      *
-     * @param kapuaId
-     *            The {@link KapuaId} to convert
+     * @param kapuaId The {@link KapuaId} to convert
      * @return The short id representation of the {@link KapuaId}
      * @since 1.0.0
      */
@@ -429,8 +415,7 @@ public class KapuaGwtModelConverter {
     /**
      * Converts a {@link Account} into a {@link GwtAccount} for GWT usage.
      *
-     * @param account
-     *            The {@link Account} to convert.
+     * @param account The {@link Account} to convert.
      * @return The converted {@link GwtAccount}
      * @since 1.0.0
      */
@@ -464,8 +449,7 @@ public class KapuaGwtModelConverter {
     /**
      * Converts a {@link Organization} into a {@link GwtOrganization} for GWT usage.
      *
-     * @param organization
-     *            The {@link Organization} to convert.
+     * @param organization The {@link Organization} to convert.
      * @return The converted {@link GwtOrganization}.
      * @since 1.0.0
      */
@@ -491,8 +475,7 @@ public class KapuaGwtModelConverter {
     /**
      * Converts a {@link User} into a {@link GwtUser} for GWT usage.
      *
-     * @param user
-     *            The {@link User} to convert.
+     * @param user The {@link User} to convert.
      * @return The converted {@link GwtUser}
      * @since 1.0.0
      */
@@ -558,11 +541,12 @@ public class KapuaGwtModelConverter {
         }
 
         // Device connection
+        gwtDevice.setConnectionIp(device.getConnectionIp());
+        gwtDevice.setConnectionInterface(device.getConnectionInterface());
         if (device.getConnection() != null) {
             DeviceConnection connection = device.getConnection();
-
+            gwtDevice.setClientIp(connection.getClientIp());
             gwtDevice.setGwtDeviceConnectionStatus(connection.getStatus().toString());
-            gwtDevice.setConnectionIp(connection.getClientIp());
             gwtDevice.setDeviceUserId(connection.getUserId().toCompactId());
         }
         return gwtDevice;
@@ -624,7 +608,7 @@ public class KapuaGwtModelConverter {
     public static GwtTopic convertToTopic(ChannelInfo channelInfo) {
         return new GwtTopic(channelInfo.getName(), channelInfo.getName(), channelInfo.getName(), channelInfo.getLastMessageOn());
     }
-    
+
     public static GwtDatastoreAsset convertToAssets(ChannelInfo channelInfo) {
         return new GwtDatastoreAsset(channelInfo.getName().substring(6), channelInfo.getName(), channelInfo.getName(), channelInfo.getLastMessageOn());
     }
@@ -639,10 +623,8 @@ public class KapuaGwtModelConverter {
     /**
      * Utility method to convert commons properties of {@link KapuaUpdatableEntity} object to the GWT matching {@link GwtUpdatableEntityModel} object
      *
-     * @param kapuaEntity
-     *            The {@link KapuaUpdatableEntity} from which to copy values
-     * @param gwtEntity
-     *            The {@link GwtUpdatableEntityModel} into which copy values
+     * @param kapuaEntity The {@link KapuaUpdatableEntity} from which to copy values
+     * @param gwtEntity   The {@link GwtUpdatableEntityModel} into which copy values
      * @since 1.0.0
      */
     private static void convertEntity(KapuaUpdatableEntity kapuaEntity, GwtUpdatableEntityModel gwtEntity) {
@@ -660,10 +642,8 @@ public class KapuaGwtModelConverter {
     /**
      * Utility method to convert commons properties of {@link KapuaEntity} object to the GWT matching {@link GwtEntityModel} object
      *
-     * @param kapuaEntity
-     *            The {@link KapuaEntity} from which to copy values
-     * @param gwtEntity
-     *            The {@link GwtEntityModel} into which copy values
+     * @param kapuaEntity The {@link KapuaEntity} from which to copy values
+     * @param gwtEntity   The {@link GwtEntityModel} into which copy values
      * @since 1.0.0
      */
     private static void convertEntity(KapuaEntity kapuaEntity, GwtEntityModel gwtEntity) {

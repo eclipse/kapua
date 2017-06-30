@@ -56,6 +56,8 @@ public class DeviceDAO extends ServiceDAO {
         device.setJvmVersion(deviceCreator.getJvmVersion());
         device.setOsgiFrameworkVersion(deviceCreator.getOsgiFrameworkVersion());
         device.setApplicationFrameworkVersion(deviceCreator.getApplicationFrameworkVersion());
+        device.setConnectionInterface(deviceCreator.getConnectionInterface());
+        device.setConnectionIp(deviceCreator.getConnectionIp());
         device.setApplicationIdentifiers(deviceCreator.getApplicationIdentifiers());
         device.setAcceptEncoding(deviceCreator.getAcceptEncoding());
         device.setCustomAttribute1(deviceCreator.getCustomAttribute1());

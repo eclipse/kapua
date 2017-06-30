@@ -307,6 +307,14 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
         set("osgiVersion", osgiFrameworkVersion);
     }
 
+    public String getClientIp() {
+        return (String) get("clientIp");
+    }
+
+    public void setClientIp(String clientIp) {
+        set("clientIp", clientIp);
+    }
+
     public String getConnectionInterface() {
         return (String) get("connectionInterface");
     }

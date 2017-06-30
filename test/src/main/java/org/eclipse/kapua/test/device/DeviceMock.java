@@ -288,6 +288,26 @@ public class DeviceMock implements Device {
     }
 
     @Override
+    public String getConnectionInterface() {
+        return null;
+    }
+
+    @Override
+    public void setConnectionInterface(String connectionInterface) {
+
+    }
+
+    @Override
+    public String getConnectionIp() {
+        return null;
+    }
+
+    @Override
+    public void setConnectionIp(String connectionIp) {
+
+    }
+
+    @Override
     public String getApplicationIdentifiers() {
         // TODO Auto-generated method stub
         return null;
