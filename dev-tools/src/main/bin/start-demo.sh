@@ -26,7 +26,7 @@ mvn clean install -P deploy -D skipTests
 
 cd dev-tools/src/main/vagrant
 
-vagrant ssh -c "nohup /usr/local/kapua/apache-activemq-${ACTIVEMQ_VERSION}/bin/activemq start xbean:/usr/local/kapua/apache-activemq-${ACTIVEMQ_VERSION}/conf/activemq.xml >/dev/null 2>&1 &
+vagrant ssh demo -c "nohup /usr/local/kapua/apache-activemq-${ACTIVEMQ_VERSION}/bin/activemq start xbean:/usr/local/kapua/apache-activemq-${ACTIVEMQ_VERSION}/conf/activemq.xml >/dev/null 2>&1 &
 nohup /usr/local/kapua/apache-tomcat-${TOMCAT_VERSION}/bin/startup.sh >/dev/null 2>&1 &
 ps -ef | grep active
 ps -ef | grep tomcat"

@@ -116,7 +116,7 @@ Password:        kapua
 
 #### Kapua Web Console
 ```
-Url:      http://192.168.33.10:8080/console/
+Url:      http://192.168.33.10:8080/admin/
 Username: kapua-sys
 Password: kapua-password
 ```
@@ -149,8 +149,8 @@ If you choose to start it again instead of recreating, you should enter the Vagr
 ```
 $ cd $KAPUA_GITHUB_HOME_DIR
 $ cd dev-tools/src/main/vagrant
-$ vagrant up
-$ vagrant ssh
+$ vagrant up demo
+$ vagrant ssh demo
 $ java -cp /usr/local/h2database/h2database-${H2DB_VERSION}/h2*.jar org.h2.tools.Server -baseDir /home/vagrant/H2/kapua -webAllowOthers -tcpAllowOthers -tcpPort 3306 &
 ```
 
@@ -158,7 +158,7 @@ $ java -cp /usr/local/h2database/h2database-${H2DB_VERSION}/h2*.jar org.h2.tools
 
 As for the development machine, once the demo machine has been created (or started manually as described in the previous chapter), you can enter the machine by executing the command:
 ```
-$ vagrant ssh
+$ vagrant ssh demo
 ```
 
 The fresh machine has both the ActiveMQ and Tomcat installed, but please don't use them, it's just due to the reuse of the base-box.
@@ -170,7 +170,7 @@ $ mvn clean install -Pdeploy -DskipTests
 
 Once the full build is done, the machine has the broker with all the proper library and configuration installed in the directory
 ```
-$ /usr/local/kapua/activemq/apache-activemq-${ACTIVEMQ_VERSION}
+$ /usr/local/kapua/apache-activemq-${ACTIVEMQ_VERSION}
 ```
 
 To start the broker type:
@@ -182,11 +182,13 @@ To stop it follow the instructions for the develop machine.
 
 The api and console are properly installed in a Tomcat container in the directory
 ```
-$ /usr/local/kapua/tomcat/apache-tomcat-${TOMCAT_VERSION}/webapps
+$ /usr/local/kapua/apache-tomcat-${TOMCAT_VERSION}/webapps
 ```
 
 To start and stop the Tomcat please use the standard scripts under the bin directory of the Tomcat installation.
-
+```
+$ bin/startup.sh
+```
 
 ## Helpful Vagrant commands
 You can check if there's already a Kapua Dev-Box installed with the command:
