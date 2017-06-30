@@ -18,7 +18,6 @@ import javax.inject.Inject;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.core.Container;
-import org.eclipse.kapua.commons.locator.ComponentLocator;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.service.authorization.domain.Domain;
@@ -86,7 +85,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
         this.scenario = scenario;
 
         // Retrieve the entity manager factory
-        AuthorizationEntityManagerFactory factory = ComponentLocator.getInstance().getComponent(AuthorizationEntityManagerFactory.class);
+        AuthorizationEntityManagerFactory factory = container.getComponentLocator().getComponent(AuthorizationEntityManagerFactory.class);
 
         // Instantiate all the services and factories that are required by the tests
         domainService = new DomainServiceImpl(factory);

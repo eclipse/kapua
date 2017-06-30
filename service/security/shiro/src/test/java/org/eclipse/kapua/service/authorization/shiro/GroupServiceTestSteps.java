@@ -20,7 +20,6 @@ import javax.inject.Inject;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.core.Container;
-import org.eclipse.kapua.commons.locator.ComponentLocator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -80,7 +79,7 @@ public class GroupServiceTestSteps extends AbstractAuthorizationServiceTest {
         commonData.exceptionCaught = false;
 
         // Retrieve the entity manager factory
-        AuthorizationEntityManagerFactory factory = ComponentLocator.getInstance().getComponent(AuthorizationEntityManagerFactory.class);
+        AuthorizationEntityManagerFactory factory = container.getComponentLocator().getComponent(AuthorizationEntityManagerFactory.class);
 
         // Instantiate all the services and factories that are required by the tests
         groupService = new GroupServiceImpl(factory);

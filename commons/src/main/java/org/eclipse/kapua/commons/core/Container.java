@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @since 0.3.0
  */
-public abstract class Container {
+public abstract class Container implements ContainerContext {
 
     private final static Logger logger = LoggerFactory.getLogger(Container.class);
 
@@ -35,13 +35,14 @@ public abstract class Container {
 
     public Container(ContainerConfig configuration) {
         this.configuration = configuration;
+        // Init the locator
         ComponentLocator.getInstance();
     }
 
     public final void startup() {
         logger.info("Startup...");
-        if (ComponentLocator.getInstance().hasBinding(ServiceBundleProvider.class)) {
-            ServiceBundleProvider bundleProvider = ComponentLocator.getInstance().getComponent(ServiceBundleProvider.class);
+        if (getComponentLocator().hasBinding(ServiceBundleProvider.class)) {
+            ServiceBundleProvider bundleProvider = getComponentLocator().getComponent(ServiceBundleProvider.class);
             for(ServiceBundle service:bundleProvider.getBundles()) {
                 service.start();
             }
@@ -49,20 +50,24 @@ public abstract class Container {
         
         List<LifecyleListener> listeners = configuration.getImplementationsOf(LifecyleListener.class);
         for(LifecyleListener listener:listeners) {
-            listener.onStartup();
+            listener.onStartup(this);
         }
         logger.info("Startup...DONE");
+    }
+
+    public final ComponentLocator getComponentLocator() {
+        return ComponentLocator.getInstance();
     }
 
     public final void shutdown() {
         logger.info("Shutdown...");
         List<LifecyleListener> listeners = configuration.getImplementationsOf(LifecyleListener.class);
         for(int i = listeners.size() - 1; i >= 0; i--) {
-            listeners.get(i).onShutdown();
+            listeners.get(i).onShutdown(this);
         }
         
-        if (ComponentLocator.getInstance().hasBinding(ServiceBundleProvider.class)) {
-            ServiceBundleProvider bundleProvider = ComponentLocator.getInstance().getComponent(ServiceBundleProvider.class);
+        if (getComponentLocator().hasBinding(ServiceBundleProvider.class)) {
+            ServiceBundleProvider bundleProvider = getComponentLocator().getComponent(ServiceBundleProvider.class);
             for (ServiceBundle service : bundleProvider.getBundles()) {
                 service.stop();
             }

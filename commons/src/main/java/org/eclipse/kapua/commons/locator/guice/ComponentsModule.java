@@ -22,7 +22,7 @@ import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.core.ComponentProvider;
 import org.eclipse.kapua.locator.inject.Interceptor;
 import org.eclipse.kapua.locator.inject.LocatorConfig;
-import org.eclipse.kapua.locator.inject.ManagedObjectPool;
+import org.eclipse.kapua.locator.inject.MessageListenersPool;
 import org.eclipse.kapua.locator.inject.MultiService;
 import org.eclipse.kapua.locator.inject.ObjectInspector;
 import org.eclipse.kapua.locator.inject.Service;
@@ -31,12 +31,8 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.PrivateModule;
 import com.google.inject.Singleton;
-import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.multibindings.Multibinder;
-import com.google.inject.spi.InjectionListener;
-import com.google.inject.spi.TypeEncounter;
-import com.google.inject.spi.TypeListener;
 
 /**
  * @since 0.3.0
@@ -46,12 +42,10 @@ public class ComponentsModule extends PrivateModule {
 
     private static final Logger logger = LoggerFactory.getLogger(ComponentsModule.class);
     
-    private ManagedObjectPool managedObjectPool;
     private LocatorConfig locatorConfig;
     Map<Class<?>, Multibinder<Class<?>>> multibinders;
 
-    public ComponentsModule(ManagedObjectPool managedObjectPool, LocatorConfig locatorConfig) {
-        this.managedObjectPool = managedObjectPool;
+    public ComponentsModule(MessageListenersPool messageComponentsPool, LocatorConfig locatorConfig) {
         this.locatorConfig = locatorConfig;
     }
     
@@ -111,23 +105,6 @@ public class ComponentsModule extends PrivateModule {
                     bind(resolver.getImplementationClass()).in(Singleton.class);
                 }
             }
-
-            // When a new insance object is created by the injector the  
-            // following listener is invoked
-            this.bindListener(Matchers.any(), new TypeListener() {
-                
-                @Override
-                public <I> void hear(TypeLiteral<I> typeLiteral, TypeEncounter<I> typeEncounter) {
-                    typeEncounter.register(new InjectionListener<I>() {
-
-                        @Override
-                        public void afterInjection(Object i) {
-                            managedObjectPool.add(i);
-                        }
-                    });
-                }
-            });
-
         } catch (Exception e) {
             logger.error("Exception configuring module", e);
             throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, e, "Cannot load " + locatorConfig.getURL());

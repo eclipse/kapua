@@ -19,7 +19,7 @@ import java.util.List;
  *  
  * @since 1.0
  */
-public interface ManagedObjectPool {
+public interface MessageListenersPool {
 
     public void add(Object object);
     public <T> List<T> getImplementationsOf(Class<T> clazz);

@@ -26,7 +26,6 @@ import java.util.Set;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
-import org.eclipse.kapua.commons.locator.ComponentLocator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
@@ -150,7 +149,7 @@ public class UserServiceSteps extends AbstractKapuaSteps {
         new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
 
         // Inject actual implementation of UserService
-            UserEntityManagerFactory userEntityManagerFactory = ComponentLocator.getInstance().getComponent(UserEntityManagerFactory.class);
+        UserEntityManagerFactory userEntityManagerFactory = container.getComponentLocator().getComponent(UserEntityManagerFactory.class);
         userService = new UserServiceImpl(userEntityManagerFactory);
         userFactory = new UserFactoryImpl();
         MockedLocator mockLocator = (MockedLocator) locator;
@@ -184,7 +183,7 @@ public class UserServiceSteps extends AbstractKapuaSteps {
     public void afterScenario() throws Exception {
 
         // Drop User Service tables
-        scriptSession(ComponentLocator.getInstance().getComponent(UserEntityManagerFactory.class), DROP_FILTER);
+        scriptSession(container.getComponentLocator().getComponent(UserEntityManagerFactory.class), DROP_FILTER);
 
         // Drop system configuration tables
         KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
