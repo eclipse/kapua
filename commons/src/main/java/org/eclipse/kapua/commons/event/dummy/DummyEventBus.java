@@ -19,16 +19,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.core.ComponentProvider;
 import org.eclipse.kapua.commons.event.EventBus;
 import org.eclipse.kapua.commons.event.EventListener;
 import org.eclipse.kapua.commons.event.EventListenerImpl;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.inject.MessageListenersPool;
 import org.eclipse.kapua.locator.inject.ObjectInspector;
 import org.eclipse.kapua.locator.inject.PoolListener;
@@ -50,14 +52,13 @@ public class DummyEventBus implements EventBus {
     
     private ObjectInspector objInspector;
     private MessageListenersPool messageListenersPool;
-    private PoolListener poolListener;    
+    private PoolListener poolListener;
     private boolean isStarted;
 
     private Map<Class<?>, Object> availableServices;
     private Map<KapuaEventListener, EventListener> eventListeners;
-    private BlockingQueue<KapuaEvent> eventQueue;
-    private ExecutorService threadPool;
-    private Thread mainLoop;
+    private BlockingQueue<Runnable> eventQueue;
+    private ThreadPoolExecutor threadPool;
 
     @Inject public DummyEventBus(MessageListenersPool messageListenersPool, ObjectInspector objInspector) {
         
@@ -69,7 +70,7 @@ public class DummyEventBus implements EventBus {
         
         this.isStarted = false;
         this.eventListeners = new HashMap<KapuaEventListener, EventListener>();
-        this.eventQueue = new ArrayBlockingQueue<KapuaEvent>(1000); // Fixed capacity
+        this.eventQueue = new ArrayBlockingQueue<Runnable>(1000); // Fixed capacity
         
         // The plugin wants to be notified when a new object is added to the pool.
         // If the object is an event listener it will then manage to plug it into
@@ -92,7 +93,7 @@ public class DummyEventBus implements EventBus {
     @Override
     public void publish(KapuaEvent event) {
         try {
-            eventQueue.put(event);
+            eventQueue.put(new KapuaEventRunnable(event));
         } catch (InterruptedException e) {
             logger.error("Message publish interrupted: {}", e.getMessage());
         }
@@ -130,50 +131,9 @@ public class DummyEventBus implements EventBus {
             subscribe(listener);
         }
         
-        threadPool = Executors.newFixedThreadPool(10);
+        threadPool = new ThreadPoolExecutor(10, 20, 0, TimeUnit.SECONDS, eventQueue);
         
         setStarted(true);
-        
-        mainLoop = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                while (isStarted()) {
-                    
-                    KapuaEvent event = null;
-                    
-                    try {
-                        event = eventQueue.poll(2, TimeUnit.SECONDS);
-                    } catch (InterruptedException e) {
-                        logger.error("Interrupted while pulling from queue: {}", e.getMessage());
-                    }
-                    
-                    // If no events to dispatch return to poll the queue
-                    if (event == null) {
-                        continue;
-                    }
-                    
-                    // Dispatch events to the listeners
-                    final KapuaEvent theEvent = event;
-                    threadPool.execute(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            Set<KapuaEventListener> kapuaEventListeners = eventListeners.keySet();
-                            for(KapuaEventListener kapuaEventListener:kapuaEventListeners) {
-                                try {
-                                    eventListeners.get(kapuaEventListener).onKapuaEvent(theEvent);
-                                } catch (Throwable t) {
-                                    logger.error("Can't notify event to {}", kapuaEventListener);
-                                }
-                            }
-                        }
-                        
-                    });
-                }
-            }
-            
-        });
         
         // Uncomment this to actually start the event bus
         //mainLoop.start();
@@ -181,25 +141,56 @@ public class DummyEventBus implements EventBus {
         logger.info("Starting...DONE");
     }
 
+    private class KapuaEventRunnable implements Runnable {
+
+        private KapuaEvent event;
+
+        public KapuaEventRunnable(KapuaEvent event) {
+            this.event = event;
+        }
+
+        public void run() {
+            try {
+                KapuaSecurityUtils.doPrivileged(
+                        new Callable<Void>() {
+
+                            @Override
+                            public Void call() throws Exception {
+                                // Dispatch events to the listeners
+                                Set<KapuaEventListener> kapuaEventListeners = eventListeners.keySet();
+                                for (KapuaEventListener kapuaEventListener : kapuaEventListeners) {
+                                    try {
+                                        eventListeners.get(kapuaEventListener).onKapuaEvent(event);
+                                    } catch (Throwable t) {
+                                        logger.error("Can't notify event to {}", kapuaEventListener);
+                                }
+                            }
+                                return (Void) null;
+                            }
+                        });
+            } catch (KapuaException e) {
+                logger.error("Processing event error: {}", e.getMessage(), e);
+            }
+
+        }
+
+    }
+
     public void stop() {
         logger.info("Stopping...");
-        
-        setStarted(false);
-        
         try {
-            mainLoop.join();
-        } catch (InterruptedException e) {
-            logger.error("Interrupted while waiting for main loop termination: {}", e.getMessage());
-        }
-        
-        try {
-            threadPool.shutdown();
-            threadPool.awaitTermination(30, TimeUnit.SECONDS);
+            if (threadPool != null) {
+                threadPool.shutdown();
+                threadPool.awaitTermination(30, TimeUnit.SECONDS);
+            }
         } catch (InterruptedException e) {
             logger.error("Interrupted while waiting for thread pool termination: {}", e.getMessage());
-            threadPool.shutdownNow();
+            if (threadPool != null) {
+                threadPool.shutdownNow();
+            }
         }       
-        
+        threadPool = null;
+        setStarted(false);
         logger.info("Stopping...DONE");
     }
     
