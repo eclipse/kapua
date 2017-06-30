@@ -20,4 +20,18 @@ import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
  */
 public interface DeviceConnectionOptionPredicates extends KapuaUpdatableEntityPredicates {
 
+    /**
+     * Credentials mode
+     */
+    public static final String CREDENTIALS_MODE = "credentialsMode";
+
+    /**
+     * Reserved user identifier
+     */
+    public static final String RESERVED_USER_ID = "reservedUserId";
+
+    /**
+     * Last user identifier
+     */
+    public static final String USER_ID = "userId";
 }

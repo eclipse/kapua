@@ -215,6 +215,7 @@ public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
                 connectionCreator.setClientIp(connItem.getClientIp());
                 connectionCreator.setServerIp(connItem.getServerIp());
                 connectionCreator.setProtocol(connItem.getProtocol());
+                connectionCreator.setAllowUserChange(false);
                 connection = deviceConnectionService.create(connectionCreator);
                 connectionId = connection.getId();
             }
@@ -303,6 +304,7 @@ public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
         assertEquals(connectionCreator.getUserId(), connection.getUserId());
         assertEquals(connectionCreator.getUserCouplingMode(), connection.getUserCouplingMode());
         assertEquals(connectionCreator.getReservedUserId(), connection.getReservedUserId());
+        assertEquals(connectionCreator.getAllowUserChange(), connection.getAllowUserChange());
         assertEquals(connectionCreator.getClientIp(), connection.getClientIp());
         assertEquals(connectionCreator.getServerIp(), connection.getServerIp());
         assertEquals(connectionCreator.getProtocol(), connection.getProtocol());
@@ -484,6 +486,7 @@ public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
         tmpCreator.setClientIp(CLIENT_IP);
         tmpCreator.setServerIp(SERVER_IP);
         tmpCreator.setProtocol("tcp");
+        tmpCreator.setAllowUserChange(false);
 
         return tmpCreator;
     }
