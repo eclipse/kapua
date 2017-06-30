@@ -143,6 +143,9 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
                         logger.warn("Failed to auto-create account", e1);
                         throw e; // we throw the original error instead
                     }
+                } else {
+                    // it is an exception we can't handle by auto-account-creation
+                    throw e;
                 }
             }
 
@@ -196,13 +199,13 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         return gwtSession;
     }
 
-    private GwtSession establishSession()
-            throws KapuaException {
+    private GwtSession establishSession() throws KapuaException {
         KapuaLocator locator = KapuaLocator.getInstance();
 
         //
         // Get info from session
         KapuaSession kapuaSession = KapuaSecurityUtils.getSession();
+        logger.debug("Kapua session: {}", kapuaSession);
 
         //
         // Get user info
