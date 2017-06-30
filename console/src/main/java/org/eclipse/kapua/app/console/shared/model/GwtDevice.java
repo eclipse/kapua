@@ -48,34 +48,6 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
         }
     }
 
-    public enum GwtConnectionUserCouplingMode implements IsSerializable {
-        LOOSE("Unbound"), //
-        STRICT("Device-bound"), //
-        INHERITED("Account Default");
-
-        private final String label;
-
-        GwtConnectionUserCouplingMode(String label) {
-            this.label = label;
-        }
-
-        public String getLabel() {
-            return label;
-        }
-
-        public static GwtConnectionUserCouplingMode getEnumFromLabel(String label) {
-            GwtConnectionUserCouplingMode gdct = null;
-
-            for (GwtConnectionUserCouplingMode e : GwtConnectionUserCouplingMode.values()) {
-                if (e.getLabel().equals(label)) {
-                    gdct = e;
-                }
-            }
-
-            return gdct;
-        }
-    }
-
     @Override
     @SuppressWarnings({ "unchecked" })
     public <X> X get(String property) {
@@ -91,8 +63,6 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
             } else {
                 return null;
             }
-        } else if ("credentialsTightEnum".equals(property)) {
-            return (X) GwtConnectionUserCouplingMode.valueOf(getCredentialsTight());
         } else if ("deviceConnectionStatusEnum".equals(property)) {
             return (X) GwtDeviceConnectionStatus.valueOf(getGwtDeviceConnectionStatus());
         } else {
@@ -516,26 +486,6 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     public void setCustomAttribute5(String customAttribute5) {
         set("customAttribute5", customAttribute5);
     }
-
-    public String getCredentialsTight() {
-        return (String) get("credentialsTight");
-    }
-
-    public GwtConnectionUserCouplingMode getCredentialTightEnum() {
-        return get("credentialsTightEnum");
-    }
-
-    public void setCredentialsTight(String credentialsTight) {
-        set("credentialsTight", credentialsTight);
-    }
-
-    // public boolean getCredentialsAllowChange() {
-    // return get("credentialsAllowChange");
-    // }
-    //
-    // public void setCredentialsAllowChange(boolean credentialsAllowChange) {
-    // set("credentialsAllowChange", credentialsAllowChange);
-    // }
 
     public boolean isOnline() {
         return "CONNECTED".equals(getGwtDeviceConnectionStatus());
