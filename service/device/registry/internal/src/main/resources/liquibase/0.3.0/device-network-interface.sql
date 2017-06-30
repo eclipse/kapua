@@ -15,6 +15,6 @@
 -- changeset device_network_interface:1
 
 ALTER TABLE dvc_device
-    ADD          connection_interface        VARCHAR(64);
+    ADD          connection_interface        VARCHAR(255);
 ALTER TABLE dvc_device
     ADD          connection_ip               VARCHAR(64);
