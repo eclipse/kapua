@@ -11,18 +11,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro.registration;
 
-import static org.eclipse.kapua.service.authentication.shiro.registration.SimpleRegistrationProcessor.Settings.loadSimpleSettings;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.ServiceLoader;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.security.registration.RegistrationProcessor;
+import org.eclipse.kapua.security.registration.RegistrationProcessorProvider;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.eclipse.kapua.service.authentication.registration.RegistrationService;
 import org.eclipse.kapua.service.authentication.shiro.utils.JwtProcessors;
-import org.eclipse.kapua.service.authorization.shiro.setting.KapuaAuthorizationSetting;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.sso.jwt.JwtProcessor;
 import org.jose4j.jwt.consumer.JwtContext;
@@ -37,14 +37,21 @@ public class RegistrationServiceImpl implements RegistrationService, AutoCloseab
     public RegistrationServiceImpl() {
         jwtProcessor = JwtProcessors.createDefault();
 
-        loadSimpleSettings(KapuaAuthorizationSetting.getInstance())
-                .ifPresent(settings -> processors.add(new SimpleRegistrationProcessor("preferred_username", settings)));
+        for (RegistrationProcessorProvider provider : ServiceLoader.load(RegistrationProcessorProvider.class)) {
+            processors.addAll(provider.createAll());
+        }
     }
 
     @Override
     public void close() throws Exception {
         if (jwtProcessor != null) {
             jwtProcessor.close();
+        }
+
+        // FIXME: use Suppressed
+
+        for (final RegistrationProcessor processor : processors) {
+            processor.close();
         }
     }
 

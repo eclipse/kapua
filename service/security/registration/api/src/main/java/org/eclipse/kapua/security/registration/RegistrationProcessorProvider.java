@@ -9,14 +9,11 @@
  * Contributors:
  *     Red Hat Inc - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.authentication.shiro.registration;
+package org.eclipse.kapua.security.registration;
 
-import java.util.Optional;
+import java.util.Collection;
 
-import org.eclipse.kapua.service.user.User;
-import org.jose4j.jwt.consumer.JwtContext;
+public interface RegistrationProcessorProvider {
 
-public interface RegistrationProcessor {
-
-    public Optional<User> createUser(JwtContext context) throws Exception;
+    public Collection<? extends RegistrationProcessor> createAll();
 }

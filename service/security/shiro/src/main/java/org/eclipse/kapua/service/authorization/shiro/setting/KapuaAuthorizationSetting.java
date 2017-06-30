@@ -15,9 +15,6 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
 /**
  * Authorization setting implementation.
- *
- * @since 1.0
- *
  */
 public class KapuaAuthorizationSetting extends AbstractKapuaSetting<KapuaAuthorizationSettingKeys> {
 
