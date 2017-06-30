@@ -14,7 +14,9 @@ package org.eclipse.kapua.locator.guice.service;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import org.aopalliance.intercept.MethodInterceptor;
@@ -24,20 +26,16 @@ import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.locator.guice.inject.SyntheticMethodMatcher;
 import org.eclipse.kapua.locator.inject.Interceptor;
 import org.eclipse.kapua.locator.inject.LocatorConfig;
-import org.eclipse.kapua.locator.inject.PoolListener;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.event.KapuaEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
-import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matcher;
 import com.google.inject.matcher.Matchers;
-import com.google.inject.spi.InjectionListener;
-import com.google.inject.spi.TypeEncounter;
-import com.google.inject.spi.TypeListener;
 
 public class KapuaModule extends AbstractModule {
 
@@ -49,18 +47,15 @@ public class KapuaModule extends AbstractModule {
     private static final String SERVICE_RESOURCE = "locator.xml";
 
     private LocatorConfig locatorConfig;
-    private PoolListener injectorListener;
+    private List<Class<? extends KapuaService>> eventListeners;
     
     public KapuaModule(LocatorConfig locatorConfig) {
         this.locatorConfig = locatorConfig;
+        eventListeners = new ArrayList<>();
     }
-    
-    public void setInjectorListener(PoolListener injectorListener) {
-        this.injectorListener = injectorListener;
-    }
-    
-    private PoolListener getInjectorListener() {
-        return this.injectorListener;
+
+    public List<Class<? extends KapuaService>> getEventListeners() {
+        return eventListeners;
     }
    
     @Override
@@ -95,6 +90,13 @@ public class KapuaModule extends AbstractModule {
                             // Guice when an interceptor binding has to be applied later on at runtime.
                             bind(resolver.getImplementationClass()).in(Singleton.class);
                             //
+                            //////
+                            
+                            // Create a list of all the services which also implements the KapuaEventListener
+                            // interface
+                            if (KapuaEventListener.class.isAssignableFrom(resolver.getServiceClass())) {
+                                eventListeners.add(resolver.getServiceClass());
+                            }
                             //////
                             
                             logger.info("Bind Kapua service {} to {}", kapuaObject, clazz);
@@ -148,26 +150,26 @@ public class KapuaModule extends AbstractModule {
             }
             
             
-            logger.info("Binding lifecycle listeners ..");
-            final KapuaModule thisModule = this;
-            
-            // When a new insance object is created by the injector the  
-            // following listener is invoked
-            if (this.getInjectorListener() != null) {
-                this.bindListener(Matchers.any(), new TypeListener() {
-                    
-                    @Override
-                    public <I> void hear(TypeLiteral<I> typeLiteral, TypeEncounter<I> typeEncounter) {
-                        typeEncounter.register(new InjectionListener<I>() {
-
-                            @Override
-                            public void afterInjection(Object i) {
-                                thisModule.getInjectorListener().onObjectAdded(i);
-                            }
-                        });
-                    }
-                });
-            }
+//            logger.info("Binding lifecycle listeners ..");
+//            final KapuaModule thisModule = this;
+//            
+//            // When a new insance object is created by the injector the  
+//            // following listener is invoked
+//            if (this.getInjectorListener() != null) {
+//                this.bindListener(Matchers.any(), new TypeListener() {
+//                    
+//                    @Override
+//                    public <I> void hear(TypeLiteral<I> typeLiteral, TypeEncounter<I> typeEncounter) {
+//                        typeEncounter.register(new InjectionListener<I>() {
+//
+//                            @Override
+//                            public void afterInjection(Object i) {
+//                                thisModule.getInjectorListener().onObjectAdded(i);
+//                            }
+//                        });
+//                    }
+//                });
+//            }
             
             logger.trace("Binding completed");
 

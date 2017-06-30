@@ -22,7 +22,7 @@ import org.eclipse.kapua.commons.util.ResourceUtils;
 import org.eclipse.kapua.locator.guice.inject.InjectorRegistry;
 import org.eclipse.kapua.locator.inject.LocatorConfig;
 import org.eclipse.kapua.locator.inject.LocatorConfigurationException;
-import org.eclipse.kapua.locator.inject.ManagedObjectPool;
+import org.eclipse.kapua.locator.inject.MessageListenersPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,14 +51,14 @@ public class ComponentLocatorImpl extends ComponentLocator {
             
             Injector rootInjector = Guice.createInjector(new PrivateModule() {
                 
-                private ManagedObjectPoolImpl managedObjectPool;
+                private MessageListenersPoolImpl messageListenersPool;
 
                 @Override
                 protected void configure() {
                     
-                    managedObjectPool = new ManagedObjectPoolImpl(); 
-                    bind(ManagedObjectPool.class).toInstance(managedObjectPool);
-                    expose(ManagedObjectPool.class);
+                    messageListenersPool = new MessageListenersPoolImpl(); 
+                    bind(MessageListenersPool.class).toInstance(messageListenersPool);
+                    expose(MessageListenersPool.class);
                 }
                 
             });
@@ -76,8 +76,8 @@ public class ComponentLocatorImpl extends ComponentLocator {
             LocatorConfig locatorConfig;
             locatorConfig = LocatorConfig.fromURL(locatorConfigURL);
             
-            ManagedObjectPool managedObjectPool = rootInjector.getInstance(ManagedObjectPool.class);
-            Injector injector = rootInjector.createChildInjector(new ComponentsModule(managedObjectPool, locatorConfig));
+            MessageListenersPool msgComponentsPool = rootInjector.getInstance(MessageListenersPool.class);
+            Injector injector = rootInjector.createChildInjector(new ComponentsModule(msgComponentsPool, locatorConfig));
             InjectorRegistry.add(COMMONS_INJECTOR_NAME, injector);
             logger.info("Created injector {}", COMMONS_INJECTOR_NAME);
         } catch (LocatorConfigurationException e) {

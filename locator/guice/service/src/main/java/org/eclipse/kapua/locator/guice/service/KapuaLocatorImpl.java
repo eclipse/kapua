@@ -24,8 +24,7 @@ import org.eclipse.kapua.locator.KapuaLocatorErrorCodes;
 import org.eclipse.kapua.locator.guice.inject.InjectorRegistry;
 import org.eclipse.kapua.locator.inject.LocatorConfig;
 import org.eclipse.kapua.locator.inject.LocatorConfigurationException;
-import org.eclipse.kapua.locator.inject.ManagedObjectPool;
-import org.eclipse.kapua.locator.inject.PoolListener;
+import org.eclipse.kapua.locator.inject.MessageListenersPool;
 import org.eclipse.kapua.locator.inject.ResourceUtils;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.service.KapuaService;
@@ -75,22 +74,11 @@ public class KapuaLocatorImpl extends KapuaLocator {
                     throw new KapuaRuntimeException(KapuaLocatorErrorCodes.INVALID_CONFIGURATION, e, "Cannot load from URL " + locatorConfigURL);
                 }
                 
-                // Add a listener to be notified when the injector creates a new object instance
-                // The listener will be notified when a new service instance get created
-                final ManagedObjectPool serviceInstances = parentInj.getInstance(ManagedObjectPool.class);
                 KapuaModule module = new KapuaModule(locatorConfig);
-                module.setInjectorListener(new PoolListener() {
-
-                    @Override
-                    public void onObjectAdded(Object object) {
-                        // Add the new object to the instance handler
-                        serviceInstances.add(object);
-                    }
-                    
-                });
-                
                 Injector childInj = parentInj.createChildInjector(module);
                 InjectorRegistry.add(KAPUA_INJECTOR, childInj);
+                
+                subscribeEventListeners(module);
             }
         }
         catch (Throwable e) {
@@ -147,4 +135,19 @@ public class KapuaLocatorImpl extends KapuaLocator {
         return servicesList;
     }
 
+    /**
+     * Gets one instance of each Kapua service that also implements the KapuaEventListener
+     * interface. These services have to be instantiated (at least one instance is needed) 
+     * and bound to the event bus. This prevents the case where the services does not listen
+     * to events due to lazy initialization.
+     */
+    private void subscribeEventListeners(KapuaModule module) {
+        Injector parentInj = InjectorRegistry.get(COMMONS_INJECTOR);
+        MessageListenersPool msgCmpPool = parentInj.getInstance(MessageListenersPool.class);
+        
+        List<Class<? extends KapuaService>> eventListeners = module.getEventListeners();
+        for (Class<? extends KapuaService> kapuaServiceClass:eventListeners) {
+            msgCmpPool.add(getService(kapuaServiceClass));
+        }       
+    }
 }

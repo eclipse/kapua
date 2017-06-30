@@ -14,7 +14,7 @@ package org.eclipse.kapua.commons.locator.guice;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.kapua.locator.inject.ManagedObjectPool;
+import org.eclipse.kapua.locator.inject.MessageListenersPool;
 import org.eclipse.kapua.locator.inject.PoolListener;
 
 
@@ -22,7 +22,7 @@ import org.eclipse.kapua.locator.inject.PoolListener;
  * @since 0.3.0
  *
  */
-public class ManagedObjectPoolImpl implements ManagedObjectPool {
+public class MessageListenersPoolImpl implements MessageListenersPool {
 
     private List<Object> instances = new ArrayList<Object>();
     private List<PoolListener> listeners = new ArrayList<PoolListener>();

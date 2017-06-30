@@ -29,7 +29,7 @@ import org.eclipse.kapua.commons.core.ComponentProvider;
 import org.eclipse.kapua.commons.event.EventBus;
 import org.eclipse.kapua.commons.event.EventListener;
 import org.eclipse.kapua.commons.event.EventListenerImpl;
-import org.eclipse.kapua.locator.inject.ManagedObjectPool;
+import org.eclipse.kapua.locator.inject.MessageListenersPool;
 import org.eclipse.kapua.locator.inject.ObjectInspector;
 import org.eclipse.kapua.locator.inject.PoolListener;
 import org.eclipse.kapua.locator.inject.Service;
@@ -49,7 +49,7 @@ public class DummyEventBus implements EventBus {
     private final static Logger logger = LoggerFactory.getLogger(DummyEventBus.class);
     
     private ObjectInspector objInspector;
-    private ManagedObjectPool managedObjects;
+    private MessageListenersPool messageListenersPool;
     private PoolListener poolListener;    
     private boolean isStarted;
 
@@ -59,13 +59,13 @@ public class DummyEventBus implements EventBus {
     private ExecutorService threadPool;
     private Thread mainLoop;
 
-    @Inject public DummyEventBus(ManagedObjectPool managedObjects, ObjectInspector objInspector) {
+    @Inject public DummyEventBus(MessageListenersPool messageListenersPool, ObjectInspector objInspector) {
         
         this.availableServices = new HashMap<Class<?>, Object>();
         availableServices.put(EventBus.class, this);
         
         this.objInspector = objInspector;
-        this.managedObjects = managedObjects;
+        this.messageListenersPool = messageListenersPool;
         
         this.isStarted = false;
         this.eventListeners = new HashMap<KapuaEventListener, EventListener>();
@@ -85,7 +85,7 @@ public class DummyEventBus implements EventBus {
                 }
             }
         };
-        this.managedObjects.register(poolListener);
+        this.messageListenersPool.register(poolListener);
        
     }
 
@@ -125,8 +125,8 @@ public class DummyEventBus implements EventBus {
         
         // After a container stop/start sequence the pool may be already populated with objects
         // The event listeners in the pool have to be collected and plugged into an EventConnector
-        List<KapuaEventListener> eeventListeners = managedObjects.getImplementationsOf(KapuaEventListener.class);
-        for (KapuaEventListener listener:eeventListeners) {
+        List<KapuaEventListener> kapuaEventListeners = messageListenersPool.getImplementationsOf(KapuaEventListener.class);
+        for (KapuaEventListener listener:kapuaEventListeners) {
             subscribe(listener);
         }
         
@@ -148,10 +148,12 @@ public class DummyEventBus implements EventBus {
                         logger.error("Interrupted while pulling from queue: {}", e.getMessage());
                     }
                     
+                    // If no events to dispatch return to poll the queue
                     if (event == null) {
                         continue;
                     }
                     
+                    // Dispatch events to the listeners
                     final KapuaEvent theEvent = event;
                     threadPool.execute(new Runnable() {
 
