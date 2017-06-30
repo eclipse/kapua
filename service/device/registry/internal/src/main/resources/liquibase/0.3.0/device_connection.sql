@@ -31,3 +31,5 @@ ALTER TABLE dvc_device_connection
 
 UPDATE dvc_device_connection
 	SET reserved_user_id = NULL;
+
+CREATE UNIQUE INDEX idx_device_connection_reserved_user_id ON dvc_device_connection (scope_id, reserved_user_id);

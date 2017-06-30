@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.connection.toolbar;
+package org.eclipse.kapua.app.console.client.connection;
 
 import org.eclipse.kapua.app.console.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.client.ui.widget.EntityCRUDToolbar;
@@ -23,7 +23,7 @@ public class ConnectionGridToolbar extends EntityCRUDToolbar<GwtDeviceConnection
     public ConnectionGridToolbar(GwtSession currentSession) {
         super(currentSession);
         setAddButtonVisible(false);
-        setEditButtonVisible(false);
+        setEditButtonVisible(true);
         setDeleteButtonVisible(false);
     }
 
@@ -39,7 +39,12 @@ public class ConnectionGridToolbar extends EntityCRUDToolbar<GwtDeviceConnection
 
     @Override
     protected KapuaDialog getEditDialog() {
-        return null;
+        GwtDeviceConnection selectedConnection = gridSelectionModel.getSelectedItem();
+        ConnectionEditDialog dialog = null;
+        if (selectedConnection != null) {
+            dialog = new ConnectionEditDialog(currentSession, selectedConnection);
+        }
+        return dialog;
     }
 
     @Override

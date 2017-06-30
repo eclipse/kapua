@@ -24,8 +24,24 @@ public interface DeviceConnectionPredicates extends KapuaUpdatableEntityPredicat
      * Client identifier
      */
     public static final String CLIENT_ID = "clientId";
+
     /**
      * Connection status
      */
     public static final String STATUS = "status";
+
+    /**
+     * Credentials mode
+     */
+    public static final String CREDENTIALS_MODE = "credentialsMode";
+
+    /**
+     * Reserved user identifier
+     */
+    public static final String RESERVED_USER_ID = "reservedUserId";
+
+    /**
+     * Last user identifier
+     */
+    public static final String USER_ID = "userId";
 }

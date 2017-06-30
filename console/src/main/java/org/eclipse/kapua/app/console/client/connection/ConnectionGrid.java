@@ -14,7 +14,6 @@ package org.eclipse.kapua.app.console.client.connection;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.kapua.app.console.client.connection.toolbar.ConnectionGridToolbar;
 import org.eclipse.kapua.app.console.client.messages.ConsoleConnectionMessages;
 import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
@@ -137,6 +136,16 @@ public class ConnectionGrid extends EntityGrid<GwtDeviceConnection> {
 
         column = new ColumnConfig("protocol", 120);
         column.setHeader(MSGS.connectionTableProtocol());
+        column.setWidth(150);
+        configs.add(column);
+
+        column = new ColumnConfig("connectionUserCouplingMode", 120);
+        column.setHeader(MSGS.connectionTableUserCouplingMode());
+        column.setWidth(150);
+        configs.add(column);
+
+        column = new ColumnConfig("reservedUserId", 120);
+        column.setHeader(MSGS.connectionTableReservedUserId());
         column.setWidth(150);
         configs.add(column);
 

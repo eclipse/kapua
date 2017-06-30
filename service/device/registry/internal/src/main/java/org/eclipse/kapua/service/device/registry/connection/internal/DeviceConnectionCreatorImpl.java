@@ -30,6 +30,7 @@ public class DeviceConnectionCreatorImpl extends AbstractKapuaEntityCreator<Devi
     private KapuaId userId;
     private ConnectionUserCouplingMode userCouplingMode;
     private KapuaId reservedUserId;
+    private boolean allowUserChange;
     private String protocol;
     private String clientIp;
     private String serverIp;
@@ -77,6 +78,14 @@ public class DeviceConnectionCreatorImpl extends AbstractKapuaEntityCreator<Devi
 
     public void setReservedUserId(KapuaId reservedUserId) {
         this.reservedUserId = reservedUserId;
+    }
+
+    public boolean getAllowUserChange() {
+        return allowUserChange;
+    }
+
+    public void setAllowUserChange(boolean allowUserChange) {
+        this.allowUserChange = allowUserChange;
     }
 
     @Override

@@ -72,7 +72,7 @@ public interface DeviceConnectionOption extends KapuaUpdatableEntity {
     /**
      * Set the device connection user coupling mode.
      *
-     * @param status
+     * @param userCouplingMode
      */
     public void setUserCouplingMode(ConnectionUserCouplingMode userCouplingMode);
 

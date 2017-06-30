@@ -13,7 +13,7 @@ package org.eclipse.kapua.app.console.shared.model;
 
 import java.io.Serializable;
 
-import org.eclipse.kapua.app.console.shared.model.GwtDevice.GwtConnectionUserCouplingMode;
+import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnection.GwtConnectionUserCouplingMode;
 
 public class GwtDeviceCreator extends KapuaBaseModel implements Serializable {
 
