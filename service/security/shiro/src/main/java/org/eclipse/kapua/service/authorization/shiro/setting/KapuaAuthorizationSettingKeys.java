@@ -23,7 +23,8 @@ import org.eclipse.kapua.commons.setting.SettingKey;
 public enum KapuaAuthorizationSettingKeys implements SettingKey {
     AUTHORIZATION_KEY("authorization.key"),
 
-    AUTO_REGISTRATION_SIMPLE_ROOT_ACCOUNT("auto.registration.simple.rootAccount");
+    AUTO_REGISTRATION_SIMPLE_ROOT_ACCOUNT("auto.registration.simple.rootAccount"),
+    AUTO_REGISTRATION_SIMPLE_MAX_NUMBER_OF_CHILD_USERS("auto.registration.simple.maximumNumberOfChildUsers");
 
     private String key;
 

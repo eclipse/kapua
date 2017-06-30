@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -34,6 +35,8 @@ import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.authorization.shiro.setting.KapuaAuthorizationSetting;
+import org.eclipse.kapua.service.authorization.shiro.setting.KapuaAuthorizationSettingKeys;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserFactory;
@@ -41,8 +44,84 @@ import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserType;
 import org.eclipse.kapua.service.user.internal.UserDomain;
 import org.jose4j.jwt.consumer.JwtContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * A processor which creates a simple account and user setup
+ * <p>
+ * This processor creates a new account based on the SSO claim and creates a single
+ * user for this account.
+ * </p>
+ * <p>
+ * It is possible to define the root account which all accounts will be part of using
+ * the {@link Settings} class.
+ * </p>
+ */
 public class SimpleRegistrationProcessor implements RegistrationProcessor {
+
+    private static final Logger logger = LoggerFactory.getLogger(SimpleRegistrationProcessor.class);
+
+    public static class Settings {
+
+        private KapuaId rootAccount;
+
+        private int maximumNumberOfChildUsers;
+
+        public Settings(final KapuaId rootAccount) {
+            this.rootAccount = rootAccount;
+        }
+
+        public KapuaId getRootAccount() {
+            return rootAccount;
+        }
+
+        /**
+         * Set the maximum number of child users for the newly created account
+         * <p>
+         * If this value is negative then there will be no limit on the number of child users.
+         * </p>
+         * 
+         * @param maximumNumberOfChildUsers
+         *            The number of child users to allow
+         */
+        public void setMaximumNumberOfChildUsers(int maximumNumberOfChildUsers) {
+            this.maximumNumberOfChildUsers = maximumNumberOfChildUsers;
+        }
+
+        public int getMaximumNumberOfChildUsers() {
+            return maximumNumberOfChildUsers;
+        }
+
+        public static Optional<SimpleRegistrationProcessor.Settings> loadSimpleSettings(final KapuaAuthorizationSetting settings) {
+            try {
+                final String accountName = settings.getString(KapuaAuthorizationSettingKeys.AUTO_REGISTRATION_SIMPLE_ROOT_ACCOUNT);
+                if (accountName != null && !accountName.isEmpty()) {
+                    return loadFrom(accountName).map(rootAccount -> applySimpleSettings(rootAccount, settings));
+                }
+                return empty();
+            } catch (final KapuaException e) {
+                throw new RuntimeException("Failed to load root account ID", e);
+            }
+        }
+
+        private static Optional<KapuaId> loadFrom(final String accountName) throws KapuaException {
+            final User user = KapuaSecurityUtils.doPrivileged(() -> KapuaLocator.getInstance().getService(UserService.class).findByName(accountName));
+
+            if (user != null) {
+                return Optional.of(user).map(User::getScopeId);
+            }
+            logger.warn("Failed to load ID of '{}'. Entry not found.", accountName);
+            return Optional.empty();
+        }
+
+        private static SimpleRegistrationProcessor.Settings applySimpleSettings(final KapuaId rootAccount, final KapuaAuthorizationSetting kapuaSettings) {
+            final Settings settings = new SimpleRegistrationProcessor.Settings(rootAccount);
+            settings.setMaximumNumberOfChildUsers(kapuaSettings.getInt(KapuaAuthorizationSettingKeys.AUTO_REGISTRATION_SIMPLE_MAX_NUMBER_OF_CHILD_USERS, 1));
+            return settings;
+        }
+
+    }
 
     private final AccountService accountService = KapuaLocator.getInstance().getService(AccountService.class);
     private final AccountFactory accountFactory = KapuaLocator.getInstance().getFactory(AccountFactory.class);
@@ -56,16 +135,24 @@ public class SimpleRegistrationProcessor implements RegistrationProcessor {
     private final PermissionFactory permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
 
     private final String claimName;
-    private final KapuaId rootAccount;
+    private final Settings settings;
 
-    public SimpleRegistrationProcessor(final String claimName, final KapuaId rootAccount) {
+    /**
+     * Create a new simple registration processor
+     * 
+     * @param claimName
+     *            the claim to use as account name
+     * @param settings
+     *            the settings for the processor
+     */
+    public SimpleRegistrationProcessor(final String claimName, final Settings settings) {
         this.claimName = claimName;
-        this.rootAccount = rootAccount;
+        this.settings = settings;
     }
 
     @Override
     public Optional<User> createUser(final JwtContext context) throws Exception {
-        final KapuaSession session = new KapuaSession(null, rootAccount, rootAccount);
+        final KapuaSession session = new KapuaSession(null, settings.getRootAccount(), settings.getRootAccount());
 
         final KapuaSession oldSession = KapuaSecurityUtils.getSession();
         KapuaSecurityUtils.setSession(session);
@@ -76,7 +163,7 @@ public class SimpleRegistrationProcessor implements RegistrationProcessor {
         }
     }
 
-    private Optional<User> internalCreateUser(JwtContext context) throws Exception {
+    private Optional<User> internalCreateUser(final JwtContext context) throws Exception {
 
         final String name = context.getJwtClaims().getClaimValue(claimName, String.class);
         if (name == null || name.isEmpty()) {
@@ -94,7 +181,7 @@ public class SimpleRegistrationProcessor implements RegistrationProcessor {
 
         // define account
 
-        final AccountCreator accountCreator = accountFactory.newCreator(rootAccount, name);
+        final AccountCreator accountCreator = accountFactory.newCreator(settings.getRootAccount(), name);
         accountCreator.setOrganizationEmail(email);
         accountCreator.setOrganizationName(name);
 
@@ -105,8 +192,7 @@ public class SimpleRegistrationProcessor implements RegistrationProcessor {
         // set the resource limits for the UserService of this account
 
         final Map<String, Object> values = new HashMap<>(2);
-        values.put("maxNumberChildEntities", 1);
-        values.put("infiniteChildEntities", false);
+        customizeUserLimits(values);
         userService.setConfigValues(account.getId(), account.getScopeId(), values);
 
         // define user
@@ -135,7 +221,17 @@ public class SimpleRegistrationProcessor implements RegistrationProcessor {
 
         // return result
 
-        return Optional.ofNullable(user);
+        return Optional.of(user);
+    }
+
+    protected void customizeUserLimits(final Map<String, Object> values) {
+        if (settings.getMaximumNumberOfChildUsers() < 0) {
+            values.put("maxNumberChildEntities", settings.getMaximumNumberOfChildUsers());
+            values.put("infiniteChildEntities", false);
+        } else {
+            values.put("maxNumberChildEntities", Integer.MAX_VALUE);
+            values.put("infiniteChildEntities", true);
+        }
     }
 
 }

@@ -108,7 +108,7 @@ public class JwtAuthenticatingRealm extends AuthenticatingRealm implements Destr
         final String id = extractExternalId(jwt);
         logger.debug("JWT contains external id: {}", id);
 
-        // Get the associated user by name
+        // Get the associated user by external id
 
         final User user;
         try {

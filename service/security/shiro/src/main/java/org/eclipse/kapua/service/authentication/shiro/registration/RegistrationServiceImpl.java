@@ -11,32 +11,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro.registration;
 
-import static java.util.Optional.empty;
+import static org.eclipse.kapua.service.authentication.shiro.registration.SimpleRegistrationProcessor.Settings.loadSimpleSettings;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
-import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.eclipse.kapua.service.authentication.registration.RegistrationService;
 import org.eclipse.kapua.service.authentication.shiro.utils.JwtProcessors;
 import org.eclipse.kapua.service.authorization.shiro.setting.KapuaAuthorizationSetting;
-import org.eclipse.kapua.service.authorization.shiro.setting.KapuaAuthorizationSettingKeys;
 import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.sso.jwt.JwtProcessor;
 import org.jose4j.jwt.consumer.JwtContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @KapuaProvider
 public class RegistrationServiceImpl implements RegistrationService, AutoCloseable {
-
-    private static final Logger logger = LoggerFactory.getLogger(RegistrationServiceImpl.class);
 
     private final JwtProcessor jwtProcessor;
 
@@ -45,31 +37,8 @@ public class RegistrationServiceImpl implements RegistrationService, AutoCloseab
     public RegistrationServiceImpl() {
         jwtProcessor = JwtProcessors.createDefault();
 
-        final Optional<KapuaId> rootAccount = evalRootAccount();
-        if (rootAccount.isPresent()) {
-            processors.add(new SimpleRegistrationProcessor("preferred_username", rootAccount.get()));
-        }
-    }
-
-    private Optional<KapuaId> evalRootAccount() {
-        try {
-            final String accountName = KapuaAuthorizationSetting.getInstance().getString(KapuaAuthorizationSettingKeys.AUTO_REGISTRATION_SIMPLE_ROOT_ACCOUNT);
-            if (accountName != null && !accountName.isEmpty()) {
-                return loadFrom(accountName);
-            }
-            return empty();
-        } catch (KapuaException e) {
-            throw new RuntimeException("Failed to load root account ID", e);
-        }
-    }
-
-    private static Optional<KapuaId> loadFrom(final String accountName) throws KapuaException {
-        final User user = KapuaLocator.getInstance().getService(UserService.class).findByName("kapua-sys");
-        if (user != null) {
-            return Optional.ofNullable(user).map(User::getScopeId);
-        }
-        logger.warn("Failed to load ID of '{}'. Entry not found.", accountName);
-        return Optional.empty();
+        loadSimpleSettings(KapuaAuthorizationSetting.getInstance())
+                .ifPresent(settings -> processors.add(new SimpleRegistrationProcessor("preferred_username", settings)));
     }
 
     @Override
