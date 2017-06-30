@@ -126,28 +126,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
 
             // Login
 
-            try {
-                authenticationService.login(credentials);
-            } catch (final KapuaAuthenticationException e) {
-                if (e.getCode() == KapuaAuthenticationErrorCodes.UNKNOWN_LOGIN_CREDENTIAL && isAccountCreationEnabled()) {
-                    try {
-                        logger.info("Trying auto account creation");
-                        if (KapuaLocator.getInstance().getService(RegistrationService.class).createAccount(credentials)) {
-                            logger.info("Created new account");
-                            authenticationService.login(credentials);
-                        } else {
-                            logger.info("New account did not get created");
-                            throw e; // throw the original error
-                        }
-                    } catch (Exception e1) {
-                        logger.warn("Failed to auto-create account", e1);
-                        throw e; // we throw the original error instead
-                    }
-                } else {
-                    // it is an exception we can't handle by auto-account-creation
-                    throw e;
-                }
-            }
+            handleLogin(authenticationService, credentials);
 
             // Get the session infos
 
@@ -157,6 +136,43 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
             KapuaExceptionHandler.handle(t);
         }
         return null;
+    }
+
+    private void handleLogin(final AuthenticationService authenticationService, final JwtCredentials credentials) throws KapuaException {
+        try {
+            authenticationService.login(credentials);
+        } catch (final KapuaAuthenticationException e) {
+            logger.debug("First level login attempt failed", e);
+            handleLoginError(authenticationService, credentials, e);
+        }
+    }
+
+    private void handleLoginError(final AuthenticationService authenticationService, final JwtCredentials credentials, final KapuaAuthenticationException e) throws KapuaException {
+        logger.debug("Handling error code: {}", e.getCode());
+
+        if (!isAccountCreationEnabled()) {
+            logger.debug("Account creation is not active");
+            throw e;
+        }
+
+        if (e.getCode().equals(KapuaAuthenticationErrorCodes.UNKNOWN_LOGIN_CREDENTIAL)) {
+            try {
+                logger.info("Trying auto account creation");
+                if (KapuaLocator.getInstance().getService(RegistrationService.class).createAccount(credentials)) {
+                    logger.info("Created new account");
+                    authenticationService.login(credentials);
+                } else {
+                    logger.info("New account did not get created");
+                    throw e; // throw the original error
+                }
+            } catch (Exception e1) {
+                logger.warn("Failed to auto-create account", e1);
+                throw e; // we throw the original error instead
+            }
+        } else {
+            // it is an exception we can't handle by auto-account-creation
+            throw e;
+        }
     }
 
     private boolean isAccountCreationEnabled() {
