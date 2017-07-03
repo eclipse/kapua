@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.client.model;
 
@@ -15,11 +16,11 @@ import org.eclipse.kapua.KapuaSerializable;
 
 /**
  * Base response object
- * 
- * @since 1.0
  */
 public abstract class Response implements KapuaSerializable {
 
+    private static final long serialVersionUID = 1L;
+    
     /**
      * Record id (it should set by the datastore client component)
      */

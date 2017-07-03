@@ -8,15 +8,16 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.client.model;
 
 /**
  * Update response
- *
- * @since 1.0
  */
 public class UpdateResponse extends Response {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Result description

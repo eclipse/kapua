@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.client.model;
 
@@ -17,12 +18,12 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * Insert response
- *
- * @since 1.0
  */
 @XmlType(name = "insertResponse")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class InsertResponse extends Response {
+
+    private static final long serialVersionUID = 1L;
 
     public InsertResponse() {
         super(null, null);

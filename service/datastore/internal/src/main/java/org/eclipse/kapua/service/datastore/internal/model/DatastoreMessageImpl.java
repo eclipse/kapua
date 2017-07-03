@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model;
 
@@ -21,11 +22,10 @@ import org.eclipse.kapua.service.datastore.model.StorableId;
 
 /**
  * Implementation of the message returned by the data store find services
- * 
- * @since 1.0
- *
  */
 public class DatastoreMessageImpl extends KapuaMessageImpl<KapuaChannel, KapuaPayload> implements DatastoreMessage {
+
+    private static final long serialVersionUID = 1L;
 
     private StorableId datastoreId;
     private Date timestamp;

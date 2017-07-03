@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model;
 
@@ -19,10 +20,10 @@ import org.eclipse.kapua.service.datastore.model.StorableId;
 
 /**
  * Client information schema implementation
- * 
- * @since 1.0.0
  */
 public class ClientInfoImpl implements ClientInfo {
+
+    private static final long serialVersionUID = 1L;
 
     private StorableId id;
     private KapuaId scopeId;

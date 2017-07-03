@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model;
 
@@ -19,10 +20,10 @@ import org.eclipse.kapua.service.datastore.model.StorableId;
 
 /**
  * Channel information schema implementation
- * 
- * @since 1.0.0
  */
 public class ChannelInfoImpl implements ChannelInfo {
+
+    private static final long serialVersionUID = 1L;
 
     private StorableId id;
     private KapuaId scopeId;
@@ -38,8 +39,6 @@ public class ChannelInfoImpl implements ChannelInfo {
      * Construct a channel information for the given scope
      * 
      * @param scope
-     * 
-     * @since 1.0.0
      */
     public ChannelInfoImpl(KapuaId scope) {
         setScopeId(scope);
@@ -84,8 +83,6 @@ public class ChannelInfoImpl implements ChannelInfo {
      * Set the client identifier
      * 
      * @param clientId
-     * 
-     * @since 1.0.0
      */
     public void setClientId(String clientId) {
         this.clientId = clientId;
