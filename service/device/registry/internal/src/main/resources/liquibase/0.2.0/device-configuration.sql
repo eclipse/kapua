@@ -57,4 +57,29 @@ VALUES (1,
   0,
   null,
   null);
+  
+  INSERT INTO sys_configuration (
+  SCOPE_ID,
+  ID,
+  PID,
+  CONFIGURATIONS,
+  CREATED_ON,
+  CREATED_BY,
+  MODIFIED_ON,
+  MODIFIED_BY,
+  OPTLOCK,
+  ATTRIBUTES,
+  PROPERTIES)
+VALUES (1,
+        6,
+        'org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService',
+        CONCAT('#', CURRENT_TIMESTAMP(), CHAR(13), CHAR(10),
+        'deviceUserCouplingDefaultMode=LOOSE'),
+  CURRENT_TIMESTAMP(),
+  1,
+  CURRENT_TIMESTAMP(),
+  1,
+  0,
+  null,
+  null);
 

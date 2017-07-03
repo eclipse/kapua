@@ -75,7 +75,6 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.datastore.DatastoreDomain;
 import org.eclipse.kapua.service.device.management.commons.DeviceManagementDomain;
 import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
-import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCreator;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
@@ -156,7 +155,6 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     private AccountService accountService = KapuaLocator.getInstance().getService(AccountService.class);
     private DeviceConnectionService deviceConnectionService = KapuaLocator.getInstance().getService(DeviceConnectionService.class);
     private DeviceConnectionFactory deviceConnectionFactory = KapuaLocator.getInstance().getFactory(DeviceConnectionFactory.class);
-    private DeviceRegistryService deviceRegistryService = KapuaLocator.getInstance().getService(DeviceRegistryService.class);
     private DeviceConnectionOptionFactory deviceConnectionOptionFactory = KapuaLocator.getInstance().getFactory(DeviceConnectionOptionFactory.class);
     private DeviceConnectionOptionService deviceConnectionOptionService = KapuaLocator.getInstance().getService(DeviceConnectionOptionService.class);
     private MetricsService metricsService = MetricServiceFactory.getInstance();
@@ -393,11 +391,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                 deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.findByClientId(scopeId, clientId));
                 loginFindClientIdTimeContext.stop();
                 // enforce the user-device bound
-                Map<String, Object> options = KapuaSecurityUtils.doPrivileged(() -> deviceRegistryService.getConfigValues(scopeId));
-                Boolean deviceUserCouplingEnabled = (Boolean) options.get("deviceUserCouplingEnabled");// TODO move to constants
-                if (Boolean.TRUE.equals(deviceUserCouplingEnabled)) {
-                    enforceDeviceUserBound(options, deviceConnection, scopeId, userId);
-                }
+                enforceDeviceUserBound(KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.getConfigValues(scopeId)), deviceConnection, scopeId, userId);
 
                 Context loginFindDevTimeContext = metricLoginFindDevTime.time();
 
