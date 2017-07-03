@@ -24,7 +24,7 @@ public class JmsConnectionFactory {
 
     private JmsConnectionFactory() {
     }
-    
+
     private static final Logger logger = LoggerFactory.getLogger(JmsConnectionFactory.class);
 
     /**

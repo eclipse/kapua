@@ -152,11 +152,13 @@ public class UserImpl extends AbstractKapuaNamedEntity implements User {
         this.externalId = externalId;
     }
 
-    @Override public Date getExpirationDate() {
+    @Override
+    public Date getExpirationDate() {
         return expirationDate;
     }
 
-    @Override public void setExpirationDate(Date expirationDate) {
+    @Override
+    public void setExpirationDate(Date expirationDate) {
         this.expirationDate = expirationDate;
     }
 }

@@ -28,21 +28,21 @@ public class JmsMessage implements TransportMessage<JmsTopic, JmsPayload> {
      * 
      * @since 1.0.0
      */
-    private JmsTopic            topic;
+    private JmsTopic topic;
 
     /**
      * The receivedOn of this {@link JmsMessage}.
      * 
      * @since 1.0.0
      */
-    private Date                receivedOn;
+    private Date receivedOn;
 
     /**
      * The payload of this {@link JmsMessage}.
      * 
      * @since 1.0.0
      */
-    private JmsPayload          payload;
+    private JmsPayload payload;
 
     /**
      * Construct a {@link JmsMessage} with the given parameters.

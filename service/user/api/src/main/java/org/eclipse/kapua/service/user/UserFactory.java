@@ -29,5 +29,5 @@ public interface UserFactory extends KapuaEntityFactory<User, UserCreator, UserQ
      * @return
      */
     public UserCreator newCreator(KapuaId scopedId, String name);
-    
+
 }
