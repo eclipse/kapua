@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.channel.message.internal;
 
@@ -17,12 +18,11 @@ import org.eclipse.kapua.service.device.management.response.KapuaResponseMessage
 
 /**
  * Device bundle information response message.
- * 
- * @since 1.0
- * 
  */
 public class ChannelResponseMessage extends KapuaMessageImpl<ChannelResponseChannel, ChannelResponsePayload>
         implements KapuaResponseMessage<ChannelResponseChannel, ChannelResponsePayload> {
+
+    private static final long serialVersionUID = 1L;
 
     private KapuaResponseCode responseCode;
 

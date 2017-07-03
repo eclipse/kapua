@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management;
 
@@ -27,7 +28,7 @@ public class RequestMessageXmlRegistry {
         return factory.newRequestChannel();
     }
 
-    public KapuaRequestMessage newRequestMessage() {
+    public KapuaRequestMessage<?,?> newRequestMessage() {
         return factory.newRequestMessage();
     }
 

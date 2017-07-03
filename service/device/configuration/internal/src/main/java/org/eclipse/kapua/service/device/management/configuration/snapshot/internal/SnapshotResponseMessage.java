@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.configuration.snapshot.internal;
 
@@ -17,11 +18,10 @@ import org.eclipse.kapua.service.device.management.response.KapuaResponseMessage
 
 /**
  * Device snapshot response message.
- * 
- * @since 1.0
- * 
  */
 public class SnapshotResponseMessage extends KapuaMessageImpl<SnapshotResponseChannel, SnapshotResponsePayload> implements KapuaResponseMessage<SnapshotResponseChannel, SnapshotResponsePayload> {
+
+    private static final long serialVersionUID = 1L;
 
     private KapuaResponseCode responseCode;
 

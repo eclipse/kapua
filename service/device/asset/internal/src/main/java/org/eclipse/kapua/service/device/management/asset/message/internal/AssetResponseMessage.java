@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.asset.message.internal;
 
@@ -24,6 +25,7 @@ import org.eclipse.kapua.service.device.management.response.KapuaResponseMessage
 public class AssetResponseMessage extends KapuaMessageImpl<AssetResponseChannel, AssetResponsePayload>
         implements KapuaResponseMessage<AssetResponseChannel, AssetResponsePayload> {
 
+    private static final long serialVersionUID = 1L;
     private KapuaResponseCode responseCode;
 
     @Override

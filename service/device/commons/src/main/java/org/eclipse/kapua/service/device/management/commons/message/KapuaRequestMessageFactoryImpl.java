@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.commons.message;
 
@@ -31,8 +32,8 @@ public class KapuaRequestMessageFactoryImpl implements KapuaRequestMessageFactor
     }
 
     @Override
-    public KapuaRequestMessage newRequestMessage() {
-        return new KapuaRequestMessageImpl();
+    public KapuaRequestMessage<?,?> newRequestMessage() {
+        return new KapuaRequestMessageImpl<>();
     }
 
     @Override

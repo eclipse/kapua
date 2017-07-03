@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.commons.message.request;
 
@@ -19,11 +20,15 @@ import org.eclipse.kapua.service.device.management.response.KapuaResponseMessage
 
 public class KapuaRequestMessageImpl<C extends KapuaRequestChannel, P extends KapuaRequestPayload> extends KapuaMessageImpl<C, P> implements KapuaRequestMessage<C, P> {
 
+    private static final long serialVersionUID = 1L;
+
+    @SuppressWarnings("rawtypes")
     @Override
     public Class<KapuaRequestMessage> getRequestClass() {
         return KapuaRequestMessage.class;
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     public Class<KapuaResponseMessage> getResponseClass() {
         return KapuaResponseMessage.class;

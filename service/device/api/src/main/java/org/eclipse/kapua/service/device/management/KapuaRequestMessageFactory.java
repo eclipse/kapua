@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management;
 
@@ -19,7 +20,7 @@ import org.eclipse.kapua.service.device.management.request.KapuaRequestPayload;
 public interface KapuaRequestMessageFactory extends KapuaObjectFactory {
     KapuaRequestChannel newRequestChannel();
 
-    KapuaRequestMessage newRequestMessage();
+    KapuaRequestMessage<?,?> newRequestMessage();
 
     KapuaRequestPayload newRequestPayload();
 

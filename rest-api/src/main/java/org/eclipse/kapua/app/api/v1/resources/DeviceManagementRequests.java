@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.app.api.v1.resources;
 
@@ -92,13 +93,12 @@ public class DeviceManagementRequests extends AbstractKapuaResource {
      * @return The response output.
      * @throws Exception
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
-     * @since 1.0.0
      */
     @POST
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @ApiOperation(value = "Sends a request", notes = "Sends a request message to a device", response = DeviceCommandOutput.class)
-    public KapuaResponseMessage sendRequest(
+    public KapuaResponseMessage<?,?> sendRequest(
             @ApiParam(value = "The ScopeId of the device", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId,
             @ApiParam(value = "The timeout of the request execution") @QueryParam("timeout") Long timeout,

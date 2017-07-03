@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.commons.message.response;
 
@@ -17,7 +18,9 @@ import org.eclipse.kapua.service.device.management.response.KapuaResponseCode;
 import org.eclipse.kapua.service.device.management.response.KapuaResponseMessage;
 import org.eclipse.kapua.service.device.management.response.KapuaResponsePayload;
 
-public class KapuaResponseMessageImpl extends KapuaMessageImpl<KapuaResponseChannel, KapuaResponsePayload> implements KapuaResponseMessage<KapuaResponseChannel, KapuaResponsePayload>{
+public class KapuaResponseMessageImpl extends KapuaMessageImpl<KapuaResponseChannel, KapuaResponsePayload> implements KapuaResponseMessage<KapuaResponseChannel, KapuaResponsePayload> {
+
+    private static final long serialVersionUID = 1L;
 
     private KapuaResponseCode responseCode;
 

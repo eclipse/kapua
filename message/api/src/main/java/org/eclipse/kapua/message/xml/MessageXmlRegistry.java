@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.message.xml;
 
@@ -24,10 +25,7 @@ import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
 
 /**
- * Message xml factory class
- * 
- * @since 1.0
- *
+ * Message XML factory class
  */
 @XmlRegistry
 public class MessageXmlRegistry {
@@ -39,7 +37,7 @@ public class MessageXmlRegistry {
         return factory.newPayload();
     }
 
-    public KapuaMessage newKapuaMessage() {
+    public KapuaMessage<?,?> newKapuaMessage() {
         return factory.newMessage();
     }
 

@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.channel.message.internal;
 
@@ -22,6 +23,8 @@ import org.eclipse.kapua.service.device.management.request.KapuaRequestMessage;
  */
 public class ChannelRequestMessage extends KapuaMessageImpl<ChannelRequestChannel, ChannelRequestPayload>
         implements KapuaRequestMessage<ChannelRequestChannel, ChannelRequestPayload> {
+
+    private static final long serialVersionUID = 1L;
 
     @SuppressWarnings("unchecked")
     @Override

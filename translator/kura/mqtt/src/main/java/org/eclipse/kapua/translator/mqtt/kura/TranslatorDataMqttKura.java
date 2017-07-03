@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.translator.mqtt.kura;
 
@@ -22,15 +23,10 @@ import org.eclipse.kapua.transport.message.mqtt.MqttTopic;
 
 /**
  * Messages translator implementation from {@link org.eclipse.kapua.transport.message.mqtt.MqttMessage} to {@link org.eclipse.kapua.service.device.call.message.kura.KuraMessage}
- * 
- * @since 1.0
- *
  */
-@SuppressWarnings("rawtypes")
 public class TranslatorDataMqttKura extends Translator<MqttMessage, KuraDataMessage> {
 
     @Override
-    @SuppressWarnings("unchecked")
     public KuraDataMessage translate(MqttMessage mqttMessage)
             throws KapuaException {
         //

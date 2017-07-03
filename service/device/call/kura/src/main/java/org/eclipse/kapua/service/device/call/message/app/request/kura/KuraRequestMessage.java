@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.message.app.request.kura;
 
@@ -18,11 +19,10 @@ import org.eclipse.kapua.service.device.call.message.kura.KuraMessage;
 
 /**
  * Kura command request message.
- * 
- * @since 1.0
- *
  */
 public class KuraRequestMessage extends KuraMessage<KuraRequestChannel, KuraRequestPayload> implements DeviceRequestMessage<KuraRequestChannel, KuraRequestPayload> {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Constructor
