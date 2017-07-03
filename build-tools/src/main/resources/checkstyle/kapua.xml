@@ -23,6 +23,10 @@
 
     <module name="TreeWalker">
 
+        <!-- annotation -->
+
+        <module name="MissingDeprecated" />
+
         <!-- imports -->
 
         <module name="AvoidStarImport" />
@@ -64,6 +68,7 @@
             <property name="allowMultipleEmptyLinesInsideClassMembers" value="false"/>
             <property name="tokens" value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, STATIC_INIT, INSTANCE_INIT, METHOD_DEF, CTOR_DEF"/>
         </module>
+
     </module>
 
     <module name="FileTabCharacter" />
