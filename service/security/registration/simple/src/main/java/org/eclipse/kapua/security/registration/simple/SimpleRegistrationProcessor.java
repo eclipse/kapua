@@ -12,6 +12,10 @@
 package org.eclipse.kapua.security.registration.simple;
 
 import static java.util.Optional.empty;
+import static org.eclipse.kapua.service.authorization.permission.Actions.delete;
+import static org.eclipse.kapua.service.authorization.permission.Actions.execute;
+import static org.eclipse.kapua.service.authorization.permission.Actions.read;
+import static org.eclipse.kapua.service.authorization.permission.Actions.write;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -273,32 +277,16 @@ public class SimpleRegistrationProcessor implements RegistrationProcessor {
         final Set<Permission> permissions = new HashSet<>();
         permissions.add(permissionFactory.newPermission(new AccessInfoDomain(), Actions.read, user.getScopeId()));
 
-        permissions.add(permissionFactory.newPermission(new AccountDomain(), Actions.read, user.getScopeId()));
-
-        permissions.add(permissionFactory.newPermission(new CredentialDomain(), Actions.delete, user.getScopeId()));
-        permissions.add(permissionFactory.newPermission(new CredentialDomain(), Actions.read, user.getScopeId()));
-        permissions.add(permissionFactory.newPermission(new CredentialDomain(), Actions.write, user.getScopeId()));
-
-        permissions.add(permissionFactory.newPermission(new DatastoreDomain(), Actions.read, user.getScopeId()));
-
-        permissions.add(permissionFactory.newPermission(DeviceDomain.INSTANCE, Actions.read, user.getScopeId()));
-        permissions.add(permissionFactory.newPermission(DeviceDomain.INSTANCE, Actions.write, user.getScopeId()));
-        permissions.add(permissionFactory.newPermission(DeviceDomain.INSTANCE, Actions.delete, user.getScopeId()));
-
-        permissions.add(permissionFactory.newPermission(new DeviceConnectionDomain(), Actions.read, user.getScopeId()));
-
-        permissions.add(permissionFactory.newPermission(new DeviceEventDomain(), Actions.read, user.getScopeId()));
-        permissions.add(permissionFactory.newPermission(new DeviceEventDomain(), Actions.write, user.getScopeId()));
-
-        permissions.add(permissionFactory.newPermission(new DeviceManagementDomain(), Actions.read, user.getScopeId()));
-        permissions.add(permissionFactory.newPermission(new DeviceManagementDomain(), Actions.write, user.getScopeId()));
-        permissions.add(permissionFactory.newPermission(new DeviceManagementDomain(), Actions.execute, user.getScopeId()));
-
-        permissions.add(permissionFactory.newPermission(new GroupDomain(), Actions.read, user.getScopeId()));
-
-        permissions.add(permissionFactory.newPermission(new RoleDomain(), Actions.read, user.getScopeId()));
-
-        permissions.add(permissionFactory.newPermission(new UserDomain(), Actions.read, user.getScopeId()));
+        permissions.addAll(permissionFactory.newPermissions(new AccountDomain(), user.getScopeId(), read));
+        permissions.addAll(permissionFactory.newPermissions(new CredentialDomain(), user.getScopeId(), read, write, delete));
+        permissions.addAll(permissionFactory.newPermissions(new DatastoreDomain(), user.getScopeId(), read));
+        permissions.addAll(permissionFactory.newPermissions(DeviceDomain.INSTANCE, user.getScopeId(), read, write, delete));
+        permissions.addAll(permissionFactory.newPermissions(new DeviceConnectionDomain(), user.getScopeId(), read));
+        permissions.addAll(permissionFactory.newPermissions(new DeviceEventDomain(), user.getScopeId(), read, write));
+        permissions.addAll(permissionFactory.newPermissions(new DeviceManagementDomain(), user.getScopeId(), read, write, execute));
+        permissions.addAll(permissionFactory.newPermissions(new GroupDomain(), user.getScopeId(), read));
+        permissions.addAll(permissionFactory.newPermissions(new RoleDomain(), user.getScopeId(), read));
+        permissions.addAll(permissionFactory.newPermissions(new UserDomain(), user.getScopeId(), read));
 
         accessInfoCreator.setPermissions(permissions);
 
