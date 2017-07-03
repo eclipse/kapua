@@ -15,8 +15,8 @@ import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Date;
 
 import org.eclipse.kapua.service.user.UserStatus;
@@ -102,7 +102,7 @@ public class TestUser {
     public Date getExpirationDate() {
         DateFormat df = new SimpleDateFormat("dd/mm/yyyy");
         Date expDate = null;
-        LocalDateTime now = LocalDateTime.now();
+        Instant now = Instant.now();
 
         if (expirationDate == null) {
             return null;
@@ -110,13 +110,13 @@ public class TestUser {
         // Special keywords for date
         switch (expirationDate) {
             case "yesterday":
-                expDate = Date.from(now.minusDays(1).atZone(ZoneId.systemDefault()).toInstant());
+                expDate = Date.from(now.minus(Duration.ofDays(1)));
                 break;
             case "today":
-                expDate = Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
+                expDate = Date.from(now);
                 break;
             case "tomorrow":
-                expDate = Date.from(now.plusDays(1).atZone(ZoneId.systemDefault()).toInstant());
+                expDate = Date.from(now.plus(Duration.ofDays(1)));
                 break;
         }
         // Just parse date

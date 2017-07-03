@@ -215,15 +215,16 @@ public class UserPassAuthenticatingRealm extends AuthenticatingRealm {
                     if (lockoutPolicyEnabled) {
                         Date now = new Date();
                         int resetAfterSeconds = (int)credentialServiceConfig.get("lockoutPolicy.resetAfter");
-                        Date firstLoginFailure = (failedCredential.getFirstLoginFailure() == null || now.after(failedCredential.getLoginFailuresReset())) ?
-                                now :
-                                failedCredential.getFirstLoginFailure();
-                        Date loginFailureWindowExpiration = new Date(firstLoginFailure.getTime() + (resetAfterSeconds * 1000));
-                        if (now.after(loginFailureWindowExpiration)) {
+                        Date firstLoginFailure;
+                        boolean resetAttempts = failedCredential.getFirstLoginFailure() == null || now.after(failedCredential.getLoginFailuresReset());
+                        if (resetAttempts) {
+                            firstLoginFailure = now;
                             failedCredential.setLoginFailures(1);
                         } else {
+                            firstLoginFailure = failedCredential.getFirstLoginFailure();
                             failedCredential.setLoginFailures(failedCredential.getLoginFailures() + 1);
                         }
+                        Date loginFailureWindowExpiration = new Date(firstLoginFailure.getTime() + (resetAfterSeconds * 1000));
                         failedCredential.setFirstLoginFailure(firstLoginFailure);
                         failedCredential.setLoginFailuresReset(loginFailureWindowExpiration);
                         int maxLoginFailures = (int)credentialServiceConfig.get("lockoutPolicy.maxFailures");

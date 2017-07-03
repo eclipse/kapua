@@ -210,6 +210,7 @@ public class UserServiceSteps extends AbstractKapuaSteps {
         char[] passwd = password.toCharArray();
         LoginCredentials credentials = new UsernamePasswordCredentialsImpl(userName, passwd);
         authenticationService.logout();
+        stepData.put("ExceptionCaught", false);
         try {
             authenticationService.login(credentials);
         } catch (KapuaException e) {
@@ -270,6 +271,33 @@ public class UserServiceSteps extends AbstractKapuaSteps {
         try {
             stepData.put("ExceptionCaught", false);
             userService.setConfigValues(accId, scopeId, valueMap);
+        } catch (KapuaException ex) {
+            stepData.put("ExceptionCaught", true);
+        }
+    }
+
+    @When("^I configure credential service$")
+    public void setCredentialServiceConfig(List<TestConfig> testConfigs)
+            throws KapuaException {
+        Map<String, Object> valueMap = new HashMap<>();
+        KapuaId accId = null;
+        KapuaId scopeId = null;
+        Account tmpAccount = (Account) stepData.get("LastAccount");
+
+        if (tmpAccount != null) {
+            accId = tmpAccount.getId();
+            scopeId = tmpAccount.getScopeId();
+        } else {
+            accId = new KapuaEid(BigInteger.ONE);
+            scopeId = new KapuaEid(BigInteger.ONE);
+        }
+
+        for (TestConfig config : testConfigs) {
+            config.addConfigToMap(valueMap);
+        }
+        try {
+            stepData.put("ExceptionCaught", false);
+            credentialService.setConfigValues(scopeId, accId, valueMap);
         } catch (KapuaException ex) {
             stepData.put("ExceptionCaught", true);
         }
