@@ -59,6 +59,7 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
         NO_USER.setUsername(MSGS.connectionFormReservedUserNoUser());
         NO_USER.setId(null);
     }
+
     public ConnectionEditDialog(GwtSession currentSession, GwtDeviceConnection selectedDeviceConnection) {
         super(currentSession);
         DialogUtils.resizeDialog(this, 440, 260);

@@ -43,7 +43,7 @@ public class DeviceConnectionOptions extends AbstractKapuaResource {
      *
      * @param scopeId
      *            The {@link ScopeId} of the requested {@link DeviceConnectionOption}.
-     * @param deviceId
+     * @param connectionId
      *            The {@link DeviceConnectionOption} id of the request
      *            {@link DeviceConnectionOption}.
      * @return The requested {@link DeviceConnectionOption} object.
