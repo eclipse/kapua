@@ -53,6 +53,8 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
         "jvmVersion",
         "osgiFrameworkVersion",
         "applicationFrameworkVersion",
+        "connectionInterface",
+        "connectionIp",
         "applicationIdentifiers",
         "acceptEncoding",
         "customAttribute1",
