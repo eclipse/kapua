@@ -8,6 +8,9 @@
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-v10.html
 #
+# Contributors:
+#     Red Hat Inc - initial API and implementation
+#     Eurotech
 ###############################################################################
 
 set -e
@@ -17,6 +20,7 @@ set -e
  : OPENSHIFT_PROJECT_NAME=${OPENSHIFT_PROJECT_NAME:=eclipse-kapua}
  : DOCKER_ACCOUNT=${DOCKER_ACCOUNT:=kapua}
  : IMAGE_VERSION=${IMAGE_VERSION:=latest}
+ : JAVA_OPTS_EXTRA=${JAVA_OPTS_EXTRA:=''}
 
 # print error and exit when necessary
 
@@ -29,6 +33,6 @@ $OC describe "project/$OPENSHIFT_PROJECT_NAME" &>/dev/null || die "Project '$OPE
 ### Create Kapua from template
 
 echo Creating Kapua from template ...
-$OC new-app -n "$OPENSHIFT_PROJECT_NAME" -f kapua-template.yml -p "DOCKER_ACCOUNT=$DOCKER_ACCOUNT" -p "IMAGE_VERSION=$IMAGE_VERSION"
+$OC new-app -n "$OPENSHIFT_PROJECT_NAME" -f kapua-template.yml -p "DOCKER_ACCOUNT=$DOCKER_ACCOUNT" -p "IMAGE_VERSION=$IMAGE_VERSION" -p "IMAGE_VERSION=$IMAGE_VERSION" -p "JAVA_OPTS_EXTRA=${JAVA_OPTS_EXTRA}"
 echo Creating Kapua from template ... done!
 
