@@ -20,25 +20,12 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 
 /**
  * {@link PermissionFactory} implementation.
- * 
- * @since 1.0.0
  */
 @KapuaProvider
 public class PermissionFactoryImpl implements PermissionFactory {
 
     @Override
-    public Permission newPermission(Domain domain, Actions action, KapuaId targetScopeId) {
-        return newPermission(domain, action, targetScopeId, null);
-    }
-
-    @Override
-    public Permission newPermission(Domain domain, Actions action, KapuaId targetScopeId, KapuaId groupId) {
-        return newPermission(domain, action, targetScopeId, groupId, false);
-    }
-
-    @Override
     public Permission newPermission(Domain domain, Actions action, KapuaId targetScopeId, KapuaId groupId, boolean forwardable) {
         return new PermissionImpl(domain != null ? domain.getName() : null, action, targetScopeId, groupId, forwardable);
     }
-
 }
