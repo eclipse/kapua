@@ -89,7 +89,8 @@ public class ConnectionGrid extends EntityGrid<GwtDeviceConnection> {
         column.setAlignment(HorizontalAlignment.CENTER);
         GridCellRenderer<GwtDeviceConnection> setStatusIcon = new GridCellRenderer<GwtDeviceConnection>() {
 
-            public String render(GwtDeviceConnection gwtDeviceConnection, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtDeviceConnection> deviceList, Grid<GwtDeviceConnection> grid) {
+            public String render(GwtDeviceConnection gwtDeviceConnection, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtDeviceConnection> deviceList,
+                    Grid<GwtDeviceConnection> grid) {
 
                 KapuaIcon icon;
                 if (gwtDeviceConnection.getConnectionStatusEnum() != null) {
@@ -123,7 +124,7 @@ public class ConnectionGrid extends EntityGrid<GwtDeviceConnection> {
         column.setAlignment(HorizontalAlignment.CENTER);
         column.setSortable(false);
         configs.add(column);
-        
+
         column = new ColumnConfig("clientId", 120);
         column.setHeader(MSGS.connectionTableClientId());
         column.setWidth(150);

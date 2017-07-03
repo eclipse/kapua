@@ -21,5 +21,5 @@
         @XmlNs(namespaceURI = "http://www.osgi.org/xmlns/metatype/v1.2.0", prefix = "ocd")
 }, elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED, attributeFormDefault = javax.xml.bind.annotation.XmlNsForm.UNQUALIFIED)
 package org.eclipse.kapua.service.device.call.kura.model.configuration.xml;
- 
+
 import javax.xml.bind.annotation.XmlNs;

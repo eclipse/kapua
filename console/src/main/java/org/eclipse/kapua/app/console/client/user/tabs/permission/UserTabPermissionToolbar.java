@@ -21,11 +21,11 @@ import com.google.gwt.user.client.Element;
 public class UserTabPermissionToolbar extends EntityCRUDToolbar<GwtAccessPermission> {
 
     private String userId;
-    
+
     public UserTabPermissionToolbar(GwtSession currentSession) {
         super(currentSession);
     }
-      
+
     public void setUserId(String userId) {
         this.userId = userId;
     }
@@ -39,7 +39,7 @@ public class UserTabPermissionToolbar extends EntityCRUDToolbar<GwtAccessPermiss
         }
         return dialog;
     }
-    
+
     @Override
     protected KapuaDialog getAddDialog() {
         PermissionAddDialog dialog = null;
@@ -56,6 +56,5 @@ public class UserTabPermissionToolbar extends EntityCRUDToolbar<GwtAccessPermiss
         deleteEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null);
         refreshEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null);
     }
-    
-    
+
 }

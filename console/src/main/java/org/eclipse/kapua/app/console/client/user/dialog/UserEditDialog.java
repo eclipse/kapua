@@ -25,9 +25,9 @@ public class UserEditDialog extends UserAddDialog {
     private GwtUser selectedUser;
 
     private GwtUserServiceAsync gwtUserService = GWT.create(GwtUserService.class);
-    
+
     private final static ConsoleUserMessages MSGS = GWT.create(ConsoleUserMessages.class);
-    
+
     public UserEditDialog(GwtSession currentSession, GwtUser selectedUser) {
         super(currentSession);
         this.selectedUser = selectedUser;
@@ -60,7 +60,7 @@ public class UserEditDialog extends UserAddDialog {
         });
 
     }
-    
+
     @Override
     public void submit() {
         selectedUser.setUsername(username.getValue());
@@ -88,14 +88,16 @@ public class UserEditDialog extends UserAddDialog {
 
     }
 
-    @Override public String getHeaderMessage() {
+    @Override
+    public String getHeaderMessage() {
         return MSGS.dialogEditHeader(selectedUser.getUsername());
     }
 
-    @Override public String getInfoMessage() {
+    @Override
+    public String getInfoMessage() {
         return MSGS.dialogEditInfo();
     }
-    
+
     private void populateEditDialog(GwtUser gwtUser) {
         username.setValue(gwtUser.getUsername());
         username.disable();

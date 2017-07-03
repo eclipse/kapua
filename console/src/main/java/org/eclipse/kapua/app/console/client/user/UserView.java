@@ -33,7 +33,7 @@ public class UserView extends EntityView<GwtUser> {
     private UserTabItemPermission permissionTab;
     private UserTabItemCredentials credentialsTab;
     private UserTabDescription descriptionTab;
-    
+
     public UserView(GwtSession gwtSession) {
         super(gwtSession);
     }
@@ -53,7 +53,7 @@ public class UserView extends EntityView<GwtUser> {
             permissionTab = new UserTabItemPermission(currentSession);
             tabs.add(permissionTab);
         }
-        if (credentialsTab == null){
+        if (credentialsTab == null) {
             credentialsTab = new UserTabItemCredentials(currentSession);
             tabs.add(credentialsTab);
         }

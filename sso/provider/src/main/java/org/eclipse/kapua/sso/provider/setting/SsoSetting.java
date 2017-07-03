@@ -22,7 +22,7 @@ public class SsoSetting extends AbstractKapuaSetting<SsoSettingKeys> {
     private SsoSetting() {
         super(SSO_SETTING_RESOURCE);
     }
-    
+
     SsoSetting(final String resourceName) {
         super(resourceName);
     }

@@ -32,7 +32,7 @@ public class AccessInfoFactoryImpl implements AccessInfoFactory {
     public AccessInfo newEntity(KapuaId scopeId) {
         return new AccessInfoImpl();
     }
-    
+
     @Override
     public AccessInfoCreator newCreator(KapuaId scopeId) {
         return new AccessInfoCreatorImpl(scopeId);

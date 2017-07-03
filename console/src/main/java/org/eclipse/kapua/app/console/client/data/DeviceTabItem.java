@@ -39,7 +39,6 @@ import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 
-
 public class DeviceTabItem extends TabItem {
 
     private static final ConsoleDataMessages MSGS = GWT.create(ConsoleDataMessages.class);
@@ -53,7 +52,6 @@ public class DeviceTabItem extends TabItem {
 
     private MetricsTable metricsTable;
     private ResultsTable resultsTable;
-    
 
     public DeviceTabItem(GwtSession currentSession) {
         super(MSGS.deviceTabItemTitle(), null);
@@ -79,7 +77,7 @@ public class DeviceTabItem extends TabItem {
         tablesLayout.setMargins(new Margins(0, 5, 0, 5));
         tablesLayout.setMinSize(250);
         add(tables, tablesLayout);
-        
+
         BorderLayoutData refreshButtonLayout = new BorderLayoutData(LayoutRegion.NORTH, 0.1f);
         refreshButtonLayout.setMargins(new Margins(5));
         refreshButton = new Button(MSGS.refresh(), new KapuaIcon(IconSet.REFRESH), new SelectionListener<ButtonEvent>() {
@@ -97,7 +95,7 @@ public class DeviceTabItem extends TabItem {
         LayoutContainer refreshButtonContainer = new LayoutContainer(refreshButtonTL);
         refreshButtonContainer.add(refreshButton, new TableData());
         tables.add(refreshButtonContainer, refreshButtonLayout);
-        
+
         BorderLayoutData deviceLayout = new BorderLayoutData(LayoutRegion.WEST, 0.5f);
         deviceTable = new DeviceTable(currentSession);
         deviceTable.setBorders(false);
@@ -140,14 +138,14 @@ public class DeviceTabItem extends TabItem {
                 resultsTable.refresh(gwtDevice, metricsInfo);
             }
         });
-        
+
         queryButton.disable();
         TableLayout queryButtonTL = new TableLayout();
         queryButtonTL.setCellPadding(0);
         LayoutContainer queryButtonContainer = new LayoutContainer(queryButtonTL);
         queryButtonContainer.add(queryButton, new TableData());
         tables.add(queryButtonContainer, queryButtonLayout);
-        
+
         BorderLayoutData resultsLayout = new BorderLayoutData(LayoutRegion.SOUTH, 0.5f);
         resultsLayout.setSplit(true);
 

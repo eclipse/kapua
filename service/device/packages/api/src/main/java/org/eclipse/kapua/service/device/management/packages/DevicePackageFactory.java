@@ -48,7 +48,7 @@ public interface DevicePackageFactory extends KapuaObjectFactory {
      * @return
      */
     public DevicePackageBundleInfo newDevicePackageBundleInfo();
-    
+
     /**
      * Creates a new device package bundle informations
      * 

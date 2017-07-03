@@ -24,7 +24,7 @@ public class GwtDatastoreAsset extends KapuaBaseModel implements Serializable {
         set("semanticTopic", semanticTopic);
         set("timestamp", timestamp);
     }
-    
+
     public GwtDatastoreAsset() {
     }
 
@@ -35,11 +35,11 @@ public class GwtDatastoreAsset extends KapuaBaseModel implements Serializable {
     public String getDriver() {
         return get("driver");
     }
-    
+
     public String getTopick() {
         return get("semanticTopic");
     }
-    
+
     public Date getTimestamp() {
         return (Date) get("timestamp");
     }

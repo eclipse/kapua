@@ -26,10 +26,10 @@ public interface GwtAccessPermissionService extends RemoteService {
 
     public GwtAccessPermission create(GwtXSRFToken gwtXsrfToken, GwtAccessPermissionCreator gwtAccessPermissionCreator)
             throws GwtKapuaException;
-    
+
     public PagingLoadResult<GwtAccessPermission> findByUserId(PagingLoadConfig loadConfig, String scopeShortId, String userShortId)
             throws GwtKapuaException;
 
-    void delete(GwtXSRFToken gwtXsrfToken, String scopeShortId, String accessPermissionShortId) 
+    void delete(GwtXSRFToken gwtXsrfToken, String scopeShortId, String accessPermissionShortId)
             throws GwtKapuaException;
 }

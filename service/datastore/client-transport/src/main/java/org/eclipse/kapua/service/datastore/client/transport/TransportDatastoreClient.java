@@ -249,7 +249,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
             updateRequest.upsert(idxRequest);
             bulkRequest.add(updateRequest);
         }
-        
+
         BulkResponse bulkResponse = esClientProvider.getClient().bulk(bulkRequest).actionGet(getQueryTimeout());
 
         BulkUpdateResponse response = new BulkUpdateResponse();
@@ -267,7 +267,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
                 }
                 metricId = ((org.elasticsearch.action.update.UpdateResponse) bulkItemResponse.getResponse()).getId();
                 response.add(new UpdateResponse(metricId, new TypeDescriptor(indexName, typeName)));
-                logger.debug("Upsert on channel metric succesfully executed [{}.{}, {}]",indexName, typeName, metricId );
+                logger.debug("Upsert on channel metric succesfully executed [{}.{}, {}]", indexName, typeName, metricId);
             }
         }
         return response;
@@ -465,8 +465,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
             esClientProvider.getClient().admin().indices().preparePutMapping(typeDescriptor.getIndex()).setType(typeDescriptor.getType()).setSource(mapping.toString(), XContentType.JSON)
                     .execute().actionGet(getQueryTimeout());
             logger.trace("Put mapping - mapping {} created! ", typeDescriptor.getType());
-        }
-        else {
+        } else {
             logger.trace("Put mapping - mapping {} already exists! ", typeDescriptor.getType());
         }
     }

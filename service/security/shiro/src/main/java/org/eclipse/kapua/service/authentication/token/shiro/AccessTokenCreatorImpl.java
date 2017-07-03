@@ -28,7 +28,7 @@ public class AccessTokenCreatorImpl extends AbstractKapuaEntityCreator<AccessTok
 
     private static final long serialVersionUID = -27718046815190710L;
 
-    private String tokenId; 
+    private String tokenId;
     private KapuaId userId;
     private Date expiresOn;
     private String refreshToken;
@@ -73,7 +73,7 @@ public class AccessTokenCreatorImpl extends AbstractKapuaEntityCreator<AccessTok
     public void setExpiresOn(Date expiresOn) {
         this.expiresOn = expiresOn;
     }
-    
+
     @Override
     public String getRefreshToken() {
         return refreshToken;

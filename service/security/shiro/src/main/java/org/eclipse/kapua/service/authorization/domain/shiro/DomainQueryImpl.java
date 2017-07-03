@@ -29,7 +29,7 @@ public class DomainQueryImpl extends AbstractKapuaQuery<Domain> implements Domai
     public DomainQueryImpl() {
         super();
     }
-    
+
     public DomainQueryImpl(KapuaId scopeId) {
         super(scopeId);
     }

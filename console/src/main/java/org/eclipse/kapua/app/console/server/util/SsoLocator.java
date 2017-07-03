@@ -24,7 +24,7 @@ public final class SsoLocator {
     public static SingleSignOnLocator getLocator(final ServletContext context) {
         return SsoLocatorListener.getLocator(context);
     }
-    
+
     public static SingleSignOnLocator getLocator(final ServletConfig config) {
         return SsoLocatorListener.getLocator(config.getServletContext());
     }

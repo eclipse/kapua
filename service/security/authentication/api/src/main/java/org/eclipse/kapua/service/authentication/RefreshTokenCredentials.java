@@ -42,7 +42,7 @@ public interface RefreshTokenCredentials extends LoginCredentials {
      * @param tokenId
      */
     public void setTokenId(String tokenId);
-    
+
     /**
      * return the refresh token
      * 

@@ -17,7 +17,7 @@ public interface SingleSignOnProvider {
 
     public interface ProviderLocator extends SingleSignOnLocator, AutoCloseable {
     }
-    
+
     public String getId();
 
     public ProviderLocator createLocator();

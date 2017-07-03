@@ -66,7 +66,7 @@ public class DeviceEventExporterExcel extends DeviceEventExporter {
         } catch (KapuaException e) {
             KapuaException.internalError(e);
         }
-        
+
         // workbook
         workbook = new HSSFWorkbook();
         sheet = workbook.createSheet();
@@ -116,7 +116,7 @@ public class DeviceEventExporterExcel extends DeviceEventExporter {
 
             // Created by
             row.createCell(iColCount++).setCellValue(deviceEvent.getCreatedBy() != null ? truncate(deviceEvent.getCreatedBy().toCompactId()) : BLANK);
-            
+
             // Device Id
             row.createCell(iColCount++).setCellValue(deviceEvent.getDeviceId() != null ? truncate(deviceEvent.getDeviceId().toCompactId()) : BLANK);
 
@@ -128,7 +128,7 @@ public class DeviceEventExporterExcel extends DeviceEventExporter {
             } else {
                 row.createCell(iColCount++).setCellValue(BLANK);
             }
-            
+
             // Sent On
             if (deviceEvent.getSentOn() != null) {
                 cell = row.createCell(iColCount++);
@@ -137,13 +137,13 @@ public class DeviceEventExporterExcel extends DeviceEventExporter {
             } else {
                 row.createCell(iColCount++).setCellValue(BLANK);
             }
-            
+
             if (deviceEvent.getPosition() != null) {
                 KapuaPosition eventPosition = deviceEvent.getPosition();
-                
+
                 // Position Longitude
                 row.createCell(iColCount++).setCellValue(eventPosition.getLongitude() != null ? truncate(eventPosition.getLongitude().toString()) : BLANK);
-                
+
                 // Position Latitude
                 row.createCell(iColCount++).setCellValue(eventPosition.getLatitude() != null ? truncate(eventPosition.getLatitude().toString()) : BLANK);
 
@@ -152,19 +152,19 @@ public class DeviceEventExporterExcel extends DeviceEventExporter {
 
                 // Position Precision
                 row.createCell(iColCount++).setCellValue(eventPosition.getPrecision() != null ? truncate(eventPosition.getPrecision().toString()) : BLANK);
-                
+
                 // Position Heading
                 row.createCell(iColCount++).setCellValue(eventPosition.getHeading() != null ? truncate(eventPosition.getHeading().toString()) : BLANK);
 
                 // Position Speed
                 row.createCell(iColCount++).setCellValue(eventPosition.getSpeed() != null ? truncate(eventPosition.getSpeed().toString()) : BLANK);
-                
+
                 // Position Timestamp
                 row.createCell(iColCount++).setCellValue(eventPosition.getTimestamp() != null ? truncate(eventPosition.getTimestamp().toString()) : BLANK);
 
                 // Position Satellites
                 row.createCell(iColCount++).setCellValue(eventPosition.getSatellites() != null ? truncate(eventPosition.getSatellites().toString()) : BLANK);
-                
+
                 // Position Status
                 row.createCell(iColCount++).setCellValue(eventPosition.getStatus() != null ? truncate(eventPosition.getStatus().toString()) : BLANK);
             } else {
@@ -178,7 +178,7 @@ public class DeviceEventExporterExcel extends DeviceEventExporter {
                 row.createCell(iColCount++).setCellValue(BLANK);
                 row.createCell(iColCount++).setCellValue(BLANK);
             }
-            
+
             // Resource
             row.createCell(iColCount++).setCellValue(deviceEvent.getResource() != null ? truncate(deviceEvent.getResource()) : BLANK);
 

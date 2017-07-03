@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -105,7 +104,7 @@ public class MetricInfoRegistryFacade {
 
                 UpdateRequest request = new UpdateRequest(new TypeDescriptor(metadata.getRegistryIndexName(), MetricInfoSchema.METRIC_TYPE_NAME), metricInfo.getId().toString(), metricInfo);
                 response = client.upsert(request);
-                
+
                 if (!metricInfoId.equals(response.getId())) {
                     // this condition shouldn't happens
                     throw new ClientException(ClientErrorCodes.ACTION_ERROR, String.format(ClientErrorMessages.CRUD_INTERNAL_ERROR, "MetricInfoRegistry - upstore"));
@@ -163,7 +162,7 @@ public class MetricInfoRegistryFacade {
                 logger.trace(String.format("Upsert failed [%s]", e.getMessage()));
                 throw e;
             }
-            
+
             if (upsertResponse != null) {
                 if (upsertResponse.getResponse().size() <= 0) {
                     return upsertResponse;
@@ -174,11 +173,11 @@ public class MetricInfoRegistryFacade {
                     String id = response.getId();
                     logger.debug(String.format("Upsert on channel metric succesfully executed [%s.%s, %s]",
                             index, type, id));
-                    
+
                     if (id == null || DatastoreCacheManager.getInstance().getMetricsCache().get(id)) {
                         continue;
                     }
-                    
+
                     // Update cache if channel metric update is completed
                     // successfully
                     DatastoreCacheManager.getInstance().getMetricsCache().put(id, true);

@@ -22,7 +22,7 @@ public class TestConfig {
     private String type;
 
     /** Name of config parameter. */
-    private String  name;
+    private String name;
 
     /** String representation of parameter value. */
     private String value;
@@ -76,20 +76,21 @@ public class TestConfig {
     /**
      * Adds this config parameter to specified map.
      *
-     * @param valueMap map to add parameter to
+     * @param valueMap
+     *            map to add parameter to
      */
     public void addConfigToMap(Map<String, Object> valueMap) {
 
         switch (type) {
-            case "integer":
-                valueMap.put(name, Integer.valueOf(value));
-                break;
-            case "string":
-                valueMap.put(name, value);
-                break;
-            case "boolean":
-                valueMap.put(name, Boolean.valueOf(value));
-                break;
+        case "integer":
+            valueMap.put(name, Integer.valueOf(value));
+            break;
+        case "string":
+            valueMap.put(name, value);
+            break;
+        case "boolean":
+            valueMap.put(name, Boolean.valueOf(value));
+            break;
         }
     }
 }

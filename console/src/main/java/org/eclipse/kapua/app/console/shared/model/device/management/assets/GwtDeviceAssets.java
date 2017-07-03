@@ -18,19 +18,19 @@ import java.util.List;
 import org.eclipse.kapua.app.console.shared.model.KapuaBaseModel;
 
 public class GwtDeviceAssets extends KapuaBaseModel implements Serializable {
-    
+
     private static final long serialVersionUID = 5527880046980004171L;
-    
+
     public GwtDeviceAssets() {
         set("assets", new ArrayList<GwtDeviceAssets>());
     }
-    
+
     public List<GwtDeviceAsset> getAssets() {
         return get("assets");
     }
-    
+
     public void setAssets(List<GwtDeviceAsset> assets) {
         set("assets", assets);
     }
-    
+
 }

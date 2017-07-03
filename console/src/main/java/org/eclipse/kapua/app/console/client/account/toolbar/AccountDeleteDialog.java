@@ -23,24 +23,23 @@ import org.eclipse.kapua.app.console.shared.service.GwtAccountServiceAsync;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-
 public class AccountDeleteDialog extends EntityDeleteDialog {
 
     private static final ConsoleAccountMessages MSGS = GWT.create(ConsoleAccountMessages.class);
     private static final GwtAccountServiceAsync GWT_ACCOUNT_SERVICE = GWT.create(GwtAccountService.class);
-    
+
     GwtAccount selectedAccount;
-    
-    public AccountDeleteDialog(GwtAccount selectedAccount){
+
+    public AccountDeleteDialog(GwtAccount selectedAccount) {
         super();
         this.selectedAccount = selectedAccount;
         DialogUtils.resizeDialog(this, 300, 135);
     }
-    
+
     @Override
     public void submit() {
         GWT_ACCOUNT_SERVICE.delete(xsrfToken, selectedAccount, new AsyncCallback<Void>() {
-            
+
             @Override
             public void onSuccess(Void v) {
                 exitStatus = true;
@@ -48,7 +47,7 @@ public class AccountDeleteDialog extends EntityDeleteDialog {
                         MSGS.accountDeletedConfirmation(selectedAccount.getUnescapedName()));
                 hide();
             }
-            
+
             @Override
             public void onFailure(Throwable t) {
                 exitStatus = false;

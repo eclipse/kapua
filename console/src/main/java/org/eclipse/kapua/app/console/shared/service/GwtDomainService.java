@@ -31,17 +31,18 @@ public interface GwtDomainService extends RemoteService {
      * 
      */
     public List<GwtDomain> findAll()
-        throws GwtKapuaException;
-    
+            throws GwtKapuaException;
+
     /**
      * Returns the list of all Actions which belong to a Domain.
      *
-     * @param domainName    the name of the domain
+     * @param domainName
+     *            the name of the domain
      * @return a list of {@link org.eclipse.kapua.service.authorization.permission.Action} objects
      * @throws GwtKapuaException
      * 
      */
     public List<GwtAction> findActionsByDomainName(String domainName)
-        throws GwtKapuaException;
+            throws GwtKapuaException;
 
 }

@@ -19,7 +19,7 @@ import org.eclipse.kapua.app.console.shared.model.GwtDeviceQueryPredicates.GwtSo
 public class GwtDeviceConnectionQueryPredicates extends KapuaBaseModel implements Serializable {
 
     private static final long serialVersionUID = 571130152596171388L;
-    
+
     public GwtDeviceConnectionQueryPredicates() {
         setSortAttribute(GwtSortAttribute.CLIENT_ID.name());
         setSortOrder(GwtSortOrder.ASCENDING.name());
@@ -46,7 +46,7 @@ public class GwtDeviceConnectionQueryPredicates extends KapuaBaseModel implement
     public void setClientId(String clientId) {
         set("clientId", clientId);
     }
-    
+
     public String getConnectionStatus() {
         return get("connectionStatus");
     }

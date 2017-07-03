@@ -89,17 +89,17 @@ public enum KapuaAuthenticationErrorCodes implements KapuaErrorCode {
      * Session credentials disabled
      */
     DISABLED_SESSION_CREDENTIAL,
-    
+
     /**
      * JWK file error
      */
     JWK_FILE_ERROR,
-    
+
     /**
      * Refresh error
      */
     REFRESH_ERROR,
-    /** 
+    /**
      * JWK generation error
      */
     JWK_GENERATION_ERROR

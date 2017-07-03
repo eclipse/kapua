@@ -60,11 +60,11 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(GROUP_DOMAIN, Actions.write, groupCreator.getScopeId()));
-        
+
         if (allowedChildEntities(groupCreator.getScopeId()) <= 0) {
             throw new KapuaIllegalArgumentException("scopeId", "max groups reached");
         }
-        
+
         return entityManagerSession.onTransactedInsert(em -> GroupDAO.create(em, groupCreator));
     }
 

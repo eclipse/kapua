@@ -329,7 +329,7 @@ public class DeviceAssetsValues extends LayoutContainer {
     }
 
     public void refresh() {
-        if (dirty && initialized) {            
+        if (dirty && initialized) {
             // clear the tree and disable the toolbar
             apply.setEnabled(false);
             reset.setEnabled(false);
@@ -417,7 +417,7 @@ public class DeviceAssetsValues extends LayoutContainer {
                                 @Override
                                 public void onSuccess(GwtXSRFToken token) {
                                     final GwtDeviceAsset updatedDeviceAsset = assetValuesPanel.getUpdatedAsset();
-                                    
+
                                     gwtDeviceAssetService.write(
                                             token,
                                             currentSession.getSelectedAccount().getId(),

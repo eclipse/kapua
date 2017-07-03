@@ -74,7 +74,7 @@ public class GwtSettings extends KapuaBaseModel implements Serializable {
     }
 
     public boolean getSMTPUseTLS() {
-        return   (Boolean) get("smtpUseTLS");
+        return (Boolean) get("smtpUseTLS");
     }
 
     public void setSMTPUseTLS(boolean value) {
@@ -82,7 +82,7 @@ public class GwtSettings extends KapuaBaseModel implements Serializable {
     }
 
     public boolean getSMTPUseSSL() {
-        return  (Boolean) get("smtpUseSSL");
+        return (Boolean) get("smtpUseSSL");
     }
 
     public void setSMTPUseSSL(boolean value) {

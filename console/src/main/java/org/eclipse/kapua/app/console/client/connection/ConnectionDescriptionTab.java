@@ -25,7 +25,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class ConnectionDescriptionTab extends EntityDescriptionTabItem<GwtDeviceConnection> {
 
     private static final GwtDeviceConnectionServiceAsync GWT_DEVICE_CONNECTION_SERVICE = GWT.create(GwtDeviceConnectionService.class);
-    
+
     @Override
     protected RpcProxy<ListLoadResult<GwtGroupedNVPair>> getDataProxy() {
         return new RpcProxy<ListLoadResult<GwtGroupedNVPair>>() {

@@ -41,7 +41,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class ChannelTable extends LayoutContainer {
 
     private static final ConsoleDataMessages MSGS = GWT.create(ConsoleDataMessages.class);
-    
+
     private BaseListLoader<ListLoadResult<GwtDatastoreChannel>> loader;
     private GwtSession currentSession;
     private Grid<GwtDatastoreChannel> channelGrid;
@@ -94,8 +94,8 @@ public class ChannelTable extends LayoutContainer {
 
             @Override
             protected void load(Object loadConfig, AsyncCallback<ListLoadResult<GwtDatastoreChannel>> callback) {
-                if(selectedDevice != null && selectedAsset != null){
-                    //TODO fetch available channels.
+                if (selectedDevice != null && selectedAsset != null) {
+                    // TODO fetch available channels.
                 } else {
                     callback.onSuccess(new BaseListLoadResult<GwtDatastoreChannel>(new ArrayList<GwtDatastoreChannel>()));
                 }
@@ -112,7 +112,7 @@ public class ChannelTable extends LayoutContainer {
         channelGrid.getView().setAutoFill(true);
         channelGrid.getView().setEmptyText(MSGS.channelTableEmptyText());
         channelGrid.disableTextSelection(false);
-        for(SelectionChangedListener<GwtDatastoreChannel> listener : listeners){
+        for (SelectionChangedListener<GwtDatastoreChannel> listener : listeners) {
             selectionModel.addSelectionChangedListener(listener);
         }
         channelGrid.addPlugin(selectionModel);

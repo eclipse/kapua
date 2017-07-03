@@ -38,13 +38,12 @@ import org.eclipse.kapua.service.device.management.bundle.message.internal.Bundl
 public class TranslatorAppBundleKapuaKura extends AbstractTranslatorKapuaKura<BundleRequestChannel, BundleRequestPayload, BundleRequestMessage> {
 
     private static final String CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
-    private static final Map<DeviceBundleAppProperties, BundleMetrics> PROPERTIES_DICTIONARY= new HashMap<>();
-    
+    private static final Map<DeviceBundleAppProperties, BundleMetrics> PROPERTIES_DICTIONARY = new HashMap<>();
+
     static {
         PROPERTIES_DICTIONARY.put(DeviceBundleAppProperties.APP_NAME, BundleMetrics.APP_ID);
         PROPERTIES_DICTIONARY.put(DeviceBundleAppProperties.APP_VERSION, BundleMetrics.APP_VERSION);
     }
-
 
     protected KuraRequestChannel translateChannel(BundleRequestChannel kapuaChannel) throws KapuaException {
         KuraRequestChannel kuraRequestChannel = new KuraRequestChannel();

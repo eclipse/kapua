@@ -23,24 +23,24 @@ import org.eclipse.kapua.locator.internal.guice.ServiceCImpl;
 import org.junit.Test;
 
 public class ResolverTest {
-    
-    @Test(expected=KapuaLocatorException.class)
-    public void testWrongServiceClass () throws KapuaLocatorException  {
+
+    @Test(expected = KapuaLocatorException.class)
+    public void testWrongServiceClass() throws KapuaLocatorException {
         ServiceResolver.newInstance(ServiceC.class, ServiceCImpl.class);
     }
-    
+
     @Test
-    public void testCorrectServiceClass () throws KapuaLocatorException  {
+    public void testCorrectServiceClass() throws KapuaLocatorException {
         ServiceResolver.newInstance(ServiceA.class, ServiceAImpl.class);
     }
-    
-    @Test(expected=KapuaLocatorException.class)
-    public void testWrongFactoryClass () throws KapuaLocatorException  {
+
+    @Test(expected = KapuaLocatorException.class)
+    public void testWrongFactoryClass() throws KapuaLocatorException {
         ServiceResolver.newInstance(FactoryC.class, ServiceCImpl.class);
     }
-    
+
     @Test
-    public void testCorrectFactoryClass () throws KapuaLocatorException  {
+    public void testCorrectFactoryClass() throws KapuaLocatorException {
         ServiceResolver.newInstance(FactoryA.class, FactoryAImpl.class);
     }
 }

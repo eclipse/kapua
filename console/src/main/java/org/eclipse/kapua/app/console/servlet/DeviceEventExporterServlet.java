@@ -64,7 +64,7 @@ public class DeviceEventExporterServlet extends HttpServlet {
             String deviceId = request.getParameter("deviceId");
             Date startDate = new Date(Long.parseLong(request.getParameter("startDate")));
             Date endDate = new Date(Long.parseLong(request.getParameter("endDate")));
-            
+
             // data exporter
             DeviceEventExporter deviceEventExporter;
             if ("xls".equals(format)) {
@@ -78,11 +78,11 @@ public class DeviceEventExporterServlet extends HttpServlet {
             if (scopeId == null || scopeId.isEmpty()) {
                 throw new IllegalArgumentException("scopeId");
             }
-            
+
             if (deviceId == null || deviceId.isEmpty()) {
                 throw new IllegalArgumentException("deviceId");
             }
-            
+
             deviceEventExporter.init(scopeId);
 
             //
@@ -96,14 +96,14 @@ public class DeviceEventExporterServlet extends HttpServlet {
             // paginate through the matching message
             DeviceEventQuery deq = def.newQuery(KapuaEid.parseCompactId(scopeId));
             deq.setLimit(250);
-            
+
             // Inserting filter parameter if specified
             AndPredicate andPred = new AndPredicate();
 
             andPred = andPred.and(new AttributePredicate<KapuaId>(DeviceEventPredicates.DEVICE_ID, KapuaEid.parseCompactId(deviceId), Operator.EQUAL))
                     .and(new AttributePredicate<Date>(DeviceEventPredicates.RECEIVED_ON, startDate, Operator.GREATER_THAN))
                     .and(new AttributePredicate<Date>(DeviceEventPredicates.RECEIVED_ON, endDate, Operator.LESS_THAN));
-            
+
             deq.setPredicate(andPred);
 
             KapuaListResult<DeviceEvent> results;

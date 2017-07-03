@@ -24,12 +24,11 @@ public class DatabaseInstance {
 
     private Connection connection;
 
-    
     public DatabaseInstance() throws SQLException {
         // FIXME: find out why start/stop don't get called
         connection = DriverManager.getConnection("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua");
     }
-    
+
     @Before(order = 100)
     public void start() throws SQLException {
         connection = DriverManager.getConnection("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua");

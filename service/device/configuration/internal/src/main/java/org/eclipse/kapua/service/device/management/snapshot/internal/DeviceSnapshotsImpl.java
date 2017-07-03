@@ -30,7 +30,7 @@ import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
 public class DeviceSnapshotsImpl implements DeviceSnapshots {
 
     private static final long serialVersionUID = -7831418953347834946L;
-    
+
     @XmlElement(name = "snapshotId")
     private List<DeviceSnapshot> snapshotIds;
 

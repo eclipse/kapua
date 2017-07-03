@@ -91,7 +91,7 @@ public class ModelContextImpl implements ModelContext {
 
     @Override
     public Map<String, Object> marshal(Object object) throws DatamodelMappingException {
-        if (object==null) {
+        if (object == null) {
             throw new DatamodelMappingException(MARSHAL_INVALID_PARAMETERS_ERROR_MSG);
         }
         try {
@@ -112,7 +112,7 @@ public class ModelContextImpl implements ModelContext {
         }
         throw new DatamodelMappingException(String.format(UNSUPPORTED_OBJECT_TYPE_ERROR_MSG, object.getClass().getName()));
     }
-    
+
     /*
      * 
      * unmarshal section
@@ -124,7 +124,7 @@ public class ModelContextImpl implements ModelContext {
         DatastoreMessageImpl message = new DatastoreMessageImpl();
         String id = (String) messageMap.get(ModelContext.DATASTORE_ID_KEY);
         message.setDatastoreId(new StorableIdImpl(id));
-        
+
         KapuaId scopeId = new KapuaEid(new BigInteger((String) messageMap.get(MessageSchema.MESSAGE_SCOPE_ID)));
         message.setScopeId(scopeId);
         KapuaId deviceId = null;
@@ -381,13 +381,12 @@ public class ModelContextImpl implements ModelContext {
         unmarshalledMetricInfo.put(MetricInfoSchema.METRIC_MTR, unmarshalledMetricValue);
         return unmarshalledMetricInfo;
     }
-    
+
     private StorableFetchStyle getStorableFetchStyle(Map<String, Object> objectMap) {
         Object storableFetchStyle = objectMap.get(QueryConverter.QUERY_FETCH_STYLE_KEY);
         if (storableFetchStyle instanceof StorableFetchStyle) {
             return (StorableFetchStyle) storableFetchStyle;
-        }
-        else {
+        } else {
             logger.warn("Wrong storable fetch style object instance!", (storableFetchStyle != null ? storableFetchStyle.getClass() : "null"));
             return StorableFetchStyle.FIELDS;
         }

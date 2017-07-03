@@ -57,7 +57,7 @@ public class KapuaPayloadTest extends Assert {
         final KapuaPayload kapuaPayload = new KapuaPayloadImpl();
         assertEquals("", kapuaPayload.toDisplayString());
     }
-    
+
     @Test
     public void displayString() throws Exception {
         final KapuaPayload kapuaPayload = new KapuaPayloadImpl();

@@ -45,10 +45,10 @@ public class CertificateServiceImpl implements CertificateService {
      */
     public CertificateServiceImpl() throws KapuaAuthenticationException {
         KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
-        
+
         String privateKeyPath = setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_SESSION_JWT_PRIVATE_KEY, "");
         String publicKeyPath = setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_SESSION_JWT_PUBLIC_KEY, "");
-        
+
         if (privateKeyPath.isEmpty() && publicKeyPath.isEmpty()) {
             // Fallback to generated
             logger.warn("No private and public key path specified. Using random generated keys.");

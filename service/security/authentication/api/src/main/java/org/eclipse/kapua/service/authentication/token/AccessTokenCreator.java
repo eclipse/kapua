@@ -93,7 +93,7 @@ public interface AccessTokenCreator extends KapuaEntityCreator<AccessToken> {
      * @since 1.0
      */
     public void setExpiresOn(Date expiresOn);
-    
+
     /**
      * Gets the refresh token to obtain a new {@link AccessToken} after expiration.
      *
@@ -101,7 +101,7 @@ public interface AccessTokenCreator extends KapuaEntityCreator<AccessToken> {
      */
     @XmlElement(name = "refreshToken")
     public String getRefreshToken();
-    
+
     /**
      * Sets the refresh token to obtain a new {@link AccessToken} after expiration.
      * 
@@ -110,7 +110,7 @@ public interface AccessTokenCreator extends KapuaEntityCreator<AccessToken> {
      * @since 1.0
      */
     public void setRefreshToken(String refreshToken);
-    
+
     /**
      * Gets the expiration date of the refresh token.
      *

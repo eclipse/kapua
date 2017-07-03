@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JmsConnectionFactory {
 
-    private JmsConnectionFactory () {
+    private JmsConnectionFactory() {
     }
     
     private static final Logger logger = LoggerFactory.getLogger(JmsConnectionFactory.class);

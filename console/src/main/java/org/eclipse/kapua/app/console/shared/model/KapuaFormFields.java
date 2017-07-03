@@ -19,8 +19,9 @@ import java.util.Map;
 import org.apache.commons.fileupload.FileItem;
 
 public class KapuaFormFields {
+
     Map<String, String> formFields;
-    List<FileItem>      fileItems;
+    List<FileItem> fileItems;
 
     public KapuaFormFields() {
     }
@@ -47,7 +48,7 @@ public class KapuaFormFields {
     }
 
     public String get(Object key)
-    throws IOException {
+            throws IOException {
         String value = formFields.get(key);
 
         if (value != null) {

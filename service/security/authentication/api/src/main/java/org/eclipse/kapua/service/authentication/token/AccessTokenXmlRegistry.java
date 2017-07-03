@@ -14,13 +14,14 @@ package org.eclipse.kapua.service.authentication.token;
 import org.eclipse.kapua.locator.KapuaLocator;
 
 public class AccessTokenXmlRegistry {
+
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final AccessTokenFactory factory = locator.getFactory(AccessTokenFactory.class);
-    
+
     public AccessToken newAccessToken() {
         return factory.newEntity(null);
     }
-    
+
     public AccessTokenCreator newAccessTokenCreator() {
         return factory.newCreator(null, null, null, null, null, null);
     }

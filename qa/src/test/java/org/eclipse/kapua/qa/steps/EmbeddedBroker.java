@@ -63,15 +63,15 @@ public class EmbeddedBroker {
 
     @Before
     public void start() {
-        
+
         this.database.setup();
-        
+
         logger.info("Starting new instance");
 
         try {
             // test if port is already open
 
-            if ( isPortOpen(1883)) {
+            if (isPortOpen(1883)) {
                 throw new IllegalStateException("Broker port is already in use");
             }
 
@@ -120,7 +120,7 @@ public class EmbeddedBroker {
         } catch (Exception e) {
             throw new RuntimeException("Failed to stop broker", e);
         }
-        
+
         DatastoreMediator.getInstance().clearCache();
 
         logger.info("Stopping instance ... done!");

@@ -52,7 +52,6 @@ public class AssetTable extends LayoutContainer {
 
     private GwtDatastoreDevice selectedDevice;
     private GwtDatastoreAsset selectedAsset;
-    
 
     public AssetTable(GwtSession currentSession) {
         this.currentSession = currentSession;
@@ -97,11 +96,11 @@ public class AssetTable extends LayoutContainer {
         column = new ColumnConfig("driver", MSGS.assetTableDriverHeader(), 100);
         configs.add(column);
         RpcProxy<ListLoadResult<GwtDatastoreAsset>> proxy = new RpcProxy<ListLoadResult<GwtDatastoreAsset>>() {
-            
+
             @Override
             protected void load(Object loadConfig, AsyncCallback<ListLoadResult<GwtDatastoreAsset>> callback) {
                 if (selectedDevice != null) {
-                dataService.findAssets((LoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedDevice, callback);
+                    dataService.findAssets((LoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedDevice, callback);
                 }
             }
         };
@@ -121,26 +120,26 @@ public class AssetTable extends LayoutContainer {
             assetGrid.getSelectionModel().addSelectionChangedListener(listener);
         }
     }
-    
-    public void clearTable(){
+
+    public void clearTable() {
         assetGrid.getStore().removeAll();
         this.selectedDevice = null;
     }
-    
-    private void refresh(){
+
+    private void refresh() {
         assetGrid.getStore().getLoader().load();
     }
-    
-    public void refresh(GwtDatastoreDevice selectedDevice){
+
+    public void refresh(GwtDatastoreDevice selectedDevice) {
         this.selectedDevice = selectedDevice;
         refresh();
     }
-    
-    public void refresh(GwtDatastoreAsset selectedAsset){
+
+    public void refresh(GwtDatastoreAsset selectedAsset) {
         this.selectedAsset = selectedAsset;
         refresh();
     }
-    
+
     public void addSelectionChangedListener(SelectionChangedListener<GwtDatastoreAsset> listener) {
         listeners.add(listener);
     }

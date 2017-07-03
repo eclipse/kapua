@@ -21,11 +21,11 @@ import com.google.gwt.user.client.Element;
 public class UserTabAccessRoleToolbar extends EntityCRUDToolbar<GwtAccessRole> {
 
     private String userId;
-    
+
     public UserTabAccessRoleToolbar(GwtSession currentSession) {
         super(currentSession);
     }
-    
+
     public void setUserId(String userId) {
         this.userId = userId;
     }
@@ -39,7 +39,7 @@ public class UserTabAccessRoleToolbar extends EntityCRUDToolbar<GwtAccessRole> {
         }
         return dialog;
     }
-    
+
     @Override
     protected KapuaDialog getAddDialog() {
         AccessRoleAddDialog dialog = null;

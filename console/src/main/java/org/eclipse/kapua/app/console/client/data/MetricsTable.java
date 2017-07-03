@@ -95,8 +95,8 @@ public class MetricsTable extends LayoutContainer {
         case DEVICE:
             tableContainer.setHeading(MSGS.metricsTableHeaderDevice(""));
             break;
-            
-        case ASSET: 
+
+        case ASSET:
             tableContainer.setHeading(MSGS.metricsTableHeaderAssets());
             break;
         default:
@@ -113,13 +113,13 @@ public class MetricsTable extends LayoutContainer {
         CheckBoxSelectionModel<GwtHeader> selectionModel = new CheckBoxSelectionModel<GwtHeader>();
         configs.add(selectionModel.getColumn());
         ColumnConfig column;
-        if(type == Type.ASSET) {
+        if (type == Type.ASSET) {
             column = new ColumnConfig("name", MSGS.metricsTableChannelHeader(), 100);
         } else {
             column = new ColumnConfig("name", MSGS.metricsTableMetricHeader(), 100);
         }
         configs.add(column);
-        if(type == Type.ASSET) {
+        if (type == Type.ASSET) {
             column = new ColumnConfig("type", MSGS.metricsTableChannelTypeHeader(), 100);
         } else {
             column = new ColumnConfig("type", MSGS.metricsTableMetricTypeHeader(), 100);
@@ -154,21 +154,21 @@ public class MetricsTable extends LayoutContainer {
         metricsInfoGrid.getView().setAutoFill(true);
         metricsInfoGrid.getView().setEmptyText(MSGS.metricsTableEmptyText());
         metricsInfoGrid.disableTextSelection(false);
-        for(SelectionChangedListener<GwtHeader> listener : listeners){
+        for (SelectionChangedListener<GwtHeader> listener : listeners) {
             selectionModel.addSelectionChangedListener(listener);
         }
         metricsInfoGrid.addPlugin(selectionModel);
         metricsInfoGrid.setSelectionModel(selectionModel);
     }
 
-    public void clearTable(){
+    public void clearTable() {
         metricsInfoGrid.getStore().removeAll();
     }
-    
-    public void refreshChannels(){
+
+    public void refreshChannels() {
         metricsInfoGrid.getStore().removeAll();
     }
-    
+
     public void refresh() {
         metricsInfoGrid.getStore().getLoader().load();
     }
@@ -197,7 +197,7 @@ public class MetricsTable extends LayoutContainer {
         }
         refresh();
     }
-    
+
     public void refresh(GwtDatastoreAsset selectedAsset) {
         if (selectedAsset != null) {
             tableContainer.setHeading(MSGS.metricsTableHeaderAssets());
@@ -209,10 +209,10 @@ public class MetricsTable extends LayoutContainer {
         refresh();
     }
 
-    public void addSelectionListener(SelectionChangedListener<GwtHeader> listener){
+    public void addSelectionListener(SelectionChangedListener<GwtHeader> listener) {
         listeners.add(listener);
     }
-    
+
     // --------------------------------------------------------------------------------------
     //
     // Unload of the GXT Component

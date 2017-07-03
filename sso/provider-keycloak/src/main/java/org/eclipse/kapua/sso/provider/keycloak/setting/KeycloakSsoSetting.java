@@ -22,7 +22,7 @@ public class KeycloakSsoSetting extends AbstractKapuaSetting<KeycloakSsoSettingK
     private KeycloakSsoSetting() {
         super(KEYCLOAK_SSO_SETTING_RESOURCE);
     }
-    
+
     KeycloakSsoSetting(final String resourceName) {
         super(resourceName);
     }

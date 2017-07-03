@@ -58,7 +58,7 @@ public class UserTabAccessRoleGrid extends EntityGrid<GwtAccessRole> {
             }
         };
     }
-    
+
     @Override
     protected void selectionChangedEvent(GwtAccessRole selectedItem) {
         super.selectionChangedEvent(selectedItem);

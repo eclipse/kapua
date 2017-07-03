@@ -29,14 +29,14 @@ public interface KapuaPrincipal extends Principal, java.io.Serializable {
      * Return the user name
      */
     public String getName();
-    
+
     /**
      * Return the token identifier
      * 
      * @return
      */
     public String getTokenId();
-    
+
     /**
      * Return the user id
      * 

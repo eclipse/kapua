@@ -24,7 +24,7 @@ public class TemporaryLockedAccountExceptionTest {
         TemporaryLockedAccountException ex = new TemporaryLockedAccountException(new Date());
         Assert.assertNotNull(ex.getMessage());
     }
-    
+
     @Test
     public void testNullTimestamp() {
         TemporaryLockedAccountException ex = new TemporaryLockedAccountException(null);

@@ -142,7 +142,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
         ArgumentValidator.numRange(query.getLimit(), 0, MAX_ENTRIES_ON_DELETE, "limit");
-        
+
         checkDataAccess(query.getScopeId(), Actions.delete);
         try {
             messageStoreFacade.delete(query);

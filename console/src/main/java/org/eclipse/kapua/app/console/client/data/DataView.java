@@ -18,37 +18,37 @@ import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.Element;
 
-public class DataView extends LayoutContainer{
-    
+public class DataView extends LayoutContainer {
+
     private GwtSession currentSession;
     private TabPanel tabsPanel;
-    
-    public DataView(GwtSession currentGwtSession){
+
+    public DataView(GwtSession currentGwtSession) {
         currentSession = currentGwtSession;
     }
-    
+
     @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
-        
+
         setLayout(new FitLayout());
         setBorders(false);
 
         tabsPanel = new TabPanel();
         tabsPanel.setPlain(false);
-        tabsPanel.setBorders(false); 
+        tabsPanel.setBorders(false);
         tabsPanel.setBodyBorder(true);
-        
+
         TopicsTabItem channelTabItem = new TopicsTabItem(currentSession);
         tabsPanel.add(channelTabItem);
         DeviceTabItem deviceTabItem = new DeviceTabItem(currentSession);
         tabsPanel.add(deviceTabItem);
         AssetTabItem assetTabItem = new AssetTabItem(currentSession);
         tabsPanel.add(assetTabItem);
-        
+
         add(tabsPanel);
     }
-    
+
     // --------------------------------------------------------------------------------------
     //
     // Unload of the GXT Component

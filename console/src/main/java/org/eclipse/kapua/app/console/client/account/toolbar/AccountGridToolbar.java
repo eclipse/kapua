@@ -18,40 +18,39 @@ import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
 
 import com.google.gwt.user.client.Element;
 
-
 public class AccountGridToolbar extends EntityCRUDToolbar<GwtAccount> {
 
     public AccountGridToolbar(GwtSession currentSession) {
         super(currentSession);
     }
-    
+
     @Override
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
         super.getEditEntityButton().disable();
         super.getDeleteEntityButton().disable();
     }
-    
+
     @Override
     protected KapuaDialog getAddDialog() {
         return new AccountAddDialog(currentSession);
     }
-    
+
     @Override
     protected KapuaDialog getEditDialog() {
         GwtAccount selectedAccount = gridSelectionModel.getSelectedItem();
         AccountEditDialog dialog = null;
-        if(selectedAccount != null){
+        if (selectedAccount != null) {
             dialog = new AccountEditDialog(currentSession, selectedAccount);
         }
         return dialog;
     }
-    
+
     @Override
     protected KapuaDialog getDeleteDialog() {
         GwtAccount selectedAccount = gridSelectionModel.getSelectedItem();
         AccountDeleteDialog dialog = null;
-        if(selectedAccount != null){
+        if (selectedAccount != null) {
             dialog = new AccountDeleteDialog(selectedAccount);
         }
         return dialog;

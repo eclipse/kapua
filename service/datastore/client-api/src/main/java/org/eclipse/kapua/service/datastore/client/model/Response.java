@@ -20,7 +20,7 @@ import org.eclipse.kapua.KapuaSerializable;
 public abstract class Response implements KapuaSerializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     /**
      * Record id (it should set by the datastore client component)
      */

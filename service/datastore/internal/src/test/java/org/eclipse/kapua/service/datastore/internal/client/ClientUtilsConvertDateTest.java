@@ -32,7 +32,7 @@ public class ClientUtilsConvertDateTest {
                 .isInstanceOf(Date.class)
                 .isEqualTo(Date.from(ZonedDateTime.of(2017, 1, 2, 12, 34, 56, 123_000_000, ZoneOffset.UTC).toInstant()));
     }
-    
+
     @Test(expected = java.time.format.DateTimeParseException.class)
     public void convertWrongString() {
         DatastoreUtils.convertToCorrectType(DatastoreUtils.CLIENT_METRIC_TYPE_DATE_ACRONYM, "01-02-2017T12:34:56.123Z");

@@ -190,7 +190,7 @@ public class WestNavigationView extends LayoutContainer {
                     centerPanel.add(panel);
                     centerPanel.layout();
                     dashboardSelected = false;
-                } else  if ("about".equals(selectedId)) {
+                } else if ("about".equals(selectedId)) {
                     AboutView aboutView = new AboutView();
 
                     panel.setBodyBorder(true);
@@ -379,7 +379,7 @@ public class WestNavigationView extends LayoutContainer {
             if (currentSession.hasAccountReadPermission()) {
                 accountManagementTreeStore.add(newItem("childaccounts", MSGS.childaccounts(), IconSet.SITEMAP), false);
             }
-            
+
             cloudResourcesTreeStore.add(newItem("about", MSGS.about(), IconSet.INFO), false);
         }
 

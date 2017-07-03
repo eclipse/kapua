@@ -53,7 +53,7 @@ public class AccessInfoServiceTestData {
     public AccessRole accessRoleFound;
     public AccessRoleListResult accessRoles;
     public Set<KapuaId> roleIds;
-    
+
     public void clearData() {
         accessInfoCreator = null;
         accessInfo = null;

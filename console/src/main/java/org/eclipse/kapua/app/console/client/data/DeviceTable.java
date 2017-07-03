@@ -39,7 +39,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class DeviceTable extends LayoutContainer {
 
-    //private static final int DEVICE_PAGE_SIZE = 50;
+    // private static final int DEVICE_PAGE_SIZE = 50;
     private static final ConsoleDataMessages MSGS = GWT.create(ConsoleDataMessages.class);
 
     private static GwtDataServiceAsync dataService = GWT.create(GwtDataService.class);
@@ -49,7 +49,7 @@ public class DeviceTable extends LayoutContainer {
     private Grid<GwtDatastoreDevice> deviceGrid;
     private ContentPanel tableContainer;
     private List<SelectionChangedListener<GwtDatastoreDevice>> listeners = new ArrayList<SelectionChangedListener<GwtDatastoreDevice>>();
-    //private PagingToolBar pagingToolBar;
+    // private PagingToolBar pagingToolBar;
 
     public DeviceTable(GwtSession currentSession) {
         this.currentSession = currentSession;
@@ -85,7 +85,7 @@ public class DeviceTable extends LayoutContainer {
         tableContainer.setScrollMode(Scroll.AUTOY);
         tableContainer.setLayout(new FitLayout());
         tableContainer.add(deviceGrid);
-        //tableContainer.setBottomComponent(pagingToolBar);
+        // tableContainer.setBottomComponent(pagingToolBar);
     }
 
     private void initDeviceGrid() {
@@ -115,17 +115,17 @@ public class DeviceTable extends LayoutContainer {
         deviceGrid.setStripeRows(true);
         deviceGrid.getView().setAutoFill(true);
         deviceGrid.getView().setEmptyText(MSGS.deviceTableEmptyText());
-        deviceGrid.disableTextSelection(false);      
-        for (SelectionChangedListener<GwtDatastoreDevice> listener : listeners){
+        deviceGrid.disableTextSelection(false);
+        for (SelectionChangedListener<GwtDatastoreDevice> listener : listeners) {
             deviceGrid.getSelectionModel().addSelectionChangedListener(listener);
         }
 
-//        pagingToolBar = new PagingToolBar(DEVICE_PAGE_SIZE);
-//        pagingToolBar.bind(loader);
-//        pagingToolBar.enable();
+        // pagingToolBar = new PagingToolBar(DEVICE_PAGE_SIZE);
+        // pagingToolBar.bind(loader);
+        // pagingToolBar.enable();
 
     }
-    
+
     public void addSelectionChangedListener(SelectionChangedListener<GwtDatastoreDevice> listener) {
         listeners.add(listener);
     }
@@ -133,8 +133,8 @@ public class DeviceTable extends LayoutContainer {
     public void onUnload() {
         super.onUnload();
     }
-    
-    public void refresh(){
+
+    public void refresh() {
         deviceGrid.getStore().getLoader().load();
     }
 

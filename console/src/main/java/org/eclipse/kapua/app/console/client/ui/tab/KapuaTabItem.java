@@ -47,7 +47,7 @@ public abstract class KapuaTabItem<M extends GwtEntityModel> extends TabItem {
     public M getSelectedEntity() {
         return selectedEntity;
     }
-    
+
     public void setSelectedEntity(M selectedEntity) {
         this.selectedEntity = selectedEntity;
     }

@@ -68,7 +68,7 @@ public class DatastoreUtils {
     public static final String CLIENT_METRIC_TYPE_BINARY_ACRONYM = "bin";
 
     private static final DateTimeFormatter DATA_INDEX_FORMATTER = DateTimeFormatter.ofPattern("yyyy-ww", Locale.US);
-    
+
     /**
      * Return the hash code for the provided components (typically components are a sequence of account - client id - channel ...)
      * 

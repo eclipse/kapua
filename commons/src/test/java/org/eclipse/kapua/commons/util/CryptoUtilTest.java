@@ -21,14 +21,14 @@ import org.junit.Test;
 public class CryptoUtilTest extends Assert {
 
     @Test
-    public void testConstructor() throws Exception{
-    Constructor<CryptoUtil> crypto = CryptoUtil.class.getDeclaredConstructor();
+    public void testConstructor() throws Exception {
+        Constructor<CryptoUtil> crypto = CryptoUtil.class.getDeclaredConstructor();
         crypto.setAccessible(true);
         crypto.newInstance();
     }
-    
+
     @Test
-    public void testSha1Hash() throws Exception{
+    public void testSha1Hash() throws Exception {
         StringBuilder longTest = new StringBuilder();
         Random random = new Random();
         String permittedSymbols = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890";
@@ -36,9 +36,9 @@ public class CryptoUtilTest extends Assert {
             longTest.append(permittedSymbols.charAt(random.nextInt(permittedSymbols.length())));
         }
         String longName = longTest.toString();
-        String[] permittedStrings = new String[] {"a","ab","abc","123",longName};
+        String[] permittedStrings = new String[] { "a", "ab", "abc", "123", longName };
         int sizeOfPermittedStrings = permittedStrings.length;
-        String[] falseStrings = new String[] {null};
+        String[] falseStrings = new String[] { null };
         int sizeOfFalseStrings = falseStrings.length;
         // Negative tests
         for (int i = 0; i < sizeOfFalseStrings; i++) {
@@ -68,7 +68,7 @@ public class CryptoUtilTest extends Assert {
             longTest.append(permittedSymbols.charAt(random.nextInt(permittedSymbols.length())));
         }
         String longName = longTest.toString();
-        String[] permittedStrings = new String[]{"a","ab","abc","123",longName};
+        String[] permittedStrings = new String[] { "a", "ab", "abc", "123", longName };
         int sizeOfPermittedStrings = permittedStrings.length;
         String[] falseStrings = new String[] { null };
         int sizeOfFalseStrings = falseStrings.length;
@@ -101,7 +101,7 @@ public class CryptoUtilTest extends Assert {
             longTest.append(permittedSymbols.charAt(random.nextInt(permittedSymbols.length())));
         }
         String longName = longTest.toString();
-        String[] permittedStrings = new String[]{"a","ab","abc","123",longName};
+        String[] permittedStrings = new String[] { "a", "ab", "abc", "123", longName };
         int sizeOfPermittedStrings = permittedStrings.length;
         String[] falseStrings = new String[] { null };
         int sizeOfFalseStrings = falseStrings.length;

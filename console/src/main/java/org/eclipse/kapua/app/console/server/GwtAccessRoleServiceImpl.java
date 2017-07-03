@@ -112,7 +112,7 @@ public class GwtAccessRoleServiceImpl extends KapuaRemoteServiceServlet implemen
                 KapuaId userId = GwtKapuaModelConverter.convert(userShortId);
 
                 AccessInfo accessInfo = accessInfoService.findByUserId(scopeId, userId);
-                
+
                 if (accessInfo != null) {
                     AccessRoleListResult accessRoleList = accessRoleService.findByAccessInfoId(scopeId, accessInfo.getId());
 

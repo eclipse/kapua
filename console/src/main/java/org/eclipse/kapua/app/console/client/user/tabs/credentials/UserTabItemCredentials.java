@@ -24,30 +24,30 @@ import com.google.gwt.user.client.Element;
 public class UserTabItemCredentials extends KapuaTabItem<GwtUser> {
 
     private static final ConsoleUserMessages MSGS = GWT.create(ConsoleUserMessages.class);
-    
+
     private CredentialGrid credentialsGrid;
 
     public UserTabItemCredentials(GwtSession currentSession) {
         super(MSGS.gridUserTabCredentialsLabel(), new KapuaIcon(IconSet.KEY));
         credentialsGrid = new CredentialGrid(null, currentSession);
     }
-    
+
     @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
         add(credentialsGrid);
     }
-    
-    public CredentialGrid getCredentialsGrid(){
+
+    public CredentialGrid getCredentialsGrid() {
         return credentialsGrid;
     }
-    
+
     @Override
     public void setEntity(GwtUser user) {
         super.setEntity(user);
         credentialsGrid.setSelectedUser(user);
     }
-    
+
     @Override
     protected void doRefresh() {
         credentialsGrid.refresh();

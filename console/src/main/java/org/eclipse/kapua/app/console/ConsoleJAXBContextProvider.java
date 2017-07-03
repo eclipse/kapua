@@ -70,7 +70,7 @@ public class ConsoleJAXBContextProvider implements JAXBContextProvider {
                         KapuaTmetadata.class,
                         TscalarImpl.class,
                         MetatypeXmlRegistry.class,
-                        
+
                         // Device Management Assets
                         DeviceAssets.class,
                         DeviceAssetXmlRegistry.class,

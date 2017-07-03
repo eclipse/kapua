@@ -129,7 +129,7 @@ public class LoginDialog extends Dialog {
         add(password);
 
         setFocusWidget(username);
-        
+
         gwtSettingService.getSsoEnabled(new AsyncCallback<Boolean>() {
 
             @Override
@@ -180,7 +180,7 @@ public class LoginDialog extends Dialog {
                 onSubmit();
             }
         });
-        
+
         ssoLogin = new Button(MSGS.loginSsoLogin());
         ssoLogin.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
@@ -208,7 +208,7 @@ public class LoginDialog extends Dialog {
             public void onSuccess(String result) {
                 Window.Location.assign(result);
             }
-            
+
         });
     }
 

@@ -27,10 +27,9 @@ import org.eclipse.kapua.service.device.management.response.KapuaResponseCode;
  */
 public final class TranslatorKuraKapuaUtils {
 
-    
     private TranslatorKuraKapuaUtils() {
     }
-    
+
     /**
      * Translate {@link DevicePosition} to {@link KapuaPosition}
      *

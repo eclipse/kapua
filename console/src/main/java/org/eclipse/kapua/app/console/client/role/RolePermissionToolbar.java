@@ -29,7 +29,7 @@ public class RolePermissionToolbar extends EntityCRUDToolbar<GwtRolePermission> 
     private RolePermissionAddDialog addDialog;
     private RolePermissionDeleteDialog deleteDialog;
     private RolePermissionGrid rolePermissionGrid;
-    
+
     public RolePermissionToolbar(GwtSession currentSession, RolePermissionGrid rolePermissionGrid) {
         super(currentSession);
         super.setEditButtonVisible(false);

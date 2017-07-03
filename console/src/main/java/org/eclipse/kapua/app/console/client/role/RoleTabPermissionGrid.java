@@ -27,7 +27,7 @@ public class RoleTabPermissionGrid extends KapuaTabItem<GwtRole> {
 
     private static final ConsoleRoleMessages MSGS = GWT.create(ConsoleRoleMessages.class);
     RolePermissionGrid rolePermissionGrid;
-    
+
     public RoleTabPermissionGrid(EntityView<GwtRolePermission> entityView, GwtSession session) {
         super(MSGS.roleTabPermissionGridTitle(), new KapuaIcon(IconSet.TASKS));
 

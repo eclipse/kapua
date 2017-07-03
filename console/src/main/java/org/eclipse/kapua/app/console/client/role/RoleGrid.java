@@ -34,11 +34,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class RoleGrid extends EntityGrid<GwtRole> {
 
     private final static ConsoleRoleMessages MSGS = GWT.create(ConsoleRoleMessages.class);
-    
+
     private static final GwtRoleServiceAsync GWT_ROLE_SERVICE = GWT.create(GwtRoleService.class);
-        
+
     private GwtRoleQuery query;
-    
+
     public RoleGrid(EntityView<GwtRole> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
         query = new GwtRoleQuery();
@@ -81,7 +81,7 @@ public class RoleGrid extends EntityGrid<GwtRole> {
 
         return columnConfigs;
     }
-    
+
     @Override
     public GwtQuery getFilterQuery() {
         return query;
@@ -89,7 +89,7 @@ public class RoleGrid extends EntityGrid<GwtRole> {
 
     @Override
     public void setFilterQuery(GwtQuery filterQuery) {
-        this.query = (GwtRoleQuery)filterQuery;
+        this.query = (GwtRoleQuery) filterQuery;
     }
 
 }

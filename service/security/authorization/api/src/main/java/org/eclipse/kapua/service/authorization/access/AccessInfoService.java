@@ -50,7 +50,7 @@ public interface AccessInfoService extends KapuaEntityService<AccessInfo, Access
      */
     public AccessInfo findByUserId(KapuaId scopeId, KapuaId userId)
             throws KapuaException;
-    
+
     /**
      * Finds the {@link AccessInfo} by scope identifier and {@link User} id.
      * 

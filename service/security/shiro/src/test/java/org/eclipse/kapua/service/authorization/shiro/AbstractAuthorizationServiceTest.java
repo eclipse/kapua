@@ -93,7 +93,7 @@ public abstract class AbstractAuthorizationServiceTest extends Assert {
     protected KapuaId generateId() {
         return new KapuaEid(BigInteger.valueOf(random.nextLong()));
     }
-    
+
     // Generate a KapuaId from an integer
     protected KapuaId generateId(Integer id) {
         return new KapuaEid(BigInteger.valueOf(id));

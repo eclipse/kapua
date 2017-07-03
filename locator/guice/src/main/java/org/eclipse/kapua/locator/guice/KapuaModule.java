@@ -45,15 +45,14 @@ public class KapuaModule extends AbstractModule {
 
     private String resourceName;
 
-    
     public KapuaModule() {
         this(SERVICE_RESOURCE);
     }
-    
+
     public KapuaModule(final String resourceName) {
         this.resourceName = resourceName;
     }
-    
+
     @Override
     protected void configure() {
         try {

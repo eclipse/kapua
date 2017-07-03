@@ -28,14 +28,14 @@ public interface GwtDeviceAssetService extends RemoteService {
 
     public List<GwtDeviceAsset> read(String scopeId, String deviceId, GwtDeviceAssets deviceAssets)
             throws GwtKapuaException;
-    
+
     public void write(GwtXSRFToken xsrfToken, String scopeIdString, String deviceIdString, GwtDeviceAsset deviceAsset)
             throws GwtKapuaException;
 
     public List<GwtDeviceAsset> get(PagingLoadConfig pagingLoadConfig, String scopeIdString, String deviceIdString, GwtDeviceAssets deviceAssets)
             throws GwtKapuaException;
-    
+
     public GwtDeviceAssetChannel trickGWT(GwtDeviceAssetChannel channel);
-            
-//    PagingLoadResult<GwtUser> query(PagingLoadConfig pagingLoadConfig, GwtAccessRoleQuery query) throws GwtKapuaException;
+
+    // PagingLoadResult<GwtUser> query(PagingLoadConfig pagingLoadConfig, GwtAccessRoleQuery query) throws GwtKapuaException;
 }

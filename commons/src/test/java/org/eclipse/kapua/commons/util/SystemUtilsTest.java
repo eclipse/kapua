@@ -26,7 +26,7 @@ public class SystemUtilsTest extends Assert {
         systemUtils.setAccessible(true);
         systemUtils.newInstance();
     }
-    
+
     @Test
     public void getBrokerURITest()
             throws URISyntaxException {

@@ -49,7 +49,7 @@ public class DeviceEventExporterCsv extends DeviceEventExporter {
     public void init(String scopeId)
             throws ServletException, IOException {
         this.scopeId = scopeId;
-        
+
         AccountService accountService = KapuaLocator.getInstance().getService(AccountService.class);
         Account account = null;
         try {
@@ -58,7 +58,7 @@ public class DeviceEventExporterCsv extends DeviceEventExporter {
         } catch (KapuaException e) {
             KapuaException.internalError(e);
         }
-        
+
         dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
 
         OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream(), Charset.forName("UTF-8"));
@@ -84,52 +84,52 @@ public class DeviceEventExporterCsv extends DeviceEventExporter {
 
             // Account name
             cols.add(accountName);
-            
-            //Event id
+
+            // Event id
             cols.add(deviceEvent.getId().toCompactId());
 
             // Created on
             cols.add(deviceEvent.getCreatedOn() != null ? dateFormat.format(deviceEvent.getCreatedOn()) : BLANK);
-            
+
             // Created by
             cols.add(deviceEvent.getCreatedBy() != null ? deviceEvent.getCreatedBy().toCompactId() : BLANK);
-            
+
             // Device id
             cols.add(deviceEvent.getDeviceId() != null ? deviceEvent.getDeviceId().toCompactId() : BLANK);
 
-            //Received on
+            // Received on
             cols.add(deviceEvent.getReceivedOn() != null ? dateFormat.format(deviceEvent.getReceivedOn()) : BLANK);
 
             // Sent on
             cols.add(deviceEvent.getSentOn() != null ? dateFormat.format(deviceEvent.getSentOn()) : BLANK);
-            
+
             if (deviceEvent.getPosition() != null) {
                 KapuaPosition eventPosition = deviceEvent.getPosition();
-                
+
                 // Position Longitude
                 cols.add(eventPosition.getLongitude() != null ? eventPosition.getLongitude().toString() : BLANK);
 
                 // Position Latitude
                 cols.add(eventPosition.getLatitude() != null ? eventPosition.getLatitude().toString() : BLANK);
-                
+
                 // Position Altitude
                 cols.add(eventPosition.getAltitude() != null ? eventPosition.getAltitude().toString() : BLANK);
-                
+
                 // Position Precision
                 cols.add(eventPosition.getPrecision() != null ? eventPosition.getPrecision().toString() : BLANK);
-                
+
                 // Position Heading
                 cols.add(eventPosition.getHeading() != null ? eventPosition.getHeading().toString() : BLANK);
-                
+
                 // Position Latitude
                 cols.add(eventPosition.getSpeed() != null ? eventPosition.getSpeed().toString() : BLANK);
-                
+
                 // Position Timestamp
                 cols.add(eventPosition.getTimestamp() != null ? eventPosition.getTimestamp().toString() : BLANK);
-                
+
                 // Position Satellites
                 cols.add(eventPosition.getSatellites() != null ? eventPosition.getSatellites().toString() : BLANK);
-                
+
                 // Position Status
                 cols.add(eventPosition.getStatus() != null ? eventPosition.getStatus().toString() : BLANK);
             } else {
@@ -143,19 +143,19 @@ public class DeviceEventExporterCsv extends DeviceEventExporter {
                 cols.add(BLANK);
                 cols.add(BLANK);
             }
-            
+
             // Resource
             cols.add(deviceEvent.getResource() != null ? deviceEvent.getResource() : BLANK);
-            
+
             // Action
             cols.add(deviceEvent.getAction() != null ? deviceEvent.getAction().toString() : BLANK);
-            
+
             // Response Code
             cols.add(deviceEvent.getResponseCode() != null ? deviceEvent.getResponseCode().toString() : BLANK);
-            
+
             // Event Message
             cols.add(deviceEvent.getEventMessage() != null ? deviceEvent.getEventMessage() : BLANK);
-            
+
             writer.writeNext(cols.toArray(new String[] {}));
         }
     }

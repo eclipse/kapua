@@ -60,7 +60,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
 
     protected static final GwtCredentialServiceAsync GWT_CREDENTIAL_SERVICE = GWT.create(GwtCredentialService.class);
     protected static final GwtUserServiceAsync GWT_USER_SERVICE = GWT.create(GwtUserService.class);
- 
+
     public CredentialAddDialog(GwtSession currentSession, GwtUser selectedUser) {
         super(currentSession);
         this.selectedUser = selectedUser;
@@ -91,7 +91,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
             }
         });
         credentialFormPanel.add(credentialType);
-        
+
         subject = new TextField<String>();
         subject.setValue(selectedUser.getUnescapedUsername());
         subject.disable();

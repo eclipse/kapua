@@ -68,7 +68,7 @@ public class AccountImpl extends AbstractKapuaNamedEntity implements Account {
     protected AccountImpl() {
         super();
     }
-    
+
     /**
      * Constructor
      *

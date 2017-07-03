@@ -38,7 +38,7 @@ public class FieldSortCriteria implements KapuaSortCriteria {
     /**
      * Field attribute name
      */
-    private String    attributeName;
+    private String attributeName;
 
     /**
      * Field sort order

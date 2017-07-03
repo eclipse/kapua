@@ -52,7 +52,7 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
     protected BasePagingLoader<PagingLoadResult<M>> entityLoader;
     protected ListStore<M> entityStore;
     protected PagingToolBar entityPagingToolbar;
-        
+
     protected EntityGrid(EntityView<M> entityView, GwtSession currentSession) {
         super(new FitLayout());
         //
@@ -157,14 +157,14 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
         entityLoader.load();
         entityPagingToolbar.enable();
     }
-    
+
     public void refresh(GwtQuery query) {
-//        m_filterPredicates = predicates;
+        // m_filterPredicates = predicates;
         setFilterQuery(query);
         entityLoader.load();
         entityPagingToolbar.enable();
     }
-    
+
     protected void selectionChangedEvent(M selectedItem) {
         if (parentEntityView != null) {
             parentEntityView.setSelectedEntity(selectedItem);
@@ -180,6 +180,6 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
     }
 
     protected abstract GwtQuery getFilterQuery();
-    
+
     protected abstract void setFilterQuery(GwtQuery filterQuery);
 }

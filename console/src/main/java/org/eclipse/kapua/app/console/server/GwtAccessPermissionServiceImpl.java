@@ -92,7 +92,7 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
             KapuaExceptionHandler.handle(t);
         }
     }
-    
+
     @Override
     public PagingLoadResult<GwtAccessPermission> findByUserId(PagingLoadConfig loadConfig, String scopeShortId, String userShortId) throws GwtKapuaException {
         //
@@ -109,7 +109,7 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
                 KapuaId userId = GwtKapuaModelConverter.convert(userShortId);
 
                 AccessInfo accessInfo = accessInfoService.findByUserId(scopeId, userId);
-                
+
                 if (accessInfo != null) {
                     AccessPermissionListResult accessPermissionList = accessPermissionService.findByAccessInfoId(scopeId, accessInfo.getId());
 

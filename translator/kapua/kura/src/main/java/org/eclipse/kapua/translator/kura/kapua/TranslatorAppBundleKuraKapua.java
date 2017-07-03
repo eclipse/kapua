@@ -51,19 +51,18 @@ public class TranslatorAppBundleKuraKapua extends AbstractSimpleTranslatorRespon
 
     private static final String CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
     private static final Map<BundleMetrics, DeviceBundleAppProperties> METRICS_DICTIONARY;
-    
+
     static {
         METRICS_DICTIONARY = new HashMap<>();
 
         METRICS_DICTIONARY.put(BundleMetrics.APP_ID, DeviceBundleAppProperties.APP_NAME);
         METRICS_DICTIONARY.put(BundleMetrics.APP_VERSION, DeviceBundleAppProperties.APP_VERSION);
     }
-    
-    
+
     public TranslatorAppBundleKuraKapua() {
         super(BundleResponseMessage.class);
     }
-    
+
     protected BundleResponseChannel translateChannel(KuraResponseChannel kuraChannel) throws KapuaException {
 
         if (!CONTROL_MESSAGE_CLASSIFIER.equals(kuraChannel.getMessageClassification())) {

@@ -18,7 +18,6 @@ import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnection
 
 import com.google.gwt.user.client.Element;
 
-
 public class ConnectionGridToolbar extends EntityCRUDToolbar<GwtDeviceConnection> {
 
     public ConnectionGridToolbar(GwtSession currentSession) {
@@ -27,22 +26,22 @@ public class ConnectionGridToolbar extends EntityCRUDToolbar<GwtDeviceConnection
         setEditButtonVisible(false);
         setDeleteButtonVisible(false);
     }
-    
+
     @Override
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
     }
-    
+
     @Override
     protected KapuaDialog getAddDialog() {
         return null;
     }
-    
+
     @Override
     protected KapuaDialog getEditDialog() {
         return null;
     }
-    
+
     @Override
     protected KapuaDialog getDeleteDialog() {
         return null;

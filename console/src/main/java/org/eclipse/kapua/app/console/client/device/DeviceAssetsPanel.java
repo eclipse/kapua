@@ -247,7 +247,7 @@ public class DeviceAssetsPanel extends LayoutContainer {
 
     private Field<?> paintChannel(GwtDeviceAssetChannel channel) {
         Field<?> field = null;
-        switch(channel.getTypeEnum()) {
+        switch (channel.getTypeEnum()) {
         case LONG:
         case DOUBLE:
         case FLOAT:
@@ -292,7 +292,7 @@ public class DeviceAssetsPanel extends LayoutContainer {
         field.setFieldLabel(channel.getName() + " (" + channel.getType() + " - " + channel.getMode() + ")");
         field.addPlugin(dirtyPlugin);
 
-        switch(channel.getTypeEnum()) {
+        switch (channel.getTypeEnum()) {
         case LONG:
             field.setPropertyEditorType(Long.class);
             if (channel.getValue() != null) {
@@ -344,9 +344,9 @@ public class DeviceAssetsPanel extends LayoutContainer {
         radioGroup.setFieldLabel(channel.getName() + " (" + channel.getType() + " - " + channel.getMode() + ")");
         radioGroup.add(radioTrue);
         radioGroup.add(radioFalse);
-        
+
         radioGroup.addPlugin(dirtyPlugin);
-        
+
         boolean bool = Boolean.parseBoolean(channel.getValue());
         if (bool) {
             radioTrue.setValue(true);
@@ -357,6 +357,6 @@ public class DeviceAssetsPanel extends LayoutContainer {
         }
 
         return radioGroup;
-    }    
+    }
 
 }

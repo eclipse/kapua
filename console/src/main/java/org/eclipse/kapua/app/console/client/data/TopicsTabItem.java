@@ -52,7 +52,6 @@ public class TopicsTabItem extends TabItem {
 
     private MetricsTable metricsTable;
     private ResultsTable resultsTable;
-    
 
     public TopicsTabItem(GwtSession currentSession) {
         super(MSGS.topicTabItemTitle(), null);
@@ -78,7 +77,7 @@ public class TopicsTabItem extends TabItem {
         tablesLayout.setMargins(new Margins(0, 5, 0, 5));
         tablesLayout.setMinSize(250);
         add(tables, tablesLayout);
-        
+
         BorderLayoutData refreshButtonLayout = new BorderLayoutData(LayoutRegion.NORTH, 0.1f);
         refreshButtonLayout.setMargins(new Margins(5));
         refreshButton = new Button(MSGS.refresh(), new KapuaIcon(IconSet.REFRESH), new SelectionListener<ButtonEvent>() {
@@ -96,7 +95,7 @@ public class TopicsTabItem extends TabItem {
         LayoutContainer refreshButtonContainer = new LayoutContainer(refreshButtonTL);
         refreshButtonContainer.add(refreshButton, new TableData());
         tables.add(refreshButtonContainer, refreshButtonLayout);
-        
+
         BorderLayoutData topicLayout = new BorderLayoutData(LayoutRegion.WEST, 0.5f);
         topicTable = new TopicsTable(currentSession);
         topicTable.setBorders(false);
@@ -144,7 +143,7 @@ public class TopicsTabItem extends TabItem {
         LayoutContainer queryButtonContainer = new LayoutContainer(queryButtonTL);
         queryButtonContainer.add(queryButton, new TableData());
         tables.add(queryButtonContainer, queryButtonLayout);
-        
+
         BorderLayoutData resultsLayout = new BorderLayoutData(LayoutRegion.SOUTH, 0.5f);
         resultsLayout.setSplit(true);
 

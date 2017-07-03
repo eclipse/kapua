@@ -24,10 +24,9 @@ import org.eclipse.kapua.service.device.call.message.kura.KuraPosition;
  */
 public final class TranslatorKapuaKuraUtils {
 
-
     private TranslatorKapuaKuraUtils() {
     }
-    
+
     /**
      * Translate {@link DevicePosition} to {@link KapuaPosition}
      *

@@ -19,7 +19,7 @@ package org.eclipse.kapua.service.datastore.client.model;
 public class IndexExistsResponse {
 
     private boolean indexExists;
-    
+
     /**
      * Default constructor
      * 
@@ -28,7 +28,7 @@ public class IndexExistsResponse {
     public IndexExistsResponse(boolean indexExists) {
         this.indexExists = indexExists;
     }
-    
+
     /**
      * Get the index exists
      * 

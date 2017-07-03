@@ -13,25 +13,24 @@ package org.eclipse.kapua.test.authentication;
 
 import org.eclipse.kapua.service.authentication.RefreshTokenCredentials;
 
-
 public class RefreshTokenCredentialsMock implements RefreshTokenCredentials {
 
     private String tokenId;
     private String refreshToken;
-     
+
     public RefreshTokenCredentialsMock(String tokenId, String refreshToken) {
         this.tokenId = tokenId;
         this.refreshToken = refreshToken;
     }
-    
+
     public String getTokenId() {
         return tokenId;
     }
-    
+
     public void setTokenId(String tokenId) {
         this.tokenId = tokenId;
     }
-    
+
     public String getRefreshToken() {
         return refreshToken;
     }
@@ -39,5 +38,5 @@ public class RefreshTokenCredentialsMock implements RefreshTokenCredentials {
     public void setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
-    
+
 }

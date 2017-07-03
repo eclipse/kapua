@@ -17,18 +17,17 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.Element;
 
 public class ResultsChart extends LayoutContainer {
-    
+
     GwtSession currentSession;
-    
-    public ResultsChart(GwtSession currentSession){
+
+    public ResultsChart(GwtSession currentSession) {
         this.currentSession = currentSession;
     }
-    
+
     @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
-        //Chart chart = new Chart("open-flash-chart.swf");
+        // Chart chart = new Chart("open-flash-chart.swf");
     }
-    
-    
+
 }

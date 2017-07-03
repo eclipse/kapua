@@ -32,11 +32,10 @@ public class JwtCredentialsMatcher implements CredentialsMatcher {
     private static final Logger logger = LoggerFactory.getLogger(JwtCredentialsMatcher.class);
     private JwtProcessor jwtProcessor;
 
-    
     public JwtCredentialsMatcher(final JwtProcessor jwtProcessor) {
         this.jwtProcessor = jwtProcessor;
     }
-    
+
     @Override
     public boolean doCredentialsMatch(AuthenticationToken authenticationToken, AuthenticationInfo authenticationInfo) {
 
@@ -54,7 +53,7 @@ public class JwtCredentialsMatcher implements CredentialsMatcher {
         }
 
         // extract credentials
-        
+
         final Credential credentials = (Credential) credentialsValue;
 
         // Match token with info

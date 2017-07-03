@@ -231,8 +231,8 @@ public class MessageSchema {
 
         ObjectNode positionNode = SchemaUtil.getField(
                 new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_OBJECT), new KeyValueEntry(KEY_ENABLED, true),
-                        new KeyValueEntry(KEY_DYNAMIC, false), new KeyValueEntry(KEY_INCLUDE_IN_ALL, false)});
-                
+                        new KeyValueEntry(KEY_DYNAMIC, false), new KeyValueEntry(KEY_INCLUDE_IN_ALL, false) });
+
         ObjectNode positionPropertiesNode = SchemaUtil.getObjectNode();
         ObjectNode messagePositionPropLocation = SchemaUtil.getField(
                 new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_GEO_POINT) });
@@ -263,7 +263,7 @@ public class MessageSchema {
         messageNode.set(FIELD_NAME_PROPERTIES, propertiesNode);
 
         ObjectNode messageMetrics = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_OBJECT), new KeyValueEntry(KEY_ENABLED, true), 
+                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_OBJECT), new KeyValueEntry(KEY_ENABLED, true),
                         new KeyValueEntry(KEY_DYNAMIC, true), new KeyValueEntry(KEY_INCLUDE_IN_ALL, false) });
         propertiesNode.set(MESSAGE_METRICS, messageMetrics);
 

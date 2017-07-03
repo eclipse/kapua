@@ -29,29 +29,29 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class ChangePasswordDialog extends SimpleDialog {
 
     GwtCredentialServiceAsync credentialService = GWT.create(GwtCredentialService.class);
-    
+
     private TextField<String> oldPassword;
     private TextField<String> newPassword;
     private TextField<String> confirmPassword;
-    
+
     private GwtSession currentSession;
-    
+
     public ChangePasswordDialog(GwtSession currentSession) {
         this.currentSession = currentSession;
     }
-    
+
     @Override
     public void createBody() {
         FormPanel credentialFormPanel = new FormPanel(FORM_LABEL_WIDTH);
         DialogUtils.resizeDialog(this, 400, 200);
-        
+
         oldPassword = new TextField<String>();
         oldPassword.setAllowBlank(false);
         oldPassword.setName("oldPassword");
         oldPassword.setFieldLabel("* " + MSGS.oldPassword());
         oldPassword.setPassword(true);
         credentialFormPanel.add(oldPassword);
-        
+
         newPassword = new TextField<String>();
         newPassword.setAllowBlank(false);
         newPassword.setName("newPassword");
@@ -67,36 +67,37 @@ public class ChangePasswordDialog extends SimpleDialog {
         confirmPassword.setValidator(new ConfirmPasswordFieldValidator(confirmPassword, newPassword));
         confirmPassword.setPassword(true);
         credentialFormPanel.add(confirmPassword);
-        
+
         bodyPanel.add(credentialFormPanel);
     }
 
     @Override
-    protected void addListeners() {        
+    protected void addListeners() {
     }
 
     @Override
     public void submit() {
-        credentialService.changePassword(xsrfToken, oldPassword.getValue(), newPassword.getValue(), currentSession.getUser().getId(), currentSession.getSelectedAccount().getId(), new AsyncCallback<Void>() {
+        credentialService.changePassword(xsrfToken, oldPassword.getValue(), newPassword.getValue(), currentSession.getUser().getId(), currentSession.getSelectedAccount().getId(),
+                new AsyncCallback<Void>() {
 
-            @Override
-            public void onFailure(Throwable caught) {
-                unmask();
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        unmask();
 
-                submitButton.enable();
-                cancelButton.enable();
-                status.hide();
-                
-                ConsoleInfo.display("Error", MSGS.changePasswordError(caught.getLocalizedMessage()));
-            }
+                        submitButton.enable();
+                        cancelButton.enable();
+                        status.hide();
 
-            @Override
-            public void onSuccess(Void result) {
-                hide();
-                
-                ConsoleInfo.display("Info", MSGS.changePasswordConfirmation());
-            }
-        });
+                        ConsoleInfo.display("Error", MSGS.changePasswordError(caught.getLocalizedMessage()));
+                    }
+
+                    @Override
+                    public void onSuccess(Void result) {
+                        hide();
+
+                        ConsoleInfo.display("Info", MSGS.changePasswordConfirmation());
+                    }
+                });
     }
 
     @Override
@@ -115,6 +116,5 @@ public class ChangePasswordDialog extends SimpleDialog {
         // TODO Auto-generated method stub
         return null;
     }
-
 
 }

@@ -19,18 +19,18 @@ import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
 
 import com.google.gwt.user.client.Element;
 
-
 public class AccountChildUserTab extends KapuaTabItem<GwtAccount> {
-    
+
     protected AccountChildUserGrid userGrid;
     protected GwtSession currentSession;
+
     public AccountChildUserTab(GwtSession currentSession) {
         super("Users", new KapuaIcon(IconSet.USERS));
         this.currentSession = currentSession;
         userGrid = new AccountChildUserGrid(currentSession);
-        
+
     }
-    
+
     @Override
     public void setEntity(GwtAccount t) {
         super.setEntity(t);
@@ -42,7 +42,7 @@ public class AccountChildUserTab extends KapuaTabItem<GwtAccount> {
         super.onRender(parent, index);
         this.add(userGrid);
     }
-    
+
     @Override
     protected void doRefresh() {
         userGrid.refresh();

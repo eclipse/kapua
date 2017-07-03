@@ -58,8 +58,7 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
         METRICS_DICTIONARY.put(SnapshotMetrics.APP_ID, DeviceSnapshotAppProperties.APP_NAME);
         METRICS_DICTIONARY.put(SnapshotMetrics.APP_VERSION, DeviceSnapshotAppProperties.APP_VERSION);
     }
-    
-    
+
     /**
      * Constructor
      */

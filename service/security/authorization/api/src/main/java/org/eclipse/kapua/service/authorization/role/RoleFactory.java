@@ -20,7 +20,7 @@ import org.eclipse.kapua.model.KapuaEntityFactory;
  *
  */
 public interface RoleFactory extends KapuaEntityFactory<Role, RoleCreator, RoleQuery, RoleListResult> {
-    
+
     /**
      * Instantiate a new {@link RolePermission} implementing object.
      * 

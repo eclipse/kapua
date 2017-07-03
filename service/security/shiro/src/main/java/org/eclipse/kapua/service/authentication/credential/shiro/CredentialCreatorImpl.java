@@ -36,15 +36,15 @@ public class CredentialCreatorImpl extends AbstractKapuaEntityCreator<Credential
     private Date expirationDate;
     private CredentialStatus credentialStatus;
 
-
     /**
      * Constructor
-     *  @param scopeId
+     * 
+     * @param scopeId
      *            scope identifier
      * @param userId
      *            user identifier
      * @param credentialType
- *            credential type (see {@link CredentialType} for the allowed values)
+     *            credential type (see {@link CredentialType} for the allowed values)
      * @param credentialKey
      * @param credentialStatus
      * @param expirationDate
@@ -59,7 +59,7 @@ public class CredentialCreatorImpl extends AbstractKapuaEntityCreator<Credential
         this.credentialStatus = credentialStatus;
         this.expirationDate = expirationDate;
     }
-    
+
     public CredentialCreatorImpl(KapuaId scopeId) {
         super(scopeId);
     }
@@ -68,7 +68,7 @@ public class CredentialCreatorImpl extends AbstractKapuaEntityCreator<Credential
     public KapuaId getUserId() {
         return userId;
     }
-    
+
     public void setUserId(KapuaId userId) {
         this.userId = userId;
     }
@@ -77,7 +77,7 @@ public class CredentialCreatorImpl extends AbstractKapuaEntityCreator<Credential
     public CredentialType getCredentialType() {
         return credentialType;
     }
-    
+
     public void setCredentialType(CredentialType credentialType) {
         this.credentialType = credentialType;
     }
@@ -86,7 +86,7 @@ public class CredentialCreatorImpl extends AbstractKapuaEntityCreator<Credential
     public String getCredentialPlainKey() {
         return credentialKey;
     }
-    
+
     @Override
     public void setCredentialPlainKey(String credentialKey) {
         this.credentialKey = credentialKey;

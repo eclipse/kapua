@@ -40,7 +40,7 @@ public abstract class AbstractTranslatorKuraKapua<TO_C extends KapuaChannel, TO_
 
         return translateMessage(kuraMessage, account);
     }
-    
+
     protected abstract TO_M translateMessage(KuraResponseMessage kuraMessage, Account account) throws KapuaException;
 
     protected abstract TO_C translateChannel(KuraResponseChannel kuraChannel) throws KapuaException;

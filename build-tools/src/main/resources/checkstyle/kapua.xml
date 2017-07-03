@@ -69,8 +69,15 @@
             <property name="tokens" value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, STATIC_INIT, INSTANCE_INIT, METHOD_DEF, CTOR_DEF"/>
         </module>
 
-        <module name="GenericWhitespace"/>
-        <module name="MethodParamPad"/>
+        <module name="GenericWhitespace" />
+        <module name="MethodParamPad" />
+        <module name="NoLineWrap" />
+        <module name="SingleSpaceSeparator" />
+
+        <module name="RegexpSinglelineJava">
+            <property name="format" value="^\s+$"/>
+            <property name="message" value="Empty lines must not contain whitespaces"/>
+        </module>
 
     </module>
 

@@ -27,7 +27,7 @@ import org.eclipse.kapua.service.account.Organization;
  */
 @KapuaProvider
 public class AccountFactoryImpl implements AccountFactory {
-    
+
     @Override
     public AccountCreator newCreator(KapuaId scopeId) {
         return new AccountCreatorImpl(scopeId, null);

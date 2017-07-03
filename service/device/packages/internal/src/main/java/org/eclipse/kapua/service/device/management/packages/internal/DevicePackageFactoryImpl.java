@@ -51,7 +51,7 @@ public class DevicePackageFactoryImpl implements DevicePackageFactory {
     public DevicePackageBundleInfo newDevicePackageBundleInfo() {
         return new DevicePackageBundleInfoImpl();
     }
-    
+
     @Override
     public DevicePackageBundleInfos newDevicePackageBundleInfos() {
         return new DevicePackageBundleInfosImpl();

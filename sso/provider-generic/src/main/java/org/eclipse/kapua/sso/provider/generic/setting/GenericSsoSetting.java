@@ -22,7 +22,7 @@ public class GenericSsoSetting extends AbstractKapuaSetting<GenericSsoSettingKey
     private GenericSsoSetting() {
         super(GENERIC_SSO_SETTING_RESOURCE);
     }
-    
+
     GenericSsoSetting(final String resourceName) {
         super(resourceName);
     }

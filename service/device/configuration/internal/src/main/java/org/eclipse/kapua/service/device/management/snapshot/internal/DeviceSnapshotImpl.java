@@ -23,22 +23,22 @@ public class DeviceSnapshotImpl implements DeviceSnapshot {
 
     private String id;
     private Long timestamp;
-    
+
     @Override
     public String getId() {
         return id;
     }
-    
+
     @Override
     public void setId(String id) {
         this.id = id;
     }
-    
+
     @Override
     public Long getTimestamp() {
         return timestamp;
     }
-    
+
     @Override
     public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;

@@ -41,20 +41,19 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class AssetDetailsTable extends LayoutContainer{
-   
+public class AssetDetailsTable extends LayoutContainer {
+
     private GwtSession currentSession;
     private ContentPanel tableContainer;
     private ToolBar toolBar;
     private ExportButton readAll, writeAll;
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
-    
-    
-    public AssetDetailsTable(GwtSession currentSession){
+
+    public AssetDetailsTable(GwtSession currentSession) {
         this.currentSession = currentSession;
     }
-    
-    private void initDetailsTable(){
+
+    private void initDetailsTable() {
         tableContainer = new ContentPanel();
         tableContainer.setBorders(false);
         tableContainer.setBodyBorder(false);
@@ -64,9 +63,9 @@ public class AssetDetailsTable extends LayoutContainer{
         initDetailsGrid();
         tableContainer.setTopComponent(toolBar);
     }
-    
-    private void initDetailsGrid(){
-        
+
+    private void initDetailsGrid() {
+
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
         ColumnConfig column = new ColumnConfig("Name", MSGS.assetName(), 150);
         column.setAlignment(HorizontalAlignment.CENTER);
@@ -80,30 +79,31 @@ public class AssetDetailsTable extends LayoutContainer{
         ColumnConfig action = new ColumnConfig("Action", MSGS.assetAction(), 150);
         action.setAlignment(HorizontalAlignment.CENTER);
         configs.add(action);
-        
-        RpcProxy<PagingLoadResult<GwtChannel>> proxy = new RpcProxy<PagingLoadResult<GwtChannel>>(){
+
+        RpcProxy<PagingLoadResult<GwtChannel>> proxy = new RpcProxy<PagingLoadResult<GwtChannel>>() {
 
             @Override
             protected void load(Object loadConfig,
-                    AsyncCallback<PagingLoadResult<GwtChannel>> callback) {                
-            }};
-            ListLoader<ListLoadResult<GwtChannel>> loader = new BaseListLoader<ListLoadResult<GwtChannel>>(proxy);
-            SwappableListStore<GwtChannel> store = new SwappableListStore<GwtChannel>(loader);
-            Grid<GwtChannel> grid = new Grid<GwtChannel>(store, new ColumnModel(configs));
-            tableContainer.add(grid);
-            toolBar = new ToolBar();
-            Label label = new Label(MSGS.assetLabel());
-            toolBar.add(label);
-            toolBar.add(new SeparatorToolItem());
-            toolBar.add(new FillToolItem());       
-            readAll = new ExportButton();
-            readAll.setText(MSGS.assetReadAll());
-            toolBar.add(readAll);
-            writeAll = new ExportButton();
-            writeAll.setText(MSGS.assetWriteAll());
-            toolBar.add(writeAll);
+                    AsyncCallback<PagingLoadResult<GwtChannel>> callback) {
+            }
+        };
+        ListLoader<ListLoadResult<GwtChannel>> loader = new BaseListLoader<ListLoadResult<GwtChannel>>(proxy);
+        SwappableListStore<GwtChannel> store = new SwappableListStore<GwtChannel>(loader);
+        Grid<GwtChannel> grid = new Grid<GwtChannel>(store, new ColumnModel(configs));
+        tableContainer.add(grid);
+        toolBar = new ToolBar();
+        Label label = new Label(MSGS.assetLabel());
+        toolBar.add(label);
+        toolBar.add(new SeparatorToolItem());
+        toolBar.add(new FillToolItem());
+        readAll = new ExportButton();
+        readAll.setText(MSGS.assetReadAll());
+        toolBar.add(readAll);
+        writeAll = new ExportButton();
+        writeAll.setText(MSGS.assetWriteAll());
+        toolBar.add(writeAll);
     }
-    
+
     @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
@@ -112,6 +112,5 @@ public class AssetDetailsTable extends LayoutContainer{
         initDetailsTable();
         add(tableContainer);
     }
-    
-   
+
 }

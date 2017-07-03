@@ -31,7 +31,7 @@ public class UserTabItemAccessRole extends KapuaTabItem<GwtUser> {
         super(MSGS.gridUserTabRolesLabel(), new KapuaIcon(IconSet.STREET_VIEW));
         accessRoleGrid = new UserTabAccessRoleGrid(null, currentSession);
     }
-    
+
     public UserTabAccessRoleGrid getAccessRoleGrid() {
         return accessRoleGrid;
     }
@@ -47,10 +47,10 @@ public class UserTabItemAccessRole extends KapuaTabItem<GwtUser> {
         super.setEntity(gwtUser);
         if (gwtUser != null) {
             accessRoleGrid.setUserId(gwtUser.getId());
-            ((UserTabAccessRoleToolbar)accessRoleGrid.getToolbar()).setUserId(gwtUser.getId());
+            ((UserTabAccessRoleToolbar) accessRoleGrid.getToolbar()).setUserId(gwtUser.getId());
         } else {
             accessRoleGrid.setUserId(null);
-            ((UserTabAccessRoleToolbar)accessRoleGrid.getToolbar()).setUserId(null);
+            ((UserTabAccessRoleToolbar) accessRoleGrid.getToolbar()).setUserId(null);
         }
     }
 

@@ -23,18 +23,20 @@ public class PasswordUpdateFieldValidator extends PasswordFieldValidator {
         super(passwordField);
 
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.kapua.app.console.client.util.PasswordFieldValidator#validate(com.extjs.gxt.ui.client.widget.form.Field, java.lang.String)
      */
     @Override
     public String validate(Field<?> field, String value) {
-        
-        if(value == null || value.equals("")){
+
+        if (value == null || value.equals("")) {
             textField.setRegex(null);
             return null;
         }
-        
+
         return super.validate(field, value);
     }
 
