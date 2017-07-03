@@ -17,8 +17,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class KapuaEidTest {
+
     @Test
-    public void testIdOne ()  {
+    public void testIdOne() {
         KapuaEid one = new KapuaEid(BigInteger.ONE);
         System.out.println(one.toCompactId());
         Assert.assertEquals("AQ", one.toCompactId());

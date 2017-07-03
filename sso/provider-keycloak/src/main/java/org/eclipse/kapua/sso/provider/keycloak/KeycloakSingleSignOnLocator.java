@@ -18,7 +18,7 @@ public class KeycloakSingleSignOnLocator implements ProviderLocator {
 
     @Override
     public SingleSignOnService getService() {
-        return new KeycloakSingleSignOnService ();
+        return new KeycloakSingleSignOnService();
     }
 
     @Override

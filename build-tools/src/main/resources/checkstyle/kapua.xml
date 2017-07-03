@@ -70,6 +70,7 @@
         </module>
 
         <module name="GenericWhitespace"/>
+        <module name="MethodParamPad"/>
 
     </module>
 

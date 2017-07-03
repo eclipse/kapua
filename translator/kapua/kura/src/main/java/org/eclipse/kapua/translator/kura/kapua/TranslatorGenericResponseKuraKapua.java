@@ -25,7 +25,7 @@ import org.eclipse.kapua.service.device.management.request.message.response.Gene
 import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
 import org.eclipse.kapua.translator.exception.TranslatorException;
 
-public class TranslatorGenericResponseKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<GenericResponseChannel, GenericResponsePayload, GenericResponseMessage>{
+public class TranslatorGenericResponseKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<GenericResponseChannel, GenericResponsePayload, GenericResponseMessage> {
 
     private static final String CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
 
@@ -55,7 +55,8 @@ public class TranslatorGenericResponseKuraKapua extends AbstractSimpleTranslator
         return genericResponseChannel;
     }
 
-    @Override protected GenericResponsePayload translatePayload(KuraResponsePayload kuraPayload) throws KapuaException {
+    @Override
+    protected GenericResponsePayload translatePayload(KuraResponsePayload kuraPayload) throws KapuaException {
         GenericResponsePayload genericResponsePayload = FACTORY.newResponsePayload();
         genericResponsePayload.setBody(kuraPayload.getBody());
         genericResponsePayload.setMetrics(kuraPayload.getMetrics());

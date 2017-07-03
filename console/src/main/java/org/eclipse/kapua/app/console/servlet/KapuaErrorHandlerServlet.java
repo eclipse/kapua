@@ -96,7 +96,6 @@ public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
             "   </body>" +
             "</html>";
 
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -196,13 +195,13 @@ public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
     }
 
     private static String processTemplate(Map<String, ?> properties, String template) {
-        final ReplaceSource mapSource = StringReplacer.newSource ( properties );
-        return StringReplacer.replace ( template, new ReplaceSource() {
-            
+        final ReplaceSource mapSource = StringReplacer.newSource(properties);
+        return StringReplacer.replace(template, new ReplaceSource() {
+
             @Override
             public String replace(String context, String key) {
                 return htmlEscaper().escape(mapSource.replace(context, key));
             }
-        }, StringReplacer.DEFAULT_PATTERN );
+        }, StringReplacer.DEFAULT_PATTERN);
     }
 }

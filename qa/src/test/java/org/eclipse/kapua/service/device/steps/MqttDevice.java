@@ -188,7 +188,7 @@ public class MqttDevice {
                 logger.info("Message arrived in client with topic: " + topic);
 
                 clientReceivedMqttMessage.clear();
-                Map<String, String > topicPayload = new HashMap<>();
+                Map<String, String> topicPayload = new HashMap<>();
                 topicPayload.put(topic, new String(mqttMessage.getPayload()));
                 clientReceivedMqttMessage.put(clientId, topicPayload);
             }
@@ -207,7 +207,7 @@ public class MqttDevice {
      */
     public void mqttClientsDisconnect() {
 
-        for (Map.Entry<String, MqttClient>mqttClient: mqttClients.entrySet()) {
+        for (Map.Entry<String, MqttClient> mqttClient : mqttClients.entrySet()) {
             try {
                 try (final Suppressed<Exception> s = Suppressed.withException()) {
                     s.run(mqttClient.getValue()::disconnect);

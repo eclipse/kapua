@@ -17,8 +17,7 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 public class PasswordFieldValidator extends TextFieldValidator {
 
     public PasswordFieldValidator(TextField<String> passwordField) {
-
-        super (passwordField, FieldType.PASSWORD);
+        super(passwordField, FieldType.PASSWORD);
         textField.setRegex(null);
     }
 

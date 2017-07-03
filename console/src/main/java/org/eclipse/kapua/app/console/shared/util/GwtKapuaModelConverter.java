@@ -128,9 +128,9 @@ import com.extjs.gxt.ui.client.data.PagingLoadConfig;
  */
 public class GwtKapuaModelConverter {
 
-    private GwtKapuaModelConverter (){
+    private GwtKapuaModelConverter() {
     }
-    
+
     /**
      * Converts a {@link GwtRoleQuery} into a {@link Role} object for backend usage
      *

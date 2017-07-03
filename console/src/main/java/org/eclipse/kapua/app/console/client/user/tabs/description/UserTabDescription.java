@@ -22,23 +22,24 @@ import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class UserTabDescription extends EntityDescriptionTabItem<GwtUser>{
-    
+public class UserTabDescription extends EntityDescriptionTabItem<GwtUser> {
+
     public UserTabDescription() {
     }
-    
+
     private static final GwtUserServiceAsync GWT_USER_SERVICE = GWT.create(GwtUserService.class);
+
     @Override
     protected RpcProxy<ListLoadResult<GwtGroupedNVPair>> getDataProxy() {
-       return new RpcProxy<ListLoadResult<GwtGroupedNVPair>>() {
+        return new RpcProxy<ListLoadResult<GwtGroupedNVPair>>() {
 
-        @Override
-        protected void load(Object loadConfig,
-                AsyncCallback<ListLoadResult<GwtGroupedNVPair>> callback) {
-           GWT_USER_SERVICE.getUserDescription(selectedEntity.getScopeId(), selectedEntity.getId(), callback);
-            
-        }
-    };
+            @Override
+            protected void load(Object loadConfig,
+                    AsyncCallback<ListLoadResult<GwtGroupedNVPair>> callback) {
+                GWT_USER_SERVICE.getUserDescription(selectedEntity.getScopeId(), selectedEntity.getId(), callback);
+
+            }
+        };
     }
 
 }
