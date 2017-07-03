@@ -17,11 +17,10 @@ import org.eclipse.kapua.service.device.call.message.DeviceMessage;
 
 /**
  * Kura device message implementation.
- * 
- * @since 1.0
- * 
  */
 public class KuraMessage<C extends KuraChannel, P extends KuraPayload> implements DeviceMessage<C, P> {
+
+    private static final long serialVersionUID = 1L;
 
     protected C channel;
     protected Date timestamp;
@@ -73,11 +72,13 @@ public class KuraMessage<C extends KuraChannel, P extends KuraPayload> implement
         this.timestamp = timestamp;
     }
 
-    @Override public void setChannel(C channel) {
+    @Override
+    public void setChannel(C channel) {
         this.channel = channel;
     }
 
-    @Override public void setPayload(P payload) {
+    @Override
+    public void setPayload(P payload) {
         this.payload = payload;
     }
 }
