@@ -28,17 +28,17 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final GenericRequestFactory FACTORY = LOCATOR.getFactory(GenericRequestFactory.class);
 
-    private Class<TO_M> messageClazz;
+    private final Class<TO_M> messageClazz;
 
-    public AbstractSimpleTranslatorResponseKuraKapua(Class<TO_M> messageClazz) {
+    public AbstractSimpleTranslatorResponseKuraKapua(final Class<TO_M> messageClazz) {
         this.messageClazz = messageClazz;
     }
 
     @Override
     protected TO_M createMessage() throws KapuaException {
         try {
-            if (messageClazz.equals(GenericResponseMessage.class)) {
-                return (TO_M)FACTORY.newResponseMessage();
+            if (this.messageClazz.equals(GenericResponseMessage.class)) {
+                return this.messageClazz.cast(FACTORY.newResponseMessage());
             } else {
                 return this.messageClazz.newInstance();
             }
