@@ -16,6 +16,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
+import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
 /**
  * DeviceConnectionService exposes APIs to retrieve Device connections under a scope.
@@ -24,7 +25,8 @@ import org.eclipse.kapua.service.KapuaUpdatableEntityService;
  * @since 1.0
  */
 public interface DeviceConnectionService extends KapuaEntityService<DeviceConnection, DeviceConnectionCreator>,
-        KapuaUpdatableEntityService<DeviceConnection> {
+        KapuaUpdatableEntityService<DeviceConnection>,
+        KapuaConfigurableService {
 
     /**
      * Find the connection by client identifier

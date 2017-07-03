@@ -185,12 +185,12 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
     private void populateEditDialog(GwtDeviceConnection gwtDeviceConnection) {
         if (gwtDeviceConnection.getUserId() != null) {
             GWT_USER_SERVICE.find(currentSession.getSelectedAccount().getId(), gwtDeviceConnection.getUserId(), new AsyncCallback<GwtUser>() {
-                
+
                 @Override
                 public void onFailure(Throwable caught) {
                     FailureHandler.handle(caught);
                 }
-                
+
                 @Override
                 public void onSuccess(GwtUser gwtUser) {
                     if (gwtUser != null) {
