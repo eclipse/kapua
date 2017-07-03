@@ -32,7 +32,7 @@ public class ChannelRequestPayload extends KapuaPayloadImpl implements KapuaRequ
         int i = 0;
         for (String channelName : channelNames) {
             if (channelName != null) {
-                getProperties().put(CHANNEL_NAME_PREFIX_DOT + i++, channelName);
+                getMetrics().put(CHANNEL_NAME_PREFIX_DOT + i++, channelName);
             }
         }
     }
@@ -42,7 +42,7 @@ public class ChannelRequestPayload extends KapuaPayloadImpl implements KapuaRequ
         List<String> names = new ArrayList<>();
         String name;
         do {
-            name = (String) getProperties().get(CHANNEL_NAME_PREFIX_DOT + i++);
+            name = (String) getMetrics().get(CHANNEL_NAME_PREFIX_DOT + i++);
             if (name != null) {
                 names.add(name);
             }

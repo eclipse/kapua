@@ -35,7 +35,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
         List<String> argumentsList = new ArrayList<>();
 
         for (int i = 0;; i++) {
-            String value = (String) getProperties().get(CommandAppProperties.APP_PROPERTY_ARG.getValue() + i);
+            String value = (String) getMetrics().get(CommandAppProperties.APP_PROPERTY_ARG.getValue() + i);
             if (value != null) {
                 argumentsList.add(value);
             } else {
@@ -58,7 +58,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
     public void setArguments(String[] arguments) {
         if (arguments != null) {
             for (int i = 0; i < arguments.length; i++) {
-                getProperties().put(CommandAppProperties.APP_PROPERTY_ARG.getValue() + i, arguments[i]);
+                getMetrics().put(CommandAppProperties.APP_PROPERTY_ARG.getValue() + i, arguments[i]);
             }
         }
     }
@@ -72,7 +72,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
         List<String> v = new ArrayList<>();
 
         for (int i = 0;; i++) {
-            String value = (String) getProperties().get(CommandAppProperties.APP_PROPERTY_ENVP.getValue() + i);
+            String value = (String) getMetrics().get(CommandAppProperties.APP_PROPERTY_ENVP.getValue() + i);
             if (value != null) {
                 v.add(value);
             } else {
@@ -95,7 +95,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
     public void setEnvironmentPairs(String[] environmentPairs) {
         if (environmentPairs != null) {
             for (int i = 0; i < environmentPairs.length; i++) {
-                getProperties().put(CommandAppProperties.APP_PROPERTY_ENVP.getValue() + i, environmentPairs[i]);
+                getMetrics().put(CommandAppProperties.APP_PROPERTY_ENVP.getValue() + i, environmentPairs[i]);
             }
         }
     }
@@ -106,7 +106,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
      * @return
      */
     public String getWorkingDir() {
-        return (String) getProperties().get(CommandAppProperties.APP_PROPERTY_DIR.getValue());
+        return (String) getMetrics().get(CommandAppProperties.APP_PROPERTY_DIR.getValue());
     }
 
     /**
@@ -116,7 +116,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
      */
     public void setWorkingDir(String workingDir) {
         if (workingDir != null) {
-            getProperties().put(CommandAppProperties.APP_PROPERTY_DIR.getValue(), workingDir);
+            getMetrics().put(CommandAppProperties.APP_PROPERTY_DIR.getValue(), workingDir);
         }
     }
 
@@ -126,7 +126,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
      * @return
      */
     public String getStdin() {
-        return (String) getProperties().get(CommandAppProperties.APP_PROPERTY_STDIN.getValue());
+        return (String) getMetrics().get(CommandAppProperties.APP_PROPERTY_STDIN.getValue());
     }
 
     /**
@@ -136,7 +136,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
      */
     public void setStdin(String stdin) {
         if (stdin != null) {
-            getProperties().put(CommandAppProperties.APP_PROPERTY_STDIN.getValue(), stdin);
+            getMetrics().put(CommandAppProperties.APP_PROPERTY_STDIN.getValue(), stdin);
         }
     }
 
@@ -146,7 +146,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
      * @return
      */
     public Integer getTimeout() {
-        return (Integer) getProperties().get(CommandAppProperties.APP_PROPERTY_TOUT.getValue());
+        return (Integer) getMetrics().get(CommandAppProperties.APP_PROPERTY_TOUT.getValue());
     }
 
     /**
@@ -155,7 +155,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
      * @param timeout
      */
     public void setTimeout(int timeout) {
-        getProperties().put(CommandAppProperties.APP_PROPERTY_TOUT.getValue(), Integer.valueOf(timeout));
+        getMetrics().put(CommandAppProperties.APP_PROPERTY_TOUT.getValue(), Integer.valueOf(timeout));
     }
 
     /**
@@ -164,7 +164,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
      * @return
      */
     public Boolean isRunAsync() {
-        return (Boolean) getProperties().get(CommandAppProperties.APP_PROPERTY_ASYNC.getValue());
+        return (Boolean) getMetrics().get(CommandAppProperties.APP_PROPERTY_ASYNC.getValue());
     }
 
     /**
@@ -173,7 +173,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
      * @param runAsync
      */
     public void setRunAsync(boolean runAsync) {
-        getProperties().put(CommandAppProperties.APP_PROPERTY_ASYNC.getValue(), Boolean.valueOf(runAsync));
+        getMetrics().put(CommandAppProperties.APP_PROPERTY_ASYNC.getValue(), Boolean.valueOf(runAsync));
     }
 
     /**
@@ -182,7 +182,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
      * @param cmd
      */
     public void setCommand(String cmd) {
-        getProperties().put(CommandAppProperties.APP_PROPERTY_CMD.getValue(), cmd);
+        getMetrics().put(CommandAppProperties.APP_PROPERTY_CMD.getValue(), cmd);
     }
 
     /**
@@ -191,7 +191,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
      * @return
      */
     public String getCommand() {
-        return (String) getProperties().get(CommandAppProperties.APP_PROPERTY_CMD.getValue());
+        return (String) getMetrics().get(CommandAppProperties.APP_PROPERTY_CMD.getValue());
     }
 
     /**
@@ -200,7 +200,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
      * @param password
      */
     public void setPassword(String password) {
-        getProperties().put(CommandAppProperties.APP_PROPERTY_PASSWORD.getValue(), password);
+        getMetrics().put(CommandAppProperties.APP_PROPERTY_PASSWORD.getValue(), password);
     }
 
     /**
@@ -209,6 +209,6 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
      * @return
      */
     public String getPassword() {
-        return (String) getProperties().get(CommandAppProperties.APP_PROPERTY_PASSWORD.getValue());
+        return (String) getMetrics().get(CommandAppProperties.APP_PROPERTY_PASSWORD.getValue());
     }
 }

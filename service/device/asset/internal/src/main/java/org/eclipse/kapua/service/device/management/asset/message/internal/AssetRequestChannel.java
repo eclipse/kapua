@@ -11,9 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.asset.message.internal;
 
-import org.eclipse.kapua.service.device.management.KapuaMethod;
-import org.eclipse.kapua.service.device.management.commons.message.response.KapuaAppChannelImpl;
-import org.eclipse.kapua.service.device.management.request.KapuaRequestChannel;
+import org.eclipse.kapua.service.device.management.commons.message.request.KapuaRequestChannelImpl;
 
 /**
  * Device asset information request channel.
@@ -21,21 +19,10 @@ import org.eclipse.kapua.service.device.management.request.KapuaRequestChannel;
  * @since 1.0
  * 
  */
-public class AssetRequestChannel extends KapuaAppChannelImpl implements KapuaRequestChannel {
+public class AssetRequestChannel extends KapuaRequestChannelImpl {
 
-    private KapuaMethod method;
     private boolean read;
     private boolean write;
-
-    @Override
-    public KapuaMethod getMethod() {
-        return method;
-    }
-
-    @Override
-    public void setMethod(KapuaMethod method) {
-        this.method = method;
-    }
 
     public boolean isRead() {
         return read;

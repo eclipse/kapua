@@ -73,9 +73,9 @@ public class DataExporterCsv extends DataExporter {
                 columns.add(BLANK);
             }
 
-            if (message.getPayload() != null && message.getPayload().getProperties() != null) {
+            if (message.getPayload() != null && message.getPayload().getMetrics() != null) {
                 for (String header : headers) {
-                    columns.add(valueOf(message.getPayload().getProperties().get(header)));
+                    columns.add(valueOf(message.getPayload().getMetrics().get(header)));
                 }
             }
 

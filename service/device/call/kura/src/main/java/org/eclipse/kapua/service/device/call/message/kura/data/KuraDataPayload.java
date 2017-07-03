@@ -21,6 +21,7 @@ import org.eclipse.kapua.message.internal.MessageErrorCodes;
 import org.eclipse.kapua.message.internal.MessageException;
 import org.eclipse.kapua.service.device.call.message.DevicePayload;
 import org.eclipse.kapua.service.device.call.message.DevicePosition;
+import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
 import org.eclipse.kapua.service.device.call.message.kura.KuraPosition;
 import org.eclipse.kapua.service.device.call.message.kura.proto.KuraPayloadProto;
 import org.eclipse.kapua.service.device.call.message.kura.utils.GZIPUtils;
@@ -36,7 +37,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
  * @since 1.0
  *
  */
-public class KuraDataPayload implements DevicePayload {
+public class KuraDataPayload extends KuraPayload implements DevicePayload {
 
     private static final Logger logger = LoggerFactory.getLogger(KuraDataPayload.class);
 
@@ -62,6 +63,7 @@ public class KuraDataPayload implements DevicePayload {
      *
      * @param timestamp
      */
+    @Override
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
@@ -76,6 +78,7 @@ public class KuraDataPayload implements DevicePayload {
      *
      * @param position
      */
+    @Override
     public void setPosition(DevicePosition position) {
         this.position = position;
     }
@@ -83,6 +86,10 @@ public class KuraDataPayload implements DevicePayload {
     @Override
     public Map<String, Object> getMetrics() {
         return metrics;
+    }
+
+    @Override public void setMetrics(Map<String, Object> metrics) {
+        this.metrics = metrics;
     }
 
     @Override
@@ -95,6 +102,7 @@ public class KuraDataPayload implements DevicePayload {
      *
      * @param body
      */
+    @Override
     public void setBody(byte[] body) {
         this.body = body;
     }

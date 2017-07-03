@@ -68,7 +68,16 @@ public class KuraMessage<C extends KuraChannel, P extends KuraPayload> implement
      * 
      * @param timestamp
      */
+    @Override
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
+    }
+
+    @Override public void setChannel(C channel) {
+        this.channel = channel;
+    }
+
+    @Override public void setPayload(P payload) {
+        this.payload = payload;
     }
 }

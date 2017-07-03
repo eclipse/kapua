@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.asset.message.internal;
 
-import org.eclipse.kapua.service.device.management.commons.message.response.KapuaAppChannelImpl;
+import org.eclipse.kapua.service.device.management.commons.message.KapuaAppChannelImpl;
 import org.eclipse.kapua.service.device.management.response.KapuaResponseChannel;
 
 /**

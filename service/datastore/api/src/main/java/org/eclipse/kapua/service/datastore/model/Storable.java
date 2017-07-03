@@ -11,11 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.model;
 
+import org.eclipse.kapua.KapuaSerializable;
+
 /**
  * Storable object definition
  * 
  * @since 1.0
  */
-public interface Storable {
+public interface Storable extends KapuaSerializable {
 
 }

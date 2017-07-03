@@ -90,6 +90,14 @@
             <artifactId>kapua-device-packages-internal</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-request-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-request-internal</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>org.eclipse.persistence.moxy</artifactId>
         </dependency>

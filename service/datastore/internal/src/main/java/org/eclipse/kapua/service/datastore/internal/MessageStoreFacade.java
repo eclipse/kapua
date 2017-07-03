@@ -150,8 +150,8 @@ public final class MessageStoreFacade {
         InsertRequest insertRequest = new InsertRequest(typeDescriptor, messageToStore);
         // Possibly update the schema with new metric mappings
         Map<String, Metric> metrics = new HashMap<>();
-        if (message.getPayload()!=null && message.getPayload().getProperties()!=null && message.getPayload().getProperties().size()>0) {
-            Map<String, Object> messageMetrics = message.getPayload().getProperties();
+        if (message.getPayload()!=null && message.getPayload().getMetrics()!=null && message.getPayload().getMetrics().size()>0) {
+            Map<String, Object> messageMetrics = message.getPayload().getMetrics();
             Iterator<String> metricsIterator = messageMetrics.keySet().iterator();
             while (metricsIterator.hasNext()) {
                 String kapuaMetricName = metricsIterator.next();

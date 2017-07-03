@@ -48,7 +48,7 @@ public class CommandResponsePayload extends KapuaResponsePayloadImpl implements 
      * @return
      */
     public String getStderr() {
-        return (String) getProperties().get(APP_PROPERTY_STDERR);
+        return (String) getMetrics().get(APP_PROPERTY_STDERR);
     }
 
     /**
@@ -57,7 +57,7 @@ public class CommandResponsePayload extends KapuaResponsePayloadImpl implements 
      * @param stderr
      */
     public void setStderr(String stderr) {
-        getProperties().put(APP_PROPERTY_STDERR, stderr);
+        getMetrics().put(APP_PROPERTY_STDERR, stderr);
     }
 
     /**
@@ -66,7 +66,7 @@ public class CommandResponsePayload extends KapuaResponsePayloadImpl implements 
      * @return
      */
     public String getStdout() {
-        return (String) getProperties().get(APP_PROPERTY_STDOUT);
+        return (String) getMetrics().get(APP_PROPERTY_STDOUT);
     }
 
     /**
@@ -75,7 +75,7 @@ public class CommandResponsePayload extends KapuaResponsePayloadImpl implements 
      * @param stdout
      */
     public void setStdout(String stdout) {
-        getProperties().put(APP_PROPERTY_STDOUT, stdout);
+        getMetrics().put(APP_PROPERTY_STDOUT, stdout);
     }
 
     /**
@@ -84,7 +84,7 @@ public class CommandResponsePayload extends KapuaResponsePayloadImpl implements 
      * @return
      */
     public Integer getExitCode() {
-        return (Integer) getProperties().get(APP_PROPERTY_EXIT_CODE);
+        return (Integer) getMetrics().get(APP_PROPERTY_EXIT_CODE);
     }
 
     /**
@@ -93,7 +93,7 @@ public class CommandResponsePayload extends KapuaResponsePayloadImpl implements 
      * @param exitCode
      */
     public void setExitCode(Integer exitCode) {
-        getProperties().put(APP_PROPERTY_EXIT_CODE, exitCode);
+        getMetrics().put(APP_PROPERTY_EXIT_CODE, exitCode);
     }
 
     /**
@@ -102,7 +102,7 @@ public class CommandResponsePayload extends KapuaResponsePayloadImpl implements 
      * @return
      */
     public Boolean hasTimedout() {
-        return (Boolean) getProperties().get(APP_PROPERTY_TIMEDOUT);
+        return (Boolean) getMetrics().get(APP_PROPERTY_TIMEDOUT);
     }
 
     /**
@@ -111,7 +111,7 @@ public class CommandResponsePayload extends KapuaResponsePayloadImpl implements 
      * @param timedout
      */
     public void setTimedout(boolean timedout) {
-        getProperties().put(APP_PROPERTY_TIMEDOUT, timedout);
+        getMetrics().put(APP_PROPERTY_TIMEDOUT, timedout);
     }
 
 }

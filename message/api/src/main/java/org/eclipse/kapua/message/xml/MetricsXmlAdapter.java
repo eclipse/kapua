@@ -33,7 +33,7 @@ public class MetricsXmlAdapter extends XmlAdapter<XmlAdaptedMetrics, Map<String,
                 XmlAdaptedMetric adaptedMapItem = new XmlAdaptedMetric();
 
                 adaptedMapItem.setName(sourceEntry.getKey());
-                adaptedMapItem.setType(sourceEntry.getValue().getClass());
+                adaptedMapItem.setValueType(sourceEntry.getValue().getClass());
                 adaptedMapItem.setValue(ObjectValueConverter.toString(sourceEntry.getValue()));
 
                 adaptedMapItems.add(adaptedMapItem);
@@ -54,7 +54,7 @@ public class MetricsXmlAdapter extends XmlAdapter<XmlAdaptedMetrics, Map<String,
 
         for (XmlAdaptedMetric sourceItem : sourceAdapter.getAdaptedMetrics()) {
             String name = sourceItem.getName();
-            Object value = ObjectValueConverter.fromString(sourceItem.getValue(), sourceItem.getType());
+            Object value = ObjectValueConverter.fromString(sourceItem.getValue(), sourceItem.getValueType());
 
             map.put(name, value);
         }

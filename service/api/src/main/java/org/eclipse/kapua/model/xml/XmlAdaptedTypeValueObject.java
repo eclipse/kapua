@@ -20,8 +20,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 public class XmlAdaptedTypeValueObject {
 
     @XmlJavaTypeAdapter(ObjectTypeXmlAdapter.class)
-    @XmlElement(name = "type")
-    private Class<?> type;
+    @XmlElement(name = "valueType")
+    private Class<?> valueType;
 
     @XmlElement(name = "value")
     private String value;
@@ -30,12 +30,12 @@ public class XmlAdaptedTypeValueObject {
         // Required by JAXB
     }
 
-    public Class<?> getType() {
-        return type;
+    public Class<?> getValueType() {
+        return valueType;
     }
 
-    public void setType(Class<?> type) {
-        this.type = type;
+    public void setValueType(Class<?> type) {
+        this.valueType = type;
     }
 
     public String getValue() {

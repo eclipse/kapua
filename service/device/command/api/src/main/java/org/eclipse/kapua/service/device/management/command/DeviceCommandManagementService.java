@@ -16,8 +16,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
 
 /**
- * Id generator service implementation.<br>
- * This implementation return a sequence.
+ * Device bundle service definition.
  * 
  * @since 1.0
  *

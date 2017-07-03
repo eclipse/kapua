@@ -31,7 +31,10 @@ import org.eclipse.kapua.message.xml.MetricsXmlAdapter;
  */
 @XmlRootElement(name = "payload")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = MessageXmlRegistry.class, factoryMethod = "newPayload")
+@XmlType(propOrder = { //
+        "metrics", //
+        "body" //
+}, factoryClass = MessageXmlRegistry.class, factoryMethod = "newPayload")
 public interface KapuaPayload extends Payload {
 
     /**
@@ -41,14 +44,14 @@ public interface KapuaPayload extends Payload {
      */
     @XmlElement(name = "metrics")
     @XmlJavaTypeAdapter(MetricsXmlAdapter.class)
-    public Map<String, Object> getProperties();
+    public Map<String, Object> getMetrics();
 
     /**
      * Set the metrics map
      *
      * @param metrics
      */
-    public void setProperties(Map<String, Object> metrics);
+    public void setMetrics(Map<String, Object> metrics);
 
     /**
      * Get the message body

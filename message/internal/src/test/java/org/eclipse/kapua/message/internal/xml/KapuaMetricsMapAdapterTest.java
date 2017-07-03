@@ -32,7 +32,7 @@ public class KapuaMetricsMapAdapterTest extends Assert {
                     "<payload>" + NEWLINE +
                     "   <metrics>" + NEWLINE +
                     "      <metric>" + NEWLINE +
-                    "         <type>string</type>" + NEWLINE +
+                    "         <valueType>string</valueType>" + NEWLINE +
                     "         <value>value1</value>" + NEWLINE +
                     "         <name>key1</name>" + NEWLINE +
                     "      </metric>" + NEWLINE +
@@ -49,7 +49,7 @@ public class KapuaMetricsMapAdapterTest extends Assert {
         KapuaPayload metricsMap = new KapuaPayloadImpl();
         Map<String, Object> metrics = new HashMap<>();
         metrics.put(String.valueOf("key1"), String.valueOf("value1"));
-        metricsMap.setProperties(metrics);
+        metricsMap.setMetrics(metrics);
 
         StringWriter strWriter = new StringWriter();
         XmlUtil.marshal(metricsMap, strWriter);
@@ -61,10 +61,10 @@ public class KapuaMetricsMapAdapterTest extends Assert {
         KapuaPayload metricsMap = new KapuaPayloadImpl();
         Map<String, Object> metrics = new HashMap<>();
         metrics.put(String.valueOf("key1"), String.valueOf("value1"));
-        metricsMap.setProperties(metrics);
+        metricsMap.setMetrics(metrics);
 
         KapuaPayload metricsMapResp = XmlUtil.unmarshal(METRICS_XML_STR, KapuaPayload.class);
-        assertEquals(metricsMap.getProperties().get("key1"), metricsMapResp.getProperties().get("key1"));
+        assertEquals(metricsMap.getMetrics().get("key1"), metricsMapResp.getMetrics().get("key1"));
     }
 
 }

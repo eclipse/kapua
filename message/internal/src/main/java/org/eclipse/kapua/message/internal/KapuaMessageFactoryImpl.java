@@ -18,13 +18,24 @@ import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.message.KapuaMessageFactory;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.message.KapuaPosition;
+import org.eclipse.kapua.message.device.data.KapuaDataChannel;
+import org.eclipse.kapua.message.device.data.KapuaDataMessage;
+import org.eclipse.kapua.message.device.data.KapuaDataPayload;
+import org.eclipse.kapua.message.internal.device.data.KapuaDataChannelImpl;
+import org.eclipse.kapua.message.internal.device.data.KapuaDataMessageImpl;
+import org.eclipse.kapua.message.internal.device.data.KapuaDataPayloadImpl;
 
 @KapuaProvider
 public class KapuaMessageFactoryImpl implements KapuaMessageFactory {
 
     @Override
     public KapuaMessage<?, ?> newMessage() {
-        return new KapuaMessageImpl<KapuaChannel, KapuaPayload>();
+        return new KapuaMessageImpl<>();
+    }
+
+    @Override
+    public KapuaDataMessage newKapuaDataMessage() {
+        return new KapuaDataMessageImpl();
     }
 
     @Override
@@ -38,9 +49,15 @@ public class KapuaMessageFactoryImpl implements KapuaMessageFactory {
     }
 
     @Override
-
     public KapuaPosition newPosition() {
         return new KapuaPositionImpl();
     }
 
+    @Override public KapuaDataChannel newKapuaDataChannel() {
+        return new KapuaDataChannelImpl();
+    }
+
+    @Override public KapuaDataPayload newKapuaDataPayload() {
+        return new KapuaDataPayloadImpl();
+    }
 }

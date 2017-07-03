@@ -71,7 +71,7 @@ public class TranslatorLifeUnmatchedKuraKapua extends Translator<KuraUnmatchedMe
             throws KapuaException {
         KapuaUnmatchedPayload kapuaUnmatchedPayload = new KapuaUnmatchedPayloadImpl();
         kapuaUnmatchedPayload.setBody(kuraUnmatchedPayload.getBody());
-        kapuaUnmatchedPayload.setProperties(kuraUnmatchedPayload.getMetrics());
+        kapuaUnmatchedPayload.setMetrics(kuraUnmatchedPayload.getMetrics());
         return kapuaUnmatchedPayload;
     }
 

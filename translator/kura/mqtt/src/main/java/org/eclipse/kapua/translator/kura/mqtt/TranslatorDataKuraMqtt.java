@@ -11,18 +11,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.mqtt;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.service.device.call.message.kura.KuraChannel;
-import org.eclipse.kapua.service.device.call.message.kura.KuraMessage;
-import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
+import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataChannel;
+import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataMessage;
+import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataPayload;
 import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.transport.message.mqtt.MqttMessage;
 import org.eclipse.kapua.transport.message.mqtt.MqttPayload;
 import org.eclipse.kapua.transport.message.mqtt.MqttTopic;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Messages translator implementation from {@link org.eclipse.kapua.service.device.call.message.kura.KuraMessage} to {@link org.eclipse.kapua.transport.message.mqtt.MqttMessage}
@@ -31,10 +31,10 @@ import org.eclipse.kapua.transport.message.mqtt.MqttTopic;
  *
  */
 @SuppressWarnings("rawtypes")
-public class TranslatorDataKuraMqtt extends Translator<KuraMessage, MqttMessage> {
+public class TranslatorDataKuraMqtt extends Translator<KuraDataMessage, MqttMessage> {
 
     @Override
-    public MqttMessage translate(KuraMessage kuraMessage)
+    public MqttMessage translate(KuraDataMessage kuraMessage)
             throws KapuaException {
         //
         // Mqtt request topic
@@ -51,7 +51,7 @@ public class TranslatorDataKuraMqtt extends Translator<KuraMessage, MqttMessage>
                 mqttPayload);
     }
 
-    private MqttTopic translate(KuraChannel kuraChannel)
+    private MqttTopic translate(KuraDataChannel kuraChannel)
             throws KapuaException {
         List<String> topicTokens = new ArrayList<>();
 
@@ -66,14 +66,14 @@ public class TranslatorDataKuraMqtt extends Translator<KuraMessage, MqttMessage>
         return new MqttTopic(topicTokens.toArray(new String[0]));
     }
 
-    private MqttPayload translate(KuraPayload kuraPayload)
+    private MqttPayload translate(KuraDataPayload kuraPayload)
             throws KapuaException {
         return new MqttPayload(kuraPayload.toByteArray());
     }
 
     @Override
-    public Class<KuraMessage> getClassFrom() {
-        return KuraMessage.class;
+    public Class<KuraDataMessage> getClassFrom() {
+        return KuraDataMessage.class;
     }
 
     @Override

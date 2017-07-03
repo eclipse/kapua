@@ -14,8 +14,14 @@ package org.eclipse.kapua.message.xml;
 import javax.xml.bind.annotation.XmlRegistry;
 
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.message.KapuaChannel;
+import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.message.KapuaMessageFactory;
 import org.eclipse.kapua.message.KapuaPayload;
+import org.eclipse.kapua.message.KapuaPosition;
+import org.eclipse.kapua.message.device.data.KapuaDataChannel;
+import org.eclipse.kapua.message.device.data.KapuaDataMessage;
+import org.eclipse.kapua.message.device.data.KapuaDataPayload;
 
 /**
  * Message xml factory class
@@ -32,4 +38,29 @@ public class MessageXmlRegistry {
     public KapuaPayload newPayload() {
         return factory.newPayload();
     }
+
+    public KapuaMessage newKapuaMessage() {
+        return factory.newMessage();
+    }
+
+    public KapuaDataMessage newKapuaDataMessage() {
+        return factory.newKapuaDataMessage();
+    }
+
+    public KapuaChannel newKapuaChannel() {
+        return factory.newChannel();
+    }
+
+    public KapuaPosition newPosition() {
+        return factory.newPosition();
+    }
+
+    public KapuaDataChannel newKapuaDataChannel() {
+        return factory.newKapuaDataChannel();
+    }
+
+    public KapuaDataPayload newKapuaDataPayload() {
+        return factory.newKapuaDataPayload();
+    }
+
 }

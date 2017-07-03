@@ -11,12 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.client.model;
 
+import org.eclipse.kapua.KapuaSerializable;
+
 /**
  * Base response object
  * 
  * @since 1.0
  */
-public abstract class Response {
+public abstract class Response implements KapuaSerializable {
 
     /**
      * Record id (it should set by the datastore client component)

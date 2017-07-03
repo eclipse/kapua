@@ -43,12 +43,14 @@ public abstract class AbstractTranslatorKapuaKura<FROM_C extends KapuaChannel, F
         AccountService accountService = locator.getService(AccountService.class);
         Account account = accountService.find(kapuaMessage.getScopeId());
 
+        Device device = null;
         DeviceRegistryService deviceService = locator.getService(DeviceRegistryService.class);
-        Device device = deviceService.find(kapuaMessage.getScopeId(), kapuaMessage.getDeviceId());
-
+        if (kapuaMessage.getDeviceId() != null) {
+            device = deviceService.find(kapuaMessage.getScopeId(), kapuaMessage.getDeviceId());
+        }
         KuraRequestChannel kuraRequestChannel = translateChannel(kapuaMessage.getChannel());
         kuraRequestChannel.setScope(account.getName());
-        kuraRequestChannel.setClientId(device.getClientId());
+        kuraRequestChannel.setClientId(device != null ? device.getClientId() : kapuaMessage.getClientId());
 
         //
         // Kura payload

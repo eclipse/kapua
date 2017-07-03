@@ -12,7 +12,11 @@
 package org.eclipse.kapua.service.device.management.request;
 
 import org.eclipse.kapua.service.device.management.KapuaAppChannel;
+import org.eclipse.kapua.service.device.management.RequestMessageXmlRegistry;
 import org.eclipse.kapua.service.device.management.KapuaMethod;
+
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Kapua request message channel definition.<br>
@@ -22,18 +26,20 @@ import org.eclipse.kapua.service.device.management.KapuaMethod;
  * @since 1.0
  *
  */
+@XmlRootElement(name = "channel")
+@XmlType(propOrder = { "method" }, factoryClass = RequestMessageXmlRegistry.class, factoryMethod = "newRequestChannel")
 public interface KapuaRequestChannel extends KapuaAppChannel {
 
     /**
      * Get the request method
-     * 
+     *
      * @return
      */
     public KapuaMethod getMethod();
 
     /**
      * Set the request method
-     * 
+     *
      * @param method
      */
     public void setMethod(KapuaMethod method);

@@ -11,12 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management;
 
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 /**
  * Kapua application property definition.
  * 
  * @since 1.0
  *
  */
+@XmlJavaTypeAdapter(KapuaAppPropertiesXmlAdapter.class)
 public interface KapuaAppProperties {
 
     /**

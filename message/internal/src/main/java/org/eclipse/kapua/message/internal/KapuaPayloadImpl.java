@@ -26,7 +26,7 @@ import org.eclipse.kapua.message.KapuaPayload;
  */
 public class KapuaPayloadImpl implements KapuaPayload {
 
-    private Map<String, Object> properties;
+    private Map<String, Object> metrics;
     private byte[] body;
 
     /**
@@ -36,17 +36,17 @@ public class KapuaPayloadImpl implements KapuaPayload {
     }
 
     @Override
-    public Map<String, Object> getProperties() {
-        if (properties == null) {
-            properties = new HashMap<>();
+    public Map<String, Object> getMetrics() {
+        if (metrics == null) {
+            metrics = new HashMap<>();
         }
 
-        return properties;
+        return metrics;
     }
 
     @Override
-    public void setProperties(Map<String, Object> properties) {
-        this.properties = properties;
+    public void setMetrics(Map<String, Object> metrics) {
+        this.metrics = metrics;
     }
 
     @Override
@@ -61,6 +61,6 @@ public class KapuaPayloadImpl implements KapuaPayload {
 
     @Override
     public String toDisplayString() {
-        return Payloads.toDisplayString(properties);
+        return Payloads.toDisplayString(metrics);
     }
 }

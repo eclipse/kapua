@@ -84,6 +84,10 @@ public class KuraPayload implements DevicePayload {
         return metrics;
     }
 
+    @Override public void setMetrics(Map<String, Object> metrics) {
+        this.metrics = metrics;
+    }
+
     @Override
     public byte[] getBody() {
         return body;

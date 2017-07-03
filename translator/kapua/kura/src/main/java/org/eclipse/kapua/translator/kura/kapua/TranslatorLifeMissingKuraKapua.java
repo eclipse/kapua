@@ -80,7 +80,7 @@ public class TranslatorLifeMissingKuraKapua extends Translator<KuraMissingMessag
             throws KapuaException {
         KapuaMissingPayload kapuaMissingPayload = new KapuaMissingPayloadImpl();
         kapuaMissingPayload.setBody(kuraMissingPayload.getBody());
-        kapuaMissingPayload.setProperties(kuraMissingPayload.getMetrics());
+        kapuaMissingPayload.setMetrics(kuraMissingPayload.getMetrics());
         return kapuaMissingPayload;
     }
 

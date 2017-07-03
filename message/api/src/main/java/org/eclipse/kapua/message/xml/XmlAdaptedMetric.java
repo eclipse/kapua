@@ -23,6 +23,6 @@ import org.eclipse.kapua.model.xml.XmlAdaptedNameTypeValueObject;
 public class XmlAdaptedMetric extends XmlAdaptedNameTypeValueObject {
 
     public Object getCastedValue() {
-        return ObjectValueConverter.fromString(getValue(), getType());
+        return ObjectValueConverter.fromString(getValue(), getValueType());
     }
 }

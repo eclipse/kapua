@@ -12,6 +12,10 @@
 package org.eclipse.kapua.service.device.management.request;
 
 import org.eclipse.kapua.message.KapuaPayload;
+import org.eclipse.kapua.service.device.management.RequestMessageXmlRegistry;
+
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Kapua request message payload definition.<br>
@@ -21,6 +25,8 @@ import org.eclipse.kapua.message.KapuaPayload;
  * @since 1.0
  *
  */
+@XmlRootElement(name = "payload")
+@XmlType(factoryClass = RequestMessageXmlRegistry.class, factoryMethod = "newRequestPayload")
 public interface KapuaRequestPayload extends KapuaPayload {
 
 }

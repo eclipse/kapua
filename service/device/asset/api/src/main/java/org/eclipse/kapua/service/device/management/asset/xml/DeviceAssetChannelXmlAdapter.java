@@ -32,7 +32,7 @@ public class DeviceAssetChannelXmlAdapter extends XmlAdapter<XmlAdaptedDeviceAss
 
         XmlAdaptedDeviceAssetChannel xmlAdaptedDeviceAssetChannel = new XmlAdaptedDeviceAssetChannel();
         xmlAdaptedDeviceAssetChannel.setName(deviceAssetChannel.getName());
-        xmlAdaptedDeviceAssetChannel.setType(deviceAssetChannel.getType());
+        xmlAdaptedDeviceAssetChannel.setValueType(deviceAssetChannel.getType());
         xmlAdaptedDeviceAssetChannel.setValue(ObjectValueConverter.toString(deviceAssetChannel.getValue()));
         xmlAdaptedDeviceAssetChannel.setMode(deviceAssetChannel.getMode());
         xmlAdaptedDeviceAssetChannel.setError(deviceAssetChannel.getError());
@@ -46,7 +46,7 @@ public class DeviceAssetChannelXmlAdapter extends XmlAdapter<XmlAdaptedDeviceAss
 
         DeviceAssetChannel adaptedDeviceAssetChannel = factory.newDeviceAssetChannel();
         adaptedDeviceAssetChannel.setName(xmlAdaptedDeviceAssetChannel.getName());
-        adaptedDeviceAssetChannel.setType(xmlAdaptedDeviceAssetChannel.getType());
+        adaptedDeviceAssetChannel.setType(xmlAdaptedDeviceAssetChannel.getValueType());
         adaptedDeviceAssetChannel.setValue(ObjectValueConverter.fromString(xmlAdaptedDeviceAssetChannel.getValue(), adaptedDeviceAssetChannel.getType()));
         adaptedDeviceAssetChannel.setMode(xmlAdaptedDeviceAssetChannel.getMode());
         adaptedDeviceAssetChannel.setError(xmlAdaptedDeviceAssetChannel.getError());

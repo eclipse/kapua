@@ -12,6 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.message;
 
+import org.eclipse.kapua.message.device.data.KapuaDataChannel;
+import org.eclipse.kapua.message.device.data.KapuaDataMessage;
+import org.eclipse.kapua.message.device.data.KapuaDataPayload;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 
 /**
@@ -27,6 +30,12 @@ public interface KapuaMessageFactory extends KapuaObjectFactory {
      * @return
      */
     public KapuaMessage<?,?> newMessage();
+
+    /**
+     * Creates and returns a new {@link KapuaDataMessage}
+     * @return
+     */
+    public KapuaDataMessage newKapuaDataMessage();
 
     /**
      * Creates and returns a new {@link KapuaChannel}
@@ -49,4 +58,7 @@ public interface KapuaMessageFactory extends KapuaObjectFactory {
      */
     public KapuaPosition newPosition();
 
+    KapuaDataChannel newKapuaDataChannel();
+
+    KapuaDataPayload newKapuaDataPayload();
 }

@@ -11,9 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.configuration.snapshot.internal;
 
-import org.eclipse.kapua.service.device.management.KapuaMethod;
-import org.eclipse.kapua.service.device.management.commons.message.response.KapuaAppChannelImpl;
-import org.eclipse.kapua.service.device.management.request.KapuaRequestChannel;
+import org.eclipse.kapua.service.device.management.commons.message.request.KapuaRequestChannelImpl;
 
 /**
  * Device snapshot request channel.
@@ -21,20 +19,9 @@ import org.eclipse.kapua.service.device.management.request.KapuaRequestChannel;
  * @since 1.0
  * 
  */
-public class SnapshotRequestChannel extends KapuaAppChannelImpl implements KapuaRequestChannel {
+public class SnapshotRequestChannel extends KapuaRequestChannelImpl {
 
-    private KapuaMethod method;
     private String snapshotId;
-
-    @Override
-    public KapuaMethod getMethod() {
-        return method;
-    }
-
-    @Override
-    public void setMethod(KapuaMethod method) {
-        this.method = method;
-    }
 
     /**
      * Get the snapshot identifier

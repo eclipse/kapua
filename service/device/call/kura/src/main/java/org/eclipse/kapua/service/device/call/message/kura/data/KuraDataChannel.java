@@ -26,6 +26,14 @@ public class KuraDataChannel extends KuraChannel implements DeviceDataChannel {
 
     private List<String> semanticChannelParts;
 
+    public KuraDataChannel() {
+        this(null, null);
+    }
+
+    public KuraDataChannel(String scopeNamespace, String clientId) {
+        super(scopeNamespace, clientId);
+    }
+
     @Override
     public List<String> getSemanticChannelParts() {
         return semanticChannelParts;

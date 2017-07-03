@@ -18,9 +18,12 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.eclipse.kapua.message.device.data.KapuaDataMessage;
+import org.eclipse.kapua.message.xml.MessageXmlRegistry;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 
@@ -44,7 +47,8 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
         "position", //
         "channel", //
         "payload", //
-}) //
+}, factoryClass = MessageXmlRegistry.class, factoryMethod = "newKapuaMessage") //
+@XmlSeeAlso(KapuaDataMessage.class)
 public interface KapuaMessage<C extends KapuaChannel, P extends KapuaPayload> extends Message<C, P> {
 
     /**

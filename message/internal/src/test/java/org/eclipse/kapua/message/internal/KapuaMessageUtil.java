@@ -47,7 +47,7 @@ public class KapuaMessageUtil {
         Map<String, Object> metrics = new HashMap<>();
         metrics.put("key1", "value1");
         metrics.put("key2", "value2");
-        kapuaPayload.setProperties(metrics);
+        kapuaPayload.setMetrics(metrics);
         byte[] body = { 'b', 'o', 'd', 'y' };
         kapuaPayload.setBody(body);
     }
@@ -68,7 +68,7 @@ public class KapuaMessageUtil {
         metrics.put("String", "Big brown fox");
         metrics.put("byte", new byte[] { 'b', 'o', 'd', 'y', 0 });
         metrics.put("unknown", new BigDecimal("42.42"));
-        kapuaPayload.setProperties(metrics);
+        kapuaPayload.setMetrics(metrics);
     }
 
     /**

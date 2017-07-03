@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.message;
 
+import org.eclipse.kapua.KapuaSerializable;
+
 /**
  * Message definition.
  *
@@ -18,6 +20,6 @@ package org.eclipse.kapua.message;
  * @param <P> payload type
  * @since 1.0
  */
-public interface Message<C extends Channel, P extends Payload> {
+public interface Message<C extends Channel, P extends Payload> extends KapuaSerializable {
 
 }
