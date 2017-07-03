@@ -13,8 +13,8 @@ package org.eclipse.kapua.service.device.registry.connection.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -27,8 +27,10 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCreator;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionListResult;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionPredicates;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
 
@@ -39,12 +41,18 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFac
  * @since 1.0
  */
 @KapuaProvider
-public class DeviceConnectionServiceImpl extends AbstractKapuaService implements DeviceConnectionService {
+public class DeviceConnectionServiceImpl extends
+        AbstractKapuaConfigurableResourceLimitedService<DeviceConnection, DeviceConnectionCreator, DeviceConnectionService, DeviceConnectionListResult, DeviceConnectionQuery, DeviceConnectionFactory>
+implements DeviceConnectionService {
 
     private static final Domain DEVICE_CONNECTION_DOMAIN = new DeviceConnectionDomain();
 
     public DeviceConnectionServiceImpl() {
-        super(DeviceEntityManagerFactory.instance());
+        this(DeviceEntityManagerFactory.instance());
+    }
+
+    public DeviceConnectionServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory) {
+        super(DeviceConnectionService.class.getName(), DEVICE_CONNECTION_DOMAIN, deviceEntityManagerFactory, DeviceConnectionService.class, DeviceConnectionFactory.class);
     }
 
     @Override
