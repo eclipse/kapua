@@ -656,7 +656,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         tmpMetrics.put("double", random.nextDouble() * 100);
         tmpMetrics.put("long", random.nextLong());
         tmpMetrics.put("string_value", Integer.toString(random.nextInt()));
-        tmpTestPayload.setProperties(tmpMetrics);
+        tmpTestPayload.setMetrics(tmpMetrics);
 
         return tmpTestPayload;
     }
@@ -831,7 +831,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
 
         assertTrue(areSemanticPartsEqual(origMsg.getChannel().getSemanticParts(), foundMsg.getChannel().getSemanticParts()));
         assertArrayEquals(origMsg.getPayload().getBody(), foundMsg.getPayload().getBody());
-        assertTrue(areMetricsEqual(origMsg.getPayload().getProperties(), foundMsg.getPayload().getProperties()));
+        assertTrue(areMetricsEqual(origMsg.getPayload().getMetrics(), foundMsg.getPayload().getMetrics()));
         assertTrue(arePositionsEqual(origMsg.getPosition(), foundMsg.getPosition()));
         assertEquals(origMsg.getCapturedOn(), foundMsg.getCapturedOn());
         assertEquals(origMsg.getSentOn(), foundMsg.getSentOn());
@@ -846,7 +846,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         assertEquals(firstMsg.getDatastoreId().toString(), secondMsg.getDatastoreId().toString());
         assertTrue(areSemanticPartsEqual(firstMsg.getChannel().getSemanticParts(), secondMsg.getChannel().getSemanticParts()));
         assertArrayEquals(firstMsg.getPayload().getBody(), secondMsg.getPayload().getBody());
-        assertTrue(areMetricsEqual(firstMsg.getPayload().getProperties(), secondMsg.getPayload().getProperties()));
+        assertTrue(areMetricsEqual(firstMsg.getPayload().getMetrics(), secondMsg.getPayload().getMetrics()));
         assertTrue(arePositionsEqual(firstMsg.getPosition(), secondMsg.getPosition()));
         assertEquals(firstMsg.getCapturedOn(), secondMsg.getCapturedOn());
         assertEquals(firstMsg.getSentOn(), secondMsg.getSentOn());
