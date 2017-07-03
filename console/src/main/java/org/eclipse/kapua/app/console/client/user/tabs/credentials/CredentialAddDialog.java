@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.user.tabs.credentials;
 
+import com.google.gwt.i18n.client.DateTimeFormat;
 import org.eclipse.kapua.app.console.client.messages.ConsoleCredentialMessages;
 import org.eclipse.kapua.app.console.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.client.ui.panel.FormPanel;
@@ -20,6 +21,7 @@ import org.eclipse.kapua.app.console.client.util.PasswordFieldValidator;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredential;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredentialCreator;
+import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredentialStatus;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredentialType;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
 import org.eclipse.kapua.app.console.shared.service.GwtCredentialService;
@@ -32,7 +34,6 @@ import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
@@ -54,7 +55,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
     protected TextField<String> password;
     protected TextField<String> confirmPassword;
     protected DateField expirationDate;
-    protected CheckBox enabled;
+    protected SimpleComboBox<GwtCredentialStatus> credentialStatus;
     protected NumberField optlock;
 
     protected static final GwtCredentialServiceAsync GWT_CREDENTIAL_SERVICE = GWT.create(GwtCredentialService.class);
@@ -63,7 +64,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
     public CredentialAddDialog(GwtSession currentSession, GwtUser selectedUser) {
         super(currentSession);
         this.selectedUser = selectedUser;
-        DialogUtils.resizeDialog(this, 400, 230);
+        DialogUtils.resizeDialog(this, 400, 300);
     }
 
     @Override
@@ -117,15 +118,25 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         credentialFormPanel.add(confirmPassword);
 
         expirationDate = new DateField();
+        expirationDate.setEmptyText(MSGS.dialogAddNoExpiration());
         expirationDate.setFieldLabel(MSGS.dialogAddFieldExpirationDate());
-        // FIXME add again when supported in backend
-        //credentialFormPanel.add(expirationDate);
+        expirationDate.setFormatValue(true);
+        expirationDate.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
+        credentialFormPanel.add(expirationDate);
 
-        enabled = new CheckBox();
-        enabled.setFieldLabel(MSGS.dialogAddFieldEnabled());
-        enabled.setBoxLabel("");    // Align to the left
-        // FIXME add again when supported in backend
-        //credentialFormPanel.add(enabled);
+        credentialStatus = new SimpleComboBox<GwtCredentialStatus>();
+        credentialStatus.setName("comboStatus");
+        credentialStatus.setFieldLabel(MSGS.dialogAddStatus());
+        credentialStatus.setLabelSeparator(":");
+        credentialStatus.setEditable(false);
+        credentialStatus.setTypeAhead(true);
+        credentialStatus.setTriggerAction(ComboBox.TriggerAction.ALL);
+        // show account status combo box
+        for (GwtCredentialStatus credentialStatus : GwtCredentialStatus.values()) {
+            this.credentialStatus.add(credentialStatus);
+        }
+        credentialStatus.setSimpleValue(GwtCredentialStatus.ENABLED);
+        credentialFormPanel.add(credentialStatus);
 
         optlock = new NumberField();
         optlock.setName("optlock");
@@ -145,6 +156,8 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         gwtCredentialCreator.setCredentialType(credentialType.getValue().getValue());
         gwtCredentialCreator.setCredentialPlainKey(password.getValue());
         gwtCredentialCreator.setUserId(selectedUser.getId());
+        gwtCredentialCreator.setExpirationDate(expirationDate.getValue());
+        gwtCredentialCreator.setCredentialStatus(credentialStatus.getValue().getValue());
 
         GWT_CREDENTIAL_SERVICE.create(xsrfToken, gwtCredentialCreator, new AsyncCallback<GwtCredential>() {
 

@@ -12,6 +12,7 @@
 package org.eclipse.kapua.app.console.shared.model.authentication;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import org.eclipse.kapua.app.console.shared.model.GwtEntityCreator;
 
@@ -22,6 +23,8 @@ public class GwtCredentialCreator extends GwtEntityCreator implements Serializab
     private String userId;
     private GwtCredentialType credentialType;
     private String credentialPlainKey;
+    private GwtCredentialStatus credentialStatus;
+    private Date expirationDate;
 
     public String getUserId() {
         return userId;
@@ -45,5 +48,25 @@ public class GwtCredentialCreator extends GwtEntityCreator implements Serializab
 
     public void setCredentialPlainKey(String credentialPlainKey) {
         this.credentialPlainKey = credentialPlainKey;
+    }
+
+    public Date getExpirationDate() {
+        return this.expirationDate;
+    }
+
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    public GwtCredentialStatus getCredentialStatus() {
+        return credentialStatus;
+    }
+
+    public void setCredentialStatus(GwtCredentialStatus credentialStatus) {
+        this.credentialStatus= credentialStatus;
+    }
+
+    public void setCredentialStatus(String credentialStatus) {
+        setCredentialStatus(GwtCredentialStatus.valueOf(credentialStatus));
     }
 }

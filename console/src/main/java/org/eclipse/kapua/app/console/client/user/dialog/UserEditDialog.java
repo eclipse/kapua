@@ -67,6 +67,8 @@ public class UserEditDialog extends UserAddDialog {
         selectedUser.setDisplayName(displayName.getValue());
         selectedUser.setEmail(email.getValue());
         selectedUser.setPhoneNumber(phoneNumber.getValue());
+        selectedUser.setStatus(userStatus.getValue().getValue().toString());
+        selectedUser.setExpirationDate(expirationDate.getValue());
 
         gwtUserService.update(xsrfToken, selectedUser, new AsyncCallback<GwtUser>() {
 
@@ -106,5 +108,7 @@ public class UserEditDialog extends UserAddDialog {
         displayName.setValue(gwtUser.getDisplayName());
         email.setValue(gwtUser.getEmail());
         phoneNumber.setValue(gwtUser.getPhoneNumber());
+        userStatus.setSimpleValue(gwtUser.getStatusEnum());
+        expirationDate.setValue(gwtUser.getExpirationDate());
     }
 }

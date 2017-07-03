@@ -20,6 +20,8 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -28,10 +30,13 @@ import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.Credential;
+import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 
+import java.util.Date;
+
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 @Entity(name = "Credential")
 @Table(name = "atht_credential")
 /**
@@ -58,6 +63,30 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
     @Column(name = "credential_key", nullable = false)
     private String credentialKey;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "expiration_date")
+    protected Date expirationDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "credential_status", nullable = false)
+    private CredentialStatus credentialStatus;
+
+    @Basic
+    @Column(name = "login_failures", nullable = false)
+    private int loginFailures;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "first_login_failure")
+    protected Date firstLoginFailure;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "login_failures_reset")
+    protected Date loginFailuresReset;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "lockout_reset")
+    protected Date lockoutReset;
+
     /**
      * Constructor
      */
@@ -73,11 +102,13 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
      * @param credentialType
      * @param credentialKey
      */
-    public CredentialImpl(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey) {
+    public CredentialImpl(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey, CredentialStatus credentialStatus, Date expirationDate) {
         super(scopeId);
         this.userId = (KapuaEid) userId;
         this.credentialType = credentialType;
         this.credentialKey = credentialKey;
+        this.credentialStatus = credentialStatus;
+        this.expirationDate = expirationDate;
     }
 
     public CredentialImpl(KapuaId scopeId) {
@@ -115,4 +146,71 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
         this.credentialKey = credentialKey;
     }
 
+    @Override
+    public CredentialStatus getStatus() {
+        return credentialStatus;
+    }
+
+    @Override
+    public void setCredentialStatus(CredentialStatus status) {
+        this.credentialStatus = status;
+    }
+
+    @Override
+    public Date getExpirationDate() {
+        return expirationDate;
+    }
+
+    @Override
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    public void setUserId(KapuaEid userId) {
+        this.userId = userId;
+    }
+
+    public CredentialStatus getCredentialStatus() {
+        return credentialStatus;
+    }
+
+    @Override
+    public int getLoginFailures() {
+        return loginFailures;
+    }
+
+    @Override
+    public void setLoginFailures(int loginFailures) {
+        this.loginFailures = loginFailures;
+    }
+
+    @Override
+    public Date getFirstLoginFailure() {
+        return firstLoginFailure;
+    }
+
+    @Override
+    public void setFirstLoginFailure(Date firstLoginFailure) {
+        this.firstLoginFailure = firstLoginFailure;
+    }
+
+    @Override
+    public Date getLoginFailuresReset() {
+        return loginFailuresReset;
+    }
+
+    @Override
+    public void setLoginFailuresReset(Date loginFailuresReset) {
+        this.loginFailuresReset = loginFailuresReset;
+    }
+
+    @Override
+    public Date getLockoutReset() {
+        return lockoutReset;
+    }
+
+    @Override
+    public void setLockoutReset(Date lockoutReset) {
+        this.lockoutReset = lockoutReset;
+    }
 }

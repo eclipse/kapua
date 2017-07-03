@@ -141,6 +141,11 @@ public class AccessTokenAuthenticatingRealm extends AuthenticatingRealm {
             throw new DisabledAccountException();
         }
 
+        // Check if expired
+        if (user.getExpirationDate() != null && !user.getExpirationDate().after(new Date())) {
+            throw new ExpiredCredentialsException();
+        }
+
         //
         // Find account
         final Account account;

@@ -35,6 +35,7 @@ import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
+import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
@@ -50,7 +51,6 @@ import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
-import org.eclipse.kapua.service.user.UserStatus;
 
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
@@ -80,11 +80,12 @@ public class GwtUserServiceImpl extends KapuaConfigurableRemoteServiceServlet<Us
             UserFactory userFactory = locator.getFactory(UserFactory.class);
 
             KapuaId scopeId = KapuaEid.parseCompactId(gwtUserCreator.getScopeId());
-            UserCreator userCreator = userFactory.newCreator(scopeId,
-                    gwtUserCreator.getUsername());
+            UserCreator userCreator = userFactory.newCreator(scopeId, gwtUserCreator.getUsername());
             userCreator.setDisplayName(gwtUserCreator.getDisplayName());
             userCreator.setEmail(gwtUserCreator.getEmail());
             userCreator.setPhoneNumber(gwtUserCreator.getPhoneNumber());
+            userCreator.setExpirationDate(gwtUserCreator.getExpirationDate());
+            userCreator.setUserStatus(GwtKapuaModelConverter.convertUserStatus(gwtUserCreator.getUserStatus()));
 
             //
             // Create the User
@@ -107,7 +108,9 @@ public class GwtUserServiceImpl extends KapuaConfigurableRemoteServiceServlet<Us
             CredentialCreator credentialCreator = credentialFactory.newCreator(scopeId,
                     user.getId(),
                     CredentialType.PASSWORD,
-                    gwtUserCreator.getPassword());
+                    gwtUserCreator.getPassword(),
+                    CredentialStatus.ENABLED,
+                    null);
             credentialService.create(credentialCreator);
 
             // convert to GwtAccount and return
@@ -143,9 +146,9 @@ public class GwtUserServiceImpl extends KapuaConfigurableRemoteServiceServlet<Us
                 user.setDisplayName(gwtUser.getUnescapedDisplayName());
                 user.setEmail(gwtUser.getUnescapedEmail());
                 user.setPhoneNumber(gwtUser.getUnescapedPhoneNumber());
-
+                user.setExpirationDate(gwtUser.getExpirationDate());
                 // status
-                user.setStatus(UserStatus.valueOf(gwtUser.getStatus()));
+                user.setStatus(GwtKapuaModelConverter.convertUserStatus(gwtUser.getStatusEnum()));
 
                 // //
                 // // Update credentials
@@ -339,6 +342,7 @@ public class GwtUserServiceImpl extends KapuaConfigurableRemoteServiceServlet<Us
                 gwtUserDescription.add(new GwtGroupedNVPair("User", "Display Name", user.getDisplayName()));
                 gwtUserDescription.add(new GwtGroupedNVPair("User", "Phone Number", user.getPhoneNumber()));
                 gwtUserDescription.add(new GwtGroupedNVPair("User", "Email", user.getEmail()));
+                gwtUserDescription.add(new GwtGroupedNVPair("User", "Expiration Date", user.getExpirationDate()));
 
             }
         } catch (Exception e) {

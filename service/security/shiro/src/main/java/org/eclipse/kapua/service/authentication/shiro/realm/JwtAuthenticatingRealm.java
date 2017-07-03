@@ -18,6 +18,7 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.DisabledAccountException;
+import org.apache.shiro.authc.ExpiredCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.realm.AuthenticatingRealm;
 import org.apache.shiro.session.Session;
@@ -31,6 +32,7 @@ import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
+import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialImpl;
 import org.eclipse.kapua.service.authentication.shiro.JwtCredentialsImpl;
@@ -42,6 +44,8 @@ import org.eclipse.kapua.sso.jwt.JwtProcessor;
 import org.jose4j.jwt.consumer.JwtContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Date;
 
 /**
  * {@link ApiKeyCredentials} based {@link AuthenticatingRealm} implementation.
@@ -131,6 +135,11 @@ public class JwtAuthenticatingRealm extends AuthenticatingRealm implements Destr
             throw new DisabledAccountException();
         }
 
+        // Check if expired
+        if (user.getExpirationDate() != null && !user.getExpirationDate().after(new Date())) {
+            throw new ExpiredCredentialsException();
+        }
+
         // Find account
 
         final Account account;
@@ -150,14 +159,15 @@ public class JwtAuthenticatingRealm extends AuthenticatingRealm implements Destr
 
         // Create credential
 
-        final Credential credential = new CredentialImpl(user.getScopeId(), user.getId(), CredentialType.JWT, jwt);
+        final Credential credential = new CredentialImpl(user.getScopeId(), user.getId(), CredentialType.JWT, jwt, CredentialStatus.ENABLED, null);
 
         // Build AuthenticationInfo
 
         return new LoginAuthenticationInfo(getName(),
                 account,
                 user,
-                credential);
+                credential,
+               null);
     }
 
     /**

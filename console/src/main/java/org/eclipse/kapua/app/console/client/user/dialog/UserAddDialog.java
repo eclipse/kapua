@@ -11,6 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.user.dialog;
 
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.DateField;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import org.eclipse.kapua.app.console.client.messages.ConsoleUserMessages;
 import org.eclipse.kapua.app.console.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.client.ui.panel.FormPanel;
@@ -38,14 +42,14 @@ public class UserAddDialog extends EntityAddEditDialog {
 
     protected static final ConsoleUserMessages MSGS = GWT.create(ConsoleUserMessages.class);
 
-    protected FieldSet infoFieldSet;
-
     protected TextField<String> username;
     protected TextField<String> password;
     protected TextField<String> confirmPassword;
     protected TextField<String> displayName;
     protected TextField<String> email;
     protected TextField<String> phoneNumber;
+    protected SimpleComboBox<GwtUser.GwtUserStatus> userStatus;
+    protected DateField expirationDate;
     protected NumberField optlock;
     
     private GwtUserServiceAsync gwtUserService = GWT.create(GwtUserService.class);
@@ -53,7 +57,7 @@ public class UserAddDialog extends EntityAddEditDialog {
     public UserAddDialog(GwtSession currentSession) {
         super(currentSession);
         
-        DialogUtils.resizeDialog(this, 400, 400);
+        DialogUtils.resizeDialog(this, 400, 500);
     }
 
     @Override
@@ -69,15 +73,24 @@ public class UserAddDialog extends EntityAddEditDialog {
         //
         // User info tab
         //
-        infoFieldSet = new FieldSet();
+        FieldSet infoFieldSet = new FieldSet();
         infoFieldSet.setHeading(MSGS.dialogAddFieldSet());
         infoFieldSet.setBorders(true);
         infoFieldSet.setStyleAttribute("margin", "0px 10px 0px 10px");
 
-        FormLayout layout = new FormLayout();
-        layout.setLabelWidth(Constants.LABEL_WIDTH_FORM);
-        infoFieldSet.setLayout(layout);
+        FieldSet statusFieldSet = new FieldSet();
+        statusFieldSet.setBorders(true);
+        statusFieldSet.setStyleAttribute("margin", "5px 10px 0px 10px");
+        statusFieldSet.setHeading(MSGS.dialogAddStatus());
+
+        FormLayout userLayout = new FormLayout();
+        FormLayout statusLayout = new FormLayout();
+        userLayout.setLabelWidth(Constants.LABEL_WIDTH_FORM);
+        statusLayout.setLabelWidth(Constants.LABEL_WIDTH_FORM);
+        infoFieldSet.setLayout(userLayout);
         infoFieldSet.setStyleAttribute("background-color", "E8E8E8");
+        statusFieldSet.setLayout(statusLayout);
+        statusFieldSet.setStyleAttribute("background-color", "E8E8E8");
 
         username = new TextField<String>();
         username.setAllowBlank(false);
@@ -131,7 +144,33 @@ public class UserAddDialog extends EntityAddEditDialog {
         optlock.setVisible(false);
         infoFieldSet.add(optlock);
 
+        userStatus = new SimpleComboBox<GwtUser.GwtUserStatus>();
+        userStatus.setName("comboStatus");
+        userStatus.setFieldLabel(MSGS.dialogAddStatus());
+        userStatus.setLabelSeparator(":");
+        userStatus.setEditable(false);
+        userStatus.setTypeAhead(true);
+        userStatus.setTriggerAction(ComboBox.TriggerAction.ALL);
+        // show account status combo box
+        for (GwtUser.GwtUserStatus userStatus : GwtUser.GwtUserStatus.values()) {
+            this.userStatus.add(userStatus);
+        }
+        userStatus.setSimpleValue(GwtUser.GwtUserStatus.ENABLED);
+        statusFieldSet.add(userStatus);
+
+        expirationDate = new DateField();
+        expirationDate.setName("expirationDate");
+        expirationDate.setFormatValue(true);
+        expirationDate.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
+        expirationDate.setFieldLabel(MSGS.dialogAddExpirationDate());
+        expirationDate.setLabelSeparator(":");
+        expirationDate.setAllowBlank(true);
+        expirationDate.setEmptyText(MSGS.dialogAddNoExpiration());
+        expirationDate.setValue(null);
+        statusFieldSet.add(expirationDate);
+
         userFormPanel.add(infoFieldSet);
+        userFormPanel.add(statusFieldSet);
         
         bodyPanel.add(userFormPanel);
     }
@@ -147,7 +186,9 @@ public class UserAddDialog extends EntityAddEditDialog {
         gwtUserCreator.setDisplayName(displayName.getValue());
         gwtUserCreator.setEmail(email.getValue());
         gwtUserCreator.setPhoneNumber(phoneNumber.getValue());
-        
+        gwtUserCreator.setUserStatus(userStatus.getValue().getValue());
+        gwtUserCreator.setExpirationDate(expirationDate.getValue());
+
         gwtUserService.create(xsrfToken, gwtUserCreator, new AsyncCallback<GwtUser>() {
 
             @Override

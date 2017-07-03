@@ -11,7 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.model.authentication;
 
+import org.eclipse.kapua.app.console.client.util.DateUtils;
 import org.eclipse.kapua.app.console.shared.model.GwtUpdatableEntityModel;
+
+import java.util.Date;
 
 public class GwtCredential extends GwtUpdatableEntityModel {
 
@@ -24,6 +27,10 @@ public class GwtCredential extends GwtUpdatableEntityModel {
             return (X) GwtCredentialType.valueOf(getCredentialType());
         } else if ("subjectTypeEnum".equals(property)) {
             return (X) GwtSubjectType.valueOf(getSubjectType());
+        } else if ("credentialStatusEnum".equals(property)) {
+            return (X) GwtCredentialStatus.valueOf(getCredentialStatus());
+        } else if ("expirationDateFormatted".equals(property)) {
+            return (X) (DateUtils.formatDateTime(getExpirationDate()));
         } else {
             return super.get(property);
         }
@@ -81,4 +88,27 @@ public class GwtCredential extends GwtUpdatableEntityModel {
         set("username", username);
     }
 
+    public String getCredentialStatus() {
+        return (String) get("credentialStatus");
+    }
+
+    public GwtCredentialStatus getCredentialStatusEnum() {
+        return (GwtCredentialStatus) get("credentialStatusEnum");
+    }
+
+    public void setCredentialStatus(String credentialStatus) {
+        set("credentialStatus", credentialStatus);
+    }
+
+    public Date getExpirationDate() {
+        return get("expirationDate");
+    }
+
+    public String getExpirationDateFormatted() {
+        return get("expirationDateFormatted");
+    }
+
+    public void setExpirationDate(Date expirationDate) {
+        set("expirationDate", expirationDate);
+    }
 }

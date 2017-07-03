@@ -17,12 +17,16 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserStatus;
 import org.eclipse.kapua.service.user.UserType;
+
+import java.util.Date;
 
 /**
  * User entity implementation.
@@ -59,6 +63,10 @@ public class UserImpl extends AbstractKapuaNamedEntity implements User {
     @Basic
     @Column(name = "external_id", updatable = false)
     private String externalId;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "expiration_date")
+    private Date expirationDate;
 
     /**
      * Constructor
@@ -142,5 +150,13 @@ public class UserImpl extends AbstractKapuaNamedEntity implements User {
     @Override
     public void setExternalId(String externalId) {
         this.externalId = externalId;
+    }
+
+    @Override public Date getExpirationDate() {
+        return expirationDate;
+    }
+
+    @Override public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
     }
 }

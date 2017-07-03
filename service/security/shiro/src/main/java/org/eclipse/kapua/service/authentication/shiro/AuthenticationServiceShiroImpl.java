@@ -166,10 +166,10 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             KapuaAuthenticationException kae;
             if (se instanceof UnknownAccountException) {
                 kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.UNKNOWN_LOGIN_CREDENTIAL, se, shiroAuthenticationToken.getPrincipal());
-            } else if (se instanceof DisabledAccountException) {
-                kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.DISABLED_LOGIN_CREDENTIAL, se, shiroAuthenticationToken.getPrincipal());
             } else if (se instanceof LockedAccountException) {
                 kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.LOCKED_LOGIN_CREDENTIAL, se, shiroAuthenticationToken.getPrincipal());
+            } else if (se instanceof DisabledAccountException) {
+                kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.DISABLED_LOGIN_CREDENTIAL, se, shiroAuthenticationToken.getPrincipal());
             } else if (se instanceof IncorrectCredentialsException) {
                 kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS, se, shiroAuthenticationToken.getPrincipal());
             } else if (se instanceof ExpiredCredentialsException) {
@@ -338,10 +338,10 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             KapuaAuthenticationException kae;
             if (se instanceof UnknownAccountException) {
                 kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.UNKNOWN_LOGIN_CREDENTIAL, se, shiroAuthenticationToken.getPrincipal());
-            } else if (se instanceof DisabledAccountException) {
-                kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.DISABLED_LOGIN_CREDENTIAL, se, shiroAuthenticationToken.getPrincipal());
             } else if (se instanceof LockedAccountException) {
                 kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.LOCKED_LOGIN_CREDENTIAL, se, shiroAuthenticationToken.getPrincipal());
+            } else if (se instanceof DisabledAccountException) {
+                kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.DISABLED_LOGIN_CREDENTIAL, se, shiroAuthenticationToken.getPrincipal());
             } else if (se instanceof IncorrectCredentialsException) {
                 kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS, se, shiroAuthenticationToken.getPrincipal());
             } else if (se instanceof ExpiredCredentialsException) {

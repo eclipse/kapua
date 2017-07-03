@@ -21,6 +21,9 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.eclipse.kapua.model.KapuaEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.model.xml.DateXmlAdapter;
+
+import java.util.Date;
 
 /**
  * Credential creator service definition.
@@ -32,7 +35,9 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = { "userId",
         "credentialType",
-        "credentialPlainKey" }, factoryClass = CredentialXmlRegistry.class, factoryMethod = "newCredentialCreator")
+        "credentialPlainKey",
+        "credentialStatus",
+        "expirationDate" }, factoryClass = CredentialXmlRegistry.class, factoryMethod = "newCredentialCreator")
 public interface CredentialCreator extends KapuaEntityCreator<Credential> {
 
     /**
@@ -81,4 +86,15 @@ public interface CredentialCreator extends KapuaEntityCreator<Credential> {
      * @param plainKey
      */
     public void setCredentialPlainKey(String plainKey);
+
+    @XmlElement(name = "expirationDate")
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
+    Date getExpirationDate();
+
+    void setExpirationDate(Date expirationDate);
+
+    @XmlElement(name = "credentialStatus")
+    CredentialStatus getCredentialStatus();
+
+    void setCredentialStatus(CredentialStatus credentialStatus);
 }

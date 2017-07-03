@@ -199,6 +199,7 @@ public class UserServiceSteps extends AbstractKapuaSteps {
         userCreator.setDisplayName(displayName);
         userCreator.setEmail(userEmail);
         userCreator.setPhoneNumber("+1 555 123 4567");
+        userCreator.setUserStatus(UserStatus.ENABLED);
 
         scenario.write("User " + userName + " created.");
     }

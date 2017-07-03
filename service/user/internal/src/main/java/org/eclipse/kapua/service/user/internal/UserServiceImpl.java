@@ -70,6 +70,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         // ArgumentValidator.match(userCreator.getRawPassword(), ArgumentValidator.PASSWORD_REGEXP, "rawPassword");
         ArgumentValidator.match(userCreator.getEmail(), ArgumentValidator.EMAIL_REGEXP, "email");
         ArgumentValidator.notNull(userCreator.getUserType(), "userType");
+        ArgumentValidator.notNull(userCreator.getUserStatus(), "userStatus");
         if (userCreator.getUserType() != UserType.INTERNAL) {
             ArgumentValidator.notEmptyOrNull(userCreator.getExternalId(), "externalId");
         } else {

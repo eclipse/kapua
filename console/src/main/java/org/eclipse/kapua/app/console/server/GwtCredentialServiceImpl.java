@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
@@ -172,12 +173,15 @@ public class GwtCredentialServiceImpl extends KapuaConfigurableRemoteServiceServ
             CredentialService credentialService = locator.getService(CredentialService.class);
             UserService userService = locator.getService(UserService.class);
 
-            Credential currentCredential = credentialService.find(scopeId, credentialId);
-            if (gwtCredential.getCredentialKey() != null && !gwtCredential.getCredentialKey().trim().equals("")) {
+            if (StringUtils.isNotEmpty(StringUtils.strip(gwtCredential.getCredentialKey()))) {
                 String encryptedPass = AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, gwtCredential.getCredentialKey());
-                currentCredential.setCredentialKey(encryptedPass);
+                gwtCredential.setCredentialKey(encryptedPass);
+            } else {
+                Credential currentCredential = credentialService.find(scopeId, credentialId);
+                gwtCredential.setCredentialKey(currentCredential.getCredentialKey());
             }
-            Credential credentialUpdated = credentialService.update(currentCredential);
+
+            Credential credentialUpdated = credentialService.update(GwtKapuaModelConverter.convert(gwtCredential));
             User user = userService.find(credentialUpdated.getScopeId(), credentialUpdated.getUserId());
             // Convert
             gwtCredentialUpdated = KapuaGwtModelConverter.convert(credentialUpdated, user);
@@ -260,7 +264,7 @@ public class GwtCredentialServiceImpl extends KapuaConfigurableRemoteServiceServ
                         }
                         if (oldCredential != null) {
                             credentialsService.delete(scopeId, oldCredential.getId());
-                            CredentialCreator newCredentialCreator = credentialFactory.newCreator(scopeId, userId, CredentialType.PASSWORD, newPassword);
+                            CredentialCreator newCredentialCreator = credentialFactory.newCreator(scopeId, userId, CredentialType.PASSWORD, newPassword, oldCredential.getStatus(), oldCredential.getExpirationDate());
                             credentialsService.create(newCredentialCreator);
                         } else {
                         }

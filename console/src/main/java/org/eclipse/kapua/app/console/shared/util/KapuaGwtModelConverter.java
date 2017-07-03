@@ -495,6 +495,7 @@ public class KapuaGwtModelConverter {
         gwtUser.setEmail(user.getEmail());
         gwtUser.setPhoneNumber(user.getPhoneNumber());
         gwtUser.setStatus(user.getStatus().name());
+        gwtUser.setExpirationDate(user.getExpirationDate());
 
         //
         // Return converted entity
@@ -598,6 +599,8 @@ public class KapuaGwtModelConverter {
         gwtCredential.setUserId(credential.getUserId().toCompactId());
         gwtCredential.setCredentialType(credential.getCredentialType().toString());
         gwtCredential.setCredentialKey(credential.getCredentialKey());
+        gwtCredential.setCredentialStatus(credential.getStatus().toString());
+        gwtCredential.setExpirationDate(credential.getExpirationDate());
         if (user != null) {
             gwtCredential.setUsername(user.getName());
         }
