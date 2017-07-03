@@ -43,7 +43,6 @@ public class TranslatorGenericRequestKapuaKura extends AbstractTranslatorKapuaKu
                     .append(kapuaChannel.getVersion().getValue());
         }
 
-
         kuraRequestChannel.setAppId(appIdSb.toString());
         kuraRequestChannel.setMethod(MethodDictionaryKapuaKura.get(kapuaChannel.getMethod()));
 
