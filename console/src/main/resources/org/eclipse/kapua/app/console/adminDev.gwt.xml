@@ -20,4 +20,9 @@
        favorite browser engine for local testing. Just don't check
        it in every time -->
   <set-property name="user.agent" value="gecko1_8" />
+
+  <set-property name="gwt.logging.enabled" value="TRUE"/>
+  <set-property name="gwt.logging.consoleHandler" value="ENABLED"/>
+  <set-property name="gwt.logging.firebugHandler" value="ENABLED"/>
+  <set-property name="gwt.logging.popupHandler" value="DISABLED"/>
 </module>
