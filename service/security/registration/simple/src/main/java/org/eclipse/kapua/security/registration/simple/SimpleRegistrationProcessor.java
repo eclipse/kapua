@@ -49,6 +49,7 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleDomain;
+import org.eclipse.kapua.service.datastore.DatastoreDomain;
 import org.eclipse.kapua.service.device.management.commons.DeviceManagementDomain;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionDomain;
@@ -277,6 +278,8 @@ public class SimpleRegistrationProcessor implements RegistrationProcessor {
         permissions.add(permissionFactory.newPermission(new CredentialDomain(), Actions.delete, user.getScopeId()));
         permissions.add(permissionFactory.newPermission(new CredentialDomain(), Actions.read, user.getScopeId()));
         permissions.add(permissionFactory.newPermission(new CredentialDomain(), Actions.write, user.getScopeId()));
+
+        permissions.add(permissionFactory.newPermission(new DatastoreDomain(), Actions.read, user.getScopeId()));
 
         permissions.add(permissionFactory.newPermission(DeviceDomain.INSTANCE, Actions.read, user.getScopeId()));
         permissions.add(permissionFactory.newPermission(DeviceDomain.INSTANCE, Actions.write, user.getScopeId()));
