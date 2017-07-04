@@ -9,26 +9,23 @@
  * Contributors:
  *     Eurotech
  *******************************************************************************/
-package org.eclipse.kapua.service.device.integration;
-
-import org.junit.runner.RunWith;
+package org.eclipse.kapua.service.tag.unit;
 
 import cucumber.api.CucumberOptions;
 import cucumber.api.junit.Cucumber;
+import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-        features = {"classpath:features/device"
-                   },
+        features = "classpath:features/tag/TagService.feature",
         glue = {"org.eclipse.kapua.qa.steps",
                 "org.eclipse.kapua.service.user.steps",
-                "org.eclipse.kapua.service.device.steps",
                 "org.eclipse.kapua.service.tag.steps"
-               },
-        plugin = {"pretty", 
-                  "html:target/cucumber/DeviceI9n",
-                  "json:target/DeviceI9n_cucumber.json"
-                 },
-        monochrome = true )
-
-public class RunDeviceI9nTest {}
+        },
+        plugin = { "pretty",
+                "html:target/cucumber/TagService",
+                "json:target/TagService_cucumber.json"
+        },
+        monochrome = true)
+public class RunTagServiceTest {
+}

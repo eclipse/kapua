@@ -17,16 +17,20 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.Vector;
 
 import javax.inject.Inject;
 
+import cucumber.api.java.en.And;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -57,6 +61,8 @@ import org.eclipse.kapua.message.internal.device.lifecycle.KapuaMissingChannelIm
 import org.eclipse.kapua.message.internal.device.lifecycle.KapuaMissingMessageImpl;
 import org.eclipse.kapua.message.internal.device.lifecycle.KapuaMissingPayloadImpl;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate;
 import org.eclipse.kapua.qa.steps.DBHelper;
 import org.eclipse.kapua.service.StepData;
 import org.eclipse.kapua.service.TestJAXBContextProvider;
@@ -67,6 +73,7 @@ import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceCredentialsMode;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
+import org.eclipse.kapua.service.device.registry.DevicePredicates;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
@@ -75,7 +82,14 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventListResultImpl;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventQueryImpl;
 import org.eclipse.kapua.service.device.registry.internal.DeviceListResultImpl;
+import org.eclipse.kapua.service.device.registry.internal.DeviceQueryImpl;
 import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService;
+import org.eclipse.kapua.service.tag.Tag;
+import org.eclipse.kapua.service.tag.TagCreator;
+import org.eclipse.kapua.service.tag.TagListResult;
+import org.eclipse.kapua.service.tag.TagService;
+import org.eclipse.kapua.service.tag.internal.TagFactoryImpl;
+import org.eclipse.kapua.service.tag.internal.TagPredicates;
 import org.eclipse.kapua.service.user.steps.TestConfig;
 import org.eclipse.kapua.test.KapuaTest;
 
@@ -91,10 +105,13 @@ import cucumber.runtime.java.guice.ScenarioScoped;
 @ScenarioScoped
 public class DeviceServiceSteps extends KapuaTest {
 
+    private static final KapuaEid DEFAULT_SCOPE_ID = new KapuaEid(BigInteger.valueOf(1L));
+
     // Device registry services
     private DeviceRegistryService deviceRegistryService;
     private DeviceEventService deviceEventsService;
     private DeviceLifeCycleService deviceLifeCycleService;
+    private TagService tagService;
 
     // Scenario scoped Device Registry test data
     StepData stepData;
@@ -117,6 +134,7 @@ public class DeviceServiceSteps extends KapuaTest {
         deviceRegistryService = locator.getService(DeviceRegistryService.class);
         deviceEventsService = locator.getService(DeviceEventService.class);
         deviceLifeCycleService = locator.getService(DeviceLifeCycleService.class);
+        tagService = locator.getService(TagService.class);
 
         // Initialize the database
         dbHelper.setup();
@@ -306,6 +324,24 @@ public class DeviceServiceSteps extends KapuaTest {
         }
     }
 
+    @When("^I configure the tag service$")
+    public void setTagServiceConfig(List<TestConfig> testConfigs)
+            throws KapuaException {
+
+        Account tmpAccount = (Account) stepData.get("LastAccount");
+        Map<String, Object> valueMap = new HashMap<>();
+
+        for (TestConfig config : testConfigs) {
+            config.addConfigToMap(valueMap);
+        }
+        try {
+            stepData.put("ExceptionCaught", false);
+            tagService.setConfigValues(tmpAccount.getId(), tmpAccount.getScopeId(), valueMap);
+        } catch (KapuaException ex) {
+            stepData.put("ExceptionCaught", true);
+        }
+    }
+
     @Given("^A device such as$")
     public void createADeviceAsSpecified(List<CucDevice> devLst)
             throws KapuaException {
@@ -341,6 +377,45 @@ public class DeviceServiceSteps extends KapuaTest {
             stepData.put("Device", tmpDev);
             stepData.put("DeviceList", tmpList);
         }
+    }
+
+    @And("^I tag device with \"([^\"]*)\" tag$")
+    public void iTagDeviceWithTag(String deviceTagName) throws Throwable {
+
+        Device device = (Device) stepData.get("Device");
+        TagCreator tagCreator = new TagFactoryImpl().newCreator(DEFAULT_SCOPE_ID);
+        tagCreator.setName(deviceTagName);
+        Tag tag = tagService.create(tagCreator);
+        Set<KapuaId> tags = new HashSet<>();
+        tags.add(tag.getId());
+        device.setTagIds(tags);
+        deviceRegistryService.update(device);
+    }
+
+
+    @When("^I search for device with tag \"([^\"]*)\"$")
+    public void iSearchForDeviceWithTag(String deviceTagName) throws Throwable {
+
+        Account lastAcc = (Account) stepData.get("LastAccount");
+        DeviceQueryImpl deviceQuery = new DeviceQueryImpl(lastAcc.getId());
+
+        KapuaQuery<Tag> tagQuery = new TagFactoryImpl().newQuery(DEFAULT_SCOPE_ID);
+        tagQuery.setPredicate(new AttributePredicate<String>(TagPredicates.NAME, deviceTagName, KapuaAttributePredicate.Operator.EQUAL));
+        TagListResult tagQueryResult = tagService.query(tagQuery);
+        Tag tag = tagQueryResult.getFirstItem();
+        deviceQuery.setPredicate(attributeIsEqualTo(DevicePredicates.TAG_IDS, tag.getId()));
+        DeviceListResult deviceList = (DeviceListResult) deviceRegistryService.query(deviceQuery);
+
+        stepData.put("DeviceList", deviceList);
+    }
+
+    @Then("^I find device \"([^\"]*)\"$")
+    public void iFindDeviceWithTag(String deviceName) throws Throwable {
+
+        DeviceListResult deviceList = (DeviceListResult) stepData.get("DeviceList");
+        Device device = deviceList.getFirstItem();
+
+        assertEquals(deviceName, device.getClientId());
     }
 
     @When("^I search for events from device \"(.+)\" in account \"(.+)\"$")
