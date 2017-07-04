@@ -110,7 +110,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
 
     /**
      * Get the singleton {@link RestDatastoreClient} instance
-     * 
+     *
      * @return
      * @throws ClientUnavailableException
      */
@@ -128,7 +128,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
     /**
      * Default constructor
      * Initialize the client provider ({@link ClientProvider}) as singleton.
-     * 
+     *
      * @throws ClientUnavailableException
      */
     private RestDatastoreClient() throws ClientUnavailableException {
@@ -194,7 +194,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
             Response insertResponse = esClientProvider.getClient().performRequest(
                     POST_ACTION,
                     getTypePath(insertRequest.getTypeDescriptor()),
-                    Collections.<String, String> emptyMap(),
+                    Collections.<String, String>emptyMap(), 
                     entity);
             if (isRequestSuccessful(insertResponse)) {
                 JsonNode responseNode = MAPPER.readTree(EntityUtils.toString(insertResponse.getEntity()));
@@ -225,7 +225,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
             Response updateResponse = esClientProvider.getClient().performRequest(
                     POST_ACTION,
                     getUpsertPath(updateRequest.getTypeDescriptor(), updateRequest.getId()),
-                    Collections.<String, String> emptyMap(),
+                    Collections.<String, String>emptyMap(),
                     entity);
             if (isRequestSuccessful(updateResponse)) {
                 JsonNode responseNode = MAPPER.readTree(EntityUtils.toString(updateResponse.getEntity()));
@@ -263,7 +263,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
             Response updateResponse = esClientProvider.getClient().performRequest(
                     POST_ACTION,
                     getBulkPath(),
-                    Collections.<String, String> emptyMap(),
+                    Collections.<String, String>emptyMap(),
                     EntityBuilder.create().setText(bulkOperation.toString()).build(),
                     new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString()));
             if (isRequestSuccessful(updateResponse)) {
@@ -330,7 +330,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
             queryResponse = esClientProvider.getClient().performRequest(
                     GET_ACTION,
                     getSearchPath(typeDescriptor),
-                    Collections.<String, String> emptyMap(),
+                    Collections.<String, String>emptyMap(),
                     EntityBuilder.create().setText(MAPPER.writeValueAsString(queryMap)).build(),
                     new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString()));
             if (isRequestSuccessful(queryResponse)) {
@@ -379,7 +379,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
             queryResponse = esClientProvider.getClient().performRequest(
                     GET_ACTION,
                     getSearchPath(typeDescriptor),
-                    Collections.<String, String> emptyMap(),
+                    Collections.<String, String>emptyMap(),
                     EntityBuilder.create().setText(MAPPER.writeValueAsString(queryMap)).build(),
                     new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString()));
             if (isRequestSuccessful(queryResponse)) {
@@ -411,7 +411,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
             deleteResponse = esClientProvider.getClient().performRequest(
                     DELETE_ACTION,
                     getIdPath(typeDescriptor, id),
-                    Collections.<String, String> emptyMap());
+                    Collections.<String, String>emptyMap());
             if (!isRequestSuccessful(deleteResponse)) {
                 throw new ClientException(ClientErrorCodes.ACTION_ERROR, deleteResponse.getStatusLine().getReasonPhrase());
             }
@@ -433,7 +433,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
             deleteResponse = esClientProvider.getClient().performRequest(
                     POST_ACTION,
                     getDeleteByQueryPath(typeDescriptor),
-                    Collections.<String, String> emptyMap(),
+                    Collections.<String, String>emptyMap(),
                     EntityBuilder.create().setText(MAPPER.writeValueAsString(deleteRequestNode)).build(),
                     new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString()));
             if (!isRequestSuccessful(deleteResponse)) {
@@ -457,7 +457,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
             isIndexExistsResponse = esClientProvider.getClient().performRequest(
                     HEAD_ACTION,
                     getIndexPath(indexExistsRequest.getIndex()),
-                    Collections.<String, String> emptyMap());
+                    Collections.<String, String>emptyMap());
             if (isIndexExistsResponse.getStatusLine().getStatusCode() == 200) {
                 return new IndexExistsResponse(true);
             } else if (isIndexExistsResponse.getStatusLine().getStatusCode() == 404) {
@@ -479,7 +479,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
             createIndexResponse = esClientProvider.getClient().performRequest(
                     PUT_ACTION,
                     getIndexPath(indexName),
-                    Collections.<String, String> emptyMap(),
+                    Collections.<String, String>emptyMap(),
                     EntityBuilder.create().setText(MAPPER.writeValueAsString(indexSettings)).build(),
                     new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString()));
             if (!isRequestSuccessful(createIndexResponse)) {
@@ -499,7 +499,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
             isMappingExistsResponse = esClientProvider.getClient().performRequest(
                     GET_ACTION,
                     getMappingPath(typeDescriptor),
-                    Collections.<String, String> emptyMap());
+                    Collections.<String, String>emptyMap());
             if (isMappingExistsResponse.getStatusLine().getStatusCode() == 200) {
                 return true;
             } else if (isMappingExistsResponse.getStatusLine().getStatusCode() == 404) {
@@ -521,7 +521,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
             createMappingResponse = esClientProvider.getClient().performRequest(
                     PUT_ACTION,
                     getMappingPath(typeDescriptor),
-                    Collections.<String, String> emptyMap(),
+                    Collections.<String, String>emptyMap(),
                     EntityBuilder.create().setText(MAPPER.writeValueAsString(mapping)).build(),
                     new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString()));
             if (!isRequestSuccessful(createMappingResponse)) {
@@ -541,7 +541,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
             refreshIndexResponse = esClientProvider.getClient().performRequest(
                     POST_ACTION,
                     getRefreshAllIndexesPath(),
-                    Collections.<String, String> emptyMap());
+                    Collections.<String, String>emptyMap());
             if (!isRequestSuccessful(refreshIndexResponse)) {
                 throw new ClientException(ClientErrorCodes.ACTION_ERROR, refreshIndexResponse.getStatusLine().getReasonPhrase());
             }
@@ -559,7 +559,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
             deleteIndexResponse = esClientProvider.getClient().performRequest(
                     DELETE_ACTION,
                     getIndexPath("_all"),
-                    Collections.<String, String> emptyMap());
+                    Collections.<String, String>emptyMap());
             if (!isRequestSuccessful(deleteIndexResponse)) {
                 throw new ClientException(ClientErrorCodes.ACTION_ERROR, deleteIndexResponse.getStatusLine().getReasonPhrase());
             }

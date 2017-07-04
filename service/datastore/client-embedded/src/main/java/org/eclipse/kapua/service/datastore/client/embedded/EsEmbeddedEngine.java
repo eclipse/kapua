@@ -53,12 +53,12 @@ public class EsEmbeddedEngine {
                     EmbeddedNodeSettings clientSettings = EmbeddedNodeSettings.getInstance();
                     String clusterName = clientSettings.getString(EmbeddedNodeSettingsKey.ELASTICSEARCH_CLUSTER);
                     logger.info("Cluster name [{}]", clusterName);
-                    
+
                     // transport
                     int transportTcpPort = clientSettings.getInt(EmbeddedNodeSettingsKey.ELASTICSEARCH_TRANSPORT_PORT);
                     String transportTcpHost = clientSettings.getString(EmbeddedNodeSettingsKey.ELASTICSEARCH_TRANSPORT_NODE);
                     logger.info(">>> Transport: host [{}] - port [{}]", transportTcpHost, transportTcpPort);
-                    
+
                     // rest
                     int restTcpPort = clientSettings.getInt(EmbeddedNodeSettingsKey.ELASTICSEARCH_REST_PORT);
                     String restTcpHost = clientSettings.getString(EmbeddedNodeSettingsKey.ELASTICSEARCH_REST_NODE);
