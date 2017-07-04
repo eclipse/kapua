@@ -25,7 +25,7 @@ import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredential;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredentialQuery;
 import org.eclipse.kapua.app.console.commons.shared.model.query.GwtQuery;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 import org.eclipse.kapua.app.console.shared.service.GwtCredentialService;
 import org.eclipse.kapua.app.console.shared.service.GwtCredentialServiceAsync;
 
@@ -54,7 +54,7 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
     protected CredentialGrid(AbstractGwtEntityView<GwtCredential> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
         query = new GwtCredentialQuery();
-        query.setScopeId(currentSession.getSelectedAccount().getId());
+        query.setScopeId(currentSession.getSelectedAccountId());
     }
 
     @Override

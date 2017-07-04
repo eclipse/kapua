@@ -23,7 +23,7 @@ import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredential;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredentialCreator;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredentialStatus;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredentialType;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 import org.eclipse.kapua.app.console.shared.service.GwtCredentialService;
 import org.eclipse.kapua.app.console.shared.service.GwtCredentialServiceAsync;
 import org.eclipse.kapua.app.console.shared.service.GwtUserService;
@@ -151,7 +151,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
     public void submit() {
         final GwtCredentialCreator gwtCredentialCreator = new GwtCredentialCreator();
 
-        gwtCredentialCreator.setScopeId(currentSession.getSelectedAccount().getId());
+        gwtCredentialCreator.setScopeId(currentSession.getSelectedAccountId());
 
         gwtCredentialCreator.setCredentialType(credentialType.getValue().getValue());
         gwtCredentialCreator.setCredentialPlainKey(password.getValue());

@@ -77,7 +77,7 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         allGroup.setId(null);
         allGroup.setGroupName("ALL");
 
-        GWT_ACCESS_INFO_SERVICE.findByUserIdOrCreate(currentSession.getSelectedAccount().getId(), userId, new AsyncCallback<GwtAccessInfo>() {
+        GWT_ACCESS_INFO_SERVICE.findByUserIdOrCreate(currentSession.getSelectedAccountId(), userId, new AsyncCallback<GwtAccessInfo>() {
 
             @Override
             public void onSuccess(GwtAccessInfo result) {
@@ -107,7 +107,7 @@ public class PermissionAddDialog extends EntityAddEditDialog {
                 forwardableChecboxGroup.getValue() != null ? true : false);
 
         GwtAccessPermissionCreator gwtAccessPermissionCreator = new GwtAccessPermissionCreator();
-        gwtAccessPermissionCreator.setScopeId(currentSession.getSelectedAccount().getId());
+        gwtAccessPermissionCreator.setScopeId(currentSession.getSelectedAccountId());
         gwtAccessPermissionCreator.setAccessInfoId(accessInfoId);
         gwtAccessPermissionCreator.setPermission(newPermission);
 
@@ -221,7 +221,7 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         // Target scope id
         targetScopeIdTxtField = new TextField<String>();
         targetScopeIdTxtField.setFieldLabel(MSGS.dialogAddPermissionTargetScopeId());
-        targetScopeIdTxtField.setValue(currentSession.getSelectedAccount().getId());
+        targetScopeIdTxtField.setValue(currentSession.getSelectedAccountId());
         targetScopeIdTxtField.setEnabled(false);
 
         permissionFormPanel.add(targetScopeIdTxtField);
@@ -239,7 +239,7 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         groupsCombo.setTriggerAction(TriggerAction.ALL);
         groupsCombo.setEmptyText(MSGS.dialogAddPermissionLoading());
         groupsCombo.disable();
-        GWT_GROUP_SERVICE.findAll(currentSession.getSelectedAccount().getId(), new AsyncCallback<List<GwtGroup>>() {
+        GWT_GROUP_SERVICE.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<List<GwtGroup>>() {
 
             @Override
             public void onFailure(Throwable caught) {

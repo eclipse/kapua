@@ -14,9 +14,9 @@ package org.eclipse.kapua.app.console.client.account.toolbar;
 import org.eclipse.kapua.app.console.commons.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtOrganization;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtOrganization;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtAccount;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -38,7 +38,7 @@ public class AccountEditDialog extends AccountAddDialog {
         fieldSet.remove(confirmPassword);
         fieldSet.remove(accountNameField);
         accountNameLabel.setVisible(true);
-        parentAccountName.setValue(currentSession.getSelectedAccount().getName());
+        parentAccountName.setValue(currentSession.getSelectedAccountName());
 
         accountNameLabel.setValue(selectedAccount.getName());
         accountNameField.setValue(selectedAccount.getName());

@@ -119,7 +119,7 @@ public class TopicsTable extends LayoutContainer {
                 topicInfoGrid.unmask();
             }
         };
-        dataService.findTopicsTree(currentSession.getSelectedAccount().getId(), topicsCallback);
+        dataService.findTopicsTree(currentSession.getSelectedAccountId(), topicsCallback);
         topicInfoGrid = new TreeGrid<GwtTopic>(store, new ColumnModel(configs));
         topicInfoGrid.setBorders(false);
         topicInfoGrid.setStateful(false);

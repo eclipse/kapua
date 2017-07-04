@@ -17,8 +17,7 @@ import org.eclipse.kapua.app.console.client.user.dialog.UserAddDialog;
 import org.eclipse.kapua.app.console.client.user.dialog.UserDeleteDialog;
 import org.eclipse.kapua.app.console.client.user.dialog.UserEditDialog;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtAccount;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 
 import com.google.gwt.user.client.Element;
 
@@ -29,17 +28,17 @@ public class AccountChildUserToolbar extends EntityCRUDToolbar<GwtUser> {
     public AccountChildUserToolbar(GwtSession currentSession) {
         super(currentSession);
         selectedAccountSession = new GwtSession();
-        selectedAccountSession.setSelectedAccount(null);
+        selectedAccountSession.setSelectedAccountId(null);
     }
 
-    public void setSelectedAccount(GwtAccount account) {
-        selectedAccountSession.setSelectedAccount(account);
+    public void setSelectedAccountId(String accountId) {
+        selectedAccountSession.setSelectedAccountId(accountId);
         updateToolBarButtons();
     }
 
     public void updateToolBarButtons() {
         if (isRendered()) {
-            if (selectedAccountSession.getSelectedAccount() == null) {
+            if (selectedAccountSession.getSelectedAccountId() == null) {
                 getAddEntityButton().disable();
                 getEditEntityButton().disable();
                 getDeleteEntityButton().disable();
@@ -90,7 +89,7 @@ public class AccountChildUserToolbar extends EntityCRUDToolbar<GwtUser> {
     @Override
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
-        if (selectedAccountSession.getSelectedAccount() != null && currentSession != null && currentSession.hasUserCreatePermission()) {
+        if (selectedAccountSession.getSelectedAccountId() != null && currentSession != null && currentSession.hasUserCreatePermission()) {
             getAddEntityButton().enable();
         } else {
             getAddEntityButton().disable();

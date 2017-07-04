@@ -306,7 +306,7 @@ public class DeviceTabHistory extends LayoutContainer {
         sbUrl.append("format=")
                 .append(format)
                 .append("&scopeId=")
-                .append(URL.encodeQueryString(currentSession.getSelectedAccount().getId()))
+                .append(URL.encodeQueryString(currentSession.getSelectedAccountId()))
                 .append("&deviceId=")
                 .append(URL.encodeQueryString(selectedDevice.getId()))
                 .append("&startDate=")

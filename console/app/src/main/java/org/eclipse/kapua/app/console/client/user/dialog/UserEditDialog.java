@@ -13,7 +13,7 @@ package org.eclipse.kapua.app.console.client.user.dialog;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleUserMessages;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 import org.eclipse.kapua.app.console.shared.service.GwtUserService;
 import org.eclipse.kapua.app.console.shared.service.GwtUserServiceAsync;
 

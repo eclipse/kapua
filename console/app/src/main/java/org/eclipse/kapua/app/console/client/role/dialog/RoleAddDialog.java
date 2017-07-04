@@ -45,7 +45,7 @@ public class RoleAddDialog extends EntityAddEditDialog {
     public void submit() {
         GwtRoleCreator gwtRoleCreator = new GwtRoleCreator();
 
-        gwtRoleCreator.setScopeId(currentSession.getSelectedAccount().getId());
+        gwtRoleCreator.setScopeId(currentSession.getSelectedAccountId());
         gwtRoleCreator.setName(roleNameField.getValue());
 
         GWT_ROLE_SERVICE.create(xsrfToken, gwtRoleCreator, new AsyncCallback<GwtRole>() {

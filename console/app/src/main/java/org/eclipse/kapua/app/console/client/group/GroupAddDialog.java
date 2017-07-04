@@ -51,7 +51,7 @@ public class GroupAddDialog extends EntityAddEditDialog {
     @Override
     public void submit() {
         GwtGroupCreator gwtGroupCreator = new GwtGroupCreator();
-        gwtGroupCreator.setScopeId(currentSession.getSelectedAccount().getId());
+        gwtGroupCreator.setScopeId(currentSession.getSelectedAccountId());
         gwtGroupCreator.setName(groupNameField.getValue());
         GWT_GROUP_SERVICE.create(gwtGroupCreator, new AsyncCallback<GwtGroup>() {
 

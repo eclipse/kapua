@@ -277,7 +277,7 @@ public class DeviceFilterPanel extends LayoutContainer {
         groupsCombo.setStyleAttribute("margin-bottom", "10px");
         groupsCombo.setTriggerAction(TriggerAction.ALL);
         groupsCombo.setValue(allGroup);
-        groupService.findAll(currentSession.getSelectedAccount().getId(), new AsyncCallback<List<GwtGroup>>() {
+        groupService.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<List<GwtGroup>>() {
 
             @Override
             public void onFailure(Throwable caught) {

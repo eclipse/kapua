@@ -100,7 +100,7 @@ public class DeviceTable extends LayoutContainer {
             @Override
             protected void load(Object loadConfig,
                     AsyncCallback<ListLoadResult<GwtDatastoreDevice>> callback) {
-                dataService.findDevices((LoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), callback);
+                dataService.findDevices((LoadConfig) loadConfig, currentSession.getSelectedAccountId(), callback);
             }
         };
 

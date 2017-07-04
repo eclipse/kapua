@@ -388,7 +388,7 @@ public class DeviceConfigSnapshots extends LayoutContainer {
             StringBuilder sbUrl = new StringBuilder();
                 sbUrl.append("device_snapshots?");
             sbUrl.append("&scopeId=")
-                    .append(URL.encodeQueryString(currentSession.getSelectedAccount().getId()))
+                    .append(URL.encodeQueryString(currentSession.getSelectedAccountId()))
                     .append("&deviceId=")
                     .append(URL.encodeQueryString(selectedDevice.getId()))
                     .append("&snapshotId=")

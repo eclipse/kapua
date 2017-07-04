@@ -17,7 +17,7 @@ import org.eclipse.kapua.app.console.client.user.dialog.UserAddDialog;
 import org.eclipse.kapua.app.console.client.user.dialog.UserDeleteDialog;
 import org.eclipse.kapua.app.console.client.user.dialog.UserEditDialog;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 
 import com.google.gwt.user.client.Element;
 

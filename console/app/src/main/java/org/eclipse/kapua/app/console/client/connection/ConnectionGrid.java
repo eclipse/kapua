@@ -52,7 +52,7 @@ public class ConnectionGrid extends EntityGrid<GwtDeviceConnection> {
     ConnectionGrid(AbstractGwtEntityView<GwtDeviceConnection> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
         filterQuery = new GwtDeviceConnectionQuery();
-        filterQuery.setScopeId(currentSession.getSelectedAccount().getId());
+        filterQuery.setScopeId(currentSession.getSelectedAccountId());
     }
 
     @Override

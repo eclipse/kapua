@@ -23,7 +23,7 @@ import org.eclipse.kapua.app.console.client.user.tabs.description.UserTabDescrip
 import org.eclipse.kapua.app.console.client.user.tabs.permission.UserTabItemPermission;
 import org.eclipse.kapua.app.console.client.user.tabs.role.UserTabItemAccessRole;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 
 public class UserView extends AbstractGwtEntityView<GwtUser> {
 

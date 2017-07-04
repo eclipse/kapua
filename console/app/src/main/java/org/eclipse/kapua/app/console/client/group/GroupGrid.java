@@ -38,7 +38,7 @@ public class GroupGrid extends EntityGrid<GwtGroup> {
     protected GroupGrid(AbstractGwtEntityView<GwtGroup> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
         query = new GwtGroupQuery();
-        query.setScopeId(currentSession.getSelectedAccount().getId());
+        query.setScopeId(currentSession.getSelectedAccountId());
     }
 
     @Override

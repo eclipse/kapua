@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.commons.shared.model;
+package org.eclipse.kapua.app.console.module.user.shared.model;
 
 import org.eclipse.kapua.app.console.commons.client.util.DateUtils;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtUpdatableEntityModel;

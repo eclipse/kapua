@@ -18,10 +18,10 @@ import org.eclipse.kapua.app.console.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.client.util.TextFieldValidator;
 import org.eclipse.kapua.app.console.client.util.TextFieldValidator.FieldType;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtOrganization;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtOrganization;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtXSRFToken;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtAccount;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccountCreator;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountServiceAsync;
@@ -337,7 +337,7 @@ public class AccountForm extends Window {
                 if (existingAccount == null) {
 
                     final GwtAccountCreator gwtAccountCreator = new GwtAccountCreator();
-                    gwtAccountCreator.setParentAccountId(currentSession.getSelectedAccount().getId());
+                    gwtAccountCreator.setParentAccountId(currentSession.getSelectedAccountId());
                     gwtAccountCreator.setAccountName(accountNameField.getValue());
                     gwtAccountCreator.setAccountPassword(accountPassword.getValue());
 
@@ -454,7 +454,7 @@ public class AccountForm extends Window {
         //
         // Populate field if necessary
         //
-        parentAccountName.setValue(currentSession.getSelectedAccount().getName());
+        parentAccountName.setValue(currentSession.getSelectedAccountName());
         if (existingAccount != null) {
             gwtAccountService.find(existingAccount.getId(), new AsyncCallback<GwtAccount>() {
 

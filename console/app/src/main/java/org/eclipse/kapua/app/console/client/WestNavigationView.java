@@ -33,10 +33,10 @@ import org.eclipse.kapua.app.console.client.tag.TagView;
 import org.eclipse.kapua.app.console.client.user.UserView;
 import org.eclipse.kapua.app.console.client.welcome.WelcomeView;
 import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractGwtEntityView;
+import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.commons.client.views.EntityViewDescriptor;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtAccount;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.Scroll;
@@ -65,6 +65,9 @@ import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
+import org.eclipse.kapua.app.console.shared.service.GwtAccountService;
+import org.eclipse.kapua.app.console.shared.service.GwtAccountServiceAsync;
 import org.eclipse.kapua.app.console.shared.service.GwtConsoleService;
 import org.eclipse.kapua.app.console.shared.service.GwtConsoleServiceAsync;
 
@@ -87,6 +90,8 @@ public class WestNavigationView extends LayoutContainer {
     private WelcomeView welcomeView;
 
     private final GwtSession currentSession;
+
+    private static final GwtAccountServiceAsync GWT_ACCOUNT_SERVICE = GWT.create(GwtAccountService.class);
 
     private static final GwtConsoleServiceAsync CONSOLE_SERVICE = GWT.create(GwtConsoleService.class);
 
@@ -192,7 +197,7 @@ public class WestNavigationView extends LayoutContainer {
 
                         centerPanel.removeAll();
 
-                        ContentPanel panel = new ContentPanel(new FitLayout());
+                        final ContentPanel panel = new ContentPanel(new FitLayout());
                         panel.setBorders(false);
                         panel.setBodyBorder(false);
 
@@ -292,18 +297,29 @@ public class WestNavigationView extends LayoutContainer {
                             centerPanel.layout();
                             dashboardSelected = false;
                         } else if ("mysettings".equals(selectedId)) {
+                            GWT_ACCOUNT_SERVICE.find(currentSession.getAccountId(), new AsyncCallback<GwtAccount>() {
 
-                            AccountDetailsView settingView = new AccountDetailsView(null, currentSession);
-                            settingView.setAccount(currentSession.getSelectedAccount());
+                                @Override
+                                public void onFailure(Throwable caught) {
+                                    FailureHandler.handle(caught);
+                                }
 
-                            panel.setIcon(new KapuaIcon(IconSet.COG));
-                            panel.setHeading(MSGS.settings());
-                            panel.add(settingView);
+                                @Override
+                                public void onSuccess(GwtAccount result) {
+                                    AccountDetailsView settingView = new AccountDetailsView(null, currentSession);
+                                    settingView.setAccount(result);
 
-                            centerPanel.add(panel);
-                            centerPanel.layout();
+                                    panel.setIcon(new KapuaIcon(IconSet.COG));
+                                    panel.setHeading(MSGS.settings());
+                                    panel.add(settingView);
 
-                            settingView.refresh();
+                                    centerPanel.add(panel);
+                                    centerPanel.layout();
+
+                                    settingView.refresh();
+                                }
+                            });
+
                         } else {
                             for (EntityViewDescriptor<? extends GwtEntityModel> entityViewDescriptor : additionalViews) {
                                 if (entityViewDescriptor.getId().equals(selectedId)) {
@@ -391,9 +407,9 @@ public class WestNavigationView extends LayoutContainer {
         cloudResourcesTreeStore.removeAll();
         accountManagementTreeStore.removeAll();
 
-        GwtAccount selectedAccount = currentSession.getSelectedAccount();
+        String selectedAccountId = currentSession.getSelectedAccountId();
 
-        if (selectedAccount != null) {
+        if (selectedAccountId != null) {
 
             cloudResourcesTreeStore.add(newItem("welcome", MSGS.welcome(), IconSet.INFO), false);
 

@@ -137,7 +137,7 @@ public class KapuaCloudConsole implements EntryPoint {
         viewport.setLayout(borderLayout);
 
         // Set class name based on account. This allows for styling based on account
-        RootPanel.getBodyElement().addClassName(gwtSession.getSelectedAccount().getName());
+        RootPanel.getBodyElement().addClassName(gwtSession.getSelectedAccountName());
 
         //
         // North View
@@ -358,7 +358,7 @@ public class KapuaCloudConsole implements EntryPoint {
 
             @Override
             public void onSuccess(final GwtSession gwtSession) {
-                logger.fine("User: " + gwtSession.getUser());
+                logger.fine("User: " + gwtSession.getUserId());
                 dlg.hide();
                 renderMainScreen(viewport, gwtSession);
             }
@@ -415,7 +415,7 @@ public class KapuaCloudConsole implements EntryPoint {
         currentSession = session;
 
         if (currentSession != null) {
-            String username = currentSession.getUser().getUsername();
+            String username = currentSession.getUserName();
             if (username != null) {
 
                 //

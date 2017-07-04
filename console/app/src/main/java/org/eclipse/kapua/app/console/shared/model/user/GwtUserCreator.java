@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.model.user;
 
-import org.eclipse.kapua.app.console.commons.shared.model.GwtUser.GwtUserStatus;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser.GwtUserStatus;
 
 import java.io.Serializable;
 import java.util.Date;

@@ -27,8 +27,8 @@ public class RolePermissionGridFieldToolbar extends EntityGridFieldToolbar<GwtRo
     public GwtRolePermission getNewModel() {
         GwtRolePermission gwtRolePermission = new GwtRolePermission();
         gwtRolePermission.setCreatedOn(new Date());
-        gwtRolePermission.setCreatedBy(currentSession.getUser().getId());
-        gwtRolePermission.setTargetScopeId(currentSession.getSelectedAccount().getId());
+        gwtRolePermission.setCreatedBy(currentSession.getUserId());
+        gwtRolePermission.setTargetScopeId(currentSession.getSelectedAccountId());
         return gwtRolePermission;
     }
 

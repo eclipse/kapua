@@ -58,7 +58,7 @@ public class GroupFilterPanel extends EntityFilterPanel<GwtGroup> {
     public void resetFields() {
         nameField.setValue(null);
         GwtGroupQuery query = new GwtGroupQuery();
-        query.setScopeId(currentSession.getSelectedAccount().getId());
+        query.setScopeId(currentSession.getSelectedAccountId());
         entityGrid.refresh(query);
 
     }
@@ -67,7 +67,7 @@ public class GroupFilterPanel extends EntityFilterPanel<GwtGroup> {
     public void doFilter() {
         GwtGroupQuery query = new GwtGroupQuery();
         query.setName(nameField.getValue());
-        query.setScopeId(currentSession.getSelectedAccount().getId());
+        query.setScopeId(currentSession.getSelectedAccountId());
         entityGrid.refresh(query);
 
     }

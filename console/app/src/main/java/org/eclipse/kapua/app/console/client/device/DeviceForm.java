@@ -187,7 +187,7 @@ public class DeviceForm extends Window {
         groupCombo.setDisplayField("groupName");
         groupCombo.setValueField("id");
 
-        gwtGroupService.findAll(currentSession.getSelectedAccount().getId(), new AsyncCallback<List<GwtGroup>>() {
+        gwtGroupService.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<List<GwtGroup>>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -294,7 +294,7 @@ public class DeviceForm extends Window {
                 if (selectedDevice == null) {
 
                     final GwtDeviceCreator gwtDeviceCreator = new GwtDeviceCreator();
-                    gwtDeviceCreator.setScopeId(currentSession.getSelectedAccount().getId());
+                    gwtDeviceCreator.setScopeId(currentSession.getSelectedAccountId());
 
                     gwtDeviceCreator.setClientId(clientIdField.getValue());
                     gwtDeviceCreator.setGroupId(groupCombo.getValue().getId());
@@ -462,7 +462,7 @@ public class DeviceForm extends Window {
             // }
             // });
             if (selectedDevice.getGroupId() != null) {
-                gwtGroupService.find(currentSession.getSelectedAccount().getId(), selectedDevice.getGroupId(), new AsyncCallback<GwtGroup>() {
+                gwtGroupService.find(currentSession.getSelectedAccountId(), selectedDevice.getGroupId(), new AsyncCallback<GwtGroup>() {
 
                     @Override
                     public void onFailure(Throwable caught) {

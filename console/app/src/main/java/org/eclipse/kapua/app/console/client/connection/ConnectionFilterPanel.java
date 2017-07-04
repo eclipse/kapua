@@ -90,14 +90,14 @@ public class ConnectionFilterPanel extends EntityFilterPanel<GwtDeviceConnection
         clientIdField.setValue(null);
         connectionStatusCombo.setSimpleValue(GwtDeviceQueryPredicates.GwtDeviceConnectionStatus.ANY);
         GwtDeviceConnectionQuery query = new GwtDeviceConnectionQuery();
-        query.setScopeId(currentSession.getSelectedAccount().getId());
+        query.setScopeId(currentSession.getSelectedAccountId());
         entityGrid.refresh(query);
     }
 
     @Override
     public void doFilter() {
         GwtDeviceConnectionQuery query = new GwtDeviceConnectionQuery();
-        query.setScopeId(currentSession.getSelectedAccount().getId());
+        query.setScopeId(currentSession.getSelectedAccountId());
         query.setClientId(clientIdField.getValue());
         query.setConnectionStatus(connectionStatusCombo.getSimpleValue().toString());
         entityGrid.refresh(query);

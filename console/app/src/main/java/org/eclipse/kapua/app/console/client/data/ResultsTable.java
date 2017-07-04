@@ -134,11 +134,11 @@ public class ResultsTable extends LayoutContainer {
             protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtMessage>> callback) {
                 if (selectedMetrics != null && !selectedMetrics.isEmpty()) {
                     if (selectedTopic != null) {
-                        dataService.findMessagesByTopic((PagingLoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedTopic, selectedMetrics, startDate, endDate, callback);
+                        dataService.findMessagesByTopic((PagingLoadConfig) loadConfig, currentSession.getSelectedAccountId(), selectedTopic, selectedMetrics, startDate, endDate, callback);
                     } else if (selectedDevice != null) {
-                        dataService.findMessagesByDevice((PagingLoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedDevice, selectedMetrics, startDate, endDate, callback);
+                        dataService.findMessagesByDevice((PagingLoadConfig) loadConfig, currentSession.getSelectedAccountId(), selectedDevice, selectedMetrics, startDate, endDate, callback);
                     } else if (selectedAsset != null) {
-                        dataService.findMessagesByAssets((PagingLoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedAsset, selectedMetrics, startDate, endDate, callback);
+                        dataService.findMessagesByAssets((PagingLoadConfig) loadConfig, currentSession.getSelectedAccountId(), selectedAsset, selectedMetrics, startDate, endDate, callback);
                     }
 
                 } else if (selectedDevice != null && selectedAsset != null && selectedChannels != null && !selectedChannels.isEmpty()) {
@@ -277,7 +277,7 @@ public class ResultsTable extends LayoutContainer {
         sbUrl.append("exporter_data?");
         sbUrl.append("format=")
                 .append(format).append("&scopeIdString=")
-                .append(URL.encodeQueryString(currentSession.getSelectedAccount().getId()));
+                .append(URL.encodeQueryString(currentSession.getSelectedAccountId()));
 
         if (selectedTopic != null) {
             sbUrl.append("&topic=").append(URL.encodeQueryString(selectedTopic.getSemanticTopic()));

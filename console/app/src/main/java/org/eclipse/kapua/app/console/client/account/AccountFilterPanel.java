@@ -16,7 +16,7 @@ import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractGwtEntityView;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtAccount;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccountQuery;
 
 import com.extjs.gxt.ui.client.widget.Label;
@@ -93,14 +93,14 @@ public class AccountFilterPanel extends EntityFilterPanel<GwtAccount> {
         accountOrgEmailField.setValue(null);
         accountOrgNameField.setValue(null);
         GwtAccountQuery query = new GwtAccountQuery();
-        query.setScopeId(currentSession.getSelectedAccount().getId());
+        query.setScopeId(currentSession.getSelectedAccountId());
         entityGrid.refresh(query);
     }
 
     @Override
     public void doFilter() {
         GwtAccountQuery query = new GwtAccountQuery();
-        query.setScopeId(currentSession.getSelectedAccount().getId());
+        query.setScopeId(currentSession.getSelectedAccountId());
         query.setName(accountNameField.getValue());
         query.setOrganizationName(accountOrgNameField.getValue());
         query.setOrganizationEmail(accountOrgEmailField.getValue());

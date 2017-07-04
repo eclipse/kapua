@@ -233,7 +233,7 @@ public class DeviceAssetsValues extends LayoutContainer {
                         tree.mask(MSGS.loading());
                         gwtDeviceAssetService.get(
                                 (PagingLoadConfig) loadConfig,
-                                currentSession.getSelectedAccount().getId(),
+                                currentSession.getSelectedAccountId(),
                                 selectedDevice.getId(),
                                 new GwtDeviceAssets(),
                                 callback);
@@ -420,7 +420,7 @@ public class DeviceAssetsValues extends LayoutContainer {
 
                                     gwtDeviceAssetService.write(
                                             token,
-                                            currentSession.getSelectedAccount().getId(),
+                                            currentSession.getSelectedAccountId(),
                                             selectedDevice.getId(),
                                             updatedDeviceAsset,
                                             new AsyncCallback<Void>() {

@@ -58,7 +58,7 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
             @Override
             protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtAccessPermission>> callback) {
                 GWT_ACCESS_PERMISSION_SERVICE.findByUserId((PagingLoadConfig) loadConfig,
-                        currentSession.getSelectedAccount().getId(),
+                        currentSession.getSelectedAccountId(),
                         userId,
                         callback);
             }

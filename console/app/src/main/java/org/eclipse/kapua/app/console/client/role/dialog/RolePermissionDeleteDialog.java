@@ -42,7 +42,7 @@ public class RolePermissionDeleteDialog extends EntityDeleteDialog {
         getSelectedRolePermission();
         if (selectedRolePermission != null) {
             GwtRoleServiceAsync roleService = GWT.create(GwtRoleService.class);
-            roleService.deleteRolePermission(xsrfToken, session.getSelectedAccount().getId(), selectedRolePermission.getId(), new AsyncCallback<Void>() {
+            roleService.deleteRolePermission(xsrfToken, session.getSelectedAccountId(), selectedRolePermission.getId(), new AsyncCallback<Void>() {
 
                 @Override
                 public void onSuccess(Void arg0) {

@@ -20,10 +20,10 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtAccount;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtJwtCredential;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtLoginCredential;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 import org.eclipse.kapua.app.console.shared.service.GwtAuthorizationService;
 import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -206,7 +206,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
                 if (gwtSession == null) {
                     gwtSession = establishSession();
                 } else {
-                    gwtSession.setGwtUser(KapuaGwtModelConverter.convert(user));
+                    gwtSession.setUserId(user.getId().toCompactId());
                 }
             }
         } catch (Throwable t) {
@@ -301,10 +301,15 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         gwtSession.setBuildNumber(commonsConfig.getString(SystemSettingKey.BUILD_NUMBER));
 
         // User info
-        gwtSession.setGwtUser(gwtUser);
-        gwtSession.setGwtAccount(gwtAccount);
-        gwtSession.setRootAccount(gwtAccount);
-        gwtSession.setSelectedAccount(gwtAccount);
+        gwtSession.setUserId(gwtUser.getId());
+        gwtSession.setAccountId(gwtAccount.getId());
+        gwtSession.setRootAccountId(gwtAccount.getId());
+        gwtSession.setSelectedAccountId(gwtAccount.getId());
+
+        gwtSession.setUserName(gwtUser.getUsername());
+        gwtSession.setUserDisplayName(gwtUser.getDisplayName());
+        gwtSession.setRootAccountName(gwtAccount.getName());
+        gwtSession.setSelectedAccountName(gwtAccount.getName());
 
         // Permission info
         gwtSession.setAccountCreatePermission(hasAccountCreate);

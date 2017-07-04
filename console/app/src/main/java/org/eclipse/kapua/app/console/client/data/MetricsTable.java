@@ -131,11 +131,11 @@ public class MetricsTable extends LayoutContainer {
             @Override
             protected void load(Object loadConfig, AsyncCallback<ListLoadResult<GwtHeader>> callback) {
                 if (selectedTopic != null) {
-                    DATA_SERVICE.findHeaders((LoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedTopic, callback);
+                    DATA_SERVICE.findHeaders((LoadConfig) loadConfig, currentSession.getSelectedAccountId(), selectedTopic, callback);
                 } else if (selectedDevice != null) {
-                    DATA_SERVICE.findHeaders((LoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedDevice, callback);
+                    DATA_SERVICE.findHeaders((LoadConfig) loadConfig, currentSession.getSelectedAccountId(), selectedDevice, callback);
                 } else if (selectedAsset != null) {
-                    DATA_SERVICE.findHeaders((LoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedAsset, callback);
+                    DATA_SERVICE.findHeaders((LoadConfig) loadConfig, currentSession.getSelectedAccountId(), selectedAsset, callback);
                 } else {
                     callback.onSuccess(new BaseListLoadResult<GwtHeader>(new ArrayList<GwtHeader>()));
                 }

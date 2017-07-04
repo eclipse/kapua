@@ -24,10 +24,10 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     private String buildNumber;
 
     // User info
-    private GwtUser user;
-    private GwtAccount gwtAccount;
-    private GwtAccount rootAccount;
-    private GwtAccount selectedAccount;
+    private String userId;
+    private String accountId;
+    private String rootAccountId;
+    private String selectedAccountId;
     private Set<String> permissions;
 
     // Static loaded permission
@@ -74,40 +74,44 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     private boolean hasConnectionReadPermission;
     private boolean hasConnectionUpdatePermission;
     private boolean hasConnectionDeletePermission;
+    private String userName;
+    private String userDisplayName;
+    private String rootAccountName;
+    private String selectedAccountName;
 
     public GwtSession() {
     }
 
-    public GwtUser getUser() {
-        return user;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setGwtUser(GwtUser gwtUser) {
-        this.user = gwtUser;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public GwtAccount getGwtAccount() {
-        return gwtAccount;
+    public String getAccountId() {
+        return accountId;
     }
 
-    public void setGwtAccount(GwtAccount gwtAccount) {
-        this.gwtAccount = gwtAccount;
+    public void setAccountId(String accountId) {
+        this.accountId = accountId;
     }
 
-    public void setRootAccount(GwtAccount rootAccount) {
-        this.rootAccount = rootAccount;
+    public void setRootAccountId(String rootAccountId) {
+        this.rootAccountId = rootAccountId;
     }
 
-    public GwtAccount getRootAccount() {
-        return rootAccount;
+    public String getRootAccountId() {
+        return rootAccountId;
     }
 
-    public void setSelectedAccount(GwtAccount selectedAccount) {
-        this.selectedAccount = selectedAccount;
+    public void setSelectedAccountId(String selectedAccountId) {
+        this.selectedAccountId = selectedAccountId;
     }
 
-    public GwtAccount getSelectedAccount() {
-        return selectedAccount;
+    public String getSelectedAccountId() {
+        return selectedAccountId;
     }
 
     public Set<String> getPermissions() {
@@ -420,5 +424,37 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
 
     public void setConnectionDeletePermission(boolean hasConnectionDeletePermission) {
         this.hasConnectionDeletePermission = hasConnectionDeletePermission;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserDisplayName() {
+        return userDisplayName;
+    }
+
+    public void setUserDisplayName(String userDisplayName) {
+        this.userDisplayName = userDisplayName;
+    }
+
+    public String getRootAccountName() {
+        return rootAccountName;
+    }
+
+    public void setRootAccountName(String rootAccountName) {
+        this.rootAccountName = rootAccountName;
+    }
+
+    public String getSelectedAccountName() {
+        return selectedAccountName;
+    }
+
+    public void setSelectedAccountName(String selectedAccountName) {
+        this.selectedAccountName = selectedAccountName;
     }
 }

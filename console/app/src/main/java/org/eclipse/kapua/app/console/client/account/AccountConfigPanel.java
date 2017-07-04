@@ -27,7 +27,7 @@ import org.eclipse.kapua.app.console.client.util.UserAgentUtils;
 import org.eclipse.kapua.app.console.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.shared.model.GwtConfigParameter;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtAccount;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Orientation;
@@ -325,7 +325,7 @@ public class AccountConfigPanel extends LayoutContainer {
             }
             String allowSelfEditValue = param.getOptions() != null ? param.getOptions().get("allowSelfEdit") : null;
             boolean allowSelfEdit = allowSelfEditValue != null && allowSelfEditValue.equals("true");
-            boolean isEditingSelf = selectedAccountId == null || selectedAccountId.equals(currentSession.getSelectedAccount().getId());
+            boolean isEditingSelf = selectedAccountId == null || selectedAccountId.equals(currentSession.getSelectedAccountId());
             if (isEditingSelf && !allowSelfEdit) {
                 field.disable();
             }

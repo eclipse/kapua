@@ -64,7 +64,7 @@ public class RoleFilterPanel extends EntityFilterPanel<GwtRole> {
     public void resetFields() {
         nameField.setValue(null);
         GwtRoleQuery query = new GwtRoleQuery();
-        query.setScopeId(currentSession.getSelectedAccount().getId());
+        query.setScopeId(currentSession.getSelectedAccountId());
         entityGrid.refresh(query);
     }
 
@@ -72,7 +72,7 @@ public class RoleFilterPanel extends EntityFilterPanel<GwtRole> {
     public void doFilter() {
         GwtRoleQuery query = new GwtRoleQuery();
         query.setName(nameField.getValue());
-        query.setScopeId(currentSession.getSelectedAccount().getId());
+        query.setScopeId(currentSession.getSelectedAccountId());
         entityGrid.refresh(query);
     }
 

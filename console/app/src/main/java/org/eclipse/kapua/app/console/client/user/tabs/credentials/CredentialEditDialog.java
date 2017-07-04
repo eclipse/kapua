@@ -15,7 +15,7 @@ import org.eclipse.kapua.app.console.client.util.ConfirmPasswordUpdateFieldValid
 import org.eclipse.kapua.app.console.client.util.PasswordUpdateFieldValidator;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredential;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;

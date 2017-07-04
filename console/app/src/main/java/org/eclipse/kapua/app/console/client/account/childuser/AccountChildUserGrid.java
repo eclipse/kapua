@@ -21,9 +21,9 @@ import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.commons.client.ui.color.Color;
 import org.eclipse.kapua.app.console.commons.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtAccount;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.commons.shared.model.query.GwtQuery;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUserQuery;
 import org.eclipse.kapua.app.console.shared.service.GwtUserService;
 import org.eclipse.kapua.app.console.shared.service.GwtUserServiceAsync;
@@ -58,14 +58,11 @@ public class AccountChildUserGrid extends EntityGrid<GwtUser> {
 
     public void setSelectedAccount(GwtAccount account) {
         query = new GwtUserQuery();
+        String accountId = account != null ? account.getId() : null;
         // Set correct scopeId for the grid
-        if (account != null) {
-            query.setScopeId(account.getId());
-        } else {
-            query.setScopeId(null);
-        }
+        query.setScopeId(accountId);
         // Set selected account for the toolbar
-        ((AccountChildUserToolbar) getToolbar()).setSelectedAccount(account);
+        ((AccountChildUserToolbar) getToolbar()).setSelectedAccountId(accountId);
     }
 
     @Override

@@ -42,7 +42,7 @@ public class RoleGrid extends EntityGrid<GwtRole> {
     public RoleGrid(AbstractGwtEntityView<GwtRole> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
         query = new GwtRoleQuery();
-        query.setScopeId(currentSession.getSelectedAccount().getId());
+        query.setScopeId(currentSession.getSelectedAccountId());
     }
 
     @Override

@@ -16,7 +16,7 @@ import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractGwtEntityView;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUserQuery;
 
 import com.extjs.gxt.ui.client.widget.Label;
@@ -64,7 +64,7 @@ public class UserFilterPanel extends EntityFilterPanel<GwtUser> {
     public void resetFields() {
         nameField.setValue(null);
         GwtUserQuery query = new GwtUserQuery();
-        query.setScopeId(currentSession.getSelectedAccount().getId());
+        query.setScopeId(currentSession.getSelectedAccountId());
         entityGrid.refresh(query);
     }
 
@@ -72,7 +72,7 @@ public class UserFilterPanel extends EntityFilterPanel<GwtUser> {
     public void doFilter() {
         GwtUserQuery query = new GwtUserQuery();
         query.setName(nameField.getValue());
-        query.setScopeId(currentSession.getSelectedAccount().getId());
+        query.setScopeId(currentSession.getSelectedAccountId());
         entityGrid.refresh(query);
     }
 

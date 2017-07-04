@@ -132,7 +132,7 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
         groupCombo.setAllowBlank(false);
         groupCombo.setDisplayField("groupName");
         groupCombo.setValueField("id");
-        GROUP_SERVICE.findAll(currentSession.getSelectedAccount().getId(), new AsyncCallback<List<GwtGroup>>() {
+        GROUP_SERVICE.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<List<GwtGroup>>() {
 
             @Override
             public void onSuccess(List<GwtGroup> groups) {
@@ -186,11 +186,11 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
         permission.setDomain(domainCombo.getValue().getValue().toString());
         permission.setAction(actionCombo.getValue().getValue().toString());
         permission.setGroupId(groupCombo.getValue().getId());
-        permission.setTargetScopeId(currentSession.getSelectedAccount().getId());
-        permission.setForwardable(forwardableChecboxGroup.getValue() != null ? true : false);
+        permission.setTargetScopeId(currentSession.getSelectedAccountId());
+        permission.setForwardable(forwardableChecboxGroup.getValue() != null);
 
         GwtRolePermissionCreator rolePermission = new GwtRolePermissionCreator();
-        rolePermission.setScopeId(currentSession.getSelectedAccount().getId());
+        rolePermission.setScopeId(currentSession.getSelectedAccountId());
         rolePermission.setRoleId(selectedRole.getId());
 
         GwtRoleServiceAsync roleService = GWT.create(GwtRoleService.class);

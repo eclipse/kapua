@@ -50,7 +50,7 @@ public class AccessRoleAddDialog extends EntityAddEditDialog {
 
     public AccessRoleAddDialog(GwtSession currentSession, String userId) {
         super(currentSession);
-        GWT_ACCESS_INFO_SERVICE.findByUserIdOrCreate(currentSession.getSelectedAccount().getId(), userId, new AsyncCallback<GwtAccessInfo>() {
+        GWT_ACCESS_INFO_SERVICE.findByUserIdOrCreate(currentSession.getSelectedAccountId(), userId, new AsyncCallback<GwtAccessInfo>() {
 
             @Override
             public void onSuccess(GwtAccessInfo result) {
@@ -74,7 +74,7 @@ public class AccessRoleAddDialog extends EntityAddEditDialog {
     public void submit() {
         GwtAccessRoleCreator gwtAccessRoleCreator = new GwtAccessRoleCreator();
 
-        gwtAccessRoleCreator.setScopeId(currentSession.getSelectedAccount().getId());
+        gwtAccessRoleCreator.setScopeId(currentSession.getSelectedAccountId());
 
         gwtAccessRoleCreator.setAccessInfoId(accessInfoId);
         gwtAccessRoleCreator.setRoleId(rolesCombo.getValue().getId());
@@ -122,7 +122,7 @@ public class AccessRoleAddDialog extends EntityAddEditDialog {
 
             @Override
             protected void load(Object loadConfig, AsyncCallback<ListLoadResult<GwtRole>> callback) {
-                GWT_ROLE_SERVICE.findAll(currentSession.getSelectedAccount().getId(),
+                GWT_ROLE_SERVICE.findAll(currentSession.getSelectedAccountId(),
                         callback);
             }
         };

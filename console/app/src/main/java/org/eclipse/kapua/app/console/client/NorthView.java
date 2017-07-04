@@ -20,9 +20,8 @@ import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.client.util.Logout;
 import org.eclipse.kapua.app.console.client.util.UserAgentUtils;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtAccount;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccountStringListItem;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtUser;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountServiceAsync;
 import org.eclipse.kapua.app.console.shared.service.GwtAuthorizationService;
@@ -62,9 +61,13 @@ public class NorthView extends LayoutContainer {
 
     // Data
     private GwtSession currentSession;
-    private GwtAccount rootAccount;
-    private GwtUser user;
+    private String rootAccountId;
+    private String userId;
 
+    private String username;
+    private String userDisplayName;
+    private String rootAccountName;
+    private String selectedAccountName;
     // Listener
     private final SelectionListener<MenuEvent> switchToAccountListener = new SelectionListener<MenuEvent>() {
 
@@ -79,8 +82,13 @@ public class NorthView extends LayoutContainer {
         this.parent = parent;
 
         this.currentSession = currentSession;
-        this.rootAccount = currentSession.getRootAccount();
-        this.user = currentSession.getUser();
+        this.rootAccountId = currentSession.getRootAccountId();
+        this.userId = currentSession.getUserId();
+
+        this.username = currentSession.getUserName();
+        this.userDisplayName = currentSession.getUserDisplayName();
+        this.rootAccountName = currentSession.getRootAccountName();
+        this.selectedAccountName = currentSession.getSelectedAccountName();
     }
 
     protected void onRender(Element parent, int index) {
@@ -202,10 +210,10 @@ public class NorthView extends LayoutContainer {
      */
     public MenuItem createAccountNavigationMenuItem() {
         KapuaMenuItem rootAccountMenuItem = new KapuaMenuItem();
-        rootAccountMenuItem.setText(MSGS.accountSelectorItemYourAccount(rootAccount.getName()));
+        rootAccountMenuItem.setText(MSGS.accountSelectorItemYourAccount(rootAccountName));
         rootAccountMenuItem.setToolTip(MSGS.accountSelectorTooltipYourAccount());
         rootAccountMenuItem.setIcon(IconSet.USER_MD);
-        rootAccountMenuItem.setId(rootAccount.getId().toString());
+        rootAccountMenuItem.setId(rootAccountId);
         rootAccountMenuItem.addSelectionListener(switchToAccountListener);
 
         subAccountMenu = new Menu();
@@ -213,7 +221,7 @@ public class NorthView extends LayoutContainer {
         subAccountMenu.add(rootAccountMenuItem);
         subAccountMenu.add(new SeparatorMenuItem());
 
-        populateNavigatorMenu(subAccountMenu, rootAccount.getId());
+        populateNavigatorMenu(subAccountMenu, rootAccountId);
 
         KapuaMenuItem switchToAccountMenuItem = new KapuaMenuItem();
         switchToAccountMenuItem.setText(MSGS.consoleHeaderUserActionSwitchToAccount());
@@ -303,7 +311,7 @@ public class NorthView extends LayoutContainer {
             @Override
             public void onSuccess(GwtAccount result) {
                 if (result != null) {
-                    currentSession.setSelectedAccount(result);
+                    currentSession.setSelectedAccountId(result.getId());
                 }
 
                 // Update userActionButtonLabel with the current data
@@ -330,9 +338,8 @@ public class NorthView extends LayoutContainer {
      */
     private void updateUserActionButtonLabel() {
         // Current selected scope
-        String accountName = currentSession.getSelectedAccount().getName();
-        String username = user.getUsername();
-        String displayName = user.getDisplayName();
+        String accountName = selectedAccountName;
+        String displayName = userDisplayName;
 
         // Set label {displayName || username} @ {selectedAccountName}
         if (displayName == null ||

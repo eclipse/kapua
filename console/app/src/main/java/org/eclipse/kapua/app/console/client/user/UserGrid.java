@@ -23,7 +23,7 @@ import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractGwtEntityVie
 import org.eclipse.kapua.app.console.commons.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.commons.shared.model.query.GwtQuery;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUserQuery;
 import org.eclipse.kapua.app.console.shared.service.GwtUserService;
 import org.eclipse.kapua.app.console.shared.service.GwtUserServiceAsync;
@@ -52,7 +52,7 @@ public class UserGrid extends EntityGrid<GwtUser> {
     public UserGrid(AbstractGwtEntityView<GwtUser> entityView, final GwtSession currentSession) {
         super(entityView, currentSession);
         query = new GwtUserQuery();
-        query.setScopeId(currentSession.getSelectedAccount().getId());
+        query.setScopeId(currentSession.getSelectedAccountId());
     }
 
     @Override

@@ -481,7 +481,7 @@ public class DevicesTable extends LayoutContainer {
                 PagingLoadConfig pagingConfig = (BasePagingLoadConfig) loadConfig;
                 ((BasePagingLoadConfig) pagingConfig).setLimit(DEVICE_PAGE_SIZE);
                 gwtDeviceService.findDevices(pagingConfig,
-                        currentSession.getSelectedAccount().getId(),
+                        currentSession.getSelectedAccountId(),
                         filterPredicates,
                         callback);
             }
@@ -627,7 +627,7 @@ public class DevicesTable extends LayoutContainer {
             @Override
             public void onSuccess(GwtXSRFToken token) {
                 gwtDeviceService.deleteDevice(token,
-                        currentSession.getSelectedAccount().getId(),
+                        currentSession.getSelectedAccountId(),
                         toDeleteDevice.getClientId(),
                         new AsyncCallback<Void>() {
 
@@ -650,7 +650,7 @@ public class DevicesTable extends LayoutContainer {
         sbUrl.append("format=")
                 .append(format)
                 .append("&scopeIdString=")
-                .append(URL.encodeQueryString(currentSession.getSelectedAccount().getId()));
+                .append(URL.encodeQueryString(currentSession.getSelectedAccountId()));
 
         //
         // Adding filtering parameter if specified

@@ -21,7 +21,7 @@ import java.util.Set;
 
 import org.eclipse.kapua.app.console.client.group.GwtGroupQuery;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtEntityModel;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtUser.GwtUserStatus;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser.GwtUserStatus;
 import org.eclipse.kapua.app.console.client.tag.GwtTagQuery;
 import org.eclipse.kapua.app.console.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.shared.model.GwtConfigParameter;

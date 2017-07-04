@@ -31,7 +31,7 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
     DeviceGrid(AbstractGwtEntityView<GwtDevice> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
         query = new GwtQuery();
-        query.setScopeId(currentSession.getSelectedAccount().getId());
+        query.setScopeId(currentSession.getSelectedAccountId());
     }
 
     @Override

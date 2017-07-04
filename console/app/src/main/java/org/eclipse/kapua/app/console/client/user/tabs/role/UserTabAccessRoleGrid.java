@@ -52,7 +52,7 @@ public class UserTabAccessRoleGrid extends EntityGrid<GwtAccessRole> {
             @Override
             protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtAccessRole>> callback) {
                 GWT_ACCESS_ROLE_SERVICE.findByUserId((PagingLoadConfig) loadConfig,
-                        currentSession.getSelectedAccount().getId(),
+                        currentSession.getSelectedAccountId(),
                         userId,
                         callback);
             }
