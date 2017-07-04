@@ -32,7 +32,7 @@ import org.eclipse.kapua.app.console.commons.client.ui.panel.ContentPanel;
 import org.eclipse.kapua.app.console.client.tag.TagView;
 import org.eclipse.kapua.app.console.client.user.UserView;
 import org.eclipse.kapua.app.console.client.welcome.WelcomeView;
-import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractGwtEntityView;
+import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.commons.client.views.EntityViewDescriptor;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtEntityModel;
@@ -325,7 +325,7 @@ public class WestNavigationView extends LayoutContainer {
                                 if (entityViewDescriptor.getId().equals(selectedId)) {
                                     panel.setIcon(new KapuaIcon(entityViewDescriptor.getIcon()));
                                     panel.setHeading(entityViewDescriptor.getName());
-                                    panel.add((AbstractGwtEntityView)entityViewDescriptor.getViewInstance(currentSession));
+                                    panel.add((AbstractEntityView)entityViewDescriptor.getViewInstance(currentSession));
 
                                     centerPanel.add(panel);
                                     centerPanel.layout();

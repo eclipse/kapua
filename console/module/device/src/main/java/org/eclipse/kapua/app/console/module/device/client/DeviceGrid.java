@@ -16,7 +16,7 @@ import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
-import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractGwtEntityView;
+import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.commons.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
@@ -28,7 +28,7 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
 
     private GwtQuery query;
 
-    DeviceGrid(AbstractGwtEntityView<GwtDevice> entityView, GwtSession currentSession) {
+    DeviceGrid(AbstractEntityView<GwtDevice> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
         query = new GwtQuery();
         query.setScopeId(currentSession.getSelectedAccountId());

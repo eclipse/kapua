@@ -17,11 +17,11 @@ import java.util.List;
 import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.commons.client.ui.tab.KapuaTabItem;
-import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractGwtEntityView;
+import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 
-public class RoleView extends AbstractGwtEntityView<GwtRole> {
+public class RoleView extends AbstractEntityView<GwtRole> {
 
     private RoleGrid roleGrid;
     private RoleTabDescription roleTabDescription;
@@ -36,7 +36,7 @@ public class RoleView extends AbstractGwtEntityView<GwtRole> {
     }
 
     @Override
-    public List<KapuaTabItem<GwtRole>> getTabs(AbstractGwtEntityView<GwtRole> entityView, GwtSession currentSession) {
+    public List<KapuaTabItem<GwtRole>> getTabs(AbstractEntityView<GwtRole> entityView, GwtSession currentSession) {
         List<KapuaTabItem<GwtRole>> tabs = new ArrayList<KapuaTabItem<GwtRole>>();
         tabs.add(roleTabDescription);
         tabs.add(roleTabPermissionGrid);
@@ -45,7 +45,7 @@ public class RoleView extends AbstractGwtEntityView<GwtRole> {
     }
 
     @Override
-    public EntityGrid<GwtRole> getEntityGrid(AbstractGwtEntityView<GwtRole> entityView, GwtSession currentSession) {
+    public EntityGrid<GwtRole> getEntityGrid(AbstractEntityView<GwtRole> entityView, GwtSession currentSession) {
         if (roleGrid == null) {
             roleGrid = new RoleGrid(entityView, currentSession);
         }
@@ -53,7 +53,7 @@ public class RoleView extends AbstractGwtEntityView<GwtRole> {
     }
 
     @Override
-    public EntityFilterPanel<GwtRole> getEntityFilterPanel(AbstractGwtEntityView<GwtRole> entityView, GwtSession currentSession) {
+    public EntityFilterPanel<GwtRole> getEntityFilterPanel(AbstractEntityView<GwtRole> entityView, GwtSession currentSession) {
         return new RoleFilterPanel(this, currentSession);
     }
 }

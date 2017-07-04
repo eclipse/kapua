@@ -18,11 +18,11 @@ import org.eclipse.kapua.app.console.client.account.childuser.AccountChildUserTa
 import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.commons.client.ui.tab.KapuaTabItem;
-import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractGwtEntityView;
+import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 
-public class AccountView extends AbstractGwtEntityView<GwtAccount> {
+public class AccountView extends AbstractEntityView<GwtAccount> {
 
     private AccountGrid accountGrid;
     private AccountDescriptionTab descriptionTab;
@@ -35,7 +35,7 @@ public class AccountView extends AbstractGwtEntityView<GwtAccount> {
     }
 
     @Override
-    public List<KapuaTabItem<GwtAccount>> getTabs(AbstractGwtEntityView<GwtAccount> entityView, GwtSession currentSession) {
+    public List<KapuaTabItem<GwtAccount>> getTabs(AbstractEntityView<GwtAccount> entityView, GwtSession currentSession) {
         List<KapuaTabItem<GwtAccount>> tabs = new ArrayList<KapuaTabItem<GwtAccount>>();
         if(descriptionTab == null){
             descriptionTab = new AccountDescriptionTab();
@@ -53,7 +53,7 @@ public class AccountView extends AbstractGwtEntityView<GwtAccount> {
     }
 
     @Override
-    public EntityGrid<GwtAccount> getEntityGrid(AbstractGwtEntityView<GwtAccount> entityView, GwtSession currentSession) {
+    public EntityGrid<GwtAccount> getEntityGrid(AbstractEntityView<GwtAccount> entityView, GwtSession currentSession) {
         if(accountGrid == null){
             accountGrid = new AccountGrid(this, currentSession);
         }
@@ -61,7 +61,7 @@ public class AccountView extends AbstractGwtEntityView<GwtAccount> {
     }
 
     @Override
-    public EntityFilterPanel<GwtAccount> getEntityFilterPanel(AbstractGwtEntityView<GwtAccount> entityView, GwtSession currentSession) {
+    public EntityFilterPanel<GwtAccount> getEntityFilterPanel(AbstractEntityView<GwtAccount> entityView, GwtSession currentSession) {
         if(filterPanel == null){
             filterPanel = new AccountFilterPanel(entityView, currentSession);
         }

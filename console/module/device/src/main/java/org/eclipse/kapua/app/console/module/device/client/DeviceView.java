@@ -14,31 +14,31 @@ package org.eclipse.kapua.app.console.module.device.client;
 import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.commons.client.ui.tab.KapuaTabItem;
-import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractGwtEntityView;
+import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DeviceView extends AbstractGwtEntityView<GwtDevice> {
+public class DeviceView extends AbstractEntityView<GwtDevice> {
 
     public DeviceView(GwtSession currentSession) {
         super(currentSession);
     }
 
     @Override
-    public List<KapuaTabItem<GwtDevice>> getTabs(AbstractGwtEntityView<GwtDevice> entityView, GwtSession currentSession) {
+    public List<KapuaTabItem<GwtDevice>> getTabs(AbstractEntityView<GwtDevice> entityView, GwtSession currentSession) {
         return new ArrayList<KapuaTabItem<GwtDevice>>();
     }
 
     @Override
-    public EntityGrid<GwtDevice> getEntityGrid(AbstractGwtEntityView<GwtDevice> entityView, GwtSession currentSession) {
+    public EntityGrid<GwtDevice> getEntityGrid(AbstractEntityView<GwtDevice> entityView, GwtSession currentSession) {
         return new DeviceGrid(entityView, currentSession);
     }
 
     @Override
-    public EntityFilterPanel<GwtDevice> getEntityFilterPanel(AbstractGwtEntityView<GwtDevice> entityView, GwtSession currentSession2) {
+    public EntityFilterPanel<GwtDevice> getEntityFilterPanel(AbstractEntityView<GwtDevice> entityView, GwtSession currentSession2) {
         return null;
     }
 }

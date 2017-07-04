@@ -19,7 +19,7 @@ import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.commons.client.ui.color.Color;
-import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractGwtEntityView;
+import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.commons.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredential;
@@ -51,7 +51,7 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
 
     private CredentialToolbar toolbar;
 
-    protected CredentialGrid(AbstractGwtEntityView<GwtCredential> entityView, GwtSession currentSession) {
+    protected CredentialGrid(AbstractEntityView<GwtCredential> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
         query = new GwtCredentialQuery();
         query.setScopeId(currentSession.getSelectedAccountId());

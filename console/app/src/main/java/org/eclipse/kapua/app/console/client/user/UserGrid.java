@@ -19,7 +19,7 @@ import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.commons.client.ui.color.Color;
-import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractGwtEntityView;
+import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.commons.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.commons.shared.model.query.GwtQuery;
@@ -44,12 +44,12 @@ public class UserGrid extends EntityGrid<GwtUser> {
 
     private GwtUserQuery query;
     private UserGridToolbar toolbar;
-
+    
     private static final GwtUserServiceAsync GWT_USER_SERVICE = GWT.create(GwtUserService.class);
-
+    
     private final static ConsoleUserMessages MSGS = GWT.create(ConsoleUserMessages.class);
 
-    public UserGrid(AbstractGwtEntityView<GwtUser> entityView, final GwtSession currentSession) {
+    public UserGrid(AbstractEntityView<GwtUser> entityView, final GwtSession currentSession) {
         super(entityView, currentSession);
         query = new GwtUserQuery();
         query.setScopeId(currentSession.getSelectedAccountId());
@@ -87,7 +87,7 @@ public class UserGrid extends EntityGrid<GwtUser> {
     @Override
     protected List<ColumnConfig> getColumns() {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
-
+        
         ColumnConfig columnConfig = new ColumnConfig("status", MSGS.gridUserColumnHeaderStatus(), 50);
         GridCellRenderer<GwtUser> setStatusIcon = new GridCellRenderer<GwtUser>() {
 
@@ -128,7 +128,7 @@ public class UserGrid extends EntityGrid<GwtUser> {
 
         columnConfig = new ColumnConfig("username", MSGS.gridUserColumnHeaderUsername(), 400);
         columnConfigs.add(columnConfig);
-
+        
         columnConfig = new ColumnConfig("displayName", MSGS.gridUserColumnHeaderDisplayName(), 400);
         columnConfigs.add(columnConfig);
 
@@ -137,7 +137,7 @@ public class UserGrid extends EntityGrid<GwtUser> {
 
         columnConfig = new ColumnConfig("email", MSGS.gridUserColumnHeaderEmail(), 200);
         columnConfigs.add(columnConfig);
-
+        
         columnConfig = new ColumnConfig("createdBy", MSGS.gridUserColumnHeaderCreatedBy(), 200);
         columnConfigs.add(columnConfig);
 

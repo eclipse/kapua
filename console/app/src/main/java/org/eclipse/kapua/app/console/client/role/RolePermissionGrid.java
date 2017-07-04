@@ -17,7 +17,7 @@ import java.util.List;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
-import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractGwtEntityView;
+import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.commons.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
@@ -49,7 +49,7 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
     private GwtRole selectedRole;
     private GwtQuery filterQuery;
 
-    protected RolePermissionGrid(AbstractGwtEntityView<GwtRolePermission> entityView, GwtSession currentSession) {
+    protected RolePermissionGrid(AbstractEntityView<GwtRolePermission> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
 
     }

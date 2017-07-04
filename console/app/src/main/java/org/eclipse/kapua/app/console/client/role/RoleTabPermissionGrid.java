@@ -15,7 +15,7 @@ import org.eclipse.kapua.app.console.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.commons.client.ui.tab.KapuaTabItem;
-import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractGwtEntityView;
+import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermission;
@@ -27,8 +27,8 @@ public class RoleTabPermissionGrid extends KapuaTabItem<GwtRole> {
 
     private static final ConsoleRoleMessages MSGS = GWT.create(ConsoleRoleMessages.class);
     RolePermissionGrid rolePermissionGrid;
-
-    public RoleTabPermissionGrid(AbstractGwtEntityView<GwtRolePermission> entityView, GwtSession session) {
+    
+    public RoleTabPermissionGrid(AbstractEntityView<GwtRolePermission> entityView, GwtSession session) {
         super(MSGS.roleTabPermissionGridTitle(), new KapuaIcon(IconSet.TASKS));
 
         rolePermissionGrid = new RolePermissionGrid(entityView, session);

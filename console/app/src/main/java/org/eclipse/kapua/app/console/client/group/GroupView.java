@@ -17,11 +17,11 @@ import java.util.List;
 import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.commons.client.ui.tab.KapuaTabItem;
-import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractGwtEntityView;
+import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 
-public class GroupView  extends AbstractGwtEntityView<GwtGroup> {
+public class GroupView  extends AbstractEntityView<GwtGroup> {
 
     private GroupGrid groupGrid;
 
@@ -30,7 +30,7 @@ public class GroupView  extends AbstractGwtEntityView<GwtGroup> {
     }
 
     @Override
-    public List<KapuaTabItem<GwtGroup>> getTabs(AbstractGwtEntityView<GwtGroup> entityView,
+    public List<KapuaTabItem<GwtGroup>> getTabs(AbstractEntityView<GwtGroup> entityView,
             GwtSession currentSession) {
         List<KapuaTabItem<GwtGroup>> tabs = new ArrayList<KapuaTabItem<GwtGroup>>();
         tabs.add(new GroupTabDescription());
@@ -38,7 +38,7 @@ public class GroupView  extends AbstractGwtEntityView<GwtGroup> {
     }
 
     @Override
-    public EntityGrid<GwtGroup> getEntityGrid(AbstractGwtEntityView<GwtGroup> entityView,
+    public EntityGrid<GwtGroup> getEntityGrid(AbstractEntityView<GwtGroup> entityView,
             GwtSession currentSession) {
         if (groupGrid == null) {
             groupGrid = new GroupGrid(entityView, currentSession);
@@ -47,7 +47,7 @@ public class GroupView  extends AbstractGwtEntityView<GwtGroup> {
     }
 
     @Override
-    public EntityFilterPanel<GwtGroup> getEntityFilterPanel(AbstractGwtEntityView<GwtGroup> entityView,
+    public EntityFilterPanel<GwtGroup> getEntityFilterPanel(AbstractEntityView<GwtGroup> entityView,
             GwtSession currentSession2) {
 
         return new GroupFilterPanel(this, currentSession2);

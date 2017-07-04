@@ -14,7 +14,7 @@ package org.eclipse.kapua.app.console.client.connection;
 import org.eclipse.kapua.app.console.client.messages.ConsoleConnectionMessages;
 import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.EntityFilterPanel;
-import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractGwtEntityView;
+import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceQueryPredicates;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnection;
@@ -28,28 +28,28 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.core.client.GWT;
 
 public class ConnectionFilterPanel extends EntityFilterPanel<GwtDeviceConnection> {
-
+    
     private static final int WIDTH = 200;
     private static final ConsoleConnectionMessages MSGS = GWT.create(ConsoleConnectionMessages.class);
-
+    
     private EntityGrid<GwtDeviceConnection> entityGrid;
     private final GwtSession currentSession;
-
+    
     private final TextField<String> clientIdField;
     private final SimpleComboBox<GwtDeviceQueryPredicates.GwtDeviceConnectionStatus> connectionStatusCombo;
-
-    public ConnectionFilterPanel(AbstractGwtEntityView<GwtDeviceConnection> entityView, GwtSession currentSession) {
+    
+    public ConnectionFilterPanel(AbstractEntityView<GwtDeviceConnection> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
         entityGrid = entityView.getEntityGrid(entityView, currentSession);
         this.currentSession = currentSession;
-
+        
         VerticalPanel fieldsPanel = getFieldsPanel();
-
+        
         final Label clientIdLabel = new Label(MSGS.connectionFilterClientIdLabel());
         clientIdLabel.setWidth(WIDTH);
         clientIdLabel.setStyleAttribute("margin", "5px");
         fieldsPanel.add(clientIdLabel);
-
+        
         clientIdField = new TextField<String>();
         clientIdField.setName("name");
         clientIdField.setWidth(WIDTH);
@@ -58,7 +58,7 @@ public class ConnectionFilterPanel extends EntityFilterPanel<GwtDeviceConnection
         clientIdField.setStyleAttribute("margin-right", "5px");
         clientIdField.setStyleAttribute("margin-bottom", "10px");
         fieldsPanel.add(clientIdField);
-
+        
         final Label connectionStatusLabel = new Label(MSGS.connectionFilterConnectionStatus());
         connectionStatusLabel.setWidth(WIDTH);
         connectionStatusLabel.setStyleAttribute("margin", "5px");
@@ -82,9 +82,9 @@ public class ConnectionFilterPanel extends EntityFilterPanel<GwtDeviceConnection
         connectionStatusCombo.setSimpleValue(GwtDeviceQueryPredicates.GwtDeviceConnectionStatus.ANY);
 
         fieldsPanel.add(connectionStatusCombo);
-
+        
     }
-
+    
     @Override
     public void resetFields() {
         clientIdField.setValue(null);

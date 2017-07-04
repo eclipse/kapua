@@ -14,7 +14,7 @@ package org.eclipse.kapua.app.console.client.role;
 import org.eclipse.kapua.app.console.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.EntityFilterPanel;
-import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractGwtEntityView;
+import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleQuery;
@@ -34,7 +34,7 @@ public class RoleFilterPanel extends EntityFilterPanel<GwtRole> {
 
     private final TextField<String> nameField;
 
-    public RoleFilterPanel(AbstractGwtEntityView<GwtRole> entityView, GwtSession currentSession) {
+    public RoleFilterPanel(AbstractEntityView<GwtRole> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
 
         entityGrid = entityView.getEntityGrid(entityView, currentSession);

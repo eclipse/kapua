@@ -36,6 +36,11 @@ public class DeviceViewDescriptor implements EntityViewDescriptor<GwtDevice>, Is
     }
 
     @Override
+    public int getOrder() {
+        return 100;
+    }
+
+    @Override
     public EntityView<GwtDevice> getViewInstance(GwtSession currentSession) {
         return new DeviceView(currentSession);
     }

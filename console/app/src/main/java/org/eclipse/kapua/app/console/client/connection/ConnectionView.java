@@ -17,11 +17,11 @@ import java.util.List;
 import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.commons.client.ui.tab.KapuaTabItem;
-import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractGwtEntityView;
+import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnection;
 
-public class ConnectionView extends AbstractGwtEntityView<GwtDeviceConnection> {
+public class ConnectionView extends AbstractEntityView<GwtDeviceConnection> {
 
     private ConnectionGrid connectionGrid;
     private ConnectionDescriptionTab descriptionTab;
@@ -32,7 +32,7 @@ public class ConnectionView extends AbstractGwtEntityView<GwtDeviceConnection> {
     }
 
     @Override
-    public List<KapuaTabItem<GwtDeviceConnection>> getTabs(AbstractGwtEntityView<GwtDeviceConnection> entityView, GwtSession currentSession) {
+    public List<KapuaTabItem<GwtDeviceConnection>> getTabs(AbstractEntityView<GwtDeviceConnection> entityView, GwtSession currentSession) {
         List<KapuaTabItem<GwtDeviceConnection>> tabs = new ArrayList<KapuaTabItem<GwtDeviceConnection>>();
         if(descriptionTab == null){
             descriptionTab = new ConnectionDescriptionTab();
@@ -42,7 +42,7 @@ public class ConnectionView extends AbstractGwtEntityView<GwtDeviceConnection> {
     }
 
     @Override
-    public EntityGrid<GwtDeviceConnection> getEntityGrid(AbstractGwtEntityView<GwtDeviceConnection> entityView, GwtSession currentSession) {
+    public EntityGrid<GwtDeviceConnection> getEntityGrid(AbstractEntityView<GwtDeviceConnection> entityView, GwtSession currentSession) {
         if(connectionGrid == null){
             connectionGrid = new ConnectionGrid(this, currentSession);
         }
@@ -50,7 +50,7 @@ public class ConnectionView extends AbstractGwtEntityView<GwtDeviceConnection> {
     }
 
     @Override
-    public EntityFilterPanel<GwtDeviceConnection> getEntityFilterPanel(AbstractGwtEntityView<GwtDeviceConnection> entityView, GwtSession currentSession) {
+    public EntityFilterPanel<GwtDeviceConnection> getEntityFilterPanel(AbstractEntityView<GwtDeviceConnection> entityView, GwtSession currentSession) {
         if(filterPanel == null){
             filterPanel = new ConnectionFilterPanel(entityView, currentSession);
         }

@@ -14,7 +14,7 @@ package org.eclipse.kapua.app.console.client.account;
 import org.eclipse.kapua.app.console.client.messages.ConsoleAccountMessages;
 import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.EntityFilterPanel;
-import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractGwtEntityView;
+import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccountQuery;
@@ -25,29 +25,29 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.core.client.GWT;
 
 public class AccountFilterPanel extends EntityFilterPanel<GwtAccount> {
-
+    
     private static final int WIDTH = 200;
     private static final ConsoleAccountMessages MSGS = GWT.create(ConsoleAccountMessages.class);
-
+    
     private EntityGrid<GwtAccount> entityGrid;
     private final GwtSession currentSession;
-
+    
     private final TextField<String> accountNameField;
     private final TextField<String> accountOrgNameField;
     private final TextField<String> accountOrgEmailField;
-
-    public AccountFilterPanel(AbstractGwtEntityView<GwtAccount> entityView, GwtSession currentSession) {
+    
+    public AccountFilterPanel(AbstractEntityView<GwtAccount> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
         entityGrid = entityView.getEntityGrid(entityView, currentSession);
         this.currentSession = currentSession;
-
+        
         VerticalPanel fieldsPanel = getFieldsPanel();
-
+        
         final Label accountNameLabel = new Label(MSGS.accountFilterNameLabel());
         accountNameLabel.setWidth(WIDTH);
         accountNameLabel.setStyleAttribute("margin", "5px");
         fieldsPanel.add(accountNameLabel);
-
+        
         accountNameField = new TextField<String>();
         accountNameField.setName("name");
         accountNameField.setWidth(WIDTH);
@@ -56,12 +56,12 @@ public class AccountFilterPanel extends EntityFilterPanel<GwtAccount> {
         accountNameField.setStyleAttribute("margin-right", "5px");
         accountNameField.setStyleAttribute("margin-bottom", "10px");
         fieldsPanel.add(accountNameField);
-
+        
         final Label accountOrgNameLabel = new Label(MSGS.accountFilterOrgNameLabel());
         accountOrgNameLabel.setWidth(WIDTH);
         accountOrgNameLabel.setStyleAttribute("margin", "5px");
         fieldsPanel.add(accountOrgNameLabel);
-
+        
         accountOrgNameField = new TextField<String>();
         accountOrgNameField.setName("orgName");
         accountOrgNameField.setWidth(WIDTH);
@@ -70,12 +70,12 @@ public class AccountFilterPanel extends EntityFilterPanel<GwtAccount> {
         accountOrgNameField.setStyleAttribute("margin-right", "5px");
         accountOrgNameField.setStyleAttribute("margin-bottom", "10px");
         fieldsPanel.add(accountOrgNameField);
-
+        
         final Label accountOrgEmailLabel = new Label(MSGS.accountFilterOrgEmailLabel());
         accountOrgEmailLabel.setWidth(WIDTH);
         accountOrgEmailLabel.setStyleAttribute("margin", "5px");
         fieldsPanel.add(accountOrgEmailLabel);
-
+        
         accountOrgEmailField = new TextField<String>();
         accountOrgEmailField.setName("name");
         accountOrgEmailField.setWidth(WIDTH);
@@ -84,9 +84,9 @@ public class AccountFilterPanel extends EntityFilterPanel<GwtAccount> {
         accountOrgEmailField.setStyleAttribute("margin-right", "5px");
         accountOrgEmailField.setStyleAttribute("margin-bottom", "10px");
         fieldsPanel.add(accountOrgEmailField);
-
+        
     }
-
+    
     @Override
     public void resetFields() {
         accountNameField.setValue(null);

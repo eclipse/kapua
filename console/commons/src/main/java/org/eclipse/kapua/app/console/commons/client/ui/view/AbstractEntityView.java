@@ -28,7 +28,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 
-public abstract class AbstractGwtEntityView<M extends GwtEntityModel> extends LayoutContainer implements EntityView<M> {
+public abstract class AbstractEntityView<M extends GwtEntityModel> extends LayoutContainer implements EntityView<M> {
 
     private GwtSession currentSession;
 
@@ -36,14 +36,14 @@ public abstract class AbstractGwtEntityView<M extends GwtEntityModel> extends La
     private EntityGrid<M> entityGrid;
     private KapuaTabPanel<M> tabsPanel;
 
-    public AbstractGwtEntityView() {
+    public AbstractEntityView() {
         super();
 
         setLayout(new BorderLayout());
         setBorders(false);
     }
 
-    public AbstractGwtEntityView(GwtSession currentSession) {
+    public AbstractEntityView(GwtSession currentSession) {
         this();
         this.currentSession = currentSession;
     }
@@ -100,11 +100,11 @@ public abstract class AbstractGwtEntityView<M extends GwtEntityModel> extends La
         resultContainer.add(tabsPanel, centerData);
     }
 
-    public abstract List<KapuaTabItem<M>> getTabs(AbstractGwtEntityView<M> entityView, GwtSession currentSession);
+    public abstract List<KapuaTabItem<M>> getTabs(AbstractEntityView<M> entityView, GwtSession currentSession);
 
-    public abstract EntityGrid<M> getEntityGrid(AbstractGwtEntityView<M> entityView, GwtSession currentSession);
+    public abstract EntityGrid<M> getEntityGrid(AbstractEntityView<M> entityView, GwtSession currentSession);
 
-    public abstract EntityFilterPanel<M> getEntityFilterPanel(AbstractGwtEntityView<M> entityView, GwtSession currentSession2);
+    public abstract EntityFilterPanel<M> getEntityFilterPanel(AbstractEntityView<M> entityView, GwtSession currentSession2);
 
     public void onUnload() {
         super.onUnload();

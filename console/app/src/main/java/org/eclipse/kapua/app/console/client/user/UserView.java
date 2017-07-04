@@ -17,7 +17,7 @@ import java.util.List;
 import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.commons.client.ui.tab.KapuaTabItem;
-import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractGwtEntityView;
+import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.client.user.tabs.credentials.UserTabItemCredentials;
 import org.eclipse.kapua.app.console.client.user.tabs.description.UserTabDescription;
 import org.eclipse.kapua.app.console.client.user.tabs.permission.UserTabItemPermission;
@@ -25,7 +25,7 @@ import org.eclipse.kapua.app.console.client.user.tabs.role.UserTabItemAccessRole
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 
-public class UserView extends AbstractGwtEntityView<GwtUser> {
+public class UserView extends AbstractEntityView<GwtUser> {
 
     private UserGrid userGrid;
 
@@ -39,7 +39,7 @@ public class UserView extends AbstractGwtEntityView<GwtUser> {
     }
 
     @Override
-    public List<KapuaTabItem<GwtUser>> getTabs(AbstractGwtEntityView<GwtUser> entityView, GwtSession currentSession) {
+    public List<KapuaTabItem<GwtUser>> getTabs(AbstractEntityView<GwtUser> entityView, GwtSession currentSession) {
         List<KapuaTabItem<GwtUser>> tabs = new ArrayList<KapuaTabItem<GwtUser>>();
         if (descriptionTab == null) {
             descriptionTab = new UserTabDescription();
@@ -61,7 +61,7 @@ public class UserView extends AbstractGwtEntityView<GwtUser> {
     }
 
     @Override
-    public EntityGrid<GwtUser> getEntityGrid(AbstractGwtEntityView<GwtUser> entityView, GwtSession currentSession) {
+    public EntityGrid<GwtUser> getEntityGrid(AbstractEntityView<GwtUser> entityView, GwtSession currentSession) {
         if (userGrid == null) {
             userGrid = new UserGrid(entityView, currentSession);
         }
@@ -69,7 +69,7 @@ public class UserView extends AbstractGwtEntityView<GwtUser> {
     }
 
     @Override
-    public EntityFilterPanel<GwtUser> getEntityFilterPanel(AbstractGwtEntityView<GwtUser> entityView, GwtSession currentSession) {
+    public EntityFilterPanel<GwtUser> getEntityFilterPanel(AbstractEntityView<GwtUser> entityView, GwtSession currentSession) {
         return new UserFilterPanel(this, currentSession);
     }
 }
