@@ -19,8 +19,8 @@
         
         <Icon resource="OSGI-INF/account-service.png" size="32"/>
 
-         <AD id="deviceUserCouplingDefaultMode"
-             name="deviceUserCouplingDefaultMode"
+         <AD id="deviceConnectionUserCouplingDefaultMode"
+             name="deviceConnectionUserCouplingDefaultMode"
              type="String"
              cardinality="0"
              required="true"
