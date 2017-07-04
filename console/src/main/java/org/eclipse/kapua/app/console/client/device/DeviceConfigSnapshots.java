@@ -22,7 +22,6 @@ import org.eclipse.kapua.app.console.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.client.ui.dialog.FileUploadDialog;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.client.util.KapuaLoadListener;
-import org.eclipse.kapua.app.console.client.util.UserAgentUtils;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.GwtSnapshot;
@@ -79,7 +78,7 @@ public class DeviceConfigSnapshots extends LayoutContainer {
     private final GwtDeviceServiceAsync gwtDeviceService = GWT.create(GwtDeviceService.class);
     private final GwtSecurityTokenServiceAsync gwtXSRFService = GWT.create(GwtSecurityTokenService.class);
 
-    private final static String SERVLET_URL = "console/file/configuration/snapshot";
+    private static final String SERVLET_URL = "file/configuration/snapshot";
 
     private GwtSession currentSession;
 
@@ -386,13 +385,7 @@ public class DeviceConfigSnapshots extends LayoutContainer {
         if (selectedDevice != null && snapshot != null) {
 
             StringBuilder sbUrl = new StringBuilder();
-
-            if (UserAgentUtils.isSafari() || UserAgentUtils.isChrome()) {
-                sbUrl.append("console/device_snapshots?");
-            } else {
-                sbUrl.append("device_snapshots?");
-            }
-
+            sbUrl.append("device_snapshots?");
             sbUrl.append("&scopeId=")
                     .append(URL.encodeQueryString(currentSession.getSelectedAccount().getId()))
                     .append("&deviceId=")
