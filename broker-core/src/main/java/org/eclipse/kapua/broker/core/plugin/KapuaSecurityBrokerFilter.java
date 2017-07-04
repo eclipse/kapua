@@ -535,7 +535,11 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             }
         }
         else {
-            checkConnectionCountByReservedUserId(scopeId, userId, 0);
+            if (deviceConnection != null && deviceConnection.getReservedUserId() != null && userId.equals(deviceConnection.getReservedUserId())) {
+                checkConnectionCountByReservedUserId(scopeId, userId, 1);
+            } else {
+                checkConnectionCountByReservedUserId(scopeId, userId, 0);
+            }
         }
     }
 
