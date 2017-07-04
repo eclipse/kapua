@@ -391,7 +391,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                 deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.findByClientId(scopeId, clientId));
                 loginFindClientIdTimeContext.stop();
                 // enforce the user-device bound
-                enforceDeviceUserBound(KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.getConfigValues(scopeId)), deviceConnection, scopeId, userId);
+                enforceDeviceConnectionUserBound(KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.getConfigValues(scopeId)), deviceConnection, scopeId, userId);
 
                 Context loginFindDevTimeContext = metricLoginFindDevTime.time();
 
@@ -498,15 +498,15 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
         }
     }
 
-    private void enforceDeviceUserBound(Map<String, Object> options, DeviceConnection deviceConnection, KapuaId scopeId, KapuaId userId) throws KapuaException {
+    private void enforceDeviceConnectionUserBound(Map<String, Object> options, DeviceConnection deviceConnection, KapuaId scopeId, KapuaId userId) throws KapuaException {
         if (deviceConnection != null) {
             ConnectionUserCouplingMode connectionUserCouplingMode = deviceConnection.getUserCouplingMode();
             if (ConnectionUserCouplingMode.INHERITED.equals(deviceConnection.getUserCouplingMode())) {
-                connectionUserCouplingMode = loadDeviceUserCouplingModeFromConfig(scopeId, options);
+                connectionUserCouplingMode = loadConnectionUserCouplingModeFromConfig(scopeId, options);
             }
             enforceDeviceUserBound(connectionUserCouplingMode, deviceConnection, scopeId, userId);
         } else {
-            enforceDeviceUserBound(loadDeviceUserCouplingModeFromConfig(scopeId, options), deviceConnection, scopeId, userId);
+            enforceDeviceUserBound(loadConnectionUserCouplingModeFromConfig(scopeId, options), deviceConnection, scopeId, userId);
             logger.warn("Cannot enforce Device-User bound since no device entry is found for this user id ('{}') - Try using account configuration!", userId);
         }
     }
@@ -554,8 +554,8 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
         }
     }
 
-    private ConnectionUserCouplingMode loadDeviceUserCouplingModeFromConfig(KapuaId scopeId, Map<String, Object> options) throws KapuaException {
-        String tmp = (String) options.get("deviceUserCouplingDefaultMode");// TODO move to constants
+    private ConnectionUserCouplingMode loadConnectionUserCouplingModeFromConfig(KapuaId scopeId, Map<String, Object> options) throws KapuaException {
+        String tmp = (String) options.get("deviceConnectionUserCouplingDefaultMode");// TODO move to constants
         if (tmp != null) {
             ConnectionUserCouplingMode tmpConnectionUserCouplingMode = ConnectionUserCouplingMode.valueOf(tmp);
             if (tmpConnectionUserCouplingMode == null) {
@@ -566,7 +566,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                 return tmpConnectionUserCouplingMode;
             }
         } else {
-            throw new SecurityException("Cannot find default Device-User coupling mode in the registry service configuration! (deviceUserCouplingDefaultMode");
+            throw new SecurityException("Cannot find default Device-User coupling mode in the registry service configuration! (deviceConnectionUserCouplingDefaultMode");
             // TODO manage the error message. is it better to throw a more specific exception or keep it obfuscated for security reason?
         }
     }
