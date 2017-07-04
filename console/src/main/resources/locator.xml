@@ -71,6 +71,7 @@
         <api>org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationFactory</api>
         <api>org.eclipse.kapua.service.device.management.packages.DevicePackageManagementService</api>
         <api>org.eclipse.kapua.service.device.management.packages.DevicePackageFactory</api>
+        <api>org.eclipse.kapua.service.device.management.request.GenericRequestFactory</api>
         <api>org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotManagementService</api>
         <api>org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotFactory</api>
 
