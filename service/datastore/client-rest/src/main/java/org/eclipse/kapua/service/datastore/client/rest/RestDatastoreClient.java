@@ -188,7 +188,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
         checkClient();
         try {
             Map<String, Object> storableMap = modelContext.marshal(insertRequest.getStorable());
-            logger.debug("Insert - converted object: '{}'", storableMap.toString());
+            logger.debug("Insert - converted object: '{}'", storableMap);
             String json = MAPPER.writeValueAsString(storableMap);
             HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
             Response insertResponse = esClientProvider.getClient().performRequest(
@@ -219,7 +219,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
             Map<String, Object> updateRequestMap = new HashMap<>();
             updateRequestMap.put(KEY_DOC, storableMap);
             updateRequestMap.put(KEY_DOC_AS_UPSERT, true);
-            logger.debug("Upsert - converted object: '{}'", updateRequestMap.toString());
+            logger.debug("Upsert - converted object: '{}'", updateRequestMap);
             String json = MAPPER.writeValueAsString(updateRequestMap);
             HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
             Response updateResponse = esClientProvider.getClient().performRequest(
@@ -322,7 +322,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
         checkClient();
         JsonNode queryMap = queryConverter.convertQuery(query);
         Object queryFetchStyle = queryConverter.getFetchStyle(query);
-        logger.debug("Query - converted query: '{}'", queryMap.toString());
+        logger.debug("Query - converted query: '{}'", queryMap);
         long totalCount = 0;
         Response queryResponse = null;
         ArrayNode resultsNode = null;
@@ -372,7 +372,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
     public long count(TypeDescriptor typeDescriptor, Object query) throws ClientException {
         checkClient();
         JsonNode queryMap = queryConverter.convertQuery(query);
-        logger.debug("Query - converted query: '{}'", queryMap.toString());
+        logger.debug("Query - converted query: '{}'", queryMap);
         long totalCount = 0;
         Response queryResponse = null;
         try {
@@ -427,7 +427,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
         checkClient();
         JsonNode queryMap = queryConverter.convertQuery(query);
         JsonNode deleteRequestNode = queryMap.get(SchemaKeys.KEY_QUERY);
-        logger.debug("Query - converted query: '{}'", queryMap.toString());
+        logger.debug("Query - converted query: '{}'", queryMap);
         Response deleteResponse = null;
         try {
             deleteResponse = esClientProvider.getClient().performRequest(
