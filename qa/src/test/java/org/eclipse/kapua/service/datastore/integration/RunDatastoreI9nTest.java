@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
         glue = {"org.eclipse.kapua.qa.steps",
                 "org.eclipse.kapua.service.datastore.steps",
                 "org.eclipse.kapua.service.user.steps",
+                "org.eclipse.kapua.service.device.steps",
         },
         plugin = { "pretty",
                 "html:target/cucumber/DatastoreI9n",

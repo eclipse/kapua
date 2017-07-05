@@ -316,8 +316,9 @@ public class DeviceServiceSteps extends KapuaTest {
         CucDevice tmpCDev = devLst.get(0);
         tmpCDev.parse();
         DeviceCreator devCr = prepareDeviceCreatorFromCucDevice(tmpCDev);
+        Device tmpDevice = deviceRegistryService.create(devCr);
 
-        stepData.put("LastDevice", deviceRegistryService.create(devCr));
+        stepData.put("LastDevice", tmpDevice);
     }
 
     @When("^I search for the device \"(.+)\" in account \"(.+)\"$")
