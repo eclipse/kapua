@@ -22,7 +22,7 @@ import org.eclipse.kapua.app.console.client.account.AccountView;
 import org.eclipse.kapua.app.console.client.connection.ConnectionView;
 import org.eclipse.kapua.app.console.client.data.DataView;
 import org.eclipse.kapua.app.console.client.device.DevicesView;
-import org.eclipse.kapua.app.console.client.group.GroupView;
+import org.eclipse.kapua.app.console.module.authorization.client.group.GroupView;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.KapuaIcon;
@@ -30,12 +30,10 @@ import org.eclipse.kapua.app.console.client.role.RoleView;
 import org.eclipse.kapua.app.console.commons.client.ui.color.Color;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.ContentPanel;
 import org.eclipse.kapua.app.console.client.tag.TagView;
-import org.eclipse.kapua.app.console.client.user.UserView;
 import org.eclipse.kapua.app.console.client.welcome.WelcomeView;
-import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
+import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractView;
 import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.commons.client.views.EntityViewDescriptor;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtEntityModel;
+import org.eclipse.kapua.app.console.commons.client.views.ViewDescriptor;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 
 import com.extjs.gxt.ui.client.Style;
@@ -120,7 +118,7 @@ public class WestNavigationView extends LayoutContainer {
     protected void onRender(final Element parent, int index) {
         super.onRender(parent, index);
 
-        CONSOLE_SERVICE.getCustomEntityViews(new AsyncCallback<List<EntityViewDescriptor<? extends GwtEntityModel>>>() {
+        CONSOLE_SERVICE.getCustomEntityViews(new AsyncCallback<List<ViewDescriptor>>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -128,7 +126,7 @@ public class WestNavigationView extends LayoutContainer {
             }
 
             @Override
-            public void onSuccess(final List<EntityViewDescriptor<? extends GwtEntityModel>> additionalViews) {
+            public void onSuccess(final List<ViewDescriptor> additionalViewDescriptors) {
                 setLayout(new FitLayout());
                 setBorders(false);
 
@@ -165,7 +163,7 @@ public class WestNavigationView extends LayoutContainer {
                 //
                 // Adding item to stores
                 //
-                addMenuItems(additionalViews);
+                addMenuItems(additionalViewDescriptors);
 
                 ColumnConfig name = new ColumnConfig("name", "Name", 200);
                 name.setRenderer(treeCellRenderer);
@@ -251,30 +249,6 @@ public class WestNavigationView extends LayoutContainer {
                             centerPanel.add(panel);
                             centerPanel.layout();
                             dashboardSelected = false;
-                } else if ("tags".equals(selectedId)) {
-                    panel.setIcon(new KapuaIcon(IconSet.TAGS));
-                    panel.setHeading(MSGS.tags());
-
-                    TagView groupView = new TagView(currentSession);
-                    panel.add(groupView);
-
-                    centerPanel.add(panel);
-                    centerPanel.layout();
-                    dashboardSelected = false;
-                        } else if ("user".equals(selectedId)) {
-
-                            UserView userView = new UserView(currentSession);
-                            // userView.setAccount(m_currentSession.getSelectedAccount());
-
-                            panel.setIcon(new KapuaIcon(IconSet.USERS));
-                            panel.setHeading(MSGS.users());
-                            panel.add(userView);
-
-                            centerPanel.add(panel);
-                            centerPanel.layout();
-                            dashboardSelected = false;
-
-                            // userView.refresh();
                         } else if ("role".equals(selectedId)) {
 
                             panel.setIcon(new KapuaIcon(IconSet.STREET_VIEW));
@@ -321,11 +295,11 @@ public class WestNavigationView extends LayoutContainer {
                             });
 
                         } else {
-                            for (EntityViewDescriptor<? extends GwtEntityModel> entityViewDescriptor : additionalViews) {
-                                if (entityViewDescriptor.getId().equals(selectedId)) {
-                                    panel.setIcon(new KapuaIcon(entityViewDescriptor.getIcon()));
-                                    panel.setHeading(entityViewDescriptor.getName());
-                                    panel.add((AbstractEntityView)entityViewDescriptor.getViewInstance(currentSession));
+                            for (ViewDescriptor viewDescriptor : additionalViewDescriptors) {
+                                if (viewDescriptor.getId().equals(selectedId)) {
+                                    panel.setIcon(new KapuaIcon(viewDescriptor.getIcon()));
+                                    panel.setHeading(viewDescriptor.getName());
+                                    panel.add((AbstractView)viewDescriptor.getViewInstance(currentSession));
 
                                     centerPanel.add(panel);
                                     centerPanel.layout();
@@ -394,7 +368,7 @@ public class WestNavigationView extends LayoutContainer {
         
     }
 
-    public void addMenuItems(List<EntityViewDescriptor<? extends GwtEntityModel>> additionalViews) {
+    public void addMenuItems(List<ViewDescriptor> additionalViewDescriptors) {
 
         ModelData selectedAccountItem = null;
         ModelData selectedManageItem = null;
@@ -447,8 +421,8 @@ public class WestNavigationView extends LayoutContainer {
             cloudResourcesTreeStore.add(newItem("about", MSGS.about(), IconSet.INFO), false);
         }
 
-        if (additionalViews != null) {
-            for (EntityViewDescriptor entityView : additionalViews) {
+        if (additionalViewDescriptors != null) {
+            for (ViewDescriptor entityView : additionalViewDescriptors) {
                 cloudResourcesTreeStore.add(newItem(entityView.getId(), entityView.getName(), entityView.getIcon()), false);
             }
         }

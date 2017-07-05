@@ -14,17 +14,17 @@ package org.eclipse.kapua.app.console.client.role;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.kapua.app.console.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.commons.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessRoleQuery;
-import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
+import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsoleRoleMessages;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessRoleQuery;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
 import org.eclipse.kapua.app.console.commons.shared.model.query.GwtQuery;
-import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
-import org.eclipse.kapua.app.console.shared.service.GwtAccessInfoService;
-import org.eclipse.kapua.app.console.shared.service.GwtAccessInfoServiceAsync;
+import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessInfoService;
+import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessInfoServiceAsync;
+import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
 
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
@@ -55,7 +55,7 @@ public class RoleSubjectGrid extends EntityGrid<GwtUser> {
             protected void load(Object loadConfig,
                     AsyncCallback<PagingLoadResult<GwtUser>> callback) {
                 if (selectedRole != null) {
-                    SERVICE.query((PagingLoadConfig) loadConfig, query, callback);
+//                    SERVICE.query((PagingLoadConfig) loadConfig, query, callback);
                 }
             }
 

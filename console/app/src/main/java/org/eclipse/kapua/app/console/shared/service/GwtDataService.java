@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Stack;
 
 import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.commons.shared.service.KapuaConfigurableRemoteService;
 import org.eclipse.kapua.app.console.shared.model.GwtDatastoreAsset;
 import org.eclipse.kapua.app.console.shared.model.GwtDatastoreDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtHeader;

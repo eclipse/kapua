@@ -41,4 +41,5 @@ public class DeviceView extends AbstractEntityView<GwtDevice> {
     public EntityFilterPanel<GwtDevice> getEntityFilterPanel(AbstractEntityView<GwtDevice> entityView, GwtSession currentSession2) {
         return null;
     }
+
 }

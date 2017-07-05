@@ -67,6 +67,10 @@
             <artifactId>commons-fileupload</artifactId>
             <version>1.3.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-security-shiro</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -117,21 +121,10 @@
                     <module>org.eclipse.kapua.app.console.commons.adminCommons</module>
 
                     <extraJvmArgs>-Xmx2048m -XX:+UseParallelGC</extraJvmArgs>
-                    <!--<webappDirectory>${project.build.directory}</webappDirectory>-->
-                    <!--<hostedWebapp>${site.basedir}</hostedWebapp>-->
 
                     <i18nConstantsWithLookupBundle>org.eclipse.kapua.app.console.commons.client.messages.ValidationMessages</i18nConstantsWithLookupBundle>
                     <i18nMessagesBundles>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.commons.client.messages.ConsoleMessages</i18nMessagesBundle>
-                        <!--<i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleAboutMessages</i18nMessagesBundle>-->
-                        <!--<i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleRoleMessages</i18nMessagesBundle>-->
-                        <!--<i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleUserMessages</i18nMessagesBundle>-->
-                        <!--<i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleGroupMessages</i18nMessagesBundle>-->
-                        <!--<i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleCredentialMessages</i18nMessagesBundle>-->
-                        <!--<i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleWelcomeMessages</i18nMessagesBundle>-->
-                        <!--<i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleAccountMessages</i18nMessagesBundle>-->
-                        <!--<i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleDataMessages</i18nMessagesBundle>-->
-                        <!--<i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleConnectionMessages</i18nMessagesBundle>-->
                     </i18nMessagesBundles>
 
                     <optimizationLevel>9</optimizationLevel>

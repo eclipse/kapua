@@ -188,6 +188,28 @@
             <version>0.2.0-SNAPSHOT</version>
             <classifier>sources</classifier>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-console-module-authentication</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-console-module-authentication</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+            <classifier>sources</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-console-module-authorization</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-console-module-authorization</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+            <classifier>sources</classifier>
+        </dependency>
 
         <!-- External dependencies -->
         <dependency>
@@ -353,10 +375,6 @@
                     <i18nMessagesBundles>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleMessages</i18nMessagesBundle>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleAboutMessages</i18nMessagesBundle>
-                        <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleRoleMessages</i18nMessagesBundle>
-                        <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleUserMessages</i18nMessagesBundle>
-                        <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleGroupMessages</i18nMessagesBundle>
-                        <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleCredentialMessages</i18nMessagesBundle>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleWelcomeMessages</i18nMessagesBundle>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleAccountMessages</i18nMessagesBundle>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleDataMessages</i18nMessagesBundle>

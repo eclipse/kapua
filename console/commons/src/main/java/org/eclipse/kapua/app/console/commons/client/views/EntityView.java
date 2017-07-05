@@ -13,6 +13,6 @@ package org.eclipse.kapua.app.console.commons.client.views;
 
 import org.eclipse.kapua.app.console.commons.shared.model.GwtEntityModel;
 
-public interface EntityView<M extends GwtEntityModel> {
+public interface EntityView<M extends GwtEntityModel> extends View {
 
 }

@@ -17,7 +17,7 @@ import org.eclipse.kapua.app.console.commons.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
-import org.eclipse.kapua.app.console.shared.model.account.GwtAccountQuery;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountQuery;
 
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;

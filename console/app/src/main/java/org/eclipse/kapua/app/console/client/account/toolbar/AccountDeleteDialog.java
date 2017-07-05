@@ -14,7 +14,7 @@ package org.eclipse.kapua.app.console.client.account.toolbar;
 import org.eclipse.kapua.app.console.client.messages.ConsoleAccountMessages;
 import org.eclipse.kapua.app.console.commons.client.ui.dialog.entity.EntityDeleteDialog;
 import org.eclipse.kapua.app.console.commons.client.util.ConsoleInfo;
-import org.eclipse.kapua.app.console.client.util.DialogUtils;
+import org.eclipse.kapua.app.console.commons.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountService;

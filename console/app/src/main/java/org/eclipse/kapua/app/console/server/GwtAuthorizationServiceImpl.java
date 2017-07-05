@@ -17,15 +17,16 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
+import org.eclipse.kapua.app.console.commons.server.KapuaRemoteServiceServlet;
+import org.eclipse.kapua.app.console.commons.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtJwtCredential;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtLoginCredential;
-import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
 import org.eclipse.kapua.app.console.shared.service.GwtAuthorizationService;
-import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
+import org.eclipse.kapua.app.console.commons.shared.util.KapuaGwtModelConverter;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -287,8 +288,8 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
 
         //
         // Convert entities
-        GwtUser gwtUser = KapuaGwtModelConverter.convert(user);
-        GwtAccount gwtAccount = KapuaGwtModelConverter.convert(account);
+        GwtUser gwtUser = KapuaGwtModelConverter.convertKapuaId(user);
+        GwtAccount gwtAccount = KapuaGwtModelConverter.convertKapuaId(account);
 
         //
         // Build the session

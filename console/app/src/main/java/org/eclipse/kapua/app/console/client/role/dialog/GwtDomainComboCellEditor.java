@@ -11,10 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.role.dialog;
 
-import org.eclipse.kapua.app.console.commons.client.ui.widget.ComboEnumCellEditor;
-import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtDomain;
 
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import org.eclipse.kapua.app.console.commons.client.ui.widget.ComboEnumCellEditor;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtDomain;
 
 public class GwtDomainComboCellEditor extends ComboEnumCellEditor<GwtDomain> {
 
@@ -24,7 +24,7 @@ public class GwtDomainComboCellEditor extends ComboEnumCellEditor<GwtDomain> {
 
     @Override
     protected GwtDomain convertStringValue(String value) {
-        return GwtDomain.valueOf(value);
+        return new GwtDomain(value);
     }
 
 }

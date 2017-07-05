@@ -13,10 +13,10 @@ package org.eclipse.kapua.app.console.client.role.dialog;
 
 import java.util.List;
 
-import org.eclipse.kapua.app.console.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.commons.client.ui.widget.EntityGridFieldToolbar;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermission;
+import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsoleRoleMessages;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRolePermission;
 
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.google.gwt.core.client.GWT;

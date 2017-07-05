@@ -31,21 +31,23 @@ import java.util.Set;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.sanselan.ImageFormat;
 import org.apache.sanselan.Sanselan;
-import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
+import org.eclipse.kapua.app.console.commons.server.KapuaConfigurableRemoteServiceServlet;
+import org.eclipse.kapua.app.console.commons.server.util.KapuaExceptionHandler;
+import org.eclipse.kapua.app.console.module.account.shared.util.GwtKapuaAccountModelConverter;
+import org.eclipse.kapua.app.console.module.account.shared.util.KapuaGwtAccountModelConverter;
 import org.eclipse.kapua.app.console.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.setting.ConsoleSettingKeys;
 import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
-import org.eclipse.kapua.app.console.shared.model.GwtConfigComponent;
-import org.eclipse.kapua.app.console.shared.model.GwtConfigParameter;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtConfigComponent;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtConfigParameter;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
-import org.eclipse.kapua.app.console.shared.model.account.GwtAccountCreator;
-import org.eclipse.kapua.app.console.shared.model.account.GwtAccountQuery;
-import org.eclipse.kapua.app.console.shared.model.account.GwtAccountStringListItem;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountCreator;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountQuery;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountStringListItem;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountService;
-import org.eclipse.kapua.app.console.shared.util.GwtKapuaModelConverter;
-import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
+import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaModelConverter;
 import org.eclipse.kapua.broker.core.BrokerDomain;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.SystemUtils;
@@ -121,8 +123,8 @@ public class GwtAccountServiceImpl extends KapuaConfigurableRemoteServiceServlet
             AccountService accountService = locator.getService(AccountService.class);
             Account account = accountService.create(accountCreator);
 
-            // convert to GwtAccount and return
-            gwtAccount = KapuaGwtModelConverter.convert(account);
+            // convertKapuaId to GwtAccount and return
+            gwtAccount = KapuaGwtAccountModelConverter.convertAccount(account);
 
             // Create roles
             RoleService roleService = locator.getService(RoleService.class);
@@ -160,7 +162,7 @@ public class GwtAccountServiceImpl extends KapuaConfigurableRemoteServiceServlet
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             AccountService accountService = locator.getService(AccountService.class);
-            gwtAccount = KapuaGwtModelConverter.convert(accountService.find(accountId));
+            gwtAccount = KapuaGwtAccountModelConverter.convertAccount(accountService.find(accountId));
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
@@ -228,8 +230,8 @@ public class GwtAccountServiceImpl extends KapuaConfigurableRemoteServiceServlet
             account.setEntityProperties(property);
             account = accountService.update(account);
 
-            // convert to GwtAccount and return
-            gwtAccountUpdated = KapuaGwtModelConverter.convert(account);
+            // convertKapuaId to GwtAccount and return
+            gwtAccountUpdated = KapuaGwtAccountModelConverter.convertAccount(account);
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
@@ -264,8 +266,8 @@ public class GwtAccountServiceImpl extends KapuaConfigurableRemoteServiceServlet
 
             account = accountService.update(account);
 
-            // convert to GwtAccount and return
-            gwtAccountUpdated = KapuaGwtModelConverter.convert(account);
+            // convertKapuaId to GwtAccount and return
+            gwtAccountUpdated = KapuaGwtAccountModelConverter.convertAccount(account);
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
@@ -307,7 +309,7 @@ public class GwtAccountServiceImpl extends KapuaConfigurableRemoteServiceServlet
 
             KapuaListResult<Account> list = accountService.query(query);
             for (Account account : list.getItems()) {
-                gwtAccountList.add(KapuaGwtModelConverter.convert(account));
+                gwtAccountList.add(KapuaGwtAccountModelConverter.convertAccount(account));
             }
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
@@ -331,7 +333,7 @@ public class GwtAccountServiceImpl extends KapuaConfigurableRemoteServiceServlet
 
             KapuaListResult<Account> list = accountService.query(query);
             for (Account account : list.getItems()) {
-                gwtAccountList.add(KapuaGwtModelConverter.convert(account));
+                gwtAccountList.add(KapuaGwtAccountModelConverter.convertAccount(account));
             }
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
@@ -376,7 +378,7 @@ public class GwtAccountServiceImpl extends KapuaConfigurableRemoteServiceServlet
             AccountService accountService = locator.getService(AccountService.class);
             Account account = accountService.findByName(accountName);
             if (account != null) {
-                gwtAccount = KapuaGwtModelConverter.convert(account);
+                gwtAccount = KapuaGwtAccountModelConverter.convertAccount(account);
             }
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
@@ -390,7 +392,7 @@ public class GwtAccountServiceImpl extends KapuaConfigurableRemoteServiceServlet
         List<GwtConfigComponent> gwtConfigs = new ArrayList<GwtConfigComponent>();
         KapuaLocator locator = KapuaLocator.getInstance();
         try {
-            KapuaId kapuaScopeId = GwtKapuaModelConverter.convert(scopeId);
+            KapuaId kapuaScopeId = GwtKapuaModelConverter.convertKapuaId(scopeId);
             for (KapuaService service : locator.getServices()) {
                 if (service instanceof KapuaConfigurableService) {
                     KapuaConfigurableService configurableService = (KapuaConfigurableService) service;
@@ -626,7 +628,7 @@ public class GwtAccountServiceImpl extends KapuaConfigurableRemoteServiceServlet
         int totalLength = 0;
         KapuaLocator locator = KapuaLocator.getInstance();
         AccountService accountService = locator.getService(AccountService.class);
-        AccountQuery query = GwtKapuaModelConverter.convertAccountQuery(loadConfig, gwtAccountQuery);
+        AccountQuery query = GwtKapuaAccountModelConverter.convertAccountQuery(loadConfig, gwtAccountQuery);
 
         try {
             accounts = accountService.query(query);
@@ -637,7 +639,7 @@ public class GwtAccountServiceImpl extends KapuaConfigurableRemoteServiceServlet
             }
 
             for (Account a : accounts.getItems()) {
-                gwtAccounts.add(KapuaGwtModelConverter.convert(a));
+                gwtAccounts.add(KapuaGwtAccountModelConverter.convertAccount(a));
             }
 
         } catch (Throwable t) {

@@ -16,8 +16,8 @@ import org.eclipse.kapua.app.console.client.role.dialog.RolePermissionDeleteDial
 import org.eclipse.kapua.app.console.commons.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.commons.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
-import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermission;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRolePermission;
 
 import com.google.gwt.user.client.Element;
 

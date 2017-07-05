@@ -25,7 +25,7 @@ import org.eclipse.kapua.app.console.commons.client.ui.widget.KapuaMenuItem;
 import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.commons.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
-import org.eclipse.kapua.app.console.shared.model.GwtDeviceEvent;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceEvent;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceService;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceServiceAsync;

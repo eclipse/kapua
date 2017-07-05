@@ -13,12 +13,11 @@ package org.eclipse.kapua.app.console.shared.service;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import org.eclipse.kapua.app.console.commons.client.views.EntityViewDescriptor;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtEntityModel;
+import org.eclipse.kapua.app.console.commons.client.views.ViewDescriptor;
 
 import java.util.List;
 
 @RemoteServiceRelativePath("console")
 public interface GwtConsoleService extends RemoteService {
-    public List<EntityViewDescriptor<? extends GwtEntityModel>> getCustomEntityViews();
+    List<ViewDescriptor> getCustomEntityViews();
 }

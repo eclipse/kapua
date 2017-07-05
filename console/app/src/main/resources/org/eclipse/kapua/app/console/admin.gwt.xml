@@ -42,6 +42,8 @@
     <inherits name="org.eclipse.kapua.app.console.module.device.adminModuleDevice" />
     <inherits name="org.eclipse.kapua.app.console.module.user.adminModuleUser" />
     <inherits name="org.eclipse.kapua.app.console.module.account.adminModuleAccount" />
+    <inherits name="org.eclipse.kapua.app.console.module.authentication.adminModuleAuthentication" />
+    <inherits name="org.eclipse.kapua.app.console.module.authorization.adminModuleAuthorization" />
 
     <!-- Locales: English language, independent of country              -->
     <extend-property name="locale" values="en" />

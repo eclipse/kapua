@@ -14,7 +14,6 @@ package org.eclipse.kapua.app.console.client.account.childuser;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.kapua.app.console.client.messages.ConsoleUserMessages;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
@@ -23,10 +22,10 @@ import org.eclipse.kapua.app.console.commons.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.commons.shared.model.query.GwtQuery;
-import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
-import org.eclipse.kapua.app.console.shared.model.user.GwtUserQuery;
-import org.eclipse.kapua.app.console.shared.service.GwtUserService;
-import org.eclipse.kapua.app.console.shared.service.GwtUserServiceAsync;
+import org.eclipse.kapua.app.console.module.user.client.messages.ConsoleUserMessages;
+import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUserQuery;
+import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserService;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
@@ -40,6 +39,7 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserServiceAsync;
 
 public class AccountChildUserGrid extends EntityGrid<GwtUser> {
 

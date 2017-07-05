@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.server;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.kapua.app.console.commons.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.shared.model.GwtAboutDependency;
 import org.eclipse.kapua.app.console.shared.model.GwtAboutInformation;
 import org.eclipse.kapua.app.console.shared.service.GwtAboutService;
@@ -37,7 +38,7 @@ public class GwtAboutServiceImpl extends KapuaRemoteServiceServlet implements Gw
         final AboutScanner scanner = AboutScanner.scan();
         final GwtAboutInformation result = new GwtAboutInformation();
 
-        // convert to UI structures
+        // convertAccessPermissionCreator to UI structures
 
         final List<GwtAboutDependency> dependencies = new ArrayList<GwtAboutDependency>();
 

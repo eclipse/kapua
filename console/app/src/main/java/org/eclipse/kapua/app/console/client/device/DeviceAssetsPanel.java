@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.client.util.Constants;
+import org.eclipse.kapua.app.console.commons.client.util.Constants;
 import org.eclipse.kapua.app.console.client.util.FormUtils;
 import org.eclipse.kapua.app.console.client.util.UserAgentUtils;
 import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAsset;

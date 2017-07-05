@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
     Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
-
+   
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
     http://www.eclipse.org/legal/epl-v10.html
-
+   
     Contributors:
         Eurotech - initial API and implementation
         Red Hat Inc
@@ -71,15 +71,15 @@
         <url-pattern>/image/*</url-pattern>
     </filter-mapping>
 
-    <!-- Default page to serve -->
-    <welcome-file-list>
-        <welcome-file>console.jsp</welcome-file>
-    </welcome-file-list>
+	<!-- Default page to serve -->
+	<welcome-file-list>
+		<welcome-file>console.jsp</welcome-file>
+	</welcome-file-list>
 
-    <!-- Session Timeout -->
-    <session-config>
-        <session-timeout>30</session-timeout>
-    </session-config>
+	<!-- Session Timeout -->
+	<session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
 
     <!--  -->
     <!-- Servlets -->
@@ -143,32 +143,32 @@
         <url-pattern>/device_snapshots/*</url-pattern>
     </servlet-mapping>
 
-    <servlet>
-        <servlet-name>accountServlet</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.server.GwtAccountServiceImpl</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>accountServlet</servlet-name>
-        <url-pattern>/account</url-pattern>
-    </servlet-mapping>
-    
-    <servlet>
-        <servlet-name>authorizationServlet</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.server.GwtAuthorizationServiceImpl</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>authorizationServlet</servlet-name>
-        <url-pattern>/auth</url-pattern>
-    </servlet-mapping>
+	<servlet>
+		<servlet-name>accountServlet</servlet-name>
+		<servlet-class>org.eclipse.kapua.app.console.server.GwtAccountServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>accountServlet</servlet-name>
+		<url-pattern>/account</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>authorizationServlet</servlet-name>
+		<servlet-class>org.eclipse.kapua.app.console.server.GwtAuthorizationServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>authorizationServlet</servlet-name>
+		<url-pattern>/auth</url-pattern>
+	</servlet-mapping>
 
-    <servlet>
-        <servlet-name>deviceServlet</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.server.GwtDeviceServiceImpl</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>deviceServlet</servlet-name>
-        <url-pattern>/device</url-pattern>
-    </servlet-mapping>
+	<servlet>
+		<servlet-name>deviceServlet</servlet-name>
+		<servlet-class>org.eclipse.kapua.app.console.server.GwtDeviceServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>deviceServlet</servlet-name>
+		<url-pattern>/device</url-pattern>
+	</servlet-mapping>
 
     <servlet>
         <servlet-name>deviceManagementServlet</servlet-name>
@@ -199,7 +199,7 @@
 
     <servlet>
         <servlet-name>roleServlet</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.server.GwtRoleServiceImpl</servlet-class>
+        <servlet-class>org.eclipse.kapua.app.console.module.authorization.server.GwtRoleServiceImpl</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>roleServlet</servlet-name>
@@ -208,7 +208,7 @@
 
     <servlet>
         <servlet-name>accessRoleServlet</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.server.GwtAccessRoleServiceImpl</servlet-class>
+        <servlet-class>org.eclipse.kapua.app.console.module.authorization.server.GwtAccessRoleServiceImpl</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>accessRoleServlet</servlet-name>
@@ -217,7 +217,7 @@
 
     <servlet>
         <servlet-name>accessInfoServlet</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.server.GwtAccessInfoServiceImpl</servlet-class>
+        <servlet-class>org.eclipse.kapua.app.console.module.authorization.server.GwtAccessInfoServiceImpl</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>accessInfoServlet</servlet-name>
@@ -226,7 +226,7 @@
 
     <servlet>
         <servlet-name>accessPermissionServlet</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.server.GwtAccessPermissionServiceImpl</servlet-class>
+        <servlet-class>org.eclipse.kapua.app.console.module.authorization.server.GwtAccessPermissionServiceImpl</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>accessPermissionServlet</servlet-name>
@@ -235,7 +235,7 @@
 
     <servlet>
         <servlet-name>domainServlet</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.server.GwtDomainServiceImpl</servlet-class>
+        <servlet-class>org.eclipse.kapua.app.console.module.authorization.server.GwtDomainServiceImpl</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>domainServlet</servlet-name>
@@ -244,32 +244,32 @@
 
     <servlet>
         <servlet-name>groupServlet</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.server.GwtGroupServiceImpl</servlet-class>
+        <servlet-class>org.eclipse.kapua.app.console.module.authorization.server.GwtGroupServiceImpl</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>groupServlet</servlet-name>
         <url-pattern>/group</url-pattern>
     </servlet-mapping>
 
-       <servlet>
-           <servlet-name>dataServlet</servlet-name>
-           <servlet-class>org.eclipse.kapua.app.console.server.GwtDataServiceImpl</servlet-class>
-       </servlet>
-       <servlet-mapping>
-           <servlet-name>dataServlet</servlet-name>
-           <url-pattern>/data</url-pattern>
-       </servlet-mapping>
-       
-       <servlet>
-           <servlet-name>dataExporterServlet</servlet-name>
-           <servlet-class>org.eclipse.kapua.app.console.servlet.DataExporterServlet</servlet-class>
-       </servlet>
+   	<servlet>
+   	    <servlet-name>dataServlet</servlet-name>
+   	    <servlet-class>org.eclipse.kapua.app.console.server.GwtDataServiceImpl</servlet-class>
+   	</servlet>
+   	<servlet-mapping>
+   	    <servlet-name>dataServlet</servlet-name>
+   	    <url-pattern>/data</url-pattern>
+   	</servlet-mapping>
+   	
+   	<servlet>
+   	    <servlet-name>dataExporterServlet</servlet-name>
+   	    <servlet-class>org.eclipse.kapua.app.console.servlet.DataExporterServlet</servlet-class>
+   	</servlet>
     
-       <servlet-mapping>
-           <servlet-name>dataExporterServlet</servlet-name>
-           <url-pattern>/exporter_data/*</url-pattern>
-       </servlet-mapping>
-       
+   	<servlet-mapping>
+   	    <servlet-name>dataExporterServlet</servlet-name>
+   	    <url-pattern>/exporter_data/*</url-pattern>
+   	</servlet-mapping>
+   	
     <servlet>
         <servlet-name>tagServlet</servlet-name>
         <servlet-class>org.eclipse.kapua.app.console.server.GwtTagServiceImpl</servlet-class>
@@ -279,15 +279,15 @@
         <url-pattern>/tag</url-pattern>
     </servlet-mapping>
     
-    <servlet>
-        <servlet-name>userServlet</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.server.GwtUserServiceImpl</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>userServlet</servlet-name>
-        <url-pattern>/user</url-pattern>
-    </servlet-mapping>
-    
+	<servlet>
+		<servlet-name>userServlet</servlet-name>
+		<servlet-class>org.eclipse.kapua.app.console.module.user.server.GwtUserServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>userServlet</servlet-name>
+		<url-pattern>/user</url-pattern>
+	</servlet-mapping>
+	
     <servlet>
         <servlet-name>assetServlet</servlet-name>
         <servlet-class>org.eclipse.kapua.app.console.server.GwtDeviceAssetServiceImpl</servlet-class>
@@ -299,7 +299,7 @@
 
     <servlet>
         <servlet-name>org.eclipse.kapua.app.console.console GwtCredentialService</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.server.GwtCredentialServiceImpl</servlet-class>
+        <servlet-class>org.eclipse.kapua.app.console.module.authentication.server.GwtCredentialServiceImpl</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>org.eclipse.kapua.app.console.console GwtCredentialService</servlet-name>

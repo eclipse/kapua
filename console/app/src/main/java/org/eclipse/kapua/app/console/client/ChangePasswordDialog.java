@@ -14,17 +14,17 @@ package org.eclipse.kapua.app.console.client;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.commons.client.ui.dialog.SimpleDialog;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.FormPanel;
-import org.eclipse.kapua.app.console.client.util.ConfirmPasswordFieldValidator;
+import org.eclipse.kapua.app.console.commons.client.util.validator.ConfirmPasswordFieldValidator;
 import org.eclipse.kapua.app.console.commons.client.util.ConsoleInfo;
-import org.eclipse.kapua.app.console.client.util.DialogUtils;
-import org.eclipse.kapua.app.console.client.util.PasswordFieldValidator;
+import org.eclipse.kapua.app.console.commons.client.util.DialogUtils;
+import org.eclipse.kapua.app.console.commons.client.util.validator.PasswordFieldValidator;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.service.GwtCredentialService;
-import org.eclipse.kapua.app.console.shared.service.GwtCredentialServiceAsync;
+import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialService;
 
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialServiceAsync;
 
 public class ChangePasswordDialog extends SimpleDialog {
 

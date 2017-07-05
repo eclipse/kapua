@@ -19,7 +19,7 @@ import org.eclipse.kapua.app.console.commons.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.commons.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnection;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection;
 
 public class ConnectionView extends AbstractEntityView<GwtDeviceConnection> {
 

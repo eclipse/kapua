@@ -14,15 +14,16 @@ package org.eclipse.kapua.app.console.server;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
+import org.eclipse.kapua.app.console.commons.server.KapuaRemoteServiceServlet;
+import org.eclipse.kapua.app.console.commons.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAsset;
 import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAssetChannel;
 import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAssets;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceAssetService;
-import org.eclipse.kapua.app.console.shared.util.GwtKapuaModelConverter;
-import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
+import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaModelConverter;
+import org.eclipse.kapua.app.console.commons.shared.util.KapuaGwtModelConverter;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.asset.DeviceAsset;
@@ -56,10 +57,10 @@ public class GwtDeviceAssetServiceImpl extends KapuaRemoteServiceServlet impleme
         gwtAssetsList.add(gwtAsset);
         gwtAssets.setAssets(gwtAssetsList);
         try {
-            KapuaId scopeId = GwtKapuaModelConverter.convert(scopeIdString);
-            KapuaId deviceId = GwtKapuaModelConverter.convert(deviceIdString);
+            KapuaId scopeId = GwtKapuaModelConverter.convertKapuaId(scopeIdString);
+            KapuaId deviceId = GwtKapuaModelConverter.convertKapuaId(deviceIdString);
 
-            assetService.write(scopeId, deviceId, GwtKapuaModelConverter.convert(gwtAssets), null);
+            assetService.write(scopeId, deviceId, GwtKapuaModelConverter.convertKapuaId(gwtAssets), null);
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
@@ -69,10 +70,10 @@ public class GwtDeviceAssetServiceImpl extends KapuaRemoteServiceServlet impleme
     public List<GwtDeviceAsset> get(PagingLoadConfig pagingLoadConfig, String scopeIdString, String deviceIdString, GwtDeviceAssets deviceAssets) throws GwtKapuaException {
         GwtDeviceAssets gwtAssets = new GwtDeviceAssets();
         try {
-            KapuaId scopeId = GwtKapuaModelConverter.convert(scopeIdString);
-            KapuaId deviceId = GwtKapuaModelConverter.convert(deviceIdString);
-            DeviceAssets assetsMetadata = assetService.get(scopeId, deviceId, GwtKapuaModelConverter.convert(deviceAssets), null);
-            DeviceAssets assetsValues = assetService.read(scopeId, deviceId, GwtKapuaModelConverter.convert(deviceAssets), null);
+            KapuaId scopeId = GwtKapuaModelConverter.convertKapuaId(scopeIdString);
+            KapuaId deviceId = GwtKapuaModelConverter.convertKapuaId(deviceIdString);
+            DeviceAssets assetsMetadata = assetService.get(scopeId, deviceId, GwtKapuaModelConverter.convertKapuaId(deviceAssets), null);
+            DeviceAssets assetsValues = assetService.read(scopeId, deviceId, GwtKapuaModelConverter.convertKapuaId(deviceAssets), null);
 
             for (int assetIndex = 0; assetIndex < assetsMetadata.getAssets().size(); assetIndex++) {
                 DeviceAsset assetMetadata = assetsMetadata.getAssets().get(assetIndex);
@@ -89,7 +90,7 @@ public class GwtDeviceAssetServiceImpl extends KapuaRemoteServiceServlet impleme
                 }
             }
 
-            gwtAssets = KapuaGwtModelConverter.convert(assetsMetadata);
+            gwtAssets = KapuaGwtModelConverter.convertKapuaId(assetsMetadata);
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }

@@ -17,8 +17,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.commons.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.commons.client.util.KapuaSafeHtmlUtils;
+import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupServiceAsync;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceQueryPredicates;
-import org.eclipse.kapua.app.console.shared.model.GwtGroup;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -40,8 +41,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
-import org.eclipse.kapua.app.console.shared.service.GwtGroupService;
-import org.eclipse.kapua.app.console.shared.service.GwtGroupServiceAsync;
+import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupService;
 
 import java.util.List;
 

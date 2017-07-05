@@ -19,7 +19,7 @@ import org.eclipse.kapua.app.console.commons.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.commons.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
 
 public class RoleView extends AbstractEntityView<GwtRole> {
 

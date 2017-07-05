@@ -11,9 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.server;
 
-import org.eclipse.kapua.app.console.commons.client.views.EntityViewDescriptor;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtEntityModel;
+import org.eclipse.kapua.app.console.commons.client.views.ViewDescriptor;
+import org.eclipse.kapua.app.console.commons.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.device.client.DeviceViewDescriptor;
+import org.eclipse.kapua.app.console.module.user.client.UserViewDescriptor;
 import org.eclipse.kapua.app.console.shared.service.GwtConsoleService;
 
 import java.util.ArrayList;
@@ -21,14 +22,17 @@ import java.util.List;
 
 public class GwtConsoleServiceImpl extends KapuaRemoteServiceServlet implements GwtConsoleService {
 
-    private static final String CLASSNAME = "org.eclipse.kapua.app.console.module.device.client.DeviceViewDescriptor";
+    private static final String DEVICE_CLASSNAME = "org.eclipse.kapua.app.console.module.device.client.DeviceViewDescriptor";
+    private static final String USER_CLASSNAME = "org.eclipse.kapua.app.console.module.user.client.UserViewDescriptor";
 
     @Override
-    public List<EntityViewDescriptor<? extends GwtEntityModel>> getCustomEntityViews() {
-        List<EntityViewDescriptor<? extends GwtEntityModel>> views = new ArrayList<EntityViewDescriptor<? extends GwtEntityModel>>();
+    public List<ViewDescriptor> getCustomEntityViews() {
+        List<ViewDescriptor> views = new ArrayList<ViewDescriptor>();
         try {
-            DeviceViewDescriptor entityView = (DeviceViewDescriptor)Class.forName(CLASSNAME).newInstance();
-            views.add(entityView);
+            DeviceViewDescriptor deviceView = (DeviceViewDescriptor)Class.forName(DEVICE_CLASSNAME).newInstance();
+            views.add(deviceView);
+            UserViewDescriptor userView = (UserViewDescriptor)Class.forName(USER_CLASSNAME).newInstance();
+            views.add(userView);
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {

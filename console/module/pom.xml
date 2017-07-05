@@ -26,6 +26,8 @@
         <module>device</module>
         <module>account</module>
         <module>user</module>
+        <module>authentication</module>
+        <module>authorization</module>
     </modules>
 
 </project>

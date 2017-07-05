@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaUnauthenticatedException;
-import org.eclipse.kapua.app.console.shared.util.GwtKapuaModelConverter;
+import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaModelConverter;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
@@ -109,7 +109,7 @@ public class DataExporterServlet extends HttpServlet {
             dataExporter.init(headers);
             KapuaLocator locator = KapuaLocator.getInstance();
             MessageStoreService messageService = locator.getService(MessageStoreService.class);
-            MessageQuery query = new MessageQueryImpl(GwtKapuaModelConverter.convert(scopeIdString));
+            MessageQuery query = new MessageQueryImpl(GwtKapuaModelConverter.convertKapuaId(scopeIdString));
             Date start = new Date(Long.valueOf(startDate));
             Date end = new Date(Long.valueOf(endDate));
             predicate.getPredicates().add(new RangePredicateImpl(MessageField.TIMESTAMP, start, end));

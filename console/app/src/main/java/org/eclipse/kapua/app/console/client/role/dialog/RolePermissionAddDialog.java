@@ -13,25 +13,22 @@ package org.eclipse.kapua.app.console.client.role.dialog;
 
 import java.util.List;
 
-import org.eclipse.kapua.app.console.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.commons.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.commons.client.ui.widget.EnumComboBox;
-import org.eclipse.kapua.app.console.client.util.DialogUtils;
+import org.eclipse.kapua.app.console.commons.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.shared.model.GwtGroup;
-import org.eclipse.kapua.app.console.shared.model.GwtPermission;
-import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtAction;
-import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtDomain;
+import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsoleRoleMessages;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtDomain;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
-import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermission;
-import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermissionCreator;
-import org.eclipse.kapua.app.console.shared.service.GwtDomainService;
-import org.eclipse.kapua.app.console.shared.service.GwtDomainServiceAsync;
-import org.eclipse.kapua.app.console.shared.service.GwtGroupService;
-import org.eclipse.kapua.app.console.shared.service.GwtGroupServiceAsync;
-import org.eclipse.kapua.app.console.shared.service.GwtRoleService;
-import org.eclipse.kapua.app.console.shared.service.GwtRoleServiceAsync;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtPermission;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtPermission.GwtAction;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRolePermission;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRolePermissionCreator;
+import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtDomainService;
+import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtDomainServiceAsync;
+import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupService;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -43,6 +40,9 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupServiceAsync;
+import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRoleService;
+import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRoleServiceAsync;
 
 public class RolePermissionAddDialog extends EntityAddEditDialog {
 
@@ -59,7 +59,7 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
     protected GwtRole selectedRole;
 
     private final GwtGroup allGroup;
-    private final GwtDomain allDomain = GwtDomain.ALL;
+    private final GwtDomain allDomain = null;
     private final GwtAction allAction = GwtAction.ALL;
 
     public RolePermissionAddDialog(GwtSession currentSession) {

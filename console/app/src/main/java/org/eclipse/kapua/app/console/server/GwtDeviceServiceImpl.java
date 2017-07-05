@@ -15,21 +15,22 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
+import org.eclipse.kapua.app.console.commons.server.KapuaConfigurableRemoteServiceServlet;
+import org.eclipse.kapua.app.console.commons.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.setting.ConsoleSettingKeys;
 import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
-import org.eclipse.kapua.app.console.shared.model.GwtDeviceCreator;
-import org.eclipse.kapua.app.console.shared.model.GwtDeviceEvent;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceCreator;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceEvent;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceQueryPredicates;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceQueryPredicates.GwtDeviceConnectionStatus;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnection.GwtConnectionUserCouplingMode;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceService;
-import org.eclipse.kapua.app.console.shared.util.GwtKapuaModelConverter;
-import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
+import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaModelConverter;
+import org.eclipse.kapua.app.console.commons.shared.util.KapuaGwtModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
@@ -85,7 +86,7 @@ public class GwtDeviceServiceImpl extends KapuaConfigurableRemoteServiceServlet<
             DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
             Device device = deviceRegistryService.findByClientId(scopeId, clientId);
 
-            gwtDevice = KapuaGwtModelConverter.convert(device);
+            gwtDevice = KapuaGwtModelConverter.convertKapuaId(device);
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
@@ -293,7 +294,7 @@ public class GwtDeviceServiceImpl extends KapuaConfigurableRemoteServiceServlet<
             KapuaListResult<Device> devices = deviceRegistryService.query(deviceQuery);
             totalResult = (int) deviceRegistryService.count(deviceQuery);
             for (Device d : devices.getItems()) {
-                GwtDevice gwtDevice = KapuaGwtModelConverter.convert(d);
+                GwtDevice gwtDevice = KapuaGwtModelConverter.convertKapuaId(d);
 
                 // Connection info
                 gwtDevice.setGwtDeviceConnectionStatus(GwtDeviceConnectionStatus.DISCONNECTED.name());
@@ -345,7 +346,7 @@ public class GwtDeviceServiceImpl extends KapuaConfigurableRemoteServiceServlet<
 
             DeviceCreator deviceCreator = deviceFactory.newCreator(scopeId, gwtDeviceCreator.getClientId());
             deviceCreator.setDisplayName(gwtDeviceCreator.getDisplayName());
-            deviceCreator.setGroupId(GwtKapuaModelConverter.convert(gwtDeviceCreator.getGroupId()));
+            deviceCreator.setGroupId(GwtKapuaModelConverter.convertKapuaId(gwtDeviceCreator.getGroupId()));
 
             // FIXME One day it will be specified from the form. In the meantime, defaults to LOOSE
             // deviceCreator.setCredentialsMode(DeviceCredentialsMode.LOOSE);
@@ -358,7 +359,7 @@ public class GwtDeviceServiceImpl extends KapuaConfigurableRemoteServiceServlet<
 
             Device device = deviceRegistryService.create(deviceCreator);
 
-            gwtDevice = KapuaGwtModelConverter.convert(device);
+            gwtDevice = KapuaGwtModelConverter.convertKapuaId(device);
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
@@ -389,7 +390,7 @@ public class GwtDeviceServiceImpl extends KapuaConfigurableRemoteServiceServlet<
             // Gerenal info
             device.setDisplayName(gwtDevice.getUnescapedDisplayName());
             device.setStatus(DeviceStatus.valueOf(gwtDevice.getGwtDeviceStatus()));
-            device.setGroupId(GwtKapuaModelConverter.convert(gwtDevice.getGroupId()));
+            device.setGroupId(GwtKapuaModelConverter.convertKapuaId(gwtDevice.getGroupId()));
 
             // Security Stuff
             // device.setCredentialsMode(DeviceCredentialsMode.valueOf(gwtDevice.getCredentialsTight()));
@@ -409,7 +410,7 @@ public class GwtDeviceServiceImpl extends KapuaConfigurableRemoteServiceServlet<
             device = deviceRegistryService.update(device);
 
             // Convert to gwt object
-            gwtDeviceUpdated = KapuaGwtModelConverter.convert(device);
+            gwtDeviceUpdated = KapuaGwtModelConverter.convertKapuaId(device);
 
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
@@ -469,7 +470,7 @@ public class GwtDeviceServiceImpl extends KapuaConfigurableRemoteServiceServlet<
 
             // prepare results
             for (DeviceEvent deviceEvent : deviceEvents.getItems()) {
-                gwtDeviceEvents.add(KapuaGwtModelConverter.convert(deviceEvent));
+                gwtDeviceEvents.add(KapuaGwtModelConverter.convertKapuaId(deviceEvent));
             }
             gwtResults = new BasePagingLoadResult<GwtDeviceEvent>(gwtDeviceEvents);
             gwtResults.setOffset(loadConfig.getOffset());

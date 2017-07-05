@@ -12,17 +12,17 @@
 package org.eclipse.kapua.app.console.client.account;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.client.util.ConfirmPasswordFieldValidator;
+import org.eclipse.kapua.app.console.commons.client.util.validator.ConfirmPasswordFieldValidator;
 import org.eclipse.kapua.app.console.commons.client.util.ConsoleInfo;
-import org.eclipse.kapua.app.console.client.util.DialogUtils;
+import org.eclipse.kapua.app.console.commons.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.client.util.TextFieldValidator;
-import org.eclipse.kapua.app.console.client.util.TextFieldValidator.FieldType;
+import org.eclipse.kapua.app.console.commons.client.util.validator.TextFieldValidator;
+import org.eclipse.kapua.app.console.commons.client.util.validator.TextFieldValidator.FieldType;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtOrganization;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
-import org.eclipse.kapua.app.console.shared.model.account.GwtAccountCreator;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountCreator;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountServiceAsync;
 import org.eclipse.kapua.app.console.commons.shared.service.GwtSecurityTokenService;

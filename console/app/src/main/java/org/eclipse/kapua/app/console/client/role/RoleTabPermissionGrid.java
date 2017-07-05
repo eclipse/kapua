@@ -11,14 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.role;
 
-import org.eclipse.kapua.app.console.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.commons.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
-import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermission;
+import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsoleRoleMessages;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRolePermission;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;

@@ -11,15 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.role.dialog;
 
-import org.eclipse.kapua.app.console.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.commons.client.ui.dialog.entity.EntityDeleteDialog;
-import org.eclipse.kapua.app.console.client.util.DialogUtils;
-import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
-import org.eclipse.kapua.app.console.shared.service.GwtRoleService;
-import org.eclipse.kapua.app.console.shared.service.GwtRoleServiceAsync;
+import org.eclipse.kapua.app.console.commons.client.util.DialogUtils;
+import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsoleRoleMessages;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRoleService;
+import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRoleServiceAsync;
 
 public class RoleDeleteDialog extends EntityDeleteDialog {
 

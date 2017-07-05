@@ -18,14 +18,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.client.util.Constants;
+import org.eclipse.kapua.app.console.commons.client.util.Constants;
 import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.client.util.FormUtils;
 import org.eclipse.kapua.app.console.commons.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.client.util.MessageUtils;
 import org.eclipse.kapua.app.console.client.util.UserAgentUtils;
-import org.eclipse.kapua.app.console.shared.model.GwtConfigComponent;
-import org.eclipse.kapua.app.console.shared.model.GwtConfigParameter;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtConfigComponent;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtConfigParameter;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Orientation;

@@ -35,7 +35,7 @@ import org.apache.poi.util.IOUtils;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaUnauthenticatedException;
-import org.eclipse.kapua.app.console.server.KapuaRemoteServiceServlet;
+import org.eclipse.kapua.app.console.commons.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.setting.ConsoleSettingKeys;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtXSRFToken;
