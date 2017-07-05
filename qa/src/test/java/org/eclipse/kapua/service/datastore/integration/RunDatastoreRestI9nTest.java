@@ -22,12 +22,11 @@ import org.junit.runner.RunWith;
         glue = {"org.eclipse.kapua.qa.steps",
                 "org.eclipse.kapua.service.datastore.steps",
                 "org.eclipse.kapua.service.user.steps",
-                "org.eclipse.kapua.service.device.steps",
         },
         plugin = { "pretty",
                 "html:target/cucumber/DatastoreI9n",
                 "json:target/DatastoreI9n_cucumber.json" },
         monochrome = true)
-@CucumberProperty(key="datastore.client.class", value="org.eclipse.kapua.service.datastore.client.transport.TransportDatastoreClient")
-public class RunDatastoreI9nTest {
+@CucumberProperty(key="datastore.client.class", value="org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient")
+public class RunDatastoreRestI9nTest {
 }

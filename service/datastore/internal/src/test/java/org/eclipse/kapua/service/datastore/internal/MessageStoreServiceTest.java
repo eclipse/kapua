@@ -58,6 +58,7 @@ import org.eclipse.kapua.service.datastore.ClientInfoRegistryService;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
+import org.eclipse.kapua.service.datastore.client.embedded.EsEmbeddedEngine;
 import org.eclipse.kapua.service.datastore.client.model.InsertResponse;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoField;
@@ -115,6 +116,13 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger(MessageStoreServiceTest.class);
     private static final long PUBLISH_DATE_TEST_CHECK_TIME_WINDOW = 1000l;
+
+    @SuppressWarnings("unused")
+    // this unused instance is just added to initialize the embedded node as first step before executing any action on datastore side.
+    // otherwise, if the datastore service is initialized before the embedded es node startup, the transport connector is not able to be initialized (since it tries to connect to the node)
+    // if the embedded node is initialized in @Before method of this class, the initialization happens after this is loaded by the classloader so the datastore service initialization, at that point,
+    // is already done!
+    private static EsEmbeddedEngine esEmbeddedEngine = new EsEmbeddedEngine();
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);

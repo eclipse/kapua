@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.client.transport;
+package org.eclipse.kapua.service.datastore.client.rest;
 
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
@@ -20,7 +20,7 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
  */
 public class ClientSettings extends AbstractKapuaSetting<ClientSettingsKey> {
 
-    private static final String DATASTORE_CONFIG_RESOURCE = "kapua-datastore-transport-client-setting.properties";
+    private static final String DATASTORE_CONFIG_RESOURCE = "kapua-datastore-rest-client-setting.properties";
 
     private static final ClientSettings INSTANCE = new ClientSettings();
 
