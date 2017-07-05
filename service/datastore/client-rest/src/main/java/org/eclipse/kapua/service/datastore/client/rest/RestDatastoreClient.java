@@ -55,9 +55,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.NumericNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.TextNode;
 
 /**
  * Client implementation based on Elasticsearch rest client.<br>
@@ -198,9 +196,9 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
                     entity);
             if (isRequestSuccessful(insertResponse)) {
                 JsonNode responseNode = MAPPER.readTree(EntityUtils.toString(insertResponse.getEntity()));
-                String id = ((TextNode) responseNode.get(KEY_DOC_ID)).asText();
-                String index = ((TextNode) responseNode.get(KEY_DOC_INDEX)).asText();
-                String type = ((TextNode) responseNode.get(KEY_DOC_TYPE)).asText();
+                String id = responseNode.get(KEY_DOC_ID).asText();
+                String index = responseNode.get(KEY_DOC_INDEX).asText();
+                String type = responseNode.get(KEY_DOC_TYPE).asText();
                 return new InsertResponse(id, new TypeDescriptor(index, type));
             }
             else {
@@ -229,9 +227,9 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
                     entity);
             if (isRequestSuccessful(updateResponse)) {
                 JsonNode responseNode = MAPPER.readTree(EntityUtils.toString(updateResponse.getEntity()));
-                String id = ((TextNode) responseNode.get(KEY_DOC_ID)).asText();
-                String index = ((TextNode) responseNode.get(KEY_DOC_INDEX)).asText();
-                String type = ((TextNode) responseNode.get(KEY_DOC_TYPE)).asText();
+                String id = responseNode.get(KEY_DOC_ID).asText();
+                String index = responseNode.get(KEY_DOC_INDEX).asText();
+                String type = responseNode.get(KEY_DOC_TYPE).asText();
                 return new UpdateResponse(id, new TypeDescriptor(index, type));
             } else {
                 throw new ClientException(ClientErrorCodes.ACTION_ERROR, updateResponse.getStatusLine().getReasonPhrase());
@@ -269,20 +267,20 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
             if (isRequestSuccessful(updateResponse)) {
                 BulkUpdateResponse bulkResponse = new BulkUpdateResponse();
                 JsonNode responseNode = MAPPER.readTree(EntityUtils.toString(updateResponse.getEntity()));
-                ArrayNode items = ((ArrayNode) responseNode.get(KEY_ITEMS));
+                ArrayNode items = (ArrayNode) responseNode.get(KEY_ITEMS);
                 for (JsonNode item : items) {
-                    JsonNode itemNode = item.get(KEY_UPDATE);
-                    if (itemNode != null) {
-                        TextNode idNode = ((TextNode) itemNode.get(KEY_DOC_ID));
+                    JsonNode jsonNode = item.get(KEY_UPDATE);
+                    if (jsonNode != null) {
+                        JsonNode idNode = jsonNode.get(KEY_DOC_ID);
                         String metricId = null;
                         if (idNode != null) {
                             metricId = idNode.asText();
                         }
-                        String indexName = ((TextNode) itemNode.get(KEY_DOC_INDEX)).asText();
-                        String typeName = ((TextNode) itemNode.get(KEY_DOC_TYPE)).asText();
-                        int responseCode = ((NumericNode) itemNode.get(KEY_STATUS)).asInt();
+                        String indexName = jsonNode.get(KEY_DOC_INDEX).asText();
+                        String typeName = jsonNode.get(KEY_DOC_TYPE).asText();
+                        int responseCode = jsonNode.get(KEY_STATUS).asInt();
                         if (!isRequestSuccessful(responseCode)) {
-                            TextNode failureNode = ((TextNode) itemNode.get(KEY_RESULT));
+                            JsonNode failureNode = jsonNode.get(KEY_RESULT);
                             String failureMessage = MSG_EMPTY_ERROR;
                             if (failureNode != null) {
                                 failureMessage = failureNode.asText();
@@ -336,7 +334,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
             if (isRequestSuccessful(queryResponse)) {
                 JsonNode responseNode = MAPPER.readTree(EntityUtils.toString(queryResponse.getEntity()));
                 JsonNode hitsNode = responseNode.get(KEY_HITS);
-                totalCount = ((NumericNode) hitsNode.get(KEY_TOTAL)).asInt();
+                totalCount = hitsNode.get(KEY_TOTAL).asInt();
                 if (totalCount > Integer.MAX_VALUE) {
                     throw new ClientException(ClientErrorCodes.ACTION_ERROR, "Total hits exceeds integer max value");
                 }
@@ -351,14 +349,14 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
         } catch (IOException e) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, e.getLocalizedMessage());
         }
-        ResultList<T> resultList = new ResultList<T>(totalCount);
+        ResultList<T> resultList = new ResultList<>(totalCount);
         if (resultsNode != null && resultsNode.size() > 0) {
             for (JsonNode result : resultsNode) {
                 @SuppressWarnings("unchecked")
                 Map<String, Object> object = MAPPER.convertValue(result.get(KEY_SOURCE), Map.class);
-                String id = ((TextNode) result.get(KEY_DOC_ID)).asText();
-                String index = ((TextNode) result.get(KEY_DOC_INDEX)).asText();
-                String type = ((TextNode) result.get(KEY_DOC_TYPE)).asText();
+                String id = result.get(KEY_DOC_ID).asText();
+                String index = result.get(KEY_DOC_INDEX).asText();
+                String type = result.get(KEY_DOC_TYPE).asText();
                 object.put(ModelContext.TYPE_DESCRIPTOR_KEY, new TypeDescriptor(index, type));
                 object.put(ModelContext.DATASTORE_ID_KEY, id);
                 object.put(QueryConverter.QUERY_FETCH_STYLE_KEY, queryFetchStyle);
@@ -385,7 +383,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
             if (isRequestSuccessful(queryResponse)) {
                 JsonNode responseNode = MAPPER.readTree(EntityUtils.toString(queryResponse.getEntity()));
                 JsonNode hitsNode = responseNode.get(KEY_HITS);
-                totalCount = ((NumericNode) hitsNode.get(KEY_TOTAL)).asInt();
+                totalCount = hitsNode.get(KEY_TOTAL).asInt();
                 if (totalCount > Integer.MAX_VALUE) {
                     throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_HITS_MAX_VALUE_EXCEDEED);
                 }
@@ -394,8 +392,6 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
             }
         } catch (ResponseException re) {
             handleResponseException(re, typeDescriptor.getIndex(), "COUNT");
-        } catch (JsonProcessingException e) {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, e.getLocalizedMessage());
         } catch (IOException e) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, e.getLocalizedMessage());
         }
@@ -441,8 +437,6 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
             }
         } catch (ResponseException re) {
             handleResponseException(re, typeDescriptor.getIndex(), "DELETE BY QUERY");
-        } catch (JsonProcessingException e) {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, e.getLocalizedMessage());
         } catch (IOException e) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, e.getLocalizedMessage());
         }
