@@ -49,7 +49,7 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
 
     private CredentialToolbar toolbar;
 
-    CredentialGrid(AbstractEntityView<GwtCredential> entityView, GwtSession currentSession) {
+    public CredentialGrid(AbstractEntityView<GwtCredential> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
         query = new GwtCredentialQuery();
         query.setScopeId(currentSession.getSelectedAccountId());
@@ -138,14 +138,14 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
     }
 
     @Override
-    protected EntityCRUDToolbar<GwtCredential> getToolbar() {
+    public EntityCRUDToolbar<GwtCredential> getToolbar() {
         if (toolbar == null) {
             toolbar = new CredentialToolbar(currentSession);
         }
         return toolbar;
     }
 
-    void setSelectedUserId(String selectedUserId) {
+    public void setSelectedUserId(String selectedUserId) {
         this.selectedUserId = selectedUserId;
         if (selectedUserId != null) {
             query.setUserId(selectedUserId);

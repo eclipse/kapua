@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.module.authentication.client.tabs.credentials;
+package org.eclipse.kapua.app.console.module.user.client.tabs.credentials;
 
 import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.KapuaIcon;
@@ -19,9 +19,10 @@ import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.authentication.client.messages.ConsoleCredentialMessages;
-import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredential;
+import org.eclipse.kapua.app.console.module.authentication.client.tabs.credentials.CredentialGrid;
+import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
 
-public class UserTabItemCredentials extends KapuaTabItem<GwtCredential> {
+public class UserTabItemCredentials extends KapuaTabItem<GwtUser> {
 
     private static final ConsoleCredentialMessages MSGS = GWT.create(ConsoleCredentialMessages.class);
 
@@ -43,9 +44,9 @@ public class UserTabItemCredentials extends KapuaTabItem<GwtCredential> {
     }
 
     @Override
-    public void setEntity(GwtCredential credential) {
-        super.setEntity(credential);
-        credentialsGrid.setSelectedUserId(credential.getUserId());
+    public void setEntity(GwtUser gwtUser) {
+        super.setEntity(gwtUser);
+        credentialsGrid.setSelectedUserId(gwtUser.getId());
     }
 
     @Override

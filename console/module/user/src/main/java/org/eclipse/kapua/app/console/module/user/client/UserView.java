@@ -19,11 +19,11 @@ import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.commons.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
-import org.eclipse.kapua.app.console.module.authentication.client.tabs.credentials.UserTabItemCredentials;
+import org.eclipse.kapua.app.console.module.user.client.tabs.credentials.UserTabItemCredentials;
 import org.eclipse.kapua.app.console.module.user.client.messages.ConsoleUserMessages;
 import org.eclipse.kapua.app.console.module.user.client.tabs.description.UserTabDescription;
-import org.eclipse.kapua.app.console.module.authorization.client.tabs.permission.UserTabItemPermission;
-import org.eclipse.kapua.app.console.module.authorization.client.tabs.role.UserTabItemAccessRole;
+import org.eclipse.kapua.app.console.module.user.client.tabs.permission.UserTabItemPermission;
+import org.eclipse.kapua.app.console.module.user.client.tabs.roles.UserTabItemAccessRole;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
 
@@ -55,15 +55,15 @@ public class UserView extends AbstractEntityView<GwtUser> {
         }
         if (accessRoleTab == null) {
             accessRoleTab = new UserTabItemAccessRole(currentSession);
-            //            tabs.add(accessRoleTab);
+            tabs.add(accessRoleTab);
         }
         if (permissionTab == null) {
             permissionTab = new UserTabItemPermission(currentSession);
-            //            tabs.add(permissionTab);
+            tabs.add(permissionTab);
         }
         if (credentialsTab == null) {
             credentialsTab = new UserTabItemCredentials(currentSession);
-            //            tabs.add(credentialsTab);
+            tabs.add(credentialsTab);
         }
         return tabs;
     }

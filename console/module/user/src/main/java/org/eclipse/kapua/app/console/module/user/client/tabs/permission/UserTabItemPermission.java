@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.module.authorization.client.tabs.permission;
+package org.eclipse.kapua.app.console.module.user.client.tabs.permission;
 
 import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.KapuaIcon;
@@ -19,9 +19,11 @@ import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsolePermissionMessages;
-import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessPermission;
+import org.eclipse.kapua.app.console.module.authorization.client.tabs.permission.UserTabPermissionGrid;
+import org.eclipse.kapua.app.console.module.authorization.client.tabs.permission.UserTabPermissionToolbar;
+import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
 
-public class UserTabItemPermission extends KapuaTabItem<GwtAccessPermission> {
+public class UserTabItemPermission extends KapuaTabItem<GwtUser> {
 
     private static final ConsolePermissionMessages MSGS = GWT.create(ConsolePermissionMessages.class);
 
@@ -43,11 +45,11 @@ public class UserTabItemPermission extends KapuaTabItem<GwtAccessPermission> {
     }
 
     @Override
-    public void setEntity(GwtAccessPermission gwtAccessPermission) {
-        super.setEntity(gwtAccessPermission);
-        if (gwtAccessPermission != null) {
-            permissionGrid.setUserId(gwtAccessPermission.getAccessInfoId());
-            ((UserTabPermissionToolbar) permissionGrid.getToolbar()).setUserId(gwtAccessPermission.getId());
+    public void setEntity(GwtUser gwtUser) {
+        super.setEntity(gwtUser);
+        if (gwtUser != null) {
+            permissionGrid.setUserId(gwtUser.getId());
+            ((UserTabPermissionToolbar) permissionGrid.getToolbar()).setUserId(gwtUser.getId());
         } else {
             permissionGrid.setUserId(null);
             ((UserTabPermissionToolbar) permissionGrid.getToolbar()).setUserId(null);
