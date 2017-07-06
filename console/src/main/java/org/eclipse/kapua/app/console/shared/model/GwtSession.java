@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -47,6 +47,11 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     private boolean hasDeviceManagePermission;
 
     private boolean hasDataReadPermission;
+
+    private boolean hasTagCreatePermission;
+    private boolean hasTagReadPermission;
+    private boolean hasTagUpdatePermission;
+    private boolean hasTagDeletePermission;
 
     private boolean hasUserCreatePermission;
     private boolean hasUserReadPermission;
@@ -180,20 +185,52 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
         this.hasAccountAllPermission = hasAccountAll;
     }
 
-    public boolean hasUserReadPermission() {
-        return hasUserReadPermission;
-    }
-
-    public void setUserReadPermission(boolean value) {
-        this.hasUserReadPermission = value;
-    }
-
     public boolean hasDataReadPermission() {
         return hasDataReadPermission;
     }
 
     public void setDataReadPermission(boolean value) {
         this.hasDataReadPermission = value;
+    }
+
+    public boolean hasTagReadPermission() {
+        return hasTagReadPermission;
+    }
+
+    public void setTagReadPermission(boolean value) {
+        this.hasTagReadPermission = value;
+    }
+
+    public boolean hasTagCreatePermission() {
+        return hasTagCreatePermission;
+    }
+
+    public void setTagCreatePermission(boolean hasTagCreatePermission) {
+        this.hasTagCreatePermission = hasTagCreatePermission;
+    }
+
+    public boolean hasTagUpdatePermission() {
+        return hasTagUpdatePermission;
+    }
+
+    public void setTagUpdatePermission(boolean hasTagUpdatePermission) {
+        this.hasTagUpdatePermission = hasTagUpdatePermission;
+    }
+
+    public boolean hasTagDeletePermission() {
+        return hasTagDeletePermission;
+    }
+
+    public void setTagDeletePermission(boolean hasTagDeletePermission) {
+        this.hasTagDeletePermission = hasTagDeletePermission;
+    }
+
+    public boolean hasUserReadPermission() {
+        return hasUserReadPermission;
+    }
+
+    public void setUserReadPermission(boolean value) {
+        this.hasUserReadPermission = value;
     }
 
     public boolean hasUserCreatePermission() {

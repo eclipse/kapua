@@ -14,6 +14,7 @@ package org.eclipse.kapua.test.device;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.Properties;
+import java.util.Set;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -462,4 +463,16 @@ public class DeviceMock implements Device {
         // TODO Auto-generated method stub
         return null;
     }
+
+    @Override
+    public void setTagIds(Set<KapuaId> tagIds) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public Set<KapuaId> getTagIds() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

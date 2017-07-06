@@ -22,7 +22,8 @@ import cucumber.api.junit.Cucumber;
                    },
         glue = {"org.eclipse.kapua.qa.steps",
                 "org.eclipse.kapua.service.user.steps",
-                "org.eclipse.kapua.service.device.steps"
+                "org.eclipse.kapua.service.device.steps",
+                "org.eclipse.kapua.service.tag.steps"
                },
         plugin = {"pretty", 
                   "html:target/cucumber/DeviceI9n",

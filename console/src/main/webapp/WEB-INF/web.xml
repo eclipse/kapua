@@ -11,7 +11,6 @@
         Eurotech - initial API and implementation
         Red Hat Inc
  -->
-
 <web-app version="3.0" 
          xmlns="http://java.sun.com/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -63,6 +62,7 @@
         <url-pattern>/accesspermission/*</url-pattern>
         <url-pattern>/domain/*</url-pattern>
         <url-pattern>/group/*</url-pattern>
+        <url-pattern>/tag/*</url-pattern>
         <url-pattern>/credential/*</url-pattern>
         <url-pattern>/asset/*</url-pattern>
         <url-pattern>/file/*</url-pattern>
@@ -270,6 +270,15 @@
    	    <url-pattern>/exporter_data/*</url-pattern>
    	</servlet-mapping>
    	
+    <servlet>
+        <servlet-name>tagServlet</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.server.GwtTagServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>tagServlet</servlet-name>
+        <url-pattern>/tag</url-pattern>
+    </servlet-mapping>
+    
 	<servlet>
 		<servlet-name>userServlet</servlet-name>
 		<servlet-class>org.eclipse.kapua.app.console.server.GwtUserServiceImpl</servlet-class>

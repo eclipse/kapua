@@ -26,6 +26,11 @@ public interface DevicePredicates extends KapuaUpdatableEntityPredicates {
     public static final String GROUP_ID = "groupId";
 
     /**
+     * Tag id.
+     */
+    public static final String TAG_IDS = "tagIds";
+
+    /**
      * Client identifier
      */
     public static final String CLIENT_ID = "clientId";

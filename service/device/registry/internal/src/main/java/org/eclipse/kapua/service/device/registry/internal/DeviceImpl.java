@@ -13,10 +13,15 @@ package org.eclipse.kapua.service.device.registry.internal;
 
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -37,6 +42,7 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionImpl;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventImpl;
+import org.eclipse.kapua.service.tag.Taggable;
 
 /**
  * {@link Device} implementation.
@@ -45,9 +51,17 @@ import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventImpl;
  */
 @Entity(name = "Device")
 @Table(name = "dvc_device")
-public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device {
+public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device, Taggable {
 
     private static final long serialVersionUID = 7688047426522474413L;
+
+    @ElementCollection
+    @CollectionTable(name = "dvc_device_tag", joinColumns = @JoinColumn(name = "device_id", referencedColumnName = "id"))
+    // @Column(name = "tag_id", nullable = false)
+    @AttributeOverrides({
+            @AttributeOverride(name = "eid", column = @Column(name = "tag_id", nullable = false, updatable = false))
+    })
+    private Set<KapuaEid> tagIds;
 
     @Embedded
     @AttributeOverrides({
@@ -191,6 +205,28 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device {
      */
     public DeviceImpl(KapuaId scopeId) {
         super(scopeId);
+    }
+
+    @Override
+    public void setTagIds(Set<KapuaId> tagIds) {
+        this.tagIds = new HashSet<>();
+
+        for (KapuaId id : tagIds) {
+            this.tagIds.add(KapuaEid.parseKapuaId(id));
+        }
+    }
+
+    @Override
+    public Set<KapuaId> getTagIds() {
+        Set<KapuaId> tagIds = new HashSet<>();
+
+        if (this.tagIds != null) {
+            for (KapuaId deviceTagId : this.tagIds) {
+                tagIds.add(new KapuaEid(deviceTagId));
+            }
+        }
+
+        return tagIds;
     }
 
     @Override
@@ -497,5 +533,4 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device {
     public String toString() {
         return reflectionToString(this);
     }
-
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *  
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,6 +27,8 @@ DROP TABLE IF EXISTS athz_user_permission;
 DROP TABLE IF EXISTS athz_user_role;
 
 DROP TABLE IF EXISTS athz_user_role_roles;
+
+DROP TABLE IF EXISTS dvc_device_tag;
 
 DROP TABLE IF EXISTS dvc_device_connection;
 
