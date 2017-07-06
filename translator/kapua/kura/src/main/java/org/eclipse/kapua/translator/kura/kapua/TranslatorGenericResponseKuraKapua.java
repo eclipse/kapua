@@ -29,9 +29,6 @@ public class TranslatorGenericResponseKuraKapua extends AbstractSimpleTranslator
 
     private static final String CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final GenericRequestFactory FACTORY = LOCATOR.getFactory(GenericRequestFactory.class);
-
     public TranslatorGenericResponseKuraKapua() {
         super(GenericResponseMessage.class);
     }
@@ -44,7 +41,9 @@ public class TranslatorGenericResponseKuraKapua extends AbstractSimpleTranslator
                     kuraChannel.getMessageClassification());
         }
 
-        GenericResponseChannel genericResponseChannel = FACTORY.newResponseChannel();
+        KapuaLocator locator = KapuaLocator.getInstance();
+        GenericRequestFactory genericRequestFactory = locator.getFactory(GenericRequestFactory.class);
+        GenericResponseChannel genericResponseChannel = genericRequestFactory.newResponseChannel();
         String[] appIdTokens = kuraChannel.getAppId().split("-");
 
         genericResponseChannel.setAppName(new GenericAppProperties(appIdTokens[0]));
@@ -57,7 +56,10 @@ public class TranslatorGenericResponseKuraKapua extends AbstractSimpleTranslator
 
     @Override
     protected GenericResponsePayload translatePayload(KuraResponsePayload kuraPayload) throws KapuaException {
-        GenericResponsePayload genericResponsePayload = FACTORY.newResponsePayload();
+        KapuaLocator locator = KapuaLocator.getInstance();
+        GenericRequestFactory genericRequestFactory = locator.getFactory(GenericRequestFactory.class);
+
+        GenericResponsePayload genericResponsePayload = genericRequestFactory.newResponsePayload();
         genericResponsePayload.setBody(kuraPayload.getBody());
         genericResponsePayload.setMetrics(kuraPayload.getMetrics());
         genericResponsePayload.setExceptionMessage(kuraPayload.getExceptionMessage());

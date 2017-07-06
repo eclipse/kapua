@@ -25,9 +25,6 @@ import org.eclipse.kapua.service.device.management.response.KapuaResponsePayload
 public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends KapuaResponseChannel, TO_P extends KapuaResponsePayload, TO_M extends KapuaResponseMessage<TO_C, TO_P>>
         extends AbstractTranslatorResponseKuraKapua<TO_C, TO_P, TO_M> {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final GenericRequestFactory FACTORY = LOCATOR.getFactory(GenericRequestFactory.class);
-
     private final Class<TO_M> messageClazz;
 
     public AbstractSimpleTranslatorResponseKuraKapua(final Class<TO_M> messageClazz) {
@@ -36,9 +33,12 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
 
     @Override
     protected TO_M createMessage() throws KapuaException {
+
         try {
             if (this.messageClazz.equals(GenericResponseMessage.class)) {
-                return this.messageClazz.cast(FACTORY.newResponseMessage());
+                KapuaLocator locator = KapuaLocator.getInstance();
+                GenericRequestFactory genericRequestFactory = locator.getFactory(GenericRequestFactory.class);
+                return this.messageClazz.cast(genericRequestFactory.newResponseMessage());
             } else {
                 return this.messageClazz.newInstance();
             }
