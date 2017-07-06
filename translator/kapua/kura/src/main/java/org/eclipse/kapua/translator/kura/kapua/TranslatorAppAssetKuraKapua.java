@@ -33,9 +33,9 @@ import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraRespo
 import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponsePayload;
 import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSetting;
 import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSettingKeys;
-import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannelMode;
 import org.eclipse.kapua.service.device.management.asset.DeviceAsset;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
+import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannelMode;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetFactory;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 import org.eclipse.kapua.service.device.management.asset.internal.DeviceAssetAppProperties;
@@ -55,8 +55,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  */
 public class TranslatorAppAssetKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<AssetResponseChannel, AssetResponsePayload, AssetResponseMessage> {
-
-    private static final DeviceAssetFactory DEVICE_ASSET_FACTORY = KapuaLocator.getInstance().getFactory(DeviceAssetFactory.class);
 
     private static final String CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
     private static final Map<AssetMetrics, DeviceAssetAppProperties> METRICS_DICTIONARY;
@@ -116,14 +114,16 @@ public class TranslatorAppAssetKuraKapua extends AbstractSimpleTranslatorRespons
 
                 JsonNode jsonNode = mapper.readTree(kuraPayload.getBody());
 
-                DeviceAssets deviceAssets = DEVICE_ASSET_FACTORY.newAssetListResult();
+                KapuaLocator locator = KapuaLocator.getInstance();
+                DeviceAssetFactory deviceAssetFactory = locator.getFactory(DeviceAssetFactory.class);
+                DeviceAssets deviceAssets = deviceAssetFactory.newAssetListResult();
                 KuraAssets kuraAssets = KuraAssets.readJsonNode(jsonNode);
                 for (KuraAsset kuraAsset : kuraAssets.getAssets()) {
-                    DeviceAsset deviceAsset = DEVICE_ASSET_FACTORY.newDeviceAsset();
+                    DeviceAsset deviceAsset = deviceAssetFactory.newDeviceAsset();
                     deviceAsset.setName(kuraAsset.getName());
 
                     for (KuraAssetChannel kuraAssetChannel : kuraAsset.getChannels()) {
-                        DeviceAssetChannel deviceAssetChannel = DEVICE_ASSET_FACTORY.newDeviceAssetChannel();
+                        DeviceAssetChannel deviceAssetChannel = deviceAssetFactory.newDeviceAssetChannel();
 
                         deviceAssetChannel.setName(kuraAssetChannel.getName());
                         KuraAssetChannelMode kuraChannelMode = kuraAssetChannel.getMode();
