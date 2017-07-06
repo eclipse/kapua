@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.inject.ConfigurationException;
+import com.google.inject.Injector;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.service.KapuaService;
@@ -33,6 +35,12 @@ import org.slf4j.LoggerFactory;
  * 
  * -Dlocator.class.impl=org.eclipse.kapua.test.MockedLocator
  *
+ * In cucumber setting is done in custom cucumber runner CucumberWithProperties.
+ *
+ * Mocked locator can be used in two ways:
+ *  - setting services with seter and having local Map of services and factories
+ *  - setting services with Google Guice DI
+ *
  */
 public class MockedLocator extends KapuaLocator {
 
@@ -41,6 +49,16 @@ public class MockedLocator extends KapuaLocator {
     private Map<Class<?>, KapuaService> serviceMap = new HashMap<>();
 
     private Map<Class<?>, KapuaObjectFactory> factoryMap = new HashMap<>();
+
+    /**
+     * Google Guice provided DI.
+     */
+    private Injector guiceInjector;
+
+    public void setInjector(Injector injector) {
+
+        this.guiceInjector = injector;
+    }
 
     public void setMockedService(Class<?> clazz, KapuaService service) {
 
@@ -68,19 +86,36 @@ public class MockedLocator extends KapuaLocator {
     public <S extends KapuaService> S getService(Class<S> serviceClass) {
 
         logger.info("Geting mocked service {} from MockedLocator", serviceClass.getName());
+        S service = getMockedService(serviceClass);
+        if ((service == null) && (guiceInjector != null)) {
+            try {
+                service = guiceInjector.getInstance(serviceClass);
+            } catch (ConfigurationException gce) {
+                // Guice didn't find instance - eat exception and return null for instance
+            }
+        }
 
-        return (S) getMockedService(serviceClass);
+        return service;
     }
 
     @Override
     public <F extends KapuaObjectFactory> F getFactory(Class<F> factoryClass) {
 
         logger.info("Geting mocked factory {} from MockedLocator", factoryClass.getName());
+        F factory = getMockedFactory(factoryClass);
+        if ((factory == null) && (guiceInjector != null)) {
+            try {
+                factory = guiceInjector.getInstance(factoryClass);
+            } catch (ConfigurationException gce) {
+                // Guice didn't find instance - eat exception and return null for instance
+            }
+        }
 
-        return (F) getMockedFactory(factoryClass);
+        return factory;
     }
 
     @Override public List<KapuaService> getServices() {
+
         return new ArrayList<>(serviceMap.values());
     }
 
