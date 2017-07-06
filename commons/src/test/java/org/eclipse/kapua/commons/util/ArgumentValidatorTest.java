@@ -15,6 +15,7 @@ import java.lang.reflect.Constructor;
 import java.util.Random;
 
 import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.KapuaIllegalNullArgumentException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -310,6 +311,100 @@ public class ArgumentValidatorTest extends Assert {
                 ArgumentValidator.match(listOfPermittedStringsEmailRegExp[i], argRegExprEmailRegExp, "EMAIL_test_case");
             } catch (Exception ex) {
                 fail("No exception expected for: " + listOfPermittedStringsEmailRegExp[i]);
+            }
+        }
+    }
+
+    @Test
+    public void testNotNull() throws Exception {
+        byte byteVariable = 0;
+        short shortVariable = 12;
+        int intVariable = 123456;
+        String stringVariable = "string_variable";
+        char charVariable = 'a';
+        long longVariable = 1234567890;
+        double doubleVariable = 1234567.1234567;
+        float floatVariable = (float) 123.123457;
+        Object[] listOfFalseStringsNullTest = new Object[] { null };
+        int sizeOfFalseStringsNullTest = listOfFalseStringsNullTest.length;
+        Object[] listOfPermittedStringNullTest = new Object[]{byteVariable, shortVariable, intVariable, charVariable,
+                stringVariable, longVariable, doubleVariable, floatVariable};
+        int sizeOfPermittedStrings = listOfPermittedStringNullTest.length;
+        for (int i = 0; i < sizeOfFalseStringsNullTest; i++) {
+            try {
+                ArgumentValidator.notNull(listOfFalseStringsNullTest[i], "NULL_test_case");
+                fail("Exception expeected for: " + listOfFalseStringsNullTest[i]);
+            } catch (KapuaIllegalNullArgumentException ex) {
+                // Expected
+            }
+        }
+        for (int i = 0; i < sizeOfPermittedStrings; i++) {
+            try {
+                ArgumentValidator.notNull(listOfPermittedStringNullTest[i], "NULL_test_case");
+            } catch (Exception ex) {
+                fail("No exception expected for: " + listOfPermittedStringNullTest[i]);
+            }
+        }
+    }
+
+    @Test
+    public void testIsNull() throws Exception {
+        byte byteVariable = 0;
+        short shortVariable = 12;
+        int intVariable = 123456;
+        String stringVariable = "string_variable";
+        char charVariable = 'a';
+        long longVariable = 1234567890;
+        double doubleVariable = 1234567.1234567;
+        float floatVariable = (float) 123.123457;
+        Object[] listOfFalseStringsNullTest = new Object[] {byteVariable, shortVariable, intVariable, charVariable,
+                stringVariable, longVariable, doubleVariable, floatVariable};
+        int sizeOfFalseStringsNullTest = listOfFalseStringsNullTest.length;
+        Object[] listOfPermittedStringNullTest = new Object[] {null};
+        int sizeOfPermittedStrings = listOfPermittedStringNullTest.length;
+        for (int i = 0; i < sizeOfFalseStringsNullTest; i++) {
+            try {
+                ArgumentValidator.isNull(listOfFalseStringsNullTest[i], "NULL_test_case");
+                fail("Exception expeected for: " + listOfFalseStringsNullTest[i]);
+            } catch (KapuaIllegalArgumentException ex) {
+                // Expected
+            }
+        }
+        for (int i = 0; i < sizeOfPermittedStrings; i++) {
+            try {
+                ArgumentValidator.isNull(listOfPermittedStringNullTest[i], "NULL_test_case");
+            } catch (Exception ex) {
+                fail("No exception expected for: " + listOfPermittedStringNullTest[i]);
+            }
+        }
+    }
+
+    @Test
+    public void testIsEmptyOrNull() throws Exception {
+        Random random = new Random();
+        String permittedSymbols = "abcdefghijklmnopqrstuvxwyzABCDEFGHIJKLMNOPQRSTUVXYZ1234567890-_@#!$%^&*+=?<>";
+        StringBuilder longStr = new StringBuilder();
+        for (int i = 0; i < 500; i++) {
+            longStr.append(permittedSymbols.charAt(random.nextInt(permittedSymbols.length())));
+        }
+        String longString = longStr.toString();
+        String[] listOfFalseStringsEmptyOrNull = new String[]{longString,"s","str","string","string"};
+        int sizeOfFalseStringsEmptyOrNull = listOfFalseStringsEmptyOrNull.length;
+        String[] listOfPermittedStringsEmptyOrNull = new String[] {null,""};
+        int sizeOfPermittedStringsEmptyOrNull = listOfPermittedStringsEmptyOrNull.length;
+        for (int i = 0; i < sizeOfFalseStringsEmptyOrNull; i++) {
+            try {
+                ArgumentValidator.isEmptyOrNull(listOfFalseStringsEmptyOrNull[i], "EMPTY_OR_NULL_test_case");
+                fail("Exception expeected for: " + listOfFalseStringsEmptyOrNull[i]);
+            } catch (KapuaIllegalArgumentException ex) {
+                // Expected
+            }
+        }
+        for (int i = 0; i < sizeOfPermittedStringsEmptyOrNull; i++) {
+            try {
+                ArgumentValidator.isEmptyOrNull(listOfPermittedStringsEmptyOrNull[i], "EMPTY_OR_NULL_test_case");
+            } catch (Exception ex) {
+                fail("No exception expected for: " + listOfPermittedStringsEmptyOrNull[i]);
             }
         }
     }
