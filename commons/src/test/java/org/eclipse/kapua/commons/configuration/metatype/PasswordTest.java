@@ -16,20 +16,19 @@ import org.junit.Test;
 
 public class PasswordTest extends Assert {
 
-    
     @Test
-    public void testGetPassword() throws Exception{
+    public void testGetPassword() throws Exception {
         Password password = new Password("pass");
         Password password2 = new Password(null);
         Assert.assertEquals("pass", password.getPassword());
         Assert.assertNull(password2.getPassword());
     }
-    
+
     @Test
     public void testToString() {
         Password password = new Password("pass");
         Password password2 = new Password(null);
-        Assert.assertEquals("pass",password.toString());
+        Assert.assertEquals("pass", password.toString());
         Assert.assertNull(password2.getPassword());
     }
 }

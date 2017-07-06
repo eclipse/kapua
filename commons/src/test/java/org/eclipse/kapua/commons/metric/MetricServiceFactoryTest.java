@@ -22,17 +22,18 @@ import org.junit.Test;
  * @since 1.0
  */
 public class MetricServiceFactoryTest extends Assert {
-    
+
     public static MetricsService instance2;
+
     @Test
-    public void testConstructor() throws Exception{
-    Constructor<MetricServiceFactory> metricFactory = MetricServiceFactory.class.getDeclaredConstructor();
-    metricFactory.setAccessible(true);
+    public void testConstructor() throws Exception {
+        Constructor<MetricServiceFactory> metricFactory = MetricServiceFactory.class.getDeclaredConstructor();
+        metricFactory.setAccessible(true);
         MetricServiceFactory metricFactoryTest = metricFactory.newInstance();
     }
-    
+
     @Test
-    public void testMetricService(){
+    public void testMetricService() {
         Assert.assertNotNull(MetricServiceFactory.getInstance());
     }
 }
