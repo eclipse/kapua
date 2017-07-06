@@ -11,12 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.shared.model;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-import org.eclipse.kapua.app.console.commons.client.util.DateUtils;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtUpdatableEntityModel;
-
 import java.io.Serializable;
 import java.util.Date;
+
+import org.eclipse.kapua.app.console.commons.shared.model.GwtUpdatableEntityModel;
+import org.eclipse.kapua.app.console.commons.client.util.DateUtils;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
 
@@ -303,6 +304,14 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
 
     public void setOsgiVersion(String osgiFrameworkVersion) {
         set("osgiVersion", osgiFrameworkVersion);
+    }
+
+    public String getClientIp() {
+        return (String) get("clientIp");
+    }
+
+    public void setClientIp(String clientIp) {
+        set("clientIp", clientIp);
     }
 
     public String getConnectionInterface() {

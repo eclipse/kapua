@@ -57,7 +57,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
     NumberField optlock;
 
     static final GwtCredentialServiceAsync GWT_CREDENTIAL_SERVICE = GWT.create(GwtCredentialService.class);
- 
+
     CredentialAddDialog(GwtSession currentSession, String selectedUserId, String selectedUserName) {
         super(currentSession);
         this.selectedUserId = selectedUserId;
@@ -89,7 +89,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
             }
         });
         credentialFormPanel.add(credentialType);
-        
+
         subject = new TextField<String>();
         subject.setValue(selectedUserName);
         subject.disable();

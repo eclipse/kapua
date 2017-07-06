@@ -21,7 +21,7 @@ public class UserViewDescriptor implements EntityViewDescriptor<GwtUser> {
 
     @Override
     public EntityView<GwtUser> getViewInstance(GwtSession currentSession) {
-        return null;
+        return new UserView(currentSession);
     }
 
     @Override

@@ -13,7 +13,6 @@ package org.eclipse.kapua.app.console.module.device.shared.model;
 
 import java.io.Serializable;
 
-import org.eclipse.kapua.app.console.shared.model.GwtDeviceQueryPredicates.GwtDeviceConnectionStatus;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtUpdatableEntityModel;
 
 import com.google.gwt.user.client.rpc.IsSerializable;

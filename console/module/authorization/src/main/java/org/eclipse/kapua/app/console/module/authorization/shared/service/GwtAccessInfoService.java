@@ -24,12 +24,12 @@ public interface GwtAccessInfoService extends RemoteService {
 
     GwtAccessInfo create(GwtXSRFToken gwtXsrfToken, GwtAccessInfoCreator gwtAccessInfoCreator)
             throws GwtKapuaException;
-    
+
     void delete(GwtXSRFToken gwtXsrfToken, String scopeShortId, String roleShortId)
             throws GwtKapuaException;
-    
+
     GwtAccessInfo findByUserIdOrCreate(String scopeShortId, String userShortId)
             throws GwtKapuaException;
-            
-//    PagingLoadResult<GwtUser> query(PagingLoadConfig pagingLoadConfig, GwtAccessRoleQuery query) throws GwtKapuaException;
+
+    //    PagingLoadResult<GwtUser> query(PagingLoadConfig pagingLoadConfig, GwtAccessRoleQuery query) throws GwtKapuaException;
 }

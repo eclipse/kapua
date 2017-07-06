@@ -14,7 +14,7 @@ package org.eclipse.kapua.app.console.client.device;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.kapua.app.console.client.util.SwappableListStore;
+import org.eclipse.kapua.app.console.commons.client.util.SwappableListStore;
 import org.eclipse.kapua.app.console.shared.model.GwtChannel;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 

@@ -17,10 +17,12 @@ import java.util.List;
 
 import org.eclipse.kapua.app.console.commons.server.KapuaConfigurableRemoteServiceServlet;
 import org.eclipse.kapua.app.console.commons.server.util.KapuaExceptionHandler;
+import org.eclipse.kapua.app.console.module.device.shared.util.KapuaGwtDeviceModelConverter;
 import org.eclipse.kapua.app.console.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.setting.ConsoleSettingKeys;
 import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
-import org.eclipse.kapua.app.console.shared.model.GwtDevice;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice.GwtDeviceCredentialsTight;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceCreator;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceEvent;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceQueryPredicates;
@@ -30,7 +32,6 @@ import org.eclipse.kapua.app.console.commons.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnection.GwtConnectionUserCouplingMode;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceService;
 import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaModelConverter;
-import org.eclipse.kapua.app.console.commons.shared.util.KapuaGwtModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
@@ -86,7 +87,7 @@ public class GwtDeviceServiceImpl extends KapuaConfigurableRemoteServiceServlet<
             DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
             Device device = deviceRegistryService.findByClientId(scopeId, clientId);
 
-            gwtDevice = KapuaGwtModelConverter.convertKapuaId(device);
+            gwtDevice = KapuaGwtDeviceModelConverter.convertDevice(device);
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
@@ -294,7 +295,7 @@ public class GwtDeviceServiceImpl extends KapuaConfigurableRemoteServiceServlet<
             KapuaListResult<Device> devices = deviceRegistryService.query(deviceQuery);
             totalResult = (int) deviceRegistryService.count(deviceQuery);
             for (Device d : devices.getItems()) {
-                GwtDevice gwtDevice = KapuaGwtModelConverter.convertKapuaId(d);
+                GwtDevice gwtDevice = KapuaGwtDeviceModelConverter.convertDevice(d);
 
                 // Connection info
                 gwtDevice.setGwtDeviceConnectionStatus(GwtDeviceConnectionStatus.DISCONNECTED.name());
@@ -359,7 +360,7 @@ public class GwtDeviceServiceImpl extends KapuaConfigurableRemoteServiceServlet<
 
             Device device = deviceRegistryService.create(deviceCreator);
 
-            gwtDevice = KapuaGwtModelConverter.convertKapuaId(device);
+            gwtDevice = KapuaGwtDeviceModelConverter.convertDevice(device);
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
@@ -410,7 +411,7 @@ public class GwtDeviceServiceImpl extends KapuaConfigurableRemoteServiceServlet<
             device = deviceRegistryService.update(device);
 
             // Convert to gwt object
-            gwtDeviceUpdated = KapuaGwtModelConverter.convertKapuaId(device);
+            gwtDeviceUpdated = KapuaGwtDeviceModelConverter.convertDevice(device);
 
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
@@ -470,7 +471,7 @@ public class GwtDeviceServiceImpl extends KapuaConfigurableRemoteServiceServlet<
 
             // prepare results
             for (DeviceEvent deviceEvent : deviceEvents.getItems()) {
-                gwtDeviceEvents.add(KapuaGwtModelConverter.convertKapuaId(deviceEvent));
+                gwtDeviceEvents.add(KapuaGwtDeviceModelConverter.convertDeviceEvent(deviceEvent));
             }
             gwtResults = new BasePagingLoadResult<GwtDeviceEvent>(gwtDeviceEvents);
             gwtResults.setOffset(loadConfig.getOffset());

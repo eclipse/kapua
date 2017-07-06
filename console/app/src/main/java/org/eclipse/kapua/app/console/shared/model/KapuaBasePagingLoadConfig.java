@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.util.Stack;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
+import org.eclipse.kapua.app.console.commons.shared.model.KapuaBasePagingCursor;
 
 public class KapuaBasePagingLoadConfig extends BasePagingLoadConfig implements KapuaPagingLoadConfig, Serializable {
 

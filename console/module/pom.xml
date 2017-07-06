@@ -28,6 +28,7 @@
         <module>user</module>
         <module>authentication</module>
         <module>authorization</module>
+        <module>data</module>
     </modules>
 
 </project>

@@ -22,9 +22,9 @@ import org.eclipse.kapua.app.console.commons.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionQuery;
 import org.eclipse.kapua.app.console.module.device.shared.util.GwtKapuaDeviceModelConverter;
+import org.eclipse.kapua.app.console.module.device.shared.util.KapuaGwtDeviceModelConverter;
 import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnection.GwtConnectionUserCouplingMode;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceConnectionService;
-import org.eclipse.kapua.app.console.commons.shared.util.KapuaGwtModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -64,7 +64,7 @@ public class GwtDeviceConnectionServiceImpl extends KapuaRemoteServiceServlet im
             }
 
             for (DeviceConnection dc : deviceConnections.getItems()) {
-                gwtDeviceConnections.add(KapuaGwtModelConverter.convertKapuaId(dc));
+                gwtDeviceConnections.add(KapuaGwtDeviceModelConverter.convertDeviceConnection(dc));
             }
 
         } catch (Throwable t) {

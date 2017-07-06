@@ -19,9 +19,9 @@ import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.commons.client.util.Constants;
 import org.eclipse.kapua.app.console.client.util.FormUtils;
 import org.eclipse.kapua.app.console.client.util.UserAgentUtils;
-import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAsset;
-import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAssetChannel;
-import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAssetChannel.GwtDeviceAssetChannelMode;
+import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAsset;
+import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssetChannel;
+import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssetChannel.GwtDeviceAssetChannelMode;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;

@@ -31,12 +31,12 @@ import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCre
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupServiceAsync;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRoleService;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRoleServiceAsync;
+import org.eclipse.kapua.app.console.module.data.shared.service.GwtDataServiceAsync;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserServiceAsync;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountServiceAsync;
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialService;
-import org.eclipse.kapua.app.console.shared.service.GwtDataService;
-import org.eclipse.kapua.app.console.shared.service.GwtDataServiceAsync;
+import org.eclipse.kapua.app.console.module.data.shared.service.GwtDataService;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceService;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceServiceAsync;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupService;

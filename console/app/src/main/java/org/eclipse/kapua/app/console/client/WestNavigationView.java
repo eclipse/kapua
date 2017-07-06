@@ -20,7 +20,7 @@ import org.eclipse.kapua.app.console.client.about.AboutView;
 import org.eclipse.kapua.app.console.client.account.AccountDetailsView;
 import org.eclipse.kapua.app.console.client.account.AccountView;
 import org.eclipse.kapua.app.console.client.connection.ConnectionView;
-import org.eclipse.kapua.app.console.client.data.DataView;
+import org.eclipse.kapua.app.console.module.data.client.DataView;
 import org.eclipse.kapua.app.console.client.device.DevicesView;
 import org.eclipse.kapua.app.console.module.authorization.client.group.GroupView;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
@@ -29,7 +29,6 @@ import org.eclipse.kapua.app.console.commons.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.client.role.RoleView;
 import org.eclipse.kapua.app.console.commons.client.ui.color.Color;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.ContentPanel;
-import org.eclipse.kapua.app.console.client.tag.TagView;
 import org.eclipse.kapua.app.console.client.welcome.WelcomeView;
 import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractView;
 import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
@@ -68,6 +67,7 @@ import org.eclipse.kapua.app.console.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountServiceAsync;
 import org.eclipse.kapua.app.console.shared.service.GwtConsoleService;
 import org.eclipse.kapua.app.console.shared.service.GwtConsoleServiceAsync;
+import org.eclipse.kapua.app.console.client.tag.TagView;
 
 public class WestNavigationView extends LayoutContainer {
 
@@ -212,7 +212,7 @@ public class WestNavigationView extends LayoutContainer {
                             centerPanel.add(panel);
                             centerPanel.layout();
                             dashboardSelected = false;
-                        } else  if ("about".equals(selectedId)) {
+                        } else if ("about".equals(selectedId)) {
                             AboutView aboutView = new AboutView();
 
                             panel.setBodyBorder(true);
@@ -245,6 +245,16 @@ public class WestNavigationView extends LayoutContainer {
                             DataView dataView = new DataView(currentSession);
                             panel.setHeaderVisible(false);
                             panel.add(dataView);
+
+                            centerPanel.add(panel);
+                            centerPanel.layout();
+                            dashboardSelected = false;
+                        } else if ("tags".equals(selectedId)) {
+                            panel.setIcon(new KapuaIcon(IconSet.TAGS));
+                            panel.setHeading(MSGS.tags());
+
+                            TagView groupView = new TagView(currentSession);
+                            panel.add(groupView);
 
                             centerPanel.add(panel);
                             centerPanel.layout();
@@ -299,7 +309,7 @@ public class WestNavigationView extends LayoutContainer {
                                 if (viewDescriptor.getId().equals(selectedId)) {
                                     panel.setIcon(new KapuaIcon(viewDescriptor.getIcon()));
                                     panel.setHeading(viewDescriptor.getName());
-                                    panel.add((AbstractView)viewDescriptor.getViewInstance(currentSession));
+                                    panel.add((AbstractView) viewDescriptor.getViewInstance(currentSession));
 
                                     centerPanel.add(panel);
                                     centerPanel.layout();
@@ -365,7 +375,7 @@ public class WestNavigationView extends LayoutContainer {
                 layout(true);
             }
         });
-        
+
     }
 
     public void addMenuItems(List<ViewDescriptor> additionalViewDescriptors) {

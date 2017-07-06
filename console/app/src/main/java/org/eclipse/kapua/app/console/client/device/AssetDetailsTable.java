@@ -16,7 +16,7 @@ import java.util.List;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.commons.client.ui.button.ExportButton;
-import org.eclipse.kapua.app.console.client.util.SwappableListStore;
+import org.eclipse.kapua.app.console.commons.client.util.SwappableListStore;
 import org.eclipse.kapua.app.console.shared.model.GwtChannel;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 

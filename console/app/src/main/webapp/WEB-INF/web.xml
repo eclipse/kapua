@@ -253,7 +253,7 @@
 
    	<servlet>
    	    <servlet-name>dataServlet</servlet-name>
-   	    <servlet-class>org.eclipse.kapua.app.console.server.GwtDataServiceImpl</servlet-class>
+   	    <servlet-class>org.eclipse.kapua.app.console.module.data.server.GwtDataServiceImpl</servlet-class>
    	</servlet>
    	<servlet-mapping>
    	    <servlet-name>dataServlet</servlet-name>

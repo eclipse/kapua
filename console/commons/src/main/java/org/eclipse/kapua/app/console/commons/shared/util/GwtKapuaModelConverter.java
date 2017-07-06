@@ -12,21 +12,14 @@
 package org.eclipse.kapua.app.console.commons.shared.util;
 
 import com.extjs.gxt.ui.client.data.BaseModel;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtConfigParameter;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtUpdatableEntityModel;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
-import org.eclipse.kapua.service.account.AccountFactory;
-import org.eclipse.kapua.service.account.AccountQuery;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,9 +29,9 @@ import java.util.Map;
  */
 public class GwtKapuaModelConverter {
 
-    private GwtKapuaModelConverter (){
+    private GwtKapuaModelConverter() {
     }
-    
+
 //    /**
 //     * Converts a {@link GwtRoleQuery} into a {@link Role} object for backend usage
 //     *
@@ -157,12 +150,6 @@ public class GwtKapuaModelConverter {
 //        return credentialQuery;
 //    }
 //
-//    public static ChannelInfoQuery convertChannelInfoQuery(GwtDataChannelInfoQuery query, PagingLoadConfig pagingLoadConfig) {
-//        ChannelInfoQueryImpl channelInfoQuery = new ChannelInfoQueryImpl(convertKapuaId(query.getScopeId()));
-//        channelInfoQuery.setOffset(pagingLoadConfig.getOffset());
-//        channelInfoQuery.setLimit(pagingLoadConfig.getLimit());
-//        return channelInfoQuery;
-//    }
 //
 //    /**
 //     * Converts a {@link GwtRole} into a {@link Role} object for backend usage

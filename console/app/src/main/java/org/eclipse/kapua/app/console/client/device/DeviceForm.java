@@ -22,7 +22,7 @@ import org.eclipse.kapua.app.console.commons.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.commons.client.util.validator.TextFieldValidator;
 import org.eclipse.kapua.app.console.commons.client.util.validator.TextFieldValidator.FieldType;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupServiceAsync;
-import org.eclipse.kapua.app.console.shared.model.GwtDevice;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceCreator;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceQueryPredicates;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroup;

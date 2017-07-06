@@ -50,12 +50,12 @@ public class UserAddDialog extends EntityAddEditDialog {
     protected SimpleComboBox<GwtUser.GwtUserStatus> userStatus;
     protected DateField expirationDate;
     protected NumberField optlock;
-    
+
     private GwtUserServiceAsync gwtUserService = GWT.create(GwtUserService.class);
-    
+
     public UserAddDialog(GwtSession currentSession) {
         super(currentSession);
-        
+
         DialogUtils.resizeDialog(this, 400, 500);
     }
 
@@ -68,7 +68,7 @@ public class UserAddDialog extends EntityAddEditDialog {
         userFormPanel.setBodyBorder(false);
         userFormPanel.setHeaderVisible(false);
         userFormPanel.setPadding(0);
-        
+
         //
         // User info tab
         //
@@ -170,7 +170,7 @@ public class UserAddDialog extends EntityAddEditDialog {
 
         userFormPanel.add(infoFieldSet);
         userFormPanel.add(statusFieldSet);
-        
+
         bodyPanel.add(userFormPanel);
     }
 
@@ -179,7 +179,7 @@ public class UserAddDialog extends EntityAddEditDialog {
         GwtUserCreator gwtUserCreator = new GwtUserCreator();
 
         gwtUserCreator.setScopeId(currentSession.getSelectedAccountId());
-        
+
         gwtUserCreator.setUsername(username.getValue());
         gwtUserCreator.setPassword(password.getValue());
         gwtUserCreator.setDisplayName(displayName.getValue());
@@ -200,14 +200,14 @@ public class UserAddDialog extends EntityAddEditDialog {
             @Override
             public void onFailure(Throwable cause) {
                 unmask();
-                
+
                 submitButton.enable();
                 cancelButton.enable();
                 status.hide();
-                
+
                 exitStatus = false;
                 exitMessage = MSGS.dialogAddError(cause.getLocalizedMessage());
-                
+
                 hide();
             }
         });

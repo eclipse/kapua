@@ -62,7 +62,19 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-user-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-user-internal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-tag-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-tag-internal</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
@@ -207,6 +219,17 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-authorization</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+            <classifier>sources</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-console-module-data</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-console-module-data</artifactId>
             <version>0.2.0-SNAPSHOT</version>
             <classifier>sources</classifier>
         </dependency>
@@ -377,7 +400,7 @@
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleAboutMessages</i18nMessagesBundle>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleWelcomeMessages</i18nMessagesBundle>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleAccountMessages</i18nMessagesBundle>
-                        <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleDataMessages</i18nMessagesBundle>
+                        <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleTagMessages</i18nMessagesBundle>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleConnectionMessages</i18nMessagesBundle>
                     </i18nMessagesBundles>
 

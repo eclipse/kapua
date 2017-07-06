@@ -16,7 +16,7 @@ import java.util.List;
 import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.shared.model.GwtDeploymentPackage;
-import org.eclipse.kapua.app.console.shared.model.GwtDevice;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceCommandInput;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceCommandOutput;
 import org.eclipse.kapua.app.console.shared.model.GwtSnapshot;

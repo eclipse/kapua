@@ -35,9 +35,9 @@ public class UserView extends AbstractEntityView<GwtUser> {
     private UserTabItemPermission permissionTab;
     private UserTabItemCredentials credentialsTab;
     private UserTabDescription descriptionTab;
-    
+
     private static final ConsoleUserMessages MSGS = GWT.create(ConsoleUserMessages.class);
-    
+
     public UserView(GwtSession gwtSession) {
         super(gwtSession);
     }
@@ -55,15 +55,15 @@ public class UserView extends AbstractEntityView<GwtUser> {
         }
         if (accessRoleTab == null) {
             accessRoleTab = new UserTabItemAccessRole(currentSession);
-//            tabs.add(accessRoleTab);
+            //            tabs.add(accessRoleTab);
         }
         if (permissionTab == null) {
             permissionTab = new UserTabItemPermission(currentSession);
-//            tabs.add(permissionTab);
+            //            tabs.add(permissionTab);
         }
-        if (credentialsTab == null){
+        if (credentialsTab == null) {
             credentialsTab = new UserTabItemCredentials(currentSession);
-//            tabs.add(credentialsTab);
+            //            tabs.add(credentialsTab);
         }
         return tabs;
     }

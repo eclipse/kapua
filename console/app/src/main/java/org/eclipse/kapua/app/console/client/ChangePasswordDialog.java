@@ -29,29 +29,29 @@ import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCre
 public class ChangePasswordDialog extends SimpleDialog {
 
     GwtCredentialServiceAsync credentialService = GWT.create(GwtCredentialService.class);
-    
+
     private TextField<String> oldPassword;
     private TextField<String> newPassword;
     private TextField<String> confirmPassword;
-    
+
     private GwtSession currentSession;
-    
+
     public ChangePasswordDialog(GwtSession currentSession) {
         this.currentSession = currentSession;
     }
-    
+
     @Override
     public void createBody() {
         FormPanel credentialFormPanel = new FormPanel(FORM_LABEL_WIDTH);
         DialogUtils.resizeDialog(this, 400, 200);
-        
+
         oldPassword = new TextField<String>();
         oldPassword.setAllowBlank(false);
         oldPassword.setName("oldPassword");
         oldPassword.setFieldLabel("* " + MSGS.oldPassword());
         oldPassword.setPassword(true);
         credentialFormPanel.add(oldPassword);
-        
+
         newPassword = new TextField<String>();
         newPassword.setAllowBlank(false);
         newPassword.setName("newPassword");
@@ -67,12 +67,12 @@ public class ChangePasswordDialog extends SimpleDialog {
         confirmPassword.setValidator(new ConfirmPasswordFieldValidator(confirmPassword, newPassword));
         confirmPassword.setPassword(true);
         credentialFormPanel.add(confirmPassword);
-        
+
         bodyPanel.add(credentialFormPanel);
     }
 
     @Override
-    protected void addListeners() {        
+    protected void addListeners() {
     }
 
     @Override
@@ -86,14 +86,14 @@ public class ChangePasswordDialog extends SimpleDialog {
                 submitButton.enable();
                 cancelButton.enable();
                 status.hide();
-                
+
                 ConsoleInfo.display("Error", MSGS.changePasswordError(caught.getLocalizedMessage()));
             }
 
             @Override
             public void onSuccess(Void result) {
                 hide();
-                
+
                 ConsoleInfo.display("Info", MSGS.changePasswordConfirmation());
             }
         });

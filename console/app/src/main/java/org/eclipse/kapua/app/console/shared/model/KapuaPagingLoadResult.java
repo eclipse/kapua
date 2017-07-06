@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.shared.model;
 import java.util.Stack;
 
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import org.eclipse.kapua.app.console.commons.shared.model.KapuaBasePagingCursor;
 
 public interface KapuaPagingLoadResult<Data> extends PagingLoadResult<Data> {
 

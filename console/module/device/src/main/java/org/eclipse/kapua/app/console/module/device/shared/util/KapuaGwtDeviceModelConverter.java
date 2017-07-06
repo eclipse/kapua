@@ -17,10 +17,21 @@ import org.eclipse.kapua.app.console.commons.shared.util.KapuaGwtModelConverter;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceEvent;
+import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAsset;
+import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssetChannel;
+import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssets;
+import org.eclipse.kapua.model.type.ObjectTypeConverter;
+import org.eclipse.kapua.model.type.ObjectValueConverter;
+import org.eclipse.kapua.service.device.management.asset.DeviceAsset;
+import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
+import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.eclipse.kapua.app.console.commons.shared.util.KapuaGwtModelConverter.convertEntity;
 
@@ -93,7 +104,7 @@ public class KapuaGwtDeviceModelConverter {
         return gwtDeviceEvent;
     }
 
-    public static GwtDeviceConnection convert(DeviceConnection deviceConnection) {
+    public static GwtDeviceConnection convertDeviceConnection(DeviceConnection deviceConnection) {
         GwtDeviceConnection gwtDeviceConnection = new GwtDeviceConnection();
 
         //
@@ -103,11 +114,11 @@ public class KapuaGwtDeviceModelConverter {
         //
         // Convert other attributes
         gwtDeviceConnection.setClientId(deviceConnection.getClientId());
-        gwtDeviceConnection.setUserId(convert(deviceConnection.getUserId()));
+        gwtDeviceConnection.setUserId(KapuaGwtModelConverter.convertKapuaId(deviceConnection.getUserId()));
         gwtDeviceConnection.setClientIp(deviceConnection.getClientIp());
         gwtDeviceConnection.setServerIp(deviceConnection.getServerIp());
         gwtDeviceConnection.setProtocol(deviceConnection.getProtocol());
-        gwtDeviceConnection.setConnectionStatus(convert(deviceConnection.getStatus()));
+        gwtDeviceConnection.setConnectionStatus(convertDeviceConnectionStatus(deviceConnection.getStatus()));
         gwtDeviceConnection.setOptlock(deviceConnection.getOptlock());
 
         //
@@ -115,7 +126,39 @@ public class KapuaGwtDeviceModelConverter {
         return gwtDeviceConnection;
     }
 
-    private static String convert(DeviceConnectionStatus status) {
+    private static String convertDeviceConnectionStatus(DeviceConnectionStatus status) {
         return status.toString();
+    }
+
+    public static GwtDeviceAssets convertDeviceAssets(DeviceAssets assets) {
+        GwtDeviceAssets gwtAssets = new GwtDeviceAssets();
+        List<GwtDeviceAsset> gwtAssetsList = new ArrayList<GwtDeviceAsset>();
+        for (DeviceAsset asset : assets.getAssets()) {
+            gwtAssetsList.add(convertDeviceAsset(asset));
+        }
+        gwtAssets.setAssets(gwtAssetsList);
+        return gwtAssets;
+    }
+
+    public static GwtDeviceAsset convertDeviceAsset(DeviceAsset asset) {
+        GwtDeviceAsset gwtAsset = new GwtDeviceAsset();
+        List<GwtDeviceAssetChannel> gwtChannelsList = new ArrayList<GwtDeviceAssetChannel>();
+        gwtAsset.setName(asset.getName());
+        for (DeviceAssetChannel channel : asset.getChannels()) {
+            gwtChannelsList.add(convertDeviceAssetChannel(channel));
+        }
+        gwtAsset.setChannels(gwtChannelsList);
+        return gwtAsset;
+    }
+
+    public static GwtDeviceAssetChannel convertDeviceAssetChannel(DeviceAssetChannel channel) {
+        GwtDeviceAssetChannel gwtChannel = new GwtDeviceAssetChannel();
+        gwtChannel.setName(channel.getName());
+        gwtChannel.setError(channel.getError());
+        gwtChannel.setTimestamp(channel.getTimestamp());
+        gwtChannel.setMode(channel.getMode().toString());
+        gwtChannel.setType(ObjectTypeConverter.toString(channel.getType()));
+        gwtChannel.setValue(ObjectValueConverter.toString(channel.getValue()));
+        return gwtChannel;
     }
 }

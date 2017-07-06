@@ -47,24 +47,24 @@ public class AccountGrid extends EntityGrid<GwtAccount> {
         super(entityView, currentSession);
         filterQuery = new GwtAccountQuery();
         filterQuery.setScopeId(currentSession.getSelectedAccountId());
-        
+
     }
-    
+
     @Override
     public void refresh(GwtQuery query) {
         super.refresh(query);
         GwtAccount selectedAccount = getSelectionModel().getSelectedItem();
         updateToolBarButtons(selectedAccount);
     }
-    
+
     @Override
     protected EntityCRUDToolbar<GwtAccount> getToolbar() {
-        if(toolbar == null){
+        if (toolbar == null) {
             toolbar = new AccountGridToolbar(currentSession);
         }
         return toolbar;
     }
-    
+
     @Override
     protected RpcProxy<PagingLoadResult<GwtAccount>> getDataProxy() {
         return new RpcProxy<PagingLoadResult<GwtAccount>>() {
@@ -75,13 +75,13 @@ public class AccountGrid extends EntityGrid<GwtAccount> {
             }
         };
     }
-    
+
     @Override
     protected void selectionChangedEvent(GwtAccount selectedItem) {
         super.selectionChangedEvent(selectedItem);
         updateToolBarButtons(selectedItem);
     }
-    
+
     @Override
     protected List<ColumnConfig> getColumns() {
         ColumnConfig column = null;
@@ -118,13 +118,13 @@ public class AccountGrid extends EntityGrid<GwtAccount> {
         this.filterQuery = (GwtAccountQuery) filterQuery;
     }
 
-    private void updateToolBarButtons(GwtAccount selectedAccount){
-        if(selectedAccount == null){
+    private void updateToolBarButtons(GwtAccount selectedAccount) {
+        if (selectedAccount == null) {
             toolbar.getEditEntityButton().setEnabled(false);
             toolbar.getDeleteEntityButton().setEnabled(false);
-        }else{
+        } else {
             toolbar.getEditEntityButton().setEnabled(true);
             toolbar.getDeleteEntityButton().setEnabled(true);
-        }          
+        }
     }
 }

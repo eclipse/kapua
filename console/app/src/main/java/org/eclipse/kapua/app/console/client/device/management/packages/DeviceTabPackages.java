@@ -19,7 +19,7 @@ import org.eclipse.kapua.app.console.commons.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.commons.client.ui.dialog.InfoDialog;
 import org.eclipse.kapua.app.console.commons.client.ui.dialog.InfoDialog.InfoDialogType;
 import org.eclipse.kapua.app.console.shared.model.GwtDeploymentPackage;
-import org.eclipse.kapua.app.console.shared.model.GwtDevice;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 
 import com.extjs.gxt.ui.client.Style.Scroll;

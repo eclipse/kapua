@@ -17,14 +17,9 @@ import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtConfigParameter;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtEntityModel;
-import org.eclipse.kapua.app.console.client.tag.GwtTagQuery;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtUpdatableEntityModel;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountQuery;
-import org.eclipse.kapua.app.console.shared.model.data.GwtDataChannelInfoQuery;
-import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAsset;
-import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAssetChannel;
-import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAssetChannel.GwtDeviceAssetChannelMode;
-import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAssets;
+import org.eclipse.kapua.app.console.shared.model.GwtTagQuery;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
@@ -33,25 +28,13 @@ import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
-import org.eclipse.kapua.model.type.ObjectTypeConverter;
-import org.eclipse.kapua.model.type.ObjectValueConverter;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountQuery;
-import org.eclipse.kapua.service.authorization.group.shiro.GroupPredicates;
-import org.eclipse.kapua.service.datastore.internal.model.query.ChannelInfoQueryImpl;
-import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
-import org.eclipse.kapua.service.device.management.asset.DeviceAsset;
-import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
-import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannelMode;
-import org.eclipse.kapua.service.device.management.asset.DeviceAssetFactory;
-import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 import org.eclipse.kapua.service.tag.TagFactory;
 import org.eclipse.kapua.service.tag.TagQuery;
 import org.eclipse.kapua.service.tag.internal.TagPredicates;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -59,22 +42,20 @@ import java.util.Map;
  */
 public class GwtKapuaModelConverter {
 
-    private GwtKapuaModelConverter (){
+    private GwtKapuaModelConverter() {
     }
-    
+
     /**
      * Converts a {@link GwtTagQuery} into a {@link TagQuery} object for backend usage
      *
-     * @param loadConfig
-     *            the load configuration
-     * @param gwtTagQuery
-     *            the {@link GwtTagQuery} to convert
+     * @param loadConfig  the load configuration
+     * @param gwtTagQuery the {@link GwtTagQuery} to convertKapuaId
      * @return the converted {@link TagQuery}
      */
     public static TagQuery convertTagQuery(PagingLoadConfig loadConfig, GwtTagQuery gwtTagQuery) {
         KapuaLocator locator = KapuaLocator.getInstance();
         TagFactory tagFactory = locator.getFactory(TagFactory.class);
-        TagQuery tagQuery = tagFactory.newQuery(convert(gwtTagQuery.getScopeId()));
+        TagQuery tagQuery = tagFactory.newQuery(GwtKapuaModelConverter.convertKapuaId(gwtTagQuery.getScopeId()));
         if (gwtTagQuery.getName() != null && !gwtTagQuery.getName().isEmpty()) {
             tagQuery.setPredicate(new AttributePredicate<String>(TagPredicates.NAME, gwtTagQuery.getName(), Operator.LIKE));
         }
@@ -84,10 +65,10 @@ public class GwtKapuaModelConverter {
         return tagQuery;
     }
 
-	public static AccountQuery convertAccountQuery(PagingLoadConfig loadConfig, GwtAccountQuery gwtAccountQuery) {
+    public static AccountQuery convertAccountQuery(PagingLoadConfig loadConfig, GwtAccountQuery gwtAccountQuery) {
         KapuaLocator locator = KapuaLocator.getInstance();
         AccountFactory factory = locator.getFactory(AccountFactory.class);
-        AccountQuery query = factory.newQuery(convert(gwtAccountQuery.getScopeId()));
+        AccountQuery query = factory.newQuery(convertKapuaId(gwtAccountQuery.getScopeId()));
         AndPredicate predicate = new AndPredicate();
 
         if (gwtAccountQuery.getName() != null && !gwtAccountQuery.getName().trim().isEmpty()) {
@@ -107,65 +88,11 @@ public class GwtKapuaModelConverter {
         return query;
     }
 
-    public static ChannelInfoQuery convertChannelInfoQuery(GwtDataChannelInfoQuery query, PagingLoadConfig pagingLoadConfig) {
-        ChannelInfoQueryImpl channelInfoQuery = new ChannelInfoQueryImpl(convert(query.getScopeId()));
-        channelInfoQuery.setOffset(pagingLoadConfig.getOffset());
-        channelInfoQuery.setLimit(pagingLoadConfig.getLimit());
-        return channelInfoQuery;
-    }
-
-    public static DeviceAssets convert(GwtDeviceAssets deviceAssets) {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        DeviceAssetFactory assetFactory = locator.getFactory(DeviceAssetFactory.class);
-        DeviceAssets assets = assetFactory.newAssetListResult();
-        List<DeviceAsset> assetList = new ArrayList<DeviceAsset>();
-        for (GwtDeviceAsset gwtDeviceAsset : deviceAssets.getAssets()) {
-            assetList.add(convert(gwtDeviceAsset));
-        }
-        assets.setAssets(assetList);
-        return assets;
-    }
-
-    public static DeviceAsset convert(GwtDeviceAsset gwtDeviceAsset) {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        DeviceAssetFactory assetFactory = locator.getFactory(DeviceAssetFactory.class);
-        DeviceAsset deviceAsset = assetFactory.newDeviceAsset();
-        deviceAsset.setName(gwtDeviceAsset.getName());
-        for (GwtDeviceAssetChannel gwtDeviceAssetChannel : gwtDeviceAsset.getChannels()) {
-            deviceAsset.getChannels().add(convert(gwtDeviceAssetChannel));
-        }
-        return deviceAsset;
-    }
-
-    public static DeviceAssetChannel convert(GwtDeviceAssetChannel gwtDeviceAssetChannel) {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        DeviceAssetFactory assetFactory = locator.getFactory(DeviceAssetFactory.class);
-        DeviceAssetChannel channel = assetFactory.newDeviceAssetChannel();
-        channel.setName(gwtDeviceAssetChannel.getName());
-        try {
-            channel.setType(ObjectTypeConverter.fromString(gwtDeviceAssetChannel.getType()));
-            channel.setValue(ObjectValueConverter.fromString(gwtDeviceAssetChannel.getValue(), channel.getType()));
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        channel.setTimestamp(gwtDeviceAssetChannel.getTimestamp());
-        channel.setMode(convert(gwtDeviceAssetChannel.getModeEnum()));
-        channel.setError(gwtDeviceAssetChannel.getError());
-        return channel;
-
-    }
-
-    public static DeviceAssetChannelMode convert(GwtDeviceAssetChannelMode gwtMode) {
-        return DeviceAssetChannelMode.valueOf(gwtMode.toString());
-    }
-
     /**
      * Utility method to convertKapuaId commons properties of {@link GwtUpdatableEntityModel} object to the matching {@link KapuaUpdatableEntity} object
      *
-     * @param gwtEntity
-     *            The {@link GwtUpdatableEntityModel} from which copy values
-     * @param kapuaEntity
-     *            The {@link KapuaUpdatableEntity} into which to copy values
+     * @param gwtEntity   The {@link GwtUpdatableEntityModel} from which copy values
+     * @param kapuaEntity The {@link KapuaUpdatableEntity} into which to copy values
      * @since 1.0.0
      */
     private static void convertEntity(GwtUpdatableEntityModel gwtEntity, KapuaUpdatableEntity kapuaEntity) {
@@ -181,10 +108,8 @@ public class GwtKapuaModelConverter {
     /**
      * Utility method to convertKapuaId commons properties of {@link GwtEntityModel} object to the matching {@link KapuaEntity} object
      *
-     * @param gwtEntity
-     *            The {@link GwtEntityModel} from which copy values
-     * @param kapuaEntity
-     *            The {@link KapuaEntity} into which to copy values
+     * @param gwtEntity   The {@link GwtEntityModel} from which copy values
+     * @param kapuaEntity The {@link KapuaEntity} into which to copy values
      * @since 1.0.0
      */
     private static void convertEntity(GwtEntityModel gwtEntity, KapuaEntity kapuaEntity) {
@@ -192,7 +117,7 @@ public class GwtKapuaModelConverter {
             return;
         }
 
-        kapuaEntity.setId(convert(gwtEntity.getId()));
+        kapuaEntity.setId(convertKapuaId(gwtEntity.getId()));
     }
 
     /**
@@ -201,12 +126,11 @@ public class GwtKapuaModelConverter {
      * Example: AQ =&gt; 1
      * </p>
      *
-     * @param shortKapuaId
-     *            the {@link KapuaId} in the short form
+     * @param shortKapuaId the {@link KapuaId} in the short form
      * @return The converted {@link KapuaId}
      * @since 1.0.0
      */
-    public static KapuaId convert(String shortKapuaId) {
+    public static KapuaId convertKapuaId(String shortKapuaId) {
         if (shortKapuaId == null) {
             return null;
         }

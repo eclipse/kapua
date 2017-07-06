@@ -21,7 +21,7 @@ import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 
-public class GroupView  extends AbstractEntityView<GwtGroup> {
+public class GroupView extends AbstractEntityView<GwtGroup> {
 
     private GroupGrid groupGrid;
 

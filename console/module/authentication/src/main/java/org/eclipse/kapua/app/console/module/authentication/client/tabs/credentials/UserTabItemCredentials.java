@@ -24,30 +24,30 @@ import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCrede
 public class UserTabItemCredentials extends KapuaTabItem<GwtCredential> {
 
     private static final ConsoleCredentialMessages MSGS = GWT.create(ConsoleCredentialMessages.class);
-    
+
     private CredentialGrid credentialsGrid;
 
     public UserTabItemCredentials(GwtSession currentSession) {
         super(MSGS.gridTabCredentialsLabel(), new KapuaIcon(IconSet.KEY));
         credentialsGrid = new CredentialGrid(null, currentSession);
     }
-    
+
     @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
         add(credentialsGrid);
     }
-    
-    public CredentialGrid getCredentialsGrid(){
+
+    public CredentialGrid getCredentialsGrid() {
         return credentialsGrid;
     }
-    
+
     @Override
     public void setEntity(GwtCredential credential) {
         super.setEntity(credential);
         credentialsGrid.setSelectedUserId(credential.getUserId());
     }
-    
+
     @Override
     protected void doRefresh() {
         credentialsGrid.refresh();

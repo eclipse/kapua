@@ -26,7 +26,6 @@ import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAcce
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessInfoServiceAsync;
 import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
 
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -55,7 +54,7 @@ public class RoleSubjectGrid extends EntityGrid<GwtUser> {
             protected void load(Object loadConfig,
                     AsyncCallback<PagingLoadResult<GwtUser>> callback) {
                 if (selectedRole != null) {
-//                    SERVICE.query((PagingLoadConfig) loadConfig, query, callback);
+                    //                    SERVICE.query((PagingLoadConfig) loadConfig, query, callback);
                 }
             }
 

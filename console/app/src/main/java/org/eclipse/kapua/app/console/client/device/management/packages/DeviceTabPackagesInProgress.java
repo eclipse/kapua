@@ -20,7 +20,7 @@ import org.eclipse.kapua.app.console.commons.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.commons.client.ui.tab.TabItem;
 import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.commons.client.util.KapuaLoadListener;
-import org.eclipse.kapua.app.console.shared.model.GwtDevice;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.shared.model.device.management.packages.GwtPackageDownloadOperation;
 import org.eclipse.kapua.app.console.shared.model.device.management.packages.GwtPackageOperation;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceManagementService;

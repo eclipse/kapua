@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Stack;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import org.eclipse.kapua.app.console.commons.shared.model.KapuaBasePagingCursor;
 
 public class KapuaBasePagingLoadResult<Data> extends BasePagingLoadResult<Data> implements KapuaPagingLoadResult<Data>, Serializable {
 

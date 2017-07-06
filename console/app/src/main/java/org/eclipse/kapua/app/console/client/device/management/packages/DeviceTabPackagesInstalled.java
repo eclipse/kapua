@@ -22,7 +22,7 @@ import org.eclipse.kapua.app.console.commons.client.ui.tab.TabItem;
 import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.shared.model.GwtBundleInfo;
 import org.eclipse.kapua.app.console.shared.model.GwtDeploymentPackage;
-import org.eclipse.kapua.app.console.shared.model.GwtDevice;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceManagementService;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceManagementServiceAsync;
 
