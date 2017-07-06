@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,6 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
@@ -31,6 +34,7 @@ import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -65,6 +69,10 @@ import cucumber.runtime.java.guice.ScenarioScoped;
 @ScenarioScoped
 public class UserServiceSteps extends AbstractKapuaSteps {
 
+    static {
+        setupDI();
+    }
+
     /**
      * User service is implemented in beforeScenario()
      */
@@ -75,8 +83,8 @@ public class UserServiceSteps extends AbstractKapuaSteps {
      */
     private UserFactory userFactory;
 
-    public static final String DEFAULT_COMMONS_PATH = "../../../commons/";
-    public static final String DROP_FILTER = "usr_*_drop.sql";
+    private static final String DEFAULT_COMMONS_PATH = "../../../commons/";
+    private static final String DROP_FILTER = "usr_*_drop.sql";
 
     private static final int DEFAULT_SCOPE_ID = 42;
 
@@ -135,8 +143,55 @@ public class UserServiceSteps extends AbstractKapuaSteps {
      */
     private Set<ComparableUser> iFoundUsers;
 
+    /**
+     * Setup DI with Google Guice DI.
+     * Create mocked and non mocked service under test and bind them with Guice.
+     * It is based on custom MockedLocator locator that is meant for sevice unit tests.
+     */
+    private static void setupDI() {
+
+        MockedLocator mockedLocator = (MockedLocator) KapuaLocator.getInstance();
+
+        AbstractModule module = new AbstractModule() {
+
+            @Override
+            protected void configure() {
+
+                // Inject mocked Authorization Service method checkPermission
+                AuthorizationService mockedAuthorization = mock(AuthorizationService.class);
+                try {
+                    Mockito.doNothing().when(mockedAuthorization).checkPermission(any(Permission.class));
+                } catch (KapuaException e) {
+                    // skip
+                }
+                bind(AuthorizationService.class).toInstance(mockedAuthorization);
+                // Inject mocked Permission Factory
+                PermissionFactory mockedPermissionFactory = mock(PermissionFactory.class);
+                bind(PermissionFactory.class).toInstance(mockedPermissionFactory);
+                // Set KapuaMetatypeFactory for Metatype configuration
+                KapuaMetatypeFactory metaFactory = new KapuaMetatypeFactoryImpl();
+                bind(KapuaMetatypeFactory.class).toInstance(metaFactory);
+
+                // Inject actual implementation of UserService
+                UserEntityManagerFactory userEntityManagerFactory = (UserEntityManagerFactory) UserEntityManagerFactory.getInstance();
+                bind(UserEntityManagerFactory.class).toInstance(userEntityManagerFactory);
+                UserService userService = new UserServiceImpl();
+                bind(UserService.class).toInstance(userService);
+                UserFactory userFactory = new UserFactoryImpl();
+                bind(UserFactory.class).toInstance(userFactory);
+            }
+        };
+
+        Injector injector = Guice.createInjector(module);
+        mockedLocator.setInjector(injector);
+    }
+
     @Before
     public void beforeScenario(Scenario scenario) throws Exception {
+
+        locator = KapuaLocator.getInstance();
+        this.userService = locator.getService(UserService.class);
+        this.userFactory = locator.getFactory(UserFactory.class);
 
         this.scenario = scenario;
         this.isException = false;
@@ -145,31 +200,11 @@ public class UserServiceSteps extends AbstractKapuaSteps {
         enableH2Connection();
         new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
 
-        // Inject actual implementation of UserService
-        userService = new UserServiceImpl();
-        userFactory = new UserFactoryImpl();
-        MockedLocator mockLocator = (MockedLocator) locator;
-        mockLocator.setMockedService(org.eclipse.kapua.service.user.UserService.class, userService);
-        mockLocator.setMockedFactory(org.eclipse.kapua.service.user.UserFactory.class, userFactory);
-
-        // Inject mocked Authorization Service method checkPermission
-        AuthorizationService mockedAuthorization = mock(AuthorizationService.class);
-        Mockito.doNothing().when(mockedAuthorization).checkPermission(any(Permission.class));
-        mockLocator.setMockedService(org.eclipse.kapua.service.authorization.AuthorizationService.class, mockedAuthorization);
-
-        // Inject mocked Permission Factory
-        PermissionFactory mockedPermissionFactory = mock(PermissionFactory.class);
-        mockLocator.setMockedFactory(org.eclipse.kapua.service.authorization.permission.PermissionFactory.class, mockedPermissionFactory);
-
         // Create KapuaSession using KapuaSecurtiyUtils and kapua-sys user as logged in user.
         // All operations on database are performed using system user.
         User user = userService.findByName("kapua-sys");
         KapuaSession kapuaSession = new KapuaSession(null, user.getScopeId(), user.getId());
         KapuaSecurityUtils.setSession(kapuaSession);
-
-        // Set KapuaMetatypeFactory for Metatype configuration
-        KapuaMetatypeFactory metaFactory = new KapuaMetatypeFactoryImpl();
-        mockLocator.setMockedFactory(org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory.class, metaFactory);
 
         // Setup JAXB context
         XmlUtil.setContextProvider(new UsersJAXBContextProvider());
@@ -194,7 +229,7 @@ public class UserServiceSteps extends AbstractKapuaSteps {
         String displayName = MessageFormat.format("User Display Name {0}", now);
         KapuaEid scpId = new KapuaEid(BigInteger.valueOf(scopeId));
 
-        userCreator = new UserFactoryImpl().newCreator(scpId, userName);
+        userCreator = userFactory.newCreator(scpId, userName);
 
         userCreator.setDisplayName(displayName);
         userCreator.setEmail(userEmail);
@@ -245,7 +280,7 @@ public class UserServiceSteps extends AbstractKapuaSteps {
     public void searchForUsers() throws Exception {
         KapuaEid scpId = new KapuaEid(BigInteger.valueOf(DEFAULT_SCOPE_ID));
 
-        KapuaQuery<User> query = new UserFactoryImpl().newQuery(scpId);
+        KapuaQuery<User> query = userFactory.newQuery(scpId);
         queryResult = userService.query(query);
         iFoundUsers = new HashSet<>();
         List<User> users = queryResult.getItems();
@@ -357,7 +392,7 @@ public class UserServiceSteps extends AbstractKapuaSteps {
     public void queryForUsers(int scopeId) throws Exception {
         KapuaEid scpId = new KapuaEid(BigInteger.valueOf(scopeId));
 
-        KapuaQuery<User> query = new UserFactoryImpl().newQuery(scpId);
+        KapuaQuery<User> query = userFactory.newQuery(scpId);
         queryResult = userService.query(query);
     }
 
@@ -365,14 +400,14 @@ public class UserServiceSteps extends AbstractKapuaSteps {
     public void countForUsers(int scopeId) throws Exception {
         KapuaEid scpId = new KapuaEid(BigInteger.valueOf(scopeId));
 
-        KapuaQuery<User> query = new UserFactoryImpl().newQuery(scpId);
+        KapuaQuery<User> query = userFactory.newQuery(scpId);
         userCnt = userService.count(query);
     }
 
     @When("^I count users in scope (\\d+)$")
     public void countUsersInScope(int scopeId) throws Exception {
         KapuaEid scpId = new KapuaEid(BigInteger.valueOf(scopeId));
-        KapuaQuery<User> query = new UserFactoryImpl().newQuery(scpId);
+        KapuaQuery<User> query = userFactory.newQuery(scpId);
         userCnt = userService.count(query);
     }
 
@@ -551,7 +586,7 @@ public class UserServiceSteps extends AbstractKapuaSteps {
      * @return UserCreator instance for creating user
      */
     private UserCreator userCreatorCreator(String name, String displayName, String email, String phone, KapuaEid scopeId) {
-        UserCreator userCreator = new UserFactoryImpl().newCreator(scopeId, name);
+        UserCreator userCreator = userFactory.newCreator(scopeId, name);
 
         userCreator.setName(name);
         userCreator.setDisplayName(displayName);

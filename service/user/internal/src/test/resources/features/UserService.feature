@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+# Copyright (c) 2017 Eurotech and/or its affiliates and others
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -81,7 +81,7 @@ Scenario: Create user with special characters in his name
         | ###$$$%%% | Kapua User 1       | kapua_u1@kapua.com | +386 31 323 555 | ENABLED |
     Then I get Kapua exception
 
-Scenario: Update user 
+Scenario: Update user
     First create user with all User entity fields set. Then persist this user in database.
     After that find that same user and modify all the fields by appending modified.
     Persist changes to database. At the end check that changes ware persisted
@@ -119,11 +119,11 @@ Scenario: Delete user
         | integer | lockoutPolicy.resetAfter   | 300   |
         | integer | lockoutPolicy.lockDuration | 3     |
     Given User with name "kapua-user" in scope with id 42
-    When I create user 
-    And I delete user 
-    Then I don't find user with name "kapua-user" 
-    
-Scenario: Query user 
+    When I create user
+    And I delete user
+    Then I don't find user with name "kapua-user"
+
+Scenario: Query user
     Create user with name kapua-user, than issue query for user based on scopeId.
     List of matching users should match single user.
 
@@ -135,12 +135,12 @@ Scenario: Query user
         | integer | lockoutPolicy.maxFailures  | 3     |
         | integer | lockoutPolicy.resetAfter   | 300   |
         | integer | lockoutPolicy.lockDuration | 3     |
-    Given User with name "kapua-user" in scope with id 42 
-    When I create user 
-    And I query for users in scope with id 42 
-    Then I count 1 user as query result list 
-    
-Scenario: Count user 
+    Given User with name "kapua-user" in scope with id 42
+    When I create user
+    And I query for users in scope with id 42
+    Then I count 1 user as query result list
+
+Scenario: Count user
     Create user with name kapua-user, than issue count based on query that has
     scopeId specified. It is same as Query user, just that it only retrieves count
     of results and not list of users. Count should match just one user.
@@ -153,9 +153,9 @@ Scenario: Count user
         | integer | lockoutPolicy.maxFailures  | 3     |
         | integer | lockoutPolicy.resetAfter   | 300   |
         | integer | lockoutPolicy.lockDuration | 3     |
-    Given User with name "kapua-user" in scope with id 42 
-    When I create user 
-    And I count for users in scope with id 42 
+    Given User with name "kapua-user" in scope with id 42
+    When I create user
+    And I count for users in scope with id 42
     Then I count 1 user
 
 Scenario: Find user by id
@@ -213,46 +213,46 @@ Scenario: Create user that already exist
     When I create user
     And I create same user
     Then I get Kapua exception
-    
-Scenario: Update user that doesn't exist 
+
+Scenario: Update user that doesn't exist
     Create user that is not persisted and than run update statement on that user.
     As user doesn't exist KapuaException should be thrown.
 
-    Given User that doesn't exist 
-    When I update nonexistent user 
-    Then I get Kapua exception 
-    
-Scenario: Delete user that doesn't exist 
+    Given User that doesn't exist
+    When I update nonexistent user
+    Then I get Kapua exception
+
+Scenario: Delete user that doesn't exist
     Create user that is not persisted and than try to delete that user. As user
     doesn't exist KapuaException should be thrown.
 
-    Given User that doesn't exist 
-    When I delete nonexistent user 
-    Then I get Kapua exception 
-    
-Scenario: Find user with id and scope id that doesn't exist 
+    Given User that doesn't exist
+    When I delete nonexistent user
+    Then I get Kapua exception
+
+Scenario: Find user with id and scope id that doesn't exist
     Try to find user that doesn't exist in database. As no user is present for current scopeId,
     issuing find by scopeId and unused user id, should return no user.
 
-    When I search for user with id 123 in scope with id 456 
-    Then I find no user 
-    
-Scenario: Find user by name that doesn't exist 
+    When I search for user with id 123 in scope with id 456
+    Then I find no user
+
+Scenario: Find user by name that doesn't exist
     Search for user with name kapua-user. That user doesn't exist in database. As a result no
     user should be returned.
 
-    When I search for user with name "kapua-user" 
-    Then I find no user 
-    
-Scenario: Delete Kapua system user 
+    When I search for user with name "kapua-user"
+    Then I find no user
+
+Scenario: Delete Kapua system user
     Deletion of user with name "kapua-sys" should not be allowed. This is system user. So search
     for "kapua-sys" user and than delete it. KapuaException should be thrown.
 
-    Given I search for user with name "kapua-sys" 
-    When I delete user 
-    Then I get Kapua exception 
-    
-Scenario: Create multiple users 
+    Given I search for user with name "kapua-sys"
+    When I delete user
+    Then I get Kapua exception
+
+Scenario: Create multiple users
     Create three ordinary users in same scopeId and then count to see if there are 3 users in
     that scopeId.
 
