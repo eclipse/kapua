@@ -46,7 +46,7 @@ public class UserTabItemCredentials extends KapuaTabItem<GwtUser> {
     @Override
     public void setEntity(GwtUser gwtUser) {
         super.setEntity(gwtUser);
-        credentialsGrid.setSelectedUserId(gwtUser.getId());
+        credentialsGrid.setSelectedUserId(gwtUser != null ? gwtUser.getId() : null);
     }
 
     @Override
