@@ -15,24 +15,7 @@
 -- changeset device:1
 
 -- WARNING: to be kept in sync with kapua/commons/src/main/resources/liquibase/configuration.sql
-CREATE TABLE IF NOT EXISTS sys_configuration (
-  scope_id          		 BIGINT(21) 	  UNSIGNED,
-  id                         BIGINT(21) 	  UNSIGNED NOT NULL,
-  pid						 VARCHAR(255) 	  NOT NULL,
-  configurations			 TEXT,
-  created_on                 TIMESTAMP(3) 	  DEFAULT 0,
-  created_by                 BIGINT(21) 	  UNSIGNED NOT NULL,
-  modified_on                TIMESTAMP(3) 	  NOT NULL,
-  modified_by                BIGINT(21) 	  UNSIGNED NOT NULL,
-  optlock                    INT UNSIGNED,
-  attributes				 TEXT,
-  properties                 TEXT,
-  
-  PRIMARY KEY  (scope_id, id)
-  
-) ENGINE = InnoDB DEFAULT CHARSET = utf8;
-
-INSERT INTO sys_configuration (
+  INSERT INTO sys_configuration (
   SCOPE_ID,
   ID,
   PID,
@@ -45,11 +28,10 @@ INSERT INTO sys_configuration (
   ATTRIBUTES,
   PROPERTIES)
 VALUES (1,
-        3,
-        'org.eclipse.kapua.service.device.registry.DeviceRegistryService',
+        7,
+        'org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService',
         CONCAT('#', CURRENT_TIMESTAMP(), CHAR(13), CHAR(10),
-        'maxNumberChildEntities=0', CHAR(13), CHAR(10),
-        'infiniteChildEntities=true'),
+        'deviceConnectionUserCouplingDefaultMode=LOOSE'),
   CURRENT_TIMESTAMP(),
   1,
   CURRENT_TIMESTAMP(),
@@ -57,4 +39,3 @@ VALUES (1,
   0,
   null,
   null);
-  

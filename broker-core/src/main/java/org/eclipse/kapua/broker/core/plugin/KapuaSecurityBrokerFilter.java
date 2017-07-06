@@ -506,8 +506,8 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             }
             enforceDeviceUserBound(connectionUserCouplingMode, deviceConnection, scopeId, userId);
         } else {
+            logger.debug("Enforce Device-User bound - no device connection found so user account settings for enforcing the bound (user id - '{}')", userId);
             enforceDeviceUserBound(loadConnectionUserCouplingModeFromConfig(scopeId, options), deviceConnection, scopeId, userId);
-            logger.warn("Cannot enforce Device-User bound since no device entry is found for this user id ('{}') - Try using account configuration!", userId);
         }
     }
 

@@ -19,5 +19,6 @@
     <include relativeToChangelogFile="true" file="./device-network-interface.sql" />
 	<include relativeToChangelogFile="true" file="./device.sql" />
     <include relativeToChangelogFile="true" file="./device_connection.sql" />
+    <include relativeToChangelogFile="true" file="./device-configuration.sql" />
 	<include relativeToChangelogFile="true" file="./device-tag.sql" />
 </databaseChangeLog>
