@@ -809,6 +809,11 @@
                 <artifactId>kapua-console-module-user</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-console-module-about</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- External dependencies -->
 

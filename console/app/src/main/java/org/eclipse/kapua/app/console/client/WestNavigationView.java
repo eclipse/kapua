@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.eclipse.kapua.app.console.client.about.AboutView;
 import org.eclipse.kapua.app.console.client.account.AccountDetailsView;
 import org.eclipse.kapua.app.console.client.account.AccountView;
 import org.eclipse.kapua.app.console.client.connection.ConnectionView;
@@ -212,17 +211,6 @@ public class WestNavigationView extends LayoutContainer {
                             centerPanel.add(panel);
                             centerPanel.layout();
                             dashboardSelected = false;
-                        } else if ("about".equals(selectedId)) {
-                            AboutView aboutView = new AboutView();
-
-                            panel.setBodyBorder(true);
-                            panel.setIcon(new KapuaIcon(IconSet.INFO));
-                            panel.setHeading(MSGS.about());
-                            panel.add(aboutView);
-
-                            centerPanel.add(panel);
-                            centerPanel.layout();
-                            dashboardSelected = false;
                         } else if ("devices".equals(selectedId)) {
                             DevicesView deviceView = new DevicesView(currentSession);
 
@@ -306,7 +294,7 @@ public class WestNavigationView extends LayoutContainer {
 
                         } else {
                             for (ViewDescriptor viewDescriptor : additionalViewDescriptors) {
-                                if (viewDescriptor.getId().equals(selectedId)) {
+                                if (viewDescriptor.getViewId().equals(selectedId)) {
                                     panel.setIcon(new KapuaIcon(viewDescriptor.getIcon()));
                                     panel.setHeading(viewDescriptor.getName());
                                     panel.add((AbstractView) viewDescriptor.getViewInstance(currentSession));
@@ -428,12 +416,11 @@ public class WestNavigationView extends LayoutContainer {
                 accountManagementTreeStore.add(newItem("childaccounts", MSGS.childaccounts(), IconSet.SITEMAP), false);
             }
 
-            cloudResourcesTreeStore.add(newItem("about", MSGS.about(), IconSet.INFO), false);
         }
 
         if (additionalViewDescriptors != null) {
             for (ViewDescriptor entityView : additionalViewDescriptors) {
-                cloudResourcesTreeStore.add(newItem(entityView.getId(), entityView.getName(), entityView.getIcon()), false);
+                cloudResourcesTreeStore.add(newItem(entityView.getViewId(), entityView.getName(), entityView.getIcon()), false);
             }
         }
 

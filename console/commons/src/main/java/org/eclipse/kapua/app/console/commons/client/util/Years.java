@@ -9,7 +9,7 @@
  * Contributors:
  *     Red Hat Inc - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.util;
+package org.eclipse.kapua.app.console.commons.client.util;
 
 import java.util.Date;
 

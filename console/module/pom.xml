@@ -23,6 +23,7 @@
     <artifactId>kapua-console-module</artifactId>
     <packaging>pom</packaging>
     <modules>
+        <module>about</module>
         <module>device</module>
         <module>account</module>
         <module>user</module>

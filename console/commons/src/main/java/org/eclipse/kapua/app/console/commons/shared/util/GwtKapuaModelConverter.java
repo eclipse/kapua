@@ -186,8 +186,8 @@ public class GwtKapuaModelConverter {
 //
 //                RolePermission rp = rolePermissionFactory.newEntity(scopeId);
 //                rp.setPermission(p);
-//                rp.setId(convertKapuaId(gwtRolePermission.getId()));
-//                rp.setRoleId(role.getId());
+//                rp.setId(convertKapuaId(gwtRolePermission.getViewId()));
+//                rp.setRoleId(role.getViewId());
 //
 //                rolePermissions.add(rp);
 //            }
@@ -277,8 +277,8 @@ public class GwtKapuaModelConverter {
 //        KapuaId scopeId = convertKapuaId(gwtCredential.getScopeId());
 //        Credential credential = credentialFactory.newEntity(scopeId);
 //        convertUpdatableEntity(gwtCredential, credential);
-//        if (gwtCredential.getId() != null && !gwtCredential.getId().trim().isEmpty()) {
-//            credential.setId(convertKapuaId(gwtCredential.getId()));
+//        if (gwtCredential.getViewId() != null && !gwtCredential.getViewId().trim().isEmpty()) {
+//            credential.setId(convertKapuaId(gwtCredential.getViewId()));
 //        }
 //        credential.setUserId(convertKapuaId(gwtCredential.getUserId()));
 //        credential.setCredentialType(convertKapuaId(gwtCredential.getCredentialTypeEnum()));

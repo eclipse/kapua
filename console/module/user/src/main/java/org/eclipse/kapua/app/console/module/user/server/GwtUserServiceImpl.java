@@ -169,12 +169,12 @@ public class GwtUserServiceImpl extends KapuaConfigurableRemoteServiceServlet<Us
                 // break;
                 // }
                 // }
-                // credentialService.delete(oldCredential.getScopeId(), oldCredential.getId());
+                // credentialService.delete(oldCredential.getScopeId(), oldCredential.getViewId());
                 //
                 // //
                 // // Create new PASSWORD credential
                 // CredentialCreator credentialCreator = credentialFactory.newCreator(scopeId,
-                // user.getId(),
+                // user.getViewId(),
                 // CredentialType.PASSWORD,
                 // gwtUser.getPassword());
                 //

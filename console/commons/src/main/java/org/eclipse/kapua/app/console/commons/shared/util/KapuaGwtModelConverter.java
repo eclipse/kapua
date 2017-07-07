@@ -63,7 +63,7 @@ public class KapuaGwtModelConverter {
 //        //
 //        // Convert other attributes
 //        gwtAccessRole.setRoleName(role.getName());
-//        gwtAccessRole.setRoleId(role.getId().toCompactId());
+//        gwtAccessRole.setRoleId(role.getViewId().toCompactId());
 //        gwtAccessRole.setAccessInfoId(accessRole.getAccessInfoId().toCompactId());
 //        //
 //        // Return converted entity
@@ -374,7 +374,7 @@ public class KapuaGwtModelConverter {
 //            throws KapuaException {
 //
 //        GwtDevice gwtDevice = new GwtDevice();
-//        gwtDevice.setId(convertKapuaId(device.getId()));
+//        gwtDevice.setId(convertKapuaId(device.getViewId()));
 //        gwtDevice.setScopeId(convertKapuaId(device.getScopeId()));
 //        gwtDevice.setGwtDeviceStatus(device.getStatus().toString());
 //        gwtDevice.setClientId(device.getClientId());

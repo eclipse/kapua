@@ -39,8 +39,8 @@ public class GwtBrokerNodeCreator implements Serializable {
 
     // // Constructor for reprovisioning
     // public GwtBrokerNodeCreator(BrokerNode node) {
-    // this.brokerClusterId = node.getBrokerCluster().getId();
-    // this.brokerNodeId = node.getId();
+    // this.brokerClusterId = node.getBrokerCluster().getViewId();
+    // this.brokerNodeId = node.getViewId();
     // this.iaasAvailabilityZone = node.getIaasAvailabilityZone();
     // this.iaasInstanceType = node.getIaasInstanceType();
     // this.iaasKeyName = node.getIaasKeyName();

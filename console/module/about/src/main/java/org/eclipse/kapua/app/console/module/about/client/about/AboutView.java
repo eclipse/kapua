@@ -9,20 +9,7 @@
  * Contributors:
  *     Red Hat Inc - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.about;
-
-import static org.eclipse.kapua.app.console.client.util.Years.getCurrentYear;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Logger;
-
-import org.eclipse.kapua.app.console.client.messages.ConsoleAboutMessages;
-import org.eclipse.kapua.app.console.commons.client.util.ConsoleInfo;
-import org.eclipse.kapua.app.console.shared.model.GwtAboutDependency;
-import org.eclipse.kapua.app.console.shared.model.GwtAboutInformation;
-import org.eclipse.kapua.app.console.shared.service.GwtAboutService;
-import org.eclipse.kapua.app.console.shared.service.GwtAboutServiceAsync;
+package org.eclipse.kapua.app.console.module.about.client.about;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
@@ -32,7 +19,6 @@ import com.extjs.gxt.ui.client.data.BeanModel;
 import com.extjs.gxt.ui.client.data.BeanModelFactory;
 import com.extjs.gxt.ui.client.data.BeanModelLookup;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -48,14 +34,28 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Image;
+import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractView;
+import org.eclipse.kapua.app.console.commons.client.util.ConsoleInfo;
+import org.eclipse.kapua.app.console.commons.client.views.View;
+import org.eclipse.kapua.app.console.module.about.client.messages.ConsoleAboutMessages;
+import org.eclipse.kapua.app.console.module.about.shared.model.GwtAboutDependency;
+import org.eclipse.kapua.app.console.module.about.shared.model.GwtAboutInformation;
+import org.eclipse.kapua.app.console.module.about.shared.service.GwtAboutService;
+import org.eclipse.kapua.app.console.module.about.shared.service.GwtAboutServiceAsync;
 
-public class AboutView extends ContentPanel {
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Logger;
+
+import static org.eclipse.kapua.app.console.commons.client.util.Years.getCurrentYear;
+
+public class AboutView extends AbstractView implements View {
 
     private static final Logger logger = Logger.getLogger("AboutView");
 
     private static final ConsoleAboutMessages MSGS = GWT.create(ConsoleAboutMessages.class);
 
-    private final GwtAboutServiceAsync aboutService = GWT.create(GwtAboutService.class);
+    private static final GwtAboutServiceAsync ABOUT_SERVICE = GWT.create(GwtAboutService.class);
 
     public AboutView() {
         setBorders(false);
@@ -63,21 +63,25 @@ public class AboutView extends ContentPanel {
         setHeaderVisible(false);
     }
 
+    public static String getName() {
+        return MSGS.title();
+    }
+
     // generating strings in native methods easier than in Java, can be created in Java as well
     public native String getTemplate() /*-{
         return [ //
-                '<div style="padding: 1em;">', //
-                '<p><h2>Additional information</h2></p><hr/>', //
-                '<tpl if="notice && noticeMimeType==\'text/plain\'">', //
-                '<p><pre>{notice}</pre></p><hr/>', // show notice
-                '</tpl>', //
-                '<tpl if="notice && noticeMimeType==\'text/html\'">', //
-                '<iframe width="100%" height="300" frameborder="0" srcdoc="{notice}" sandbox></iframe><hr/>', // show notice
-                '</tpl>', //
-                '<tpl if="licenseText">', //
-                '<p><pre>{licenseText}</pre></p><hr/>', // show license text
-                '</tpl>', //
-                '</div>' //
+            '<div style="padding: 1em;">', //
+            '<p><h2>Additional information</h2></p><hr/>', //
+            '<tpl if="notice && noticeMimeType==\'text/plain\'">', //
+            '<p><pre>{notice}</pre></p><hr/>', // show notice
+            '</tpl>', //
+            '<tpl if="notice && noticeMimeType==\'text/html\'">', //
+            '<iframe width="100%" height="300" frameborder="0" srcdoc="{notice}" sandbox></iframe><hr/>', // show notice
+            '</tpl>', //
+            '<tpl if="licenseText">', //
+            '<p><pre>{licenseText}</pre></p><hr/>', // show license text
+            '</tpl>', //
+            '</div>' //
         ].join("");
     }-*/;
 
@@ -153,7 +157,7 @@ public class AboutView extends ContentPanel {
     }
 
     private void fillAboutInformation(final Grid<BeanModel> grid, final ListStore<BeanModel> store) {
-        aboutService.getInformation(new AsyncCallback<GwtAboutInformation>() {
+        ABOUT_SERVICE.getInformation(new AsyncCallback<GwtAboutInformation>() {
 
             @Override
             public void onFailure(final Throwable caught) {

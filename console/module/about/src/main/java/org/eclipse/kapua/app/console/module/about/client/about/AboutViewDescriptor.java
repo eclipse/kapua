@@ -9,38 +9,39 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.module.user.client;
+package org.eclipse.kapua.app.console.module.about.client.about;
 
 import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.commons.client.views.EntityView;
-import org.eclipse.kapua.app.console.commons.client.views.EntityViewDescriptor;
+import org.eclipse.kapua.app.console.commons.client.views.View;
+import org.eclipse.kapua.app.console.commons.client.views.ViewDescriptor;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
 
-public class UserViewDescriptor implements EntityViewDescriptor<GwtUser> {
-
-    @Override
-    public EntityView<GwtUser> getViewInstance(GwtSession currentSession) {
-        return new UserView(currentSession);
-    }
+public class AboutViewDescriptor implements ViewDescriptor {
 
     @Override
     public String getViewId() {
-        return "user";
+        return "about";
     }
 
     @Override
     public IconSet getIcon() {
-        return IconSet.USERS;
+        return IconSet.INFO;
     }
 
     @Override
     public int getOrder() {
-        return 200;
+        return 900;
     }
 
     @Override
     public String getName() {
-        return UserView.getName();
+        return AboutView.getName();
     }
+
+    @Override
+    public View getViewInstance(GwtSession currentSession) {
+        return new AboutView();
+    }
+
+
 }

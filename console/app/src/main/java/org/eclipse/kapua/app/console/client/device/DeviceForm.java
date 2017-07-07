@@ -302,7 +302,7 @@ public class DeviceForm extends Window {
 
                     // Security Options
                     // gwtDeviceCreator.setGwtCredentialsTight(credentialsTightCombo.getSimpleValue());
-                    // gwtDeviceCreator.setGwtPreferredUserId(deviceUserCombo.getValue().getId());
+                    // gwtDeviceCreator.setGwtPreferredUserId(deviceUserCombo.getValue().getViewId());
 
                     // Custom attributes
                     gwtDeviceCreator.setCustomAttribute1(unescapeValue(customAttribute1Field.getValue()));
@@ -361,7 +361,7 @@ public class DeviceForm extends Window {
                     // Security Options
                     // m_selectedDevice.setCredentialsTight(GwtDeviceCredentialsTight.getEnumFromLabel(credentialsTightCombo.getSimpleValue()).name());
                     // m_selectedDevice.setCredentialsAllowChange(allowCredentialsChangeCheckbox.getValue());
-                    // m_selectedDevice.setDeviceUserId(deviceUserCombo.getValue().getId());
+                    // m_selectedDevice.setDeviceUserId(deviceUserCombo.getValue().getViewId());
 
                     // Custom attributes
                     selectedDevice.setCustomAttribute1(unescapeValue(customAttribute1Field.getValue()));
@@ -448,7 +448,7 @@ public class DeviceForm extends Window {
             // Security options data
             // credentialsTightCombo.setSimpleValue(m_selectedDevice.getCredentialTightEnum().getLabel());
             // allowCredentialsChangeCheckbox.setValue(m_selectedDevice.getCredentialsAllowChange());
-            // gwtUserService.find(m_currentSession.getSelectedAccount().getId(), m_selectedDevice.getDeviceUserId(), new AsyncCallback<GwtUser>() {
+            // gwtUserService.find(m_currentSession.getSelectedAccount().getViewId(), m_selectedDevice.getDeviceUserId(), new AsyncCallback<GwtUser>() {
             // @Override
             // public void onFailure(Throwable caught)
             // {

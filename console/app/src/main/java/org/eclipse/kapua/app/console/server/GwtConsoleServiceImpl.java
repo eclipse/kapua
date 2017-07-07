@@ -13,6 +13,7 @@ package org.eclipse.kapua.app.console.server;
 
 import org.eclipse.kapua.app.console.commons.client.views.ViewDescriptor;
 import org.eclipse.kapua.app.console.commons.server.KapuaRemoteServiceServlet;
+import org.eclipse.kapua.app.console.module.about.client.about.AboutViewDescriptor;
 import org.eclipse.kapua.app.console.module.user.client.UserViewDescriptor;
 import org.eclipse.kapua.app.console.shared.service.GwtConsoleService;
 
@@ -21,6 +22,7 @@ import java.util.List;
 
 public class GwtConsoleServiceImpl extends KapuaRemoteServiceServlet implements GwtConsoleService {
 
+     private static final String ABOUT_CLASSNAME = "org.eclipse.kapua.app.console.module.about.client.about.AboutViewDescriptor";
      private static final String USER_CLASSNAME = "org.eclipse.kapua.app.console.module.user.client.UserViewDescriptor";
 
     @Override
@@ -29,6 +31,8 @@ public class GwtConsoleServiceImpl extends KapuaRemoteServiceServlet implements 
         try {
             UserViewDescriptor userView = (UserViewDescriptor)Class.forName(USER_CLASSNAME).newInstance();
             views.add(userView);
+            AboutViewDescriptor aboutView = (AboutViewDescriptor)Class.forName(ABOUT_CLASSNAME).newInstance();
+            views.add(aboutView);
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {

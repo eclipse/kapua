@@ -16,7 +16,7 @@ import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 
 public interface ViewDescriptor extends IsSerializable {
-    String getId();
+    String getViewId();
 
     IconSet getIcon();
 

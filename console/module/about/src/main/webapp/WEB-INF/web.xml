@@ -22,7 +22,7 @@
 
     <filter-mapping>
         <filter-name>ShiroFilter</filter-name>
-        <url-pattern>/user/*</url-pattern>
+        <url-pattern>/about/*</url-pattern>
     </filter-mapping>
 
     <!-- Session Timeout -->
@@ -32,11 +32,11 @@
 
     <!-- XSRF servlet support -->
     <servlet>
-        <servlet-name>GwtUserServiceImpl</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.module.user.server.GwtUserServiceImpl</servlet-class>
+        <servlet-name>GwtAboutServiceImpl</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.module.about.server.GwtAboutServiceImpl</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>GwtUserServiceImpl</servlet-name>
-        <url-pattern>/user/*</url-pattern>
+        <servlet-name>GwtAboutServiceImpl</servlet-name>
+        <url-pattern>/about/*</url-pattern>
     </servlet-mapping>
 </web-app>

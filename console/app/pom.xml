@@ -233,6 +233,17 @@
             <version>0.2.0-SNAPSHOT</version>
             <classifier>sources</classifier>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-console-module-about</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-console-module-about</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+            <classifier>sources</classifier>
+        </dependency>
 
         <!-- External dependencies -->
         <dependency>
@@ -397,7 +408,6 @@
                     <i18nConstantsWithLookupBundle>org.eclipse.kapua.app.console.client.messages.ValidationMessages</i18nConstantsWithLookupBundle>
                     <i18nMessagesBundles>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleMessages</i18nMessagesBundle>
-                        <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleAboutMessages</i18nMessagesBundle>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleWelcomeMessages</i18nMessagesBundle>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleAccountMessages</i18nMessagesBundle>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleTagMessages</i18nMessagesBundle>
