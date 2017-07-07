@@ -132,7 +132,7 @@
                     <version>${maven-release-plugin.version}</version>
                     <configuration>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
-                        <releaseProfiles>javadoc,deploy,release,docker-push,-console</releaseProfiles>
+                        <releaseProfiles>javadoc,deploy,release,-console</releaseProfiles>
                         <goals>deploy</goals>
                     </configuration>
                 </plugin>
