@@ -12,6 +12,7 @@
 package org.eclipse.kapua.commons.util;
 
 import java.lang.reflect.Constructor;
+import java.util.Date;
 import java.util.Random;
 
 import org.eclipse.kapua.KapuaIllegalArgumentException;
@@ -405,6 +406,116 @@ public class ArgumentValidatorTest extends Assert {
                 ArgumentValidator.isEmptyOrNull(listOfPermittedStringsEmptyOrNull[i], "EMPTY_OR_NULL_test_case");
             } catch (Exception ex) {
                 fail("No exception expected for: " + listOfPermittedStringsEmptyOrNull[i]);
+            }
+        }
+    }
+
+    @Test
+    public void testNotEmptyOrNullString() throws Exception {
+        String[] listOfFalseStrings = new String[] { "", null };
+        int sizeOfFalseStrings = listOfFalseStrings.length;
+        String[] listOfPermittedStrings = new String[]{"a","ab","abc","string"};
+        int sizeOfPermittedStrings = listOfPermittedStrings.length;
+        for (int i = 0; i < sizeOfFalseStrings; i++) {
+            try {
+                ArgumentValidator.notEmptyOrNull(listOfFalseStrings[i], "notEmptyOrNullTest");
+                fail("Exception expected for: " + listOfFalseStrings[i]);
+            } catch (Exception ex) {
+                // Expected
+            }
+        }
+
+        for (int i = 0; i < sizeOfPermittedStrings; i++) {
+            try {
+                ArgumentValidator.notEmptyOrNull(listOfPermittedStrings[i], "notEmptyOrNullTest");
+            } catch (Exception ex) {
+                fail("No Exception expected for: " + listOfPermittedStrings[i]);
+            }
+        }
+    }
+
+    @Test
+    public void testNotNegative() throws KapuaIllegalNullArgumentException {
+        long[] listOfNegative = new long[] {-1,-12,-123,-1234,-12345,-123456,-1234567,
+                -12345678};
+        int sizeOfNegative = listOfNegative.length;
+        long[] listOfPositive = new long[]{0,1,12,123,1234,123456,1234567,12345678};
+        int sizeOfPositive = listOfPositive.length;
+        for (int i = 0; i < sizeOfNegative; i++) {
+            try {
+                ArgumentValidator.notNegative(listOfNegative[i], "not null test");
+                fail("Exception expected for : " + listOfNegative[i]);
+            } catch (Exception ex) {
+                // Expected
+            }
+        }
+        for (int i = 0; i < sizeOfPositive; i++) {
+            try {
+                ArgumentValidator.notNegative(listOfPositive[i], "not null test");
+            } catch (Exception ex) {
+                fail("No exception expected for: " + listOfPositive[i]);
+            }
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    @Test
+    public void testDateRange() throws Exception {
+
+        Date startTimeFalse2 = new Date(2018, 1, 1);
+        Date endTimeFalse2 = new Date(2017, 1, 1);
+
+        Date[] startTimeFalse = new Date[] { startTimeFalse2 };
+        Date[] endTimeFalse = new Date[] { endTimeFalse2 };
+
+        Date startTimeOK0 = new Date(2017, 1, 1);
+        Date endTimeOK0 = new Date(2018, 1, 1);
+
+        Date startTimeOK1 = new Date(-2017, -10, -10);
+        Date endTimeOK1 = new Date(2018, 1, 1);
+
+        Date startTimeOK2 = new Date(2017, 1, 1);
+        Date endTimeOK2 = new Date(2018, -1, -1);
+
+        Date[] startTimeOK = new Date[] { startTimeOK0, startTimeOK1, startTimeOK1 };
+        Date[] endTimeOK = new Date[] { endTimeOK0, endTimeOK1, endTimeOK2 };
+
+        for (int i = 0; i < startTimeFalse.length; i++) {
+            try {
+                ArgumentValidator.dateRange(startTimeFalse[i], endTimeFalse[i]);
+                fail("Exception expected for: " + i);
+            } catch (Exception ex) {
+                // Expected
+            }
+        }
+        for (int i = 0; i < startTimeOK.length; i++) {
+            try {
+                ArgumentValidator.dateRange(startTimeOK[i], endTimeOK[i]);
+            } catch (Exception ex) {
+                fail("No exception expected for: " + startTimeFalse[i] + endTimeFalse[i]);
+            }
+        }
+    }
+
+    @Test
+    public void testNumRange() throws Exception {
+        long minValue = 12;
+        long maxValue = 12345;
+        long numRangeFalse[] = new long[] { 0, 11, 12346 };
+        long numRangePermitted[] = new long[] { 12, 15, 12345 };
+        for (long element : numRangeFalse) {
+            try {
+                ArgumentValidator.numRange(element, minValue, maxValue, "numRange test");
+                fail("Exception expected for: " + element);
+            } catch (Exception ex) {
+                // Expected
+            }
+        }
+        for (long element : numRangePermitted) {
+            try {
+                ArgumentValidator.numRange(element, minValue, maxValue, "numRange test");
+            } catch (Exception ex) {
+                fail("No exception expected for: " + element);
             }
         }
     }
