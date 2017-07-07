@@ -136,7 +136,7 @@ public final class MessageStoreFacade {
             if (capturedOn != null) {
                 indexedOn = capturedOn.getTime();
             } else {
-                logger.warn("The account is set to use, as date indexing, the device timestamp but the device timestamp is null! Current system date will be used to indexing the message by date!");
+                logger.debug("The account is set to use, as date indexing, the device timestamp but the device timestamp is null! Current system date will be used to indexing the message by date!");
             }
         }
         // Extract schema metadata
