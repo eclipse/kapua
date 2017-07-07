@@ -317,8 +317,6 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         KapuaDataMessage tmpMessage = (KapuaDataMessage) stepData.get(msgKey);
         StorableId storeId = insertMessageInStore(tmpMessage);
         stepData.put(idKey, storeId);
-        // Wait for the database to index the newly inserted records
-        waitABit(5000);
     }
 
     @Given("^I store the message \"(.*)\" with the server time and remember its ID as \"(.*)\"$")
@@ -328,8 +326,6 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         tmpMessage.setReceivedOn(new Date());
         StorableId storeId = insertMessageInStore(tmpMessage);
         stepData.put(idKey, storeId);
-        // Wait for the database to index the newly inserted records
-        waitABit(5000);
     }
 
     @Given("^I store the messages from list \"(.*)\" and remember the IDs as \"(.*)\"$")
@@ -338,8 +334,6 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         List<KapuaDataMessage> tmpMsgList = (List<KapuaDataMessage>) stepData.get(msgListKey);
         List<StorableId> tmpIdList = insertMessagesInStore(tmpMsgList);
         stepData.put(idListKey, tmpIdList);
-        // Wait for the database to index the newly inserted records
-        waitABit(5000);
     }
 
     @Given("^I set the database to device timestamp indexing$")
@@ -1227,14 +1221,6 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         DatastoreCacheManager.getInstance().getClientsCache().invalidateAll();
         DatastoreCacheManager.getInstance().getMetricsCache().invalidateAll();
         DatastoreCacheManager.getInstance().getMetadataCache().invalidateAll();
-    }
-
-    private void waitABit(int millis) {
-
-        try {
-            Thread.sleep(millis);
-        } catch (Exception ex) {
-        }
     }
 
     private Date parseFeatureDateTimeString(String timeStamp) throws Exception {

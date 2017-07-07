@@ -63,6 +63,7 @@ Feature: Datastore tests
     And The device "test-device-1"
     And I prepare a random message and save it as "RandomDataMessage1"
     Then I store the message "RandomDataMessage1" and remember its ID as "RandomDataMessage1Id"
+    And I refresh all database indices
     When I search for a data message with ID "RandomDataMessage1Id" and remember it as "DataStoreMessage"
     Then The datastore message "DataStoreMessage" matches the prepared message "RandomDataMessage1"
     Then I clear all the database caches
@@ -80,6 +81,7 @@ Feature: Datastore tests
     And The device "test-device-1"
     When I prepare 15 random messages and remember the list as "RandomMessagesList"
     And I store the messages from list "RandomMessagesList" and remember the IDs as "StoredMessageIDs"
+    And I refresh all database indices
     When I search for messages with IDs from the list "StoredMessageIDs" and store them in the list "StoredMessagesList"
     Then The datastore messages in list "StoredMessagesList" matches the prepared messages in list "RandomMessagesList"
 
