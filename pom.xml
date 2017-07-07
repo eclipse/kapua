@@ -132,7 +132,7 @@
                     <version>${maven-release-plugin.version}</version>
                     <configuration>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
-                        <releaseProfiles>javadoc,deploy,release,docker-push</releaseProfiles>
+                        <releaseProfiles>javadoc,deploy,release,docker-push,-console</releaseProfiles>
                         <goals>deploy</goals>
                     </configuration>
                 </plugin>
@@ -1003,7 +1003,6 @@
         <module>sso</module>
 
         <!-- Applications -->
-        <module>console</module>
         <module>rest-api</module>
 
         <!-- Simulator framework -->
@@ -1016,6 +1015,17 @@
     </modules>
 
     <profiles>
+        <!-- Profile used to exclude console module on release process -->
+        <profile>
+            <id>console</id>
+             <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>console</module>
+            </modules>
+        </profile>
+    
         <!-- Profile used only during release process. -->
         <profile>
             <id>release</id>
