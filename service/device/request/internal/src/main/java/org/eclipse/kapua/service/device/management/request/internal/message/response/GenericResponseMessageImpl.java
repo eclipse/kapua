@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.request.internal.message.response;
 
@@ -20,6 +21,8 @@ import org.eclipse.kapua.service.device.management.response.KapuaResponseMessage
 
 public class GenericResponseMessageImpl extends KapuaMessageImpl<GenericResponseChannel, GenericResponsePayload>
         implements KapuaResponseMessage<GenericResponseChannel, GenericResponsePayload>, GenericResponseMessage {
+
+    private static final long serialVersionUID = 1L;
 
     private KapuaResponseCode responseCode;
 

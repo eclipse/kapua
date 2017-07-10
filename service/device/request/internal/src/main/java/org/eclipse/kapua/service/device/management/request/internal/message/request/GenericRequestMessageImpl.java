@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.request.internal.message.request;
 
@@ -18,6 +19,8 @@ import org.eclipse.kapua.service.device.management.request.message.request.Gener
 import org.eclipse.kapua.service.device.management.request.message.response.GenericResponseMessage;
 
 public class GenericRequestMessageImpl extends KapuaMessageImpl<GenericRequestChannel, GenericRequestPayload> implements GenericRequestMessage {
+
+    private static final long serialVersionUID = 1L;
 
     @SuppressWarnings("unchecked")
     @Override
