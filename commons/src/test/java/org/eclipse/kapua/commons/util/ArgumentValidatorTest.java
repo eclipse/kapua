@@ -492,7 +492,53 @@ public class ArgumentValidatorTest extends Assert {
             try {
                 ArgumentValidator.dateRange(startTimeOK[i], endTimeOK[i]);
             } catch (Exception ex) {
-                fail("No exception expected for: " + startTimeFalse[i] + endTimeFalse[i]);
+                fail("No exception expected for: " + startTimeOK[i] + endTimeOK[i]);
+            }
+        }
+    }
+
+    @Test
+    public void testDateRangeLong() throws Exception {
+
+        long startTimeOK0 = 123456789L;
+        long endTimeOK0 = 1234567899L;
+
+        long startTimeOK1 = 123456789L;
+        long endTimeOK1 = 123456789L;
+
+        long startTimeOK2 = -1L;
+        long endTimeOK2 = -1L;
+
+        long startTimeOK3 = 123456L;
+        long endTimeOK3 = -1L;
+
+        long startTimeOK4 = -1L;
+        long endTimeOK4 = 12341231411L;
+
+        long[] startTimeOK = new long[] { startTimeOK0, startTimeOK1,startTimeOK2,
+                startTimeOK3,startTimeOK4};
+        long[] endTimeOK = new long[] { endTimeOK0, endTimeOK1,endTimeOK2,
+                endTimeOK3,endTimeOK4};
+
+        long startTimeNOK0 = 1234567890123456789L;
+        long endTimeNOK0 = 123456789012345L;
+
+        long[] startTimeNOK = new long[] {startTimeNOK0};
+        long[] endTimeNOK = new long[] {endTimeNOK0};
+
+        for (int i = 0; i < startTimeNOK.length; i++) {
+            try {
+                ArgumentValidator.dateRange(startTimeNOK[i], endTimeNOK[i]);
+                fail("Exception expected for LONG: " + i);
+            } catch (Exception ex) {
+                // Expected
+            }
+        }
+        for (int i = 0; i < startTimeOK.length; i++) {
+            try {
+                ArgumentValidator.dateRange(startTimeOK[i], endTimeOK[i]);
+            } catch (Exception ex) {
+                fail("No exception expected for: " + startTimeOK[i] + endTimeOK[i]);
             }
         }
     }
