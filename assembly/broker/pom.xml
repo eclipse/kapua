@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <!--
     Copyright (c) 2017 Red Hat Inc and others
-   
+
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
     http://www.eclipse.org/legal/epl-v10.html
-   
+
     Contributors:
         Red Hat Inc - initial API and implementation
         Eurotech
@@ -626,10 +626,10 @@
                                         <user>kapua</user>
                                         <runCmds>
                                             <run><![CDATA[
-									chown -R kapua:kapua /maven && \
-									chmod -R a+rw /maven && \
-									find /maven -type d -exec chmod a+x {} +
-									]]></run>
+                                    chown -R kapua:kapua /maven && \
+                                    chmod -R a+rw /maven && \
+                                    find /maven -type d -exec chmod a+x {} +
+                                    ]]></run>
                                         </runCmds>
                                         <volumes>
                                             <volume>/maven/data</volume>

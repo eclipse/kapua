@@ -223,7 +223,7 @@
             <artifactId>transport-netty4-client</artifactId>
             <version>${elasticsearch.version}</version>
         </dependency>
-		<dependency>
+        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <scope>test</scope>
@@ -244,6 +244,6 @@
             <optional>true</optional>
         </dependency>
 
-	</dependencies>
+    </dependencies>
 
 </project>

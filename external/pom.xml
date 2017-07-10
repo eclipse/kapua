@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-    Copyright (c) 2017 Red Hat Inc
+    Copyright (c) 2017 Red Hat Inc and others
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -13,38 +13,38 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.eclipse.kapua</groupId>
-		<artifactId>kapua</artifactId>
-		<version>0.3.0-SNAPSHOT</version>
-		<relativePath>..</relativePath>
-	</parent>
+    <parent>
+        <groupId>org.eclipse.kapua</groupId>
+        <artifactId>kapua</artifactId>
+        <version>0.3.0-SNAPSHOT</version>
+        <relativePath>..</relativePath>
+    </parent>
 
-	<packaging>pom</packaging>
+    <packaging>pom</packaging>
 
-	<groupId>org.eclipse.kapua.external</groupId>
-	<artifactId>kapua-external</artifactId>
+    <groupId>org.eclipse.kapua.external</groupId>
+    <artifactId>kapua-external</artifactId>
 
-	<modules>
-		<module>swagger-ui</module>
-		<module>swagger-ui-lib</module>
-	</modules>
+    <modules>
+        <module>swagger-ui</module>
+        <module>swagger-ui-lib</module>
+    </modules>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>checkstyle-check</id>
-						<phase>none</phase>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>checkstyle-check</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
