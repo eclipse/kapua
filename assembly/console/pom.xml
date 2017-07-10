@@ -9,6 +9,7 @@
    
     Contributors:
         Red Hat Inc - initial API and implementation
+        Eurotech
  -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -33,7 +34,7 @@
             <type>pom</type>
         </dependency>
 
-        <!-- console and api dependency -->
+        <!-- Console dependency -->
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat</artifactId>
@@ -55,12 +56,6 @@
 
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-rest-api</artifactId>
-            <version>${project.version}</version>
-            <type>war</type>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console</artifactId>
             <version>${project.version}</version>
             <type>war</type>
@@ -78,10 +73,6 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-commons</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-broker-core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
@@ -193,31 +184,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>apache-activemq</artifactId>
-            <version>${activemq.version}</version>
-            <classifier>bin</classifier>
-            <type>tar.gz</type>
-            <exclusions>
-                <!--
-                  - Mark log4j as excluded. Although that has no real
-                  - effect here since we specifying the tar.gz file, which
-                  - cannot be changed. However the assembly descriptor
-                  - will still filter out those dependencies and the
-                  - exclusions here fix the dependency report.
-                  -->
-                <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-log4j12</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>javax.persistence</artifactId>
             <!--TODO manage version in central place -->
@@ -323,208 +289,6 @@
                             <tarLongFileMode>posix</tarLongFileMode>
                             <finalName>kapua-console-${project.version}</finalName>
                             <appendAssemblyId>false</appendAssemblyId>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>unpack-activemq</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.apache.activemq</groupId>
-                                    <artifactId>apache-activemq</artifactId>
-                                    <classifier>bin</classifier>
-                                    <type>tar.gz</type>
-                                    <outputDirectory>target/dependencies/activemq</outputDirectory>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>copy</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>com.google.guava</groupId>
-                                    <artifactId>guava</artifactId>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>target/broker_dependency</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>com.google.inject</groupId>
-                                    <artifactId>guice</artifactId>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>target/broker_dependency</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>javax.inject</groupId>
-                                    <artifactId>javax.inject</artifactId>
-                                    <version>1</version>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>target/broker_dependency</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>aopalliance</groupId>
-                                    <artifactId>aopalliance</artifactId>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>target/broker_dependency</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.eclipse.persistence</groupId>
-                                    <artifactId>javax.persistence</artifactId>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>target/broker_dependency</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.eclipse.persistence</groupId>
-                                    <artifactId>eclipselink</artifactId>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>target/broker_dependency</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>commons-configuration</groupId>
-                                    <artifactId>commons-configuration</artifactId>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>target/broker_dependency</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.springframework.security</groupId>
-                                    <artifactId>spring-security-core</artifactId>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>target/broker_dependency</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>io.dropwizard.metrics</groupId>
-                                    <artifactId>metrics-core</artifactId>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>target/broker_dependency</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>com.h2database</groupId>
-                                    <artifactId>h2</artifactId>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>target/broker_dependency</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>com.google.protobuf</groupId>
-                                    <artifactId>protobuf-java</artifactId>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>target/broker_dependency</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.apache.shiro</groupId>
-                                    <artifactId>shiro-core</artifactId>
-                                    <version>${shiro.version}</version>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>target/broker_dependency</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.eclipse.paho</groupId>
-                                    <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
-                                    <version>${paho.version}</version>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>target/broker_dependency</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.apache.commons</groupId>
-                                    <artifactId>commons-pool2</artifactId>
-                                    <version>2.3</version>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>target/broker_dependency</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.bitbucket.b_c</groupId>
-                                    <artifactId>jose4j</artifactId>
-                                    <version>0.5.2</version>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>target/broker_dependency</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.elasticsearch</groupId>
-                                    <artifactId>elasticsearch</artifactId>
-                                    <version>${elasticsearch.version}</version>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>target/broker_dependency</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.reflections</groupId>
-                                    <artifactId>reflections</artifactId>
-                                    <version>${reflections.version}</version>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>target/broker_dependency</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.javassist</groupId>
-                                    <artifactId>javassist</artifactId>
-                                    <version>${javassist.version}</version>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>target/broker_dependency</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>commons-io</groupId>
-                                    <artifactId>commons-io</artifactId>
-                                    <version>${commons-io.version}</version>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>target/broker_dependency</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.apache.commons</groupId>
-                                    <artifactId>commons-lang3</artifactId>
-                                    <version>${commons-lang.version}</version>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>target/broker_dependency</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.liquibase</groupId>
-                                    <artifactId>liquibase-core</artifactId>
-                                    <version>${liquibase.version}</version>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>target/broker_dependency</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.yaml</groupId>
-                                    <artifactId>snakeyaml</artifactId>
-                                    <version>${snakeyaml.version}</version>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>target/broker_dependency</outputDirectory>
-                                </artifactItem>
-                            </artifactItems>
                         </configuration>
                     </execution>
                 </executions>

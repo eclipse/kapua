@@ -32,39 +32,6 @@
             <type>pom</type>
         </dependency>
 
-        <!-- console and api dependency -->
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat</artifactId>
-            <version>${tomcat.version}</version>
-            <type>tar.gz</type>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tomcat.extras</groupId>
-            <artifactId>tomcat-extras-juli</artifactId>
-            <version>${tomcat.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tomcat.extras</groupId>
-            <artifactId>tomcat-extras-juli-adapters</artifactId>
-            <version>${tomcat.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-rest-api</artifactId>
-            <version>${project.version}</version>
-            <type>war</type>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-console</artifactId>
-            <version>${project.version}</version>
-            <type>war</type>
-        </dependency>
-
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-guice</artifactId>
@@ -127,8 +94,7 @@
             <artifactId>kapua-user-internal</artifactId>
         </dependency>
 
-        <!-- dependencies added otherwise the unix assembly doesn't know the arctifact
-            to add -->
+        <!-- dependencies added otherwise the unix assembly doesn't know the arctifact to add -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-asset-api</artifactId>
