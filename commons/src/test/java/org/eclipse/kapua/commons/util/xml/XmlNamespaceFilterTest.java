@@ -20,7 +20,9 @@ public class XmlNamespaceFilterTest extends Assert {
 
     @Test
     public void testConstructor() throws Exception {
+        @SuppressWarnings("unused")
         XmlNamespaceFilter testConsturctor1 = new XmlNamespaceFilter("string", true);
+        @SuppressWarnings("unused")
         XmlNamespaceFilter testConsturctor2 = new XmlNamespaceFilter("string", false);
     }
 

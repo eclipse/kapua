@@ -18,8 +18,6 @@ import org.junit.Test;
 
 /**
  * {@link MetricsService} factory.
- * 
- * @since 1.0
  */
 public class MetricServiceFactoryTest extends Assert {
 
@@ -29,6 +27,7 @@ public class MetricServiceFactoryTest extends Assert {
     public void testConstructor() throws Exception {
         Constructor<MetricServiceFactory> metricFactory = MetricServiceFactory.class.getDeclaredConstructor();
         metricFactory.setAccessible(true);
+        @SuppressWarnings("unused")
         MetricServiceFactory metricFactoryTest = metricFactory.newInstance();
     }
 

@@ -27,6 +27,7 @@ public class KapuaExceptionUtilsTest extends Assert {
     public void testConstructor() throws Exception {
         Constructor<KapuaExceptionUtils> exceptionUtil = KapuaExceptionUtils.class.getDeclaredConstructor();
         exceptionUtil.setAccessible(true);
+        @SuppressWarnings("unused")
         KapuaExceptionUtils exceptionUtilTest = exceptionUtil.newInstance();
     }
 
