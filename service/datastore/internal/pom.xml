@@ -74,7 +74,7 @@
         </dependency>
 
         <!-- ATTENTION: A dependency must be declared exactly once either in regular dependencies
-             			or in the test dependencies -->
+                         or in the test dependencies -->
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>

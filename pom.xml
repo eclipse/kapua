@@ -345,8 +345,12 @@
                         <configLocation>checkstyle/kapua.xml</configLocation>
                         <suppressionsLocation>checkstyle/kapua.suppressions.xml</suppressionsLocation>
 
-                        <includeTestResources>true</includeTestResources>
-                        <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                        <includeResources>false</includeResources>
+                        <includeTestResources>false</includeTestResources>
+ 
+                        <sourceDirectory>${project.basedir}</sourceDirectory>
+                        <includes>**/*.java, **/*.xml</includes>
+                        <excludes>**/target/**/*, **/.settings/**/*, maven/**/*</excludes>
                     </configuration>
                 </plugin>
             </plugins>

@@ -1,31 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    /*******************************************************************************
-     * Copyright (c) 2011, 2017 Eurotech and/or its affiliates
-     *
-     * All rights reserved. This program and the accompanying materials
-     * are made available under the terms of the Eclipse Public License v1.0
-     * which accompanies this distribution, and is available at
-     * http://www.eclipse.org/legal/epl-v10.html
-     *
-     * Contributors:
-     *      Eurotech - initial API and implementation
-     *******************************************************************************/
- -->
+    Copyright (c) 2017 Eurotech and/or its affiliates and others
 
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
 <!DOCTYPE xml>
 <configuration>
 
-	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<encoder>
-			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
-			</pattern>
-		</encoder>
-	</appender>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
 
-	<logger name="liquibase" level="WARN" />
+    <logger name="liquibase" level="WARN" />
 
-	<root level="info">
-		<appender-ref ref="STDOUT" />
-	</root>
+    <root level="info">
+        <appender-ref ref="STDOUT" />
+    </root>
 </configuration>

@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others All 
-    rights reserved. This program and the accompanying materials are made available 
-    under the terms of the Eclipse Public License v1.0 which accompanies this 
-    distribution, and is available at http://www.eclipse.org/legal/epl-v10.html 
-    Contributors: Eurotech - initial API and implementation -->
+<!--
+    Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
 
 <!-- This web.xml file is not required when using Servlet 3.0 container, 
     see implementation details http://jersey.java.net/nonav/documentation/latest/jax-rs.html -->
@@ -44,9 +50,9 @@
         <init-param>
             <param-name>jersey.config.server.provider.packages</param-name>
             <param-value>
-	            io.swagger.jaxrs.listing<!-- ,
-	            {your.application.packages}-->
-	        </param-value>
+                io.swagger.jaxrs.listing<!-- ,
+                {your.application.packages}-->
+            </param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>

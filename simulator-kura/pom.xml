@@ -1,267 +1,267 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2017 Red Hat Inc
-   
+    Copyright (c) 2017 Red Hat Inc and others
+
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
     http://www.eclipse.org/legal/epl-v10.html
-   
+
     Contributors:
         Red Hat Inc - initial API and implementation
  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.eclipse.kapua</groupId>
-		<artifactId>kapua</artifactId>
-		<version>0.3.0-SNAPSHOT</version>
-		<relativePath>..</relativePath>
-	</parent>
+    <parent>
+        <groupId>org.eclipse.kapua</groupId>
+        <artifactId>kapua</artifactId>
+        <version>0.3.0-SNAPSHOT</version>
+        <relativePath>..</relativePath>
+    </parent>
 
-	<artifactId>kapua-simulator-kura</artifactId>
+    <artifactId>kapua-simulator-kura</artifactId>
 
-	<description>This is a framework for simulating Eclipse Kura IoT gateway instances</description>
+    <description>This is a framework for simulating Eclipse Kura IoT gateway instances</description>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<docker.account>kapua</docker.account>
-	</properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <docker.account>kapua</docker.account>
+    </properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.eclipse.paho</groupId>
-			<artifactId>org.eclipse.paho.client.mqttv3</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.neoscada.utils</groupId>
-			<artifactId>org.eclipse.scada.utils</artifactId>
-			<version>0.4.0</version>
-		</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>org.eclipse.paho</groupId>
+            <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.neoscada.utils</groupId>
+            <artifactId>org.eclipse.scada.utils</artifactId>
+            <version>0.4.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>com.google.protobuf</groupId>
-			<artifactId>protobuf-java</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
-			<version>6.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>6.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jul-to-slf4j</artifactId>
-			<version>${slf4j.version}</version>
-			<optional>true</optional>
-		</dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+            <optional>true</optional>
+        </dependency>
 
-		<dependency>
-			<groupId>commons-cli</groupId>
-			<artifactId>commons-cli</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>commons-cli</groupId>
+            <artifactId>commons-cli</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<optional>true</optional>
-		</dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <optional>true</optional>
+        </dependency>
 
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>org.assertj</groupId>
-			<artifactId>assertj-core</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>com.github.os72</groupId>
-				<artifactId>protoc-jar-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<protocVersion>2.6.1</protocVersion>
-							<includeStdTypes>true</includeStdTypes>
-							<inputDirectories>
-								<include>src/main/protobuf</include>
-							</inputDirectories>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.github.os72</groupId>
+                <artifactId>protoc-jar-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <protocVersion>2.6.1</protocVersion>
+                            <includeStdTypes>true</includeStdTypes>
+                            <inputDirectories>
+                                <include>src/main/protobuf</include>
+                            </inputDirectories>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<configuration>
-					<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-					</transformer>
-					<shadedArtifactAttached>true</shadedArtifactAttached>
-					<filters>
-						<filter>
-							<artifact>*:*</artifact>
-							<excludes>
-								<exclude>META-INF/*.SF</exclude>
-								<exclude>META-INF/*.DSA</exclude>
-								<exclude>META-INF/*.RSA</exclude>
-								<exclude>META-INF/maven/**</exclude>
-								<exclude>META-INF/DEPENDENCIES</exclude>
-								<exclude>bundle.properties</exclude>
-								<exclude>about.*</exclude>
-								<exclude>OSGI-OPT/**</exclude>
-								<exclude>LICENSE</exclude>
-							</excludes>
-						</filter>
-					</filters>
-					<transformers>
-						<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-							<mainClass>org.eclipse.kapua.kura.simulator.main.SimulatorRunner</mainClass>
-						</transformer>
-						<transformer implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer">
-							<addHeader>false</addHeader>
-						</transformer>
-						<transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
-					</transformers>
-					<shadedArtifactAttached>true</shadedArtifactAttached>
-					<shadedClassifierName>app</shadedClassifierName>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <configuration>
+                    <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                    </transformer>
+                    <shadedArtifactAttached>true</shadedArtifactAttached>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/*.SF</exclude>
+                                <exclude>META-INF/*.DSA</exclude>
+                                <exclude>META-INF/*.RSA</exclude>
+                                <exclude>META-INF/maven/**</exclude>
+                                <exclude>META-INF/DEPENDENCIES</exclude>
+                                <exclude>bundle.properties</exclude>
+                                <exclude>about.*</exclude>
+                                <exclude>OSGI-OPT/**</exclude>
+                                <exclude>LICENSE</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                    <transformers>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                            <mainClass>org.eclipse.kapua.kura.simulator.main.SimulatorRunner</mainClass>
+                        </transformer>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer">
+                            <addHeader>false</addHeader>
+                        </transformer>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
+                    </transformers>
+                    <shadedArtifactAttached>true</shadedArtifactAttached>
+                    <shadedClassifierName>app</shadedClassifierName>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
-			<plugin>
-				<groupId>io.fabric8</groupId>
-				<artifactId>docker-maven-plugin</artifactId>
-				<configuration>
-					<images>
-						<image>
-							<name>${docker.account}/kura-simulator</name>
-							<build>
-								<from>java:8-jre-alpine</from>
-								<maintainer>Jens Reimann &lt;jreimann@redhat.com&gt;</maintainer>
-								<assembly>
-									<mode>dir</mode>
-									<targetDir>/opt/${project.artifactId}</targetDir>
-									<descriptor>kura-simulator.xml</descriptor>
-								</assembly>
-								<runCmds>
-									<runCmd>adduser -D -g "" simulator</runCmd>
-								</runCmds>
-								<user>simulator</user>
-								<entryPoint>
-									<exec>
-										<arg>java</arg>
-										<arg>-Dlogback.configurationFile=/opt/${project.artifactId}/logback.xml</arg>
-										<arg>-cp</arg>
-										<arg>/opt/${project.artifactId}/${project.artifactId}-${project.version}-app.jar</arg>
-										<arg>org.eclipse.kapua.kura.simulator.main.SimulatorRunner</arg>
-									</exec>
-								</entryPoint>
-							</build>
-						</image>
-					</images>
-				</configuration>
-			</plugin>
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <configuration>
+                    <images>
+                        <image>
+                            <name>${docker.account}/kura-simulator</name>
+                            <build>
+                                <from>java:8-jre-alpine</from>
+                                <maintainer>Jens Reimann &lt;jreimann@redhat.com&gt;</maintainer>
+                                <assembly>
+                                    <mode>dir</mode>
+                                    <targetDir>/opt/${project.artifactId}</targetDir>
+                                    <descriptor>kura-simulator.xml</descriptor>
+                                </assembly>
+                                <runCmds>
+                                    <runCmd>adduser -D -g "" simulator</runCmd>
+                                </runCmds>
+                                <user>simulator</user>
+                                <entryPoint>
+                                    <exec>
+                                        <arg>java</arg>
+                                        <arg>-Dlogback.configurationFile=/opt/${project.artifactId}/logback.xml</arg>
+                                        <arg>-cp</arg>
+                                        <arg>/opt/${project.artifactId}/${project.artifactId}-${project.version}-app.jar</arg>
+                                        <arg>org.eclipse.kapua.kura.simulator.main.SimulatorRunner</arg>
+                                    </exec>
+                                </entryPoint>
+                            </build>
+                        </image>
+                    </images>
+                </configuration>
+            </plugin>
 
-		</plugins>
+        </plugins>
 
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>io.fabric8</groupId>
-					<artifactId>docker-maven-plugin</artifactId>
-					<configuration>
-						<images>
-							<image>
-								<name>${docker.account}/kura-simulator</name>
-								<build>
-									<tags>
-										<tag>${project.version}</tag>
-										<tag>${timestamp}</tag>
-									</tags>
-								</build>
-							</image>
-						</images>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>io.fabric8</groupId>
+                    <artifactId>docker-maven-plugin</artifactId>
+                    <configuration>
+                        <images>
+                            <image>
+                                <name>${docker.account}/kura-simulator</name>
+                                <build>
+                                    <tags>
+                                        <tag>${project.version}</tag>
+                                        <tag>${timestamp}</tag>
+                                    </tags>
+                                </build>
+                            </image>
+                        </images>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
 
-	</build>
+    </build>
 
-	<profiles>
-		<profile>
-			<id>release</id>
-			<build>
-				<pluginManagement>
-					<plugins>
-						<plugin>
-							<groupId>io.fabric8</groupId>
-							<artifactId>docker-maven-plugin</artifactId>
-							<configuration>
-								<images>
-									<image>
-										<name>${docker.account}/kura-simulator</name>
-										<build>
-											<tags>
-												<tag>latest</tag>
-												<tag>${project.version}</tag>
-												<tag>${timestamp}</tag>
-											</tags>
-										</build>
-									</image>
-								</images>
-							</configuration>
-						</plugin>
-					</plugins>
-				</pluginManagement>
-			</build>
-		</profile>
-	</profiles>
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>io.fabric8</groupId>
+                            <artifactId>docker-maven-plugin</artifactId>
+                            <configuration>
+                                <images>
+                                    <image>
+                                        <name>${docker.account}/kura-simulator</name>
+                                        <build>
+                                            <tags>
+                                                <tag>latest</tag>
+                                                <tag>${project.version}</tag>
+                                                <tag>${timestamp}</tag>
+                                            </tags>
+                                        </build>
+                                    </image>
+                                </images>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
