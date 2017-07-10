@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.request.internal;
 
@@ -28,7 +29,9 @@ import org.eclipse.kapua.service.device.management.request.GenericRequestFactory
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestChannel;
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestMessage;
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestPayload;
+import org.eclipse.kapua.service.device.management.response.KapuaResponseChannel;
 import org.eclipse.kapua.service.device.management.response.KapuaResponseMessage;
+import org.eclipse.kapua.service.device.management.response.KapuaResponsePayload;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
@@ -43,7 +46,7 @@ public class DeviceRequestManagementServiceImpl implements DeviceRequestManageme
     private static final GenericRequestFactory FACTORY = LOCATOR.getFactory(GenericRequestFactory.class);
 
     @Override
-    public KapuaResponseMessage exec(
+    public KapuaResponseMessage<KapuaResponseChannel, KapuaResponsePayload> exec(
             GenericRequestMessage requestInput,
             Long timeout) throws KapuaException {
         //
@@ -57,22 +60,22 @@ public class DeviceRequestManagementServiceImpl implements DeviceRequestManageme
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         Actions action;
         switch (requestInput.getChannel().getMethod()) {
-            case EXECUTE:
-                action = Actions.execute;
-                break;
-            case READ:
-            case OPTIONS:
-                action = Actions.read;
-                break;
-            case CREATE:
-            case WRITE:
-                action = Actions.write;
-                break;
-            case DELETE:
-                action = Actions.delete;
-                break;
-            default:
-                throw new KapuaRuntimeException(KapuaErrorCodes.OPERATION_NOT_SUPPORTED);
+        case EXECUTE:
+            action = Actions.execute;
+            break;
+        case READ:
+        case OPTIONS:
+            action = Actions.read;
+            break;
+        case CREATE:
+        case WRITE:
+            action = Actions.write;
+            break;
+        case DELETE:
+            action = Actions.delete;
+            break;
+        default:
+            throw new KapuaRuntimeException(KapuaErrorCodes.OPERATION_NOT_SUPPORTED);
         }
         authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, action, requestInput.getScopeId()));
 
@@ -98,8 +101,8 @@ public class DeviceRequestManagementServiceImpl implements DeviceRequestManageme
 
         //
         // Do exec
-        DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(genericRequestMessage, timeout);
-        KapuaResponseMessage responseMessage = deviceApplicationCall.send();
+        DeviceCallExecutor<?, ?, ?, KapuaResponseMessage<KapuaResponseChannel, KapuaResponsePayload>> deviceApplicationCall = new DeviceCallExecutor<>(genericRequestMessage, timeout);
+        KapuaResponseMessage<KapuaResponseChannel, KapuaResponsePayload> responseMessage = deviceApplicationCall.send();
 
         //
         // Create event
