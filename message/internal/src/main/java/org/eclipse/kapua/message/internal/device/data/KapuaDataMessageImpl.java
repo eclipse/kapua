@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.message.internal.device.data;
 
@@ -18,10 +19,9 @@ import org.eclipse.kapua.message.internal.KapuaMessageImpl;
 
 /**
  * Kapua data message object reference implementation.
- *
- * @since 1.0
- *
  */
 public class KapuaDataMessageImpl extends KapuaMessageImpl<KapuaDataChannel, KapuaDataPayload> implements KapuaDataMessage {
+
+    private static final long serialVersionUID = 1L;
 
 }

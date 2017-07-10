@@ -30,11 +30,10 @@ import org.eclipse.kapua.model.id.KapuaId;
  * how KapuaPayload are modelled and how they can be constructed.<br>
  * The KapuaMessage class is used both by the messages/search API to return message results from the platform,
  * as well as by messages/store and messages/publish API to send messages to the platform.
- *
- * @since 1.0
- *
  */
 public class KapuaMessageImpl<C extends KapuaChannel, P extends KapuaPayload> implements Comparable<KapuaMessageImpl<C, P>>, KapuaMessage<C, P> {
+
+    private static final long serialVersionUID = 1L;
 
     private UUID id;
 
