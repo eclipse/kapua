@@ -9,50 +9,37 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.role.dialog;
+package org.eclipse.kapua.app.console.module.authorization.client.role.dialog;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.kapua.app.console.commons.client.ui.widget.EntityGridField;
 import org.eclipse.kapua.app.console.commons.client.ui.widget.EntityGridFieldToolbar;
-import org.eclipse.kapua.app.console.commons.client.ui.widget.EnumComboBox;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsoleRoleMessages;
-import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtDomain;
-import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtPermission.GwtAction;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRolePermission;
 
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.google.gwt.core.client.GWT;
 
-public class RolePermissionNewGridField extends EntityGridField<GwtRolePermission> {
+public class RolePermissionEditGridField extends RolePermissionNewGridField {
 
     private final static ConsoleRoleMessages MSGS = GWT.create(ConsoleRoleMessages.class);
 
-    protected RolePermissionNewGridField(GwtSession currentSession) {
+    protected RolePermissionEditGridField(GwtSession currentSession) {
         super(currentSession);
     }
 
     @Override
     protected List<ColumnConfig> getColumns() {
-        List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
+        List<ColumnConfig> columnConfigs = super.getColumns();
 
-        EnumComboBox<GwtDomain> domainCombo = new EnumComboBox<GwtDomain>();
-//        domainCombo.add(GwtDomain.values());
+        ColumnConfig columnConfig = new ColumnConfig("id", MSGS.dialogEditFieldGridRolePermissionId(), 80);
+        columnConfigs.add(0, columnConfig);
 
-        ColumnConfig columnConfig = new ColumnConfig("domain", MSGS.dialogAddFieldGridRolePermissionDomain(), 100);
-        columnConfig.setEditor(new GwtDomainComboCellEditor(domainCombo));
+        columnConfig = new ColumnConfig("createdBy", MSGS.dialogEditFieldGridRolePermissionCreatedBy(), 100);
         columnConfigs.add(columnConfig);
 
-        EnumComboBox<GwtAction> actionCombo = new EnumComboBox<GwtAction>();
-        actionCombo.add(GwtAction.values());
-
-        columnConfig = new ColumnConfig("action", MSGS.dialogAddFieldGridRolePermissionAction(), 100);
-        columnConfig.setEditor(new GwtActionComboCellEditor(actionCombo));
-        columnConfigs.add(columnConfig);
-
-        columnConfig = new ColumnConfig("targetScopeId", MSGS.dialogAddFieldGridRolePermissionTargetScopeId(), 100);
+        columnConfig = new ColumnConfig("createdOnFormatted", MSGS.dialogEditFieldGridRolePermissionCreatedOn(), 100);
         columnConfigs.add(columnConfig);
 
         return columnConfigs;

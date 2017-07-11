@@ -9,9 +9,9 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.role.dialog;
+package org.eclipse.kapua.app.console.module.authorization.client.role.dialog;
 
-import org.eclipse.kapua.app.console.client.role.RolePermissionGrid;
+import org.eclipse.kapua.app.console.module.authorization.client.role.RolePermissionGrid;
 import org.eclipse.kapua.app.console.commons.client.ui.dialog.entity.EntityDeleteDialog;
 import org.eclipse.kapua.app.console.commons.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;

@@ -19,13 +19,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.client.account.AccountDetailsView;
 import org.eclipse.kapua.app.console.client.account.AccountView;
 import org.eclipse.kapua.app.console.client.connection.ConnectionView;
+import org.eclipse.kapua.app.console.commons.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.data.client.DataView;
 import org.eclipse.kapua.app.console.client.device.DevicesView;
 import org.eclipse.kapua.app.console.module.authorization.client.group.GroupView;
-import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.client.role.RoleView;
 import org.eclipse.kapua.app.console.commons.client.ui.color.Color;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.ContentPanel;
 import org.eclipse.kapua.app.console.client.welcome.WelcomeView;
@@ -65,8 +64,8 @@ import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountServiceAsync;
 import org.eclipse.kapua.app.console.shared.service.GwtConsoleService;
-import org.eclipse.kapua.app.console.shared.service.GwtConsoleServiceAsync;
 import org.eclipse.kapua.app.console.client.tag.TagView;
+import org.eclipse.kapua.app.console.shared.service.GwtConsoleServiceAsync;
 
 public class WestNavigationView extends LayoutContainer {
 
@@ -247,17 +246,6 @@ public class WestNavigationView extends LayoutContainer {
                             centerPanel.add(panel);
                             centerPanel.layout();
                             dashboardSelected = false;
-                        } else if ("role".equals(selectedId)) {
-
-                            panel.setIcon(new KapuaIcon(IconSet.STREET_VIEW));
-                            panel.setHeading(MSGS.roles());
-
-                            RoleView userView = new RoleView(currentSession);
-                            panel.add(userView);
-
-                            centerPanel.add(panel);
-                            centerPanel.layout();
-                            dashboardSelected = false;
                         } else if ("groups".equals(selectedId)) {
                             panel.setIcon(new KapuaIcon(IconSet.OBJECT_GROUP));
                             panel.setHeading(MSGS.groups());
@@ -399,9 +387,6 @@ public class WestNavigationView extends LayoutContainer {
             }
             if (currentSession.hasUserReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("user", MSGS.users(), IconSet.USERS), false);
-            }
-            if (currentSession.hasRoleReadPermission()) {
-                cloudResourcesTreeStore.add(newItem("role", MSGS.roles(), IconSet.STREET_VIEW), false);
             }
             if (currentSession.hasAccountReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("mysettings", MSGS.settings(), IconSet.COG), false);

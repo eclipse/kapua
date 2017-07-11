@@ -9,21 +9,22 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.role.dialog;
+package org.eclipse.kapua.app.console.module.authorization.client.role.dialog;
+
 
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import org.eclipse.kapua.app.console.commons.client.ui.widget.ComboEnumCellEditor;
-import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtPermission.GwtAction;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtDomain;
 
-public class GwtActionComboCellEditor extends ComboEnumCellEditor<GwtAction> {
+public class GwtDomainComboCellEditor extends ComboEnumCellEditor<GwtDomain> {
 
-    public GwtActionComboCellEditor(SimpleComboBox<GwtAction> field) {
+    public GwtDomainComboCellEditor(SimpleComboBox<GwtDomain> field) {
         super(field);
     }
 
     @Override
-    protected GwtAction convertStringValue(String value) {
-        return GwtAction.valueOf(value);
+    protected GwtDomain convertStringValue(String value) {
+        return new GwtDomain(value);
     }
 
 }

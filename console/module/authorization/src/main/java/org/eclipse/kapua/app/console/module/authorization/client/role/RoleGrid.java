@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.role;
+package org.eclipse.kapua.app.console.module.authorization.client.role;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -11,19 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.commons.client.views;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
+public abstract class AbstractViewDescriptor implements ViewDescriptor{
 
-public interface ViewDescriptor extends IsSerializable, Comparable<ViewDescriptor> {
-    String getViewId();
-
-    IconSet getIcon();
-
-    Integer getOrder();
-
-    String getName();
-
-    View getViewInstance(GwtSession currentSession);
-
+    @Override
+    public int compareTo(ViewDescriptor o) {
+        return getOrder().compareTo(o.getOrder());
+    }
 }
