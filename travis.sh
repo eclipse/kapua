@@ -28,7 +28,7 @@ HEARTBEAT_PROCESS_PID=$!
 
 ### Build itself
 
-mvn -Dorg.eclipse.kapua.qa.waitMultiplier=2.0 -Dgwt.compiler.localWorkers=2 -Pjavadoc >> $OUTPUT 2>&1
+mvn -B -Dorg.eclipse.kapua.qa.waitMultiplier=2.0 -Dgwt.compiler.localWorkers=2 -Pjavadoc,console >> $OUTPUT 2>&1
 tail_log
 
 ### Cleaning up heartbeat process
