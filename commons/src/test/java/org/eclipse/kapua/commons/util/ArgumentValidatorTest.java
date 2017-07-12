@@ -474,6 +474,7 @@ public class ArgumentValidatorTest extends Assert {
         Date startTimeOK1 = new Date(-2017, -10, -10);
         Date endTimeOK1 = new Date(2018, 1, 1);
 
+        @SuppressWarnings("unused")
         Date startTimeOK2 = new Date(2017, 1, 1);
         Date endTimeOK2 = new Date(2018, -1, -1);
 
