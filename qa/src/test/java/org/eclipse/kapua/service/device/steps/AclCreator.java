@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.device.steps;
 
@@ -61,27 +62,27 @@ public class AclCreator {
     /**
      * Credential service.
      */
-    private static CredentialService credentialService;
+    private CredentialService credentialService;
 
     /**
      * User service.
      */
-    private static UserService userService;
+    private UserService userService;
 
     /**
      * Accessinfo service.
      */
-    private static AccessInfoService accessInfoService;
+    private AccessInfoService accessInfoService;
 
     /**
      * Account service.
      */
-    private static AccountService accountService;
+    private AccountService accountService;
 
     /**
      * Account factory.
      */
-    private static AccountFactory accountFactory;
+    private AccountFactory accountFactory;
 
     /**
      * Constructor with all support services.
@@ -218,6 +219,7 @@ public class AclCreator {
             CredentialCreator credentialCreator;
             credentialCreator = new CredentialFactoryImpl().newCreator(account.getId(), user.getId(), CredentialType.PASSWORD, "kapua-password", CredentialStatus.ENABLED, null);
             try {
+                @SuppressWarnings("unused")
                 Credential credential = credentialService.create(credentialCreator);
             } catch (KapuaException ke) {
                 // skip

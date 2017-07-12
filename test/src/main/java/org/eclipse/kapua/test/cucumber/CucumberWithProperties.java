@@ -23,7 +23,7 @@ import java.io.IOException;
  */
 public class CucumberWithProperties extends Cucumber {
 
-    public CucumberWithProperties(Class clazz) throws InitializationError, IOException {
+    public CucumberWithProperties(Class<?> clazz) throws InitializationError, IOException {
         super(clazz);
 
         CucumberProperty[] systemProperties = getProperties(clazz);

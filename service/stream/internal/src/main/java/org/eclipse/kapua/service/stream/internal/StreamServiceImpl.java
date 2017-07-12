@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.stream.internal;
 
@@ -15,6 +16,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.message.Message;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.service.device.call.kura.exception.KuraMqttDeviceCallErrorCodes;
 import org.eclipse.kapua.service.device.call.kura.exception.KuraMqttDeviceCallException;
@@ -31,9 +33,9 @@ import java.util.Date;
 @KapuaProvider
 public class StreamServiceImpl implements StreamService {
 
-    @Override public KapuaResponseMessage publish(KapuaDataMessage requestMessage, Long timeout)
+    @Override public KapuaResponseMessage<?, ?> publish(KapuaDataMessage requestMessage, Long timeout)
             throws KapuaException {
-        TransportFacade transportFacade = null;
+        TransportFacade<?,?,TransportMessage<?,?>,?> transportFacade = null;
         try {
             ArgumentValidator.notNull(requestMessage.getClientId(), "clientId");
             ArgumentValidator.notNull(requestMessage.getScopeId(), "scopeId");
@@ -45,7 +47,7 @@ public class StreamServiceImpl implements StreamService {
             //
             // Get Kura to transport translator for the request and vice versa
             Translator<KapuaDataMessage, KuraDataMessage> translatorKapuaKura = getTranslator(KapuaDataMessage.class, KuraDataMessage.class);
-            Translator translatorKuraTransport = getTranslator(KuraDataMessage.class, transportFacade.getMessageClass());
+            Translator<KuraDataMessage,?> translatorKuraTransport = getTranslator(KuraDataMessage.class, transportFacade.getMessageClass());
 
             KuraDataMessage kuraDataMessage = translatorKapuaKura.translate(requestMessage);
 
@@ -56,7 +58,7 @@ public class StreamServiceImpl implements StreamService {
                 kuraDataMessage.setTimestamp(new Date());
 
                 // Send
-                transportFacade.sendAsync((TransportMessage) translatorKuraTransport.translate(kuraDataMessage));
+                transportFacade.sendAsync((TransportMessage<?,?>) translatorKuraTransport.translate(kuraDataMessage));
 
             } catch (KapuaException e) {
                 throw new KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes.CLIENT_SEND_ERROR,
@@ -79,13 +81,14 @@ public class StreamServiceImpl implements StreamService {
     //
     // Private methods
     //
-    private TransportFacade borrowClient()
+    @SuppressWarnings("unchecked")
+    private TransportFacade<?,?,TransportMessage<?,?>,?> borrowClient()
             throws KuraMqttDeviceCallException {
-        TransportFacade transportFacade;
+        TransportFacade<?,?,TransportMessage<?,?>,?> transportFacade;
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
-            TransportClientFactory transportClientFactory = locator.getFactory(TransportClientFactory.class);
-            transportFacade = transportClientFactory.getFacade();
+            TransportClientFactory<?,?,?,?,?,?> transportClientFactory = locator.getFactory(TransportClientFactory.class);
+            transportFacade = (TransportFacade<?, ?, TransportMessage<?, ?>, ?>) transportClientFactory.getFacade();
         } catch (Exception e) {
             throw new KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes.CALL_ERROR,
                     e,
@@ -94,10 +97,9 @@ public class StreamServiceImpl implements StreamService {
         return transportFacade;
     }
 
-    @SuppressWarnings("unchecked")
-    private Translator getTranslator(Class from, Class to)
+    private <T1 extends Message<?,?>,T2 extends Message<?,?>> Translator<T1,T2> getTranslator(Class<T1> from, Class<T2> to)
             throws KuraMqttDeviceCallException {
-        Translator translator;
+        Translator<T1,T2> translator;
         try {
             translator = Translator.getTranslatorFor(from, to);
         } catch (KapuaException e) {

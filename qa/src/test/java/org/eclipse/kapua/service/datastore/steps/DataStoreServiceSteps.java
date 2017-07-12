@@ -8,16 +8,30 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.steps;
 
-import cucumber.api.Scenario;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
-import cucumber.runtime.java.guice.ScenarioScoped;
+import static org.eclipse.kapua.service.datastore.model.query.SortField.ascending;
+import static org.eclipse.kapua.service.datastore.model.query.SortField.descending;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.shiro.SecurityUtils;
 import org.eclipse.kapua.KapuaException;
@@ -39,7 +53,6 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
 import org.eclipse.kapua.service.datastore.ClientInfoRegistryService;
 import org.eclipse.kapua.service.datastore.DatastoreJAXBContextProvider;
-import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
 import org.eclipse.kapua.service.datastore.client.model.InsertResponse;
@@ -88,24 +101,13 @@ import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import static org.eclipse.kapua.service.datastore.model.query.SortField.ascending;
-import static org.eclipse.kapua.service.datastore.model.query.SortField.descending;
+import cucumber.api.Scenario;
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+import cucumber.runtime.java.guice.ScenarioScoped;
 
 /**
  * Steps used in Datastore scenarios.
@@ -122,8 +124,6 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
     private DeviceFactory deviceFactory;
 
     private MessageStoreService messageStoreService;
-
-    private DatastoreObjectFactory datastoreObjectFactory;
 
     private StorablePredicateFactory storablePredicateFactory;
 
@@ -153,7 +153,6 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         deviceRegistryService = locator.getService(DeviceRegistryService.class);
         deviceFactory = locator.getFactory(DeviceFactory.class);
         messageStoreService = locator.getService(MessageStoreService.class);
-        datastoreObjectFactory = locator.getFactory(DatastoreObjectFactory.class);
         storablePredicateFactory = locator.getFactory(StorablePredicateFactory.class);
         channelInfoRegistryService = locator.getService(ChannelInfoRegistryService.class);
         channelInfoRegistryServiceProxy = new ChannelInfoRegistryServiceProxy();
@@ -328,6 +327,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         stepData.put(idKey, storeId);
     }
 
+    @SuppressWarnings("unchecked")
     @Given("^I store the messages from list \"(.*)\" and remember the IDs as \"(.*)\"$")
     public void insertRandomMessagesIntoDatastore(String msgListKey, String idListKey) throws KapuaException {
 
@@ -372,6 +372,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         messageStoreService.delete(account.getId(), msgId);
     }
 
+    @SuppressWarnings("unchecked")
     @When("^I pick the ID number (\\d+) from the list \"(.*)\" and remember it as \"(.*)\"$")
     public void pickAMessageIdFromAList(int index, String lstKey, String idKey) {
 
@@ -405,6 +406,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         stepData.put(msgKey, tmpMsg);
     }
 
+    @SuppressWarnings("unchecked")
     @When("^I search for messages with IDs from the list \"(.*)\" and store them in the list \"(.*)\"$")
     public void searchForMessagesInTheDatastore(String idListKey, String msgListKey) throws KapuaException {
 
@@ -675,6 +677,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Then("^The datastore messages in list \"(.*)\" matches the prepared messages in list \"(.*)\"$")
     public void checkThatTheStoredMessagesMatchTheOriginals(String datastoreMsgLstKey, String originalMsgLstKey) throws KapuaException {
 
@@ -716,6 +719,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         assertNull(channelInfo);
     }
 
+    @SuppressWarnings("unchecked")
     @Then("^The channel info items \"(.+)\" match the prepared messages in \"(.+)\"$")
     public void checkThatChannelInfoMatchesTheMessageData(String channelKey, String msgKey) {
 

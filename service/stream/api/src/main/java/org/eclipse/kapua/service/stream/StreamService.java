@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.stream;
 
@@ -17,6 +18,6 @@ import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.management.response.KapuaResponseMessage;
 
 public interface StreamService extends KapuaService {
-    KapuaResponseMessage publish(KapuaDataMessage message, Long timeout)
+    KapuaResponseMessage<?,?> publish(KapuaDataMessage message, Long timeout)
             throws KapuaException;
 }
