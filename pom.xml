@@ -357,7 +357,7 @@
  
                         <sourceDirectory>${project.basedir}</sourceDirectory>
                         <includes>**/*.java, **/*.xml</includes>
-                        <excludes>**/target/**/*, **/.settings/**/*, maven/**/*, .maven/**/*</excludes>
+                        <excludes>**/target/**/*, **/.settings/**/*, maven/**/*, .maven/**/*, .idea/**/*</excludes>
                     </configuration>
                 </plugin>
             </plugins>
