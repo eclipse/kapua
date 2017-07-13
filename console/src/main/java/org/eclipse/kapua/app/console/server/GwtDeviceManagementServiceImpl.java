@@ -161,7 +161,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             DevicePackageFactory devicePackageFactory = locator.getFactory(DevicePackageFactory.class);
 
             DevicePackageDownloadRequest packageDownloadRequest = devicePackageFactory.newPackageDownloadRequest();
-            packageDownloadRequest.setURI(new URI(gwtPackageInstallRequest.getPackageURI()));
+            packageDownloadRequest.setUri(new URI(gwtPackageInstallRequest.getPackageURI()));
             packageDownloadRequest.setName(gwtPackageInstallRequest.getPackageName());
             packageDownloadRequest.setVersion(gwtPackageInstallRequest.getPackageVersion());
             packageDownloadRequest.setInstall(true); // Always install

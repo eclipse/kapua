@@ -366,7 +366,7 @@ public class SimulatorSteps {
                     request.setInstall(true);
                     request.setName(packageName);
                     request.setVersion(version);
-                    request.setURI(uri);
+                    request.setUri(uri);
 
                     service.downloadExec(account.getId(), device.getId(), request, DEFAULT_REQUEST_TIMEOUT);
                 });
