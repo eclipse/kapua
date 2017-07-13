@@ -38,6 +38,14 @@ public enum ClientSettingsKey implements SettingKey {
      */
     ELASTICSEARCH_CLUSTER("datastore.elasticsearch.cluster"),
     /**
+     * Elasticsearch max retry attempt (when a timeout occurred in the rest call)
+     */
+    ELASTICSEARCH_REST_TIMEOUT_MAX_RETRY("datastore.elasticsearch.rest.max_retry_attempt"),
+    /**
+     * Elasticsearch max wait time between retry attempt (in milliseconds)
+     */
+    ELASTICSEARCH_REST_TIMEOUT_MAX_WAIT("datastore.elasticsearch.rest.max_wait_time"),
+    /**
      * Query timeout
      */
     QUERY_TIMEOUT("datastore.query.timeout"),

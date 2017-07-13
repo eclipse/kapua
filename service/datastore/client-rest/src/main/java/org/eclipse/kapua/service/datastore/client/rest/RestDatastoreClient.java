@@ -19,6 +19,9 @@ import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.entity.EntityBuilder;
@@ -26,6 +29,9 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.nio.entity.NStringEntity;
 import org.apache.http.util.EntityUtils;
+import org.eclipse.kapua.KapuaErrorCodes;
+import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.service.datastore.client.ClientErrorCodes;
 import org.eclipse.kapua.service.datastore.client.ClientException;
 import org.eclipse.kapua.service.datastore.client.ClientProvider;
@@ -50,6 +56,7 @@ import org.elasticsearch.client.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.codahale.metrics.Counter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -94,9 +101,20 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
     private static final String CLIENT_HITS_MAX_VALUE_EXCEDEED = "Total hits exceeds integer max value";
     private static final String CLIENT_UNDEFINED_MSG = "Elasticsearch client must be not null";
     private static final String CLIENT_CLEANUP_ERROR_MSG = "Cannot cleanup rest datastore driver. Cannot close Elasticsearch client instance";
+
+    private final static Random RANDOM = new Random();
+    private final static int MAX_RETRY_ATTEMPT = ClientSettings.getInstance().getInt(ClientSettingsKey.ELASTICSEARCH_REST_TIMEOUT_MAX_RETRY, 3);
+    private final static long MAX_RETRY_WAIT_TIME = ClientSettings.getInstance().getLong(ClientSettingsKey.ELASTICSEARCH_REST_TIMEOUT_MAX_WAIT, 2500);
+
     private static RestDatastoreClient instance;
 
     private ClientProvider<RestClient> esClientProvider;
+
+    private MetricsService metricService = MetricServiceFactory.getInstance();
+
+    private Counter restCallRuntimeExecCount;
+    private Counter timeoutRetryCount;
+    private Counter timeoutRetryLimitReachedCount;
 
     private ModelContext modelContext;
     private QueryConverter queryConverter;
@@ -140,6 +158,9 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
                     logger.info("Starting Elasticsearch rest client...");
                     esClientProvider = EsRestClientProvider.init();
                     logger.info("Starting Elasticsearch rest client... DONE");
+                    restCallRuntimeExecCount = metricService.getCounter("datastore-rest-client", "rest-client", new String[]{"runtime_exc", "count"});
+                    timeoutRetryCount = metricService.getCounter("datastore-rest-client", "rest-client", new String[]{"timeout_retry", "count"});
+                    timeoutRetryLimitReachedCount = metricService.getCounter("datastore-rest-client", "rest-client", new String[] { "timeout_retry_limit_reached", "count" });
                 }
             }
         }
@@ -184,123 +205,161 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
     @Override
     public InsertResponse insert(InsertRequest insertRequest) throws ClientException {
         checkClient();
+        Map<String, Object> storableMap = modelContext.marshal(insertRequest.getStorable());
+        logger.debug("Insert - converted object: '{}'", storableMap);
+        String json = null;
         try {
-            Map<String, Object> storableMap = modelContext.marshal(insertRequest.getStorable());
-            logger.debug("Insert - converted object: '{}'", storableMap);
-            String json = MAPPER.writeValueAsString(storableMap);
-            HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
-            Response insertResponse = esClientProvider.getClient().performRequest(
-                    POST_ACTION,
-                    getTypePath(insertRequest.getTypeDescriptor()),
-                    Collections.<String, String>emptyMap(), 
-                    entity);
-            if (isRequestSuccessful(insertResponse)) {
-                JsonNode responseNode = MAPPER.readTree(EntityUtils.toString(insertResponse.getEntity()));
-                String id = responseNode.get(KEY_DOC_ID).asText();
-                String index = responseNode.get(KEY_DOC_INDEX).asText();
-                String type = responseNode.get(KEY_DOC_TYPE).asText();
-                return new InsertResponse(id, new TypeDescriptor(index, type));
-            }
-            else {
-                throw new ClientException(ClientErrorCodes.ACTION_ERROR, insertResponse.getStatusLine().getReasonPhrase());
-            }
+            json = MAPPER.writeValueAsString(storableMap);
         } catch (IOException e) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, e.getLocalizedMessage());
+        }
+        HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
+        Response insertResponse = restCallTimeoutHandler(new Callable<Response>() {
+
+            @Override
+            public Response call() throws Exception {
+                return esClientProvider.getClient().performRequest(
+                        POST_ACTION,
+                        getTypePath(insertRequest.getTypeDescriptor()),
+                        Collections.<String, String>emptyMap(),
+                        entity);
+            }
+        }, insertRequest.getTypeDescriptor().getIndex(), "INSERT");
+
+        if (isRequestSuccessful(insertResponse)) {
+            JsonNode responseNode = null;
+            try {
+                responseNode = MAPPER.readTree(EntityUtils.toString(insertResponse.getEntity()));
+            } catch (IOException e) {
+                throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, e.getLocalizedMessage());
+            }
+            String id = responseNode.get(KEY_DOC_ID).asText();
+            String index = responseNode.get(KEY_DOC_INDEX).asText();
+            String type = responseNode.get(KEY_DOC_TYPE).asText();
+            return new InsertResponse(id, new TypeDescriptor(index, type));
+        } else {
+            throw new ClientException(ClientErrorCodes.ACTION_ERROR, (insertResponse != null && insertResponse.getStatusLine() != null) ? insertResponse.getStatusLine().getReasonPhrase() : "null");
         }
     }
 
     @Override
     public UpdateResponse upsert(UpdateRequest updateRequest) throws ClientException {
         checkClient();
+        Map<String, Object> storableMap = modelContext.marshal(updateRequest.getStorable());
+        Map<String, Object> updateRequestMap = new HashMap<>();
+        updateRequestMap.put(KEY_DOC, storableMap);
+        updateRequestMap.put(KEY_DOC_AS_UPSERT, true);
+        logger.debug("Upsert - converted object: '{}'", updateRequestMap);
+        String json = null;
         try {
-            Map<String, Object> storableMap = modelContext.marshal(updateRequest.getStorable());
-            Map<String, Object> updateRequestMap = new HashMap<>();
-            updateRequestMap.put(KEY_DOC, storableMap);
-            updateRequestMap.put(KEY_DOC_AS_UPSERT, true);
-            logger.debug("Upsert - converted object: '{}'", updateRequestMap);
-            String json = MAPPER.writeValueAsString(updateRequestMap);
-            HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
-            Response updateResponse = esClientProvider.getClient().performRequest(
-                    POST_ACTION,
-                    getUpsertPath(updateRequest.getTypeDescriptor(), updateRequest.getId()),
-                    Collections.<String, String>emptyMap(),
-                    entity);
-            if (isRequestSuccessful(updateResponse)) {
-                JsonNode responseNode = MAPPER.readTree(EntityUtils.toString(updateResponse.getEntity()));
-                String id = responseNode.get(KEY_DOC_ID).asText();
-                String index = responseNode.get(KEY_DOC_INDEX).asText();
-                String type = responseNode.get(KEY_DOC_TYPE).asText();
-                return new UpdateResponse(id, new TypeDescriptor(index, type));
-            } else {
-                throw new ClientException(ClientErrorCodes.ACTION_ERROR, updateResponse.getStatusLine().getReasonPhrase());
-            }
-        } catch (Throwable e) {
+            json = MAPPER.writeValueAsString(updateRequestMap);
+        } catch (IOException e) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, e.getLocalizedMessage());
+        }
+        HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
+        Response updateResponse = restCallTimeoutHandler(new Callable<Response>() {
+
+            @Override
+            public Response call() throws Exception {
+                return esClientProvider.getClient().performRequest(
+                        POST_ACTION,
+                        getUpsertPath(updateRequest.getTypeDescriptor(), updateRequest.getId()),
+                        Collections.<String, String>emptyMap(),
+                        entity);
+            }
+
+        }, updateRequest.getTypeDescriptor().getIndex(), "UPSERT");
+        if (isRequestSuccessful(updateResponse)) {
+            JsonNode responseNode = null;
+            try {
+                responseNode = MAPPER.readTree(EntityUtils.toString(updateResponse.getEntity()));
+            } catch (IOException e) {
+                throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, e.getLocalizedMessage());
+            }
+            String id = responseNode.get(KEY_DOC_ID).asText();
+            String index = responseNode.get(KEY_DOC_INDEX).asText();
+            String type = responseNode.get(KEY_DOC_TYPE).asText();
+            return new UpdateResponse(id, new TypeDescriptor(index, type));
+        } else {
+            throw new ClientException(ClientErrorCodes.ACTION_ERROR, (updateResponse != null && updateResponse.getStatusLine() != null) ? updateResponse.getStatusLine().getReasonPhrase() : "null");
         }
     }
 
     @Override
     public BulkUpdateResponse upsert(BulkUpdateRequest bulkUpdateRequest) throws ClientException {
         checkClient();
-        try {
-            StringBuilder bulkOperation = new StringBuilder();
-            for (UpdateRequest upsertRequest : bulkUpdateRequest.getRequest()) {
-                Map<String, Object> storableMap = modelContext.marshal(upsertRequest.getStorable());
-                bulkOperation.append("{ \"update\": {\"_id\": \"")
-                        .append(upsertRequest.getId())
-                        .append("\", \"_type\": \"")
-                        .append(upsertRequest.getTypeDescriptor().getType())
-                        .append("\", \"_index\": \"")
-                        .append(upsertRequest.getTypeDescriptor().getIndex())
-                        .append("\"}\n");
+        StringBuilder bulkOperation = new StringBuilder();
+        for (UpdateRequest upsertRequest : bulkUpdateRequest.getRequest()) {
+            Map<String, Object> storableMap = modelContext.marshal(upsertRequest.getStorable());
+            bulkOperation.append("{ \"update\": {\"_id\": \"")
+                    .append(upsertRequest.getId())
+                    .append("\", \"_type\": \"")
+                    .append(upsertRequest.getTypeDescriptor().getType())
+                    .append("\", \"_index\": \"")
+                    .append(upsertRequest.getTypeDescriptor().getIndex())
+                    .append("\"}\n");
 
-                bulkOperation.append("{ \"doc\": ")
-                        .append(MAPPER.writeValueAsString(storableMap))
-                        .append(", \"doc_as_upsert\": true }\n");
+            bulkOperation.append("{ \"doc\": ");
+            try {
+
+                bulkOperation.append(MAPPER.writeValueAsString(storableMap));
+            } catch (IOException e) {
+                throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, e.getLocalizedMessage());
             }
-            Response updateResponse = esClientProvider.getClient().performRequest(
-                    POST_ACTION,
-                    getBulkPath(),
-                    Collections.<String, String>emptyMap(),
-                    EntityBuilder.create().setText(bulkOperation.toString()).build(),
-                    new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString()));
-            if (isRequestSuccessful(updateResponse)) {
-                BulkUpdateResponse bulkResponse = new BulkUpdateResponse();
-                JsonNode responseNode = MAPPER.readTree(EntityUtils.toString(updateResponse.getEntity()));
-                ArrayNode items = (ArrayNode) responseNode.get(KEY_ITEMS);
-                for (JsonNode item : items) {
-                    JsonNode jsonNode = item.get(KEY_UPDATE);
-                    if (jsonNode != null) {
-                        JsonNode idNode = jsonNode.get(KEY_DOC_ID);
-                        String metricId = null;
-                        if (idNode != null) {
-                            metricId = idNode.asText();
-                        }
-                        String indexName = jsonNode.get(KEY_DOC_INDEX).asText();
-                        String typeName = jsonNode.get(KEY_DOC_TYPE).asText();
-                        int responseCode = jsonNode.get(KEY_STATUS).asInt();
-                        if (!isRequestSuccessful(responseCode)) {
-                            JsonNode failureNode = jsonNode.get(KEY_RESULT);
-                            String failureMessage = MSG_EMPTY_ERROR;
-                            if (failureNode != null) {
-                                failureMessage = failureNode.asText();
-                            }
-                            bulkResponse.add(new UpdateResponse(metricId, new TypeDescriptor(indexName, typeName), failureMessage));
-                            logger.info("Upsert failed [{}, {}, {}]", new Object[] { indexName, typeName, failureMessage });
-                            continue;
-                        }
-                        bulkResponse.add(new UpdateResponse(metricId, new TypeDescriptor(indexName, typeName)));
-                        logger.debug("Upsert on channel metric succesfully executed [{}.{}, {}]", new Object[] { indexName, typeName, metricId });
-                    } else {
-                        throw new ClientException(ClientErrorCodes.ACTION_ERROR, "Unexpected action response");
+            bulkOperation.append(", \"doc_as_upsert\": true }\n");
+        }
+        Response updateResponse = restCallTimeoutHandler(new Callable<Response>() {
+
+            @Override
+            public Response call() throws Exception {
+                return esClientProvider.getClient().performRequest(
+                        POST_ACTION,
+                        getBulkPath(),
+                        Collections.<String, String>emptyMap(),
+                        EntityBuilder.create().setText(bulkOperation.toString()).build(),
+                        new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString()));
+            }
+
+        }, "multi-index", "UPSERT BULK");
+        if (isRequestSuccessful(updateResponse)) {
+            BulkUpdateResponse bulkResponse = new BulkUpdateResponse();
+            JsonNode responseNode = null;
+            try {
+                responseNode = MAPPER.readTree(EntityUtils.toString(updateResponse.getEntity()));
+            } catch (IOException e) {
+                throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, e.getLocalizedMessage());
+            }
+            ArrayNode items = (ArrayNode) responseNode.get(KEY_ITEMS);
+            for (JsonNode item : items) {
+                JsonNode jsonNode = item.get(KEY_UPDATE);
+                if (jsonNode != null) {
+                    JsonNode idNode = jsonNode.get(KEY_DOC_ID);
+                    String metricId = null;
+                    if (idNode != null) {
+                        metricId = idNode.asText();
                     }
+                    String indexName = jsonNode.get(KEY_DOC_INDEX).asText();
+                    String typeName = jsonNode.get(KEY_DOC_TYPE).asText();
+                    int responseCode = jsonNode.get(KEY_STATUS).asInt();
+                    if (!isRequestSuccessful(responseCode)) {
+                        JsonNode failureNode = jsonNode.get(KEY_RESULT);
+                        String failureMessage = MSG_EMPTY_ERROR;
+                        if (failureNode != null) {
+                            failureMessage = failureNode.asText();
+                        }
+                        bulkResponse.add(new UpdateResponse(metricId, new TypeDescriptor(indexName, typeName), failureMessage));
+                        logger.info("Upsert failed [{}, {}, {}]", new Object[] { indexName, typeName, failureMessage });
+                        continue;
+                    }
+                    bulkResponse.add(new UpdateResponse(metricId, new TypeDescriptor(indexName, typeName)));
+                    logger.debug("Upsert on channel metric succesfully executed [{}.{}, {}]", new Object[] { indexName, typeName, metricId });
+                } else {
+                    throw new ClientException(ClientErrorCodes.ACTION_ERROR, "Unexpected action response");
                 }
-                return bulkResponse;
-            } else {
-                throw new ClientException(ClientErrorCodes.ACTION_ERROR, updateResponse.getStatusLine().getReasonPhrase());
             }
-        } catch (IOException e) {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, e.getLocalizedMessage());
+            return bulkResponse;
+        } else {
+            throw new ClientException(ClientErrorCodes.ACTION_ERROR, (updateResponse != null && updateResponse.getStatusLine() != null) ? updateResponse.getStatusLine().getReasonPhrase() : "null");
         }
     }
 
@@ -324,30 +383,34 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
         long totalCount = 0;
         Response queryResponse = null;
         ArrayNode resultsNode = null;
-        try {
-            queryResponse = esClientProvider.getClient().performRequest(
-                    GET_ACTION,
-                    getSearchPath(typeDescriptor),
-                    Collections.<String, String>emptyMap(),
-                    EntityBuilder.create().setText(MAPPER.writeValueAsString(queryMap)).build(),
-                    new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString()));
-            if (isRequestSuccessful(queryResponse)) {
-                JsonNode responseNode = MAPPER.readTree(EntityUtils.toString(queryResponse.getEntity()));
-                JsonNode hitsNode = responseNode.get(KEY_HITS);
-                totalCount = hitsNode.get(KEY_TOTAL).asInt();
-                if (totalCount > Integer.MAX_VALUE) {
-                    throw new ClientException(ClientErrorCodes.ACTION_ERROR, "Total hits exceeds integer max value");
-                }
-                resultsNode = ((ArrayNode) hitsNode.get(KEY_HITS));
-            } else {
-                throw new ClientException(ClientErrorCodes.ACTION_ERROR, queryResponse.getStatusLine().getReasonPhrase());
+        queryResponse = restCallTimeoutHandler(new Callable<Response>() {
+
+            @Override
+            public Response call() throws Exception {
+                return esClientProvider.getClient().performRequest(
+                        GET_ACTION,
+                        getSearchPath(typeDescriptor),
+                        Collections.<String, String>emptyMap(),
+                        EntityBuilder.create().setText(MAPPER.writeValueAsString(queryMap)).build(),
+                        new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString()));
             }
-        } catch (ResponseException re) {
-            handleResponseException(re, typeDescriptor.getIndex(), "QUERY");
-        } catch (JsonProcessingException e) {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, e.getLocalizedMessage());
-        } catch (IOException e) {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, e.getLocalizedMessage());
+
+        }, typeDescriptor.getIndex(), "QUERY");
+        if (isRequestSuccessful(queryResponse)) {
+            JsonNode responseNode;
+            try {
+                responseNode = MAPPER.readTree(EntityUtils.toString(queryResponse.getEntity()));
+            } catch (IOException e) {
+                throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, e.getLocalizedMessage());
+            }
+            JsonNode hitsNode = responseNode.get(KEY_HITS);
+            totalCount = hitsNode.get(KEY_TOTAL).asInt();
+            if (totalCount > Integer.MAX_VALUE) {
+                throw new ClientException(ClientErrorCodes.ACTION_ERROR, "Total hits exceeds integer max value");
+            }
+            resultsNode = ((ArrayNode) hitsNode.get(KEY_HITS));
+        } else if (queryResponse != null) {
+            throw new ClientException(ClientErrorCodes.ACTION_ERROR, (queryResponse != null && queryResponse.getStatusLine() != null) ? queryResponse.getStatusLine().getReasonPhrase() : "null");
         }
         ResultList<T> resultList = new ResultList<>(totalCount);
         if (resultsNode != null && resultsNode.size() > 0) {
@@ -373,27 +436,33 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
         logger.debug("Query - converted query: '{}'", queryMap);
         long totalCount = 0;
         Response queryResponse = null;
-        try {
-            queryResponse = esClientProvider.getClient().performRequest(
-                    GET_ACTION,
-                    getSearchPath(typeDescriptor),
-                    Collections.<String, String>emptyMap(),
-                    EntityBuilder.create().setText(MAPPER.writeValueAsString(queryMap)).build(),
-                    new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString()));
-            if (isRequestSuccessful(queryResponse)) {
-                JsonNode responseNode = MAPPER.readTree(EntityUtils.toString(queryResponse.getEntity()));
-                JsonNode hitsNode = responseNode.get(KEY_HITS);
-                totalCount = hitsNode.get(KEY_TOTAL).asInt();
-                if (totalCount > Integer.MAX_VALUE) {
-                    throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_HITS_MAX_VALUE_EXCEDEED);
-                }
-            } else {
-                throw new ClientException(ClientErrorCodes.ACTION_ERROR, queryResponse.getStatusLine().getReasonPhrase());
+        queryResponse = restCallTimeoutHandler(new Callable<Response>() {
+
+            @Override
+            public Response call() throws Exception {
+                return esClientProvider.getClient().performRequest(
+                        GET_ACTION,
+                        getSearchPath(typeDescriptor),
+                        Collections.<String, String>emptyMap(),
+                        EntityBuilder.create().setText(MAPPER.writeValueAsString(queryMap)).build(),
+                        new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString()));
             }
-        } catch (ResponseException re) {
-            handleResponseException(re, typeDescriptor.getIndex(), "COUNT");
-        } catch (IOException e) {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, e.getLocalizedMessage());
+
+        }, typeDescriptor.getIndex(), "COUNT");
+        if (isRequestSuccessful(queryResponse)) {
+            JsonNode responseNode = null;
+            try {
+                responseNode = MAPPER.readTree(EntityUtils.toString(queryResponse.getEntity()));
+            } catch (IOException e) {
+                throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, e.getLocalizedMessage());
+            }
+            JsonNode hitsNode = responseNode.get(KEY_HITS);
+            totalCount = hitsNode.get(KEY_TOTAL).asInt();
+            if (totalCount > Integer.MAX_VALUE) {
+                throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_HITS_MAX_VALUE_EXCEDEED);
+            }
+        } else if (queryResponse != null) {
+            throw new ClientException(ClientErrorCodes.ACTION_ERROR, (queryResponse != null && queryResponse.getStatusLine() != null) ? queryResponse.getStatusLine().getReasonPhrase() : "null");
         }
         return totalCount;
     }
@@ -403,18 +472,18 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
         logger.debug("Delete - id: '{}'", id);
         checkClient();
         Response deleteResponse = null;
-        try {
-            deleteResponse = esClientProvider.getClient().performRequest(
-                    DELETE_ACTION,
-                    getIdPath(typeDescriptor, id),
-                    Collections.<String, String>emptyMap());
-            if (!isRequestSuccessful(deleteResponse)) {
-                throw new ClientException(ClientErrorCodes.ACTION_ERROR, deleteResponse.getStatusLine().getReasonPhrase());
+        deleteResponse = restCallTimeoutHandler(new Callable<Response>() {
+
+            @Override
+            public Response call() throws Exception {
+                return esClientProvider.getClient().performRequest(
+                        DELETE_ACTION,
+                        getIdPath(typeDescriptor, id),
+                        Collections.<String, String>emptyMap());
             }
-        } catch (ResponseException re) {
-            handleResponseException(re, typeDescriptor.getIndex(), "DELETE");
-        } catch (IOException e) {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, e.getLocalizedMessage());
+        }, typeDescriptor.getIndex(), "DELETE");
+        if (deleteResponse != null && !isRequestSuccessful(deleteResponse)) {
+            throw new ClientException(ClientErrorCodes.ACTION_ERROR, (deleteResponse != null && deleteResponse.getStatusLine() != null) ? deleteResponse.getStatusLine().getReasonPhrase() : "null");
         }
     }
 
@@ -425,20 +494,20 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
         JsonNode deleteRequestNode = queryMap.get(SchemaKeys.KEY_QUERY);
         logger.debug("Query - converted query: '{}'", queryMap);
         Response deleteResponse = null;
-        try {
-            deleteResponse = esClientProvider.getClient().performRequest(
-                    POST_ACTION,
-                    getDeleteByQueryPath(typeDescriptor),
-                    Collections.<String, String>emptyMap(),
-                    EntityBuilder.create().setText(MAPPER.writeValueAsString(deleteRequestNode)).build(),
-                    new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString()));
-            if (!isRequestSuccessful(deleteResponse)) {
-                throw new ClientException(ClientErrorCodes.ACTION_ERROR, deleteResponse.getStatusLine().getReasonPhrase());
+        deleteResponse = restCallTimeoutHandler(new Callable<Response>() {
+
+            @Override
+            public Response call() throws Exception {
+                return esClientProvider.getClient().performRequest(
+                        POST_ACTION,
+                        getDeleteByQueryPath(typeDescriptor),
+                        Collections.<String, String>emptyMap(),
+                        EntityBuilder.create().setText(MAPPER.writeValueAsString(deleteRequestNode)).build(),
+                        new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString()));
             }
-        } catch (ResponseException re) {
-            handleResponseException(re, typeDescriptor.getIndex(), "DELETE BY QUERY");
-        } catch (IOException e) {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, e.getLocalizedMessage());
+        }, typeDescriptor.getIndex(), "DELETE BY QUERY");
+        if (deleteResponse != null && !isRequestSuccessful(deleteResponse)) {
+            throw new ClientException(ClientErrorCodes.ACTION_ERROR, (deleteResponse != null && deleteResponse.getStatusLine() != null) ? deleteResponse.getStatusLine().getReasonPhrase() : "null");
         }
     }
 
@@ -447,21 +516,25 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
         logger.debug("Index exists - index name: '{}'", indexExistsRequest.getIndex());
         checkClient();
         Response isIndexExistsResponse = null;
-        try {
-            isIndexExistsResponse = esClientProvider.getClient().performRequest(
-                    HEAD_ACTION,
-                    getIndexPath(indexExistsRequest.getIndex()),
-                    Collections.<String, String>emptyMap());
+        isIndexExistsResponse = restCallTimeoutHandler(new Callable<Response>() {
+
+            @Override
+            public Response call() throws Exception {
+                return esClientProvider.getClient().performRequest(
+                        HEAD_ACTION,
+                        getIndexPath(indexExistsRequest.getIndex()),
+                        Collections.<String, String>emptyMap());
+            }
+        }, indexExistsRequest.getIndex(), "INDEX EXIST");
+        if (isIndexExistsResponse != null && isIndexExistsResponse.getStatusLine() != null) {
             if (isIndexExistsResponse.getStatusLine().getStatusCode() == 200) {
                 return new IndexExistsResponse(true);
             } else if (isIndexExistsResponse.getStatusLine().getStatusCode() == 404) {
                 return new IndexExistsResponse(false);
-            } else {
-                throw new ClientException(ClientErrorCodes.ACTION_ERROR, isIndexExistsResponse.getStatusLine().getReasonPhrase());
             }
-        } catch (IOException e) {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, e.getLocalizedMessage());
         }
+        throw new ClientException(ClientErrorCodes.ACTION_ERROR,
+                (isIndexExistsResponse != null && isIndexExistsResponse.getStatusLine() != null) ? isIndexExistsResponse.getStatusLine().getReasonPhrase() : "");
     }
 
     @Override
@@ -469,18 +542,22 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
         logger.debug("Create index - object: '{}'", indexSettings);
         checkClient();
         Response createIndexResponse = null;
-        try {
-            createIndexResponse = esClientProvider.getClient().performRequest(
-                    PUT_ACTION,
-                    getIndexPath(indexName),
-                    Collections.<String, String>emptyMap(),
-                    EntityBuilder.create().setText(MAPPER.writeValueAsString(indexSettings)).build(),
-                    new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString()));
-            if (!isRequestSuccessful(createIndexResponse)) {
-                throw new ClientException(ClientErrorCodes.ACTION_ERROR, createIndexResponse.getStatusLine().getReasonPhrase());
+        createIndexResponse = restCallTimeoutHandler(new Callable<Response>() {
+
+            @Override
+            public Response call() throws Exception {
+                return esClientProvider.getClient().performRequest(
+                        PUT_ACTION,
+                        getIndexPath(indexName),
+                        Collections.<String, String>emptyMap(),
+                        EntityBuilder.create().setText(MAPPER.writeValueAsString(indexSettings)).build(),
+                        new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString()));
             }
-        } catch (IOException e) {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, e.getLocalizedMessage());
+
+        }, indexName, "CREATE INDEX");
+        if (!isRequestSuccessful(createIndexResponse)) {
+            throw new ClientException(ClientErrorCodes.ACTION_ERROR,
+                    (createIndexResponse != null && createIndexResponse.getStatusLine() != null) ? createIndexResponse.getStatusLine().getReasonPhrase() : "null");
         }
     }
 
@@ -489,21 +566,25 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
         logger.debug("Mapping exists - mapping name: '{} - {}'", typeDescriptor.getIndex(), typeDescriptor.getType());
         checkClient();
         Response isMappingExistsResponse = null;
-        try {
-            isMappingExistsResponse = esClientProvider.getClient().performRequest(
-                    GET_ACTION,
-                    getMappingPath(typeDescriptor),
-                    Collections.<String, String>emptyMap());
+        isMappingExistsResponse = restCallTimeoutHandler(new Callable<Response>() {
+
+            @Override
+            public Response call() throws Exception {
+                return esClientProvider.getClient().performRequest(
+                        GET_ACTION,
+                        getMappingPath(typeDescriptor),
+                        Collections.<String, String>emptyMap());
+            }
+        }, typeDescriptor.getIndex(), "MAPPING EXIST");
+        if (isMappingExistsResponse !=null && isMappingExistsResponse.getStatusLine()!=null) {
             if (isMappingExistsResponse.getStatusLine().getStatusCode() == 200) {
                 return true;
             } else if (isMappingExistsResponse.getStatusLine().getStatusCode() == 404) {
                 return false;
-            } else {
-                throw new ClientException(ClientErrorCodes.ACTION_ERROR, isMappingExistsResponse.getStatusLine().getReasonPhrase());
             }
-        } catch (IOException e) {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, e.getLocalizedMessage());
         }
+        throw new ClientException(ClientErrorCodes.ACTION_ERROR,
+                (isMappingExistsResponse != null && isMappingExistsResponse.getStatusLine() != null) ? isMappingExistsResponse.getStatusLine().getReasonPhrase() : "null");
     }
 
     @Override
@@ -511,18 +592,21 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
         logger.debug("Create mapping - object: '{}, index: {}, type: {}'", mapping, typeDescriptor.getIndex(), typeDescriptor.getType());
         checkClient();
         Response createMappingResponse = null;
-        try {
-            createMappingResponse = esClientProvider.getClient().performRequest(
-                    PUT_ACTION,
-                    getMappingPath(typeDescriptor),
-                    Collections.<String, String>emptyMap(),
-                    EntityBuilder.create().setText(MAPPER.writeValueAsString(mapping)).build(),
-                    new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString()));
-            if (!isRequestSuccessful(createMappingResponse)) {
-                throw new ClientException(ClientErrorCodes.ACTION_ERROR, createMappingResponse.getStatusLine().getReasonPhrase());
+        createMappingResponse = restCallTimeoutHandler(new Callable<Response>() {
+
+            @Override
+            public Response call() throws Exception {
+                return esClientProvider.getClient().performRequest(
+                        PUT_ACTION,
+                        getMappingPath(typeDescriptor),
+                        Collections.<String, String>emptyMap(),
+                        EntityBuilder.create().setText(MAPPER.writeValueAsString(mapping)).build(),
+                        new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString()));
             }
-        } catch (IOException e) {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, e.getLocalizedMessage());
+        }, typeDescriptor.getIndex(), "PUT MAPPING");
+        if (!isRequestSuccessful(createMappingResponse)) {
+            throw new ClientException(ClientErrorCodes.ACTION_ERROR,
+                    (createMappingResponse != null && createMappingResponse.getStatusLine() != null) ? createMappingResponse.getStatusLine().getReasonPhrase() : "null");
         }
     }
 
@@ -531,16 +615,19 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
         logger.debug("Refresh all indexes");
         checkClient();
         Response refreshIndexResponse = null;
-        try {
-            refreshIndexResponse = esClientProvider.getClient().performRequest(
-                    POST_ACTION,
-                    getRefreshAllIndexesPath(),
-                    Collections.<String, String>emptyMap());
-            if (!isRequestSuccessful(refreshIndexResponse)) {
-                throw new ClientException(ClientErrorCodes.ACTION_ERROR, refreshIndexResponse.getStatusLine().getReasonPhrase());
+        refreshIndexResponse = restCallTimeoutHandler(new Callable<Response>() {
+
+            @Override
+            public Response call() throws Exception {
+                return esClientProvider.getClient().performRequest(
+                        POST_ACTION,
+                        getRefreshAllIndexesPath(),
+                        Collections.<String, String>emptyMap());
             }
-        } catch (IOException e) {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, e.getLocalizedMessage());
+        }, "ALL", "REFRESH INDEX");
+        if (!isRequestSuccessful(refreshIndexResponse)) {
+            throw new ClientException(ClientErrorCodes.ACTION_ERROR,
+                    (refreshIndexResponse != null && refreshIndexResponse.getStatusLine() != null) ? refreshIndexResponse.getStatusLine().getReasonPhrase() : "null");
         }
     }
 
@@ -549,16 +636,19 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
         logger.debug("Delete all indexes");
         checkClient();
         Response deleteIndexResponse = null;
-        try {
-            deleteIndexResponse = esClientProvider.getClient().performRequest(
-                    DELETE_ACTION,
-                    getIndexPath("_all"),
-                    Collections.<String, String>emptyMap());
-            if (!isRequestSuccessful(deleteIndexResponse)) {
-                throw new ClientException(ClientErrorCodes.ACTION_ERROR, deleteIndexResponse.getStatusLine().getReasonPhrase());
+        deleteIndexResponse = restCallTimeoutHandler(new Callable<Response>() {
+
+            @Override
+            public Response call() throws Exception {
+                return esClientProvider.getClient().performRequest(
+                        DELETE_ACTION,
+                        getIndexPath("_all"),
+                        Collections.<String, String>emptyMap());
             }
-        } catch (IOException e) {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, e.getLocalizedMessage());
+        }, "ALL", "DELETE INDEX");
+        if (!isRequestSuccessful(deleteIndexResponse)) {
+            throw new ClientException(ClientErrorCodes.ACTION_ERROR,
+                    (deleteIndexResponse != null && deleteIndexResponse.getStatusLine() != null) ? deleteIndexResponse.getStatusLine().getReasonPhrase() : "null");
         }
     }
 
@@ -572,18 +662,58 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
         this.queryConverter = queryConverter;
     }
 
-    private void handleResponseException(ResponseException re, String index, String action) throws ClientException {
-        if (re.getResponse().getStatusLine().getStatusCode() == 404) {
-            logger.warn("Resource for index '{}' not found on action '{}'! {}", index, action, re.getLocalizedMessage());
-        } else if (re.getResponse().getStatusLine().getStatusCode() == 400) {
-            logger.warn("Bad request for index '{}' on action '{}'! {}", index, action, re.getLocalizedMessage());
-        } else {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR, re, re.getLocalizedMessage());
+    private <T> T restCallTimeoutHandler(Callable<T> restAction, String index, String operationName) throws ClientException {
+        int retryCount = 0;
+        logger.info("Metrics: {} - {} - {}", timeoutRetryLimitReachedCount.getCount(), restCallRuntimeExecCount.getCount(), timeoutRetryCount.getCount());
+        try {
+            do {
+                try {
+                    return restAction.call();
+                } catch (RuntimeException e) {
+                    restCallRuntimeExecCount.inc();
+                    if (e.getCause() instanceof TimeoutException) {
+                        timeoutRetryCount.inc();
+                        if (retryCount + 1 >= MAX_RETRY_ATTEMPT) {
+                            timeoutRetryLimitReachedCount.inc();
+                            throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, e.getLocalizedMessage());
+                        }
+                        // try again
+                        try {
+                            Thread.sleep((long) (RANDOM.nextFloat() * MAX_RETRY_WAIT_TIME));
+                        } catch (InterruptedException e1) {
+                            // DO NOTHING
+                        }
+                    } else {
+                        throw e;
+                    }
+                }
+            } while (++retryCount <= MAX_RETRY_ATTEMPT);
+        } catch (ResponseException re) {
+            if (re.getResponse().getStatusLine().getStatusCode() == 404) {
+                logger.warn("Resource for index '{}' not found on action '{}'! {}", index, operationName, re.getLocalizedMessage());
+                return (T) null;
+            } else if (re.getResponse().getStatusLine().getStatusCode() == 400) {
+                logger.warn("Bad request for index '{}' on action '{}'! {}", index, operationName, re.getLocalizedMessage());
+                return (T) null;
+            } else {
+                throw new ClientException(ClientErrorCodes.ACTION_ERROR, re, re.getLocalizedMessage());
+            }
+        } catch (JsonProcessingException e) {
+            throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, e.getLocalizedMessage());
+        } catch (IOException e) {
+            throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, e.getLocalizedMessage());
+        } catch (Exception e) {
+            throw new ClientException(KapuaErrorCodes.SEVERE_INTERNAL_ERROR);
         }
+        throw new ClientException(KapuaErrorCodes.SEVERE_INTERNAL_ERROR);// change the exception!!!
     }
 
     private boolean isRequestSuccessful(Response response) {
-        return isRequestSuccessful(response.getStatusLine().getStatusCode());
+        if (response != null && response.getStatusLine() != null) {
+            return isRequestSuccessful(response.getStatusLine().getStatusCode());
+        } else {
+            return false;
+        }
     }
 
     private boolean isRequestSuccessful(int responseCode) {

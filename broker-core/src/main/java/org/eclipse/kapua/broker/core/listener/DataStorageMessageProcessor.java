@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.listener;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.apache.camel.spi.UriEndpoint;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.message.CamelKapuaMessage;
@@ -41,6 +43,10 @@ public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMes
     // store timers
     private final Timer metricStorageDataSaveTime;
 
+    private final static AtomicInteger ERROR_COUNT = new AtomicInteger();
+    private final static AtomicInteger COUNT = new AtomicInteger();
+    private final static AtomicInteger PROCESSED_COUNT = new AtomicInteger();
+
     private final MessageStoreService messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
 
     public DataStorageMessageProcessor() {
@@ -55,23 +61,28 @@ public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMes
 
     /**
      * Process a data message.
+     * 
+     * @throws KapuaException
      */
     @Override
-    public void processMessage(CamelKapuaMessage<?> message) {
+    public void processMessage(CamelKapuaMessage<?> message) throws KapuaException {
 
         // TODO filter alert topic???
         //
-
+        PROCESSED_COUNT.incrementAndGet();
         // data messages
         try {
             Context metricStorageDataSaveTimeContext = metricStorageDataSaveTime.time();
             logger.debug("Received data message from device channel: client id '{}' - {}", message.getMessage().getClientId(), message.getMessage().getChannel());
             messageStoreService.store(message.getMessage());
+            COUNT.incrementAndGet();
             metricStorageMessage.inc();
             metricStorageDataSaveTimeContext.stop();
         } catch (KapuaException e) {
+            ERROR_COUNT.incrementAndGet();
             metricStorageDataErrorMessage.inc();
             logger.error("An error occurred while storing message", e);
+            throw e;
         }
     }
 
