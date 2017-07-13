@@ -23,6 +23,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import io.swagger.annotations.Authorization;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.DateParam;
 import org.eclipse.kapua.app.api.v1.resources.model.MetricType;
@@ -54,7 +55,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-@Api("Data Messages")
+@Api(value = "Data Messages", authorizations = { @Authorization(value = "kapuaAccessToken") })
 @Path("{scopeId}/data/messages")
 public class DataMessages extends AbstractKapuaResource {
 
@@ -90,8 +91,7 @@ public class DataMessages extends AbstractKapuaResource {
     @SuppressWarnings("unchecked")
     @ApiOperation(value = "Gets the DatastoreMessage list in the scope", //
             notes = "Returns the list of all the datastoreMessages associated to the current selected scope.", //
-            response = DatastoreMessage.class, //
-            responseContainer = "DatastoreMessageListResult")
+            response = MessageListResult.class)
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public <V extends Comparable<V>> MessageListResult simpleQuery(  //
@@ -190,8 +190,7 @@ public class DataMessages extends AbstractKapuaResource {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @ApiOperation(value = "Queries the DatastoreMessages", //
             notes = "Queries the DatastoreMessages with the given DatastoreMessageQuery parameter returning all matching DatastoreMessages",  //
-            response = DatastoreMessage.class, //
-            responseContainer = "DatastoreMessageListResult")
+            response = MessageListResult.class)
     public MessageListResult query( //
             @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
             @ApiParam(value = "The DatastoreMessageQuery to use to filter results", required = true) MessageQuery query) throws Exception {

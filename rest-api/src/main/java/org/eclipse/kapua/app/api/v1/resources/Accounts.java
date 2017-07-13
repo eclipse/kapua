@@ -24,6 +24,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import io.swagger.annotations.Authorization;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
@@ -46,7 +47,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-@Api("Accounts")
+@Api(value = "Accounts", authorizations = { @Authorization(value = "kapuaAccessToken") })
 @Path("{scopeId}/accounts")
 public class Accounts extends AbstractKapuaResource {
 
@@ -72,8 +73,7 @@ public class Accounts extends AbstractKapuaResource {
      */
     @ApiOperation(value = "Gets the Account list in the scope", //
             notes = "Returns the list of all the accounts associated to the current selected scope.", //
-            response = Account.class, //
-            responseContainer = "AccountListResult") //
+            response = AccountListResult.class) //
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public AccountListResult simpleQuery( //
@@ -109,8 +109,7 @@ public class Accounts extends AbstractKapuaResource {
      */
     @ApiOperation(value = "Queries the Accounts", //
             notes = "Queries the Accounts with the given AccountQuery parameter returning all matching Accounts", //
-            response = Account.class, //
-            responseContainer = "AccountListResult") //
+            response = AccountListResult.class) //
     @POST
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })

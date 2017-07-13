@@ -21,6 +21,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import io.swagger.annotations.Authorization;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
@@ -44,7 +45,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-@Api("Device Connections")
+@Api(value = "Device Connections", authorizations = { @Authorization(value = "kapuaAccessToken") })
 @Path("{scopeId}/deviceconnections")
 public class DeviceConnections extends AbstractKapuaResource {
 
@@ -70,7 +71,7 @@ public class DeviceConnections extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Gets the DeviceConnection list in the scope", notes = "Returns the list of all the deviceConnections associated to the current selected scope.", response = DeviceConnection.class, responseContainer = "DeviceConnectionListResult")
+    @ApiOperation(value = "Gets the DeviceConnection list in the scope", notes = "Returns the list of all the deviceConnections associated to the current selected scope.", response = DeviceConnectionListResult.class)
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public DeviceConnectionListResult simpleQuery(
@@ -108,7 +109,7 @@ public class DeviceConnections extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Queries the DeviceConnections", notes = "Queries the DeviceConnections with the given DeviceConnections parameter returning all matching DeviceConnections", response = DeviceConnection.class, responseContainer = "DeviceConnectionListResult")
+    @ApiOperation(value = "Queries the DeviceConnections", notes = "Queries the DeviceConnections with the given DeviceConnections parameter returning all matching DeviceConnections", response = DeviceConnectionListResult.class)
     @POST
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })

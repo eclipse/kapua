@@ -21,6 +21,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import io.swagger.annotations.Authorization;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
 import org.eclipse.kapua.app.api.v1.resources.model.StorableEntityId;
@@ -43,7 +44,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-@Api("Data Metrics")
+@Api(value = "Data Metrics", authorizations = { @Authorization(value = "kapuaAccessToken") })
 @Path("{scopeId}/data/metrics")
 public class DataMetrics extends AbstractKapuaResource {
 
@@ -72,8 +73,7 @@ public class DataMetrics extends AbstractKapuaResource {
      */
     @ApiOperation(value = "Gets the MetricInfo list in the scope", //
             notes = "Returns the list of all the metricInfos associated to the current selected scope.", //
-            response = MetricInfo.class, //
-            responseContainer = "MetricInfoListResult")
+            response = MetricInfoListResult.class)
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public MetricInfoListResult simpleQuery( //
@@ -123,8 +123,7 @@ public class DataMetrics extends AbstractKapuaResource {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @ApiOperation(value = "Queries the MetricInfos", //
             notes = "Queries the MetricInfos with the given MetricInfoQuery parameter returning all matching MetricInfos",  //
-            response = MetricInfo.class, //
-            responseContainer = "MetricInfoListResult")
+            response = MetricInfoListResult.class)
     public MetricInfoListResult query( //
             @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
             @ApiParam(value = "The MetricInfoQuery to use to filter results", required = true) MetricInfoQuery query) throws Exception {

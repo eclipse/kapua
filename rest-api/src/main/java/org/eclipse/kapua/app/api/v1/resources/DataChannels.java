@@ -21,6 +21,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import io.swagger.annotations.Authorization;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
 import org.eclipse.kapua.app.api.v1.resources.model.StorableEntityId;
@@ -45,7 +46,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-@Api("Data Channels")
+@Api(value = "Data Channels", authorizations = { @Authorization(value = "kapuaAccessToken") })
 @Path("{scopeId}/data/channels")
 public class DataChannels extends AbstractKapuaResource {
 
@@ -74,8 +75,7 @@ public class DataChannels extends AbstractKapuaResource {
      */
     @ApiOperation(value = "Gets the ChannelInfo list in the scope", //
             notes = "Returns the list of all the channelInfos associated to the current selected scope.", //
-            response = ChannelInfo.class, //
-            responseContainer = "ChannelInfoListResult")
+            response = ChannelInfoListResult.class)
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public ChannelInfoListResult simpleQuery( //
@@ -121,8 +121,7 @@ public class DataChannels extends AbstractKapuaResource {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @ApiOperation(value = "Queries the ChannelInfos", //
             notes = "Queries the ChannelInfos with the given ChannelInfoQuery parameter returning all matching ChannelInfos",  //
-            response = ChannelInfo.class, //
-            responseContainer = "ChannelInfoListResult")  //
+            response = ChannelInfoListResult.class)  //
     public ChannelInfoListResult query( //
             @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
             @ApiParam(value = "The ChannelInfoQuery to use to filter results", required = true) ChannelInfoQuery query) throws Exception {

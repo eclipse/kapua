@@ -26,6 +26,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import io.swagger.annotations.Authorization;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
@@ -48,7 +49,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-@Api("Devices")
+@Api(value = "Devices", authorizations = { @Authorization(value = "kapuaAccessToken") })
 @Path("{scopeId}/devices/{deviceId}/events")
 public class DeviceEvents extends AbstractKapuaResource {
 
@@ -74,7 +75,7 @@ public class DeviceEvents extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Gets the DeviceEvent list in the scope", notes = "Returns the list of all the deviceEvents associated to the current selected scope.", response = DeviceEvent.class, responseContainer = "DeviceEventListResult")
+    @ApiOperation(value = "Gets the DeviceEvent list in the scope", notes = "Returns the list of all the deviceEvents associated to the current selected scope.", response = DeviceEventListResult.class)
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public DeviceEventListResult simpleQuery(
@@ -112,7 +113,7 @@ public class DeviceEvents extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Queries the DeviceEvents", notes = "Queries the DeviceEvents with the given DeviceEvents parameter returning all matching DeviceEvents", response = DeviceEvent.class, responseContainer = "DeviceEventListResult")
+    @ApiOperation(value = "Queries the DeviceEvents", notes = "Queries the DeviceEvents with the given DeviceEvents parameter returning all matching DeviceEvents", response = DeviceEventListResult.class)
     @POST
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })

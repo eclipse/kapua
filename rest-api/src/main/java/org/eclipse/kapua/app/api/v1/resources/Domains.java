@@ -21,6 +21,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import io.swagger.annotations.Authorization;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
@@ -42,7 +43,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-@Api("Domains")
+@Api(value = "Domains", authorizations = { @Authorization(value = "kapuaAccessToken") })
 @Path("{scopeId}/domains")
 public class Domains extends AbstractKapuaResource {
 
@@ -66,7 +67,7 @@ public class Domains extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Gets the Domain list in the scope", notes = "Returns the list of all the domains associated to the current selected scope.", response = Domain.class, responseContainer = "DomainListResult")
+    @ApiOperation(value = "Gets the Domain list in the scope", notes = "Returns the list of all the domains associated to the current selected scope.", response = DomainListResult.class)
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public DomainListResult simpleQuery(
@@ -100,7 +101,7 @@ public class Domains extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Queries the Domains", notes = "Queries the Domains with the given DomainQuery parameter returning all matching Domains", response = Domain.class, responseContainer = "DomainListResult")
+    @ApiOperation(value = "Queries the Domains", notes = "Queries the Domains with the given DomainQuery parameter returning all matching Domains", response = DomainListResult.class)
     @POST
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })

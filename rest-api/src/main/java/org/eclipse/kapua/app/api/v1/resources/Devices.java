@@ -26,6 +26,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import io.swagger.annotations.Authorization;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
@@ -50,7 +51,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-@Api("Devices")
+@Api(value = "Devices", authorizations = { @Authorization(value = "kapuaAccessToken") })
 @Path("{scopeId}/devices")
 public class Devices extends AbstractKapuaResource {
 
@@ -79,7 +80,7 @@ public class Devices extends AbstractKapuaResource {
      * @since 1.0.0
      * 
      */
-    @ApiOperation(value = "Gets the Device list in the scope", notes = "Returns the list of all the devices associated to the current selected scope.", response = DeviceListResult.class, responseContainer = "DeviceListResult")
+    @ApiOperation(value = "Gets the Device list in the scope", notes = "Returns the list of all the devices associated to the current selected scope.", response = DeviceListResult.class)
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public DeviceListResult simpleQuery(
@@ -122,7 +123,7 @@ public class Devices extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Queries the Devices", notes = "Queries the Devices with the given Devices parameter returning all matching Devices", response = DeviceListResult.class, responseContainer = "DeviceListResult")
+    @ApiOperation(value = "Queries the Devices", notes = "Queries the Devices with the given Devices parameter returning all matching Devices", response = DeviceListResult.class)
     @POST
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
