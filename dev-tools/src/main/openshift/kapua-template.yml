@@ -391,6 +391,8 @@ objects:
             value: "-Xms${ELASTIC_SEARCH_MEMORY} -Xmx${ELASTIC_SEARCH_MEMORY}"
           image: elasticsearch:5.4
           command:
+            - 'gosu'
+            - 'elasticsearch'
             - 'elasticsearch'
             - '-Etransport.host=_site_'
             - '-Ecluster.name=kapua-datastore'
