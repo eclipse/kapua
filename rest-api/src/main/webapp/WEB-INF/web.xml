@@ -50,9 +50,9 @@
         <init-param>
             <param-name>jersey.config.server.provider.packages</param-name>
             <param-value>
-                io.swagger.jaxrs.listing<!-- ,
-                {your.application.packages}-->
-            </param-value>
+	            io.swagger.jaxrs.listing,
+                org.eclipse.kapua.app.api
+	        </param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>

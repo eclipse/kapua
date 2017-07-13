@@ -12,6 +12,8 @@
 package org.eclipse.kapua.app.api;
 
 import java.security.acl.Permission;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -166,6 +168,7 @@ import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserXmlRegistry;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
+import org.eclipse.persistence.jaxb.MarshallerProperties;
 
 /**
  * Provide a customized JAXBContext that makes the concrete implementations
@@ -181,6 +184,9 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
 
     public JaxbContextResolver() {
         try {
+            Map<String, Object> properties = new HashMap<String, Object>(1);
+            properties.put(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
+
             jaxbContext = JAXBContextFactory.createContext(new Class[] {
                     // REST API utility models
                     CountResult.class,
@@ -389,7 +395,7 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     UserQuery.class,
                     UserXmlRegistry.class
 
-            }, null);
+            }, properties);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
