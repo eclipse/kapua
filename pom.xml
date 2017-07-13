@@ -62,6 +62,7 @@
         <slf4j.version>1.7.24</slf4j.version>
         <logback.version>1.1.8</logback.version>
         <snakeyaml.version>1.15</snakeyaml.version>
+        <swagger.version>1.5.12</swagger.version>
         <validation-api.version>1.1.0.Final</validation-api.version>
         <cucumber.version>1.2.4</cucumber.version>
         <elasticsearch.version>5.3.0</elasticsearch.version>
