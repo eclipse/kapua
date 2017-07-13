@@ -100,7 +100,7 @@
 			if (key && key.trim() != "") {
 				var apiKeyAuth = new SwaggerClient.ApiKeyAuthorization(
 						"Authorization", "Bearer " + key, "header");
-				window.swaggerUi.api.clientAuthorizations.add("api_key",
+				window.swaggerUi.api.clientAuthorizations.add("kapuaAccessToken",
 						apiKeyAuth);
 				log("added key " + key);
 			}
