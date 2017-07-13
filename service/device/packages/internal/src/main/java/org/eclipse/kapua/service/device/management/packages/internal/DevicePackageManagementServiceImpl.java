@@ -156,7 +156,7 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(deviceId, "deviceId");
         ArgumentValidator.notNull(packageDownloadRequest, "packageDownloadRequest");
-        ArgumentValidator.notNull(packageDownloadRequest.getURI(), "packageDownloadRequest.URI");
+        ArgumentValidator.notNull(packageDownloadRequest.getUri(), "packageDownloadRequest.URI");
         ArgumentValidator.notNull(packageDownloadRequest.getName(), "packageDownloadRequest.name");
         ArgumentValidator.notNull(packageDownloadRequest.getVersion(), "packageDownloadRequest.version");
 
@@ -181,11 +181,11 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
 
         PackageRequestPayload packageRequestPayload = new PackageRequestPayload();
         packageRequestPayload.setOperationId(operationId);
-        packageRequestPayload.setPackageDownloadURI(packageDownloadRequest.getURI());
+        packageRequestPayload.setPackageDownloadURI(packageDownloadRequest.getUri());
         packageRequestPayload.setPackageDownloadName(packageDownloadRequest.getName());
         packageRequestPayload.setPackageDownloadVersion(packageDownloadRequest.getVersion());
-        packageRequestPayload.setPackageDownloadnstall(packageDownloadRequest.isInstall());
-        packageRequestPayload.setReboot(packageDownloadRequest.isReboot());
+        packageRequestPayload.setPackageDownloadnstall(packageDownloadRequest.getInstall());
+        packageRequestPayload.setReboot(packageDownloadRequest.getReboot());
         packageRequestPayload.setRebootDelay(packageDownloadRequest.getRebootDelay());
 
         PackageRequestMessage packageRequestMessage = new PackageRequestMessage();

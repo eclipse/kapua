@@ -33,12 +33,12 @@ public class DevicePackageDownloadRequestImpl implements DevicePackageDownloadRe
     public Integer rebootDelay;
 
     @Override
-    public URI getURI() {
+    public URI getUri() {
         return uri;
     }
 
     @Override
-    public void setURI(URI uri) {
+    public void setUri(URI uri) {
         this.uri = uri;
     }
 
@@ -63,7 +63,7 @@ public class DevicePackageDownloadRequestImpl implements DevicePackageDownloadRe
     }
 
     @Override
-    public Boolean isInstall() {
+    public Boolean getInstall() {
         return install;
     }
 
@@ -73,7 +73,7 @@ public class DevicePackageDownloadRequestImpl implements DevicePackageDownloadRe
     }
 
     @Override
-    public Boolean isReboot() {
+    public Boolean getReboot() {
         return reboot;
     }
 

@@ -30,7 +30,7 @@ import org.eclipse.kapua.service.device.management.packages.model.DevicePackageX
 @XmlRootElement(name = "downloadRequest")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = {
-        "URI",
+        "uri",
         "name",
         "version",
         "install",
@@ -46,15 +46,15 @@ public interface DevicePackageDownloadRequest {
      * 
      * @return
      */
-    @XmlElement(name = "URI")
-    public URI getURI();
+    @XmlElement(name = "uri")
+    public URI getUri();
 
     /**
      * Set the download URI
      * 
      * @param uri
      */
-    public void setURI(URI uri);
+    public void setUri(URI uri);
 
     /**
      * Get the package name
@@ -92,7 +92,7 @@ public interface DevicePackageDownloadRequest {
      * @return
      */
     @XmlElement(name = "install")
-    public Boolean isInstall();
+    public Boolean getInstall();
 
     /**
      * Set the package installed flag
@@ -107,7 +107,7 @@ public interface DevicePackageDownloadRequest {
      * @return
      */
     @XmlElement(name = "reboot")
-    public Boolean isReboot();
+    public Boolean getReboot();
 
     /**
      * Set the device reboot flag
