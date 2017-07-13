@@ -188,7 +188,7 @@
         <servlet-name>deviceManagementServlet</servlet-name>
         <url-pattern>/deviceManagement</url-pattern>
     </servlet-mapping>
-    
+
     <servlet>
         <servlet-name>deviceConnectionServlet</servlet-name>
         <servlet-class>org.eclipse.kapua.app.console.server.GwtDeviceConnectionServiceImpl</servlet-class>
@@ -198,7 +198,7 @@
         <url-pattern>/deviceConnection</url-pattern>
     </servlet-mapping>
 
-	<servlet>
+    <servlet>
         <servlet-name>deviceConnectionOptionServlet</servlet-name>
         <servlet-class>org.eclipse.kapua.app.console.server.GwtDeviceConnectionOptionServiceImpl</servlet-class>
     </servlet>
@@ -206,7 +206,7 @@
         <servlet-name>deviceConnectionOptionServlet</servlet-name>
         <url-pattern>/deviceConnectionOption</url-pattern>
     </servlet-mapping>
-    
+
     <servlet>
         <servlet-name>roleServlet</servlet-name>
         <servlet-class>org.eclipse.kapua.app.console.server.GwtRoleServiceImpl</servlet-class>
