@@ -1170,10 +1170,16 @@
 
     <developers>
         <developer>
-            <name>Henryk Konsek</name>
-            <email>hekonsek@gmail.com</email>
+            <name>Kapua Development Team</name>
+            <email>kapua-dev@eclipse.org</email>
+            <url>https://projects.eclipse.org/projects/iot.kapua/who</url>
         </developer>
     </developers>
+    
+    <organization>
+        <name>Eclipse.org</name>
+        <url>http://www.eclipse.org</url>
+    </organization>
 
     <distributionManagement>
         <snapshotRepository>
