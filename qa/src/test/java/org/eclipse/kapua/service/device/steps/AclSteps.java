@@ -147,7 +147,7 @@ public class AclSteps {
         // Wait for broker to start
         waitInMillis(BROKER_START_WAIT_MILLIS);
         // Login with system user
-        char[] passwd = SYS_PASSWORD.toCharArray();
+        String passwd = SYS_PASSWORD;
         LoginCredentials credentials = new UsernamePasswordCredentialsImpl(SYS_USERNAME, passwd);
         authenticationService.login(credentials);
     }

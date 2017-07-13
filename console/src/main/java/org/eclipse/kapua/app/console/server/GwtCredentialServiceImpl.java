@@ -245,7 +245,7 @@ public class GwtCredentialServiceImpl extends KapuaConfigurableRemoteServiceServ
 
             User user = userService.find(scopeId, userId);
             final String username = user.getName();
-            LoginCredentials loginCredentials = credentialsFactory.newUsernamePasswordCredentials(username, oldPassword.toCharArray());
+            LoginCredentials loginCredentials = credentialsFactory.newUsernamePasswordCredentials(username, oldPassword);
 
             boolean validPassword = authenticationService.verifyCredentials(loginCredentials);
 

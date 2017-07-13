@@ -13,9 +13,9 @@ package org.eclipse.kapua.service.authentication.shiro.realm;
 
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
+import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.user.User;
@@ -34,9 +34,9 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
 
         //
         // Token data
-        UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
+        UsernamePasswordCredentials token = (UsernamePasswordCredentials) authenticationToken;
         String tokenUsername = token.getUsername();
-        String tokenPassword = String.valueOf(token.getPassword());
+        String tokenPassword = token.getPassword();
 
         //
         // Info data
