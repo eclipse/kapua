@@ -156,7 +156,7 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(deviceId, "deviceId");
         ArgumentValidator.notNull(packageDownloadRequest, "packageDownloadRequest");
-        ArgumentValidator.notNull(packageDownloadRequest.getUri(), "packageDownloadRequest.URI");
+        ArgumentValidator.notNull(packageDownloadRequest.getUri(), "packageDownloadRequest.uri");
         ArgumentValidator.notNull(packageDownloadRequest.getName(), "packageDownloadRequest.name");
         ArgumentValidator.notNull(packageDownloadRequest.getVersion(), "packageDownloadRequest.version");
 
