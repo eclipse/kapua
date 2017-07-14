@@ -12,6 +12,7 @@
 package org.eclipse.kapua.commons.util;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 
@@ -435,6 +436,80 @@ public class ArgumentValidatorTest extends Assert {
     }
 
     @Test
+    public void testNotEmptyOrNullObject() throws Exception {
+        Object[] object1 = null;
+        Object[] object2 = new Object[]{};
+        Object[] object3 = new Object[]{object1,object2};
+        Object[] listOfChoicesPermitted = new Object[] {"","string",1};
+        int sizeOfPermitted = listOfChoicesPermitted.length;
+        try {
+            ArgumentValidator.notEmptyOrNull(object1, "notEmptyOrNullTest");
+            fail("Exception expected!");
+        } catch (Exception ex) {
+            // Expected
+        }
+        try{
+            ArgumentValidator.notEmptyOrNull(object2, "notEmptyOrNullTest");
+            fail("Exception expected!");
+        }catch (Exception ex) {
+            // Expected
+        }
+        for(int i=0;i<sizeOfPermitted;i++){
+            try{
+                ArgumentValidator.notEmptyOrNull(listOfChoicesPermitted, "notEmptyOrNullTest");
+            }catch(Exception ex){
+                fail("No exception expected!");
+            }
+        }
+    }
+
+    @Test
+    public void testNotEmptyOrNullCollection() throws Exception {
+        ArrayList<String> stringList1 = null;
+        ArrayList<String> stringList2 = new ArrayList<>();
+        ArrayList<String> stringList3 = new ArrayList<>();
+        stringList3.add("string");
+        ArrayList<Integer> integerList = new ArrayList<>();
+        integerList.add(1);
+        ArrayList<Boolean> booleanList = new ArrayList<>();
+        booleanList.add(true);
+        ArrayList<Long> longList = new ArrayList<>();
+        longList.add((long) 1.1234);
+        try{
+            ArgumentValidator.notEmptyOrNull(stringList1, "notEmptyOrNullTest");
+            fail("Exception expected.");
+        }catch(Exception ex){
+            // Expected
+        }
+        try{
+            ArgumentValidator.notEmptyOrNull(stringList2, "notEmptyOrNullTest");
+            fail("Exception expected.");
+        }catch(Exception ex){
+            // Expected
+        }
+        try{
+            ArgumentValidator.notEmptyOrNull(stringList3, "notEmptyOrNullTest");
+        }catch(Exception ex){
+            fail("No exception expected.");
+        }
+        try{
+            ArgumentValidator.notEmptyOrNull(integerList, "notEmptyOrNullTest");
+        }catch(Exception ex){
+            fail("No exception expected.");
+        }
+        try{
+            ArgumentValidator.notEmptyOrNull(booleanList, "notEmptyOrNullTest");
+        }catch(Exception ex){
+            fail("No exception expected.");
+        }
+        try{
+            ArgumentValidator.notEmptyOrNull(longList, "notEmptyOrNullTest");
+        }catch(Exception ex){
+            fail("No exception expected.");
+        }
+    }
+
+    @Test
     public void testNotNegative() throws KapuaIllegalNullArgumentException {
         long[] listOfNegative = new long[] {-1,-12,-123,-1234,-12345,-123456,-1234567,
                 -12345678};
@@ -465,8 +540,8 @@ public class ArgumentValidatorTest extends Assert {
         Date startTimeFalse2 = new Date(2018, 1, 1);
         Date endTimeFalse2 = new Date(2017, 1, 1);
 
-        Date[] startTimeFalse = new Date[] { startTimeFalse2 };
-        Date[] endTimeFalse = new Date[] { endTimeFalse2 };
+        Date[] startTimeFalse = new Date[] {startTimeFalse2};
+        Date[] endTimeFalse = new Date[] {endTimeFalse2};
 
         Date startTimeOK0 = new Date(2017, 1, 1);
         Date endTimeOK0 = new Date(2018, 1, 1);
@@ -478,8 +553,8 @@ public class ArgumentValidatorTest extends Assert {
         Date startTimeOK2 = new Date(2017, 1, 1);
         Date endTimeOK2 = new Date(2018, -1, -1);
 
-        Date[] startTimeOK = new Date[] { startTimeOK0, startTimeOK1, startTimeOK1 };
-        Date[] endTimeOK = new Date[] { endTimeOK0, endTimeOK1, endTimeOK2 };
+        Date[] startTimeOK = new Date[] {startTimeOK0,startTimeOK1,startTimeOK1 };
+        Date[] endTimeOK = new Date[] {endTimeOK0,endTimeOK1,endTimeOK2 };
 
         for (int i = 0; i < startTimeFalse.length; i++) {
             try {
@@ -516,9 +591,9 @@ public class ArgumentValidatorTest extends Assert {
         long startTimeOK4 = -1L;
         long endTimeOK4 = 12341231411L;
 
-        long[] startTimeOK = new long[] { startTimeOK0, startTimeOK1,startTimeOK2,
+        long[] startTimeOK = new long[] {startTimeOK0,startTimeOK1,startTimeOK2,
                 startTimeOK3,startTimeOK4};
-        long[] endTimeOK = new long[] { endTimeOK0, endTimeOK1,endTimeOK2,
+        long[] endTimeOK = new long[] {endTimeOK0,endTimeOK1,endTimeOK2,
                 endTimeOK3,endTimeOK4};
 
         long startTimeNOK0 = 1234567890123456789L;
@@ -548,8 +623,8 @@ public class ArgumentValidatorTest extends Assert {
     public void testNumRange() throws Exception {
         long minValue = 12;
         long maxValue = 12345;
-        long numRangeFalse[] = new long[] { 0, 11, 12346 };
-        long numRangePermitted[] = new long[] { 12, 15, 12345 };
+        long numRangeFalse[] = new long[] {0,11,12346};
+        long numRangePermitted[] = new long[] {12,15,12345};
         for (long element : numRangeFalse) {
             try {
                 ArgumentValidator.numRange(element, minValue, maxValue, "numRange test");
