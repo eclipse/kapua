@@ -540,8 +540,8 @@ public class ArgumentValidatorTest extends Assert {
         Date startTimeFalse2 = new Date(2018, 1, 1);
         Date endTimeFalse2 = new Date(2017, 1, 1);
 
-        Date[] startTimeFalse = new Date[] { startTimeFalse2 };
-        Date[] endTimeFalse = new Date[] { endTimeFalse2 };
+        Date[] startTimeFalse = new Date[] {startTimeFalse2};
+        Date[] endTimeFalse = new Date[] {endTimeFalse2};
 
         Date startTimeOK0 = new Date(2017, 1, 1);
         Date endTimeOK0 = new Date(2018, 1, 1);
@@ -553,8 +553,8 @@ public class ArgumentValidatorTest extends Assert {
         Date startTimeOK2 = new Date(2017, 1, 1);
         Date endTimeOK2 = new Date(2018, -1, -1);
 
-        Date[] startTimeOK = new Date[] { startTimeOK0, startTimeOK1, startTimeOK1 };
-        Date[] endTimeOK = new Date[] { endTimeOK0, endTimeOK1, endTimeOK2 };
+        Date[] startTimeOK = new Date[] {startTimeOK0,startTimeOK1,startTimeOK1 };
+        Date[] endTimeOK = new Date[] {endTimeOK0,endTimeOK1,endTimeOK2 };
 
         for (int i = 0; i < startTimeFalse.length; i++) {
             try {
@@ -591,9 +591,9 @@ public class ArgumentValidatorTest extends Assert {
         long startTimeOK4 = -1L;
         long endTimeOK4 = 12341231411L;
 
-        long[] startTimeOK = new long[] { startTimeOK0, startTimeOK1,startTimeOK2,
+        long[] startTimeOK = new long[] {startTimeOK0,startTimeOK1,startTimeOK2,
                 startTimeOK3,startTimeOK4};
-        long[] endTimeOK = new long[] { endTimeOK0, endTimeOK1,endTimeOK2,
+        long[] endTimeOK = new long[] {endTimeOK0,endTimeOK1,endTimeOK2,
                 endTimeOK3,endTimeOK4};
 
         long startTimeNOK0 = 1234567890123456789L;
@@ -623,8 +623,8 @@ public class ArgumentValidatorTest extends Assert {
     public void testNumRange() throws Exception {
         long minValue = 12;
         long maxValue = 12345;
-        long numRangeFalse[] = new long[] { 0, 11, 12346 };
-        long numRangePermitted[] = new long[] { 12, 15, 12345 };
+        long numRangeFalse[] = new long[] {0,11,12346};
+        long numRangePermitted[] = new long[] {12,15,12345};
         for (long element : numRangeFalse) {
             try {
                 ArgumentValidator.numRange(element, minValue, maxValue, "numRange test");
