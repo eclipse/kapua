@@ -679,7 +679,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
                         }
                         // try again
                         try {
-                            Thread.sleep((long) (RANDOM.nextFloat() * MAX_RETRY_WAIT_TIME));
+                            Thread.sleep((long) (MAX_RETRY_WAIT_TIME * (0.5 + RANDOM.nextFloat() / 2)));
                         } catch (InterruptedException e1) {
                             // DO NOTHING
                         }
