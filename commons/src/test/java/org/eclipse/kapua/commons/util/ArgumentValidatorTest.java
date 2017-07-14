@@ -12,6 +12,7 @@
 package org.eclipse.kapua.commons.util;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 
@@ -431,6 +432,81 @@ public class ArgumentValidatorTest extends Assert {
             } catch (Exception ex) {
                 fail("No Exception expected for: " + listOfPermittedStrings[i]);
             }
+        }
+    }
+
+
+    @Test
+    public void testNotEmptyOrNullObject() throws Exception {
+        Object[] object1 = null;
+        Object[] object2 = new Object[]{};
+        Object[] object3 = new Object[]{object1,object2};
+        Object[] listOfChoicesPermitted = new Object[] {"","string",1};
+        int sizeOfPermitted = listOfChoicesPermitted.length;
+        try {
+            ArgumentValidator.notEmptyOrNull(object1, "notEmptyOrNullTest");
+            fail("Exception expected!");
+        } catch (Exception ex) {
+            // Expected
+        }
+        try{
+            ArgumentValidator.notEmptyOrNull(object2, "notEmptyOrNullTest");
+            fail("Exception expected!");
+        }catch (Exception ex) {
+            // Expected
+        }
+        for(int i=0;i<sizeOfPermitted;i++){
+            try{
+                ArgumentValidator.notEmptyOrNull(listOfChoicesPermitted, "notEmptyOrNullTest");
+            }catch(Exception ex){
+                fail("No exception expected!");
+            }
+        }
+    }
+
+    @Test
+    public void testNotEmptyOrNullCollection() throws Exception {
+        ArrayList<String> stringList1 = null;
+        ArrayList<String> stringList2 = new ArrayList<>();
+        ArrayList<String> stringList3 = new ArrayList<>();
+        stringList3.add("string");
+        ArrayList<Integer> integerList = new ArrayList<>();
+        integerList.add(1);
+        ArrayList<Boolean> booleanList = new ArrayList<>();
+        booleanList.add(true);
+        ArrayList<Long> longList = new ArrayList<>();
+        longList.add((long) 1.1234);
+        try{
+            ArgumentValidator.notEmptyOrNull(stringList1, "notEmptyOrNullTest");
+            fail("Exception expected.");
+        }catch(Exception ex){
+            // Expected
+        }
+        try{
+            ArgumentValidator.notEmptyOrNull(stringList2, "notEmptyOrNullTest");
+            fail("Exception expected.");
+        }catch(Exception ex){
+            // Expected
+        }
+        try{
+            ArgumentValidator.notEmptyOrNull(stringList3, "notEmptyOrNullTest");
+        }catch(Exception ex){
+            fail("No exception expected.");
+        }
+        try{
+            ArgumentValidator.notEmptyOrNull(integerList, "notEmptyOrNullTest");
+        }catch(Exception ex){
+            fail("No exception expected.");
+        }
+        try{
+            ArgumentValidator.notEmptyOrNull(booleanList, "notEmptyOrNullTest");
+        }catch(Exception ex){
+            fail("No exception expected.");
+        }
+        try{
+            ArgumentValidator.notEmptyOrNull(longList, "notEmptyOrNullTest");
+        }catch(Exception ex){
+            fail("No exception expected.");
         }
     }
 
