@@ -341,19 +341,21 @@ public class DeviceServiceSteps extends KapuaTest {
         }
     }
 
-    @Given("^A device such as$")
-    public void createADeviceAsSpecified(List<CucDevice> devLst)
+    @Given("^(?:A d|D)evices? such as$")
+    public void createADevicesAsSpecified(List<CucDevice> devLst)
             throws KapuaException {
 
-        assertNotNull(devLst);
-        assertEquals(1, devLst.size());
+        KapuaSecurityUtils.doPrivileged(() -> {
+            assertNotNull(devLst);
 
-        CucDevice tmpCDev = devLst.get(0);
-        tmpCDev.parse();
-        DeviceCreator devCr = prepareDeviceCreatorFromCucDevice(tmpCDev);
-        Device tmpDevice = deviceRegistryService.create(devCr);
-
-        stepData.put("LastDevice", tmpDevice);
+            Device tmpDevice = null;
+            for (CucDevice tmpCDev : devLst) {
+                tmpCDev.parse();
+                DeviceCreator devCr = prepareDeviceCreatorFromCucDevice(tmpCDev);
+                tmpDevice = deviceRegistryService.create(devCr);
+            }
+            stepData.put("LastDevice", tmpDevice);
+        });
     }
 
     @When("^I search for the device \"(.+)\" in account \"(.+)\"$")
@@ -370,7 +372,7 @@ public class DeviceServiceSteps extends KapuaTest {
 
         tmpDev = deviceRegistryService.findByClientId(tmpAcc.getId(), clientId);
         if (tmpDev != null) {
-            Vector<Device> dv = new Vector<Device>();
+            Vector<Device> dv = new Vector<>();
             dv.add(tmpDev);
             tmpList.addItems(dv);
             stepData.put("Device", tmpDev);
@@ -437,7 +439,7 @@ public class DeviceServiceSteps extends KapuaTest {
         tmpQuery = new DeviceEventQueryImpl(tmpAcc.getId());
         tmpQuery.setPredicate(attributeIsEqualTo("deviceId", tmpDev.getId()));
         tmpQuery.setSortCriteria(new FieldSortCriteria("receivedOn", FieldSortCriteria.SortOrder.ASCENDING));
-        tmpList = (DeviceEventListResult) deviceEventsService.query(tmpQuery);
+        tmpList = deviceEventsService.query(tmpQuery);
 
         assertNotNull(tmpList);
         stepData.put("DeviceEventList", tmpList);
