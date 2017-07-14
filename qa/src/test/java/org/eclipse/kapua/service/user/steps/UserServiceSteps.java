@@ -57,6 +57,7 @@ import org.eclipse.kapua.service.authorization.permission.shiro.PermissionFactor
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserService;
+import org.eclipse.kapua.service.user.internal.UserCreatorImpl;
 import org.eclipse.kapua.service.user.internal.UserDomain;
 import org.eclipse.kapua.service.user.internal.UserFactoryImpl;
 import org.eclipse.kapua.service.user.internal.UsersJAXBContextProvider;
@@ -202,6 +203,25 @@ public class UserServiceSteps extends AbstractKapuaSteps {
             tmpUser = userIterator.next();
         }
         stepData.put("LastUser", tmpUser);
+    }
+
+    @Given("^The following users? with full permissions$")
+    public void createFullPermissionUsers(List<TestUser> userList) throws Exception {
+
+        Account account = (Account)stepData.get("LastAccount");
+        createUsersInList(userList, account);
+
+        for (TestUser tmpUsr : userList) {
+            String tmpName = tmpUsr.getName();
+            String tmpPwd = tmpUsr.getPassword();
+
+            assertNotNull(tmpName);
+            assertNotNull(tmpPwd);
+
+            UserCreator usrCr = new UserCreatorImpl(account.getId(), tmpName);
+            //User tmpUsr = userService.create(usrCr);
+            // TODO: Finish this implementation!
+        }
     }
 
     @When("^I login as user with name \"(.*)\" and password \"(.*)\"$")

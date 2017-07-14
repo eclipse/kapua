@@ -41,6 +41,8 @@ public class TestUser {
 
     private BigInteger scopeId;
 
+    private String password;
+
     private String expirationDate;
 
     public String getName() {
@@ -49,6 +51,14 @@ public class TestUser {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getDisplayName() {

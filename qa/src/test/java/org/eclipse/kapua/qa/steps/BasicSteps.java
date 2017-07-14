@@ -11,19 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.steps;
 
-import static java.time.Duration.ofSeconds;
-
+import com.google.inject.Inject;
+import cucumber.api.java.Before;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.service.StepData;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.Inject;
-
-import cucumber.api.java.Before;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
-import cucumber.runtime.java.guice.ScenarioScoped;
+import static java.time.Duration.ofSeconds;
 
 @ScenarioScoped
 public class BasicSteps extends Assert {
@@ -67,7 +65,10 @@ public class BasicSteps extends Assert {
 
     @Then("^No exception was thrown$")
     public void noExceptionCaught() {
-        assertFalse((boolean) stepData.get("ExceptionCaught"));
+        Object val = stepData.get("ExceptionCaught");
+        if (val != null) {
+            assertFalse((boolean) val);
+        }
     }
 
     @Then("^I get (\\d+)$")
