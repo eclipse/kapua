@@ -88,17 +88,9 @@
                       type="DeadLetterChannel"
                       deadLetterUri="bean:errorMessageListener?method=processMessage"
                       useOriginalMessage="true">
-            <redeliveryPolicy maximumRedeliveries="1"/>
+            <redeliveryPolicy maximumRedeliveries="3" redeliveryDelay="2000"/>
         </errorHandler>
 
-        <!-- Executor thread pool
-        Please check the KapuaExecutorThreadPoolFactory comments before modify the threadName attributes
-        -->
-        <threadPool id="serviceThreads"
-                    threadName="kapuaExecutorPoolServiceProcessor"
-                    poolSize="3"
-                    maxPoolSize="5"
-                    maxQueueSize="2"/>
         <!--
         For the transaction/acknowledge mode please follow http://stackoverflow.com/questions/13498652/camel-jms-client-acknowledge-mode
 
@@ -115,7 +107,7 @@
         transacted=false
         -->
         <route errorHandlerRef="mainRouteMessageErrorHandler">
-            <from uri="activemq:queue:Consumer.eurotech:mainRoutelisteners:EXACTLY_ONCE.VirtualTopic.>?asyncConsumer=false&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=10&amp;maxConcurrentConsumers=10"/>
+            <from uri="activemq:queue:Consumer.eurotech:mainRoutelisteners:EXACTLY_ONCE.VirtualTopic.>?asyncConsumer=false&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=20&amp;maxConcurrentConsumers=50"/>
             <pipeline>
                 <bean ref="kapuaCamelFilter" method="bindSession"/>
                 <choice id="choice">

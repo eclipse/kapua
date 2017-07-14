@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.UUID;
 
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.cache.LocalCache;
@@ -514,6 +515,10 @@ public final class MessageStoreFacade {
         datastoreMessage.setReceivedOn(message.getReceivedOn());
         datastoreMessage.setScopeId(message.getScopeId());
         datastoreMessage.setSentOn(message.getSentOn());
+
+        // generate uuid
+        String id = UUID.randomUUID().toString();
+        datastoreMessage.setDatastoreId(new StorableIdImpl(id));
         return datastoreMessage;
     }
 
