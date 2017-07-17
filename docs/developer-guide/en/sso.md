@@ -63,3 +63,64 @@ URL in order to allow request from this source, while Kapua requires the Keycloa
 The URLs are being constructed from OpenShift routes, which are configured for both Kapua and Keycloak. However this requires
 that Kapua is set up before Keycloak and that the `activate` script can only be called after the `deploy` script
 has been successfully run.
+
+## Enabling single sign-on
+
+In order to enable single sign-on you will need to select an SSO provider. You can do this using the
+configuration option `sso.provider`. Currently there are two default providers in Kapua. However additional
+providers an be added to Kapua by using the Java service loader framework.
+
+The current default providers are:
+
+* `generic` – A generic OpenID Connect provider
+* `keycloak` – An OpenID Connect provider based on Keycloak's configuration patterns
+
+Each provider will require additional configuration options. But there is a set of common configuration
+options:
+
+<dl>
+  <dt><code>sso.openid.client.id</code></dt>
+  <dd>
+  The "client id" used when communicating with the OpenID Connect server.
+  </dd>
+
+  <dt><code>sso.openid.client.secret</code> (optional)</dt>
+  <dd>
+  The "client secret" used when communicating with the OpenID Connect server.
+  </dd>
+</dl>
+
+It is also necessary to configure the Web Console what its external endpoint address is.
+Currently this is a required configuration, even if there is no difference between the servers
+endpoint URL and its external URL, even if this may just be `http://localhost:8080`.
+
+<dl>
+  <dt><code>site.home.uri</code></dt>
+  <dd>The URL to the web console, e.g. <code>http://localhost:8080</code></dd>
+</dl>
+
+### Generic provider
+
+The follow values are specific to your OpenID Connection solution, please use its
+documentation to look up the required values:
+
+<dl>
+  <dt><code>sso.generic.openid.server.endpoint.auth</code></dt>
+  <dd>The endpoint URL to the authentication API</dd>
+  <dt><code>sso.generic.openid.server.endpoint.token</code></dt>
+  <dd>The endpoint URL to the token API</dd>
+</dl>
+
+### Keycloak provider
+
+The keycloak provider can be configured using the following configuration parameters:
+
+<dl>
+  <dt><code>sso.keycloak.uri</code></dt>
+  <dd>The base URL to the Keycloak server</dd>
+  
+  <dt><code>sso.keycloak.realm</code></dt>
+  <dd>The name of they realm to use</dd>
+</dl>
+
+For more information see the [Keycloak Documentation](http://www.keycloak.org/documentation.html).
