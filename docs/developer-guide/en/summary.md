@@ -10,8 +10,7 @@
 * [Setting up an IDE](ide.md)
   * [Eclipse IDE](ide.md#eclipse)
 * Configuration
-  * Web Console
-    * [Single sign-on](sso.md)
+  * [Single sign-on](sso.md)
 * [Working with database](database.md)
 * [Client generation](client.md)
 * [QA process](qa.md)
