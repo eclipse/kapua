@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -63,6 +64,7 @@ public interface DeviceEvent extends KapuaEntity {
      */
     @XmlElement(name = "deviceId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    @ApiModelProperty(dataType = "string")
     public KapuaId getDeviceId();
 
     /**

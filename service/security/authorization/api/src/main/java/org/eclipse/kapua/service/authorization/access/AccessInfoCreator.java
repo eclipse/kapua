@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.model.KapuaEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
@@ -61,6 +62,7 @@ public interface AccessInfoCreator extends KapuaEntityCreator<AccessInfo> {
      */
     @XmlElement(name = "userId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    @ApiModelProperty(dataType = "string")
     public KapuaId getUserId();
 
     /**
@@ -83,6 +85,7 @@ public interface AccessInfoCreator extends KapuaEntityCreator<AccessInfo> {
     @XmlElementWrapper(name = "roleIds")
     @XmlElement(name = "roleId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    @ApiModelProperty(dataType = "string")
     public Set<KapuaId> getRoleIds();
 
     /**
