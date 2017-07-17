@@ -30,6 +30,7 @@
         <module>authentication</module>
         <module>authorization</module>
         <module>data</module>
+        <module>welcome</module>
     </modules>
 
 </project>

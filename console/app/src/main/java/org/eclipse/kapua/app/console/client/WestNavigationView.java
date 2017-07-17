@@ -12,35 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client;
 
-import java.util.Arrays;
-import java.util.List;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.eclipse.kapua.app.console.client.account.AccountDetailsView;
-import org.eclipse.kapua.app.console.client.account.AccountView;
-import org.eclipse.kapua.app.console.client.connection.ConnectionView;
-import org.eclipse.kapua.app.console.commons.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.module.data.client.DataView;
-import org.eclipse.kapua.app.console.client.device.DevicesView;
-import org.eclipse.kapua.app.console.module.authorization.client.group.GroupView;
-import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.commons.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.commons.client.ui.color.Color;
-import org.eclipse.kapua.app.console.commons.client.ui.panel.ContentPanel;
-import org.eclipse.kapua.app.console.client.welcome.WelcomeView;
-import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractView;
-import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.commons.client.views.ViewDescriptor;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
-
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -59,13 +35,32 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
+import org.eclipse.kapua.app.console.client.account.AccountDetailsView;
+import org.eclipse.kapua.app.console.client.account.AccountView;
+import org.eclipse.kapua.app.console.client.connection.ConnectionView;
+import org.eclipse.kapua.app.console.client.device.DevicesView;
+import org.eclipse.kapua.app.console.client.tag.TagView;
+import org.eclipse.kapua.app.console.commons.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.commons.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.commons.client.ui.color.Color;
+import org.eclipse.kapua.app.console.commons.client.ui.panel.ContentPanel;
+import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractView;
+import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.commons.client.views.ViewDescriptor;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
+import org.eclipse.kapua.app.console.module.authorization.client.group.GroupView;
+import org.eclipse.kapua.app.console.module.data.client.DataView;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountServiceAsync;
 import org.eclipse.kapua.app.console.shared.service.GwtConsoleService;
-import org.eclipse.kapua.app.console.client.tag.TagView;
 import org.eclipse.kapua.app.console.shared.service.GwtConsoleServiceAsync;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class WestNavigationView extends LayoutContainer {
 
@@ -83,7 +78,6 @@ public class WestNavigationView extends LayoutContainer {
 
     private boolean dashboardSelected;
     private KapuaIcon imgRefreshLabel;
-    private WelcomeView welcomeView;
 
     private final GwtSession currentSession;
 
@@ -93,22 +87,7 @@ public class WestNavigationView extends LayoutContainer {
 
     public WestNavigationView(GwtSession currentSession, LayoutContainer center) {
         this.currentSession = currentSession;
-
-        welcomeView = new WelcomeView(this.currentSession);
-
-        ContentPanel panel = new ContentPanel(new FitLayout());
-        panel.setBodyBorder(true);
-        panel.setHeaderVisible(true);
-        panel.setIcon(new KapuaIcon(IconSet.INFO));
-        panel.setHeading(MSGS.welcome());
-        panel.add(welcomeView);
-
-        // set initial view
-
         centerPanel = center;
-        centerPanel.add(panel);
-        centerPanel.layout();
-
         dashboardSelected = true;
     }
 
@@ -125,6 +104,7 @@ public class WestNavigationView extends LayoutContainer {
 
             @Override
             public void onSuccess(final List<ViewDescriptor> additionalViewDescriptors) {
+
                 setLayout(new FitLayout());
                 setBorders(false);
 
@@ -194,23 +174,12 @@ public class WestNavigationView extends LayoutContainer {
                         centerPanel.removeAll();
 
                         final ContentPanel panel = new ContentPanel(new FitLayout());
+
                         panel.setBorders(false);
                         panel.setBodyBorder(false);
 
                         String selectedId = selected.get("id");
-                        if ("welcome".equals(selectedId)) {
-
-                            welcomeView = new WelcomeView(currentSession);
-
-                            panel.setBodyBorder(true);
-                            panel.setIcon(new KapuaIcon(IconSet.INFO));
-                            panel.setHeading(MSGS.welcome());
-                            panel.add(welcomeView);
-
-                            centerPanel.add(panel);
-                            centerPanel.layout();
-                            dashboardSelected = false;
-                        } else if ("devices".equals(selectedId)) {
+                        if ("devices".equals(selectedId)) {
                             DevicesView deviceView = new DevicesView(currentSession);
 
                             panel.setHeaderVisible(false);
@@ -295,6 +264,20 @@ public class WestNavigationView extends LayoutContainer {
                     }
                 });
 
+                if (additionalViewDescriptors.size() > 0) {
+                    centerPanel.removeAll();
+
+                    final ContentPanel panel = new ContentPanel(new FitLayout());
+
+                    ViewDescriptor firstView = additionalViewDescriptors.get(0);
+                    panel.setIcon(new KapuaIcon(firstView.getIcon()));
+                    panel.setHeading(firstView.getName());
+                    panel.add((AbstractView) firstView.getViewInstance(currentSession));
+
+                    centerPanel.add(panel);
+                    centerPanel.layout();
+                }
+
                 ColumnConfig name1 = new ColumnConfig("name", "Name", 200);
                 name1.setRenderer(treeCellRenderer);
 
@@ -371,8 +354,6 @@ public class WestNavigationView extends LayoutContainer {
 
         if (selectedAccountId != null) {
 
-            cloudResourcesTreeStore.add(newItem("welcome", MSGS.welcome(), IconSet.INFO), false);
-
             if (currentSession.hasDeviceReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("devices", MSGS.devices(), IconSet.HDD_O), false);
             }
@@ -403,7 +384,7 @@ public class WestNavigationView extends LayoutContainer {
 
         }
 
-        if (additionalViewDescriptors != null) {
+        if (additionalViewDescriptors != null && additionalViewDescriptors.size() > 0) {
             for (ViewDescriptor entityView : additionalViewDescriptors) {
                 cloudResourcesTreeStore.add(newItem(entityView.getViewId(), entityView.getName(), entityView.getIcon()), false);
             }
@@ -474,24 +455,6 @@ public class WestNavigationView extends LayoutContainer {
 
             TableData labelTableData = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.MIDDLE);
             lc.add(label, labelTableData);
-
-            //
-            // Refresh icon for dashboard view
-            if (((String) model.get(property)).equals("Dashboard")) {
-                imgRefreshLabel = new KapuaIcon(IconSet.REFRESH);
-                imgRefreshLabel.addListener(Events.OnClick, new Listener<BaseEvent>() {
-
-                    @Override
-                    public void handleEvent(BaseEvent be) {
-                        if (dashboardSelected) {
-                            // FIXME: seems to be dead code
-                            welcomeView.refresh();
-                        }
-                    }
-                });
-
-                lc.add(imgRefreshLabel, new TableData(Style.HorizontalAlignment.RIGHT, Style.VerticalAlignment.MIDDLE));
-            }
 
             //
             // Return component
