@@ -36,7 +36,7 @@ public class UserViewDescriptor extends AbstractViewDescriptor implements Entity
     }
 
     @Override
-    public int getOrder() {
+    public Integer getOrder() {
         return 200;
     }
 

@@ -14,7 +14,6 @@ package org.eclipse.kapua.app.console.module.about.client.about;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.commons.client.views.AbstractViewDescriptor;
 import org.eclipse.kapua.app.console.commons.client.views.View;
-import org.eclipse.kapua.app.console.commons.client.views.ViewDescriptor;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 
 public class AboutViewDescriptor extends AbstractViewDescriptor {
@@ -30,7 +29,7 @@ public class AboutViewDescriptor extends AbstractViewDescriptor {
     }
 
     @Override
-    public int getOrder() {
+    public Integer getOrder() {
         return 900;
     }
 
