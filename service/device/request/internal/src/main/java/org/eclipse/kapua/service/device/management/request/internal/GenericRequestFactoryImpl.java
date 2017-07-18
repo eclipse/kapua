@@ -44,15 +44,18 @@ public class GenericRequestFactoryImpl implements GenericRequestFactory {
         return new GenericRequestMessageImpl();
     }
 
-    @Override public GenericResponseChannel newResponseChannel() {
+    @Override
+    public GenericResponseChannel newResponseChannel() {
         return new GenericResponseChannelImpl();
     }
 
-    @Override public GenericResponsePayload newResponsePayload() {
+    @Override
+    public GenericResponsePayload newResponsePayload() {
         return new GenericResponsePayloadImpl();
     }
 
-    @Override public GenericResponseMessage newResponseMessage() {
+    @Override
+    public GenericResponseMessage newResponseMessage() {
         return new GenericResponseMessageImpl();
     }
 }

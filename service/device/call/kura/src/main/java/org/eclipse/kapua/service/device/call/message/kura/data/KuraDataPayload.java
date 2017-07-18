@@ -88,7 +88,8 @@ public class KuraDataPayload extends KuraPayload implements DevicePayload {
         return metrics;
     }
 
-    @Override public void setMetrics(Map<String, Object> metrics) {
+    @Override
+    public void setMetrics(Map<String, Object> metrics) {
         this.metrics = metrics;
     }
 

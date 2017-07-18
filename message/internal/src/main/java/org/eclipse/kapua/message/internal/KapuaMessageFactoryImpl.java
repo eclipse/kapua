@@ -53,11 +53,13 @@ public class KapuaMessageFactoryImpl implements KapuaMessageFactory {
         return new KapuaPositionImpl();
     }
 
-    @Override public KapuaDataChannel newKapuaDataChannel() {
+    @Override
+    public KapuaDataChannel newKapuaDataChannel() {
         return new KapuaDataChannelImpl();
     }
 
-    @Override public KapuaDataPayload newKapuaDataPayload() {
+    @Override
+    public KapuaDataPayload newKapuaDataPayload() {
         return new KapuaDataPayloadImpl();
     }
 }

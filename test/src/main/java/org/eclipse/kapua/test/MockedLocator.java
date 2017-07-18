@@ -80,7 +80,8 @@ public class MockedLocator extends KapuaLocator {
         return (F) getMockedFactory(factoryClass);
     }
 
-    @Override public List<KapuaService> getServices() {
+    @Override
+    public List<KapuaService> getServices() {
         return new ArrayList<>(serviceMap.values());
     }
 

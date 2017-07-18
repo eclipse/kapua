@@ -33,9 +33,10 @@ import java.util.Date;
 @KapuaProvider
 public class StreamServiceImpl implements StreamService {
 
-    @Override public KapuaResponseMessage<?, ?> publish(KapuaDataMessage requestMessage, Long timeout)
+    @Override
+    public KapuaResponseMessage<?, ?> publish(KapuaDataMessage requestMessage, Long timeout)
             throws KapuaException {
-        TransportFacade<?,?,TransportMessage<?,?>,?> transportFacade = null;
+        TransportFacade<?, ?, TransportMessage<?, ?>, ?> transportFacade = null;
         try {
             ArgumentValidator.notNull(requestMessage.getClientId(), "clientId");
             ArgumentValidator.notNull(requestMessage.getScopeId(), "scopeId");
@@ -47,7 +48,7 @@ public class StreamServiceImpl implements StreamService {
             //
             // Get Kura to transport translator for the request and vice versa
             Translator<KapuaDataMessage, KuraDataMessage> translatorKapuaKura = getTranslator(KapuaDataMessage.class, KuraDataMessage.class);
-            Translator<KuraDataMessage,?> translatorKuraTransport = getTranslator(KuraDataMessage.class, transportFacade.getMessageClass());
+            Translator<KuraDataMessage, ?> translatorKuraTransport = getTranslator(KuraDataMessage.class, transportFacade.getMessageClass());
 
             KuraDataMessage kuraDataMessage = translatorKapuaKura.translate(requestMessage);
 
@@ -58,7 +59,7 @@ public class StreamServiceImpl implements StreamService {
                 kuraDataMessage.setTimestamp(new Date());
 
                 // Send
-                transportFacade.sendAsync((TransportMessage<?,?>) translatorKuraTransport.translate(kuraDataMessage));
+                transportFacade.sendAsync((TransportMessage<?, ?>) translatorKuraTransport.translate(kuraDataMessage));
 
             } catch (KapuaException e) {
                 throw new KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes.CLIENT_SEND_ERROR,
@@ -82,12 +83,12 @@ public class StreamServiceImpl implements StreamService {
     // Private methods
     //
     @SuppressWarnings("unchecked")
-    private TransportFacade<?,?,TransportMessage<?,?>,?> borrowClient()
+    private TransportFacade<?, ?, TransportMessage<?, ?>, ?> borrowClient()
             throws KuraMqttDeviceCallException {
-        TransportFacade<?,?,TransportMessage<?,?>,?> transportFacade;
+        TransportFacade<?, ?, TransportMessage<?, ?>, ?> transportFacade;
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
-            TransportClientFactory<?,?,?,?,?,?> transportClientFactory = locator.getFactory(TransportClientFactory.class);
+            TransportClientFactory<?, ?, ?, ?, ?, ?> transportClientFactory = locator.getFactory(TransportClientFactory.class);
             transportFacade = (TransportFacade<?, ?, TransportMessage<?, ?>, ?>) transportClientFactory.getFacade();
         } catch (Exception e) {
             throw new KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes.CALL_ERROR,
@@ -97,9 +98,9 @@ public class StreamServiceImpl implements StreamService {
         return transportFacade;
     }
 
-    private <T1 extends Message<?,?>,T2 extends Message<?,?>> Translator<T1,T2> getTranslator(Class<T1> from, Class<T2> to)
+    private <T1 extends Message<?, ?>, T2 extends Message<?, ?>> Translator<T1, T2> getTranslator(Class<T1> from, Class<T2> to)
             throws KuraMqttDeviceCallException {
-        Translator<T1,T2> translator;
+        Translator<T1, T2> translator;
         try {
             translator = Translator.getTranslatorFor(from, to);
         } catch (KapuaException e) {
