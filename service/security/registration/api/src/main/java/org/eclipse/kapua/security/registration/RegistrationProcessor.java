@@ -16,7 +16,24 @@ import java.util.Optional;
 import org.eclipse.kapua.service.user.User;
 import org.jose4j.jwt.consumer.JwtContext;
 
+/**
+ * A registration processor
+ * 
+ * <p>
+ * A registration process may be able to create a new user based on the provided
+ * SSO authentication context.
+ * </p>
+ */
 public interface RegistrationProcessor extends AutoCloseable {
 
+    /**
+     * Ask the registration process to create a new user
+     * 
+     * @param context
+     *            the context to use as reference
+     * @return an optional new user, never returns {@code null}, but may return {@link Optional#empty()}
+     * @throws Exception
+     *             if anything goes wrong
+     */
     public Optional<User> createUser(JwtContext context) throws Exception;
 }
