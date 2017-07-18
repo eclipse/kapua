@@ -20,12 +20,28 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>kapua-console-module-authentication</artifactId>
+    <artifactId>kapua-console-module-tag</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-commons</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-console-module-authentication</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-console-module-device</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-tag-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-tag-internal</artifactId>
         </dependency>
     </dependencies>
 
@@ -63,15 +79,12 @@
                 </executions>
 
                 <configuration>
-                    <module>org.eclipse.kapua.app.console.module.authentication.adminModuleAuthentication</module>
-
-                    <extraJvmArgs>-Xmx2048m -XX:+UseParallelGC</extraJvmArgs>
+                    <module>org.eclipse.kapua.app.console.module.tag.adminModuleTag</module>
                     <i18nMessagesBundles>
-                        <i18nMessagesBundle>org.eclipse.kapua.app.console.module.authentication.client.messages.ConsoleCredentialMessages</i18nMessagesBundle>
+                        <i18nMessagesBundle>org.eclipse.kapua.app.console.module.tag.client.messages.ConsoleTagMessages</i18nMessagesBundle>
                     </i18nMessagesBundles>
-
+                    <extraJvmArgs>-Xmx2048m -XX:+UseParallelGC</extraJvmArgs>
                     <optimizationLevel>9</optimizationLevel>
-                    <!--<runTarget>console.jsp</runTarget>-->
                 </configuration>
             </plugin>
         </plugins>

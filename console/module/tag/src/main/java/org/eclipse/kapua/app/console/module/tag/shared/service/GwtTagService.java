@@ -9,21 +9,21 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.shared.service;
+package org.eclipse.kapua.app.console.module.tag.shared.service;
 
 import java.util.List;
 
 import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.commons.shared.service.KapuaConfigurableRemoteService;
-import org.eclipse.kapua.app.console.shared.model.GwtTagQuery;
-import org.eclipse.kapua.app.console.shared.model.GwtTagCreator;
-import org.eclipse.kapua.app.console.shared.model.GwtTag;
 
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
+import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTagCreator;
+import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTagQuery;
 
 @RemoteServiceRelativePath("tag")
 public interface GwtTagService extends KapuaConfigurableRemoteService {

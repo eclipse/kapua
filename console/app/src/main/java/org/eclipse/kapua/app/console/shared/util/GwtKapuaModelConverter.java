@@ -19,7 +19,6 @@ import org.eclipse.kapua.app.console.commons.shared.model.GwtConfigParameter;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtUpdatableEntityModel;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountQuery;
-import org.eclipse.kapua.app.console.shared.model.GwtTagQuery;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
@@ -30,9 +29,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountQuery;
-import org.eclipse.kapua.service.tag.TagFactory;
-import org.eclipse.kapua.service.tag.TagQuery;
-import org.eclipse.kapua.service.tag.internal.TagPredicates;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,26 +39,6 @@ import java.util.Map;
 public class GwtKapuaModelConverter {
 
     private GwtKapuaModelConverter() {
-    }
-
-    /**
-     * Converts a {@link GwtTagQuery} into a {@link TagQuery} object for backend usage
-     *
-     * @param loadConfig  the load configuration
-     * @param gwtTagQuery the {@link GwtTagQuery} to convertKapuaId
-     * @return the converted {@link TagQuery}
-     */
-    public static TagQuery convertTagQuery(PagingLoadConfig loadConfig, GwtTagQuery gwtTagQuery) {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        TagFactory tagFactory = locator.getFactory(TagFactory.class);
-        TagQuery tagQuery = tagFactory.newQuery(GwtKapuaModelConverter.convertKapuaId(gwtTagQuery.getScopeId()));
-        if (gwtTagQuery.getName() != null && !gwtTagQuery.getName().isEmpty()) {
-            tagQuery.setPredicate(new AttributePredicate<String>(TagPredicates.NAME, gwtTagQuery.getName(), Operator.LIKE));
-        }
-        tagQuery.setOffset(loadConfig.getOffset());
-        tagQuery.setLimit(loadConfig.getLimit());
-
-        return tagQuery;
     }
 
     public static AccountQuery convertAccountQuery(PagingLoadConfig loadConfig, GwtAccountQuery gwtAccountQuery) {

@@ -9,24 +9,32 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.tag;
+package org.eclipse.kapua.app.console.module.tag.client;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.gwt.core.client.GWT;
 import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.commons.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.model.GwtTag;
+import org.eclipse.kapua.app.console.module.tag.client.messages.ConsoleTagMessages;
+import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TagView extends AbstractEntityView<GwtTag> {
 
     private TagGrid tagGrid;
 
+    private static final ConsoleTagMessages MSGS = GWT.create(ConsoleTagMessages.class);
+
     public TagView(GwtSession gwtSession) {
         super(gwtSession);
+    }
+
+    public static String getName() {
+        return MSGS.tags();
     }
 
     @Override
@@ -48,9 +56,9 @@ public class TagView extends AbstractEntityView<GwtTag> {
 
     @Override
     public EntityFilterPanel<GwtTag> getEntityFilterPanel(AbstractEntityView<GwtTag> entityView,
-            GwtSession currentSession2) {
+            GwtSession currentSession) {
 
-        return new TagFilterPanel(this, currentSession2);
+        return new TagFilterPanel(this, currentSession);
     }
 
 }

@@ -13,7 +13,6 @@ package org.eclipse.kapua.app.console.shared.util;
 
 import org.eclipse.kapua.app.console.commons.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtUpdatableEntityModel;
-import org.eclipse.kapua.app.console.shared.model.GwtTag;
 import org.eclipse.kapua.app.console.shared.model.GwtTopic;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtUpdatableEntityModel;
 import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAsset;
@@ -24,7 +23,6 @@ import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnection
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.tag.Tag;
 
 public class KapuaGwtModelConverter {
 
@@ -49,27 +47,6 @@ public class KapuaGwtModelConverter {
         //
         // Return converted entity
         return kapuaId.toCompactId();
-    }
-
-    /**
-     * Converts a {@link Tag} into a {@link GwtTag}
-     *
-     * @param tag The {@link Tag} to convertKapuaId
-     * @return The converted {@link GwtTag}
-     * @since 1.0.0
-     */
-    public static GwtTag convert(Tag tag) {
-
-        GwtTag gwtTag = new GwtTag();
-        //
-        // Covert commons attributes
-        convertEntity(tag, gwtTag);
-
-        //
-        // Convert other attributes
-        gwtTag.setTagName(tag.getName());
-
-        return gwtTag;
     }
 
     /**

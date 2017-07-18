@@ -9,18 +9,18 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.tag;
+package org.eclipse.kapua.app.console.module.tag.client;
 
 import org.eclipse.kapua.app.console.commons.client.ui.tab.EntityDescriptionTabItem;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtGroupedNVPair;
-import org.eclipse.kapua.app.console.shared.model.GwtTag;
-import org.eclipse.kapua.app.console.shared.service.GwtTagService;
 
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.eclipse.kapua.app.console.shared.service.GwtTagServiceAsync;
+import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
+import org.eclipse.kapua.app.console.module.tag.shared.service.GwtTagService;
+import org.eclipse.kapua.app.console.module.tag.shared.service.GwtTagServiceAsync;
 
 public class TagTabDescription extends EntityDescriptionTabItem<GwtTag> {
 

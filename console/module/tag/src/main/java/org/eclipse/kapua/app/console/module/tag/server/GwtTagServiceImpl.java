@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.server;
+package org.eclipse.kapua.app.console.module.tag.server;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,28 +18,29 @@ import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.commons.server.KapuaConfigurableRemoteServiceServlet;
 import org.eclipse.kapua.app.console.commons.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtGroupedNVPair;
-import org.eclipse.kapua.app.console.shared.model.GwtTagQuery;
-import org.eclipse.kapua.app.console.shared.service.GwtTagService;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.console.shared.model.GwtTagCreator;
-import org.eclipse.kapua.app.console.shared.model.GwtTag;
-import org.eclipse.kapua.app.console.shared.util.GwtKapuaModelConverter;
-import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
+import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaModelConverter;
+import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
+import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTagCreator;
+import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTagQuery;
+import org.eclipse.kapua.app.console.module.tag.shared.service.GwtTagService;
+import org.eclipse.kapua.app.console.module.tag.shared.util.GwtKapuaTagModelConverter;
+import org.eclipse.kapua.app.console.module.tag.shared.util.KapuaGwtTagModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.tag.Tag;
-import org.eclipse.kapua.service.tag.TagCreator;
-import org.eclipse.kapua.service.tag.TagFactory;
-import org.eclipse.kapua.service.tag.TagListResult;
-import org.eclipse.kapua.service.tag.TagQuery;
-import org.eclipse.kapua.service.tag.TagService;
 
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import org.eclipse.kapua.service.tag.Tag;
+import org.eclipse.kapua.service.tag.TagCreator;
+import org.eclipse.kapua.service.tag.TagFactory;
+import org.eclipse.kapua.service.tag.TagListResult;
+import org.eclipse.kapua.service.tag.TagQuery;
+import org.eclipse.kapua.service.tag.TagService;
 
 public class GwtTagServiceImpl extends KapuaConfigurableRemoteServiceServlet<TagService> implements GwtTagService {
 
@@ -59,7 +60,7 @@ public class GwtTagServiceImpl extends KapuaConfigurableRemoteServiceServlet<Tag
             TagCreator tagCreator = tagFactory.newCreator(scopeId, gwtTagCreator.getName());
             TagService tagService = locator.getService(TagService.class);
             Tag tag = tagService.create(tagCreator);
-            gwtTag = KapuaGwtModelConverter.convert(tag);
+            gwtTag = KapuaGwtTagModelConverter.convertTag(tag);
 
         } catch (Exception e) {
             KapuaExceptionHandler.handle(e);
@@ -80,8 +81,7 @@ public class GwtTagServiceImpl extends KapuaConfigurableRemoteServiceServlet<Tag
             if (tag != null) {
                 tag.setName(gwtTag.getTagName());
                 tagService.update(tag);
-                gwtTagUpdated = KapuaGwtModelConverter
-                        .convert(tagService.find(tag.getScopeId(), tag.getId()));
+                gwtTagUpdated = KapuaGwtTagModelConverter.convertTag(tagService.find(tag.getScopeId(), tag.getId()));
             }
         } catch (Exception e) {
             KapuaExceptionHandler.handle(e);
@@ -99,7 +99,7 @@ public class GwtTagServiceImpl extends KapuaConfigurableRemoteServiceServlet<Tag
             TagService tagService = locator.getService(TagService.class);
             Tag tag = tagService.find(scopeId, tagId);
             if (tag != null) {
-                gwtTag = KapuaGwtModelConverter.convert(tag);
+                gwtTag = KapuaGwtTagModelConverter.convertTag(tag);
             }
         } catch (Exception e) {
             KapuaExceptionHandler.handle(e);
@@ -115,7 +115,7 @@ public class GwtTagServiceImpl extends KapuaConfigurableRemoteServiceServlet<Tag
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             TagService tagService = locator.getService(TagService.class);
-            TagQuery tagQuery = GwtKapuaModelConverter.convertTagQuery(loadConfig, gwtTagQuery);
+            TagQuery tagQuery = GwtKapuaTagModelConverter.convertTagQuery(loadConfig, gwtTagQuery);
             TagListResult tags = tagService.query(tagQuery);
             if (!tags.isEmpty()) {
                 if (tags.getSize() >= loadConfig.getLimit()) {
@@ -125,7 +125,7 @@ public class GwtTagServiceImpl extends KapuaConfigurableRemoteServiceServlet<Tag
                     totalLength = tags.getSize();
                 }
                 for (Tag g : tags.getItems()) {
-                    gwtTagList.add(KapuaGwtModelConverter.convert(g));
+                    gwtTagList.add(KapuaGwtTagModelConverter.convertTag(g));
                 }
             }
         } catch (Exception e) {
@@ -186,7 +186,7 @@ public class GwtTagServiceImpl extends KapuaConfigurableRemoteServiceServlet<Tag
         try {
             TagListResult result = tagService.query(query);
             for (Tag tag : result.getItems()) {
-                tagList.add(KapuaGwtModelConverter.convert(tag));
+                tagList.add(KapuaGwtTagModelConverter.convertTag(tag));
             }
         } catch (KapuaException e) {
             e.printStackTrace();

@@ -85,6 +85,17 @@
     <!-- Servlets -->
     <!--  -->
 
+    <!-- XSRF servlet support -->
+    <servlet>
+        <servlet-name>GwtSecurityTokenServiceImpl</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.commons.server.GwtSecurityTokenServiceImpl
+        </servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GwtSecurityTokenServiceImpl</servlet-name>
+        <url-pattern>/xsrf/*</url-pattern>
+    </servlet-mapping>
+
     <!-- Http error handling servlet -->
     <servlet>
         <servlet-name>KapuaErrorHandlerServlet</servlet-name>
@@ -271,7 +282,7 @@
    	
     <servlet>
         <servlet-name>tagServlet</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.server.GwtTagServiceImpl</servlet-class>
+        <servlet-class>org.eclipse.kapua.app.console.module.tag.server.GwtTagServiceImpl</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>tagServlet</servlet-name>

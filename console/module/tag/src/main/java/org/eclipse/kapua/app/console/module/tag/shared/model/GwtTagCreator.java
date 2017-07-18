@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.shared.model;
+package org.eclipse.kapua.app.console.module.tag.shared.model;
 
 import org.eclipse.kapua.app.console.commons.shared.model.GwtEntityCreator;
 

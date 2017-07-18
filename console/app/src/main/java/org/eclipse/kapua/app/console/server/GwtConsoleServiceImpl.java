@@ -15,6 +15,7 @@ import org.eclipse.kapua.app.console.commons.client.views.ViewDescriptor;
 import org.eclipse.kapua.app.console.commons.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.about.client.about.AboutViewDescriptor;
 import org.eclipse.kapua.app.console.module.authorization.client.role.RoleViewDescriptor;
+import org.eclipse.kapua.app.console.module.tag.client.TagViewDescriptor;
 import org.eclipse.kapua.app.console.module.user.client.UserViewDescriptor;
 import org.eclipse.kapua.app.console.module.welcome.client.WelcomeViewDescriptor;
 import org.eclipse.kapua.app.console.shared.service.GwtConsoleService;
@@ -29,6 +30,7 @@ public class GwtConsoleServiceImpl extends KapuaRemoteServiceServlet implements 
      private static final String ROLES_CLASSNAME = "org.eclipse.kapua.app.console.module.authorization.client.role.RoleViewDescriptor";
      private static final String USER_CLASSNAME = "org.eclipse.kapua.app.console.module.user.client.UserViewDescriptor";
      private static final String WELCOME_CLASSNAME = "org.eclipse.kapua.app.console.module.welcome.client.WelcomeViewDescriptor";
+     private static final String TAG_CLASSNAME = "org.eclipse.kapua.app.console.module.tag.client.TagViewDescriptor";
 
     @Override
     public List<ViewDescriptor> getCustomEntityViews() {
@@ -42,6 +44,8 @@ public class GwtConsoleServiceImpl extends KapuaRemoteServiceServlet implements 
             views.add(roleView);
             WelcomeViewDescriptor welcomeView = (WelcomeViewDescriptor)Class.forName(WELCOME_CLASSNAME).newInstance();
             views.add(welcomeView);
+            TagViewDescriptor tagView = (TagViewDescriptor)Class.forName(TAG_CLASSNAME).newInstance();
+            views.add(tagView);
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {

@@ -9,20 +9,20 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.tag;
+package org.eclipse.kapua.app.console.module.tag.client;
 
-import org.eclipse.kapua.app.console.client.messages.ConsoleTagMessages;
 import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.model.GwtTag;
 
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.core.client.GWT;
-import org.eclipse.kapua.app.console.shared.model.GwtTagQuery;
+import org.eclipse.kapua.app.console.module.tag.client.messages.ConsoleTagMessages;
+import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
+import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTagQuery;
 
 public class TagFilterPanel extends EntityFilterPanel<GwtTag> {
 

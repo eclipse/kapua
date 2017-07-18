@@ -9,22 +9,25 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.shared.model;
+package org.eclipse.kapua.app.console.module.tag.shared.model;
 
-import org.eclipse.kapua.app.console.commons.shared.model.query.GwtQuery;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtUpdatableEntityModel;
 
-public class GwtTagQuery extends GwtQuery {
+public class GwtTag extends GwtUpdatableEntityModel {
 
-    private static final long serialVersionUID = -4379272962842143514L;
+    private static final long serialVersionUID = 1379154649673867888L;
 
-    private String name;
-
-    public String getName() {
-        return name;
+    public String getTagName() {
+        return get("tagName");
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTagName(String name) {
+        set("tagName", name);
+        set("value", name);
     }
 
+    @Override
+    public String toString() {
+        return getTagName();
+    }
 }

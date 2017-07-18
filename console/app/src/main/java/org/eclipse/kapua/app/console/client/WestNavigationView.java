@@ -41,7 +41,6 @@ import org.eclipse.kapua.app.console.client.account.AccountDetailsView;
 import org.eclipse.kapua.app.console.client.account.AccountView;
 import org.eclipse.kapua.app.console.client.connection.ConnectionView;
 import org.eclipse.kapua.app.console.client.device.DevicesView;
-import org.eclipse.kapua.app.console.client.tag.TagView;
 import org.eclipse.kapua.app.console.commons.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.KapuaIcon;
@@ -205,16 +204,6 @@ public class WestNavigationView extends LayoutContainer {
                             centerPanel.add(panel);
                             centerPanel.layout();
                             dashboardSelected = false;
-                        } else if ("tags".equals(selectedId)) {
-                            panel.setIcon(new KapuaIcon(IconSet.TAGS));
-                            panel.setHeading(MSGS.tags());
-
-                            TagView groupView = new TagView(currentSession);
-                            panel.add(groupView);
-
-                            centerPanel.add(panel);
-                            centerPanel.layout();
-                            dashboardSelected = false;
                         } else if ("groups".equals(selectedId)) {
                             panel.setIcon(new KapuaIcon(IconSet.OBJECT_GROUP));
                             panel.setHeading(MSGS.groups());
@@ -362,9 +351,6 @@ public class WestNavigationView extends LayoutContainer {
             }
             if (currentSession.hasDataReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("data", "Data", IconSet.DATABASE), false);
-            }
-            if (currentSession.hasTagReadPermission()) {
-                cloudResourcesTreeStore.add(newItem("tags", MSGS.tags(), IconSet.TAGS), false);
             }
             if (currentSession.hasUserReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("user", MSGS.users(), IconSet.USERS), false);

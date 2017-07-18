@@ -9,18 +9,18 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.tag;
+package org.eclipse.kapua.app.console.module.tag.client;
 
-import org.eclipse.kapua.app.console.client.messages.ConsoleTagMessages;
 import org.eclipse.kapua.app.console.commons.client.ui.dialog.entity.EntityDeleteDialog;
 import org.eclipse.kapua.app.console.commons.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.shared.model.GwtTag;
-import org.eclipse.kapua.app.console.shared.service.GwtTagService;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.eclipse.kapua.app.console.shared.service.GwtTagServiceAsync;
+import org.eclipse.kapua.app.console.module.tag.client.messages.ConsoleTagMessages;
+import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
+import org.eclipse.kapua.app.console.module.tag.shared.service.GwtTagService;
+import org.eclipse.kapua.app.console.module.tag.shared.service.GwtTagServiceAsync;
 
 public class TagDeleteDialog extends EntityDeleteDialog {
 

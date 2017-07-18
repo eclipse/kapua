@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.tag;
+package org.eclipse.kapua.app.console.module.tag.client;
 
 
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
@@ -18,15 +18,15 @@ import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.eclipse.kapua.app.console.client.messages.ConsoleTagMessages;
 import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.commons.shared.model.query.GwtQuery;
-import org.eclipse.kapua.app.console.shared.model.GwtTag;
-import org.eclipse.kapua.app.console.shared.model.GwtTagQuery;
-import org.eclipse.kapua.app.console.shared.service.GwtTagService;
-import org.eclipse.kapua.app.console.shared.service.GwtTagServiceAsync;
+import org.eclipse.kapua.app.console.module.tag.client.messages.ConsoleTagMessages;
+import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
+import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTagQuery;
+import org.eclipse.kapua.app.console.module.tag.shared.service.GwtTagService;
+import org.eclipse.kapua.app.console.module.tag.shared.service.GwtTagServiceAsync;
 
 import java.util.ArrayList;
 import java.util.List;

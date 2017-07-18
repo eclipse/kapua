@@ -9,12 +9,12 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.tag;
+package org.eclipse.kapua.app.console.module.tag.client;
 
 import org.eclipse.kapua.app.console.commons.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.commons.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.model.GwtTag;
+import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
 
 public class TagToolbarGrid extends EntityCRUDToolbar<GwtTag> {
 
