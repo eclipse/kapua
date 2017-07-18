@@ -39,7 +39,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 import org.eclipse.kapua.app.console.client.account.AccountDetailsView;
 import org.eclipse.kapua.app.console.client.account.AccountView;
-import org.eclipse.kapua.app.console.client.connection.ConnectionView;
 import org.eclipse.kapua.app.console.commons.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.KapuaIcon;
@@ -177,16 +176,7 @@ public class WestNavigationView extends LayoutContainer {
                         panel.setBodyBorder(false);
 
                         String selectedId = selected.get("id");
-                        if ("connection".equals(selectedId)) {
-                            ConnectionView connectionView = new ConnectionView(currentSession);
-
-                            panel.setHeaderVisible(false);
-                            panel.add(connectionView);
-
-                            centerPanel.add(panel);
-                            centerPanel.layout();
-                            dashboardSelected = false;
-                        } else if ("data".equals(selectedId)) {
+                        if ("data".equals(selectedId)) {
                             DataView dataView = new DataView(currentSession);
                             panel.setHeaderVisible(false);
                             panel.add(dataView);
@@ -333,9 +323,6 @@ public class WestNavigationView extends LayoutContainer {
 
         if (selectedAccountId != null) {
 
-            if (currentSession.hasConnectionReadPermission()) {
-                cloudResourcesTreeStore.add(newItem("connection", MSGS.connections(), IconSet.PLUG), false);
-            }
             if (currentSession.hasDataReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("data", "Data", IconSet.DATABASE), false);
             }

@@ -9,12 +9,12 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.connection;
+package org.eclipse.kapua.app.console.module.device.client.connection;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.kapua.app.console.client.messages.ConsoleConnectionMessages;
+import org.eclipse.kapua.app.console.module.device.client.connection.toolbar.ConnectionGridToolbar;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
@@ -22,6 +22,7 @@ import org.eclipse.kapua.app.console.commons.client.ui.color.Color;
 import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.commons.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleConnectionMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionQuery;
 import org.eclipse.kapua.app.console.commons.shared.model.query.GwtQuery;

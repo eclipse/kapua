@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.connection.toolbar;
+package org.eclipse.kapua.app.console.module.device.client.connection.toolbar;
 
 import org.eclipse.kapua.app.console.commons.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.commons.client.ui.widget.EntityCRUDToolbar;

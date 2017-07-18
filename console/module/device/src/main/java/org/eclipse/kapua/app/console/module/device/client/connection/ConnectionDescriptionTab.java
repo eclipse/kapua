@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.connection;
+package org.eclipse.kapua.app.console.module.device.client.connection;
 
 import org.eclipse.kapua.app.console.commons.client.ui.tab.EntityDescriptionTabItem;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtGroupedNVPair;

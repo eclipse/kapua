@@ -16,6 +16,7 @@ import org.eclipse.kapua.app.console.commons.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.about.client.about.AboutViewDescriptor;
 import org.eclipse.kapua.app.console.module.authorization.client.role.RoleViewDescriptor;
 import org.eclipse.kapua.app.console.module.device.client.DevicesViewDescriptor;
+import org.eclipse.kapua.app.console.module.device.client.connection.ConnectionViewDescriptor;
 import org.eclipse.kapua.app.console.module.tag.client.TagViewDescriptor;
 import org.eclipse.kapua.app.console.module.user.client.UserViewDescriptor;
 import org.eclipse.kapua.app.console.module.welcome.client.WelcomeViewDescriptor;
@@ -33,6 +34,7 @@ public class GwtConsoleServiceImpl extends KapuaRemoteServiceServlet implements 
      private static final String WELCOME_CLASSNAME = "org.eclipse.kapua.app.console.module.welcome.client.WelcomeViewDescriptor";
      private static final String TAG_CLASSNAME = "org.eclipse.kapua.app.console.module.tag.client.TagViewDescriptor";
      private static final String DEVICE_CLASSNAME = "org.eclipse.kapua.app.console.module.device.client.DevicesViewDescriptor";
+     private static final String CONNECTION_CLASSNAME = "org.eclipse.kapua.app.console.module.device.client.connection.ConnectionViewDescriptor";
 
     @Override
     public List<ViewDescriptor> getCustomEntityViews() {
@@ -50,6 +52,8 @@ public class GwtConsoleServiceImpl extends KapuaRemoteServiceServlet implements 
             views.add(tagView);
             DevicesViewDescriptor devicesView = (DevicesViewDescriptor)Class.forName(DEVICE_CLASSNAME).newInstance();
             views.add(devicesView);
+            ConnectionViewDescriptor connectionView = (ConnectionViewDescriptor)Class.forName(CONNECTION_CLASSNAME).newInstance();
+            views.add(connectionView);
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {

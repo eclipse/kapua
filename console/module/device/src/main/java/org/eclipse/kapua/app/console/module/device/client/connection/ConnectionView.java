@@ -9,16 +9,18 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.connection;
+package org.eclipse.kapua.app.console.module.device.client.connection;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
 import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.commons.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleConnectionMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection;
 
 public class ConnectionView extends AbstractEntityView<GwtDeviceConnection> {
@@ -26,6 +28,8 @@ public class ConnectionView extends AbstractEntityView<GwtDeviceConnection> {
     private ConnectionGrid connectionGrid;
     private ConnectionDescriptionTab descriptionTab;
     private ConnectionFilterPanel filterPanel;
+
+    private static final ConsoleConnectionMessages MSGS = GWT.create(ConsoleConnectionMessages.class);
 
     public ConnectionView(GwtSession currentSession) {
         super(currentSession);
@@ -55,5 +59,9 @@ public class ConnectionView extends AbstractEntityView<GwtDeviceConnection> {
             filterPanel = new ConnectionFilterPanel(entityView, currentSession);
         }
         return filterPanel;
+    }
+
+    public static String getName() {
+        return MSGS.connections();
     }
 }
