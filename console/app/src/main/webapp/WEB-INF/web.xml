@@ -173,7 +173,7 @@
 
 	<servlet>
 		<servlet-name>deviceServlet</servlet-name>
-		<servlet-class>org.eclipse.kapua.app.console.server.GwtDeviceServiceImpl</servlet-class>
+		<servlet-class>org.eclipse.kapua.app.console.module.device.server.GwtDeviceServiceImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>deviceServlet</servlet-name>
@@ -182,7 +182,7 @@
 
     <servlet>
         <servlet-name>deviceManagementServlet</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.server.GwtDeviceManagementServiceImpl</servlet-class>
+        <servlet-class>org.eclipse.kapua.app.console.module.device.server.GwtDeviceManagementServiceImpl</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>deviceManagementServlet</servlet-name>
@@ -191,7 +191,7 @@
 
     <servlet>
         <servlet-name>deviceConnectionServlet</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.server.GwtDeviceConnectionServiceImpl</servlet-class>
+        <servlet-class>org.eclipse.kapua.app.console.module.device.server.GwtDeviceConnectionServiceImpl</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>deviceConnectionServlet</servlet-name>
@@ -300,7 +300,7 @@
 
     <servlet>
         <servlet-name>assetServlet</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.server.GwtDeviceAssetServiceImpl</servlet-class>
+        <servlet-class>org.eclipse.kapua.app.console.module.device.server.GwtDeviceAssetServiceImpl</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>assetServlet</servlet-name>

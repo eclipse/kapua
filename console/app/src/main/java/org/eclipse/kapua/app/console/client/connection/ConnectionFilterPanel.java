@@ -15,7 +15,7 @@ import org.eclipse.kapua.app.console.client.messages.ConsoleConnectionMessages;
 import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
-import org.eclipse.kapua.app.console.shared.model.GwtDeviceQueryPredicates;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPredicates;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionQuery;

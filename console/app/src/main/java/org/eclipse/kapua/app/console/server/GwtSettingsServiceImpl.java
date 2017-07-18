@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.app.console.server;
 
@@ -16,8 +15,8 @@ import java.util.UUID;
 
 import org.eclipse.kapua.app.console.server.util.SsoHelper;
 import org.eclipse.kapua.app.console.server.util.SsoLocator;
-import org.eclipse.kapua.app.console.setting.ConsoleSetting;
-import org.eclipse.kapua.app.console.setting.ConsoleSettingKeys;
+import org.eclipse.kapua.app.console.commons.setting.ConsoleSetting;
+import org.eclipse.kapua.app.console.commons.setting.ConsoleSettingKeys;
 import org.eclipse.kapua.app.console.shared.model.GwtLoginInformation;
 import org.eclipse.kapua.app.console.shared.service.GwtSettingsService;
 

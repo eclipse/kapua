@@ -35,8 +35,8 @@ import org.eclipse.kapua.app.console.commons.server.KapuaConfigurableRemoteServi
 import org.eclipse.kapua.app.console.commons.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.module.account.shared.util.GwtKapuaAccountModelConverter;
 import org.eclipse.kapua.app.console.module.account.shared.util.KapuaGwtAccountModelConverter;
-import org.eclipse.kapua.app.console.setting.ConsoleSetting;
-import org.eclipse.kapua.app.console.setting.ConsoleSettingKeys;
+import org.eclipse.kapua.app.console.commons.setting.ConsoleSetting;
+import org.eclipse.kapua.app.console.commons.setting.ConsoleSettingKeys;
 import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtConfigParameter;

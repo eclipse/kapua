@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.commons.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.client.util.Logout;
-import org.eclipse.kapua.app.console.client.util.UserAgentUtils;
+import org.eclipse.kapua.app.console.commons.client.util.UserAgentUtils;
 import org.eclipse.kapua.app.console.commons.client.util.Years;
 import org.eclipse.kapua.app.console.shared.model.GwtLoginInformation;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;

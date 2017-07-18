@@ -34,6 +34,40 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-asset-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-packages-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-configuration-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-bundle-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-command-api</artifactId>
+        </dependency>
+        <!-- External dependencies -->
+        <dependency>
+            <!-- Imaging utils used to handle device component configuration
+                icons -->
+            <!-- former commons-imaging changed because the 1.0-FINAL was
+                not contined/supported in maven -->
+            <groupId>org.apache.sanselan</groupId>
+            <artifactId>sanselan</artifactId>
+            <version>0.97-incubator</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-console-module-authorization</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

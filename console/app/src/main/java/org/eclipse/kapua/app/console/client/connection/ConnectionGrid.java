@@ -25,8 +25,7 @@ import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionQuery;
 import org.eclipse.kapua.app.console.commons.shared.model.query.GwtQuery;
-import org.eclipse.kapua.app.console.shared.service.GwtDeviceConnectionService;
-import org.eclipse.kapua.app.console.shared.service.GwtDeviceConnectionServiceAsync;
+import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceConnectionService;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
@@ -39,6 +38,7 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceConnectionServiceAsync;
 
 public class ConnectionGrid extends EntityGrid<GwtDeviceConnection> {
 

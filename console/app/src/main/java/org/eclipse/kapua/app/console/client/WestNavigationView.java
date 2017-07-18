@@ -40,7 +40,6 @@ import com.google.gwt.user.client.ui.Widget;
 import org.eclipse.kapua.app.console.client.account.AccountDetailsView;
 import org.eclipse.kapua.app.console.client.account.AccountView;
 import org.eclipse.kapua.app.console.client.connection.ConnectionView;
-import org.eclipse.kapua.app.console.client.device.DevicesView;
 import org.eclipse.kapua.app.console.commons.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.KapuaIcon;
@@ -178,16 +177,7 @@ public class WestNavigationView extends LayoutContainer {
                         panel.setBodyBorder(false);
 
                         String selectedId = selected.get("id");
-                        if ("devices".equals(selectedId)) {
-                            DevicesView deviceView = new DevicesView(currentSession);
-
-                            panel.setHeaderVisible(false);
-                            panel.add(deviceView);
-
-                            centerPanel.add(panel);
-                            centerPanel.layout();
-                            dashboardSelected = false;
-                        } else if ("connection".equals(selectedId)) {
+                        if ("connection".equals(selectedId)) {
                             ConnectionView connectionView = new ConnectionView(currentSession);
 
                             panel.setHeaderVisible(false);
@@ -343,9 +333,6 @@ public class WestNavigationView extends LayoutContainer {
 
         if (selectedAccountId != null) {
 
-            if (currentSession.hasDeviceReadPermission()) {
-                cloudResourcesTreeStore.add(newItem("devices", MSGS.devices(), IconSet.HDD_O), false);
-            }
             if (currentSession.hasConnectionReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("connection", MSGS.connections(), IconSet.PLUG), false);
             }

@@ -316,16 +316,6 @@
         </dependency>
 
         <dependency>
-            <!-- Imaging utils used to handle device component configuration
-                icons -->
-            <!-- former commons-imaging changed because the 1.0-FINAL was
-                not contined/supported in maven -->
-            <groupId>org.apache.sanselan</groupId>
-            <artifactId>sanselan</artifactId>
-            <version>0.97-incubator</version>
-        </dependency>
-
-        <dependency>
             <!-- Apache shiro security framework web support -->
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-web</artifactId>

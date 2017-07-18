@@ -14,13 +14,13 @@ package org.eclipse.kapua.app.console.client.connection;
 import org.eclipse.kapua.app.console.commons.client.ui.tab.EntityDescriptionTabItem;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection;
-import org.eclipse.kapua.app.console.shared.service.GwtDeviceConnectionService;
-import org.eclipse.kapua.app.console.shared.service.GwtDeviceConnectionServiceAsync;
+import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceConnectionService;
 
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceConnectionServiceAsync;
 
 public class ConnectionDescriptionTab extends EntityDescriptionTabItem<GwtDeviceConnection> {
 
