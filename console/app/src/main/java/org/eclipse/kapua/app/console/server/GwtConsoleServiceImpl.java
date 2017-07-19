@@ -16,6 +16,7 @@ import org.eclipse.kapua.app.console.commons.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.about.client.about.AboutViewDescriptor;
 import org.eclipse.kapua.app.console.module.authorization.client.group.GroupViewDescriptor;
 import org.eclipse.kapua.app.console.module.authorization.client.role.RoleViewDescriptor;
+import org.eclipse.kapua.app.console.module.data.client.DataViewDescriptor;
 import org.eclipse.kapua.app.console.module.device.client.DevicesViewDescriptor;
 import org.eclipse.kapua.app.console.module.device.client.connection.ConnectionViewDescriptor;
 import org.eclipse.kapua.app.console.module.tag.client.TagViewDescriptor;
@@ -37,6 +38,7 @@ public class GwtConsoleServiceImpl extends KapuaRemoteServiceServlet implements 
      private static final String DEVICE_CLASSNAME = "org.eclipse.kapua.app.console.module.device.client.DevicesViewDescriptor";
      private static final String CONNECTION_CLASSNAME = "org.eclipse.kapua.app.console.module.device.client.connection.ConnectionViewDescriptor";
      private static final String GROUP_CLASSNAME = "org.eclipse.kapua.app.console.module.authorization.client.group.GroupViewDescriptor";
+     private static final String DATA_CLASSNAME = "org.eclipse.kapua.app.console.module.data.client.DataViewDescriptor";
 
     @Override
     public List<ViewDescriptor> getCustomEntityViews() {
@@ -58,6 +60,8 @@ public class GwtConsoleServiceImpl extends KapuaRemoteServiceServlet implements 
             views.add(connectionView);
             GroupViewDescriptor groupView = (GroupViewDescriptor)Class.forName(GROUP_CLASSNAME).newInstance();
             views.add(groupView);
+            DataViewDescriptor dataView = (DataViewDescriptor)Class.forName(DATA_CLASSNAME).newInstance();
+            views.add(dataView);
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {

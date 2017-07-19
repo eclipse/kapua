@@ -49,7 +49,6 @@ import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.commons.client.views.ViewDescriptor;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
-import org.eclipse.kapua.app.console.module.data.client.DataView;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountServiceAsync;
 import org.eclipse.kapua.app.console.shared.service.GwtConsoleService;
@@ -175,15 +174,7 @@ public class WestNavigationView extends LayoutContainer {
                         panel.setBodyBorder(false);
 
                         String selectedId = selected.get("id");
-                        if ("data".equals(selectedId)) {
-                            DataView dataView = new DataView(currentSession);
-                            panel.setHeaderVisible(false);
-                            panel.add(dataView);
-
-                            centerPanel.add(panel);
-                            centerPanel.layout();
-                            dashboardSelected = false;
-                        } else if ("mysettings".equals(selectedId)) {
+                        if ("mysettings".equals(selectedId)) {
                             GWT_ACCOUNT_SERVICE.find(currentSession.getAccountId(), new AsyncCallback<GwtAccount>() {
 
                                 @Override
@@ -311,10 +302,6 @@ public class WestNavigationView extends LayoutContainer {
         String selectedAccountId = currentSession.getSelectedAccountId();
 
         if (selectedAccountId != null) {
-
-            if (currentSession.hasDataReadPermission()) {
-                cloudResourcesTreeStore.add(newItem("data", "Data", IconSet.DATABASE), false);
-            }
             if (currentSession.hasUserReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("user", MSGS.users(), IconSet.USERS), false);
             }

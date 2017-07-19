@@ -11,20 +11,28 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.data.client;
 
+import com.google.gwt.core.client.GWT;
+import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractView;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.Element;
+import org.eclipse.kapua.app.console.module.data.client.messages.ConsoleDataMessages;
 
-public class DataView extends LayoutContainer {
+public class DataView extends AbstractView {
 
     private GwtSession currentSession;
     private TabPanel tabsPanel;
 
+    private static final ConsoleDataMessages MSGS = GWT.create(ConsoleDataMessages.class);
+
     public DataView(GwtSession currentGwtSession) {
         currentSession = currentGwtSession;
+    }
+
+    public static String getName() {
+        return MSGS.data();
     }
 
     @Override
