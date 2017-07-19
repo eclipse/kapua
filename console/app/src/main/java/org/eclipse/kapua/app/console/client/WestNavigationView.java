@@ -302,9 +302,6 @@ public class WestNavigationView extends LayoutContainer {
         String selectedAccountId = currentSession.getSelectedAccountId();
 
         if (selectedAccountId != null) {
-            if (currentSession.hasUserReadPermission()) {
-                cloudResourcesTreeStore.add(newItem("user", MSGS.users(), IconSet.USERS), false);
-            }
             if (currentSession.hasAccountReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("mysettings", MSGS.settings(), IconSet.COG), false);
             }
