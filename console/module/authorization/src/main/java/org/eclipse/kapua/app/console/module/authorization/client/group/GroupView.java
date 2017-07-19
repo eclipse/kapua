@@ -14,10 +14,12 @@ package org.eclipse.kapua.app.console.module.authorization.client.group;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
 import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.commons.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
+import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsoleGroupMessages;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 
@@ -25,8 +27,14 @@ public class GroupView extends AbstractEntityView<GwtGroup> {
 
     private GroupGrid groupGrid;
 
+    private static final ConsoleGroupMessages MSGS = GWT.create(ConsoleGroupMessages.class);
+
     public GroupView(GwtSession gwtSession) {
         super(gwtSession);
+    }
+
+    public static String getName() {
+        return MSGS.groups();
     }
 
     @Override

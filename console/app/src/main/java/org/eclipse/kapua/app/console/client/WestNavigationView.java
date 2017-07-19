@@ -49,7 +49,6 @@ import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.commons.client.views.ViewDescriptor;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
-import org.eclipse.kapua.app.console.module.authorization.client.group.GroupView;
 import org.eclipse.kapua.app.console.module.data.client.DataView;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountServiceAsync;
@@ -180,16 +179,6 @@ public class WestNavigationView extends LayoutContainer {
                             DataView dataView = new DataView(currentSession);
                             panel.setHeaderVisible(false);
                             panel.add(dataView);
-
-                            centerPanel.add(panel);
-                            centerPanel.layout();
-                            dashboardSelected = false;
-                        } else if ("groups".equals(selectedId)) {
-                            panel.setIcon(new KapuaIcon(IconSet.OBJECT_GROUP));
-                            panel.setHeading(MSGS.groups());
-
-                            GroupView groupView = new GroupView(currentSession);
-                            panel.add(groupView);
 
                             centerPanel.add(panel);
                             centerPanel.layout();
@@ -331,9 +320,6 @@ public class WestNavigationView extends LayoutContainer {
             }
             if (currentSession.hasAccountReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("mysettings", MSGS.settings(), IconSet.COG), false);
-            }
-            if (currentSession.hasGroupReadPermission()) {
-                cloudResourcesTreeStore.add(newItem("groups", MSGS.groups(), IconSet.OBJECT_GROUP), false);
             }
 
             //
