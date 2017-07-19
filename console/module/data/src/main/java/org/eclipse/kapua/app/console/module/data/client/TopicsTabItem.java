@@ -65,7 +65,7 @@ public class TopicsTabItem extends TabItem {
 
         setWidth("100%");
 
-        BorderLayoutData messageLayout = new BorderLayoutData(LayoutRegion.NORTH, 0.06f);
+        BorderLayoutData messageLayout = new BorderLayoutData(LayoutRegion.NORTH, 0.04f);
         messageLayout.setMargins(new Margins(5));
         Text welcomeMessage = new Text();
         welcomeMessage.setText(MSGS.topicTabItemMessage());

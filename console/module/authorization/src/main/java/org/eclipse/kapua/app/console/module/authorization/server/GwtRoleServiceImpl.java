@@ -197,13 +197,11 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
             // If there are results
             if (role != null) {
-                gwtRoleDescription.add(new GwtGroupedNVPair("Entity", "Scope Id", KapuaGwtCommonsModelConverter.convertKapuaId(role.getScopeId())));
-                gwtRoleDescription.add(new GwtGroupedNVPair("Entity", "Id", KapuaGwtCommonsModelConverter.convertKapuaId(role.getId())));
-                gwtRoleDescription.add(new GwtGroupedNVPair("Entity", "Created On", role.getCreatedOn()));
-                gwtRoleDescription.add(new GwtGroupedNVPair("Entity", "Created By", KapuaGwtCommonsModelConverter.convertKapuaId(role.getCreatedBy())));
-                gwtRoleDescription.add(new GwtGroupedNVPair("Entity", "Modified On", role.getModifiedOn()));
-                gwtRoleDescription.add(new GwtGroupedNVPair("Entity", "Modified By", KapuaGwtCommonsModelConverter.convertKapuaId(role.getModifiedBy())));
                 gwtRoleDescription.add(new GwtGroupedNVPair("Role", "Name", role.getName()));
+                gwtRoleDescription.add(new GwtGroupedNVPair("Role", "Modified On", role.getModifiedOn()));
+                gwtRoleDescription.add(new GwtGroupedNVPair("Role", "Modified By", KapuaGwtCommonsModelConverter.convertKapuaId(role.getModifiedBy())));
+                gwtRoleDescription.add(new GwtGroupedNVPair("Role", "Created On", role.getCreatedOn()));
+                gwtRoleDescription.add(new GwtGroupedNVPair("Role", "Created By", KapuaGwtCommonsModelConverter.convertKapuaId(role.getCreatedBy())));
             }
 
         } catch (Throwable t) {

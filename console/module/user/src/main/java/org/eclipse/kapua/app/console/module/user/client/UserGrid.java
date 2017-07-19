@@ -135,9 +135,6 @@ public class UserGrid extends EntityGrid<GwtUser> {
         columnConfig = new ColumnConfig("email", MSGS.gridUserColumnHeaderEmail(), 200);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("createdBy", MSGS.gridUserColumnHeaderCreatedBy(), 200);
-        columnConfigs.add(columnConfig);
-
         columnConfig = new ColumnConfig("createdOn", MSGS.gridUserColumnHeaderCreatedOn(), 200);
         columnConfigs.add(columnConfig);
 

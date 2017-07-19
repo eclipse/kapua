@@ -74,7 +74,7 @@ public class MetricsTable extends LayoutContainer {
         super.onRender(parent, index);
 
         setLayout(new FitLayout());
-        setBorders(true);
+        setBorders(false);
 
         initMetricsTable();
         add(tableContainer);
@@ -97,6 +97,8 @@ public class MetricsTable extends LayoutContainer {
 
         case ASSET:
             tableContainer.setHeading(MSGS.metricsTableHeaderAssets());
+            tableContainer.setStyleAttribute("margin-left", "8px");
+            tableContainer.setBorders(true);
             break;
         default:
             break;
@@ -113,7 +115,7 @@ public class MetricsTable extends LayoutContainer {
         configs.add(selectionModel.getColumn());
         ColumnConfig column;
         if (type == Type.ASSET) {
-            column = new ColumnConfig("name", MSGS.metricsTableChannelHeader(), 100);
+            column = new ColumnConfig("name", MSGS.metricsTableMetricHeader(), 100);
         } else {
             column = new ColumnConfig("name", MSGS.metricsTableMetricHeader(), 100);
         }
