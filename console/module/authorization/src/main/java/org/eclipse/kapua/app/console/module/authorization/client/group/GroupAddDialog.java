@@ -43,7 +43,7 @@ public class GroupAddDialog extends EntityAddEditDialog {
         FormPanel groupFormPanel = new FormPanel(FORM_LABEL_WIDTH);
         groupNameField = new TextField<String>();
         groupNameField.setAllowBlank(false);
-        groupNameField.setFieldLabel(MSGS.dialogAddFieldName());
+        groupNameField.setFieldLabel("* " + MSGS.dialogAddFieldName());
         groupNameField.setToolTip(MSGS.dialogAddFieldNameTooltip());
         groupFormPanel.add(groupNameField);
         bodyPanel.add(groupFormPanel);

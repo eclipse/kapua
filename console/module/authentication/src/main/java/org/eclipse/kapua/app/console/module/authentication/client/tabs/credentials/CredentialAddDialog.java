@@ -70,6 +70,13 @@ public class CredentialAddDialog extends EntityAddEditDialog {
 
         FormPanel credentialFormPanel = new FormPanel(FORM_LABEL_WIDTH);
 
+        subject = new TextField<String>();
+        subject.setValue(selectedUserName);
+        subject.disable();
+        subject.setAllowBlank(false);
+        subject.setFieldLabel(MSGS.dialogAddFieldSubject());
+        credentialFormPanel.add(subject);
+
         credentialType = new SimpleComboBox<GwtCredentialType>();
         credentialType.setEditable(false);
         credentialType.setTypeAhead(false);

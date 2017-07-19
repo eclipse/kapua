@@ -37,7 +37,7 @@ public class PermissionDeleteDialog extends EntityDeleteDialog {
 
     @Override
     public String getHeaderMessage() {
-        return MSGS.dialogDeletePermissionHeader(gwtAccessPermission.toString());
+        return MSGS.dialogDeletePermissionHeader();
     }
 
     @Override

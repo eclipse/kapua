@@ -49,7 +49,8 @@ import java.util.List;
 
 public class GwtKapuaDeviceModelConverter {
 
-    private GwtKapuaDeviceModelConverter() { }
+    private GwtKapuaDeviceModelConverter() {
+    }
 
     public static DeviceConnectionQuery convertConnectionQuery(PagingLoadConfig loadConfig, GwtDeviceConnectionQuery gwtDeviceConnectionQuery) {
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -63,6 +64,9 @@ public class GwtKapuaDeviceModelConverter {
 
         if (gwtDeviceConnectionQuery.getConnectionStatus() != null && !gwtDeviceConnectionQuery.getConnectionStatus().equals(GwtDeviceConnectionStatus.ANY.toString())) {
             predicate.and(new AttributePredicate<DeviceConnectionStatus>("status", convertConnectionStatus(gwtDeviceConnectionQuery.getConnectionStatus()), Operator.EQUAL));
+        }
+        if (gwtDeviceConnectionQuery.getClientIP() != null && !gwtDeviceConnectionQuery.getClientIP().trim().isEmpty()) {
+            predicate.and(new AttributePredicate<String>("clientIp", gwtDeviceConnectionQuery.getClientIP(), Operator.LIKE));
         }
 
         query.setPredicate(predicate);

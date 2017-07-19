@@ -18,6 +18,7 @@ public class GwtUserQuery extends GwtQuery {
     private static final long serialVersionUID = -5198696327167110220L;
 
     private String name;
+    private String userStatus;
 
     public String getName() {
         return name;
@@ -25,5 +26,13 @@ public class GwtUserQuery extends GwtQuery {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getUserStatus() {
+        return userStatus;
+    }
+
+    public void setUserStatus(String userStatus) {
+        this.userStatus = userStatus;
     }
 }

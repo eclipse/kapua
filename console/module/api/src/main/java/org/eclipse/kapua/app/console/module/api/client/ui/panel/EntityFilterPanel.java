@@ -88,8 +88,8 @@ public abstract class EntityFilterPanel<M extends GwtEntityModel> extends Conten
 
         });
 
-        buttonPanel.add(resetButton);
         buttonPanel.add(searchButton);
+        buttonPanel.add(resetButton);
 
         add(buttonPanel);
     }
