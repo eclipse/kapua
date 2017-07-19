@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,14 +9,14 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.account;
+package org.eclipse.kapua.app.console.module.account.client;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.kapua.app.console.module.device.client.button.ConfigDiscardButton;
-import org.eclipse.kapua.app.console.module.device.client.button.ConfigSaveButton;
-import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.commons.client.button.ConfigDiscardButton;
+import org.eclipse.kapua.app.console.commons.client.button.ConfigSaveButton;
+import org.eclipse.kapua.app.console.commons.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.commons.client.ui.button.RefreshButton;
@@ -27,18 +27,18 @@ import org.eclipse.kapua.app.console.commons.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
+import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
+import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialServiceAsync;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupServiceAsync;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRoleService;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRoleServiceAsync;
+import org.eclipse.kapua.app.console.module.data.shared.service.GwtDataService;
 import org.eclipse.kapua.app.console.module.data.shared.service.GwtDataServiceAsync;
+import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceServiceAsync;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserServiceAsync;
-import org.eclipse.kapua.app.console.shared.service.GwtAccountService;
-import org.eclipse.kapua.app.console.shared.service.GwtAccountServiceAsync;
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialService;
-import org.eclipse.kapua.app.console.module.data.shared.service.GwtDataService;
-import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceService;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupService;
 import org.eclipse.kapua.app.console.commons.shared.service.GwtSecurityTokenService;
 import org.eclipse.kapua.app.console.commons.shared.service.GwtSecurityTokenServiceAsync;

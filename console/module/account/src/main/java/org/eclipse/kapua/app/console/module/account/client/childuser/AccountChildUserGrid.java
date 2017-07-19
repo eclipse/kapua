@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.account.childuser;
+package org.eclipse.kapua.app.console.module.account.client.childuser;
 
 import java.util.ArrayList;
 import java.util.List;

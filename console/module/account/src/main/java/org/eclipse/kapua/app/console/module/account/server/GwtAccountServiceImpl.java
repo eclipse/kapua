@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,9 +8,8 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *     Red Hat Inc
  *******************************************************************************/
-package org.eclipse.kapua.app.console.server;
+package org.eclipse.kapua.app.console.module.account.server;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,6 +32,7 @@ import org.apache.sanselan.ImageFormat;
 import org.apache.sanselan.Sanselan;
 import org.eclipse.kapua.app.console.commons.server.KapuaConfigurableRemoteServiceServlet;
 import org.eclipse.kapua.app.console.commons.server.util.KapuaExceptionHandler;
+import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.module.account.shared.util.GwtKapuaAccountModelConverter;
 import org.eclipse.kapua.app.console.module.account.shared.util.KapuaGwtAccountModelConverter;
 import org.eclipse.kapua.app.console.commons.setting.ConsoleSetting;
@@ -46,7 +46,6 @@ import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountCreator;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountQuery;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountStringListItem;
-import org.eclipse.kapua.app.console.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaModelConverter;
 import org.eclipse.kapua.broker.core.BrokerDomain;
 import org.eclipse.kapua.commons.model.id.KapuaEid;

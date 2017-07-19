@@ -22,6 +22,9 @@
     <inherits name='com.extjs.gxt.ui.GXT' />
 
     <inherits name="org.eclipse.kapua.app.console.commons.adminCommons" />
+    <inherits name="org.eclipse.kapua.app.console.module.user.adminModuleUser" />
+    <inherits name="org.eclipse.kapua.app.console.module.data.adminModuleData" />
+    <inherits name="org.eclipse.kapua.app.console.module.device.adminModuleDevice" />
 
     <!-- Locales: English language, independent of country              -->
     <extend-property name="locale" values="en" />

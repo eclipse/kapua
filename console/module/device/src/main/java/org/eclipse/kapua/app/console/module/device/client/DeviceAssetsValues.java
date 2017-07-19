@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.kapua.app.console.commons.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.module.device.client.button.ConfigDiscardButton;
-import org.eclipse.kapua.app.console.module.device.client.button.ConfigSaveButton;
+import org.eclipse.kapua.app.console.commons.client.button.ConfigDiscardButton;
+import org.eclipse.kapua.app.console.commons.client.button.ConfigSaveButton;
 import org.eclipse.kapua.app.console.commons.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.commons.client.ui.label.Label;
 import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;

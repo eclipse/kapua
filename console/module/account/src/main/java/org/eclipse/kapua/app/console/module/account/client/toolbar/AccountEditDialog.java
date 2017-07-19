@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.account.toolbar;
+package org.eclipse.kapua.app.console.module.account.client.toolbar;
 
 import org.eclipse.kapua.app.console.commons.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.commons.client.util.DialogUtils;

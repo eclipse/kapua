@@ -14,6 +14,8 @@ package org.eclipse.kapua.app.console.server;
 import org.eclipse.kapua.app.console.commons.client.views.ViewDescriptor;
 import org.eclipse.kapua.app.console.commons.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.about.client.about.AboutViewDescriptor;
+import org.eclipse.kapua.app.console.module.account.client.AccountDetailsViewDescriptor;
+import org.eclipse.kapua.app.console.module.account.client.AccountViewDescriptor;
 import org.eclipse.kapua.app.console.module.authorization.client.group.GroupViewDescriptor;
 import org.eclipse.kapua.app.console.module.authorization.client.role.RoleViewDescriptor;
 import org.eclipse.kapua.app.console.module.data.client.DataViewDescriptor;
@@ -39,6 +41,8 @@ public class GwtConsoleServiceImpl extends KapuaRemoteServiceServlet implements 
      private static final String CONNECTION_CLASSNAME = "org.eclipse.kapua.app.console.module.device.client.connection.ConnectionViewDescriptor";
      private static final String GROUP_CLASSNAME = "org.eclipse.kapua.app.console.module.authorization.client.group.GroupViewDescriptor";
      private static final String DATA_CLASSNAME = "org.eclipse.kapua.app.console.module.data.client.DataViewDescriptor";
+     private static final String ACCOUNT_CLASSNAME = "org.eclipse.kapua.app.console.module.account.client.AccountViewDescriptor";
+     private static final String ACCOUNT_DETAILS_CLASSNAME = "org.eclipse.kapua.app.console.module.account.client.AccountDetailsViewDescriptor";
 
     @Override
     public List<ViewDescriptor> getCustomEntityViews() {
@@ -62,6 +66,10 @@ public class GwtConsoleServiceImpl extends KapuaRemoteServiceServlet implements 
             views.add(groupView);
             DataViewDescriptor dataView = (DataViewDescriptor)Class.forName(DATA_CLASSNAME).newInstance();
             views.add(dataView);
+            AccountViewDescriptor accountView = (AccountViewDescriptor)Class.forName(ACCOUNT_CLASSNAME).newInstance();
+            views.add(accountView);
+            AccountDetailsViewDescriptor accountDetailsView = (AccountDetailsViewDescriptor)Class.forName(ACCOUNT_DETAILS_CLASSNAME).newInstance();
+            views.add(accountDetailsView);
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {

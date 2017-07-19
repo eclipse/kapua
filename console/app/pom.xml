@@ -408,7 +408,6 @@
                     <i18nConstantsWithLookupBundle>org.eclipse.kapua.app.console.client.messages.ValidationMessages</i18nConstantsWithLookupBundle>
                     <i18nMessagesBundles>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleMessages</i18nMessagesBundle>
-                        <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleAccountMessages</i18nMessagesBundle>
                     </i18nMessagesBundles>
 
                     <optimizationLevel>9</optimizationLevel>

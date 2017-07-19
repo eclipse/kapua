@@ -155,7 +155,7 @@
 
 	<servlet>
 		<servlet-name>accountServlet</servlet-name>
-		<servlet-class>org.eclipse.kapua.app.console.server.GwtAccountServiceImpl</servlet-class>
+		<servlet-class>org.eclipse.kapua.app.console.module.account.server.GwtAccountServiceImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>accountServlet</servlet-name>

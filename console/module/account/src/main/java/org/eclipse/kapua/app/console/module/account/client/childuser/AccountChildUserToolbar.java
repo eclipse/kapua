@@ -9,17 +9,17 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.account.childuser;
+package org.eclipse.kapua.app.console.module.account.client.childuser;
 
 import org.eclipse.kapua.app.console.commons.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.commons.client.ui.widget.EntityCRUDToolbar;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
+
+import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.user.client.dialog.UserAddDialog;
 import org.eclipse.kapua.app.console.module.user.client.dialog.UserDeleteDialog;
 import org.eclipse.kapua.app.console.module.user.client.dialog.UserEditDialog;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
-
-import com.google.gwt.user.client.Element;
 
 public class AccountChildUserToolbar extends EntityCRUDToolbar<GwtUser> {
 

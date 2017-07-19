@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.module.device.client.button;
+package org.eclipse.kapua.app.console.commons.client.button;
 
 import org.eclipse.kapua.app.console.commons.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
@@ -20,13 +20,13 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.google.gwt.core.client.GWT;
 
-public class ConfigDiscardButton extends Button {
+public class ConfigSaveButton extends Button {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    public ConfigDiscardButton(SelectionListener<ButtonEvent> listener) {
-        super(MSGS.buttonConfigDiscard(),
-                new KapuaIcon(IconSet.RECYCLE),
+    public ConfigSaveButton(SelectionListener<ButtonEvent> listener) {
+        super(MSGS.buttonConfigSave(),
+                new KapuaIcon(IconSet.SAVE),
                 listener);
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,21 +9,20 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.account;
+package org.eclipse.kapua.app.console.module.account.client;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.commons.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.commons.client.ui.button.Button;
 import org.eclipse.kapua.app.console.commons.client.ui.button.EditButton;
+import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractView;
 import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.commons.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
-import org.eclipse.kapua.app.console.shared.service.GwtAccountService;
-import org.eclipse.kapua.app.console.shared.service.GwtAccountServiceAsync;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
@@ -53,8 +52,10 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
+import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
 
-public class AccountDetailsView extends LayoutContainer {
+public class AccountDetailsView extends AbstractView {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     private GwtAccountServiceAsync gwtAccountService = GWT.create(GwtAccountService.class);
@@ -73,12 +74,20 @@ public class AccountDetailsView extends LayoutContainer {
     private GroupingStore<GwtGroupedNVPair> store;
     private BaseListLoader<ListLoadResult<GwtGroupedNVPair>> loader;
 
-    public AccountDetailsView(AccountView centerAccountView, GwtSession currentSession) {
-        this.centerAccountView = centerAccountView;
+    public AccountDetailsView(GwtSession currentSession) {
         this.currentSession = currentSession;
 
         dirty = true;
         initialized = false;
+    }
+
+    public AccountDetailsView(AccountView centerAccountView, GwtSession currentSession) {
+        this(currentSession);
+        this.centerAccountView = centerAccountView;
+    }
+
+    public static String getName() {
+        return MSGS.settings();
     }
 
     public void setAccount(GwtAccount selectedAccount) {

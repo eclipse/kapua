@@ -27,6 +27,37 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-commons</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-console-module-user</artifactId>
+        </dependency>
+        <!-- External Dependencies -->
+        <dependency>
+            <!-- Imaging utils used to handle device component configuration
+                icons -->
+            <!-- former commons-imaging changed because the 1.0-FINAL was
+                not contined/supported in maven -->
+            <groupId>org.apache.sanselan</groupId>
+            <artifactId>sanselan</artifactId>
+            <version>0.97-incubator</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-broker-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-console-module-data</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-console-module-device</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -55,7 +86,7 @@
                     <execution>
                         <goals>
                             <goal>generateAsync</goal> <!-- Generate Async RPC interfaces -->
-                            <!--<goal>i18n</goal> &lt;!&ndash; Generate internationalization files &ndash;&gt;-->
+                            <goal>i18n</goal> <!-- Generate internationalization files -->
                             <goal>compile</goal> <!-- Compile permutations -->
                             <goal>test</goal>
                         </goals>
@@ -64,6 +95,9 @@
 
                 <configuration>
                     <module>org.eclipse.kapua.app.console.module.account.adminModuleAccount</module>
+                    <i18nMessagesBundles>
+                        <i18nMessagesBundle>org.eclipse.kapua.app.console.module.account.client.messages.ConsoleAccountMessages</i18nMessagesBundle>
+                    </i18nMessagesBundles>
                     <extraJvmArgs>-Xmx2048m -XX:+UseParallelGC</extraJvmArgs>
                     <optimizationLevel>9</optimizationLevel>
                 </configuration>
