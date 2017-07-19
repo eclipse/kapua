@@ -30,7 +30,7 @@ public class AboutViewDescriptor extends AbstractViewDescriptor {
 
     @Override
     public Integer getOrder() {
-        return 900;
+        return 1000;
     }
 
     @Override

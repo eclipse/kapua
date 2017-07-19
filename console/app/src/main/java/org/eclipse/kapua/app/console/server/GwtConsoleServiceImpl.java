@@ -32,44 +32,45 @@ import java.util.List;
 
 public class GwtConsoleServiceImpl extends KapuaRemoteServiceServlet implements GwtConsoleService {
 
-     private static final String ABOUT_CLASSNAME = "org.eclipse.kapua.app.console.module.about.client.about.AboutViewDescriptor";
-     private static final String ROLES_CLASSNAME = "org.eclipse.kapua.app.console.module.authorization.client.role.RoleViewDescriptor";
-     private static final String USER_CLASSNAME = "org.eclipse.kapua.app.console.module.user.client.UserViewDescriptor";
      private static final String WELCOME_CLASSNAME = "org.eclipse.kapua.app.console.module.welcome.client.WelcomeViewDescriptor";
-     private static final String TAG_CLASSNAME = "org.eclipse.kapua.app.console.module.tag.client.TagViewDescriptor";
      private static final String DEVICE_CLASSNAME = "org.eclipse.kapua.app.console.module.device.client.DevicesViewDescriptor";
      private static final String CONNECTION_CLASSNAME = "org.eclipse.kapua.app.console.module.device.client.connection.ConnectionViewDescriptor";
-     private static final String GROUP_CLASSNAME = "org.eclipse.kapua.app.console.module.authorization.client.group.GroupViewDescriptor";
      private static final String DATA_CLASSNAME = "org.eclipse.kapua.app.console.module.data.client.DataViewDescriptor";
-     private static final String ACCOUNT_CLASSNAME = "org.eclipse.kapua.app.console.module.account.client.AccountViewDescriptor";
+     private static final String TAG_CLASSNAME = "org.eclipse.kapua.app.console.module.tag.client.TagViewDescriptor";
+     private static final String USER_CLASSNAME = "org.eclipse.kapua.app.console.module.user.client.UserViewDescriptor";
+     private static final String ROLES_CLASSNAME = "org.eclipse.kapua.app.console.module.authorization.client.role.RoleViewDescriptor";
      private static final String ACCOUNT_DETAILS_CLASSNAME = "org.eclipse.kapua.app.console.module.account.client.AccountDetailsViewDescriptor";
+     private static final String GROUP_CLASSNAME = "org.eclipse.kapua.app.console.module.authorization.client.group.GroupViewDescriptor";
+     private static final String ABOUT_CLASSNAME = "org.eclipse.kapua.app.console.module.about.client.about.AboutViewDescriptor";
+     private static final String ACCOUNT_CLASSNAME = "org.eclipse.kapua.app.console.module.account.client.AccountViewDescriptor";
 
     @Override
     public List<ViewDescriptor> getCustomEntityViews() {
         List<ViewDescriptor> views = new ArrayList<ViewDescriptor>();
         try {
-            UserViewDescriptor userView = (UserViewDescriptor)Class.forName(USER_CLASSNAME).newInstance();
-            views.add(userView);
-            AboutViewDescriptor aboutView = (AboutViewDescriptor)Class.forName(ABOUT_CLASSNAME).newInstance();
-            views.add(aboutView);
-            RoleViewDescriptor roleView = (RoleViewDescriptor)Class.forName(ROLES_CLASSNAME).newInstance();
-            views.add(roleView);
             WelcomeViewDescriptor welcomeView = (WelcomeViewDescriptor)Class.forName(WELCOME_CLASSNAME).newInstance();
-            views.add(welcomeView);
-            TagViewDescriptor tagView = (TagViewDescriptor)Class.forName(TAG_CLASSNAME).newInstance();
-            views.add(tagView);
             DevicesViewDescriptor devicesView = (DevicesViewDescriptor)Class.forName(DEVICE_CLASSNAME).newInstance();
-            views.add(devicesView);
             ConnectionViewDescriptor connectionView = (ConnectionViewDescriptor)Class.forName(CONNECTION_CLASSNAME).newInstance();
-            views.add(connectionView);
-            GroupViewDescriptor groupView = (GroupViewDescriptor)Class.forName(GROUP_CLASSNAME).newInstance();
-            views.add(groupView);
             DataViewDescriptor dataView = (DataViewDescriptor)Class.forName(DATA_CLASSNAME).newInstance();
-            views.add(dataView);
-            AccountViewDescriptor accountView = (AccountViewDescriptor)Class.forName(ACCOUNT_CLASSNAME).newInstance();
-            views.add(accountView);
+            TagViewDescriptor tagView = (TagViewDescriptor)Class.forName(TAG_CLASSNAME).newInstance();
+            UserViewDescriptor userView = (UserViewDescriptor)Class.forName(USER_CLASSNAME).newInstance();
+            RoleViewDescriptor roleView = (RoleViewDescriptor)Class.forName(ROLES_CLASSNAME).newInstance();
             AccountDetailsViewDescriptor accountDetailsView = (AccountDetailsViewDescriptor)Class.forName(ACCOUNT_DETAILS_CLASSNAME).newInstance();
+            GroupViewDescriptor groupView = (GroupViewDescriptor)Class.forName(GROUP_CLASSNAME).newInstance();
+            AboutViewDescriptor aboutView = (AboutViewDescriptor)Class.forName(ABOUT_CLASSNAME).newInstance();
+            AccountViewDescriptor accountView = (AccountViewDescriptor)Class.forName(ACCOUNT_CLASSNAME).newInstance();
+
+            views.add(welcomeView);
+            views.add(devicesView);
+            views.add(connectionView);
+            views.add(dataView);
+            views.add(tagView);
+            views.add(userView);
+            views.add(roleView);
             views.add(accountDetailsView);
+            views.add(groupView);
+            views.add(aboutView);
+            views.add(accountView);
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
