@@ -1050,6 +1050,9 @@
         <!-- Applications -->
         <module>rest-api</module>
 
+        <!-- Client -->
+        <module>client</module>
+
         <!-- Simulator framework -->
         <module>simulator-kura</module>
 
