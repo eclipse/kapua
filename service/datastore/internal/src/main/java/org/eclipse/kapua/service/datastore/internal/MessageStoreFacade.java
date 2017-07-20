@@ -35,7 +35,6 @@ import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactor
 import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreChannel;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
-import org.eclipse.kapua.service.datastore.internal.mediator.InvalidChannelException;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageInfo;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreConfiguration;
@@ -491,7 +490,6 @@ public final class MessageStoreFacade {
      *
      * @param clientId
      * @return
-     * @throws InvalidChannelException
      * @since 1.0.0
      */
     private boolean isAnyClientId(String clientId) {

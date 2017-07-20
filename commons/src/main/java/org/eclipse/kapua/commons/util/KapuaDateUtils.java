@@ -48,7 +48,7 @@ public final class KapuaDateUtils {
     }
 
     /**
-     * Parse the provided String using the {@link KapuaDateUtils#ISO_DATE_PATTERN 'default pattern'}
+     * Parse the provided String using the {@link KapuaDateUtils#ISO_DATE_PATTERN default pattern}
      *
      * @param date
      * @return
@@ -63,7 +63,7 @@ public final class KapuaDateUtils {
     }
 
     /**
-     * Format the provided Date using the {@link KapuaDateUtils#ISO_DATE_PATTERN 'default pattern'}
+     * Format the provided Date using the {@link KapuaDateUtils#ISO_DATE_PATTERN default pattern}
      *
      * @param date
      * @return

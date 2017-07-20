@@ -88,7 +88,7 @@ public enum MetricInfoField implements StorableField {
     }
 
     /**
-     * Get the metric identifier getting parameters from the metricInfoCreator. Then it calls {@link getOrDeriveId(StorableId id, KapuaId scopeId, String clientId, String channel, String
+     * Get the metric identifier getting parameters from the metricInfoCreator. Then it calls {@link MetricInfoField#getOrDeriveId(StorableId id, KapuaId scopeId, String clientId, String channel, String
      * metricName, Class metricType)}
      * 
      * @param id
@@ -105,7 +105,7 @@ public enum MetricInfoField implements StorableField {
     }
 
     /**
-     * Get the metric identifier getting parameters from the metricInfo. Then it calls {@link getOrDeriveId(StorableId id, KapuaId scopeId, String clientId, String channel, String
+     * Get the metric identifier getting parameters from the metricInfo. Then it calls {@link MetricInfoField#getOrDeriveId(StorableId id, KapuaId scopeId, String clientId, String channel, String
      * metricName, Class metricType)}
      * 
      * @param id

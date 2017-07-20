@@ -1859,7 +1859,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * Set the query account and message timestamp id filter
      *
      * @param metricInfoQuery
-     * @param dateRange
      */
     private void setMetricInfoQueryBaseCriteria(MetricInfoQuery metricInfoQuery, String channel) {
         setMetricInfoQueryBaseCriteria(metricInfoQuery, null, channel, null);

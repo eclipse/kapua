@@ -76,7 +76,7 @@ public enum ChannelInfoField implements StorableField {
     }
 
     /**
-     * Get the channel identifier getting parameters from the metricInfoCreator. Then it calls {@link getOrDeriveId(StorableId id, KapuaId scopeId, String clientId, String channel)}
+     * Get the channel identifier getting parameters from the metricInfoCreator. Then it calls {@link ChannelInfoField#getOrDeriveId(StorableId id, KapuaId scopeId, String clientId, String channel)}
      * 
      * @param id
      * @param channelInfoCreator
@@ -90,7 +90,7 @@ public enum ChannelInfoField implements StorableField {
     }
 
     /**
-     * Get the channel identifier getting parameters from the channelInfo. Then it calls {@link getOrDeriveId(StorableId id, KapuaId scopeId, String clientId, String channel)}
+     * Get the channel identifier getting parameters from the channelInfo. Then it calls {@link ChannelInfoField#getOrDeriveId(StorableId id, KapuaId scopeId, String clientId, String channel)}
      * 
      * @param id
      * @param channelInfo
