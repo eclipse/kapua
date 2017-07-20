@@ -20,7 +20,7 @@
         <groupId>org.eclipse.kapua</groupId>
         <artifactId>kapua-client-gateway</artifactId>
         <version>0.3.0-SNAPSHOT</version>
-        <relativePath>..</relativePath>
+        <relativePath>../..</relativePath>
     </parent>
 
     <artifactId>kapua-client-gateway-profile-kura</artifactId>
