@@ -21,6 +21,13 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
     <artifactId>kapua-console-commons</artifactId>
+    <repositories>
+        <repository>
+            <id>kapua_addons</id>
+            <name>Kapua Addons Maven Repository</name>
+            <url>https://raw.github.com/eurotech/kapua_addons/mvn-repo/</url>
+        </repository>
+    </repositories>
     <dependencies>
         <!-- External dependencies -->
         <dependency>

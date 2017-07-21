@@ -18,6 +18,7 @@
         <module>app</module>
         <module>commons</module>
         <module>module</module>
+        <module>core</module>
     </modules>
     <parent>
         <groupId>org.eclipse.kapua</groupId>
