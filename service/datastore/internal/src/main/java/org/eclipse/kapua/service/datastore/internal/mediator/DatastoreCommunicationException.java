@@ -18,27 +18,27 @@ package org.eclipse.kapua.service.datastore.internal.mediator;
  * @since 1.0
  *
  */
-public class ConfigurationException extends DatastoreException {
+public class DatastoreCommunicationException extends DatastoreException {
 
     private static final long serialVersionUID = 5211237236391747299L;
 
-    /**
-     * Construct the exception with the provided message
-     * 
-     * @param message
-     */
-    public ConfigurationException(String message) {
-        super(DatastoreErrorCodes.CONFIGURATION_ERROR, message);
-    }
+    private String uuid;
 
     /**
-     * Construct the exception with the provided message and throwable
+     * Construct the exception with the provided uuid and throwable
      * 
-     * @param message
+     * @param uuid
+     *            the kapua message identifier
      * @param t
+     *            cause exception
      */
-    public ConfigurationException(String message, Throwable t) {
-        super(DatastoreErrorCodes.CONFIGURATION_ERROR, t, message);
+    public DatastoreCommunicationException(String uuid, Throwable t) {
+        super(DatastoreErrorCodes.COMMUNICATION_ERROR, t);
+        this.uuid = uuid;
+    }
+
+    public String getUuid() {
+        return uuid;
     }
 
 }

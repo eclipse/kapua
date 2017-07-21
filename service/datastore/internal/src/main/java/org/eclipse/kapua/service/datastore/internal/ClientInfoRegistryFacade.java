@@ -108,7 +108,7 @@ public class ClientInfoRegistryFacade {
                         Metadata metadata = mediator.getMetadata(clientInfo.getScopeId(), clientInfo.getFirstMessageOn().getTime());
                         String kapuaIndexName = metadata.getRegistryIndexName();
 
-                        UpdateRequest request = new UpdateRequest(new TypeDescriptor(kapuaIndexName, ClientInfoSchema.CLIENT_TYPE_NAME), clientInfo.getId().toString(), clientInfo);
+                        UpdateRequest request = new UpdateRequest(clientInfo.getId().toString(), new TypeDescriptor(kapuaIndexName, ClientInfoSchema.CLIENT_TYPE_NAME), clientInfo);
                         response = client.upsert(request);
 
                         if (!clientInfoId.equals(response.getId())) {

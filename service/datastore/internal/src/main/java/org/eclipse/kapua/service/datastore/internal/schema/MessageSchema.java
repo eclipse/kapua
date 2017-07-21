@@ -56,6 +56,10 @@ public class MessageSchema {
      */
     public final static String MESSAGE_TYPE_NAME = "message";
     /**
+     * Message id
+     */
+    public static final String MESSAGE_ID = "message_id";
+    /**
      * Message timestamp
      */
     public final static String MESSAGE_TIMESTAMP = "timestamp";
@@ -201,6 +205,9 @@ public class MessageSchema {
         messageNode.set(KEY_ALL, allMessage);
 
         ObjectNode propertiesNode = SchemaUtil.getObjectNode();
+        ObjectNode messageId = SchemaUtil.getField(
+                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
+        propertiesNode.set(MESSAGE_ID, messageId);
         ObjectNode messageTimestamp = SchemaUtil.getField(
                 new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_DATE), new KeyValueEntry(KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN) });
         propertiesNode.set(MESSAGE_TIMESTAMP, messageTimestamp);

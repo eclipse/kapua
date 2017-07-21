@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.converter;
 
+import java.util.Base64;
+
 import org.apache.camel.Exchange;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.shiro.util.ThreadContext;
@@ -40,7 +42,7 @@ public class KapuaCamelFilter extends AbstractListener {
     public void bindSession(Exchange exchange, Object value) throws KapuaException {
         ThreadContext.unbindSubject();
         // FIX #164
-        byte[] kapuaSession = exchange.getIn().getHeader(MessageConstants.HEADER_KAPUA_SESSION, byte[].class);
+        byte[] kapuaSession = Base64.getDecoder().decode(exchange.getIn().getHeader(MessageConstants.HEADER_KAPUA_SESSION, String.class));
         KapuaSecurityUtils.setSession((KapuaSession) SerializationUtils.deserialize(kapuaSession));
     }
 

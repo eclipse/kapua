@@ -12,51 +12,44 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.listener;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
+import org.apache.camel.Exchange;
 import org.apache.camel.spi.UriEndpoint;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.message.CamelKapuaMessage;
+import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
+import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreCommunicationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.codahale.metrics.Counter;
-import com.codahale.metrics.Timer;
-import com.codahale.metrics.Timer.Context;
 
 /**
  * Data storage message listener
  *
  * @since 1.0
  */
-@UriEndpoint(title = "Data storage message processor", syntax = "bean:dataStorageMessageProcessor", scheme = "bean")
+@UriEndpoint(title = "Data storage message processor", syntax = "bean:dataMessageProcessor", scheme = "bean")
 public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMessage<?>> {
 
     private static final Logger logger = LoggerFactory.getLogger(DataStorageMessageProcessor.class);
-
-    // metrics
-    private final Counter metricStorageMessage;
-    // data message
-    private final Counter metricStorageDataErrorMessage;
-    // store timers
-    private final Timer metricStorageDataSaveTime;
-
-    private final static AtomicInteger ERROR_COUNT = new AtomicInteger();
-    private final static AtomicInteger COUNT = new AtomicInteger();
-    private final static AtomicInteger PROCESSED_COUNT = new AtomicInteger();
+    private static final String METRIC_COMPONENT_NAME = "datastore";
 
     private final MessageStoreService messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
 
+    // queues counters
+    private final Counter metricQueueCommunicationErrorCount;
+    private final Counter metricQueueConfigurationErrorCount;
+    private final Counter metricQueueGenericErrorCount;
+
     public DataStorageMessageProcessor() {
         super("DataStorage");
-
-        // data message
-        metricStorageMessage = registerCounter("listener", "storage", "messages", "count");
-        metricStorageDataErrorMessage = registerCounter("listener", "storage", "messages", "data", "error", "count");
-        // store timers
-        metricStorageDataSaveTime = registerTimer("listener", "storage", "store", "data", "time", "s");
+        MetricsService metricService = MetricServiceFactory.getInstance();
+        metricQueueCommunicationErrorCount = metricService.getCounter(METRIC_COMPONENT_NAME, "datastore", "store", "queue", "communication", "error", "count");
+        metricQueueConfigurationErrorCount = metricService.getCounter(METRIC_COMPONENT_NAME, "datastore", "store", "queue", "configuration", "error", "count");
+        metricQueueGenericErrorCount = metricService.getCounter(METRIC_COMPONENT_NAME, "datastore", "store", "queue", "generic", "error", "count");
     }
 
     /**
@@ -64,26 +57,35 @@ public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMes
      * 
      * @throws KapuaException
      */
-    @Override
     public void processMessage(CamelKapuaMessage<?> message) throws KapuaException {
-
-        // TODO filter alert topic???
-        //
-        PROCESSED_COUNT.incrementAndGet();
         // data messages
+        logger.debug("Received data message from device channel: client id '{}' - {}", message.getMessage().getClientId(), message.getMessage().getChannel());
         try {
-            Context metricStorageDataSaveTimeContext = metricStorageDataSaveTime.time();
-            logger.debug("Received data message from device channel: client id '{}' - {}", message.getMessage().getClientId(), message.getMessage().getChannel());
-            messageStoreService.store(message.getMessage());
-            COUNT.incrementAndGet();
-            metricStorageMessage.inc();
-            metricStorageDataSaveTimeContext.stop();
-        } catch (KapuaException e) {
-            ERROR_COUNT.incrementAndGet();
-            metricStorageDataErrorMessage.inc();
-            logger.error("An error occurred while storing message", e);
+            messageStoreService.store(message.getMessage(), message.getDatastoreId());
+        } catch (DatastoreCommunicationException e) {
+            message.setDatastoreId(e.getUuid());
             throw e;
         }
+    }
+
+    public void processCommunicationErrorMessage(Exchange exchange, CamelKapuaMessage<?> message) throws KapuaException {
+        logger.info("Message datastoreId: '{}' - Message Id: '{}'", new Object[] { message.getDatastoreId(), message.getMessage().getId() });
+        processMessage(message);
+        metricQueueCommunicationErrorCount.dec();
+    }
+
+    public void processConfigurationErrorMessage(Exchange exchange, CamelKapuaMessage<?> message) throws KapuaException {
+        logger.info("Message datastoreId: '{}' - Message Id '{}'", new Object[] { message.getDatastoreId(), message.getMessage().getId() });
+        metricQueueConfigurationErrorCount.dec();
+    }
+
+    public void processGenericErrorMessage(Exchange exchange, CamelKapuaMessage<?> message) throws KapuaException {
+        logger.info("Message datastoreId: '{}' - Message Id '{}'", new Object[] { message.getDatastoreId(), message.getMessage().getId() });
+        metricQueueGenericErrorCount.dec();
+    }
+
+    public void notProcessableMessage(Exchange exchange, Object value) {
+        logger.info("notProcessableMessage");
     }
 
 }

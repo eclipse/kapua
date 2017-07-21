@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
@@ -124,6 +125,10 @@ public class ModelContextImpl implements ModelContext {
         DatastoreMessageImpl message = new DatastoreMessageImpl();
         String id = (String) messageMap.get(ModelContext.DATASTORE_ID_KEY);
         message.setDatastoreId(new StorableIdImpl(id));
+        String messageId = (String) messageMap.get(MessageSchema.MESSAGE_ID);
+        if (messageId != null) {
+            message.setId(UUID.fromString(messageId));
+        }
 
         KapuaId scopeId = new KapuaEid(new BigInteger((String) messageMap.get(MessageSchema.MESSAGE_SCOPE_ID)));
         message.setScopeId(scopeId);
@@ -291,6 +296,9 @@ public class ModelContextImpl implements ModelContext {
         Map<String, Object> unmarshalledMessage = new HashMap<>();
         String scopeId = message.getScopeId().toStringId();
         String deviceIdStr = message.getDeviceId() == null ? null : message.getDeviceId().toStringId();
+        if (message.getId() != null) {
+            unmarshalledMessage.put(MessageSchema.MESSAGE_ID, message.getId().toString());
+        }
         unmarshalledMessage.put(MessageSchema.MESSAGE_TIMESTAMP, KapuaDateUtils.formatDate(message.getTimestamp()));
         unmarshalledMessage.put(MessageSchema.MESSAGE_RECEIVED_ON, KapuaDateUtils.formatDate(message.getReceivedOn()));
         unmarshalledMessage.put(MessageSchema.MESSAGE_IP_ADDRESS, "127.0.0.1");// TODO

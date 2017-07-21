@@ -18,36 +18,19 @@ package org.eclipse.kapua.service.datastore.client.model;
  */
 public class UpdateRequest extends Request {
 
-    private String id;
 
     /**
-     * Construct the update request with the provided parameters
+     * Defualt constructor
      * 
+     * @param id
+     *            object identifier
      * @param typeDescriptor
-     * @param id
+     *            index/type descriptor
      * @param storable
+     *            object to insert
      */
-    public UpdateRequest(TypeDescriptor typeDescriptor, String id, Object storable) {
-        super(typeDescriptor, storable);
-        this.id = id;
-    }
-
-    /**
-     * Get the object id
-     * 
-     * @return
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * Set the object id
-     * 
-     * @param id
-     */
-    public void setId(String id) {
-        this.id = id;
+    public UpdateRequest(String id, TypeDescriptor typeDescriptor, Object storable) {
+        super(id, typeDescriptor, storable);
     }
 
 }

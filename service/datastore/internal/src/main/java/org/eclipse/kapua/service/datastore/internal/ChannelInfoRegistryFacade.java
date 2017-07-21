@@ -107,7 +107,7 @@ public class ChannelInfoRegistryFacade {
                         Metadata metadata = mediator.getMetadata(channelInfo.getScopeId(), channelInfo.getFirstMessageOn().getTime());
                         String registryIndexName = metadata.getRegistryIndexName();
 
-                        UpdateRequest request = new UpdateRequest(new TypeDescriptor(metadata.getRegistryIndexName(), ChannelInfoSchema.CHANNEL_TYPE_NAME), channelInfo.getId().toString(),
+                        UpdateRequest request = new UpdateRequest(channelInfo.getId().toString(), new TypeDescriptor(metadata.getRegistryIndexName(), ChannelInfoSchema.CHANNEL_TYPE_NAME),
                                 channelInfo);
                         response = client.upsert(request);
 

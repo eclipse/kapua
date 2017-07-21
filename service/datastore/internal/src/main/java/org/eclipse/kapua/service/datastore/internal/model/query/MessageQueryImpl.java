@@ -75,6 +75,7 @@ public class MessageQueryImpl extends AbstractStorableQuery<DatastoreMessage> im
     @Override
     public String[] getFields() {
         return new String[] {
+                MessageField.MESSAGE_ID.field(),
                 MessageField.SCOPE_ID.field(),
                 MessageField.DEVICE_ID.field(),
                 MessageField.CLIENT_ID.field(),

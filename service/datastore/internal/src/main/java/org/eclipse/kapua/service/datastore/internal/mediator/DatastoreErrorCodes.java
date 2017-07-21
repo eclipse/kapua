@@ -27,6 +27,9 @@ public enum DatastoreErrorCodes implements KapuaErrorCode {
     /**
      * Invalid channel format
      */
-    INVALID_CHANNEL
-
+    INVALID_CHANNEL,
+    /**
+     * Error on communication with the underlying datastore layer (timeout, no node available ...)
+     */
+    COMMUNICATION_ERROR
 }

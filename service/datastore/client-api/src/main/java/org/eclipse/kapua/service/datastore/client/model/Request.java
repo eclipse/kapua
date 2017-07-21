@@ -19,11 +19,15 @@ package org.eclipse.kapua.service.datastore.client.model;
 public abstract class Request {
 
     /**
+     * Object identifier
+     */
+    private String id;
+    /**
      * index/type descriptor
      */
     private TypeDescriptor typeDescriptor;
     /**
-     * Storable object
+     * Object to be stored
      */
     private Object storable;
 
@@ -34,9 +38,28 @@ public abstract class Request {
      *            index/type descriptor
      * @param storable
      */
-    protected Request(TypeDescriptor typeDescriptor, Object storable) {
+    protected Request(String id, TypeDescriptor typeDescriptor, Object storable) {
+        this.id = id;
         this.typeDescriptor = typeDescriptor;
         this.storable = storable;
+    }
+
+    /**
+     * Get the object id
+     * 
+     * @return
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * Set the object id
+     * 
+     * @param id
+     */
+    public void setId(String id) {
+        this.id = id;
     }
 
     /**

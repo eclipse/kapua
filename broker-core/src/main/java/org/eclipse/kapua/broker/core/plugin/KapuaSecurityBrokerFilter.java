@@ -14,6 +14,7 @@ package org.eclipse.kapua.broker.core.plugin;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -622,10 +623,11 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                 }
             }
             // FIX #164
-            messageSend.setProperty(MessageConstants.HEADER_KAPUA_CONNECTION_ID, SerializationUtils.serialize(kapuaSecurityContext.getConnectionId()));
+            messageSend.setProperty(MessageConstants.HEADER_KAPUA_CONNECTION_ID, Base64.getEncoder().encodeToString(SerializationUtils.serialize(kapuaSecurityContext.getConnectionId())));
             messageSend.setProperty(MessageConstants.HEADER_KAPUA_CLIENT_ID, ((KapuaPrincipal) kapuaSecurityContext.getMainPrincipal()).getClientId());
-            messageSend.setProperty(MessageConstants.HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL, SerializationUtils.serialize(kapuaSecurityContext.getConnectorDescriptor()));
-            messageSend.setProperty(MessageConstants.HEADER_KAPUA_SESSION, SerializationUtils.serialize(kapuaSecurityContext.getKapuaSession()));
+            messageSend.setProperty(MessageConstants.HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL,
+                    Base64.getEncoder().encodeToString(SerializationUtils.serialize(kapuaSecurityContext.getConnectorDescriptor())));
+            messageSend.setProperty(MessageConstants.HEADER_KAPUA_SESSION, Base64.getEncoder().encodeToString(SerializationUtils.serialize(kapuaSecurityContext.getKapuaSession())));
         }
         if (messageSend.getContent() != null) {
             metricPublishMessageSizeAllowed.update(messageSend.getContent().length);

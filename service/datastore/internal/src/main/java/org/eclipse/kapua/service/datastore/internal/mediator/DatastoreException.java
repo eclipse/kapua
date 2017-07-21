@@ -47,7 +47,18 @@ public class DatastoreException extends KapuaException {
      * 
      * @param code
      * @param t
+     */
+    public DatastoreException(KapuaErrorCode code, Throwable t) {
+        super(code, t);
+    }
+
+    /**
+     * Construct the exception with the provided error code, throwable and message
+     * 
+     * @param code
+     * @param t
      * @param message
+     *            message
      */
     public DatastoreException(KapuaErrorCode code, Throwable t, String message) {
         super(code, t, message);
