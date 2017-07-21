@@ -12,7 +12,6 @@
 package org.eclipse.kapua.service.authentication.shiro;
 
 import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 
@@ -22,20 +21,19 @@ import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
  * @since 1.0
  * 
  */
-public class UsernamePasswordCredentialsImpl extends UsernamePasswordToken implements UsernamePasswordCredentials, AuthenticationToken {
+public class UsernamePasswordCredentialsImpl implements UsernamePasswordCredentials, AuthenticationToken {
 
     private static final long serialVersionUID = -7549848672967689716L;
 
     private String username;
-    private char[] password;
+    private String password;
 
     /**
      * Constructor
-     * 
-     * @param username
+     *  @param username
      * @param password
      */
-    public UsernamePasswordCredentialsImpl(String username, char[] password) {
+    public UsernamePasswordCredentialsImpl(String username, String password) {
         this.username = username;
         this.password = password;
     }
@@ -51,12 +49,22 @@ public class UsernamePasswordCredentialsImpl extends UsernamePasswordToken imple
     }
 
     @Override
-    public char[] getPassword() {
+    public String getPassword() {
         return password;
     }
 
     @Override
-    public void setPassword(char[] password) {
+    public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public Object getPrincipal() {
+        return username;
+    }
+
+    @Override
+    public Object getCredentials() {
+        return password;
     }
 }

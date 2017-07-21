@@ -23,6 +23,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import io.swagger.annotations.Authorization;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
@@ -49,7 +50,7 @@ import io.swagger.annotations.ApiParam;
  *
  * @since 1.0.0
  */
-@Api("Access Info")
+@Api(value = "Access Info", authorizations = { @Authorization(value = "kapuaAccessToken") })
 @Path("{scopeId}/accessinfos/{accessInfoId}/permissions")
 public class AccessPermissions extends AbstractKapuaResource {
 
@@ -73,7 +74,7 @@ public class AccessPermissions extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Gets the AccessPermission list in the scope", notes = "Gets the AccessPermission list in the scope. The query parameter accessInfoId is optional and can be used to filter results", response = AccessPermission.class, responseContainer = "AccessPermissionListResult")
+    @ApiOperation(value = "Gets the AccessPermission list in the scope", notes = "Gets the AccessPermission list in the scope. The query parameter accessInfoId is optional and can be used to filter results", response = AccessPermissionListResult.class)
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public AccessPermissionListResult simpleQuery(
@@ -105,7 +106,7 @@ public class AccessPermissions extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Queries the AccessPermissions", notes = "Queries the AccessPermissions with the given AccessPermissionQuery parameter returning all matching AccessPermissions", response = AccessPermission.class, responseContainer = "AccessPermissionListResult")
+    @ApiOperation(value = "Queries the AccessPermissions", notes = "Queries the AccessPermissions with the given AccessPermissionQuery parameter returning all matching AccessPermissions", response = AccessPermissionListResult.class)
     @POST
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })

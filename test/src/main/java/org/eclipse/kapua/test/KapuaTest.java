@@ -63,7 +63,7 @@ public class KapuaTest extends Assert {
 
             AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
             CredentialsFactory credentialsFactory = locator.getFactory(CredentialsFactory.class);
-            authenticationService.login(credentialsFactory.newUsernamePasswordCredentials(username, password.toCharArray()));
+            authenticationService.login(credentialsFactory.newUsernamePasswordCredentials(username, password));
 
             //
             // Get current user Id

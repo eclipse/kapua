@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
@@ -31,6 +32,7 @@ public class EntityNotFoundExceptionInfo extends AbstractInfo {
 
     @XmlElement(name = "entityId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    @ApiModelProperty(dataType = "string")
     private KapuaId entityId;
 
     protected EntityNotFoundExceptionInfo() {

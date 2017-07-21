@@ -25,7 +25,7 @@ import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 public class CredentialsFactoryMock implements CredentialsFactory {
 
     @Override
-    public UsernamePasswordCredentials newUsernamePasswordCredentials(String username, char[] password) {
+    public UsernamePasswordCredentials newUsernamePasswordCredentials(String username, String password) {
         return new UsernamePasswordCredentialsMock(username, password);
     }
 

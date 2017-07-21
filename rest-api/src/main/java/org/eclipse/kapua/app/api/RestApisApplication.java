@@ -16,6 +16,7 @@ import java.util.HashMap;
 import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBException;
 
+
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -45,6 +46,8 @@ public class RestApisApplication extends ResourceConfig {
         register(KapuaSerializableBodyWriter.class);
         register(ListBodyWriter.class);
         register(CORSResponseFilter.class);
+        register(SwaggerDefinition.class);
+        register(MoxyJsonConfigContextResolver.class);
 
         register(new ContainerLifecycleListener() {
 

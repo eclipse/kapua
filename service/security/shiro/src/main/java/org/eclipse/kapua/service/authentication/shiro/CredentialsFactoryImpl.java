@@ -29,7 +29,7 @@ import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 public class CredentialsFactoryImpl implements CredentialsFactory {
 
     @Override
-    public UsernamePasswordCredentials newUsernamePasswordCredentials(String username, char[] password) {
+    public UsernamePasswordCredentials newUsernamePasswordCredentials(String username, String password) {
         return new UsernamePasswordCredentialsImpl(username, password);
     }
 

@@ -207,7 +207,7 @@ public class UserServiceSteps extends AbstractKapuaSteps {
     @When("^I login as user with name \"(.*)\" and password \"(.*)\"$")
     public void loginUser(String userName, String password) throws KapuaException {
 
-        char[] passwd = password.toCharArray();
+        String passwd = password;
         LoginCredentials credentials = new UsernamePasswordCredentialsImpl(userName, passwd);
         authenticationService.logout();
         stepData.put("ExceptionCaught", false);

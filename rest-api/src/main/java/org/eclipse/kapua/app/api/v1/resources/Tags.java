@@ -24,6 +24,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import io.swagger.annotations.Authorization;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
@@ -47,7 +48,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-@Api("Tags")
+@Api(value = "Tags", authorizations = { @Authorization(value = "kapuaAccessToken") })
 @Path("{scopeId}/tags")
 public class Tags extends AbstractKapuaResource {
 
@@ -73,8 +74,7 @@ public class Tags extends AbstractKapuaResource {
      */
     @ApiOperation(value = "Gets the Tag list in the scope", //
             notes = "Returns the list of all the tags associated to the current selected scope.", //
-            response = Tag.class, //
-            responseContainer = "TagListResult")
+            response = TagListResult.class)
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public TagListResult simpleQuery(
@@ -110,8 +110,7 @@ public class Tags extends AbstractKapuaResource {
      */
     @ApiOperation(value = "Queries the Tags", //
             notes = "Queries the Tags with the given TagQuery parameter returning all matching Tags", //
-            response = Tag.class, //
-            responseContainer = "TagListResult")
+            response = TagListResult.class)
     @POST
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })

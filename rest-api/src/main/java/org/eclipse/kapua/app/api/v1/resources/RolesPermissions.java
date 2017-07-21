@@ -23,6 +23,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import io.swagger.annotations.Authorization;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
@@ -47,7 +48,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-@Api("Roles")
+@Api(value = "Roles", authorizations = { @Authorization(value = "kapuaAccessToken") })
 @Path("{scopeId}/roles/{roleId}/permissions")
 public class RolesPermissions extends AbstractKapuaResource {
 
@@ -75,7 +76,7 @@ public class RolesPermissions extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Gets the RolePermission list in the scope", notes = "Returns the list of all the rolePermissions associated to the current selected scope.", response = RolePermission.class, responseContainer = "RolePermissionListResult")
+    @ApiOperation(value = "Gets the RolePermission list in the scope", notes = "Returns the list of all the rolePermissions associated to the current selected scope.", response = RolePermissionListResult.class)
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public RolePermissionListResult simpleQuery(
@@ -117,7 +118,7 @@ public class RolesPermissions extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Queries the RolePermissions", notes = "Queries the RolePermissions with the given RolePermissionQuery parameter returning all matching RolePermissions", response = RolePermission.class, responseContainer = "RolePermissionListResult")
+    @ApiOperation(value = "Queries the RolePermissions", notes = "Queries the RolePermissions with the given RolePermissionQuery parameter returning all matching RolePermissions", response = RolePermissionListResult.class)
     @POST
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })

@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.model.KapuaUpdatableEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
@@ -75,6 +76,7 @@ public interface DeviceCreator extends KapuaUpdatableEntityCreator<Device> {
      */
     @XmlElement(name = "groupId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    @ApiModelProperty(dataType = "string")
     public KapuaId getGroupId();
 
     /**
@@ -121,6 +123,7 @@ public interface DeviceCreator extends KapuaUpdatableEntityCreator<Device> {
      */
     @XmlElement(name = "connectionId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    @ApiModelProperty(dataType = "string")
     public KapuaId getConnectionId();
 
     /**
@@ -137,6 +140,7 @@ public interface DeviceCreator extends KapuaUpdatableEntityCreator<Device> {
      */
     @XmlElement(name = "lastEventId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    @ApiModelProperty(dataType = "string")
     public KapuaId getLastEventId();
 
     /**
@@ -482,6 +486,7 @@ public interface DeviceCreator extends KapuaUpdatableEntityCreator<Device> {
      */
     @XmlElement(name = "preferredUserId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    @ApiModelProperty(dataType = "string")
     public KapuaId getPreferredUserId();
 
     /**

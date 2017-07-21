@@ -24,6 +24,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import io.swagger.annotations.Authorization;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
@@ -46,7 +47,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-@Api("Groups")
+@Api(value = "Groups", authorizations = { @Authorization(value = "kapuaAccessToken") })
 @Path("{scopeId}/groups")
 public class Groups extends AbstractKapuaResource {
 
@@ -70,7 +71,7 @@ public class Groups extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Gets the Group list in the scope", notes = "Returns the list of all the groups associated to the current selected scope.", response = Group.class, responseContainer = "GroupListResult")
+    @ApiOperation(value = "Gets the Group list in the scope", notes = "Returns the list of all the groups associated to the current selected scope.", response = GroupListResult.class)
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public GroupListResult simpleQuery(
@@ -104,7 +105,7 @@ public class Groups extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Queries the Groups", notes = "Queries the Groups with the given GroupQuery parameter returning all matching Groups", response = Group.class, responseContainer = "GroupListResult")
+    @ApiOperation(value = "Queries the Groups", notes = "Queries the Groups with the given GroupQuery parameter returning all matching Groups", response = GroupListResult.class)
     @POST
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })

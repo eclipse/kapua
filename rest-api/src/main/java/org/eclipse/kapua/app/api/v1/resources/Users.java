@@ -24,6 +24,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import io.swagger.annotations.Authorization;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
@@ -46,7 +47,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-@Api("Users")
+@Api(value = "Users", authorizations = { @Authorization(value = "kapuaAccessToken") })
 @Path("{scopeId}/users")
 public class Users extends AbstractKapuaResource {
 
@@ -70,7 +71,7 @@ public class Users extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Gets the User list in the scope", notes = "Returns the list of all the users associated to the current selected scope.", response = User.class, responseContainer = "UserListResult")
+    @ApiOperation(value = "Gets the User list in the scope", notes = "Returns the list of all the users associated to the current selected scope.", response = UserListResult.class)
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public UserListResult simpleQuery(
@@ -104,7 +105,7 @@ public class Users extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Queries the Users", notes = "Queries the Users with the given UserQuery parameter returning all matching Users", response = User.class, responseContainer = "UserListResult")
+    @ApiOperation(value = "Queries the Users", notes = "Queries the Users with the given UserQuery parameter returning all matching Users", response = UserListResult.class)
     @POST
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })

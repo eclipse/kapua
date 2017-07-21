@@ -16,9 +16,9 @@ import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 public class UsernamePasswordCredentialsMock implements UsernamePasswordCredentials {
 
     private String username;
-    private char[] password;
+    private String password;
 
-    public UsernamePasswordCredentialsMock(String username, char[] password) {
+    public UsernamePasswordCredentialsMock(String username, String password) {
         this.username = username;
         this.password = password;
     }
@@ -34,12 +34,12 @@ public class UsernamePasswordCredentialsMock implements UsernamePasswordCredenti
     }
 
     @Override
-    public char[] getPassword() {
+    public String getPassword() {
         return this.password;
     }
 
     @Override
-    public void setPassword(char[] password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 
