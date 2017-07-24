@@ -271,35 +271,35 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         // Custom Attribute #1
         customAttribute1Field = new TextField<String>();
         customAttribute1Field.setName("customAttribute1");
-        customAttribute1Field.setFieldLabel("* " + DEVICE_MSGS.deviceFormCustomAttribute1());
+        customAttribute1Field.setFieldLabel(DEVICE_MSGS.deviceFormCustomAttribute1());
         customAttribute1Field.setWidth(225);
         fieldSetCustomAttributes.add(customAttribute1Field, formData);
 
         // Custom Attribute #2
         customAttribute2Field = new TextField<String>();
         customAttribute2Field.setName("customAttribute2");
-        customAttribute2Field.setFieldLabel("* " + DEVICE_MSGS.deviceFormCustomAttribute2());
+        customAttribute2Field.setFieldLabel(DEVICE_MSGS.deviceFormCustomAttribute2());
         customAttribute2Field.setWidth(225);
         fieldSetCustomAttributes.add(customAttribute2Field, formData);
 
         // Custom Attribute #3
         customAttribute3Field = new TextField<String>();
         customAttribute3Field.setName("customAttribute3");
-        customAttribute3Field.setFieldLabel("* " + DEVICE_MSGS.deviceFormCustomAttribute3());
+        customAttribute3Field.setFieldLabel(DEVICE_MSGS.deviceFormCustomAttribute3());
         customAttribute3Field.setWidth(225);
         fieldSetCustomAttributes.add(customAttribute3Field, formData);
 
         // Custom Attribute #4
         customAttribute4Field = new TextField<String>();
         customAttribute4Field.setName("customAttribute4");
-        customAttribute4Field.setFieldLabel("* " + DEVICE_MSGS.deviceFormCustomAttribute4());
+        customAttribute4Field.setFieldLabel(DEVICE_MSGS.deviceFormCustomAttribute4());
         customAttribute4Field.setWidth(225);
         fieldSetCustomAttributes.add(customAttribute4Field, formData);
 
         // Custom Attribute #5
         customAttribute5Field = new TextField<String>();
         customAttribute5Field.setName("customAttribute5");
-        customAttribute5Field.setFieldLabel("* " + DEVICE_MSGS.deviceFormCustomAttribute5());
+        customAttribute5Field.setFieldLabel(DEVICE_MSGS.deviceFormCustomAttribute5());
         customAttribute5Field.setWidth(225);
         fieldSetCustomAttributes.add(customAttribute5Field, formData);
 
