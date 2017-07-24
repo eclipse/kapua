@@ -11,7 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.gateway;
 
+import java.time.Duration;
+import java.util.Objects;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 /**
@@ -118,6 +121,7 @@ public interface Transport {
      *             if the wait got interrupted
      */
     public static void waitForConnection(final Transport transport) throws InterruptedException {
+        Objects.requireNonNull(transport);
 
         final Semaphore sem = new Semaphore(0);
 
@@ -128,5 +132,33 @@ public interface Transport {
         });
 
         sem.acquire();
+    }
+
+    /**
+     * Wait for the connection to be established or the timeout occurs
+     * <p>
+     * <b>Note:</b> This method will reset the transport listeners.
+     * </p>
+     *
+     * @param transport
+     *            to wait on
+     * @param timeout
+     *            the timeout
+     * @throws InterruptedException
+     *             if the wait got interrupted
+     */
+    public static boolean waitForConnection(final Transport transport, final Duration timeout) throws InterruptedException {
+        Objects.requireNonNull(transport);
+        Objects.requireNonNull(timeout);
+
+        final Semaphore sem = new Semaphore(0);
+
+        transport.state(state -> {
+            if (state) {
+                sem.release();
+            }
+        });
+
+        return sem.tryAcquire(timeout.toNanos(), TimeUnit.NANOSECONDS);
     }
 }
