@@ -36,8 +36,8 @@ public class AbstractData implements Data {
     }
 
     @Override
-    public void send(final Payload payload) throws Exception {
-        application.publish(topic, payload);
+    public CompletionStage<?> send(final Payload payload) {
+        return application.publish(topic, payload);
     }
 
     @Override

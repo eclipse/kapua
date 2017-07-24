@@ -12,6 +12,7 @@
 package org.eclipse.kapua.client.gateway.mqtt;
 
 import java.nio.ByteBuffer;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
 
@@ -41,13 +42,19 @@ public class MqttApplication extends AbstractApplication {
     }
 
     @Override
-    protected CompletionStage<?> publish(Topic topic, Payload payload) throws Exception {
+    protected CompletionStage<?> publish(Topic topic, Payload payload) {
         logger.debug("Publishing values - {} -> {}", topic, payload.getValues());
 
-        final ByteBuffer buffer = client.getCodec().encode(payload, null);
-        buffer.flip();
+        try {
+            final ByteBuffer buffer = client.getCodec().encode(payload, null);
+            buffer.flip();
 
-        return client.publish(applicationId, topic, buffer);
+            return client.publish(applicationId, topic, buffer);
+        } catch (final Exception e) {
+            final CompletableFuture<?> future = new CompletableFuture<>();
+            future.completeExceptionally(e);
+            return future;
+        }
     }
 
     @Override

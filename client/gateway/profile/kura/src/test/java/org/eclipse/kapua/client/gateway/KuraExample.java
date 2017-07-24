@@ -12,15 +12,10 @@
 package org.eclipse.kapua.client.gateway;
 
 import static org.eclipse.kapua.client.gateway.Credentials.userAndPassword;
-import static org.eclipse.kapua.client.gateway.Errors.handle;
-import static org.eclipse.kapua.client.gateway.Errors.ignore;
 import static org.eclipse.kapua.client.gateway.Transport.waitForConnection;
 
-import org.eclipse.kapua.client.gateway.Application;
-import org.eclipse.kapua.client.gateway.Client;
-import org.eclipse.kapua.client.gateway.Payload;
-import org.eclipse.kapua.client.gateway.Sender;
-import org.eclipse.kapua.client.gateway.Topic;
+import java.time.Duration;
+
 import org.eclipse.kapua.client.gateway.mqtt.fuse.FuseClient;
 import org.eclipse.kapua.client.gateway.profile.kura.KuraMqttProfile;
 import org.slf4j.Logger;
@@ -46,7 +41,9 @@ public final class KuraExample {
 
                 // wait for connection
 
-                waitForConnection(application.transport());
+                if (!waitForConnection(application.transport(), Duration.ofSeconds(30))) {
+                    throw new RuntimeException("Unable to connect to target broker");
+                }
 
                 // subscribe to a topic
 
@@ -69,22 +66,26 @@ public final class KuraExample {
 
                 // send, with attached error handler
 
-                application.data(Topic.of("my", "topic"))
-                        .errors(handle((e, message) -> System.err.println("Failed to publish: " + e.getMessage())))
+                application
+                        .data(Topic.of("my", "topic"))
                         .send(payload);
 
                 // ignoring error
 
-                application.data(Topic.of("my", "topic")).errors(ignore()).send(payload);
+                application
+                        .data(Topic.of("my", "topic"))
+                        .send(payload);
 
                 // cache sender instance
 
-                final Sender<RuntimeException> sender = application.data(Topic.of("my", "topic")).errors(ignore());
+                final Sender sender = application.data(Topic.of("my", "topic"));
 
-                int i = 0;
-                while (i < 10) {
+                for (int i = 0; i < 10; i++) {
+
                     // send
-                    sender.send(Payload.of("counter", i++));
+
+                    sender.send(Payload.of("counter", i));
+
                     Thread.sleep(1_000);
                 }
 

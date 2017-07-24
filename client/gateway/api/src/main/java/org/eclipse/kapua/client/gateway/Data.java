@@ -20,7 +20,7 @@ import java.util.concurrent.CompletionStage;
  * to {@link Application#data(Topic)}.
  * </p>
  */
-public interface Data extends Sender<Exception> {
+public interface Data extends Sender {
 
     /**
      * Receive messages on this data topic

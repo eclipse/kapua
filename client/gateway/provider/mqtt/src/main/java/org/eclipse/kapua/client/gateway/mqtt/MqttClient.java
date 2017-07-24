@@ -103,12 +103,12 @@ public abstract class MqttClient extends AbstractClient {
         this.namespace = namespace;
     }
 
-    protected CompletionStage<?> publish(String applicationId, Topic topic, ByteBuffer buffer) throws Exception {
+    protected CompletionStage<?> publish(String applicationId, Topic topic, ByteBuffer buffer) {
         final String mqttTopic = namespace.dataTopic(clientId, applicationId, topic);
         return publishMqtt(mqttTopic, buffer);
     }
 
-    public abstract CompletionStage<?> publishMqtt(String topic, ByteBuffer payload) throws Exception;
+    public abstract CompletionStage<?> publishMqtt(String topic, ByteBuffer payload);
 
     protected abstract CompletionStage<?> subscribeMqtt(String topic, MqttMessageHandler messageHandler) throws Exception;
 

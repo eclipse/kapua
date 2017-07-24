@@ -244,15 +244,19 @@ public class PahoClient extends MqttClient {
     }
 
     @Override
-    public CompletionStage<?> publishMqtt(final String topic, final ByteBuffer payload) throws Exception {
+    public CompletionStage<?> publishMqtt(final String topic, final ByteBuffer payload) {
         return publish(topic, payload);
     }
 
-    protected CompletionStage<?> publish(final String topic, final ByteBuffer payload) throws MqttException {
+    protected CompletionStage<?> publish(final String topic, final ByteBuffer payload) {
         logger.debug("Publishing {} - {}", topic, payload);
 
         final CompletableFuture<?> future = new CompletableFuture<>();
-        client.publish(topic, toByteArray(payload), 1, false, null, toListener(future));
+        try {
+            client.publish(topic, toByteArray(payload), 1, false, null, toListener(future));
+        } catch (MqttException e) {
+            future.completeExceptionally(e);
+        }
         return future;
     }
 
