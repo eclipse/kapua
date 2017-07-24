@@ -12,6 +12,7 @@
 package org.eclipse.kapua.client.gateway.mqtt.fuse;
 
 import static java.util.Objects.requireNonNull;
+import static org.eclipse.kapua.client.gateway.mqtt.fuse.internal.Callbacks.asCallback;
 import static org.eclipse.kapua.client.gateway.utils.Strings.nonEmptyText;
 
 import java.net.URI;
@@ -160,8 +161,10 @@ public class FuseClient extends MqttClient {
     }
 
     @Override
-    public void publishMqtt(final String topic, final ByteBuffer payload) {
-        connection.publish(Buffer.utf8(topic), new Buffer(payload), QoS.AT_LEAST_ONCE, false, null);
+    public CompletionStage<?> publishMqtt(final String topic, final ByteBuffer payload) {
+        final CompletableFuture<Void> future = new CompletableFuture<>();
+        connection.publish(Buffer.utf8(topic), new Buffer(payload), QoS.AT_LEAST_ONCE, false, asCallback(future));
+        return future;
     }
 
     @Override

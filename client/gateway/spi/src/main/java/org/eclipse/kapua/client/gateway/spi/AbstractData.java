@@ -41,13 +41,12 @@ public class AbstractData implements Data {
     }
 
     @Override
-    public void subscribe(final MessageHandler handler, final ErrorHandler<? extends Throwable> errorHandler) throws Exception {
+    public CompletionStage<?> subscribe(final MessageHandler handler, final ErrorHandler<? extends Throwable> errorHandler) throws Exception {
         requireNonNull(handler);
         requireNonNull(errorHandler);
 
         logger.debug("Setting subscription for: {}", topic);
 
-        final CompletionStage<?> future = application.subscribe(topic, handler, errorHandler);
-        future.toCompletableFuture().get();
+        return application.subscribe(topic, handler, errorHandler);
     }
 }

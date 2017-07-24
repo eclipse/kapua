@@ -12,6 +12,8 @@
 package org.eclipse.kapua.client.gateway.mqtt.paho;
 
 import static java.util.Objects.requireNonNull;
+import static org.eclipse.kapua.client.gateway.mqtt.paho.internal.Listeners.toListener;
+import static org.eclipse.kapua.client.gateway.utils.Buffers.toByteArray;
 import static org.eclipse.kapua.client.gateway.utils.Strings.nonEmptyText;
 
 import java.net.URI;
@@ -242,13 +244,16 @@ public class PahoClient extends MqttClient {
     }
 
     @Override
-    public void publishMqtt(final String topic, final ByteBuffer payload) throws Exception {
-        publish(topic, payload);
+    public CompletionStage<?> publishMqtt(final String topic, final ByteBuffer payload) throws Exception {
+        return publish(topic, payload);
     }
 
-    protected void publish(final String topic, final ByteBuffer payload) throws MqttException {
+    protected CompletionStage<?> publish(final String topic, final ByteBuffer payload) throws MqttException {
         logger.debug("Publishing {} - {}", topic, payload);
-        client.publish(topic, Buffers.toByteArray(payload), 1, false);
+
+        final CompletableFuture<?> future = new CompletableFuture<>();
+        client.publish(topic, toByteArray(payload), 1, false, null, toListener(future));
+        return future;
     }
 
     @Override

@@ -41,13 +41,13 @@ public class MqttApplication extends AbstractApplication {
     }
 
     @Override
-    protected void publish(Topic topic, Payload payload) throws Exception {
+    protected CompletionStage<?> publish(Topic topic, Payload payload) throws Exception {
         logger.debug("Publishing values - {} -> {}", topic, payload.getValues());
 
         final ByteBuffer buffer = client.getCodec().encode(payload, null);
         buffer.flip();
 
-        client.publish(applicationId, topic, buffer);
+        return client.publish(applicationId, topic, buffer);
     }
 
     @Override

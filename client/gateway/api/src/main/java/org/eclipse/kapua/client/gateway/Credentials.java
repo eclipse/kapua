@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.gateway;
 
+/**
+ * Utility class for credentials
+ */
 public final class Credentials {
 
     private Credentials() {

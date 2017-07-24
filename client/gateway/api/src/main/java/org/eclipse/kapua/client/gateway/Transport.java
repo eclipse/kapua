@@ -34,7 +34,11 @@ public interface Transport {
     }
 
     /**
-     * Set a state listener
+     * Set the state listener
+     * 
+     * <p>
+     * <b>Note:</b> Only one state lister can be set for a {@link Transport} instance
+     * </p>
      *
      * <p>
      * The listener will be called immediately after setting with the

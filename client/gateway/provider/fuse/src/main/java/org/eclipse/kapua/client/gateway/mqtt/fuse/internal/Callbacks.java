@@ -20,7 +20,7 @@ public final class Callbacks {
     private Callbacks() {
     }
 
-    public static <T> Callback<T> asCallback(CompletableFuture<T> future) {
+    public static <T> Callback<T> asCallback(final CompletableFuture<T> future) {
         return new Callback<T>() {
 
             @Override

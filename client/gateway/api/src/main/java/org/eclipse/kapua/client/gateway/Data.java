@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.gateway;
 
+import java.util.concurrent.CompletionStage;
+
 /**
  * An interface for control data
  * <p>
@@ -23,22 +25,23 @@ public interface Data extends Sender<Exception> {
     /**
      * Receive messages on this data topic
      * <p>
-     * Subscriptions will automatically be re-established after a connection loss.
+     * Subscriptions will be automatically re-established after a connection loss.
      * </p>
      *
      * @param handler
      *            the handler which should process received messages
+     * @return a {@link CompletionStage} for the operation
      * @throws Exception
      *             if anything goes wrong on the subscription process
      */
-    public default void subscribe(final MessageHandler handler) throws Exception {
-        subscribe(handler, Errors::ignore);
+    public default CompletionStage<?> subscribe(final MessageHandler handler) throws Exception {
+        return subscribe(handler, Errors::ignore);
     }
 
     /**
      * Receive messages and handle reception errors on this data topic
      * <p>
-     * Subscriptions will automatically be re-established after a connection loss.
+     * Subscriptions will be automatically re-established after a connection loss.
      * </p>
      *
      * @param handler
@@ -46,8 +49,9 @@ public interface Data extends Sender<Exception> {
      * @param errorHandler
      *            the handler which should process received messages which got received
      *            but could not be properly parsed
+     * @return a {@link CompletionStage} for the operation
      * @throws Exception
      *             if anything goes wrong on the subscription process
      */
-    public void subscribe(MessageHandler handler, ErrorHandler<? extends Throwable> errorHandler) throws Exception;
+    public CompletionStage<?> subscribe(MessageHandler handler, ErrorHandler<? extends Throwable> errorHandler) throws Exception;
 }

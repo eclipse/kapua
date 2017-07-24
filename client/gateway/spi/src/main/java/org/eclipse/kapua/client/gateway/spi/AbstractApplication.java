@@ -79,7 +79,7 @@ public abstract class AbstractApplication implements Application {
         client.internalCloseApplication(applicationId, subscriptions, this);
     }
 
-    protected abstract void publish(Topic topic, Payload payload) throws Exception;
+    protected abstract CompletionStage<?> publish(Topic topic, Payload payload) throws Exception;
 
     public CompletionStage<?> subscribe(Topic topic, MessageHandler handler, ErrorHandler<? extends Throwable> errorHandler) throws Exception {
         recordSubscription(topic);
