@@ -21,11 +21,11 @@ import org.eclipse.kapua.client.gateway.profile.kura.KuraMqttProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class KuraExample {
+public final class KuraProfileExample {
 
-    private static final Logger logger = LoggerFactory.getLogger(KuraExample.class);
+    private static final Logger logger = LoggerFactory.getLogger(KuraProfileExample.class);
 
-    private KuraExample() {
+    private KuraProfileExample() {
     }
 
     public static void main(final String[] args) throws Exception {
