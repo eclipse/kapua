@@ -68,7 +68,7 @@ public class AssetTabItem extends TabItem {
 
         setWidth("100%");
 
-        BorderLayoutData messageLayout = new BorderLayoutData(LayoutRegion.NORTH, 0.04f);
+        BorderLayoutData messageLayout = new BorderLayoutData(LayoutRegion.NORTH, 0.01f);
         messageLayout.setMargins(new Margins(5));
         Text welcomeMessage = new Text();
         welcomeMessage.setText(MSGS.assetTabItemMessage());
@@ -80,7 +80,7 @@ public class AssetTabItem extends TabItem {
         tablesLayout.setMinSize(250);
         add(tables, tablesLayout);
 
-        BorderLayoutData refreshButtonLayout = new BorderLayoutData(LayoutRegion.NORTH, 0.1f);
+        BorderLayoutData refreshButtonLayout = new BorderLayoutData(LayoutRegion.NORTH, 0.08f);
         refreshButtonLayout.setMargins(new Margins(5));
         refreshButton = new Button(MSGS.refresh(), new KapuaIcon(IconSet.REFRESH), new SelectionListener<ButtonEvent>() {
 
@@ -90,7 +90,6 @@ public class AssetTabItem extends TabItem {
                 resultsTable.refresh();
             }
         });
-        refreshButton.disable();
         TableLayout refreshButtonTL = new TableLayout();
         refreshButtonTL.setCellPadding(0);
         LayoutContainer refreshButtonContainer = new LayoutContainer(refreshButtonTL);

@@ -33,6 +33,8 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
         updateAddButtonEnabled();
         getEditEntityButton().disable();
         getDeleteEntityButton().disable();
+        getRefreshEntityButton().disable();
+        getFilterButton().hide();
     }
 
     @Override

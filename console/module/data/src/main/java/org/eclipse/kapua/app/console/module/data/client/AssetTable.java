@@ -93,8 +93,6 @@ public class AssetTable extends LayoutContainer {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
         ColumnConfig column = new ColumnConfig("asset", MSGS.assetTableAssetHeader(), 100);
         configs.add(column);
-        column = new ColumnConfig("driver", MSGS.assetTableDriverHeader(), 100);
-        configs.add(column);
         RpcProxy<ListLoadResult<GwtDatastoreAsset>> proxy = new RpcProxy<ListLoadResult<GwtDatastoreAsset>>() {
 
             @Override

@@ -29,7 +29,9 @@ import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
+import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
@@ -58,6 +60,11 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
 
     protected RefreshButton refreshEntityButton;
     private boolean refreshEntityButtonShow = true;
+
+    protected ToggleButton filterButton;
+    private boolean filterButtonShow=true;
+    
+    protected EntityFilterPanel<M> filterPanel; 
 
     public EntityCRUDToolbar(GwtSession currentSession) {
         this.currentSession = currentSession;
@@ -88,6 +95,26 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
         if (refreshEntityButtonShow) {
             refreshEntityButton = new RefreshButton(getRefreshButtonSelectionListener());
             add(refreshEntityButton);
+            add(new FillToolItem());
+        }
+      
+        if (filterButtonShow) {
+        	filterButton = new ToggleButton(MSGS.deviceTableToolbarCloseFilter(), new SelectionListener<ButtonEvent>() {
+
+				@Override
+				public void componentSelected(ButtonEvent ce) {
+					if (filterButton.isPressed()) {
+						filterPanel.show();
+						filterButton.setText(MSGS.deviceTableToolbarOpenFilter());
+					} else {
+						filterPanel.hide();
+						filterButton.setText(MSGS.deviceTableToolbarCloseFilter());
+    }
+
+				}
+			});
+        	filterButton.toggle(true);
+        	add(filterButton);
         }
     }
 
@@ -141,6 +168,10 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
 
     public void setEditButtonVisible(boolean show) {
         this.editEntityButtonShow = show;
+    }
+
+    public void setFilterButtonVisible(boolean show) {
+    	this.filterButtonShow = show;
     }
 
     //
@@ -251,6 +282,10 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
         if (refreshEntityButton != null) {
             refreshEntityButton.enable();
         }
+        
+        if (filterButton != null) {
+        	filterButton.enable();
+        }
     }
 
     public AddButton getAddEntityButton() {
@@ -267,5 +302,13 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
 
     public RefreshButton getRefreshEntityButton() {
         return refreshEntityButton;
+    }
+    
+    public ToggleButton getFilterButton() {
+    	return filterButton;
+    }
+    
+    public void setFilterPanel(EntityFilterPanel<M> filterPanel) {
+    	this.filterPanel = filterPanel;
     }
 }
