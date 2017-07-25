@@ -41,6 +41,7 @@ public class RolePermissionToolbar extends EntityCRUDToolbar<GwtRolePermission> 
         super.onRender(target, index);
         getDeleteEntityButton().setEnabled(false);
         checkAddButton();
+        filterButton.hide();
     }
 
     public void setSelectedRole(GwtRole selectedRole) {
