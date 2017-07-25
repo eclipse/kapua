@@ -15,27 +15,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import org.eclipse.kapua.app.console.commons.shared.model.Enum;
 import org.eclipse.kapua.app.console.commons.shared.model.KapuaBaseModel;
 
-public class GwtDomain extends KapuaBaseModel implements IsSerializable, Comparable<GwtDomain>,Enum {
-
-    private String domainName;
-
-    //        access_info, //
-    //        access_token, //
-    //        account, //
-    //        broker, //
-    //        credential, //
-    //        datastore, //
-    //        device, //
-    //        device_connection, //
-    //        device_event, //
-    //        device_lifecycle, //
-    //        device_management, //
-    //        domain, //
-    //        group, //
-    //        role, //
-    //        user, //
-    //
-    //        ALL; //
+public class GwtDomain extends KapuaBaseModel implements IsSerializable, Comparable<GwtDomain>, Enum {
 
     public GwtDomain(String domainName) {
         set("domainName", domainName);

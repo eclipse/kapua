@@ -11,9 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.shared.util;
 
-import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.commons.shared.util.KapuaGwtModelConverter;
-import org.eclipse.kapua.app.console.module.authorization.server.GwtDomainServiceImpl;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessInfo;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessPermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessRole;
@@ -23,7 +21,6 @@ import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtPermis
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtPermission.GwtAction;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRolePermission;
-import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtDomainService;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
@@ -33,8 +30,6 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
-
-import java.util.List;
 
 public class KapuaGwtAuthorizationModelConverter {
 
@@ -279,50 +274,7 @@ public class KapuaGwtAuthorizationModelConverter {
      * @since 1.0.0
      */
     public static GwtDomain convertDomain(String domainName) {
-
-//        if (new AccessInfoDomain().getName().equals(domain)) {
-//            gwtDomain = GwtDomain.access_info;
-//        } else if (new AccessTokenDomain().getName().equals(domain)) {
-//            gwtDomain = GwtDomain.access_token;
-//        } else if (new AccountDomain().getName().equals(domain)) {
-//            gwtDomain = GwtDomain.account;
-//        } else if (new BrokerDomain().getName().equals(domain)) {
-//            gwtDomain = GwtDomain.broker;
-//        } else if (new CredentialDomain().getName().equals(domain)) {
-//            gwtDomain = GwtDomain.credential;
-//        } else if (new DatastoreDomain().getName().equals(domain)) {
-//            gwtDomain = GwtDomain.datastore;
-//        } else if (new DeviceDomain().getName().equals(domain)) {
-//            gwtDomain = GwtDomain.device;
-//        } else if (new DeviceConnectionDomain().getName().equals(domain)) {
-//            gwtDomain = GwtDomain.device_connection;
-//        } else if (new DeviceEventDomain().getName().equals(domain)) {
-//            gwtDomain = GwtDomain.device_event;
-//        } else if (new DeviceLifecycleDomain().getName().equals(domain)) {
-//            gwtDomain = GwtDomain.device_lifecycle;
-//        } else if (new DeviceManagementDomain().getName().equals(domain)) {
-//            gwtDomain = GwtDomain.device_management;
-//        } else if (new DomainDomain().getName().equals(domain)) {
-//            gwtDomain = GwtDomain.domain;
-//        } else if (new GroupDomain().getName().equals(domain)) {
-//            gwtDomain = GwtDomain.group;
-//        } else if (new RoleDomain().getName().equals(domain)) {
-//            gwtDomain = GwtDomain.role;
-//        } else if (new UserDomain().getName().equals(domain)) {
-//            gwtDomain = GwtDomain.user;
-//        }
-
-        GwtDomainService service = new GwtDomainServiceImpl();
-        try {
-            List<GwtDomain> domains = service.findAll();
-            for (GwtDomain domain : domains) {
-                if (domain.getDomainName().equals(domainName)) {
-                    return domain;
-                }
-            }
-        } catch (GwtKapuaException ex) { }
-
-        return null;
+        return new GwtDomain(domainName);
     }
 
     /**

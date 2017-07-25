@@ -57,7 +57,7 @@ public class PermissionAddDialog extends EntityAddEditDialog {
     private final static GwtAccessInfoServiceAsync GWT_ACCESS_INFO_SERVICE = GWT.create(GwtAccessInfoService.class);
     private final static GwtGroupServiceAsync GWT_GROUP_SERVICE = GWT.create(GwtGroupService.class);
 
-    private SimpleComboBox<GwtDomain> domainsCombo;
+    private ComboBox<GwtDomain> domainsCombo;
     private SimpleComboBox<GwtAction> actionsCombo;
     private TextField<String> targetScopeIdTxtField;
     private ComboBox<GwtGroup> groupsCombo;
@@ -65,7 +65,7 @@ public class PermissionAddDialog extends EntityAddEditDialog {
     private CheckBox forwardableChecbox;
 
     private final GwtGroup allGroup;
-    private final GwtDomain allDomain = null;
+    private final GwtDomain allDomain = new GwtDomain("ALL");
     private final GwtAction allAction = GwtAction.ALL;
 
     private String accessInfoId;
@@ -100,7 +100,7 @@ public class PermissionAddDialog extends EntityAddEditDialog {
     public void submit() {
 
         GwtPermission newPermission = new GwtPermission(//
-                domainsCombo.getValue().getValue().getDomainName(), //
+                domainsCombo.getValue().getDomainName(), //
                 actionsCombo.getValue().getValue(), //
                 targetScopeIdTxtField.getValue(), //
                 groupsCombo.getValue().getId(), //
@@ -152,7 +152,8 @@ public class PermissionAddDialog extends EntityAddEditDialog {
 
         //
         // Domain
-        domainsCombo = new SimpleComboBox<GwtDomain>();
+        domainsCombo = new ComboBox<GwtDomain>();
+        domainsCombo.setStore(new ListStore<GwtDomain>());
         domainsCombo.setEditable(false);
         domainsCombo.setTypeAhead(false);
         domainsCombo.setAllowBlank(false);
@@ -160,6 +161,7 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         domainsCombo.setFieldLabel(MSGS.dialogAddPermissionDomain());
         domainsCombo.setTriggerAction(TriggerAction.ALL);
         domainsCombo.setEmptyText(MSGS.dialogAddPermissionLoading());
+        domainsCombo.setDisplayField("domainName");
         GWT_DOMAIN_SERVICE.findAll(new AsyncCallback<List<GwtDomain>>() {
 
             @Override
@@ -171,18 +173,18 @@ public class PermissionAddDialog extends EntityAddEditDialog {
 
             @Override
             public void onSuccess(List<GwtDomain> result) {
-                domainsCombo.add(allDomain);
-                domainsCombo.add(result);
-                domainsCombo.setSimpleValue(allDomain);
+                domainsCombo.getStore().add(allDomain);
+                domainsCombo.getStore().add(result);
+                domainsCombo.setValue(allDomain);
                 domainsCombo.enable();
             }
         });
 
-        domainsCombo.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<GwtDomain>>() {
+        domainsCombo.addSelectionChangedListener(new SelectionChangedListener<GwtDomain>() {
 
             @Override
-            public void selectionChanged(SelectionChangedEvent<SimpleComboValue<GwtDomain>> se) {
-                GWT_DOMAIN_SERVICE.findActionsByDomainName(se.getSelectedItem().getValue().toString(), new AsyncCallback<List<GwtAction>>() {
+            public void selectionChanged(SelectionChangedEvent<GwtDomain> se) {
+                GWT_DOMAIN_SERVICE.findActionsByDomainName(se.getSelectedItem().getDomainName(), new AsyncCallback<List<GwtAction>>() {
 
                     @Override
                     public void onFailure(Throwable caught) {

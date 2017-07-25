@@ -50,16 +50,16 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
     private final static GwtDomainServiceAsync DOMAIN_SERVICE = GWT.create(GwtDomainService.class);
     private final static GwtGroupServiceAsync GROUP_SERVICE = GWT.create(GwtGroupService.class);
 
-    protected EnumComboBox<GwtDomain> domainCombo;
-    protected EnumComboBox<GwtAction> actionCombo;
-    protected ComboBox<GwtGroup> groupCombo;
-    protected CheckBoxGroup forwardableChecboxGroup;
-    protected CheckBox forwardableChecbox;
+    private ComboBox<GwtDomain> domainCombo;
+    private EnumComboBox<GwtAction> actionCombo;
+    private ComboBox<GwtGroup> groupCombo;
+    private CheckBoxGroup forwardableChecboxGroup;
+    private CheckBox forwardableChecbox;
 
-    protected GwtRole selectedRole;
+    private GwtRole selectedRole;
 
     private final GwtGroup allGroup;
-    private final GwtDomain allDomain = null;
+    private final GwtDomain allDomain = new GwtDomain("ALL");
     private final GwtAction allAction = GwtAction.ALL;
 
     public RolePermissionAddDialog(GwtSession currentSession) {
@@ -86,9 +86,9 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
             @Override
             public void onSuccess(List<GwtDomain> domainslist) {
                 domainCombo.getStore().removeAll();
-                domainCombo.add(allDomain);
-                domainCombo.add(domainslist);
-                domainCombo.setSimpleValue(allDomain);
+                domainCombo.getStore().add(allDomain);
+                domainCombo.getStore().add(domainslist);
+                domainCombo.setValue(allDomain);
                 refreshActions();
             }
 
@@ -97,7 +97,8 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
                 FailureHandler.handle(t);
             }
         });
-        domainCombo = new EnumComboBox<GwtDomain>();
+        domainCombo = new ComboBox<GwtDomain>();
+        domainCombo.setStore(new ListStore<GwtDomain>());
         domainCombo.setFieldLabel(MSGS.permissionAddDialogDomain());
         domainCombo.setForceSelection(true);
         domainCombo.setTypeAhead(false);
@@ -163,7 +164,7 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
     }
 
     private void refreshActions() {
-        DOMAIN_SERVICE.findActionsByDomainName(domainCombo.getValue().getValue().toString(), new AsyncCallback<List<GwtAction>>() {
+        DOMAIN_SERVICE.findActionsByDomainName(domainCombo.getValue().getDomainName(), new AsyncCallback<List<GwtAction>>() {
 
             @Override
             public void onSuccess(List<GwtAction> actionslist) {
@@ -183,7 +184,7 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
     @Override
     public void submit() {
         GwtPermission permission = new GwtPermission();
-        permission.setDomain(domainCombo.getValue().getValue().toString());
+        permission.setDomain(domainCombo.getValue().getDomainName());
         permission.setAction(actionCombo.getValue().getValue().toString());
         permission.setGroupId(groupCombo.getValue().getId());
         permission.setTargetScopeId(currentSession.getSelectedAccountId());
