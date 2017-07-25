@@ -44,4 +44,9 @@ public class TagViewDescriptor extends AbstractViewDescriptor implements EntityV
     public EntityView<GwtTag> getViewInstance(GwtSession currentSession) {
         return new TagView(currentSession);
     }
+
+    @Override
+    public Boolean isEnabled(GwtSession currentSession) {
+        return currentSession.hasTagReadPermission();
+    }
 }

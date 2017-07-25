@@ -43,5 +43,8 @@ public class AboutViewDescriptor extends AbstractViewDescriptor {
         return new AboutView();
     }
 
-
+    @Override
+    public Boolean isEnabled(GwtSession currentSession) {
+        return true;
+    }
 }

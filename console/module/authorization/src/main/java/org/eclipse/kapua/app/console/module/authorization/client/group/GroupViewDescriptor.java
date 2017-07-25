@@ -44,4 +44,9 @@ public class GroupViewDescriptor extends AbstractViewDescriptor implements Entit
     public EntityView<GwtGroup> getViewInstance(GwtSession currentSession) {
         return new GroupView(currentSession);
     }
+
+    @Override
+    public Boolean isEnabled(GwtSession currentSession) {
+        return currentSession.hasGroupReadPermission();
+    }
 }

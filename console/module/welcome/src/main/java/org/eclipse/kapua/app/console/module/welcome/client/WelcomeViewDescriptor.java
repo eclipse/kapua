@@ -43,4 +43,9 @@ public class WelcomeViewDescriptor extends AbstractViewDescriptor {
     public View getViewInstance(GwtSession currentSession) {
         return new WelcomeView(currentSession);
     }
+
+    @Override
+    public Boolean isEnabled(GwtSession currentSession) {
+        return true;
+    }
 }

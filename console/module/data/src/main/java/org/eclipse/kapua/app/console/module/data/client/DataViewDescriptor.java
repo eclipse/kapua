@@ -42,4 +42,9 @@ public class DataViewDescriptor extends AbstractViewDescriptor {
     public View getViewInstance(GwtSession currentSession) {
         return new DataView(currentSession);
     }
+
+    @Override
+    public Boolean isEnabled(GwtSession currentSession) {
+        return currentSession.hasDataReadPermission();
+    }
 }

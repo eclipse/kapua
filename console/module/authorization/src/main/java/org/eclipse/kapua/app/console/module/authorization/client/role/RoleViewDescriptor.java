@@ -44,4 +44,9 @@ public class RoleViewDescriptor extends AbstractViewDescriptor implements Entity
     public EntityView<GwtRole> getViewInstance(GwtSession currentSession) {
         return new RoleView(currentSession);
     }
+
+    @Override
+    public Boolean isEnabled(GwtSession currentSession) {
+        return currentSession.hasRoleReadPermission();
+    }
 }

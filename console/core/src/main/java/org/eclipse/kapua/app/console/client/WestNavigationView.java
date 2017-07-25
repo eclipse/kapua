@@ -298,25 +298,27 @@ public class WestNavigationView extends LayoutContainer {
 
         if (additionalViewDescriptors != null && additionalViewDescriptors.size() > 0) {
             for (ViewDescriptor entityView : additionalViewDescriptors) {
-                cloudResourcesTreeStore.add(newItem(entityView.getViewId(), entityView.getName(), entityView.getIcon()), false);
+                if (entityView.isEnabled(currentSession)) {
+                    cloudResourcesTreeStore.add(newItem(entityView.getViewId(), entityView.getName(), entityView.getIcon()), false);
+                }
             }
         }
 
         if (selectedAccountItem != null) {
-            String searchFor = (String) selectedAccountItem.get("id");
+            String searchFor = selectedAccountItem.get("id");
 
             for (int i = 0; i < cloudResourcesTreeStore.getAllItems().size(); i++) {
-                String compareTo = (String) cloudResourcesTreeStore.getChild(i).get("id");
+                String compareTo = cloudResourcesTreeStore.getChild(i).get("id");
                 if (searchFor.compareTo(compareTo) == 0) {
                     cloudResourcesTreeGrid.getSelectionModel().select(i, false);
                     break;
                 }
             }
         } else if (selectedManageItem != null) {
-            String searchFor = (String) selectedManageItem.get("id");
+            String searchFor = selectedManageItem.get("id");
 
             for (int i = 0; i < accountManagementTreeStore.getAllItems().size(); i++) {
-                String compareTo = (String) accountManagementTreeStore.getChild(i).get("id");
+                String compareTo = accountManagementTreeStore.getChild(i).get("id");
                 if (searchFor.compareTo(compareTo) == 0) {
                     accountManagementTreeGrid.getSelectionModel().select(i, false);
                     break;

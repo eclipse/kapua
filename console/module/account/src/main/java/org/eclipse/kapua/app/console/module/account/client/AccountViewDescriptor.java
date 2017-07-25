@@ -43,4 +43,9 @@ public class AccountViewDescriptor extends AbstractEntityViewDescriptor<GwtAccou
     public EntityView<GwtAccount> getViewInstance(GwtSession currentSession) {
         return new AccountView(currentSession);
     }
+
+    @Override
+    public Boolean isEnabled(GwtSession currentSession) {
+        return currentSession.hasAccountReadPermission();
+    }
 }

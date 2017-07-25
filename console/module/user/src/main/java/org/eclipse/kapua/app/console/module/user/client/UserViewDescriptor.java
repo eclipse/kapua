@@ -44,4 +44,9 @@ public class UserViewDescriptor extends AbstractViewDescriptor implements Entity
     public String getName() {
         return UserView.getName();
     }
+
+    @Override
+    public Boolean isEnabled(GwtSession currentSession) {
+        return currentSession.hasUserReadPermission();
+    }
 }

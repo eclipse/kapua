@@ -42,4 +42,9 @@ public class DevicesViewDescriptor extends AbstractViewDescriptor {
     public View getViewInstance(GwtSession currentSession) {
         return new DevicesView(currentSession);
     }
+
+    @Override
+    public Boolean isEnabled(GwtSession currentSession) {
+        return currentSession.hasDeviceReadPermission();
+    }
 }

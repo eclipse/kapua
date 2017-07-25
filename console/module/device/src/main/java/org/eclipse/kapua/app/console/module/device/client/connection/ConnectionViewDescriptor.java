@@ -44,4 +44,9 @@ public class ConnectionViewDescriptor extends AbstractViewDescriptor implements 
     public EntityView<GwtDeviceConnection> getViewInstance(GwtSession currentSession) {
         return new ConnectionView(currentSession);
     }
+
+    @Override
+    public Boolean isEnabled(GwtSession currentSession) {
+        return currentSession.hasConnectionReadPermission();
+    }
 }

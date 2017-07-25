@@ -26,6 +26,5 @@ public interface ViewDescriptor extends IsSerializable, Comparable<ViewDescripto
 
     View getViewInstance(GwtSession currentSession);
 
-    // TODO
-    // Boolean isEnabled();
+    Boolean isEnabled(GwtSession currentSession);
 }

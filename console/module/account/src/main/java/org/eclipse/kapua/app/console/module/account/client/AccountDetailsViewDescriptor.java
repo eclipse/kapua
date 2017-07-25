@@ -42,4 +42,9 @@ public class AccountDetailsViewDescriptor extends AbstractViewDescriptor {
     public View getViewInstance(GwtSession currentSession) {
         return new AccountDetailsView(currentSession);
     }
+
+    @Override
+    public Boolean isEnabled(GwtSession currentSession) {
+        return currentSession.hasAccountReadPermission();
+    }
 }
