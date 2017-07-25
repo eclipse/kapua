@@ -93,6 +93,7 @@ public class AccountConfigComponents extends LayoutContainer {
     private ContentPanel configPanel;
     private AccountConfigPanel devConfPanel;
     private BorderLayoutData centerData;
+    private AccountDetailsView accountDetailsView;
 
     @SuppressWarnings("rawtypes")
     private BaseTreeLoader loader;
@@ -118,9 +119,10 @@ public class AccountConfigComponents extends LayoutContainer {
     };
 
     AccountConfigComponents(GwtSession currentSession,
-            AccountTabConfiguration tabConfig) {
+            AccountTabConfiguration tabConfig, AccountDetailsView accountDetailsView) {
         this.currentSession = currentSession;
         this.tabConfig = tabConfig;
+        this.accountDetailsView = accountDetailsView;
         dirty = false;
         initialized = false;
     }
@@ -282,7 +284,7 @@ public class AccountConfigComponents extends LayoutContainer {
 
                 final GwtConfigComponent componentToSwitchTo = (GwtConfigComponent) se.getModel();
                 if (devConfPanel != null && devConfPanel.isDirty()) {
-
+                	accountDetailsView.updateAccountInfo();
                     // cancel the event first
                     be.setCancelled(true);
 
@@ -310,7 +312,9 @@ public class AccountConfigComponents extends LayoutContainer {
                                 }
                             });
                 } else {
+                	
                     refreshConfigPanel(componentToSwitchTo);
+                    accountDetailsView.updateAccountInfo();
 
                     // this is needed to select the item in the Tree
                     // Temporarly disable the firing of the selection events
