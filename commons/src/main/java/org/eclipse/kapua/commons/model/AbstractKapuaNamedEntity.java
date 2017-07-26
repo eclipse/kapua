@@ -32,7 +32,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 public abstract class AbstractKapuaNamedEntity extends AbstractKapuaUpdatableEntity implements KapuaNamedEntity {
 
     @Basic
-    @Column(name = "name")
+    @Column(name = "name", nullable = false, updatable = true)
     protected String name;
 
     /**
