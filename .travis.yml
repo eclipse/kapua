@@ -4,6 +4,7 @@ jdk:
   - oraclejdk8
 
 sudo: false
+dist: trusty
 
 # The cache is stored per-branch
 
@@ -25,6 +26,7 @@ install:
 before_script:
   - export M2_HOME=$PWD/maven
   - export PATH=${M2_HOME}/bin:${PATH}
+  - export MAVEN_OPTS=-Xmx256m
   - hash -r
 
 jobs:
