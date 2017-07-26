@@ -9,10 +9,13 @@
  * Contributors:
  *     Red Hat Inc - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.client.gateway;
+package org.eclipse.kapua.client.gateway.util;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
+
+import org.eclipse.kapua.client.gateway.ErrorHandler;
+import org.eclipse.kapua.client.gateway.Payload;
 
 public final class Errors {
 

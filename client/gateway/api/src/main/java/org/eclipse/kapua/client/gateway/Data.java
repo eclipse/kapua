@@ -13,6 +13,8 @@ package org.eclipse.kapua.client.gateway;
 
 import java.util.concurrent.CompletionStage;
 
+import org.eclipse.kapua.client.gateway.util.Errors;
+
 /**
  * An interface for control data
  * <p>

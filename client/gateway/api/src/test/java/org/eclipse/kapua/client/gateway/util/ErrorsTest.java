@@ -9,11 +9,11 @@
  * Contributors:
  *     Red Hat Inc - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.client.gateway;
+package org.eclipse.kapua.client.gateway.util;
 
 import java.util.Optional;
 
-import org.eclipse.kapua.client.gateway.Errors;
+import org.eclipse.kapua.client.gateway.util.Errors;
 import org.junit.Test;
 
 public class ErrorsTest {
