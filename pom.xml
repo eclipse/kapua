@@ -132,7 +132,7 @@
                     <version>${maven-release-plugin.version}</version>
                     <configuration>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
-                        <releaseProfiles>javadoc,deploy,release,-console</releaseProfiles>
+                        <releaseProfiles>javadoc,deploy,release,!console</releaseProfiles>
                         <goals>deploy</goals>
                         <tagNameFormat>@{project.version}</tagNameFormat>
                     </configuration>
@@ -951,9 +951,6 @@
         <!-- Profile used to exclude console module on release process -->
         <profile>
             <id>console</id>
-             <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <modules>
                 <module>console</module>
             </modules>
