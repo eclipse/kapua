@@ -41,9 +41,6 @@
         <!-- Profile used to exclude console module on release process -->
         <profile>
             <id>console</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <modules>
                 <module>console</module>
             </modules>
