@@ -32,7 +32,7 @@ public class GroupViewDescriptor extends AbstractViewDescriptor implements Entit
 
     @Override
     public Integer getOrder() {
-        return 900;
+        return 500;
     }
 
     @Override

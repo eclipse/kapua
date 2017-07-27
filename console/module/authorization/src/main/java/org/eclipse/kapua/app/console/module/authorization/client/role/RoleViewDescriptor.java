@@ -32,7 +32,7 @@ public class RoleViewDescriptor extends AbstractViewDescriptor implements Entity
 
     @Override
     public Integer getOrder() {
-        return 700;
+        return 800;
     }
 
     @Override

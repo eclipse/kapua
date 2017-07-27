@@ -31,7 +31,7 @@ public class AccountViewDescriptor extends AbstractEntityViewDescriptor<GwtAccou
 
     @Override
     public Integer getOrder() {
-        return 1100;
+        return 900;
     }
 
     @Override

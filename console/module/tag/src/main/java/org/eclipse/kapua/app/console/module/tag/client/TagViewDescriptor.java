@@ -32,7 +32,7 @@ public class TagViewDescriptor extends AbstractViewDescriptor implements EntityV
 
     @Override
     public Integer getOrder() {
-        return 500;
+        return 600;
     }
 
     @Override
