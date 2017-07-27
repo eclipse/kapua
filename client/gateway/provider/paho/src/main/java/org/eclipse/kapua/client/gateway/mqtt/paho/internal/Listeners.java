@@ -21,7 +21,7 @@ public final class Listeners {
     private Listeners() {
     }
 
-    public static <T> IMqttActionListener toListener(final CompletableFuture<?> token) {
+    public static IMqttActionListener toListener(final CompletableFuture<?> token) {
         return new IMqttActionListener() {
 
             @Override
