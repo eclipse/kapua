@@ -82,7 +82,10 @@ public abstract class AbstractApplication implements Application {
     protected abstract CompletionStage<?> publish(Topic topic, Payload payload);
 
     public CompletionStage<?> subscribe(Topic topic, MessageHandler handler, ErrorHandler<? extends Throwable> errorHandler) throws Exception {
-        recordSubscription(topic);
+        synchronized (this) {
+            checkClosed();
+            recordSubscription(topic);
+        }
         return internalSubscribe(topic, handler, errorHandler);
     }
 
