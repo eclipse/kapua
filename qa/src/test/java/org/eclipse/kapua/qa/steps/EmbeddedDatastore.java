@@ -21,6 +21,8 @@ import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.runtime.java.guice.ScenarioScoped;
 
+import static java.time.Duration.ofSeconds;
+
 /**
  * Singleton for managing datastore creation and deletion inside Gherkin scenarios.
  */
@@ -29,18 +31,34 @@ public class EmbeddedDatastore {
 
     private static final Logger logger = LoggerFactory.getLogger(EmbeddedDatastore.class);
 
+    private static final int EXTRA_STARTUP_DELAY = Integer.getInteger("org.eclipse.kapua.qa.datastore.extraStartupDelay", 0);
+
     private EsEmbeddedEngine esEmbeddedEngine;
 
     @Before(order = HookPriorities.DATASTORE)
     public void setup() {
         logger.info("starting embedded datastore");
         esEmbeddedEngine = new EsEmbeddedEngine();
+        if (EXTRA_STARTUP_DELAY > 0) {
+            try {
+                Thread.sleep(ofSeconds(EXTRA_STARTUP_DELAY).toMillis());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         logger.info("starting embedded datastore DONE");
     }
 
     @After(order = HookPriorities.DATASTORE)
     public void closeNode() throws IOException {
         logger.info("closing embedded datastore");
+        if (EXTRA_STARTUP_DELAY > 0) {
+            try {
+                Thread.sleep(ofSeconds(EXTRA_STARTUP_DELAY).toMillis());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         esEmbeddedEngine.close();
         logger.info("closing embedded datastore DONE");
     }

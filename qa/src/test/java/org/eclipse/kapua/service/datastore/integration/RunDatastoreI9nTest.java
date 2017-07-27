@@ -29,5 +29,6 @@ import org.junit.runner.RunWith;
                 "json:target/DatastoreI9n_cucumber.json" },
         monochrome = true)
 @CucumberProperty(key="datastore.client.class", value="org.eclipse.kapua.service.datastore.client.transport.TransportDatastoreClient")
+@CucumberProperty(key="org.eclipse.kapua.qa.datastore.extraStartupDelay", value="5")
 public class RunDatastoreI9nTest {
 }

@@ -163,9 +163,6 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
 
         // JAXB Context
         XmlUtil.setContextProvider(new DatastoreJAXBContextProvider());
-
-        // Precautions if index exists form previous tests.
-        deleteAllIndices();
     }
 
     @After
@@ -178,6 +175,12 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         } catch (Exception e) {
             logger.error("Failed to log out in @After", e);
         }
+    }
+
+    @Given("^All indices are deleted$")
+    public void deleteIndices() throws Exception {
+
+        deleteAllIndices();
     }
 
     @Given("^Account for \"(.*)\"$")
