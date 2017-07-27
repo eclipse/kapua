@@ -38,6 +38,7 @@ import org.eclipse.kapua.client.gateway.mqtt.MqttNamespace;
 import org.eclipse.kapua.client.gateway.mqtt.paho.internal.Listeners;
 import org.eclipse.kapua.client.gateway.utils.Buffers;
 import org.eclipse.kapua.client.gateway.Module;
+import org.eclipse.kapua.client.gateway.TransmissionException;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -253,11 +254,37 @@ public class PahoClient extends MqttClient {
 
         final CompletableFuture<?> future = new CompletableFuture<>();
         try {
-            client.publish(topic, toByteArray(payload), 1, false, null, toListener(future));
+            client.publish(topic, toByteArray(payload), 1, false, null,
+                    toListener(
+                            () -> future.complete(null),
+                            error -> handlePublishError(future, error)));
         } catch (MqttException e) {
             future.completeExceptionally(e);
         }
         return future;
+    }
+
+    private void handlePublishError(final CompletableFuture<?> future, final Throwable error) {
+        if (!(error instanceof MqttException)) {
+            // unknown exception type, simply forward
+            future.completeExceptionally(error);
+            return;
+        }
+
+        // check for error code
+
+        final MqttException e = (MqttException) error;
+        switch (e.getReasonCode()) {
+        case MqttException.REASON_CODE_CLIENT_EXCEPTION: //$FALL-THROUGH$
+        case MqttException.REASON_CODE_UNEXPECTED_ERROR:
+            // consider this non-temporary
+            future.completeExceptionally(error);
+            return;
+        default:
+            // conisider this temporary and recoverable
+            future.completeExceptionally(new TransmissionException(error));
+            return;
+        }
     }
 
     @Override
