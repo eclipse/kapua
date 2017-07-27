@@ -84,7 +84,9 @@ public final class KuraProfileExample {
 
                     // send
 
-                    sender.send(Payload.of("counter", i));
+                    sender.send(Payload.of("counter", i)).whenComplete((value, error) -> {
+                        System.out.format("Send complete - value: %s, error: %s%n", value, error);
+                    });
 
                     Thread.sleep(1_000);
                 }
