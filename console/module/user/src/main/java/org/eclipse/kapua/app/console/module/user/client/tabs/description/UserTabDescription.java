@@ -18,6 +18,7 @@ import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserService;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserServiceAsync;
@@ -40,6 +41,12 @@ public class UserTabDescription extends EntityDescriptionTabItem<GwtUser> {
 
             }
         };
+    }
+    
+    @Override
+    protected void onRender(Element parent, int index) {
+    	super.onRender(parent, index);
+    	setBorders(false);
     }
 
 }
