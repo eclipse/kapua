@@ -21,6 +21,9 @@ Feature: Tag Service
         | boolean | infiniteChildEntities      | true  |
         | integer | maxNumberChildEntities     | 5     |
 
+  @StartBroker
+  Scenario: Start broker for all scenarios
+
   Scenario: Creating tag
     Create a tag entry, with specified name. Name is only tag specific attribute.
     Once created search for it and is should been created.
@@ -29,3 +32,6 @@ Feature: Tag Service
     When Tag with name "tagName" is searched
     Then Tag with name "tagName" is found
       And I logout
+
+  @StopBroker
+  Scenario: Stop broker after all scenarios

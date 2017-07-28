@@ -14,7 +14,16 @@ Feature: Device Broker Integration
   Each Scenario starts with BIRTH of device and then the communication over MQTT
   between device and Kapua.
 
-  Scenario: Send BIRTH message and then DC message. Effectively this is connect and disconnect of Kura device.
+  @StartBroker
+  Scenario: Start broker for all scenarios
+
+  @StartDatastore
+  Scenario: Start datastore for all scenarios
+
+  Scenario: Send BIRTH message and then DC message
+    Effectively this is connect and disconnect of Kura device.
+    Basic birth - death scenario.
+
     When I start the Kura Mock
     And Device birth message is sent
     And I wait 5 seconds for system to receive and process that message
@@ -29,3 +38,10 @@ Feature: Device Broker Integration
     Then Exit code 0 is received
     And I logout
     And Device death message is sent
+
+  @StopBroker
+  Scenario: Stop broker after all scenarios
+
+  @StopDatastore
+  Scenario: Stop datastore after all scenarios
+

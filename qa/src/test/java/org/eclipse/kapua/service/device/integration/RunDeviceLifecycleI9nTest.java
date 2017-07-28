@@ -7,26 +7,26 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Eurotech - initial API and implementation
+ *     Eurotech
  *     Red Hat Inc
  *******************************************************************************/
-package org.eclipse.kapua.service.user.integration;
-
-import org.junit.runner.RunWith;
+package org.eclipse.kapua.service.device.integration;
 
 import cucumber.api.CucumberOptions;
 import cucumber.api.junit.Cucumber;
+import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-        features = "classpath:features/user/UserServiceI9n.feature",
+        features = {"classpath:features/broker/DeviceLifecycle.feature"},
         glue = {"org.eclipse.kapua.qa.steps",
-                "org.eclipse.kapua.service.user.steps"
+                "org.eclipse.kapua.service.user.steps",
+                "org.eclipse.kapua.service.device.steps"
                },
         plugin = {"pretty", 
-                  "html:target/cucumber/UserServiceI9n",
-                  "json:target/UserServiceI9n_cucumber.json"
+                  "html:target/cucumber/DeviceLifecycleI9n",
+                  "json:target/DeviceLifecycleI9n_cucumber.json"
                  },
-        monochrome=true)
+        monochrome = true )
 
-public class RunUserServiceI9nTest {}
+public class RunDeviceLifecycleI9nTest {}

@@ -13,6 +13,12 @@
 
 Feature: Datastore tests
 
+  @StartBroker
+  Scenario: Start broker for all scenarios
+
+  @StartDatastore
+  Scenario: Start datastore for all scenarios
+
   Scenario: Query before schema search
     Before schema is created methods that search with find for messages, channel info,
     metric info and client info, should return null values.
@@ -324,3 +330,9 @@ Feature: Datastore tests
     And Client "test-client-2" first published on a channel in the list "ChannelList" on "03/07/2017T09:00:00"
     And Client "test-client-2" last published on a channel in the list "ChannelList" on "03/07/2017T09:00:20"
     And All indices are deleted
+
+  @StopBroker
+  Scenario: Stop broker after all scenarios
+
+  @StopDatastore
+  Scenario: Stop datastore after all scenarios
