@@ -15,4 +15,4 @@ org.eclipse.kapua.app.console.module.authorization.client.role.RoleTabPermission
 
 org.eclipse.kapua.app.console.module.authorization.client.group.GroupTabDescriptionDescriptor->org.eclipse.kapua.app.console.module.authorization.client.group.GroupView
 
-org.eclipse.kapua.app.console.module.authorization.client.group.GroupTabDescriptionDescriptor->org.eclipse.kapua.app.console.module.authorization.client.group.GroupView
+org.eclipse.kapua.app.console.module.tag.client.TagTabDescriptionDescriptor->org.eclipse.kapua.app.console.module.tag.client.TagView
