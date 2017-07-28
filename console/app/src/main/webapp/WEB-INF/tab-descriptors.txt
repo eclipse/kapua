@@ -12,3 +12,7 @@ org.eclipse.kapua.app.console.module.device.client.connection.ConnectionDescript
 org.eclipse.kapua.app.console.module.user.client.tabs.roles.UsersRoleTabItemDescriptor->org.eclipse.kapua.app.console.module.authorization.client.role.RoleView
 org.eclipse.kapua.app.console.module.authorization.client.role.RoleTabDescriptionDescriptor->org.eclipse.kapua.app.console.module.authorization.client.role.RoleView
 org.eclipse.kapua.app.console.module.authorization.client.role.RoleTabPermissionGridDescriptor->org.eclipse.kapua.app.console.module.authorization.client.role.RoleView
+
+org.eclipse.kapua.app.console.module.authorization.client.group.GroupTabDescriptionDescriptor->org.eclipse.kapua.app.console.module.authorization.client.group.GroupView
+
+org.eclipse.kapua.app.console.module.authorization.client.group.GroupTabDescriptionDescriptor->org.eclipse.kapua.app.console.module.authorization.client.group.GroupView
