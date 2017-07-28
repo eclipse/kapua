@@ -27,11 +27,12 @@ public class AccountTabConfiguration extends KapuaTabItem<GwtAccount> {
 
     private AccountConfigComponents configComponents;
     private AccountDetailsView accountDetailsView;
+    private AccountDetailsTabDescription accountDetailsTabDescription;
 
     public AccountTabConfiguration(GwtSession currentSession, AccountDetailsView accoountDetailsView) {
         super("Settings", new KapuaIcon(IconSet.COG));
         this.accountDetailsView = accoountDetailsView;
-        configComponents = new AccountConfigComponents(currentSession, this, accountDetailsView);
+        configComponents = new AccountConfigComponents(currentSession, this);
         setBorders(false);
         setLayout(new FitLayout());
         addListener(Events.Select, new Listener<ComponentEvent>() {
@@ -61,6 +62,12 @@ public class AccountTabConfiguration extends KapuaTabItem<GwtAccount> {
         setLayout(new FitLayout());
 
         add(configComponents);
+    }
+    
+    public void setDescriptionTab(AccountDetailsTabDescription accountDetailsTabDescription) {
+    	this.accountDetailsTabDescription = accountDetailsTabDescription;
+         configComponents.setDescriptionTab(accountDetailsTabDescription);
+
     }
    
 }

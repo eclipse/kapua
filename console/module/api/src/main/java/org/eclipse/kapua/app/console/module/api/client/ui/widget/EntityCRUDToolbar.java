@@ -60,7 +60,7 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
 
     protected RefreshButton refreshEntityButton;
     private boolean refreshEntityButtonShow = true;
-
+    
     protected ToggleButton filterButton;
     private boolean filterButtonShow=true;
     
@@ -105,12 +105,12 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
 				public void componentSelected(ButtonEvent ce) {
 					if (filterButton.isPressed()) {
 						filterPanel.show();
-						filterButton.setText(MSGS.deviceTableToolbarOpenFilter());
+						filterButton.setText(MSGS.deviceTableToolbarCloseFilter());
 					} else {
 						filterPanel.hide();
-						filterButton.setText(MSGS.deviceTableToolbarCloseFilter());
-    }
-
+						filterButton.setText(MSGS.deviceTableToolbarOpenFilter());
+					}
+					
 				}
 			});
         	filterButton.toggle(true);
@@ -169,7 +169,7 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
     public void setEditButtonVisible(boolean show) {
         this.editEntityButtonShow = show;
     }
-
+    
     public void setFilterButtonVisible(boolean show) {
     	this.filterButtonShow = show;
     }
