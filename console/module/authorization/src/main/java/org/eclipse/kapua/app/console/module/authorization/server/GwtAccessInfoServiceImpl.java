@@ -131,38 +131,4 @@ public class GwtAccessInfoServiceImpl extends KapuaRemoteServiceServlet implemen
         return gwtAccessInfo;
     }
 
-//    @Override
-//    public PagingLoadResult<GwtUser> query(PagingLoadConfig pagingLoadConfig,
-//            GwtAccessRoleQuery query) throws GwtKapuaException {
-//        int totalLength = 0;
-//        List<GwtUser> list = new ArrayList<GwtUser>();
-//        try {
-//            KapuaLocator locator = KapuaLocator.getInstance();
-//            UserService userService = locator.getService(UserService.class);
-//            AccessRoleService accessRoleService = locator.getService(AccessRoleService.class);
-//            AccessRoleQuery accessRoleQuery = GwtKapuaAuthorizationModelConverter
-//                    .convertAccessRoleQuery(pagingLoadConfig, query);
-//            AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
-//            AccessRoleListResult accessRoleList = accessRoleService.query(accessRoleQuery);
-//            if (!accessRoleList.isEmpty()) {
-//                if (accessRoleList.getSize() >= pagingLoadConfig.getLimit()) {
-//                    totalLength = Long.valueOf(accessRoleService.count(accessRoleQuery)).intValue();
-//
-//                } else {
-//                    totalLength = accessRoleList.getSize();
-//                }
-//
-//                for (AccessRole a : accessRoleList.getItems()) {
-//                    AccessInfo accessInfo = accessInfoService.find(KapuaEid.parseCompactId(query.getScopeId()), a.getAccessInfoId());
-//                    User user = userService.find(KapuaEid.parseCompactId(query.getScopeId()), accessInfo.getUserId());
-//                    GwtUser gwtUser = KapuaGwtAuthorizationModelConverter.convertRoleCreator(user);
-//                    gwtUser.set("type", "USER");
-//                    list.add(gwtUser);
-//                }
-//            }
-//        } catch (Exception e) {
-//            KapuaExceptionHandler.handle(e);
-//        }
-//        return new BasePagingLoadResult<GwtUser>(list, pagingLoadConfig.getOffset(), totalLength);
-//    }
 }

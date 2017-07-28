@@ -11,6 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.commons.client.views;
 
-public abstract class AbstractTabDescriptor extends AbstractViewDescriptor implements TabDescriptor {
+import org.eclipse.kapua.app.console.commons.client.ui.tab.KapuaTabItem;
+import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtEntityModel;
+
+public abstract class AbstractTabDescriptor<M extends GwtEntityModel, T extends KapuaTabItem<M>, V extends AbstractEntityView<M>> extends AbstractViewDescriptor implements TabDescriptor<M, T, V> {
 
 }

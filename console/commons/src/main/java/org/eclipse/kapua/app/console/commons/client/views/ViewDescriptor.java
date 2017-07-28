@@ -16,13 +16,11 @@ import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 
 public interface ViewDescriptor extends IsSerializable, Comparable<ViewDescriptor> {
-    String getViewId();
 
-    IconSet getIcon();
+    String getViewId();
 
     Integer getOrder();
 
-    String getName();
-
     Boolean isEnabled(GwtSession currentSession);
+
 }

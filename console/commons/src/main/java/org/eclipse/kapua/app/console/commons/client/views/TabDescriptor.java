@@ -16,8 +16,8 @@ import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 
-public interface TabDescriptor extends ViewDescriptor {
+public interface TabDescriptor<M extends GwtEntityModel, T extends KapuaTabItem<M>, V extends AbstractEntityView<M>> extends ViewDescriptor {
 
-    <M extends GwtEntityModel> KapuaTabItem<M> getTabViewInstance(AbstractEntityView<M> view, GwtSession currentSession);
+    T getTabViewInstance(V view, GwtSession currentSession);
 
 }

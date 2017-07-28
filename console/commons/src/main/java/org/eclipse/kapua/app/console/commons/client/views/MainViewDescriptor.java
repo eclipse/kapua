@@ -11,9 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.commons.client.views;
 
+import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 
 public interface MainViewDescriptor extends ViewDescriptor {
+
+    String getName();
+
+    IconSet getIcon();
 
     View getViewInstance(GwtSession currentSession);
 

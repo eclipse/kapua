@@ -11,18 +11,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.user.server;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import com.extjs.gxt.ui.client.data.BaseListLoadResult;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.commons.server.KapuaConfigurableRemoteServiceServlet;
 import org.eclipse.kapua.app.console.commons.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaModelConverter;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessRoleQuery;
+import org.eclipse.kapua.app.console.module.authorization.shared.util.GwtKapuaAuthorizationModelConverter;
 import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
 import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUserCreator;
 import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUserQuery;
@@ -46,6 +47,7 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult
 import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
 import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
+import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 import org.eclipse.kapua.service.authorization.access.AccessRoleService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
@@ -54,11 +56,11 @@ import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
 
-import com.extjs.gxt.ui.client.data.BaseListLoadResult;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * The server side implementation of the RPC service.
@@ -353,4 +355,39 @@ public class GwtUserServiceImpl extends KapuaConfigurableRemoteServiceServlet<Us
 
         return new BaseListLoadResult<GwtGroupedNVPair>(gwtUserDescription);
     }
+
+        @Override
+        public PagingLoadResult<GwtUser> getUsersForRole(PagingLoadConfig pagingLoadConfig,
+                GwtAccessRoleQuery query) throws GwtKapuaException {
+            int totalLength = 0;
+            List<GwtUser> list = new ArrayList<GwtUser>();
+            try {
+                KapuaLocator locator = KapuaLocator.getInstance();
+                UserService userService = locator.getService(UserService.class);
+                AccessRoleService accessRoleService = locator.getService(AccessRoleService.class);
+                AccessRoleQuery accessRoleQuery = GwtKapuaAuthorizationModelConverter
+                        .convertAccessRoleQuery(pagingLoadConfig, query);
+                AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
+                AccessRoleListResult accessRoleList = accessRoleService.query(accessRoleQuery);
+                if (!accessRoleList.isEmpty()) {
+                    if (accessRoleList.getSize() >= pagingLoadConfig.getLimit()) {
+                        totalLength = Long.valueOf(accessRoleService.count(accessRoleQuery)).intValue();
+
+                    } else {
+                        totalLength = accessRoleList.getSize();
+                    }
+
+                    for (AccessRole a : accessRoleList.getItems()) {
+                        AccessInfo accessInfo = accessInfoService.find(KapuaEid.parseCompactId(query.getScopeId()), a.getAccessInfoId());
+                        User user = userService.find(KapuaEid.parseCompactId(query.getScopeId()), accessInfo.getUserId());
+                        GwtUser gwtUser = KapuaGwtUserModelConverter.convertUser(user);
+                        gwtUser.set("type", "USER");
+                        list.add(gwtUser);
+                    }
+                }
+            } catch (Exception e) {
+                KapuaExceptionHandler.handle(e);
+            }
+            return new BasePagingLoadResult<GwtUser>(list, pagingLoadConfig.getOffset(), totalLength);
+        }
 }
