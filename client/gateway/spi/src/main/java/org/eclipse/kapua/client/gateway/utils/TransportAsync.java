@@ -11,47 +11,60 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.gateway.utils;
 
-import java.util.concurrent.Executor;
+import static java.util.concurrent.CompletableFuture.completedFuture;
+
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 import org.eclipse.kapua.client.gateway.Transport;
 
 public class TransportAsync implements Transport {
 
-    private final Executor executor;
-    private Consumer<Boolean> listener;
+    private final ExecutorService executor;
+    private CopyOnWriteArraySet<Consumer<Boolean>> listeners = new CopyOnWriteArraySet<>();
     private boolean state;
 
-    public TransportAsync(final Executor executor) {
+    public TransportAsync(final ExecutorService executor) {
         this.executor = executor;
     }
 
-    private void fireEvent(final boolean state, final Consumer<Boolean> listener) {
-        if (listener == null) {
-            return;
+    private Future<?> fireEvent(final boolean state) {
+        if (listeners.isEmpty()) {
+            return completedFuture(null);
         }
-        executor.execute(() -> listener.accept(state));
+
+        final CopyOnWriteArraySet<Consumer<Boolean>> listeners = new CopyOnWriteArraySet<>(this.listeners);
+        return executor.submit(() -> listeners.stream().forEach(l -> l.accept(state)));
     }
 
-    public synchronized void handleConnected() {
+    public synchronized Future<?> handleConnected() {
         if (!state) {
             state = true;
-            fireEvent(true, listener);
+            return fireEvent(true);
         }
+
+        return completedFuture(null);
     }
 
-    public synchronized void handleDisconnected() {
+    public synchronized Future<?> handleDisconnected() {
         if (state) {
             state = false;
-            fireEvent(false, listener);
+            return fireEvent(false);
         }
+
+        return completedFuture(null);
     }
 
     @Override
-    public void state(final Consumer<Boolean> listener) {
-        synchronized (this) {
-            this.listener = listener;
-            fireEvent(state, listener);
-        }
+    public synchronized ListenerHandle listen(final Consumer<Boolean> listener) {
+        this.listeners.add(listener);
+        fireEvent(state);
+        return () -> removeListener(listener);
+    }
+
+    private synchronized void removeListener(Consumer<Boolean> listener) {
+        this.listeners.remove(listener);
     }
 }

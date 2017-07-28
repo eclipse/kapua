@@ -14,7 +14,7 @@ package org.eclipse.kapua.client.gateway.mqtt;
 import java.nio.ByteBuffer;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 
 import org.eclipse.kapua.client.gateway.ErrorHandler;
 import org.eclipse.kapua.client.gateway.MessageHandler;
@@ -31,7 +31,7 @@ public class MqttApplication extends AbstractApplication {
 
     private final MqttClient client;
 
-    public MqttApplication(final MqttClient client, final String applicationId, final Executor executor) {
+    public MqttApplication(final MqttClient client, final String applicationId, final ExecutorService executor) {
         super(client, applicationId, executor);
         this.client = client;
     }
@@ -42,7 +42,7 @@ public class MqttApplication extends AbstractApplication {
     }
 
     @Override
-    protected CompletionStage<?> publish(Topic topic, Payload payload) {
+    protected CompletionStage<?> publish(final Topic topic, final Payload payload) {
         logger.debug("Publishing values - {} -> {}", topic, payload.getValues());
 
         try {
@@ -58,7 +58,7 @@ public class MqttApplication extends AbstractApplication {
     }
 
     @Override
-    protected CompletionStage<?> internalSubscribe(Topic topic, MessageHandler handler, ErrorHandler<? extends Throwable> errorHandler) throws Exception {
+    protected CompletionStage<?> internalSubscribe(final Topic topic, final MessageHandler handler, final ErrorHandler<? extends Throwable> errorHandler) throws Exception {
         return client.subscribe(applicationId, topic, (messageTopic, payload) -> {
             logger.debug("Received message for: {}", topic);
             try {

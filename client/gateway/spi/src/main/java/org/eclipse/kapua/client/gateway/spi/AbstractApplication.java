@@ -14,7 +14,7 @@ package org.eclipse.kapua.client.gateway.spi;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 
 import org.eclipse.kapua.client.gateway.Application;
 import org.eclipse.kapua.client.gateway.ErrorHandler;
@@ -32,7 +32,7 @@ public abstract class AbstractApplication implements Application {
     protected final TransportAsync transport;
     private boolean closed;
 
-    public AbstractApplication(final AbstractClient client, final String applicationId, final Executor executor) {
+    public AbstractApplication(final AbstractClient client, final String applicationId, final ExecutorService executor) {
         this.client = client;
         this.applicationId = applicationId;
         transport = new TransportAsync(executor);

@@ -33,12 +33,15 @@ public interface Transport {
         public void disconnected(Runnable runnable);
     }
 
+    @FunctionalInterface
+    public interface ListenerHandle extends AutoCloseable {
+
+        @Override
+        public void close();
+    }
+
     /**
-     * Set the state listener
-     * 
-     * <p>
-     * <b>Note:</b> Only one state lister can be set for a {@link Transport} instance
-     * </p>
+     * Add a state listener
      *
      * <p>
      * The listener will be called immediately after setting with the
@@ -48,7 +51,7 @@ public interface Transport {
      * @param stateChange
      *            the listener to transport state changes
      */
-    public void state(Consumer<Boolean> stateChange);
+    public ListenerHandle listen(Consumer<Boolean> stateChange);
 
     /**
      * This method allows to atomically set a state listener using simple runnable.
@@ -76,9 +79,10 @@ public interface Transport {
      *
      * @param events
      *            code to update the {@link TransportEvents}
+     * @return
      *
      */
-    public default void events(final Consumer<TransportEvents> events) {
+    public default ListenerHandle events(final Consumer<TransportEvents> events) {
         class TransportEventsImpl implements TransportEvents {
 
             private Runnable connected;
@@ -100,7 +104,7 @@ public interface Transport {
 
         events.accept(impl);
 
-        state(state -> {
+        return listen(state -> {
             if (state) {
                 if (impl.connected != null) {
                     impl.connected.run();
@@ -129,13 +133,13 @@ public interface Transport {
 
         final Semaphore sem = new Semaphore(0);
 
-        transport.state(state -> {
+        try (ListenerHandle handle = transport.listen(state -> {
             if (state) {
                 sem.release();
             }
-        });
-
-        sem.acquire();
+        })) {
+            sem.acquire();
+        }
     }
 
     /**
@@ -157,12 +161,13 @@ public interface Transport {
 
         final Semaphore sem = new Semaphore(0);
 
-        transport.state(state -> {
+        try (ListenerHandle handle = transport.listen(state -> {
             if (state) {
                 sem.release();
             }
-        });
+        })) {
+            return sem.tryAcquire(timeout.toNanos(), TimeUnit.NANOSECONDS);
+        }
 
-        return sem.tryAcquire(timeout.toNanos(), TimeUnit.NANOSECONDS);
     }
 }

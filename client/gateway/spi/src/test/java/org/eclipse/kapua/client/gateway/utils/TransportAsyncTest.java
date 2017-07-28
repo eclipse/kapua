@@ -16,9 +16,10 @@ import java.time.Instant;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.kapua.client.gateway.Transport;
-import org.eclipse.kapua.client.gateway.utils.TransportAsync;
+import org.eclipse.kapua.client.gateway.Transport.ListenerHandle;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -59,5 +60,50 @@ public class TransportAsyncTest {
         } finally {
             executor.shutdown();
         }
+    }
+
+    @Test
+    public void test3() throws Exception {
+        final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+
+        final TransportAsync transport = new TransportAsync(executor);
+
+        final AtomicBoolean b1 = new AtomicBoolean(true);
+        final AtomicBoolean b2 = new AtomicBoolean(true);
+
+        try (
+                ListenerHandle h1 = transport.listen(b1::set);
+                ListenerHandle h2 = transport.listen(b2::set);) {
+
+            // we can't sync to the initial even
+
+            Thread.sleep(100);
+
+            // expect them to be true and false initially
+
+            Assert.assertEquals(false, b1.get());
+            Assert.assertEquals(false, b2.get());
+
+            transport.handleConnected().get();
+
+            // now they should be true
+
+            Assert.assertEquals(true, b1.get());
+            Assert.assertEquals(true, b2.get());
+
+            transport.handleDisconnected().get();
+
+            // and false again
+
+            Assert.assertEquals(false, b1.get());
+            Assert.assertEquals(false, b2.get());
+        }
+
+        transport.handleConnected().get();
+
+        // as both are disconnected, they should remain false
+
+        Assert.assertEquals(false, b1.get());
+        Assert.assertEquals(false, b2.get());
     }
 }
