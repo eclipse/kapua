@@ -1,1 +1,6 @@
+org.eclipse.kapua.app.console.module.user.client.tabs.credentials.UserTabItemCredentialsDescriptor->org.eclipse.kapua.app.console.module.user.client.UserView
+org.eclipse.kapua.app.console.module.user.client.tabs.description.UserTabDescriptionDescriptor->org.eclipse.kapua.app.console.module.user.client.UserView
+org.eclipse.kapua.app.console.module.user.client.tabs.permission.UserTabItemPermissionDescriptor->org.eclipse.kapua.app.console.module.user.client.UserView
+org.eclipse.kapua.app.console.module.user.client.tabs.roles.UserTabItemAccessRoleDescriptor->org.eclipse.kapua.app.console.module.user.client.UserView
+
 org.eclipse.kapua.app.console.module.user.client.tabs.roles.UsersRoleTabItemDescriptor->org.eclipse.kapua.app.console.module.authorization.client.role.RoleView
