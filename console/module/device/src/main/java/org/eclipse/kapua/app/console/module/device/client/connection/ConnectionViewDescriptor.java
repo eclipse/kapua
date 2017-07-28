@@ -12,13 +12,12 @@
 package org.eclipse.kapua.app.console.module.device.client.connection;
 
 import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.commons.client.views.AbstractViewDescriptor;
+import org.eclipse.kapua.app.console.commons.client.views.AbstractEntityViewDescriptor;
 import org.eclipse.kapua.app.console.commons.client.views.EntityView;
-import org.eclipse.kapua.app.console.commons.client.views.EntityViewDescriptor;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection;
 
-public class ConnectionViewDescriptor extends AbstractViewDescriptor implements EntityViewDescriptor<GwtDeviceConnection> {
+public class ConnectionViewDescriptor extends AbstractEntityViewDescriptor<GwtDeviceConnection> {
 
     @Override
     public String getViewId() {

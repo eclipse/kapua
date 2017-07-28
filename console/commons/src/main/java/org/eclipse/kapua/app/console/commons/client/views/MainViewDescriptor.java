@@ -11,18 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.commons.client.views;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 
-public interface ViewDescriptor extends IsSerializable, Comparable<ViewDescriptor> {
-    String getViewId();
+public interface MainViewDescriptor extends ViewDescriptor {
 
-    IconSet getIcon();
+    View getViewInstance(GwtSession currentSession);
 
-    Integer getOrder();
-
-    String getName();
-
-    Boolean isEnabled(GwtSession currentSession);
 }

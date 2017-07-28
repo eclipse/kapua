@@ -318,7 +318,7 @@
 
     <servlet>
         <servlet-name>GwtConsoleService</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.server.GwtConsoleServiceImpl</servlet-class>
+        <servlet-class>org.eclipse.kapua.app.console.commons.server.GwtConsoleServiceImpl</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>GwtConsoleService</servlet-name>

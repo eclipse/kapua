@@ -11,18 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.commons.client.views;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.commons.client.ui.tab.KapuaTabItem;
+import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 
-public interface ViewDescriptor extends IsSerializable, Comparable<ViewDescriptor> {
-    String getViewId();
+public interface TabDescriptor extends ViewDescriptor {
 
-    IconSet getIcon();
+    <M extends GwtEntityModel> KapuaTabItem<M> getTabViewInstance(AbstractEntityView<M> view, GwtSession currentSession);
 
-    Integer getOrder();
-
-    String getName();
-
-    Boolean isEnabled(GwtSession currentSession);
 }

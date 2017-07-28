@@ -12,13 +12,12 @@
 package org.eclipse.kapua.app.console.module.user.client;
 
 import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.commons.client.views.AbstractViewDescriptor;
+import org.eclipse.kapua.app.console.commons.client.views.AbstractEntityViewDescriptor;
 import org.eclipse.kapua.app.console.commons.client.views.EntityView;
-import org.eclipse.kapua.app.console.commons.client.views.EntityViewDescriptor;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
 
-public class UserViewDescriptor extends AbstractViewDescriptor implements EntityViewDescriptor<GwtUser> {
+public class UserViewDescriptor extends AbstractEntityViewDescriptor<GwtUser> {
 
     @Override
     public EntityView<GwtUser> getViewInstance(GwtSession currentSession) {

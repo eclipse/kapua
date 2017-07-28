@@ -12,12 +12,11 @@
 package org.eclipse.kapua.app.console.module.welcome.client;
 
 import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.commons.client.views.AbstractViewDescriptor;
+import org.eclipse.kapua.app.console.commons.client.views.AbstractMainViewDescriptor;
 import org.eclipse.kapua.app.console.commons.client.views.View;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.module.welcome.client.WelcomeView;
 
-public class WelcomeViewDescriptor extends AbstractViewDescriptor {
+public class WelcomeViewDescriptor extends AbstractMainViewDescriptor {
 
     @Override
     public String getViewId() {

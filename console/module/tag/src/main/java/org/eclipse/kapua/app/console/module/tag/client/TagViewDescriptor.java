@@ -12,13 +12,12 @@
 package org.eclipse.kapua.app.console.module.tag.client;
 
 import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.commons.client.views.AbstractViewDescriptor;
+import org.eclipse.kapua.app.console.commons.client.views.AbstractEntityViewDescriptor;
 import org.eclipse.kapua.app.console.commons.client.views.EntityView;
-import org.eclipse.kapua.app.console.commons.client.views.EntityViewDescriptor;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
 
-public class TagViewDescriptor extends AbstractViewDescriptor implements EntityViewDescriptor<GwtTag> {
+public class TagViewDescriptor extends AbstractEntityViewDescriptor<GwtTag> {
 
     @Override
     public String getViewId() {

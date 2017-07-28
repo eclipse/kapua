@@ -36,6 +36,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
+import org.eclipse.kapua.app.console.commons.client.views.MainViewDescriptor;
+import org.eclipse.kapua.app.console.commons.shared.service.GwtConsoleServiceAsync;
 import org.eclipse.kapua.app.console.module.account.client.AccountDetailsView;
 import org.eclipse.kapua.app.console.commons.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
@@ -44,13 +46,11 @@ import org.eclipse.kapua.app.console.commons.client.ui.color.Color;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.ContentPanel;
 import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractView;
 import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.commons.client.views.ViewDescriptor;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
-import org.eclipse.kapua.app.console.shared.service.GwtConsoleService;
-import org.eclipse.kapua.app.console.shared.service.GwtConsoleServiceAsync;
+import org.eclipse.kapua.app.console.commons.shared.service.GwtConsoleService;
 
 import java.util.Arrays;
 import java.util.List;
@@ -88,7 +88,7 @@ public class WestNavigationView extends LayoutContainer {
     protected void onRender(final Element parent, int index) {
         super.onRender(parent, index);
 
-        CONSOLE_SERVICE.getCustomEntityViews(new AsyncCallback<List<ViewDescriptor>>() {
+        CONSOLE_SERVICE.getCustomEntityViews(new AsyncCallback<List<MainViewDescriptor>>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -96,7 +96,7 @@ public class WestNavigationView extends LayoutContainer {
             }
 
             @Override
-            public void onSuccess(final List<ViewDescriptor> additionalViewDescriptors) {
+            public void onSuccess(final List<MainViewDescriptor> additionalViewDescriptors) {
 
                 setLayout(new FitLayout());
                 setBorders(false);
@@ -198,7 +198,7 @@ public class WestNavigationView extends LayoutContainer {
                             });
 
                         } else {
-                            for (ViewDescriptor viewDescriptor : additionalViewDescriptors) {
+                            for (MainViewDescriptor viewDescriptor : additionalViewDescriptors) {
                                 if (viewDescriptor.getViewId().equals(selectedId)) {
                                     panel.setIcon(new KapuaIcon(viewDescriptor.getIcon()));
                                     panel.setHeading(viewDescriptor.getName());
@@ -217,7 +217,7 @@ public class WestNavigationView extends LayoutContainer {
 
                     final ContentPanel panel = new ContentPanel(new FitLayout());
 
-                    ViewDescriptor firstView = additionalViewDescriptors.get(0);
+                    MainViewDescriptor firstView = additionalViewDescriptors.get(0);
                     panel.setIcon(new KapuaIcon(firstView.getIcon()));
                     panel.setHeading(firstView.getName());
                     panel.add((AbstractView) firstView.getViewInstance(currentSession));
@@ -229,53 +229,7 @@ public class WestNavigationView extends LayoutContainer {
                 ColumnConfig name1 = new ColumnConfig("name", "Name", 200);
                 name1.setRenderer(treeCellRenderer);
 
-//                ColumnModel cm1 = new ColumnModel(Arrays.asList(name1));
-//
-//                accountManagementTreeGrid = new TreeGrid<ModelData>(accountManagementTreeStore, cm1);
-//                accountManagementTreeGrid.setBorders(false);
-//                accountManagementTreeGrid.setHideHeaders(true);
-//                accountManagementTreeGrid.setAutoExpandColumn("name");
-//                accountManagementTreeGrid.getTreeView().setRowHeight(36);
-//                accountManagementTreeGrid.getTreeView().setForceFit(true);
-//                accountManagementTreeGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-//                accountManagementTreeGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<ModelData>() {
-//
-//                    @Override
-//                    public void selectionChanged(SelectionChangedEvent<ModelData> se) {
-//
-//                        ModelData selected = se.getSelectedItem();
-//                        if (selected == null) {
-//                            return;
-//                        }
-//
-//                        cloudResourcesTreeGrid.getSelectionModel().deselectAll();
-//
-//                        centerPanel.removeAll();
-//                        ContentPanel panel = new ContentPanel(new FitLayout());
-//                        panel.setBorders(false);
-//                        panel.setBodyBorder(false);
-//
-//                        String selectedId = (String) selected.get("id");
-//                        if ("childaccounts".equals(selectedId)) {
-//                            AccountView accountView = new AccountView(currentSession);
-//
-//                            panel.setIcon(new KapuaIcon(IconSet.SITEMAP));
-//                            panel.setHeading(MSGS.childaccounts());
-//                            panel.add(accountView);
-//
-//                            dashboardSelected = false;
-//                        }
-//                        // imgRefreshLabel.setVisible(dashboardSelected);
-//
-//                        centerPanel.add(panel);
-//                        centerPanel.layout();
-//                    }
-//                });
-//
                 cloudResourcesPanel.add(cloudResourcesTreeGrid);
-//                cloudResourcesPanel.add(accountManagementPanel);
-//                cloudResourcesPanel.add(accountManagementTreeGrid);
-//
                 accordionPanel.add(cloudResourcesPanel);
                 layout(true);
             }
@@ -283,7 +237,7 @@ public class WestNavigationView extends LayoutContainer {
 
     }
 
-    public void addMenuItems(List<ViewDescriptor> additionalViewDescriptors) {
+    public void addMenuItems(List<MainViewDescriptor> additionalViewDescriptors) {
 
         ModelData selectedAccountItem = null;
         ModelData selectedManageItem = null;
@@ -297,7 +251,7 @@ public class WestNavigationView extends LayoutContainer {
         accountManagementTreeStore.removeAll();
 
         if (additionalViewDescriptors != null && additionalViewDescriptors.size() > 0) {
-            for (ViewDescriptor entityView : additionalViewDescriptors) {
+            for (MainViewDescriptor entityView : additionalViewDescriptors) {
                 if (entityView.isEnabled(currentSession)) {
                     cloudResourcesTreeStore.add(newItem(entityView.getViewId(), entityView.getName(), entityView.getIcon()), false);
                 }

@@ -12,11 +12,11 @@
 package org.eclipse.kapua.app.console.module.account.client;
 
 import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.commons.client.views.AbstractViewDescriptor;
+import org.eclipse.kapua.app.console.commons.client.views.AbstractMainViewDescriptor;
 import org.eclipse.kapua.app.console.commons.client.views.View;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 
-public class AccountDetailsViewDescriptor extends AbstractViewDescriptor {
+public class AccountDetailsViewDescriptor extends AbstractMainViewDescriptor {
 
     @Override
     public String getViewId() {

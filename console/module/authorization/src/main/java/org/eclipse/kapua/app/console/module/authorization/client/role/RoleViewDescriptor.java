@@ -12,13 +12,12 @@
 package org.eclipse.kapua.app.console.module.authorization.client.role;
 
 import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.commons.client.views.AbstractViewDescriptor;
+import org.eclipse.kapua.app.console.commons.client.views.AbstractEntityViewDescriptor;
 import org.eclipse.kapua.app.console.commons.client.views.EntityView;
-import org.eclipse.kapua.app.console.commons.client.views.EntityViewDescriptor;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
 
-public class RoleViewDescriptor extends AbstractViewDescriptor implements EntityViewDescriptor<GwtRole> {
+public class RoleViewDescriptor extends AbstractEntityViewDescriptor<GwtRole> {
 
     @Override
     public String getViewId() {

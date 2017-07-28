@@ -11,18 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.commons.client.views;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
+public abstract class AbstractTabDescriptor extends AbstractViewDescriptor implements TabDescriptor {
 
-public interface ViewDescriptor extends IsSerializable, Comparable<ViewDescriptor> {
-    String getViewId();
-
-    IconSet getIcon();
-
-    Integer getOrder();
-
-    String getName();
-
-    Boolean isEnabled(GwtSession currentSession);
 }

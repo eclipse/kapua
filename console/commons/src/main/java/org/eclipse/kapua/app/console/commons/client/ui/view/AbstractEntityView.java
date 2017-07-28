@@ -13,12 +13,15 @@ package org.eclipse.kapua.app.console.commons.client.ui.view;
 
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.KapuaBorderLayoutData;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.KapuaTabPanel;
 import org.eclipse.kapua.app.console.commons.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.commons.client.views.EntityView;
+import org.eclipse.kapua.app.console.commons.client.views.TabDescriptor;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtEntityModel;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
@@ -27,12 +30,16 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.commons.shared.service.GwtConsoleService;
+import org.eclipse.kapua.app.console.commons.shared.service.GwtConsoleServiceAsync;
 
 public abstract class AbstractEntityView<M extends GwtEntityModel> extends AbstractView implements EntityView<M> {
 
     private EntityFilterPanel<M> filterPanel;
     private EntityGrid<M> entityGrid;
     private KapuaTabPanel<M> tabsPanel;
+
+    private static final GwtConsoleServiceAsync CONSOLE_SERVICE = GWT.create(GwtConsoleService.class);
 
     public AbstractEntityView() {
         super();
@@ -65,7 +72,7 @@ public abstract class AbstractEntityView<M extends GwtEntityModel> extends Abstr
 
         //
         // Center Main panel:
-        LayoutContainer resultContainer = new LayoutContainer(new BorderLayout());
+        final LayoutContainer resultContainer = new LayoutContainer(new BorderLayout());
         resultContainer.setBorders(false);
 
         KapuaBorderLayoutData centerMainPanel = new KapuaBorderLayoutData(LayoutRegion.CENTER);
@@ -82,20 +89,31 @@ public abstract class AbstractEntityView<M extends GwtEntityModel> extends Abstr
         BorderLayoutData northData = new KapuaBorderLayoutData(LayoutRegion.NORTH, .45F);
         resultContainer.add(entityGrid, northData);
 
-        //
-        // Center sub panel: Entity sub tabs
-        tabsPanel = new KapuaTabPanel<M>();
+        CONSOLE_SERVICE.getCustomTabsForView(getClass().getName(), new AsyncCallback<List<TabDescriptor>>() {
 
-        List<KapuaTabItem<M>> tabItems = getTabs(this, currentSession);
+            @Override
+            public void onFailure(Throwable caught) {
+                // TODO Manage
+                System.out.println("Failure!");
+            }
 
-        for (KapuaTabItem<M> kti : tabItems) {
-            tabsPanel.add(kti);
-        }
+            @Override
+            public void onSuccess(List<TabDescriptor> result) {
+                tabsPanel = new KapuaTabPanel<M>();
 
-        KapuaBorderLayoutData centerData = new KapuaBorderLayoutData(LayoutRegion.CENTER);
-        centerData.setMarginTop(5);
+                for (TabDescriptor tabDescriptor : result) {
+                    tabsPanel.add(tabDescriptor.getTabViewInstance(AbstractEntityView.this, currentSession));
+                }
 
-        resultContainer.add(tabsPanel, centerData);
+                KapuaBorderLayoutData centerData = new KapuaBorderLayoutData(LayoutRegion.CENTER);
+                centerData.setMarginTop(5);
+
+                resultContainer.add(tabsPanel, centerData);
+
+                layout(true);
+            }
+        });
+
     }
 
     public abstract List<KapuaTabItem<M>> getTabs(AbstractEntityView<M> entityView, GwtSession currentSession);

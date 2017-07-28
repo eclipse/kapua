@@ -13,6 +13,6 @@ package org.eclipse.kapua.app.console.commons.client.views;
 
 import org.eclipse.kapua.app.console.commons.shared.model.GwtEntityModel;
 
-public abstract class AbstractEntityViewDescriptor<M extends GwtEntityModel> extends AbstractViewDescriptor implements EntityViewDescriptor<M> {
+public abstract class AbstractEntityViewDescriptor<M extends GwtEntityModel> extends AbstractMainViewDescriptor implements EntityViewDescriptor<M> {
 
 }
