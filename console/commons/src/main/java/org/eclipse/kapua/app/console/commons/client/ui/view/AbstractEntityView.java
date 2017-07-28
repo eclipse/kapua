@@ -19,7 +19,6 @@ import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.KapuaBorderLayoutData;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.KapuaTabPanel;
-import org.eclipse.kapua.app.console.commons.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.commons.client.views.EntityView;
 import org.eclipse.kapua.app.console.commons.client.views.TabDescriptor;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtEntityModel;
@@ -117,8 +116,6 @@ public abstract class AbstractEntityView<M extends GwtEntityModel> extends Abstr
         });
 
     }
-
-    public abstract List<KapuaTabItem<M>> getTabs(AbstractEntityView<M> entityView, GwtSession currentSession);
 
     public abstract EntityGrid<M> getEntityGrid(AbstractEntityView<M> entityView, GwtSession currentSession);
 

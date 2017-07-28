@@ -11,13 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.client.connection;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.core.client.GWT;
 import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.EntityFilterPanel;
-import org.eclipse.kapua.app.console.commons.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleConnectionMessages;
@@ -26,23 +22,12 @@ import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnect
 public class ConnectionView extends AbstractEntityView<GwtDeviceConnection> {
 
     private ConnectionGrid connectionGrid;
-    private ConnectionDescriptionTab descriptionTab;
     private ConnectionFilterPanel filterPanel;
 
     private static final ConsoleConnectionMessages MSGS = GWT.create(ConsoleConnectionMessages.class);
 
     public ConnectionView(GwtSession currentSession) {
         super(currentSession);
-    }
-
-    @Override
-    public List<KapuaTabItem<GwtDeviceConnection>> getTabs(AbstractEntityView<GwtDeviceConnection> entityView, GwtSession currentSession) {
-        List<KapuaTabItem<GwtDeviceConnection>> tabs = new ArrayList<KapuaTabItem<GwtDeviceConnection>>();
-        if(descriptionTab == null){
-            descriptionTab = new ConnectionDescriptionTab();
-        }
-        tabs.add(descriptionTab);
-        return tabs;
     }
 
     @Override

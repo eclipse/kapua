@@ -14,14 +14,10 @@ package org.eclipse.kapua.app.console.module.tag.client;
 import com.google.gwt.core.client.GWT;
 import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.EntityFilterPanel;
-import org.eclipse.kapua.app.console.commons.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.tag.client.messages.ConsoleTagMessages;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class TagView extends AbstractEntityView<GwtTag> {
 
@@ -35,14 +31,6 @@ public class TagView extends AbstractEntityView<GwtTag> {
 
     public static String getName() {
         return MSGS.tags();
-    }
-
-    @Override
-    public List<KapuaTabItem<GwtTag>> getTabs(AbstractEntityView<GwtTag> entityView,
-            GwtSession currentSession) {
-        List<KapuaTabItem<GwtTag>> tabs = new ArrayList<KapuaTabItem<GwtTag>>();
-        tabs.add(new TagTabDescription());
-        return tabs;
     }
 
     @Override

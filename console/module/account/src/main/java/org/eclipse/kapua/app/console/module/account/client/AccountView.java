@@ -11,14 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.account.client;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.core.client.GWT;
-import org.eclipse.kapua.app.console.module.account.client.childuser.AccountChildUserTab;
 import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.commons.client.ui.panel.EntityFilterPanel;
-import org.eclipse.kapua.app.console.commons.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.account.client.messages.ConsoleAccountMessages;
@@ -27,10 +22,7 @@ import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 public class AccountView extends AbstractEntityView<GwtAccount> {
 
     private AccountGrid accountGrid;
-    private AccountDescriptionTab descriptionTab;
     private AccountFilterPanel filterPanel;
-    private AccountChildUserTab accountChildTab;
-    private AccountTabConfiguration accountConfigTab;
 
     private static final ConsoleAccountMessages MSGS = GWT.create(ConsoleAccountMessages.class);
 
@@ -40,24 +32,6 @@ public class AccountView extends AbstractEntityView<GwtAccount> {
 
     public static String getName() {
         return MSGS.childAccounts();
-    }
-
-    @Override
-    public List<KapuaTabItem<GwtAccount>> getTabs(AbstractEntityView<GwtAccount> entityView, GwtSession currentSession) {
-        List<KapuaTabItem<GwtAccount>> tabs = new ArrayList<KapuaTabItem<GwtAccount>>();
-        if(descriptionTab == null){
-            descriptionTab = new AccountDescriptionTab();
-        }
-        if(accountChildTab == null){
-            accountChildTab = new AccountChildUserTab(currentSession);
-        }
-        if (accountConfigTab == null) {
-            accountConfigTab = new AccountTabConfiguration(currentSession);
-        }
-        tabs.add(descriptionTab);
-        tabs.add(accountChildTab);
-        tabs.add(accountConfigTab);
-        return tabs;
     }
 
     @Override
