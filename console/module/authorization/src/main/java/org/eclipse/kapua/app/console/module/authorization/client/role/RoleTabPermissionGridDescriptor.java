@@ -19,7 +19,7 @@ public class RoleTabPermissionGridDescriptor extends AbstractTabDescriptor<GwtRo
 
     @Override
     public RoleTabPermissionGrid getTabViewInstance(RoleView view, GwtSession currentSession) {
-        return new RoleTabPermissionGrid(null, currentSession);
+        return new RoleTabPermissionGrid(currentSession);
     }
 
     @Override

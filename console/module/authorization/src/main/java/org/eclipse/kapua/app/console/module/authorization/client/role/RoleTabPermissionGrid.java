@@ -35,6 +35,10 @@ public class RoleTabPermissionGrid extends KapuaTabItem<GwtRole> {
 
     }
 
+    public RoleTabPermissionGrid(GwtSession session) {
+        this(null, session);
+    }
+
     @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
