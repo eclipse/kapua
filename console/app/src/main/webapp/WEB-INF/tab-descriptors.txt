@@ -7,4 +7,6 @@ org.eclipse.kapua.app.console.module.account.client.AccountDescriptionTabDescrip
 org.eclipse.kapua.app.console.module.account.client.AccountTabConfigurationDescriptor->org.eclipse.kapua.app.console.module.account.client.AccountView
 org.eclipse.kapua.app.console.module.account.client.childuser.AccountChildUserTabDescriptor->org.eclipse.kapua.app.console.module.account.client.AccountView
 
+org.eclipse.kapua.app.console.module.device.client.connection.ConnectionDescriptionTabDescriptor->org.eclipse.kapua.app.console.module.device.client.connection.ConnectionView
+
 org.eclipse.kapua.app.console.module.user.client.tabs.roles.UsersRoleTabItemDescriptor->org.eclipse.kapua.app.console.module.authorization.client.role.RoleView
