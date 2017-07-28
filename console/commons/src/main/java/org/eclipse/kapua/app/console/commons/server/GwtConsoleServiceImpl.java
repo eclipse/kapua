@@ -31,8 +31,8 @@ public class GwtConsoleServiceImpl extends KapuaRemoteServiceServlet implements 
         List<MainViewDescriptor> views = new ArrayList<MainViewDescriptor>();
         try {
             List<String> viewDescriptorsClasses = FileUtils.readLines(new File(context.getRealPath("/WEB-INF/view-descriptors.txt")));
-            for(String viewDescriptorClass : viewDescriptorsClasses) {
-                views.add((MainViewDescriptor)Class.forName(viewDescriptorClass).newInstance());
+            for (String viewDescriptorClass : viewDescriptorsClasses) {
+                views.add((MainViewDescriptor) Class.forName(viewDescriptorClass).newInstance());
             }
         } catch (InstantiationException e) {
             e.printStackTrace();
@@ -53,10 +53,10 @@ public class GwtConsoleServiceImpl extends KapuaRemoteServiceServlet implements 
         List<TabDescriptor> tabs = new ArrayList<TabDescriptor>();
         try {
             List<String> tabDescriptorsClasses = FileUtils.readLines(new File(context.getRealPath("/WEB-INF/tab-descriptors.txt")));
-            for(String tabDescriptorClass : tabDescriptorsClasses) {
+            for (String tabDescriptorClass : tabDescriptorsClasses) {
                 String[] tabDescriptorParts = tabDescriptorClass.split("->");
-                if (tabDescriptorParts[1].equals(viewClass)) {
-                    tabs.add((TabDescriptor)Class.forName(tabDescriptorParts[0]).newInstance());
+                if (tabDescriptorParts.length == 2 && tabDescriptorParts[1].equals(viewClass)) {
+                    tabs.add((TabDescriptor) Class.forName(tabDescriptorParts[0]).newInstance());
                 }
             }
         } catch (InstantiationException e) {
