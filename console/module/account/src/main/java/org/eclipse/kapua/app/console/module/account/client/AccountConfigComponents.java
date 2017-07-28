@@ -94,6 +94,7 @@ public class AccountConfigComponents extends LayoutContainer {
     private AccountConfigPanel devConfPanel;
     private BorderLayoutData centerData;
     private AccountDetailsView accountDetailsView;
+    private  AccountDetailsTabDescription accountDetailsTabDescription;
 
     @SuppressWarnings("rawtypes")
     private BaseTreeLoader loader;
@@ -119,10 +120,9 @@ public class AccountConfigComponents extends LayoutContainer {
     };
 
     AccountConfigComponents(GwtSession currentSession,
-            AccountTabConfiguration tabConfig, AccountDetailsView accountDetailsView) {
+            AccountTabConfiguration tabConfig) {
         this.currentSession = currentSession;
         this.tabConfig = tabConfig;
-        this.accountDetailsView = accountDetailsView;
         dirty = false;
         initialized = false;
     }
@@ -284,7 +284,7 @@ public class AccountConfigComponents extends LayoutContainer {
 
                 final GwtConfigComponent componentToSwitchTo = (GwtConfigComponent) se.getModel();
                 if (devConfPanel != null && devConfPanel.isDirty()) {
-                	accountDetailsView.updateAccountInfo();
+                	accountDetailsTabDescription.updateAccountInfo();
                     // cancel the event first
                     be.setCancelled(true);
 
@@ -314,7 +314,9 @@ public class AccountConfigComponents extends LayoutContainer {
                 } else {
                 	
                     refreshConfigPanel(componentToSwitchTo);
-                    accountDetailsView.updateAccountInfo();
+                    if (accountDetailsTabDescription != null) {
+                    	 accountDetailsTabDescription.updateAccountInfo();
+                    }
 
                     // this is needed to select the item in the Tree
                     // Temporarly disable the firing of the selection events
@@ -497,6 +499,10 @@ public class AccountConfigComponents extends LayoutContainer {
             return label.getText();
         }
     };
+    
+    public void setDescriptionTab(AccountDetailsTabDescription accountDetailsTabDescription) {
+    	this.accountDetailsTabDescription = accountDetailsTabDescription;
+    }
 
     // --------------------------------------------------------------------------------------
     //
