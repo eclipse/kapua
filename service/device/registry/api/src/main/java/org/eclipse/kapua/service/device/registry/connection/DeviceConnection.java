@@ -135,6 +135,7 @@ public interface DeviceConnection extends KapuaUpdatableEntity {
      */
     @XmlElement(name = "reservedUserId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    @ApiModelProperty(dataType = "string")
     public KapuaId getReservedUserId();
 
     /**
