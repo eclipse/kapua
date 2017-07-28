@@ -102,7 +102,9 @@ public abstract class AbstractEntityView<M extends GwtEntityModel> extends Abstr
                 tabsPanel = new KapuaTabPanel<M>();
 
                 for (TabDescriptor tabDescriptor : result) {
-                    tabsPanel.add(tabDescriptor.getTabViewInstance(AbstractEntityView.this, currentSession));
+                    if (tabDescriptor.isEnabled(currentSession)) {
+                        tabsPanel.add(tabDescriptor.getTabViewInstance(AbstractEntityView.this, currentSession));
+                    }
                 }
 
                 KapuaBorderLayoutData centerData = new KapuaBorderLayoutData(LayoutRegion.CENTER);
