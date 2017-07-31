@@ -40,6 +40,12 @@ public interface Transport {
         public void close();
     }
 
+    @FunctionalInterface
+    public interface Listener {
+
+        public void stateChange(boolean state);
+    }
+
     /**
      * Add a state listener
      *
@@ -48,10 +54,10 @@ public interface Transport {
      * last known state.
      * </p>
      *
-     * @param stateChange
+     * @param listener
      *            the listener to transport state changes
      */
-    public ListenerHandle listen(Consumer<Boolean> stateChange);
+    public ListenerHandle listen(Listener listener);
 
     /**
      * This method allows to atomically set a state listener using simple runnable.

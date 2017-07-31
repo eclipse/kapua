@@ -16,14 +16,13 @@ import static java.util.concurrent.CompletableFuture.completedFuture;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.function.Consumer;
 
 import org.eclipse.kapua.client.gateway.Transport;
 
 public class TransportAsync implements Transport {
 
     private final ExecutorService executor;
-    private CopyOnWriteArraySet<Consumer<Boolean>> listeners = new CopyOnWriteArraySet<>();
+    private CopyOnWriteArraySet<Listener> listeners = new CopyOnWriteArraySet<>();
     private boolean state;
 
     public TransportAsync(final ExecutorService executor) {
@@ -35,8 +34,8 @@ public class TransportAsync implements Transport {
             return completedFuture(null);
         }
 
-        final CopyOnWriteArraySet<Consumer<Boolean>> listeners = new CopyOnWriteArraySet<>(this.listeners);
-        return executor.submit(() -> listeners.stream().forEach(l -> l.accept(state)));
+        final CopyOnWriteArraySet<Listener> listeners = new CopyOnWriteArraySet<>(this.listeners);
+        return executor.submit(() -> listeners.stream().forEach(l -> l.stateChange(state)));
     }
 
     public synchronized Future<?> handleConnected() {
@@ -58,13 +57,13 @@ public class TransportAsync implements Transport {
     }
 
     @Override
-    public synchronized ListenerHandle listen(final Consumer<Boolean> listener) {
+    public synchronized ListenerHandle listen(final Listener listener) {
         this.listeners.add(listener);
         fireEvent(state);
         return () -> removeListener(listener);
     }
 
-    private synchronized void removeListener(Consumer<Boolean> listener) {
+    private synchronized void removeListener(final Listener listener) {
         this.listeners.remove(listener);
     }
 }
