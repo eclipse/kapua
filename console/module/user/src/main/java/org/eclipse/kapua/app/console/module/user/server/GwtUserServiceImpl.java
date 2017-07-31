@@ -335,15 +335,15 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             User user = userService.find(scopeId, userId);
 
             if (user != null) {
-                gwtUserDescription.add(new GwtGroupedNVPair("User", "Status", user.getStatus().toString()));
-                gwtUserDescription.add(new GwtGroupedNVPair("User", "User Name", user.getName()));
-                gwtUserDescription.add(new GwtGroupedNVPair("User", "Display Name", user.getDisplayName()));
-                gwtUserDescription.add(new GwtGroupedNVPair("User", "E-mail", user.getEmail()));
-                gwtUserDescription.add(new GwtGroupedNVPair("User", "Phone Number", user.getPhoneNumber()));
-                gwtUserDescription.add(new GwtGroupedNVPair("User", "Created On", user.getCreatedOn().toString()));
-                gwtUserDescription.add(new GwtGroupedNVPair("User", "Created By", user.getCreatedBy().toCompactId()));
-                gwtUserDescription.add(new GwtGroupedNVPair("User", "Modified On", user.getModifiedBy().toCompactId()));
-                gwtUserDescription.add(new GwtGroupedNVPair("User", "Modified By", user.getModifiedOn().toString()));
+                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userStatus", user.getStatus().toString()));
+                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userName", user.getName()));
+                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userDisplayName", user.getDisplayName()));
+                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userEmail", user.getEmail()));
+                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userPhoneNumber", user.getPhoneNumber()));
+                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userCreatedOn", user.getCreatedOn().toString()));
+                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userCreatedBy", user.getCreatedBy().toCompactId()));
+                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userModifiedOn", user.getModifiedOn().toString()));
+                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userModifiedBy", user.getModifiedBy().toCompactId()));
             }
         } catch (Exception e) {
             KapuaExceptionHandler.handle(e);
