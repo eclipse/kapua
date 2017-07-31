@@ -225,11 +225,9 @@ public class PahoClient extends MqttClient {
 
     private void handleResubscribe() {
         for (final Map.Entry<String, MqttMessageHandler> entry : subscriptions.entrySet()) {
-            try {
-                internalSubscribe(entry.getKey());
-            } catch (final MqttException e) {
-                logger.warn("Failed to re-subscribe to '{}'", entry.getKey());
-            }
+            internalSubscribe(entry.getKey()).whenComplete((value, ex) -> {
+                logger.warn("Failed to re-subscribe to '{}'", entry.getKey(), ex);
+            });
         }
     }
 
@@ -288,7 +286,7 @@ public class PahoClient extends MqttClient {
     }
 
     @Override
-    protected CompletionStage<?> subscribeMqtt(String topic, MqttMessageHandler messageHandler) throws MqttException {
+    protected CompletionStage<?> subscribeMqtt(String topic, MqttMessageHandler messageHandler) {
         synchronized (this) {
             subscriptions.put(topic, messageHandler);
             return internalSubscribe(topic);
@@ -324,9 +322,13 @@ public class PahoClient extends MqttClient {
         }
     }
 
-    private CompletionStage<?> internalSubscribe(final String topic) throws MqttException {
+    private CompletionStage<?> internalSubscribe(final String topic) {
         final CompletableFuture<?> future = new CompletableFuture<>();
-        client.subscribe(topic, 1, null, Listeners.toListener(future));
+        try {
+            client.subscribe(topic, 1, null, Listeners.toListener(future));
+        } catch (final MqttException e) {
+            future.completeExceptionally(e);
+        }
         return future;
     }
 
