@@ -159,11 +159,11 @@ public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtT
             if (tag != null) {
                 // gwtTagDescription.add(new GwtGroupedNVPair("Entity", "Scope
                 // Id", KapuaGwtCommonsModelConverter.convertKapuaId(tag.getScopeId())));
-                gwtTagDescription.add(new GwtGroupedNVPair("Tag", "Tag Name", tag.getName()));
-                gwtTagDescription.add(new GwtGroupedNVPair("Entity", "Modified On", tag.getModifiedOn().toString()));
-                gwtTagDescription.add(new GwtGroupedNVPair("Entity", "Modified By", tag.getModifiedBy().toCompactId()));
-                gwtTagDescription.add(new GwtGroupedNVPair("Entity", "Created On", tag.getCreatedOn().toString()));
-                gwtTagDescription.add(new GwtGroupedNVPair("Entity", "Created By", tag.getCreatedBy().toCompactId()));
+                gwtTagDescription.add(new GwtGroupedNVPair("tagInfo", "tagName", tag.getName()));
+                gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagModifiedOn", tag.getModifiedOn().toString()));
+                gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagModifiedBy", tag.getModifiedBy().toCompactId()));
+                gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagCreatedOn", tag.getCreatedOn().toString()));
+                gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagCreatedBy", tag.getCreatedBy().toCompactId()));
 
             }
         } catch (Exception e) {
