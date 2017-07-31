@@ -174,7 +174,7 @@ public class WestNavigationView extends LayoutContainer {
                         String selectedId = selected.get("id");
                         if ("mysettings".equals(selectedId)) {
                             // TODO generalize!
-                            GWT_ACCOUNT_SERVICE.find(currentSession.getAccountId(), new AsyncCallback<GwtAccount>() {
+                            GWT_ACCOUNT_SERVICE.find(currentSession.getSelectedAccountId(), new AsyncCallback<GwtAccount>() {
 
                                 @Override
                                 public void onFailure(Throwable caught) {

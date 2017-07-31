@@ -12,6 +12,9 @@
 package org.eclipse.kapua.app.console.client;
 
 import org.eclipse.kapua.app.console.commons.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.commons.client.views.MainViewDescriptor;
+import org.eclipse.kapua.app.console.commons.shared.service.GwtConsoleService;
+import org.eclipse.kapua.app.console.commons.shared.service.GwtConsoleServiceAsync;
 import org.eclipse.kapua.app.console.shared.service.GwtAuthorizationService;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.commons.client.ui.widget.KapuaMenuItem;
@@ -47,11 +50,14 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import java.util.List;
+
 public class NorthView extends LayoutContainer {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     private final GwtAuthorizationServiceAsync gwtAuthorizationService = GWT.create(GwtAuthorizationService.class);
     private final GwtAccountServiceAsync gwtAccountService = GWT.create(GwtAccountService.class);
+    private final GwtConsoleServiceAsync gwtConsoleService = GWT.create(GwtConsoleService.class);
 
     // UI stuff
     private KapuaCloudConsole parent;
@@ -308,20 +314,34 @@ public class NorthView extends LayoutContainer {
             }
 
             @Override
-            public void onSuccess(GwtAccount result) {
-                if (result != null) {
-                    currentSession.setSelectedAccountId(result.getId());
-                }
+            public void onSuccess(final GwtAccount result) {
+                gwtConsoleService.getCustomEntityViews(new AsyncCallback<List<MainViewDescriptor>>() {
 
-                // Update userActionButtonLabel with the current data
-                updateUserActionButtonLabel();
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        parent.getViewport().unmask();
+                        FailureHandler.handle(caught);
+                    }
 
-                // Force the west view (which contains the navigation menu) to reload available components
-                parent.getWestView().addMenuItems(null);
-                parent.getWestView().setDashboardSelected(false);
+                    @Override
+                    public void onSuccess(List<MainViewDescriptor> viewDescriptors) {
+                        if (result != null) {
+                            currentSession.setSelectedAccountId(result.getId());
+                            currentSession.setSelectedAccountName(result.getName());
+                        }
 
-                // Unmask the whole page
-                parent.getViewport().unmask();
+                        // Update userActionButtonLabel with the current data
+                        updateUserActionButtonLabel();
+
+                        // Force the west view (which contains the navigation menu) to reload available components
+                        parent.getWestView().addMenuItems(viewDescriptors);
+                        parent.getWestView().setDashboardSelected(false);
+                        parent.getWestView().layout(true);
+
+                        // Unmask the whole page
+                        parent.getViewport().unmask();
+                    }
+                });
             }
         });
     }
@@ -337,14 +357,13 @@ public class NorthView extends LayoutContainer {
      */
     private void updateUserActionButtonLabel() {
         // Current selected scope
-        String accountName = selectedAccountName;
-        String displayName = userDisplayName;
+        String accountName = currentSession.getSelectedAccountName();
 
         // Set label {displayName || username} @ {selectedAccountName}
-        if (displayName == null ||
-                displayName.isEmpty()) {
-            displayName = username;
+        if (userDisplayName == null ||
+                userDisplayName.isEmpty()) {
+            userDisplayName = username;
         }
-        userActionButton.setText(MSGS.consoleHeaderUserActionButtonLabel(displayName, accountName));
+        userActionButton.setText(MSGS.consoleHeaderUserActionButtonLabel(userDisplayName, accountName));
     }
 }
