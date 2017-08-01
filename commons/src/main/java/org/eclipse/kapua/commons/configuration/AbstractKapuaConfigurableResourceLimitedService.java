@@ -27,6 +27,11 @@ import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
 import org.eclipse.kapua.service.KapuaEntityService;
+import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.account.AccountFactory;
+import org.eclipse.kapua.service.account.AccountListResult;
+import org.eclipse.kapua.service.account.AccountQuery;
+import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 
 public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends KapuaEntity, C extends KapuaEntityCreator<E>, S extends KapuaEntityService<E, C>, L extends KapuaListResult<E>, Q extends KapuaQuery<E>, F extends KapuaEntityFactory<E, C, Q, L>>
@@ -88,50 +93,55 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
         KapuaLocator locator = KapuaLocator.getInstance();
         S service = locator.getService(serviceClass);
         F factory = locator.getFactory(factoryClass);
+        AccountFactory accountFactory = locator.getFactory(AccountFactory.class);
+        AccountService accountService = locator.getService(AccountService.class);
+
         if (configuration == null) {
             configuration = getConfigValues(scopeId);
         }
         boolean allowInfiniteChildEntities = (boolean) configuration.get("infiniteChildEntities");
         if (!allowInfiniteChildEntities) {
-            Q query = factory.newQuery(scopeId);
+            Q countQuery = factory.newQuery(scopeId);
 
             // Current used entities
-            long currentChildAccounts = service.count(query);
+            long currentUsedEntities = service.count(countQuery);
 
+            AccountQuery childAccountsQuery = accountFactory.newQuery(scopeId);
             // Exclude the scope that is under config update
             if (targetScopeId != null) {
-                query.setPredicate(new AttributePredicate<KapuaId>(KapuaEntityPredicates.ENTITY_ID, targetScopeId, Operator.NOT_EQUAL));
+                childAccountsQuery.setPredicate(new AttributePredicate<>(KapuaEntityPredicates.ENTITY_ID, targetScopeId, Operator.NOT_EQUAL));
             }
 
-            KapuaListResult<E> currentChildEntities = service.query(query);
+            // FIXME Has to ALWAYS query on accountService!
+            AccountListResult childAccounts = accountService.query(childAccountsQuery);
             // Resources assigned to children
             long childCount = 0;
-            for (E childEntity : currentChildEntities.getItems()) {
-                Map<String, Object> childConfigValues = getConfigValues(childEntity);
+            for (Account childAccount : childAccounts.getItems()) {
+                Map<String, Object> childConfigValues = getConfigValues(childAccount);
                 int maxChildChildAccounts = (int) childConfigValues.get("maxNumberChildEntities");
                 childCount += maxChildChildAccounts;
             }
 
             // Max allowed for this account
             int maxChildAccounts = (int) configuration.get("maxNumberChildEntities");
-            return (int) (maxChildAccounts - currentChildAccounts - childCount);
+            return (int) (maxChildAccounts - currentUsedEntities - childCount);
         }
         return Integer.MAX_VALUE;
     }
 
     /**
-     * Gets the scoped configuration values from the given {@link KapuaEntity}.
-     * This method defaults to {@link KapuaEntity#getScopeId()}, but implementations can change it to use other attributes.
+     * Gets the scoped configuration values from the given {@link Account}.
+     * This method defaults to {@link Account#getId()}, but implementations can change it to use other attributes.
      * 
-     * @param entity
-     *            The entity from which get the scope id.
-     * @return The scoped configurations for the scope id in the {@link KapuaEntity} parameter.
+     * @param account
+     *            The account from which get the id.
+     * @return The scoped configurations for the given {@link Account}.
      * @throws KapuaException
      * 
      * @since 1.0.0
      */
-    protected Map<String, Object> getConfigValues(E entity) throws KapuaException {
-        return getConfigValues(entity.getScopeId());
+    protected Map<String, Object> getConfigValues(Account account) throws KapuaException {
+        return getConfigValues(account.getId());
     }
 
 }
