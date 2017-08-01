@@ -12,19 +12,48 @@
 package org.eclipse.kapua.client.gateway.spi.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.kapua.client.gateway.Transport.ListenerHandle;
-import org.eclipse.kapua.client.gateway.spi.util.TransportAsync;
-import org.eclipse.kapua.client.gateway.spi.util.TransportProxy;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 public class TransportProxyTest {
+
+    private static final class TestListener {
+
+        private static final long DEFAULT_TIMEOUT = Long.getLong("defaultTimeout", 500L); // 500ms default
+
+        private final Semaphore lock = new Semaphore(0);
+
+        private boolean state;
+
+        public void set(boolean state) {
+            this.state = state;
+            lock.release();
+        }
+
+        public boolean get() {
+            return this.state;
+        }
+
+        public Boolean await(long timeoutMillis) throws InterruptedException {
+            if (lock.tryAcquire(timeoutMillis, TimeUnit.MILLISECONDS)) {
+                return this.state;
+            }
+            return null;
+        }
+
+        public Boolean await() throws InterruptedException {
+            return await(DEFAULT_TIMEOUT);
+        }
+    }
 
     private ExecutorService executor;
 
@@ -41,11 +70,11 @@ public class TransportProxyTest {
     @Test
     public void test1() throws Exception {
 
-        final AtomicBoolean b1 = new AtomicBoolean();
-        final AtomicBoolean b2 = new AtomicBoolean();
+        final TestListener b1 = new TestListener();
+        final TestListener b2 = new TestListener();
 
         final TransportAsync transport = new TransportAsync(executor);
-        transport.handleConnected().get();
+        transport.handleConnected();
 
         try (final TransportProxy transportProxy = TransportProxy.proxy(transport, executor)) {
 
@@ -53,35 +82,33 @@ public class TransportProxyTest {
             assertEquals(false, b2.get());
 
             final ListenerHandle h1 = transportProxy.listen(b1::set);
-            Thread.sleep(100);
 
-            assertEquals(true, b1.get());
-            assertEquals(false, b2.get());
+            assertEquals(true, b1.await());
+            assertNull(b2.await());
 
             final ListenerHandle h2 = transportProxy.listen(b2::set);
-            Thread.sleep(100);
 
-            assertEquals(true, b1.get());
-            assertEquals(true, b2.get());
+            assertNull(b1.await());
+            assertEquals(true, b2.await());
 
-            transport.handleDisconnected().get();
+            transport.handleDisconnected();
 
-            assertEquals(false, b1.get());
-            assertEquals(false, b2.get());
+            assertEquals(false, b1.await());
+            assertEquals(false, b2.await());
 
             h2.close();
 
-            transport.handleConnected().get();
+            transport.handleConnected();
 
-            assertEquals(true, b1.get());
-            assertEquals(false, b2.get());
+            assertEquals(true, b1.await());
+            assertNull(b2.await());
 
             h1.close();
 
-            transport.handleDisconnected().get();
+            transport.handleDisconnected();
 
-            assertEquals(true, b1.get());
-            assertEquals(false, b2.get());
+            assertNull(b1.await());
+            assertNull(b2.await());
 
         }
     }
