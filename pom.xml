@@ -920,8 +920,6 @@
     <modules>
         <module>build-tools</module>
 
-        <module>external</module>
-
         <module>commons</module>
         <module>locator</module>
         <module>service</module>
@@ -955,6 +953,14 @@
                 <module>console</module>
             </modules>
         </profile>
+        
+        <!-- Profile used to exclude external dependency modules -->
+        <!-- <profile>
+            <id>external</id>
+            <modules>
+                <module>external</module>
+            </modules>
+        </profile> -->
     
         <!-- Profile used only during release process. -->
         <profile>
