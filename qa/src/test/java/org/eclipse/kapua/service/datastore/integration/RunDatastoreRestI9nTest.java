@@ -24,8 +24,8 @@ import org.junit.runner.RunWith;
                 "org.eclipse.kapua.service.user.steps",
         },
         plugin = { "pretty",
-                "html:target/cucumber/DatastoreI9n",
-                "json:target/DatastoreI9n_cucumber.json" },
+                "html:target/cucumber/DatastoreRestI9n",
+                "json:target/DatastoreRestI9n_cucumber.json" },
         monochrome = true)
 @CucumberProperty(key="datastore.client.class", value="org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient")
 public class RunDatastoreRestI9nTest {
