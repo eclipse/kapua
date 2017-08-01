@@ -23,6 +23,7 @@
 
     <artifactId>kapua-client-gateway-provider</artifactId>
     <packaging>pom</packaging>
+    <name>Eclipse Kapua :: Gateway Client :: Provider</name>
 
     <modules>
         <module>fuse</module>
