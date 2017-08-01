@@ -9,7 +9,7 @@
  * Contributors:
  *     Red Hat Inc - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.client.gateway.util;
+package org.eclipse.kapua.client.gateway.spi.util;
 
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;

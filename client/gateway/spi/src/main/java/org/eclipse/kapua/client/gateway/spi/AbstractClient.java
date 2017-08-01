@@ -12,7 +12,7 @@
 package org.eclipse.kapua.client.gateway.spi;
 
 import static java.util.concurrent.CompletableFuture.completedFuture;
-import static org.eclipse.kapua.client.gateway.util.Futures.completedExceptionally;
+import static org.eclipse.kapua.client.gateway.spi.util.Futures.completedExceptionally;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -33,8 +33,8 @@ import org.eclipse.kapua.client.gateway.ModuleContext;
 import org.eclipse.kapua.client.gateway.Payload;
 import org.eclipse.kapua.client.gateway.Topic;
 import org.eclipse.kapua.client.gateway.Transport;
-import org.eclipse.kapua.client.gateway.utils.TransportAsync;
-import org.eclipse.kapua.client.gateway.utils.TransportProxy;
+import org.eclipse.kapua.client.gateway.spi.util.TransportAsync;
+import org.eclipse.kapua.client.gateway.spi.util.TransportProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

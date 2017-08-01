@@ -13,7 +13,7 @@ package org.eclipse.kapua.client.gateway.mqtt.fuse;
 
 import static java.util.Objects.requireNonNull;
 import static org.eclipse.kapua.client.gateway.mqtt.fuse.internal.Callbacks.asCallback;
-import static org.eclipse.kapua.client.gateway.utils.Strings.nonEmptyText;
+import static org.eclipse.kapua.client.gateway.spi.util.Strings.nonEmptyText;
 
 import java.net.URI;
 import java.nio.ByteBuffer;

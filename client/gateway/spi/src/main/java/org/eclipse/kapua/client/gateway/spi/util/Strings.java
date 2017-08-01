@@ -9,7 +9,7 @@
  * Contributors:
  *     Red Hat Inc - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.client.gateway.utils;
+package org.eclipse.kapua.client.gateway.spi.util;
 
 public final class Strings {
 

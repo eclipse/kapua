@@ -9,7 +9,7 @@
  * Contributors:
  *     Red Hat Inc - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.client.gateway.utils;
+package org.eclipse.kapua.client.gateway.spi.util;
 
 import static org.junit.Assert.assertEquals;
 
@@ -18,6 +18,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.kapua.client.gateway.Transport.ListenerHandle;
+import org.eclipse.kapua.client.gateway.spi.util.TransportAsync;
+import org.eclipse.kapua.client.gateway.spi.util.TransportProxy;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

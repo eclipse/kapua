@@ -9,11 +9,11 @@
  * Contributors:
  *     Red Hat Inc - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.client.gateway.utils;
+package org.eclipse.kapua.client.gateway.spi.util;
 
 import java.nio.ByteBuffer;
 
-import org.eclipse.kapua.client.gateway.utils.Buffers;
+import org.eclipse.kapua.client.gateway.spi.util.Buffers;
 import org.junit.Assert;
 import org.junit.Test;
 

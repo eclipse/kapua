@@ -19,7 +19,7 @@ import java.util.Objects;
 import org.eclipse.kapua.client.gateway.BinaryPayloadCodec;
 import org.eclipse.kapua.client.gateway.Payload;
 import org.eclipse.kapua.client.gateway.kura.internal.Metrics;
-import org.eclipse.kapua.client.gateway.utils.Buffers;
+import org.eclipse.kapua.client.gateway.spi.util.Buffers;
 import org.eclipse.kapua.gateway.client.kura.payload.KuraPayloadProto;
 import org.eclipse.kapua.gateway.client.kura.payload.KuraPayloadProto.KuraPayload;
 

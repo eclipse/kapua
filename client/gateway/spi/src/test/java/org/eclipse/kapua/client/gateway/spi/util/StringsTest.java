@@ -9,9 +9,9 @@
  * Contributors:
  *     Red Hat Inc - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.client.gateway.utils;
+package org.eclipse.kapua.client.gateway.spi.util;
 
-import org.eclipse.kapua.client.gateway.utils.Strings;
+import org.eclipse.kapua.client.gateway.spi.util.Strings;
 import org.junit.Test;
 
 public class StringsTest {

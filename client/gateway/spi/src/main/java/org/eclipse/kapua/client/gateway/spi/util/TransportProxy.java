@@ -9,7 +9,7 @@
  * Contributors:
  *     Red Hat Inc - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.client.gateway.utils;
+package org.eclipse.kapua.client.gateway.spi.util;
 
 import java.util.Collections;
 import java.util.Objects;
