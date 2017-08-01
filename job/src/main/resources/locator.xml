@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+<!DOCTYPE xml>
+<locator-config>
+    <provided>
+        <api>org.eclipse.kapua.service.job.JobFactory</api>
+        <api>org.eclipse.kapua.service.job.JobService</api>
+        
+        <api>org.eclipse.kapua.service.job.target.JobTargetService</api>
+        <api>org.eclipse.kapua.service.job.target.JobTargetFactory</api>
+        <api>org.eclipse.kapua.service.job.step.definition.JobStepDefinitionFactory</api>
+
+
+        <api>org.eclipse.kapua.service.account.AccountService</api>
+        <api>org.eclipse.kapua.service.account.AccountFactory</api>
+        
+        <api>org.eclipse.kapua.service.authorization.AuthorizationService</api>
+        <api>org.eclipse.kapua.service.authorization.permission.PermissionFactory</api>
+        
+        <api>org.eclipse.kapua.service.device.call.DeviceCallFactory</api>        
+        <api>org.eclipse.kapua.service.device.management.command.DeviceCommandManagementService</api>
+        <api>org.eclipse.kapua.service.device.management.command.DeviceCommandFactory</api>
+        
+        <api>org.eclipse.kapua.translator.Translator</api>]
+        
+        <api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
+        <api>org.eclipse.kapua.model.id.KapuaIdFactory</api>
+    </provided>
+    <packages>
+        <package>org.eclipse.kapua.commons</package>
+        <package>org.eclipse.kapua.service</package>
+        <package>org.eclipse.kapua.transport</package>
+    </packages>
+</locator-config>
