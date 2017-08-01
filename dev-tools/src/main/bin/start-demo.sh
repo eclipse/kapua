@@ -22,7 +22,7 @@ echo 'creating demo vagrant machine'
 
 cd $KAPUA_GIT_ROOT/../../../../
 
-mvn clean install -P deploy -D skipTests
+mvn clean install -Pdeploy,console -D skipTests
 
 cd dev-tools/src/main/vagrant
 
