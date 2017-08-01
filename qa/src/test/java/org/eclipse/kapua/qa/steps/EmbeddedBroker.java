@@ -52,7 +52,7 @@ public class EmbeddedBroker {
 
     private Map<String, List<AutoCloseable>> closables = new HashMap<>();
 
-    private BrokerService broker;
+    private static BrokerService broker;
 
     private DBHelper database;
 
@@ -61,10 +61,10 @@ public class EmbeddedBroker {
         this.database = database;
     }
 
-    @Before
+    @Before(value = "@StartBroker")
     public void start() {
 
-        this.database.setup();
+        database.setup();
 
         logger.info("Starting new instance");
 
@@ -99,7 +99,7 @@ public class EmbeddedBroker {
         }
     }
 
-    @After
+    @After(value = "@StopBroker")
     public void stop() {
         logger.info("Stopping instance ...");
 

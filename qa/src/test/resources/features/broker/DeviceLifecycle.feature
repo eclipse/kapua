@@ -11,6 +11,12 @@
 ###############################################################################
 Feature: Device lifecycle scenarios
 
+  @StartBroker
+  Scenario: Start broker for all scenarios
+
+  @StartDatastore
+  Scenario: Start datastore for all scenarios
+
 Scenario: Starting and stopping the simulator should create a device entry and properly set its status
   This starts and stops a simulator instance and checks if the connection state
   is recorded properly.
@@ -60,4 +66,10 @@ Scenario: Installing a package
   
   When I fetch the package states
   Then Package "foo.bar" with version 1.2.3 is installed and has 10 mock bundles
+
+  @StopBroker
+  Scenario: Stop broker after all scenarios
+
+  @StopDatastore
+  Scenario: Stop datastore after all scenarios
 

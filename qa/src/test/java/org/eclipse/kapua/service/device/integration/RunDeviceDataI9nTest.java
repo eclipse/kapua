@@ -8,27 +8,25 @@
  *
  * Contributors:
  *     Eurotech
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.device.integration;
 
 import cucumber.api.CucumberOptions;
-import org.eclipse.kapua.test.cucumber.CucumberProperty;
-import org.eclipse.kapua.test.cucumber.CucumberWithProperties;
+import cucumber.api.junit.Cucumber;
 import org.junit.runner.RunWith;
 
-@RunWith(CucumberWithProperties.class)
+@RunWith(Cucumber.class)
 @CucumberOptions(
-        features = {"classpath:features/broker/acl/BrokerACLI9n.feature"
-                   },
+        features = {"classpath:features/broker/DeviceData.feature"},
         glue = {"org.eclipse.kapua.qa.steps",
                 "org.eclipse.kapua.service.user.steps",
                 "org.eclipse.kapua.service.device.steps"
                },
         plugin = {"pretty", 
-                  "html:target/cucumber/BrokerACLI9n",
-                  "json:target/BrokerACLI9n_cucumber.json"
+                  "html:target/cucumber/DeviceDataI9n",
+                  "json:target/DeviceDataI9n_cucumber.json"
                  },
         monochrome = true )
-@CucumberProperty(key="org.eclipse.kapua.qa.broker.extraStartupDelay", value="3")
-public class RunBrokerACLI9nTest {
-}
+
+public class RunDeviceDataI9nTest {}

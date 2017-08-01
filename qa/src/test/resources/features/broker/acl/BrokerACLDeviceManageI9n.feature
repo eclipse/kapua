@@ -39,6 +39,13 @@ Feature: Broker ACL tests
   ACL_DATA_ACC = {0}.>
   ACL_DATA_ACC_CLI = {0}.{1}.>
   ACL_CTRL_ACC_NOTIFY = $EDC.{0}.*.*.NOTIFY.{1}.>
+
+  @StartBroker
+  Scenario: Start broker for all scenarios
+
+  @StartDatastore
+  Scenario: Start datastore for all scenarios
+
 #
 # Data manage
 #
@@ -192,3 +199,9 @@ Feature: Broker ACL tests
     Then exception is thrown
     And clients are disconnected
     And Mqtt Device is stoped
+
+  @StopBroker
+  Scenario: Stop broker after all scenarios
+
+  @StopDatastore
+  Scenario: Stop datastore after all scenarios

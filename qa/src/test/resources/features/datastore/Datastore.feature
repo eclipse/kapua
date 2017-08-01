@@ -13,6 +13,12 @@
 
 Feature: Datastore tests
 
+  @StartBroker
+  Scenario: Start broker for all scenarios
+
+  @StartDatastore
+  Scenario: Start datastore for all scenarios
+
   Scenario: Query before schema search
     Before schema is created methods that search with find for messages, channel info,
     metric info and client info, should return null values.
@@ -51,6 +57,7 @@ Feature: Datastore tests
          Then I get empty client info list result
        When I count for client info
          Then I get client info count 0
+    Then All indices are deleted
     And I logout
 
   Scenario: Check the database cache coherency
@@ -71,9 +78,10 @@ Feature: Datastore tests
     When I refresh all database indices
     And I search for a data message with ID "RandomDataMessage1Id" and remember it as "DataStoreMessageNew"
     Then The datastore messages "DataStoreMessage" and "DataStoreMessageNew" match
+    And All indices are deleted
 
   Scenario: Check the message store
-    Store few messages with few metrics, position and body (partially randomly generated) and check 
+    Store few messages with few metrics, position and body (partially randomly generated) and check
     if the stored message (retrieved by id) has all the fields correctly set.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
@@ -84,11 +92,13 @@ Feature: Datastore tests
     And I refresh all database indices
     When I search for messages with IDs from the list "StoredMessageIDs" and store them in the list "StoredMessagesList"
     Then The datastore messages in list "StoredMessagesList" matches the prepared messages in list "RandomMessagesList"
+    And All indices are deleted
 
   Scenario: Delete items by the datastore ID
     Delete a previously stored message and verify that it is not in the store any more. Also delete and check the
     message related channel, metric and client info entries.
 
+    Given All indices are deleted
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And Account for "kapua-sys"
     And The device "test-device-1"
@@ -119,9 +129,11 @@ Feature: Datastore tests
     And I refresh all database indices
     When I count the current account clients and store the count as "AccountClientCount"
     Then The value of "AccountClientCount" is exactly 0
+    And All indices are deleted
 
   Scenario: Delete items based on query results
 
+    Given All indices are deleted
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And Account for "kapua-sys"
     And The device "test-device-1"
@@ -168,9 +180,11 @@ Feature: Datastore tests
     And I refresh all database indices
     When I query for the current account clients and store them as "AccountClientlList2"
     Then There are exactly 2 clients in the list "AccountClientlList2"
+    And All indices are deleted
 
   Scenario: Check the mapping for message semantic topics
 
+    Given All indices are deleted
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And Account for "kapua-sys"
     And The device "test-device-1"
@@ -187,6 +201,7 @@ Feature: Datastore tests
     Then The value of "AccountMetricCount" is exactly 15
     When I search for messages with IDs from the list "StoredMessageIDs" and store them in the list "StoredMessagesList"
     Then The datastore messages in list "StoredMessagesList" matches the prepared messages in list "TestMessages"
+    And All indices are deleted
 
   Scenario: Ordered query
     Test the correctness of the query filtering order (3 fields: date descending, date ascending, string descending)
@@ -205,11 +220,13 @@ Feature: Datastore tests
     Then I refresh all database indices
     When I perform an ordered query for messages and store the results as "QueriedMessageList"
     Then The items in the list "QueriedMessageList" are stored in the default order
+    And All indices are deleted
 
   Scenario: Test the message store with timestamp indexing
     Test the correctness of the storage process with a basic message (no metrics, payload and position)
     indexing message date by device timestamp (as default).
 
+    And All indices are deleted
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And Account for "kapua-sys"
     And The device "test-device-1"
@@ -220,11 +237,13 @@ Feature: Datastore tests
     When I perform a default query for the account messages and store the results as "AccountMessages"
     And I pick message number 0 from the list "AccountMessages" and remember it as "QueriedMessage"
     Then The datastore message "QueriedMessage" matches the prepared message "TestMessageWithNullPayload"
+    And All indices are deleted
 
   Scenario: Test the message store with server timestamp indexing
     Test the correctness of the storage process with a basic message (no metrics, payload and position)
     indexing message date by server timestamp (as default).
 
+    Given All indices are deleted
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And Account for "kapua-sys"
     And The device "test-device-1"
@@ -235,11 +254,13 @@ Feature: Datastore tests
     When I perform a default query for the account messages and store the results as "AccountMessages"
     And I pick message number 0 from the list "AccountMessages" and remember it as "QueriedMessage"
     Then The datastore message "QueriedMessage" matches the prepared message "TestMessageWithNullPayload"
+    And All indices are deleted
 
   Scenario: ChannelInfo client ID and topic data based on the account id
     Check the correctness of the client ids and topics stored in the channel info data by retrieving the
     channel info by account id
 
+    Given All indices are deleted
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And Account for "kapua-sys"
     And The device "test-device-1"
@@ -257,6 +278,7 @@ Feature: Datastore tests
     When I query for the current account channels and store them as "AccountChannelList"
     Then There are exactly 6 channels in the list "AccountChannelList"
     And The channel info items "AccountChannelList" match the prepared messages in "TestMessages"
+    And All indices are deleted
 
   Scenario: ChannelInfo client ID and topic data based on the client id
   Check the correctness of the client ids and topics stored in the channel info data by retrieving the
@@ -283,6 +305,7 @@ Feature: Datastore tests
     When I query for the channel info of the client "test-client-1" and store the result as "ClientInfoList"
     Then There are exactly 4 channels in the list "ClientInfoList"
     And The channel info items "ClientInfoList" match the prepared messages in "TestMessages1"
+    And All indices are deleted
 
   Scenario: ChannelInfo last published date
     Check the correctness of the channel info last publish date stored by retrieving the
@@ -306,3 +329,10 @@ Feature: Datastore tests
     And Client "test-client-1" last published on a channel in the list "ChannelList" on "03/07/2017T09:00:00"
     And Client "test-client-2" first published on a channel in the list "ChannelList" on "03/07/2017T09:00:00"
     And Client "test-client-2" last published on a channel in the list "ChannelList" on "03/07/2017T09:00:20"
+    And All indices are deleted
+
+  @StopBroker
+  Scenario: Stop broker after all scenarios
+
+  @StopDatastore
+  Scenario: Stop datastore after all scenarios

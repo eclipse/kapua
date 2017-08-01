@@ -7,28 +7,25 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Eurotech
+ *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
-package org.eclipse.kapua.service.device.integration;
+package org.eclipse.kapua.service.user.integration;
 
 import cucumber.api.CucumberOptions;
-import org.eclipse.kapua.test.cucumber.CucumberProperty;
-import org.eclipse.kapua.test.cucumber.CucumberWithProperties;
+import cucumber.api.junit.Cucumber;
 import org.junit.runner.RunWith;
 
-@RunWith(CucumberWithProperties.class)
+@RunWith(Cucumber.class)
 @CucumberOptions(
-        features = {"classpath:features/broker/acl/BrokerACLI9n.feature"
-                   },
+        features = "classpath:features/user/LockoutExpirationI9n.feature",
         glue = {"org.eclipse.kapua.qa.steps",
-                "org.eclipse.kapua.service.user.steps",
-                "org.eclipse.kapua.service.device.steps"
+                "org.eclipse.kapua.service.user.steps"
                },
         plugin = {"pretty", 
-                  "html:target/cucumber/BrokerACLI9n",
-                  "json:target/BrokerACLI9n_cucumber.json"
+                  "html:target/cucumber/LockoutExpirationI9n",
+                  "json:target/LockoutExpirationI9n_cucumber.json"
                  },
-        monochrome = true )
-@CucumberProperty(key="org.eclipse.kapua.qa.broker.extraStartupDelay", value="3")
-public class RunBrokerACLI9nTest {
-}
+        monochrome=true)
+
+public class RunLockoutExpirationI9nTest {}

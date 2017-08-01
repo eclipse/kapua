@@ -13,6 +13,12 @@ Feature: Device Registry Integration
     Device Registy integration test scenarios. These scenarios test higher level device service functionality
     with all services live.
 
+  @StartBroker
+  Scenario: Start broker for all scenarios
+
+  @StartDatastore
+  Scenario: Start datastore for all scenarios
+
 Scenario: Birth message handling from a new device
     A birth message is received. The referenced device does not yet exist and is created on-the-fly. After the
     message is processed a new device must be created and a BIRTH event inserted in the database.
@@ -257,3 +263,9 @@ Scenario: Creating new device and tagging it with specific Tag
     When I search for device with tag "KuraDevice"
     Then I find device "device_1"
     And I logout
+
+  @StopBroker
+  Scenario: Stop broker after all scenarios
+
+  @StopDatastore
+  Scenario: Stop datastore after all scenarios

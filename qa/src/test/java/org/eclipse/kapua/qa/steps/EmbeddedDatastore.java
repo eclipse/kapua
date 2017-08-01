@@ -13,13 +13,16 @@
 package org.eclipse.kapua.qa.steps;
 
 import java.io.IOException;
+
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
 import org.eclipse.kapua.service.datastore.client.embedded.EsEmbeddedEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
 import cucumber.runtime.java.guice.ScenarioScoped;
+
+import static java.time.Duration.ofSeconds;
 
 /**
  * Singleton for managing datastore creation and deletion inside Gherkin scenarios.
@@ -29,19 +32,37 @@ public class EmbeddedDatastore {
 
     private static final Logger logger = LoggerFactory.getLogger(EmbeddedDatastore.class);
 
-    private EsEmbeddedEngine esEmbeddedEngine;
+    private static final int EXTRA_STARTUP_DELAY = Integer.getInteger("org.eclipse.kapua.qa.datastore.extraStartupDelay", 0);
 
-    @Before(order = HookPriorities.DATASTORE)
+    private static EsEmbeddedEngine esEmbeddedEngine;
+
+    @Before(order = HookPriorities.DATASTORE, value = "@StartDatastore")
     public void setup() {
         logger.info("starting embedded datastore");
         esEmbeddedEngine = new EsEmbeddedEngine();
+        if (EXTRA_STARTUP_DELAY > 0) {
+            try {
+                Thread.sleep(ofSeconds(EXTRA_STARTUP_DELAY).toMillis());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         logger.info("starting embedded datastore DONE");
     }
 
-    @After(order = HookPriorities.DATASTORE)
+    @After(order = HookPriorities.DATASTORE, value = "@StopDatastore")
     public void closeNode() throws IOException {
         logger.info("closing embedded datastore");
-        esEmbeddedEngine.close();
+        if (EXTRA_STARTUP_DELAY > 0) {
+            try {
+                Thread.sleep(ofSeconds(EXTRA_STARTUP_DELAY).toMillis());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        if (esEmbeddedEngine != null) {
+            esEmbeddedEngine.close();
+        }
         logger.info("closing embedded datastore DONE");
     }
 }

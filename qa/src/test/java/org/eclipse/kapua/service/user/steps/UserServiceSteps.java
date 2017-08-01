@@ -111,14 +111,19 @@ public class UserServiceSteps extends AbstractKapuaSteps {
      */
     private StepData stepData;
 
+    private DBHelper database;
+
     @Inject
-    public UserServiceSteps(StepData stepData, /*dependency*/ DBHelper dbHelper) {
+    public UserServiceSteps(StepData stepData, DBHelper dbHelper) {
 
         this.stepData = stepData;
+        this.database = dbHelper;
     }
 
     @Before
     public void beforeScenario(Scenario scenario) throws KapuaException {
+
+        this.database.setup();
 
         // Services by default Locator
         KapuaLocator locator = KapuaLocator.getInstance();

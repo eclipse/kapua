@@ -19,7 +19,7 @@ import cucumber.api.junit.Cucumber;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-        features = "classpath:features/user",
+        features = "classpath:features/user/UserServiceI9n.feature",
         glue = {"org.eclipse.kapua.qa.steps",
                 "org.eclipse.kapua.service.user.steps"
                },
