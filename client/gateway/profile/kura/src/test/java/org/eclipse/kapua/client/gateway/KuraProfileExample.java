@@ -59,18 +59,15 @@ public final class KuraProfileExample {
 
                 try {
                     // send, handling error ourself
-                    application.data(Topic.of("my", "topic")).send(payload);
+                    application
+                            .data(Topic.of("my", "topic"))
+                            .send(payload)
+                            .toCompletableFuture().get();
                 } catch (final Exception e) {
                     logger.info("Failed to publish", e);
                 }
 
-                // send, with attached error handler
-
-                application
-                        .data(Topic.of("my", "topic"))
-                        .send(payload);
-
-                // ignoring error
+                // send data
 
                 application
                         .data(Topic.of("my", "topic"))
