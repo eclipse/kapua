@@ -46,7 +46,7 @@ public class JobImpl extends AbstractKapuaNamedEntity implements Job {
     private List<JobStep> jobSteps;
 
     @Basic
-    @Column(name = "xmlDefinition", nullable = true, updatable = true)
+    @Column(name = "job_xml_definition", nullable = true, updatable = true)
     private String jobXmlDefinition;
 
     public JobImpl(KapuaId scopeId) {

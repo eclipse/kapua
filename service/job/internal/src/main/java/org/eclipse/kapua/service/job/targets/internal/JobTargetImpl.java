@@ -44,24 +44,24 @@ public class JobTargetImpl extends AbstractKapuaUpdatableEntity implements JobTa
     @AttributeOverrides({
             @AttributeOverride(name = "eid", column = @Column(name = "job_id", nullable = false, updatable = false))
     })
-    public KapuaEid jobId;
+    private KapuaEid jobId;
 
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "eid", column = @Column(name = "job_target_id", nullable = false, updatable = false))
     })
-    public KapuaEid jobTargetId;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false, updatable = true)
-    public JobTargetStatus status;
+    private KapuaEid jobTargetId;
 
     @Basic
     @Column(name = "step_index", nullable = false, updatable = true)
-    public int stepIndex;
+    private int stepIndex;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, updatable = true)
+    private JobTargetStatus status;
 
     @Transient
-    public Exception e;
+    private Exception e;
 
     public JobTargetImpl(KapuaId scopeId) {
         super(scopeId);
@@ -88,17 +88,6 @@ public class JobTargetImpl extends AbstractKapuaUpdatableEntity implements JobTa
     }
 
     @Override
-    public JobTargetStatus getStatus() {
-        return status;
-    }
-
-    @Override
-    public void setStatus(JobTargetStatus status) {
-        this.status = status;
-
-    }
-
-    @Override
     public int getStepIndex() {
         return stepIndex;
     }
@@ -106,7 +95,16 @@ public class JobTargetImpl extends AbstractKapuaUpdatableEntity implements JobTa
     @Override
     public void setStepIndex(int stepIndex) {
         this.stepIndex = stepIndex;
+    }
 
+    @Override
+    public JobTargetStatus getStatus() {
+        return status;
+    }
+
+    @Override
+    public void setStatus(JobTargetStatus status) {
+        this.status = status;
     }
 
     @Override

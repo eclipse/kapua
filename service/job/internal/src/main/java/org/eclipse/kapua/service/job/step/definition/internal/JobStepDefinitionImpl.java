@@ -45,7 +45,7 @@ public class JobStepDefinitionImpl extends AbstractKapuaNamedEntity implements J
     private String description;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "jobStepType", nullable = false, updatable = false)
+    @Column(name = "job_step_type", nullable = false, updatable = false)
     private JobStepType jobStepType;
 
     @Basic

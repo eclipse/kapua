@@ -22,5 +22,4 @@ import org.eclipse.kapua.service.job.targets.JobTargetListResult;
  */
 public class JobTargetListResultImpl extends KapuaListResultImpl<JobTarget> implements JobTargetListResult {
 
-
 }
