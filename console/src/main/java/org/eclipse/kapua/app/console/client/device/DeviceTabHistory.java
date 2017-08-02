@@ -17,8 +17,10 @@ import java.util.List;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.client.ui.button.ExportButton;
 import org.eclipse.kapua.app.console.client.ui.button.RefreshButton;
+import org.eclipse.kapua.app.console.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.client.ui.widget.DateRangeSelector;
 import org.eclipse.kapua.app.console.client.ui.widget.DateRangeSelectorListener;
 import org.eclipse.kapua.app.console.client.ui.widget.KapuaMenuItem;
@@ -45,7 +47,6 @@ import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
@@ -66,7 +67,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class DeviceTabHistory extends LayoutContainer {
+public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
@@ -76,9 +77,7 @@ public class DeviceTabHistory extends LayoutContainer {
 
     private GwtSession currentSession;
 
-    private boolean dirty;
     private boolean initialized;
-    private GwtDevice selectedDevice;
 
     private ToolBar toolBar;
 
@@ -93,14 +92,9 @@ public class DeviceTabHistory extends LayoutContainer {
     protected boolean refreshProcess;
 
     public DeviceTabHistory(GwtSession currentSession) {
+        super(MSGS.tabHistory(), new KapuaIcon(IconSet.HISTORY));
         this.currentSession = currentSession;
-        dirty = false;
         initialized = false;
-    }
-
-    public void setDevice(GwtDevice selectedDevice) {
-        dirty = true;
-        this.selectedDevice = selectedDevice;
     }
 
     protected void onRender(Element parent, int index) {
@@ -178,7 +172,6 @@ public class DeviceTabHistory extends LayoutContainer {
         dateRangeSelector.setListener(new DateRangeSelectorListener() {
 
             public void onUpdate() {
-                dirty = true;
                 refresh();
             }
         });
@@ -240,11 +233,11 @@ public class DeviceTabHistory extends LayoutContainer {
 
             @Override
             public void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtDeviceEvent>> callback) {
-                if (selectedDevice != null) {
+                if (selectedEntity != null) {
                     PagingLoadConfig pagingConfig = (BasePagingLoadConfig) loadConfig;
                     ((BasePagingLoadConfig) pagingConfig).setLimit(DEVICE_PAGE_SIZE);
                     gwtDeviceService.findDeviceEvents(pagingConfig,
-                            selectedDevice,
+                            selectedEntity,
                             dateRangeSelector.getStartDate(),
                             dateRangeSelector.getEndDate(),
                             callback);
@@ -284,10 +277,10 @@ public class DeviceTabHistory extends LayoutContainer {
     //
     // --------------------------------------------------------------------------------------
 
-    public void refresh() {
-        if (dirty && initialized) {
-            dirty = false;
-            if (selectedDevice == null) {
+    @Override
+    public void doRefresh() {
+        if (initialized) {
+            if (selectedEntity == null) {
                 // clear the table
                 grid.getStore().removeAll();
             } else {
@@ -308,7 +301,7 @@ public class DeviceTabHistory extends LayoutContainer {
                 .append("&scopeId=")
                 .append(URL.encodeQueryString(currentSession.getSelectedAccount().getId()))
                 .append("&deviceId=")
-                .append(URL.encodeQueryString(selectedDevice.getId()))
+                .append(URL.encodeQueryString(selectedEntity.getId()))
                 .append("&startDate=")
                 .append(dateRangeSelector.getStartDate().getTime())
                 .append("&endDate=")

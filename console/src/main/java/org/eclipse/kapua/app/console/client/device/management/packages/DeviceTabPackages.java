@@ -11,13 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.device.management.packages;
 
-import org.eclipse.kapua.app.console.client.device.DeviceTabs;
+import org.eclipse.kapua.app.console.client.device.DeviceView;
 import org.eclipse.kapua.app.console.client.device.management.packages.button.PackageInstallButton;
 import org.eclipse.kapua.app.console.client.device.management.packages.button.PackageUninstallButton;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.client.ui.dialog.InfoDialog;
 import org.eclipse.kapua.app.console.client.ui.dialog.InfoDialog.InfoDialogType;
+import org.eclipse.kapua.app.console.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.shared.model.GwtDeploymentPackage;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
@@ -30,7 +33,6 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.TabPanel.TabPosition;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -40,14 +42,13 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 
-public class DeviceTabPackages extends LayoutContainer {
+public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    private DeviceTabs deviceTabs;
+    private DeviceView deviceTabs;
 
-    private boolean componentInitialized;
-    private GwtDevice selectedDevice;
+    private boolean initialized;
 
     private ToolBar toolBar;
     private Button refreshButton;
@@ -59,17 +60,21 @@ public class DeviceTabPackages extends LayoutContainer {
     private DeviceTabPackagesInProgress inProgressPackageTab;
 
     public DeviceTabPackages(GwtSession currentSession,
-            DeviceTabs deviceTabs) {
+            DeviceView deviceTabs) {
+        super(MSGS.tabPackages(), new KapuaIcon(IconSet.INBOX));
         this.deviceTabs = deviceTabs;
     }
 
-    public void setDevice(GwtDevice selectedDevice) {
+    @Override
+    public void setEntity(GwtDevice gwtDevice) {
+        super.setEntity(gwtDevice);
         setDirty();
-        this.selectedDevice = selectedDevice;
 
-        if (componentInitialized) {
+        if(initialized) {
             tabsPanel.setSelection(installedPackageTab);
         }
+
+        doRefresh();
     }
 
     protected void onRender(Element parent, int index) {
@@ -96,7 +101,7 @@ public class DeviceTabPackages extends LayoutContainer {
 
         add(devicesConfigurationPanel);
 
-        componentInitialized = true;
+        initialized = true;
     }
 
     //
@@ -110,8 +115,8 @@ public class DeviceTabPackages extends LayoutContainer {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if (selectedDevice != null &&
-                        selectedDevice.isOnline()) {
+                if (selectedEntity != null &&
+                        selectedEntity.isOnline()) {
                     setDirty();
                     refresh();
                 } else {
@@ -124,8 +129,8 @@ public class DeviceTabPackages extends LayoutContainer {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if (selectedDevice != null &&
-                        selectedDevice.isOnline()) {
+                if (selectedEntity != null &&
+                        selectedEntity.isOnline()) {
                     openInstallDialog();
                 } else {
                     openDeviceOfflineAlertDialog();
@@ -137,8 +142,8 @@ public class DeviceTabPackages extends LayoutContainer {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if (selectedDevice != null &&
-                        selectedDevice.isOnline()) {
+                if (selectedEntity != null &&
+                        selectedEntity.isOnline()) {
                     openUninstallDialog();
                 } else {
                     openDeviceOfflineAlertDialog();
@@ -198,7 +203,7 @@ public class DeviceTabPackages extends LayoutContainer {
     private void openInstallDialog() {
         toolBar.disable();
 
-        final PackageInstallDialog packageInstallDialog = new PackageInstallDialog(selectedDevice.getScopeId(), selectedDevice.getId());
+        final PackageInstallDialog packageInstallDialog = new PackageInstallDialog(selectedEntity.getScopeId(), selectedEntity.getId());
 
         packageInstallDialog.addListener(Events.Hide, new Listener<BaseEvent>() {
 
@@ -228,7 +233,7 @@ public class DeviceTabPackages extends LayoutContainer {
                     exitDialog.show();
 
                     uninstallButton.disable();
-                    deviceTabs.setDevice(selectedDevice);
+                    deviceTabs.setSelectedEntity(selectedEntity);
                 }
             }
         });
@@ -242,7 +247,7 @@ public class DeviceTabPackages extends LayoutContainer {
         if (selectedDeploymentPackage != null) {
             toolBar.disable();
 
-            final PackageUninstallDialog packageUninstallDialog = new PackageUninstallDialog(selectedDevice.getScopeId(), selectedDevice.getId(), selectedDeploymentPackage);
+            final PackageUninstallDialog packageUninstallDialog = new PackageUninstallDialog(selectedEntity.getScopeId(), selectedEntity.getId(), selectedDeploymentPackage);
 
             packageUninstallDialog.addListener(Events.Hide, new Listener<BaseEvent>() {
 
@@ -272,7 +277,7 @@ public class DeviceTabPackages extends LayoutContainer {
                         exitDialog.show();
 
                         uninstallButton.disable();
-                        deviceTabs.setDevice(selectedDevice);
+                        deviceTabs.setSelectedEntity(selectedEntity);
                     }
                 }
             });
@@ -291,22 +296,25 @@ public class DeviceTabPackages extends LayoutContainer {
     //
     // REFRESHER
     //
-    public void refresh() {
-        //
-        // Refresh the installed tab if selected
-        if (tabsPanel.getSelectedItem().equals(installedPackageTab)) {
-            installedPackageTab.refresh();
-        } else {
-            inProgressPackageTab.refresh();
-        }
+    @Override
+    public void doRefresh() {
+        if(initialized) {
+            //
+            // Refresh the installed tab if selected
+            if (tabsPanel.getSelectedItem().equals(installedPackageTab)) {
+                installedPackageTab.refresh();
+            } else {
+                inProgressPackageTab.refresh();
+            }
 
-        //
-        // Manage buttons
-        if (selectedDevice != null && selectedDevice.isOnline()) {
-            toolBar.enable();
-            uninstallButton.disable();
-        } else {
-            toolBar.disable();
+            //
+            // Manage buttons
+            if (selectedEntity != null && selectedEntity.isOnline()) {
+                toolBar.enable();
+                uninstallButton.disable();
+            } else {
+                toolBar.disable();
+            }
         }
     }
 
@@ -315,11 +323,11 @@ public class DeviceTabPackages extends LayoutContainer {
     //
 
     public GwtDevice getSelectedDevice() {
-        return selectedDevice;
+        return selectedEntity;
     }
 
     public void setDirty() {
-        if (componentInitialized) {
+        if (initialized) {
             installedPackageTab.setDirty(true);
             inProgressPackageTab.setDirty(true);
         }

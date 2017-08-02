@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,7 +17,10 @@ import java.util.List;
 import org.eclipse.kapua.app.console.client.device.button.BundleStartButton;
 import org.eclipse.kapua.app.console.client.device.button.BundleStopButton;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.client.ui.button.RefreshButton;
+import org.eclipse.kapua.app.console.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
@@ -44,7 +47,6 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -59,18 +61,16 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class DeviceTabBundles extends LayoutContainer {
+public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
     private final GwtDeviceManagementServiceAsync gwtDeviceManagementService = GWT.create(GwtDeviceManagementService.class);
     private final GwtSecurityTokenServiceAsync gwtXSRFService = GWT.create(GwtSecurityTokenService.class);
 
-    private DeviceTabs deviceTabs;
+    private DeviceView devicesView;
 
-    private boolean dirty;
     private boolean initialized;
-    private GwtDevice selectedDevice;
 
     private ToolBar toolBar;
 
@@ -85,15 +85,16 @@ public class DeviceTabBundles extends LayoutContainer {
     protected boolean refreshProcess;
 
     public DeviceTabBundles(GwtSession currentSession,
-            DeviceTabs deviceTabs) {
-        this.deviceTabs = deviceTabs;
-        dirty = true;
+            DeviceView devicesView) {
+        super(MSGS.tabBundles(), new KapuaIcon(IconSet.CUBES));
+        this.devicesView = devicesView;
         initialized = false;
     }
 
-    public void setDevice(GwtDevice selectedDevice) {
-        dirty = true;
-        this.selectedDevice = selectedDevice;
+    @Override
+    public void setEntity(GwtDevice gwtDevice) {
+        super.setEntity(gwtDevice);
+        doRefresh();
     }
 
     protected void onRender(Element parent, int index) {
@@ -129,9 +130,8 @@ public class DeviceTabBundles extends LayoutContainer {
                 if (!refreshProcess) {
                     refreshProcess = true;
 
-                    if (selectedDevice.isOnline()) {
+                    if (selectedEntity.isOnline()) {
                         toolBar.disable();
-                        dirty = true;
                         refresh();
 
                         refreshProcess = false;
@@ -159,13 +159,11 @@ public class DeviceTabBundles extends LayoutContainer {
 
             public void onFailure(Throwable caught) {
                 FailureHandler.handle(caught);
-                dirty = true;
             }
 
             public void onSuccess(Void arg0) {
                 // mark this panel dirty and also all the other pier panels
-                deviceTabs.setDevice(selectedDevice);
-                dirty = true;
+                devicesView.setSelectedEntity(selectedEntity);
                 refresh();
             }
         };
@@ -176,7 +174,7 @@ public class DeviceTabBundles extends LayoutContainer {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if (selectedDevice.isOnline()) {
+                if (selectedEntity.isOnline()) {
                     toolBar.disable();
                     grid.mask(MSGS.loading());
 
@@ -192,7 +190,7 @@ public class DeviceTabBundles extends LayoutContainer {
                         @Override
                         public void onSuccess(GwtXSRFToken token) {
                             gwtDeviceManagementService.startBundle(token,
-                                    selectedDevice,
+                                    selectedEntity,
                                     grid.getSelectionModel().getSelectedItem(),
                                     callback);
                         }
@@ -219,7 +217,7 @@ public class DeviceTabBundles extends LayoutContainer {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if (selectedDevice.isOnline()) {
+                if (selectedEntity.isOnline()) {
                     final GwtBundle gwtBundle = grid.getSelectionModel().getSelectedItem();
                     String bundleName = gwtBundle.getName();
                     MessageBox.confirm(MSGS.confirm(),
@@ -244,7 +242,7 @@ public class DeviceTabBundles extends LayoutContainer {
                                             @Override
                                             public void onSuccess(GwtXSRFToken token) {
                                                 gwtDeviceManagementService.stopBundle(token,
-                                                        selectedDevice,
+                                                        selectedEntity,
                                                         gwtBundle,
                                                         callback);
                                             }
@@ -276,9 +274,9 @@ public class DeviceTabBundles extends LayoutContainer {
 
             @Override
             protected void load(Object loadConfig, final AsyncCallback<ListLoadResult<GwtBundle>> callback) {
-                if (selectedDevice != null) {
-                    if (selectedDevice.isOnline()) {
-                        gwtDeviceManagementService.findBundles(selectedDevice, callback);
+                if (selectedEntity != null) {
+                    if (selectedEntity.isOnline()) {
+                        gwtDeviceManagementService.findBundles(selectedEntity, callback);
                     } else {
                         grid.getStore().removeAll();
                         grid.unmask();
@@ -335,11 +333,10 @@ public class DeviceTabBundles extends LayoutContainer {
         });
     }
 
-    public void refresh() {
-        if (dirty && initialized) {
-
-            dirty = false;
-            if (selectedDevice != null) {
+    @Override
+    public void doRefresh() {
+        if(initialized) {
+            if (selectedEntity != null) {
                 loader.load();
                 toolBar.enable();
                 startButton.disable();
@@ -352,7 +349,7 @@ public class DeviceTabBundles extends LayoutContainer {
     }
 
     public void reload() {
-        if (selectedDevice != null) {
+        if (selectedEntity != null) {
             loader.load();
         }
     }

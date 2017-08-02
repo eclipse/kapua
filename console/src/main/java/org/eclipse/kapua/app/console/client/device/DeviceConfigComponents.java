@@ -445,6 +445,8 @@ public class DeviceConfigComponents extends LayoutContainer {
             message = MSGS.deviceCloudConfigConfirmation(componentName);
         }
 
+        final DeviceConfigPanel finalDevConfPanel = devConfPanel;
+
         MessageBox.confirm(MSGS.confirm(),
                 message,
                 new Listener<MessageBoxEvent>() {
@@ -457,9 +459,9 @@ public class DeviceConfigComponents extends LayoutContainer {
                         if (dialog.yesText.equals(ce.getButtonClicked().getText())) {
 
                             // mark the whole config panel dirty and for reload
-                            tabConfig.setDevice(selectedDevice);
+                            tabConfig.setEntity(selectedDevice);
 
-                            devConfPanel.mask(MSGS.applying());
+                            finalDevConfPanel.mask(MSGS.applying());
                             tree.mask();
                             apply.setEnabled(false);
                             reset.setEnabled(false);
@@ -476,7 +478,7 @@ public class DeviceConfigComponents extends LayoutContainer {
 
                                 @Override
                                 public void onSuccess(GwtXSRFToken token) {
-                                    final GwtConfigComponent configComponent = devConfPanel.getUpdatedConfiguration();
+                                    final GwtConfigComponent configComponent = finalDevConfPanel.getUpdatedConfiguration();
                                     gwtDeviceManagementService.updateComponentConfiguration(token,
                                             selectedDevice,
                                             configComponent,

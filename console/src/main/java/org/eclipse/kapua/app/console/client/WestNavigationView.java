@@ -19,7 +19,7 @@ import org.eclipse.kapua.app.console.client.account.AccountDetailsView;
 import org.eclipse.kapua.app.console.client.account.AccountView;
 import org.eclipse.kapua.app.console.client.connection.ConnectionView;
 import org.eclipse.kapua.app.console.client.data.DataView;
-import org.eclipse.kapua.app.console.client.device.DevicesView;
+import org.eclipse.kapua.app.console.client.device.DeviceView;
 import org.eclipse.kapua.app.console.client.group.GroupView;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
@@ -203,7 +203,7 @@ public class WestNavigationView extends LayoutContainer {
                     centerPanel.layout();
                     dashboardSelected = false;
                 } else if ("devices".equals(selectedId)) {
-                    DevicesView deviceView = new DevicesView(currentSession);
+                    DeviceView deviceView = new DeviceView(currentSession);
 
                     panel.setHeaderVisible(false);
                     panel.add(deviceView);

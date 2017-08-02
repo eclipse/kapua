@@ -17,9 +17,9 @@ import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.Element;
 
-public class DevicesMap extends LayoutContainer {
+public class DeviceMap extends LayoutContainer {
 
-    public DevicesMap(DevicesView devicesView,
+    public DeviceMap(DeviceView devicesView,
             GwtSession currentSession) {
     }
 

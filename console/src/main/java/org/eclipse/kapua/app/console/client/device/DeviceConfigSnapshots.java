@@ -348,7 +348,7 @@ public class DeviceConfigSnapshots extends LayoutContainer {
                                 private void done() {
                                     cancel();
                                     // force a dirty on both tabs
-                                    tabConfig.setDevice(selectedDevice);
+                                    tabConfig.setEntity(selectedDevice);
                                     refresh();
                                 }
                             });
@@ -446,7 +446,7 @@ public class DeviceConfigSnapshots extends LayoutContainer {
                                 toolBar.disable();
 
                                 // mark the whole config panel dirty and for reload
-                                tabConfig.setDevice(selectedDevice);
+                                tabConfig.setEntity(selectedDevice);
 
                                 //
                                 // Getting XSRF token
