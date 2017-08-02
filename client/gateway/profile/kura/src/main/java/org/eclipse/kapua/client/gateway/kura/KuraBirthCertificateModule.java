@@ -23,7 +23,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.eclipse.kapua.client.gateway.kura.internal.Metrics;
-import org.eclipse.kapua.client.gateway.mqtt.AbstractMqttClient;
 import org.eclipse.kapua.client.gateway.mqtt.MqttModuleContext;
 import org.eclipse.kapua.client.gateway.spi.Module;
 import org.eclipse.kapua.client.gateway.spi.ModuleContext;
@@ -146,9 +145,9 @@ public class KuraBirthCertificateModule implements Module {
 
         this.client = client.orElseThrow(() -> {
             return new IllegalStateException(
-                    String.format("%s can only be used with an %s based instance",
+                    String.format("%s can only be used with a client providing an instance to %s",
                             KuraBirthCertificateModule.class.getSimpleName(),
-                            AbstractMqttClient.class.getName()));
+                            MqttModuleContext.class.getName()));
         });
     }
 
