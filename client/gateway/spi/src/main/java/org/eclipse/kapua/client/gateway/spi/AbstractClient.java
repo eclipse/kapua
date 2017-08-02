@@ -52,7 +52,7 @@ public abstract class AbstractClient implements Client {
 
         private ContextImpl(String applicationId) {
             this.applicationId = applicationId;
-            this.transport = TransportProxy.proxy(AbstractClient.this.transport, executor);
+            transport = TransportProxy.proxy(AbstractClient.this.transport, executor);
         }
 
         @Override

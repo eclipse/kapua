@@ -13,7 +13,6 @@ package org.eclipse.kapua.client.gateway.spi.util;
 
 import java.nio.ByteBuffer;
 
-import org.eclipse.kapua.client.gateway.spi.util.Buffers;
 import org.junit.Assert;
 import org.junit.Test;
 

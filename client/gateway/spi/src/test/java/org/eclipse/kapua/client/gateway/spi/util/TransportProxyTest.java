@@ -40,12 +40,12 @@ public class TransportProxyTest {
         }
 
         public boolean get() {
-            return this.state;
+            return state;
         }
 
         public Boolean await(long timeoutMillis) throws InterruptedException {
             if (lock.tryAcquire(timeoutMillis, TimeUnit.MILLISECONDS)) {
-                return this.state;
+                return state;
             }
             return null;
         }
@@ -59,12 +59,12 @@ public class TransportProxyTest {
 
     @Before
     public void createExecutor() {
-        this.executor = Executors.newSingleThreadExecutor();
+        executor = Executors.newSingleThreadExecutor();
     }
 
     @After
     public void disposeExecutor() {
-        this.executor.shutdown();
+        executor.shutdown();
     }
 
     @Test

@@ -42,7 +42,7 @@ public interface BinaryPayloadCodec {
 
     /**
      * Decode a {@link Payload} structure from the provided BLOB
-     * 
+     *
      * @param buffer
      *            The buffer to read from, must not be {@code null}
      * @return the decoded payload structure, may be {@code null}

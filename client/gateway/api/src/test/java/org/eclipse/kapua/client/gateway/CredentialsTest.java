@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.gateway;
 
-import org.eclipse.kapua.client.gateway.Credentials;
 import org.eclipse.kapua.client.gateway.Credentials.UserAndPassword;
 import org.junit.Assert;
 import org.junit.Test;

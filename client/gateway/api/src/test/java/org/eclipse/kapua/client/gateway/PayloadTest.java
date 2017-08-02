@@ -14,7 +14,6 @@ package org.eclipse.kapua.client.gateway;
 import java.time.Instant;
 import java.util.Collections;
 
-import org.eclipse.kapua.client.gateway.Payload;
 import org.junit.Assert;
 import org.junit.Test;
 

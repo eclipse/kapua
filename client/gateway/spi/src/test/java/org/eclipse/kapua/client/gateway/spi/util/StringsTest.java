@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.gateway.spi.util;
 
-import org.eclipse.kapua.client.gateway.spi.util.Strings;
 import org.junit.Test;
 
 public class StringsTest {

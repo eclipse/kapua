@@ -22,7 +22,7 @@ import org.eclipse.kapua.client.gateway.Transport;
 public final class TransportProxy implements Transport, AutoCloseable {
 
     private final Transport transport;
-    private Executor executor;
+    private final Executor executor;
     private boolean closed;
 
     private final Set<Listener> listeners = new CopyOnWriteArraySet<>();
@@ -84,7 +84,7 @@ public final class TransportProxy implements Transport, AutoCloseable {
      * <p>
      * If the proxy instance is already closed, this method will <b>not</b> throw any exception
      * </p>
-     * 
+     *
      * @param listener
      *            the listener to remove
      */
@@ -96,8 +96,8 @@ public final class TransportProxy implements Transport, AutoCloseable {
     }
 
     private synchronized void handleChange(final boolean state) {
-        this.lastKnownState = state;
-        fireEvent(state, new CopyOnWriteArraySet<>(this.listeners));
+        lastKnownState = state;
+        fireEvent(state, new CopyOnWriteArraySet<>(listeners));
     }
 
     private void fireEvent(final boolean state, final Set<Listener> listeners) {
@@ -107,7 +107,7 @@ public final class TransportProxy implements Transport, AutoCloseable {
     }
 
     private void attach() {
-        this.handle = transport.listen(this::handleChange);
+        handle = transport.listen(this::handleChange);
     }
 
     private synchronized void detach() {
@@ -128,7 +128,7 @@ public final class TransportProxy implements Transport, AutoCloseable {
     }
 
     /**
-     * 
+     *
      * @param transport
      * @param executor
      * @return

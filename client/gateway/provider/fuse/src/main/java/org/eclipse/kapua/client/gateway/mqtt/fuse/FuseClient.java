@@ -29,11 +29,11 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import org.eclipse.kapua.client.gateway.BinaryPayloadCodec;
 import org.eclipse.kapua.client.gateway.Credentials.UserAndPassword;
+import org.eclipse.kapua.client.gateway.Module;
 import org.eclipse.kapua.client.gateway.mqtt.MqttClient;
 import org.eclipse.kapua.client.gateway.mqtt.MqttMessageHandler;
 import org.eclipse.kapua.client.gateway.mqtt.MqttNamespace;
 import org.eclipse.kapua.client.gateway.mqtt.fuse.internal.Callbacks;
-import org.eclipse.kapua.client.gateway.Module;
 import org.fusesource.hawtbuf.Buffer;
 import org.fusesource.hawtbuf.UTF8Buffer;
 import org.fusesource.mqtt.client.Callback;

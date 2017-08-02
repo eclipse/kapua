@@ -15,7 +15,7 @@ import java.io.IOException;
 
 /**
  * An exception indicating a temporary transmission error.
- * 
+ *
  * This exception indicates that the message could not be transmitted
  * at the moment. Re-trying at a later time is a valid option though.
  */
@@ -26,15 +26,15 @@ public class TransmissionException extends IOException {
     public TransmissionException() {
     }
 
-    public TransmissionException(String message, Throwable cause) {
+    public TransmissionException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public TransmissionException(String message) {
+    public TransmissionException(final String message) {
         super(message);
     }
 
-    public TransmissionException(Throwable cause) {
+    public TransmissionException(final Throwable cause) {
         super(cause);
     }
 

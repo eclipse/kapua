@@ -32,13 +32,13 @@ import java.util.function.Supplier;
 
 import org.eclipse.kapua.client.gateway.BinaryPayloadCodec;
 import org.eclipse.kapua.client.gateway.Credentials.UserAndPassword;
+import org.eclipse.kapua.client.gateway.Module;
+import org.eclipse.kapua.client.gateway.TransmissionException;
 import org.eclipse.kapua.client.gateway.mqtt.MqttClient;
 import org.eclipse.kapua.client.gateway.mqtt.MqttMessageHandler;
 import org.eclipse.kapua.client.gateway.mqtt.MqttNamespace;
 import org.eclipse.kapua.client.gateway.mqtt.paho.internal.Listeners;
 import org.eclipse.kapua.client.gateway.spi.util.Buffers;
-import org.eclipse.kapua.client.gateway.Module;
-import org.eclipse.kapua.client.gateway.TransmissionException;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;

@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.eclipse.kapua.client.gateway.Topic;
 import org.junit.Assert;
 import org.junit.Test;
 

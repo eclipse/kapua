@@ -28,7 +28,7 @@ public final class Futures {
     }
 
     public static <T> CompletableFuture<T> completedExceptionally(Throwable error) {
-        final CompletableFuture<T> future = new CompletableFuture<T>();
+        final CompletableFuture<T> future = new CompletableFuture<>();
         future.completeExceptionally(error);
         return future;
     }

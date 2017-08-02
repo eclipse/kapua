@@ -22,7 +22,7 @@ import org.eclipse.kapua.client.gateway.Transport;
 public class TransportAsync implements Transport {
 
     private final ExecutorService executor;
-    private CopyOnWriteArraySet<Listener> listeners = new CopyOnWriteArraySet<>();
+    private final CopyOnWriteArraySet<Listener> listeners = new CopyOnWriteArraySet<>();
     private boolean state;
 
     public TransportAsync(final ExecutorService executor) {
@@ -58,12 +58,12 @@ public class TransportAsync implements Transport {
 
     @Override
     public synchronized ListenerHandle listen(final Listener listener) {
-        this.listeners.add(listener);
+        listeners.add(listener);
         fireEvent(state);
         return () -> removeListener(listener);
     }
 
     private synchronized void removeListener(final Listener listener) {
-        this.listeners.remove(listener);
+        listeners.remove(listener);
     }
 }

@@ -19,7 +19,6 @@ import java.nio.ByteBuffer;
 import java.util.Collections;
 
 import org.eclipse.kapua.client.gateway.Payload;
-import org.eclipse.kapua.client.gateway.kura.KuraBinaryPayloadCodec;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

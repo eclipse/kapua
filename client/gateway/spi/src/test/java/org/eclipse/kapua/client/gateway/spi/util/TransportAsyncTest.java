@@ -20,7 +20,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.kapua.client.gateway.Transport;
 import org.eclipse.kapua.client.gateway.Transport.ListenerHandle;
-import org.eclipse.kapua.client.gateway.spi.util.TransportAsync;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -14,7 +14,6 @@ package org.eclipse.kapua.client.gateway.kura;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.kapua.client.gateway.Topic;
-import org.eclipse.kapua.client.gateway.kura.KuraNamespace;
 import org.eclipse.kapua.client.gateway.kura.KuraNamespace.Builder;
 import org.junit.Assert;
 import org.junit.Test;
