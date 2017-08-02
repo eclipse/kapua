@@ -25,19 +25,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import org.eclipse.kapua.client.gateway.BinaryPayloadCodec;
 import org.eclipse.kapua.client.gateway.Credentials.UserAndPassword;
 import org.eclipse.kapua.client.gateway.TransmissionException;
-import org.eclipse.kapua.client.gateway.mqtt.AbstractMqttClient;
+import org.eclipse.kapua.client.gateway.mqtt.AbstractMqttChannel;
 import org.eclipse.kapua.client.gateway.mqtt.MqttMessageHandler;
 import org.eclipse.kapua.client.gateway.mqtt.MqttNamespace;
 import org.eclipse.kapua.client.gateway.mqtt.paho.internal.Listeners;
-import org.eclipse.kapua.client.gateway.spi.Module;
 import org.eclipse.kapua.client.gateway.spi.util.Buffers;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -52,11 +49,11 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PahoClient extends AbstractMqttClient {
+public class PahoChannel extends AbstractMqttChannel {
 
-    private static final Logger logger = LoggerFactory.getLogger(PahoClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(PahoChannel.class);
 
-    public static class Builder extends AbstractMqttClient.Builder<Builder> {
+    public static class Builder extends AbstractMqttChannel.Builder<Builder> {
 
         private Supplier<MqttClientPersistence> persistenceProvider = MemoryPersistence::new;
 
@@ -79,7 +76,7 @@ public class PahoClient extends AbstractMqttClient {
         }
 
         @Override
-        public PahoClient build() throws Exception {
+        public PahoChannel build() throws Exception {
 
             final URI broker = requireNonNull(broker(), "Broker must be set");
             final String clientId = nonEmptyText(clientId(), "clientId");
@@ -89,16 +86,11 @@ public class PahoClient extends AbstractMqttClient {
             final BinaryPayloadCodec codec = requireNonNull(codec(), "Codec must be set");
 
             MqttAsyncClient client = new MqttAsyncClient(broker.toString(), clientId, persistence);
-            ScheduledExecutorService executor = createExecutor(clientId);
             try {
-                final PahoClient result = new PahoClient(modules(), clientId, executor, namespace, codec, client, persistence, createConnectOptions(this));
+                final PahoChannel result = new PahoChannel(clientId, namespace, codec, client, persistence, createConnectOptions(this));
                 client = null;
-                executor = null;
                 return result;
             } finally {
-                if (executor != null) {
-                    executor.shutdown();
-                }
                 if (client != null) {
                     try {
                         client.disconnectForcibly(0);
@@ -108,10 +100,6 @@ public class PahoClient extends AbstractMqttClient {
                 }
             }
         }
-    }
-
-    private static ScheduledExecutorService createExecutor(final String clientId) {
-        return Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, clientId));
     }
 
     private static MqttConnectOptions createConnectOptions(final Builder builder) {
@@ -135,11 +123,12 @@ public class PahoClient extends AbstractMqttClient {
     private MqttAsyncClient client;
 
     private final Map<String, MqttMessageHandler> subscriptions = new HashMap<>();
+    private Context context;
 
-    private PahoClient(final Set<Module> modules, final String clientId, final ScheduledExecutorService executor, final MqttNamespace namespace, final BinaryPayloadCodec codec,
+    private PahoChannel(final String clientId, final MqttNamespace namespace, final BinaryPayloadCodec codec,
             final MqttAsyncClient client, final MqttClientPersistence persistence, final MqttConnectOptions connectOptions) {
 
-        super(executor, codec, namespace, clientId, modules);
+        super(codec, namespace, clientId);
 
         this.connectOptions = connectOptions;
         this.client = client;
@@ -160,8 +149,12 @@ public class PahoClient extends AbstractMqttClient {
                 handleDisconnected();
             }
         });
+    }
 
-        this.executor.execute(this::connect);
+    @Override
+    public void handleInit(final Context context) {
+        this.context = context;
+        this.context.executor().execute(this::connect);
     }
 
     protected void connect() {
@@ -184,7 +177,7 @@ public class PahoClient extends AbstractMqttClient {
     }
 
     @Override
-    public void close() {
+    public void handleClose(final Context context) {
 
         final MqttAsyncClient client;
 
@@ -196,30 +189,35 @@ public class PahoClient extends AbstractMqttClient {
             this.client = null;
         }
 
+        // disconnect first
+
         try {
-            // disconnect first
+            client.disconnect().waitForCompletion();
+        } catch (final MqttException e) {
+        }
 
-            try {
-                client.disconnect().waitForCompletion();
-            } catch (final MqttException e) {
-            }
+        // now try to close (and free the resources)
 
-            // now try to close (and free the resources)
-
-            try {
-                client.close();
-            } catch (final MqttException e) {
-            }
-        } finally {
-            executor.shutdown();
+        try {
+            client.close();
+        } catch (final MqttException e) {
         }
     }
 
-    @Override
     protected void handleConnected() {
         synchronized (this) {
-            super.handleConnected();
+            context.notifyConnected();
             handleResubscribe();
+        }
+    }
+
+    protected void handleDisconnected() {
+        synchronized (this) {
+            try {
+                context.notifyDisconnected();
+            } finally {
+                context.executor().schedule(this::connect, 1, TimeUnit.SECONDS);
+            }
         }
     }
 
@@ -232,22 +230,7 @@ public class PahoClient extends AbstractMqttClient {
     }
 
     @Override
-    protected void handleDisconnected() {
-        synchronized (this) {
-            try {
-                super.handleDisconnected();
-            } finally {
-                executor.schedule(this::connect, 1, TimeUnit.SECONDS);
-            }
-        }
-    }
-
-    @Override
     public CompletionStage<?> publishMqtt(final String topic, final ByteBuffer payload) {
-        return publish(topic, payload);
-    }
-
-    protected CompletionStage<?> publish(final String topic, final ByteBuffer payload) {
         logger.debug("Publishing {} - {}", topic, payload);
 
         final CompletableFuture<?> future = new CompletableFuture<>();
@@ -279,7 +262,7 @@ public class PahoClient extends AbstractMqttClient {
             future.completeExceptionally(error);
             return;
         default:
-            // conisider this temporary and recoverable
+            // consider this temporary and recoverable
             future.completeExceptionally(new TransmissionException(error));
             return;
         }
@@ -291,6 +274,16 @@ public class PahoClient extends AbstractMqttClient {
             subscriptions.put(topic, messageHandler);
             return internalSubscribe(topic);
         }
+    }
+
+    private CompletionStage<?> internalSubscribe(final String topic) {
+        final CompletableFuture<?> future = new CompletableFuture<>();
+        try {
+            client.subscribe(topic, 1, null, Listeners.toListener(future));
+        } catch (final MqttException e) {
+            future.completeExceptionally(e);
+        }
+        return future;
     }
 
     @Override
@@ -320,16 +313,6 @@ public class PahoClient extends AbstractMqttClient {
         if (handler != null) {
             handler.handleMessage(topic, buffer);
         }
-    }
-
-    private CompletionStage<?> internalSubscribe(final String topic) {
-        final CompletableFuture<?> future = new CompletableFuture<>();
-        try {
-            client.subscribe(topic, 1, null, Listeners.toListener(future));
-        } catch (final MqttException e) {
-            future.completeExceptionally(e);
-        }
-        return future;
     }
 
 }

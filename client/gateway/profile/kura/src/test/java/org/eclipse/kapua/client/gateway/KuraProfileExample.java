@@ -16,7 +16,7 @@ import static org.eclipse.kapua.client.gateway.Transport.waitForConnection;
 
 import java.time.Duration;
 
-import org.eclipse.kapua.client.gateway.mqtt.fuse.FuseClient;
+import org.eclipse.kapua.client.gateway.mqtt.fuse.FuseChannel;
 import org.eclipse.kapua.client.gateway.profile.kura.KuraMqttProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ public final class KuraProfileExample {
 
     public static void main(final String[] args) throws Exception {
 
-        try (final Client client = KuraMqttProfile.newProfile(FuseClient.Builder::new)
+        try (final Client client = KuraMqttProfile.newProfile(FuseChannel.Builder::new)
                 .accountName("kapua-sys")
                 .clientId("foo-bar-1")
                 .brokerUrl("tcp://localhost:1883")
@@ -58,7 +58,9 @@ public final class KuraProfileExample {
                 payload.put("a", 1);
 
                 try {
+
                     // send, handling error ourself
+
                     application
                             .data(Topic.of("my", "topic"))
                             .send(payload)

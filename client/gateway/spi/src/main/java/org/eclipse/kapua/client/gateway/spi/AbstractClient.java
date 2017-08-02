@@ -131,7 +131,9 @@ public abstract class AbstractClient implements Client {
         this.modules = new HashSet<>(modules);
 
         transport = new TransportAsync(executor);
+    }
 
+    protected void init() {
         fireModuleEvent(module -> module.initialize(new ModuleContext() {
 
             @Override
@@ -140,7 +142,7 @@ public abstract class AbstractClient implements Client {
             }
 
             @Override
-            public <T> Optional<T> adapt(Class<T> clazz) {
+            public <T> Optional<T> adapt(final Class<T> clazz) {
                 Objects.requireNonNull(clazz);
 
                 return adaptModuleContext(clazz);

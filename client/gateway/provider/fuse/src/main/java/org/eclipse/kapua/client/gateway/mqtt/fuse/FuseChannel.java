@@ -24,16 +24,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 import org.eclipse.kapua.client.gateway.BinaryPayloadCodec;
 import org.eclipse.kapua.client.gateway.Credentials.UserAndPassword;
-import org.eclipse.kapua.client.gateway.mqtt.AbstractMqttClient;
+import org.eclipse.kapua.client.gateway.mqtt.AbstractMqttChannel;
 import org.eclipse.kapua.client.gateway.mqtt.MqttMessageHandler;
 import org.eclipse.kapua.client.gateway.mqtt.MqttNamespace;
 import org.eclipse.kapua.client.gateway.mqtt.fuse.internal.Callbacks;
-import org.eclipse.kapua.client.gateway.spi.Module;
 import org.fusesource.hawtbuf.Buffer;
 import org.fusesource.hawtbuf.UTF8Buffer;
 import org.fusesource.mqtt.client.Callback;
@@ -45,11 +42,11 @@ import org.fusesource.mqtt.client.QoS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FuseClient extends AbstractMqttClient {
+public class FuseChannel extends AbstractMqttChannel {
 
-    private static final Logger logger = LoggerFactory.getLogger(FuseClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(FuseChannel.class);
 
-    public static class Builder extends AbstractMqttClient.Builder<Builder> {
+    public static class Builder extends AbstractMqttChannel.Builder<Builder> {
 
         @Override
         protected Builder builder() {
@@ -57,7 +54,7 @@ public class FuseClient extends AbstractMqttClient {
         }
 
         @Override
-        public FuseClient build() throws Exception {
+        public FuseChannel build() throws Exception {
 
             final URI broker = requireNonNull(broker(), "Broker must be set");
             final String clientId = nonEmptyText(clientId(), "clientId");
@@ -82,23 +79,10 @@ public class FuseClient extends AbstractMqttClient {
                         String.format("Unknown credentials type: %s", credentials.getClass().getName()));
             }
 
-            CallbackConnection connection = mqtt.callbackConnection();
-            ScheduledExecutorService executor = createExecutor(clientId);
-            try {
-                final FuseClient result = new FuseClient(modules(), clientId, executor, namespace, codec, connection);
-                connection = null;
-                executor = null;
-                return result;
-            } finally {
-                if (executor != null) {
-                    executor.shutdown();
-                }
-            }
+            final CallbackConnection connection = mqtt.callbackConnection();
+            final FuseChannel result = new FuseChannel(clientId, namespace, codec, connection);
+            return result;
         }
-    }
-
-    private static ScheduledExecutorService createExecutor(final String clientId) {
-        return Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, clientId));
     }
 
     private final ExtendedListener listener = new ExtendedListener() {
@@ -143,21 +127,33 @@ public class FuseClient extends AbstractMqttClient {
 
     private final Map<String, MqttMessageHandler> subscriptions = new HashMap<>();
 
-    private FuseClient(final Set<Module> modules, final String clientId, final ScheduledExecutorService executor,
-            final MqttNamespace namespace, final BinaryPayloadCodec codec, final CallbackConnection connection) {
+    private Context context;
 
-        super(executor, codec, namespace, clientId, modules);
+    private FuseChannel(final String clientId, final MqttNamespace namespace, final BinaryPayloadCodec codec, final CallbackConnection connection) {
+
+        super(codec, namespace, clientId);
 
         this.connection = connection;
+        this.connection.listener(listener);
+    }
 
-        connection.listener(listener);
+    protected void handleConnected() {
+        context.notifyConnected();
+    }
+
+    protected void handleDisconnected() {
+        context.notifyDisconnected();
+    }
+
+    @Override
+    public void handleInit(final Context context) {
+        this.context = context;
         connection.connect(new Promise<>());
     }
 
     @Override
-    public void close() {
+    public void handleClose(final Context context) {
         connection.disconnect(null);
-        executor.shutdown();
     }
 
     @Override
