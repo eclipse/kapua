@@ -51,7 +51,7 @@ public class KuraMqttProfile<B extends AbstractMqttClient.Builder<B>> {
         return this;
     }
 
-    public KuraMqttProfile<B> customizer(Consumer<B> customizer) {
+    public KuraMqttProfile<B> customizer(final Consumer<B> customizer) {
         this.customizer = customizer;
         return this;
     }
@@ -69,11 +69,12 @@ public class KuraMqttProfile<B extends AbstractMqttClient.Builder<B>> {
     public Client build() throws Exception {
         validate();
 
-        B builder = builderSupplier.get()
+        final B builder = builderSupplier.get()
                 .clientId(this.clientId)
                 .broker(this.brokerUrl)
                 .credentials(this.userAndPassword)
-                .codec(new KuraBinaryPayloadCodec.Builder().build())
+                .codec(new KuraBinaryPayloadCodec.Builder()
+                        .build())
                 .namespace(
                         new KuraNamespace.Builder()
                                 .accountName(this.accountName)
