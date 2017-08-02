@@ -45,24 +45,26 @@ public class JobStepImpl extends AbstractKapuaNamedEntity implements JobStep {
 
     @Basic
     @Column(name = "description", nullable = true, updatable = true)
-    public String description;
+    private String description;
 
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "eid", column = @Column(name = "job_id", nullable = false, updatable = false))
     })
-    public KapuaEid jobId;
-
-    public int stepIndex;
+    private KapuaEid jobId;
 
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "eid", column = @Column(name = "job_step_definition_id", nullable = false, updatable = false))
     })
-    public KapuaEid jobStepDefinitionId;
+    private KapuaEid jobStepDefinitionId;
+
+    @Basic
+    @Column(name = "step_index", nullable = false, updatable = false)
+    private int stepIndex;
 
     @Transient
-    public List<JobStepPropertyImpl> stepProperties;
+    private List<JobStepPropertyImpl> stepProperties;
 
     public JobStepImpl(KapuaId scopeId) {
         super(scopeId);
@@ -89,16 +91,6 @@ public class JobStepImpl extends AbstractKapuaNamedEntity implements JobStep {
     }
 
     @Override
-    public int getStepIndex() {
-        return stepIndex;
-    }
-
-    @Override
-    public void setStepIndex(int stepIndex) {
-        this.stepIndex = stepIndex;
-    }
-
-    @Override
     public KapuaId getJobStepDefinitionId() {
         return jobStepDefinitionId;
     }
@@ -106,6 +98,16 @@ public class JobStepImpl extends AbstractKapuaNamedEntity implements JobStep {
     @Override
     public void setJobStepDefinitionId(KapuaId jobStepDefinitionId) {
         this.jobStepDefinitionId = KapuaEid.parseKapuaId(jobStepDefinitionId);
+    }
+
+    @Override
+    public int getStepIndex() {
+        return stepIndex;
+    }
+
+    @Override
+    public void setStepIndex(int stepIndex) {
+        this.stepIndex = stepIndex;
     }
 
     @Override
