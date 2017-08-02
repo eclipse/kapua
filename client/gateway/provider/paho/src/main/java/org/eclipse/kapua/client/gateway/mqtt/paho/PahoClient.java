@@ -32,12 +32,12 @@ import java.util.function.Supplier;
 
 import org.eclipse.kapua.client.gateway.BinaryPayloadCodec;
 import org.eclipse.kapua.client.gateway.Credentials.UserAndPassword;
-import org.eclipse.kapua.client.gateway.Module;
 import org.eclipse.kapua.client.gateway.TransmissionException;
-import org.eclipse.kapua.client.gateway.mqtt.MqttClient;
+import org.eclipse.kapua.client.gateway.mqtt.AbstractMqttClient;
 import org.eclipse.kapua.client.gateway.mqtt.MqttMessageHandler;
 import org.eclipse.kapua.client.gateway.mqtt.MqttNamespace;
 import org.eclipse.kapua.client.gateway.mqtt.paho.internal.Listeners;
+import org.eclipse.kapua.client.gateway.spi.Module;
 import org.eclipse.kapua.client.gateway.spi.util.Buffers;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -52,11 +52,11 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PahoClient extends MqttClient {
+public class PahoClient extends AbstractMqttClient {
 
     private static final Logger logger = LoggerFactory.getLogger(PahoClient.class);
 
-    public static class Builder extends MqttClient.Builder<Builder> {
+    public static class Builder extends AbstractMqttClient.Builder<Builder> {
 
         private Supplier<MqttClientPersistence> persistenceProvider = MemoryPersistence::new;
 

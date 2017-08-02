@@ -18,14 +18,15 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.eclipse.kapua.client.gateway.Client;
-import org.eclipse.kapua.client.gateway.Module;
-import org.eclipse.kapua.client.gateway.ModuleContext;
 import org.eclipse.kapua.client.gateway.kura.internal.Metrics;
-import org.eclipse.kapua.client.gateway.mqtt.MqttClient;
+import org.eclipse.kapua.client.gateway.mqtt.AbstractMqttClient;
+import org.eclipse.kapua.client.gateway.mqtt.MqttModuleContext;
+import org.eclipse.kapua.client.gateway.spi.Module;
+import org.eclipse.kapua.client.gateway.spi.ModuleContext;
 import org.eclipse.kapua.gateway.client.kura.payload.KuraPayloadProto.KuraPayload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,7 +108,7 @@ public class KuraBirthCertificateModule implements Module {
 
     private final Set<String> applications = new TreeSet<>();
 
-    private MqttClient client;
+    private MqttModuleContext client;
 
     private final String accountName;
 
@@ -141,11 +142,14 @@ public class KuraBirthCertificateModule implements Module {
 
     @Override
     public void initialize(final ModuleContext context) {
-        final Client client = context.getClient();
-        if (!(client instanceof MqttClient)) {
-            throw new IllegalStateException(String.format("%s can only be used with an %s based instance", KuraBirthCertificateModule.class.getSimpleName(), MqttClient.class.getName()));
-        }
-        this.client = (MqttClient) client;
+        final Optional<MqttModuleContext> client = context.adapt(MqttModuleContext.class);
+
+        this.client = client.orElseThrow(() -> {
+            return new IllegalStateException(
+                    String.format("%s can only be used with an %s based instance",
+                            KuraBirthCertificateModule.class.getSimpleName(),
+                            AbstractMqttClient.class.getName()));
+        });
     }
 
     private void sendBirthCertificate() {

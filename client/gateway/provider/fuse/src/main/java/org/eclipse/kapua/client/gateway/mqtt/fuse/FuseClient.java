@@ -29,11 +29,11 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import org.eclipse.kapua.client.gateway.BinaryPayloadCodec;
 import org.eclipse.kapua.client.gateway.Credentials.UserAndPassword;
-import org.eclipse.kapua.client.gateway.Module;
-import org.eclipse.kapua.client.gateway.mqtt.MqttClient;
+import org.eclipse.kapua.client.gateway.mqtt.AbstractMqttClient;
 import org.eclipse.kapua.client.gateway.mqtt.MqttMessageHandler;
 import org.eclipse.kapua.client.gateway.mqtt.MqttNamespace;
 import org.eclipse.kapua.client.gateway.mqtt.fuse.internal.Callbacks;
+import org.eclipse.kapua.client.gateway.spi.Module;
 import org.fusesource.hawtbuf.Buffer;
 import org.fusesource.hawtbuf.UTF8Buffer;
 import org.fusesource.mqtt.client.Callback;
@@ -45,11 +45,11 @@ import org.fusesource.mqtt.client.QoS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FuseClient extends MqttClient {
+public class FuseClient extends AbstractMqttClient {
 
     private static final Logger logger = LoggerFactory.getLogger(FuseClient.class);
 
-    public static class Builder extends MqttClient.Builder<Builder> {
+    public static class Builder extends AbstractMqttClient.Builder<Builder> {
 
         @Override
         protected Builder builder() {

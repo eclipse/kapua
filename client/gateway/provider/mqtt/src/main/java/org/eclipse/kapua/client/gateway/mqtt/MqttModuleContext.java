@@ -9,22 +9,18 @@
  * Contributors:
  *     Red Hat Inc - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.client.gateway;
+package org.eclipse.kapua.client.gateway.mqtt;
 
-public interface Module {
+import java.nio.ByteBuffer;
+import java.util.concurrent.CompletionStage;
 
-    public default void initialize(final ModuleContext context) {
-    }
+/**
+ * Module context when working with MQTT backed clients
+ */
+public interface MqttModuleContext {
 
-    public default void applicationAdded(final String applicationId) {
-    }
+    public CompletionStage<?> publishMqtt(String topic, ByteBuffer payload);
 
-    public default void applicationRemoved(final String applicationId) {
-    }
+    public String getMqttClientId();
 
-    public default void connected() {
-    }
-
-    public default void disconnected() {
-    }
 }

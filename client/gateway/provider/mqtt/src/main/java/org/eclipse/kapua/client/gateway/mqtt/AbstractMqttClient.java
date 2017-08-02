@@ -16,6 +16,7 @@ import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -26,16 +27,19 @@ import org.eclipse.kapua.client.gateway.BinaryPayloadCodec;
 import org.eclipse.kapua.client.gateway.Credentials.UserAndPassword;
 import org.eclipse.kapua.client.gateway.ErrorHandler;
 import org.eclipse.kapua.client.gateway.MessageHandler;
-import org.eclipse.kapua.client.gateway.Module;
 import org.eclipse.kapua.client.gateway.Payload;
 import org.eclipse.kapua.client.gateway.Topic;
 import org.eclipse.kapua.client.gateway.spi.AbstractClient;
+import org.eclipse.kapua.client.gateway.spi.Module;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class MqttClient extends AbstractClient {
+/**
+ * An abstract base class for implementing MQTT based clients
+ */
+public abstract class AbstractMqttClient extends AbstractClient {
 
-    private static final Logger logger = LoggerFactory.getLogger(MqttClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractMqttClient.class);
 
     public abstract static class Builder<T extends Builder<T>> extends AbstractClient.Builder<T> {
 
@@ -98,24 +102,53 @@ public abstract class MqttClient extends AbstractClient {
         }
     }
 
+    private final MqttModuleContext mqttAdapter = new MqttModuleContext() {
+
+        @Override
+        public CompletionStage<?> publishMqtt(final String topic, final ByteBuffer payload) {
+            return AbstractMqttClient.this.publishMqtt(topic, payload);
+        }
+
+        @Override
+        public String getMqttClientId() {
+            return AbstractMqttClient.this.getMqttClientId();
+        }
+    };
+
     private final String clientId;
     private final BinaryPayloadCodec codec;
     private final MqttNamespace namespace;
 
-    public MqttClient(final ScheduledExecutorService executor, final BinaryPayloadCodec codec, final MqttNamespace namespace, final String clientId, final Set<Module> modules) {
+    public AbstractMqttClient(final ScheduledExecutorService executor, final BinaryPayloadCodec codec, final MqttNamespace namespace, final String clientId, final Set<Module> modules) {
         super(executor, modules);
         this.clientId = clientId;
         this.codec = codec;
         this.namespace = namespace;
     }
 
-    protected CompletionStage<?> publish(String applicationId, Topic topic, ByteBuffer buffer) {
+    protected abstract CompletionStage<?> publishMqtt(String topic, ByteBuffer payload);
+
+    protected abstract CompletionStage<?> subscribeMqtt(String topic, MqttMessageHandler messageHandler);
+
+    protected abstract void unsubscribeMqtt(Set<String> mqttTopics) throws Exception;
+
+    @Override
+    protected <T> Optional<T> adaptModuleContext(Class<T> clazz) {
+
+        if (clazz.equals(MqttModuleContext.class)) {
+            return Optional.of(clazz.cast(mqttAdapter));
+        }
+
+        return super.adaptModuleContext(clazz);
+    }
+
+    protected CompletionStage<?> publish(final String applicationId, final Topic topic, final ByteBuffer buffer) {
         final String mqttTopic = namespace.dataTopic(clientId, applicationId, topic);
         return publishMqtt(mqttTopic, buffer);
     }
 
     @Override
-    protected CompletionStage<?> internalPublish(String applicationId, Topic topic, Payload payload) {
+    protected CompletionStage<?> handlePublish(final String applicationId, final Topic topic, final Payload payload) {
         logger.debug("Publishing values - {} -> {}", topic, payload.getValues());
 
         try {
@@ -131,10 +164,8 @@ public abstract class MqttClient extends AbstractClient {
 
     }
 
-    public abstract CompletionStage<?> publishMqtt(String topic, ByteBuffer payload);
-
     @Override
-    protected CompletionStage<?> internalSubscribe(final String applicationId, final Topic topic, final MessageHandler handler, final ErrorHandler<? extends Throwable> errorHandler) {
+    protected CompletionStage<?> handleSubscribe(final String applicationId, final Topic topic, final MessageHandler handler, final ErrorHandler<? extends Throwable> errorHandler) {
         return subscribe(applicationId, topic, (messageTopic, payload) -> {
             logger.debug("Received message for: {}", topic);
             try {
@@ -157,22 +188,18 @@ public abstract class MqttClient extends AbstractClient {
         handler.handleMessage(payload);
     }
 
-    protected abstract CompletionStage<?> subscribeMqtt(String topic, MqttMessageHandler messageHandler);
-
     protected CompletionStage<?> subscribe(final String applicationId, final Topic topic, final MqttMessageHandler messageHandler) {
         final String mqttTopic = namespace.dataTopic(clientId, applicationId, topic);
         return subscribeMqtt(mqttTopic, messageHandler);
     }
 
     @Override
-    protected void internalUnsubscribe(final String applicationId, final Collection<Topic> topics) throws Exception {
+    protected void handleUnsubscribe(final String applicationId, final Collection<Topic> topics) throws Exception {
         Set<String> mqttTopics = topics.stream().map(topic -> namespace.dataTopic(clientId, applicationId, topic)).collect(Collectors.toSet());
         unsubscribeMqtt(mqttTopics);
     }
 
-    protected abstract void unsubscribeMqtt(Set<String> mqttTopics) throws Exception;
-
-    public String getMqttClientId() {
+    protected String getMqttClientId() {
         return clientId;
     }
 

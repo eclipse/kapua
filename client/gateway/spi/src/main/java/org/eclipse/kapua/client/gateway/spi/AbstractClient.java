@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ScheduledExecutorService;
@@ -28,8 +29,6 @@ import org.eclipse.kapua.client.gateway.Application;
 import org.eclipse.kapua.client.gateway.Client;
 import org.eclipse.kapua.client.gateway.ErrorHandler;
 import org.eclipse.kapua.client.gateway.MessageHandler;
-import org.eclipse.kapua.client.gateway.Module;
-import org.eclipse.kapua.client.gateway.ModuleContext;
 import org.eclipse.kapua.client.gateway.Payload;
 import org.eclipse.kapua.client.gateway.Topic;
 import org.eclipse.kapua.client.gateway.Transport;
@@ -139,7 +138,24 @@ public abstract class AbstractClient implements Client {
             public Client getClient() {
                 return AbstractClient.this;
             }
+
+            @Override
+            public <T> Optional<T> adapt(Class<T> clazz) {
+                Objects.requireNonNull(clazz);
+
+                return adaptModuleContext(clazz);
+            }
         }));
+    }
+
+    protected abstract CompletionStage<?> handleSubscribe(String applicationId, Topic topic, MessageHandler messageHandler, ErrorHandler<? extends Throwable> errorHandler);
+
+    protected abstract CompletionStage<?> handlePublish(String applicationId, Topic topic, Payload payload);
+
+    protected abstract void handleUnsubscribe(String applicationId, Collection<Topic> topics) throws Exception;
+
+    protected <T> Optional<T> adaptModuleContext(final Class<T> clazz) {
+        return Optional.empty();
     }
 
     @Override
@@ -176,13 +192,13 @@ public abstract class AbstractClient implements Client {
     }
 
     protected void handleConnected() {
-        logger.debug("Connected");
+        logger.info("Connected");
 
         notifyConnected();
     }
 
     protected void handleDisconnected() {
-        logger.debug("Disconnected");
+        logger.info("Disconnected");
 
         notifyDisconnected();
     }
@@ -206,7 +222,7 @@ public abstract class AbstractClient implements Client {
 
             final Context context = new ContextImpl(applicationId);
 
-            final DefaultApplication result = internalCreateApplication(builder, context);
+            final DefaultApplication result = createApplication(builder, context);
 
             applications.put(applicationId, context);
             notifyAddApplication(applicationId);
@@ -214,8 +230,6 @@ public abstract class AbstractClient implements Client {
             return result;
         }
     }
-
-    protected abstract CompletionStage<?> internalSubscribe(String applicationId, Topic topic, MessageHandler messageHandler, ErrorHandler<? extends Throwable> errorHandler);
 
     protected synchronized CompletionStage<?> internalSubscribe(final ContextImpl context, final String applicationId, final Topic topic, final MessageHandler messageHandler,
             final ErrorHandler<? extends Throwable> errorHandler) {
@@ -227,29 +241,25 @@ public abstract class AbstractClient implements Client {
             return completedFuture(null);
         }
 
-        return internalSubscribe(applicationId, topic, messageHandler, errorHandler);
+        return handleSubscribe(applicationId, topic, messageHandler, errorHandler);
     }
-
-    protected abstract CompletionStage<?> internalPublish(String applicationId, Topic topic, Payload payload);
 
     protected synchronized CompletionStage<?> internalPublish(final Context context, final String applicationId, final Topic topic, final Payload payload) {
         if (applications.get(applicationId) != context) {
             return completedExceptionally(new IllegalStateException(String.format("Application '%s' is already closed", applicationId)));
         }
 
-        return internalPublish(applicationId, topic, payload);
+        return handlePublish(applicationId, topic, payload);
     }
 
-    protected DefaultApplication internalCreateApplication(final Application.Builder builder, final AbstractClient.Context context) {
+    protected DefaultApplication createApplication(final Application.Builder builder, final AbstractClient.Context context) {
         return new DefaultApplication(context);
     }
-
-    protected abstract void internalUnsubscribe(String applicationId, Collection<Topic> topics) throws Exception;
 
     protected synchronized void internalCloseApplication(final ContextImpl context, final String applicationId) {
         if (applications.remove(applicationId, context)) {
             try {
-                internalUnsubscribe(applicationId, context.getSubscriptions());
+                handleUnsubscribe(applicationId, context.getSubscriptions());
             } catch (Exception e) {
                 logger.warn("Failed to unsubscribe on application close", e);
             }

@@ -21,11 +21,11 @@ import org.eclipse.kapua.client.gateway.Credentials.UserAndPassword;
 import org.eclipse.kapua.client.gateway.kura.KuraBinaryPayloadCodec;
 import org.eclipse.kapua.client.gateway.kura.KuraBirthCertificateModule;
 import org.eclipse.kapua.client.gateway.kura.KuraNamespace;
-import org.eclipse.kapua.client.gateway.mqtt.MqttClient;
+import org.eclipse.kapua.client.gateway.mqtt.AbstractMqttClient;
 
-public class KuraMqttProfile<B extends MqttClient.Builder<B>> {
+public class KuraMqttProfile<B extends AbstractMqttClient.Builder<B>> {
 
-    public static <B extends MqttClient.Builder<B>> KuraMqttProfile<B> newProfile(final Supplier<B> builderSupplier) {
+    public static <B extends AbstractMqttClient.Builder<B>> KuraMqttProfile<B> newProfile(final Supplier<B> builderSupplier) {
         requireNonNull(builderSupplier);
         return new KuraMqttProfile<>(builderSupplier);
     }
