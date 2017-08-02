@@ -19,13 +19,14 @@ import org.eclipse.kapua.client.gateway.Payload;
 
 public final class Errors {
 
-    private static final ErrorHandler<RuntimeException> IGNORE = Errors::ignore;
-
     private Errors() {
     }
 
     public static ErrorHandler<RuntimeException> ignore() {
-        return IGNORE;
+        return Errors::ignore;
+    }
+
+    public static void ignore(final Throwable e, final Optional<Payload> payload) {
     }
 
     public static ErrorHandler<RuntimeException> handle(final BiConsumer<Throwable, Optional<Payload>> handler) {
@@ -36,8 +37,5 @@ public final class Errors {
                 handler.accept(e, payload);
             }
         };
-    }
-
-    public static void ignore(final Throwable e, final Optional<Payload> payload) {
     }
 }
