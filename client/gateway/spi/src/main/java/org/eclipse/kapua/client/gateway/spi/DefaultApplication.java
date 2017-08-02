@@ -20,11 +20,11 @@ import org.eclipse.kapua.client.gateway.Payload;
 import org.eclipse.kapua.client.gateway.Topic;
 import org.eclipse.kapua.client.gateway.Transport;
 
-public abstract class AbstractApplication implements Application {
+public class DefaultApplication implements Application {
 
     private final AbstractClient.Context context;
 
-    public AbstractApplication(final AbstractClient.Context context) {
+    public DefaultApplication(final AbstractClient.Context context) {
         this.context = context;
     }
 
@@ -34,8 +34,8 @@ public abstract class AbstractApplication implements Application {
     }
 
     @Override
-    public AbstractData data(Topic topic) {
-        return new AbstractData(this, topic);
+    public DefaultData data(Topic topic) {
+        return new DefaultData(this, topic);
     }
 
     @Override

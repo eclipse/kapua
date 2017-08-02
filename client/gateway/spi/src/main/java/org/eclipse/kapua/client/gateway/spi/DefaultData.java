@@ -23,14 +23,14 @@ import org.eclipse.kapua.client.gateway.Topic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AbstractData implements Data {
+public class DefaultData implements Data {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractData.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultData.class);
 
-    private final AbstractApplication application;
+    private final DefaultApplication application;
     private final Topic topic;
 
-    public AbstractData(final AbstractApplication application, final Topic topic) {
+    public DefaultData(final DefaultApplication application, final Topic topic) {
         this.application = application;
         this.topic = topic;
     }

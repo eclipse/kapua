@@ -198,7 +198,7 @@ public abstract class AbstractClient implements Client {
         };
     }
 
-    protected AbstractApplication internalBuildApplication(final Application.Builder builder, final String applicationId) {
+    protected DefaultApplication internalBuildApplication(final Application.Builder builder, final String applicationId) {
         synchronized (this) {
             if (applications.containsKey(applicationId)) {
                 throw new IllegalStateException(String.format("An application with the ID '%s' already exists", applicationId));
@@ -206,7 +206,7 @@ public abstract class AbstractClient implements Client {
 
             final Context context = new ContextImpl(applicationId);
 
-            final AbstractApplication result = internalCreateApplication(builder, context);
+            final DefaultApplication result = internalCreateApplication(builder, context);
 
             applications.put(applicationId, context);
             notifyAddApplication(applicationId);
@@ -240,9 +240,8 @@ public abstract class AbstractClient implements Client {
         return internalPublish(applicationId, topic, payload);
     }
 
-    protected AbstractApplication internalCreateApplication(final Application.Builder builder, final AbstractClient.Context context) {
-        return new AbstractApplication(context) {
-        };
+    protected DefaultApplication internalCreateApplication(final Application.Builder builder, final AbstractClient.Context context) {
+        return new DefaultApplication(context);
     }
 
     protected abstract void internalUnsubscribe(String applicationId, Collection<Topic> topics) throws Exception;
