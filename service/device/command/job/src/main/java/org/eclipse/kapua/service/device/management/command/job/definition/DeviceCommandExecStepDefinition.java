@@ -18,8 +18,6 @@ import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
 import org.eclipse.kapua.service.device.management.command.job.DeviceCommandTargetProcessor;
-import org.eclipse.kapua.service.device.management.command.job.DeviceCommandTargetReader;
-import org.eclipse.kapua.service.device.management.command.job.DeviceCommandTargetWriter;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionFactory;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
@@ -56,11 +54,6 @@ public class DeviceCommandExecStepDefinition extends AbstractKapuaNamedEntity im
     }
 
     @Override
-    public String getReaderName() {
-        return DeviceCommandTargetReader.class.getName();
-    }
-
-    @Override
     public void setReaderName(String readerName) {
     }
 
@@ -71,11 +64,6 @@ public class DeviceCommandExecStepDefinition extends AbstractKapuaNamedEntity im
 
     @Override
     public void setProcessorName(String processorName) {
-    }
-
-    @Override
-    public String getWriterName() {
-        return DeviceCommandTargetWriter.class.getName();
     }
 
     @Override
