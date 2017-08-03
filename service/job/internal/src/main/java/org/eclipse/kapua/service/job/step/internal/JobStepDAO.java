@@ -46,8 +46,11 @@ public class JobStepDAO {
         // Create JobStep
 
         JobStepImpl jobStepImpl = new JobStepImpl(jobStepCreator.getScopeId());
-        // jobStepImpl.setStepIndex(jobStepCreator.getStepIndex());
-        // jobStepImpl.setJobId(jobStepCreator.getJobId());
+        jobStepImpl.setName(jobStepCreator.getName());
+        jobStepImpl.setDescription(jobStepCreator.getDescription());
+        jobStepImpl.setJobId(jobStepCreator.getJobId());
+        jobStepImpl.setJobStepDefinitionId(jobStepCreator.getJobStepDefinitionId());
+        jobStepImpl.setStepIndex(jobStepCreator.getStepIndex());
 
         return ServiceDAO.create(em, jobStepImpl);
     }

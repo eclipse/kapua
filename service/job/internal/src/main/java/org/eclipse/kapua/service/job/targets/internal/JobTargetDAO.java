@@ -20,6 +20,7 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 import org.eclipse.kapua.service.job.targets.JobTargetCreator;
 import org.eclipse.kapua.service.job.targets.JobTargetListResult;
+import org.eclipse.kapua.service.job.targets.JobTargetStatus;
 
 /**
  * JobTarget DAO
@@ -46,8 +47,10 @@ public class JobTargetDAO {
         // Create JobTarget
 
         JobTargetImpl jobTargetImpl = new JobTargetImpl(jobTargetCreator.getScopeId());
-        // jobTargetImpl.setTargetIndex(jobTargetCreator.getTargetIndex());
-        // jobTargetImpl.setJobId(jobTargetCreator.getJobId());
+        jobTargetImpl.setJobId(jobTargetCreator.getJobId());
+        jobTargetImpl.setJobTargetId(jobTargetCreator.getJobTargetId());
+        jobTargetImpl.setStepIndex(0);
+        jobTargetImpl.setStatus(JobTargetStatus.PROCESS_AWAITING);
 
         return ServiceDAO.create(em, jobTargetImpl);
     }

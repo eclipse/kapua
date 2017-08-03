@@ -30,6 +30,7 @@ public class JobTargetCreatorImpl extends AbstractKapuaEntityCreator<JobTarget> 
     private static final long serialVersionUID = 3119071638220738358L;
 
     private KapuaId jobId;
+    private KapuaId jobTargetId;
 
     protected JobTargetCreatorImpl(KapuaId scopeId) {
         super(scopeId);
@@ -43,6 +44,16 @@ public class JobTargetCreatorImpl extends AbstractKapuaEntityCreator<JobTarget> 
     @Override
     public void setJobId(KapuaId jobId) {
         this.jobId = jobId;
+    }
+
+    @Override
+    public KapuaId getJobTargetId() {
+        return jobTargetId;
+    }
+
+    @Override
+    public void setJobTargetId(KapuaId jobTargetId) {
+        this.jobTargetId = jobTargetId;
     }
 
 }

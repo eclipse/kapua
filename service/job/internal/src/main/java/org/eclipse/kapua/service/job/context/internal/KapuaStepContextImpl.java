@@ -11,57 +11,98 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.context.internal;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
+import java.util.Properties;
+
+import javax.batch.runtime.BatchStatus;
+import javax.batch.runtime.Metric;
+import javax.batch.runtime.context.StepContext;
 
 import org.eclipse.kapua.service.job.context.KapuaStepContext;
-import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
+import org.eclipse.kapua.service.job.context.StepContextPropertyNames;
 
 public class KapuaStepContextImpl implements KapuaStepContext {
 
-    private int stepId;
-    private Integer nextStepId;
-    private List<JobStepProperty> jobStepProperties;
+    private StepContext stepContext;
 
-    public int getStepId() {
-        return stepId;
+    public KapuaStepContextImpl(StepContext stepContext) {
+        this.stepContext = stepContext;
     }
 
-    public void setStepId(int stepId) {
-        this.stepId = stepId;
+    public int getStepIndex() {
+        Properties jobContextProperties = stepContext.getProperties();
+        String stepIndexString = jobContextProperties.getProperty(StepContextPropertyNames.STEP_INDEX);
+        return stepIndexString != null ? Integer.parseInt(stepIndexString) : null;
     }
 
-    public Integer getNextStepId() {
-        return nextStepId;
+    public Integer getNextStepIndex() {
+        Properties jobContextProperties = stepContext.getProperties();
+        String stepNextIndexString = jobContextProperties.getProperty(StepContextPropertyNames.STEP_NEXT_INDEX);
+        return stepNextIndexString != null ? Integer.parseInt(stepNextIndexString) : null;
     }
 
-    public void setNextStepId(Integer nextStepId) {
-        this.nextStepId = nextStepId;
+    @Override
+    public String getStepName() {
+        return stepContext.getStepName();
     }
 
-    public List<JobStepProperty> getStepProperties() {
-        if (jobStepProperties == null) {
-            jobStepProperties = new ArrayList<>();
-        }
-        return jobStepProperties;
+    @Override
+    public Object getTransientUserData() {
+        return stepContext.getTransientUserData();
     }
 
-    public void setStepProperties(List<JobStepProperty> jobStepProperties) {
-        this.jobStepProperties = jobStepProperties;
+    @Override
+    public void setTransientUserData(Object data) {
+        this.stepContext.setTransientUserData(data);
     }
 
+    @Override
+    public long getStepExecutionId() {
+        return stepContext.getStepExecutionId();
+    }
+
+    @Override
+    public Properties getProperties() {
+        return stepContext.getProperties();
+    }
+
+    @Override
+    public Serializable getPersistentUserData() {
+        return stepContext.getPersistentUserData();
+    }
+
+    @Override
+    public void setPersistentUserData(Serializable data) {
+        this.stepContext.setPersistentUserData(data);
+    }
+
+    @Override
+    public BatchStatus getBatchStatus() {
+        return stepContext.getBatchStatus();
+    }
+
+    @Override
+    public String getExitStatus() {
+        return stepContext.getExitStatus();
+    }
+
+    @Override
+    public void setExitStatus(String status) {
+        this.stepContext.setExitStatus(status);
+    }
+
+    @Override
+    public Exception getException() {
+        return stepContext.getException();
+    }
+
+    @Override
+    public Metric[] getMetrics() {
+        return stepContext.getMetrics();
+    }
+
+    @Override
     public <T> T getStepProperty(String stepPropertyName) {
-
-        T stepPropertyValue = null;
-        if (jobStepProperties != null) {
-            for (JobStepProperty jobStepProperty : jobStepProperties) {
-                if (jobStepProperty.getName().equals(stepPropertyName)) {
-
-                }
-            }
-        }
-
-        return stepPropertyValue;
+        return null;
     }
-
 }

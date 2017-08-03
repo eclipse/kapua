@@ -57,11 +57,14 @@ public class JobStepDefinitionImpl extends AbstractKapuaNamedEntity implements J
     private String processorName;
 
     @Basic
-    @Column(name = "write_name", nullable = false, updatable = false)
+    @Column(name = "writer_name", nullable = false, updatable = false)
     private String writerName;
 
     @Transient
     private List<JobStepProperty> jobStepProperties;
+
+    public JobStepDefinitionImpl() {
+    }
 
     public JobStepDefinitionImpl(KapuaId scopeId) {
         super(scopeId);
