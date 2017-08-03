@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,12 +9,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.job.step;
+package org.eclipse.kapua.service.job.context;
 
-import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
+import javax.batch.runtime.context.JobContext;
+import javax.batch.runtime.context.StepContext;
 
-public interface JobStepPredicates extends KapuaUpdatableEntityPredicates {
+import org.eclipse.kapua.model.KapuaObjectFactory;
 
-    public String JOB_ID = "jobId";
+public interface JobContextFactory extends KapuaObjectFactory {
 
+    public KapuaJobContext newJobContext(JobContext jobContext);
+
+    public KapuaStepContext newStepContext(StepContext stepContext);
 }

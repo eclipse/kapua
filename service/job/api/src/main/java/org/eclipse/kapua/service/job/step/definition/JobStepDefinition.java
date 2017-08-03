@@ -19,6 +19,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.kapua.model.KapuaNamedEntity;
+import org.eclipse.kapua.service.job.operation.defaults.DefaultTargetReader;
+import org.eclipse.kapua.service.job.operation.defaults.DefaultTargetWriter;
 
 /**
  * {@link JobStepDefinition} entity.
@@ -45,7 +47,9 @@ public interface JobStepDefinition extends KapuaNamedEntity {
 
     public void setStepType(JobStepType jobStepType);
 
-    public String getReaderName();
+    public default String getReaderName() {
+        return DefaultTargetReader.class.getName();
+    }
 
     public void setReaderName(String readerName);
 
@@ -53,7 +57,9 @@ public interface JobStepDefinition extends KapuaNamedEntity {
 
     public void setProcessorName(String processorName);
 
-    public String getWriterName();
+    public default String getWriterName() {
+        return DefaultTargetWriter.class.getName();
+    }
 
     public void setWriterName(String writesName);
 
