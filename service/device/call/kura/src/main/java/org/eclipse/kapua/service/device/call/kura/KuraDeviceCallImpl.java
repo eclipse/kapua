@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *      Eurotech - initial API and implementation
+ *      Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura;
 
@@ -31,9 +32,6 @@ import org.eclipse.kapua.transport.message.TransportMessage;
 
 /**
  * Kura device call implementation.
- *
- * @since 1.0
- * 
  */
 @SuppressWarnings("rawtypes")
 public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraResponseMessage> {
@@ -119,14 +117,10 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
                 // Translate response
                 response = (KuraResponseMessage) translatorTransportKura.translate(transportResponseMessage);
             } catch (KapuaException e) {
-                throw new KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes.CLIENT_SEND_ERROR,
-                        e,
-                        (Object[]) null);
+                throw new KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes.CLIENT_SEND_ERROR, e);
             }
         } catch (KapuaException ke) {
-            throw new KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes.CALL_ERROR,
-                    ke,
-                    (Object[]) null);
+            throw new KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes.CALL_ERROR, ke);
         } finally {
             if (transportFacade != null) {
                 transportFacade.clean();
@@ -153,9 +147,7 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
             TransportClientFactory transportClientFactory = locator.getFactory(TransportClientFactory.class);
             transportFacade = transportClientFactory.getFacade();
         } catch (Exception e) {
-            throw new KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes.CALL_ERROR,
-                    e,
-                    (Object[]) null);
+            throw new KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes.CALL_ERROR, e);
         }
         return transportFacade;
     }
@@ -167,9 +159,7 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
         try {
             translator = Translator.getTranslatorFor(from, to);
         } catch (KapuaException e) {
-            throw new KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes.CALL_ERROR,
-                    e,
-                    (Object[]) null);
+            throw new KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes.CALL_ERROR, e);
         }
         return translator;
     }
