@@ -11,23 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.context;
 
-import java.util.List;
+import javax.batch.runtime.context.StepContext;
 
-import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
+public interface KapuaStepContext extends StepContext {
 
-public interface KapuaStepContext {
+    public int getStepIndex();
 
-    public int getStepId();
-
-    public void setStepId(int stepId);
-
-    public Integer getNextStepId();
-
-    public void setNextStepId(Integer nextStepId);
-
-    public List<JobStepProperty> getStepProperties();
-
-    public void setStepProperties(List<JobStepProperty> jobStepProperties);
+    public Integer getNextStepIndex();
 
     public <T> T getStepProperty(String stepPropertyName);
 

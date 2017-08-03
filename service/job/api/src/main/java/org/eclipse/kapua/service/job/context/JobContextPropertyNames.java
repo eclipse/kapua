@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,12 +9,13 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.job.step;
+package org.eclipse.kapua.service.job.context;
 
-import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
+public class JobContextPropertyNames {
 
-public interface JobStepPredicates extends KapuaUpdatableEntityPredicates {
+    public static final String JOB_SCOPE_ID = "job.scopeId";
+    public static final String JOB_ID = "job.id";
 
-    public String JOB_ID = "jobId";
-
+    private JobContextPropertyNames() {
+    }
 }

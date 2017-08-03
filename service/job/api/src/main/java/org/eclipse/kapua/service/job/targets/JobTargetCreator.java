@@ -34,4 +34,8 @@ public interface JobTargetCreator extends KapuaUpdatableEntityCreator<JobTarget>
     public KapuaId getJobId();
 
     public void setJobId(KapuaId jobId);
+
+    public KapuaId getJobTargetId();
+
+    public void setJobTargetId(KapuaId jobTargetId);
 }

@@ -11,16 +11,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.context;
 
+import javax.batch.runtime.context.JobContext;
+
 import org.eclipse.kapua.model.id.KapuaId;
 
-public interface KapuaJobContext {
+public interface KapuaJobContext extends JobContext {
 
     public KapuaId getScopeId();
 
-    public void setScopeId(KapuaId scopeId);
+    // public void setScopeId(KapuaId scopeId);
 
     public KapuaId getJobId();
 
-    public void setJobId(KapuaId jobId);
+    // public void setJobId(KapuaId jobId);
 
 }
