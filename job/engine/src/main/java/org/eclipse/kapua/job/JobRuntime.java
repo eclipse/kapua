@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -25,21 +26,24 @@ import javax.xml.bind.JAXBException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.job.listener.KapuaJobListener;
-import org.eclipse.kapua.job.step.TestStep;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.device.management.command.job.definition.DeviceCommandExecStepDefinition;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.JobService;
-import org.eclipse.kapua.service.job.internal.JobImpl;
+import org.eclipse.kapua.service.job.context.JobContextPropertyNames;
+import org.eclipse.kapua.service.job.context.StepContextPropertyNames;
 import org.eclipse.kapua.service.job.step.JobStep;
+import org.eclipse.kapua.service.job.step.JobStepFactory;
+import org.eclipse.kapua.service.job.step.JobStepListResult;
+import org.eclipse.kapua.service.job.step.JobStepPredicates;
+import org.eclipse.kapua.service.job.step.JobStepQuery;
+import org.eclipse.kapua.service.job.step.JobStepService;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
-import org.eclipse.kapua.service.job.step.internal.JobStepImpl;
 
 import com.ibm.jbatch.container.jsl.ExecutionElement;
 import com.ibm.jbatch.container.jsl.ModelSerializer;
@@ -53,19 +57,22 @@ import com.ibm.jbatch.jsl.model.JSLJob;
 import com.ibm.jbatch.jsl.model.JSLProperties;
 import com.ibm.jbatch.jsl.model.Listener;
 import com.ibm.jbatch.jsl.model.Listeners;
+import com.ibm.jbatch.jsl.model.Property;
 import com.ibm.jbatch.jsl.model.Step;
 
 @KapuaProvider
 public class JobRuntime implements KapuaService {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final JobService JOB_SERVICE = null;// LOCATOR.getService(JobService.class);
-    private static final JobStepDefinitionService STEP_DEFINITION_SERVICE = null;// LOCATOR.getService(JobStepDefinitionService.class);
+    private static final JobService JOB_SERVICE = LOCATOR.getService(JobService.class);
+
+    private static final JobStepService JOB_STEP_SERVICE = LOCATOR.getService(JobStepService.class);
+    private static final JobStepFactory JOB_STEP_FACTORY = LOCATOR.getFactory(JobStepFactory.class);
+
+    private static final JobStepDefinitionService STEP_DEFINITION_SERVICE = LOCATOR.getService(JobStepDefinitionService.class);
 
     private static final ModelSerializer<JSLJob> JSL_MODEL_SERIALIZER_FACTORY;
     private static final JobOperator JOB_ENGINE;
-
-    static Job job;
 
     static {
 
@@ -76,7 +83,7 @@ public class JobRuntime implements KapuaService {
         //
         // Job Engine configuration
 
-        System.setProperty("JDBC_DRIVER", "org.apache.derby.jdbc.EmbeddedDriver1");
+        System.setProperty("JDBC_DRIVER", "org.apache.derby.jdbc.EmbeddedDriver");
         System.setProperty("JDBC_URL", "jdbc:derby:RUNTIMEDB;create=true");
 
         System.setProperty("com.ibm.jbatch.spi.ServiceRegistry.J2SE_MODE", "true");
@@ -90,77 +97,45 @@ public class JobRuntime implements KapuaService {
     private JobRuntime() {
     }
 
-    static {
-        job = new JobImpl(KapuaEid.ONE);
-        job.setId(KapuaEid.ONE);
-        job.setName("test name");
-        job.setDescription("test job");
-
-        JobStep jobStep = new JobStepImpl(KapuaEid.ONE);
-        jobStep.setDescription("Test Step Description");
-        jobStep.setName("testName");
-        jobStep.setJobStepDefinitionId(KapuaEid.ONE);
-
-        List<JobStep> jobSteps = job.getJobSteps();
-        jobSteps.add(jobStep);
-    }
-
     public static synchronized void startJob(KapuaId scopeId, KapuaId jobId) throws KapuaException, IOException, JAXBException {
-        // Job job = JOB_SERVICE.find(scopeId, jobId);
-        // Job job = new JobImpl(scopeId);
+        Job job = JOB_SERVICE.find(scopeId, jobId);
 
         // Retrieve job XML definition. Create it if not exists
         String jobXmlDefinition = job.getJobXmlDefinition();
         if (jobXmlDefinition == null) {
-            List<JobStep> jobSteps = job.getJobSteps();
+            JobStepQuery jobStepQuery = JOB_STEP_FACTORY.newQuery(job.getScopeId());
+            jobStepQuery.setPredicate(new AttributePredicate<>(JobStepPredicates.JOB_ID, job.getId()));
+
+            JobStepListResult jobSteps = JOB_STEP_SERVICE.query(jobStepQuery);
             jobSteps.sort((step1, step2) -> step1.getStepIndex() - step2.getStepIndex());
 
-            Listener jslListener = new Listener();
-            jslListener.setRef(KapuaJobListener.class.getName());
-            Listeners listeners = new Listeners();
-            listeners.getListenerList().add(jslListener);
-
-            JSLProperties jslProperties = new JSLProperties();
-
             List<ExecutionElement> jslExecutionElements = new ArrayList<>();
-            for (JobStep jobStep : jobSteps) {
-
-                JSLProperties jslStepProperties = new JSLProperties();
-                jslStepProperties.getPropertyList();
+            Iterator<JobStep> jobStepIterator = jobSteps.getItems().iterator();
+            while (jobStepIterator.hasNext()) {
+                // for (JobStep jobStep : jobSteps.getItems()) {
+                JobStep jobStep = jobStepIterator.next();
 
                 Step jslStep = new Step();
-                jslStep.setId("step-" + String.valueOf(jobStep.getStepIndex()));
-                jslStep.setProperties(jslStepProperties);
-
-                // JobStepDefinition jobStepDefinition = STEP_DEFINITION_SERVICE.find(jobStep.getScopeId(), jobStep.getJobStepDefinitionId());
-                JobStepDefinition jobStepDefinition = new DeviceCommandExecStepDefinition();
+                JobStepDefinition jobStepDefinition = STEP_DEFINITION_SERVICE.find(jobStep.getScopeId(), jobStep.getJobStepDefinitionId());
                 switch (jobStepDefinition.getStepType()) {
                 case GENERIC:
-                    Batchlet batchlet = new Batchlet();
-                    batchlet.setRef(TestStep.class.getName());
-                    jslStep.setBatchlet(batchlet);
+                    jslStep.setBatchlet(buildBatchletStep(jobStepDefinition));
                     break;
                 case TARGET:
-                    Chunk chunk = new Chunk();
-
-                    ItemReader itemReader = new ItemReader();
-                    itemReader.setRef(jobStepDefinition.getReaderName());
-                    chunk.setReader(itemReader);
-
-                    ItemProcessor itemProcessor = new ItemProcessor();
-                    itemProcessor.setRef(jobStepDefinition.getProcessorName());
-                    chunk.setProcessor(itemProcessor);
-
-                    ItemWriter itemWriter = new ItemWriter();
-                    itemWriter.setRef(jobStepDefinition.getWriterName());
-                    chunk.setWriter(itemWriter);
-
-                    jslStep.setChunk(chunk);
+                    jslStep.setChunk(buildChunkStep(jobStepDefinition));
                     break;
                 default:
                     // FIXME: Throw appropriate exception
                     break;
                 }
+
+                jslStep.setId("step-" + String.valueOf(jobStep.getStepIndex()));
+
+                if (jobStepIterator.hasNext()) {
+                    jslStep.setNextFromAttribute("step-" + String.valueOf(jobStep.getStepIndex() + 1));
+                }
+
+                jslStep.setProperties(buildStepProperties(jobStepDefinition, jobStep, jobStepIterator.hasNext()));
 
                 jslExecutionElements.add(jslStep);
             }
@@ -169,8 +144,8 @@ public class JobRuntime implements KapuaService {
             jslJob.setRestartable("false");
             jslJob.setId("job-" + job.getScopeId().toCompactId() + "-" + job.getId().toCompactId());
             jslJob.setVersion("1.0");
-            jslJob.setProperties(jslProperties);
-            jslJob.setListeners(listeners);
+            jslJob.setProperties(buildJobProperties(job));
+            jslJob.setListeners(buildListener());
             jslJob.getExecutionElements().addAll(jslExecutionElements);
 
             jobXmlDefinition = JSL_MODEL_SERIALIZER_FACTORY.serializeModel(jslJob);
@@ -193,5 +168,71 @@ public class JobRuntime implements KapuaService {
         }
 
         JOB_ENGINE.start(jobXmlDefinitionFile.getAbsolutePath().replaceAll("\\.xml$", ""), new Properties());
+    }
+
+    private static Listeners buildListener() {
+        Listener jslListener = new Listener();
+        jslListener.setRef(KapuaJobListener.class.getName());
+        Listeners listeners = new Listeners();
+        listeners.getListenerList().add(jslListener);
+        return listeners;
+    }
+
+    private static JSLProperties buildJobProperties(Job job) {
+
+        Property scopeIdProperty = new Property();
+        scopeIdProperty.setName(JobContextPropertyNames.JOB_SCOPE_ID);
+        scopeIdProperty.setValue(job.getScopeId().toCompactId());
+
+        Property jobIdProperty = new Property();
+        jobIdProperty.setName(JobContextPropertyNames.JOB_ID);
+        jobIdProperty.setValue(job.getId().toCompactId());
+
+        JSLProperties jslProperties = new JSLProperties();
+        List<Property> jslPropertyList = jslProperties.getPropertyList();
+        jslPropertyList.add(scopeIdProperty);
+        jslPropertyList.add(jobIdProperty);
+
+        return jslProperties;
+    }
+
+    private static JSLProperties buildStepProperties(JobStepDefinition jobStepDefinition, JobStep jobStep, boolean hasNext) {
+        JSLProperties jslProperties = new JSLProperties();
+        List<Property> jslPropertyList = jslProperties.getPropertyList();
+
+        Property stepIndexProperty = new Property();
+        stepIndexProperty.setName(StepContextPropertyNames.STEP_INDEX);
+        stepIndexProperty.setValue(String.valueOf(jobStep.getStepIndex()));
+        jslPropertyList.add(stepIndexProperty);
+
+        if (hasNext) {
+            Property stepNextIndexProperty = new Property();
+            stepNextIndexProperty.setName(StepContextPropertyNames.STEP_NEXT_INDEX);
+            stepNextIndexProperty.setValue(String.valueOf(jobStep.getStepIndex() + 1));
+            jslPropertyList.add(stepNextIndexProperty);
+        }
+
+        return jslProperties;
+    }
+
+    private static Batchlet buildBatchletStep(JobStepDefinition jobStepDefinition) {
+        return new Batchlet();
+    }
+
+    private static Chunk buildChunkStep(JobStepDefinition jobStepDefinition) {
+        Chunk chunk = new Chunk();
+
+        ItemReader itemReader = new ItemReader();
+        itemReader.setRef(jobStepDefinition.getReaderName());
+        chunk.setReader(itemReader);
+
+        ItemProcessor itemProcessor = new ItemProcessor();
+        itemProcessor.setRef(jobStepDefinition.getProcessorName());
+        chunk.setProcessor(itemProcessor);
+
+        ItemWriter itemWriter = new ItemWriter();
+        itemWriter.setRef(jobStepDefinition.getWriterName());
+        chunk.setWriter(itemWriter);
+        return chunk;
     }
 }
