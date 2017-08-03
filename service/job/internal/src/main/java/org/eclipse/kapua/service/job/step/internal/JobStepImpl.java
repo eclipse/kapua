@@ -38,7 +38,7 @@ import org.eclipse.kapua.service.job.step.definition.internal.JobStepPropertyImp
  *
  */
 @Entity(name = "JobStep")
-@Table(name = "jobStep_jobStep")
+@Table(name = "job_job_step")
 public class JobStepImpl extends AbstractKapuaNamedEntity implements JobStep {
 
     private static final long serialVersionUID = -5686107367635300337L;
@@ -65,6 +65,9 @@ public class JobStepImpl extends AbstractKapuaNamedEntity implements JobStep {
 
     @Transient
     private List<JobStepPropertyImpl> stepProperties;
+
+    public JobStepImpl() {
+    }
 
     public JobStepImpl(KapuaId scopeId) {
         super(scopeId);

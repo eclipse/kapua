@@ -47,6 +47,12 @@ public class JobStepDefinitionDAO {
 
         JobStepDefinitionImpl jobStepDefinitionImpl = new JobStepDefinitionImpl(jobStepDefinitionCreator.getScopeId());
         jobStepDefinitionImpl.setName(jobStepDefinitionCreator.getName());
+        jobStepDefinitionImpl.setDescription(jobStepDefinitionCreator.getDescription());
+        jobStepDefinitionImpl.setStepType(jobStepDefinitionCreator.getStepType());
+        jobStepDefinitionImpl.setReaderName(jobStepDefinitionCreator.getReaderName());
+        jobStepDefinitionImpl.setProcessorName(jobStepDefinitionCreator.getProcessorName());
+        jobStepDefinitionImpl.setWriterName(jobStepDefinitionCreator.getWriterName());
+        jobStepDefinitionImpl.setStepProperties(jobStepDefinitionCreator.getStepProperties());
 
         return ServiceDAO.create(em, jobStepDefinitionImpl);
     }

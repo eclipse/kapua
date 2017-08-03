@@ -11,28 +11,80 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.context.internal;
 
+import java.util.Properties;
+
+import javax.batch.runtime.BatchStatus;
+import javax.batch.runtime.context.JobContext;
+
+import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.job.context.JobContextPropertyNames;
 import org.eclipse.kapua.service.job.context.KapuaJobContext;
 
 public class KapuaJobContextImpl implements KapuaJobContext {
 
-    private KapuaId scopeId;
-    private KapuaId jobId;
+    private JobContext jobContext;
 
+    public KapuaJobContextImpl(JobContext jobContext) {
+        this.jobContext = jobContext;
+    }
+
+    @Override
     public KapuaId getScopeId() {
-        return scopeId;
+        Properties jobContextProperties = jobContext.getProperties();
+        String scopeIdString = jobContextProperties.getProperty(JobContextPropertyNames.JOB_SCOPE_ID);
+        return scopeIdString != null ? KapuaEid.parseCompactId(scopeIdString) : null;
     }
 
-    public void setScopeId(KapuaId scopeId) {
-        this.scopeId = scopeId;
-    }
-
+    @Override
     public KapuaId getJobId() {
-        return jobId;
+        Properties jobContextProperties = jobContext.getProperties();
+        String jobIdString = jobContextProperties.getProperty(JobContextPropertyNames.JOB_ID);
+        return jobIdString != null ? KapuaEid.parseCompactId(jobIdString) : null;
     }
 
-    public void setJobId(KapuaId jobId) {
-        this.jobId = jobId;
+    @Override
+    public String getJobName() {
+        return jobContext.getJobName();
     }
 
+    @Override
+    public Object getTransientUserData() {
+        return jobContext.getTransientUserData();
+    }
+
+    @Override
+    public void setTransientUserData(Object data) {
+        jobContext.setTransientUserData(data);
+    }
+
+    @Override
+    public long getInstanceId() {
+        return jobContext.getInstanceId();
+    }
+
+    @Override
+    public long getExecutionId() {
+        return jobContext.getExecutionId();
+    }
+
+    @Override
+    public Properties getProperties() {
+        return jobContext.getProperties();
+    }
+
+    @Override
+    public BatchStatus getBatchStatus() {
+        return jobContext.getBatchStatus();
+    }
+
+    @Override
+    public String getExitStatus() {
+        return jobContext.getExitStatus();
+    }
+
+    @Override
+    public void setExitStatus(String status) {
+        jobContext.setExitStatus(status);
+    }
 }

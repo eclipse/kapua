@@ -35,7 +35,7 @@ import org.eclipse.kapua.service.job.targets.JobTargetStatus;
  *
  */
 @Entity(name = "JobTarget")
-@Table(name = "jobTarget_jobTarget")
+@Table(name = "job_job_target")
 public class JobTargetImpl extends AbstractKapuaUpdatableEntity implements JobTarget {
 
     private static final long serialVersionUID = -5686107367635300337L;
@@ -62,6 +62,9 @@ public class JobTargetImpl extends AbstractKapuaUpdatableEntity implements JobTa
 
     @Transient
     private Exception e;
+
+    public JobTargetImpl() {
+    }
 
     public JobTargetImpl(KapuaId scopeId) {
         super(scopeId);

@@ -47,6 +47,7 @@ public class JobDAO {
 
         JobImpl jobImpl = new JobImpl(jobCreator.getScopeId());
         jobImpl.setName(jobCreator.getName());
+        jobImpl.setDescription(jobCreator.getDescription());
 
         return ServiceDAO.create(em, jobImpl);
     }

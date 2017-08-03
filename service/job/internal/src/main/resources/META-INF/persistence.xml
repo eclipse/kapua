@@ -23,6 +23,7 @@
         <class>org.eclipse.kapua.service.job.step.internal.JobStepImpl</class>
         <class>org.eclipse.kapua.service.job.step.definition.internal.JobStepDefinitionImpl</class>
         <class>org.eclipse.kapua.service.job.targets.internal.JobTargetImpl</class>
+        
         <class>org.eclipse.kapua.commons.configuration.ServiceConfigImpl</class>
 
         <!-- Base classes and External classes -->
