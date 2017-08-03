@@ -14,6 +14,7 @@ package org.eclipse.kapua.commons.model.query;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.kapua.model.KapuaEntity;
@@ -85,5 +86,10 @@ public class KapuaListResultImpl<E extends KapuaEntity> implements KapuaListResu
     @Override
     public void clearItems() {
         this.items.clear();
+    }
+
+    @Override
+    public void sort(Comparator<E> comparator) {
+        this.items.sort(comparator);
     }
 }
