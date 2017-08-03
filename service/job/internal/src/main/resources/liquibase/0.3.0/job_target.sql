@@ -22,8 +22,6 @@ CREATE TABLE job_job_target (
   modified_on               TIMESTAMP(3)	NOT NULL,
   modified_by               BIGINT(21)		UNSIGNED NOT NULL,
   
-  name                      VARCHAR(255)	NOT NULL,
-
   job_id          			BIGINT(21) 	  	UNSIGNED NOT NULL,
   job_target_id          	BIGINT(21) 	  	UNSIGNED NOT NULL,
   step_index	          	INT				UNSIGNED NOT NULL,

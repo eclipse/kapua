@@ -12,22 +12,24 @@
 
 -- liquibase formatted sql
 
--- changeset job:1
+-- changeset job_step:1
 
 CREATE TABLE job_job_step_definition (
-  scope_id          		 BIGINT(21) 	  UNSIGNED NOT NULL,
-  id                         BIGINT(21) 	  UNSIGNED NOT NULL,
-  created_on                 TIMESTAMP(3) 	  DEFAULT 0,
-  created_by                 BIGINT(21) 	  UNSIGNED NOT NULL,
-  modified_on                TIMESTAMP(3)     NOT NULL,
-  modified_by                BIGINT(21) 	  UNSIGNED NOT NULL,
+  scope_id          		BIGINT(21) 	  	UNSIGNED NOT NULL,
+  id                        BIGINT(21)		UNSIGNED NOT NULL,
+  created_on                TIMESTAMP(3)	DEFAULT 0,
+  created_by                BIGINT(21) 	  	UNSIGNED NOT NULL,
+  modified_on               TIMESTAMP(3)	NOT NULL,
+  modified_by               BIGINT(21)		UNSIGNED NOT NULL,
+
+  name                      VARCHAR(255)	NOT NULL,
   
-  name                       VARCHAR(255) 	  NOT NULL,  
+  description				TEXT,
+  job_step_type          	VARCHAR(255)	UNSIGNED NOT NULL,
   
-  description				 TEXT,
-  job_id          		 	 BIGINT(21) 	  UNSIGNED NOT NULL,
-  job_step_definition_id     BIGINT(21) 	  UNSIGNED NOT NULL,
-  step_index				 INT			  UNSIGNED NOT NULL,
+  reader_name     			VARCHAR(255)	UNSIGNED NOT NULL,
+  processor_name     		VARCHAR(255)	UNSIGNED NOT NULL,
+  writer_name     			VARCHAR(255)	UNSIGNED NOT NULL,
   
   optlock                    INT UNSIGNED,
   attributes				 TEXT,
