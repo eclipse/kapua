@@ -26,7 +26,7 @@
 
     <modules>
         <module>engine</module>
-        <!-- <module>commons</module> -->
+        <module>commons</module>
     </modules>
 
 </project>

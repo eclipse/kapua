@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.job.operation.defaults;
+package org.eclipse.kapua.service.job.commons.operation;
 
 import java.util.List;
 

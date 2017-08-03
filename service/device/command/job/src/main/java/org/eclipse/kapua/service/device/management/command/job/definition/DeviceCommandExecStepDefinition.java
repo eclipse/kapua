@@ -14,16 +14,16 @@ package org.eclipse.kapua.service.device.management.command.job.definition;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
 import org.eclipse.kapua.service.device.management.command.job.DeviceCommandTargetProcessor;
+import org.eclipse.kapua.service.job.commons.step.definition.AbstractTargetJobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionFactory;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 import org.eclipse.kapua.service.job.step.definition.JobStepType;
 
-public class DeviceCommandExecStepDefinition extends AbstractKapuaNamedEntity implements JobStepDefinition {
+public class DeviceCommandExecStepDefinition extends AbstractTargetJobStepDefinition implements JobStepDefinition {
 
     private static final long serialVersionUID = -4994045121586264564L;
 
@@ -36,17 +36,16 @@ public class DeviceCommandExecStepDefinition extends AbstractKapuaNamedEntity im
     }
 
     @Override
+    public void setName(String name) {
+    }
+
+    @Override
     public String getDescription() {
         return null;
     }
 
     @Override
     public void setDescription(String description) {
-    }
-
-    @Override
-    public JobStepType getStepType() {
-        return JobStepType.TARGET;
     }
 
     @Override
