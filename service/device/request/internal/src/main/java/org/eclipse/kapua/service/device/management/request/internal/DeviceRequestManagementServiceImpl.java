@@ -30,9 +30,6 @@ import org.eclipse.kapua.service.device.management.request.message.request.Gener
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestMessage;
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestPayload;
 import org.eclipse.kapua.service.device.management.request.message.response.GenericResponseMessage;
-import org.eclipse.kapua.service.device.management.response.KapuaResponseChannel;
-import org.eclipse.kapua.service.device.management.response.KapuaResponseMessage;
-import org.eclipse.kapua.service.device.management.response.KapuaResponsePayload;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
