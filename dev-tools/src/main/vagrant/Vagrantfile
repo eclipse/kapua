@@ -155,20 +155,34 @@ Vagrant.configure("2") do |config|
       # ActiveMQ post-install setup
       cd /usr/local/activemq/apache-activemq-${ACTIVEMQ_VERSION}
       rm conf/activemq.xml
-      ln -s /kapua/org.eclipse.kapua.kapua-docker-broker/src/main/resources/conf/broker/activemq.xml conf/activemq.xml
-      ln -s /kapua/org.eclipse.kapua.kapua-docker-broker/src/main/resources/conf/broker/camel.xml conf/camel.xml
+
+      sudo mkdir /usr/local/activemq-service
+      sudo cp -R /usr/local/activemq/apache-activemq-${ACTIVEMQ_VERSION}/* /usr/local/activemq-service
+      
+      ln -s /kapua/assembly/broker/src/main/resources/conf/broker/activemq.xml conf/activemq.xml
+      ln -s /kapua/assembly/broker/src/main/resources/conf/broker/camel.xml conf/camel.xml
       echo 'configuring conf/log4j.properties'
       sudo sed -i 's/log4j.appender.logfile.layout.ConversionPattern=%d | %-5p | %m | %c | %t%n/log4j.appender.logfile.layout.ConversionPattern=%d | %-5p | %t | %c | %m%n/g' conf/log4j.properties
       sudo sed -i 's/log4j.appender.audit.layout.ConversionPattern=%-5p | %m | %t%n/log4j.appender.audit.layout.ConversionPattern=%-5p | %t%n | %m/g' conf/log4j.properties
 
-      cp /kapua/dev-tools/src/main/vagrant/develop/broker/*.sh .
+      cp /kapua/dev-tools/src/main/vagrant/develop/broker/update-kapua-jars-cfg.sh .
+      cp /kapua/dev-tools/src/main/vagrant/develop/broker/start-broker.sh .
       chmod 555 update-kapua-jars-cfg.sh
       chmod 555 start-broker.sh
+      
+      cd /usr/local/activemq-service
+      cp /kapua/assembly/broker/src/main/resources/conf/broker/activemq-service.xml conf/activemq.xml
+      cp /kapua/dev-tools/src/main/vagrant/develop/broker/start-broker-service.sh .
+      chmod 555 start-broker-service.sh
+      
+      cd /usr/local/activemq/apache-activemq-${ACTIVEMQ_VERSION}
 
       # Enable debug
       sudo sed -i 's/\#ACTIVEMQ_DEBUG_OPTS=/ACTIVEMQ_DEBUG_OPTS=/g' bin/env
       sudo sed -i 's/ACTIVEMQ_VERSION/'"$ACTIVEMQ_VERSION"'/g' update-kapua-jars-cfg.sh
+      sudo sed -i 's/ACTIVEMQ_VERSION/'"$ACTIVEMQ_VERSION"'/g' start-broker.sh
       sudo chown -R vagrant:vagrant /usr/local/activemq/apache-activemq-${ACTIVEMQ_VERSION}
+      sudo chown -R vagrant:vagrant /usr/local/activemq-service
 
       ###########################
       ### Tomcat post install ###

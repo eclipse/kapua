@@ -30,6 +30,9 @@ import org.eclipse.kapua.service.authorization.domain.DomainService;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
+import org.eclipse.kapua.service.event.KapuaEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link DomainService} implementation.
@@ -38,6 +41,8 @@ import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerF
  */
 @KapuaProvider
 public class DomainServiceImpl extends AbstractKapuaService implements DomainService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DomainServiceImpl.class);
 
     private static final Domain DOMAIN_DOMAIN = new DomainDomain();
 
@@ -153,5 +158,29 @@ public class DomainServiceImpl extends AbstractKapuaService implements DomainSer
         authorizationService.checkPermission(permissionFactory.newPermission(DOMAIN_DOMAIN, Actions.read, KapuaId.ANY));
 
         return entityManagerSession.onResult(em -> DomainDAO.count(em, query));
+    }
+
+    @Override
+    public void onKapuaEvent(KapuaEvent kapuaEvent) throws KapuaException {
+        if (kapuaEvent == null) {
+            //service bus error. Throw some exception?
+        }
+        LOGGER.info("DomainService: received kapua event from {}, operation {}", kapuaEvent.getService(), kapuaEvent.getOperation());
+        if ("account".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {
+            deleteDomainByAccountId(kapuaEvent.getScopeId(), kapuaEvent.getEntityId());
+        }
+    }
+
+    private void deleteDomainByAccountId(KapuaId scopeId, KapuaId accountId) throws KapuaException {
+        KapuaLocator locator = KapuaLocator.getInstance();
+        DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
+
+        DomainQuery query = domainFactory.newQuery(accountId);
+
+        DomainListResult domainsToDelete = query(query);
+
+        for (Domain d : domainsToDelete.getItems()) {
+            delete(d.getScopeId(), d.getId());
+        }
     }
 }

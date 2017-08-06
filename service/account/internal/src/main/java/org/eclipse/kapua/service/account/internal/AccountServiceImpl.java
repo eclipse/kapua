@@ -39,6 +39,10 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.event.KapuaEvent;
+import org.eclipse.kapua.service.event.KapuaEventBusListener;
+import org.eclipse.kapua.service.event.ListenKapuaEvent;
+import org.eclipse.kapua.service.event.RaiseKapuaEvent;
 
 /**
  * {@link AccountService} implementation.
@@ -47,10 +51,11 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
  */
 @KapuaProvider
 public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<Account, AccountCreator, AccountService, AccountListResult, AccountQuery, AccountFactory>
-        implements AccountService {
+        implements AccountService, KapuaEventBusListener {
 
     private static final Domain ACCOUNT_DOMAIN = new AccountDomain();
 
+//    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     @Inject
     private AuthorizationService authorizationService;
 
@@ -67,6 +72,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     @Override
+    @RaiseKapuaEvent
     public Account create(AccountCreator accountCreator)
             throws KapuaException {
         //
@@ -106,6 +112,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     @Override
+    @RaiseKapuaEvent
     public Account update(Account account)
             throws KapuaException {
         //
@@ -151,6 +158,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     @Override
+    @RaiseKapuaEvent
     public void delete(KapuaId scopeId, KapuaId accountId)
             throws KapuaException {
 
@@ -333,6 +341,13 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     @Override
     protected Map<String, Object> getConfigValues(Account entity) throws KapuaException {
         return super.getConfigValues(entity.getId());
+    }
+
+    @Override
+    @ListenKapuaEvent
+    public void onKapuaEvent(KapuaEvent kapuaEvent) throws KapuaException {
+        // TODO Auto-generated method stub
+
     }
 
 }

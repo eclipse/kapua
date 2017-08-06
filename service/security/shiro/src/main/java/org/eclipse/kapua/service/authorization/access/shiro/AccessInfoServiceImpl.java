@@ -42,6 +42,11 @@ import org.eclipse.kapua.service.authorization.permission.shiro.PermissionValida
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
+import org.eclipse.kapua.service.authorization.shiro.KapuaAuthorizationErrorCodes;
+import org.eclipse.kapua.service.authorization.shiro.KapuaAuthorizationException;
+import org.eclipse.kapua.service.event.KapuaEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eclipse.kapua.service.authorization.shiro.exception.KapuaAuthorizationErrorCodes;
 import org.eclipse.kapua.service.authorization.shiro.exception.KapuaAuthorizationException;
 
@@ -52,6 +57,8 @@ import org.eclipse.kapua.service.authorization.shiro.exception.KapuaAuthorizatio
  */
 @KapuaProvider
 public class AccessInfoServiceImpl extends AbstractKapuaService implements AccessInfoService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccessInfoServiceImpl.class);
 
     private static final Domain ACCESS_INFO_DOMAIN = new AccessInfoDomain();
 
@@ -218,5 +225,46 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
 
             AccessInfoDAO.delete(em, accessInfoId);
         });
+    }
+
+    @Override
+    public void onKapuaEvent(KapuaEvent kapuaEvent) throws KapuaException {
+        if (kapuaEvent == null) {
+            //service bus error. Throw some exception?
+        }
+        LOGGER.info("AccessInfoService: received kapua event from {}, operation {}", kapuaEvent.getService(), kapuaEvent.getOperation());
+        if ("user".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {
+            deleteAccessInfoByUserId(kapuaEvent.getScopeId(), kapuaEvent.getEntityId());
+        }
+        else if ("account".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {
+            deleteAccessInfoByAccountId(kapuaEvent.getScopeId(), kapuaEvent.getEntityId());
+        }
+    }
+
+    private void deleteAccessInfoByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException {
+        KapuaLocator locator = KapuaLocator.getInstance();
+        AccessInfoFactory accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
+
+        AccessInfoQuery query = accessInfoFactory.newQuery(scopeId);
+        query.setPredicate(new AttributePredicate<>(AccessInfoPredicates.USER_ID, userId));
+
+        AccessInfoListResult accessInfosToDelete = query(query);
+
+        for (AccessInfo at : accessInfosToDelete.getItems()) {
+            delete(at.getScopeId(), at.getId());
+        }
+    }
+
+    private void deleteAccessInfoByAccountId(KapuaId scopeId, KapuaId accountId) throws KapuaException {
+        KapuaLocator locator = KapuaLocator.getInstance();
+        AccessInfoFactory accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
+
+        AccessInfoQuery query = accessInfoFactory.newQuery(accountId);
+
+        AccessInfoListResult accessInfosToDelete = query(query);
+
+        for (AccessInfo at : accessInfosToDelete.getItems()) {
+            delete(at.getScopeId(), at.getId());
+        }
     }
 }

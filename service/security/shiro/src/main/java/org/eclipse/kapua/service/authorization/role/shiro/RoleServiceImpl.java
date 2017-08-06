@@ -35,6 +35,9 @@ import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
+import org.eclipse.kapua.service.event.KapuaEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Role service implementation.
@@ -43,6 +46,8 @@ import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerF
  */
 @KapuaProvider
 public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<Role, RoleCreator, RoleService, RoleListResult, RoleQuery, RoleFactory> implements RoleService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RoleServiceImpl.class);
 
     private static final Domain ROLE_DOMAIN = new RoleDomain();
 
@@ -186,5 +191,29 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         authorizationService.checkPermission(permissionFactory.newPermission(ROLE_DOMAIN, Actions.read, query.getScopeId()));
 
         return entityManagerSession.onResult(em -> RoleDAO.count(em, query));
+    }
+
+    @Override
+    public void onKapuaEvent(KapuaEvent kapuaEvent) throws KapuaException {
+        if (kapuaEvent == null) {
+            //service bus error. Throw some exception?
+        }
+        LOGGER.info("RoleService: received kapua event from {}, operation {}", kapuaEvent.getService(), kapuaEvent.getOperation());
+        if ("account".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {
+            deleteRoleByAccountId(kapuaEvent.getScopeId(), kapuaEvent.getEntityId());
+        }
+    }
+
+    private void deleteRoleByAccountId(KapuaId scopeId, KapuaId accountId) throws KapuaException {
+        KapuaLocator locator = KapuaLocator.getInstance();
+        RoleFactory roleFactory = locator.getFactory(RoleFactory.class);
+
+        RoleQuery query = roleFactory.newQuery(accountId);
+
+        RoleListResult rolesToDelete = query(query);
+
+        for (Role r : rolesToDelete.getItems()) {
+            delete(r.getScopeId(), r.getId());
+        }
     }
 }

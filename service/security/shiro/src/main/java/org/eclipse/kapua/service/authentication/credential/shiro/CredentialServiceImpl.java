@@ -43,6 +43,9 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.event.KapuaEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.security.SecureRandom;
 
@@ -53,6 +56,8 @@ import java.security.SecureRandom;
  */
 @KapuaProvider
 public class CredentialServiceImpl extends AbstractKapuaConfigurableService implements CredentialService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CredentialServiceImpl.class);
 
     private static final Domain CREDENTIAL_DOMAIN = new CredentialDomain();
 
@@ -389,4 +394,46 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         credentialQuery.setPredicate(andPredicate);
         return count(credentialQuery);
     }
+
+    @Override
+    public void onKapuaEvent(KapuaEvent kapuaEvent) throws KapuaException {
+        if (kapuaEvent == null) {
+            //service bus error. Throw some exception?
+        }
+        LOGGER.info("CredentialService: received kapua event from {}, operation {}", kapuaEvent.getService(), kapuaEvent.getOperation());
+        if ("user".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {
+            deleteCredentialByUserId(kapuaEvent.getScopeId(), kapuaEvent.getEntityId());
+        }
+        else if ("account".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {
+            deleteCredentialByAccountId(kapuaEvent.getScopeId(), kapuaEvent.getEntityId());
+        }
+    }
+
+    private void deleteCredentialByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException {
+        KapuaLocator locator = KapuaLocator.getInstance();
+        CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
+
+        CredentialQuery query = credentialFactory.newQuery(scopeId);
+        query.setPredicate(new AttributePredicate<>(CredentialPredicates.USER_ID, userId));
+
+        CredentialListResult credentialsToDelete = query(query);
+
+        for (Credential c : credentialsToDelete.getItems()) {
+            delete(c.getScopeId(), c.getId());
+        }
+    }
+
+    private void deleteCredentialByAccountId(KapuaId scopeId, KapuaId accountId) throws KapuaException {
+        KapuaLocator locator = KapuaLocator.getInstance();
+        CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
+
+        CredentialQuery query = credentialFactory.newQuery(accountId);
+
+        CredentialListResult credentialsToDelete = query(query);
+
+        for (Credential c : credentialsToDelete.getItems()) {
+            delete(c.getScopeId(), c.getId());
+        }
+    }
+
 }

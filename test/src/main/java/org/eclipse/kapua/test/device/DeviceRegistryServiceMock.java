@@ -24,6 +24,7 @@ import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.eclipse.kapua.service.event.KapuaEvent;
 
 @KapuaProvider
 public class DeviceRegistryServiceMock implements DeviceRegistryService {
@@ -108,5 +109,10 @@ public class DeviceRegistryServiceMock implements DeviceRegistryService {
     @Override
     public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
 
+    }
+
+    @Override
+    public void onKapuaEvent(KapuaEvent kapuaEvent) throws KapuaException {
+        // TODO Auto-generated method stub
     }
 }

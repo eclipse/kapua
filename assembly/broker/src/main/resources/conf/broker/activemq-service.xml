@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+        Red Hat Inc
+ -->
+<beans
+        xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:util="http://www.springframework.org/schema/util"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://activemq.apache.org/schema/core
+         http://activemq.apache.org/schema/core/activemq-core.xsd
+         http://camel.apache.org/schema/spring
+         http://camel.apache.org/schema/spring/camel-spring-2.15.1.xsd
+         http://www.springframework.org/schema/util
+         http://www.springframework.org/schema/util/spring-util-3.2.xsd">
+
+    <!-- Allows us to use system properties as variables in this configuration file -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <value>file:${activemq.conf}/credentials.properties</value>
+        </property>
+    </bean>
+
+    <broker xmlns="http://activemq.apache.org/schema/core"
+            brokerName="kapua-service"
+            id="kapua-service-broker"
+            persistent="true"
+            dataDirectory="${activemq.data}"
+            schedulePeriodForDestinationPurge="-1"
+            networkConnectorStartAsync="true"
+            restartAllowed="false"
+            useJmx="true"
+            advisorySupport="false">
+
+        <!-- commented to remove all jmx management -->
+        <managementContext>
+            <managementContext createConnector="false"/>
+        </managementContext>
+        
+        <!-- DEMO configuration. To be filled with the proper service event topology -->
+        <destinationInterceptors>
+            <virtualDestinationInterceptor>
+                <virtualDestinations>
+                    <compositeQueue name="events.account">
+                        <forwardTo>
+                            <queue physicalName="events.account.account" />
+                            <queue physicalName="events.account.user" />
+                            <!-- device registry us -->
+                            <queue physicalName="events.account.deviceregistry" />
+                            <queue physicalName="events.account.deviceconnection" />
+                            <!-- authorization us -->
+                            <queue physicalName="events.account.accessinfo" />
+                            <queue physicalName="events.account.role" />
+                            <queue physicalName="events.account.domain" />
+                            <queue physicalName="events.account.group" />
+                            <!-- authentication us -->
+                            <queue physicalName="events.account.credential" />
+                            <queue physicalName="events.account.accesstoken" />
+
+                        </forwardTo>
+                    </compositeQueue>
+                </virtualDestinations>
+            </virtualDestinationInterceptor>
+            <virtualDestinationInterceptor>
+                <virtualDestinations>
+                    <compositeQueue name="events.authorization">
+                        <forwardTo>
+                            <queue physicalName="events.authorization.authorization" />
+                            <queue physicalName="events.authorization.deviceregistry" />
+                        </forwardTo>
+                    </compositeQueue>
+                </virtualDestinations>
+            </virtualDestinationInterceptor>
+            <virtualDestinationInterceptor>
+                <virtualDestinations>
+                    <compositeQueue name="events.user">
+                        <forwardTo>
+                            <queue physicalName="events.user.user" />
+                            <queue physicalName="events.user.credential" />
+                            <queue physicalName="events.user.accesstoken" />
+                            <queue physicalName="events.user.accessinfo" />
+                        </forwardTo>
+                    </compositeQueue>
+                </virtualDestinations>
+            </virtualDestinationInterceptor>
+        </destinationInterceptors>
+
+        <persistenceAdapter>
+            <!--
+                indexCacheSize—(default 10000) specifies the size of the cache in units of pages (where one page is 4 KB by default).
+                https://access.redhat.com/documentation/en-US/Fuse_ESB_Enterprise/7.1/html/ActiveMQ_Tuning_Guide/files/PersTuning-KahaDB.html
+            -->
+            <kahaDB directory="${activemq.data}/kahadb"
+                    journalMaxFileLength="32mb"
+                    concurrentStoreAndDispatchQueues="true"
+                    concurrentStoreAndDispatchTopics="false"
+                    indexWriteBatchSize="10000"
+                    indexCacheSize="100000"
+                    enableJournalDiskSyncs="false"/>
+        </persistenceAdapter>
+
+        <systemUsage>
+            <systemUsage>
+                <memoryUsage>
+                    <memoryUsage limit="6 gb"/>
+                </memoryUsage>
+                <storeUsage>
+                    <storeUsage limit="10 gb"/>
+                </storeUsage>
+                <tempUsage>
+                    <tempUsage limit="1 gb"/>
+                </tempUsage>
+            </systemUsage>
+        </systemUsage>
+
+        <transportConnectors>
+            <transportConnector name="tcp"
+                                uri="tcp://0.0.0.0:61619?transport.maximumConnections=1000&amp;transport.socketBufferSize=131072&amp;ioBufferSize=16384&amp;transport.activeMQSubscriptionPrefetch=32766&amp;transport.publishDollarTopics=true&amp;transport.subscriptionStrategy=mqtt-virtual-topic-subscriptions"/>
+        </transportConnectors>
+    </broker>
+
+</beans>
