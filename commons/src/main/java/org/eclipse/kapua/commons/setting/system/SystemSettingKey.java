@@ -174,7 +174,27 @@ public enum SystemSettingKey implements SettingKey {
     /**
      * Maximum allowed retry (due to a {@link EntityExistsException}, so already exists key) on insert operation
      */
-    KAPUA_INSERT_MAX_RETRY("commons.entity.insert.max.retry");
+    KAPUA_INSERT_MAX_RETRY("commons.entity.insert.max.retry"),
+
+    /**
+     * Url of the event bus
+     */
+    EVENT_BUS_URL("commons.eventbus.url"),
+
+    /**
+     * Username to connect to the event bus
+     */
+    EVENT_BUS_USERNAME("commons.eventbus.username"),
+
+    /**
+     * Password to connect to the event bus
+     */
+    EVENT_BUS_PASSWORD("commons.eventbus.password"),
+
+    /**
+     * Wait time between housekeeper executions
+     */
+    HOUSEKEEPER_EXECUTION_WAIT_TIME("commons.eventbus.houskeeper.waitTime");
 
     private String key;
 

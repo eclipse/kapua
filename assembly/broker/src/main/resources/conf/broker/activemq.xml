@@ -131,6 +131,9 @@
             <bean xmlns="http://www.springframework.org/schema/beans"
                   id="kapuaBrokerPlugin"
                   class="org.eclipse.kapua.broker.core.KapuaBrokerSecurityPlugin"/>
+            <bean xmlns="http://www.springframework.org/schema/beans"
+                  id="applicationFilter"
+                  class="org.eclipse.kapua.broker.core.KapuaBrokerApplicationPlugin"/>
             <discardingDLQBrokerPlugin dropAll="true"
                                        dropTemporaryTopics="true"
                                        dropTemporaryQueues="true"/>

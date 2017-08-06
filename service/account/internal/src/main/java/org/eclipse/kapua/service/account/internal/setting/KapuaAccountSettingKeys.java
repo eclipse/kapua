@@ -23,7 +23,9 @@ public enum KapuaAccountSettingKeys implements SettingKey {
     /**
      * The key value in the configuration resources.
      */
-    ACCOUNT_KEY("account.key");
+    ACCOUNT_KEY("account.key"),
+    ACCOUNT_PUBLISH_INTERNAL_EVENT_ADDRESS("account.publishInternalEventAddress"),
+    ACCOUNT_INTERNAL_EVENT_ADDRESS("account.internalEventAddress");
 
     private String key;
 

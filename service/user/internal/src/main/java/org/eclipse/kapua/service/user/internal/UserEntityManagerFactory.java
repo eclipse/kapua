@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.0
  *
  */
-public class UserEntityManagerFactory extends AbstractEntityManagerFactory {
+public class UserEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory {
 
     @SuppressWarnings("unused")
     private static final Logger LOG = LoggerFactory.getLogger(UserEntityManagerFactory.class);
@@ -49,7 +49,7 @@ public class UserEntityManagerFactory extends AbstractEntityManagerFactory {
      * 
      * @return
      */
-    public static EntityManagerFactory getInstance() {
+    public static UserEntityManagerFactory getInstance() {
         return instance;
     }
 }
