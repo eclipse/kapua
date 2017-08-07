@@ -14,7 +14,7 @@ package org.eclipse.kapua.app.console.module.authorization.shared.util;
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaModelConverter;
+import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessInfoCreator;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessPermissionCreator;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessRoleCreator;
@@ -74,7 +74,7 @@ public class GwtKapuaAuthorizationModelConverter {
             GwtGroupQuery gwtGroupQuery) {
         KapuaLocator locator = KapuaLocator.getInstance();
         GroupFactory groupFactory = locator.getFactory(GroupFactory.class);
-        GroupQuery groupQuery = groupFactory.newQuery(GwtKapuaModelConverter.convertKapuaId(gwtGroupQuery.getScopeId()));
+        GroupQuery groupQuery = groupFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtGroupQuery.getScopeId()));
         if (gwtGroupQuery.getName() != null && !gwtGroupQuery.getName().isEmpty()) {
             groupQuery
                     .setPredicate(new AttributePredicate<String>("name", gwtGroupQuery.getName(), Operator.LIKE));
@@ -101,7 +101,7 @@ public class GwtKapuaAuthorizationModelConverter {
         RoleFactory roleFactory = locator.getFactory(RoleFactory.class);
 
         // Convert query
-        RoleQuery roleQuery = roleFactory.newQuery(GwtKapuaModelConverter.convertKapuaId(gwtRoleQuery.getScopeId()));
+        RoleQuery roleQuery = roleFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtRoleQuery.getScopeId()));
         if (gwtRoleQuery.getName() != null && !gwtRoleQuery.getName().trim().isEmpty()) {
             roleQuery.setPredicate(new AttributePredicate<String>(RolePredicates.NAME, gwtRoleQuery.getName(), Operator.LIKE));
         }
@@ -119,7 +119,7 @@ public class GwtKapuaAuthorizationModelConverter {
         KapuaLocator locator = KapuaLocator.getInstance();
         AccessRoleFactory accessRoleFactory = locator.getFactory(AccessRoleFactory.class);
         AccessRoleQuery accessRoleQuery = accessRoleFactory
-                .newQuery(GwtKapuaModelConverter.convertKapuaId(gwtRoleQuery.getScopeId()));
+                .newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtRoleQuery.getScopeId()));
         accessRoleQuery.setPredicate(new AttributePredicate<KapuaId>("roleId",
                 KapuaEid.parseCompactId(gwtRoleQuery.getRoleId())));
         accessRoleQuery.setOffset(pagingLoadConfig.getOffset());
@@ -144,9 +144,9 @@ public class GwtKapuaAuthorizationModelConverter {
         RolePermissionFactory rolePermissionFactory = locator.getFactory(RolePermissionFactory.class);
 
         // Convert scopeId
-        KapuaId scopeId = GwtKapuaModelConverter.convertKapuaId(gwtRole.getScopeId());
+        KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtRole.getScopeId());
         Role role = roleFactory.newEntity(scopeId);
-        GwtKapuaModelConverter.convertEntity(gwtRole, role);
+        GwtKapuaCommonsModelConverter.convertUpdatableEntity(gwtRole, role);
 
         // Convert name
         role.setName(gwtRole.getName());
@@ -165,7 +165,7 @@ public class GwtKapuaAuthorizationModelConverter {
 
                 RolePermission rp = rolePermissionFactory.newEntity(scopeId);
                 rp.setPermission(p);
-                rp.setId(GwtKapuaModelConverter.convertKapuaId(gwtRolePermission.getId()));
+                rp.setId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtRolePermission.getId()));
                 rp.setRoleId(role.getId());
 
                 rolePermissions.add(rp);
@@ -191,7 +191,7 @@ public class GwtKapuaAuthorizationModelConverter {
         RoleFactory roleFactory = locator.getFactory(RoleFactory.class);
 
         // Convert scopeId
-        KapuaId scopeId = GwtKapuaModelConverter.convertKapuaId(gwtRoleCreator.getScopeId());
+        KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtRoleCreator.getScopeId());
         RoleCreator roleCreator = roleFactory.newCreator(scopeId);
 
         // Convert name
@@ -227,14 +227,14 @@ public class GwtKapuaAuthorizationModelConverter {
         AccessRoleFactory accessRoleFactory = locator.getFactory(AccessRoleFactory.class);
 
         // Convert scopeId
-        KapuaId scopeId = GwtKapuaModelConverter.convertKapuaId(gwtAccessRoleCreator.getScopeId());
+        KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtAccessRoleCreator.getScopeId());
         AccessRoleCreator accessRoleCreator = accessRoleFactory.newCreator(scopeId);
 
         // Convert accessInfoId
-        accessRoleCreator.setAccessInfoId(GwtKapuaModelConverter.convertKapuaId(gwtAccessRoleCreator.getAccessInfoId()));
+        accessRoleCreator.setAccessInfoId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtAccessRoleCreator.getAccessInfoId()));
 
         // Convert roleId
-        accessRoleCreator.setRoleId(GwtKapuaModelConverter.convertKapuaId(gwtAccessRoleCreator.getRoleId()));
+        accessRoleCreator.setRoleId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtAccessRoleCreator.getRoleId()));
 
         //
         // Return converted
@@ -256,11 +256,11 @@ public class GwtKapuaAuthorizationModelConverter {
         AccessPermissionFactory accessPermissionFactory = locator.getFactory(AccessPermissionFactory.class);
 
         // Convert scopeId
-        KapuaId scopeId = GwtKapuaModelConverter.convertKapuaId(gwtAccessPermissionCreator.getScopeId());
+        KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtAccessPermissionCreator.getScopeId());
         AccessPermissionCreator accessPermissionCreator = accessPermissionFactory.newCreator(scopeId);
 
         // Convert accessInfoId
-        accessPermissionCreator.setAccessInfoId(GwtKapuaModelConverter.convertKapuaId(gwtAccessPermissionCreator.getAccessInfoId()));
+        accessPermissionCreator.setAccessInfoId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtAccessPermissionCreator.getAccessInfoId()));
 
         // Convert Permission
         accessPermissionCreator.setPermission(convertPermission(gwtAccessPermissionCreator.getPermission()));
@@ -276,11 +276,11 @@ public class GwtKapuaAuthorizationModelConverter {
         AccessInfoFactory accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
 
         // Convert scopeId
-        KapuaId scopeId = GwtKapuaModelConverter.convertKapuaId(gwtAccessInfoCreator.getScopeId());
+        KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtAccessInfoCreator.getScopeId());
         AccessInfoCreator accessInfoCreator = accessInfoFactory.newCreator(scopeId);
 
         // Convert userId
-        accessInfoCreator.setUserId(GwtKapuaModelConverter.convertKapuaId(gwtAccessInfoCreator.getUserId()));
+        accessInfoCreator.setUserId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtAccessInfoCreator.getUserId()));
 
         //
         // Return converted
@@ -304,8 +304,8 @@ public class GwtKapuaAuthorizationModelConverter {
         // Return converted
         return permissionFactory.newPermission(convertDomain(new GwtDomain(gwtPermission.getDomain())),
                 convertAction(gwtPermission.getActionEnum()),
-                GwtKapuaModelConverter.convertKapuaId(gwtPermission.getTargetScopeId()),
-                GwtKapuaModelConverter.convertKapuaId(gwtPermission.getGroupId()),
+                GwtKapuaCommonsModelConverter.convertKapuaId(gwtPermission.getTargetScopeId()),
+                GwtKapuaCommonsModelConverter.convertKapuaId(gwtPermission.getGroupId()),
                 gwtPermission.getForwardable());
     }
 

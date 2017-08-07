@@ -13,7 +13,7 @@ package org.eclipse.kapua.app.console.module.authentication.shared.util;
 
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaModelConverter;
+import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredential;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialCreator;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialQuery;
@@ -57,10 +57,10 @@ public class GwtKapuaAuthenticationModelConverter {
         CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
 
         // Convert query
-        CredentialQuery credentialQuery = credentialFactory.newQuery(GwtKapuaModelConverter.convertKapuaId(gwtCredentialQuery.getScopeId()));
+        CredentialQuery credentialQuery = credentialFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtCredentialQuery.getScopeId()));
         AndPredicate andPredicate = new AndPredicate();
         if (gwtCredentialQuery.getUserId() != null && !gwtCredentialQuery.getUserId().trim().isEmpty()) {
-            andPredicate.and(new AttributePredicate<KapuaId>(CredentialPredicates.USER_ID, GwtKapuaModelConverter.convertKapuaId(gwtCredentialQuery.getUserId())));
+            andPredicate.and(new AttributePredicate<KapuaId>(CredentialPredicates.USER_ID, GwtKapuaCommonsModelConverter.convertKapuaId(gwtCredentialQuery.getUserId())));
         }
         if (gwtCredentialQuery.getUsername() != null && !gwtCredentialQuery.getUsername().trim().isEmpty()) {
             // TODO set username predicate
@@ -91,10 +91,10 @@ public class GwtKapuaAuthenticationModelConverter {
         CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
 
         // Convert scopeId
-        KapuaId scopeId = GwtKapuaModelConverter.convertKapuaId(gwtCredentialCreator.getScopeId());
+        KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtCredentialCreator.getScopeId());
         CredentialCreator credentialCreator = credentialFactory
                 .newCreator(scopeId,
-                        GwtKapuaModelConverter.convertKapuaId(gwtCredentialCreator.getUserId()),
+                        GwtKapuaCommonsModelConverter.convertKapuaId(gwtCredentialCreator.getUserId()),
                         convertCredentialType(gwtCredentialCreator.getCredentialType()),
                         gwtCredentialCreator.getCredentialPlainKey(),
                         convertCredentialStatus(gwtCredentialCreator.getCredentialStatus()),
@@ -118,13 +118,13 @@ public class GwtKapuaAuthenticationModelConverter {
         CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
 
         // Convert scopeId
-        KapuaId scopeId = GwtKapuaModelConverter.convertKapuaId(gwtCredential.getScopeId());
+        KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtCredential.getScopeId());
         Credential credential = credentialFactory.newEntity(scopeId);
-        GwtKapuaModelConverter.convertEntity(gwtCredential, credential);
+        GwtKapuaCommonsModelConverter.convertUpdatableEntity(gwtCredential, credential);
         if (gwtCredential.getId() != null && !gwtCredential.getId().trim().isEmpty()) {
-            credential.setId(GwtKapuaModelConverter.convertKapuaId(gwtCredential.getId()));
+            credential.setId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtCredential.getId()));
         }
-        credential.setUserId(GwtKapuaModelConverter.convertKapuaId(gwtCredential.getUserId()));
+        credential.setUserId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtCredential.getUserId()));
         credential.setCredentialType(convertCredentialType(gwtCredential.getCredentialTypeEnum()));
         credential.setCredentialKey(gwtCredential.getCredentialKey());
         credential.setExpirationDate(gwtCredential.getExpirationDate());

@@ -30,9 +30,8 @@ import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceCreator
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceEvent;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtXSRFToken;
-import org.eclipse.kapua.app.console.shared.service.GwtDeviceService;
+import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnection.GwtConnectionUserCouplingMode;
-import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
@@ -348,7 +347,7 @@ public class GwtDeviceServiceImpl extends KapuaConfigurableRemoteServiceServlet<
 
             DeviceCreator deviceCreator = deviceFactory.newCreator(scopeId, gwtDeviceCreator.getClientId());
             deviceCreator.setDisplayName(gwtDeviceCreator.getDisplayName());
-            deviceCreator.setGroupId(GwtKapuaModelConverter.convertKapuaId(gwtDeviceCreator.getGroupId()));
+            deviceCreator.setGroupId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtDeviceCreator.getGroupId()));
 
             // FIXME One day it will be specified from the form. In the meantime, defaults to LOOSE
             // deviceCreator.setCredentialsMode(DeviceCredentialsMode.LOOSE);
@@ -392,7 +391,7 @@ public class GwtDeviceServiceImpl extends KapuaConfigurableRemoteServiceServlet<
             // Gerenal info
             device.setDisplayName(gwtDevice.getUnescapedDisplayName());
             device.setStatus(DeviceStatus.valueOf(gwtDevice.getGwtDeviceStatus()));
-            device.setGroupId(GwtKapuaModelConverter.convertKapuaId(gwtDevice.getGroupId()));
+            device.setGroupId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtDevice.getGroupId()));
 
             // Security Stuff
             // device.setCredentialsMode(DeviceCredentialsMode.valueOf(gwtDevice.getCredentialsTight()));

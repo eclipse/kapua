@@ -23,7 +23,7 @@ import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserStatus;
 
-import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaModelConverter;
+import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.service.user.internal.UserPredicates;
 
 /**
@@ -50,7 +50,7 @@ public class GwtKapuaUserModelConverter {
         UserFactory userFactory = locator.getFactory(UserFactory.class);
 
         // Convert query
-        UserQuery userQuery = userFactory.newQuery(GwtKapuaModelConverter.convertKapuaId(gwtUserQuery.getScopeId()));
+        UserQuery userQuery = userFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtUserQuery.getScopeId()));
         if (gwtUserQuery.getName() != null && !gwtUserQuery.getName().isEmpty()) {
             userQuery.setPredicate(new AttributePredicate<String>(UserPredicates.NAME, gwtUserQuery.getName(), Operator.LIKE));
         }

@@ -54,6 +54,7 @@
         <liquibase.version>3.0.5</liquibase.version>
         <mariadb.version>1.4.6</mariadb.version>
         <mockito.version>1.10.19</mockito.version>
+        <opencsv.version>3.7</opencsv.version>
         <paho.version>1.1.0</paho.version>
         <poi.version>3.11</poi.version>
         <protobuf.version>2.6.1</protobuf.version>
@@ -771,6 +772,11 @@
             <!-- Console dependencies -->
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-console</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-console-app</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -941,6 +947,11 @@
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi</artifactId>
                 <version>${poi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.opencsv</groupId>
+                <artifactId>opencsv</artifactId>
+                <version>${opencsv.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.paho</groupId>

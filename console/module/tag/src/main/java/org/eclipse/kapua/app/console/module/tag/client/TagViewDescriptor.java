@@ -12,8 +12,8 @@
 package org.eclipse.kapua.app.console.module.tag.client;
 
 import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.commons.client.views.AbstractEntityViewDescriptor;
-import org.eclipse.kapua.app.console.commons.client.views.EntityView;
+import org.eclipse.kapua.app.console.commons.client.ui.view.descriptor.AbstractEntityViewDescriptor;
+import org.eclipse.kapua.app.console.commons.client.ui.view.EntityView;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
 

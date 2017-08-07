@@ -13,8 +13,8 @@ package org.eclipse.kapua.app.console.commons.shared.service;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import org.eclipse.kapua.app.console.commons.client.views.MainViewDescriptor;
-import org.eclipse.kapua.app.console.commons.client.views.TabDescriptor;
+import org.eclipse.kapua.app.console.commons.client.ui.view.descriptor.MainViewDescriptor;
+import org.eclipse.kapua.app.console.commons.client.ui.view.descriptor.TabDescriptor;
 
 import java.util.List;
 

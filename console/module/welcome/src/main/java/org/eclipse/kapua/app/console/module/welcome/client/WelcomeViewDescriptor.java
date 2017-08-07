@@ -12,8 +12,8 @@
 package org.eclipse.kapua.app.console.module.welcome.client;
 
 import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.commons.client.views.AbstractMainViewDescriptor;
-import org.eclipse.kapua.app.console.commons.client.views.View;
+import org.eclipse.kapua.app.console.commons.client.ui.view.descriptor.AbstractMainViewDescriptor;
+import org.eclipse.kapua.app.console.commons.client.ui.view.View;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 
 public class WelcomeViewDescriptor extends AbstractMainViewDescriptor {

@@ -21,7 +21,7 @@ import org.eclipse.kapua.app.console.commons.server.KapuaConfigurableRemoteServi
 import org.eclipse.kapua.app.console.commons.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtXSRFToken;
-import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaModelConverter;
+import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessRoleQuery;
 import org.eclipse.kapua.app.console.module.authorization.shared.util.GwtKapuaAuthorizationModelConverter;
 import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
@@ -206,8 +206,8 @@ public class GwtUserServiceImpl extends KapuaConfigurableRemoteServiceServlet<Us
             throws GwtKapuaException {
         checkXSRFToken(xsrfToken);
 
-        KapuaId scopeId = GwtKapuaModelConverter.convertKapuaId(gwtScopeId);
-        KapuaId userId = GwtKapuaModelConverter.convertKapuaId(gwtUserId);
+        KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtScopeId);
+        KapuaId userId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtUserId);
 
         try {
             KapuaLocator locator = KapuaLocator.getInstance();

@@ -12,7 +12,7 @@
 package org.eclipse.kapua.app.console.module.device.shared.util;
 
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaModelConverter;
+import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionQuery;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionStatus;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAsset;
@@ -44,7 +44,7 @@ public class GwtKapuaDeviceModelConverter {
     public static DeviceConnectionQuery convertConnectionQuery(PagingLoadConfig loadConfig, GwtDeviceConnectionQuery gwtDeviceConnectionQuery) {
         KapuaLocator locator = KapuaLocator.getInstance();
         DeviceConnectionFactory factory = locator.getFactory(DeviceConnectionFactory.class);
-        DeviceConnectionQuery query = factory.newQuery(GwtKapuaModelConverter.convertKapuaId(gwtDeviceConnectionQuery.getScopeId()));
+        DeviceConnectionQuery query = factory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtDeviceConnectionQuery.getScopeId()));
         AndPredicate predicate = new AndPredicate();
 
         if (gwtDeviceConnectionQuery.getClientId() != null && !gwtDeviceConnectionQuery.getClientId().trim().isEmpty()) {

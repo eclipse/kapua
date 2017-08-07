@@ -18,7 +18,7 @@ import org.eclipse.kapua.app.console.commons.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.commons.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtXSRFToken;
-import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaModelConverter;
+import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessRole;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessRoleCreator;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessRoleService;
@@ -85,8 +85,8 @@ public class GwtAccessRoleServiceImpl extends KapuaRemoteServiceServlet implemen
         // Do delete
         try {
             // Convert from GWT Entity
-            KapuaId scopeId = GwtKapuaModelConverter.convertKapuaId(scopeShortId);
-            KapuaId accessRoleId = GwtKapuaModelConverter.convertKapuaId(accessRoleShortId);
+            KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeShortId);
+            KapuaId accessRoleId = GwtKapuaCommonsModelConverter.convertKapuaId(accessRoleShortId);
 
             // Delete
             KapuaLocator locator = KapuaLocator.getInstance();
@@ -110,8 +110,8 @@ public class GwtAccessRoleServiceImpl extends KapuaRemoteServiceServlet implemen
                 AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
                 AccessRoleService accessRoleService = locator.getService(AccessRoleService.class);
 
-                KapuaId scopeId = GwtKapuaModelConverter.convertKapuaId(scopeShortId);
-                KapuaId userId = GwtKapuaModelConverter.convertKapuaId(userShortId);
+                KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeShortId);
+                KapuaId userId = GwtKapuaCommonsModelConverter.convertKapuaId(userShortId);
 
                 AccessInfo accessInfo = accessInfoService.findByUserId(scopeId, userId);
 

@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.kapua.app.console.commons.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.commons.client.button.ConfigDiscardButton;
-import org.eclipse.kapua.app.console.commons.client.button.ConfigSaveButton;
+import org.eclipse.kapua.app.console.commons.client.ui.button.DiscardButton;
+import org.eclipse.kapua.app.console.commons.client.ui.button.SaveButton;
 import org.eclipse.kapua.app.console.commons.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.commons.client.ui.label.Label;
 import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
@@ -161,7 +161,7 @@ public class DeviceAssetsValues extends LayoutContainer {
         toolBar.add(refreshButton);
         toolBar.add(new SeparatorToolItem());
 
-        apply = new ConfigSaveButton(new SelectionListener<ButtonEvent>() {
+        apply = new SaveButton(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -177,7 +177,7 @@ public class DeviceAssetsValues extends LayoutContainer {
             }
         });
 
-        reset = new ConfigDiscardButton(new SelectionListener<ButtonEvent>() {
+        reset = new DiscardButton(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {

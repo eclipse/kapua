@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authentication.shared.util;
 
-import org.eclipse.kapua.app.console.commons.shared.util.KapuaGwtModelConverter;
+import org.eclipse.kapua.app.console.commons.shared.util.KapuaGwtCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredential;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtSubjectType;
 import org.eclipse.kapua.service.authentication.credential.Credential;
@@ -23,7 +23,7 @@ public class KapuaGwtAuthenticationModelConverter {
 
     public static GwtCredential convertCredential(Credential credential, User user) {
         GwtCredential gwtCredential = new GwtCredential();
-        KapuaGwtModelConverter.convertUpdatableEntity(credential, gwtCredential);
+        KapuaGwtCommonsModelConverter.convertUpdatableEntity(credential, gwtCredential);
         gwtCredential.setUserId(credential.getUserId().toCompactId());
         gwtCredential.setCredentialType(credential.getCredentialType().toString());
         gwtCredential.setCredentialKey(credential.getCredentialKey());

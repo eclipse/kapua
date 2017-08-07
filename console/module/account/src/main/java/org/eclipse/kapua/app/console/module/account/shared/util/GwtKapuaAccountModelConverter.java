@@ -12,7 +12,7 @@
 package org.eclipse.kapua.app.console.module.account.shared.util;
 
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaModelConverter;
+import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountQuery;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
@@ -28,7 +28,7 @@ public class GwtKapuaAccountModelConverter {
     public static AccountQuery convertAccountQuery(PagingLoadConfig loadConfig, GwtAccountQuery gwtAccountQuery) {
         KapuaLocator locator = KapuaLocator.getInstance();
         AccountFactory factory = locator.getFactory(AccountFactory.class);
-        AccountQuery query = factory.newQuery(GwtKapuaModelConverter.convertKapuaId(gwtAccountQuery.getScopeId()));
+        AccountQuery query = factory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtAccountQuery.getScopeId()));
         AndPredicate predicate = new AndPredicate();
 
         if (gwtAccountQuery.getName() != null && !gwtAccountQuery.getName().trim().isEmpty()) {

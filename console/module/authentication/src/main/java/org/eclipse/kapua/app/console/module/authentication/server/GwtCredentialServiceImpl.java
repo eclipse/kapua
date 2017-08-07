@@ -27,8 +27,8 @@ import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCrede
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialCreator;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialQuery;
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialService;
-import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaModelConverter;
-import org.eclipse.kapua.app.console.commons.shared.util.KapuaGwtModelConverter;
+import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaCommonsModelConverter;
+import org.eclipse.kapua.app.console.commons.shared.util.KapuaGwtCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.authentication.shared.util.GwtKapuaAuthenticationModelConverter;
 import org.eclipse.kapua.app.console.module.authentication.shared.util.KapuaGwtAuthenticationModelConverter;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -120,8 +120,8 @@ public class GwtCredentialServiceImpl extends KapuaConfigurableRemoteServiceServ
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             CredentialService credentialService = locator.getService(CredentialService.class);
-            KapuaId scopeId = GwtKapuaModelConverter.convertKapuaId(stringAccountId);
-            KapuaId credentialId = GwtKapuaModelConverter.convertKapuaId(gwtCredentialId);
+            KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(stringAccountId);
+            KapuaId credentialId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtCredentialId);
             credentialService.delete(scopeId, credentialId);
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
@@ -146,7 +146,7 @@ public class GwtCredentialServiceImpl extends KapuaConfigurableRemoteServiceServ
             CredentialService credentialService = locator.getService(CredentialService.class);
             UserService userService = locator.getService(UserService.class);
             Credential credential = credentialService.create(credentialCreator);
-            User user = userService.find(GwtKapuaModelConverter.convertKapuaId(gwtCredentialCreator.getScopeId()), credential.getUserId());
+            User user = userService.find(GwtKapuaCommonsModelConverter.convertKapuaId(gwtCredentialCreator.getScopeId()), credential.getUserId());
             // Convert
             gwtCredential = KapuaGwtAuthenticationModelConverter.convertCredential(credential, user);
 
@@ -169,8 +169,8 @@ public class GwtCredentialServiceImpl extends KapuaConfigurableRemoteServiceServ
         // Do update
         GwtCredential gwtCredentialUpdated = null;
         try {
-            KapuaId scopeId = GwtKapuaModelConverter.convertKapuaId(gwtCredential.getScopeId());
-            KapuaId credentialId = GwtKapuaModelConverter.convertKapuaId(gwtCredential.getId());
+            KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtCredential.getScopeId());
+            KapuaId credentialId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtCredential.getId());
             // Update
             KapuaLocator locator = KapuaLocator.getInstance();
             CredentialService credentialService = locator.getService(CredentialService.class);
@@ -208,22 +208,22 @@ public class GwtCredentialServiceImpl extends KapuaConfigurableRemoteServiceServ
             CredentialService credentialService = locator.getService(CredentialService.class);
 
             // Convert from GWT Entity
-            KapuaId scopeId = GwtKapuaModelConverter.convertKapuaId(scopeShortId);
-            KapuaId credentialId = GwtKapuaModelConverter.convertKapuaId(credentialShortId);
+            KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeShortId);
+            KapuaId credentialId = GwtKapuaCommonsModelConverter.convertKapuaId(credentialShortId);
 
             // Find
             Credential credential = credentialService.find(scopeId, credentialId);
 
             // If there are results
             if (credential != null) {
-                gwtCredentialDescription.add(new GwtGroupedNVPair("Entity", "Scope Id", KapuaGwtModelConverter.convertKapuaId(credential.getScopeId())));
-                gwtCredentialDescription.add(new GwtGroupedNVPair("Entity", "Id", KapuaGwtModelConverter.convertKapuaId(credential.getId())));
+                gwtCredentialDescription.add(new GwtGroupedNVPair("Entity", "Scope Id", KapuaGwtCommonsModelConverter.convertKapuaId(credential.getScopeId())));
+                gwtCredentialDescription.add(new GwtGroupedNVPair("Entity", "Id", KapuaGwtCommonsModelConverter.convertKapuaId(credential.getId())));
                 gwtCredentialDescription.add(new GwtGroupedNVPair("Entity", "Created On", credential.getCreatedOn()));
-                gwtCredentialDescription.add(new GwtGroupedNVPair("Entity", "Created By", KapuaGwtModelConverter.convertKapuaId(credential.getCreatedBy())));
+                gwtCredentialDescription.add(new GwtGroupedNVPair("Entity", "Created By", KapuaGwtCommonsModelConverter.convertKapuaId(credential.getCreatedBy())));
                 gwtCredentialDescription.add(new GwtGroupedNVPair("Entity", "Modified On", credential.getModifiedOn()));
-                gwtCredentialDescription.add(new GwtGroupedNVPair("Entity", "Modified By", KapuaGwtModelConverter.convertKapuaId(credential.getModifiedBy())));
+                gwtCredentialDescription.add(new GwtGroupedNVPair("Entity", "Modified By", KapuaGwtCommonsModelConverter.convertKapuaId(credential.getModifiedBy())));
                 gwtCredentialDescription.add(new GwtGroupedNVPair("Credential", "Credential Type", credential.getCredentialType().toString()));
-                gwtCredentialDescription.add(new GwtGroupedNVPair("Credential", "User ID", KapuaGwtModelConverter.convertKapuaId(credential.getUserId())));
+                gwtCredentialDescription.add(new GwtGroupedNVPair("Credential", "User ID", KapuaGwtCommonsModelConverter.convertKapuaId(credential.getUserId())));
             }
 
         } catch (Throwable t) {
@@ -243,8 +243,8 @@ public class GwtCredentialServiceImpl extends KapuaConfigurableRemoteServiceServ
             final CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
             final CredentialsFactory credentialsFactory = locator.getFactory(CredentialsFactory.class);
 
-            final KapuaId scopeId = GwtKapuaModelConverter.convertKapuaId(stringScopeId);
-            final KapuaId userId = GwtKapuaModelConverter.convertKapuaId(stringUserId);
+            final KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(stringScopeId);
+            final KapuaId userId = GwtKapuaCommonsModelConverter.convertKapuaId(stringUserId);
 
             User user = userService.find(scopeId, userId);
             final String username = user.getName();

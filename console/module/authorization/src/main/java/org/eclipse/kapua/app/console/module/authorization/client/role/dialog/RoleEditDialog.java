@@ -102,11 +102,4 @@ public class RoleEditDialog extends RoleAddDialog {
         return MSGS.dialogEditInfo();
     }
 
-    @Override
-    protected RolePermissionNewGridField getRolePermissionNewGridField(GwtSession currentSession) {
-        RolePermissionEditGridField rolePermissionsGrid = new RolePermissionEditGridField(currentSession);
-        rolePermissionsGrid.setFieldLabel(MSGS.dialogEditFieldRolePermissions());
-        rolePermissionsGrid.setToolTip(MSGS.dialogEditFieldRolePermissionsTooltip());
-        return rolePermissionsGrid;
-    }
 }

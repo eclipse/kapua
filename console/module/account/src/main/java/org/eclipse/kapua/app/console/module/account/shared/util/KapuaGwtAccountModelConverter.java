@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.account.shared.util;
 
-import org.eclipse.kapua.app.console.commons.shared.util.KapuaGwtModelConverter;
+import org.eclipse.kapua.app.console.commons.shared.util.KapuaGwtCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtOrganization;
 import org.eclipse.kapua.commons.util.SystemUtils;
@@ -37,7 +37,7 @@ public class KapuaGwtAccountModelConverter {
 
         //
         // Convert commons attributes
-        KapuaGwtModelConverter.convertUpdatableEntity(account, gwtAccount);
+        KapuaGwtCommonsModelConverter.convertUpdatableEntity(account, gwtAccount);
 
         //
         // Convert other attributes

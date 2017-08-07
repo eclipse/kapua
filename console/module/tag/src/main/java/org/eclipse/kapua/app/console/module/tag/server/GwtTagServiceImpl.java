@@ -19,7 +19,7 @@ import org.eclipse.kapua.app.console.commons.server.KapuaConfigurableRemoteServi
 import org.eclipse.kapua.app.console.commons.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaModelConverter;
+import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTagCreator;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTagQuery;
@@ -140,7 +140,7 @@ public class GwtTagServiceImpl extends KapuaConfigurableRemoteServiceServlet<Tag
 
         try {
             KapuaId scopeId2 = KapuaEid.parseCompactId(scopeId);
-            KapuaId tagId2 = GwtKapuaModelConverter.convertKapuaId(tagId);
+            KapuaId tagId2 = GwtKapuaCommonsModelConverter.convertKapuaId(tagId);
             KapuaLocator locator = KapuaLocator.getInstance();
             TagService tagService = locator.getService(TagService.class);
             tagService.delete(scopeId2, tagId2);
@@ -162,7 +162,7 @@ public class GwtTagServiceImpl extends KapuaConfigurableRemoteServiceServlet<Tag
 
             if (tag != null) {
                 // gwtTagDescription.add(new GwtGroupedNVPair("Entity", "Scope
-                // Id", KapuaGwtModelConverter.convertKapuaId(tag.getScopeId())));
+                // Id", KapuaGwtCommonsModelConverter.convertKapuaId(tag.getScopeId())));
                 gwtTagDescription.add(new GwtGroupedNVPair("Tag", "Tag Name", tag.getName()));
                 gwtTagDescription.add(new GwtGroupedNVPair("Entity", "Modified On", tag.getModifiedOn().toString()));
                 gwtTagDescription.add(new GwtGroupedNVPair("Entity", "Modified By", tag.getModifiedBy().toCompactId()));
@@ -182,7 +182,7 @@ public class GwtTagServiceImpl extends KapuaConfigurableRemoteServiceServlet<Tag
         KapuaLocator locator = KapuaLocator.getInstance();
         TagService tagService = locator.getService(TagService.class);
         TagFactory tagFactory = locator.getFactory(TagFactory.class);
-        TagQuery query = tagFactory.newQuery(GwtKapuaModelConverter.convertKapuaId(scopeId));
+        TagQuery query = tagFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(scopeId));
         try {
             TagListResult result = tagService.query(query);
             for (Tag tag : result.getItems()) {

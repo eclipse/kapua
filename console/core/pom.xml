@@ -405,7 +405,7 @@
                 </executions>
 
                 <configuration>
-                    <module>org.eclipse.kapua.app.console.adminCore</module>
+                    <module>org.eclipse.kapua.app.console.core.adminCore</module>
 
                     <extraJvmArgs>-Xmx2048m -XX:+UseParallelGC</extraJvmArgs>
                     <webappDirectory>${project.build.directory}</webappDirectory>

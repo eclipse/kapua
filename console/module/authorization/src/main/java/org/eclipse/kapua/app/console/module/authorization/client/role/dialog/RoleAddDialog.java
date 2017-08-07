@@ -33,7 +33,6 @@ public class RoleAddDialog extends EntityAddEditDialog {
     private final static GwtRoleServiceAsync GWT_ROLE_SERVICE = GWT.create(GwtRoleService.class);
 
     protected TextField<String> roleNameField;
-    protected RolePermissionNewGridField rolePermissionsGrid;
 
     public RoleAddDialog(GwtSession currentSession) {
         super(currentSession);
@@ -93,13 +92,6 @@ public class RoleAddDialog extends EntityAddEditDialog {
         roleFormPanel.add(roleNameField);
 
         bodyPanel.add(roleFormPanel);
-    }
-
-    protected RolePermissionNewGridField getRolePermissionNewGridField(GwtSession currentSession) {
-        RolePermissionNewGridField rolePermissionsGrid = new RolePermissionNewGridField(currentSession);
-        rolePermissionsGrid.setFieldLabel(MSGS.dialogAddFieldRolePermissions());
-        rolePermissionsGrid.setToolTip(MSGS.dialogAddFieldRolePermissionsTooltip());
-        return rolePermissionsGrid;
     }
 
 }

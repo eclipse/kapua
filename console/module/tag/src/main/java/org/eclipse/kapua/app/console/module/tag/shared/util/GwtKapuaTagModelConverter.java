@@ -12,7 +12,7 @@
 package org.eclipse.kapua.app.console.module.tag.shared.util;
 
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaModelConverter;
+import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTagQuery;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -35,7 +35,7 @@ public class GwtKapuaTagModelConverter {
     public static TagQuery convertTagQuery(PagingLoadConfig loadConfig, GwtTagQuery gwtTagQuery) {
         KapuaLocator locator = KapuaLocator.getInstance();
         TagFactory tagFactory = locator.getFactory(TagFactory.class);
-        TagQuery tagQuery = tagFactory.newQuery(GwtKapuaModelConverter.convertKapuaId(gwtTagQuery.getScopeId()));
+        TagQuery tagQuery = tagFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtTagQuery.getScopeId()));
         if (gwtTagQuery.getName() != null && !gwtTagQuery.getName().isEmpty()) {
             tagQuery.setPredicate(new AttributePredicate<String>(TagPredicates.NAME, gwtTagQuery.getName(), Operator.LIKE));
         }

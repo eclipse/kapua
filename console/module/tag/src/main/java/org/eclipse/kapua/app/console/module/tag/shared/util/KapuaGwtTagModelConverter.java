@@ -11,10 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.tag.shared.util;
 
+import org.eclipse.kapua.app.console.commons.shared.util.KapuaGwtCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
 import org.eclipse.kapua.service.tag.Tag;
-
-import org.eclipse.kapua.app.console.commons.shared.util.KapuaGwtModelConverter;
 
 public class KapuaGwtTagModelConverter {
 
@@ -32,7 +31,7 @@ public class KapuaGwtTagModelConverter {
         GwtTag gwtTag = new GwtTag();
         //
         // Covert commons attributes
-        KapuaGwtModelConverter.convertEntity(tag, gwtTag);
+        KapuaGwtCommonsModelConverter.convertEntity(tag, gwtTag);
 
         //
         // Convert other attributes

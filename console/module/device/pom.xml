@@ -52,6 +52,14 @@
         </dependency>
         <!-- External dependencies -->
         <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+        </dependency>
+        <dependency>
             <!-- Imaging utils used to handle device component configuration
                 icons -->
             <!-- former commons-imaging changed because the 1.0-FINAL was

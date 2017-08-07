@@ -23,7 +23,7 @@ import org.eclipse.kapua.app.console.commons.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroupCreator;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroupQuery;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupService;
-import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaModelConverter;
+import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.authorization.shared.util.GwtKapuaAuthorizationModelConverter;
 import org.eclipse.kapua.app.console.module.authorization.shared.util.KapuaGwtAuthorizationModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -141,7 +141,7 @@ public class GwtGroupServiceImpl extends KapuaConfigurableRemoteServiceServlet<G
 
         try {
             KapuaId scopeId2 = KapuaEid.parseCompactId(scopeId);
-            KapuaId groupId2 = GwtKapuaModelConverter.convertKapuaId(groupId);
+            KapuaId groupId2 = GwtKapuaCommonsModelConverter.convertKapuaId(groupId);
             KapuaLocator locator = KapuaLocator.getInstance();
             GroupService groupService = locator.getService(GroupService.class);
             groupService.delete(scopeId2, groupId2);
@@ -189,7 +189,7 @@ public class GwtGroupServiceImpl extends KapuaConfigurableRemoteServiceServlet<G
         KapuaLocator locator = KapuaLocator.getInstance();
         GroupService groupService = locator.getService(GroupService.class);
         GroupFactory groupFactory = locator.getFactory(GroupFactory.class);
-        GroupQuery query = groupFactory.newQuery(GwtKapuaModelConverter.convertKapuaId(scopeId));
+        GroupQuery query = groupFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(scopeId));
         try {
             GroupListResult result = groupService.query(query);
             for (Group group : result.getItems()) {

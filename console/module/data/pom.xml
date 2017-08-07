@@ -43,6 +43,15 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-datastore-client-rest</artifactId>
         </dependency>
+        <!-- External Dependencies -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

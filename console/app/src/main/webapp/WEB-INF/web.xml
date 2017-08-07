@@ -21,16 +21,16 @@
     </listener>
 
     <listener>
-        <listener-class>org.eclipse.kapua.app.console.server.util.ConsoleListener</listener-class>
+        <listener-class>org.eclipse.kapua.app.console.core.server.util.ConsoleListener</listener-class>
     </listener>
 
     <listener>
-        <listener-class>org.eclipse.kapua.app.console.server.util.SsoLocatorListener</listener-class>
+        <listener-class>org.eclipse.kapua.app.console.core.server.util.SsoLocatorListener</listener-class>
     </listener>
 
     <filter>
         <filter-name>ShiroFilter</filter-name>
-        <filter-class>org.eclipse.kapua.app.console.commons.filter.KapuaWebFilter</filter-class>
+        <filter-class>org.eclipse.kapua.app.console.core.filter.KapuaWebFilter</filter-class>
     </filter>
 
     <filter-mapping>
@@ -99,7 +99,7 @@
     <!-- Http error handling servlet -->
     <servlet>
         <servlet-name>KapuaErrorHandlerServlet</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.servlet.KapuaErrorHandlerServlet
+        <servlet-class>org.eclipse.kapua.app.console.core.servlet.KapuaErrorHandlerServlet
         </servlet-class>
     </servlet>
     <servlet-mapping>
@@ -118,7 +118,7 @@
 
     <servlet>
         <servlet-name>GwtSettingsServiceImpl</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.server.GwtSettingsServiceImpl
+        <servlet-class>org.eclipse.kapua.app.console.core.server.GwtSettingsServiceImpl
         </servlet-class>
     </servlet>
     <servlet-mapping>
@@ -128,7 +128,7 @@
 
     <servlet>
         <servlet-name>deviceExporterServlet</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.servlet.DeviceExporterServlet</servlet-class>
+        <servlet-class>org.eclipse.kapua.app.console.module.device.servlet.DeviceExporterServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>deviceExporterServlet</servlet-name>
@@ -137,7 +137,7 @@
     
     <servlet>
         <servlet-name>deviceEventExporterServlet</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.servlet.DeviceEventExporterServlet</servlet-class>
+        <servlet-class>org.eclipse.kapua.app.console.module.device.servlet.DeviceEventExporterServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>deviceEventExporterServlet</servlet-name>
@@ -146,7 +146,7 @@
 
     <servlet>
         <servlet-name>deviceSnapshotsServlet</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.servlet.DeviceSnapshotsServlet</servlet-class>
+        <servlet-class>org.eclipse.kapua.app.console.module.device.servlet.DeviceSnapshotsServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>deviceSnapshotsServlet</servlet-name>
@@ -164,7 +164,7 @@
 
     <servlet>
         <servlet-name>authorizationServlet</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.server.GwtAuthorizationServiceImpl</servlet-class>
+        <servlet-class>org.eclipse.kapua.app.console.core.server.GwtAuthorizationServiceImpl</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>authorizationServlet</servlet-name>
@@ -272,7 +272,7 @@
 
     <servlet>
         <servlet-name>dataExporterServlet</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.servlet.DataExporterServlet</servlet-class>
+        <servlet-class>org.eclipse.kapua.app.console.module.data.servlet.DataExporterServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
@@ -331,7 +331,7 @@
 
     <servlet>
         <servlet-name>fileServlet</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.servlet.FileServlet</servlet-class>
+        <servlet-class>org.eclipse.kapua.app.console.core.servlet.FileServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>fileServlet</servlet-name>
@@ -340,7 +340,7 @@
 
     <servlet>
         <servlet-name>ssoCallbackServlet</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.servlet.SsoCallbackServlet</servlet-class>
+        <servlet-class>org.eclipse.kapua.app.console.core.servlet.SsoCallbackServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>

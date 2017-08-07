@@ -12,8 +12,8 @@
 package org.eclipse.kapua.app.console.commons.server;
 
 import org.apache.commons.io.FileUtils;
-import org.eclipse.kapua.app.console.commons.client.views.MainViewDescriptor;
-import org.eclipse.kapua.app.console.commons.client.views.TabDescriptor;
+import org.eclipse.kapua.app.console.commons.client.ui.view.descriptor.MainViewDescriptor;
+import org.eclipse.kapua.app.console.commons.client.ui.view.descriptor.TabDescriptor;
 import org.eclipse.kapua.app.console.commons.shared.service.GwtConsoleService;
 
 import javax.servlet.ServletContext;

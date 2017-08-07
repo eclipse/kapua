@@ -17,7 +17,7 @@ import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.commons.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtXSRFToken;
-import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaModelConverter;
+import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
@@ -35,11 +35,11 @@ public abstract class KapuaConfigurableRemoteServiceServlet<S extends KapuaConfi
         //
         // Checking validity of the given XSRF Token
         checkXSRFToken(xsrfToken);
-        KapuaId kapuaScopeId = GwtKapuaModelConverter.convertKapuaId(scopeId);
-        KapuaId kapuaParentId = GwtKapuaModelConverter.convertKapuaId(parentId);
+        KapuaId kapuaScopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeId);
+        KapuaId kapuaParentId = GwtKapuaCommonsModelConverter.convertKapuaId(parentId);
         try {
             // execute the update
-            Map<String, Object> configParameters = GwtKapuaModelConverter.convertConfigComponent(gwtConfigComponent);
+            Map<String, Object> configParameters = GwtKapuaCommonsModelConverter.convertConfigComponent(gwtConfigComponent);
 
             configurableService.setConfigValues(kapuaScopeId, kapuaParentId, configParameters);
 

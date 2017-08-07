@@ -46,7 +46,7 @@ import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountCreator;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountQuery;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountStringListItem;
-import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaModelConverter;
+import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.broker.core.BrokerDomain;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.SystemUtils;
@@ -391,7 +391,7 @@ public class GwtAccountServiceImpl extends KapuaConfigurableRemoteServiceServlet
         List<GwtConfigComponent> gwtConfigs = new ArrayList<GwtConfigComponent>();
         KapuaLocator locator = KapuaLocator.getInstance();
         try {
-            KapuaId kapuaScopeId = GwtKapuaModelConverter.convertKapuaId(scopeId);
+            KapuaId kapuaScopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeId);
             for (KapuaService service : locator.getServices()) {
                 if (service instanceof KapuaConfigurableService) {
                     KapuaConfigurableService configurableService = (KapuaConfigurableService) service;

@@ -24,7 +24,7 @@ import org.eclipse.kapua.app.console.module.device.shared.model.device.managemen
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssetChannel;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssets;
 import org.eclipse.kapua.app.console.module.device.shared.util.KapuaGwtDeviceModelConverter;
-import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaModelConverter;
+import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.asset.DeviceAsset;
@@ -58,8 +58,8 @@ public class GwtDeviceAssetServiceImpl extends KapuaRemoteServiceServlet impleme
         gwtAssetsList.add(gwtAsset);
         gwtAssets.setAssets(gwtAssetsList);
         try {
-            KapuaId scopeId = GwtKapuaModelConverter.convertKapuaId(scopeIdString);
-            KapuaId deviceId = GwtKapuaModelConverter.convertKapuaId(deviceIdString);
+            KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeIdString);
+            KapuaId deviceId = GwtKapuaCommonsModelConverter.convertKapuaId(deviceIdString);
 
             assetService.write(scopeId, deviceId, GwtKapuaDeviceModelConverter.convertDeviceAssets(gwtAssets), null);
         } catch (Throwable t) {
@@ -71,8 +71,8 @@ public class GwtDeviceAssetServiceImpl extends KapuaRemoteServiceServlet impleme
     public List<GwtDeviceAsset> get(PagingLoadConfig pagingLoadConfig, String scopeIdString, String deviceIdString, GwtDeviceAssets deviceAssets) throws GwtKapuaException {
         GwtDeviceAssets gwtAssets = new GwtDeviceAssets();
         try {
-            KapuaId scopeId = GwtKapuaModelConverter.convertKapuaId(scopeIdString);
-            KapuaId deviceId = GwtKapuaModelConverter.convertKapuaId(deviceIdString);
+            KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeIdString);
+            KapuaId deviceId = GwtKapuaCommonsModelConverter.convertKapuaId(deviceIdString);
             DeviceAssets assetsMetadata = assetService.get(scopeId, deviceId, GwtKapuaDeviceModelConverter.convertDeviceAssets(deviceAssets), null);
             DeviceAssets assetsValues = assetService.read(scopeId, deviceId, GwtKapuaDeviceModelConverter.convertDeviceAssets(deviceAssets), null);
 

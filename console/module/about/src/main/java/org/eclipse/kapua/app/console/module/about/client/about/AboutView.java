@@ -36,7 +36,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Image;
 import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractView;
 import org.eclipse.kapua.app.console.commons.client.util.ConsoleInfo;
-import org.eclipse.kapua.app.console.commons.client.views.View;
+import org.eclipse.kapua.app.console.commons.client.ui.view.View;
 import org.eclipse.kapua.app.console.module.about.client.messages.ConsoleAboutMessages;
 import org.eclipse.kapua.app.console.module.about.shared.model.GwtAboutDependency;
 import org.eclipse.kapua.app.console.module.about.shared.model.GwtAboutInformation;

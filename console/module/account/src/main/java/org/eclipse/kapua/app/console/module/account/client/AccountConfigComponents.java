@@ -14,8 +14,8 @@ package org.eclipse.kapua.app.console.module.account.client;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.kapua.app.console.commons.client.button.ConfigDiscardButton;
-import org.eclipse.kapua.app.console.commons.client.button.ConfigSaveButton;
+import org.eclipse.kapua.app.console.commons.client.ui.button.DiscardButton;
+import org.eclipse.kapua.app.console.commons.client.ui.button.SaveButton;
 import org.eclipse.kapua.app.console.commons.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.commons.client.resources.icons.KapuaIcon;
@@ -193,7 +193,7 @@ public class AccountConfigComponents extends LayoutContainer {
         toolBar.add(refreshButton);
         toolBar.add(new SeparatorToolItem());
 
-        apply = new ConfigSaveButton(new SelectionListener<ButtonEvent>() {
+        apply = new SaveButton(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -209,7 +209,7 @@ public class AccountConfigComponents extends LayoutContainer {
             }
         });
 
-        reset = new ConfigDiscardButton(new SelectionListener<ButtonEvent>() {
+        reset = new DiscardButton(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {

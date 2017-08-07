@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.user.client.tabs.roles;
 
-import org.eclipse.kapua.app.console.commons.client.views.AbstractTabDescriptor;
+import org.eclipse.kapua.app.console.commons.client.ui.view.descriptor.AbstractTabDescriptor;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.user.client.UserView;
 import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;

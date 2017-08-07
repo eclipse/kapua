@@ -22,9 +22,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.commons.server.KapuaConfigurableRemoteServiceServlet;
 import org.eclipse.kapua.app.console.commons.server.util.KapuaExceptionHandler;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtKapuaChartResult;
-import org.eclipse.kapua.app.console.commons.shared.model.KapuaBasePagingCursor;
-import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaModelConverter;
+import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.data.client.GwtTopic;
 import org.eclipse.kapua.app.console.module.data.client.util.GwtMessage;
 import org.eclipse.kapua.app.console.module.data.shared.model.GwtDataChannelInfoQuery;
@@ -75,7 +73,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 
 public class GwtDataServiceImpl extends KapuaConfigurableRemoteServiceServlet<MessageStoreService> implements GwtDataService {
 
@@ -93,7 +90,7 @@ public class GwtDataServiceImpl extends KapuaConfigurableRemoteServiceServlet<Me
         List<GwtTopic> channelInfoList = new ArrayList<GwtTopic>();
         HashMap<String, GwtTopic> topicMap = new HashMap<String, GwtTopic>();
         ChannelInfoRegistryService channelInfoService = LOCATOR.getService(ChannelInfoRegistryService.class);
-        ChannelInfoQuery query = new ChannelInfoQueryImpl(GwtKapuaModelConverter.convertKapuaId(scopeId));
+        ChannelInfoQuery query = new ChannelInfoQueryImpl(GwtKapuaCommonsModelConverter.convertKapuaId(scopeId));
         int offset = 0;
         int limit = 250;
         try {
@@ -185,7 +182,7 @@ public class GwtDataServiceImpl extends KapuaConfigurableRemoteServiceServlet<Me
     public ListLoadResult<GwtDatastoreDevice> findDevices(LoadConfig config, String scopeId) throws GwtKapuaException {
         ClientInfoRegistryService clientInfoService = LOCATOR.getService(ClientInfoRegistryService.class);
         List<GwtDatastoreDevice> devices = new ArrayList<GwtDatastoreDevice>();
-        KapuaId convertedScopeId = GwtKapuaModelConverter.convertKapuaId(scopeId);
+        KapuaId convertedScopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeId);
         ClientInfoQuery query = new ClientInfoQueryImpl(convertedScopeId);
         try {
             ClientInfoListResult result = clientInfoService.query(query);
@@ -204,7 +201,7 @@ public class GwtDataServiceImpl extends KapuaConfigurableRemoteServiceServlet<Me
     public ListLoadResult<GwtDatastoreAsset> findAssets(LoadConfig config, String scopeId, GwtDatastoreDevice selectedDevice) throws GwtKapuaException {
         ChannelInfoRegistryService clientInfoService = LOCATOR.getService(ChannelInfoRegistryService.class);
         List<GwtDatastoreAsset> asset = new ArrayList<GwtDatastoreAsset>();
-        KapuaId convertedScopeId = GwtKapuaModelConverter.convertKapuaId(scopeId);
+        KapuaId convertedScopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeId);
         ChannelInfoQuery query = new ChannelInfoQueryImpl(convertedScopeId);
         try {
             ChannelInfoListResult result = clientInfoService.query(query);
@@ -261,18 +258,7 @@ public class GwtDataServiceImpl extends KapuaConfigurableRemoteServiceServlet<Me
         return null;
     }
 
-    @Override
-    public GwtKapuaChartResult findMessagesByTopic(String accountName, GwtTopic topic, List<GwtHeader> metrics, Date startDate, Date endDate) throws GwtKapuaException {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
-    @Override
-    public GwtKapuaChartResult findMessagesByTopic(String accountName, GwtTopic topic, List<GwtHeader> headers, Date startDate, Date endDate, Stack<KapuaBasePagingCursor> cursors, int limit,
-            int lastOffset, Integer indexOffset) throws GwtKapuaException {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
     @Override
     public PagingLoadResult<GwtMessage> findMessagesByDevice(PagingLoadConfig loadConfig, String scopeId, GwtDatastoreDevice device, List<GwtHeader> headers, Date startDate, Date endDate)
@@ -288,17 +274,11 @@ public class GwtDataServiceImpl extends KapuaConfigurableRemoteServiceServlet<Me
         return findMessages(loadConfig, scopeId, headers, startDate, endDate, predicate);
     }
 
-    @Override
-    public GwtKapuaChartResult findMessagesByDevice(String accountName, GwtDatastoreDevice device, List<GwtHeader> headers, Date startDate, Date endDate, Stack<KapuaBasePagingCursor> cursors,
-            int limit,
-            int lastOffset, Integer indexOffset) throws GwtKapuaException {
-        // TODO Auto-generated method stub
-        return null;
-    }
+
 
     private ListLoadResult<GwtHeader> findHeaders(LoadConfig config, String scopeId, StorablePredicate predicate) throws GwtKapuaException {
         MetricInfoRegistryService metricService = LOCATOR.getService(MetricInfoRegistryService.class);
-        MetricInfoQueryImpl query = new MetricInfoQueryImpl(GwtKapuaModelConverter.convertKapuaId(scopeId));
+        MetricInfoQueryImpl query = new MetricInfoQueryImpl(GwtKapuaCommonsModelConverter.convertKapuaId(scopeId));
         if (predicate != null) {
             query.setPredicate(predicate);
         }
@@ -323,7 +303,7 @@ public class GwtDataServiceImpl extends KapuaConfigurableRemoteServiceServlet<Me
         MessageStoreService messageService = LOCATOR.getService(MessageStoreService.class);
         List<GwtMessage> messages;
         int totalLength = 0;
-        MessageQuery query = new MessageQueryImpl(GwtKapuaModelConverter.convertKapuaId(scopeId));
+        MessageQuery query = new MessageQueryImpl(GwtKapuaCommonsModelConverter.convertKapuaId(scopeId));
         query.setLimit(loadConfig.getLimit());
         query.setOffset(loadConfig.getOffset());
         AndPredicate andPredicate = new AndPredicateImpl();
