@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,12 +16,14 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 
 import java.math.BigInteger;
-import java.security.acl.Permission;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
@@ -31,6 +33,8 @@ import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
@@ -61,41 +65,36 @@ import cucumber.runtime.java.guice.ScenarioScoped;
  * Implementation of Gherkin steps used in AccountService.feature scenarios.
  *
  * MockedLocator is used for Location Service. Mockito is used to mock other
- * services that the Account services dependent on. Dependent services are: -
- * Authorization Service -
- *
+ * services that the Account services dependent on. Dependent services are:
+ * - Authorization Service
  *
  */
 @ScenarioScoped
 public class AccountServiceTestSteps extends AbstractKapuaSteps {
 
-    public static final String DEFAULT_PATH = "src/main/sql/H2";
-    public static final String DEFAULT_COMMONS_PATH = "../../../commons";
-    public static final String DROP_ACCOUNT_TABLES = "act_*_drop.sql";
+    static {
+        setupDI();
+    }
 
-    KapuaId rootScopeId = new KapuaEid(BigInteger.ONE);
+    private static final String DEFAULT_COMMONS_PATH = "../../../commons";
+    private static final String DROP_ACCOUNT_TABLES = "act_*_drop.sql";
+
+    private KapuaId rootScopeId = new KapuaEid(BigInteger.ONE);
 
     // Account creator object used for creating new accounts.
-    AccountCreator accountCreator;
-    AccountService accountService;
-    AccountFactory accountFactory;
+    private AccountCreator accountCreator;
+    private AccountService accountService;
+    private AccountFactory accountFactory;
 
     // Simple account objects used for creation and checks of account operations.
-    Account account;
-    Organization organization;
-    KapuaId accountId;
+    private Account account;
+    private KapuaId accountId;
 
     // Check if exception was fired in step.
-    boolean exceptionCaught;
-
-    // Currently executing scenario.
-    Scenario scenario;
-
-    // Metadata boolean value.
-    Boolean boolVal;
+    private boolean exceptionCaught;
 
     // Metadata integer value.
-    Integer intVal;
+    private Integer intVal;
 
     // Default constructor
     public AccountServiceTestSteps() {
@@ -105,12 +104,57 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     // Definition of Cucumber scenario steps
     // *************************************
 
+    /**
+     * Setup DI with Google Guice DI.
+     * Create mocked and non mocked service under test and bind them with Guice.
+     * It is based on custom MockedLocator locator that is meant for sevice unit tests.
+     */
+    private static void setupDI() {
+
+        MockedLocator mockedLocator = (MockedLocator) KapuaLocator.getInstance();
+
+        AbstractModule module = new AbstractModule() {
+
+            @Override
+            protected void configure() {
+
+                // Inject mocked Authorization Service method checkPermission
+                AuthorizationService mockedAuthorization = mock(AuthorizationService.class);
+                try {
+                    Mockito.doNothing().when(mockedAuthorization).checkPermission(any(org.eclipse.kapua.service.authorization.permission.Permission.class));
+                } catch (KapuaException e) {
+                    // skip
+                }
+                bind(AuthorizationService.class).toInstance(mockedAuthorization);
+                // Inject mocked Permission Factory
+                PermissionFactory mockedPermissionFactory = mock(PermissionFactory.class);
+                bind(PermissionFactory.class).toInstance(mockedPermissionFactory);
+                // Set KapuaMetatypeFactory for Metatype configuration
+                KapuaMetatypeFactory metaFactory = new KapuaMetatypeFactoryImpl();
+                bind(KapuaMetatypeFactory.class).toInstance(metaFactory);
+
+                // Inject actual account related services
+                AccountService accountService = new AccountServiceImpl();
+                bind(AccountService.class).toInstance(accountService);
+                AccountFactory accountFactory = new AccountFactoryImpl();
+                bind(AccountFactory.class).toInstance(accountFactory);
+            }
+        };
+
+        Injector injector = Guice.createInjector(module);
+        mockedLocator.setInjector(injector);
+    }
+
     // Setup and tear-down steps
 
     @Before
     public void beforeScenario(Scenario scenario)
             throws Exception {
-        this.scenario = scenario;
+
+        locator = KapuaLocator.getInstance();
+        this.accountService = locator.getService(AccountService.class);
+        this.accountFactory = locator.getFactory(AccountFactory.class);
+
         exceptionCaught = false;
 
         // Create User Service tables
@@ -118,35 +162,12 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
 
         // Create the account service tables
         new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
-        XmlUtil.setContextProvider(new AccountsJAXBContextProvider());
-
-        MockedLocator mockLocator = (MockedLocator) locator;
-
-        // Inject mocked Authorization Service method checkPermission
-        AuthorizationService mockedAuthorization = mock(AuthorizationService.class);
-        // TODO: Check why does this line needs an explicit cast!
-        Mockito.doNothing().when(mockedAuthorization).checkPermission(
-                (org.eclipse.kapua.service.authorization.permission.Permission) any(Permission.class));
-        mockLocator.setMockedService(org.eclipse.kapua.service.authorization.AuthorizationService.class,
-                mockedAuthorization);
-
-        // Inject mocked Permission Factory
-        PermissionFactory mockedPermissionFactory = mock(PermissionFactory.class);
-        mockLocator.setMockedFactory(org.eclipse.kapua.service.authorization.permission.PermissionFactory.class,
-                mockedPermissionFactory);
-
-        // Inject actual account related services
-        accountService = new AccountServiceImpl();
-        mockLocator.setMockedService(org.eclipse.kapua.service.account.AccountService.class, accountService);
-        accountFactory = new AccountFactoryImpl();
-        mockLocator.setMockedFactory(org.eclipse.kapua.service.account.AccountFactory.class, accountFactory);
-
-        // Set KapuaMetatypeFactory for Metatype configuration
-        mockLocator.setMockedFactory(org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory.class, new KapuaMetatypeFactoryImpl());
 
         // All operations on database are performed using system user.
         KapuaSession kapuaSession = new KapuaSession(null, new KapuaEid(BigInteger.ONE), new KapuaEid(BigInteger.ONE));
         KapuaSecurityUtils.setSession(kapuaSession);
+
+        XmlUtil.setContextProvider(new AccountsJAXBContextProvider());
     }
 
     @After
