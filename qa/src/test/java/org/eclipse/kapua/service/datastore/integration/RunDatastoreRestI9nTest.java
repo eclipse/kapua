@@ -18,14 +18,14 @@ import org.junit.runner.RunWith;
 
 @RunWith(CucumberWithProperties.class)
 @CucumberOptions(
-        features = "classpath:features/datastore",
+        features = "classpath:features/datastore/Datastore.feature",
         glue = {"org.eclipse.kapua.qa.steps",
                 "org.eclipse.kapua.service.datastore.steps",
                 "org.eclipse.kapua.service.user.steps",
-        },
-        plugin = { "pretty",
-                "html:target/cucumber/DatastoreI9n",
-                "json:target/DatastoreI9n_cucumber.json" },
+                "org.eclipse.kapua.service.device.steps"},
+        plugin = {"pretty",
+                  "html:target/cucumber/DatastoreRestI9n",
+                  "json:target/DatastoreRestI9n_cucumber.json"},
         monochrome = true)
 @CucumberProperty(key="datastore.client.class", value="org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient")
 @CucumberProperty(key="org.eclipse.kapua.qa.datastore.extraStartupDelay", value="5")

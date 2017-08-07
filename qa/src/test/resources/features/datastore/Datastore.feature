@@ -309,7 +309,7 @@ Feature: Datastore tests
 
   Scenario: ChannelInfo last published date
     Check the correctness of the channel info last publish date stored by retrieving the
-    channel info by client id.
+    channel info published in a defined time window.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And Account for "kapua-sys"
@@ -329,6 +329,270 @@ Feature: Datastore tests
     And Client "test-client-1" last published on a channel in the list "ChannelList" on "03/07/2017T09:00:00"
     And Client "test-client-2" first published on a channel in the list "ChannelList" on "03/07/2017T09:00:00"
     And Client "test-client-2" last published on a channel in the list "ChannelList" on "03/07/2017T09:00:20"
+    And All indices are deleted
+
+  Scenario: Account wide metrics check
+    Check the correctness of the metric info data stored by retrieving the metrics information by account.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And Account for "kapua-sys"
+    And The device "test-device-1"
+    And I set the database to device timestamp indexing
+    Then I prepare a number of messages with the following details and remember the list as "TestMessages"
+      |clientId      |topic            |
+      |test-client-1 |test_topic/1/2/3 |
+      |test-client-2 |test_topic/1/2/3 |
+    And I set the following metrics to the message 0 from the list "TestMessages"
+      |metric        |type      |value      |
+      |tst-metric-1  |double    |123        |
+      |tst-metric-2  |int       |123        |
+    And I set the following metrics to the message 1 from the list "TestMessages"
+      |metric        |type      |value      |
+      |tst-metric-3  |string    |123        |
+      |tst-metric-4  |bool      |true       |
+    Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
+    And I refresh all database indices
+    When I query for the current account metrics and store them as "AccountMetrics"
+    Then There are exactly 4 metrics in the list "AccountMetrics"
+    And The metric info items "AccountMetrics" match the prepared messages in "TestMessages"
+    And All indices are deleted
+
+  Scenario: MetricsInfo client ID and topic data based on the client id
+    Check the correctness of the client ids and metrics stored in the metrics info data by retrieving the
+    metric info by client id.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And Account for "kapua-sys"
+    And The device "test-device-1"
+    And I set the database to device timestamp indexing
+    Then I prepare a number of messages with the following details and remember the list as "TestMessages"
+      |clientId      |topic            |
+      |test-client-1 |test_topic/1/2/3 |
+      |test-client-1 |test_topic/1/2/4 |
+    And I set the following metrics to the message 0 from the list "TestMessages"
+      |metric        |type      |value      |
+      |tst-metric-1  |double    |123        |
+      |tst-metric-2  |int       |123        |
+    And I set the following metrics to the message 1 from the list "TestMessages"
+      |metric        |type      |value      |
+      |tst-metric-3  |string    |123        |
+      |tst-metric-4  |bool      |true       |
+    Then I prepare a number of messages with the following details and remember the list as "TestMessages2"
+      |clientId      |topic            |
+      |test-client-2 |test_topic/1/2/3 |
+    And I set the following metrics to the message 0 from the list "TestMessages2"
+      |metric        |type      |value      |
+      |tst-metric-5  |string    |123        |
+      |tst-metric-6  |bool      |true       |
+    Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
+    Then I store the messages from list "TestMessages2" and remember the IDs as "StoredMessageIDs2"
+    And I refresh all database indices
+    When I query for the metrics from client "test-client-1" and store them as "Client1Metrics"
+    Then There are exactly 4 metrics in the list "Client1Metrics"
+    And The metric info items "Client1Metrics" match the prepared messages in "TestMessages"
+    And All indices are deleted
+
+  Scenario: MetricsInfo last published date
+    Check the correctness of the metrics info last publish date stored by retrieving the
+    metrics info published in a defined time window.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And Account for "kapua-sys"
+    And The device "test-device-1"
+    And I set the database to device timestamp indexing
+    When I prepare a number of messages with the following details and remember the list as "TestMessages"
+      |clientId      |topic              |captured            |
+      |test-client-1 |test_topic/1/2/3   |03/07/2017T09:00:00 |
+      |test-client-2 |test_topic/1/2/3   |03/07/2017T09:00:00 |
+      |test-client-2 |test_topic/1/2/3   |03/07/2017T09:00:10 |
+      |test-client-2 |test_topic/1/2/3   |03/07/2017T09:00:20 |
+    And I set the following metrics to the message 0 from the list "TestMessages"
+      |metric        |type      |value      |
+      |tst-metric-1  |double    |123        |
+      |tst-metric-2  |int       |123        |
+    And I set the following metrics to the message 1 from the list "TestMessages"
+      |metric        |type      |value      |
+      |tst-metric-3  |string    |123        |
+      |tst-metric-4  |bool      |true       |
+    And I set the following metrics to the message 2 from the list "TestMessages"
+      |metric        |type      |value      |
+      |tst-metric-3  |string    |123        |
+      |tst-metric-4  |bool      |true       |
+    And I set the following metrics to the message 3 from the list "TestMessages"
+      |metric        |type      |value      |
+      |tst-metric-3  |string    |123        |
+      |tst-metric-4  |bool      |true       |
+    Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
+    And I refresh all database indices
+    When I query for the current account metrics in the date range "03/07/2017T09:00:00" to "03/07/2017T09:00:20" and store them as "AccountMetrics"
+    Then There are exactly 4 metrics in the list "AccountMetrics"
+    And The metric info items "AccountMetrics" match the prepared messages in "TestMessages"
+    And Client "test-client-1" first published a metric in the list "AccountMetrics" on "03/07/2017T09:00:00"
+    And Client "test-client-2" last published a metric in the list "AccountMetrics" on "03/07/2017T09:00:20"
+    And The metric "tst-metric-1" was first published in the list "AccountMetrics" on "03/07/2017T09:00:00"
+    And The metric "tst-metric-1" was last published in the list "AccountMetrics" on "03/07/2017T09:00:00"
+    And The metric "tst-metric-2" was last published in the list "AccountMetrics" on "03/07/2017T09:00:00"
+    And The metric "tst-metric-3" was last published in the list "AccountMetrics" on "03/07/2017T09:00:20"
+    And The metric "tst-metric-4" was last published in the list "AccountMetrics" on "03/07/2017T09:00:20"
+    And All indices are deleted
+
+  Scenario: Account based ClientInfo data check
+    Check the correctness of the client info data stored by retrieving the client information by account.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And Account for "kapua-sys"
+    And The device "test-device-1"
+    And I set the database to device timestamp indexing
+    When I prepare a number of messages with the following details and remember the list as "TestMessages"
+      |clientId      |topic              |
+      |test-client-1 |test_topic/1/2/3   |
+      |test-client-2 |test_topic/1/2/4   |
+      |test-client-1 |test_topic/1/2/5   |
+      |test-client-2 |test_topic/1/2/6   |
+    Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
+    And I refresh all database indices
+    When I query for the current account clients and store them as "AccountClients"
+    Then There are exactly 2 clients in the list "AccountClients"
+    And The client info items "AccountClients" match the prepared messages in "TestMessages"
+    And All indices are deleted
+
+  Scenario: Captured date based ClientInfo data check
+    Check the correctness of the client info data stored by retrieving the client info with a query based
+    on the Captured date.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And Account for "kapua-sys"
+    And The device "test-device-1"
+    And I set the database to device timestamp indexing
+    When I prepare a number of messages with the following details and remember the list as "TestMessages"
+      |clientId      |topic              |captured            |
+      |test-client-1 |test_topic/1/2/3   |03/07/2017T09:00:00 |
+      |test-client-2 |test_topic/1/2/3   |03/07/2017T09:00:00 |
+      |test-client-2 |test_topic/1/2/3   |03/07/2017T09:00:10 |
+      |test-client-2 |test_topic/1/2/3   |03/07/2017T09:00:20 |
+    Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
+    And I refresh all database indices
+    When I query for current account clients in the date range "03/07/2017T09:00:00" to "03/07/2017T09:00:20" and store them as "ClientInfos"
+    Then There are exactly 2 clients in the list "ClientInfos"
+    And Client "test-client-1" first message in the list "ClientInfos" is on "03/07/2017T09:00:00"
+    And Client "test-client-1" last message in the list "ClientInfos" is on "03/07/2017T09:00:00"
+    And Client "test-client-2" first message in the list "ClientInfos" is on "03/07/2017T09:00:00"
+    And Client "test-client-2" last message in the list "ClientInfos" is on "03/07/2017T09:00:20"
+    And All indices are deleted
+
+  Scenario: Client Id based ClientInfo data check
+    Check the correctness of the client info data stored by retrieving the client info with a query based
+    on the Client Id.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And Account for "kapua-sys"
+    And The device "test-device-1"
+    And I set the database to device timestamp indexing
+    When I prepare a number of messages with the following details and remember the list as "TestMessages1"
+      |clientId      |topic              |
+      |test-client-1 |test_topic/1/2/3   |
+    Then I store the messages from list "TestMessages1" and remember the IDs as "StoredMessageIDs1"
+    When I prepare a number of messages with the following details and remember the list as "TestMessages2"
+      |clientId      |topic              |
+      |test-client-2 |test_topic/1/2/4   |
+      |test-client-3 |test_topic/1/2/3   |
+      |test-client-4 |test_topic/1/2/4   |
+    Then I store the messages from list "TestMessages2" and remember the IDs as "StoredMessageIDs2"
+    And I refresh all database indices
+    When I query for the current account client with the Id "test-client-1" and store it as "ClientInfo"
+    Then There is exactly 1 client in the list "ClientInfo"
+    And The client info items "ClientInfo" match the prepared messages in "TestMessages1"
+    And All indices are deleted
+
+  Scenario: Channel info queries based on datastore channel filters
+    Query for account channels and use specific topic filters to narrow the range of retrieved
+    channel info items.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And Account for "kapua-sys"
+    And The device "test-device-1"
+    And I set the database to device timestamp indexing
+    When I prepare a number of messages with the following details and remember the list as "TestMessages"
+      |clientId      |topic       |
+      |test-client-1 |tba_1/1/1/1 |
+      |test-client-1 |tba_1/1/1/2 |
+      |test-client-1 |tba_1/1/1/3 |
+      |test-client-1 |tba_1/1/2/1 |
+      |test-client-1 |tba_1/1/2/2 |
+      |test-client-1 |tba_1/1/2/3 |
+      |test-client-1 |tba_1/2/1/1 |
+      |test-client-1 |tba_1/2/1/2 |
+      |test-client-1 |tba_1/2/1/3 |
+      |test-client-1 |tba_1/2/2/1 |
+      |test-client-1 |tba_1/2/2/2 |
+      |test-client-1 |tba_1/2/2/3 |
+      |test-client-1 |tba_2/1/1/1 |
+      |test-client-1 |tba_2/1/1/2 |
+      |test-client-1 |tba_2/1/1/3 |
+      |test-client-1 |tba_2/1/2/1 |
+      |test-client-1 |tba_2/1/2/2 |
+      |test-client-1 |tba_2/1/2/3 |
+      |test-client-1 |tba_2/2/1/1 |
+      |test-client-1 |tba_2/2/1/2 |
+      |test-client-1 |tba_2/2/1/3 |
+      |test-client-1 |tba_2/2/2/1 |
+      |test-client-1 |tba_2/2/2/2 |
+      |test-client-1 |tba_2/2/2/3 |
+    Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
+    And I refresh all database indices
+    When I query for the current account channels and store them as "AccountChannelList"
+    Then There are exactly 24 channels in the list "AccountChannelList"
+    When I query for the current account channels with the filter "1/#" and store them as "QueryResult1"
+    Then There are exactly 0 channels in the list "QueryResult1"
+    When I query for the current account channels with the filter "tba_1/#" and store them as "QueryResult2"
+    Then There are exactly 12 channels in the list "QueryResult2"
+    And The channel list "QueryResult2" contains the following topics
+      |topic       |
+      |tba_1/1/1/1 |
+      |tba_1/1/1/2 |
+      |tba_1/1/1/3 |
+      |tba_1/1/2/1 |
+      |tba_1/1/2/2 |
+      |tba_1/1/2/3 |
+      |tba_1/2/1/1 |
+      |tba_1/2/1/2 |
+      |tba_1/2/1/3 |
+      |tba_1/2/2/1 |
+      |tba_1/2/2/2 |
+      |tba_1/2/2/3 |
+    When I query for the current account channels with the filter "tba_2/#" and store them as "QueryResult3"
+    Then There are exactly 12 channels in the list "QueryResult3"
+    And The channel list "QueryResult3" contains the following topics
+      |topic       |
+      |tba_2/1/1/1 |
+      |tba_2/1/1/2 |
+      |tba_2/1/1/3 |
+      |tba_2/1/2/1 |
+      |tba_2/1/2/2 |
+      |tba_2/1/2/3 |
+      |tba_2/2/1/1 |
+      |tba_2/2/1/2 |
+      |tba_2/2/1/3 |
+      |tba_2/2/2/1 |
+      |tba_2/2/2/2 |
+      |tba_2/2/2/3 |
+    When I query for the current account channels with the filter "tba_1/1/#" and store them as "QueryResult4"
+    Then There are exactly 6 channels in the list "QueryResult4"
+    And The channel list "QueryResult4" contains the following topics
+      |topic       |
+      |tba_1/1/1/1 |
+      |tba_1/1/1/2 |
+      |tba_1/1/1/3 |
+      |tba_1/1/2/1 |
+      |tba_1/1/2/2 |
+      |tba_1/1/2/3 |
+    When I query for the current account channels with the filter "tba_2/1/1/#" and store them as "QueryResult5"
+    Then There are exactly 3 channels in the list "QueryResult5"
+    And The channel list "QueryResult5" contains the following topics
+      |topic       |
+      |tba_2/1/1/1 |
+      |tba_2/1/1/2 |
+      |tba_2/1/1/3 |
     And All indices are deleted
 
   @StopBroker
