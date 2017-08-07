@@ -19,6 +19,6 @@ public interface KapuaStepContext extends StepContext {
 
     public Integer getNextStepIndex();
 
-    public <T> T getStepProperty(String stepPropertyName);
+    public <T> T getStepProperty(String stepPropertyName, Class<T> type);
 
 }

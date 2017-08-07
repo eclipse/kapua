@@ -42,6 +42,14 @@ public class KapuaStepContextImpl implements KapuaStepContext {
     }
 
     @Override
+    public <T> T getStepProperty(String stepPropertyName, Class<T> type) {
+        Properties jobContextProperties = stepContext.getProperties();
+        String stepNextIndexString = jobContextProperties.getProperty(stepPropertyName);
+
+        return null;
+    }
+
+    @Override
     public String getStepName() {
         return stepContext.getStepName();
     }
@@ -99,10 +107,5 @@ public class KapuaStepContextImpl implements KapuaStepContext {
     @Override
     public Metric[] getMetrics() {
         return stepContext.getMetrics();
-    }
-
-    @Override
-    public <T> T getStepProperty(String stepPropertyName) {
-        return null;
     }
 }
