@@ -13,12 +13,14 @@ package org.eclipse.kapua.service.job.context;
 
 import javax.batch.runtime.context.StepContext;
 
+import org.eclipse.kapua.KapuaIllegalArgumentException;
+
 public interface KapuaStepContext extends StepContext {
 
     public int getStepIndex();
 
     public Integer getNextStepIndex();
 
-    public <T> T getStepProperty(String stepPropertyName, Class<T> type);
+    public <T> T getStepProperty(String stepPropertyName, Class<T> type) throws KapuaIllegalArgumentException;
 
 }
