@@ -17,11 +17,13 @@ import java.util.List;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -63,7 +65,8 @@ public class JobStepImpl extends AbstractKapuaNamedEntity implements JobStep {
     @Column(name = "step_index", nullable = false, updatable = false)
     private int stepIndex;
 
-    @Transient
+    @ElementCollection
+    @CollectionTable(name = "job_job_step_properties", joinColumns = @JoinColumn(name = "step_id", referencedColumnName = "id"))
     private List<JobStepPropertyImpl> stepProperties;
 
     public JobStepImpl() {

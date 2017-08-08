@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.step.internal;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntityCreator;
@@ -85,6 +86,10 @@ public class JobStepCreatorImpl extends AbstractKapuaNamedEntityCreator<JobStep>
 
     @Override
     public List<JobStepProperty> getJobStepProperties() {
+        if (jobStepProperty == null) {
+            this.jobStepProperty = new ArrayList<>();
+        }
+
         return jobStepProperty;
     }
 
