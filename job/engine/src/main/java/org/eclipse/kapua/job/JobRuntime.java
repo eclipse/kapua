@@ -15,8 +15,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.batch.operations.JobOperator;
@@ -44,6 +47,7 @@ import org.eclipse.kapua.service.job.step.JobStepQuery;
 import org.eclipse.kapua.service.job.step.JobStepService;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
+import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 
 import com.ibm.jbatch.container.jsl.ExecutionElement;
 import com.ibm.jbatch.container.jsl.ModelSerializer;
@@ -200,23 +204,54 @@ public class JobRuntime implements KapuaService {
         JSLProperties jslProperties = new JSLProperties();
         List<Property> jslPropertyList = jslProperties.getPropertyList();
 
-        Property stepIndexProperty = new Property();
-        stepIndexProperty.setName(StepContextPropertyNames.STEP_INDEX);
-        stepIndexProperty.setValue(String.valueOf(jobStep.getStepIndex()));
-        jslPropertyList.add(stepIndexProperty);
+        Property jslStepIndexProperty = new Property();
+        jslStepIndexProperty.setName(StepContextPropertyNames.STEP_INDEX);
+        jslStepIndexProperty.setValue(String.valueOf(jobStep.getStepIndex()));
+        jslPropertyList.add(jslStepIndexProperty);
 
         if (hasNext) {
-            Property stepNextIndexProperty = new Property();
-            stepNextIndexProperty.setName(StepContextPropertyNames.STEP_NEXT_INDEX);
-            stepNextIndexProperty.setValue(String.valueOf(jobStep.getStepIndex() + 1));
-            jslPropertyList.add(stepNextIndexProperty);
+            Property jslStepNextIndexProperty = new Property();
+            jslStepNextIndexProperty.setName(StepContextPropertyNames.STEP_NEXT_INDEX);
+            jslStepNextIndexProperty.setValue(String.valueOf(jobStep.getStepIndex() + 1));
+            jslPropertyList.add(jslStepNextIndexProperty);
         }
+
+        jslPropertyList.addAll(buildCustomStepProperties(jobStepDefinition, jobStep));
 
         return jslProperties;
     }
 
+    private static Collection<Property> buildCustomStepProperties(JobStepDefinition jobStepDefinition, JobStep jobStep) {
+
+        Map<String, Property> customStepProperties = new HashMap<>();
+
+        //
+        // Add default properties
+        for (JobStepProperty jobStepProperty : jobStepDefinition.getStepProperties()) {
+            Property jslStepProperty = new Property();
+            jslStepProperty.setName(jobStepProperty.getName());
+            jslStepProperty.setValue(jobStepProperty.getPropertyValue());
+            customStepProperties.put(jobStepProperty.getName(), jslStepProperty);
+        }
+
+        //
+        // Add custom values
+        for (JobStepProperty jobStepProperty : jobStep.getStepProperties()) {
+            Property jslStepProperty = new Property();
+            jslStepProperty.setName(jobStepProperty.getName());
+            jslStepProperty.setValue(jobStepProperty.getPropertyValue());
+            customStepProperties.put(jobStepProperty.getName(), jslStepProperty);
+        }
+
+        return customStepProperties.values();
+    }
+
     private static Batchlet buildBatchletStep(JobStepDefinition jobStepDefinition) {
-        return new Batchlet();
+        Batchlet batchlet = new Batchlet();
+
+        batchlet.setRef(jobStepDefinition.getProcessorName());
+
+        return batchlet;
     }
 
     private static Chunk buildChunkStep(JobStepDefinition jobStepDefinition) {
