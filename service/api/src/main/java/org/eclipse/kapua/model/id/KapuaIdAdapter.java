@@ -35,12 +35,12 @@ public class KapuaIdAdapter extends XmlAdapter<String, KapuaId> {
 
     @Override
     public String marshal(KapuaId v) throws Exception {
-        return v.toCompactId();
+        return v != null ? v.toCompactId() : null;
     }
 
     @Override
     public KapuaId unmarshal(String v) throws Exception {
-        return kapuaIdFactory.newKapuaId(v);
+        return v != null ? kapuaIdFactory.newKapuaId(v) : null;
     }
 
 }
