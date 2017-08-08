@@ -12,7 +12,8 @@
         Eurotech
  -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -21,7 +22,7 @@
         <version>0.3.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kapua-assembly-broker</artifactId>
+    <artifactId>kapua-assembly-broker-service</artifactId>
     <name>${project.artifactId}</name>
 
     <dependencies>
@@ -33,158 +34,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-guice</artifactId>
-        </dependency>
-        <dependency>
             <groupId>aopalliance</groupId>
             <artifactId>aopalliance</artifactId>
             <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-commons</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-broker-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-message-internal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-account-internal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-datastore-internal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-datastore-client-transport</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-datastore-client-rest</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-configuration-internal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-security-shiro</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-liquibase</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-registry-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-registry-internal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-tag-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-tag-internal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-user-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-user-internal</artifactId>
-        </dependency>
-
-        <!-- dependencies added otherwise the unix assembly doesn't know the arctifact to add -->
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-asset-api</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-asset-internal</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-bundle-api</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-bundle-internal</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-command-api</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-command-internal</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-packages-api</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-packages-internal</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-sso-jwt</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-translator-kapua-kura</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-translator-kura-jms</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-translator-kura-mqtt</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-transport-api</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-transport-jms</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-transport-mqtt</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-foreignkeys</artifactId>
         </dependency>
         <dependency>
             <!-- Google protobuf for message encoding -->
@@ -294,7 +146,7 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            </dependency>
+        </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-to-slf4j</artifactId>
@@ -363,17 +215,17 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>kapua-broker</id>
+                        <id>kapua-broker-service</id>
                         <phase>package</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
                         <configuration>
                             <descriptors>
-                                <descriptor>src/main/descriptors/kapua-broker.xml</descriptor>
+                                <descriptor>src/main/descriptors/kapua-broker-service.xml</descriptor>
                             </descriptors>
                             <tarLongFileMode>posix</tarLongFileMode>
-                            <finalName>kapua-broker-${project.version}</finalName>
+                            <finalName>kapua-broker-service-${project.version}</finalName>
                             <appendAssemblyId>false</appendAssemblyId>
                         </configuration>
                     </execution>
@@ -601,11 +453,11 @@
                         <configuration>
                             <images>
                                 <image>
-                                    <name>${docker.account}/kapua-broker</name>
+                                    <name>${docker.account}/kapua-broker-service</name>
                                     <build>
                                         <from>${docker.account}/java-base</from>
                                         <assembly>
-                                            <descriptor>${basedir}/src/main/descriptors/kapua-broker.xml</descriptor>
+                                            <descriptor>${basedir}/src/main/descriptors/kapua-broker-service.xml</descriptor>
                                         </assembly>
                                         <entryPoint>
                                             <exec>
@@ -616,17 +468,14 @@
                                         <env>
                                             <SQL_DB_PORT>\${DB_PORT_3306_TCP_PORT}</SQL_DB_PORT>
                                             <SQL_DB_ADDR>\${DB_PORT_3306_TCP_ADDR}</SQL_DB_ADDR>
-                                            <DATASTORE_PORT>\${ES_PORT_9200_TCP_PORT}</DATASTORE_PORT>
-                                            <DATASTORE_ADDR>\${ES_PORT_9200_TCP_ADDR}</DATASTORE_ADDR>
-                                            <SERVICE_BROKER_ADDR>tcp://\${SERVICE_PORT_61619_TCP_ADDR}:\${SERVICE_PORT_61619_TCP_PORT}</SERVICE_BROKER_ADDR>
                                             <DATASTORE_CLIENT>org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient</DATASTORE_CLIENT>
-                                            <ACTIVEMQ_OPTS>-Dcommons.db.connection.host=\${SQL_DB_ADDR} -Dcommons.db.connection.port=\${SQL_DB_PORT} -Ddatastore.elasticsearch.nodes=\${DATASTORE_ADDR} -Ddatastore.elasticsearch.port=\${DATASTORE_PORT} -Ddatastore.client.class=\${DATASTORE_CLIENT} -Dcommons.eventbus.url=\${SERVICE_BROKER_ADDR}</ACTIVEMQ_OPTS>
+                                            <ACTIVEMQ_OPTS>-Dcommons.db.connection.host=\${SQL_DB_ADDR} -Dcommons.db.connection.port=\${SQL_DB_PORT} \
+                                                -Dorg.apache.activemq.SERIALIZABLE_PACKAGES=*
+                                            </ACTIVEMQ_OPTS>
                                         </env>
                                         <ports>
-                                            <port>1883</port><!-- MQTT -->
-                                            <port>8883</port><!-- MQTTS -->
-                                            <port>8778</port><!-- Jolokia -->
-                                            <port>61614</port><!-- MQTT-WS -->
+                                            <port>8779</port><!-- Jolokia -->
+                                            <port>61619</port><!-- MQTT-WS -->
                                         </ports>
                                         <user>kapua</user>
                                         <runCmds>
