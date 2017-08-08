@@ -17,10 +17,9 @@ import javax.inject.Inject;
 
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.service.device.management.command.DeviceCommandFactory;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandManagementService;
-import org.eclipse.kapua.service.device.management.command.DeviceCommandOutput;
+import org.eclipse.kapua.service.device.management.command.job.definition.DeviceCommandExecPropertyKeys;
 import org.eclipse.kapua.service.job.context.JobContextFactory;
 import org.eclipse.kapua.service.job.context.KapuaJobContext;
 import org.eclipse.kapua.service.job.context.KapuaStepContext;
@@ -36,9 +35,7 @@ public class DeviceCommandTargetProcessor implements TargetOperation {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final JobContextFactory JOB_CONTEXT_FACTORY = LOCATOR.getFactory(JobContextFactory.class);
-
     private static final DeviceCommandManagementService COMMAND_MANAGEMENT_SERVICE = LOCATOR.getService(DeviceCommandManagementService.class);
-    private static final DeviceCommandFactory COMMAND_FACTORY = LOCATOR.getFactory(DeviceCommandFactory.class);
 
     @Inject
     JobContext jobContext;
@@ -52,18 +49,14 @@ public class DeviceCommandTargetProcessor implements TargetOperation {
         KapuaStepContext kapuaStepContext = JOB_CONTEXT_FACTORY.newStepContext(stepContext);
         LOG.info("JOB {} - Processing item...", kapuaJobContext.getJobId());
 
+        DeviceCommandInput commandInput = kapuaStepContext.getStepProperty(DeviceCommandExecPropertyKeys.COMMAND_INPUT, DeviceCommandInput.class);
+        Long timeout = kapuaStepContext.getStepProperty(DeviceCommandExecPropertyKeys.TIMEOUT, Long.class);
+
         JobTarget jobTarget = (JobTarget) item;
-
-        DeviceCommandInput commandInput = COMMAND_FACTORY.newCommandInput();
-        commandInput.setCommand("ls");        // kapuaStepContext.getStepProperty(DeviceCommandExecPropertyKeys.COMMAND_INPUT);
-        commandInput.setTimeout(30000);
-        Long timeout = null; // kapuaStepContext.getStepProperty(DeviceCommandExecPropertyKeys.TIMEOUT);
-
         try {
-            DeviceCommandOutput commandOutput = KapuaSecurityUtils.doPrivileged(() -> COMMAND_MANAGEMENT_SERVICE.exec(jobTarget.getScopeId(), jobTarget.getJobTargetId(), commandInput, timeout));
+            KapuaSecurityUtils.doPrivileged(() -> COMMAND_MANAGEMENT_SERVICE.exec(jobTarget.getScopeId(), jobTarget.getJobTargetId(), commandInput, timeout));
 
             jobTarget.setStatus(JobTargetStatus.PROCESS_OK);
-            // jobTarget.setOutput(...);
         } catch (Exception e) {
             jobTarget.setStatus(JobTargetStatus.PROCESS_FAILED);
             jobTarget.setException(e);
