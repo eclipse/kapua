@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.eclipse.kapua.app.console.commons.server.KapuaConfigurableRemoteServiceServlet;
+import org.eclipse.kapua.app.console.commons.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.commons.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionStatus;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPredicates;
@@ -69,13 +69,9 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
 /**
  * The server side implementation of the Device RPC service.
  */
-public class GwtDeviceServiceImpl extends KapuaConfigurableRemoteServiceServlet<DeviceRegistryService> implements GwtDeviceService {
+public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements GwtDeviceService {
 
     private static final long serialVersionUID = -1391026997499175151L;
-
-    public GwtDeviceServiceImpl() {
-        super(KapuaLocator.getInstance().getService(DeviceRegistryService.class));
-    }
 
     public GwtDevice findDevice(String scopeIdString, String clientId)
             throws GwtKapuaException {

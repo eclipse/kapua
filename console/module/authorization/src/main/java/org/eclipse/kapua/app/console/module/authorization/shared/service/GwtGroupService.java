@@ -13,8 +13,8 @@ package org.eclipse.kapua.app.console.module.authorization.shared.service;
 
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.RemoteService;
 import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
-import org.eclipse.kapua.app.console.commons.shared.service.KapuaConfigurableRemoteService;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtGroupedNVPair;
 
@@ -26,7 +26,7 @@ import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroupC
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroupQuery;
 
 @RemoteServiceRelativePath("group")
-public interface GwtGroupService extends KapuaConfigurableRemoteService {
+public interface GwtGroupService extends RemoteService {
 
     public GwtGroup create(GwtGroupCreator gwtGroupCreator) throws GwtKapuaException;
 

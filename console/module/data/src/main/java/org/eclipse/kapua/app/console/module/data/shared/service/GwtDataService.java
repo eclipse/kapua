@@ -14,8 +14,8 @@ package org.eclipse.kapua.app.console.module.data.shared.service;
 import java.util.Date;
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.RemoteService;
 import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
-import org.eclipse.kapua.app.console.commons.shared.service.KapuaConfigurableRemoteService;
 import org.eclipse.kapua.app.console.module.data.client.GwtTopic;
 import org.eclipse.kapua.app.console.module.data.client.util.GwtMessage;
 import org.eclipse.kapua.app.console.module.data.shared.model.GwtDataChannelInfoQuery;
@@ -30,7 +30,7 @@ import org.eclipse.kapua.app.console.module.data.shared.model.GwtDatastoreDevice
 import org.eclipse.kapua.app.console.module.data.shared.model.GwtHeader;
 
 @RemoteServiceRelativePath("data")
-public interface GwtDataService extends KapuaConfigurableRemoteService {
+public interface GwtDataService extends RemoteService {
 
     /**
      * Return the Topics for a given account; the returned structure is ready to

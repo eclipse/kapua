@@ -17,7 +17,7 @@ import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
-import org.eclipse.kapua.app.console.commons.server.KapuaConfigurableRemoteServiceServlet;
+import org.eclipse.kapua.app.console.commons.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.commons.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtXSRFToken;
@@ -65,13 +65,9 @@ import java.util.Set;
 /**
  * The server side implementation of the RPC service.
  */
-public class GwtUserServiceImpl extends KapuaConfigurableRemoteServiceServlet<UserService> implements GwtUserService {
+public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements GwtUserService {
 
     private static final long serialVersionUID = 7430961652373364113L;
-
-    public GwtUserServiceImpl() {
-        super(KapuaLocator.getInstance().getService(UserService.class));
-    }
 
     @Override
     public GwtUser create(GwtXSRFToken xsrfToken, GwtUserCreator gwtUserCreator)

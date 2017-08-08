@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.kapua.app.console.commons.server.KapuaConfigurableRemoteServiceServlet;
+import org.eclipse.kapua.app.console.commons.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.commons.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtGroupedNVPair;
@@ -57,13 +57,9 @@ import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
-public class GwtCredentialServiceImpl extends KapuaConfigurableRemoteServiceServlet<CredentialService> implements GwtCredentialService {
+public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implements GwtCredentialService {
 
     private static final long serialVersionUID = 7323313459749361320L;
-
-    public GwtCredentialServiceImpl() {
-        super(KapuaLocator.getInstance().getService(CredentialService.class));
-    }
 
     @Override
     public PagingLoadResult<GwtCredential> query(PagingLoadConfig loadConfig, GwtCredentialQuery gwtCredentialQuery) throws GwtKapuaException {

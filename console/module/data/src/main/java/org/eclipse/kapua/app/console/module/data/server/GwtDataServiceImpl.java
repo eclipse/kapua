@@ -20,7 +20,7 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
-import org.eclipse.kapua.app.console.commons.server.KapuaConfigurableRemoteServiceServlet;
+import org.eclipse.kapua.app.console.commons.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.commons.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.data.client.GwtTopic;
@@ -74,16 +74,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GwtDataServiceImpl extends KapuaConfigurableRemoteServiceServlet<MessageStoreService> implements GwtDataService {
+public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements GwtDataService {
 
     private static final long serialVersionUID = -5518740923786017558L;
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final StorablePredicateFactory STORABLE_PREDICATE_FACTORY = LOCATOR.getFactory(StorablePredicateFactory.class);
-
-    public GwtDataServiceImpl() {
-        super(LOCATOR.getService(MessageStoreService.class));
-    }
 
     @Override
     public List<GwtTopic> findTopicsTree(String scopeId) throws GwtKapuaException {

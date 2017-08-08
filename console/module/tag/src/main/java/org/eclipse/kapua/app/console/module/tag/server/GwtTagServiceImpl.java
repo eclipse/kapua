@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
-import org.eclipse.kapua.app.console.commons.server.KapuaConfigurableRemoteServiceServlet;
+import org.eclipse.kapua.app.console.commons.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.commons.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.KapuaException;
@@ -42,13 +42,9 @@ import org.eclipse.kapua.service.tag.TagListResult;
 import org.eclipse.kapua.service.tag.TagQuery;
 import org.eclipse.kapua.service.tag.TagService;
 
-public class GwtTagServiceImpl extends KapuaConfigurableRemoteServiceServlet<TagService> implements GwtTagService {
+public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtTagService {
 
     private static final long serialVersionUID = 929002466564699535L;
-
-    public GwtTagServiceImpl() {
-        super(KapuaLocator.getInstance().getService(TagService.class));
-    }
 
     @Override
     public GwtTag create(GwtTagCreator gwtTagCreator) throws GwtKapuaException {

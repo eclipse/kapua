@@ -13,11 +13,11 @@ package org.eclipse.kapua.app.console.module.account.shared.service;
 
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.RemoteService;
 import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtXSRFToken;
-import org.eclipse.kapua.app.console.commons.shared.service.KapuaConfigurableRemoteService;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountCreator;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountQuery;
@@ -32,7 +32,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * The client side stub for the RPC service.
  */
 @RemoteServiceRelativePath("account")
-public interface GwtAccountService extends KapuaConfigurableRemoteService {
+public interface GwtAccountService extends RemoteService {
 
     /**
      * Creates a new Account based on the information provided in the supplied GwtAccountCreator. Each new account results in the creation of an Organization, a set of Users, and a provisioning step

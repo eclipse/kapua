@@ -13,9 +13,9 @@ package org.eclipse.kapua.app.console.module.tag.shared.service;
 
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.RemoteService;
 import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtGroupedNVPair;
-import org.eclipse.kapua.app.console.commons.shared.service.KapuaConfigurableRemoteService;
 
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
@@ -26,7 +26,7 @@ import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTagCreator;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTagQuery;
 
 @RemoteServiceRelativePath("tag")
-public interface GwtTagService extends KapuaConfigurableRemoteService {
+public interface GwtTagService extends RemoteService {
 
     public GwtTag create(GwtTagCreator gwtTagCreator) throws GwtKapuaException;
 

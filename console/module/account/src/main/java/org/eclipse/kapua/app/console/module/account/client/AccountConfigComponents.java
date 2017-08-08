@@ -11,39 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.account.client;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.kapua.app.console.commons.client.ui.button.DiscardButton;
-import org.eclipse.kapua.app.console.commons.client.ui.button.SaveButton;
-import org.eclipse.kapua.app.console.commons.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.commons.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.commons.client.ui.button.RefreshButton;
-import org.eclipse.kapua.app.console.commons.client.ui.label.Label;
-import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.commons.client.util.KapuaLoadListener;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtConfigComponent;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtXSRFToken;
-import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
-import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
-import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
-import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialServiceAsync;
-import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupServiceAsync;
-import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRoleService;
-import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRoleServiceAsync;
-import org.eclipse.kapua.app.console.module.data.shared.service.GwtDataService;
-import org.eclipse.kapua.app.console.module.data.shared.service.GwtDataServiceAsync;
-import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceService;
-import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceServiceAsync;
-import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserServiceAsync;
-import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialService;
-import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupService;
-import org.eclipse.kapua.app.console.commons.shared.service.GwtSecurityTokenService;
-import org.eclipse.kapua.app.console.commons.shared.service.GwtSecurityTokenServiceAsync;
-import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserService;
-
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
@@ -75,6 +42,28 @@ import com.extjs.gxt.ui.client.widget.treepanel.TreePanelSelectionModel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.commons.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.commons.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.commons.client.ui.button.DiscardButton;
+import org.eclipse.kapua.app.console.commons.client.ui.button.RefreshButton;
+import org.eclipse.kapua.app.console.commons.client.ui.button.SaveButton;
+import org.eclipse.kapua.app.console.commons.client.ui.label.Label;
+import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.commons.client.util.KapuaLoadListener;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtConfigComponent;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.commons.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.commons.shared.service.GwtConsoleService;
+import org.eclipse.kapua.app.console.commons.shared.service.GwtConsoleServiceAsync;
+import org.eclipse.kapua.app.console.commons.shared.service.GwtSecurityTokenService;
+import org.eclipse.kapua.app.console.commons.shared.service.GwtSecurityTokenServiceAsync;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
+import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
+import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AccountConfigComponents extends LayoutContainer {
 
@@ -82,12 +71,7 @@ public class AccountConfigComponents extends LayoutContainer {
 
     private static final GwtSecurityTokenServiceAsync GWT_SECURITY_TOKEN_SERVICE = GWT.create(GwtSecurityTokenService.class);
     private static final GwtAccountServiceAsync GWT_ACCOUNT_SERVICE = GWT.create(GwtAccountService.class);
-    private static final GwtCredentialServiceAsync GWT_CREDENTIAL_SERVICE = GWT.create(GwtCredentialService.class);
-    private static final GwtGroupServiceAsync GWT_GROUP_SERVICE = GWT.create(GwtGroupService.class);
-    private static final GwtRoleServiceAsync GWT_ROLE_SERVICE = GWT.create(GwtRoleService.class);
-    private static final GwtDataServiceAsync GWT_DATA_SERVICE = GWT.create(GwtDataService.class);
-    private static final GwtDeviceServiceAsync GWT_DEVICE_SERVICE = GWT.create(GwtDeviceService.class);
-    private static final GwtUserServiceAsync GWT_USER_SERVICE = GWT.create(GwtUserService.class);
+    private static final GwtConsoleServiceAsync GWT_CONSOLE_SERVICE = GWT.create(GwtConsoleService.class);
 
     private GwtSession currentSession;
 
@@ -430,27 +414,9 @@ public class AccountConfigComponents extends LayoutContainer {
                                 @Override
                                 public void onSuccess(GwtXSRFToken token) {
                                     final GwtConfigComponent configComponent = devConfPanel.getUpdatedConfiguration();
-
-                                    if ("AccountService".equals(configComponent.getComponentName())) {
-                                        GWT_ACCOUNT_SERVICE.updateComponentConfiguration(token, selectedAccount.getId(), selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
-                                    } else if ("CredentialService".equals(configComponent.getComponentName())) {
-                                        GWT_CREDENTIAL_SERVICE.updateComponentConfiguration(token, selectedAccount.getId(), selectedAccount.getParentAccountId(), configComponent,
-                                                applyConfigCallback);
-                                    } else if ("DeviceRegistryService".equals(configComponent.getComponentName())) {
-                                        GWT_DEVICE_SERVICE.updateComponentConfiguration(token, selectedAccount.getId(), selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
-                                    } else if ("GroupService".equals(configComponent.getComponentName())) {
-                                        GWT_GROUP_SERVICE.updateComponentConfiguration(token, selectedAccount.getId(), selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
-                                    } else if ("RoleService".equals(configComponent.getComponentName())) {
-                                        GWT_ROLE_SERVICE.updateComponentConfiguration(token, selectedAccount.getId(), selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
-                                    } else if ("MessageStoreService".equals(configComponent.getComponentName())) {
-                                        GWT_DATA_SERVICE.updateComponentConfiguration(token, selectedAccount.getId(), selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
-                                    } else if ("UserService".equals(configComponent.getComponentName())) {
-                                        GWT_USER_SERVICE.updateComponentConfiguration(token, selectedAccount.getId(), selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
-                                    }
+                                    GWT_CONSOLE_SERVICE.updateComponentConfiguration(token, selectedAccount.getId(), selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
                                 }
                             });
-
-                            // start the configuration update
                         }
                     }
                 });

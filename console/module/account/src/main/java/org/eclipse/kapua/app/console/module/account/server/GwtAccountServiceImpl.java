@@ -30,7 +30,7 @@ import java.util.Set;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.sanselan.ImageFormat;
 import org.apache.sanselan.Sanselan;
-import org.eclipse.kapua.app.console.commons.server.KapuaConfigurableRemoteServiceServlet;
+import org.eclipse.kapua.app.console.commons.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.commons.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.module.account.shared.util.GwtKapuaAccountModelConverter;
@@ -83,11 +83,7 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
 /**
  * The server side implementation of the RPC service.
  */
-public class GwtAccountServiceImpl extends KapuaConfigurableRemoteServiceServlet<AccountService> implements GwtAccountService {
-
-    public GwtAccountServiceImpl() {
-        super(KapuaLocator.getInstance().getService(AccountService.class));
-    }
+public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements GwtAccountService {
 
     private static final Logger logger = LoggerFactory.getLogger(GwtAccountServiceImpl.class);
     private static final long serialVersionUID = 3314502846487119577L;

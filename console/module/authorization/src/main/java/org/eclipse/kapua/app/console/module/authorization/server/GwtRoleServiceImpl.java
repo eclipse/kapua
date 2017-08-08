@@ -14,7 +14,7 @@ package org.eclipse.kapua.app.console.module.authorization.server;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.kapua.app.console.commons.server.KapuaConfigurableRemoteServiceServlet;
+import org.eclipse.kapua.app.console.commons.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.commons.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtGroupedNVPair;
@@ -51,13 +51,9 @@ import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
-public class GwtRoleServiceImpl extends KapuaConfigurableRemoteServiceServlet<RoleService> implements GwtRoleService {
+public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements GwtRoleService {
 
     private static final long serialVersionUID = 3606053200278262228L;
-
-    public GwtRoleServiceImpl() {
-        super(KapuaLocator.getInstance().getService(RoleService.class));
-    }
 
     @Override
     public GwtRole create(GwtXSRFToken xsrfToken, GwtRoleCreator gwtRoleCreator) throws GwtKapuaException {

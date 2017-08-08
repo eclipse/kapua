@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.console.commons.server.KapuaConfigurableRemoteServiceServlet;
+import org.eclipse.kapua.app.console.commons.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.commons.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroup;
@@ -42,13 +42,9 @@ import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
-public class GwtGroupServiceImpl extends KapuaConfigurableRemoteServiceServlet<GroupService> implements GwtGroupService {
+public class GwtGroupServiceImpl extends KapuaRemoteServiceServlet implements GwtGroupService {
 
     private static final long serialVersionUID = 929002466564699535L;
-
-    public GwtGroupServiceImpl() {
-        super(KapuaLocator.getInstance().getService(GroupService.class));
-    }
 
     @Override
     public GwtGroup create(GwtGroupCreator gwtGroupCreator) throws GwtKapuaException {

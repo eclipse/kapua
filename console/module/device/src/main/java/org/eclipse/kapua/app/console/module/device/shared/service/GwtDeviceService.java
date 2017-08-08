@@ -13,8 +13,8 @@ package org.eclipse.kapua.app.console.module.device.shared.service;
 
 import java.util.Date;
 
+import com.google.gwt.user.client.rpc.RemoteService;
 import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
-import org.eclipse.kapua.app.console.commons.shared.service.KapuaConfigurableRemoteService;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceCreator;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceEvent;
@@ -31,7 +31,7 @@ import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPr
  * The client side stub for the RPC service.
  */
 @RemoteServiceRelativePath("device")
-public interface GwtDeviceService extends KapuaConfigurableRemoteService {
+public interface GwtDeviceService extends RemoteService {
 
     /**
      * Finds device given its clientId

@@ -11,9 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.shared.service;
 
+import com.google.gwt.user.client.rpc.RemoteService;
 import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtGroupedNVPair;
-import org.eclipse.kapua.app.console.commons.shared.service.KapuaConfigurableRemoteService;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtXSRFToken;
 
 import com.extjs.gxt.ui.client.data.ListLoadResult;
@@ -28,7 +28,7 @@ import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRolePe
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRoleQuery;
 
 @RemoteServiceRelativePath("role")
-public interface GwtRoleService extends KapuaConfigurableRemoteService {
+public interface GwtRoleService extends RemoteService {
 
     public GwtRole create(GwtXSRFToken gwtXsrfToken, GwtRoleCreator gwtRoleCreator)
             throws GwtKapuaException;
