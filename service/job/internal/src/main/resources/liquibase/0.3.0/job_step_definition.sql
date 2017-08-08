@@ -23,13 +23,12 @@ CREATE TABLE job_job_step_definition (
   modified_by               BIGINT(21)		UNSIGNED NOT NULL,
 
   name                      VARCHAR(255)	NOT NULL,
-  
   description				TEXT,
-  job_step_type          	VARCHAR(255)	UNSIGNED NOT NULL,
+  job_step_type          	VARCHAR(255)	 NOT NULL,
   
-  reader_name     			VARCHAR(255)	UNSIGNED NOT NULL,
-  processor_name     		VARCHAR(255)	UNSIGNED NOT NULL,
-  writer_name     			VARCHAR(255)	UNSIGNED NOT NULL,
+  reader_name     			VARCHAR(255)	,
+  processor_name     		VARCHAR(255)	 NOT NULL,
+  writer_name     			VARCHAR(255)	,
   
   optlock                    INT UNSIGNED,
   attributes				 TEXT,

@@ -11,13 +11,29 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.step.definition.internal;
 
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 
+@Embeddable
 public class JobStepPropertyImpl implements JobStepProperty {
 
+    @Basic
+    @Column(name = "name", nullable = false, updatable = false)
     private String name;
+
+    @Basic
+    @Column(name = "property_type", nullable = false, updatable = false)
     private String propertyType;
+
+    @Basic
+    @Column(name = "property_value", nullable = false, updatable = false)
     private String propertyValue;
+
+    public JobStepPropertyImpl() {
+    }
 
     private JobStepPropertyImpl(JobStepProperty jobStepProperty) {
         setName(jobStepProperty.getName());
