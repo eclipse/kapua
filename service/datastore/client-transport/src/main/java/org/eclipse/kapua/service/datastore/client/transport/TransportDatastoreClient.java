@@ -61,6 +61,7 @@ import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.common.xcontent.XContentParser;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.IndexNotFoundException;
+import org.elasticsearch.index.VersionType;
 import org.elasticsearch.index.query.QueryParseContext;
 import org.elasticsearch.indices.InvalidIndexNameException;
 import org.elasticsearch.search.SearchHit;
@@ -193,6 +194,9 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
         Map<String, Object> storableMap = modelContext.marshal(insertRequest.getStorable());
         logger.debug("Insert - converted object: '{}'", storableMap);
         IndexRequest idxRequest = new IndexRequest(insertRequest.getTypeDescriptor().getIndex(), insertRequest.getTypeDescriptor().getType()).source(storableMap);
+        if (insertRequest.getId() != null) {
+            idxRequest.id(insertRequest.getId()).version(1).versionType(VersionType.EXTERNAL);
+        }
         IndexResponse response = esClientProvider.getClient().index(idxRequest).actionGet(getQueryTimeout());
         return new InsertResponse(response.getId(), insertRequest.getTypeDescriptor());
     }

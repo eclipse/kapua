@@ -43,6 +43,17 @@ public interface MessageStoreService extends KapuaService, KapuaConfigurableServ
             throws KapuaException;
 
     /**
+     * Store the message setting the provided datastoreId
+     * 
+     * @param message
+     * @param datastoreId
+     * @return
+     * @throws KapuaException
+     */
+    InsertResponse store(KapuaMessage<?, ?> message, String datastoreId)
+            throws KapuaException;
+
+    /**
      * Find message by identifier
      * 
      * @param scopeId

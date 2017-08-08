@@ -9,28 +9,25 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.client.model;
+package org.eclipse.kapua.service.datastore.client;
 
 /**
- * Insert request
- * 
- * @since 1.0
+ * Client communication exception (timeout, no node available ...)
  *
+ * @since 1.0
  */
-public class InsertRequest extends Request {
+public class ClientCommunicationException extends ClientException {
+
+    private static final long serialVersionUID = 1599649533697887868L;
 
     /**
-     * Defualt constructor
-     * 
-     * @param id
-     *            object identifier
-     * @param typeDescriptor
-     *            index/type descriptor
-     * @param storable
-     *            object to insert
+     * Construct the exception with the provided throwable
+     *
+     * @param message
+     * @param t
      */
-    public InsertRequest(String id, TypeDescriptor typeDescriptor, Object storable) {
-        super(id, typeDescriptor, storable);
+    public ClientCommunicationException(String message, Throwable t) {
+        super(ClientErrorCodes.COMMUNICATION_ERROR, t);
     }
 
 }

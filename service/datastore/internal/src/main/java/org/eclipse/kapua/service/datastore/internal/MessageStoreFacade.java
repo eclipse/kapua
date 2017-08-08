@@ -15,10 +15,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.UUID;
 
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.cache.LocalCache;
+import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.message.KapuaMessage;
@@ -67,6 +68,8 @@ import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.codahale.metrics.Counter;
+
 /**
  * Message store facade
  *
@@ -76,6 +79,10 @@ import org.slf4j.LoggerFactory;
 public final class MessageStoreFacade {
 
     private static final Logger logger = LoggerFactory.getLogger(MessageStoreFacade.class);
+
+    private final Counter metricMessagesAlreadyInTheDatastoreCount;
+
+    private static final String METRIC_COMPONENT_NAME = "datastore";
 
     private final MessageStoreMediator mediator;
     private final ConfigurationProvider configProvider;
@@ -94,6 +101,8 @@ public final class MessageStoreFacade {
         configProvider = confProvider;
         this.mediator = mediator;
         client = DatastoreClientFactory.getInstance();
+        MetricsService metricService = MetricServiceFactory.getInstance();
+        metricMessagesAlreadyInTheDatastoreCount = metricService.getCounter(METRIC_COMPONENT_NAME, "datastore", "store", "messages", "already_in_the_datastore", "count");
     }
 
     /**
@@ -105,13 +114,14 @@ public final class MessageStoreFacade {
      * @throws ConfigurationException
      * @throws ClientException
      */
-    public InsertResponse store(KapuaMessage<?, ?> message)
+    public InsertResponse store(KapuaMessage<?, ?> message, String messageId, boolean newInsert)
             throws KapuaIllegalArgumentException,
             ConfigurationException,
             ClientException {
         ArgumentValidator.notNull(message, "message");
         ArgumentValidator.notNull(message.getScopeId(), "scopeId");
         ArgumentValidator.notNull(message.getReceivedOn(), "receivedOn");
+        ArgumentValidator.notNull(messageId, "messageId");
 
         // Collect context data
         MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(message.getScopeId());
@@ -144,13 +154,23 @@ public final class MessageStoreFacade {
         Date indexedOnDate = new Date(indexedOn);
         String indexName = schemaMetadata.getDataIndexName();
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MessageSchema.MESSAGE_TYPE_NAME);
+
+        if (!newInsert) {
+            DatastoreMessage datastoreMessage = find(message.getScopeId(), new StorableIdImpl(messageId), StorableFetchStyle.SOURCE_SELECT);
+            if (datastoreMessage != null) {
+                logger.debug("Message with datatstore id '{}' already found", messageId);
+                metricMessagesAlreadyInTheDatastoreCount.inc();
+                return new InsertResponse(messageId, typeDescriptor);
+            }
+        }
+
         // Save message (the big one)
-        DatastoreMessage messageToStore = convertTo(message);
+        DatastoreMessage messageToStore = convertTo(message, messageId);
         messageToStore.setTimestamp(indexedOnDate);
-        InsertRequest insertRequest = new InsertRequest(typeDescriptor, messageToStore);
+        InsertRequest insertRequest = new InsertRequest(messageToStore.getDatastoreId().toString(), typeDescriptor, messageToStore);
         // Possibly update the schema with new metric mappings
         Map<String, Metric> metrics = new HashMap<>();
-        if (message.getPayload()!=null && message.getPayload().getMetrics()!=null && message.getPayload().getMetrics().size()>0) {
+        if (message.getPayload() != null && message.getPayload().getMetrics() != null && message.getPayload().getMetrics().size() > 0) {
             Map<String, Object> messageMetrics = message.getPayload().getMetrics();
             Iterator<String> metricsIterator = messageMetrics.keySet().iterator();
             while (metricsIterator.hasNext()) {
@@ -501,7 +521,7 @@ public final class MessageStoreFacade {
      * 
      * @param message
      */
-    private DatastoreMessage convertTo(KapuaMessage<?, ?> message) {
+    private DatastoreMessage convertTo(KapuaMessage<?, ?> message, String messageId) {
         DatastoreMessage datastoreMessage = new DatastoreMessageImpl();
         datastoreMessage.setCapturedOn(message.getCapturedOn());
         datastoreMessage.setChannel(message.getChannel());
@@ -515,8 +535,8 @@ public final class MessageStoreFacade {
         datastoreMessage.setSentOn(message.getSentOn());
 
         // generate uuid
-        String id = UUID.randomUUID().toString();
-        datastoreMessage.setDatastoreId(new StorableIdImpl(id));
+        datastoreMessage.setId(message.getId());
+        datastoreMessage.setDatastoreId(new StorableIdImpl(messageId));
         return datastoreMessage;
     }
 

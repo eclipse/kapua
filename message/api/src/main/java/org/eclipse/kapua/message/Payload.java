@@ -13,6 +13,8 @@ package org.eclipse.kapua.message;
 
 import org.eclipse.kapua.message.xml.MessageXmlRegistry;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -21,6 +23,6 @@ import javax.xml.bind.annotation.XmlType;
  * @since 1.0
  */
 @XmlType(factoryClass = MessageXmlRegistry.class, factoryMethod = "newPayload") //
-public interface Payload {
+public interface Payload extends Serializable {
 
 }

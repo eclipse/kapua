@@ -102,7 +102,7 @@ public class MetricInfoRegistryFacade {
                 Metadata metadata = mediator.getMetadata(metricInfo.getScopeId(), metricInfo.getFirstMessageOn().getTime());
                 String kapuaIndexName = metadata.getRegistryIndexName();
 
-                UpdateRequest request = new UpdateRequest(new TypeDescriptor(metadata.getRegistryIndexName(), MetricInfoSchema.METRIC_TYPE_NAME), metricInfo.getId().toString(), metricInfo);
+                UpdateRequest request = new UpdateRequest(metricInfo.getId().toString(), new TypeDescriptor(metadata.getRegistryIndexName(), MetricInfoSchema.METRIC_TYPE_NAME), metricInfo);
                 response = client.upsert(request);
 
                 if (!metricInfoId.equals(response.getId())) {
@@ -149,7 +149,7 @@ public class MetricInfoRegistryFacade {
                 performUpdate = true;
                 Metadata metadata = mediator.getMetadata(metricInfo.getScopeId(), metricInfo.getFirstMessageOn().getTime());
                 bulkRequest.add(
-                        new UpdateRequest(new TypeDescriptor(metadata.getRegistryIndexName(), MetricInfoSchema.METRIC_TYPE_NAME), metricInfo.getId().toString(), metricInfo));
+                        new UpdateRequest(metricInfo.getId().toString(), new TypeDescriptor(metadata.getRegistryIndexName(), MetricInfoSchema.METRIC_TYPE_NAME), metricInfo));
             }
         }
 

@@ -43,6 +43,9 @@ public enum ClientErrorCodes implements KapuaErrorCode {
     /**
      * Error on performed action
      */
-    ACTION_ERROR
-
+    ACTION_ERROR,
+    /**
+     * Error on communication with the underlying datastore layer (timeout, no node available ...)
+     */
+    COMMUNICATION_ERROR
 }

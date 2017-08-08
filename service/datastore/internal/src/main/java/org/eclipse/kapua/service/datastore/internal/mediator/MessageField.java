@@ -21,6 +21,10 @@ import org.eclipse.kapua.service.datastore.model.query.StorableField;
  */
 public enum MessageField implements StorableField {
     /**
+     * Message identifier
+     */
+    MESSAGE_ID(MessageSchema.MESSAGE_ID),
+    /**
      * Account identifier
      */
     SCOPE_ID(MessageSchema.MESSAGE_SCOPE_ID),
