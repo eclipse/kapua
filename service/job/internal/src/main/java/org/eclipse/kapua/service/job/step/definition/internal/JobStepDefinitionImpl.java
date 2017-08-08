@@ -15,12 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Basic;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -60,8 +62,9 @@ public class JobStepDefinitionImpl extends AbstractKapuaNamedEntity implements J
     @Column(name = "writer_name", nullable = false, updatable = false)
     private String writerName;
 
-    @Transient
-    private List<JobStepProperty> jobStepProperties;
+    @ElementCollection
+    @CollectionTable(name = "job_job_step_definition_properties", joinColumns = @JoinColumn(name = "step_definition_id", referencedColumnName = "id"))
+    private List<JobStepPropertyImpl> jobStepProperties;
 
     public JobStepDefinitionImpl() {
     }
@@ -122,7 +125,8 @@ public class JobStepDefinitionImpl extends AbstractKapuaNamedEntity implements J
     }
 
     @Override
-    public List<JobStepProperty> getStepProperties() {
+    @SuppressWarnings("unchecked")
+    public List<JobStepPropertyImpl> getStepProperties() {
         if (jobStepProperties == null) {
             jobStepProperties = new ArrayList<>();
         }
@@ -132,7 +136,11 @@ public class JobStepDefinitionImpl extends AbstractKapuaNamedEntity implements J
 
     @Override
     public void setStepProperties(List<JobStepProperty> jobStepProperties) {
-        this.jobStepProperties = jobStepProperties;
+        this.jobStepProperties = new ArrayList<>();
+
+        for (JobStepProperty sp : jobStepProperties) {
+            this.jobStepProperties.add(JobStepPropertyImpl.parse(sp));
+        }
 
     }
 
