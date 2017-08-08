@@ -247,9 +247,9 @@ public class XmlUtil {
     }
 
     /**
-     * Get the jaxb context for the provided class
+     * Get the default JAXB context available.
      *
-     * @return
+     * @return The default JAXB context available.
      * @throws JAXBException
      */
     private static JAXBContext get() throws JAXBException {
