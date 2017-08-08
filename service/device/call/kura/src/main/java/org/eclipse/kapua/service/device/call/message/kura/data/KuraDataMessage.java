@@ -24,10 +24,6 @@ public class KuraDataMessage extends KuraMessage<KuraDataChannel, KuraDataPayloa
 
     private static final long serialVersionUID = 1L;
 
-    protected KuraDataChannel channel;
-    protected Date timestamp;
-    protected KuraDataPayload payload;
-
     /**
      * Constructor
      */
@@ -49,38 +45,4 @@ public class KuraDataMessage extends KuraMessage<KuraDataChannel, KuraDataPayloa
         this.payload = payload;
     }
 
-    @Override
-    public KuraDataChannel getChannel() {
-        return channel;
-    }
-
-    @Override
-    public KuraDataPayload getPayload() {
-        return payload;
-    }
-
-    @Override
-    public Date getTimestamp() {
-        return timestamp;
-    }
-
-    @Override
-    public void setChannel(KuraDataChannel channel) {
-        this.channel = channel;
-    }
-
-    @Override
-    public void setPayload(KuraDataPayload payload) {
-        this.payload = payload;
-    }
-
-    /**
-     * Set the message timestamp
-     * 
-     * @param timestamp
-     */
-    @Override
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
-    }
 }
