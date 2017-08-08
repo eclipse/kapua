@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+    Copyright (c) 2017 Eurotech and/or its affiliates and others
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -9,26 +9,18 @@
 
     Contributors:
         Eurotech - initial API and implementation
-        Red Hat Inc
--->
+ -->
 <assembly
     xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
 
-    <id>kapua-broker</id>
+    <id>kapua-broker-service</id>
 
     <formats>
         <format>tar.gz</format>
     </formats>
 
-    <files>
-        <file>
-            <source>src/main/resources/run-broker</source>
-            <outputDirectory>/</outputDirectory>
-            <fileMode>0755</fileMode>
-        </file>
-    </files>
     <fileSets>
         <!-- Expanded ActiveMQ Runtime -->
         <fileSet>
@@ -164,7 +156,6 @@
             <includes>
                 <include>com.google.guava:guava</include>
                 <include>com.google.inject:guice</include>
-                <include>com.google.inject.extensions:guice-multibindings</include>
                 <include>javax.inject:javax.inject</include>
                 <include>aopalliance:aopalliance</include>
                 <include>org.eclipse.persistence:javax.persistence</include>
@@ -219,59 +210,6 @@
                 <include>org.apache.commons:commons-lang3</include>
                 <include>org.liquibase:liquibase-core</include>
                 <include>org.yaml:snakeyaml</include>
-
-                <include>${pom.groupId}:kapua-commons</include>
-                <include>${pom.groupId}:kapua-foreignkeys</include>
-                <include>${pom.groupId}:kapua-service-api</include>
-                <include>${pom.groupId}:kapua-liquibase</include>
-                <include>${pom.groupId}:kapua-guice</include>
-                <include>${pom.groupId}:kapua-broker-core</include>
-                <include>${pom.groupId}:kapua-message-api</include>
-                <include>${pom.groupId}:kapua-message-internal</include>
-                <include>${pom.groupId}:kapua-security-authentication-api</include>
-                <include>${pom.groupId}:kapua-security-authorization-api</include>
-                <include>${pom.groupId}:kapua-security-certificate-api</include>
-                <include>${pom.groupId}:kapua-security-certificate-internal</include>
-                <include>${pom.groupId}:kapua-security-shiro</include>
-                <include>${pom.groupId}:kapua-device-call-api</include>
-                <include>${pom.groupId}:kapua-device-call-kura</include>
-                <include>${pom.groupId}:kapua-device-asset-api</include>
-                <include>${pom.groupId}:kapua-device-asset-internal</include>
-                <include>${pom.groupId}:kapua-device-api</include>
-                <include>${pom.groupId}:kapua-device-bundle-api</include>
-                <include>${pom.groupId}:kapua-device-bundle-internal</include>
-                <include>${pom.groupId}:kapua-device-command-api</include>
-                <include>${pom.groupId}:kapua-device-command-internal</include>
-                <include>${pom.groupId}:kapua-device-commons</include>
-                <include>${pom.groupId}:kapua-device-configuration-api</include>
-                <include>${pom.groupId}:kapua-device-configuration-internal</include>
-                <include>${pom.groupId}:kapua-device-packages-api</include>
-                <include>${pom.groupId}:kapua-device-packages-internal</include>
-                <include>${pom.groupId}:kapua-device-registry-api</include>
-                <include>${pom.groupId}:kapua-device-registry-internal</include>
-                <include>${pom.groupId}:kapua-device-request-api</include>
-                <include>${pom.groupId}:kapua-device-request-internal</include>
-                <include>${pom.groupId}:kapua-device-asset-api</include>
-                <include>${pom.groupId}:kapua-device-asset-internal</include>
-                <include>${pom.groupId}:kapua-tag-api</include>
-                <include>${pom.groupId}:kapua-tag-internal</include>
-                <include>${pom.groupId}:kapua-sso-jwt</include>
-                <include>${pom.groupId}:kapua-user-api</include>
-                <include>${pom.groupId}:kapua-user-internal</include>
-                <include>${pom.groupId}:kapua-datastore-api</include>
-                <include>${pom.groupId}:kapua-datastore-client-api</include>
-                <include>${pom.groupId}:kapua-datastore-client-transport</include>
-                <include>${pom.groupId}:kapua-datastore-client-rest</include>
-                <include>${pom.groupId}:kapua-datastore-internal</include>
-                <include>${pom.groupId}:kapua-account-api</include>
-                <include>${pom.groupId}:kapua-account-internal</include>
-                <include>${pom.groupId}:kapua-translator-api</include>
-                <include>${pom.groupId}:kapua-translator-kapua-kura</include>
-                <include>${pom.groupId}:kapua-translator-kura-jms</include>
-                <include>${pom.groupId}:kapua-translator-kura-mqtt</include>
-                <include>${pom.groupId}:kapua-transport-api</include>
-                <include>${pom.groupId}:kapua-transport-jms</include>
-                <include>${pom.groupId}:kapua-transport-mqtt</include>
             </includes>
         </dependencySet>
         

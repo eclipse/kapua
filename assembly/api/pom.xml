@@ -413,6 +413,7 @@
                                             <SQL_DB_ADDR>\${DB_PORT_3306_TCP_ADDR}</SQL_DB_ADDR>
                                             <DATASTORE_PORT>\${ES_PORT_9200_TCP_PORT}</DATASTORE_PORT>
                                             <DATASTORE_ADDR>\${ES_PORT_9200_TCP_ADDR}</DATASTORE_ADDR>
+                                            <SERVICE_BROKER_ADDR>tcp://\${SERVICE_PORT_61619_TCP_ADDR}:\${SERVICE_PORT_61619_TCP_PORT}</SERVICE_BROKER_ADDR>
                                             <DATASTORE_CLIENT>org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient</DATASTORE_CLIENT>
                                             <JAVA_OPTS>
                                                 -Dcommons.db.connection.host=\${SQL_DB_ADDR} \
@@ -421,6 +422,7 @@
                                                 -Ddatastore.elasticsearch.nodes=\${DATASTORE_ADDR} \
                                                 -Ddatastore.elasticsearch.port=\${DATASTORE_PORT} \
                                                 -Ddatastore.client.class=\${DATASTORE_CLIENT} \
+                                                -Dcommons.eventbus.url=\${SERVICE_BROKER_ADDR} \
                                                 -Dcertificate.jwt.private.key=file:///home/kapua/key.pk8 \
                                                 -Dcertificate.jwt.certificate=file:///home/kapua/cert.pem
                                             </JAVA_OPTS>
