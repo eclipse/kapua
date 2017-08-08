@@ -36,7 +36,7 @@ import java.util.Map;
 public class GwtConsoleServiceImpl extends KapuaRemoteServiceServlet implements GwtConsoleService {
 
     @Override
-    public List<MainViewDescriptor> getCustomEntityViews() {
+    public List<MainViewDescriptor> getCustomEntityViews() throws GwtKapuaException {
         ServletContext context = getServletContext();
         List<MainViewDescriptor> views = new ArrayList<MainViewDescriptor>();
         try {
@@ -45,20 +45,20 @@ public class GwtConsoleServiceImpl extends KapuaRemoteServiceServlet implements 
                 views.add((MainViewDescriptor) Class.forName(viewDescriptorClass).newInstance());
             }
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            KapuaExceptionHandler.handle(e);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            KapuaExceptionHandler.handle(e);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            KapuaExceptionHandler.handle(e);
         } catch (IOException e) {
-            e.printStackTrace();
+            KapuaExceptionHandler.handle(e);
         }
         Collections.sort(views);
         return views;
     }
 
     @Override
-    public List<TabDescriptor> getCustomTabsForView(String viewClass) {
+    public List<TabDescriptor> getCustomTabsForView(String viewClass) throws GwtKapuaException {
         ServletContext context = getServletContext();
         List<TabDescriptor> tabs = new ArrayList<TabDescriptor>();
         try {
@@ -70,13 +70,13 @@ public class GwtConsoleServiceImpl extends KapuaRemoteServiceServlet implements 
                 }
             }
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            KapuaExceptionHandler.handle(e);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            KapuaExceptionHandler.handle(e);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            KapuaExceptionHandler.handle(e);
         } catch (IOException e) {
-            e.printStackTrace();
+            KapuaExceptionHandler.handle(e);
         }
         Collections.sort(tabs);
         return tabs;

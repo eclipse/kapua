@@ -23,9 +23,11 @@ import java.util.List;
 
 @RemoteServiceRelativePath("console")
 public interface GwtConsoleService extends RemoteService {
-    List<MainViewDescriptor> getCustomEntityViews();
+    List<MainViewDescriptor> getCustomEntityViews()
+            throws GwtKapuaException;
 
-    List<TabDescriptor> getCustomTabsForView(String viewClass);
+    List<TabDescriptor> getCustomTabsForView(String viewClass)
+            throws GwtKapuaException;
 
     void updateComponentConfiguration(GwtXSRFToken xsrfToken, String scopeId, String parentScopeId, GwtConfigComponent configComponent)
             throws GwtKapuaException;
