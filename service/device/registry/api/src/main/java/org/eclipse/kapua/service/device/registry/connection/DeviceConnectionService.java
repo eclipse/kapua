@@ -16,6 +16,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
+import org.eclipse.kapua.service.event.KapuaEventBusListener;
 import org.eclipse.kapua.service.event.KapuaServiceEventListener;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
@@ -27,6 +28,7 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
  */
 public interface DeviceConnectionService extends KapuaEntityService<DeviceConnection, DeviceConnectionCreator>,
         KapuaUpdatableEntityService<DeviceConnection>,
+        KapuaEventBusListener, 
         KapuaServiceEventListener, 
         KapuaConfigurableService {
 

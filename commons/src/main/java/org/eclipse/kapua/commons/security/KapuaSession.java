@@ -37,7 +37,7 @@ public class KapuaSession implements Serializable {
     static {
         TRUSTED_CLASSES.add("org.eclipse.kapua.broker.core.plugin.KapuaSecurityContext.<init>");
         TRUSTED_CLASSES.add("org.eclipse.kapua.commons.security.KapuaSecurityUtils.doPrivileged");
-        TRUSTED_CLASSES.add("org.eclipse.kapua.commons.event.bus.jms.JMSEventbus.setSession");
+        TRUSTED_CLASSES.add("org.eclipse.kapua.commons.event.bus.jms.JMSEventBus.setSession");
     }
 
     /**

@@ -53,7 +53,9 @@
                 <virtualDestinations>
                     <compositeQueue name="events.account">
                         <forwardTo>
+                            <!-- internal queue -->
                             <queue physicalName="events.account.account" />
+                            <!-- user us -->
                             <queue physicalName="events.account.user" />
                             <!-- device registry us -->
                             <queue physicalName="events.account.deviceregistry" />
@@ -66,7 +68,6 @@
                             <!-- authentication us -->
                             <queue physicalName="events.account.credential" />
                             <queue physicalName="events.account.accesstoken" />
-
                         </forwardTo>
                     </compositeQueue>
                 </virtualDestinations>
@@ -75,8 +76,10 @@
                 <virtualDestinations>
                     <compositeQueue name="events.authorization">
                         <forwardTo>
+                            <!-- internal queue -->
                             <queue physicalName="events.authorization.authorization" />
-                            <queue physicalName="events.authorization.deviceregistry" />
+                            <!-- device registry us -->
+                            <queue physicalName="events.group.deviceregistry" />
                         </forwardTo>
                     </compositeQueue>
                 </virtualDestinations>
@@ -85,9 +88,12 @@
                 <virtualDestinations>
                     <compositeQueue name="events.user">
                         <forwardTo>
+                            <!-- internal queue -->
                             <queue physicalName="events.user.user" />
+                            <!-- authentication us -->
                             <queue physicalName="events.user.credential" />
                             <queue physicalName="events.user.accesstoken" />
+                            <!-- authorization us -->
                             <queue physicalName="events.user.accessinfo" />
                         </forwardTo>
                     </compositeQueue>

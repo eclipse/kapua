@@ -45,8 +45,8 @@ public enum KapuaAuthenticationSettingKeys implements SettingKey {
     AUTHENTICATION_CREDENTIAL_APIKEY_CACHE_TTL("authentication.credential.apiKey.cache.ttl"), //
 
     //event queues
-    AUTHENTICATION_PUBLISH_INTERNAL_EVENT_ADDRESS("authentication.publishInternalEventAddress"),
     AUTHENTICATION_INTERNAL_EVENT_ADDRESS("authentication.internalEventAddress"),
+    AUTHENTICATION_SERVICES_NAMES("authentication.servicesNames"),
     USER_ACCESS_TOKEN_UPSTREAM_EVENT_ADDRESS("authentication.user.access_token.upstreamEventAddress"),
     USER_CREDENTIAL_UPSTREAM_EVENT_ADDRESS("authentication.user.credential.upstreamEventAddress"),
     ACCOUNT_ACCESS_TOKEN_UPSTREAM_EVENT_ADDRESS("authentication.account.access_token.upstreamEventAddress"),

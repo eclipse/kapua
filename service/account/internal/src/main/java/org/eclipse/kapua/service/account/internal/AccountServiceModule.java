@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -20,17 +21,27 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.core.ServiceModule;
 import org.eclipse.kapua.commons.event.bus.EventBusManager;
 import org.eclipse.kapua.commons.event.service.EventStoreHouseKeeperJob;
-import org.eclipse.kapua.commons.event.service.internal.KapuaEventStoreServiceImpl;
+import org.eclipse.kapua.commons.event.service.internal.ServiceMap;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.account.internal.setting.KapuaAccountSetting;
 import org.eclipse.kapua.service.account.internal.setting.KapuaAccountSettingKeys;
 import org.eclipse.kapua.service.event.KapuaEventBus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @KapuaProvider
 public class AccountServiceModule implements ServiceModule {
 
-    private KapuaEventStoreServiceImpl kapuaEventService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccountServiceModule.class);
+
+    private final static int MAX_WAIT_LOOP_ON_SHUTDOWN = 30;
+    private final static int SCHEDULED_EXECUTION_TIME_WINDOW = 30;
+    private final static long WAIT_TIME = 1000;
+
+    private List<String> servicesNames;
     private ScheduledExecutorService houseKeeperScheduler;
+    private ScheduledFuture<?> houseKeeperHandler;
+    private EventStoreHouseKeeperJob houseKeeperJob;
 
     @Override
     public void start() throws KapuaException {
@@ -39,25 +50,38 @@ public class AccountServiceModule implements ServiceModule {
 
         // No upstream service events to listen to
 
-        // Event store listener
-
-        kapuaEventService = new KapuaEventStoreServiceImpl(AccountEntityManagerFactory.getInstance());
-        //eventStoreListener = new EventStoreListener(kapuaEventService);
-
-        // the event bus implicitly will add event. as prefix for each publish/subscribe
-        String internalEventsAddressSub = KapuaAccountSetting.getInstance().getString(KapuaAccountSettingKeys.ACCOUNT_INTERNAL_EVENT_ADDRESS); 
-        eventbus.subscribe(internalEventsAddressSub, eventStoreListener);
+        //register events to the service map
+        String serviceInternalEventAddress = KapuaAccountSetting.getInstance().getString(KapuaAccountSettingKeys.ACCOUNT_INTERNAL_EVENT_ADDRESS);
+        servicesNames = KapuaAccountSetting.getInstance().getList(String.class, KapuaAccountSettingKeys.ACCOUNT_SERVICES_NAMES);
+        ServiceMap.registerServices(serviceInternalEventAddress, servicesNames);
 
         // Start the House keeper
         houseKeeperScheduler = Executors.newScheduledThreadPool(1);
-        String publishInternalEventsAddress = KapuaAccountSetting.getInstance().getString(KapuaAccountSettingKeys.ACCOUNT_PUBLISH_INTERNAL_EVENT_ADDRESS); //the event bus implicitly will add event. as prefix for each publish/subscribe
-        Runnable houseKeeperJob = new HouseKeeperJob(eventbus, publishInternalEventsAddress);
+        houseKeeperJob = new EventStoreHouseKeeperJob(AccountEntityManagerFactory.getInstance(), eventbus, serviceInternalEventAddress, servicesNames);
         // Start time can be made random from 0 to 30 seconds
-        final ScheduledFuture<?> houseKeeperHandle = houseKeeperScheduler.scheduleAtFixedRate(houseKeeperJob, 30, 30, TimeUnit.SECONDS);
+        houseKeeperHandler = houseKeeperScheduler.scheduleAtFixedRate(houseKeeperJob, SCHEDULED_EXECUTION_TIME_WINDOW, SCHEDULED_EXECUTION_TIME_WINDOW, TimeUnit.SECONDS);
     }
 
     @Override
     public void stop() throws KapuaException {
-        houseKeeperScheduler.shutdown();
+        if (houseKeeperJob!=null) {
+            houseKeeperJob.stop();
+        }
+        int waitLoop = 0;
+        while(houseKeeperHandler.isDone()) {
+            try {
+                Thread.sleep(WAIT_TIME);
+            } catch (InterruptedException e) {
+                //do nothing
+            }
+            if (waitLoop++ > MAX_WAIT_LOOP_ON_SHUTDOWN) {
+                LOGGER.warn("Cannot cancel the house keeper task afeter a while!");
+                break;
+            }
+        }
+        if (houseKeeperScheduler != null) {
+            houseKeeperScheduler.shutdown();
+        }
+        ServiceMap.unregisterServices(servicesNames);
     }
 }

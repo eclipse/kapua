@@ -18,5 +18,10 @@ import org.eclipse.kapua.KapuaException;
  */
 public interface KapuaEventBusListener {
 
+    /**
+     * This method implementation must be thread safe!
+     * @param kapuaEvent
+     * @throws KapuaException
+     */
     public void onKapuaEvent(KapuaEvent kapuaEvent) throws KapuaException;
 }
