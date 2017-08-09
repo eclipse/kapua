@@ -11,6 +11,9 @@
 ###############################################################################
 Feature: User Coupling
 
+  @StartBroker
+  Scenario: Start broker for all scenarios
+
   Scenario: Test LOOSE user coupling on single connection
 
     Given Account
@@ -1642,3 +1645,6 @@ Feature: User Coupling
     And The connection user is "test-user-3"
     Then I stop the simulator
     And I wait for 2 seconds
+
+  @StopBroker
+  Scenario: Stop broker after all scenarios
