@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,59 +11,48 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.event.bus;
 
+import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.event.bus.jms.JMSEventBus;
-import org.eclipse.kapua.service.event.KapuaEvent;
 import org.eclipse.kapua.service.event.KapuaEventBus;
 import org.eclipse.kapua.service.event.KapuaEventBusException;
-import org.eclipse.kapua.service.event.KapuaEventBusListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EventBusManager implements KapuaEventBus {
+public class EventBusManager {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(EventBusManager.class);
 
-    private static EventBusManager instance;
-    private static Throwable initFailureCause;
-
-    private JMSEventBus jmsEventbus;
+    private final static JMSEventBus JMS_EVENT_BUS;
+    private static boolean started;
 
     static {
         try {
-            instance = new EventBusManager();
-        } catch (Throwable e) {
-            LOGGER.error("Error while initializing EventbusProvider", e);
-            instance = null;
-            initFailureCause = e;
+            JMS_EVENT_BUS = new JMSEventBus();
+        } catch (Throwable t) {
+            LOGGER.error("Error while initializing EventbusProvider", t);
+            throw KapuaRuntimeException.internalError(t, "Cannot initialize event bus manager");
         }
     }
 
-    private EventBusManager() throws KapuaEventBusException {
-        jmsEventbus = new JMSEventBus();
+    private EventBusManager() {
+
     }
 
-    public static EventBusManager getInstance() throws KapuaEventBusException {
-        if (initFailureCause != null) {
-            throw new KapuaEventBusException(initFailureCause);
+    public static KapuaEventBus getInstance() throws KapuaEventBusException {
+        if (!started) {
+            throw new KapuaEventBusException("The event bus isn't initialized! Cannot perform any operation!");
         }
-        return instance;
+        return JMS_EVENT_BUS;
     }
 
-    @Override
-    public void publish(String address, KapuaEvent event) throws KapuaEventBusException {
-        jmsEventbus.publish(address, event);
+    public static void start() throws KapuaEventBusException {
+        JMS_EVENT_BUS.start();
+        started = true;
     }
 
-    @Override
-    public void subscribe(String address, KapuaEventBusListener eventListener) throws KapuaEventBusException {
-        jmsEventbus.subscribe(address, eventListener);
+    public static void stop() throws KapuaEventBusException {
+        JMS_EVENT_BUS.stop();
+        started = false;
     }
 
-    public void start() throws KapuaEventBusException {
-        jmsEventbus.start();
-    }
-
-    public void stop() throws KapuaEventBusException {
-        jmsEventbus.stop();
-    }
 }

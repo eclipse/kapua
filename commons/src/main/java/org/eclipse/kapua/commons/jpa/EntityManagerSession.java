@@ -85,7 +85,7 @@ public class EntityManagerSession {
             entityManagerActionCallback.onAction(manager);
 
             if (manager.isTransactionActive()) {
-                KapuaEvent kapuaEvent = appendKapuaEvent(null, manager);
+                appendKapuaEvent(null, manager);
             }
 
             transactionManager.commit(manager);
@@ -138,7 +138,7 @@ public class EntityManagerSession {
             T result = entityManagerResultCallback.onResult(manager);
 
             if (manager.isTransactionActive()) {
-                KapuaEvent kapuaEvent = appendKapuaEvent(result, manager);
+                appendKapuaEvent(result, manager);
             }
 
             transactionManager.commit(manager);
@@ -199,7 +199,7 @@ public class EntityManagerSession {
                     transactionManager.beginTransaction(manager);
                     instance = entityManagerInsertCallback.onInsert(manager);
 
-                    KapuaEvent kapuaEvent = appendKapuaEvent(instance, manager);
+                    appendKapuaEvent(instance, manager);
 
                     transactionManager.commit(manager);
                     succeeded = true;
@@ -240,15 +240,13 @@ public class EntityManagerSession {
         KapuaEvent kapuaEvent = EventScope.get();
 
         if (kapuaEvent!=null && instance instanceof KapuaEntity) {
-            //TODO make sense to override the entity id and type without checking for previous empty values?
+            //make sense to override the entity id and type without checking for previous empty values?
             //override only if parameters are not evaluated
             if (kapuaEvent.getEntityType() == null || kapuaEvent.getEntityType().trim().length()<=0) {
-                //TODO remove log after test
                 logger.debug("Kapua event - update entity type to '{}'", instance.getClass().getName());
                 kapuaEvent.setEntityType(instance.getClass().getName());
             }
             if (kapuaEvent.getEntityId()==null) {
-                //TODO remove log after test  
                 logger.debug("Kapua event - update entity id to '{}'", ((KapuaEntity) instance).getId());
                 kapuaEvent.setEntityId(((KapuaEntity) instance).getId());
             }

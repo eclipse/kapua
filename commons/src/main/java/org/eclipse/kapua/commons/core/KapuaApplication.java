@@ -30,7 +30,7 @@ public class KapuaApplication {
         logger.info("Starting up...");
 
         logger.info("Startup Kapua Eventbus...");
-        EventBusManager.getInstance().start();
+        EventBusManager.start();
 
         logger.info("Startup Kapua Service Modules...");
         ServiceModuleProvider moduleProvider = ServiceModuleLocator.getModuleProvider();
@@ -59,7 +59,7 @@ public class KapuaApplication {
         }
 
         logger.info("Shutdown Kapua Eventbus...");
-        EventBusManager.getInstance().stop();
+        EventBusManager.stop();
 
         logger.info("Shutdown...DONE");
     }

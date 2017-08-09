@@ -19,6 +19,8 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -74,16 +76,16 @@ public class KapuaEventImpl extends AbstractKapuaUpdatableEntity implements Kapu
     @Column(name = "outputs", nullable = true, updatable = true)
     private String outputs;
 
-    @Basic
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = true, updatable = true)
-    private String status;
+    private EventStatus status;
 
     @Basic
     @Column(name = "note", nullable = true, updatable = true)
     private String note;
 
     public KapuaEventImpl() {
-        status = EVENT_STATUS.FIRED.name();
+        status = EventStatus.TRIGGERED;
     }
 
     public KapuaEventImpl(KapuaId scopeId) {
@@ -189,12 +191,12 @@ public class KapuaEventImpl extends AbstractKapuaUpdatableEntity implements Kapu
     }
 
     @Override
-    public String getStatus() {
+    public EventStatus getStatus() {
         return status;
     }
 
     @Override
-    public void setStatus(String status) {
+    public void setStatus(EventStatus status) {
         this.status = status;
     }
 

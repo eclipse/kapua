@@ -26,8 +26,7 @@ import org.eclipse.kapua.service.KapuaUpdatableEntityService;
  * 
  */
 public interface KapuaEventStoreService extends KapuaEntityService<KapuaEvent, KapuaEventCreator>,
-        KapuaUpdatableEntityService<KapuaEvent>, 
-        KapuaEventBusListener {
+        KapuaUpdatableEntityService<KapuaEvent> {
 
     /**
      * Finds the kapuaEvent by kapuaEvent identifiers
