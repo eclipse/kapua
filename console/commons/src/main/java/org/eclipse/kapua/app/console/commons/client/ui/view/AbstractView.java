@@ -11,10 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.commons.client.ui.view;
 
-import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
 
-public abstract class AbstractView extends ContentPanel implements View {
+public abstract class AbstractView extends LayoutContainer implements View {
 
     protected GwtSession currentSession;
 

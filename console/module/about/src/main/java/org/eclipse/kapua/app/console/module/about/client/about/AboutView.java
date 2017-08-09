@@ -59,8 +59,8 @@ public class AboutView extends AbstractView implements View {
 
     public AboutView() {
         setBorders(false);
-        setBodyBorder(false);
-        setHeaderVisible(false);
+//        setBodyBorder(false);
+//        setHeaderVisible(false);
     }
 
     public static String getName() {
