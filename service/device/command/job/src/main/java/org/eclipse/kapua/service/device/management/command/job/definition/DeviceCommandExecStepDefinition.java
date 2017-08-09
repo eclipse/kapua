@@ -21,7 +21,6 @@ import org.eclipse.kapua.service.job.commons.step.definition.AbstractTargetJobSt
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionFactory;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
-import org.eclipse.kapua.service.job.step.definition.JobStepType;
 
 public class DeviceCommandExecStepDefinition extends AbstractTargetJobStepDefinition implements JobStepDefinition {
 
@@ -36,37 +35,13 @@ public class DeviceCommandExecStepDefinition extends AbstractTargetJobStepDefini
     }
 
     @Override
-    public void setName(String name) {
-    }
-
-    @Override
     public String getDescription() {
-        return null;
-    }
-
-    @Override
-    public void setDescription(String description) {
-    }
-
-    @Override
-    public void setStepType(JobStepType jobStepType) {
-    }
-
-    @Override
-    public void setReaderName(String readerName) {
+        return "Execution of a command using the Device Command Management Service";
     }
 
     @Override
     public String getProcessorName() {
         return DeviceCommandTargetProcessor.class.getName();
-    }
-
-    @Override
-    public void setProcessorName(String processorName) {
-    }
-
-    @Override
-    public void setWriterName(String writesName) {
     }
 
     @Override
@@ -84,9 +59,4 @@ public class DeviceCommandExecStepDefinition extends AbstractTargetJobStepDefini
 
         return Arrays.asList(propertyCommandInput, propertyTimeout);
     }
-
-    @Override
-    public void setStepProperties(List<JobStepProperty> jobStepProperties) {
-    }
-
 }

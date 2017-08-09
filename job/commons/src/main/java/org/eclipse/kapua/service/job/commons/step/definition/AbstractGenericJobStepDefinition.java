@@ -14,13 +14,13 @@ package org.eclipse.kapua.service.job.commons.step.definition;
 import java.util.List;
 
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
-import org.eclipse.kapua.service.job.commons.operation.DefaultTargetReader;
-import org.eclipse.kapua.service.job.commons.operation.DefaultTargetWriter;
+import org.eclipse.kapua.service.job.commons.operation.DefaultGenericReader;
+import org.eclipse.kapua.service.job.commons.operation.DefaultGenericWriter;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 import org.eclipse.kapua.service.job.step.definition.JobStepType;
 
-public abstract class AbstractTargetJobStepDefinition extends AbstractKapuaUpdatableEntity implements JobStepDefinition {
+public abstract class AbstractGenericJobStepDefinition extends AbstractKapuaUpdatableEntity implements JobStepDefinition {
 
     private static final long serialVersionUID = 474195961081702478L;
 
@@ -33,7 +33,7 @@ public abstract class AbstractTargetJobStepDefinition extends AbstractKapuaUpdat
 
     @Override
     public JobStepType getStepType() {
-        return JobStepType.TARGET;
+        return JobStepType.GENERIC;
     }
 
     @Override
@@ -42,7 +42,7 @@ public abstract class AbstractTargetJobStepDefinition extends AbstractKapuaUpdat
 
     @Override
     public String getReaderName() {
-        return DefaultTargetReader.class.getName();
+        return DefaultGenericReader.class.getName();
     }
 
     @Override
@@ -55,7 +55,7 @@ public abstract class AbstractTargetJobStepDefinition extends AbstractKapuaUpdat
 
     @Override
     public String getWriterName() {
-        return DefaultTargetWriter.class.getName();
+        return DefaultGenericWriter.class.getName();
     }
 
     @Override
