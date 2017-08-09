@@ -52,7 +52,6 @@ import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 import com.ibm.jbatch.container.jsl.ExecutionElement;
 import com.ibm.jbatch.container.jsl.ModelSerializer;
 import com.ibm.jbatch.container.jsl.ModelSerializerFactory;
-import com.ibm.jbatch.jsl.model.Batchlet;
 import com.ibm.jbatch.jsl.model.Chunk;
 import com.ibm.jbatch.jsl.model.ItemProcessor;
 import com.ibm.jbatch.jsl.model.ItemReader;
@@ -123,7 +122,7 @@ public class JobRuntime implements KapuaService {
                 JobStepDefinition jobStepDefinition = STEP_DEFINITION_SERVICE.find(jobStep.getScopeId(), jobStep.getJobStepDefinitionId());
                 switch (jobStepDefinition.getStepType()) {
                 case GENERIC:
-                    jslStep.setBatchlet(buildBatchletStep(jobStepDefinition));
+                    jslStep.setChunk(buildGenericStep(jobStepDefinition));
                     break;
                 case TARGET:
                     jslStep.setChunk(buildChunkStep(jobStepDefinition));
@@ -246,12 +245,8 @@ public class JobRuntime implements KapuaService {
         return customStepProperties.values();
     }
 
-    private static Batchlet buildBatchletStep(JobStepDefinition jobStepDefinition) {
-        Batchlet batchlet = new Batchlet();
-
-        batchlet.setRef(jobStepDefinition.getProcessorName());
-
-        return batchlet;
+    private static Chunk buildGenericStep(JobStepDefinition jobStepDefinition) {
+        return buildChunkStep(jobStepDefinition);
     }
 
     private static Chunk buildChunkStep(JobStepDefinition jobStepDefinition) {
@@ -268,6 +263,7 @@ public class JobRuntime implements KapuaService {
         ItemWriter itemWriter = new ItemWriter();
         itemWriter.setRef(jobStepDefinition.getWriterName());
         chunk.setWriter(itemWriter);
+
         return chunk;
     }
 }
