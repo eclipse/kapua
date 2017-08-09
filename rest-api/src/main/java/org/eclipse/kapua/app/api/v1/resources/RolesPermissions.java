@@ -76,7 +76,7 @@ public class RolesPermissions extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Gets the RolePermission list in the scope", notes = "Returns the list of all the rolePermissions associated to the current selected scope.", response = RolePermissionListResult.class)
+    @ApiOperation(nickname = "rolePermissionSimpleQuery", value = "Gets the RolePermission list in the scope", notes = "Returns the list of all the rolePermissions associated to the current selected scope.", response = RolePermissionListResult.class)
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public RolePermissionListResult simpleQuery(
@@ -118,7 +118,7 @@ public class RolesPermissions extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Queries the RolePermissions", notes = "Queries the RolePermissions with the given RolePermissionQuery parameter returning all matching RolePermissions", response = RolePermissionListResult.class)
+    @ApiOperation(nickname = "rolePermissionQuery", value = "Queries the RolePermissions", notes = "Queries the RolePermissions with the given RolePermissionQuery parameter returning all matching RolePermissions", response = RolePermissionListResult.class)
     @POST
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -152,7 +152,7 @@ public class RolesPermissions extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Counts the RolePermissions", notes = "Counts the RolePermissions with the given RolePermissionQuery parameter returning the number of matching RolePermissions", response = CountResult.class)
+    @ApiOperation(nickname = "rolePermissionCount", value = "Counts the RolePermissions", notes = "Counts the RolePermissions with the given RolePermissionQuery parameter returning the number of matching RolePermissions", response = CountResult.class)
     @POST
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -182,7 +182,7 @@ public class RolesPermissions extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Create a RolePermission", notes = "Creates a new RolePermission based on the information provided in RolePermissionCreator parameter.", response = RolePermission.class)
+    @ApiOperation(nickname = "rolePermissionCreate", value = "Create a RolePermission", notes = "Creates a new RolePermission based on the information provided in RolePermissionCreator parameter.", response = RolePermission.class)
     @POST
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -210,7 +210,7 @@ public class RolesPermissions extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Get a RolePermission", notes = "Returns the RolePermission specified by the \"rolePermissionId\" path parameter.", response = RolePermission.class)
+    @ApiOperation(nickname = "rolePermissionFind", value = "Get a RolePermission", notes = "Returns the RolePermission specified by the \"rolePermissionId\" path parameter.", response = RolePermission.class)
     @GET
     @Path("{rolePermissionId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -251,7 +251,7 @@ public class RolesPermissions extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Delete an RolePermission", notes = "Deletes the RolePermission specified by the \"rolePermissionId\" path parameter.")
+    @ApiOperation(nickname = "rolePermissionDelete", value = "Delete an RolePermission", notes = "Deletes the RolePermission specified by the \"rolePermissionId\" path parameter.")
     @DELETE
     @Path("{rolePermissionId}")
     public Response deleteRolePermission(

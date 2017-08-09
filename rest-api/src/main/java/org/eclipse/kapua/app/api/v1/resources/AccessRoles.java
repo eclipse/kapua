@@ -66,7 +66,7 @@ public class AccessRoles extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Gets the AccessRole list in the scope", notes = "Returns the list of all the accessRoles associated to the current selected scope.", response = AccessRoleListResult.class)
+    @ApiOperation(nickname = "accessRoleSimpleQuery", value = "Gets the AccessRole list in the scope", notes = "Returns the list of all the accessRoles associated to the current selected scope.", response = AccessRoleListResult.class)
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public AccessRoleListResult simpleQuery(
@@ -96,7 +96,7 @@ public class AccessRoles extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Queries the AccessRoles", notes = "Queries the AccessRoles with the given AccessRoleQuery parameter returning all matching AccessRoles", response = AccessRoleListResult.class)
+    @ApiOperation(nickname = "accessRoleQuery", value = "Queries the AccessRoles", notes = "Queries the AccessRoles with the given AccessRoleQuery parameter returning all matching AccessRoles", response = AccessRoleListResult.class)
     @POST
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -124,7 +124,7 @@ public class AccessRoles extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Counts the AccessRoles", notes = "Counts the AccessRoles with the given AccessRoleQuery parameter returning the number of matching AccessRoles", response = CountResult.class)
+    @ApiOperation(nickname = "accessRoleCount", value = "Counts the AccessRoles", notes = "Counts the AccessRoles with the given AccessRoleQuery parameter returning the number of matching AccessRoles", response = CountResult.class)
     @POST
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -153,7 +153,7 @@ public class AccessRoles extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Create an AccessRole", notes = "Creates a new AccessRole based on the information provided in AccessRoleCreator parameter.", response = AccessRole.class)
+    @ApiOperation(nickname = "accessRoleCreate", value = "Create an AccessRole", notes = "Creates a new AccessRole based on the information provided in AccessRoleCreator parameter.", response = AccessRole.class)
     @POST
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -179,7 +179,7 @@ public class AccessRoles extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Get an AccessRole", notes = "Returns the AccessRole specified by the \"accessRoleId\" path parameter.", response = AccessRole.class)
+    @ApiOperation(nickname = "accessRoleFind", value = "Get an AccessRole", notes = "Returns the AccessRole specified by the \"accessRoleId\" path parameter.", response = AccessRole.class)
     @GET
     @Path("{accessRoleId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -216,7 +216,7 @@ public class AccessRoles extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Delete an AccessRole", notes = "Deletes the AccessRole specified by the \"accessRoleId\" path parameter.")
+    @ApiOperation(nickname = "accessRoleDelete", value = "Delete an AccessRole", notes = "Deletes the AccessRole specified by the \"accessRoleId\" path parameter.")
     @DELETE
     @Path("{accessRoleId}")
     public Response deleteAccessRole(

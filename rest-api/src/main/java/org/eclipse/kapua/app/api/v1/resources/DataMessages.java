@@ -89,7 +89,8 @@ public class DataMessages extends AbstractKapuaResource {
      * @since 1.0.0
      */
     @SuppressWarnings("unchecked")
-    @ApiOperation(value = "Gets the DatastoreMessage list in the scope", //
+    @ApiOperation(nickname = "dataMessageSimpleQuery",
+            value = "Gets the DatastoreMessage list in the scope", //
             notes = "Returns the list of all the datastoreMessages associated to the current selected scope.", //
             response = MessageListResult.class)
     @GET
@@ -162,7 +163,8 @@ public class DataMessages extends AbstractKapuaResource {
     @POST
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @ApiOperation(value = "Stores a new KapuaDataMessage", //
+    @ApiOperation(nickname = "dataMessageStore",
+            value = "Stores a new KapuaDataMessage", //
             notes = "Stores a new KapuaDataMessage under the account of the currently connected user. In this case, the provided message will only be stored in the back-end database and it will not be forwarded to the message broker.", //
             response = InsertResponse.class)
     public InsertResponse storeMessage(
@@ -188,7 +190,8 @@ public class DataMessages extends AbstractKapuaResource {
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @ApiOperation(value = "Queries the DatastoreMessages", //
+    @ApiOperation(nickname = "dataMessageQuery",
+            value = "Queries the DatastoreMessages", //
             notes = "Queries the DatastoreMessages with the given DatastoreMessageQuery parameter returning all matching DatastoreMessages",  //
             response = MessageListResult.class)
     public MessageListResult query( //
@@ -215,7 +218,8 @@ public class DataMessages extends AbstractKapuaResource {
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @ApiOperation(value = "Counts the DatastoreMessages", //
+    @ApiOperation(nickname = "dataMessageCount",
+            value = "Counts the DatastoreMessages", //
             notes = "Counts the DatastoreMessages with the given DatastoreMessageQuery parameter returning the number of matching DatastoreMessages", //
             response = CountResult.class)
     public CountResult count( //
@@ -239,7 +243,8 @@ public class DataMessages extends AbstractKapuaResource {
     @GET
     @Path("{datastoreMessageId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @ApiOperation(value = "Gets an DatastoreMessage", //
+    @ApiOperation(nickname = "dataMessageFind",
+            value = "Gets an DatastoreMessage", //
             notes = "Gets the DatastoreMessage specified by the datastoreMessageId path parameter", //
             response = DatastoreMessage.class)
     public DatastoreMessage find( //

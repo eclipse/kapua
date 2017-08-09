@@ -71,7 +71,8 @@ public class DataMetrics extends AbstractKapuaResource {
      * @return The {@link MetricInfoListResult} of all the metricInfos associated to the current selected scope.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Gets the MetricInfo list in the scope", //
+    @ApiOperation(nickname = "dataMetricSimpleQuery",
+            value = "Gets the MetricInfo list in the scope", //
             notes = "Returns the list of all the metricInfos associated to the current selected scope.", //
             response = MetricInfoListResult.class)
     @GET
@@ -121,7 +122,8 @@ public class DataMetrics extends AbstractKapuaResource {
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @ApiOperation(value = "Queries the MetricInfos", //
+    @ApiOperation(nickname = "dataMetricQuery",
+            value = "Queries the MetricInfos", //
             notes = "Queries the MetricInfos with the given MetricInfoQuery parameter returning all matching MetricInfos",  //
             response = MetricInfoListResult.class)
     public MetricInfoListResult query( //
@@ -146,7 +148,8 @@ public class DataMetrics extends AbstractKapuaResource {
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @ApiOperation(value = "Counts the MetricInfos", //
+    @ApiOperation(nickname = "dataMetricCount",
+            value = "Counts the MetricInfos", //
             notes = "Counts the MetricInfos with the given MetricInfoQuery parameter returning the number of matching MetricInfos", //
             response = CountResult.class)
     public CountResult count( //
@@ -167,7 +170,8 @@ public class DataMetrics extends AbstractKapuaResource {
     @GET
     @Path("{metricInfoId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @ApiOperation(value = "Gets an MetricInfo", //
+    @ApiOperation(nickname = "dataMetricFind",
+            value = "Gets an MetricInfo", //
             notes = "Gets the MetricInfo specified by the metricInfoId path parameter", //
             response = MetricInfo.class)
     public MetricInfo find( //

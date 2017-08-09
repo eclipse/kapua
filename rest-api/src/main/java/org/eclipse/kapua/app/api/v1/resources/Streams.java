@@ -88,7 +88,7 @@ public class Streams extends AbstractKapuaResource {
     @Path("messages")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @ApiOperation(value = "Publishes a fire-and-forget message", notes = "Publishes a fire-and-forget message to a topic composed of [account-name] / [client-id] / [semtantic-parts]")
+    @ApiOperation(nickname = "streamPublish", value = "Publishes a fire-and-forget message", notes = "Publishes a fire-and-forget message to a topic composed of [account-name] / [client-id] / [semtantic-parts]")
     public Response publish(
             @ApiParam(value = "The ScopeId of the device", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The timeout of the request execution") @QueryParam("timeout") Long timeout,

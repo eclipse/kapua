@@ -80,7 +80,7 @@ public class Devices extends AbstractKapuaResource {
      * @since 1.0.0
      * 
      */
-    @ApiOperation(value = "Gets the Device list in the scope", notes = "Returns the list of all the devices associated to the current selected scope.", response = DeviceListResult.class)
+    @ApiOperation(nickname = "deviceSimpleQuery", value = "Gets the Device list in the scope", notes = "Returns the list of all the devices associated to the current selected scope.", response = DeviceListResult.class)
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public DeviceListResult simpleQuery(
@@ -123,7 +123,7 @@ public class Devices extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Queries the Devices", notes = "Queries the Devices with the given Devices parameter returning all matching Devices", response = DeviceListResult.class)
+    @ApiOperation(nickname = "deviceQuery", value = "Queries the Devices", notes = "Queries the Devices with the given Devices parameter returning all matching Devices", response = DeviceListResult.class)
     @POST
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -148,7 +148,7 @@ public class Devices extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Counts the Devices", notes = "Counts the Devices with the given DeviceQuery parameter returning the number of matching Devices", response = CountResult.class)
+    @ApiOperation(nickname = "deviceCount", value = "Counts the Devices", notes = "Counts the Devices with the given DeviceQuery parameter returning the number of matching Devices", response = CountResult.class)
     @POST
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -174,7 +174,7 @@ public class Devices extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Create an Device", notes = "Creates a new Device based on the information provided in DeviceCreator parameter.", response = Device.class)
+    @ApiOperation(nickname = "deviceCreate", value = "Create an Device", notes = "Creates a new Device based on the information provided in DeviceCreator parameter.", response = Device.class)
     @POST
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -198,7 +198,7 @@ public class Devices extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Get a Device", notes = "Returns the Device specified by the \"deviceId\" path parameter.", response = Device.class)
+    @ApiOperation(nickname = "deviceFind", value = "Get a Device", notes = "Returns the Device specified by the \"deviceId\" path parameter.", response = Device.class)
     @GET
     @Path("{deviceId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -228,7 +228,7 @@ public class Devices extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Update a Device", notes = "Updates a new Device based on the information provided in the Device parameter.", response = Device.class)
+    @ApiOperation(nickname = "deviceUpdate", value = "Update a Device", notes = "Updates a new Device based on the information provided in the Device parameter.", response = Device.class)
     @PUT
     @Path("{deviceId}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -255,7 +255,7 @@ public class Devices extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Delete a Device", notes = "Deletes the Device specified by the \"deviceId\" path parameter.")
+    @ApiOperation(nickname = "deviceDelete", value = "Delete a Device", notes = "Deletes the Device specified by the \"deviceId\" path parameter.")
     @DELETE
     @Path("{deviceId}")
     public Response deleteDevice(

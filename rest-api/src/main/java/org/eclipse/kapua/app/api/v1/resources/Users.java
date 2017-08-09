@@ -71,7 +71,7 @@ public class Users extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Gets the User list in the scope", notes = "Returns the list of all the users associated to the current selected scope.", response = UserListResult.class)
+    @ApiOperation(nickname = "userSimpleQuery", value = "Gets the User list in the scope", notes = "Returns the list of all the users associated to the current selected scope.", response = UserListResult.class)
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public UserListResult simpleQuery(
@@ -105,7 +105,7 @@ public class Users extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Queries the Users", notes = "Queries the Users with the given UserQuery parameter returning all matching Users", response = UserListResult.class)
+    @ApiOperation(nickname = "userQuery", value = "Queries the Users", notes = "Queries the Users with the given UserQuery parameter returning all matching Users", response = UserListResult.class)
     @POST
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -130,7 +130,7 @@ public class Users extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Counts the Users", notes = "Counts the Users with the given UserQuery parameter returning the number of matching Users", response = CountResult.class)
+    @ApiOperation(nickname = "userCount", value = "Counts the Users", notes = "Counts the Users with the given UserQuery parameter returning the number of matching Users", response = CountResult.class)
     @POST
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -156,7 +156,7 @@ public class Users extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Create an User", notes = "Creates a new User based on the information provided in UserCreator parameter.", response = User.class)
+    @ApiOperation(nickname = "userCreate", value = "Create an User", notes = "Creates a new User based on the information provided in UserCreator parameter.", response = User.class)
     @POST
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -180,7 +180,7 @@ public class Users extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Get an User", notes = "Returns the User specified by the \"userId\" path parameter.", response = User.class)
+    @ApiOperation(nickname = "userFind", value = "Get an User", notes = "Returns the User specified by the \"userId\" path parameter.", response = User.class)
     @GET
     @Path("{userId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -210,7 +210,7 @@ public class Users extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Update an User", notes = "Updates a new User based on the information provided in the User parameter.", response = User.class)
+    @ApiOperation(nickname = "userUpdate", value = "Update an User", notes = "Updates a new User based on the information provided in the User parameter.", response = User.class)
     @PUT
     @Path("{userId}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -237,7 +237,7 @@ public class Users extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Delete an User", notes = "Deletes the User specified by the \"userId\" path parameter.")
+    @ApiOperation(nickname = "userDelete", value = "Delete an User", notes = "Deletes the User specified by the \"userId\" path parameter.")
     @DELETE
     @Path("{userId}")
     public Response deleteUser(

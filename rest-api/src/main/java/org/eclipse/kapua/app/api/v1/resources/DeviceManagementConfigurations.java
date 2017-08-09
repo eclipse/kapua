@@ -58,7 +58,7 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
      */
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @ApiOperation(value = "Gets the device configurations", notes = "Returns the current configuration of a device", response = DeviceConfiguration.class)
+    @ApiOperation(nickname = "deviceConfigurationGet", value = "Gets the device configurations", notes = "Returns the current configuration of a device", response = DeviceConfiguration.class)
     public DeviceConfiguration get(
             @ApiParam(value = "The ScopeId of the Device.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId,
@@ -84,7 +84,7 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
      */
     @PUT
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @ApiOperation(value = "Updates a device component configuration", notes = "Updates a device component configuration", response = DeviceConfiguration.class)
+    @ApiOperation(nickname = "deviceConfigurationUpdate", value = "Updates a device component configuration", notes = "Updates a device component configuration", response = DeviceConfiguration.class)
     public Response update(
             @ApiParam(value = "The ScopeId of the Device.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId,
@@ -118,7 +118,7 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
     @GET
     @Path("{componentId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @ApiOperation(value = "Gets the device configurations", notes = "Returns the configuration of a device or the configuration of the OSGi component " +
+    @ApiOperation(nickname = "deviceConfigurationComponentGet", value = "Gets the device configurations", notes = "Returns the configuration of a device or the configuration of the OSGi component " +
             "identified with specified PID (service's persistent identity). " +
             "In the OSGi framework, the service's persistent identity is defined as the name attribute of the " +
             "Component Descriptor XML file; at runtime, the same value is also available " +
@@ -156,7 +156,7 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
     @PUT
     @Path("{componentId}")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @ApiOperation(value = "Updates a device component configuration", notes = "Updates a device component configuration", response = DeviceConfiguration.class)
+    @ApiOperation(nickname = "deviceConfigurationComponentUpdate", value = "Updates a device component configuration", notes = "Updates a device component configuration", response = DeviceConfiguration.class)
     public Response updateComponent(
             @ApiParam(value = "The ScopeId of the Device.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId,

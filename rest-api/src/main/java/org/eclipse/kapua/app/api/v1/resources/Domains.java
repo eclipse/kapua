@@ -67,7 +67,7 @@ public class Domains extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Gets the Domain list in the scope", notes = "Returns the list of all the domains associated to the current selected scope.", response = DomainListResult.class)
+    @ApiOperation(nickname = "domainSimpleQuery", value = "Gets the Domain list in the scope", notes = "Returns the list of all the domains associated to the current selected scope.", response = DomainListResult.class)
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public DomainListResult simpleQuery(
@@ -101,7 +101,7 @@ public class Domains extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Queries the Domains", notes = "Queries the Domains with the given DomainQuery parameter returning all matching Domains", response = DomainListResult.class)
+    @ApiOperation(nickname = "deviceQuery", value = "Queries the Domains", notes = "Queries the Domains with the given DomainQuery parameter returning all matching Domains", response = DomainListResult.class)
     @POST
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -124,7 +124,7 @@ public class Domains extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Counts the Domains", notes = "Counts the Domains with the given DomainQuery parameter returning the number of matching Domains", response = CountResult.class)
+    @ApiOperation(nickname = "domainCount", value = "Counts the Domains", notes = "Counts the Domains with the given DomainQuery parameter returning the number of matching Domains", response = CountResult.class)
     @POST
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -147,7 +147,7 @@ public class Domains extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Get a Domain", notes = "Returns the Domain specified by the \"domainId\" path parameter.", response = Domain.class)
+    @ApiOperation(nickname = "domainFind", value = "Get a Domain", notes = "Returns the Domain specified by the \"domainId\" path parameter.", response = Domain.class)
     @GET
     @Path("{domainId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })

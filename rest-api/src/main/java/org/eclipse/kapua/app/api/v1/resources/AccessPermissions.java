@@ -74,7 +74,7 @@ public class AccessPermissions extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Gets the AccessPermission list in the scope", notes = "Gets the AccessPermission list in the scope. The query parameter accessInfoId is optional and can be used to filter results", response = AccessPermissionListResult.class)
+    @ApiOperation(nickname = "accessPermissionSimpleQuery", value = "Gets the AccessPermission list in the scope", notes = "Gets the AccessPermission list in the scope. The query parameter accessInfoId is optional and can be used to filter results", response = AccessPermissionListResult.class)
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public AccessPermissionListResult simpleQuery(
@@ -106,7 +106,7 @@ public class AccessPermissions extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Queries the AccessPermissions", notes = "Queries the AccessPermissions with the given AccessPermissionQuery parameter returning all matching AccessPermissions", response = AccessPermissionListResult.class)
+    @ApiOperation(nickname = "accessPermissionQuery", value = "Queries the AccessPermissions", notes = "Queries the AccessPermissions with the given AccessPermissionQuery parameter returning all matching AccessPermissions", response = AccessPermissionListResult.class)
     @POST
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -137,7 +137,7 @@ public class AccessPermissions extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Counts the AccessPermissions", notes = "Counts the AccessPermissions with the given AccessPermissionQuery parameter returning the number of matching AccessPermissions", response = CountResult.class)
+    @ApiOperation(nickname = "accessPermissionCount", value = "Counts the AccessPermissions", notes = "Counts the AccessPermissions with the given AccessPermissionQuery parameter returning the number of matching AccessPermissions", response = CountResult.class)
     @POST
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -168,7 +168,7 @@ public class AccessPermissions extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Create an AccessPermission", notes = "Creates a new AccessPermission based on the information provided in AccessPermissionCreator parameter.", response = AccessPermission.class)
+    @ApiOperation(nickname = "accessPermissionCreate", value = "Create an AccessPermission", notes = "Creates a new AccessPermission based on the information provided in AccessPermissionCreator parameter.", response = AccessPermission.class)
     @POST
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -196,7 +196,7 @@ public class AccessPermissions extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Get an AccessPermission", notes = "Returns the AccessPermission specified by the \"accessPermissionId\" path parameter.", response = AccessPermission.class)
+    @ApiOperation(nickname = "accessPermissionFind", value = "Get an AccessPermission", notes = "Returns the AccessPermission specified by the \"accessPermissionId\" path parameter.", response = AccessPermission.class)
     @GET
     @Path("{accessPermissionId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -237,7 +237,7 @@ public class AccessPermissions extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Delete an AccessPermission", notes = "Deletes the AccessPermission specified by the \"accessPermissionId\" path parameter.")
+    @ApiOperation(nickname = "accessPermissionDelete", value = "Delete an AccessPermission", notes = "Deletes the AccessPermission specified by the \"accessPermissionId\" path parameter.")
     @DELETE
     @Path("{accessPermissionId}")
     public Response deleteAccessPermission(

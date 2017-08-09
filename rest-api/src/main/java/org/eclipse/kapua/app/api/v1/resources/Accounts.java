@@ -71,7 +71,8 @@ public class Accounts extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Gets the Account list in the scope", //
+    @ApiOperation(nickname = "accountSimpleQuery",
+            value = "Gets the Account list in the scope", //
             notes = "Returns the list of all the accounts associated to the current selected scope.", //
             response = AccountListResult.class) //
     @GET
@@ -107,7 +108,8 @@ public class Accounts extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Queries the Accounts", //
+    @ApiOperation(nickname = "accountQuery",
+            value = "Queries the Accounts", //
             notes = "Queries the Accounts with the given AccountQuery parameter returning all matching Accounts", //
             response = AccountListResult.class) //
     @POST
@@ -134,7 +136,8 @@ public class Accounts extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Counts the Accounts", //
+    @ApiOperation(nickname = "accountCount",
+            value = "Counts the Accounts", //
             notes = "Counts the Accounts with the given AccountQuery parameter returning the number of matching Accounts", //
             response = CountResult.class)
     @POST
@@ -162,7 +165,8 @@ public class Accounts extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Create an Account",  //
+    @ApiOperation(nickname = "accountCreate",
+            value = "Create an Account",  //
             notes = "Creates a new Account based on the information provided in AccountCreator parameter.",  //
             response = Account.class)
     @POST
@@ -188,7 +192,8 @@ public class Accounts extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Get an Account",  //
+    @ApiOperation(nickname = "accountFind",
+            value = "Get an Account",  //
             notes = "Returns the Account specified by the \"accountId\" path parameter.",  //
             response = Account.class)
     @GET
@@ -220,7 +225,8 @@ public class Accounts extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Update an Account",  //
+    @ApiOperation(nickname = "accountUpdate",
+            value = "Update an Account",  //
             notes = "Updates a new Account based on the information provided in the Account parameter.",  //
             response = Account.class)
     @PUT
@@ -249,7 +255,8 @@ public class Accounts extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Delete an Account",  //
+    @ApiOperation(nickname = "accountDelete",
+            value = "Delete an Account",  //
             notes = "Deletes the Account specified by the \"accountId\" path parameter.")
     @DELETE
     @Path("{accountId}")

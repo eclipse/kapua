@@ -71,7 +71,7 @@ public class Groups extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Gets the Group list in the scope", notes = "Returns the list of all the groups associated to the current selected scope.", response = GroupListResult.class)
+    @ApiOperation(nickname = "groupSimpleQuery", value = "Gets the Group list in the scope", notes = "Returns the list of all the groups associated to the current selected scope.", response = GroupListResult.class)
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public GroupListResult simpleQuery(
@@ -105,7 +105,7 @@ public class Groups extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Queries the Groups", notes = "Queries the Groups with the given GroupQuery parameter returning all matching Groups", response = GroupListResult.class)
+    @ApiOperation(nickname = "groupQuery", value = "Queries the Groups", notes = "Queries the Groups with the given GroupQuery parameter returning all matching Groups", response = GroupListResult.class)
     @POST
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -130,7 +130,7 @@ public class Groups extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Counts the Groups", notes = "Counts the Groups with the given GroupQuery parameter returning the number of matching Groups", response = CountResult.class)
+    @ApiOperation(nickname = "groupCount", value = "Counts the Groups", notes = "Counts the Groups with the given GroupQuery parameter returning the number of matching Groups", response = CountResult.class)
     @POST
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -153,7 +153,7 @@ public class Groups extends AbstractKapuaResource {
      *            Provides the information for the new {@link Group} to be created.
      * @return The newly created {@link Group} object.
      */
-    @ApiOperation(value = "Create a Group", notes = "Creates a new Group based on the information provided in GroupCreator parameter.", response = Group.class)
+    @ApiOperation(nickname = "groupCreate", value = "Create a Group", notes = "Creates a new Group based on the information provided in GroupCreator parameter.", response = Group.class)
     @POST
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -177,7 +177,7 @@ public class Groups extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Get an Group", notes = "Returns the Group specified by the \"groupId\" path parameter.", response = Group.class)
+    @ApiOperation(nickname = "groupFind", value = "Get an Group", notes = "Returns the Group specified by the \"groupId\" path parameter.", response = Group.class)
     @GET
     @Path("{groupId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -207,7 +207,7 @@ public class Groups extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Update an Group", notes = "Updates a new Group based on the information provided in the Group parameter.", response = Group.class)
+    @ApiOperation(nickname = "groupUpdate", value = "Update an Group", notes = "Updates a new Group based on the information provided in the Group parameter.", response = Group.class)
     @PUT
     @Path("{groupId}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -234,7 +234,7 @@ public class Groups extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Delete an Group", notes = "Deletes the Group specified by the \"groupId\" path parameter.")
+    @ApiOperation(nickname = "groupDelete", value = "Delete an Group", notes = "Deletes the Group specified by the \"groupId\" path parameter.")
     @DELETE
     @Path("{groupId}")
     public Response deleteGroup(

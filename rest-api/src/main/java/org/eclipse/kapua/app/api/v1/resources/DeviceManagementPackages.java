@@ -59,7 +59,7 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
      */
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @ApiOperation(value = "Gets a list of packages", notes = "Returns the list of all the packages installed on the device.", response = DeviceSnapshots.class)
+    @ApiOperation(nickname = "devicePackageGet", value = "Gets a list of packages", notes = "Returns the list of all the packages installed on the device.", response = DeviceSnapshots.class)
     public DevicePackages get(
             @ApiParam(value = "The ScopeId of the Device", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId,
@@ -86,7 +86,7 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
     @POST
     @Path("_download")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @ApiOperation(value = "Installs a package", notes = "Installs a package into the device.")
+    @ApiOperation(nickname = "devicePackageDownload", value = "Installs a package", notes = "Installs a package into the device.")
     public Response download(
             @ApiParam(value = "The ScopeId of the Device", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId,
@@ -117,7 +117,7 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
     @POST
     @Path("_uninstall")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @ApiOperation(value = "Uninstalls a package", notes = "Uninstalls a package into the device.")
+    @ApiOperation(nickname = "devicePackageUninstall", value = "Uninstalls a package", notes = "Uninstalls a package into the device.")
     public Response uninstall(
             @ApiParam(value = "The ScopeId of the Device", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId,
