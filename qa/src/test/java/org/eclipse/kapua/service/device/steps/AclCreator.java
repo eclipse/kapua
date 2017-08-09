@@ -250,24 +250,30 @@ public class AclCreator {
     void attachBrokerPermissions(Account account, User user) throws Exception {
         List<PermissionData> permissionList = new ArrayList<>();
         permissionList.add(new PermissionData(new BrokerDomain(), Actions.connect, (KapuaEid) user.getScopeId()));
+        permissionList.add(new PermissionData(new BrokerDomain(), Actions.write, (KapuaEid) user.getScopeId()));
+        permissionList.add(new PermissionData(new BrokerDomain(), Actions.read, (KapuaEid) user.getScopeId()));
+        permissionList.add(new PermissionData(new BrokerDomain(), Actions.delete, (KapuaEid) user.getScopeId()));
         createPermissions(permissionList, user, account);
     }
 
     void attachDevicePermissions(Account account, User user) throws Exception {
         List<PermissionData> permissionList = new ArrayList<>();
         permissionList.add(new PermissionData(new DeviceManagementDomain(), Actions.write, (KapuaEid) user.getScopeId()));
+        permissionList.add(new PermissionData(new BrokerDomain(), Actions.connect, (KapuaEid) user.getScopeId()));
         createPermissions(permissionList, user, account);
     }
 
     void attachDataViewPermissions(Account account, User user) throws Exception {
         List<PermissionData> permissionList = new ArrayList<>();
         permissionList.add(new PermissionData(new DatastoreDomain(), Actions.read, (KapuaEid) user.getScopeId()));
+        permissionList.add(new PermissionData(new BrokerDomain(), Actions.connect, (KapuaEid) user.getScopeId()));
         createPermissions(permissionList, user, account);
     }
 
     void attachDataManagePermissions(Account account, User user) throws Exception {
         List<PermissionData> permissionList = new ArrayList<>();
         permissionList.add(new PermissionData(new DatastoreDomain(), Actions.write, (KapuaEid) user.getScopeId()));
+        permissionList.add(new PermissionData(new BrokerDomain(), Actions.connect, (KapuaEid) user.getScopeId()));
         createPermissions(permissionList, user, account);
     }
 
