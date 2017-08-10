@@ -162,8 +162,6 @@ public class WestNavigationView extends LayoutContainer {
                             return;
                         }
 
-//                        accountManagementTreeGrid.getSelectionModel().deselectAll();
-
                         centerPanel.removeAll();
 
                         final ContentPanel panel = new ContentPanel(new FitLayout());
@@ -209,6 +207,8 @@ public class WestNavigationView extends LayoutContainer {
                                 }
                             }
                         }
+
+                        setDashboardSelected(false);
                     }
                 });
 
