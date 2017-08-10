@@ -165,7 +165,7 @@ The fresh machine has both the ActiveMQ and Tomcat installed, but please don't u
 To start ***using properly the demo machine*** run a full Kapua build as follow:
 
 ```
-$ mvn clean install -Pdeploy -DskipTests
+$ mvn clean install -PdeployVagrant -DskipTests
 ```
 
 Once the full build is done, the machine has the broker with all the proper library and configuration installed in the directory
