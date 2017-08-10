@@ -11,9 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore;
 
+import javax.inject.Inject;
 import javax.xml.bind.annotation.XmlRegistry;
 
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 
@@ -25,8 +25,8 @@ import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 @XmlRegistry
 public class DatastoreMessageXmlRegistry {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final DatastoreObjectFactory factory = locator.getFactory(DatastoreObjectFactory.class);
+    @Inject
+    private DatastoreObjectFactory factory;
 
     /**
      * Creates a {@link MessageListResult} instance

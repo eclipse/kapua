@@ -20,7 +20,6 @@ import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -51,6 +50,8 @@ import com.codahale.metrics.Counter;
 import com.codahale.metrics.Timer;
 import com.codahale.metrics.Timer.Context;
 
+import javax.inject.Inject;
+
 /**
  * Message store service implementation.
  * 
@@ -62,7 +63,6 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
     private static final Domain DATASTORE_DOMAIN = new DatastoreDomain();
     private static final String METRIC_COMPONENT_NAME = "datastore";
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     // metrics
     private final Counter metricMessageCount;
     private final Counter metricCommunicationErrorCount;
@@ -76,9 +76,13 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
     private final Counter metricQueueConfigurationErrorCount;
     private final Counter metricQueueGenericErrorCount;
 
-    private final AccountService accountService = LOCATOR.getService(AccountService.class);
-    private final AuthorizationService authorizationService = LOCATOR.getService(AuthorizationService.class);
-    private final PermissionFactory permissionFactory = LOCATOR.getFactory(PermissionFactory.class);
+    @Inject
+    private AccountService accountService;
+    @Inject
+    private AuthorizationService authorizationService;
+    @Inject
+    private PermissionFactory permissionFactory;
+
     private final static Integer MAX_ENTRIES_ON_DELETE = DatastoreSettings.getInstance().get(Integer.class, DatastoreSettingKey.CONFIG_MAX_ENTRIES_ON_DELETE);
 
     private final MessageStoreFacade messageStoreFacade;
@@ -88,7 +92,8 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
      * 
      * @throws ClientUnavailableException
      */
-    public MessageStoreServiceImpl() throws ClientUnavailableException {
+    @Inject
+    public MessageStoreServiceImpl(AccountService accountService) throws ClientUnavailableException {
         super(MessageStoreService.class.getName(), DATASTORE_DOMAIN, DatastoreEntityManagerFactory.getInstance());
         ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(this, accountService);
         messageStoreFacade = new MessageStoreFacade(configurationProvider, DatastoreMediator.getInstance());

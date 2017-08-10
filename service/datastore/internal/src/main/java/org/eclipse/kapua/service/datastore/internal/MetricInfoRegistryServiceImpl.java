@@ -21,7 +21,6 @@ import java.util.List;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.AccountService;
@@ -59,6 +58,8 @@ import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+
 /**
  * Metric information registry implementation.
  * 
@@ -71,29 +72,28 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
 
     private static final Logger logger = LoggerFactory.getLogger(MetricInfoRegistryServiceImpl.class);
 
-    private final AccountService accountService;
-    private final AuthorizationService authorizationService;
-    private final PermissionFactory permissionFactory;
-    private final MetricInfoRegistryFacade metricInfoRegistryFacade;
-    private final MessageStoreService messageStoreService;
-    private final StorablePredicateFactory storablePredicateFactory;
+    @Inject
+    private AccountService accountService;
+    @Inject
+    private AuthorizationService authorizationService;
+    @Inject
+    private PermissionFactory permissionFactory;
+    @Inject
+    private MessageStoreService messageStoreService;
+    @Inject
+    private StorablePredicateFactory storablePredicateFactory;
+
+    private MetricInfoRegistryFacade metricInfoRegistryFacade;
 
     /**
      * Default constructor
-     * 
+     *
      * @throws ClientUnavailableException
      */
-    public MetricInfoRegistryServiceImpl() throws ClientUnavailableException {
+    @Inject
+    public MetricInfoRegistryServiceImpl(MessageStoreService messageStoreService, AccountService accountService) throws ClientUnavailableException {
         super(MetricInfoRegistryService.class.getName(), DATASTORE_DOMAIN, DatastoreEntityManagerFactory.getInstance());
 
-        KapuaLocator locator = KapuaLocator.getInstance();
-        accountService = locator.getService(AccountService.class);
-        authorizationService = locator.getService(AuthorizationService.class);
-        permissionFactory = locator.getFactory(PermissionFactory.class);
-        messageStoreService = locator.getService(MessageStoreService.class);
-        storablePredicateFactory = KapuaLocator.getInstance().getFactory(StorablePredicateFactory.class);
-
-        MessageStoreService messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
         ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(messageStoreService, accountService);
         metricInfoRegistryFacade = new MetricInfoRegistryFacade(configurationProvider, DatastoreMediator.getInstance());
         DatastoreMediator.getInstance().setMetricInfoStoreFacade(metricInfoRegistryFacade);
