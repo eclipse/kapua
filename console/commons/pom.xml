@@ -52,20 +52,6 @@
             <version>3.1.8</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-to-slf4j</artifactId>
-        </dependency>
-        <dependency>
-            <!-- Apache shiro security framework web support -->
-            <groupId>org.apache.shiro</groupId>
-            <artifactId>shiro-web</artifactId>
-            <version>${shiro.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-commons</artifactId>
         </dependency>
