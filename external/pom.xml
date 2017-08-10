@@ -9,25 +9,19 @@
 
     Contributors:
         Red Hat Inc - initial API and implementation
+        Eurotech
  -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
-
-	<!-- <parent>
-		<groupId>org.eclipse.kapua</groupId>
-		<artifactId>kapua</artifactId>
-        <version>0.3.0-SNAPSHOT</version>
-		<relativePath>..</relativePath>
-	</parent> -->
-
-	<groupId>org.eclipse.kapua.external</groupId>
-	<artifactId>kapua-external</artifactId>
-    <version>0.2.0-SNAPSHOT</version>
+    <modelVersion>4.0.0</modelVersion>
+    
+    <groupId>org.eclipse.kapua.external</groupId>
+    <artifactId>kapua-external</artifactId>
+    <version>0.3.0-SNAPSHOT</version>
     <name>kapua-externals</name>
-	<packaging>pom</packaging>
+    <packaging>pom</packaging>
 
     <properties>
         <!-- Build properties -->
@@ -37,8 +31,8 @@
 
     </properties>
 
-	<modules>
-		<module>swagger-ui</module>
-		<module>swagger-ui-lib</module>
-	</modules>
+    <modules>
+        <module>swagger-ui</module>
+        <module>swagger-ui-lib</module>
+    </modules>
 </project>
