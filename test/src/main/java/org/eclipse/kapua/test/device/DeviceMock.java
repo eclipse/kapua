@@ -20,7 +20,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.Device;
-import org.eclipse.kapua.service.device.registry.DeviceCredentialsMode;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
@@ -388,30 +387,6 @@ public class DeviceMock implements Device {
 
     @Override
     public void setCustomAttribute5(String customAttribute5) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public DeviceCredentialsMode getCredentialsMode() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setCredentialsMode(DeviceCredentialsMode credentialsMode) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public KapuaId getPreferredUserId() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setPreferredUserId(KapuaId deviceUserId) {
         // TODO Auto-generated method stub
 
     }

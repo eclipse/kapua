@@ -30,6 +30,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCreator;
@@ -209,10 +210,12 @@ public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
             for (DeviceConnection connItem : connections) {
                 connectionCreator = new DeviceConnectionCreatorImpl(scopeId);
                 connectionCreator.setUserId(userId);
+                connectionCreator.setUserCouplingMode(ConnectionUserCouplingMode.LOOSE);
                 connectionCreator.setClientId(connItem.getClientId());
                 connectionCreator.setClientIp(connItem.getClientIp());
                 connectionCreator.setServerIp(connItem.getServerIp());
                 connectionCreator.setProtocol(connItem.getProtocol());
+                connectionCreator.setAllowUserChange(false);
                 connection = deviceConnectionService.create(connectionCreator);
                 connectionId = connection.getId();
             }
@@ -299,6 +302,9 @@ public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
         assertEquals(connectionCreator.getScopeId(), connection.getScopeId());
         assertEquals(connectionCreator.getClientId(), connection.getClientId());
         assertEquals(connectionCreator.getUserId(), connection.getUserId());
+        assertEquals(connectionCreator.getUserCouplingMode(), connection.getUserCouplingMode());
+        assertEquals(connectionCreator.getReservedUserId(), connection.getReservedUserId());
+        assertEquals(connectionCreator.getAllowUserChange(), connection.getAllowUserChange());
         assertEquals(connectionCreator.getClientIp(), connection.getClientIp());
         assertEquals(connectionCreator.getServerIp(), connection.getServerIp());
         assertEquals(connectionCreator.getProtocol(), connection.getProtocol());
@@ -474,10 +480,13 @@ public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
         DeviceConnectionCreatorImpl tmpCreator = new DeviceConnectionCreatorImpl(scopeId);
 
         tmpCreator.setUserId(userId);
+        tmpCreator.setUserCouplingMode(ConnectionUserCouplingMode.LOOSE);
+        tmpCreator.setReservedUserId(userId);
         tmpCreator.setClientId(CLIENT_NAME);
         tmpCreator.setClientIp(CLIENT_IP);
         tmpCreator.setServerIp(SERVER_IP);
         tmpCreator.setProtocol("tcp");
+        tmpCreator.setAllowUserChange(false);
 
         return tmpCreator;
     }

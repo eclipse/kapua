@@ -51,6 +51,8 @@ import org.eclipse.kapua.broker.core.BrokerDomain;
 import org.eclipse.kapua.broker.core.message.MessageConstants;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsService;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -73,11 +75,16 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.datastore.DatastoreDomain;
 import org.eclipse.kapua.service.device.management.commons.DeviceManagementDomain;
+import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCreator;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
+import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionFactory;
+import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionPredicates;
+import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionQuery;
+import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -149,6 +156,8 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     private AccountService accountService = KapuaLocator.getInstance().getService(AccountService.class);
     private DeviceConnectionService deviceConnectionService = KapuaLocator.getInstance().getService(DeviceConnectionService.class);
     private DeviceConnectionFactory deviceConnectionFactory = KapuaLocator.getInstance().getFactory(DeviceConnectionFactory.class);
+    private DeviceConnectionOptionFactory deviceConnectionOptionFactory = KapuaLocator.getInstance().getFactory(DeviceConnectionOptionFactory.class);
+    private DeviceConnectionOptionService deviceConnectionOptionService = KapuaLocator.getInstance().getService(DeviceConnectionOptionService.class);
     private MetricsService metricsService = MetricServiceFactory.getInstance();
 
     public KapuaSecurityBrokerFilter(Broker next) throws KapuaException {
@@ -382,6 +391,8 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                 Context loginFindClientIdTimeContext = metricLoginFindClientIdTime.time();
                 deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.findByClientId(scopeId, clientId));
                 loginFindClientIdTimeContext.stop();
+                // enforce the user-device bound
+                enforceDeviceConnectionUserBound(KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.getConfigValues(scopeId)), deviceConnection, scopeId, userId);
 
                 Context loginFindDevTimeContext = metricLoginFindDevTime.time();
 
@@ -395,6 +406,8 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                     deviceConnectionCreator.setProtocol("MQTT");
                     deviceConnectionCreator.setServerIp(null);// TODO to be filled with the proper value
                     deviceConnectionCreator.setUserId(userId);
+                    deviceConnectionCreator.setUserCouplingMode(ConnectionUserCouplingMode.INHERITED);
+                    deviceConnectionCreator.setAllowUserChange(false);
                     deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.create(deviceConnectionCreator));
                 } else {
                     deviceConnection.setClientIp(clientIp);
@@ -402,6 +415,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                     deviceConnection.setServerIp(null);// TODO to be filled with the proper value
                     deviceConnection.setUserId(userId);
                     deviceConnection.setStatus(DeviceConnectionStatus.CONNECTED);
+                    deviceConnection.setAllowUserChange(false);
                     final DeviceConnection deviceConnectionToUpdate = deviceConnection;
                     KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.update(deviceConnectionToUpdate));
                     // TODO implement the banned status
@@ -482,6 +496,83 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             ThreadContext.unbindSubject();
             loginShiroLogoutTimeContext.stop();
             loginTotalContext.stop();
+        }
+    }
+
+    private void enforceDeviceConnectionUserBound(Map<String, Object> options, DeviceConnection deviceConnection, KapuaId scopeId, KapuaId userId) throws KapuaException {
+        if (deviceConnection != null) {
+            ConnectionUserCouplingMode connectionUserCouplingMode = deviceConnection.getUserCouplingMode();
+            if (ConnectionUserCouplingMode.INHERITED.equals(deviceConnection.getUserCouplingMode())) {
+                connectionUserCouplingMode = loadConnectionUserCouplingModeFromConfig(scopeId, options);
+            }
+            enforceDeviceUserBound(connectionUserCouplingMode, deviceConnection, scopeId, userId);
+        } else {
+            logger.debug("Enforce Device-User bound - no device connection found so user account settings for enforcing the bound (user id - '{}')", userId);
+            enforceDeviceUserBound(loadConnectionUserCouplingModeFromConfig(scopeId, options), deviceConnection, scopeId, userId);
+        }
+    }
+
+    private void enforceDeviceUserBound(ConnectionUserCouplingMode connectionUserCouplingMode, DeviceConnection deviceConnection, KapuaId scopeId, KapuaId userId)
+            throws KapuaException {
+        if (ConnectionUserCouplingMode.STRICT.equals(connectionUserCouplingMode)) {
+            if (deviceConnection == null) {
+                checkConnectionCountByReservedUserId(scopeId, userId, 0);
+            } else {
+                if (deviceConnection.getReservedUserId() == null) {
+                    checkConnectionCountByReservedUserId(scopeId, userId, 0);
+                    if (!deviceConnection.getAllowUserChange() && !userId.equals(deviceConnection.getUserId())) {
+                        throw new SecurityException("User not authorized!");
+                        // TODO manage the error message. is it better to throw a more specific exception or keep it obfuscated for security reason?
+                    }
+                }
+                else {
+                    checkConnectionCountByReservedUserId(scopeId, deviceConnection.getReservedUserId(), 1);
+                    if (!userId.equals(deviceConnection.getReservedUserId())) {
+                        throw new SecurityException("User not authorized!");
+                        // TODO manage the error message. is it better to throw a more specific exception or keep it obfuscated for security reason?
+                    }
+                }
+            }
+        }
+        else {
+            if (deviceConnection != null && deviceConnection.getReservedUserId() != null && userId.equals(deviceConnection.getReservedUserId())) {
+                checkConnectionCountByReservedUserId(scopeId, userId, 1);
+            } else {
+                checkConnectionCountByReservedUserId(scopeId, userId, 0);
+            }
+        }
+    }
+
+    private void checkConnectionCountByReservedUserId(KapuaId scopeId, KapuaId userId, long count) throws KapuaException {
+        // check that no devices have this user as strict user
+        DeviceConnectionOptionQuery query = deviceConnectionOptionFactory.newQuery(scopeId);
+
+        AndPredicate andPredicate = new AndPredicate();
+        andPredicate.and(new AttributePredicate<>(DeviceConnectionOptionPredicates.RESERVED_USER_ID, userId));
+        query.setPredicate(andPredicate);
+        query.setLimit(1);
+
+        Long connectionCountByReservedUserId = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionOptionService.count(query));
+        if (connectionCountByReservedUserId != null && connectionCountByReservedUserId > count) {
+            throw new SecurityException("User not authorized!");
+            // TODO manage the error message. is it better to throw a more specific exception or keep it obfuscated for security reason?
+        }
+    }
+
+    private ConnectionUserCouplingMode loadConnectionUserCouplingModeFromConfig(KapuaId scopeId, Map<String, Object> options) throws KapuaException {
+        String tmp = (String) options.get("deviceConnectionUserCouplingDefaultMode");// TODO move to constants
+        if (tmp != null) {
+            ConnectionUserCouplingMode tmpConnectionUserCouplingMode = ConnectionUserCouplingMode.valueOf(tmp);
+            if (tmpConnectionUserCouplingMode == null) {
+                throw new SecurityException(String
+                        .format("Cannot parse the default Device-User coupling mode in the registry service configuration! (found '%s' - allowed values are 'LOOSE' - 'STRICT')", tmp));
+                // TODO manage the error message. is it better to throw a more specific exception or keep it obfuscated for security reason?
+            } else {
+                return tmpConnectionUserCouplingMode;
+            }
+        } else {
+            throw new SecurityException("Cannot find default Device-User coupling mode in the registry service configuration! (deviceConnectionUserCouplingDefaultMode");
+            // TODO manage the error message. is it better to throw a more specific exception or keep it obfuscated for security reason?
         }
     }
 

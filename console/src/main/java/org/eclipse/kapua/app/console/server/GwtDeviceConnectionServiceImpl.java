@@ -19,6 +19,7 @@ import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnection;
+import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnection.GwtConnectionUserCouplingMode;
 import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnectionQuery;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceConnectionService;
 import org.eclipse.kapua.app.console.shared.util.GwtKapuaModelConverter;
@@ -105,6 +106,15 @@ public class GwtDeviceConnectionServiceImpl extends KapuaRemoteServiceServlet im
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("Entity Informations", "Modified By", deviceConnection.getModifiedBy().toCompactId()));
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("Entity Informations", "Created On", deviceConnection.getCreatedOn().toString()));
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("Entity Informations", "Created By", deviceConnection.getCreatedBy().toCompactId()));
+
+            GwtConnectionUserCouplingMode gwtConnectionUserCouplingMode = null;
+            if (deviceConnection.getUserCouplingMode() != null) {
+                gwtConnectionUserCouplingMode = GwtConnectionUserCouplingMode.valueOf(deviceConnection.getUserCouplingMode().name());
+            }
+            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("Connection-user bound Informations", "Connection-user bound", gwtConnectionUserCouplingMode.getLabel()));
+            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("Connection-user bound Informations", "Reserved User Id",
+                    deviceConnection.getReservedUserId() != null ? deviceConnection.getReservedUserId().toCompactId() : "N/A"));
+            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("Connection-user bound Informations", "Allow user change", deviceConnection.getAllowUserChange()));
 
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("Connection Informations", "Client Id", deviceConnection.getClientId()));
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("Connection Informations", "User Id", deviceConnection.getUserId().toCompactId()));

@@ -70,7 +70,6 @@ import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
-import org.eclipse.kapua.service.device.registry.DeviceCredentialsMode;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DevicePredicates;
@@ -342,19 +341,21 @@ public class DeviceServiceSteps extends KapuaTest {
         }
     }
 
-    @Given("^A device such as$")
-    public void createADeviceAsSpecified(List<CucDevice> devLst)
+    @Given("^(?:A d|D)evices? such as$")
+    public void createADevicesAsSpecified(List<CucDevice> devLst)
             throws KapuaException {
 
-        assertNotNull(devLst);
-        assertEquals(1, devLst.size());
+        KapuaSecurityUtils.doPrivileged(() -> {
+            assertNotNull(devLst);
 
-        CucDevice tmpCDev = devLst.get(0);
-        tmpCDev.parse();
-        DeviceCreator devCr = prepareDeviceCreatorFromCucDevice(tmpCDev);
-        Device tmpDevice = deviceRegistryService.create(devCr);
-
-        stepData.put("LastDevice", tmpDevice);
+            Device tmpDevice = null;
+            for (CucDevice tmpCDev : devLst) {
+                tmpCDev.parse();
+                DeviceCreator devCr = prepareDeviceCreatorFromCucDevice(tmpCDev);
+                tmpDevice = deviceRegistryService.create(devCr);
+            }
+            stepData.put("LastDevice", tmpDevice);
+        });
     }
 
     @When("^I search for the device \"(.+)\" in account \"(.+)\"$")
@@ -371,7 +372,7 @@ public class DeviceServiceSteps extends KapuaTest {
 
         tmpDev = deviceRegistryService.findByClientId(tmpAcc.getId(), clientId);
         if (tmpDev != null) {
-            Vector<Device> dv = new Vector<Device>();
+            Vector<Device> dv = new Vector<>();
             dv.add(tmpDev);
             tmpList.addItems(dv);
             stepData.put("Device", tmpDev);
@@ -438,7 +439,7 @@ public class DeviceServiceSteps extends KapuaTest {
         tmpQuery = new DeviceEventQueryImpl(tmpAcc.getId());
         tmpQuery.setPredicate(attributeIsEqualTo("deviceId", tmpDev.getId()));
         tmpQuery.setSortCriteria(new FieldSortCriteria("receivedOn", FieldSortCriteria.SortOrder.ASCENDING));
-        tmpList = (DeviceEventListResult) deviceEventsService.query(tmpQuery);
+        tmpList = deviceEventsService.query(tmpQuery);
 
         assertNotNull(tmpList);
         stepData.put("DeviceEventList", tmpList);
@@ -597,9 +598,6 @@ public class DeviceServiceSteps extends KapuaTest {
         if (dev.connectionId != null) {
             tmpCr.setConnectionId(dev.getConnectionId());
         }
-        if (dev.preferredUserId != null) {
-            tmpCr.setPreferredUserId(dev.getPreferredUserId());
-        }
         if (dev.displayName != null) {
             tmpCr.setDisplayName(dev.displayName);
         }
@@ -645,9 +643,6 @@ public class DeviceServiceSteps extends KapuaTest {
         if (dev.acceptEncoding != null) {
             tmpCr.setAcceptEncoding(dev.acceptEncoding);
         }
-        if (dev.credentialsMode != null) {
-            tmpCr.setCredentialsMode(dev.getCredentialsMode());
-        }
 
         return tmpCr;
     }
@@ -679,8 +674,6 @@ public class DeviceServiceSteps extends KapuaTest {
         tmpCr.setCustomAttribute3("customAttribute3");
         tmpCr.setCustomAttribute4("customAttribute4");
         tmpCr.setCustomAttribute5("customAttribute5");
-        tmpCr.setCredentialsMode(DeviceCredentialsMode.LOOSE);
-        tmpCr.setPreferredUserId(generateRandomId());
         tmpCr.setStatus(DeviceStatus.ENABLED);
 
         return tmpCr;

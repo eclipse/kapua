@@ -13,8 +13,8 @@ package org.eclipse.kapua.service.device.registry.connection.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -39,12 +39,20 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFac
  * @since 1.0
  */
 @KapuaProvider
-public class DeviceConnectionServiceImpl extends AbstractKapuaService implements DeviceConnectionService {
+public class DeviceConnectionServiceImpl extends
+        //        AbstractKapuaConfigurableResourceLimitedService<DeviceConnection, DeviceConnectionCreator, DeviceConnectionService, DeviceConnectionListResult, DeviceConnectionQuery, DeviceConnectionFactory>
+        AbstractKapuaConfigurableService
+        implements DeviceConnectionService {
 
     private static final Domain DEVICE_CONNECTION_DOMAIN = new DeviceConnectionDomain();
 
     public DeviceConnectionServiceImpl() {
-        super(DeviceEntityManagerFactory.instance());
+        this(DeviceEntityManagerFactory.instance());
+    }
+
+    public DeviceConnectionServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory) {
+        //        super(DeviceConnectionService.class.getName(), DEVICE_CONNECTION_DOMAIN, deviceEntityManagerFactory, DeviceConnectionService.class, DeviceConnectionFactory.class);
+        super(DeviceConnectionService.class.getName(), DEVICE_CONNECTION_DOMAIN, deviceEntityManagerFactory);
     }
 
     @Override
@@ -62,7 +70,7 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaService implements
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_CONNECTION_DOMAIN, Actions.write, deviceConnectionCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_CONNECTION_DOMAIN, Actions.write, null));
 
         return entityManagerSession.onTransactedInsert(em -> DeviceConnectionDAO.create(em, deviceConnectionCreator));
     }
@@ -81,7 +89,7 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaService implements
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_CONNECTION_DOMAIN, Actions.write, deviceConnection.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_CONNECTION_DOMAIN, Actions.write, null));
 
         return entityManagerSession.onTransactedResult(em -> {
             if (DeviceConnectionDAO.find(em, deviceConnection.getId()) == null) {
@@ -183,7 +191,7 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaService implements
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_CONNECTION_DOMAIN, Actions.write, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_CONNECTION_DOMAIN, Actions.write, null));
 
         entityManagerSession.onTransactedAction(em -> {
             if (DeviceConnectionDAO.find(em, deviceConnectionId) == null) {

@@ -22,6 +22,7 @@
         <!-- Device -->
         <class>org.eclipse.kapua.service.device.registry.internal.DeviceImpl</class>
         <class>org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionImpl</class>
+        <class>org.eclipse.kapua.service.device.registry.connection.option.internal.DeviceConnectionOptionImpl</class>
         <class>org.eclipse.kapua.service.device.registry.event.internal.DeviceEventImpl</class>
          
         <!-- Base classes and External classes -->

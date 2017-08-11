@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.common;
 
-import static org.eclipse.kapua.service.device.registry.DeviceCredentialsMode.LOOSE;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 
@@ -351,8 +350,6 @@ public class DeviceRegistryValidationTestSteps extends AbstractKapuaSteps {
         tmpDeviceCreator.setCustomAttribute3("customAttribute3");
         tmpDeviceCreator.setCustomAttribute4("customAttribute4");
         tmpDeviceCreator.setCustomAttribute5("customAttribute5");
-        tmpDeviceCreator.setCredentialsMode(LOOSE);
-        tmpDeviceCreator.setPreferredUserId(new KapuaEid(BigInteger.valueOf(random.nextLong())));
         tmpDeviceCreator.setStatus(DeviceStatus.ENABLED);
 
         return tmpDeviceCreator;
@@ -383,8 +380,6 @@ public class DeviceRegistryValidationTestSteps extends AbstractKapuaSteps {
         tmpDevice.setCustomAttribute3("customAttribute3");
         tmpDevice.setCustomAttribute4("customAttribute4");
         tmpDevice.setCustomAttribute5("customAttribute5");
-        tmpDevice.setCredentialsMode(LOOSE);
-        tmpDevice.setPreferredUserId(new KapuaEid(BigInteger.valueOf(random.nextLong())));
         tmpDevice.setStatus(DeviceStatus.ENABLED);
 
         return tmpDevice;

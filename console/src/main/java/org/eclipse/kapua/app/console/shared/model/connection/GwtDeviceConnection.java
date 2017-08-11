@@ -14,6 +14,9 @@ package org.eclipse.kapua.app.console.shared.model.connection;
 import java.io.Serializable;
 
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceQueryPredicates.GwtDeviceConnectionStatus;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import org.eclipse.kapua.app.console.shared.model.GwtUpdatableEntityModel;
 
 public class GwtDeviceConnection extends GwtUpdatableEntityModel implements Serializable {
@@ -28,8 +31,38 @@ public class GwtDeviceConnection extends GwtUpdatableEntityModel implements Seri
     public <X> X get(String property) {
         if ("connectionStatusEnum".equals(property)) {
             return (X) GwtDeviceConnectionStatus.valueOf(getConnectionStatus());
+        } else if ("connectionUserCouplingModeEnum".equals(property)) {
+            return (X) GwtConnectionUserCouplingMode.getEnumFromLabel(getConnectionUserCouplingMode());
         } else {
             return super.get(property);
+        }
+    }
+
+    public enum GwtConnectionUserCouplingMode implements IsSerializable {
+        LOOSE("Unbound"), //
+        STRICT("Device-bound"), //
+        INHERITED("Account Default");
+
+        private final String label;
+
+        GwtConnectionUserCouplingMode(String label) {
+            this.label = label;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        public static GwtConnectionUserCouplingMode getEnumFromLabel(String label) {
+            GwtConnectionUserCouplingMode gdct = null;
+
+            for (GwtConnectionUserCouplingMode e : GwtConnectionUserCouplingMode.values()) {
+                if (e.getLabel().equals(label)) {
+                    gdct = e;
+                }
+            }
+
+            return gdct;
         }
     }
 
@@ -83,6 +116,34 @@ public class GwtDeviceConnection extends GwtUpdatableEntityModel implements Seri
 
     public void setServerIp(String serverIp) {
         set("serverIp", serverIp);
+    }
+
+    public String getConnectionUserCouplingMode() {
+        return get("connectionUserCouplingMode");
+    }
+
+    public GwtConnectionUserCouplingMode getConnectionUserCouplingModeEnum() {
+        return get("connectionUserCouplingModeEnum");
+    }
+
+    public void setConnectionUserCouplingMode(String connectionUserCouplingMode) {
+        set("connectionUserCouplingMode", connectionUserCouplingMode);
+    }
+
+    public String getReservedUserId() {
+        return get("reservedUserId");
+    }
+
+    public void setReservedUserId(String userId) {
+        set("reservedUserId", userId);
+    }
+
+    public Boolean getAllowUserChange() {
+        return get("allowUserChange");
+    }
+
+    public void setAllowUserChange(Boolean allowUserChange) {
+        set("allowUserChange", allowUserChange);
     }
 
 }

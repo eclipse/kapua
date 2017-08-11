@@ -20,13 +20,13 @@ import org.eclipse.kapua.app.console.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.setting.ConsoleSettingKeys;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
-import org.eclipse.kapua.app.console.shared.model.GwtDevice.GwtDeviceCredentialsTight;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceCreator;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceEvent;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceQueryPredicates;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceQueryPredicates.GwtDeviceConnectionStatus;
 import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnection.GwtConnectionUserCouplingMode;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceService;
 import org.eclipse.kapua.app.console.shared.util.GwtKapuaModelConverter;
 import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
@@ -43,7 +43,6 @@ import org.eclipse.kapua.model.query.predicate.KapuaAndPredicate;
 import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
-import org.eclipse.kapua.service.device.registry.DeviceCredentialsMode;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DevicePredicates;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
@@ -113,18 +112,27 @@ public class GwtDeviceServiceImpl extends KapuaConfigurableRemoteServiceServlet<
                 DeviceConnection deviceConnection = null;
                 if (device.getConnectionId() != null) {
                     deviceConnection = deviceConnectionService.find(scopeId, device.getConnectionId());
-                    if (deviceConnection != null) {
-                        pairs.add(new GwtGroupedNVPair("netInfo", "netConnIface", device.getConnectionInterface()));
-                        pairs.add(new GwtGroupedNVPair("netInfo", "netConnIp", deviceConnection.getClientIp()));
-                        pairs.add(new GwtGroupedNVPair("netInfo", "netConnIfaceIp", device.getConnectionIp()));
-                        pairs.add(new GwtGroupedNVPair("devInfo", "devConnectionStatus", deviceConnection.getStatus().toString()));
-                    } else {
-                        pairs.add(new GwtGroupedNVPair("netInfo", "netConnIface", null));
-                        pairs.add(new GwtGroupedNVPair("netInfo", "netConnIp", null));
-                        pairs.add(new GwtGroupedNVPair("netInfo", "netConnIfaceIp", null));
-                        pairs.add(new GwtGroupedNVPair("devInfo", "devConnectionStatus", DeviceConnectionStatus.DISCONNECTED.toString()));
-                    }
+                }
+
+                if (deviceConnection != null) {
+                    pairs.add(new GwtGroupedNVPair("connInfo", "connConnectionStatus", deviceConnection.getStatus().toString()));
+                    pairs.add(new GwtGroupedNVPair("connInfo", "connClientId", device.getClientId()));
+                    pairs.add(new GwtGroupedNVPair("connInfo", "connUserId", deviceConnection.getUserId().toCompactId()));
+                    pairs.add(new GwtGroupedNVPair("connInfo", "connReservedUserId", deviceConnection.getReservedUserId() != null ? deviceConnection.getReservedUserId().toCompactId() : null));
+                    pairs.add(new GwtGroupedNVPair("connInfo", "connUserCouplingMode", GwtConnectionUserCouplingMode.valueOf(deviceConnection.getUserCouplingMode().name()).getLabel()));
+                    pairs.add(new GwtGroupedNVPair("connInfo", "connClientIp", deviceConnection.getClientIp()));
+                    pairs.add(new GwtGroupedNVPair("netInfo", "netConnIface", device.getConnectionInterface()));
+                    pairs.add(new GwtGroupedNVPair("netInfo", "netConnIp", deviceConnection.getClientIp()));
+                    pairs.add(new GwtGroupedNVPair("netInfo", "netConnIfaceIp", device.getConnectionIp()));
+                    pairs.add(new GwtGroupedNVPair("devInfo", "devConnectionStatus", deviceConnection.getStatus().toString()));
+
                 } else {
+                    pairs.add(new GwtGroupedNVPair("connInfo", "connConnectionStatus", DeviceConnectionStatus.DISCONNECTED.toString()));
+                    pairs.add(new GwtGroupedNVPair("connInfo", "connClientId", null));
+                    pairs.add(new GwtGroupedNVPair("connInfo", "connUserId", null));
+                    pairs.add(new GwtGroupedNVPair("connInfo", "connLastUser", null));
+                    pairs.add(new GwtGroupedNVPair("connInfo", "connUserCouplingMode", null));
+                    pairs.add(new GwtGroupedNVPair("connInfo", "connClientIp", null));
                     pairs.add(new GwtGroupedNVPair("netInfo", "netConnIface", null));
                     pairs.add(new GwtGroupedNVPair("netInfo", "netConnIp", null));
                     pairs.add(new GwtGroupedNVPair("netInfo", "netConnIfaceIp", null));
@@ -155,10 +163,6 @@ public class GwtDeviceServiceImpl extends KapuaConfigurableRemoteServiceServlet<
                     }
                 }
 
-                if (device.getPreferredUserId() != null) {
-                    pairs.add(new GwtGroupedNVPair("devInfo", "devLastUserUsed", device.getPreferredUserId().toCompactId()));
-                }
-
                 pairs.add(new GwtGroupedNVPair("devInfo", "devApps", device.getApplicationIdentifiers()));
                 pairs.add(new GwtGroupedNVPair("devInfo", "devAccEnc", device.getAcceptEncoding()));
 
@@ -167,10 +171,6 @@ public class GwtDeviceServiceImpl extends KapuaConfigurableRemoteServiceServlet<
                 pairs.add(new GwtGroupedNVPair("devAttributesInfo", "devCustomAttribute3", device.getCustomAttribute3()));
                 pairs.add(new GwtGroupedNVPair("devAttributesInfo", "devCustomAttribute4", device.getCustomAttribute4()));
                 pairs.add(new GwtGroupedNVPair("devAttributesInfo", "devCustomAttribute5", device.getCustomAttribute5()));
-
-                // Credentials tight
-                pairs.add(new GwtGroupedNVPair("devSecurity", "devSecurityCredentialsTight", GwtDeviceCredentialsTight.valueOf(device.getCredentialsMode().name()).getLabel()));
-                pairs.add(new GwtGroupedNVPair("devSecurity", "devSecurityAllowCredentialsChange", device.getPreferredUserId() == null));
 
                 pairs.add(new GwtGroupedNVPair("devHw", "devModelName", device.getModelId()));
                 pairs.add(new GwtGroupedNVPair("devHw", "devModelId", device.getModelId()));
@@ -348,7 +348,7 @@ public class GwtDeviceServiceImpl extends KapuaConfigurableRemoteServiceServlet<
             deviceCreator.setGroupId(GwtKapuaModelConverter.convert(gwtDeviceCreator.getGroupId()));
 
             // FIXME One day it will be specified from the form. In the meantime, defaults to LOOSE
-            deviceCreator.setCredentialsMode(DeviceCredentialsMode.LOOSE);
+            // deviceCreator.setCredentialsMode(DeviceCredentialsMode.LOOSE);
 
             deviceCreator.setCustomAttribute1(gwtDeviceCreator.getCustomAttribute1());
             deviceCreator.setCustomAttribute2(gwtDeviceCreator.getCustomAttribute2());

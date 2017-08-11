@@ -47,6 +47,7 @@
         <url-pattern>/device/*</url-pattern>
         <url-pattern>/deviceManagement/*</url-pattern>
         <url-pattern>/deviceConnection/*</url-pattern>
+        <url-pattern>/deviceConnectionOption/*</url-pattern>
         <url-pattern>/device_snapshots/*</url-pattern>
         <url-pattern>/user/*</url-pattern>
         <url-pattern>/data/*</url-pattern>
@@ -187,7 +188,7 @@
         <servlet-name>deviceManagementServlet</servlet-name>
         <url-pattern>/deviceManagement</url-pattern>
     </servlet-mapping>
-    
+
     <servlet>
         <servlet-name>deviceConnectionServlet</servlet-name>
         <servlet-class>org.eclipse.kapua.app.console.server.GwtDeviceConnectionServiceImpl</servlet-class>
@@ -195,6 +196,15 @@
     <servlet-mapping>
         <servlet-name>deviceConnectionServlet</servlet-name>
         <url-pattern>/deviceConnection</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>deviceConnectionOptionServlet</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.server.GwtDeviceConnectionOptionServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>deviceConnectionOptionServlet</servlet-name>
+        <url-pattern>/deviceConnectionOption</url-pattern>
     </servlet-mapping>
 
     <servlet>

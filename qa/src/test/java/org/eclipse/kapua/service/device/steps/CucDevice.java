@@ -15,7 +15,6 @@ import java.math.BigInteger;
 
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.device.registry.DeviceCredentialsMode;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
 
 /**
@@ -50,8 +49,6 @@ public class CucDevice {
     String applicationFrameworkVersion;
     String applicationIdentifiers;
     String acceptEncoding;
-    String credentialsMode;
-    DeviceCredentialsMode kCredentialsMode;
 
     public void parse() {
         if (scopeId != null) {
@@ -80,23 +77,6 @@ public class CucDevice {
                 break;
             default:
                 kStatus = null;
-                break;
-            }
-        }
-
-        if (credentialsMode != null) {
-            switch (credentialsMode.trim().toUpperCase()) {
-            case "INHERITED":
-                kCredentialsMode = DeviceCredentialsMode.INHERITED;
-                break;
-            case "LOOSE":
-                kCredentialsMode = DeviceCredentialsMode.LOOSE;
-                break;
-            case "STRICT":
-                kCredentialsMode = DeviceCredentialsMode.STRICT;
-                break;
-            default:
-                kCredentialsMode = null;
                 break;
             }
         }
@@ -260,13 +240,5 @@ public class CucDevice {
 
     public void setAcceptEncoding(String acceptEncoding) {
         this.acceptEncoding = acceptEncoding;
-    }
-
-    public DeviceCredentialsMode getCredentialsMode() {
-        return kCredentialsMode;
-    }
-
-    public void setCredentialsMode(DeviceCredentialsMode credentialsMode) {
-        kCredentialsMode = credentialsMode;
     }
 }

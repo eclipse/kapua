@@ -20,12 +20,12 @@ Scenario: Regular connection
 
 	Given User 1 in scope 1
 	And I have the following connection
-		| clientId    | clientIp    | serverIp   | protocol |
-		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      |
+		| clientId    | clientIp    | serverIp   | protocol | allowUserChange   |
+		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      | true              |
 	Then The connection object is regular
 	And The connection details match
-		| clientId    | clientIp    | serverIp   | protocol |
-		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      |
+		| clientId    | clientIp    | serverIp   | protocol | allowUserChange   |
+		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      | true              |
 	And The connection status is "CONNECTED"
 
 Scenario: Device connection update
@@ -34,15 +34,15 @@ Scenario: Device connection update
 
 	Given User 1 in scope 1
 	And I have the following connection
-		| clientId    | clientIp    | serverIp   | protocol |
-		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      |
+		| clientId    | clientIp    | serverIp   | protocol | allowUserChange   |
+		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      | true              |
 	When I modify the connection details to
-		| clientIp    | serverIp   | protocol |
-		| 127.0.0.109 | 127.0.0.25 | udp      |
+		| clientIp    | serverIp   | protocol | allowUserChange   |
+		| 127.0.0.109 | 127.0.0.25 | udp      | true              |
 	Then No exception was thrown
 	And The connection details match
-		| clientIp    | serverIp   | protocol |
-		| 127.0.0.109 | 127.0.0.25 | udp      |
+		| clientIp    | serverIp   | protocol | allowUserChange   |
+		| 127.0.0.109 | 127.0.0.25 | udp      | true              |
 
 Scenario: Try to modify the connection client ID
 	It must not be possible to change the client ID of an existing device connection.
@@ -51,8 +51,8 @@ Scenario: Try to modify the connection client ID
 	
 	Given User 1 in scope 1
 	And I have the following connection
-		| clientId    | clientIp    | serverIp   | protocol |
-		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      |
+		| clientId    | clientIp    | serverIp   | protocol | allowUserChange   |
+		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      | true              |
 	When I try to modify the connection client Id to "testClient2"
 	Then No exception was thrown
 	And The connection client ID remains unchanged
@@ -62,14 +62,14 @@ Scenario: Count connections in scope
 
 	Given A scope with id 1
 	And I have the following connections
-		| clientId    | clientIp    | serverIp   | protocol |
-		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      |
-		| testClient2 | 127.0.0.102 | 127.0.0.10 | tcp      |
-		| testClient3 | 127.0.0.103 | 127.0.0.10 | tcp      |
-		| testClient4 | 127.0.0.104 | 127.0.0.10 | tcp      |
-		| testClient5 | 127.0.0.105 | 127.0.0.10 | tcp      |
-		| testClient6 | 127.0.0.106 | 127.0.0.10 | tcp      |
-		| testClient7 | 127.0.0.107 | 127.0.0.10 | tcp      |
+		| clientId    | clientIp    | serverIp   | protocol | allowUserChange   |
+		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      | true              |
+		| testClient2 | 127.0.0.102 | 127.0.0.10 | tcp      | true              |
+		| testClient3 | 127.0.0.103 | 127.0.0.10 | tcp      | true              |
+		| testClient4 | 127.0.0.104 | 127.0.0.10 | tcp      | true              |
+		| testClient5 | 127.0.0.105 | 127.0.0.10 | tcp      | true              |
+		| testClient6 | 127.0.0.106 | 127.0.0.10 | tcp      | true              |
+		| testClient7 | 127.0.0.107 | 127.0.0.10 | tcp      | true              |
 	Then No exception was thrown
 	And I count 7 connections in scope 1
 
@@ -79,14 +79,14 @@ Scenario: Count connections in empty scope
 	
 	Given A scope with id 1
 	And I have the following connections
-		| clientId    | clientIp    | serverIp   | protocol |
-		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      |
-		| testClient2 | 127.0.0.102 | 127.0.0.10 | tcp      |
-		| testClient3 | 127.0.0.103 | 127.0.0.10 | tcp      |
-		| testClient4 | 127.0.0.104 | 127.0.0.10 | tcp      |
-		| testClient5 | 127.0.0.105 | 127.0.0.10 | tcp      |
-		| testClient6 | 127.0.0.106 | 127.0.0.10 | tcp      |
-		| testClient7 | 127.0.0.107 | 127.0.0.10 | tcp      |
+		| clientId    | clientIp    | serverIp   | protocol | allowUserChange   |
+		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      | true              |
+		| testClient2 | 127.0.0.102 | 127.0.0.10 | tcp      | true              |
+		| testClient3 | 127.0.0.103 | 127.0.0.10 | tcp      | true              |
+		| testClient4 | 127.0.0.104 | 127.0.0.10 | tcp      | true              |
+		| testClient5 | 127.0.0.105 | 127.0.0.10 | tcp      | true              |
+		| testClient6 | 127.0.0.106 | 127.0.0.10 | tcp      | true              |
+		| testClient7 | 127.0.0.107 | 127.0.0.10 | tcp      | true              |
 	Then I count 0 connections in scope 42
 
 Scenario: Try to change an existing connection ID
@@ -95,8 +95,8 @@ Scenario: Try to change an existing connection ID
 	
 	Given User 1 in scope 1
 	And I have the following connection
-		| clientId    | clientIp    | serverIp   | protocol |
-		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      |
+		| clientId    | clientIp    | serverIp   | protocol | allowUserChange   |
+		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      | true              |
 	When I try to modify the connection Id
 	Then An exception was thrown
 
@@ -106,12 +106,12 @@ Scenario: Find a connection by its IDs
 
 	Given User 1 in scope 1
 	And I have the following connection
-		| clientId    | clientIp    | serverIp   | protocol |
-		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      |
+		| clientId    | clientIp    | serverIp   | protocol | allowUserChange   |
+		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      | true              |
 	When I search for a connection by scope and connection IDs
 	Then The connection details match
-		| clientId    | clientIp    | serverIp   | protocol |
-		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      |
+		| clientId    | clientIp    | serverIp   | protocol | allowUserChange   |
+		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      | true              |
 
 Scenario: I try to find a non-existing connection
 	Searching for a non existing connection must not raise any exception. A null
@@ -119,8 +119,8 @@ Scenario: I try to find a non-existing connection
 
 	Given User 1 in scope 1
 	And I have the following connection
-		| clientId    | clientIp    | serverIp   | protocol |
-		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      |
+		| clientId    | clientIp    | serverIp   | protocol | allowUserChange   |
+		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      | true              |
 	When I search for a random connection ID
 	Then No connection was found
 
@@ -130,15 +130,15 @@ Scenario: Find a connection by its client ID
 
 	Given User 1 in scope 1
 	And I have the following connections
-		| clientId    | clientIp    | serverIp   | protocol |
-		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      |
-		| testClient2 | 127.0.0.102 | 127.0.0.10 | tcp      |
-		| testClient3 | 127.0.0.103 | 127.0.0.10 | tcp      |
-		| testClient4 | 127.0.0.104 | 127.0.0.10 | tcp      |
+		| clientId    | clientIp    | serverIp   | protocol | allowUserChange   |
+		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      | true              |
+		| testClient2 | 127.0.0.102 | 127.0.0.10 | tcp      | true              |
+		| testClient3 | 127.0.0.103 | 127.0.0.10 | tcp      | true              |
+		| testClient4 | 127.0.0.104 | 127.0.0.10 | tcp      | true              |
 	When I search for a connection with the client ID "testClient3"
 	Then The connection details match
-		| clientId    | clientIp    | serverIp   | protocol |
-		| testClient3 | 127.0.0.103 | 127.0.0.10 | tcp      |	
+		| clientId    | clientIp    | serverIp   | protocol | allowUserChange   |
+		| testClient3 | 127.0.0.103 | 127.0.0.10 | tcp      | true              |
 
 Scenario: Search for a non existent client ID
 	Searching for a non existing connection must not raise any exception. A null
@@ -146,36 +146,36 @@ Scenario: Search for a non existent client ID
 	
 	Given User 1 in scope 1
 	And I have the following connections
-		| clientId    | clientIp    | serverIp   | protocol |
-		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      |
-		| testClient2 | 127.0.0.102 | 127.0.0.10 | tcp      |
-		| testClient3 | 127.0.0.103 | 127.0.0.10 | tcp      |
-		| testClient4 | 127.0.0.104 | 127.0.0.10 | tcp      |
+		| clientId    | clientIp    | serverIp   | protocol | allowUserChange   |
+		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      | true              |
+		| testClient2 | 127.0.0.102 | 127.0.0.10 | tcp      | true              |
+		| testClient3 | 127.0.0.103 | 127.0.0.10 | tcp      | true              |
+		| testClient4 | 127.0.0.104 | 127.0.0.10 | tcp      | true              |
 	When I search for a connection with the client ID "nonexistentId"
 	Then No connection was found
 
 Scenario: The Client ID is case sensitive
 	Given User 1 in scope 1
 	And I have the following connections
-		| clientId    | clientIp    | serverIp   | protocol |
-		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      |
+		| clientId    | clientIp    | serverIp   | protocol | allowUserChange   |
+		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      | true              |
 	When I search for a connection with the client ID "TESTClient1"
 	Then No connection was found
 	When I search for a connection with the client ID "testClient1"
 	Then The connection details match
-		| clientId    | clientIp    | serverIp   | protocol |
-		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      |	
+		| clientId    | clientIp    | serverIp   | protocol | allowUserChange   |
+		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      | true              |
 
 Scenario: Delete a connection from the database
 	It must be possible to delete a specific entry fron the connection database.
 
 	Given User 1 in scope 1
 	And I have the following connections
-		| clientId    | clientIp    | serverIp   | protocol |
-		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      |
-		| testClient2 | 127.0.0.102 | 127.0.0.10 | tcp      |
-		| testClient3 | 127.0.0.103 | 127.0.0.10 | tcp      |
-		| testClient4 | 127.0.0.104 | 127.0.0.10 | tcp      |
+		| clientId    | clientIp    | serverIp   | protocol | allowUserChange   |
+		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      | true              |
+		| testClient2 | 127.0.0.102 | 127.0.0.10 | tcp      | true              |
+		| testClient3 | 127.0.0.103 | 127.0.0.10 | tcp      | true              |
+		| testClient4 | 127.0.0.104 | 127.0.0.10 | tcp      | true              |
 	And I search for a connection with the client ID "testClient3"
 	And I delete the existing connection
 	When I search for a connection with the client ID "testClient3"
@@ -187,8 +187,8 @@ Scenario: Delete a non existing cnnection
 	
 	Given User 1 in scope 1
 	And I have the following connection
-		| clientId    | clientIp    | serverIp   | protocol |
-		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      |
+		| clientId    | clientIp    | serverIp   | protocol | allowUserChange   |
+		| testClient1 | 127.0.0.101 | 127.0.0.10 | tcp      | true              |
 	When I try to delete a random connection ID
 	Then An exception was thrown
 
@@ -198,18 +198,18 @@ Scenario: Generic connection query
 	
 	Given User 1 in scope 1
 	And I have the following connections
-		| clientId     | clientIp    | serverIp   | protocol |
-		| testClient01 | 127.0.0.101 | 127.0.0.10 | tcp      |
-		| testClient02 | 127.0.0.102 | 127.0.0.10 | tcp      |
-		| testClient03 | 127.0.0.103 | 127.0.0.10 | tcp      |
-		| testClient04 | 127.0.0.104 | 127.0.0.11 | tcp      |
-		| testClient05 | 127.0.0.104 | 127.0.0.11 | tcp      |
-		| testClient06 | 127.0.0.104 | 127.0.0.11 | tcp      |
-		| testClient07 | 127.0.0.104 | 127.0.0.11 | udp      |
-		| testClient08 | 127.0.0.104 | 127.0.0.10 | udp      |
-		| testClient09 | 127.0.0.104 | 127.0.0.10 | udp      |
-		| testClient10 | 127.0.0.104 | 127.0.0.10 | udp      |
-		| testClient11 | 127.0.0.104 | 127.0.0.10 | udp      |
+		| clientId     | clientIp    | serverIp   | protocol | allowUserChange   |
+		| testClient01 | 127.0.0.101 | 127.0.0.10 | tcp      | true              |
+		| testClient02 | 127.0.0.102 | 127.0.0.10 | tcp      | true              |
+		| testClient03 | 127.0.0.103 | 127.0.0.10 | tcp      | true              |
+		| testClient04 | 127.0.0.104 | 127.0.0.11 | tcp      | true              |
+		| testClient05 | 127.0.0.104 | 127.0.0.11 | tcp      | true              |
+		| testClient06 | 127.0.0.104 | 127.0.0.11 | tcp      | true              |
+		| testClient07 | 127.0.0.104 | 127.0.0.11 | udp      | true              |
+		| testClient08 | 127.0.0.104 | 127.0.0.10 | udp      | true              |
+		| testClient09 | 127.0.0.104 | 127.0.0.10 | udp      | true              |
+		| testClient10 | 127.0.0.104 | 127.0.0.10 | udp      | true              |
+		| testClient11 | 127.0.0.104 | 127.0.0.10 | udp      | true              |
 	When I query for all connections with the parameter "protocol" set to "udp"
 	Then I find 5 connections
 	When I query for all connections with the parameter "serverIp" set to "127.0.0.11"

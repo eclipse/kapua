@@ -26,6 +26,7 @@ import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 
@@ -42,7 +43,7 @@ public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implement
     private static final long serialVersionUID = 8928343233144731836L;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(name = "status", nullable = false, updatable = true)
     private DeviceConnectionStatus status;
 
     @Basic
@@ -51,9 +52,23 @@ public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implement
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "eid", column = @Column(name = "user_id", nullable = false))
+            @AttributeOverride(name = "eid", column = @Column(name = "user_id", nullable = false, updatable = true))
     })
     private KapuaEid userId;
+
+    @Basic
+    @Column(name = "allow_user_change", nullable = false, updatable = true)
+    private boolean allowUserChange;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_coupling_mode", nullable = false)
+    private ConnectionUserCouplingMode userCouplingMode;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "eid", column = @Column(name = "reserved_user_id", nullable = true, updatable = true))
+    })
+    private KapuaEid reservedUserId;
 
     @Basic
     @Column(name = "protocol", nullable = false)
@@ -89,6 +104,9 @@ public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implement
         setStatus(deviceConnection.getStatus());
         setClientId(deviceConnection.getClientId());
         setUserId(deviceConnection.getUserId());
+        setAllowUserChange(deviceConnection.getAllowUserChange());
+        setUserCouplingMode(deviceConnection.getUserCouplingMode());
+        setReservedUserId(deviceConnection.getReservedUserId());
         setProtocol(deviceConnection.getProtocol());
         setClientIp(deviceConnection.getClientIp());
         setServerIp(deviceConnection.getServerIp());
@@ -121,7 +139,31 @@ public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implement
 
     @Override
     public void setUserId(KapuaId userId) {
-        this.userId = (KapuaEid) userId;
+        this.userId = KapuaEid.parseKapuaId(userId);
+    }
+
+    public boolean getAllowUserChange() {
+        return allowUserChange;
+    }
+
+    public void setAllowUserChange(boolean allowUserChange) {
+        this.allowUserChange = allowUserChange;
+    }
+
+    public ConnectionUserCouplingMode getUserCouplingMode() {
+        return userCouplingMode;
+    }
+
+    public void setUserCouplingMode(ConnectionUserCouplingMode userCouplingMode) {
+        this.userCouplingMode = userCouplingMode;
+    }
+
+    public KapuaId getReservedUserId() {
+        return reservedUserId;
+    }
+
+    public void setReservedUserId(KapuaId reservedUserId) {
+        this.reservedUserId = KapuaEid.parseKapuaId(reservedUserId);
     }
 
     @Override
