@@ -91,6 +91,10 @@
             <artifactId>logback-classic</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-account-api</artifactId>
+        </dependency>
     </dependencies>
         
 </project>
