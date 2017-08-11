@@ -23,6 +23,8 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -105,9 +107,12 @@ public class KapuaLiquibaseClient {
 
         //
         // Find and execute all master scripts
-        File[] masterChangelogs = changelogTempDirectory.listFiles((FilenameFilter) (dir, name) -> name.endsWith("-master.xml"));
+        List<File> masterChangelogs = Arrays.asList(changelogTempDirectory.listFiles((FilenameFilter) (dir, name) -> name.endsWith("-master.xml")));
 
-        LOG.info("Master Liquibase files found: {}", masterChangelogs.length);
+        LOG.info("Master Liquibase files found: {}", masterChangelogs.size());
+
+        LOG.trace("Sorting master Liquibase files found.");
+        masterChangelogs.sort((f1, f2) -> f1.getAbsolutePath().compareTo(f2.getAbsolutePath()));
 
         for (File masterChangelog : masterChangelogs) {
             LOG.info("Excuting liquibase script: {}", masterChangelog.getAbsolutePath());
