@@ -2,7 +2,16 @@ language: java
 jdk:
   - oraclejdk8
 
-before_script:
+sudo: false
+dist: trusty
+
+# The cache is stored per-branch
+
+cache:
+  directories:
+  - $HOME/.m2
+
+install:
   - echo ==== Setting up toolchain.xml ====
   - ls /usr/lib/jvm
   - ls
@@ -12,11 +21,30 @@ before_script:
   - mkdir maven
   - cd maven ; tar --strip-components 1 -xzf ../maven.tar.gz ; cd ..
   - chmod a+x maven/bin/mvn
+
+before_script:
   - export M2_HOME=$PWD/maven
-  - export PATH=$PWD/maven/bin:${PATH}
+  - export PATH=${M2_HOME}/bin:${PATH}
+  - export MAVEN_OPTS=-Xmx256m
   - hash -r
 
-script: ./travis.sh
+jobs:
+  include:
+    - stage: build
+      script:
+        - $M2_HOME/bin/mvn -v
+        - $M2_HOME/bin/mvn -B -f external/pom.xml install
+    - stage: build
+      script:
+        - $M2_HOME/bin/mvn -v
+        - $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -DskipTests install
+    - stage: test
+      script:
+        - $M2_HOME/bin/mvn -B javadoc:jar
+    - stage: test
+      script:
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Pdev verify
+        - bash <(curl -s https://codecov.io/bash)
 
 # The following upgrades Java during the build in
 # order to work around an older Java 8 compiler issue
@@ -26,4 +54,4 @@ script: ./travis.sh
 addons:
   apt:
     packages:
-      - oracle-java8-installer 
+      - oracle-java8-installer
