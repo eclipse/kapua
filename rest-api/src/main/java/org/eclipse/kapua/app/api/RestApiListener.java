@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.server.util;
+package org.eclipse.kapua.app.api;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers.resolveJdbcUrl;
@@ -24,24 +24,17 @@ import java.util.Optional;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.eclipse.kapua.app.console.ConsoleJAXBContextProvider;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ConsoleListener implements ServletContextListener {
+public class RestApiListener implements ServletContextListener {
 
-    private static final Logger logger = LoggerFactory.getLogger(ConsoleListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(RestApiListener.class);
 
     @Override
     public void contextInitialized(final ServletContextEvent event) {
-        logger.info("Initialize Console JABContext Provider");
-        JAXBContextProvider consoleProvider = new ConsoleJAXBContextProvider();
-        XmlUtil.setContextProvider(consoleProvider);
-
         logger.info("Initialize Liquibase embedded client.");
         SystemSetting config = SystemSetting.getInstance();
         String dbUsername = config.getString(DB_USERNAME);
