@@ -14,10 +14,13 @@
   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
-                      
-    <include relativeToChangelogFile="true" file="./atht_credential-expiration.sql" />
-    <include relativeToChangelogFile="true" file="./atht_credential-lockout_policy.sql" />
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+  logicalFilePath="KapuaDB/changelog-authentication-0.3.0.xml">
+
+    <changeSet id="changelog-authentication-0.3.0" author="eurotech">
+        <sqlFile relativeToChangelogFile="true" path="./atht_credential-expiration.sql" />
+        <sqlFile relativeToChangelogFile="true" path="./atht_credential-lockout_policy.sql" />
+    </changeSet>
 
     <include relativeToChangelogFile="true" file="./atht_access_token-id_check_positive.sql" />
     <include relativeToChangelogFile="true" file="./atht_credential-id_check_positive.sql" />
