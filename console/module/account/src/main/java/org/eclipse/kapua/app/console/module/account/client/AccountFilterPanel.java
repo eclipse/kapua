@@ -40,10 +40,7 @@ public class AccountFilterPanel extends EntityFilterPanel<GwtAccount> {
         super(entityView, currentSession);
         entityGrid = entityView.getEntityGrid(entityView, currentSession);
         this.currentSession = currentSession;
-
-        setIcon(new KapuaIcon(IconSet.FILTER));
-        setHeading(MSGS.filterHeader());
-
+        
         VerticalPanel fieldsPanel = getFieldsPanel();
 
         final Label accountNameLabel = new Label(MSGS.accountFilterNameLabel());
