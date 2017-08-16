@@ -110,6 +110,11 @@ public enum SystemSettingKey implements SettingKey {
     DB_SCHEMA_ENV("COMMONS_DB_SCHEMA"),
 
     /**
+     * Update database schema on startup
+     */
+    DB_SCHEMA_UPDATE("commons.db.schema.update"),
+
+    /**
      * Database timezone to use
      */
     DB_USE_TIMEZONE("commons.db.useTimezone"),

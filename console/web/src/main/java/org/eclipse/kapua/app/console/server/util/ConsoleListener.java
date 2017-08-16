@@ -17,6 +17,7 @@ import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_JDBC_
 import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_PASSWORD;
 import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_SCHEMA;
 import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_SCHEMA_ENV;
+import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_SCHEMA_UPDATE;
 import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_USERNAME;
 
 import java.util.Optional;
@@ -42,21 +43,23 @@ public class ConsoleListener implements ServletContextListener {
         JAXBContextProvider consoleProvider = new ConsoleJAXBContextProvider();
         XmlUtil.setContextProvider(consoleProvider);
 
-        logger.info("Initialize Liquibase embedded client.");
         SystemSetting config = SystemSetting.getInstance();
-        String dbUsername = config.getString(DB_USERNAME);
-        String dbPassword = config.getString(DB_PASSWORD);
-        String schema = firstNonNull(config.getString(DB_SCHEMA_ENV), config.getString(DB_SCHEMA));
+        if(config.getBoolean(DB_SCHEMA_UPDATE, false)) {
+            logger.info("Initialize Liquibase embedded client.");
+            String dbUsername = config.getString(DB_USERNAME);
+            String dbPassword = config.getString(DB_PASSWORD);
+            String schema = firstNonNull(config.getString(DB_SCHEMA_ENV), config.getString(DB_SCHEMA));
 
-        // initialize driver
-        try {
-            Class.forName(config.getString(DB_JDBC_DRIVER));
-        } catch (ClassNotFoundException e) {
-            logger.warn("Could not find jdbc driver: {}", config.getString(DB_JDBC_DRIVER));
+            // initialize driver
+            try {
+                Class.forName(config.getString(DB_JDBC_DRIVER));
+            } catch (ClassNotFoundException e) {
+                logger.warn("Could not find jdbc driver: {}", config.getString(DB_JDBC_DRIVER));
+            }
+
+            logger.debug("Starting Liquibase embedded client update - URL: {}, user/pass: {}/{}", new Object[]{resolveJdbcUrl(), dbUsername, dbPassword});
+            new KapuaLiquibaseClient(resolveJdbcUrl(), dbUsername, dbPassword, Optional.of(schema)).update();
         }
-
-        logger.debug("Starting Liquibase embedded client update - URL: {}, user/pass: {}/{}", new Object[]{resolveJdbcUrl(), dbUsername, dbPassword});
-        new KapuaLiquibaseClient(resolveJdbcUrl(), dbUsername, dbPassword, Optional.of(schema)).update();
     }
 
     @Override
