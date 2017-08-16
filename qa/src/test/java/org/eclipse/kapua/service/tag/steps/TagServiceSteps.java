@@ -31,8 +31,10 @@ import org.eclipse.kapua.service.tag.TagListResult;
 import org.eclipse.kapua.service.tag.TagService;
 import org.eclipse.kapua.service.tag.internal.TagFactoryImpl;
 import org.eclipse.kapua.service.tag.internal.TagPredicates;
+import org.eclipse.kapua.service.tag.internal.TagServiceImpl;
 import org.eclipse.kapua.service.user.steps.TestConfig;
 
+//import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import java.math.BigInteger;
 import java.util.HashMap;
@@ -44,10 +46,12 @@ import static org.junit.Assert.assertEquals;
 /**
  * Implementation of Gherkin steps used in TagService.feature scenarios.
  */
+
 @ScenarioScoped
 public class TagServiceSteps {
 
     private static final KapuaEid DEFAULT_SCOPE_ID = new KapuaEid(BigInteger.valueOf(1L));
+    private static TagServiceImpl tagServiceImpl = new TagServiceImpl();
 
     /**
      * Tag service.
@@ -122,6 +126,25 @@ public class TagServiceSteps {
         assertEquals(tagName, foundTag.getName());
     }
 
+    @Then("^Tag with name \"([^\"]*)\" is found and deleted$")
+    public void tagWithNameIsFoundAndDeleted(String tagName) throws Throwable {
+
+        Tag foundTag = (Tag) stepData.get("tag");
+        KapuaId foundTagId = foundTag.getId();
+        KapuaId scopeId = foundTag.getId();
+        tagServiceImpl.delete(scopeId, foundTagId);
+    }
+
+    @Then("^Tag with name \"([^\"]*)\" is verified$")
+    public void tagWithNameIsNotFound(String tagName) throws Throwable {
+
+        KapuaQuery<Tag> query = new TagFactoryImpl().newQuery(DEFAULT_SCOPE_ID);
+        query.setPredicate(new AttributePredicate<String>(TagPredicates.NAME, tagName, KapuaAttributePredicate.Operator.EQUAL));
+        TagListResult queryResult = tagService.query(query);
+        Tag foundTag = queryResult.getFirstItem();
+        assertEquals(null, foundTag);
+    }
+
     /**
      * Create TagCreator for creating tag with specified name.
      *
@@ -132,7 +155,6 @@ public class TagServiceSteps {
 
         TagCreator tagCreator = new TagFactoryImpl().newCreator(DEFAULT_SCOPE_ID);
         tagCreator.setName(tagName);
-
         return tagCreator;
     }
 }

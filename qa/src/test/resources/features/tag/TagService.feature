@@ -24,7 +24,7 @@ Feature: Tag Service
   @StartBroker
   Scenario: Start broker for all scenarios
 
-  Scenario: Creating tag
+   Scenario: Creating tag
     Create a tag entry, with specified name. Name is only tag specific attribute.
     Once created search for it and is should been created.
 
@@ -32,6 +32,17 @@ Feature: Tag Service
     When Tag with name "tagName" is searched
     Then Tag with name "tagName" is found
       And I logout
+      
+   Scenario: Deleting tag
+    Delete a tag entry, with specified name. Name is only tag specific attribute.
+    Once created search for it and is should be found and deleted.
+
+    Given Tag with name "tagName2"
+    When Tag with name "tagName2" is searched
+    Then Tag with name "tagName2" is found and deleted
+    Then Tag with name "tagName2" is verified
+      And I logout
+
 
   @StopBroker
   Scenario: Stop broker after all scenarios
