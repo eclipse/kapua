@@ -15,24 +15,24 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
-  logicalFilePath="KapuaDB/changelog-account-0.2.0.xml">
+  logicalFilePath="KapuaDB/changelog-authorization-0.2.0.xml">
 
     <include relativeToChangelogFile="true" file="../common-properties.xml" />
-    
-    <changeSet id="changelog-account-0.2.0_createTable" author="eurotech">
+
+    <changeSet id="changelog-authorization-role-0.2.0" author="eurotech">
         <!-- Old SQL file
-        <sqlFile relativeToChangelogFile="true" path="./account.sql" />
+        <sqlFile relativeToChangelogFile="true" path="./athz_role.sql" />
         -->
-        <createTable tableName="act_account">
-            <column name="scope_id" type="bigint(21) unsigned"/>
+        <createTable tableName="athz_role">
+            <column name="scope_id" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
             <column name="id" type="bigint(21) unsigned">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="name" type="varchar(255)">
-                <constraints nullable="false" unique="true"/>
+            <column name="created_on" type="timestamp(3)" defaultValueComputed="${now}">
+                <constraints nullable="false"/>
             </column>
-        
-            <column name="created_on" type="timestamp(3)" defaultValueComputed="${now}" />
             <column name="created_by" type="bigint(21) unsigned">
                 <constraints nullable="false"/>
             </column>
@@ -42,60 +42,97 @@
             <column name="modified_by" type="bigint(21) unsigned">
                 <constraints nullable="false"/>
             </column>
-
-            <column name="org_name" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="org_person_name" type="varchar(255)" />
-            <column name="org_email" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="org_phone_number" type="varchar(64)" />
-            <column name="org_address_line_1" type="varchar(255)" />
-            <column name="org_address_line_2" type="varchar(255)" />
-            <column name="org_address_line_3" type="varchar(255)" />
-            <column name="org_zip_postcode" type="varchar(255)" />
-            <column name="org_city" type="varchar(255)" />
-            <column name="org_state_province_county" type="varchar(255)" />
-            <column name="org_country" type="varchar(255)" />
             
-            <column name="parent_account_path" type="varchar(64)" />
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+
             <column name="optlock" type="int unsigned" />
             <column name="attributes" type="text" />
             <column name="properties" type="text" />
         </createTable>
-        
-        <addForeignKeyConstraint constraintName="scope_id_fk" baseTableName="act_account" baseColumnNames="scope_id" referencedTableName="act_account" referencedColumnNames="id" onDelete="RESTRICT"/>
-        
-        <createIndex tableName="act_account" indexName="idx_account_scope_id">
+
+        <createIndex tableName="athz_role" indexName="idx_role_name" unique="true">
             <column name="scope_id"/>
+            <column name="name"/>
         </createIndex>
-        
-        <insert tableName="act_account">
+
+        <!-- Seed values -->
+        <insert tableName="athz_role">
+            <column name="scope_id" value="1"/>
             <column name="id" value="1"/>
-            <column name="name" value="kapua-sys"/>
             <column name="created_on" valueComputed="${now}"/>
             <column name="created_by" value="1"/>
             <column name="modified_on" valueComputed="${now}"/>
             <column name="modified_by" value="1"/>
-            <column name="org_name" value="kapua-org"/>
-            <column name="org_person_name" value="Kapua Sysadmin"/>
-            <column name="org_email" value="kapua-sys@eclipse.org"/>
-            <column name="org_phone_number" value="+1 555 123 4567"/>
-            <column name="parent_account_path" value="/1"/>
+            <column name="name" value="admin"/>
             <column name="optlock" value="0"/>
+            <column name="attributes" value=""/>
+            <column name="properties" value=""/>
         </insert>
-        
+
         <rollback>
-            <dropIndex tableName="act_account" indexName="idx_account_scope_id"/>
-            <dropTable tableName="act_account"/>
+            <dropTable tableName="athz_role"/>
         </rollback>
     </changeSet>
 
-
-    <changeSet id="changelog-account-configuration-0.2.0_createTable" author="eurotech">
+    <changeSet id="changelog-authorization-role-permission-0.2.0" author="eurotech">
         <!-- Old SQL file
-        <sqlFile relativeToChangelogFile="true" path="./account-configuration.sql" />
+        <sqlFile relativeToChangelogFile="true" path="./athz_role_permission.sql" />
+        -->
+        <createTable tableName="athz_role_permission">
+            <column name="scope_id" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="bigint(21) unsigned">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="created_on" type="timestamp(3)" defaultValueComputed="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="role_id" type="bigint(21) unsigned" />
+            
+            <column name="domain" type="varchar(64)"/>
+            <column name="action" type="varchar(64)"/>
+            <column name="target_scope_id" type="bigint(21) unsigned" />
+            <column name="group_id" type="bigint(21) unsigned" />
+            <column name="forwardable" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="role_id_fk_2" baseTableName="athz_role_permission" baseColumnNames="role_id" referencedTableName="athz_role" referencedColumnNames="id" onDelete="CASCADE"/>
+
+        <createIndex tableName="athz_role_permission" indexName="idx_role_permission_scope_id" unique="true">
+            <column name="role_id"/>
+            <column name="domain"/>
+            <column name="action"/>
+            <column name="target_scope_id"/>
+            <column name="group_id"/>
+        </createIndex>
+
+        <!-- Seed values -->
+        <insert tableName="athz_role_permission">
+            <column name="scope_id" value="1"/>
+            <column name="id" value="1"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="1"/>
+            <column name="role_id" value="1"/>
+            <column name="forwardable" valueBoolean="true"/>
+        </insert>
+
+        <rollback>
+            <dropTable tableName="athz_role"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="changelog-authorization-role-configuration-0.2.0_createTable" author="eurotech">
+        <!-- Old SQL file
+        <sqlFile relativeToChangelogFile="true" path="./athz_role-configuration.sql" />
         -->
         <preConditions onFail="MARK_RAN">
             <not><tableExists tableName="sys_configuration"></tableExists></not>
@@ -127,19 +164,15 @@
             <column name="properties" type="text" />
         </createTable>
 
-        <createIndex tableName="sys_configuration" indexName="idx_configurationScopeId">
-            <column name="scope_id"/>
-        </createIndex>
-
         <!-- Don't drop the table since it might have already existed -->
         <rollback/>
     </changeSet>
         
-    <changeSet id="changelog-account-configuration-0.2.0_seed" author="eurotech">
+    <changeSet id="changelog-authorization-role-configuration-0.2.0_seed" author="eurotech">
         <insert tableName="sys_configuration">
             <column name="scope_id" value="1"/>
-            <column name="id" value="1"/>
-            <column name="pid" value='org.eclipse.kapua.service.account.AccountService'/>
+            <column name="id" value="5"/>
+            <column name="pid" value='org.eclipse.kapua.service.authorization.role.RoleService'/>
             <column name="configurations" valueComputed="CONCAT('#', ${now}, CHAR(13), CHAR(10),
                'maxNumberChildEntities=0', CHAR(13), CHAR(10),
                'infiniteChildEntities=true')"/>
@@ -151,9 +184,9 @@
         </insert>
         <rollback>
             <delete tableName="sys_configuration">
-                <where>scope_id=1 AND id=1</where>
+                <where>scope_id=1 AND id=5</where>
             </delete>
         </rollback>
     </changeSet>
-
+    
 </databaseChangeLog>

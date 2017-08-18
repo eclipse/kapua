@@ -17,21 +17,9 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
   logicalFilePath="KapuaDB/changelog-authorization-0.2.0.xml">
 
-    <changeSet id="changelog-authorization-0.2.0" author="eurotech">
-        <sqlFile relativeToChangelogFile="true" path="./athz_domain.sql" />
-        <sqlFile relativeToChangelogFile="true" path="./athz_domain_actions.sql" />
-        
-        <sqlFile relativeToChangelogFile="true" path="./athz_group.sql" />
-        <sqlFile relativeToChangelogFile="true" path="./athz_group-configuration.sql" />
-        
-        <sqlFile relativeToChangelogFile="true" path="./athz_role.sql" />
-        <sqlFile relativeToChangelogFile="true" path="./athz_role_permission.sql" />
-        
-        <sqlFile relativeToChangelogFile="true" path="./athz_access_info.sql" />
-        <sqlFile relativeToChangelogFile="true" path="./athz_access_permission.sql" />
-        <sqlFile relativeToChangelogFile="true" path="./athz_access_role.sql" />
-        
-        <sqlFile relativeToChangelogFile="true" path="./athz_role-configuration.sql" />
-    </changeSet>
+    <include relativeToChangelogFile="true" file="./athz_domain.xml" />
+    <include relativeToChangelogFile="true" file="./athz_group.xml" />
+    <include relativeToChangelogFile="true" file="./athz_role.xml" />
+    <include relativeToChangelogFile="true" file="./athz_access.xml" />
 
 </databaseChangeLog>

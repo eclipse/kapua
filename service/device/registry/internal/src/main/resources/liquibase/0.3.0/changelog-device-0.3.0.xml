@@ -17,16 +17,93 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
   logicalFilePath="KapuaDB/changelog-device-0.3.0.xml">
 
-    <changeSet id="changelog-device-0.3.0" author="eurotech">
+    <changeSet id="changelog-device-network-interface-0.3.0" author="eurotech">
+        <!-- Old SQL file
         <sqlFile relativeToChangelogFile="true" path="./device-network-interface.sql" />
-        <sqlFile relativeToChangelogFile="true" path="./device-remove_credential_options.sql" />
-        <sqlFile relativeToChangelogFile="true" path="./device_connection-add_connection_options.sql" />
-        <sqlFile relativeToChangelogFile="true" path="./device_connection-configuration.sql" />
-        <sqlFile relativeToChangelogFile="true" path="./device_tag.sql" />
-        
-        <sqlFile relativeToChangelogFile="true" path="./device-id_check_positive.sql" />
-        <sqlFile relativeToChangelogFile="true" path="./device_connection-id_check_positive.sql" />
-        <sqlFile relativeToChangelogFile="true" path="./device_event-id_check_positive.sql" />
+        -->
+        <addColumn tableName="dvc_device">
+            <column name="connection_interface" type="varchar(255)" />
+            <column name="connection_ip" type="varchar(64)" />
+        </addColumn>
     </changeSet>
-    
+
+    <changeSet id="changelog-device-0.3.0" author="eurotech">
+        <!-- Old SQL file
+        <sqlFile relativeToChangelogFile="true" path="./device.sql" />
+        -->
+        <dropIndex tableName="dvc_device" indexName="idx_device_preferred_user_id"/>
+        <dropColumn tableName="dvc_device" columnName="credentials_mode"/>
+        <dropColumn tableName="dvc_device" columnName="preferred_user_id"/>
+    </changeSet>
+
+    <changeSet id="changelog-device-connection-0.3.0" author="eurotech">
+        <!-- Old SQL file
+        <sqlFile relativeToChangelogFile="true" path="./device_connection.sql" />
+        -->
+        <addColumn tableName="dvc_device_connection">
+            <column name="allow_user_change" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <update tableName="dvc_device_connection">
+            <column name="allow_user_change" valueBoolean="false"/>
+        </update>
+
+        <addColumn tableName="dvc_device_connection">
+            <column name="user_coupling_mode" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <update tableName="dvc_device_connection">
+            <column name="user_coupling_mode" value="INHERITED"/>
+        </update>
+
+        <addColumn tableName="dvc_device_connection">
+            <column name="reserved_user_id" type="bigint(21) unsigned"/>
+        </addColumn>
+
+        <createIndex tableName="dvc_device_connection" indexName="idx_device_connection_reserved_user_id" unique="true">
+            <column name="scope_id"/>
+            <column name="reserved_user_id"/>        
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="changelog-device-connection-configuration-0.3.0_seed" author="eurotech">
+        <!-- Old SQL file
+        <sqlFile relativeToChangelogFile="true" path="./device_connection-configuration.sql" />
+        -->
+        <insert tableName="sys_configuration">
+            <column name="scope_id" value="1"/>
+            <column name="pid" value='org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService'/>
+            <column name="configurations" valueComputed="CONCAT('#', ${now}, CHAR(13), CHAR(10),
+               'deviceConnectionUserCouplingDefaultMode=LOOSE')"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="1"/>
+            <column name="modified_on" valueComputed="${now}"/>
+            <column name="modified_by" value="1"/>
+            <column name="optlock" value="0"/>
+        </insert>
+        <rollback>
+            <delete tableName="sys_configuration">
+                <where>scope_id=1</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="changelog-device-tag-0.3.0" author="eurotech">
+        <!-- Old SQL file
+        <sqlFile relativeToChangelogFile="true" path="./device-tag.sql" />
+        -->
+        <createTable tableName="dvc_device_tag">
+            <column name="device_id" type="bigint(21) unsigned">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="tag_id" type="bigint(21) unsigned">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="device_id_fk" baseTableName="dvc_device_tag" baseColumnNames="device_id" referencedTableName="dvc_device" referencedColumnNames="id" onDelete="CASCADE"/>
+    </changeSet>
+
 </databaseChangeLog>

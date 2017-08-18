@@ -17,9 +17,153 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
   logicalFilePath="KapuaDB/changelog-user-0.2.0.xml">
 
-    <changeSet id="changelog-user-0.2.0" author="eurotech">
+    <include relativeToChangelogFile="true" file="../common-properties.xml" />
+
+    <changeSet id="changelog-user-0.2.0_createTable" author="eurotech">
+        <!-- Old SQL file
         <sqlFile relativeToChangelogFile="true" path="./user.sql" />
-        <sqlFile relativeToChangelogFile="true" path="./user-configuration.sql" />
+        -->
+        <createTable tableName="usr_user">
+            <column name="scope_id" type="bigint(21) unsigned">
+                <constraints nullable="false" />
+            </column>
+            <column name="id" type="bigint(21) unsigned">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        
+            <column name="created_on" type="timestamp(3)" defaultValueComputed="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_on" type="timestamp(3)" defaultValueComputed="${now}"/>
+            <column name="modified_by" type="bigint(21) unsigned"/>
+
+            <column name="status" type="varchar(64)" defaultValue="ENABLED">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="display_name" type="varchar(255)" />
+            <column name="email" type="varchar(255)"/>
+            <column name="phone_number" type="varchar(64)" />
+            <column name="user_type" type="varchar(64)" defaultValue="INTERNAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="external_id" type="varchar(255)" />
+
+            <column name="optlock" type="int unsigned" />
+            <column name="attributes" type="text" />
+            <column name="properties" type="text" />
+        </createTable>
+
+        <createIndex tableName="usr_user" indexName="idx_user_scope_id">
+            <column name="scope_id"/>
+        </createIndex>
+
+        <!-- Seed values -->
+        <insert tableName="usr_user">
+            <column name="scope_id" value="1"/>
+            <column name="id" value="1"/>
+            <column name="name" value="kapua-sys"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="1"/>
+            <column name="modified_on" valueComputed="${now}"/>
+            <column name="modified_by" value="1"/>
+            <column name="status" value="ENABLED"/>
+            <column name="display_name" value="Kapua Sysadmin"/>
+            <column name="email" value="kapua-sys@eclipse.org"/>
+            <column name="phone_number" value="+1 555 123 4567"/>
+            <column name="user_type" value="INTERNAL"/>
+            <column name="optlock" value="0"/>
+        </insert>
+
+        <insert tableName="usr_user">
+            <column name="scope_id" value="1"/>
+            <column name="id" value="2"/>
+            <column name="name" value="kapua-broker"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="1"/>
+            <column name="modified_on" valueComputed="${now}"/>
+            <column name="modified_by" value="1"/>
+            <column name="status" value="ENABLED"/>
+            <column name="display_name" value="Kapua Broker"/>
+            <column name="email" value="kapua-broker@eclipse.org"/>
+            <column name="phone_number" value="+1 555 123 4567"/>
+            <column name="user_type" value="INTERNAL"/>
+            <column name="optlock" value="0"/>
+        </insert>
+        
+        <rollback>
+            <dropTable tableName="usr_user"/>
+        </rollback>
     </changeSet>
+    
+    <changeSet id="changelog-user-configuration-0.2.0_createTable" author="eurotech">
+        <!-- Old SQL file
+        <sqlFile relativeToChangelogFile="true" path="./user-configuration.sql" />
+        -->
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="sys_configuration"></tableExists></not>
+        </preConditions>
+        
+        <createTable tableName="sys_configuration">
+            <column name="scope_id" type="bigint(21) unsigned">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="id" type="bigint(21) unsigned">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="pid" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="configurations" type="text" />
+            <column name="created_on" type="timestamp(3)" defaultValueComputed="${now}" />
+            <column name="created_by" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_on" type="timestamp(3)" defaultValueComputed="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+            <column name="optlock" type="int unsigned" />
+            <column name="attributes" type="text" />
+            <column name="properties" type="text" />
+        </createTable>
+        
+        <createIndex tableName="sys_configuration" indexName="idx_configurationScopeId">
+            <column name="scope_id"/>
+        </createIndex>
+
+        <!-- Don't drop the table since it might have already existed -->
+        <rollback/>
+    </changeSet>
+        
+    <changeSet id="changelog-user-configuration-0.2.0_seed" author="eurotech">
+        <insert tableName="sys_configuration">
+            <column name="scope_id" value="1"/>
+            <column name="id" value="2"/>
+            <column name="pid" value='org.eclipse.kapua.service.user.UserService'/>
+            <column name="configurations" valueComputed="CONCAT('#', ${now}, CHAR(13), CHAR(10),
+               'maxNumberChildEntities=0', CHAR(13), CHAR(10),
+               'infiniteChildEntities=true')"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="1"/>
+            <column name="modified_on" valueComputed="${now}"/>
+            <column name="modified_by" value="1"/>
+            <column name="optlock" value="0"/>
+        </insert>
+        <rollback>
+            <delete tableName="sys_configuration">
+                <where>scope_id=1 AND id=2</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
 
 </databaseChangeLog>
