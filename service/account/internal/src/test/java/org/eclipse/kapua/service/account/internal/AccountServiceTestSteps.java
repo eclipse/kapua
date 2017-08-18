@@ -24,7 +24,9 @@ import java.util.Properties;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaIllegalNullArgumentException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -60,6 +62,8 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of Gherkin steps used in AccountService.feature scenarios.
@@ -76,6 +80,8 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
         setupDI();
     }
 
+    private static final Logger logger = LoggerFactory.getLogger(AccountServiceTestSteps.class);
+
     private static final String DEFAULT_COMMONS_PATH = "../../../commons";
     private static final String DROP_ACCOUNT_TABLES = "act_*_drop.sql";
 
@@ -90,11 +96,16 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     private Account account;
     private KapuaId accountId;
 
-    // Check if exception was fired in step.
+    // Scratchpad data related to exception checking
+    private boolean exceptionExpected;
+    private String exceptionName;
+    private String exceptionMessage;
     private boolean exceptionCaught;
 
     // Metadata integer value.
     private Integer intVal;
+
+    private Scenario scenario;
 
     // Default constructor
     public AccountServiceTestSteps() {
@@ -151,10 +162,15 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     public void beforeScenario(Scenario scenario)
             throws Exception {
 
+        this.scenario = scenario;
+
         locator = KapuaLocator.getInstance();
         this.accountService = locator.getService(AccountService.class);
         this.accountFactory = locator.getFactory(AccountFactory.class);
 
+        exceptionExpected = false;
+        exceptionName = "";
+        exceptionMessage = "";
         exceptionCaught = false;
 
         // Create User Service tables
@@ -180,6 +196,13 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
 
     // The Cucumber test steps
 
+    @Given("^I expect the exception \"(.+)\" with the text \"(.+)\"$")
+    public void setExpectedExceptionDetails(String name, String text) {
+        exceptionExpected = true;
+        exceptionName = name;
+        exceptionMessage = text;
+    }
+
     @Given("^An account creator with the name \"(.*)\"$")
     public void prepareTestAccountCreatorWithName(String name) {
         accountCreator = prepareRegularAccountCreator(rootScopeId, name);
@@ -187,22 +210,27 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
 
     @Given("^An existing account with the name \"(.*)\"$")
     public void createTestAccountWithName(String name)
-            throws KapuaException {
+            throws Exception {
         accountCreator = prepareRegularAccountCreator(rootScopeId, name);
-        account = accountService.create(accountCreator);
-        accountId = account.getId();
+        try {
+            primeException();
+            account = accountService.create(accountCreator);
+            accountId = account.getId();
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
     }
 
     @Given("^I create (\\d+) childs for account with Id (\\d+)$")
     public void createANumberOfAccounts(int num, int parentId)
-            throws KapuaException {
-        exceptionCaught = false;
+            throws Exception {
         for (int i = 0; i < num; i++) {
             accountCreator = prepareRegularAccountCreator(new KapuaEid(BigInteger.valueOf(parentId)), "tmp_acc_" + String.format("%d", i));
             try {
+                primeException();
                 accountService.create(accountCreator);
             } catch (KapuaException ex) {
-                exceptionCaught = true;
+                verifyException(ex);
                 break;
             }
         }
@@ -210,15 +238,16 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
 
     @Given("^I create (\\d+) childs for account with name \"(.*)\"$")
     public void createANumberOfChildrenForAccountWithName(int num, String name)
-            throws KapuaException {
+            throws Exception {
         Account tmpAcc = accountService.findByName(name);
         exceptionCaught = false;
         for (int i = 0; i < num; i++) {
             accountCreator = prepareRegularAccountCreator(tmpAcc.getId(), "tmp_acc_" + String.format("%d", i));
             try {
+                primeException();
                 accountService.create(accountCreator);
             } catch (KapuaException ex) {
-                exceptionCaught = true;
+                verifyException(ex);
                 break;
             }
         }
@@ -226,15 +255,16 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
 
     @Given("^I create (\\d+) accounts with organization name \"(.*)\"$")
     public void createANumberOfChildrenForAccountWithOrganizationName(int num, String name)
-            throws KapuaException {
+            throws Exception {
         exceptionCaught = false;
         for (int i = 0; i < num; i++) {
             accountCreator = prepareRegularAccountCreator(rootScopeId, "tmp_acc_" + String.format("%d", i));
             accountCreator.setOrganizationName(name);
             try {
+                primeException();
                 accountService.create(accountCreator);
             } catch (KapuaException ex) {
-                exceptionCaught = true;
+                verifyException(ex);
                 break;
             }
         }
@@ -253,21 +283,22 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
             throws Exception {
         accountCreator = prepareRegularAccountCreator(rootScopeId, name);
         try {
-            exceptionCaught = false;
+            primeException();
             account = accountService.create(accountCreator);
         } catch (KapuaException ex) {
-            exceptionCaught = true;
+            verifyException(ex);
         }
     }
 
     @When("^I create an account with a null name$")
-    public void createAccountWithNullName() {
+    public void createAccountWithNullName()
+            throws Exception{
         accountCreator = prepareRegularAccountCreator(rootScopeId, null);
         try {
-            exceptionCaught = false;
+            primeException();
             account = accountService.create(accountCreator);
-        } catch (KapuaException ex) {
-            exceptionCaught = true;
+        } catch (KapuaIllegalNullArgumentException ex) {
+            verifyException(ex);
         }
     }
 
@@ -286,55 +317,56 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     }
 
     @When("^I modify the current account$")
-    public void updateAccount() {
+    public void updateAccount()
+            throws Exception {
         try {
-            exceptionCaught = false;
+            primeException();
             accountService.update(account);
-        } catch (KapuaException ex) {
-            exceptionCaught = true;
+        } catch (KapuaEntityNotFoundException ex) {
+            verifyException(ex);
         }
     }
 
     @When("^I change the account \"(.*)\" name to \"(.*)\"$")
     public void changeAccountName(String accName, String name)
-            throws KapuaException {
+            throws Exception {
         Account tmpAcc = accountService.findByName(accName);
 
         tmpAcc.setName(name);
         try {
-            exceptionCaught = false;
+            primeException();
             accountService.update(tmpAcc);
         } catch (KapuaException ex) {
-            exceptionCaught = true;
+            verifyException(ex);
         }
     }
 
     @When("^I change the parent path for account \"(.*)\"$")
     public void changeParentPathForAccount(String name)
-            throws KapuaException {
+            throws Exception {
         Account tmpAcc = accountService.findByName(name);
         String modParentPath = tmpAcc.getParentAccountPath() + "/mod";
 
         tmpAcc.setParentAccountPath(modParentPath);
         try {
-            exceptionCaught = false;
+            primeException();
             accountService.update(tmpAcc);
         } catch (KapuaAccountException ex) {
-            exceptionCaught = true;
+            verifyException(ex);
         }
     }
 
     @When("^I try to change the account \"(.*)\" scope Id to (\\d+)$")
     public void changeAccountScopeId(String name, int newScopeId)
-            throws KapuaException {
+            throws Exception {
         AccountImpl tmpAcc = (AccountImpl) accountService.findByName(name);
 
         tmpAcc.setScopeId(new KapuaEid(BigInteger.valueOf(newScopeId)));
         try {
-            exceptionCaught = false;
+            primeException();
             accountService.update(tmpAcc);
         } catch (KapuaException ex) {
-            exceptionCaught = true;
+            verifyException(ex);
         }
     }
 
@@ -347,7 +379,7 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
 
     @When("^I try to delete the system account$")
     public void deleteSystemAccount()
-            throws KapuaException {
+            throws Exception {
         String adminUserName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_ACCOUNT);
         Account tmpAcc = accountService.findByName(adminUserName);
 
@@ -355,20 +387,21 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
         assertNotNull(tmpAcc.getId());
 
         try {
-            exceptionCaught = false;
+            primeException();
             accountService.delete(rootScopeId, tmpAcc.getId());
         } catch (KapuaException ex) {
-            exceptionCaught = true;
+            verifyException(ex);
         }
     }
 
     @When("^I delete a random account$")
-    public void deleteRandomAccount() {
+    public void deleteRandomAccount()
+            throws Exception {
         try {
-            exceptionCaught = false;
+            primeException();
             accountService.delete(rootScopeId, new KapuaEid(BigInteger.valueOf(random.nextLong())));
         } catch (KapuaException ex) {
-            exceptionCaught = true;
+            verifyException(ex);
         }
     }
 
@@ -409,7 +442,7 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
 
     @When("^I configure \"(.*)\" item \"(.*)\" to \"(.*)\"$")
     public void setConfigurationValue(String type, String name, String value)
-            throws KapuaException {
+            throws Exception {
         Map<String, Object> valueMap = new HashMap<>();
 
         switch (type) {
@@ -425,10 +458,10 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
         valueMap.put("infiniteChildEntities", true);
 
         try {
-            exceptionCaught = false;
+            primeException();
             accountService.setConfigValues(account.getId(), account.getScopeId(), valueMap);
         } catch (KapuaException ex) {
-            exceptionCaught = true;
+            verifyException(ex);
         }
     }
 
@@ -510,12 +543,11 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
 
     @Then("^An exception is caught$")
     public void checkThatAnExceptionWasCaught() {
-        assertTrue(exceptionCaught);
+        assertTrue("An exception was expected but it was not raised!", exceptionCaught);
     }
 
     @Then("^The account does not exist$")
-    public void tryToFindInexistentAccount()
-            throws KapuaException {
+    public void tryToFindInexistentAccount() {
         assertNull(account);
     }
 
@@ -572,17 +604,13 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     }
 
     @Then("^The returned value is (\\d+)$")
-    public void checkIntegerReturnValue(int val)
-            throws KapuaException {
+    public void checkIntegerReturnValue(int val) {
         assertEquals(Integer.valueOf(val), intVal);
     }
 
     @Then("^Account service metadata is available$")
-    public void checkAccountServiceMetadataExistance()
-            throws KapuaException {
-        KapuaAccountSetting tmpAccountSettings = KapuaAccountSetting.getInstance();
-
-        assertNotNull("Account settings not configured.", tmpAccountSettings);
+    public void checkAccountServiceMetadataExistance() {
+        assertNotNull("Account settings not configured.", KapuaAccountSetting.getInstance());
     }
 
     // *******************
@@ -613,6 +641,26 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
         tmpAccCreator.setOrganizationPhoneNumber("012/123-456-789");
 
         return tmpAccCreator;
+    }
+
+    private void primeException() {
+        exceptionCaught = false;
+    }
+
+    // Check the exception that was caught. In case the exception was expected the type and message is shown in the cucumber logs.
+    // Otherwise the exception is rethrown failing the test and dumping the stack trace to help resolving problems.
+    private void verifyException(Exception ex)
+            throws Exception {
+
+        if (!exceptionExpected ||
+                (!exceptionName.isEmpty() && !ex.getClass().toGenericString().contains(exceptionName)) ||
+                (!exceptionMessage.isEmpty() && !exceptionMessage.trim().contentEquals("*") && !ex.getMessage().contains(exceptionMessage))) {
+            scenario.write("An unexpected exception was raised!");
+            throw(ex);
+        }
+
+        scenario.write("Exception raised as expected: " + ex.getClass().getCanonicalName() + ", " + ex.getMessage());
+        exceptionCaught = true;
     }
 
     // *****************

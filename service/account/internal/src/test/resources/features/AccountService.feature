@@ -30,21 +30,23 @@ Scenario: Handle duplicate account names
     given, the account service should throw an exception.
 
     Given An existing account with the name "test_acc_1"
+    And I expect the exception "KapuaException" with the text "Error during Persistence Operation"
     When I create a duplicate account "test_acc_1"
     Then An exception is caught
 
 Scenario: Handle null account name
     If an account name is null, the account service should throw an exception.
 
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "*"
     When I create an account with a null name
     Then An exception is caught
 
 Scenario: Find account by Id
     The account service must be able to find the requested account entity by its Id.
 
-    Given An existing account with the name "test_acc_42"
-    When I search for the account with the remembered account Id
-    Then The account matches the creator settings
+     Given An existing account with the name "test_acc_42"
+     When I search for the account with the remembered account Id
+     Then The account matches the creator settings
 
 Scenario: Find account by Ids
     The account service must be able to find the requested account entity by its
@@ -85,7 +87,8 @@ Scenario: Modify nonexisting account
     Try to update an account that does not exist anymore. An exception should be thrown.
 
     Given An existing account with the name "test_acc_42"
-    When I delete account "test_acc_42"
+    Then I delete account "test_acc_42"
+    Given I expect the exception "KapuaEntityNotFoundException" with the text "The entity of type account with id/name"
     And I modify the current account
     Then An exception is caught
 
@@ -100,6 +103,7 @@ Scenario: Delete an existing account
 Scenario: Delete the Kapua system account
     It must not be possible to delete the system account.
 
+    Given I expect the exception "KapuaIllegalAccessException" with the text "The current subject is not authorized for write"
     When I try to delete the system account
     Then An exception is caught
     And The System account exists
@@ -108,6 +112,7 @@ Scenario: Delete nonexisting account
     Try to delete an account with a a random Id. The operation should fail and an exception
     should be thrown.
 
+    Given I expect the exception "KapuaEntityNotFoundException" with the text "The entity of type account with id/name"
     When I delete a random account
     Then An exception is caught
 
@@ -115,6 +120,7 @@ Scenario: Change the account parent Id
     The account service must not allow the account parent Id to be changed.
 
     Given An existing account with the name "test_acc_123"
+    And I expect the exception "KapuaAccountException" with the text "An illegal value was provided for the argument"
     When I try to change the account "test_acc_123" scope Id to 2
     Then An exception is caught
 
@@ -122,6 +128,7 @@ Scenario: Change the account parent path
     It must not be possible to change the account parent path. Any try should result in an exception.
 
     Given An existing account with the name "test_acc_11"
+    And I expect the exception "KapuaAccountException" with the text "An illegal value was provided for the argument"
     When I change the parent path for account "test_acc_11"
     Then An exception is caught
 
@@ -171,6 +178,7 @@ Scenario: Setting configuration without mandatory items must raise an error
     specifying the mandatory items must raise an error.
 
     Given An existing account with the name "test_acc_11"
+    And I expect the exception "KapuaConfigurationException" with the text "Required configuration attribute missing"
     When I configure "integer" item "ArbitraryUnknownItem" to "5"
     Then An exception is caught
 
@@ -194,6 +202,7 @@ Scenario: Account name must not be mutable
     be thrown and the original account must be unchanged.
 
     Given An existing account with the name "test_acc"
+    And I expect the exception "KapuaAccountException" with the text "An illegal value was provided for the argument"
     When I change the account "test_acc" name to "test_acc_new"
     Then An exception is caught
     And Account "test_acc" exists
