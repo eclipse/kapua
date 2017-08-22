@@ -12,30 +12,12 @@
 
 -- liquibase formatted sql
 
--- changeset tag:1
+-- changeset account-foreignkeys:1
 
-INSERT INTO sys_configuration (
-  SCOPE_ID,
-  ID,
-  PID,
-  CONFIGURATIONS,
-  CREATED_ON,
-  CREATED_BY,
-  MODIFIED_ON,
-  MODIFIED_BY,
-  OPTLOCK,
-  ATTRIBUTES,
-  PROPERTIES)
-VALUES (1,
-        6,
-        'org.eclipse.kapua.service.tag.TagService',
-        CONCAT('#', CURRENT_TIMESTAMP(), CHAR(13), CHAR(10),
-        'maxNumberChildEntities=0', CHAR(13), CHAR(10),
-        'infiniteChildEntities=true'),
-  CURRENT_TIMESTAMP(),
-  1,
-  CURRENT_TIMESTAMP(),
-  1,
-  0,
-  null,
-  null);
+ALTER TABLE dvc_device_tag
+	ADD CONSTRAINT fk_dvc_device_tag_tagId
+		FOREIGN KEY (tag_id) REFERENCES tag_tag(id)
+			ON DELETE CASCADE;
+
+
+

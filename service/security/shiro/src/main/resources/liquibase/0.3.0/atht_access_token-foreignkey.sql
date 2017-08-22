@@ -12,30 +12,14 @@
 
 -- liquibase formatted sql
 
--- changeset tag:1
+-- changeset access_token-foreignkeys:1
 
-INSERT INTO sys_configuration (
-  SCOPE_ID,
-  ID,
-  PID,
-  CONFIGURATIONS,
-  CREATED_ON,
-  CREATED_BY,
-  MODIFIED_ON,
-  MODIFIED_BY,
-  OPTLOCK,
-  ATTRIBUTES,
-  PROPERTIES)
-VALUES (1,
-        6,
-        'org.eclipse.kapua.service.tag.TagService',
-        CONCAT('#', CURRENT_TIMESTAMP(), CHAR(13), CHAR(10),
-        'maxNumberChildEntities=0', CHAR(13), CHAR(10),
-        'infiniteChildEntities=true'),
-  CURRENT_TIMESTAMP(),
-  1,
-  CURRENT_TIMESTAMP(),
-  1,
-  0,
-  null,
-  null);
+ALTER TABLE atht_access_token
+	ADD CONSTRAINT fk_atht_access_token_scopeId
+		FOREIGN KEY (scope_id) REFERENCES act_account(id)
+			ON DELETE CASCADE;
+
+ALTER TABLE atht_access_token
+	ADD CONSTRAINT fk_atht_access_token_userId
+		FOREIGN KEY (user_id) REFERENCES usr_user(id)
+			ON DELETE CASCADE;

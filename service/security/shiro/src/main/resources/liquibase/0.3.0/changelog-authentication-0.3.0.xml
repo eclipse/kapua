@@ -18,5 +18,7 @@
                       
     <include relativeToChangelogFile="true" file="./atht_credential_expiration.sql" />
     <include relativeToChangelogFile="true" file="./atht_credential_lockout_policy.sql" />
+    <include relativeToChangelogFile="true" file="./atht_credential-foreignkey.sql" />
+    <include relativeToChangelogFile="true" file="./atht_access_token-foreignkey.sql" />
 
 </databaseChangeLog>
