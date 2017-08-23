@@ -112,26 +112,26 @@ public class GwtDeviceConnectionServiceImpl extends KapuaRemoteServiceServlet im
             DeviceConnection deviceConnection = deviceConnectionService.find(scopeId, deviceConnectionId);
             User user = userService.find(scopeId, deviceConnection.getUserId());
 
-
-            if (user != null) {
-                deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionUser", user.getName()));
-            } else {
-                deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionUser", "N/A"));
-                }
-
+            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionStatus", deviceConnection.getStatus().toString()));
+            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionFirstEstablishedOn", deviceConnection.getCreatedOn().toString()));
+            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionFirstEstablishedBy", deviceConnection.getCreatedBy().toCompactId()));
+            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionModifiedOn", deviceConnection.getModifiedOn().toString()));
+            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionModifiedBy", deviceConnection.getModifiedBy().toCompactId()));
+            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionProtocol", deviceConnection.getProtocol()));
             GwtConnectionUserCouplingMode gwtConnectionUserCouplingMode = null;
             if (deviceConnection.getUserCouplingMode() != null) {
                 gwtConnectionUserCouplingMode = GwtConnectionUserCouplingMode.valueOf(deviceConnection.getUserCouplingMode().name());
             }
-            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("Connection-user bound Informations", "Connection-user bound", gwtConnectionUserCouplingMode.getLabel()));
-            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("Connection-user bound Informations", "Reserved User Id",
-            deviceConnection.getReservedUserId() != null ? deviceConnection.getReservedUserId().toCompactId() : "N/A"));
-            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("Connection-user bound Informations", "Allow user change", deviceConnection.getAllowUserChange()));
+            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionUserBoundInfo", "connectionUserBound", gwtConnectionUserCouplingMode.getLabel()));
+            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionUserBoundInfo", "reservedUserId",
+                    deviceConnection.getReservedUserId() != null ? deviceConnection.getReservedUserId().toCompactId() : null));
+            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionUserBoundInfo", "allowUserChange", deviceConnection.getAllowUserChange()));
 
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionClientId", deviceConnection.getClientId()));
-            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("Connection Informations", "User Id", deviceConnection.getUserId().toCompactId()));
+            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionUser", deviceConnection.getUserId().toCompactId()));
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionClientIp", deviceConnection.getClientIp()));
-            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionServerIp", deviceConnection.getServerIp()));           
+            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionServerIp", deviceConnection.getServerIp()));
+            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "protocol", deviceConnection.getProtocol()));
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionProtocol", deviceConnection.getProtocol()));
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionStatus", deviceConnection.getStatus().toString()));
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionFirstEstablishedOn", deviceConnection.getCreatedOn().toString()));
