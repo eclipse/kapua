@@ -19,6 +19,7 @@ import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGrou
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupServiceAsync;
 
@@ -42,5 +43,11 @@ public class GroupTabDescription extends EntityDescriptionTabItem<GwtGroup> {
 
             }
         };
+    }
+
+    @Override
+    protected void onRender(Element parent, int index) {
+        super.onRender(parent, index);
+        setBorders(false);
     }
 }
