@@ -85,6 +85,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         credentialType.setTriggerAction(ComboBox.TriggerAction.ALL);
         credentialType.add(GwtCredentialType.PASSWORD);
         credentialType.add(GwtCredentialType.API_KEY);
+        credentialType.setEmptyText(MSGS.credentialTypePlaceHolder());
         credentialType.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<GwtCredentialType>>() {
 
             @Override
@@ -136,11 +137,12 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         credentialStatus.setEditable(false);
         credentialStatus.setTypeAhead(true);
         credentialStatus.setTriggerAction(ComboBox.TriggerAction.ALL);
+        credentialStatus.setEmptyText(MSGS.credentialStatusPlaceHolder());
         // show account status combo box
         for (GwtCredentialStatus credentialStatus : GwtCredentialStatus.values()) {
             this.credentialStatus.add(credentialStatus);
         }
-        credentialStatus.setSimpleValue(GwtCredentialStatus.ENABLED);
+
         credentialFormPanel.add(credentialStatus);
 
         optlock = new NumberField();
@@ -178,7 +180,6 @@ public class CredentialAddDialog extends EntityAddEditDialog {
                     apiKeyConfirmationDialog.setScrollMode(Scroll.AUTO);
                     apiKeyConfirmationDialog.setHeading(MSGS.dialogConfirmationAPI());
                     apiKeyConfirmationDialog.setStyleAttribute("background-color", "#F0F0F0");
-                    apiKeyConfirmationDialog.setBodyStyle("background-color:white");
                     apiKeyConfirmationDialog.setClosable(false);
                     Label valueMessage = new Label(new SafeHtmlBuilder().appendEscapedLines(MSGS.dialogAddConfirmationApiKey(arg0.getCredentialKey())).toSafeHtml().asString());
                     valueMessage.setStyleAttribute("font-size", "11px");

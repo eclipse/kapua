@@ -72,18 +72,13 @@ public class AccountDetailsView extends AbstractView {
         bodyLayoutContainer.setScrollMode(Scroll.AUTO);
         bodyLayoutContainer.setStyleAttribute("background-color", "#F0F0F0");
         bodyLayoutContainer.setStyleAttribute("padding", "0px");
-        BorderLayoutData centerMainPanel = new BorderLayoutData(LayoutRegion.CENTER);
-        centerMainPanel.setMargins(new Margins(0, 5, 0, 0));
-        centerMainPanel.setSplit(false);
 
         TabPanel tabPanel = new TabPanel();
         LayoutContainer resultContainer = new LayoutContainer(new BorderLayout());
         resultContainer.setBorders(false);
 
-        bodyLayoutContainer.add(resultContainer, centerMainPanel);
-        BorderLayoutData northData = new BorderLayoutData(LayoutRegion.NORTH, .45F);
+        BorderLayoutData northData = new BorderLayoutData(LayoutRegion.CENTER);
         northData.setMargins(new Margins(0, 0, 0, 0));
-        northData.setSplit(true);
         northData.setMinSize(0);
         resultContainer.add(tabPanel, northData);
 
@@ -93,13 +88,13 @@ public class AccountDetailsView extends AbstractView {
         tabPanel.setBodyBorder(false);
         AccountTabConfiguration settingsTabItem = new AccountTabConfiguration(currentSession, this);
         settingsTabItem.setEntity(selectedAccount);
-        tabPanel.add(settingsTabItem);
+
         AccountDetailsTabDescription accountDescriptionTab = new AccountDetailsTabDescription(currentSession, this, centerAccountView);
         settingsTabItem.setDescriptionTab(accountDescriptionTab);
         accountDescriptionTab.setAccount(selectedAccount);
         accountDescriptionTab.initTable();
         tabPanel.add(accountDescriptionTab);
-        
+        tabPanel.add(settingsTabItem);
         bodyLayoutContainer.add(tabPanel, northData);
 
         add(bodyLayoutContainer);
