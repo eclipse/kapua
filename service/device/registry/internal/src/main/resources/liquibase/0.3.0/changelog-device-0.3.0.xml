@@ -21,7 +21,5 @@
     <include relativeToChangelogFile="true" file="./device_connection.sql" />
     <include relativeToChangelogFile="true" file="./device-configuration.sql" />
     <include relativeToChangelogFile="true" file="./device-tag.sql" />
-    <include relativeToChangelogFile="true" file="./device-foreignkey.sql" />
-    <include relativeToChangelogFile="true" file="./device-connection-foreignkey.sql" />
-    <include relativeToChangelogFile="true" file="./device-tag-foreignkey.sql" />
+
 </databaseChangeLog>

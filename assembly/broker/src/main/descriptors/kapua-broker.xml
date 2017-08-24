@@ -213,6 +213,7 @@
                 <include>org.yaml:snakeyaml</include>
 
                 <include>${pom.groupId}:kapua-commons</include>
+                <include>${pom.groupId}:kapua-foreignkeys</include>
                 <include>${pom.groupId}:kapua-service-api</include>
                 <include>${pom.groupId}:kapua-liquibase</include>
                 <include>${pom.groupId}:kapua-guice</include>

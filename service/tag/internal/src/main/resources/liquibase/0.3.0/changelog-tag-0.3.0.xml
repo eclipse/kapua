@@ -18,6 +18,5 @@
                       
     <include relativeToChangelogFile="true" file="./tag.sql" />
     <include relativeToChangelogFile="true" file="./tag-configuration.sql" />
-    <include relativeToChangelogFile="true" file="./tag-foreignkey.sql" />
     
 </databaseChangeLog>
