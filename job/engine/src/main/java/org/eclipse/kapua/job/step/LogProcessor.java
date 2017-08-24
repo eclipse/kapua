@@ -16,20 +16,14 @@ import javax.batch.runtime.context.StepContext;
 import javax.inject.Inject;
 
 import org.eclipse.kapua.job.step.definition.LogPropertyKeys;
-import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.service.job.context.JobContextFactory;
-import org.eclipse.kapua.service.job.context.KapuaJobContext;
-import org.eclipse.kapua.service.job.context.KapuaStepContext;
-import org.eclipse.kapua.service.job.operation.TargetOperation;
+import org.eclipse.kapua.service.job.commons.operation.AbstractGenericOperation;
+import org.eclipse.kapua.service.job.operation.GenericOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LogProcessor implements TargetOperation {
+public class LogProcessor extends AbstractGenericOperation implements GenericOperation {
 
     private static final Logger LOG = LoggerFactory.getLogger(LogProcessor.class);
-
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final JobContextFactory JOB_CONTEXT_FACTORY = LOCATOR.getFactory(JobContextFactory.class);
 
     @Inject
     JobContext jobContext;
@@ -38,15 +32,16 @@ public class LogProcessor implements TargetOperation {
     StepContext stepContext;
 
     @Override
-    public Object processItem(Object item) throws Exception {
-        KapuaJobContext kapuaJobContext = JOB_CONTEXT_FACTORY.newJobContext(jobContext);
-        KapuaStepContext kapuaStepContext = JOB_CONTEXT_FACTORY.newStepContext(stepContext);
+    public void processInternal() throws Exception {
 
-        String logString = kapuaStepContext.getStepProperty(LogPropertyKeys.LOG_STRING, String.class);
+        String logString = getStepContext().getStepProperty(LogPropertyKeys.LOG_STRING, String.class);
 
-        LOG.info("JOB {} - {}", kapuaJobContext.getJobId(), logString);
+        LOG.info("JOB {} - {}", getJobContext().getJobId(), logString);
+    }
 
-        return item;
+    @Override
+    protected void retrieveContext() {
+        setContext(jobContext, stepContext);
     }
 
 }

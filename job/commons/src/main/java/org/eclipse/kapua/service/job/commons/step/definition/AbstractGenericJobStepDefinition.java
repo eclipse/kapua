@@ -14,8 +14,6 @@ package org.eclipse.kapua.service.job.commons.step.definition;
 import java.util.List;
 
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
-import org.eclipse.kapua.service.job.commons.operation.DefaultGenericReader;
-import org.eclipse.kapua.service.job.commons.operation.DefaultGenericWriter;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 import org.eclipse.kapua.service.job.step.definition.JobStepType;
@@ -42,7 +40,7 @@ public abstract class AbstractGenericJobStepDefinition extends AbstractKapuaUpda
 
     @Override
     public String getReaderName() {
-        return DefaultGenericReader.class.getName();
+        return null;
     }
 
     @Override
@@ -55,7 +53,7 @@ public abstract class AbstractGenericJobStepDefinition extends AbstractKapuaUpda
 
     @Override
     public String getWriterName() {
-        return DefaultGenericWriter.class.getName();
+        return null;
     }
 
     @Override

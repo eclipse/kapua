@@ -15,26 +15,19 @@ import javax.batch.runtime.context.JobContext;
 import javax.batch.runtime.context.StepContext;
 import javax.inject.Inject;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandManagementService;
 import org.eclipse.kapua.service.device.management.command.job.definition.DeviceCommandExecPropertyKeys;
-import org.eclipse.kapua.service.job.context.JobContextFactory;
-import org.eclipse.kapua.service.job.context.KapuaJobContext;
-import org.eclipse.kapua.service.job.context.KapuaStepContext;
+import org.eclipse.kapua.service.job.commons.operation.AbstractTargetProcessor;
 import org.eclipse.kapua.service.job.operation.TargetOperation;
 import org.eclipse.kapua.service.job.targets.JobTarget;
-import org.eclipse.kapua.service.job.targets.JobTargetStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class DeviceCommandTargetProcessor implements TargetOperation {
-
-    private static final Logger LOG = LoggerFactory.getLogger(DeviceCommandTargetProcessor.class);
+public class DeviceCommandTargetProcessor extends AbstractTargetProcessor implements TargetOperation {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final JobContextFactory JOB_CONTEXT_FACTORY = LOCATOR.getFactory(JobContextFactory.class);
     private static final DeviceCommandManagementService COMMAND_MANAGEMENT_SERVICE = LOCATOR.getService(DeviceCommandManagementService.class);
 
     @Inject
@@ -44,26 +37,12 @@ public class DeviceCommandTargetProcessor implements TargetOperation {
     StepContext stepContext;
 
     @Override
-    public Object processItem(Object item) throws Exception {
-        KapuaJobContext kapuaJobContext = JOB_CONTEXT_FACTORY.newJobContext(jobContext);
-        KapuaStepContext kapuaStepContext = JOB_CONTEXT_FACTORY.newStepContext(stepContext);
-        LOG.info("JOB {} - Processing item...", kapuaJobContext.getJobId());
+    public void processTarget(JobTarget jobTarget) throws KapuaException {
+        setContext(jobContext, stepContext);
 
         DeviceCommandInput commandInput = kapuaStepContext.getStepProperty(DeviceCommandExecPropertyKeys.COMMAND_INPUT, DeviceCommandInput.class);
         Long timeout = kapuaStepContext.getStepProperty(DeviceCommandExecPropertyKeys.TIMEOUT, Long.class);
 
-        JobTarget jobTarget = (JobTarget) item;
-        try {
-            KapuaSecurityUtils.doPrivileged(() -> COMMAND_MANAGEMENT_SERVICE.exec(jobTarget.getScopeId(), jobTarget.getJobTargetId(), commandInput, timeout));
-
-            jobTarget.setStatus(JobTargetStatus.PROCESS_OK);
-        } catch (Exception e) {
-            jobTarget.setStatus(JobTargetStatus.PROCESS_FAILED);
-            jobTarget.setException(e);
-        }
-
-        LOG.info("JOB {} - Processing item... DONE!", kapuaJobContext.getJobId());
-        return jobTarget;
+        KapuaSecurityUtils.doPrivileged(() -> COMMAND_MANAGEMENT_SERVICE.exec(jobTarget.getScopeId(), jobTarget.getJobTargetId(), commandInput, timeout));
     }
-
 }
