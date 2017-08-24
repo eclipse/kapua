@@ -45,7 +45,7 @@ INSERT INTO sys_configuration (
     ATTRIBUTES,
     PROPERTIES)
 VALUES (1,
-        7,
+        8,
         'org.eclipse.kapua.service.job.JobService',
         CONCAT('#', CURRENT_TIMESTAMP(), CHAR(13), CHAR(10),
                'maxNumberChildEntities=0', CHAR(13), CHAR(10),
