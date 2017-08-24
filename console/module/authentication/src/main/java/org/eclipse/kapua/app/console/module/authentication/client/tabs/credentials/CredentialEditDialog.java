@@ -12,9 +12,9 @@
 package org.eclipse.kapua.app.console.module.authentication.client.tabs.credentials;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.eclipse.kapua.app.console.commons.client.util.validator.ConfirmPasswordUpdateFieldValidator;
-import org.eclipse.kapua.app.console.commons.client.util.validator.PasswordUpdateFieldValidator;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.client.util.validator.ConfirmPasswordUpdateFieldValidator;
+import org.eclipse.kapua.app.console.module.api.client.util.validator.PasswordUpdateFieldValidator;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;

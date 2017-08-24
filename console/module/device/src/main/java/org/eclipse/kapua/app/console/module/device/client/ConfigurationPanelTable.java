@@ -14,8 +14,8 @@ package org.eclipse.kapua.app.console.module.device.client;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.kapua.app.console.commons.client.util.SwappableListStore;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.client.util.SwappableListStore;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Scroll;

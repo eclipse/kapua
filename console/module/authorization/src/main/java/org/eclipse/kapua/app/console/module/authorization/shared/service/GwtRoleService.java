@@ -12,9 +12,9 @@
 package org.eclipse.kapua.app.console.module.authorization.shared.service;
 
 import com.google.gwt.user.client.rpc.RemoteService;
-import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtGroupedNVPair;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;

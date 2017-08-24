@@ -25,7 +25,7 @@
     <dependencies>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-console-commons</artifactId>
+            <artifactId>kapua-console-module-api</artifactId>
         </dependency>
     </dependencies>
 

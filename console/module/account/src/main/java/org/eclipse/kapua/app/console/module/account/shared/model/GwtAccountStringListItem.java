@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.account.shared.model;
 
-import org.eclipse.kapua.app.console.commons.shared.model.GwtStringListItem;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtStringListItem;
 
 public class GwtAccountStringListItem extends GwtStringListItem {
 

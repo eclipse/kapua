@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.tag.shared.model;
 
-import org.eclipse.kapua.app.console.commons.shared.model.GwtUpdatableEntityModel;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtUpdatableEntityModel;
 
 public class GwtTag extends GwtUpdatableEntityModel {
 

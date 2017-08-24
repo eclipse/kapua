@@ -13,7 +13,7 @@ package org.eclipse.kapua.app.console.module.authorization.shared.service;
 
 import java.util.List;
 
-import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;

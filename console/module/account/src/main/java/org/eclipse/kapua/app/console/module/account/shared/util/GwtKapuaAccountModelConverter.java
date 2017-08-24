@@ -12,7 +12,7 @@
 package org.eclipse.kapua.app.console.module.account.shared.util;
 
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaCommonsModelConverter;
+import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountQuery;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;

@@ -15,8 +15,8 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.eclipse.kapua.app.console.commons.setting.ConsoleSetting;
-import org.eclipse.kapua.app.console.commons.setting.ConsoleSettingKeys;
+import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
+import org.eclipse.kapua.app.console.module.api.setting.ConsoleSettingKeys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

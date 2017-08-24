@@ -14,9 +14,9 @@ package org.eclipse.kapua.app.console.module.authorization.client.role;
 import org.eclipse.kapua.app.console.module.authorization.client.role.dialog.RoleAddDialog;
 import org.eclipse.kapua.app.console.module.authorization.client.role.dialog.RoleDeleteDialog;
 import org.eclipse.kapua.app.console.module.authorization.client.role.dialog.RoleEditDialog;
-import org.eclipse.kapua.app.console.commons.client.ui.dialog.KapuaDialog;
-import org.eclipse.kapua.app.console.commons.client.ui.widget.EntityCRUDToolbar;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaDialog;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
 
 public class RoleToolbarGrid extends EntityCRUDToolbar<GwtRole> {

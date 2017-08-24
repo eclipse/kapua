@@ -14,10 +14,10 @@ package org.eclipse.kapua.app.console.module.device.client;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.kapua.app.console.commons.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.commons.client.util.Constants;
-import org.eclipse.kapua.app.console.commons.client.util.FormUtils;
-import org.eclipse.kapua.app.console.commons.client.util.UserAgentUtils;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.util.Constants;
+import org.eclipse.kapua.app.console.module.api.client.util.FormUtils;
+import org.eclipse.kapua.app.console.module.api.client.util.UserAgentUtils;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAsset;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssetChannel;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssetChannel.GwtDeviceAssetChannelMode;

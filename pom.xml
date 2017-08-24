@@ -777,17 +777,17 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-console-app</artifactId>
+                <artifactId>kapua-console-web</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-console-commons</artifactId>
+                <artifactId>kapua-console-module-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-console-commons</artifactId>
+                <artifactId>kapua-console-module-api</artifactId>
                 <version>${project.version}</version>
                 <classifier>sources</classifier>
             </dependency>

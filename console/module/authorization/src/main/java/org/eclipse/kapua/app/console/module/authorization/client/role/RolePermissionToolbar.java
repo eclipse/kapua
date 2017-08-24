@@ -13,9 +13,9 @@ package org.eclipse.kapua.app.console.module.authorization.client.role;
 
 import org.eclipse.kapua.app.console.module.authorization.client.role.dialog.RolePermissionAddDialog;
 import org.eclipse.kapua.app.console.module.authorization.client.role.dialog.RolePermissionDeleteDialog;
-import org.eclipse.kapua.app.console.commons.client.ui.dialog.KapuaDialog;
-import org.eclipse.kapua.app.console.commons.client.ui.widget.EntityCRUDToolbar;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaDialog;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRolePermission;
 

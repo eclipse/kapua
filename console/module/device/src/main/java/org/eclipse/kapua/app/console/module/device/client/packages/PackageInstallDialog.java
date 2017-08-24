@@ -11,9 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.client.packages;
 
-import org.eclipse.kapua.app.console.commons.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.commons.client.ui.dialog.TabbedDialog;
-import org.eclipse.kapua.app.console.commons.client.util.DialogUtils;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.TabbedDialog;
+import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.packages.GwtPackageInstallRequest;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;

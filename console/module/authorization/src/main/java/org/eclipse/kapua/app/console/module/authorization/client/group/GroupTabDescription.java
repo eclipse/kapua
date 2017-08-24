@@ -11,9 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.client.group;
 
-import org.eclipse.kapua.app.console.commons.client.ui.tab.EntityDescriptionTabItem;
+import org.eclipse.kapua.app.console.module.api.client.ui.tab.EntityDescriptionTabItem;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroup;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtGroupedNVPair;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupService;
 
 import com.extjs.gxt.ui.client.data.ListLoadResult;

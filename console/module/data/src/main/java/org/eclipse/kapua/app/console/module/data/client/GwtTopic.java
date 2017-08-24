@@ -14,8 +14,8 @@ package org.eclipse.kapua.app.console.module.data.client;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.eclipse.kapua.app.console.commons.client.util.DateUtils;
-import org.eclipse.kapua.app.console.commons.shared.model.KapuaBaseTreeModel;
+import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
+import org.eclipse.kapua.app.console.module.api.shared.model.KapuaBaseTreeModel;
 
 public class GwtTopic extends KapuaBaseTreeModel implements Serializable {
 

@@ -11,18 +11,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.client;
 
-import org.eclipse.kapua.app.console.commons.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.commons.client.ui.view.descriptor.MainViewDescriptor;
-import org.eclipse.kapua.app.console.commons.shared.service.GwtConsoleService;
-import org.eclipse.kapua.app.console.commons.shared.service.GwtConsoleServiceAsync;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.MainViewDescriptor;
+import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleService;
+import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleServiceAsync;
 import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationService;
-import org.eclipse.kapua.app.console.commons.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.commons.client.ui.widget.KapuaMenuItem;
-import org.eclipse.kapua.app.console.commons.client.util.ConsoleInfo;
-import org.eclipse.kapua.app.console.commons.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaMenuItem;
+import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.core.client.util.Logout;
-import org.eclipse.kapua.app.console.commons.client.util.UserAgentUtils;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.client.util.UserAgentUtils;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountStringListItem;
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;

@@ -16,9 +16,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.console.commons.server.KapuaRemoteServiceServlet;
-import org.eclipse.kapua.app.console.commons.server.util.KapuaExceptionHandler;
-import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
+import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtDomain;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtPermission.GwtAction;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtDomainService;

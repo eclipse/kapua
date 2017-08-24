@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authentication.shared.util;
 
-import org.eclipse.kapua.app.console.commons.shared.util.KapuaGwtCommonsModelConverter;
+import org.eclipse.kapua.app.console.module.api.shared.util.KapuaGwtCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredential;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtSubjectType;
 import org.eclipse.kapua.service.authentication.credential.Credential;

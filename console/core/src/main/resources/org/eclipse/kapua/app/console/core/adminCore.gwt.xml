@@ -38,7 +38,7 @@
     <inherits name='com.extjs.gxt.ui.GXT' />
     <inherits name="com.google.gwt.i18n.I18N" />
 
-    <inherits name="org.eclipse.kapua.app.console.commons.adminCommons" />
+    <inherits name="org.eclipse.kapua.app.console.module.api.adminModuleApi" />
     <inherits name="org.eclipse.kapua.app.console.module.device.adminModuleDevice" />
     <inherits name="org.eclipse.kapua.app.console.module.user.adminModuleUser" />
     <inherits name="org.eclipse.kapua.app.console.module.account.adminModuleAccount" />

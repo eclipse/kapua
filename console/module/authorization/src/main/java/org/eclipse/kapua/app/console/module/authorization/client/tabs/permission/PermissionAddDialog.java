@@ -13,10 +13,10 @@ package org.eclipse.kapua.app.console.module.authorization.client.tabs.permissio
 
 import java.util.List;
 
-import org.eclipse.kapua.app.console.commons.client.ui.dialog.entity.EntityAddEditDialog;
-import org.eclipse.kapua.app.console.commons.client.ui.panel.FormPanel;
-import org.eclipse.kapua.app.console.commons.client.util.DialogUtils;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
+import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
+import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;

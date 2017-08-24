@@ -11,8 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.welcome.client;
 
-import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractView;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractView;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.welcome.client.messages.ConsoleWelcomeMessages;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;

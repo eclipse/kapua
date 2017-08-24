@@ -11,11 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.server;
 
-import org.eclipse.kapua.app.console.commons.server.KapuaRemoteServiceServlet;
-import org.eclipse.kapua.app.console.commons.server.util.KapuaExceptionHandler;
-import org.eclipse.kapua.app.console.commons.client.GwtKapuaException;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtXSRFToken;
-import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaCommonsModelConverter;
+import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
+import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessInfo;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessInfoCreator;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessInfoService;

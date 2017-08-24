@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.tag.shared.util;
 
-import org.eclipse.kapua.app.console.commons.shared.util.KapuaGwtCommonsModelConverter;
+import org.eclipse.kapua.app.console.module.api.shared.util.KapuaGwtCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
 import org.eclipse.kapua.service.tag.Tag;
 

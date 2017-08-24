@@ -15,14 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import org.eclipse.kapua.app.console.commons.client.ui.grid.EntityGrid;
-import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractEntityView;
-import org.eclipse.kapua.app.console.commons.client.ui.widget.EntityCRUDToolbar;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessRoleQuery;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
-import org.eclipse.kapua.app.console.commons.shared.model.query.GwtQuery;
+import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;

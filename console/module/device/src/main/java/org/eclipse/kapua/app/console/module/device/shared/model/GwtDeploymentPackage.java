@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.shared.model;
 
-import org.eclipse.kapua.app.console.commons.shared.model.KapuaBaseModel;
+import org.eclipse.kapua.app.console.module.api.shared.model.KapuaBaseModel;
 
 import java.io.Serializable;
 import java.util.List;

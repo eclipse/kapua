@@ -11,8 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.user.client.dialog;
 
-import org.eclipse.kapua.app.console.commons.client.ui.dialog.entity.EntityDeleteDialog;
-import org.eclipse.kapua.app.console.commons.client.util.DialogUtils;
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityDeleteDialog;
+import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.user.client.messages.ConsoleUserMessages;
 import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
 

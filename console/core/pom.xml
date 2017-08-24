@@ -267,11 +267,11 @@
         <!-- Internal console dependencies -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-console-commons</artifactId>
+            <artifactId>kapua-console-module-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-console-commons</artifactId>
+            <artifactId>kapua-console-module-api</artifactId>
             <classifier>sources</classifier>
         </dependency>
         <dependency>

@@ -12,8 +12,8 @@
 package org.eclipse.kapua.app.console.module.device.shared.util;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.console.commons.client.util.KapuaSafeHtmlUtils;
-import org.eclipse.kapua.app.console.commons.shared.util.KapuaGwtCommonsModelConverter;
+import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
+import org.eclipse.kapua.app.console.module.api.shared.util.KapuaGwtCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceEvent;
@@ -33,7 +33,7 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.eclipse.kapua.app.console.commons.shared.util.KapuaGwtCommonsModelConverter.convertEntity;
+import static org.eclipse.kapua.app.console.module.api.shared.util.KapuaGwtCommonsModelConverter.convertEntity;
 
 public class KapuaGwtDeviceModelConverter {
 

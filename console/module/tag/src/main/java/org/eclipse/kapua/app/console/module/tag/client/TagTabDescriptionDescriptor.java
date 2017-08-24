@@ -11,8 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.tag.client;
 
-import org.eclipse.kapua.app.console.commons.client.ui.view.descriptor.AbstractTabDescriptor;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractTabDescriptor;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
 
 public class TagTabDescriptionDescriptor extends AbstractTabDescriptor<GwtTag, TagTabDescription, TagView> {

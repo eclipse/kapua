@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.shared.util;
 
-import org.eclipse.kapua.app.console.commons.shared.util.KapuaGwtCommonsModelConverter;
+import org.eclipse.kapua.app.console.module.api.shared.util.KapuaGwtCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessInfo;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessPermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessRole;

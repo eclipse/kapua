@@ -11,8 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.shared.model.device.management.bundles;
 
-import org.eclipse.kapua.app.console.commons.client.messages.ValidationMessages;
-import org.eclipse.kapua.app.console.commons.shared.model.KapuaBaseModel;
+import org.eclipse.kapua.app.console.module.api.client.messages.ValidationMessages;
+import org.eclipse.kapua.app.console.module.api.shared.model.KapuaBaseModel;
 
 import com.google.gwt.core.client.GWT;
 

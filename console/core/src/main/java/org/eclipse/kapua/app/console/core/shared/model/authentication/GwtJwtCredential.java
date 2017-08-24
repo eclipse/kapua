@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.shared.model.authentication;
 
-import org.eclipse.kapua.app.console.commons.shared.model.KapuaBaseModel;
+import org.eclipse.kapua.app.console.module.api.shared.model.KapuaBaseModel;
 
 public class GwtJwtCredential extends KapuaBaseModel {
 

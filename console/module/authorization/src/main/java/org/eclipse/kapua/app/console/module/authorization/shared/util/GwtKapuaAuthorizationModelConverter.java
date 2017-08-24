@@ -14,7 +14,7 @@ package org.eclipse.kapua.app.console.module.authorization.shared.util;
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaCommonsModelConverter;
+import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessInfoCreator;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessPermissionCreator;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessRoleCreator;

@@ -21,7 +21,7 @@
 
     <inherits name='com.extjs.gxt.ui.GXT' />
 
-    <inherits name="org.eclipse.kapua.app.console.commons.adminCommons" />
+    <inherits name="org.eclipse.kapua.app.console.module.api.adminModuleApi" />
     <inherits name="org.eclipse.kapua.app.console.module.authentication.adminModuleAuthentication" />
     <inherits name="org.eclipse.kapua.app.console.module.authorization.adminModuleAuthorization" />
 

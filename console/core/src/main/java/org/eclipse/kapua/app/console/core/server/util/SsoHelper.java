@@ -13,8 +13,8 @@ package org.eclipse.kapua.app.console.core.server.util;
 
 import java.net.URI;
 
-import org.eclipse.kapua.app.console.commons.setting.ConsoleSetting;
-import org.eclipse.kapua.app.console.commons.setting.ConsoleSettingKeys;
+import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
+import org.eclipse.kapua.app.console.module.api.setting.ConsoleSettingKeys;
 
 public final class SsoHelper {
 

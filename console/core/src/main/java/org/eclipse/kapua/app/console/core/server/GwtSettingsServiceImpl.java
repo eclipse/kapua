@@ -17,8 +17,8 @@ import org.eclipse.kapua.app.console.core.server.util.SsoHelper;
 import org.eclipse.kapua.app.console.core.server.util.SsoLocator;
 import org.eclipse.kapua.app.console.core.shared.model.GwtLoginInformation;
 import org.eclipse.kapua.app.console.core.shared.service.GwtSettingsService;
-import org.eclipse.kapua.app.console.commons.setting.ConsoleSetting;
-import org.eclipse.kapua.app.console.commons.setting.ConsoleSettingKeys;
+import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
+import org.eclipse.kapua.app.console.module.api.setting.ConsoleSettingKeys;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 

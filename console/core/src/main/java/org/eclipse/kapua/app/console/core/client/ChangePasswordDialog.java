@@ -11,15 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.client;
 
-import org.eclipse.kapua.app.console.commons.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.commons.client.ui.dialog.ActionDialog;
-import org.eclipse.kapua.app.console.commons.client.ui.dialog.SimpleDialog;
-import org.eclipse.kapua.app.console.commons.client.ui.panel.FormPanel;
-import org.eclipse.kapua.app.console.commons.client.util.validator.ConfirmPasswordFieldValidator;
-import org.eclipse.kapua.app.console.commons.client.util.ConsoleInfo;
-import org.eclipse.kapua.app.console.commons.client.util.DialogUtils;
-import org.eclipse.kapua.app.console.commons.client.util.validator.PasswordFieldValidator;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.ActionDialog;
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.SimpleDialog;
+import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
+import org.eclipse.kapua.app.console.module.api.client.util.validator.ConfirmPasswordFieldValidator;
+import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
+import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
+import org.eclipse.kapua.app.console.module.api.client.util.validator.PasswordFieldValidator;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialService;
 
 import com.extjs.gxt.ui.client.widget.form.TextField;

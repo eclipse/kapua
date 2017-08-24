@@ -12,7 +12,7 @@
 package org.eclipse.kapua.app.console.module.device.shared.util;
 
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import org.eclipse.kapua.app.console.commons.shared.util.GwtKapuaCommonsModelConverter;
+import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionQuery;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionStatus;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAsset;

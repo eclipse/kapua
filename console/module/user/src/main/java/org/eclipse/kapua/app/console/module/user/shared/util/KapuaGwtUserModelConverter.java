@@ -12,7 +12,7 @@
 package org.eclipse.kapua.app.console.module.user.shared.util;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.console.commons.shared.util.KapuaGwtCommonsModelConverter;
+import org.eclipse.kapua.app.console.module.api.shared.util.KapuaGwtCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
 import org.eclipse.kapua.service.user.User;
 

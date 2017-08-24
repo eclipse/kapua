@@ -13,7 +13,7 @@ package org.eclipse.kapua.app.console.module.authorization.shared.model;
 
 import java.util.List;
 
-import org.eclipse.kapua.app.console.commons.shared.model.GwtEntityCreator;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityCreator;
 
 public class GwtRoleCreator extends GwtEntityCreator {
 

@@ -14,10 +14,10 @@ package org.eclipse.kapua.app.console.module.device.shared.model;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.eclipse.kapua.app.console.commons.client.util.DateUtils;
+import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import org.eclipse.kapua.app.console.commons.shared.model.KapuaBaseModel;
+import org.eclipse.kapua.app.console.module.api.shared.model.KapuaBaseModel;
 
 public class GwtDeviceEvent extends KapuaBaseModel implements Serializable {
 

@@ -12,7 +12,7 @@
 package org.eclipse.kapua.app.console.module.data.client.util;
 
 import com.google.gwt.core.client.GWT;
-import org.eclipse.kapua.app.console.commons.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.data.shared.model.GwtHeader;
 import org.eclipse.kapua.app.console.module.data.shared.model.GwtHeader.GwtHeaderType;
 

@@ -14,7 +14,7 @@ package org.eclipse.kapua.app.console.module.about.server;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.kapua.app.console.commons.server.KapuaRemoteServiceServlet;
+import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.about.shared.model.GwtAboutDependency;
 import org.eclipse.kapua.app.console.module.about.shared.model.GwtAboutInformation;
 import org.eclipse.kapua.app.console.module.about.shared.service.GwtAboutService;

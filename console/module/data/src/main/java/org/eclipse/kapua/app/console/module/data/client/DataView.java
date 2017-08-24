@@ -12,8 +12,8 @@
 package org.eclipse.kapua.app.console.module.data.client;
 
 import com.google.gwt.core.client.GWT;
-import org.eclipse.kapua.app.console.commons.client.ui.view.AbstractView;
-import org.eclipse.kapua.app.console.commons.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractView;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
