@@ -19,11 +19,11 @@ import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandle
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection.GwtConnectionUserCouplingMode;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionQuery;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceConnectionService;
 import org.eclipse.kapua.app.console.module.device.shared.util.GwtKapuaDeviceModelConverter;
 import org.eclipse.kapua.app.console.module.device.shared.util.KapuaGwtDeviceModelConverter;
-import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnection.GwtConnectionUserCouplingMode;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;

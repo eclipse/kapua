@@ -17,8 +17,6 @@ import org.eclipse.kapua.app.console.module.api.shared.model.GwtUpdatableEntityM
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-import org.eclipse.kapua.app.console.shared.model.GwtUpdatableEntityModel;
-
 public class GwtDeviceConnection extends GwtUpdatableEntityModel implements Serializable {
 
     /**

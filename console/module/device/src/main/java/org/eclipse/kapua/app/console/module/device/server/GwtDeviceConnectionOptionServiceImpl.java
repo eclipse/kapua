@@ -9,15 +9,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.server;
+package org.eclipse.kapua.app.console.module.device.server;
 
-import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
-import org.eclipse.kapua.app.console.shared.GwtKapuaException;
-import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
-import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnectionOption;
-import org.eclipse.kapua.app.console.shared.service.GwtDeviceConnectionOptionService;
-import org.eclipse.kapua.app.console.shared.util.GwtKapuaModelConverter;
-import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
+import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionOption;
+import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceConnectionOptionService;
+import org.eclipse.kapua.app.console.module.device.shared.util.KapuaGwtDeviceModelConverter;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
@@ -37,8 +38,8 @@ public class GwtDeviceConnectionOptionServiceImpl extends KapuaRemoteServiceServ
         //
         // Do update
         try {
-            KapuaId scopeId = GwtKapuaModelConverter.convert(gwtDeviceConnectionOption.getScopeId());
-            KapuaId deviceConnectionOptionId = GwtKapuaModelConverter.convert(gwtDeviceConnectionOption.getId());
+            KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtDeviceConnectionOption.getScopeId());
+            KapuaId deviceConnectionOptionId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtDeviceConnectionOption.getId());
             // Update
             KapuaLocator locator = KapuaLocator.getInstance();
             DeviceConnectionOptionService deviceConnectionOptionService = locator.getService(DeviceConnectionOptionService.class);
@@ -46,12 +47,12 @@ public class GwtDeviceConnectionOptionServiceImpl extends KapuaRemoteServiceServ
             DeviceConnectionOption deviceConnectionOption = deviceConnectionOptionService.find(scopeId, deviceConnectionOptionId);
 
             deviceConnectionOption.setAllowUserChange(gwtDeviceConnectionOption.getAllowUserChange());
-            deviceConnectionOption.setReservedUserId(GwtKapuaModelConverter.convert(gwtDeviceConnectionOption.getReservedUserId()));
+            deviceConnectionOption.setReservedUserId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtDeviceConnectionOption.getReservedUserId()));
             if (gwtDeviceConnectionOption.getConnectionUserCouplingModeEnum() != null) {
                 deviceConnectionOption.setUserCouplingMode(ConnectionUserCouplingMode.valueOf(gwtDeviceConnectionOption.getConnectionUserCouplingModeEnum().name()));
             }
 
-            return KapuaGwtModelConverter.convert(deviceConnectionOptionService.update(deviceConnectionOption));
+            return KapuaGwtDeviceModelConverter.convertDeviceConnectionOption(deviceConnectionOptionService.update(deviceConnectionOption));
 
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);

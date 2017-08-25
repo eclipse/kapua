@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,35 +9,34 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.connection;
-
-import org.eclipse.kapua.app.console.client.messages.ConsoleConnectionMessages;
-import org.eclipse.kapua.app.console.client.ui.dialog.entity.EntityAddEditDialog;
-import org.eclipse.kapua.app.console.client.ui.panel.FormPanel;
-import org.eclipse.kapua.app.console.client.util.Constants;
-import org.eclipse.kapua.app.console.client.util.DialogUtils;
-import org.eclipse.kapua.app.console.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnection;
-import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnection.GwtConnectionUserCouplingMode;
-import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnectionOption;
-import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
-import org.eclipse.kapua.app.console.shared.service.GwtDeviceConnectionOptionService;
-import org.eclipse.kapua.app.console.shared.service.GwtDeviceConnectionOptionServiceAsync;
-import org.eclipse.kapua.app.console.shared.service.GwtUserService;
-import org.eclipse.kapua.app.console.shared.service.GwtUserServiceAsync;
+package org.eclipse.kapua.app.console.module.device.client.connection;
 
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
-import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
+import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
+import org.eclipse.kapua.app.console.module.api.client.util.Constants;
+import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleConnectionMessages;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection.GwtConnectionUserCouplingMode;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionOption;
+import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceConnectionOptionService;
+import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceConnectionOptionServiceAsync;
+import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserService;
+import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserServiceAsync;
 
 public class ConnectionEditDialog extends EntityAddEditDialog {
 
@@ -101,7 +100,7 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
         fieldSetSecurityOptions.add(couplingModeCombo);
 
         // Device User
-        GWT_USER_SERVICE.findAll(currentSession.getSelectedAccount().getId(), new AsyncCallback<ListLoadResult<GwtUser>>() {
+        GWT_USER_SERVICE.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<ListLoadResult<GwtUser>>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -148,7 +147,7 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
 
     @Override
     public void submit() {
-        // convert the connection to connection option
+        // convertDeviceAssetChannel the connection to connection option
         GwtDeviceConnectionOption selectedDeviceConnectionOption = new GwtDeviceConnectionOption(selectedDeviceConnection);
         selectedDeviceConnectionOption.setAllowUserChange(allowUserChangeCheckbox.getValue());
         selectedDeviceConnectionOption.setConnectionUserCouplingMode(couplingModeCombo.getValue() != null ? couplingModeCombo.getValue().getValue() : null);
@@ -184,7 +183,7 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
 
     private void populateEditDialog(GwtDeviceConnection gwtDeviceConnection) {
         if (gwtDeviceConnection.getUserId() != null) {
-            GWT_USER_SERVICE.find(currentSession.getSelectedAccount().getId(), gwtDeviceConnection.getUserId(), new AsyncCallback<GwtUser>() {
+            GWT_USER_SERVICE.find(currentSession.getSelectedAccountId(), gwtDeviceConnection.getUserId(), new AsyncCallback<GwtUser>() {
 
                 @Override
                 public void onFailure(Throwable caught) {

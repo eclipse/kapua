@@ -9,12 +9,12 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.shared.model.connection;
+package org.eclipse.kapua.app.console.module.device.shared.model;
+
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtUpdatableEntityModel;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection.GwtConnectionUserCouplingMode;
 
 import java.io.Serializable;
-
-import org.eclipse.kapua.app.console.shared.model.GwtUpdatableEntityModel;
-import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnection.GwtConnectionUserCouplingMode;
 
 public class GwtDeviceConnectionOption extends GwtUpdatableEntityModel implements Serializable {
 

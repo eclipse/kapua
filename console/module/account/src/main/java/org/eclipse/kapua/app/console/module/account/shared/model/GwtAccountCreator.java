@@ -14,7 +14,7 @@ package org.eclipse.kapua.app.console.module.account.shared.model;
 import java.util.Date;
 
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityCreator;
-import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnection.GwtConnectionUserCouplingMode;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection.GwtConnectionUserCouplingMode;
 
 public class GwtAccountCreator extends GwtEntityCreator {
 

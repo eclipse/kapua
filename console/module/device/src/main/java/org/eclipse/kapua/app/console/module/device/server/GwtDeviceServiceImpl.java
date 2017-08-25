@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection.GwtConnectionUserCouplingMode;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionStatus;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPredicates;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceService;
@@ -25,13 +26,11 @@ import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSettingKeys;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice.GwtDeviceCredentialsTight;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceCreator;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceEvent;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
-import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnection.GwtConnectionUserCouplingMode;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
@@ -113,24 +112,24 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                 }
 
                     if (deviceConnection != null) {
-                    pairs.add(new GwtGroupedNVPair("connInfo", "connConnectionStatus", deviceConnection.getStatus().toString()));
-                    pairs.add(new GwtGroupedNVPair("connInfo", "connClientId", device.getClientId()));
-                    pairs.add(new GwtGroupedNVPair("connInfo", "connUserId", deviceConnection.getUserId().toCompactId()));
-                    pairs.add(new GwtGroupedNVPair("connInfo", "connReservedUserId", deviceConnection.getReservedUserId() != null ? deviceConnection.getReservedUserId().toCompactId() : null));
-                    pairs.add(new GwtGroupedNVPair("connInfo", "connUserCouplingMode", GwtConnectionUserCouplingMode.valueOf(deviceConnection.getUserCouplingMode().name()).getLabel()));
-                    pairs.add(new GwtGroupedNVPair("connInfo", "connClientIp", deviceConnection.getClientIp()));
+                        pairs.add(new GwtGroupedNVPair("connInfo", "connConnectionStatus", deviceConnection.getStatus().toString()));
+                        pairs.add(new GwtGroupedNVPair("connInfo", "connClientId", device.getClientId()));
+                        pairs.add(new GwtGroupedNVPair("connInfo", "connUserId", deviceConnection.getUserId().toCompactId()));
+                        pairs.add(new GwtGroupedNVPair("connInfo", "connReservedUserId", deviceConnection.getReservedUserId() != null ? deviceConnection.getReservedUserId().toCompactId() : null));
+                        pairs.add(new GwtGroupedNVPair("connInfo", "connUserCouplingMode", GwtConnectionUserCouplingMode.valueOf(deviceConnection.getUserCouplingMode().name()).getLabel()));
+                        pairs.add(new GwtGroupedNVPair("connInfo", "connClientIp", deviceConnection.getClientIp()));
                         pairs.add(new GwtGroupedNVPair("netInfo", "netConnIface", device.getConnectionInterface()));
                         pairs.add(new GwtGroupedNVPair("netInfo", "netConnIp", deviceConnection.getClientIp()));
                         pairs.add(new GwtGroupedNVPair("netInfo", "netConnIfaceIp", device.getConnectionIp()));
                         pairs.add(new GwtGroupedNVPair("devInfo", "devConnectionStatus", deviceConnection.getStatus().toString()));
 
                     } else {
-                    pairs.add(new GwtGroupedNVPair("connInfo", "connConnectionStatus", DeviceConnectionStatus.DISCONNECTED.toString()));
-                    pairs.add(new GwtGroupedNVPair("connInfo", "connClientId", null));
-                    pairs.add(new GwtGroupedNVPair("connInfo", "connUserId", null));
-                    pairs.add(new GwtGroupedNVPair("connInfo", "connReservedUserId", null));
-                    pairs.add(new GwtGroupedNVPair("connInfo", "connUserCouplingMode", null));
-                    pairs.add(new GwtGroupedNVPair("connInfo", "connClientIp", null));
+                        pairs.add(new GwtGroupedNVPair("connInfo", "connConnectionStatus", DeviceConnectionStatus.DISCONNECTED.toString()));
+                        pairs.add(new GwtGroupedNVPair("connInfo", "connClientId", null));
+                        pairs.add(new GwtGroupedNVPair("connInfo", "connUserId", null));
+                        pairs.add(new GwtGroupedNVPair("connInfo", "connReservedUserId", null));
+                        pairs.add(new GwtGroupedNVPair("connInfo", "connUserCouplingMode", null));
+                        pairs.add(new GwtGroupedNVPair("connInfo", "connClientIp", null));
                         pairs.add(new GwtGroupedNVPair("netInfo", "netConnIface", null));
                         pairs.add(new GwtGroupedNVPair("netInfo", "netConnIp", null));
                         pairs.add(new GwtGroupedNVPair("netInfo", "netConnIfaceIp", null));

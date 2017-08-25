@@ -14,8 +14,7 @@ package org.eclipse.kapua.app.console.module.device.shared.model;
 import java.io.Serializable;
 
 import org.eclipse.kapua.app.console.module.api.shared.model.KapuaBaseModel;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice.GwtDeviceCredentialsTight;
-import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnection.GwtConnectionUserCouplingMode;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection.GwtConnectionUserCouplingMode;
 
 public class GwtDeviceCreator extends KapuaBaseModel implements Serializable {
 

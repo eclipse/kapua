@@ -16,6 +16,8 @@ import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.module.api.shared.util.KapuaGwtCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection.GwtConnectionUserCouplingMode;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionOption;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceEvent;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAsset;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssetChannel;
@@ -28,6 +30,7 @@ import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
+import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOption;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 
 import java.util.ArrayList;
@@ -121,6 +124,14 @@ public class KapuaGwtDeviceModelConverter {
         gwtDeviceConnection.setConnectionStatus(convertDeviceConnectionStatus(deviceConnection.getStatus()));
         gwtDeviceConnection.setOptlock(deviceConnection.getOptlock());
 
+        // convertDeviceAssetChannel user coupling attributes
+        gwtDeviceConnection.setReservedUserId(KapuaGwtCommonsModelConverter.convertKapuaId(deviceConnection.getReservedUserId()));
+        if (deviceConnection.getUserCouplingMode() != null) {
+            GwtConnectionUserCouplingMode gwtConnectionUserCouplingMode = GwtConnectionUserCouplingMode.valueOf(deviceConnection.getUserCouplingMode().name());
+            gwtDeviceConnection.setConnectionUserCouplingMode(gwtConnectionUserCouplingMode != null ? gwtConnectionUserCouplingMode.getLabel() : "");
+        }
+        gwtDeviceConnection.setAllowUserChange(deviceConnection.getAllowUserChange());
+
         //
         // Return converted entity
         return gwtDeviceConnection;
@@ -161,4 +172,25 @@ public class KapuaGwtDeviceModelConverter {
         gwtChannel.setValue(ObjectValueConverter.toString(channel.getValue()));
         return gwtChannel;
     }
+
+    public static GwtDeviceConnectionOption convertDeviceConnectionOption(DeviceConnectionOption deviceConnectionOption) {
+        GwtDeviceConnectionOption gwtDeviceConnectionOption = new GwtDeviceConnectionOption();
+
+        //
+        // Convert commons attributes
+        convertEntity(deviceConnectionOption, gwtDeviceConnectionOption);
+
+        // convertDeviceAssetChannel user coupling attributes
+        gwtDeviceConnectionOption.setReservedUserId(KapuaGwtCommonsModelConverter.convertKapuaId(deviceConnectionOption.getReservedUserId()));
+        if (deviceConnectionOption.getUserCouplingMode() != null) {
+            GwtConnectionUserCouplingMode gwtConnectionUserCouplingMode = GwtConnectionUserCouplingMode.getEnumFromLabel(deviceConnectionOption.getUserCouplingMode().name());
+            gwtDeviceConnectionOption.setConnectionUserCouplingMode(gwtConnectionUserCouplingMode != null ? gwtConnectionUserCouplingMode.getLabel() : "");
+        }
+        gwtDeviceConnectionOption.setAllowUserChange(deviceConnectionOption.getAllowUserChange());
+
+        //
+        // Return converted entity
+        return gwtDeviceConnectionOption;
+    }
+
 }

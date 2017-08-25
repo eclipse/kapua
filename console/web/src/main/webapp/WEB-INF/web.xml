@@ -200,7 +200,7 @@
 
     <servlet>
         <servlet-name>deviceConnectionOptionServlet</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.server.GwtDeviceConnectionOptionServiceImpl</servlet-class>
+        <servlet-class>org.eclipse.kapua.app.console.module.device.server.GwtDeviceConnectionOptionServiceImpl</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>deviceConnectionOptionServlet</servlet-name>

@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.module.device.client.connection.toolbar;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.device.client.connection.ConnectionEditDialog;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection;
 
 import com.google.gwt.user.client.Element;
@@ -23,7 +24,7 @@ public class ConnectionGridToolbar extends EntityCRUDToolbar<GwtDeviceConnection
     public ConnectionGridToolbar(GwtSession currentSession) {
         super(currentSession);
         setAddButtonVisible(false);
-        setEditButtonVisible(false);
+        setEditButtonVisible(true);
         setDeleteButtonVisible(false);
     }
 
@@ -39,7 +40,12 @@ public class ConnectionGridToolbar extends EntityCRUDToolbar<GwtDeviceConnection
 
     @Override
     protected KapuaDialog getEditDialog() {
-        return null;
+        GwtDeviceConnection selectedConnection = gridSelectionModel.getSelectedItem();
+        ConnectionEditDialog dialog = null;
+        if (selectedConnection != null) {
+            dialog = new ConnectionEditDialog(currentSession, selectedConnection);
+        }
+        return dialog;
     }
 
     @Override

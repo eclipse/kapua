@@ -478,7 +478,7 @@ public class DevicesTable extends LayoutContainer {
             @Override
             public void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtDevice>> callback) {
                 PagingLoadConfig pagingConfig = (BasePagingLoadConfig) loadConfig;
-                ((BasePagingLoadConfig) pagingConfig).setLimit(DEVICE_PAGE_SIZE);
+                pagingConfig.setLimit(DEVICE_PAGE_SIZE);
                 gwtDeviceService.findDevices(pagingConfig,
                         currentSession.getSelectedAccountId(),
                         filterPredicates,

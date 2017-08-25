@@ -99,13 +99,13 @@ public class GwtKapuaDeviceModelConverter {
             e.printStackTrace();
         }
         channel.setTimestamp(gwtDeviceAssetChannel.getTimestamp());
-        channel.setMode(convert(gwtDeviceAssetChannel.getModeEnum()));
+        channel.setMode(convertDeviceAssetChannel(gwtDeviceAssetChannel.getModeEnum()));
         channel.setError(gwtDeviceAssetChannel.getError());
         return channel;
 
     }
 
-    public static DeviceAssetChannelMode convert(GwtDeviceAssetChannelMode gwtMode) {
+    public static DeviceAssetChannelMode convertDeviceAssetChannel(GwtDeviceAssetChannelMode gwtMode) {
         return DeviceAssetChannelMode.valueOf(gwtMode.toString());
     }
 }
