@@ -15,9 +15,17 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
-  logicalFilePath="KapuaDB/changelog-account-0.2.0.xml">
+  logicalFilePath="KapuaDB/changelog-user-0.3.0.xml">
 
-    <include relativeToChangelogFile="true" file="./account.xml" />
-    <include relativeToChangelogFile="true" file="./account-configuration.xml" />
+    <include relativeToChangelogFile="true" file="../common-properties.xml" />
+
+    <changeSet id="changelog-user-0.3.0_addExpiration" author="eurotech">
+        <!-- Old SQL file
+        <sqlFile relativeToChangelogFile="true" path="./user-expiration.sql" />
+        -->
+        <addColumn tableName="usr_user">
+            <column name="expiration_date" type="timestamp(3)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

@@ -15,17 +15,18 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
-  logicalFilePath="KapuaDB/changelog-authorization-0.2.0.xml">
+  logicalFilePath="KapuaDB/changelog-device-0.2.0.xml">
 
     <include relativeToChangelogFile="true" file="../common-properties.xml" />
 
-    <changeSet id="changelog-authorization-group-0.2.0" author="eurotech">
+    <changeSet id="changelog-device-connection-0.2.0" author="eurotech">
         <!-- Old SQL file
-        <sqlFile relativeToChangelogFile="true" path="./athz_group.sql" />
+        <sqlFile relativeToChangelogFile="true" path="./device_connection.sql" />
         -->
-        <createTable tableName="athz_group">
+        <createTable tableName="dvc_device_connection">
+            <!-- primary key needs to include the partitioning key -->
             <column name="scope_id" type="bigint(21) unsigned">
-                <constraints nullable="false"/>
+                <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="id" type="bigint(21) unsigned">
                 <constraints nullable="false" primaryKey="true"/>
@@ -42,19 +43,36 @@
             <column name="modified_by" type="bigint(21) unsigned">
                 <constraints nullable="false"/>
             </column>
-            
-            <column name="name" type="varchar(255)">
+
+            <column name="status" type="varchar(20)">
                 <constraints nullable="false"/>
             </column>
+            <column name="client_id" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+            <column name="protocol" type="varchar(64)"/>
+            <column name="client_ip" type="varchar(255)"/>
+            <column name="server_ip" type="varchar(255)"/>
 
             <column name="optlock" type="int unsigned" />
             <column name="attributes" type="text" />
             <column name="properties" type="text" />
         </createTable>
 
-        <createIndex tableName="athz_group" indexName="idx_group_name" unique="true">
+        <createIndex tableName="dvc_device_connection" indexName="idx_connection_status_id_client_id">
             <column name="scope_id"/>
-            <column name="name"/>
+            <column name="id"/>
+            <column name="status"/>
+            <column name="client_id"/>
+        </createIndex>
+        <createIndex tableName="dvc_device_connection" indexName="idx_connection_client_id_status_id">
+            <column name="scope_id"/>
+            <column name="id"/>
+            <column name="client_id"/>
+            <column name="status"/>
         </createIndex>
     </changeSet>
 

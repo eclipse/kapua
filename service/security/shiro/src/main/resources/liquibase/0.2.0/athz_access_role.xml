@@ -19,11 +19,11 @@
 
     <include relativeToChangelogFile="true" file="../common-properties.xml" />
 
-    <changeSet id="changelog-authorization-group-0.2.0" author="eurotech">
+    <changeSet id="changelog-authorization-access-role-0.2.0" author="eurotech">
         <!-- Old SQL file
-        <sqlFile relativeToChangelogFile="true" path="./athz_group.sql" />
+        <sqlFile relativeToChangelogFile="true" path="./athz_access_role.sql" />
         -->
-        <createTable tableName="athz_group">
+        <createTable tableName="athz_access_role">
             <column name="scope_id" type="bigint(21) unsigned">
                 <constraints nullable="false"/>
             </column>
@@ -36,26 +36,38 @@
             <column name="created_by" type="bigint(21) unsigned">
                 <constraints nullable="false"/>
             </column>
-            <column name="modified_on" type="timestamp(3)" defaultValueComputed="${now}">
-                <constraints nullable="false"/>
-            </column>
-            <column name="modified_by" type="bigint(21) unsigned">
-                <constraints nullable="false"/>
-            </column>
-            
-            <column name="name" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
 
-            <column name="optlock" type="int unsigned" />
-            <column name="attributes" type="text" />
-            <column name="properties" type="text" />
+            <column name="access_info_id" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_id" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
 
-        <createIndex tableName="athz_group" indexName="idx_group_name" unique="true">
+        <addForeignKeyConstraint constraintName="access_info_id_fk_2" baseTableName="athz_access_role" baseColumnNames="access_info_id" referencedTableName="athz_access_info" referencedColumnNames="id" onDelete="CASCADE"/>
+        <addForeignKeyConstraint constraintName="role_id_fk_1" baseTableName="athz_access_role" baseColumnNames="role_id" referencedTableName="athz_role" referencedColumnNames="id" onDelete="CASCADE"/>
+
+        <createIndex tableName="athz_access_role" indexName="idx_scopeId_accessId_roleId" unique="true">
             <column name="scope_id"/>
-            <column name="name"/>
+            <column name="access_info_id"/>
+            <column name="role_id"/>
         </createIndex>
+
+        <!-- Seed values -->
+        <insert tableName="athz_access_role">
+            <!-- kapua-sys assigned of role admin -->
+            <column name="scope_id" value="1"/>
+            <column name="id" value="1"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="1"/>
+            <column name="access_info_id" value="1"/>
+            <column name="role_id" value="1"/>
+        </insert>
+
+        <rollback>
+            <dropTable tableName="athz_access_role"/>
+        </rollback>
     </changeSet>
 
 </databaseChangeLog>

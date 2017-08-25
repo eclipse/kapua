@@ -17,10 +17,20 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
   logicalFilePath="KapuaDB/changelog-device-0.3.0.xml">
 
-    <include relativeToChangelogFile="true" file="../device-network-interface.xml" />
-    <include relativeToChangelogFile="true" file="../device.xml" />
-    <include relativeToChangelogFile="true" file="../device-connection.xml" />
-    <include relativeToChangelogFile="true" file="../device-connection-configuration.xml" />
-    <include relativeToChangelogFile="true" file="../device-tag.xml" />
+    <changeSet id="changelog-device-tag-0.3.0" author="eurotech">
+        <!-- Old SQL file
+        <sqlFile relativeToChangelogFile="true" path="./device-tag.sql" />
+        -->
+        <createTable tableName="dvc_device_tag">
+            <column name="device_id" type="bigint(21) unsigned">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="tag_id" type="bigint(21) unsigned">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="device_id_fk" baseTableName="dvc_device_tag" baseColumnNames="device_id" referencedTableName="dvc_device" referencedColumnNames="id" onDelete="CASCADE"/>
+    </changeSet>
 
 </databaseChangeLog>

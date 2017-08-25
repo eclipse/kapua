@@ -19,11 +19,11 @@
 
     <include relativeToChangelogFile="true" file="../common-properties.xml" />
 
-    <changeSet id="changelog-authorization-group-0.2.0" author="eurotech">
+    <changeSet id="changelog-authorization-access-info-0.2.0" author="eurotech">
         <!-- Old SQL file
-        <sqlFile relativeToChangelogFile="true" path="./athz_group.sql" />
+        <sqlFile relativeToChangelogFile="true" path="./athz_access_info.sql" />
         -->
-        <createTable tableName="athz_group">
+        <createTable tableName="athz_access_info">
             <column name="scope_id" type="bigint(21) unsigned">
                 <constraints nullable="false"/>
             </column>
@@ -43,7 +43,7 @@
                 <constraints nullable="false"/>
             </column>
             
-            <column name="name" type="varchar(255)">
+            <column name="user_id" type="bigint(21) unsigned">
                 <constraints nullable="false"/>
             </column>
 
@@ -52,10 +52,41 @@
             <column name="properties" type="text" />
         </createTable>
 
-        <createIndex tableName="athz_group" indexName="idx_group_name" unique="true">
+        <createIndex tableName="athz_access_info" indexName="idx_scopeId_userId">
             <column name="scope_id"/>
-            <column name="name"/>
+            <column name="user_id"/>
         </createIndex>
+
+        <!-- Seed values -->
+        <insert tableName="athz_access_info">
+            <column name="scope_id" value="1"/>
+            <column name="id" value="1"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="1"/>
+            <column name="modified_on" valueComputed="${now}"/>
+            <column name="modified_by" value="1"/>
+            <column name="user_id" value="1"/>
+            <column name="optlock" value="0"/>
+            <column name="attributes" value=""/>
+            <column name="properties" value=""/>
+        </insert>
+
+        <insert tableName="athz_access_info">
+            <column name="scope_id" value="1"/>
+            <column name="id" value="2"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="1"/>
+            <column name="modified_on" valueComputed="${now}"/>
+            <column name="modified_by" value="1"/>
+            <column name="user_id" value="2"/>
+            <column name="optlock" value="0"/>
+            <column name="attributes" value=""/>
+            <column name="properties" value=""/>
+        </insert>
+
+        <rollback>
+            <dropTable tableName="athz_access_info"/>
+        </rollback>
     </changeSet>
 
 </databaseChangeLog>

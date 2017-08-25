@@ -9,15 +9,21 @@
 
     Contributors:
         Eurotech - initial API and implementation
- -->
+-->
 <databaseChangeLog
   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
-  logicalFilePath="KapuaDB/changelog-account-0.2.0.xml">
+  logicalFilePath="KapuaDB/changelog-device-0.3.0.xml">
 
-    <include relativeToChangelogFile="true" file="./account.xml" />
-    <include relativeToChangelogFile="true" file="./account-configuration.xml" />
+    <changeSet id="changelog-device-0.3.0" author="eurotech">
+        <!-- Old SQL file
+        <sqlFile relativeToChangelogFile="true" path="./device.sql" />
+        -->
+        <dropIndex tableName="dvc_device" indexName="idx_device_preferred_user_id"/>
+        <dropColumn tableName="dvc_device" columnName="credentials_mode"/>
+        <dropColumn tableName="dvc_device" columnName="preferred_user_id"/>
+    </changeSet>
 
 </databaseChangeLog>

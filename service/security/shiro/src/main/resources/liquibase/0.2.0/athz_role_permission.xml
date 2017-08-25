@@ -19,11 +19,11 @@
 
     <include relativeToChangelogFile="true" file="../common-properties.xml" />
 
-    <changeSet id="changelog-authorization-group-0.2.0" author="eurotech">
+    <changeSet id="changelog-authorization-role-permission-0.2.0" author="eurotech">
         <!-- Old SQL file
-        <sqlFile relativeToChangelogFile="true" path="./athz_group.sql" />
+        <sqlFile relativeToChangelogFile="true" path="./athz_role_permission.sql" />
         -->
-        <createTable tableName="athz_group">
+        <createTable tableName="athz_role_permission">
             <column name="scope_id" type="bigint(21) unsigned">
                 <constraints nullable="false"/>
             </column>
@@ -36,26 +36,41 @@
             <column name="created_by" type="bigint(21) unsigned">
                 <constraints nullable="false"/>
             </column>
-            <column name="modified_on" type="timestamp(3)" defaultValueComputed="${now}">
-                <constraints nullable="false"/>
-            </column>
-            <column name="modified_by" type="bigint(21) unsigned">
-                <constraints nullable="false"/>
-            </column>
-            
-            <column name="name" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
 
-            <column name="optlock" type="int unsigned" />
-            <column name="attributes" type="text" />
-            <column name="properties" type="text" />
+            <column name="role_id" type="bigint(21) unsigned" />
+            
+            <column name="domain" type="varchar(64)"/>
+            <column name="action" type="varchar(64)"/>
+            <column name="target_scope_id" type="bigint(21) unsigned" />
+            <column name="group_id" type="bigint(21) unsigned" />
+            <column name="forwardable" type="boolean">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
 
-        <createIndex tableName="athz_group" indexName="idx_group_name" unique="true">
-            <column name="scope_id"/>
-            <column name="name"/>
+        <addForeignKeyConstraint constraintName="role_id_fk_2" baseTableName="athz_role_permission" baseColumnNames="role_id" referencedTableName="athz_role" referencedColumnNames="id" onDelete="CASCADE"/>
+
+        <createIndex tableName="athz_role_permission" indexName="idx_role_permission_scope_id" unique="true">
+            <column name="role_id"/>
+            <column name="domain"/>
+            <column name="action"/>
+            <column name="target_scope_id"/>
+            <column name="group_id"/>
         </createIndex>
+
+        <!-- Seed values -->
+        <insert tableName="athz_role_permission">
+            <column name="scope_id" value="1"/>
+            <column name="id" value="1"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="1"/>
+            <column name="role_id" value="1"/>
+            <column name="forwardable" valueBoolean="true"/>
+        </insert>
+
+        <rollback>
+            <dropTable tableName="athz_role"/>
+        </rollback>
     </changeSet>
 
 </databaseChangeLog>
