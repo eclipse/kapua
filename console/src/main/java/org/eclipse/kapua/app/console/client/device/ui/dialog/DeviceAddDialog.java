@@ -32,10 +32,8 @@ import org.eclipse.kapua.app.console.shared.service.GwtDeviceServiceAsync;
 import org.eclipse.kapua.app.console.shared.service.GwtGroupService;
 import org.eclipse.kapua.app.console.shared.service.GwtGroupServiceAsync;
 
-import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
@@ -45,7 +43,6 @@ import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
-import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -201,14 +198,6 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         // layoutTags.setLabelWidth(Constants.LABEL_WIDTH_DEVICE_FORM);
         // fieldSetTags.setLayout(layoutTags);
         // fieldSetTags.setHeading(MSGS.deviceFormFieldsetTags());
-
-        ContentPanel panel = new ContentPanel();
-        panel.setBorders(false);
-        panel.setBodyBorder(false);
-        panel.setHeaderVisible(false);
-        panel.setLayout(new RowLayout(Orientation.HORIZONTAL));
-        panel.setBodyStyle("background-color:transparent");
-        panel.setHeight(35);
 
         // Device Custom attributes fieldset
         FormLayout layoutSecurityOptions = new FormLayout();
