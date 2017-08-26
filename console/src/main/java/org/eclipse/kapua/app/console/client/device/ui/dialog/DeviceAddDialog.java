@@ -27,13 +27,10 @@ import org.eclipse.kapua.app.console.shared.model.GwtDeviceCreator;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceQueryPredicates;
 import org.eclipse.kapua.app.console.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceService;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceServiceAsync;
 import org.eclipse.kapua.app.console.shared.service.GwtGroupService;
 import org.eclipse.kapua.app.console.shared.service.GwtGroupServiceAsync;
-import org.eclipse.kapua.app.console.shared.service.GwtSecurityTokenService;
-import org.eclipse.kapua.app.console.shared.service.GwtSecurityTokenServiceAsync;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
@@ -59,7 +56,6 @@ public class DeviceAddDialog extends EntityAddEditDialog {
     protected final GwtDeviceServiceAsync gwtDeviceService = GWT.create(GwtDeviceService.class);
     // protected final GwtUserServiceAsync gwtUserService = GWT.create(GwtUserService.class);
     protected final GwtGroupServiceAsync gwtGroupService = GWT.create(GwtGroupService.class);
-    protected final GwtSecurityTokenServiceAsync gwtXSRFService = GWT.create(GwtSecurityTokenService.class);
 
     // General info fields
     protected LabelField clientIdLabel;
@@ -503,70 +499,31 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         gwtDeviceCreator.setCustomAttribute5(KapuaSafeHtmlUtils.htmlUnescape(customAttribute5Field.getValue()));
 
         //
-        // Getting XSRF token
-        gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
+        // Submit
+        gwtDeviceService.createDevice(xsrfToken, gwtDeviceCreator, new AsyncCallback<GwtDevice>() {
 
             @Override
-            public void onFailure(Throwable ex) {
-                FailureHandler.handle(ex);
+            public void onFailure(Throwable caught) {
+                unmask();
+
+                submitButton.enable();
+                cancelButton.enable();
+                status.hide();
+
+                exitStatus = false;
+                // FIXME:
+                exitMessage = MSGS.error();
+                // exitMessage = MSGS.dialogAddError(caught.getLocalizedMessage());
+
+                hide();
+                //
+                // FailureHandler.handle(caught);
             }
 
-            @Override
-            public void onSuccess(GwtXSRFToken token) {
-                gwtDeviceService.createDevice(token, gwtDeviceCreator, new AsyncCallback<GwtDevice>() {
-
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        unmask();
-
-                        submitButton.enable();
-                        cancelButton.enable();
-                        status.hide();
-
-                        exitStatus = false;
-                        // FIXME:
-                        exitMessage = MSGS.error();
-                        // exitMessage = MSGS.dialogAddError(caught.getLocalizedMessage());
-
-                        hide();
-                        //
-                        // FailureHandler.handle(caught);
-                    }
-
-                    public void onSuccess(final GwtDevice gwtDevice) {
-                        //
-                        // Getting XSRF token
-                        gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
-
-                            @Override
-                            public void onFailure(Throwable ex) {
-                                unmask();
-
-                                submitButton.enable();
-                                cancelButton.enable();
-                                status.hide();
-
-                                exitStatus = false;
-                                exitMessage = MSGS.deviceCreationSuccess();
-
-                                hide();
-
-                                // FailureHandler.handle(ex);
-                            }
-
-                            @Override
-                            public void onSuccess(GwtXSRFToken token) {
-                                // hide();
-                                // ConsoleInfo.display(MSGS.info(), MSGS.deviceUpdateSuccess());
-                                exitStatus = true;
-                                exitMessage = MSGS.deviceUpdateSuccess();
-                                hide();
-
-                            }
-                        });
-
-                    }
-                });
+            public void onSuccess(final GwtDevice gwtDevice) {
+                exitStatus = true;
+                exitMessage = MSGS.deviceUpdateSuccess();
+                hide();
             }
         });
 

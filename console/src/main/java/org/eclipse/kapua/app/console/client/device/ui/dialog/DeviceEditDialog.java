@@ -18,7 +18,6 @@ import org.eclipse.kapua.app.console.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceQueryPredicates;
 import org.eclipse.kapua.app.console.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -90,48 +89,20 @@ public class DeviceEditDialog extends DeviceAddDialog {
         selectedDevice.setOptlock(optlock.getValue().intValue());
 
         //
-        // Getting XSRF token
-        gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
+        // Submit
+        gwtDeviceService.updateAttributes(xsrfToken, selectedDevice, new AsyncCallback<GwtDevice>() {
 
-            @Override
-            public void onFailure(Throwable ex) {
-                FailureHandler.handle(ex);
+            public void onFailure(Throwable caught) {
+                // FailureHandler.handle(caught);
+                exitStatus = false;
+                // FIXME:
+                exitMessage = MSGS.error();
             }
 
-            @Override
-            public void onSuccess(GwtXSRFToken token) {
-                gwtDeviceService.updateAttributes(token, selectedDevice, new AsyncCallback<GwtDevice>() {
-
-                    public void onFailure(Throwable caught) {
-                        // FailureHandler.handle(caught);
-                        exitStatus = false;
-                        // FIXME:
-                        exitMessage = MSGS.error();
-                    }
-
-                    public void onSuccess(GwtDevice gwtDevice) {
-                        //
-                        // Getting XSRF token
-                        gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
-
-                            @Override
-                            public void onFailure(Throwable ex) {
-                                // FailureHandler.handle(ex);
-                                exitStatus = false;
-                                // FIXME:
-                                exitMessage = MSGS.error();
-                            }
-
-                            @Override
-                            public void onSuccess(GwtXSRFToken token) {
-                                exitStatus = true;
-                                exitMessage = MSGS.deviceUpdateSuccess();
-                                hide();
-                            }
-                        });
-
-                    }
-                });
+            public void onSuccess(GwtDevice gwtDevice) {
+                exitStatus = true;
+                exitMessage = MSGS.deviceUpdateSuccess();
+                hide();
             }
         });
     }
@@ -151,6 +122,7 @@ public class DeviceEditDialog extends DeviceAddDialog {
     private void populateDialog(GwtDevice device) {
         if (device != null) {
             // General info data
+            clientIdField.setValue(device.getClientId());
             clientIdLabel.setText(device.getClientId());
             displayNameField.setValue(device.getUnescapedDisplayName());
             statusCombo.setSimpleValue(GwtDeviceQueryPredicates.GwtDeviceStatus.valueOf(device.getGwtDeviceStatus()));

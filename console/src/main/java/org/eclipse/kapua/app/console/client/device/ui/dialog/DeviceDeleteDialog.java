@@ -14,9 +14,7 @@ package org.eclipse.kapua.app.console.client.device.ui.dialog;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.ui.dialog.entity.EntityDeleteDialog;
 import org.eclipse.kapua.app.console.client.util.DialogUtils;
-import org.eclipse.kapua.app.console.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
-import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceService;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceServiceAsync;
 
@@ -53,39 +51,27 @@ public class DeviceDeleteDialog extends EntityDeleteDialog {
     public void submit() {
         final GwtDevice toDeleteDevice = gwtDevice;
 
-        //
-        // Getting XSRF token
-        gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
+        GWT_DEVICE_SERVICE.deleteDevice(xsrfToken,
+                toDeleteDevice.getScopeId(),
+                toDeleteDevice.getClientId(),
+                new AsyncCallback<Void>() {
 
-            @Override
-            public void onFailure(Throwable ex) {
-                FailureHandler.handle(ex);
-            }
+                    public void onFailure(Throwable caught) {
+                        exitStatus = false;
+                        // TODO
+                        // exitMessage = MSGS.dialogDeleteError(caught.getLocalizedMessage());
+                        hide();
+                    }
 
-            @Override
-            public void onSuccess(GwtXSRFToken token) {
-                GWT_DEVICE_SERVICE.deleteDevice(token,
-                        toDeleteDevice.getScopeId(),
-                        toDeleteDevice.getClientId(),
-                        new AsyncCallback<Void>() {
-
-                            public void onFailure(Throwable caught) {
-                                exitStatus = false;
-                                // TODO
-                                // exitMessage = MSGS.dialogDeleteError(caught.getLocalizedMessage());
-                                hide();
-                            }
-
-                            public void onSuccess(Void arg0) {
-                                // refresh(filterPredicates);
-                                exitStatus = true;
-                                // TODO
-                                // exitMessage = MSGS.dialogDeleteConfirmation();
-                                hide();
-                            }
-                        });
-            }
-        });
+                    public void onSuccess(Void arg0) {
+                        // refresh(filterPredicates);
+                        exitStatus = true;
+                        // TODO
+                        // exitMessage = MSGS.dialogDeleteConfirmation();
+                        hide();
+                    }
+                }
+        );
     }
 
 }
