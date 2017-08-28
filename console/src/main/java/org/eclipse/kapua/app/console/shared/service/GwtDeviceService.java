@@ -46,8 +46,7 @@ public interface GwtDeviceService extends KapuaConfigurableRemoteService {
      * Finds devices in an account with query
      * 
      * @param loadConfig
-     * @param scopeIdString
-     * @param predicates
+     * @param gwtUserQuery
      * @return
      */
     public PagingLoadResult<GwtDevice> query(PagingLoadConfig loadConfig, GwtDeviceQuery gwtUserQuery)
