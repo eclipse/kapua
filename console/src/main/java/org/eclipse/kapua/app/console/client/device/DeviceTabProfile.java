@@ -16,12 +16,14 @@ import java.util.Date;
 import java.util.List;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.client.util.DateUtils;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
-import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceService;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceServiceAsync;
 
@@ -32,7 +34,6 @@ import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -44,28 +45,27 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class DeviceTabProfile extends LayoutContainer {
+public class DeviceTabProfile extends KapuaTabItem<GwtDevice> {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
     private final GwtDeviceServiceAsync gwtDeviceService = GWT.create(GwtDeviceService.class);
 
-    private boolean dirty;
     private boolean initialized;
-    private GwtDevice selectedDevice;
 
     private Grid<GwtGroupedNVPair> grid;
     private GroupingStore<GwtGroupedNVPair> store;
     private BaseListLoader<ListLoadResult<GwtGroupedNVPair>> loader;
 
-    public DeviceTabProfile(DevicesTable devicesTable, DeviceFilterPanel deviceFilterPanel, GwtSession currentSession) {
-        dirty = true;
+    public DeviceTabProfile() {
+        super(MSGS.deviceTabDescription(), new KapuaIcon(IconSet.INFO));
         initialized = false;
     }
 
-    public void setDevice(GwtDevice selectedDevice) {
-        dirty = true;
-        this.selectedDevice = selectedDevice;
+    @Override
+    public void setEntity(GwtDevice gwtDevice) {
+        super.setEntity(gwtDevice);
+        doRefresh();
     }
 
     protected void onRender(Element parent, int index) {
@@ -83,8 +83,8 @@ public class DeviceTabProfile extends LayoutContainer {
 
             @Override
             protected void load(Object loadConfig, final AsyncCallback<ListLoadResult<GwtGroupedNVPair>> callback) {
-                if (selectedDevice != null) {
-                    gwtDeviceService.findDeviceProfile(selectedDevice.getScopeId(), selectedDevice.getClientId(), callback);
+                if (selectedEntity != null) {
+                    gwtDeviceService.findDeviceProfile(selectedEntity.getScopeId(), selectedEntity.getClientId(), callback);
                 }
             }
         };
@@ -139,10 +139,10 @@ public class DeviceTabProfile extends LayoutContainer {
         initialized = true;
     }
 
-    public void refresh() {
-        if (dirty && initialized) {
-            dirty = false;
-            if (selectedDevice != null) {
+    @Override
+    public void doRefresh() {
+        if (initialized) {
+            if (selectedEntity != null) {
                 loader.load();
             } else {
                 grid.getStore().removeAll();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,6 +12,9 @@
 package org.eclipse.kapua.app.console.client.device;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.client.util.Constants;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.client.util.KapuaSafeHtmlUtils;
@@ -51,7 +54,7 @@ import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class DeviceTabCommand extends LayoutContainer {
+public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
@@ -63,9 +66,7 @@ public class DeviceTabCommand extends LayoutContainer {
     private final GwtSecurityTokenServiceAsync gwtXSRFService = GWT.create(GwtSecurityTokenService.class);
     private HiddenField<String> xsrfTokenField;
 
-    private boolean dirty;
     private boolean initialized;
-    private GwtDevice selectedDevice;
 
     private LayoutContainer commandInput;
     private FormPanel formPanel;
@@ -87,13 +88,14 @@ public class DeviceTabCommand extends LayoutContainer {
     protected boolean resetProcess;
 
     public DeviceTabCommand(GwtSession currentSession) {
-        dirty = false;
+        super(MSGS.tabCommand(), new KapuaIcon(IconSet.TERMINAL));
         initialized = false;
     }
 
-    public void setDevice(GwtDevice selectedDevice) {
-        dirty = true;
-        this.selectedDevice = selectedDevice;
+    @Override
+    public void setEntity(GwtDevice gwtDevice) {
+        super.setEntity(gwtDevice);
+        doRefresh();
     }
 
     protected void onRender(Element parent, int index) {
@@ -160,7 +162,7 @@ public class DeviceTabCommand extends LayoutContainer {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                if (!selectedDevice.isOnline()) {
+                if (!selectedEntity.isOnline()) {
                     MessageBox.alert(MSGS.dialogAlerts(), MSGS.deviceOffline(), new Listener<MessageBoxEvent>() {
 
                         @Override
@@ -262,8 +264,8 @@ public class DeviceTabCommand extends LayoutContainer {
                 if (formPanel.isValid()) {
                     result.clear();
                     commandInput.mask(MSGS.deviceCommandExecuting());
-                    accountField.setValue(selectedDevice.getScopeId());
-                    deviceIdField.setValue(selectedDevice.getId());
+                    accountField.setValue(selectedEntity.getScopeId());
+                    deviceIdField.setValue(selectedEntity.getId());
                     timeoutField.setValue(COMMAND_TIMEOUT_SECS);
 
                     gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
@@ -324,14 +326,17 @@ public class DeviceTabCommand extends LayoutContainer {
     //
     // --------------------------------------------------------------------------------------
 
-    public void refresh() {
-        if (dirty && initialized) {
-            dirty = false;
-
-            if (selectedDevice != null) {
-                commandInput.unmask();
-            }
+    @Override
+    public void doRefresh() {
+        if (initialized && selectedEntity != null) {
+            commandInput.unmask();
+            clearAll();
         }
+    }
+
+    private void clearAll() {
+        formPanel.reset();
+        result.reset();
     }
 
     // --------------------------------------------------------------------------------------
