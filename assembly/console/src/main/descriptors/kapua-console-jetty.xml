@@ -39,7 +39,7 @@
             <useProjectArtifact>false</useProjectArtifact>
 
             <includes>
-                <include>${pom.groupId}:kapua-console:war</include>
+                <include>${pom.groupId}:kapua-console-web:war</include>
             </includes>
 
         </dependencySet>

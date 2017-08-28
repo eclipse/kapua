@@ -14,7 +14,7 @@ vagrant ssh demo -c "echo 'deploying the Kapua broker'
 	sudo rm -rf webapp/admin*
 	sudo rm -rf webapp/api*
 	echo 'copying Kapua console web application'
-	sudo cp /kapua/console/target/admin.war webapps/admin.war
+	sudo cp /kapua/console/web/target/admin.war webapps/admin.war
 	echo 'copying Kapua api web application'
 	sudo cp /kapua/rest-api/target/api.war webapps/api.war
 	cd ..
