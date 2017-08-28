@@ -262,6 +262,43 @@ Scenario: Creating new device and tagging it with specific Tag
     And I tag device with "KuraDevice" tag
     When I search for device with tag "KuraDevice"
     Then I find device "device_1"
+    And I untag device with "KuraDevice" tag
+    And I logout
+
+Scenario: Creating new device, tagging it with specific Tag and then deleting this Tag
+  Procedure of registering a device is executed and device BIRTH message is sent.
+  After that device is tagged with Tag KuraDevice and searched by this same tag, followed
+  by deletion of this tag. 
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name      | scopeId |
+      | AccountA  | 1       |
+    And I configure user service
+      | type    | name                       | value |
+      | boolean | infiniteChildEntities      | true  |
+      | integer | maxNumberChildEntities     | 5     |
+    Given User A
+      | name    | displayName  | email             | phoneNumber     | status  | userType |
+      | UserA   | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
+    And I configure the device service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities |  10   |
+    And I configure the tag service
+      | type    | name                       | value |
+      | boolean | infiniteChildEntities      | true  |
+      | integer | maxNumberChildEntities     | 10     |
+    And A device such as
+      | clientId | displayName | modelId         | serialNumber |
+      | device_2 | testGateway3 | ReliaGate 10-20 | 12541234ABC  |
+    And A birth message from device "device_1"
+    And I search for the device "device_1" in account "AccountA"
+    And I tag device with "KuraDevice2" tag
+    When I search for device with tag "KuraDevice2"
+    Then I find device "device_1"
+    And I untag device with "KuraDevice2" tag
+    And I verify that tag "KuraDevice2" is deleted
     And I logout
 
   @StopBroker
