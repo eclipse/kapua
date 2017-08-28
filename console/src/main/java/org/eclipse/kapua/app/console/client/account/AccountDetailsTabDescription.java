@@ -132,7 +132,7 @@ public class AccountDetailsTabDescription extends KapuaTabItem<GwtAccount>{
         grid.setStripeRows(true);
         grid.setTrackMouseOver(false);
         grid.disableTextSelection(false);
-
+        updateAccountInfo();
         add(grid);
     }
 	
@@ -174,7 +174,7 @@ public class AccountDetailsTabDescription extends KapuaTabItem<GwtAccount>{
                   }
               }
           });
-          editButton.setEnabled(false);
+          editButton.setEnabled(true);
 
           accountsToolBar.add(editButton);
           accountsToolBar.add(new SeparatorToolItem());

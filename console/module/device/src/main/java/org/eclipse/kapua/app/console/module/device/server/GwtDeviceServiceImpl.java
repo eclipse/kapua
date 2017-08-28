@@ -60,6 +60,8 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventPredicates;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
+import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserService;
 
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
@@ -101,6 +103,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
         DeviceEventService deviceEventService = locator.getService(DeviceEventService.class);
         DeviceConnectionService deviceConnectionService = locator.getService(DeviceConnectionService.class);
         GroupService groupService = locator.getService(GroupService.class);
+        UserService userService = locator.getService(UserService.class);
 
         try {
 
@@ -117,9 +120,10 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                 }
 
                 if (deviceConnection != null) {
+                    User user = userService.find(scopeId, deviceConnection.getUserId());
                     pairs.add(new GwtGroupedNVPair("connInfo", "connConnectionStatus", deviceConnection.getStatus().toString()));
                     pairs.add(new GwtGroupedNVPair("connInfo", "connClientId", device.getClientId()));
-                    pairs.add(new GwtGroupedNVPair("connInfo", "connUserId", deviceConnection.getUserId().toCompactId()));
+                    pairs.add(new GwtGroupedNVPair("connInfo", "connUserName", user.getDisplayName()));
                     pairs.add(new GwtGroupedNVPair("connInfo", "connReservedUserId", deviceConnection.getReservedUserId() != null ? deviceConnection.getReservedUserId().toCompactId() : null));
                     pairs.add(new GwtGroupedNVPair("connInfo", "connUserCouplingMode", GwtConnectionUserCouplingMode.valueOf(deviceConnection.getUserCouplingMode().name()).getLabel()));
                     pairs.add(new GwtGroupedNVPair("connInfo", "connClientIp", deviceConnection.getClientIp()));
