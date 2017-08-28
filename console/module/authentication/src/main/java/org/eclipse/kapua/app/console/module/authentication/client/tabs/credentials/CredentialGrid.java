@@ -130,14 +130,14 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
         columnConfig = new ColumnConfig("createdOn", MSGS.gridCredentialColumnHeaderCreatedOn(), 200);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("createdBy", MSGS.gridCredentialColumnHeaderCreatedBy(), 200);
+        columnConfig = new ColumnConfig("username", MSGS.gridCredentialColumnHeaderCreatedBy(), 200);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("modifiedOn", MSGS.gridCredentialColumnHeaderModifiedOn(), 200);
         columnConfig.setHidden(true);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("modifiedBy", MSGS.gridCredentialColumnHeaderModifiedBy(), 200);
+        columnConfig = new ColumnConfig("username", MSGS.gridCredentialColumnHeaderModifiedBy(), 200);
         columnConfig.setHidden(true);
         columnConfigs.add(columnConfig);
 

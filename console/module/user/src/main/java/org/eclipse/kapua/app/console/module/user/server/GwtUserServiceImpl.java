@@ -341,9 +341,9 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userEmail", user.getEmail()));
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userPhoneNumber", user.getPhoneNumber()));
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userCreatedOn", user.getCreatedOn().toString()));
-                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userCreatedBy", user.getCreatedBy().toCompactId()));
+                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userCreatedBy", user.getDisplayName()));
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userModifiedOn", user.getModifiedOn().toString()));
-                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userModifiedBy", user.getModifiedBy().toCompactId()));
+                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userModifiedBy", user.getDisplayName()));
             }
         } catch (Exception e) {
             KapuaExceptionHandler.handle(e);

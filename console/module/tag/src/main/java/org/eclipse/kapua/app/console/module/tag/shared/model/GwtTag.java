@@ -30,4 +30,12 @@ public class GwtTag extends GwtUpdatableEntityModel {
     public String toString() {
         return getTagName();
     }
+
+    public String getUserName() {
+        return get("userName");
+    }
+
+    public void setUserName(String userName) {
+        set("userName", userName);
+    }
 }

@@ -80,7 +80,7 @@ public class UserTabAccessRoleGrid extends EntityGrid<GwtAccessRole> {
         columnConfig = new ColumnConfig("roleName", MSGS.gridRoleColumnHeaderName(), 400);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("createdBy", MSGS.gridRoleColumnHeaderCreatedBy(), 200);
+        columnConfig = new ColumnConfig("userName", MSGS.gridRoleColumnHeaderCreatedBy(), 200);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("createdOn", MSGS.gridRoleColumnHeaderCreatedOn(), 200);
