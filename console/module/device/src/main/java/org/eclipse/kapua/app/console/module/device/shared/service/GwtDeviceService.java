@@ -25,7 +25,7 @@ import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPredicates;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQuery;
 
 /**
  * The client side stub for the RPC service.
@@ -47,11 +47,10 @@ public interface GwtDeviceService extends RemoteService {
      * Finds devices in an account with query
      * 
      * @param loadConfig
-     * @param scopeIdString
-     * @param predicates
+     * @param gwtUserQuery
      * @return
      */
-    public PagingLoadResult<GwtDevice> findDevices(PagingLoadConfig loadConfig, String scopeIdString, GwtDeviceQueryPredicates predicates)
+    public PagingLoadResult<GwtDevice> query(PagingLoadConfig loadConfig, GwtDeviceQuery gwtUserQuery)
             throws GwtKapuaException;
 
     /**

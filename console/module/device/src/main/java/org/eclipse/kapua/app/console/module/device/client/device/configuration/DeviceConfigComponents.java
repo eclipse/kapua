@@ -9,7 +9,27 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.module.account.client;
+package org.eclipse.kapua.app.console.module.device.client.device.configuration;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.DiscardButton;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.SaveButton;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
+import org.eclipse.kapua.app.console.module.api.client.ui.label.Label;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.module.api.client.util.KapuaLoadListener;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigComponent;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenService;
+import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenServiceAsync;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
@@ -41,46 +61,27 @@ import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanelSelectionModel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.DiscardButton;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.SaveButton;
-import org.eclipse.kapua.app.console.module.api.client.ui.label.Label;
-import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.module.api.client.util.KapuaLoadListener;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigComponent;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
-import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleService;
-import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleServiceAsync;
-import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenService;
-import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenServiceAsync;
-import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
-import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
-import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
-import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
+import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementService;
+import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementServiceAsync;
+import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceService;
+import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceServiceAsync;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class AccountConfigComponents extends LayoutContainer {
+@SuppressWarnings("Duplicates")
+public class DeviceConfigComponents extends LayoutContainer {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
-    private static final ConsoleDeviceMessages DEVICES_MSGS = GWT.create(ConsoleDeviceMessages.class);
+    private static final ConsoleDeviceMessages DEVICE_MSGS = GWT.create(ConsoleDeviceMessages.class);
 
-    private static final GwtSecurityTokenServiceAsync GWT_SECURITY_TOKEN_SERVICE = GWT.create(GwtSecurityTokenService.class);
-    private static final GwtAccountServiceAsync GWT_ACCOUNT_SERVICE = GWT.create(GwtAccountService.class);
-    private static final GwtConsoleServiceAsync GWT_CONSOLE_SERVICE = GWT.create(GwtConsoleService.class);
-
-    private GwtSession currentSession;
+    private final GwtDeviceServiceAsync gwtDeviceService = GWT.create(GwtDeviceService.class);
+    private final GwtDeviceManagementServiceAsync gwtDeviceManagementService = GWT.create(GwtDeviceManagementService.class);
+    private final GwtSecurityTokenServiceAsync gwtXSRFService = GWT.create(GwtSecurityTokenService.class);
 
     private boolean dirty;
     private boolean initialized;
-    private GwtAccount selectedAccount;
-    private AccountTabConfiguration tabConfig;
+    private GwtDevice selectedDevice;
+    private DeviceTabConfiguration tabConfig;
 
     private ToolBar toolBar;
 
@@ -91,7 +92,7 @@ public class AccountConfigComponents extends LayoutContainer {
     private Button reset;
 
     private ContentPanel configPanel;
-    private AccountConfigPanel devConfPanel;
+    private DeviceConfigPanel devConfPanel;
     private BorderLayoutData centerData;
 
     @SuppressWarnings("rawtypes")
@@ -99,35 +100,20 @@ public class AccountConfigComponents extends LayoutContainer {
     private TreeStore<ModelData> treeStore;
     private TreePanel<ModelData> tree;
 
-    private boolean resetProcess;
+    protected boolean resetProcess;
 
-    private boolean applyProcess;
+    protected boolean applyProcess;
 
-    private final AsyncCallback<Void> applyConfigCallback = new AsyncCallback<Void>() {
-
-        public void onFailure(Throwable caught) {
-            FailureHandler.handle(caught);
-            dirty = true;
-            refresh();
-        }
-
-        public void onSuccess(Void arg0) {
-            dirty = true;
-            refresh();
-        }
-    };
-
-    AccountConfigComponents(GwtSession currentSession,
-            AccountTabConfiguration tabConfig) {
-        this.currentSession = currentSession;
+    public DeviceConfigComponents(GwtSession currentSession,
+            DeviceTabConfiguration tabConfig) {
         this.tabConfig = tabConfig;
         dirty = false;
         initialized = false;
     }
 
-    public void setAccount(GwtAccount selectedAccount) {
+    public void setDevice(GwtDevice selectedDevice) {
         dirty = true;
-        this.selectedAccount = selectedAccount;
+        this.selectedDevice = selectedDevice;
     }
 
     protected void onRender(Element parent, int index) {
@@ -139,16 +125,16 @@ public class AccountConfigComponents extends LayoutContainer {
         initToolBar();
         initConfigPanel();
 
-        ContentPanel accountConfigurationPanel = new ContentPanel();
-        accountConfigurationPanel.setBorders(false);
-        accountConfigurationPanel.setBodyBorder(false);
-        accountConfigurationPanel.setHeaderVisible(false);
-        accountConfigurationPanel.setLayout(new FitLayout());
-        accountConfigurationPanel.setScrollMode(Scroll.AUTO);
-        accountConfigurationPanel.setTopComponent(toolBar);
-        accountConfigurationPanel.add(configPanel);
+        ContentPanel devicesConfigurationPanel = new ContentPanel();
+        devicesConfigurationPanel.setBorders(false);
+        devicesConfigurationPanel.setBodyBorder(false);
+        devicesConfigurationPanel.setHeaderVisible(false);
+        devicesConfigurationPanel.setLayout(new FitLayout());
+        devicesConfigurationPanel.setScrollMode(Scroll.AUTO);
+        devicesConfigurationPanel.setTopComponent(toolBar);
+        devicesConfigurationPanel.add(configPanel);
 
-        add(accountConfigurationPanel);
+        add(devicesConfigurationPanel);
         initialized = true;
     }
 
@@ -246,11 +232,29 @@ public class AccountConfigComponents extends LayoutContainer {
 
             @Override
             protected void load(Object loadConfig, AsyncCallback<List<GwtConfigComponent>> callback) {
-                if (selectedAccount != null) {
-                    tree.mask(MSGS.loading());
-                    GWT_ACCOUNT_SERVICE.findServiceConfigurations(selectedAccount.getId(), callback);
-                    dirty = false;
+                if (selectedDevice != null && dirty && initialized) {
+                    if (selectedDevice.isOnline()) {
+                        tree.mask(MSGS.loading());
+                        gwtDeviceManagementService.findDeviceConfigurations(selectedDevice, callback);
+                    } else {
+                        List<GwtConfigComponent> comps = new ArrayList<GwtConfigComponent>();
+                        GwtConfigComponent comp = new GwtConfigComponent();
+                        comp.setId(DEVICE_MSGS.deviceNoDeviceSelected());
+                        comp.setName(DEVICE_MSGS.deviceNoComponents());
+                        comp.setDescription(DEVICE_MSGS.deviceNoConfigSupported());
+                        comps.add(comp);
+                        callback.onSuccess(comps);
+                    }
+                } else {
+                    List<GwtConfigComponent> comps = new ArrayList<GwtConfigComponent>();
+                    GwtConfigComponent comp = new GwtConfigComponent();
+                    comp.setId(DEVICE_MSGS.deviceNoDeviceSelected());
+                    comp.setName(DEVICE_MSGS.deviceNoDeviceSelected());
+                    comp.setDescription(DEVICE_MSGS.deviceNoDeviceSelected());
+                    comps.add(comp);
+                    callback.onSuccess(comps);
                 }
+                dirty = false;
             }
         };
 
@@ -278,25 +282,26 @@ public class AccountConfigComponents extends LayoutContainer {
             @Override
             public void handleEvent(BaseEvent be) {
 
+                final BaseEvent theEvent = be;
                 SelectionEvent<ModelData> se = (SelectionEvent<ModelData>) be;
 
                 final GwtConfigComponent componentToSwitchTo = (GwtConfigComponent) se.getModel();
                 if (devConfPanel != null && devConfPanel.isDirty()) {
 
                     // cancel the event first
-                    be.setCancelled(true);
+                    theEvent.setCancelled(true);
 
                     // need to reselect the current entry
                     // as the BeforeSelect event cleared it
                     // we need to do this without raising events
-                    TreePanelSelectionModel selectionModel = tree.getSelectionModel();
+                    TreePanelSelectionModel selectionModel = (TreePanelSelectionModel) tree.getSelectionModel();
                     selectionModel.setFiresEvents(false);
                     selectionModel.select(false, devConfPanel.getConfiguration());
                     selectionModel.setFiresEvents(true);
 
                     // ask for confirmation before switching
                     MessageBox.confirm(MSGS.confirm(),
-                            DEVICES_MSGS.deviceConfigDirty(),
+                            DEVICE_MSGS.deviceConfigDirty(),
                             new Listener<MessageBoxEvent>() {
 
                                 public void handleEvent(MessageBoxEvent ce) {
@@ -315,7 +320,7 @@ public class AccountConfigComponents extends LayoutContainer {
                     // this is needed to select the item in the Tree
                     // Temporarly disable the firing of the selection events
                     // to avoid an infinite loop as BeforeSelect would be invoked again.
-                    TreePanelSelectionModel selectionModel = tree.getSelectionModel();
+                    TreePanelSelectionModel selectionModel = (TreePanelSelectionModel) tree.getSelectionModel();
                     selectionModel.setFiresEvents(false);
                     selectionModel.select(false, componentToSwitchTo);
 
@@ -324,6 +329,60 @@ public class AccountConfigComponents extends LayoutContainer {
                 }
             }
         });
+    }
+
+    // --------------------------------------------------------------------------------------
+    //
+    // Device Configuration Management
+    //
+    // --------------------------------------------------------------------------------------
+
+    private static final int PERIOD_MILLIS = 1000;
+
+    public void refreshWhenOnline() {
+
+        Timer timer = new Timer() {
+
+            private static final int TIMEOUT_MILLIS = 30000;
+            private int countdownMillis = TIMEOUT_MILLIS;
+
+            public void run() {
+                if (selectedDevice != null) {
+                    countdownMillis -= PERIOD_MILLIS;
+
+                    //
+                    // Poll the current status of the device until is online again or timeout.
+                    gwtDeviceService.findDevice(selectedDevice.getScopeId(),
+                            selectedDevice.getUnescapedClientId(),
+                            new AsyncCallback<GwtDevice>() {
+
+                                @Override
+                                public void onFailure(Throwable t) {
+                                    done();
+                                }
+
+                                @Override
+                                public void onSuccess(GwtDevice gwtDevice) {
+                                    if (countdownMillis <= 0 ||
+                                    // Allow the device to disconnect before checking if it's online again.
+                                            ((TIMEOUT_MILLIS - countdownMillis) > 5000 && gwtDevice.isOnline())) {
+                                        done();
+                                    }
+                                }
+
+                                private void done() {
+                                    cancel();
+                                    refresh();
+                                    if (devConfPanel != null) {
+                                        devConfPanel.unmask();
+                                    }
+                                }
+                            });
+                }
+            }
+        };
+        devConfPanel.mask(MSGS.waiting());
+        timer.scheduleRepeating(PERIOD_MILLIS);
     }
 
     public void refresh() {
@@ -348,7 +407,7 @@ public class AccountConfigComponents extends LayoutContainer {
         }
     }
 
-    private void refreshConfigPanel(GwtConfigComponent configComponent) {
+    public void refreshConfigPanel(GwtConfigComponent configComponent) {
         apply.setEnabled(false);
         reset.setEnabled(false);
 
@@ -357,7 +416,7 @@ public class AccountConfigComponents extends LayoutContainer {
         }
         if (configComponent != null) {
 
-            devConfPanel = new AccountConfigPanel(configComponent, currentSession, tabConfig.getSelectedEntity());
+            devConfPanel = new DeviceConfigPanel(configComponent);
             devConfPanel.addListener(Events.Change, new Listener<BaseEvent>() {
 
                 @Override
@@ -371,18 +430,24 @@ public class AccountConfigComponents extends LayoutContainer {
         }
     }
 
-    private void apply() {
+    public void apply() {
         if (!devConfPanel.isValid()) {
             MessageBox mb = new MessageBox();
             mb.setIcon(MessageBox.ERROR);
-            mb.setMessage(DEVICES_MSGS.deviceConfigError());
+            mb.setMessage(DEVICE_MSGS.deviceConfigError());
             mb.show();
             return;
         }
 
         // ask for confirmation
         String componentName = devConfPanel.getConfiguration().getComponentName();
-        String message = DEVICES_MSGS.deviceConfigConfirmation(componentName);
+        String message = DEVICE_MSGS.deviceConfigConfirmation(componentName);
+        final boolean isCloudUpdate = "CloudService".equals(componentName);
+        if (isCloudUpdate) {
+            message = DEVICE_MSGS.deviceCloudConfigConfirmation(componentName);
+        }
+
+        final DeviceConfigPanel finalDevConfPanel = devConfPanel;
 
         MessageBox.confirm(MSGS.confirm(),
                 message,
@@ -396,9 +461,9 @@ public class AccountConfigComponents extends LayoutContainer {
                         if (dialog.yesText.equals(ce.getButtonClicked().getText())) {
 
                             // mark the whole config panel dirty and for reload
-                            tabConfig.setEntity(selectedAccount);
+                            tabConfig.setEntity(selectedDevice);
 
-                            devConfPanel.mask(MSGS.applying());
+                            finalDevConfPanel.mask(MSGS.applying());
                             tree.mask();
                             apply.setEnabled(false);
                             reset.setEnabled(false);
@@ -406,7 +471,7 @@ public class AccountConfigComponents extends LayoutContainer {
 
                             //
                             // Getting XSRF token
-                            GWT_SECURITY_TOKEN_SERVICE.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
+                            gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
 
                                 @Override
                                 public void onFailure(Throwable ex) {
@@ -415,10 +480,30 @@ public class AccountConfigComponents extends LayoutContainer {
 
                                 @Override
                                 public void onSuccess(GwtXSRFToken token) {
-                                    final GwtConfigComponent configComponent = devConfPanel.getUpdatedConfiguration();
-                                    GWT_CONSOLE_SERVICE.updateComponentConfiguration(token, selectedAccount.getId(), selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
+                                    final GwtConfigComponent configComponent = finalDevConfPanel.getUpdatedConfiguration();
+                                    gwtDeviceManagementService.updateComponentConfiguration(token,
+                                            selectedDevice,
+                                            configComponent,
+                                            new AsyncCallback<Void>() {
+
+                                                public void onFailure(Throwable caught) {
+                                                    FailureHandler.handle(caught);
+                                                    dirty = true;
+                                                }
+
+                                                public void onSuccess(Void arg0) {
+                                                    dirty = true;
+                                                    if (isCloudUpdate) {
+                                                        refreshWhenOnline();
+                                                    } else {
+                                                        refresh();
+                                                    }
+                                                }
+                                            });
                                 }
                             });
+
+                            // start the configuration update
                         }
                     }
                 });
@@ -428,7 +513,7 @@ public class AccountConfigComponents extends LayoutContainer {
         final GwtConfigComponent comp = (GwtConfigComponent) tree.getSelectionModel().getSelectedItem();
         if (devConfPanel != null && comp != null && devConfPanel.isDirty()) {
             MessageBox.confirm(MSGS.confirm(),
-                    DEVICES_MSGS.deviceConfigDirty(),
+                    DEVICE_MSGS.deviceConfigDirty(),
                     new Listener<MessageBoxEvent>() {
 
                         public void handleEvent(MessageBoxEvent ce) {
@@ -502,7 +587,7 @@ public class AccountConfigComponents extends LayoutContainer {
 
     private class DataLoadListener extends KapuaLoadListener {
 
-        DataLoadListener() {
+        public DataLoadListener() {
         }
 
         public void loaderLoad(LoadEvent le) {
@@ -521,9 +606,9 @@ public class AccountConfigComponents extends LayoutContainer {
 
             List<ModelData> comps = new ArrayList<ModelData>();
             GwtConfigComponent comp = new GwtConfigComponent();
-            comp.setId(DEVICES_MSGS.deviceNoDeviceSelected());
-            comp.setName(DEVICES_MSGS.deviceNoComponents());
-            comp.setDescription(DEVICES_MSGS.deviceNoConfigSupported());
+            comp.setId(DEVICE_MSGS.deviceNoDeviceSelected());
+            comp.setName(DEVICE_MSGS.deviceNoComponents());
+            comp.setDescription(DEVICE_MSGS.deviceNoConfigSupported());
             comps.add(comp);
             treeStore.removeAll();
             treeStore.add(comps, false);

@@ -54,10 +54,12 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
+import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 
 public class AccountDetailsView extends AbstractView {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
+    private static final ConsoleDeviceMessages DEVICES_MSGS = GWT.create(ConsoleDeviceMessages.class);
     private GwtAccountServiceAsync gwtAccountService = GWT.create(GwtAccountService.class);
 
     private GwtSession currentSession;
@@ -161,8 +163,8 @@ public class AccountDetailsView extends AbstractView {
         store = new GroupingStore<GwtGroupedNVPair>(loader);
         store.groupBy("groupLoc");
 
-        ColumnConfig name = new ColumnConfig("nameLoc", MSGS.devicePropName(), 50);
-        ColumnConfig value = new ColumnConfig("value", MSGS.devicePropValue(), 50);
+        ColumnConfig name = new ColumnConfig("nameLoc", DEVICES_MSGS.devicePropName(), 50);
+        ColumnConfig value = new ColumnConfig("value", DEVICES_MSGS.devicePropValue(), 50);
 
         List<ColumnConfig> config = new ArrayList<ColumnConfig>();
         config.add(name);

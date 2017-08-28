@@ -1,5 +1,5 @@
 org.eclipse.kapua.app.console.module.welcome.client.WelcomeViewDescriptor
-org.eclipse.kapua.app.console.module.device.client.DevicesViewDescriptor
+org.eclipse.kapua.app.console.module.device.client.device.DeviceViewDescriptor
 org.eclipse.kapua.app.console.module.device.client.connection.ConnectionViewDescriptor
 org.eclipse.kapua.app.console.module.data.client.DataViewDescriptor
 org.eclipse.kapua.app.console.module.tag.client.TagViewDescriptor

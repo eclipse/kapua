@@ -66,7 +66,6 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
         "customAttribute3",
         "customAttribute4",
         "customAttribute5",
-        "credentialsMode",
         "tagIds"
         // // derived attributes
         // "uptime",

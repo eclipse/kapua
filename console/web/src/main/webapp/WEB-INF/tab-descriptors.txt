@@ -16,3 +16,11 @@ org.eclipse.kapua.app.console.module.authorization.client.role.RoleTabPermission
 org.eclipse.kapua.app.console.module.authorization.client.group.GroupTabDescriptionDescriptor->org.eclipse.kapua.app.console.module.authorization.client.group.GroupView
 
 org.eclipse.kapua.app.console.module.tag.client.TagTabDescriptionDescriptor->org.eclipse.kapua.app.console.module.tag.client.TagView
+
+org.eclipse.kapua.app.console.module.device.client.device.assets.DeviceTabAssetsDescriptor->org.eclipse.kapua.app.console.module.device.client.device.DeviceView
+org.eclipse.kapua.app.console.module.device.client.device.bundles.DeviceTabBundlesDescriptor->org.eclipse.kapua.app.console.module.device.client.device.DeviceView
+org.eclipse.kapua.app.console.module.device.client.device.command.DeviceTabCommandDescriptor->org.eclipse.kapua.app.console.module.device.client.device.DeviceView
+org.eclipse.kapua.app.console.module.device.client.device.configuration.DeviceTabConfigurationDescriptor->org.eclipse.kapua.app.console.module.device.client.device.DeviceView
+org.eclipse.kapua.app.console.module.device.client.device.history.DeviceTabHistoryDescriptor->org.eclipse.kapua.app.console.module.device.client.device.DeviceView
+org.eclipse.kapua.app.console.module.device.client.device.packages.DeviceTabPackagesDescriptor->org.eclipse.kapua.app.console.module.device.client.device.DeviceView
+org.eclipse.kapua.app.console.module.device.client.device.profile.DeviceTabProfileDescriptor->org.eclipse.kapua.app.console.module.device.client.device.DeviceView
