@@ -84,17 +84,6 @@ public class JobRuntime implements KapuaService {
         // jBatch model serializer configuration
         JSL_MODEL_SERIALIZER_FACTORY = ModelSerializerFactory.createJobModelSerializer();
 
-        //
-        // Job Engine configuration
-
-        System.setProperty("JDBC_DRIVER", "org.apache.derby.jdbc.EmbeddedDriver");
-        System.setProperty("JDBC_URL", "jdbc:derby:RUNTIMEDB;create=true");
-
-        System.setProperty("com.ibm.jbatch.spi.ServiceRegistry.J2SE_MODE", "true");
-        System.setProperty("com.ibm.jbatch.spi.ServiceRegistry.JOBXML_LOADER_SERVICE", "com.ibm.jbatch.container.services.impl.DirectoryJobXMLLoaderServiceImpl");
-        System.setProperty("com.ibm.jbatch.spi.ServiceRegistry.CONTAINER_ARTIFACT_FACTORY_SERVICE", "com.ibm.jbatch.container.services.impl.DelegatingBatchArtifactFactoryImpl");
-        System.setProperty("com.ibm.jbatch.spi.ServiceRegistry.BATCH_THREADPOOL_SERVICE", "com.ibm.jbatch.container.services.impl.GrowableThreadPoolServiceImpl");
-
         JOB_ENGINE = BatchRuntime.getJobOperator();
     }
 
