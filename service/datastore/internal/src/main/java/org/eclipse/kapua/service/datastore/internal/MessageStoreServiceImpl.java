@@ -34,7 +34,6 @@ import org.eclipse.kapua.service.datastore.DatastoreDomain;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.client.ClientCommunicationException;
 import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
-import org.eclipse.kapua.service.datastore.client.model.InsertResponse;
 import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreCommunicationException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreException;
@@ -109,7 +108,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
     }
 
     @Override
-    public InsertResponse store(KapuaMessage<?, ?> message)
+    public StorableId store(KapuaMessage<?, ?> message)
             throws KapuaException {
         String datastoreId = UUID.randomUUID().toString();
         Context metricDataSaveTimeContext = metricDataSaveTime.time();
@@ -139,7 +138,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
     }
 
     @Override
-    public InsertResponse store(KapuaMessage<?, ?> message, String datastoreId)
+    public StorableId store(KapuaMessage<?, ?> message, String datastoreId)
             throws KapuaException {
         ArgumentValidator.notEmptyOrNull(datastoreId, "datastoreId");
         Context metricDataSaveTimeContext = metricDataSaveTime.time();

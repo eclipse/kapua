@@ -59,7 +59,6 @@ import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
 import org.eclipse.kapua.service.datastore.client.embedded.EsEmbeddedEngine;
-import org.eclipse.kapua.service.datastore.client.model.InsertResponse;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreChannel;
@@ -1524,8 +1523,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         List<StorableId> storableIds = new ArrayList<>(messages.length);
         for (KapuaDataMessage message : messages) {
             try {
-                InsertResponse response = MESSAGE_STORE_SERVICE.store(message);
-                storableIds.add(new StorableIdImpl(response.getId()));
+                storableIds.add(MESSAGE_STORE_SERVICE.store(message));
             } catch (Exception e) {
                 logger.error("Message insert exception!", e);
                 fail("Store messages should have succeded");
@@ -2576,9 +2574,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         message.setPayload(messagePayload);
         message.setClientId(clientId);
 
-        InsertResponse response = MESSAGE_STORE_SERVICE.store(message);
-
-        StorableId messageId = new StorableIdImpl(response.getId());
+        StorableId messageId = MESSAGE_STORE_SERVICE.store(message);
         //
         // A non empty message id must be returned
         assertNotNull(messageId);

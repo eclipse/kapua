@@ -58,7 +58,6 @@ import org.eclipse.kapua.service.datastore.ClientInfoRegistryService;
 import org.eclipse.kapua.service.datastore.DatastoreJAXBContextProvider;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
-import org.eclipse.kapua.service.datastore.client.model.InsertResponse;
 import org.eclipse.kapua.service.datastore.internal.ChannelInfoRegistryServiceProxy;
 import org.eclipse.kapua.service.datastore.internal.ClientInfoRegistryServiceProxy;
 import org.eclipse.kapua.service.datastore.internal.DatastoreCacheManager;
@@ -1439,10 +1438,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
     }
 
     private StorableId insertMessageInStore(KapuaDataMessage message) throws KapuaException {
-
-        InsertResponse tmpResponse = messageStoreService.store(message);
-        StorableId tmpId = new StorableIdImpl(tmpResponse.getId());
-        return tmpId;
+        return messageStoreService.store(message);
     }
 
     private List<StorableId> insertMessagesInStore(List<KapuaDataMessage> messages) throws KapuaException {

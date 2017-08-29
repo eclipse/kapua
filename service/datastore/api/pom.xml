@@ -26,12 +26,21 @@
     <dependencies>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-datastore-client-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-message-api</artifactId>
         </dependency>
 
+    <!--  external dependencies -->
         <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-datastore-client-api</artifactId>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
         </dependency>
     </dependencies>
 </project>
