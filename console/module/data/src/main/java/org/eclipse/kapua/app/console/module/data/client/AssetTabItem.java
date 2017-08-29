@@ -128,9 +128,10 @@ public class AssetTabItem extends TabItem {
         tables.add(assetTable, assetLayout);
 
         BorderLayoutData channelLayout = new BorderLayoutData(LayoutRegion.EAST, 0.33f);
-        channelLayout.setMargins(new Margins(0, 0, 0, 5));
+        channelLayout.setMargins(new Margins(0, 0, 0, 3));
         channelLayout.setSplit(true);
         metricsTable = new MetricsTable(currentSession, MetricsTable.Type.ASSET);
+        metricsTable.setStyleAttribute("padding-left", "2px");
         metricsTable.addSelectionListener(new SelectionChangedListener<GwtHeader>() {
 
             @Override
