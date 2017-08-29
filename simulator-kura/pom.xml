@@ -182,7 +182,7 @@
                         <image>
                             <name>${docker.account}/kura-simulator</name>
                             <build>
-                                <from>java:8-jre-alpine</from>
+                                <from>centos:7</from>
                                 <maintainer>Jens Reimann &lt;jreimann@redhat.com&gt;</maintainer>
                                 <assembly>
                                     <mode>dir</mode>

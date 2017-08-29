@@ -26,7 +26,7 @@
 
     <properties>
         <docker.account>kapua</docker.account>
-        <java.base.image>openjdk:8u121-jre-alpine</java.base.image>
+        <java.base.image>centos:7</java.base.image>
     </properties>
 
     <dependencies>
