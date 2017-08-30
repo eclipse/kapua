@@ -11,9 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.model;
 
+import javax.inject.Inject;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
-
-import org.eclipse.kapua.locator.KapuaLocator;
 
 /**
  * Kapua identifier adapter. It marshal and unmarshal the Kapua identifier in a proper way.
@@ -24,14 +23,10 @@ import org.eclipse.kapua.locator.KapuaLocator;
 public class StorableIdAdapter extends XmlAdapter<String, StorableId> {
 
     /**
-     * Locator instance
-     */
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-
-    /**
      * Meta type factory instance
      */
-    private final StorableIdFactory storableIdFactory = locator.getFactory(StorableIdFactory.class);
+    @Inject
+    private StorableIdFactory storableIdFactory;
 
     @Override
     public String marshal(StorableId v) throws Exception {

@@ -11,9 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore;
 
+import javax.inject.Inject;
 import javax.xml.bind.annotation.XmlRegistry;
 
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 
@@ -25,8 +25,8 @@ import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 @XmlRegistry
 public class ChannelInfoXmlRegistry {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final DatastoreObjectFactory factory = locator.getFactory(DatastoreObjectFactory.class);
+    @Inject
+    private DatastoreObjectFactory factory;
 
     /**
      * Creates a {@link ChannelInfoListResult} instance

@@ -21,7 +21,6 @@ import java.util.List;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.AccountService;
@@ -57,6 +56,8 @@ import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+
 /**
  * Client information registry implementation.
  * 
@@ -69,29 +70,28 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
 
     private static final Logger logger = LoggerFactory.getLogger(ClientInfoRegistryServiceImpl.class);
 
-    private final AccountService accountService;
-    private final AuthorizationService authorizationService;
-    private final PermissionFactory permissionFactory;
+    @Inject
+    private AccountService accountService;
+    @Inject
+    private AuthorizationService authorizationService;
+    @Inject
+    private PermissionFactory permissionFactory;
+    @Inject
+    private MessageStoreService messageStoreService;
+    @Inject
+    private StorablePredicateFactory storablePredicateFactory;
+
     private final ClientInfoRegistryFacade clientInfoRegistryFacade;
-    private final MessageStoreService messageStoreService;
-    private final StorablePredicateFactory storablePredicateFactory;
 
     /**
      * Default constructor
      * 
      * @throws ClientUnavailableException
      */
-    public ClientInfoRegistryServiceImpl() throws ClientUnavailableException {
+    @Inject
+    public ClientInfoRegistryServiceImpl(MessageStoreService messageStoreService, AccountService accountService) throws ClientUnavailableException {
         super(ClientInfoRegistryService.class.getName(), DATASTORE_DOMAIN, DatastoreEntityManagerFactory.getInstance());
 
-        KapuaLocator locator = KapuaLocator.getInstance();
-        accountService = locator.getService(AccountService.class);
-        authorizationService = locator.getService(AuthorizationService.class);
-        permissionFactory = locator.getFactory(PermissionFactory.class);
-        messageStoreService = locator.getService(MessageStoreService.class);
-        storablePredicateFactory = KapuaLocator.getInstance().getFactory(StorablePredicateFactory.class);
-
-        MessageStoreService messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
         ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(messageStoreService, accountService);
         clientInfoRegistryFacade = new ClientInfoRegistryFacade(configurationProvider, DatastoreMediator.getInstance());
         DatastoreMediator.getInstance().setClientInfoStoreFacade(clientInfoRegistryFacade);

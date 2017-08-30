@@ -15,12 +15,8 @@ package org.eclipse.kapua.service.datastore.internal.mediator;
 import java.util.Map;
 
 import org.eclipse.kapua.KapuaIllegalArgumentException;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
-import org.eclipse.kapua.service.datastore.ClientInfoRegistryService;
-import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
 import org.eclipse.kapua.service.datastore.client.ClientException;
 import org.eclipse.kapua.service.datastore.client.QueryMappingException;
 import org.eclipse.kapua.service.datastore.internal.ChannelInfoRegistryFacade;
@@ -60,11 +56,6 @@ public class DatastoreMediator implements MessageStoreMediator,
 
     static {
         INSTANCE = new DatastoreMediator();
-
-        // Be sure the data registry services are instantiated
-        KapuaLocator.getInstance().getService(ClientInfoRegistryService.class);
-        KapuaLocator.getInstance().getService(ChannelInfoRegistryService.class);
-        KapuaLocator.getInstance().getService(MetricInfoRegistryService.class);
     }
 
     private DatastoreMediator() {
