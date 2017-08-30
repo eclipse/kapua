@@ -19,6 +19,7 @@
     <include relativeToChangelogFile="true" file="./job-configuration.sql" />
                       
     <include relativeToChangelogFile="true" file="./job.sql" />
+    <include relativeToChangelogFile="true" file="./job_execution.sql" />
     <include relativeToChangelogFile="true" file="./job_step.sql" />
     <include relativeToChangelogFile="true" file="./job_step_properties.sql" />
     <include relativeToChangelogFile="true" file="./job_step_definition.sql" />
