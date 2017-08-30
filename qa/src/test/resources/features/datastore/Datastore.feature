@@ -138,16 +138,16 @@ Feature: Datastore tests
     And Account for "kapua-sys"
     And The device "test-device-1"
     Given I prepare a number of messages with the following details and remember the list as "TestMessages1"
-      |topic                  |
-      |delete/by/query/test/1 |
+      |topic                   |
+      |delete/by/query/test/1  |
     And The device "test-device-2"
     Given I prepare a number of messages with the following details and remember the list as "TestMessages2"
-      |topic                  |
+      |topic                   |
       |delete/by/query/tests/2 |
     And The device "test-device-3"
     Given I prepare a number of messages with the following details and remember the list as "TestMessages3"
-      |topic                  |
-      |delete/by/query/test/3 |
+      |topic                   |
+      |delete/by/query/test/3  |
     Then I store the messages from list "TestMessages1" and remember the IDs as "StoredMessageIDs1"
     Then I store the messages from list "TestMessages2" and remember the IDs as "StoredMessageIDs2"
     Then I store the messages from list "TestMessages3" and remember the IDs as "StoredMessageIDs3"
@@ -289,11 +289,11 @@ Feature: Datastore tests
     And I set the database to device timestamp indexing
     And The device "test-device-1"
     When I prepare a number of messages with the following details and remember the list as "TestMessages1"
-      |clientId      |topic           |
-      |test-client-1 |bus/route/one   |
-      |test-client-1 |bus/route/one/a |
-      |test-client-1 |bus/route/two/a |
-      |test-client-1 |bus/route/two/b |
+      |clientId      |topic             |
+      |test-client-1 |bus/route/one     |
+      |test-client-1 |bus/route/one/a   |
+      |test-client-1 |bus/route/two/a   |
+      |test-client-1 |bus/route/two/b   |
     Then I store the messages from list "TestMessages1" and remember the IDs as "StoredMessageIDs1"
     When I prepare a number of messages with the following details and remember the list as "TestMessages2"
       |clientId      |topic             |
@@ -316,19 +316,19 @@ Feature: Datastore tests
     And The device "test-device-1"
     And I set the database to device timestamp indexing
     When I prepare a number of messages with the following details and remember the list as "TestMessages"
-      |clientId      |topic                            |captured            |
-      |test-client-1 |ci_client_by_pd_by_account/1/2/3 |03/07/2017T09:00:00 |
-      |test-client-2 |ci_client_by_pd_by_account/1/2/3 |03/07/2017T09:00:00 |
-      |test-client-2 |ci_client_by_pd_by_account/1/2/3 |03/07/2017T09:00:10 |
-      |test-client-2 |ci_client_by_pd_by_account/1/2/3 |03/07/2017T09:00:20 |
+      |clientId      |topic                            |captured                 |
+      |test-client-1 |ci_client_by_pd_by_account/1/2/3 |2017-07-03T09:00:00.000Z |
+      |test-client-2 |ci_client_by_pd_by_account/1/2/3 |2017-07-03T09:00:00.000Z |
+      |test-client-2 |ci_client_by_pd_by_account/1/2/3 |2017-07-03T09:00:10.000Z |
+      |test-client-2 |ci_client_by_pd_by_account/1/2/3 |2017-07-03T09:00:20.000Z |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
     And I refresh all database indices
-    When I query for the current account channels in the date range "03/07/2017T09:00:00" to "03/07/2017T09:00:20" and store them as "ChannelList"
+    When I query for the current account channels in the date range "2017-07-03T09:00:00.000Z" to "2017-07-03T09:00:20.000Z" and store them as "ChannelList"
     Then There are exactly 2 channels in the list "ChannelList"
-    And Client "test-client-1" first published on a channel in the list "ChannelList" on "03/07/2017T09:00:00"
-    And Client "test-client-1" last published on a channel in the list "ChannelList" on "03/07/2017T09:00:00"
-    And Client "test-client-2" first published on a channel in the list "ChannelList" on "03/07/2017T09:00:00"
-    And Client "test-client-2" last published on a channel in the list "ChannelList" on "03/07/2017T09:00:20"
+    And Client "test-client-1" first published on a channel in the list "ChannelList" on "2017-07-03T09:00:00.000Z"
+    And Client "test-client-1" last published on a channel in the list "ChannelList" on "2017-07-03T09:00:00.000Z"
+    And Client "test-client-2" first published on a channel in the list "ChannelList" on "2017-07-03T09:00:00.000Z"
+    And Client "test-client-2" last published on a channel in the list "ChannelList" on "2017-07-03T09:00:20.000Z"
     And All indices are deleted
 
   Scenario: Account wide metrics check
@@ -343,13 +343,13 @@ Feature: Datastore tests
       |test-client-1 |test_topic/1/2/3 |
       |test-client-2 |test_topic/1/2/3 |
     And I set the following metrics to the message 0 from the list "TestMessages"
-      |metric        |type      |value      |
-      |tst-metric-1  |double    |123        |
-      |tst-metric-2  |int       |123        |
+      |metric        |type      |value |
+      |tst-metric-1  |double    |123   |
+      |tst-metric-2  |int       |123   |
     And I set the following metrics to the message 1 from the list "TestMessages"
-      |metric        |type      |value      |
-      |tst-metric-3  |string    |123        |
-      |tst-metric-4  |bool      |true       |
+      |metric        |type      |value |
+      |tst-metric-3  |string    |123   |
+      |tst-metric-4  |bool      |true  |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
     And I refresh all database indices
     When I query for the current account metrics and store them as "AccountMetrics"
@@ -368,22 +368,22 @@ Feature: Datastore tests
     Then I prepare a number of messages with the following details and remember the list as "TestMessages"
       |clientId      |topic            |
       |test-client-1 |test_topic/1/2/3 |
-      |test-client-1 |test_topic/1/2/4 |
+      |test-client-1 |test_topic/1/2/3 |
     And I set the following metrics to the message 0 from the list "TestMessages"
-      |metric        |type      |value      |
-      |tst-metric-1  |double    |123        |
-      |tst-metric-2  |int       |123        |
+      |metric        |type      |value |
+      |tst-metric-1  |double    |123   |
+      |tst-metric-2  |int       |123   |
     And I set the following metrics to the message 1 from the list "TestMessages"
-      |metric        |type      |value      |
-      |tst-metric-3  |string    |123        |
-      |tst-metric-4  |bool      |true       |
+      |metric        |type      |value |
+      |tst-metric-3  |string    |123   |
+      |tst-metric-4  |bool      |true  |
     Then I prepare a number of messages with the following details and remember the list as "TestMessages2"
       |clientId      |topic            |
       |test-client-2 |test_topic/1/2/3 |
     And I set the following metrics to the message 0 from the list "TestMessages2"
-      |metric        |type      |value      |
-      |tst-metric-5  |string    |123        |
-      |tst-metric-6  |bool      |true       |
+      |metric        |type      |value |
+      |tst-metric-3  |double    |123   |
+      |tst-metric-4  |int       |123   |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
     Then I store the messages from list "TestMessages2" and remember the IDs as "StoredMessageIDs2"
     And I refresh all database indices
@@ -401,39 +401,40 @@ Feature: Datastore tests
     And The device "test-device-1"
     And I set the database to device timestamp indexing
     When I prepare a number of messages with the following details and remember the list as "TestMessages"
-      |clientId      |topic              |captured            |
-      |test-client-1 |test_topic/1/2/3   |03/07/2017T09:00:00 |
-      |test-client-2 |test_topic/1/2/3   |03/07/2017T09:00:00 |
-      |test-client-2 |test_topic/1/2/3   |03/07/2017T09:00:10 |
-      |test-client-2 |test_topic/1/2/3   |03/07/2017T09:00:20 |
+      |clientId      |topic            |captured                 |
+      |test-client-1 |test_topic/1/2/3 |2017-07-03T09:00:00.000Z |
+      |test-client-2 |test_topic/1/2/3 |2017-07-03T09:00:00.000Z |
+      |test-client-2 |test_topic/1/2/3 |2017-07-03T09:00:10.000Z |
+      |test-client-2 |test_topic/1/2/3 |2017-07-03T09:00:20.000Z |
     And I set the following metrics to the message 0 from the list "TestMessages"
-      |metric        |type      |value      |
-      |tst-metric-1  |double    |123        |
-      |tst-metric-2  |int       |123        |
+      |metric        |type   |value |
+      |tst-metric-1  |double |123   |
+      |tst-metric-2  |int    |123   |
     And I set the following metrics to the message 1 from the list "TestMessages"
-      |metric        |type      |value      |
-      |tst-metric-3  |string    |123        |
-      |tst-metric-4  |bool      |true       |
+      |metric        |type   |value |
+      |tst-metric-3  |string |123   |
+      |tst-metric-4  |bool   |true  |
     And I set the following metrics to the message 2 from the list "TestMessages"
-      |metric        |type      |value      |
-      |tst-metric-3  |string    |123        |
-      |tst-metric-4  |bool      |true       |
+      |metric        |type   |value |
+      |tst-metric-3  |string |123   |
+      |tst-metric-4  |bool   |true  |
     And I set the following metrics to the message 3 from the list "TestMessages"
-      |metric        |type      |value      |
-      |tst-metric-3  |string    |123        |
-      |tst-metric-4  |bool      |true       |
+      |metric        |type   |value |
+      |tst-metric-3  |string |123   |
+      |tst-metric-4  |bool   |true  |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
     And I refresh all database indices
-    When I query for the current account metrics in the date range "03/07/2017T09:00:00" to "03/07/2017T09:00:20" and store them as "AccountMetrics"
+    When I query for the current account metrics in the date range "2017-07-03T09:00:00.000Z" to "2017-07-03T09:00:20.000Z" and store them as "AccountMetrics"
     Then There are exactly 4 metrics in the list "AccountMetrics"
     And The metric info items "AccountMetrics" match the prepared messages in "TestMessages"
-    And Client "test-client-1" first published a metric in the list "AccountMetrics" on "03/07/2017T09:00:00"
-    And Client "test-client-2" last published a metric in the list "AccountMetrics" on "03/07/2017T09:00:20"
-    And The metric "tst-metric-1" was first published in the list "AccountMetrics" on "03/07/2017T09:00:00"
-    And The metric "tst-metric-1" was last published in the list "AccountMetrics" on "03/07/2017T09:00:00"
-    And The metric "tst-metric-2" was last published in the list "AccountMetrics" on "03/07/2017T09:00:00"
-    And The metric "tst-metric-3" was last published in the list "AccountMetrics" on "03/07/2017T09:00:20"
-    And The metric "tst-metric-4" was last published in the list "AccountMetrics" on "03/07/2017T09:00:20"
+    And Client "test-client-1" first published a metric in the list "AccountMetrics" on "2017-07-03T09:00:00.000Z"
+    And Client "test-client-1" last published a metric in the list "AccountMetrics" on "2017-07-03T09:00:00.000Z"
+    And Client "test-client-2" first published a metric in the list "AccountMetrics" on "2017-07-03T09:00:00.000Z"
+    And Client "test-client-2" last published a metric in the list "AccountMetrics" on "2017-07-03T09:00:20.000Z"
+    And The metric "tst-metric-1" was last published in the list "AccountMetrics" on "2017-07-03T09:00:00.000Z"
+    And The metric "tst-metric-2" was last published in the list "AccountMetrics" on "2017-07-03T09:00:00.000Z"
+    And The metric "tst-metric-3" was last published in the list "AccountMetrics" on "2017-07-03T09:00:20.000Z"
+    And The metric "tst-metric-4" was last published in the list "AccountMetrics" on "2017-07-03T09:00:20.000Z"
     And All indices are deleted
 
   Scenario: Account based ClientInfo data check
@@ -444,11 +445,11 @@ Feature: Datastore tests
     And The device "test-device-1"
     And I set the database to device timestamp indexing
     When I prepare a number of messages with the following details and remember the list as "TestMessages"
-      |clientId      |topic              |
-      |test-client-1 |test_topic/1/2/3   |
-      |test-client-2 |test_topic/1/2/4   |
-      |test-client-1 |test_topic/1/2/5   |
-      |test-client-2 |test_topic/1/2/6   |
+      |clientId      |topic            |
+      |test-client-1 |test_topic/1/2/3 |
+      |test-client-2 |test_topic/1/2/3 |
+      |test-client-2 |test_topic/1/2/3 |
+      |test-client-2 |test_topic/1/2/3 |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
     And I refresh all database indices
     When I query for the current account clients and store them as "AccountClients"
@@ -465,19 +466,19 @@ Feature: Datastore tests
     And The device "test-device-1"
     And I set the database to device timestamp indexing
     When I prepare a number of messages with the following details and remember the list as "TestMessages"
-      |clientId      |topic              |captured            |
-      |test-client-1 |test_topic/1/2/3   |03/07/2017T09:00:00 |
-      |test-client-2 |test_topic/1/2/3   |03/07/2017T09:00:00 |
-      |test-client-2 |test_topic/1/2/3   |03/07/2017T09:00:10 |
-      |test-client-2 |test_topic/1/2/3   |03/07/2017T09:00:20 |
+      |clientId      |topic            |captured                 |
+      |test-client-1 |test_topic/1/2/3 |2017-07-03T09:00:00.000Z |
+      |test-client-2 |test_topic/1/2/3 |2017-07-03T09:00:00.000Z |
+      |test-client-2 |test_topic/1/2/3 |2017-07-03T09:00:10.000Z |
+      |test-client-2 |test_topic/1/2/3 |2017-07-03T09:00:20.000Z |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
     And I refresh all database indices
-    When I query for current account clients in the date range "03/07/2017T09:00:00" to "03/07/2017T09:00:20" and store them as "ClientInfos"
+    When I query for current account clients in the date range "2017-07-03T09:00:00.000Z" to "2017-07-03T09:00:20.000Z" and store them as "ClientInfos"
     Then There are exactly 2 clients in the list "ClientInfos"
-    And Client "test-client-1" first message in the list "ClientInfos" is on "03/07/2017T09:00:00"
-    And Client "test-client-1" last message in the list "ClientInfos" is on "03/07/2017T09:00:00"
-    And Client "test-client-2" first message in the list "ClientInfos" is on "03/07/2017T09:00:00"
-    And Client "test-client-2" last message in the list "ClientInfos" is on "03/07/2017T09:00:20"
+    And Client "test-client-1" first message in the list "ClientInfos" is on "2017-07-03T09:00:00.000Z"
+    And Client "test-client-1" last message in the list "ClientInfos" is on "2017-07-03T09:00:00.000Z"
+    And Client "test-client-2" first message in the list "ClientInfos" is on "2017-07-03T09:00:00.000Z"
+    And Client "test-client-2" last message in the list "ClientInfos" is on "2017-07-03T09:00:20.000Z"
     And All indices are deleted
 
   Scenario: Client Id based ClientInfo data check
@@ -489,14 +490,14 @@ Feature: Datastore tests
     And The device "test-device-1"
     And I set the database to device timestamp indexing
     When I prepare a number of messages with the following details and remember the list as "TestMessages1"
-      |clientId      |topic              |
-      |test-client-1 |test_topic/1/2/3   |
+      |clientId      |topic            |
+      |test-client-1 |test_topic/1/2/3 |
     Then I store the messages from list "TestMessages1" and remember the IDs as "StoredMessageIDs1"
     When I prepare a number of messages with the following details and remember the list as "TestMessages2"
-      |clientId      |topic              |
-      |test-client-2 |test_topic/1/2/4   |
-      |test-client-3 |test_topic/1/2/3   |
-      |test-client-4 |test_topic/1/2/4   |
+      |clientId      |topic            |
+      |test-client-2 |test_topic/1/2/4 |
+      |test-client-3 |test_topic/1/2/3 |
+      |test-client-4 |test_topic/1/2/4 |
     Then I store the messages from list "TestMessages2" and remember the IDs as "StoredMessageIDs2"
     And I refresh all database indices
     When I query for the current account client with the Id "test-client-1" and store it as "ClientInfo"

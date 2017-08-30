@@ -17,7 +17,6 @@ import static org.eclipse.kapua.service.datastore.model.query.SortField.descendi
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -36,6 +35,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.shiro.SecurityUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaPosition;
@@ -173,6 +173,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
     public void afterScenario() throws Exception {
 
         try {
+            deleteAllIndices();
             logger.info("Logging out in cleanup");
             SecurityUtils.getSubject().logout();
             KapuaSecurityUtils.clearSession();
@@ -542,7 +543,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         Account account = (Account) stepData.get("LastAccount");
         ChannelInfoQuery tmpQuery = DatastoreQueryFactory.createBaseChannelInfoQuery(account.getId(), 100);
         RangePredicate timestampPredicate = new RangePredicateImpl(ChannelInfoField.TIMESTAMP,
-                parseFeatureDateTimeString(start), parseFeatureDateTimeString(end));
+                KapuaDateUtils.parseDate(start), KapuaDateUtils.parseDate(end));
         AndPredicate andPredicate = new AndPredicateImpl();
         andPredicate.getPredicates().add(timestampPredicate);
         tmpQuery.setPredicate(andPredicate);
@@ -571,7 +572,6 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
 
         ChannelInfoListResult tmpList = (ChannelInfoListResult) stepData.get(lstKey);
         Set<String> infoTopics = new HashSet<>();
-        Set<String> listTopics = new HashSet<>();
 
         assertEquals("Wrong number of topics found!", tmpList.getSize(), topics.size());
 
@@ -579,11 +579,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
             infoTopics.add(tmpInfo.getName());
         }
         for (TestTopic tmpTop : topics) {
-            listTopics.add(tmpTop.getTopic());
-        }
-
-        for (String tmpTopic : listTopics) {
-            assertTrue(String.format("The topic [%s] was not found!", tmpTopic), infoTopics.contains(tmpTopic));
+            assertTrue(String.format("The topic [%s] was not found!", tmpTop.getTopic()), infoTopics.contains(tmpTop.getTopic()));
         }
     }
 
@@ -607,11 +603,11 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
     public void checkFirstPublishDateOnChannel(String clientId, String lstKey, String date) throws Exception {
 
         ChannelInfoListResult chnList = (ChannelInfoListResult) stepData.get(lstKey);
-        Date tmpCaptured = parseFeatureDateTimeString(date);
+        Date tmpCaptured = KapuaDateUtils.parseDate(date);
 
         for (ChannelInfo tmpInfo : chnList.getItems()) {
             if (tmpInfo.getClientId().equals(clientId)) {
-                assertEquals(tmpInfo.getFirstMessageOn(), tmpCaptured);
+                assertEquals(tmpCaptured, tmpInfo.getFirstMessageOn());
                 return;
             }
         }
@@ -622,11 +618,11 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
     public void checkLastPublishDateOnChannel(String clientId, String lstKey, String date) throws Exception {
 
         ChannelInfoListResult chnList = (ChannelInfoListResult) stepData.get(lstKey);
-        Date tmpCaptured = parseFeatureDateTimeString(date);
+        Date tmpCaptured = KapuaDateUtils.parseDate(date);
 
         for (ChannelInfo tmpInfo : chnList.getItems()) {
             if (tmpInfo.getClientId().equals(clientId)) {
-                assertEquals(tmpInfo.getLastMessageOn(), tmpCaptured);
+                assertEquals(tmpCaptured, tmpInfo.getLastMessageOn());
                 return;
             }
         }
@@ -669,7 +665,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         Account account = (Account) stepData.get("LastAccount");
         MetricInfoQuery tmpQuery = DatastoreQueryFactory.createBaseMetricInfoQuery(account.getId(), 100);
         RangePredicate timestampPredicate = new RangePredicateImpl(MetricInfoField.TIMESTAMP_FULL,
-                parseFeatureDateTimeString(start), parseFeatureDateTimeString(end));
+                KapuaDateUtils.parseDate(start), KapuaDateUtils.parseDate(end));
         AndPredicate andPredicate = new AndPredicateImpl();
         andPredicate.getPredicates().add(timestampPredicate);
         tmpQuery.setPredicate(andPredicate);
@@ -729,7 +725,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
     public void checkFirstPublishDateOfClientMetric(String clientId, String lstKey, String date) throws Exception {
 
         MetricInfoListResult metList = (MetricInfoListResult) stepData.get(lstKey);
-        Date tmpCaptured = parseFeatureDateTimeString(date);
+        Date tmpCaptured = KapuaDateUtils.parseDate(date);
 
         for (MetricInfo tmpMet : metList.getItems()) {
             if (tmpMet.getClientId().equals(clientId)) {
@@ -744,7 +740,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
     public void checkLastPublishDateOfClientMetric(String clientId, String lstKey, String date) throws Exception {
 
         MetricInfoListResult metList = (MetricInfoListResult) stepData.get(lstKey);
-        Date tmpCaptured = parseFeatureDateTimeString(date);
+        Date tmpCaptured = KapuaDateUtils.parseDate(date);
 
         for (MetricInfo tmpMet : metList.getItems()) {
             if (tmpMet.getClientId().equals(clientId)) {
@@ -759,7 +755,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
     public void checkFirstPublishDateOfMetricInList(String metric, String lstKey, String date) throws Exception {
 
         MetricInfoListResult metList = (MetricInfoListResult) stepData.get(lstKey);
-        Date tmpCaptured = parseFeatureDateTimeString(date);
+        Date tmpCaptured = KapuaDateUtils.parseDate(date);
 
         for (MetricInfo tmpMet : metList.getItems()) {
             if (tmpMet.getName().equals(metric)) {
@@ -774,7 +770,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
     public void checkLastPublishDateOfMetricInList(String metric, String lstKey, String date) throws Exception {
 
         MetricInfoListResult metList = (MetricInfoListResult) stepData.get(lstKey);
-        Date tmpCaptured = parseFeatureDateTimeString(date);
+        Date tmpCaptured = KapuaDateUtils.parseDate(date);
 
         for (MetricInfo tmpMet : metList.getItems()) {
             if (tmpMet.getName().equals(metric)) {
@@ -812,7 +808,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         Account account = (Account) stepData.get("LastAccount");
         ClientInfoQuery tmpQuery = DatastoreQueryFactory.createBaseClientInfoQuery(account.getId(), 100);
         RangePredicate timestampPredicate = new RangePredicateImpl(ClientInfoField.TIMESTAMP,
-                parseFeatureDateTimeString(start), parseFeatureDateTimeString(end));
+                KapuaDateUtils.parseDate(start), KapuaDateUtils.parseDate(end));
         AndPredicate andPredicate = new AndPredicateImpl();
         andPredicate.getPredicates().add(timestampPredicate);
         tmpQuery.setPredicate(andPredicate);
@@ -855,7 +851,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
     public void checkFirstPublishDateForClient(String clientId, String lstKey, String date) throws Exception {
 
         ClientInfoListResult cliList = (ClientInfoListResult) stepData.get(lstKey);
-        Date tmpCaptured = parseFeatureDateTimeString(date);
+        Date tmpCaptured = KapuaDateUtils.parseDate(date);
 
         for (ClientInfo tmpInfo : cliList.getItems()) {
             if (tmpInfo.getClientId().equals(clientId)) {
@@ -870,7 +866,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
     public void checkLastPublishDateForClient(String clientId, String lstKey, String date) throws Exception {
 
         ClientInfoListResult cliList = (ClientInfoListResult) stepData.get(lstKey);
-        Date tmpCaptured = parseFeatureDateTimeString(date);
+        Date tmpCaptured = KapuaDateUtils.parseDate(date);
 
         for (ClientInfo tmpInfo : cliList.getItems()) {
             if (tmpInfo.getClientId().equals(clientId)) {
@@ -1269,7 +1265,8 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
 
         Date tmpCaptured = tmpRecDate;
         if (captured != null) {
-            tmpCaptured = parseFeatureDateTimeString(captured);
+            tmpCaptured = KapuaDateUtils.parseDate(captured);
+//            tmpCaptured = KapuaDateUtils.parseDate(captured);
         }
 
         tmpMessage.setReceivedOn(tmpRecDate);
@@ -1562,11 +1559,6 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         DatastoreCacheManager.getInstance().getClientsCache().invalidateAll();
         DatastoreCacheManager.getInstance().getMetricsCache().invalidateAll();
         DatastoreCacheManager.getInstance().getMetadataCache().invalidateAll();
-    }
-
-    private Date parseFeatureDateTimeString(String timeStamp) throws Exception {
-
-        return new Date(new SimpleDateFormat("dd/MM/yyyy'T'HH:mm:ss").parse(timeStamp).getTime());
     }
 
     private List<OrderConstraint<?>> getDefaultListOrdering() {
