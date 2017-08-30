@@ -170,6 +170,8 @@ public class Main {
         jobStepService.create(jobStepCreator);
 
         JobRuntime.startJob(job.getScopeId(), job.getId());
+
+        // JobRuntime.startJob(job.getScopeId(), job.getId());
     }
 
     private static List<JobStepProperty> createCommandStepProperties1() throws JAXBException {
