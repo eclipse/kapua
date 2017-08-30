@@ -47,6 +47,9 @@
                                     <name>${docker.account}/java-base</name>
                                     <build>
                                         <from>${java.base.image}</from>
+                                            <env>
+                                                <JAVA_HOME>/usr/lib/jvm/jre-openjdk</JAVA_HOME>
+                                            </env>
                                         <runCmds>
                                             <runCmd><![CDATA[
                                     yum install -y java-1.8.0-openjdk && \
