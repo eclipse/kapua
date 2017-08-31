@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+<!DOCTYPE xml>
+<locator-config>
+    <provided>    
+        <api>org.eclipse.kapua.service.job.JobFactory</api>
+        <api>org.eclipse.kapua.service.job.JobService</api>
+        
+        <api>org.eclipse.kapua.service.job.context.JobContextFactory</api>
+        
+        <api>org.eclipse.kapua.service.job.execution.JobExecutionService</api>
+        <api>org.eclipse.kapua.service.job.execution.JobExecutionFactory</api>
+        
+        <api>org.eclipse.kapua.service.job.targets.JobTargetService</api>
+        <api>org.eclipse.kapua.service.job.targets.JobTargetFactory</api>
+        
+        <api>org.eclipse.kapua.service.job.step.JobStepService</api>
+        <api>org.eclipse.kapua.service.job.step.JobStepFactory</api>
+        
+        <api>org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService</api>
+        <api>org.eclipse.kapua.service.job.step.definition.JobStepDefinitionFactory</api>
+
+        <api>org.eclipse.kapua.service.authorization.AuthorizationService</api>
+        
+        <api>org.eclipse.kapua.service.authorization.access.AccessPermissionService</api>
+        <api>org.eclipse.kapua.service.authorization.access.AccessPermissionFactory</api>
+        
+        <api>org.eclipse.kapua.service.authorization.permission.PermissionFactory</api>
+    </provided>
+    <packages>
+        <package>org.eclipse.kapua.commons</package>
+        <package>org.eclipse.kapua.service</package>
+        <package>org.eclipse.kapua.transport</package>
+    </packages>
+</locator-config>
