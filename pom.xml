@@ -650,12 +650,17 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-job-runtime</artifactId>
+                <artifactId>kapua-job-engine</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-job-engine</artifactId>
+                <artifactId>kapua-job-engine-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-job-engine-jbatch</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -1097,7 +1102,7 @@
         
         <!-- Applications -->
         <module>rest-api</module>
-        <module>job</module>
+        <module>job-engine</module>
 
         <!-- Client -->
         <module>client</module>
