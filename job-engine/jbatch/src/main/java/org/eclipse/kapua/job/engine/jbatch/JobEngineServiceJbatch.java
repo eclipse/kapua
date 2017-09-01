@@ -11,27 +11,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.jbatch;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.batch.operations.JobOperator;
-import javax.batch.runtime.BatchRuntime;
-
+import com.ibm.jbatch.container.jsl.ExecutionElement;
+import com.ibm.jbatch.container.jsl.ModelSerializer;
+import com.ibm.jbatch.container.jsl.ModelSerializerFactory;
+import com.ibm.jbatch.jsl.model.JSLJob;
+import com.ibm.jbatch.jsl.model.Step;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.job.engine.JobEngineService;
-import org.eclipse.kapua.job.engine.jbatch.listener.KapuaJobListener;
+import org.eclipse.kapua.job.engine.jbatch.utils.JobDefinitionBuildUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -41,8 +32,6 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.JobService;
-import org.eclipse.kapua.service.job.context.JobContextPropertyNames;
-import org.eclipse.kapua.service.job.context.StepContextPropertyNames;
 import org.eclipse.kapua.service.job.internal.JobDomain;
 import org.eclipse.kapua.service.job.step.JobStep;
 import org.eclipse.kapua.service.job.step.JobStepFactory;
@@ -52,22 +41,17 @@ import org.eclipse.kapua.service.job.step.JobStepQuery;
 import org.eclipse.kapua.service.job.step.JobStepService;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
-import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 
-import com.ibm.jbatch.container.jsl.ExecutionElement;
-import com.ibm.jbatch.container.jsl.ModelSerializer;
-import com.ibm.jbatch.container.jsl.ModelSerializerFactory;
-import com.ibm.jbatch.jsl.model.Batchlet;
-import com.ibm.jbatch.jsl.model.Chunk;
-import com.ibm.jbatch.jsl.model.ItemProcessor;
-import com.ibm.jbatch.jsl.model.ItemReader;
-import com.ibm.jbatch.jsl.model.ItemWriter;
-import com.ibm.jbatch.jsl.model.JSLJob;
-import com.ibm.jbatch.jsl.model.JSLProperties;
-import com.ibm.jbatch.jsl.model.Listener;
-import com.ibm.jbatch.jsl.model.Listeners;
-import com.ibm.jbatch.jsl.model.Property;
-import com.ibm.jbatch.jsl.model.Step;
+import javax.batch.operations.JobOperator;
+import javax.batch.runtime.BatchRuntime;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
 
 @KapuaProvider
 public class JobEngineServiceJbatch implements JobEngineService {
@@ -119,7 +103,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
             jobStepQuery.setPredicate(new AttributePredicate<>(JobStepPredicates.JOB_ID, job.getId()));
 
             JobStepListResult jobSteps = JOB_STEP_SERVICE.query(jobStepQuery);
-            jobSteps.sort((step1, step2) -> step1.getStepIndex() - step2.getStepIndex());
+            jobSteps.sort(Comparator.comparing(JobStep::getStepIndex));
 
             List<ExecutionElement> jslExecutionElements = new ArrayList<>();
             Iterator<JobStep> jobStepIterator = jobSteps.getItems().iterator();
@@ -131,10 +115,10 @@ public class JobEngineServiceJbatch implements JobEngineService {
                 JobStepDefinition jobStepDefinition = STEP_DEFINITION_SERVICE.find(jobStep.getScopeId(), jobStep.getJobStepDefinitionId());
                 switch (jobStepDefinition.getStepType()) {
                 case GENERIC:
-                    jslStep.setBatchlet(buildGenericStep(jobStepDefinition));
+                    jslStep.setBatchlet(JobDefinitionBuildUtils.buildGenericStep(jobStepDefinition));
                     break;
                 case TARGET:
-                    jslStep.setChunk(buildChunkStep(jobStepDefinition));
+                    jslStep.setChunk(JobDefinitionBuildUtils.buildChunkStep(jobStepDefinition));
                     break;
                 default:
                     // FIXME: Throw appropriate exception
@@ -147,7 +131,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
                     jslStep.setNextFromAttribute("step-" + String.valueOf(jobStep.getStepIndex() + 1));
                 }
 
-                jslStep.setProperties(buildStepProperties(jobStepDefinition, jobStep, jobStepIterator.hasNext()));
+                jslStep.setProperties(JobDefinitionBuildUtils.buildStepProperties(jobStepDefinition, jobStep, jobStepIterator.hasNext()));
 
                 jslExecutionElements.add(jslStep);
             }
@@ -156,8 +140,8 @@ public class JobEngineServiceJbatch implements JobEngineService {
             jslJob.setRestartable("true");
             jslJob.setId("job-" + job.getScopeId().toCompactId() + "-" + job.getId().toCompactId());
             jslJob.setVersion("1.0");
-            jslJob.setProperties(buildJobProperties(job));
-            jslJob.setListeners(buildListener());
+            jslJob.setProperties(JobDefinitionBuildUtils.buildJobProperties(job));
+            jslJob.setListeners(JobDefinitionBuildUtils.buildListener());
             jslJob.getExecutionElements().addAll(jslExecutionElements);
 
             jobXmlDefinition = JSL_MODEL_SERIALIZER_FACTORY.serializeModel(jslJob);
@@ -227,100 +211,5 @@ public class JobEngineServiceJbatch implements JobEngineService {
         JOB_ENGINE.restart(jobExecutionId, null);
     }
 
-    private static Listeners buildListener() {
-        Listener jslListener = new Listener();
-        jslListener.setRef(KapuaJobListener.class.getName());
-        Listeners listeners = new Listeners();
-        listeners.getListenerList().add(jslListener);
-        return listeners;
-    }
 
-    private static JSLProperties buildJobProperties(Job job) {
-
-        Property scopeIdProperty = new Property();
-        scopeIdProperty.setName(JobContextPropertyNames.JOB_SCOPE_ID);
-        scopeIdProperty.setValue(job.getScopeId().toCompactId());
-
-        Property jobIdProperty = new Property();
-        jobIdProperty.setName(JobContextPropertyNames.JOB_ID);
-        jobIdProperty.setValue(job.getId().toCompactId());
-
-        JSLProperties jslProperties = new JSLProperties();
-        List<Property> jslPropertyList = jslProperties.getPropertyList();
-        jslPropertyList.add(scopeIdProperty);
-        jslPropertyList.add(jobIdProperty);
-
-        return jslProperties;
-    }
-
-    private static JSLProperties buildStepProperties(JobStepDefinition jobStepDefinition, JobStep jobStep, boolean hasNext) {
-        JSLProperties jslProperties = new JSLProperties();
-        List<Property> jslPropertyList = jslProperties.getPropertyList();
-
-        Property jslStepIndexProperty = new Property();
-        jslStepIndexProperty.setName(StepContextPropertyNames.STEP_INDEX);
-        jslStepIndexProperty.setValue(String.valueOf(jobStep.getStepIndex()));
-        jslPropertyList.add(jslStepIndexProperty);
-
-        if (hasNext) {
-            Property jslStepNextIndexProperty = new Property();
-            jslStepNextIndexProperty.setName(StepContextPropertyNames.STEP_NEXT_INDEX);
-            jslStepNextIndexProperty.setValue(String.valueOf(jobStep.getStepIndex() + 1));
-            jslPropertyList.add(jslStepNextIndexProperty);
-        }
-
-        jslPropertyList.addAll(buildCustomStepProperties(jobStepDefinition, jobStep));
-
-        return jslProperties;
-    }
-
-    private static Collection<Property> buildCustomStepProperties(JobStepDefinition jobStepDefinition, JobStep jobStep) {
-
-        Map<String, Property> customStepProperties = new HashMap<>();
-
-        //
-        // Add default properties
-        for (JobStepProperty jobStepProperty : jobStepDefinition.getStepProperties()) {
-            Property jslStepProperty = new Property();
-            jslStepProperty.setName(jobStepProperty.getName());
-            jslStepProperty.setValue(jobStepProperty.getPropertyValue());
-            customStepProperties.put(jobStepProperty.getName(), jslStepProperty);
-        }
-
-        //
-        // Add custom values
-        for (JobStepProperty jobStepProperty : jobStep.getStepProperties()) {
-            Property jslStepProperty = new Property();
-            jslStepProperty.setName(jobStepProperty.getName());
-            jslStepProperty.setValue(jobStepProperty.getPropertyValue());
-            customStepProperties.put(jobStepProperty.getName(), jslStepProperty);
-        }
-
-        return customStepProperties.values();
-    }
-
-    private static Batchlet buildGenericStep(JobStepDefinition jobStepDefinition) {
-        Batchlet batchlet = new Batchlet();
-        batchlet.setRef(jobStepDefinition.getProcessorName());
-
-        return batchlet;
-    }
-
-    private static Chunk buildChunkStep(JobStepDefinition jobStepDefinition) {
-        Chunk chunk = new Chunk();
-
-        ItemReader itemReader = new ItemReader();
-        itemReader.setRef(jobStepDefinition.getReaderName());
-        chunk.setReader(itemReader);
-
-        ItemProcessor itemProcessor = new ItemProcessor();
-        itemProcessor.setRef(jobStepDefinition.getProcessorName());
-        chunk.setProcessor(itemProcessor);
-
-        ItemWriter itemWriter = new ItemWriter();
-        itemWriter.setRef(jobStepDefinition.getWriterName());
-        chunk.setWriter(itemWriter);
-
-        return chunk;
-    }
 }
