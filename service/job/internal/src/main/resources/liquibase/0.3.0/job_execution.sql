@@ -34,4 +34,4 @@ CREATE TABLE job_job_execution (
   
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
-CREATE INDEX idx_job_execution_scope_id ON job_job_target (scope_id);
+CREATE INDEX idx_job_execution_scope_id ON job_job_execution (scope_id);
