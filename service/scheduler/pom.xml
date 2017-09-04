@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-    Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+    Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -16,29 +16,17 @@
 
     <parent>
         <groupId>org.eclipse.kapua</groupId>
-        <artifactId>kapua</artifactId>
+        <artifactId>kapua-service</artifactId>
         <version>0.3.0-SNAPSHOT</version>
     </parent>
-
     <packaging>pom</packaging>
 
-    <artifactId>kapua-service</artifactId>
+    <artifactId>kapua-scheduler</artifactId>
+    <name>${project.artifactId}</name>
 
     <modules>
-        <module>liquibase</module>
-
         <module>api</module>
-        
-        <module>account</module>
-        <module>datastore</module>
-        <module>device</module>
-        <module>job</module>
-        <module>scheduler</module>
-        <module>security</module>
-        <module>stream</module>
-        <module>tag</module>
-        <module>user</module>
-        
+        <module>internal</module>
     </modules>
 
 </project>
