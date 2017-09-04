@@ -11,6 +11,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.jbatch.utils;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.eclipse.kapua.job.engine.jbatch.listener.KapuaJobListener;
+import org.eclipse.kapua.service.job.Job;
+import org.eclipse.kapua.service.job.context.JobContextPropertyNames;
+import org.eclipse.kapua.service.job.context.StepContextPropertyNames;
+import org.eclipse.kapua.service.job.step.JobStep;
+import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
+import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
+
 import com.ibm.jbatch.jsl.model.Batchlet;
 import com.ibm.jbatch.jsl.model.Chunk;
 import com.ibm.jbatch.jsl.model.ItemProcessor;
@@ -20,20 +33,11 @@ import com.ibm.jbatch.jsl.model.JSLProperties;
 import com.ibm.jbatch.jsl.model.Listener;
 import com.ibm.jbatch.jsl.model.Listeners;
 import com.ibm.jbatch.jsl.model.Property;
-import org.eclipse.kapua.job.engine.jbatch.listener.KapuaJobListener;
-import org.eclipse.kapua.service.job.Job;
-import org.eclipse.kapua.service.job.context.JobContextPropertyNames;
-import org.eclipse.kapua.service.job.context.StepContextPropertyNames;
-import org.eclipse.kapua.service.job.step.JobStep;
-import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
-import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class JobDefinitionBuildUtils {
+
+    private JobDefinitionBuildUtils() {
+    }
 
     public static Listeners buildListener() {
         Listener jslListener = new Listener();
