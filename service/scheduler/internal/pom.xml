@@ -54,5 +54,15 @@
             <version>2.2.3</version>
         </dependency>
         
+        <!-- External dependencies -->
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-job-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-job-engine-api</artifactId>
+        </dependency>
+        
     </dependencies>
 </project>

@@ -24,6 +24,9 @@
         <api>org.eclipse.kapua.service.device.management.command.DeviceCommandManagementService</api>
         <api>org.eclipse.kapua.service.device.management.command.DeviceCommandFactory</api>
     
+        <api>org.eclipse.kapua.service.scheduler.trigger.TriggerService</api>
+        <api>org.eclipse.kapua.service.scheduler.trigger.TriggerFactory</api>
+    
         <api>org.eclipse.kapua.service.job.JobFactory</api>
         <api>org.eclipse.kapua.service.job.JobService</api>
         

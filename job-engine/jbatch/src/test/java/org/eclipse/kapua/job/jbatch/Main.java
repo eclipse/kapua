@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.jbatch;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -46,6 +47,15 @@ import org.eclipse.kapua.service.job.step.definition.internal.JobStepPropertyImp
 import org.eclipse.kapua.service.job.targets.JobTargetCreator;
 import org.eclipse.kapua.service.job.targets.JobTargetFactory;
 import org.eclipse.kapua.service.job.targets.JobTargetService;
+import org.eclipse.kapua.service.scheduler.trigger.Trigger;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerCreator;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerProperty;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.SchedulerFactory;
+import org.quartz.impl.StdSchedulerFactory;
 
 import com.google.common.collect.Lists;
 
@@ -72,10 +82,25 @@ public class Main {
     private static LogStepDefinition logStep = new LogStepDefinition();
     private static DeviceCommandExecStepDefinition commandExecStep = new DeviceCommandExecStepDefinition();
 
+    private static Scheduler scheduler;
+
     private Main() {
     }
 
-    public static void main(String[] args) throws KapuaException {
+    public static void main(String[] args) throws KapuaException, SchedulerException {
+
+        try {
+            SchedulerFactory schedulerFactory = new StdSchedulerFactory();
+            scheduler = schedulerFactory.getScheduler();
+
+            scheduler.start();
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            if (scheduler != null) {
+                scheduler.shutdown();
+            }
+        }
 
         try {
 
@@ -86,15 +111,38 @@ public class Main {
             return;
         }
 
+        Job job;
         try {
-            KapuaSecurityUtils.doPrivileged(() -> doThings());
+            job = KapuaSecurityUtils.doPrivileged(() -> doThings());
         } catch (Exception e) {
             e.printStackTrace();
+            return;
         }
 
+        try {
+            TriggerService triggerService = locator.getService(TriggerService.class);
+            TriggerFactory triggerFactory = locator.getFactory(TriggerFactory.class);
+
+            List<TriggerProperty> triggerProperties = new ArrayList<>();
+            triggerProperties.add(triggerFactory.newTriggerProperty("scopeId", KapuaId.class.getName(), job.getScopeId().toCompactId()));
+            triggerProperties.add(triggerFactory.newTriggerProperty("jobId", KapuaId.class.getName(), job.getId().toCompactId()));
+
+            TriggerCreator triggerCreator = triggerFactory.newCreator(KapuaId.ONE);
+            triggerCreator.setName("testTrigger");
+            triggerCreator.setTriggerProperties(triggerProperties);
+            Trigger trigger = KapuaSecurityUtils.doPrivileged(() -> triggerService.create(triggerCreator));
+
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return;
+        }
+
+        if (scheduler != null) {
+            // scheduler.shutdown();
+        }
     }
 
-    private static void doThings() throws Exception {
+    private static Job doThings() throws Exception {
 
         Device device210 = KapuaSecurityUtils.doPrivileged(() -> deviceRegistryService.findByClientId(KapuaId.ONE, "Kura_2-1-0"));
         Device device140 = KapuaSecurityUtils.doPrivileged(() -> deviceRegistryService.findByClientId(KapuaId.ONE, "Kura_1-4-0"));
@@ -173,11 +221,13 @@ public class Main {
 
         jobStepService.create(jobStepCreator);
 
-        jobEngineService.startJob(job.getScopeId(), job.getId());
+        // jobEngineService.startJob(job.getScopeId(), job.getId());
 
         // jobEngineService.stopJob(job.getScopeId(), job.getId());
         //
         // jobEngineService.resumeJob(job.getScopeId(), job.getId());
+
+        return job;
     }
 
     private static List<JobStepProperty> createCommandStepProperties1() throws JAXBException {

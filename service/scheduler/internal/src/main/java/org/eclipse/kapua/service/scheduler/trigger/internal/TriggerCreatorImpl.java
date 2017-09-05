@@ -11,12 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.scheduler.trigger.internal;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerCreator;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerProperty;
 
 /**
  * Trigger creator service implementation.
@@ -32,6 +35,7 @@ public class TriggerCreatorImpl extends AbstractKapuaNamedEntityCreator<Trigger>
     private Date endsOn;
     private String cronScheduling;
     private Long retryInterval;
+    private List<TriggerProperty> triggerProperties;
 
     /**
      * Constructor
@@ -75,4 +79,19 @@ public class TriggerCreatorImpl extends AbstractKapuaNamedEntityCreator<Trigger>
     public void setRetryInterval(Long retryInterval) {
         this.retryInterval = retryInterval;
     }
+
+    @Override
+    public List<TriggerProperty> getTriggerProperties() {
+        if (triggerProperties == null) {
+            triggerProperties = new ArrayList<>();
+        }
+
+        return triggerProperties;
+    }
+
+    @Override
+    public void setTriggerProperties(List<TriggerProperty> triggerProperties) {
+        this.triggerProperties = triggerProperties;
+    }
+
 }
