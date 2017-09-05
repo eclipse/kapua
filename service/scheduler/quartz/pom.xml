@@ -19,7 +19,7 @@
         <version>0.3.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kapua-scheduler-internal</artifactId>
+    <artifactId>kapua-scheduler-quartz</artifactId>
 
     <dependencies>
         <!-- Implemented service interfaces -->

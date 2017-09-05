@@ -10,7 +10,7 @@
  *     Eurotech - initial API and implementation
  *     Red Hat Inc
  *******************************************************************************/
-package org.eclipse.kapua.service.scheduler.trigger.internal;
+package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
 import javax.inject.Inject;
 
@@ -36,7 +36,7 @@ import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerProperty;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
-import org.eclipse.kapua.service.scheduler.trigger.internal.job.KapuaJobLauncer;
+import org.eclipse.kapua.service.scheduler.trigger.quartz.job.KapuaJobLauncer;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;

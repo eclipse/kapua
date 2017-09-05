@@ -14,7 +14,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.eclipse.kapua</groupId>
-        <artifactId>kapua-account</artifactId>
+        <artifactId>kapua-scheduler</artifactId>
         <version>0.3.0-SNAPSHOT</version>
     </parent>
 

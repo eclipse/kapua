@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.scheduler.trigger.internal;
+package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
 import org.eclipse.kapua.commons.model.query.predicate.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;

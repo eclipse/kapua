@@ -9,72 +9,43 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.scheduler.trigger.internal;
+package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Basic;
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
+import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerCreator;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerProperty;
 
 /**
- * Trigger entity implementation.
- *
+ * Trigger creator service implementation.
+ * 
  * @since 1.0
+ * 
  */
-@Entity(name = "Trigger")
-@Table(name = "schdl_trigger")
-public class TriggerImpl extends AbstractKapuaNamedEntity implements Trigger {
+public class TriggerCreatorImpl extends AbstractKapuaNamedEntityCreator<Trigger> implements TriggerCreator {
 
-    private static final long serialVersionUID = 3250140890001324842L;
+    private static final long serialVersionUID = -2460883485294616032L;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "starts_on", nullable = true, updatable = false)
     private Date startsOn;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "ends_on", nullable = true, updatable = false)
     private Date endsOn;
-
-    @Basic
-    @Column(name = "cron_scheduling", nullable = true, updatable = false)
     private String cronScheduling;
-
-    @Basic
-    @Column(name = "retry_interval", nullable = true, updatable = false)
     private Long retryInterval;
-
-    @ElementCollection
-    @CollectionTable(name = "schdl_trigger_properties", joinColumns = @JoinColumn(name = "trigger_id", referencedColumnName = "id"))
-    private List<TriggerPropertyImpl> triggerProperties;
+    private List<TriggerProperty> triggerProperties;
 
     /**
      * Constructor
-     */
-    protected TriggerImpl() {
-        super();
-    }
-
-    /**
-     * Constructor
-     *
+     * 
      * @param scopeId
+     * @param name
+     *            trigger name
      */
-    public TriggerImpl(KapuaId scopeId) {
-        super(scopeId);
+    public TriggerCreatorImpl(KapuaId scopeId, String name) {
+        super(scopeId, name);
     }
 
     public Date getStartsOn() {
@@ -110,8 +81,7 @@ public class TriggerImpl extends AbstractKapuaNamedEntity implements Trigger {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public List<TriggerPropertyImpl> getTriggerProperties() {
+    public List<TriggerProperty> getTriggerProperties() {
         if (triggerProperties == null) {
             triggerProperties = new ArrayList<>();
         }
@@ -121,9 +91,7 @@ public class TriggerImpl extends AbstractKapuaNamedEntity implements Trigger {
 
     @Override
     public void setTriggerProperties(List<TriggerProperty> triggerProperties) {
-        this.triggerProperties = new ArrayList<>();
-
-        triggerProperties.forEach((tp) -> this.triggerProperties.add(TriggerPropertyImpl.parse(tp)));
+        this.triggerProperties = triggerProperties;
     }
 
 }
