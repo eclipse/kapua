@@ -16,6 +16,7 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
 import org.eclipse.kapua.service.datastore.model.StorableId;
+import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
 
 /*******************************************************************************
  * This proxy class is only used to acces sthe otherwise package-restricted
@@ -31,5 +32,9 @@ public class MetricInfoRegistryServiceProxy {
 
     public void delete(KapuaId scopeId, StorableId id) throws KapuaException {
         ((MetricInfoRegistryServiceImpl) METRIC_INFO_REGISTRY_SERVICE).delete(scopeId, id);
+    }
+
+    public void delete(MetricInfoQuery query) throws KapuaException {
+        ((MetricInfoRegistryServiceImpl) METRIC_INFO_REGISTRY_SERVICE).delete(query);
     }
 }

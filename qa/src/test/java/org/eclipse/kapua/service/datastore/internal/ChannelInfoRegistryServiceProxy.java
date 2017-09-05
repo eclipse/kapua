@@ -16,6 +16,7 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
 import org.eclipse.kapua.service.datastore.model.StorableId;
+import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 
 /*******************************************************************************
  * This proxy class is only used to acces sthe otherwise package-restricted
@@ -31,5 +32,9 @@ public class ChannelInfoRegistryServiceProxy {
 
     public void delete(KapuaId scopeId, StorableId id) throws KapuaException {
         ((ChannelInfoRegistryServiceImpl) CHANNEL_INFO_REGISTRY_SERVICE).delete(scopeId, id);
+    }
+
+    public void delete(ChannelInfoQuery query) throws KapuaException {
+        ((ChannelInfoRegistryServiceImpl) CHANNEL_INFO_REGISTRY_SERVICE).delete(query);
     }
 }

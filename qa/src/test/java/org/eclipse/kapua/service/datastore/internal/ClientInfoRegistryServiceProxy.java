@@ -16,6 +16,7 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.ClientInfoRegistryService;
 import org.eclipse.kapua.service.datastore.model.StorableId;
+import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 
 /*******************************************************************************
  * This proxy class is only used to acces sthe otherwise package-restricted
@@ -31,5 +32,9 @@ public class ClientInfoRegistryServiceProxy {
 
     public void delete(KapuaId scopeId, StorableId id) throws KapuaException {
         ((ClientInfoRegistryServiceImpl) CLIENT_INFO_REGISTRY_SERVICE).delete(scopeId, id);
+    }
+
+    public void delete(ClientInfoQuery query) throws KapuaException {
+        ((ClientInfoRegistryServiceImpl) CLIENT_INFO_REGISTRY_SERVICE).delete(query);
     }
 }
