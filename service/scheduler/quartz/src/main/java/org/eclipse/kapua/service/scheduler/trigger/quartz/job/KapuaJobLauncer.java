@@ -27,8 +27,8 @@ public class KapuaJobLauncer implements Job {
     JobService jobService = locator.getService(JobService.class);
     JobEngineService jobEngineService = locator.getService(JobEngineService.class);
 
-    KapuaId scopeId;
-    KapuaId jobId;
+    private KapuaId scopeId;
+    private KapuaId jobId;
 
     public KapuaJobLauncer() {
     }
