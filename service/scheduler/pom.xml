@@ -26,7 +26,7 @@
 
     <modules>
         <module>api</module>
-        <module>internal</module>
+        <module>quartz</module>
     </modules>
 
 </project>

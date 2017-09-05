@@ -670,7 +670,7 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-scheduler-internal</artifactId>
+                <artifactId>kapua-scheduler-quartz</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

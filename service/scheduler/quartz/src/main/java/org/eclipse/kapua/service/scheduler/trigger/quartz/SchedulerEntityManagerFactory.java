@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.scheduler.trigger.internal;
+package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
 import java.util.HashMap;
 import java.util.Map;
