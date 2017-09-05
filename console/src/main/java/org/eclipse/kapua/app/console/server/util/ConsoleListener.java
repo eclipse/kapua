@@ -14,9 +14,11 @@ package org.eclipse.kapua.app.console.server.util;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.ConsoleJAXBContextProvider;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.service.scheduler.trigger.internal.SchedulerServiceInit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,10 +31,23 @@ public class ConsoleListener implements ServletContextListener {
         logger.info("Initialize Console JABContext Provider");
         JAXBContextProvider consoleProvider = new ConsoleJAXBContextProvider();
         XmlUtil.setContextProvider(consoleProvider);
+        // start quarz scheduler
+        logger.info("Starting job scheduler...");
+        try {
+            SchedulerServiceInit.initialize();
+        } catch (KapuaException e) {
+            logger.error("Cannot start scheduler service: {}", e.getMessage(), e);
+        }
+        logger.info("Starting job scheduler... DONE");
+
     }
 
     @Override
     public void contextDestroyed(final ServletContextEvent event) {
+        // stop quarz scheduler
+        logger.info("Stopping job scheduler...");
+        SchedulerServiceInit.close();
+        logger.info("Stopping job scheduler... DONE");
     }
 
 }

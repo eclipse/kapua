@@ -151,7 +151,10 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-sso-provider</artifactId>
         </dependency>
-        
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-scheduler-internal</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
