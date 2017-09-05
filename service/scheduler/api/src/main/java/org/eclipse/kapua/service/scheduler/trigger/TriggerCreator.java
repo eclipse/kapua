@@ -12,6 +12,7 @@
 package org.eclipse.kapua.service.scheduler.trigger;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -47,4 +48,8 @@ public interface TriggerCreator extends KapuaNamedEntityCreator<Trigger> {
     public Long getRetryInterval();
 
     public void setRetryInterval(Long retryInterval);
+
+    public <P extends TriggerProperty> List<P> getTriggerProperties();
+
+    public void setTriggerProperties(List<TriggerProperty> triggerProperties);
 }

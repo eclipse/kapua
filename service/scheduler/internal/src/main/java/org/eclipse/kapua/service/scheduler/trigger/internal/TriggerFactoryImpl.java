@@ -17,6 +17,7 @@ import org.eclipse.kapua.service.scheduler.trigger.Trigger;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerCreator;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerProperty;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 
 /**
@@ -45,5 +46,10 @@ public class TriggerFactoryImpl implements TriggerFactory {
     @Override
     public TriggerListResult newListResult() {
         return new TriggerListResultImpl();
+    }
+
+    @Override
+    public TriggerProperty newTriggerProperty(String name, String type, String value) {
+        return new TriggerPropertyImpl(name, type, value);
     }
 }

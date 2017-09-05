@@ -50,6 +50,7 @@ public class TriggerDAO {
         triggerImpl.setEndsOn(triggerCreator.getEndsOn());
         triggerImpl.setCronScheduling(triggerCreator.getCronScheduling());
         triggerImpl.setRetryInterval(triggerCreator.getRetryInterval());
+        triggerImpl.setTriggerProperties(triggerCreator.getTriggerProperties());
 
         return ServiceDAO.create(em, triggerImpl);
     }

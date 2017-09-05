@@ -21,6 +21,6 @@ CREATE TABLE job_job_step_properties (
   property_type		VARCHAR(1024)	NOT NULL,
   property_value		TEXT,
   
-  PRIMARY KEY (step_id, name),
+  PRIMARY KEY (step_id, name)
   
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;

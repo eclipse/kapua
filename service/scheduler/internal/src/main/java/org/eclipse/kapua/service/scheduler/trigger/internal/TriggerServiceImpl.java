@@ -18,6 +18,7 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -32,8 +33,19 @@ import org.eclipse.kapua.service.scheduler.trigger.Trigger;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerCreator;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerProperty;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
+import org.eclipse.kapua.service.scheduler.trigger.internal.job.KapuaJobLauncer;
+import org.quartz.CronScheduleBuilder;
+import org.quartz.JobBuilder;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+import org.quartz.JobKey;
+import org.quartz.SchedulerException;
+import org.quartz.SchedulerFactory;
+import org.quartz.TriggerBuilder;
+import org.quartz.impl.StdSchedulerFactory;
 
 /**
  * {@link TriggerService} implementation.
@@ -75,7 +87,32 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         authorizationService.checkPermission(permissionFactory.newPermission(SCHEDULER_DOMAIN, Actions.write, triggerCreator.getScopeId()));
 
         return entityManagerSession.onTransactedInsert(em -> {
-            return TriggerDAO.create(em, triggerCreator);
+            Trigger trigger = TriggerDAO.create(em, triggerCreator);
+
+            JobDataMap triggerDataMap = new JobDataMap();
+            for (TriggerProperty tp : trigger.getTriggerProperties()) {
+                triggerDataMap.put(tp.getName(), KapuaEid.parseCompactId(tp.getPropertyValue()));
+
+            }
+
+            JobDetail jobLauncherDetail = JobBuilder.newJob(KapuaJobLauncer.class)
+                    .withIdentity(JobKey.createUniqueName("deviceManagement"), "deviceManagement")
+                    .build();
+
+            org.quartz.Trigger quarztTrigger = TriggerBuilder.newTrigger()
+                    .usingJobData(triggerDataMap)
+                    .withSchedule(CronScheduleBuilder.cronSchedule("*/30 * * * * ? *"))
+                    .build();
+
+            SchedulerFactory sf = new StdSchedulerFactory();
+            try {
+                sf.getScheduler().scheduleJob(jobLauncherDetail, quarztTrigger);
+            } catch (SchedulerException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+            return trigger;
         });
     }
 

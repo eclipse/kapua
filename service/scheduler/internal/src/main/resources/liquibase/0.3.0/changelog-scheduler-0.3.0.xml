@@ -16,7 +16,8 @@
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
                       
-    <include relativeToChangelogFile="true" file="./scheduler.sql" />
-    <include relativeToChangelogFile="true" file="./scheduler-configuration.sql" />
+    <include relativeToChangelogFile="true" file="./trigger.sql" />
+    <include relativeToChangelogFile="true" file="./trigger_properties.sql" />
+    <include relativeToChangelogFile="true" file="./trigger-configuration.sql" />
 
 </databaseChangeLog>

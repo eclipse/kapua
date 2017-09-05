@@ -14,13 +14,13 @@
 
 -- changeset job:1
 
-CREATE TABLE job_job_step_definition_properties (
-  step_definition_id		BIGINT(21) 	  	UNSIGNED NOT NULL,
+CREATE TABLE schdl_trigger_properties (
+  trigger_id          	BIGINT(21) 	  	UNSIGNED NOT NULL,
   
-  name 					VARCHAR(255)		NOT NULL,
-  property_type			VARCHAR(1024)	NOT NULL,
-  property_value			TEXT,
+  name 				VARCHAR(255)		NOT NULL,
+  property_type		VARCHAR(1024)	NOT NULL,
+  property_value		TEXT,
   
-  PRIMARY KEY (step_definition_id, name)
+  PRIMARY KEY (trigger_id, name)
   
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;

@@ -40,6 +40,16 @@
             <scope>provided</scope>
         </dependency>
         
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-scheduler-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-scheduler-internal</artifactId>
+            <scope>provided</scope>
+        </dependency>
         
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
