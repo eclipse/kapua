@@ -110,7 +110,7 @@ public interface KapuaListResult<E extends KapuaEntity> extends KapuaSerializabl
     /**
      * Sorts the list result according to the given {@link Comparator}.
      * 
-     * @param commparator
+     * @param comparator
      *            The {@link Comparator} used to compare items.
      */
     public void sort(Comparator<E> comparator);

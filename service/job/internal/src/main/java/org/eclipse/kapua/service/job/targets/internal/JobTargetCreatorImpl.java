@@ -17,13 +17,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 import org.eclipse.kapua.service.job.targets.JobTargetCreator;
 
-/**
- * {@link JobTargetDefinitionCreator} encapsulates all the information needed to create a new JobTargetDefinition in the system.<br>
- * The data provided will be used to seed the new JobTargetDefinition.
- * 
- * @since 1.0.0
- *
- */
 @KapuaProvider
 public class JobTargetCreatorImpl extends AbstractKapuaEntityCreator<JobTarget> implements JobTargetCreator {
 

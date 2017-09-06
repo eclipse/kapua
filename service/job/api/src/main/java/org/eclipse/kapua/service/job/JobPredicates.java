@@ -16,7 +16,7 @@ import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
 public interface JobPredicates extends KapuaUpdatableEntityPredicates {
 
     /**
-     * The {@link JobStepDefinition} name.
+     * The {@link Job} name.
      */
     public static final String NAME = "name";
 }

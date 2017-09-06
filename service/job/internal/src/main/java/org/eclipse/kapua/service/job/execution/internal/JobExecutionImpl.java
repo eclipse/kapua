@@ -27,12 +27,6 @@ import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.execution.JobExecution;
 
-/**
- * {@link JobExecutionDefinition} entity.
- * 
- * @since 1.0
- *
- */
 @Entity(name = "JobExecution")
 @Table(name = "job_job_execution")
 public class JobExecutionImpl extends AbstractKapuaUpdatableEntity implements JobExecution {

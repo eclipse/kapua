@@ -28,12 +28,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 import org.eclipse.kapua.service.job.targets.JobTargetStatus;
 
-/**
- * {@link JobTargetDefinition} entity.
- * 
- * @since 1.0
- *
- */
 @Entity(name = "JobTarget")
 @Table(name = "job_job_target")
 public class JobTargetImpl extends AbstractKapuaUpdatableEntity implements JobTarget {
