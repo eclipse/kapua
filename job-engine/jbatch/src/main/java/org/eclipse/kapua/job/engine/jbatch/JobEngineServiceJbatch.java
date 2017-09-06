@@ -319,13 +319,18 @@ public class JobEngineServiceJbatch implements JobEngineService {
         if (count > 10) {
             limit = 10;
         }
-        List<JobInstance> jobInstances = BatchRuntime.getJobOperator().getJobInstances(jobName, count - limit - 1, limit);
+        List<JobInstance> jobInstances = BatchRuntime.getJobOperator().getJobInstances(jobName, 0, limit);
         if (jobInstances != null) {
             for (JobInstance jobInstance : jobInstances) {
-                JobExecution jobExecution = BatchRuntime.getJobOperator().getJobExecution(jobInstance.getInstanceId());
-                if (BatchStatus.STOPPED.equals(jobExecution.getBatchStatus())) {
-                    suspendedJobs.add(jobExecution.getExecutionId());
-                }
+                List<JobExecution> jobExecutions = BatchRuntime.getJobOperator().getJobExecutions(jobInstance);
+
+                // JobExecution jobExecution = BatchRuntime.getJobOperator().getJobExecution(jobInstance.getInstanceId());
+                jobExecutions.forEach((je) -> {
+                    if (BatchStatus.STOPPED.equals(je.getBatchStatus())) {
+                        suspendedJobs.add(je.getExecutionId());
+                    }
+                });
+
             }
         }
         return suspendedJobs;

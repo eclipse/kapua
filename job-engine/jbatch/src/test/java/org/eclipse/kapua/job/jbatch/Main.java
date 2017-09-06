@@ -147,6 +147,8 @@ public class Main {
             return;
         }
 
+        KapuaSecurityUtils.doPrivileged(() -> jobEngineService.startJob(job.getScopeId(), job.getId()));
+
         if (scheduler != null) {
             // scheduler.shutdown();
         }
