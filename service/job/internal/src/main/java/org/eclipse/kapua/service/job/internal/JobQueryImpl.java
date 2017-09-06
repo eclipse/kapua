@@ -16,12 +16,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.JobQuery;
 
-/**
- * {@link JobStepDefinitionQuery} definition.
- * 
- * @since 1.0.0
- * 
- */
 public class JobQueryImpl extends AbstractKapuaQuery<Job> implements JobQuery {
 
     /**

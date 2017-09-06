@@ -16,12 +16,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 import org.eclipse.kapua.service.job.targets.JobTargetQuery;
 
-/**
- * {@link JobTargetDefinitionQuery} definition.
- * 
- * @since 1.0.0
- * 
- */
 public class JobTargetQueryImpl extends AbstractKapuaQuery<JobTarget> implements JobTargetQuery {
 
     /**

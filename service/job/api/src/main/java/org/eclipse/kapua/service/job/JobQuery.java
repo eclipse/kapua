@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.eclipse.kapua.model.query.KapuaQuery;
 
 /**
- * {@link JobStepDefinitionQuery} definition.
+ * {@link JobQuery} definition.
  * 
  * @since 1.0
  * 

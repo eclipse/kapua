@@ -19,13 +19,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.execution.JobExecution;
 import org.eclipse.kapua.service.job.execution.JobExecutionCreator;
 
-/**
- * {@link JobExecutionDefinitionCreator} encapsulates all the information needed to create a new JobExecutionDefinition in the system.<br>
- * The data provided will be used to seed the new JobExecutionDefinition.
- * 
- * @since 1.0.0
- *
- */
 @KapuaProvider
 public class JobExecutionCreatorImpl extends AbstractKapuaEntityCreator<JobExecution> implements JobExecutionCreator {
 

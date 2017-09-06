@@ -16,12 +16,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.execution.JobExecution;
 import org.eclipse.kapua.service.job.execution.JobExecutionQuery;
 
-/**
- * {@link JobExecutionDefinitionQuery} definition.
- * 
- * @since 1.0.0
- * 
- */
 public class JobExecutionQueryImpl extends AbstractKapuaQuery<JobExecution> implements JobExecutionQuery {
 
     /**
