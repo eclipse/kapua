@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.jbatch;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -48,11 +47,6 @@ import org.eclipse.kapua.service.job.step.definition.internal.JobStepPropertyImp
 import org.eclipse.kapua.service.job.targets.JobTargetCreator;
 import org.eclipse.kapua.service.job.targets.JobTargetFactory;
 import org.eclipse.kapua.service.job.targets.JobTargetService;
-import org.eclipse.kapua.service.scheduler.trigger.Trigger;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerCreator;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerProperty;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
@@ -120,13 +114,25 @@ public class Main {
             return;
         }
 
-        try {
-            TriggerService triggerService = locator.getService(TriggerService.class);
-            TriggerFactory triggerFactory = locator.getFactory(TriggerFactory.class);
+        // try {
+        // TriggerService triggerService = locator.getService(TriggerService.class);
+        // TriggerFactory triggerFactory = locator.getFactory(TriggerFactory.class);
+        //
+        // List<TriggerProperty> triggerProperties = new ArrayList<>();
+        // triggerProperties.add(triggerFactory.newTriggerProperty("scopeId", KapuaId.class.getName(), job.getScopeId().toCompactId()));
+        // triggerProperties.add(triggerFactory.newTriggerProperty("jobId", KapuaId.class.getName(), job.getId().toCompactId()));
+        //
+        // TriggerCreator triggerCreator = triggerFactory.newCreator(KapuaId.ONE);
+        // triggerCreator.setName("testTrigger");
+        // triggerCreator.setTriggerProperties(triggerProperties);
+        // Trigger trigger = KapuaSecurityUtils.doPrivileged(() -> triggerService.create(triggerCreator));
+        //
+        // } catch (Throwable e) {
+        // e.printStackTrace();
+        // return;
+        // }
 
-            List<TriggerProperty> triggerProperties = new ArrayList<>();
-            triggerProperties.add(triggerFactory.newTriggerProperty("scopeId", KapuaId.class.getName(), job.getScopeId().toCompactId()));
-            triggerProperties.add(triggerFactory.newTriggerProperty("jobId", KapuaId.class.getName(), job.getId().toCompactId()));
+        KapuaSecurityUtils.doPrivileged(() -> jobEngineService.startJob(job.getScopeId(), job.getId()));
 
             TriggerCreator triggerCreator = triggerFactory.newCreator(KapuaId.ONE);
             triggerCreator.setName("testTrigger");
