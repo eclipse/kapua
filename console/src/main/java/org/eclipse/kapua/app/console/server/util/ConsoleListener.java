@@ -18,7 +18,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.ConsoleJAXBContextProvider;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.service.scheduler.trigger.internal.SchedulerServiceInit;
+import org.eclipse.kapua.service.scheduler.quartz.SchedulerServiceInit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
