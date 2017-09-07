@@ -16,7 +16,7 @@
 	<parent>
 		<artifactId>kapua-dev-tools</artifactId>
 		<groupId>org.eclipse.kapua</groupId>
-		<version>0.2.0-SNAPSHOT</version>
+		<version>0.2.0</version>
 	</parent>
 
 	<artifactId>kapua-cucumber-reports</artifactId>

@@ -80,7 +80,7 @@ Not all MQTT clients have WebSocket support, so we need to enable direct MQTT ov
 So you can connect your MQTT clients directly to this service. For the simulator example similar to the above, that would look something like
 
 ```
-java -jar target/kapua-simulator-kura-0.2.0-SNAPSHOT-app.jar --broker tcp://kapua-broker:kapua-password@192.168.64.2:31883
+java -jar target/kapua-simulator-kura-0.2.0-app.jar --broker tcp://kapua-broker:kapua-password@192.168.64.2:31883
 ```
 
 This is suitable only for the local deployments. In the cloud or production environments, you should deploy a proper LoadBalancer Openshift service to enable external traffic flow to the broker.

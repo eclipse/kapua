@@ -39,7 +39,7 @@ The team maintains some docker images in a Docker Hub repository at [Kapua Repos
 **Note :** the Docker Hub repository mentioned above is not the official project repository from Eclipse Foundation.
 ***
 
-Suppose the target is the current snapshot 0.2.0-SNAPSHOT.
+Suppose the target is the current snapshot 0.2.0.
 
 * Run Docker
 * Open an OS shell
