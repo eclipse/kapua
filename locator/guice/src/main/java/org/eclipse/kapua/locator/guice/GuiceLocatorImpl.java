@@ -9,6 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *     Red Hat Inc
+ *     Anastasiya Lazarenko - minor performance issue
  *******************************************************************************/
 package org.eclipse.kapua.locator.guice;
 
@@ -65,8 +66,8 @@ public class GuiceLocatorImpl extends KapuaLocator {
     public List<KapuaService> getServices() {
         final List<KapuaService> servicesList = new ArrayList<>();
         final Map<Key<?>, Binding<?>> bindings = injector.getBindings();
-        for (Binding<?> binding : bindings.values()) {
-            final Class<?> clazz = binding.getKey().getTypeLiteral().getRawType();
+        for (Key<?> binding : bindings.keySet()) {
+            final Class<?> clazz = binding.getTypeLiteral().getRawType();
             if (KapuaService.class.isAssignableFrom(clazz)) {
                 servicesList.add(injector.getInstance(clazz.asSubclass(KapuaService.class)));
             }
