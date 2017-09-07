@@ -12,6 +12,7 @@
 package org.eclipse.kapua.service.device.steps;
 
 import static org.eclipse.kapua.commons.model.query.predicate.AttributePredicate.attributeIsEqualTo;
+import static org.junit.Assert.assertEquals;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -105,13 +106,13 @@ import cucumber.runtime.java.guice.ScenarioScoped;
 public class DeviceServiceSteps extends KapuaTest {
 
     private static final KapuaEid DEFAULT_SCOPE_ID = new KapuaEid(BigInteger.valueOf(1L));
+    private static final KapuaEid DEFAULT_SCOPE_ID2 = new KapuaEid(BigInteger.valueOf(123));
 
     // Device registry services
     private DeviceRegistryService deviceRegistryService;
     private DeviceEventService deviceEventsService;
     private DeviceLifeCycleService deviceLifeCycleService;
     private TagService tagService;
-
     // Scenario scoped Device Registry test data
     StepData stepData;
 
@@ -384,15 +385,22 @@ public class DeviceServiceSteps extends KapuaTest {
     public void iTagDeviceWithTag(String deviceTagName) throws Throwable {
 
         Device device = (Device) stepData.get("Device");
+        //stepData.clear();
         TagCreator tagCreator = new TagFactoryImpl().newCreator(DEFAULT_SCOPE_ID);
         tagCreator.setName(deviceTagName);
         Tag tag = tagService.create(tagCreator);
         Set<KapuaId> tags = new HashSet<>();
-        tags.add(tag.getId());
-        device.setTagIds(tags);
-        deviceRegistryService.update(device);
+        try {
+            stepData.put("ExceptionCaught", false);
+            tags.add(tag.getId());
+            device.setTagIds(tags);
+            deviceRegistryService.update(device);
+            stepData.put("tag", tag);
+            stepData.put("tags", tags);
+        } catch (KapuaException ex) {
+            stepData.put("ExceptionCaught", true);
+        }
     }
-
 
     @When("^I search for device with tag \"([^\"]*)\"$")
     public void iSearchForDeviceWithTag(String deviceTagName) throws Throwable {
@@ -417,6 +425,27 @@ public class DeviceServiceSteps extends KapuaTest {
         Device device = deviceList.getFirstItem();
 
         assertEquals(deviceName, device.getClientId());
+    }
+
+    @And("^I untag device with \"([^\"]*)\" tag$")
+    public void iDeleteTag(String deviceTagName) throws Throwable {
+
+        Tag foundTag = (Tag) stepData.get("tag");     
+        assertEquals(deviceTagName, foundTag.getName());
+        Device device = (Device) stepData.get("Device");
+        stepData.remove("tag");
+        stepData.remove("tags");
+        Set<KapuaId> tags = new HashSet<>();
+        device.setTagIds(tags);
+        deviceRegistryService.update(device);
+        assertEquals(device.getTagIds().isEmpty(), true);
+    }
+
+    @And("^I verify that tag \"([^\"]*)\" is deleted$")
+    public void iVerifyTagIsDeleted(String deviceTagName) throws Throwable {
+
+        Tag foundTag = (Tag) stepData.get("tag"); 
+        assertEquals(null, foundTag);
     }
 
     @When("^I search for events from device \"(.+)\" in account \"(.+)\"$")
