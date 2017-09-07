@@ -34,7 +34,7 @@ public class StorableIdImpl implements StorableId {
 
     @Override
     public String toString() {
-        return sid.toString();
+        return sid;
     }
 
     @Override

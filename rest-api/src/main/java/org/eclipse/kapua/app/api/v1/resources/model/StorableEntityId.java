@@ -35,12 +35,18 @@ public class StorableEntityId implements StorableId {
         setId(id);
     }
 
+    public StorableEntityId() { }
+
     @Override
     public String toString() {
         return id;
     }
 
-    private void setId(String storableId) {
+    public void setId(String storableId) {
         this.id = storableId;
+    }
+
+    public String getId() {
+        return id;
     }
 }

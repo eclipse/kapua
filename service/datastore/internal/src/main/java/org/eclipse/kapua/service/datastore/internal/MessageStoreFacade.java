@@ -114,7 +114,7 @@ public final class MessageStoreFacade {
      * @throws ConfigurationException
      * @throws ClientException
      */
-    public InsertResponse store(KapuaMessage<?, ?> message, String messageId, boolean newInsert)
+    public StorableId store(KapuaMessage<?, ?> message, String messageId, boolean newInsert)
             throws KapuaIllegalArgumentException,
             ConfigurationException,
             ClientException {
@@ -160,7 +160,7 @@ public final class MessageStoreFacade {
             if (datastoreMessage != null) {
                 logger.debug("Message with datatstore id '{}' already found", messageId);
                 metricMessagesAlreadyInTheDatastoreCount.inc();
-                return new InsertResponse(messageId, typeDescriptor);
+                return new StorableIdImpl(messageId);
             }
         }
 
@@ -190,7 +190,7 @@ public final class MessageStoreFacade {
         messageToStore.setDatastoreId(new StorableIdImpl(insertResponse.getId()));
 
         mediator.onAfterMessageStore(messageInfo, messageToStore);
-        return insertResponse;
+        return new StorableIdImpl(insertResponse.getId());
     }
 
     /**
