@@ -264,10 +264,14 @@ public class GwtDeviceServiceImpl extends KapuaConfigurableRemoteServiceServlet<
         }
 
         gwtResults = new BasePagingLoadResult<GwtDevice>(gwtDevices);
-        gwtResults.setOffset(loadConfig.getOffset());
+        gwtResults.setOffset(loadConfig != null ? loadConfig.getOffset() : 0);
         gwtResults.setTotalLength(totalResult);
 
         return gwtResults;
+    }
+
+    public List<GwtDevice> query(GwtDeviceQuery gwtDeviceQuery) throws GwtKapuaException {
+        return query(null, gwtDeviceQuery).getData();
     }
 
     public GwtDevice createDevice(GwtXSRFToken xsrfToken, GwtDeviceCreator gwtDeviceCreator)

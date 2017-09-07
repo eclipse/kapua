@@ -11,10 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.util;
 
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.shared.model.GwtDatastoreAsset;
@@ -24,6 +20,7 @@ import org.eclipse.kapua.app.console.shared.model.GwtDeviceEvent;
 import org.eclipse.kapua.app.console.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.shared.model.GwtHeader;
+import org.eclipse.kapua.app.console.shared.model.GwtJobTarget;
 import org.eclipse.kapua.app.console.shared.model.GwtMessage;
 import org.eclipse.kapua.app.console.shared.model.GwtOrganization;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission;
@@ -31,6 +28,9 @@ import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtAction;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtDomain;
 import org.eclipse.kapua.app.console.shared.model.GwtTag;
 import org.eclipse.kapua.app.console.shared.model.GwtTopic;
+import org.eclipse.kapua.app.console.shared.model.job.GwtExecution;
+import org.eclipse.kapua.app.console.shared.model.job.GwtTrigger;
+import org.eclipse.kapua.app.console.shared.model.job.GwtTriggerProperty;
 import org.eclipse.kapua.app.console.shared.model.GwtUpdatableEntityModel;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredential;
@@ -46,6 +46,10 @@ import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnection
 import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAsset;
 import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAssetChannel;
 import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAssets;
+import org.eclipse.kapua.app.console.shared.model.job.GwtJob;
+import org.eclipse.kapua.app.console.shared.model.job.GwtJobStep;
+import org.eclipse.kapua.app.console.shared.model.job.GwtJobStepDefinition;
+import org.eclipse.kapua.app.console.shared.model.job.GwtJobStepProperty;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
 import org.eclipse.kapua.broker.core.BrokerDomain;
 import org.eclipse.kapua.commons.util.SystemUtils;
@@ -91,9 +95,21 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventDomain;
 import org.eclipse.kapua.service.device.registry.internal.DeviceDomain;
 import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifecycleDomain;
+import org.eclipse.kapua.service.job.Job;
+import org.eclipse.kapua.service.job.execution.JobExecution;
+import org.eclipse.kapua.service.job.step.JobStep;
+import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
+import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
+import org.eclipse.kapua.service.job.targets.JobTarget;
+import org.eclipse.kapua.service.scheduler.trigger.Trigger;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerProperty;
 import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.internal.UserDomain;
+
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class KapuaGwtModelConverter {
 
@@ -420,8 +436,7 @@ public class KapuaGwtModelConverter {
     /**
      * Converts a {@link Tag} into a {@link GwtTag}
      *
-     * @param tag
-     *            The {@link Tag} to convert
+     * @param tag The {@link Tag} to convert
      * @return The converted {@link GwtTag}
      * @since 1.0.0
      */
@@ -778,4 +793,100 @@ public class KapuaGwtModelConverter {
         return gwtChannel;
     }
 
+    public static GwtJob convertJob(Job job) {
+        GwtJob gwtJob = new GwtJob();
+        convertEntity(job, gwtJob);
+        gwtJob.setJobName(job.getName());
+        gwtJob.setDescription(job.getDescription());
+        gwtJob.setJobXmlDefinition(job.getJobXmlDefinition());
+        gwtJob.setJobSteps(convertJobSteps(job.getJobSteps()));
+        return gwtJob;
+    }
+
+    private static List<GwtJobStep> convertJobSteps(List<JobStep> jobStepList) {
+        List<GwtJobStep> gwtJobStepList = new ArrayList<GwtJobStep>();
+        for (JobStep jobStep : jobStepList) {
+            gwtJobStepList.add(convertJobStep(jobStep));
+        }
+        return gwtJobStepList;
+    }
+
+    public static GwtJobStep convertJobStep(JobStep jobStep) {
+        GwtJobStep gwtJobStep = new GwtJobStep();
+        convertEntity(jobStep, gwtJobStep);
+        gwtJobStep.setJobStepName(jobStep.getName());
+        gwtJobStep.setDescription(jobStep.getDescription());
+        gwtJobStep.setJobId(convert(jobStep.getJobId()));
+        gwtJobStep.setJobStepDefinitionId(convert(jobStep.getJobStepDefinitionId()));
+        gwtJobStep.setStepIndex(jobStep.getStepIndex());
+        gwtJobStep.setStepProperties(convertJobStepProperties(jobStep.getStepProperties()));
+        return gwtJobStep;
+    }
+
+    private static List<GwtJobStepProperty> convertJobStepProperties(List<JobStepProperty> jobStepPropertyList) {
+        List<GwtJobStepProperty> gwtJobStepPropertyList = new ArrayList<GwtJobStepProperty>();
+        for (JobStepProperty jobStepProperty : jobStepPropertyList) {
+            GwtJobStepProperty gwtJobStepProperty = new GwtJobStepProperty();
+            gwtJobStepProperty.setPropertyName(jobStepProperty.getName());
+            gwtJobStepProperty.setPropertyType(jobStepProperty.getPropertyType());
+            gwtJobStepProperty.setPropertyValue(jobStepProperty.getPropertyValue());
+            gwtJobStepPropertyList.add(gwtJobStepProperty);
+        }
+        return gwtJobStepPropertyList;
+    }
+
+    public static GwtJobTarget convertJobTarget(JobTarget jobTarget) {
+        GwtJobTarget gwtJobTarget = new GwtJobTarget();
+        convertEntity(jobTarget, gwtJobTarget);
+        gwtJobTarget.setJobTargetId(convert(jobTarget.getJobTargetId()));
+        gwtJobTarget.setStatus(jobTarget.getStatus().toString());
+        gwtJobTarget.setStepIndex(jobTarget.getStepIndex());
+        gwtJobTarget.setErrorMessage(jobTarget.getException() != null ? jobTarget.getException().getMessage() : null);
+        return gwtJobTarget;
+    }
+
+    public static GwtJobStepDefinition convertJobStepDefinition(JobStepDefinition jobStepDefinition) {
+        GwtJobStepDefinition gwtJobStepDefinition = new GwtJobStepDefinition();
+        convertEntity(jobStepDefinition, gwtJobStepDefinition);
+        gwtJobStepDefinition.setJobStepDefinitionName(jobStepDefinition.getName());
+        gwtJobStepDefinition.setDescription(jobStepDefinition.getDescription());
+        gwtJobStepDefinition.setProcessorName(jobStepDefinition.getProcessorName());
+        gwtJobStepDefinition.setReaderName(jobStepDefinition.getReaderName());
+        gwtJobStepDefinition.setWriterName(jobStepDefinition.getWriterName());
+        gwtJobStepDefinition.setStepProperties(KapuaGwtModelConverter.convertJobStepProperties(jobStepDefinition.getStepProperties()));
+        gwtJobStepDefinition.setStepType(jobStepDefinition.getStepType().name());
+        return gwtJobStepDefinition;
+    }
+
+    public static GwtTrigger convertTrigger(Trigger trigger) {
+        GwtTrigger gwtTrigger = new GwtTrigger();
+        convertEntity(trigger, gwtTrigger);
+        gwtTrigger.setTriggerName(trigger.getName());
+        gwtTrigger.setCronScheduling(trigger.getCronScheduling());
+        gwtTrigger.setStartsOn(trigger.getStartsOn());
+        gwtTrigger.setEndsOn(trigger.getEndsOn());
+        gwtTrigger.setRetryInterval(trigger.getRetryInterval());
+        gwtTrigger.setTriggerProperties(convertTriggerProperties(trigger.getTriggerProperties()));
+        return gwtTrigger;
+    }
+
+    private static List<GwtTriggerProperty> convertTriggerProperties(List<TriggerProperty> triggerPropertyList) {
+        List<GwtTriggerProperty> gwtTriggerPropertyList = new ArrayList<GwtTriggerProperty>();
+        for (TriggerProperty triggerProperty : triggerPropertyList) {
+            GwtTriggerProperty gwtTriggerProperty = new GwtTriggerProperty();
+            gwtTriggerProperty.setPropertyName(triggerProperty.getName());
+            gwtTriggerProperty.setPropertyType(triggerProperty.getPropertyType());
+            gwtTriggerProperty.setPropertyValue(triggerProperty.getPropertyValue());
+            gwtTriggerPropertyList.add(gwtTriggerProperty);
+        }
+        return gwtTriggerPropertyList;
+    }
+
+    public static GwtExecution convertJobExecution(JobExecution jobExecution) {
+        GwtExecution gwtExecution = new GwtExecution();
+        convertEntity(jobExecution, gwtExecution);
+        gwtExecution.setStartedOn(jobExecution.getStartedOn());
+        gwtExecution.setEndedOn(jobExecution.getEndedOn());
+        return gwtExecution;
+    }
 }

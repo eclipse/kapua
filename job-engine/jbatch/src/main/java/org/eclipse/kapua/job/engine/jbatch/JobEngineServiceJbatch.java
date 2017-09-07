@@ -157,6 +157,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
 
             jobXmlDefinition = ModelSerializerFactory.createJobModelSerializer().serializeModel(jslJob);
             job.setJobXmlDefinition(jobXmlDefinition);
+            JOB_SERVICE.update(job);
         }
 
         // Retrieve temporary directory for job XML definition

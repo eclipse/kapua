@@ -12,6 +12,7 @@
 package org.eclipse.kapua.app.console.shared.service;
 
 import java.util.Date;
+import java.util.List;
 
 import org.eclipse.kapua.app.console.client.device.GwtDeviceQuery;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
@@ -46,10 +47,19 @@ public interface GwtDeviceService extends KapuaConfigurableRemoteService {
      * Finds devices in an account with query
      * 
      * @param loadConfig
-     * @param gwtUserQuery
+     * @param gwtDeviceQuery
      * @return
      */
-    public PagingLoadResult<GwtDevice> query(PagingLoadConfig loadConfig, GwtDeviceQuery gwtUserQuery)
+    public PagingLoadResult<GwtDevice> query(PagingLoadConfig loadConfig, GwtDeviceQuery gwtDeviceQuery)
+            throws GwtKapuaException;
+
+    /**
+     * Finds devices in an account with query
+     *
+     * @param gwtDeviceQuery
+     * @return
+     */
+    public List<GwtDevice> query(GwtDeviceQuery gwtDeviceQuery)
             throws GwtKapuaException;
 
     /**

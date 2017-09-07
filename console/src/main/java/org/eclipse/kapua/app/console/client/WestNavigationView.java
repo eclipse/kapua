@@ -21,6 +21,7 @@ import org.eclipse.kapua.app.console.client.connection.ConnectionView;
 import org.eclipse.kapua.app.console.client.data.DataView;
 import org.eclipse.kapua.app.console.client.device.DeviceView;
 import org.eclipse.kapua.app.console.client.group.GroupView;
+import org.eclipse.kapua.app.console.client.job.JobView;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
@@ -228,6 +229,14 @@ public class WestNavigationView extends LayoutContainer {
                     centerPanel.add(panel);
                     centerPanel.layout();
                     dashboardSelected = false;
+                } else if ("jobs".equals(selectedId)) {
+                    JobView jobsView = new JobView(currentSession);
+                    panel.setHeaderVisible(false);
+                    panel.add(jobsView);
+
+                    centerPanel.add(panel);
+                    centerPanel.layout();
+                    dashboardSelected = false;
                 } else if ("tags".equals(selectedId)) {
                     panel.setIcon(new KapuaIcon(IconSet.TAGS));
                     panel.setHeading(MSGS.tags());
@@ -371,6 +380,9 @@ public class WestNavigationView extends LayoutContainer {
             }
             if (currentSession.hasDataReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("data", "Data", IconSet.DATABASE), false);
+            }
+            if (currentSession.hasJobReadPermission()) {
+                cloudResourcesTreeStore.add(newItem("jobs", "Jobs", IconSet.SORT_AMOUNT_ASC), false);
             }
             if (currentSession.hasTagReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("tags", MSGS.tags(), IconSet.TAGS), false);

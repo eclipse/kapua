@@ -156,9 +156,9 @@ public class Main {
 
     private static Job doThings() throws Exception {
 
-        Device device210 = KapuaSecurityUtils.doPrivileged(() -> deviceRegistryService.findByClientId(KapuaId.ONE, "Kura_2-1-0"));
-        Device device140 = KapuaSecurityUtils.doPrivileged(() -> deviceRegistryService.findByClientId(KapuaId.ONE, "Kura_1-4-0"));
-
+//        Device device210 = KapuaSecurityUtils.doPrivileged(() -> deviceRegistryService.findByClientId(KapuaId.ONE, "Kura_2-1-0"));
+//        Device device140 = KapuaSecurityUtils.doPrivileged(() -> deviceRegistryService.findByClientId(KapuaId.ONE, "Kura_1-4-0"));
+        Device device = KapuaSecurityUtils.doPrivileged(() -> deviceRegistryService.findByClientId(KapuaId.ONE, "B8:27:EB:59:53:C1"));
         JobStepDefinitionCreator jobStepDefinitionCreator = jobStepDefinitionFactory.newCreator(KapuaId.ONE);
         jobStepDefinitionCreator.setName(commandExecStep.getName());
         jobStepDefinitionCreator.setDescription(commandExecStep.getDescription());
@@ -188,13 +188,13 @@ public class Main {
 
         JobTargetCreator jobTargetCreator = jobTargetFactory.newCreator(KapuaId.ONE);
         jobTargetCreator.setJobId(job.getId());
-        jobTargetCreator.setJobTargetId(device140.getId());
+        jobTargetCreator.setJobTargetId(device.getId());
 
         jobTargetService.create(jobTargetCreator);
 
         jobTargetCreator = jobTargetFactory.newCreator(KapuaId.ONE);
         jobTargetCreator.setJobId(job.getId());
-        jobTargetCreator.setJobTargetId(device210.getId());
+        jobTargetCreator.setJobTargetId(device.getId());
 
         jobTargetService.create(jobTargetCreator);
 
