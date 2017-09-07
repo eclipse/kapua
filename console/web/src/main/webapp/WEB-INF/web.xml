@@ -66,6 +66,13 @@
         <url-pattern>/tag/*</url-pattern>
         <url-pattern>/credential/*</url-pattern>
         <url-pattern>/asset/*</url-pattern>
+        <url-pattern>/job/*</url-pattern>
+        <url-pattern>/jobStep/*</url-pattern>
+        <url-pattern>/jobStepDefinition/*</url-pattern>
+        <url-pattern>/jobTarget/*</url-pattern>
+        <url-pattern>/jobEngine/*</url-pattern>
+        <url-pattern>/trigger/*</url-pattern>
+        <url-pattern>/execution/*</url-pattern>
         <url-pattern>/console/*</url-pattern>
         <url-pattern>/file/*</url-pattern>
         <url-pattern>/image/*</url-pattern>
@@ -161,7 +168,7 @@
         <servlet-name>accountServlet</servlet-name>
         <url-pattern>/account</url-pattern>
     </servlet-mapping>
-
+    
     <servlet>
         <servlet-name>authorizationServlet</servlet-name>
         <servlet-class>org.eclipse.kapua.app.console.core.server.GwtAuthorizationServiceImpl</servlet-class>
@@ -261,25 +268,25 @@
         <url-pattern>/group</url-pattern>
     </servlet-mapping>
 
-    <servlet>
-        <servlet-name>dataServlet</servlet-name>
+       <servlet>
+           <servlet-name>dataServlet</servlet-name>
         <servlet-class>org.eclipse.kapua.app.console.module.data.server.GwtDataServiceImpl</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>dataServlet</servlet-name>
-        <url-pattern>/data</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>dataExporterServlet</servlet-name>
+       </servlet>
+       <servlet-mapping>
+           <servlet-name>dataServlet</servlet-name>
+           <url-pattern>/data</url-pattern>
+       </servlet-mapping>
+       
+       <servlet>
+           <servlet-name>dataExporterServlet</servlet-name>
         <servlet-class>org.eclipse.kapua.app.console.module.data.servlet.DataExporterServlet</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>dataExporterServlet</servlet-name>
-        <url-pattern>/exporter_data/*</url-pattern>
-    </servlet-mapping>
-
+       </servlet>
+    
+       <servlet-mapping>
+           <servlet-name>dataExporterServlet</servlet-name>
+           <url-pattern>/exporter_data/*</url-pattern>
+       </servlet-mapping>
+       
     <servlet>
         <servlet-name>tagServlet</servlet-name>
         <servlet-class>org.eclipse.kapua.app.console.module.tag.server.GwtTagServiceImpl</servlet-class>
@@ -288,7 +295,7 @@
         <servlet-name>tagServlet</servlet-name>
         <url-pattern>/tag</url-pattern>
     </servlet-mapping>
-
+    
     <servlet>
         <servlet-name>userServlet</servlet-name>
         <servlet-class>org.eclipse.kapua.app.console.module.user.server.GwtUserServiceImpl</servlet-class>
@@ -297,7 +304,7 @@
         <servlet-name>userServlet</servlet-name>
         <url-pattern>/user</url-pattern>
     </servlet-mapping>
-
+    
     <servlet>
         <servlet-name>assetServlet</servlet-name>
         <servlet-class>org.eclipse.kapua.app.console.module.device.server.GwtDeviceAssetServiceImpl</servlet-class>
@@ -308,8 +315,71 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>jobServlet</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.server.GwtJobServiceImpl</servlet-class>
         <servlet-name>org.eclipse.kapua.app.console.console GwtCredentialService</servlet-name>
         <servlet-class>org.eclipse.kapua.app.console.module.authentication.server.GwtCredentialServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>jobServlet</servlet-name>
+        <url-pattern>/job</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>jobStepServlet</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.server.GwtJobStepServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>jobStepServlet</servlet-name>
+        <url-pattern>/jobStep</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>jobStepDefinitionServlet</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.server.GwtJobStepDefinitionServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>jobStepDefinitionServlet</servlet-name>
+        <url-pattern>/jobStepDefinition</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>jobTargetServlet</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.server.GwtJobTargetServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>jobTargetServlet</servlet-name>
+        <url-pattern>/jobTarget</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>jobEngineServlet</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.server.GwtJobEngineServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>jobEngineServlet</servlet-name>
+        <url-pattern>/jobEngine</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>triggerServlet</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.server.GwtTriggerServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>triggerServlet</servlet-name>
+        <url-pattern>/trigger</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>executionServlet</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.server.GwtExecutionServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>executionServlet</servlet-name>
+        <url-pattern>/execution</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
     </servlet>
     <servlet-mapping>
         <servlet-name>org.eclipse.kapua.app.console.console GwtCredentialService</servlet-name>

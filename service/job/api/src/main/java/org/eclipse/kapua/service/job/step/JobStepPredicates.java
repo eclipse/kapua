@@ -16,5 +16,6 @@ import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
 public interface JobStepPredicates extends KapuaUpdatableEntityPredicates {
 
     public String JOB_ID = "jobId";
+    public String STEP_INDEX = "stepIndex";
 
 }
