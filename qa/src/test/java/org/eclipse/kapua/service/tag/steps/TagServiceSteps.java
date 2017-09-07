@@ -60,7 +60,7 @@ public class TagServiceSteps {
     private StepData stepData;
 
     @Inject
-    public TagServiceSteps(StepData stepData) {
+    public TagServiceSteps(StepData stepData) { 
 
         this.stepData = stepData;
     }
@@ -113,6 +113,7 @@ public class TagServiceSteps {
         TagListResult queryResult = tagService.query(query);
         Tag foundTag = queryResult.getFirstItem();
         stepData.put("tag", foundTag);
+        stepData.put("queryResult", queryResult);
     }
 
     @Then("^Tag with name \"([^\"]*)\" is found$")
@@ -120,6 +121,17 @@ public class TagServiceSteps {
 
         Tag foundTag = (Tag) stepData.get("tag");
         assertEquals(tagName, foundTag.getName());
+    }
+
+    @Then("^Tag with name \"([^\"]*)\" is found and deleted$")
+    public void tagWithNameIsDeleted(String tagName) throws Throwable {
+
+        Tag foundTag = (Tag) stepData.get("tag");
+        TagListResult queryResult = (TagListResult) stepData.get("queryResult");
+        tagService.delete(foundTag.getScopeId(), foundTag.getId());
+        queryResult.clearItems();
+        foundTag = queryResult.getFirstItem();
+        assertEquals(null,foundTag);
     }
 
     /**

@@ -32,6 +32,15 @@ Feature: Tag Service
     When Tag with name "tagName" is searched
     Then Tag with name "tagName" is found
       And I logout
+      
+  Scenario: Deleting tag
+    Create a tag entry, with specified name. Name is only tag specific attribute.
+    Once created search and find it, then delete it.
+
+    Given Tag with name "tagName2"
+    When Tag with name "tagName2" is searched
+    Then Tag with name "tagName2" is found and deleted
+      And I logout
 
   @StopBroker
   Scenario: Stop broker after all scenarios
