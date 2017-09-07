@@ -26,6 +26,7 @@ import org.eclipse.kapua.app.api.exception.model.IllegalArgumentExceptionInfo;
 import org.eclipse.kapua.app.api.exception.model.IllegalNullArgumentExceptionInfo;
 import org.eclipse.kapua.app.api.exception.model.ThrowableInfo;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
+import org.eclipse.kapua.app.api.v1.resources.model.StorableEntityId;
 import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
@@ -100,6 +101,7 @@ import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
+import org.eclipse.kapua.service.datastore.model.StorableId;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
@@ -239,6 +241,8 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     KapuaDataMessage.class,
                     InsertResponse.class,
                     MessageXmlRegistry.class,
+                    StorableEntityId.class,
+                    StorableId.class,
 
                     // Device
                     Device.class,
