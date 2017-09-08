@@ -60,22 +60,10 @@ public class AuthenticationServiceModule implements ServiceModule {
         KapuaEventBus eventbus = EventBusManager.getInstance();
 
         // Listen to upstream service events
-
-        String upEvUserCredentialSubscribe = KapuaAuthenticationSetting.getInstance().getString(KapuaAuthenticationSettingKeys.USER_CREDENTIAL_UPSTREAM_EVENT_ADDRESS);
-        //the event bus implicitly will add event. as prefix for each publish/subscribe
-        eventbus.subscribe(upEvUserCredentialSubscribe, credentialService);
-
-        String upEvUserAccessTokenSubscribe = KapuaAuthenticationSetting.getInstance().getString(KapuaAuthenticationSettingKeys.USER_ACCESS_TOKEN_UPSTREAM_EVENT_ADDRESS);
-        //the event bus implicitly will add event. as prefix for each publish/subscribe
-        eventbus.subscribe(upEvUserAccessTokenSubscribe, accessTokenService);
-
-        String upEvAccountCredentialSubscribe = KapuaAuthenticationSetting.getInstance().getString(KapuaAuthenticationSettingKeys.ACCOUNT_CREDENTIAL_UPSTREAM_EVENT_ADDRESS);
-        //the event bus implicitly will add event. as prefix for each publish/subscribe
-        eventbus.subscribe(upEvAccountCredentialSubscribe, credentialService);
-
-        String upEvAccountAccessTokenSubscribe = KapuaAuthenticationSetting.getInstance().getString(KapuaAuthenticationSettingKeys.ACCOUNT_ACCESS_TOKEN_UPSTREAM_EVENT_ADDRESS);
-        //the event bus implicitly will add event. as prefix for each publish/subscribe
-        eventbus.subscribe(upEvAccountAccessTokenSubscribe, accessTokenService);
+        eventbus.subscribe("user", "user-credential", credentialService);
+        eventbus.subscribe("user", "user-accesstoken", accessTokenService);
+        eventbus.subscribe("account", "account-credential", credentialService);
+        eventbus.subscribe("account", "account-accesstoken", accessTokenService);
 
         //register events to the service map
         String serviceInternalEventAddress = KapuaAuthenticationSetting.getInstance().getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_INTERNAL_EVENT_ADDRESS);

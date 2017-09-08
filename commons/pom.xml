@@ -80,11 +80,6 @@
             <groupId>org.apache.qpid</groupId>
             <artifactId>qpid-jms-client</artifactId>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.activemq/activemq-client -->
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-client</artifactId>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/javax.jms/javax.jms-api -->
         <dependency>
             <groupId>javax.jms</groupId>

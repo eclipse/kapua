@@ -167,6 +167,7 @@ public class RaiseKapuaEventInterceptor implements MethodInterceptor {
             updateEventStatus(invocation, kapuaEvent, EventStatus.SENT);
         }
         catch (KapuaEventBusException e) {
+            LOGGER.warn("Error sending event", e);
             //mark event status as SEND_ERROR
             updateEventStatus(invocation, kapuaEvent, EventStatus.SEND_ERROR);
         }

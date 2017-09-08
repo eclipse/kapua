@@ -84,7 +84,6 @@ Vagrant.configure(2) do |config|
     sudo rm -rf lib/optional/leveldb*
     sudo rm -rf lib/optional/org.apache.servicemix.bundles*
     sudo rm -rf lib/optional/org.linkedin*
-    sudo rm -rf lib/optional/proton-j*
     sudo rm -rf lib/optional/scala-library*
     sudo rm -rf lib/optional/shiro*
     sudo rm -rf lib/optional/snappy-*

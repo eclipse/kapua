@@ -78,6 +78,7 @@
         <log4j2-mock.version>0.0.1</log4j2-mock.version>
         <tomcat.version>8.0.41</tomcat.version>
         <qpid-jms-client.version>0.23.0</qpid-jms-client.version>
+        <qpid-proton.version>0.20.0</qpid-proton.version>
         <javax.jms-api.version>2.0</javax.jms-api.version>
 
         <!-- Plugins versions -->

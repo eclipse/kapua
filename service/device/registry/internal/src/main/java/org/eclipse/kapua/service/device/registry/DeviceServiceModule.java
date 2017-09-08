@@ -56,18 +56,9 @@ public class DeviceServiceModule implements ServiceModule {
         KapuaEventBus eventbus = EventBusManager.getInstance();
 
         // Listen to upstream service events
-
-        String upEvAccountDeviceRegistryAddress = KapuaDeviceRegistrySettings.getInstance().getString(KapuaDeviceRegistrySettingKeys.ACCOUNT_DEVICE_REGISTRY_UPSTREAM_EVENT_ADDRESS);
-        //the event bus implicitly will add event. as prefix for each publish/subscribe
-        eventbus.subscribe(upEvAccountDeviceRegistryAddress, deviceRegistryService); 
-
-        String upEvAccountDeviceConnectionAddress = KapuaDeviceRegistrySettings.getInstance().getString(KapuaDeviceRegistrySettingKeys.ACCOUNT_DEVICE_CONNECTION_UPSTREAM_EVENT_ADDRESS);
-        //the event bus implicitly will add event. as prefix for each publish/subscribe
-        eventbus.subscribe(upEvAccountDeviceConnectionAddress, deviceConnectionService); 
-
-        String upEvAuthorizationDeviceRegistryAddress = KapuaDeviceRegistrySettings.getInstance().getString(KapuaDeviceRegistrySettingKeys.AUTHORIZATION_DEVICE_REGISTRY_UPSTREAM_EVENT_ADDRESS);
-        //the event bus implicitly will add event. as prefix for each publish/subscribe
-        eventbus.subscribe(upEvAuthorizationDeviceRegistryAddress, deviceRegistryService); 
+        eventbus.subscribe("account", "account-deviceregistry", deviceRegistryService);
+        eventbus.subscribe("account", "account-deviceconnection", deviceConnectionService);
+        eventbus.subscribe("authorization", "authorization-deviceregistry", deviceRegistryService);
 
         //register events to the service map
         String serviceInternalEventAddress = KapuaDeviceRegistrySettings.getInstance().getString(KapuaDeviceRegistrySettingKeys.DEVICE_INTERNAL_EVENT_ADDRESS);
