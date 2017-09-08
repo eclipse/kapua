@@ -23,10 +23,13 @@
     <artifactId>kapua-console-module-data</artifactId>
 
     <dependencies>
+        <!-- Console modules -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-api</artifactId>
         </dependency>
+        
+        <!-- Internal dependencies -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-datastore-api</artifactId>
@@ -35,6 +38,7 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-datastore-internal</artifactId>
         </dependency>
+        
         <!-- External Dependencies -->
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -67,28 +71,12 @@
                 <!-- GWT Maven Plugin -->
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
-                <version>2.4.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generateAsync</goal> <!-- Generate Async RPC interfaces -->
-                            <goal>i18n</goal> <!-- Generate internationalization files -->
-                            <goal>compile</goal> <!-- Compile permutations -->
-                            <goal>test</goal>
-                        </goals>
-                    </execution>
-                </executions>
 
                 <configuration>
                     <module>org.eclipse.kapua.app.console.module.data.adminModuleData</module>
-
-                    <extraJvmArgs>-Xmx2048m -XX:+UseParallelGC</extraJvmArgs>
                     <i18nMessagesBundles>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.module.data.client.messages.ConsoleDataMessages</i18nMessagesBundle>
                     </i18nMessagesBundles>
-
-                    <optimizationLevel>9</optimizationLevel>
-                    <!--<runTarget>console.jsp</runTarget>-->
                 </configuration>
             </plugin>
         </plugins>

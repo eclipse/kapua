@@ -10,9 +10,8 @@
     Contributors:
         Eurotech - initial API and implementation
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>kapua-console-module</artifactId>
         <groupId>org.eclipse.kapua</groupId>
@@ -23,6 +22,7 @@
     <artifactId>kapua-console-module-account</artifactId>
 
     <dependencies>
+        <!-- Console modules -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-api</artifactId>
@@ -30,24 +30,6 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-user</artifactId>
-        </dependency>
-        <!-- External Dependencies -->
-        <dependency>
-            <!-- Imaging utils used to handle device component configuration
-                icons -->
-            <!-- former commons-imaging changed because the 1.0-FINAL was
-                not contined/supported in maven -->
-            <groupId>org.apache.sanselan</groupId>
-            <artifactId>sanselan</artifactId>
-            <version>0.97-incubator</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-broker-core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
@@ -64,6 +46,25 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-device</artifactId>
+        </dependency>
+
+        <!-- Internal dependencies -->
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-broker-core</artifactId>
+        </dependency>
+
+        <!-- External Dependencies -->
+        <dependency>
+            <!-- Imaging utils used to handle device component configuration  icons -->
+            <!-- Former commons-imaging changed because the 1.0-FINAL was not contined/supported in maven -->
+            <groupId>org.apache.sanselan</groupId>
+            <artifactId>sanselan</artifactId>
+            <version>0.97-incubator</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
         </dependency>
     </dependencies>
 
@@ -88,25 +89,11 @@
                 <!-- GWT Maven Plugin -->
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
-                <version>2.4.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generateAsync</goal> <!-- Generate Async RPC interfaces -->
-                            <goal>i18n</goal> <!-- Generate internationalization files -->
-                            <goal>compile</goal> <!-- Compile permutations -->
-                            <goal>test</goal>
-                        </goals>
-                    </execution>
-                </executions>
-
                 <configuration>
                     <module>org.eclipse.kapua.app.console.module.account.adminModuleAccount</module>
                     <i18nMessagesBundles>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.module.account.client.messages.ConsoleAccountMessages</i18nMessagesBundle>
                     </i18nMessagesBundles>
-                    <extraJvmArgs>-Xmx2048m -XX:+UseParallelGC</extraJvmArgs>
-                    <optimizationLevel>9</optimizationLevel>
                 </configuration>
             </plugin>
         </plugins>

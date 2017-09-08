@@ -21,11 +21,23 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>kapua-console-module-device</artifactId>
+    
     <dependencies>
+        <!-- Console modules -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-console-module-authorization</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-console-module-user</artifactId>
+        </dependency>
+        
+        <!-- Internal dependencies -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-registry-api</artifactId>
@@ -58,6 +70,7 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-translator-kura-mqtt</artifactId>
         </dependency>
+        
         <!-- External dependencies -->
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -79,14 +92,6 @@
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-console-module-authorization</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-console-module-user</artifactId>
         </dependency>
     </dependencies>
 
@@ -111,28 +116,13 @@
                 <!-- GWT Maven Plugin -->
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
-                <version>2.4.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generateAsync</goal> <!-- Generate Async RPC interfaces -->
-                            <goal>i18n</goal> <!-- Generate internationalization files -->
-                            <goal>compile</goal> <!-- Compile permutations -->
-                            <goal>test</goal>
-                        </goals>
-                    </execution>
-                </executions>
 
                 <configuration>
                     <module>org.eclipse.kapua.app.console.module.device.adminModuleDevice</module>
-
-                    <extraJvmArgs>-Xmx2048m -XX:+UseParallelGC</extraJvmArgs>
                     <i18nMessagesBundles>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages</i18nMessagesBundle>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.module.device.client.messages.ConsoleConnectionMessages</i18nMessagesBundle>
                     </i18nMessagesBundles>
-
-                    <optimizationLevel>9</optimizationLevel>
                 </configuration>
             </plugin>
         </plugins>

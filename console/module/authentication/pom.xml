@@ -23,6 +23,7 @@
     <artifactId>kapua-console-module-authentication</artifactId>
 
     <dependencies>
+        <!-- Console modules -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-api</artifactId>
@@ -50,28 +51,12 @@
                 <!-- GWT Maven Plugin -->
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
-                <version>2.4.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generateAsync</goal> <!-- Generate Async RPC interfaces -->
-                            <goal>i18n</goal> <!-- Generate internationalization files -->
-                            <goal>compile</goal> <!-- Compile permutations -->
-                            <goal>test</goal>
-                        </goals>
-                    </execution>
-                </executions>
 
                 <configuration>
                     <module>org.eclipse.kapua.app.console.module.authentication.adminModuleAuthentication</module>
-
-                    <extraJvmArgs>-Xmx2048m -XX:+UseParallelGC</extraJvmArgs>
                     <i18nMessagesBundles>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.module.authentication.client.messages.ConsoleCredentialMessages</i18nMessagesBundle>
                     </i18nMessagesBundles>
-
-                    <optimizationLevel>9</optimizationLevel>
-                    <!--<runTarget>console.jsp</runTarget>-->
                 </configuration>
             </plugin>
         </plugins>

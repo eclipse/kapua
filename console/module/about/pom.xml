@@ -10,9 +10,8 @@
     Contributors:
         Eurotech - initial API and implementation
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>kapua-console-module</artifactId>
         <groupId>org.eclipse.kapua</groupId>
@@ -23,6 +22,7 @@
     <artifactId>kapua-console-module-about</artifactId>
 
     <dependencies>
+        <!-- Console modules -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-api</artifactId>
@@ -50,28 +50,12 @@
                 <!-- GWT Maven Plugin -->
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
-                <version>2.4.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generateAsync</goal> <!-- Generate Async RPC interfaces -->
-                            <goal>i18n</goal> <!-- Generate internationalization files -->
-                            <goal>compile</goal> <!-- Compile permutations -->
-                            <goal>test</goal>
-                        </goals>
-                    </execution>
-                </executions>
 
                 <configuration>
                     <module>org.eclipse.kapua.app.console.module.about.adminModuleAbout</module>
-
-                    <extraJvmArgs>-Xmx2048m -XX:+UseParallelGC</extraJvmArgs>
                     <i18nMessagesBundles>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.module.about.client.messages.ConsoleAboutMessages</i18nMessagesBundle>
                     </i18nMessagesBundles>
-
-                    <optimizationLevel>9</optimizationLevel>
-                    <!--<runTarget>console.jsp</runTarget>-->
                 </configuration>
             </plugin>
         </plugins>

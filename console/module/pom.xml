@@ -10,9 +10,8 @@
     Contributors:
         Eurotech - initial API and implementation
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>kapua-console</artifactId>
         <groupId>org.eclipse.kapua</groupId>
@@ -22,17 +21,64 @@
 
     <artifactId>kapua-console-module</artifactId>
     <packaging>pom</packaging>
+    
     <modules>
         <module>api</module>
         <module>about</module>
-        <module>device</module>
         <module>account</module>
-        <module>user</module>
         <module>authentication</module>
         <module>authorization</module>
         <module>data</module>
-        <module>welcome</module>
+        <module>device</module>
         <module>tag</module>
+        <module>user</module>
+        <module>welcome</module>
     </modules>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <!-- GWT Maven Plugin -->
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>gwt-maven-plugin</artifactId>
+                    <version>${com.google.gwt.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>generateAsync</goal> <!-- Generate Async RPC interfaces -->
+                                <goal>i18n</goal> <!-- Generate internationalization files -->
+                                <goal>compile</goal> <!-- Compile permutations -->
+                            </goals>
+                        </execution>
+                    </executions>
+
+                    <configuration>
+                        <extraJvmArgs>-Xmx2048m -XX:+UseParallelGC</extraJvmArgs>
+                        <optimizationLevel>9</optimizationLevel>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-servlet</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.extjs</groupId>
+            <artifactId>gxt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.allen-sauer.gwt.log</groupId>
+            <artifactId>gwt-log</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

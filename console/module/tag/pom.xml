@@ -23,6 +23,7 @@
     <artifactId>kapua-console-module-tag</artifactId>
 
     <dependencies>
+        <!-- Console modules -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-api</artifactId>
@@ -45,6 +46,8 @@
             <artifactId>kapua-console-module-device</artifactId>
             <classifier>sources</classifier>
         </dependency>
+        
+        <!-- Internal dependencies -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-tag-api</artifactId>
@@ -76,25 +79,12 @@
                 <!-- GWT Maven Plugin -->
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
-                <version>2.4.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generateAsync</goal> <!-- Generate Async RPC interfaces -->
-                            <goal>i18n</goal> <!-- Generate internationalization files -->
-                            <goal>compile</goal> <!-- Compile permutations -->
-                            <goal>test</goal>
-                        </goals>
-                    </execution>
-                </executions>
 
                 <configuration>
                     <module>org.eclipse.kapua.app.console.module.tag.adminModuleTag</module>
                     <i18nMessagesBundles>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.module.tag.client.messages.ConsoleTagMessages</i18nMessagesBundle>
                     </i18nMessagesBundles>
-                    <extraJvmArgs>-Xmx2048m -XX:+UseParallelGC</extraJvmArgs>
-                    <optimizationLevel>9</optimizationLevel>
                 </configuration>
             </plugin>
         </plugins>
