@@ -20,5 +20,5 @@ public interface KapuaEventBus {
 
     public void publish(String address, KapuaEvent event) throws KapuaEventBusException;
 
-    public void subscribe(String address, KapuaEventBusListener eventListener) throws KapuaEventBusException;
+    public void subscribe(String address, String name, KapuaEventBusListener eventListener) throws KapuaEventBusException;
 }

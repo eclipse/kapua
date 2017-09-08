@@ -64,27 +64,11 @@ public class AuthorizationServiceModule implements ServiceModule {
 
         KapuaEventBus eventbus = EventBusManager.getInstance();
 
-        // Listen to upstream service events
-
-        String upEvAccountAccessInfoSubscribe = KapuaAuthorizationSetting.getInstance().getString(KapuaAuthorizationSettingKeys.ACCOUNT_ACCESS_INFO_UPSTREAM_EVENT_ADDRESS);
-        //the event bus implicitly will add event. as prefix for each publish/subscribe
-        eventbus.subscribe(upEvAccountAccessInfoSubscribe, accessInfoService);
-
-        String upEvAccountRoleSubscribe = KapuaAuthorizationSetting.getInstance().getString(KapuaAuthorizationSettingKeys.ACCOUNT_ROLE_UPSTREAM_EVENT_ADDRESS);
-        //the event bus implicitly will add event. as prefix for each publish/subscribe
-        eventbus.subscribe(upEvAccountRoleSubscribe, roleService); 
-
-        String upEvAccountDomainSubscribe = KapuaAuthorizationSetting.getInstance().getString(KapuaAuthorizationSettingKeys.ACCOUNT_DOMAIN_UPSTREAM_EVENT_ADDRESS);
-        //the event bus implicitly will add event. as prefix for each publish/subscribe
-        eventbus.subscribe(upEvAccountDomainSubscribe, domainService); 
-
-        String upEvAccountGroupSubscribe = KapuaAuthorizationSetting.getInstance().getString(KapuaAuthorizationSettingKeys.ACCOUNT_GROUP_UPSTREAM_EVENT_ADDRESS);
-        //the event bus implicitly will add event. as prefix for each publish/subscribe
-        eventbus.subscribe(upEvAccountGroupSubscribe, groupService); 
-
-        String upEvUserAccessInfoSubscribe = KapuaAuthorizationSetting.getInstance().getString(KapuaAuthorizationSettingKeys.USER_ACCESS_INFO_UPSTREAM_EVENT_ADDRESS);
-        //the event bus implicitly will add event. as prefix for each publish/subscribe
-        eventbus.subscribe(upEvUserAccessInfoSubscribe, accessInfoService); 
+        eventbus.subscribe("account", "account-accessinfo", accessInfoService);
+        eventbus.subscribe("account", "account-role", roleService);
+        eventbus.subscribe("account", "account-domain", domainService);
+        eventbus.subscribe("account", "account-group", groupService);
+        eventbus.subscribe("user", "user-accessinfo", accessInfoService);
 
         //register events to the service map
         String serviceInternalEventAddress = KapuaAuthorizationSetting.getInstance().getString(KapuaAuthorizationSettingKeys.AUTHORIZATION_INTERNAL_EVENT_ADDRESS);

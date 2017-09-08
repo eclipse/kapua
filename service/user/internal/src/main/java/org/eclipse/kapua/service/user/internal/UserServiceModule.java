@@ -55,10 +55,7 @@ public class UserServiceModule implements ServiceModule {
         KapuaEventBus eventbus = EventBusManager.getInstance();
 
         // Listen to upstream service events
-
-        String upEvAccountUserAddressSub = KapuaUserSetting.getInstance().getString(KapuaUserSettingKeys.ACCOUNT_USER_EVENT_ADDRESS);
-        //the event bus implicitly will add event. as prefix for each publish/subscribe
-        eventbus.subscribe(upEvAccountUserAddressSub, userService); 
+        eventbus.subscribe("account", "account-user", userService);
 
         //register events to the service map
         String serviceInternalEventAddress = KapuaUserSetting.getInstance().getString(KapuaUserSettingKeys.USER_INTERNAL_EVENT_ADDRESS);

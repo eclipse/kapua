@@ -25,7 +25,7 @@ import org.xml.sax.SAXException;
 
 public abstract class EventBusMarshaler {
 
-    public final static String CONTENT_TYPE_KEY = "Content-Type";
+    public final static String CONTENT_TYPE_KEY = "ContentType";
     public final static String CONTENT_TYPE_JSON = "application/json";
     public final static String CONTENT_TYPE_XML = "application/xml";
 
