@@ -16,7 +16,7 @@
 
 CREATE TABLE IF NOT EXISTS sys_configuration (
   scope_id          		 BIGINT(21) 	  UNSIGNED,
-  id                         BIGINT(21) 	  UNSIGNED NOT NULL,
+  id                         BIGINT(21) 	  UNSIGNED AUTO_INCREMENT NOT NULL,
   pid						 VARCHAR(255) 	  NOT NULL,
   configurations			 TEXT,
   created_on                 TIMESTAMP(3) 	  DEFAULT 0,

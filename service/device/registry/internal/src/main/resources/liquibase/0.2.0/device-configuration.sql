@@ -12,11 +12,10 @@
 
 -- liquibase formatted sql
 
--- changeset device:1
+-- changeset device-configuration:1
 
 INSERT INTO sys_configuration (
   SCOPE_ID,
-  ID,
   PID,
   CONFIGURATIONS,
   CREATED_ON,
@@ -27,7 +26,6 @@ INSERT INTO sys_configuration (
   ATTRIBUTES,
   PROPERTIES)
 VALUES (1,
-        3,
         'org.eclipse.kapua.service.device.registry.DeviceRegistryService',
         CONCAT('#', CURRENT_TIMESTAMP(), CHAR(13), CHAR(10),
         'maxNumberChildEntities=0', CHAR(13), CHAR(10),

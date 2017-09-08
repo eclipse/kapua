@@ -12,11 +12,10 @@
 
 -- liquibase formatted sql
 
--- changeset role:1
+-- changeset role-configuration:1
 
 INSERT INTO sys_configuration (
   SCOPE_ID,
-  ID,
   PID,
   CONFIGURATIONS,
   CREATED_ON,
@@ -27,7 +26,6 @@ INSERT INTO sys_configuration (
   ATTRIBUTES,
   PROPERTIES)
 VALUES (1,
-        5,
         'org.eclipse.kapua.service.authorization.role.RoleService',
         CONCAT('#', CURRENT_TIMESTAMP(), CHAR(13), CHAR(10),
         'maxNumberChildEntities=0', CHAR(13), CHAR(10),

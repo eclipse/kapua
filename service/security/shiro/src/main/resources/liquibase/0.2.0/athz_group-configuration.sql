@@ -12,11 +12,10 @@
 
 -- liquibase formatted sql
 
--- changeset group:1
+-- changeset group-configuration:1
 
 INSERT INTO sys_configuration (
   SCOPE_ID,
-  ID,
   PID,
   CONFIGURATIONS,
   CREATED_ON,
@@ -27,7 +26,6 @@ INSERT INTO sys_configuration (
   ATTRIBUTES,
   PROPERTIES)
 VALUES (1,
-        4,
         'org.eclipse.kapua.service.authorization.group.GroupService',
         CONCAT('#', CURRENT_TIMESTAMP(), CHAR(13), CHAR(10),
         'maxNumberChildEntities=0', CHAR(13), CHAR(10),
