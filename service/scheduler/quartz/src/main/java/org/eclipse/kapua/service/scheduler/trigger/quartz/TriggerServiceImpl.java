@@ -44,6 +44,7 @@ import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
+import org.quartz.SimpleScheduleBuilder;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
@@ -92,17 +93,28 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
             JobDataMap triggerDataMap = new JobDataMap();
             for (TriggerProperty tp : trigger.getTriggerProperties()) {
                 triggerDataMap.put(tp.getName(), KapuaEid.parseCompactId(tp.getPropertyValue()));
-
             }
 
             JobDetail jobLauncherDetail = JobBuilder.newJob(KapuaJobLauncer.class)
-                    .withIdentity(JobKey.createUniqueName("deviceManagement"), "deviceManagement")
+                    .withIdentity(JobKey.createUniqueName(KapuaJobLauncer.class.getName()), KapuaJobLauncer.class.getName())
                     .build();
 
-            org.quartz.Trigger quarztTrigger = TriggerBuilder.newTrigger()
-                    .usingJobData(triggerDataMap)
-                    .withSchedule(CronScheduleBuilder.cronSchedule("*/30 * * * * ? *"))
-                    .build();
+            org.quartz.Trigger quarztTrigger = null;
+            if (trigger.getRetryInterval() != null) {
+                quarztTrigger = TriggerBuilder.newTrigger()
+                        .usingJobData(triggerDataMap)
+                        .startAt(trigger.getStartsOn())
+                        .endAt(trigger.getEndsOn())
+                        .withSchedule(SimpleScheduleBuilder.repeatSecondlyForever(trigger.getRetryInterval().intValue()))
+                        .build();
+            } else {
+                quarztTrigger = TriggerBuilder.newTrigger()
+                        .usingJobData(triggerDataMap)
+                        .startAt(trigger.getStartsOn())
+                        .endAt(trigger.getEndsOn())
+                        .withSchedule(CronScheduleBuilder.cronSchedule(trigger.getCronScheduling()))
+                        .build();
+            }
 
             SchedulerFactory sf = new StdSchedulerFactory();
             try {
@@ -111,7 +123,6 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-
             return trigger;
         });
     }

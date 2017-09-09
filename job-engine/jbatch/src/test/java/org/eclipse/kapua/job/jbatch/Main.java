@@ -12,6 +12,7 @@
 package org.eclipse.kapua.job.jbatch;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -130,6 +131,9 @@ public class Main {
             TriggerCreator triggerCreator = triggerFactory.newCreator(KapuaId.ONE);
             triggerCreator.setName("testTrigger");
             triggerCreator.setTriggerProperties(triggerProperties);
+            triggerCreator.setStartsOn(new Date());
+            // triggerCreator.setCronScheduling("*/15 * * * * ? *");
+            triggerCreator.setRetryInterval(15L);
             Trigger trigger = KapuaSecurityUtils.doPrivileged(() -> triggerService.create(triggerCreator));
 
         } catch (Throwable e) {
