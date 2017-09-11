@@ -43,9 +43,21 @@ function downloadCss(elementSrc, elementId) {
 }
 
 //
+// Adds console sking script
+function downloadJsConsoleSkin() {
+	downloadJs("console/skin/skin.js?v=1", "consoleSkinScript");
+}
+
+//
 // Adds console css
 function downloadCssConsole() {
 	downloadCss("css/console.css", "consoleCss")
+}
+
+//
+// Adds console skin css
+function downloadCssConsoleSkin() {
+	downloadCss("console/skin/skin.css?v=1", "consoleSkinCss")
 }
 
 //
@@ -54,6 +66,10 @@ function deferResourcesDownload() {
 
 	// Custom Kapua CSS
 	downloadCssConsole();
+
+	// Skin resources
+	downloadJsConsoleSkin();
+	downloadCssConsoleSkin();
 }
 
 if (window.addEventListener)
