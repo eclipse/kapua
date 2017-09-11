@@ -29,7 +29,13 @@
     <include relativeToChangelogFile="true" file="./device-connection-foreignkey.xml" />
     <include relativeToChangelogFile="true" file="./device-tag-foreignkey.xml" />
     
+    <include relativeToChangelogFile="true" file="./job-foreignkey.sql"/>
+    <include relativeToChangelogFile="true" file="./job_step_definition-foreignkey.sql"/>
+
+    <include relativeToChangelogFile="true" file="./schdl_trigger-foreignkey.sql"/>
+
     <include relativeToChangelogFile="true" file="./user-foreignkey.xml" />
+
     
     <include relativeToChangelogFile="true" file="./tag-foreignkey.xml" />
 
