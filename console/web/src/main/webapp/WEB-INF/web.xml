@@ -339,6 +339,15 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>skinServlet</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.servlet.SkinServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>skinServlet</servlet-name>
+        <url-pattern>/skin/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>ssoCallbackServlet</servlet-name>
         <servlet-class>org.eclipse.kapua.app.console.core.servlet.SsoCallbackServlet</servlet-class>
     </servlet>

@@ -45,7 +45,7 @@ function downloadCss(elementSrc, elementId) {
 //
 // Adds console sking script
 function downloadJsConsoleSkin() {
-	downloadJs("console/skin/skin.js?v=1", "consoleSkinScript");
+	downloadJs("/skin/skin.js?v=1", "consoleSkinScript");
 }
 
 //
@@ -57,7 +57,7 @@ function downloadCssConsole() {
 //
 // Adds console skin css
 function downloadCssConsoleSkin() {
-	downloadCss("console/skin/skin.css?v=1", "consoleSkinCss")
+	downloadCss("/skin/skin.css?v=1", "consoleSkinCss")
 }
 
 //
