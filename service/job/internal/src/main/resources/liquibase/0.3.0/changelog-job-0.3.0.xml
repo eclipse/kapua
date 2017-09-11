@@ -10,20 +10,20 @@
     Contributors:
         Eurotech - initial API and implementation
  -->
- <databaseChangeLog
-  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
-    
-    <include relativeToChangelogFile="true" file="./job-configuration.sql" />
-                      
-    <include relativeToChangelogFile="true" file="./job.sql" />
-    <include relativeToChangelogFile="true" file="./job_execution.sql" />
-    <include relativeToChangelogFile="true" file="./job_step.sql" />
-    <include relativeToChangelogFile="true" file="./job_step_properties.sql" />
-    <include relativeToChangelogFile="true" file="./job_step_definition.sql" />
-    <include relativeToChangelogFile="true" file="./job_step_definition_properties.sql" />
-    <include relativeToChangelogFile="true" file="./job_target.sql" />
-    
+
+    <include relativeToChangelogFile="true" file="./job-configuration.sql"/>
+
+    <include relativeToChangelogFile="true" file="./job.sql"/>
+    <include relativeToChangelogFile="true" file="./job_execution.sql"/>
+    <include relativeToChangelogFile="true" file="./job_step.sql"/>
+    <include relativeToChangelogFile="true" file="./job_step_properties.sql"/>
+    <include relativeToChangelogFile="true" file="./job_step_definition.sql"/>
+    <include relativeToChangelogFile="true" file="./job_step_definition_properties.sql"/>
+    <include relativeToChangelogFile="true" file="./job_target.sql"/>
+
 </databaseChangeLog>

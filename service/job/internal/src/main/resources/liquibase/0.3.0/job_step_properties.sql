@@ -12,15 +12,17 @@
 
 -- liquibase formatted sql
 
--- changeset job:1
+-- changeset job_job_step_propreties:1
 
 CREATE TABLE job_job_step_properties (
-  step_id          	BIGINT(21) 	  	UNSIGNED NOT NULL,
-  
-  name 				VARCHAR(255)		NOT NULL,
-  property_type		VARCHAR(1024)	NOT NULL,
-  property_value		TEXT,
-  
-  PRIMARY KEY (step_id, name)
-  
+  step_id        BIGINT(21) UNSIGNED NOT NULL,
+
+  name           VARCHAR(255)  NOT NULL,
+  property_type  VARCHAR(1024) NOT NULL,
+  property_value TEXT,
+
+  PRIMARY KEY (step_id, name),
+
+  FOREIGN KEY (step_id) REFERENCES job_job_step (id) ON DELETE CASCADE
+
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;

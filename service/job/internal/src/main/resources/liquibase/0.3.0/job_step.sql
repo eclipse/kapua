@@ -12,29 +12,32 @@
 
 -- liquibase formatted sql
 
--- changeset job:1
+-- changeset job_job_step:1
 
 CREATE TABLE job_job_step (
-  scope_id          		 BIGINT(21) 	  UNSIGNED NOT NULL,
-  id                         BIGINT(21) 	  UNSIGNED NOT NULL,
-  created_on                 TIMESTAMP(3) 	  DEFAULT 0,
-  created_by                 BIGINT(21) 	  UNSIGNED NOT NULL,
-  modified_on                TIMESTAMP(3)     NOT NULL,
-  modified_by                BIGINT(21) 	  UNSIGNED NOT NULL,
-  
-  name                       VARCHAR(255) 	  NOT NULL,  
-  
-  description				 TEXT,
-  job_id          		 	 BIGINT(21) 	  UNSIGNED NOT NULL,
-  job_step_definition_id     BIGINT(21) 	  UNSIGNED NOT NULL,
-  step_index				 INT			  UNSIGNED NOT NULL,
-  
-  optlock                    INT UNSIGNED,
-  attributes				 TEXT,
-  properties                 TEXT,
-  
+  scope_id               BIGINT(21) UNSIGNED NOT NULL,
+  id                     BIGINT(21) UNSIGNED NOT NULL,
+  created_on             TIMESTAMP(3) DEFAULT 0,
+  created_by             BIGINT(21) UNSIGNED NOT NULL,
+  modified_on            TIMESTAMP(3) NOT NULL,
+  modified_by            BIGINT(21) UNSIGNED NOT NULL,
+
+  name                   VARCHAR(255) NOT NULL,
+
+  description            TEXT,
+  job_id                 BIGINT(21) UNSIGNED NOT NULL,
+  job_step_definition_id BIGINT(21) UNSIGNED NOT NULL,
+  step_index             INT UNSIGNED NOT NULL,
+
+  optlock                INT UNSIGNED,
+  attributes             TEXT,
+  properties             TEXT,
+
   PRIMARY KEY (id),
-  
+
+  FOREIGN KEY (scope_id, job_id) REFERENCES job_job (scope_id, id) ON DELETE CASCADE
+
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
-CREATE INDEX idx_job_step_scope_id ON job_job_step (scope_id);
+CREATE INDEX idx_job_step_scope_id
+  ON job_job_step (scope_id);

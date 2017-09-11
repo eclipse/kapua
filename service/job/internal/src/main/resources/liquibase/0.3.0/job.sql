@@ -15,24 +15,25 @@
 -- changeset job:1
 
 CREATE TABLE job_job (
-  scope_id          		 BIGINT(21) 	  UNSIGNED NOT NULL,
-  id                         BIGINT(21) 	  UNSIGNED NOT NULL,
-  created_on                 TIMESTAMP(3) 	  DEFAULT 0,
-  created_by                 BIGINT(21) 	  UNSIGNED NOT NULL,
-  modified_on                TIMESTAMP(3)     NOT NULL,
-  modified_by                BIGINT(21) 	  UNSIGNED NOT NULL,
-  
-  name                       VARCHAR(255) 	  NOT NULL,
+  scope_id           BIGINT(21) UNSIGNED NOT NULL,
+  id                 BIGINT(21) UNSIGNED NOT NULL,
+  created_on         TIMESTAMP(3) DEFAULT 0,
+  created_by         BIGINT(21) UNSIGNED NOT NULL,
+  modified_on        TIMESTAMP(3) NOT NULL,
+  modified_by        BIGINT(21) UNSIGNED NOT NULL,
 
-  description				 TEXT,
-  job_xml_definition		 TEXT,
-  
-  optlock                    INT UNSIGNED,
-  attributes				 TEXT,
-  properties                 TEXT,
-  
+  name               VARCHAR(255) NOT NULL,
+
+  description        TEXT,
+  job_xml_definition TEXT,
+
+  optlock            INT UNSIGNED,
+  attributes         TEXT,
+  properties         TEXT,
+
   PRIMARY KEY (id),
-  
+
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
-CREATE INDEX idx_job_scope_id ON job_job (scope_id);
+CREATE INDEX idx_job_scope_id
+  ON job_job (scope_id);

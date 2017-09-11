@@ -12,7 +12,7 @@
 
 -- liquibase formatted sql
 
--- changeset account-configuration:1
+-- changeset trigger-configuration:1
 
 INSERT INTO sys_configuration (
   SCOPE_ID,

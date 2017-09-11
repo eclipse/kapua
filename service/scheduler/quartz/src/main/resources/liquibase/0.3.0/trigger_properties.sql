@@ -12,15 +12,18 @@
 
 -- liquibase formatted sql
 
--- changeset job:1
+-- changeset schdl_trigger_properties:1
 
 CREATE TABLE schdl_trigger_properties (
-  trigger_id          	BIGINT(21) 	  	UNSIGNED NOT NULL,
-  
-  name 				VARCHAR(255)		NOT NULL,
-  property_type		VARCHAR(1024)	NOT NULL,
-  property_value		TEXT,
-  
-  PRIMARY KEY (trigger_id, name)
-  
+  trigger_id     BIGINT(21) UNSIGNED NOT NULL,
+
+  name           VARCHAR(255)  NOT NULL,
+  property_type  VARCHAR(1024) NOT NULL,
+  property_value TEXT,
+
+  PRIMARY KEY (trigger_id, name),
+
+  FOREIGN KEY (trigger_id) REFERENCES schdl_trigger (id) ON DELETE CASCADE
+
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
