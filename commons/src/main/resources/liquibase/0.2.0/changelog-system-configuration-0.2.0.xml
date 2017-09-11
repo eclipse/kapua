@@ -20,18 +20,11 @@
     <include relativeToChangelogFile="true" file="../common-properties.xml" />
 
     <changeSet id="changelog-system-configuration-0.2.0" author="eurotech">
-        <!-- Old SQL file
-        <sqlFile relativeToChangelogFile="true" path="./system_configuration.sql" />
-        -->
-        <preConditions onFail="MARK_RAN">
-            <not><tableExists tableName="sys_configuration"></tableExists></not>
-        </preConditions>
-        
         <createTable tableName="sys_configuration">
             <column name="scope_id" type="bigint(21) unsigned">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="id" type="bigint(21) unsigned">
+            <column name="id" type="bigint(21) unsigned" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="pid" type="varchar(255)">
@@ -56,9 +49,6 @@
         <createIndex tableName="sys_configuration" indexName="idx_configurationScopeId">
             <column name="scope_id"/>
         </createIndex>
-        
-        <!-- Don't drop the table since it might have already existed -->
-        <rollback/>
     </changeSet>
 
 </databaseChangeLog>

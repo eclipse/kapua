@@ -29,22 +29,22 @@
         
         <createTable tableName="tag_tag">
             <column name="scope_id" type="bigint(21) unsigned">
-                <constraints nullable="false"/>
+                <constraints nullable="false" checkConstraint=">= 0"/>
             </column>
             <column name="id" type="bigint(21) unsigned">
-                <constraints nullable="false" primaryKey="true"/>
+                <constraints nullable="false" primaryKey="true" checkConstraint=">= 0"/>
             </column>
             <column name="created_on" type="timestamp(3)" defaultValueComputed="${now}">
                 <constraints nullable="false"/>
             </column>
             <column name="created_by" type="bigint(21) unsigned">
-                <constraints nullable="false"/>
+                <constraints nullable="false" checkConstraint=">= 0"/>
             </column>
             <column name="modified_on" type="timestamp(3)" defaultValueComputed="${now}">
                 <constraints nullable="false"/>
             </column>
             <column name="modified_by" type="bigint(21) unsigned">
-                <constraints nullable="false"/>
+                <constraints nullable="false" checkConstraint=">= 0"/>
             </column>
             
             <column name="name" type="varchar(255)">

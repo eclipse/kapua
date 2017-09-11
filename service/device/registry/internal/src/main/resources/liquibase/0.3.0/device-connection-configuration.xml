@@ -20,9 +20,6 @@
     <include relativeToChangelogFile="true" file="../common-properties.xml" />
 
     <changeSet id="changelog-device-connection-configuration-0.3.0_seed" author="eurotech">
-        <!-- Old SQL file
-        <sqlFile relativeToChangelogFile="true" path="./device-configuration.sql" />
-        -->
         <insert tableName="sys_configuration">
             <column name="scope_id" value="1"/>
             <column name="pid" value='org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService'/>
@@ -34,11 +31,6 @@
             <column name="modified_by" value="1"/>
             <column name="optlock" value="0"/>
         </insert>
-        <rollback>
-            <delete tableName="sys_configuration">
-                <where>scope_id=1</where>
-            </delete>
-        </rollback>
     </changeSet>
 
 </databaseChangeLog>
