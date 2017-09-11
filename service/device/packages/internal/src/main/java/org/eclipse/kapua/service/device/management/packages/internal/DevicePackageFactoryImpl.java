@@ -21,6 +21,8 @@ import org.eclipse.kapua.service.device.management.packages.model.download.Devic
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
 import org.eclipse.kapua.service.device.management.packages.model.download.internal.DevicePackageDownloadOperationImpl;
 import org.eclipse.kapua.service.device.management.packages.model.download.internal.DevicePackageDownloadRequestImpl;
+import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallRequest;
+import org.eclipse.kapua.service.device.management.packages.model.install.internal.DevicePackageInstallRequestImpl;
 import org.eclipse.kapua.service.device.management.packages.model.internal.DevicePackageBundleInfoImpl;
 import org.eclipse.kapua.service.device.management.packages.model.internal.DevicePackageBundleInfosImpl;
 import org.eclipse.kapua.service.device.management.packages.model.internal.DevicePackageImpl;
@@ -70,6 +72,17 @@ public class DevicePackageFactoryImpl implements DevicePackageFactory {
         return new DevicePackageDownloadOperationImpl();
     }
 
+    //
+    // Install operation
+    //
+    @Override
+    public DevicePackageInstallRequest newPackageInstallRequest() {
+        return new DevicePackageInstallRequestImpl();
+    }
+
+    //
+    // Uninstall operation
+    //
     @Override
     public DevicePackageUninstallRequest newPackageUninstallRequest() {
         return new DevicePackageUninstallRequestImpl();
