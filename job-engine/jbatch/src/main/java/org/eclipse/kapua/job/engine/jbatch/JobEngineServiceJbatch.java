@@ -24,9 +24,10 @@ import javax.batch.operations.JobSecurityException;
 import javax.batch.operations.NoSuchJobException;
 import javax.batch.operations.NoSuchJobExecutionException;
 import javax.batch.runtime.BatchRuntime;
+//import javax.batch.runtime.BatchStatus;
+//import javax.batch.runtime.JobExecution;
+//import javax.batch.runtime.JobInstance;
 import javax.batch.runtime.BatchStatus;
-import javax.batch.runtime.JobExecution;
-import javax.batch.runtime.JobInstance;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -67,6 +68,9 @@ import com.ibm.jbatch.jsl.model.Step;
 public class JobEngineServiceJbatch implements JobEngineService {
 
     private final static Logger logger = LoggerFactory.getLogger(JobEngineServiceJbatch.class);
+
+    private final static long ON_STOP_MAX_WAIT = 60;
+    private final static long ON_STOP_WAIT_STEP = 1000;
 
     private static final Domain JOB_DOMAIN = new JobDomain();
 
@@ -171,44 +175,14 @@ public class JobEngineServiceJbatch implements JobEngineService {
         } catch (IOException e) {
             throw KapuaException.internalError(e, "Cannot write job XML definition file");
         }
-
         try {
             BatchRuntime.getJobOperator().start(jobXmlDefinitionFile.getAbsolutePath().replaceAll("\\.xml$", ""), new Properties());
         } catch (NoSuchJobExecutionException | NoSuchJobException | JobSecurityException e) {
-            String message = String.format("Cannot start job '[%d]': [%s]", jobId, e.getMessage());
+            String message = String.format("Cannot start job '[%s]': [%s]", jobId, e.getMessage());
             logger.error(message, e);
             throw new KapuaIllegalStateException(message);
         }
 
-    }
-
-    @Override
-    public void pauseJob(KapuaId scopeId, KapuaId jobId) throws KapuaException {
-        //
-        // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(jobId, "jobId");
-
-        //
-        // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.execute, scopeId));
-
-        //
-        // Check existence
-        Job job = JOB_SERVICE.find(scopeId, jobId);
-        if (job == null) {
-            throw new KapuaEntityNotFoundException(Job.TYPE, jobId);
-        }
-
-        //
-        // Pause the job
-        try {
-            BatchRuntime.getJobOperator().stop(getRunningJobExecution(getJbatchJobName(job)));
-        } catch (NoSuchJobExecutionException | NoSuchJobException | JobSecurityException e) {
-            String message = String.format("Cannot pause job '[%d]': [%s]", jobId, e.getMessage());
-            logger.error(message, e);
-            throw new KapuaIllegalStateException(message);
-        }
     }
 
     @Override
@@ -232,38 +206,23 @@ public class JobEngineServiceJbatch implements JobEngineService {
         //
         // Stop the job
         try {
-            BatchRuntime.getJobOperator().abandon(getStoppedJobExecution(getJbatchJobName(job)));
+            Long jbatchJobExecutionId = getRunningJobExecution(getJbatchJobName(job));
+            BatchRuntime.getJobOperator().stop(jbatchJobExecutionId);
+            // wait for stop completed
+            for (int i = 0; i < ON_STOP_MAX_WAIT; i++) {
+                if (BatchStatus.STOPPED.equals(BatchRuntime.getJobOperator().getJobExecution(jbatchJobExecutionId).getBatchStatus())) {
+                    BatchRuntime.getJobOperator().abandon(jbatchJobExecutionId);
+                    break;
+                }
+                try {
+                    Thread.sleep(ON_STOP_WAIT_STEP);
+                }
+                catch (InterruptedException e) {
+                    //ignore it
+                }
+            }
         } catch (NoSuchJobExecutionException | NoSuchJobException | JobSecurityException e) {
-            String message = String.format("Cannot stop job '[%d]': [%s]", jobId, e.getMessage());
-            logger.error(message, e);
-            throw new KapuaIllegalStateException(message);
-        }
-    }
-
-    @Override
-    public void resumeJob(KapuaId scopeId, KapuaId jobId) throws KapuaException {
-        //
-        // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(jobId, "jobId");
-
-        //
-        // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.execute, scopeId));
-
-        //
-        // Check existence
-        Job job = JOB_SERVICE.find(scopeId, jobId);
-        if (job == null) {
-            throw new KapuaEntityNotFoundException(Job.TYPE, jobId);
-        }
-
-        //
-        // Resume job
-        try {
-            BatchRuntime.getJobOperator().restart(getStoppedJobExecution(getJbatchJobName(job)), null);
-        } catch (NoSuchJobExecutionException | NoSuchJobException | JobSecurityException e) {
-            String message = String.format("Cannot resume job '[%d]': [%s]", jobId, e.getMessage());
+            String message = String.format("Cannot stop job '[%s]': [%s]", jobId, e.getMessage());
             logger.error(message, e);
             throw new KapuaIllegalStateException(message);
         }
@@ -303,37 +262,37 @@ public class JobEngineServiceJbatch implements JobEngineService {
         return BatchRuntime.getJobOperator().getRunningExecutions(jobName);
     }
 
-    private long getStoppedJobExecution(String jobName) {
-        List<Long> jobExecutions = getStoppedJobExecutions(jobName);
-        if (jobExecutions.size() != 1) {
-            throw new KapuaIllegalStateException(String.format("Cannot find running job for the specified job name [%s]", jobName));
-        }
-        return jobExecutions.get(0);
-    }
-
-    private List<Long> getStoppedJobExecutions(String jobName) {
-        List<Long> suspendedJobs = new ArrayList<>();
-        int count = BatchRuntime.getJobOperator().getJobInstanceCount(jobName);
-        int limit = count;
-        // limit to the last few instance
-        if (count > 10) {
-            limit = 10;
-        }
-        List<JobInstance> jobInstances = BatchRuntime.getJobOperator().getJobInstances(jobName, 0, limit);
-        if (jobInstances != null) {
-            for (JobInstance jobInstance : jobInstances) {
-                List<JobExecution> jobExecutions = BatchRuntime.getJobOperator().getJobExecutions(jobInstance);
-
-                // JobExecution jobExecution = BatchRuntime.getJobOperator().getJobExecution(jobInstance.getInstanceId());
-                jobExecutions.forEach((je) -> {
-                    if (BatchStatus.STOPPED.equals(je.getBatchStatus())) {
-                        suspendedJobs.add(je.getExecutionId());
-                    }
-                });
-
-            }
-        }
-        return suspendedJobs;
-    }
+    // private long getStoppedJobExecution(String jobName) {
+    // List<Long> jobExecutions = getStoppedJobExecutions(jobName);
+    // if (jobExecutions.size() != 1) {
+    // throw new KapuaIllegalStateException(String.format("Cannot find running job for the specified job name [%s]", jobName));
+    // }
+    // return jobExecutions.get(0);
+    // }
+    //
+    // private List<Long> getStoppedJobExecutions(String jobName) {
+    // List<Long> suspendedJobs = new ArrayList<>();
+    // int count = BatchRuntime.getJobOperator().getJobInstanceCount(jobName);
+    // int limit = count;
+    // // limit to the last few instance
+    // if (count > 10) {
+    // limit = 10;
+    // }
+    // List<JobInstance> jobInstances = BatchRuntime.getJobOperator().getJobInstances(jobName, 0, limit);
+    // if (jobInstances != null) {
+    // for (JobInstance jobInstance : jobInstances) {
+    // List<JobExecution> jobExecutions = BatchRuntime.getJobOperator().getJobExecutions(jobInstance);
+    //
+    // // JobExecution jobExecution = BatchRuntime.getJobOperator().getJobExecution(jobInstance.getInstanceId());
+    // jobExecutions.forEach((je) -> {
+    // if (BatchStatus.STOPPED.equals(je.getBatchStatus())) {
+    // suspendedJobs.add(je.getExecutionId());
+    // }
+    // });
+    //
+    // }
+    // }
+    // return suspendedJobs;
+    // }
 
 }

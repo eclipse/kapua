@@ -13,14 +13,14 @@ package org.eclipse.kapua.service.job.execution.internal;
 
 import java.util.Date;
 
-import org.eclipse.kapua.commons.model.AbstractKapuaEntityCreator;
+import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntityCreator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.execution.JobExecution;
 import org.eclipse.kapua.service.job.execution.JobExecutionCreator;
 
 @KapuaProvider
-public class JobExecutionCreatorImpl extends AbstractKapuaEntityCreator<JobExecution> implements JobExecutionCreator {
+public class JobExecutionCreatorImpl extends AbstractKapuaUpdatableEntityCreator<JobExecution> implements JobExecutionCreator {
 
     private static final long serialVersionUID = 3119071638220738358L;
 

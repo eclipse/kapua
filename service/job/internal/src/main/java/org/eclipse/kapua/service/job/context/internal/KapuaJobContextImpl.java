@@ -23,6 +23,8 @@ import org.eclipse.kapua.service.job.context.KapuaJobContext;
 
 public class KapuaJobContextImpl implements KapuaJobContext {
 
+    private static final String KAPUA_EXECUTION_ID = "KAPUA_EXECUTION_ID";
+
     private JobContext jobContext;
 
     public KapuaJobContextImpl(JobContext jobContext) {
@@ -86,5 +88,15 @@ public class KapuaJobContextImpl implements KapuaJobContext {
     @Override
     public void setExitStatus(String status) {
         jobContext.setExitStatus(status);
+    }
+
+    @Override
+    public KapuaId getKapuaExecutionId() {
+        return (KapuaId) getProperties().get(KAPUA_EXECUTION_ID);
+    }
+
+    @Override
+    public void setKapuaExecutionId(KapuaId kapuaExecutionId) {
+        getProperties().put(KAPUA_EXECUTION_ID, kapuaExecutionId);
     }
 }
