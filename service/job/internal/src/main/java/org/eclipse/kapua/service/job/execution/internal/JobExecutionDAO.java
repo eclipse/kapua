@@ -48,6 +48,7 @@ public class JobExecutionDAO {
         JobExecutionImpl jobExecutionImpl = new JobExecutionImpl(jobExecutionCreator.getScopeId());
         jobExecutionImpl.setJobId(jobExecutionCreator.getJobId());
         jobExecutionImpl.setStartedOn(jobExecutionCreator.getStartedOn());
+        jobExecutionImpl.setEntityAttributes(jobExecutionCreator.getEntityAttributes());
 
         return ServiceDAO.create(em, jobExecutionImpl);
     }

@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.test.account;
 
+import java.util.Properties;
+
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.AccountCreator;
 
@@ -152,6 +155,18 @@ public class AccountCreatorMock implements AccountCreator {
 
     @Override
     public void setOrganizationCountry(String organizationCountry) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public Properties getEntityAttributes() throws KapuaException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setEntityAttributes(Properties entityAttributes) throws KapuaException {
         // TODO Auto-generated method stub
 
     }

@@ -11,12 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.test.user;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserStatus;
 import org.eclipse.kapua.service.user.UserType;
 
 import java.util.Date;
+import java.util.Properties;
 
 public class UserCreatorMock implements UserCreator {
 
@@ -116,5 +118,17 @@ public class UserCreatorMock implements UserCreator {
     @Override
     public void setUserStatus(UserStatus userStatus) {
         this.userStatus = userStatus;
+    }
+
+    @Override
+    public Properties getEntityAttributes() throws KapuaException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setEntityAttributes(Properties entityAttributes) throws KapuaException {
+        // TODO Auto-generated method stub
+
     }
 }
