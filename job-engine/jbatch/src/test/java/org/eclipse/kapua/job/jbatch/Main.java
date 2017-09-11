@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.jbatch;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -134,18 +133,19 @@ public class Main {
 
         KapuaSecurityUtils.doPrivileged(() -> jobEngineService.startJob(job.getScopeId(), job.getId()));
 
-            TriggerCreator triggerCreator = triggerFactory.newCreator(KapuaId.ONE);
-            triggerCreator.setName("testTrigger");
-            triggerCreator.setTriggerProperties(triggerProperties);
-            triggerCreator.setStartsOn(new Date());
-            // triggerCreator.setCronScheduling("*/15 * * * * ? *");
-            triggerCreator.setRetryInterval(15L);
-            Trigger trigger = KapuaSecurityUtils.doPrivileged(() -> triggerService.create(triggerCreator));
-
-        } catch (Throwable e) {
-            e.printStackTrace();
-            return;
-        }
+        // try {
+        // TriggerCreator triggerCreator = triggerFactory.newCreator(KapuaId.ONE);
+        // triggerCreator.setName("testTrigger");
+        // triggerCreator.setTriggerProperties(triggerProperties);
+        // triggerCreator.setStartsOn(new Date());
+        // // triggerCreator.setCronScheduling("*/15 * * * * ? *");
+        // triggerCreator.setRetryInterval(15L);
+        // Trigger trigger = KapuaSecurityUtils.doPrivileged(() -> triggerService.create(triggerCreator));
+        //
+        // } catch (Throwable e) {
+        // e.printStackTrace();
+        // return;
+        // }
 
         KapuaSecurityUtils.doPrivileged(() -> jobEngineService.startJob(job.getScopeId(), job.getId()));
 
