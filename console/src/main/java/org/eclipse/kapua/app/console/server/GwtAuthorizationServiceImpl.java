@@ -83,12 +83,6 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
     @Override
     public GwtSession login(GwtLoginCredential gwtLoginCredentials)
             throws GwtKapuaException {
-        // VIP
-        // keep this here to make sure we initialize the logger.
-        // Without the following, console logger may not log anything when deployed into tomcat.
-        logger.info(">>> THIS IS INFO <<<");
-        logger.warn(">>> THIS IS WARN <<<");
-        logger.debug(">>> THIS IS DEBUG <<<");
 
         try {
             // Get the user

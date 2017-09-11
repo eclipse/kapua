@@ -16,3 +16,6 @@
 
 ALTER TABLE act_account
 		ALTER COLUMN parent_account_path VARCHAR(1024);
+		
+ALTER TABLE act_account
+		ADD  CHECK (id > 0);
