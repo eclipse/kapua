@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+# Copyright (c) 2017 Eurotech and/or its affiliates and others
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -12,7 +12,7 @@
 Feature: Access Info Service CRUD tests
 
 Scenario: Simple create
-    Create a simple access info entry. Only a user is supplied. The entry must 
+    Create a simple access info entry. Only a user is supplied. The entry must
     match the creator parameters.
 
     Given A scope with ID 1
@@ -25,7 +25,7 @@ Scenario: Simple create
     And The entity matches the creator
 
 Scenario: Create with permissions
-    Create an access info entry. In addition to a user a list of permissions is 
+    Create an access info entry. In addition to a user a list of permissions is
     supplied too. The entry must match the creator parameters.
 
     Given A scope with ID 1
@@ -62,20 +62,21 @@ Scenario: Create with permissions and a role
 Scenario: Try to create an access into entity with an invalid role id
     It must not be possible to create an access info entity if the given role is invalid.
     Such an attempt must result in an exception.
-    
+
     Given A scope with ID 1
     And A user such as
         | name     | displayName     | email              | phoneNumber     |
         | kapua-u1 | Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 |
     And The permissions "read, write, execute"
     And An invalid role ID
+    Given I expect the exception "KapuaAuthorizationException" with the text "Error: Role not found in the scope"
     When I create the access info entity
     Then An exception was thrown
 
 Scenario: Find an access info entity
-    It must be possible to find an existing access info entity in the database 
+    It must be possible to find an existing access info entity in the database
     based on its ID.
-    
+
     Given A scope with ID 1
     And A user such as
         | name     | displayName     | email              | phoneNumber     |
@@ -87,8 +88,8 @@ Scenario: Find an access info entity
     Then I find an accessinfo entity
 
 Scenario: Find an access info entity by user ID
-    It must be possible to find an existing access info entity in the database 
-    based on the entity user ID. 
+    It must be possible to find an existing access info entity in the database
+    based on the entity user ID.
 
     Given A scope with ID 1
     And A user such as
@@ -100,7 +101,7 @@ Scenario: Find an access info entity by user ID
     Then I find an accessinfo entity
 
 Scenario: Search for an access info entity by an incorrect user ID
-    If the user ID supplied for a search is invalid, only a null result 
+    If the user ID supplied for a search is invalid, only a null result
     must be returned. No exception must be thrown.
 
     Given A scope with ID 1
@@ -144,7 +145,7 @@ Scenario: Delete a access info entity with permissions and roles
     Then I find no access info entity
 
 Scenario: Delete an access info entity twice
-    An attempt to delete the same entity multiple times should result 
+    An attempt to delete the same entity multiple times should result
     in an exception.
 
     Given A scope with ID 1
@@ -152,12 +153,13 @@ Scenario: Delete an access info entity twice
         | name     | displayName     | email              | phoneNumber     |
         | kapua-u1 | Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 |
     And I create the access info entity
+    Then I delete the existing access info entity
+    Given I expect the exception "KapuaEntityNotFoundException" with the text "The entity of type accessPermission"
     When I delete the existing access info entity
-    And I delete the existing access info entity
     Then An exception was thrown
 
 Scenario: Delete an access info entity using the wrong scope ID
-    An attempt to delete an entity using the wrong scope ID must result 
+    An attempt to delete an entity using the wrong scope ID must result
     in an exception.
 
     Given A scope with ID 1
@@ -170,7 +172,7 @@ Scenario: Delete an access info entity using the wrong scope ID
     Then No exception was thrown
 
 Scenario: Count access info entities in a specific scope
-    It must be possible to count the existing access info entities in various 
+    It must be possible to count the existing access info entities in various
     scopes.
 
     Given A scope with ID 10
@@ -195,7 +197,7 @@ Scenario: Count access info entities in a specific scope
     Then I get 0 as result
 
 Scenario: Query for all the access info entities of a specific user
-    It must be possible to find all the access info entities that belong 
+    It must be possible to find all the access info entities that belong
     to a specific user.
 
     Given A scope with ID 1
@@ -220,7 +222,7 @@ Scenario: Query for all the access info entities of a specific user
 Scenario: Query for all the access info entities of an invalid user
     If an invalid user is supplied for an entity count, the result list must be empty.
     No exceptions should be thrown.
- 
+
     Given A scope with ID 1
     And A user such as
         | name     | displayName     | email              | phoneNumber     |
@@ -263,7 +265,7 @@ Scenario: Find last created permision
 
 Scenario: Delete an existing access permission entity
     It must be possibel to delete a specific permission entry.
-    
+
     Given A scope with ID 10
     And A user such as
         | name     | displayName     | email              | phoneNumber     |
@@ -278,7 +280,7 @@ Scenario: Delete an existing access permission entity
     Then I get 2 as result
 
 Scenario: Delete a non existing permission entity
-    Atttempting to delete a non existing permission entry must result in 
+    Atttempting to delete a non existing permission entry must result in
     an exception. In this case this is achieved by deleting the same entry twice.
 
     Given A scope with ID 10
@@ -290,13 +292,14 @@ Scenario: Delete a non existing permission entity
     And I create the permission
     When I count the permissions in scope 10
     Then I get 1 as result
+    Then I delete the last created access permission
+    Given I expect the exception "KapuaEntityNotFoundException" with the text "The entity of type accessPermission"
     When I delete the last created access permission
-    And I delete the last created access permission
     Then An exception was thrown
 
 Scenario: Regular creation of Access Role entity
     It must be possible to create a regular role entity in the dataabse.
-    
+
     Given A scope with ID 10
     And A user such as
         | name     | displayName     | email              | phoneNumber     |
@@ -310,7 +313,7 @@ Scenario: Regular creation of Access Role entity
     And An access role entity was created
 
 Scenario: Creation of access role without an acess info entity
-    The creation of an access role entity without an already existing access info 
+    The creation of an access role entity without an already existing access info
     entry is permitted.
 
     Given A scope with ID 10
@@ -325,20 +328,20 @@ Scenario: Creation of access role without an acess info entity
 
 Scenario: Creation of access role with neither acess info and role entities
     The creation of an access role entity with neither access info nor role
-    entries is permitted. 
+    entries is permitted.
 
-	Given A scope with ID 10
-	And A user such as
-	        | name     | displayName     | email              | phoneNumber     |
-	        | kapua-u1 | Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 |
-	When I create the access info entity
-	And The permissions "read, write, execute"
-	And The role "test_role_1"
-	When I create the access role
-	Then No exception was thrown
+    Given A scope with ID 10
+    And A user such as
+            | name     | displayName     | email              | phoneNumber     |
+            | kapua-u1 | Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 |
+    When I create the access info entity
+    And The permissions "read, write, execute"
+    And The role "test_role_1"
+    When I create the access role
+    Then No exception was thrown
 
 Scenario: Find an existing access role entity
-    It must be possible to find an existing access role entry in the database 
+    It must be possible to find an existing access role entry in the database
     based on its ID.
 
     Given A scope with ID 10
@@ -353,7 +356,7 @@ Scenario: Find an existing access role entity
     Then I find an access role entity
 
 Scenario: Count access role entities by scope
-    It must be possible to count all the access role entries in specific scopes. If the 
+    It must be possible to count all the access role entries in specific scopes. If the
     requested scope doesn't contain a role or doesn't exist altogether, only an empty
     result list must be returned. No exception must be thrown.
 
@@ -369,7 +372,7 @@ Scenario: Count access role entities by scope
     And I create the access role
     And The role "test_role_3"
     And I create the access role
-    
+
     Given A scope with ID 20
     And A user such as
         | name     | displayName     | email              | phoneNumber     |
@@ -378,13 +381,13 @@ Scenario: Count access role entities by scope
     And The permissions "read, write, execute"
     And The role "test_role_2"
     And I create the access role
-    
+
     Given A scope with ID 30
     And A user such as
         | name     | displayName     | email              | phoneNumber     |
         | kapua-u3 | Kapua User 3    | kapua_u3@kapua.com | +386 31 323 555 |
     When I create the access info entity
-    
+
     When I count the access roles in scope 10
     Then I get 3 as result
     When I count the access roles in scope 20
@@ -418,7 +421,7 @@ Scenario: Delete an existing access role entry
     Then I get 2 as result
 
 Scenario: Delete an existing role twice
-    Attempting to delete a non existing access role entry must result in an exception. In 
+    Attempting to delete a non existing access role entry must result in an exception. In
     this case this is achieved by trying to delete the same entry twice.
 
     Given A scope with ID 10
@@ -429,8 +432,9 @@ Scenario: Delete an existing role twice
     And The permissions "read, write, execute"
     And The role "test_role_1"
     And I create the access role
+    Then I delete the last created access role entry
+    Given I expect the exception "KapuaEntityNotFoundException" with the text "The entity of type accessRole"
     When I delete the last created access role entry
-    And I delete the last created access role entry
     Then An exception was thrown
 
 Scenario: Access info service sanity checks
@@ -448,7 +452,7 @@ Scenario: Access service comparison sanity checks
 
 Scenario: Create with permissions and a role in the wrong scope
     Such a scenario should cause an exception to bo thrown. The keyword is 'should'.
-    In the current implementation RoleDAO.find will succcessfully find the role 
+    In the current implementation RoleDAO.find will succcessfully find the role
     entity even if it was created in a different scope than the access info entity.
 
     Given A scope with ID 10

@@ -68,7 +68,6 @@ public class GroupServiceTestSteps extends AbstractAuthorizationServiceTest {
     public void beforeScenario(Scenario scenario)
             throws Exception {
         this.scenario = scenario;
-        commonData.exceptionCaught = false;
 
         // Instantiate all the services and factories that are required by the tests
         groupService = new GroupServiceImpl();
@@ -81,6 +80,7 @@ public class GroupServiceTestSteps extends AbstractAuthorizationServiceTest {
 
         // Clean up the test data scratchpads
         commonData.clearData();
+        commonData.scenario = this.scenario;
         groupData.clearData();
 
         // All operations on database are performed using system user.
@@ -96,7 +96,7 @@ public class GroupServiceTestSteps extends AbstractAuthorizationServiceTest {
     // *************************************
     @When("^I configure$")
     public void setConfigurationValue(List<TestConfig> testConfigs)
-            throws KapuaException {
+            throws Exception {
 
         KapuaSecurityUtils.doPrivileged(() -> {
             Map<String, Object> valueMap = new HashMap<>();
@@ -109,10 +109,10 @@ public class GroupServiceTestSteps extends AbstractAuthorizationServiceTest {
                 parentScopeId = new KapuaEid(BigInteger.valueOf(Long.valueOf(config.getParentScopeId())));
             }
             try {
-                commonData.exceptionCaught = false;
+                commonData.primeException();
                 groupService.setConfigValues(scopeId, parentScopeId, valueMap);
             } catch (KapuaException ex) {
-                commonData.exceptionCaught = true;
+                commonData.verifyException(ex);
             }
 
             return null;
@@ -130,9 +130,9 @@ public class GroupServiceTestSteps extends AbstractAuthorizationServiceTest {
 
     @Given("^I create the group(?:|s)$")
     public void createAListOfDomains(List<CucGroup> groups)
-            throws KapuaException {
+            throws Exception {
         for (CucGroup tmpGrp : groups) {
-            commonData.exceptionCaught = false;
+            commonData.primeException();
             tmpGrp.doParse();
             groupData.groupCreator = groupFactory.newCreator(tmpGrp.getScopeId(), tmpGrp.getName());
 
@@ -140,7 +140,7 @@ public class GroupServiceTestSteps extends AbstractAuthorizationServiceTest {
                 try {
                     groupData.group = groupService.create(groupData.groupCreator);
                 } catch (KapuaException ex) {
-                    commonData.exceptionCaught = true;
+                    commonData.verifyException(ex);
                     return null;
                 }
                 assertNotNull(groupData.group);
@@ -171,16 +171,16 @@ public class GroupServiceTestSteps extends AbstractAuthorizationServiceTest {
 
     @When("^I update the group with an incorrect ID$")
     public void updateGroupWithFalseId()
-            throws KapuaException {
+            throws Exception {
 
         groupData.group.setId(generateId());
+        commonData.primeException();
 
         KapuaSecurityUtils.doPrivileged(() -> {
             try {
-                commonData.exceptionCaught = false;
                 groupService.update(groupData.group);
             } catch (KapuaException ex) {
-                commonData.exceptionCaught = true;
+                commonData.verifyException(ex);
             }
             return null;
         });
@@ -197,13 +197,14 @@ public class GroupServiceTestSteps extends AbstractAuthorizationServiceTest {
 
     @When("^I try to delete a random group id$")
     public void deleteGroupWithRandomId()
-            throws KapuaException {
+            throws Exception {
+
+        commonData.primeException();
         KapuaSecurityUtils.doPrivileged(() -> {
             try {
                 groupService.delete(ROOT_SCOPE_ID, generateId());
-                commonData.exceptionCaught = false;
             } catch (KapuaException ex) {
-                commonData.exceptionCaught = true;
+                commonData.verifyException(ex);
             }
             return null;
         });

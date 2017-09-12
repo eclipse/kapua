@@ -89,6 +89,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
 
         // Clean up the test data scratchpads
         commonData.clearData();
+        commonData.scenario = this.scenario;
         domainData.clearData();
     }
 
@@ -98,9 +99,9 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
 
     @Given("^I create the domain(?:|s)$")
     public void createAListOfDomains(List<CucDomain> domains)
-            throws KapuaException {
+            throws Exception {
         for (CucDomain tmpDom : domains) {
-            commonData.exceptionCaught = false;
+            commonData.primeException();
             tmpDom.doParse();
             domainData.domainCreator = domainFactory.newCreator(tmpDom.getName(), tmpDom.getServiceName());
             if (tmpDom.getActionSet() != null) {
@@ -110,7 +111,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
                 try {
                     domainData.domain = domainService.create(domainData.domainCreator);
                 } catch (KapuaException ex) {
-                    commonData.exceptionCaught = true;
+                    commonData.verifyException(ex);
                     return null;
                 }
                 assertNotNull(domainData.domain);
@@ -144,13 +145,13 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
 
     @When("^I try to delete domain with a random ID$")
     public void deleteRandomDomainId()
-            throws KapuaException {
+            throws Exception {
         KapuaSecurityUtils.doPrivileged(() -> {
             try {
-                commonData.exceptionCaught = false;
+                commonData.primeException();
                 domainService.delete(null, generateId());
             } catch (KapuaException ex) {
-                commonData.exceptionCaught = true;
+                commonData.verifyException(ex);
             }
             return null;
         });
