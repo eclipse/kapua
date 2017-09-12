@@ -11,14 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.targets.internal;
 
-import org.eclipse.kapua.commons.model.AbstractKapuaEntityCreator;
+import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntityCreator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 import org.eclipse.kapua.service.job.targets.JobTargetCreator;
 
 @KapuaProvider
-public class JobTargetCreatorImpl extends AbstractKapuaEntityCreator<JobTarget> implements JobTargetCreator {
+public class JobTargetCreatorImpl extends AbstractKapuaUpdatableEntityCreator<JobTarget> implements JobTargetCreator {
 
     private static final long serialVersionUID = 3119071638220738358L;
 

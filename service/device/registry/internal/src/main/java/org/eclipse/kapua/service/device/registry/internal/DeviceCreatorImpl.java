@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.internal;
 
-import org.eclipse.kapua.commons.model.AbstractKapuaEntityCreator;
+import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
@@ -22,7 +22,7 @@ import org.eclipse.kapua.service.device.registry.DeviceStatus;
  *
  * @since 1.0.0
  */
-public class DeviceCreatorImpl extends AbstractKapuaEntityCreator<Device> implements DeviceCreator {
+public class DeviceCreatorImpl extends AbstractKapuaUpdatableEntityCreator<Device> implements DeviceCreator {
 
     private static final long serialVersionUID = 8628137091890107296L;
 

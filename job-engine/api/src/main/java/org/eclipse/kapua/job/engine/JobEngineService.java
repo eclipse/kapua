@@ -19,10 +19,6 @@ public interface JobEngineService extends KapuaService {
 
     public void startJob(KapuaId scopeId, KapuaId jobId) throws KapuaException;
 
-    public void pauseJob(KapuaId scopeId, KapuaId jobId) throws KapuaException;
-
-    public void resumeJob(KapuaId scopeId, KapuaId jobId) throws KapuaException;
-
     public void stopJob(KapuaId scopeId, KapuaId jobId) throws KapuaException;
 
 }

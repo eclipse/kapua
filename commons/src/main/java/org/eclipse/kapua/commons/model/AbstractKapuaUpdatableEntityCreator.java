@@ -11,12 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.model;
 
+import java.util.Properties;
+
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaEntity;
-import org.eclipse.kapua.model.KapuaNamedEntityCreator;
+import org.eclipse.kapua.model.KapuaUpdatableEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 
 /**
- * Kapua entity named creator service (reference abstract implementation).
+ * Kapua updatable entity creator service (reference abstract implementation).
  *
  * @param <E>
  *            entity type
@@ -25,9 +28,10 @@ import org.eclipse.kapua.model.id.KapuaId;
  *
  */
 @SuppressWarnings("serial")
-public abstract class AbstractKapuaNamedEntityCreator<E extends KapuaEntity> extends AbstractKapuaUpdatableEntityCreator<E> implements KapuaNamedEntityCreator<E> {
+public abstract class AbstractKapuaUpdatableEntityCreator<E extends KapuaEntity> extends AbstractKapuaEntityCreator<E> implements KapuaUpdatableEntityCreator<E> {
 
     protected String name;
+    protected Properties entityAttributes;
 
     /**
      * Constructor
@@ -35,23 +39,25 @@ public abstract class AbstractKapuaNamedEntityCreator<E extends KapuaEntity> ext
      * @param scopeId
      * @param name
      */
-    protected AbstractKapuaNamedEntityCreator(KapuaId scopeId,
+    protected AbstractKapuaUpdatableEntityCreator(KapuaId scopeId,
             String name) {
         super(scopeId);
         this.name = name;
+        entityAttributes = new Properties();
     }
 
-    public AbstractKapuaNamedEntityCreator(KapuaId scopeId) {
+    public AbstractKapuaUpdatableEntityCreator(KapuaId scopeId) {
         super(scopeId);
+        entityAttributes = new Properties();
     }
 
     @Override
-    public String getName() {
-        return name;
+    public Properties getEntityAttributes() throws KapuaException {
+        return entityAttributes;
     }
 
     @Override
-    public void setName(String name) {
-        this.name = name;
+    public void setEntityAttributes(Properties entityAttributes) throws KapuaException {
+        this.entityAttributes = entityAttributes;
     }
 }

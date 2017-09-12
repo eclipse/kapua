@@ -15,7 +15,7 @@ import java.util.Properties;
 
 import javax.xml.bind.annotation.XmlElement;
 
-import org.eclipse.kapua.commons.model.AbstractKapuaEntityCreator;
+import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 
 /**
@@ -24,7 +24,7 @@ import org.eclipse.kapua.model.id.KapuaId;
  * @since 1.0
  *
  */
-public class ServiceConfigCreatorImpl extends AbstractKapuaEntityCreator<ServiceConfig>
+public class ServiceConfigCreatorImpl extends AbstractKapuaUpdatableEntityCreator<ServiceConfig>
         implements ServiceConfigCreator {
 
     private static final long serialVersionUID = 7508550960304732465L;
