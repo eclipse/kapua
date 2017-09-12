@@ -20,6 +20,7 @@ import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleService;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
+import org.eclipse.kapua.commons.util.ResourceUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
@@ -31,9 +32,8 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonString;
 import javax.json.JsonValue;
-import javax.servlet.ServletContext;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,6 +43,18 @@ import java.util.ServiceLoader;
 public class GwtConsoleServiceImpl extends KapuaRemoteServiceServlet implements GwtConsoleService {
 
     private static final ServiceLoader<MainViewDescriptor> MAIN_VIEW_DESCRIPTORS = ServiceLoader.load(MainViewDescriptor.class);
+    private static final JsonObject TAB_DESCRIPTORS;
+    private static JsonReader jsonReader;
+
+    static {
+        jsonReader = null;
+        try {
+            jsonReader = Json.createReader(ResourceUtils.openAsReader(ResourceUtils.getResource("org/eclipse/kapua/app/console/tab-descriptors.json"), Charset.forName("UTF-8")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        TAB_DESCRIPTORS = jsonReader.readObject();
+    }
 
     @Override
     public List<MainViewDescriptor> getCustomEntityViews() throws GwtKapuaException {
@@ -56,21 +68,16 @@ public class GwtConsoleServiceImpl extends KapuaRemoteServiceServlet implements 
 
     @Override
     public List<TabDescriptor> getCustomTabsForView(String viewClass) throws GwtKapuaException {
-        ServletContext context = getServletContext();
         List<TabDescriptor> tabs = new ArrayList<TabDescriptor>();
         try {
-            JsonReader jsonReader = Json.createReader(new FileInputStream(context.getRealPath("/WEB-INF/tab-descriptors.json")));
-            JsonObject jsonObject = jsonReader.readObject();
-            JsonArray jsonArray = jsonObject.getJsonArray(viewClass);
+            JsonArray jsonArray = TAB_DESCRIPTORS.getJsonArray(viewClass);
             if (jsonArray != null) {
                 for (JsonValue jsonValue : jsonArray) {
                     if (jsonValue != null && jsonValue instanceof JsonString) {
-                        tabs.add((TabDescriptor) Class.forName(((JsonString)jsonValue).getString()).newInstance());
+                        tabs.add((TabDescriptor) Class.forName(((JsonString) jsonValue).getString()).newInstance());
                     }
                 }
             }
-        } catch (FileNotFoundException e) {
-            throw new GwtKapuaException(GwtKapuaErrorCode.INTERNAL_ERROR, e);
         } catch (IllegalAccessException e) {
             throw new GwtKapuaException(GwtKapuaErrorCode.INTERNAL_ERROR, e);
         } catch (InstantiationException e) {
