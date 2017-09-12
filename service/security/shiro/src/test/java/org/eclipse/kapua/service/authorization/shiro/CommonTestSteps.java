@@ -39,11 +39,21 @@ public class CommonTestSteps extends AbstractKapuaSteps {
 
     // Database setup and tear-down steps
     @Before
-    public void beforeScenario(Scenario scenario) throws KapuaException {
+    public void beforeScenario(Scenario scenario)
+            throws KapuaException {
         commonData.clearData();
+        commonData.scenario = scenario;
     }
 
     // Cucumber test steps
+
+    @Given("^I expect the exception \"(.+)\" with the text \"(.+)\"$")
+    public void setExpectedExceptionDetails(String name, String text) {
+        commonData.exceptionExpected = true;
+        commonData.exceptionName = name;
+        commonData.exceptionMessage = text;
+    }
+
     @Given("^A scope with ID (\\d+)$")
     public void setScopeId(Integer scope) {
         commonData.scopeId = new KapuaEid(BigInteger.valueOf(scope));
