@@ -21,14 +21,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalNullArgumentException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
@@ -54,6 +52,12 @@ import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.test.MockedLocator;
 import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 import org.mockito.Mockito;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
@@ -62,8 +66,6 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of Gherkin steps used in AccountService.feature scenarios.
@@ -292,7 +294,7 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
 
     @When("^I create an account with a null name$")
     public void createAccountWithNullName()
-            throws Exception{
+            throws Exception {
         accountCreator = prepareRegularAccountCreator(rootScopeId, null);
         try {
             primeException();
@@ -399,7 +401,7 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
             throws Exception {
         try {
             primeException();
-            accountService.delete(rootScopeId, new KapuaEid(BigInteger.valueOf(random.nextLong())));
+            accountService.delete(rootScopeId, new KapuaEid(IdGenerator.generate()));
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -426,7 +428,7 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     @When("^I search for a random account Id$")
     public void findRandomAccountId()
             throws KapuaException {
-        account = accountService.find(rootScopeId, new KapuaEid(BigInteger.valueOf(random.nextLong())));
+        account = accountService.find(rootScopeId, new KapuaEid(IdGenerator.generate()));
     }
 
     @When("^I set the following parameters$")
@@ -656,7 +658,7 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
                 (!exceptionName.isEmpty() && !ex.getClass().toGenericString().contains(exceptionName)) ||
                 (!exceptionMessage.isEmpty() && !exceptionMessage.trim().contentEquals("*") && !ex.getMessage().contains(exceptionMessage))) {
             scenario.write("An unexpected exception was raised!");
-            throw(ex);
+            throw (ex);
         }
 
         scenario.write("Exception raised as expected: " + ex.getClass().getCanonicalName() + ", " + ex.getMessage());

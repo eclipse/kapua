@@ -11,10 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.shiro;
 
-import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -32,7 +32,7 @@ import org.junit.Test;
 
 public class DomainServiceTest extends KapuaTest {
 
-    KapuaEid scope = new KapuaEid(BigInteger.valueOf(random.nextLong()));
+    KapuaEid scope = new KapuaEid(IdGenerator.generate());
 
     // Tests
 

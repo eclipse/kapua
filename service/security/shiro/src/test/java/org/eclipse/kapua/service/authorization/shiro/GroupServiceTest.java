@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.authorization.shiro;
 import java.math.BigInteger;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -38,7 +39,7 @@ public class GroupServiceTest extends KapuaTest {
 
     public static final String DROP_FILTER = "athz_*_drop.sql";
 
-    KapuaEid scope = new KapuaEid(BigInteger.valueOf(random.nextLong()));
+    KapuaEid scope = new KapuaEid(IdGenerator.generate());
 
     // Database fixtures
 
@@ -49,7 +50,7 @@ public class GroupServiceTest extends KapuaTest {
 
     @AfterClass
     public static void afterClass() throws KapuaException {
-        //        scriptSession(AuthorizationEntityManagerFactory.getInstance(), DROP_FILTER);
+        // scriptSession(AuthorizationEntityManagerFactory.getInstance(), DROP_FILTER);
     }
 
     @Before

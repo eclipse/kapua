@@ -17,6 +17,7 @@ import java.util.Random;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.jpa.SimpleSqlScriptExecutor;
+import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -91,7 +92,7 @@ public abstract class AbstractAuthorizationServiceTest extends Assert {
 
     // Generate a random KapuaId
     protected KapuaId generateId() {
-        return new KapuaEid(BigInteger.valueOf(random.nextLong()));
+        return new KapuaEid(IdGenerator.generate());
     }
 
     // Generate a KapuaId from an integer

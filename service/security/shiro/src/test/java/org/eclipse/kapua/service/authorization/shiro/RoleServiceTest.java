@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -50,7 +51,7 @@ public class RoleServiceTest extends KapuaTest {
 
     private static final Domain TEST_DOMAIN = new TestDomain();
 
-    KapuaEid scope = new KapuaEid(BigInteger.valueOf(random.nextLong()));
+    KapuaEid scope = new KapuaEid(IdGenerator.generate());
 
     // Database fixtures
 

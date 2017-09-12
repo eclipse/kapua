@@ -15,6 +15,7 @@ import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
@@ -49,7 +50,7 @@ public class AccessInfoServiceTest extends KapuaTest {
 
     private static final Domain TEST_DOMAIN = new TestDomain();
 
-    KapuaEid scope = new KapuaEid(BigInteger.valueOf(random.nextLong()));
+    KapuaEid scope = new KapuaEid(IdGenerator.generate());
 
     @Before
     public void before() {

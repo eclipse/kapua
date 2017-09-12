@@ -12,7 +12,6 @@
 package org.eclipse.kapua.service.device.steps;
 
 import static org.eclipse.kapua.commons.model.query.predicate.AttributePredicate.attributeIsEqualTo;
-import static org.junit.Assert.assertEquals;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -27,8 +26,8 @@ import java.util.Vector;
 
 import javax.inject.Inject;
 
-import cucumber.api.java.en.And;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
@@ -96,6 +95,7 @@ import org.eclipse.kapua.test.KapuaTest;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -385,7 +385,7 @@ public class DeviceServiceSteps extends KapuaTest {
     public void iTagDeviceWithTag(String deviceTagName) throws Throwable {
 
         Device device = (Device) stepData.get("Device");
-        //stepData.clear();
+        // stepData.clear();
         TagCreator tagCreator = new TagFactoryImpl().newCreator(DEFAULT_SCOPE_ID);
         tagCreator.setName(deviceTagName);
         Tag tag = tagService.create(tagCreator);
@@ -430,7 +430,7 @@ public class DeviceServiceSteps extends KapuaTest {
     @And("^I untag device with \"([^\"]*)\" tag$")
     public void iDeleteTag(String deviceTagName) throws Throwable {
 
-        Tag foundTag = (Tag) stepData.get("tag");     
+        Tag foundTag = (Tag) stepData.get("tag");
         assertEquals(deviceTagName, foundTag.getName());
         Device device = (Device) stepData.get("Device");
         stepData.remove("tag");
@@ -444,7 +444,7 @@ public class DeviceServiceSteps extends KapuaTest {
     @And("^I verify that tag \"([^\"]*)\" is deleted$")
     public void iVerifyTagIsDeleted(String deviceTagName) throws Throwable {
 
-        Tag foundTag = (Tag) stepData.get("tag"); 
+        Tag foundTag = (Tag) stepData.get("tag");
         assertEquals(null, foundTag);
     }
 
@@ -709,6 +709,6 @@ public class DeviceServiceSteps extends KapuaTest {
     }
 
     private KapuaId generateRandomId() {
-        return new KapuaEid(BigInteger.valueOf(random.nextLong()));
+        return new KapuaEid(IdGenerator.generate());
     }
 }

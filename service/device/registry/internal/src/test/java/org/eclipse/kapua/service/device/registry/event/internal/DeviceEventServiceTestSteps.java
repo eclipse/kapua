@@ -27,6 +27,7 @@ import java.util.Set;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
@@ -326,7 +327,7 @@ public class DeviceEventServiceTestSteps extends AbstractKapuaSteps {
     @When("^I search for an event with a random ID$")
     public void findEventByRandomId()
             throws KapuaException {
-        KapuaId tmpId = new KapuaEid(BigInteger.valueOf(random.nextLong()));
+        KapuaId tmpId = new KapuaEid(IdGenerator.generate());
         event = eventService.find(scopeId, tmpId);
     }
 
@@ -338,7 +339,7 @@ public class DeviceEventServiceTestSteps extends AbstractKapuaSteps {
 
     @When("^I delete an event with a random ID$")
     public void deleteEventWithRandomId() {
-        KapuaId tmpId = new KapuaEid(BigInteger.valueOf(random.nextLong()));
+        KapuaId tmpId = new KapuaEid(IdGenerator.generate());
         try {
             exceptionCaught = false;
             eventService.delete(scopeId, tmpId);
@@ -413,7 +414,7 @@ public class DeviceEventServiceTestSteps extends AbstractKapuaSteps {
         DeviceEventListResult tmpList = null;
 
         tmpEvent = eventFactory.newEntity(rootScopeId);
-        tmpCreator = eventFactory.newCreator(rootScopeId, new KapuaEid(BigInteger.valueOf(random.nextLong())), new Date(), "");
+        tmpCreator = eventFactory.newCreator(rootScopeId, new KapuaEid(IdGenerator.generate()), new Date(), "");
         tmpQuery = eventFactory.newQuery(rootScopeId);
         tmpList = eventFactory.newListResult();
 
@@ -519,7 +520,7 @@ public class DeviceEventServiceTestSteps extends AbstractKapuaSteps {
     }
 
     private KapuaId createRandomId() {
-        KapuaId tmpId = new KapuaEid(BigInteger.valueOf(random.nextLong()));
+        KapuaId tmpId = new KapuaEid(IdGenerator.generate());
         return tmpId;
     }
 }

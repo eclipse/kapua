@@ -23,6 +23,7 @@ import java.util.List;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
@@ -177,14 +178,14 @@ public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
     @Given("^A regular connection creator$")
     public void createRegularCreator() {
         connectionCreator = prepareRegularConnectionCreator(rootScopeId,
-                new KapuaEid(BigInteger.valueOf(random.nextLong())));
+                new KapuaEid(IdGenerator.generate()));
     }
 
     @Given("^A connection for scope (d+)$")
     public void createConnectionInScope(int scope)
             throws KapuaException {
         DeviceConnectionCreator tmpCreator = prepareRegularConnectionCreator(new KapuaEid(BigInteger.valueOf(scope)),
-                new KapuaEid(BigInteger.valueOf(random.nextLong())));
+                new KapuaEid(IdGenerator.generate()));
         connection = deviceConnectionService.create(tmpCreator);
     }
 
@@ -271,7 +272,7 @@ public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
     public void changeConnectionIdRandomly()
             throws KapuaException {
         // Try to update the connection ID
-        KapuaId newId = new KapuaEid(BigInteger.valueOf(random.nextLong()));
+        KapuaId newId = new KapuaEid(IdGenerator.generate());
         connection.setId(newId);
         try {
             exceptionCaught = false;
@@ -343,7 +344,7 @@ public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
     @When("^I search for a random connection ID$")
     public void searchForARandomConnectionId()
             throws KapuaException {
-        KapuaId tmpConnId = new KapuaEid(BigInteger.valueOf(random.nextLong()));
+        KapuaId tmpConnId = new KapuaEid(IdGenerator.generate());
         connection = deviceConnectionService.find(scopeId, tmpConnId);
     }
 
@@ -362,7 +363,7 @@ public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
 
     @When("^I try to delete a random connection ID$")
     public void deleteRandomConnection() {
-        KapuaId tmpId = new KapuaEid(BigInteger.valueOf(random.nextLong()));
+        KapuaId tmpId = new KapuaEid(IdGenerator.generate());
         try {
             exceptionCaught = false;
             deviceConnectionService.delete(scopeId, tmpId);
