@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.api.server;
 
-import org.apache.commons.io.FileUtils;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.MainViewDescriptor;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.TabDescriptor;
@@ -25,9 +25,15 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.JsonString;
+import javax.json.JsonValue;
 import javax.servlet.ServletContext;
-import java.io.File;
-import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -53,21 +59,24 @@ public class GwtConsoleServiceImpl extends KapuaRemoteServiceServlet implements 
         ServletContext context = getServletContext();
         List<TabDescriptor> tabs = new ArrayList<TabDescriptor>();
         try {
-            List<String> tabDescriptorsClasses = FileUtils.readLines(new File(context.getRealPath("/WEB-INF/tab-descriptors.txt")));
-            for (String tabDescriptorClass : tabDescriptorsClasses) {
-                String[] tabDescriptorParts = tabDescriptorClass.split("->");
-                if (tabDescriptorParts.length == 2 && tabDescriptorParts[1].equals(viewClass)) {
-                    tabs.add((TabDescriptor) Class.forName(tabDescriptorParts[0]).newInstance());
+            JsonReader jsonReader = Json.createReader(new FileInputStream(context.getRealPath("/WEB-INF/tab-descriptors.json")));
+            JsonObject jsonObject = jsonReader.readObject();
+            JsonArray jsonArray = jsonObject.getJsonArray(viewClass);
+            if (jsonArray != null) {
+                for (JsonValue jsonValue : jsonArray) {
+                    if (jsonValue != null && jsonValue instanceof JsonString) {
+                        tabs.add((TabDescriptor) Class.forName(((JsonString)jsonValue).getString()).newInstance());
+                    }
                 }
             }
-        } catch (InstantiationException e) {
-            KapuaExceptionHandler.handle(e);
+        } catch (FileNotFoundException e) {
+            throw new GwtKapuaException(GwtKapuaErrorCode.INTERNAL_ERROR, e);
         } catch (IllegalAccessException e) {
-            KapuaExceptionHandler.handle(e);
+            throw new GwtKapuaException(GwtKapuaErrorCode.INTERNAL_ERROR, e);
+        } catch (InstantiationException e) {
+            throw new GwtKapuaException(GwtKapuaErrorCode.INTERNAL_ERROR, e);
         } catch (ClassNotFoundException e) {
-            KapuaExceptionHandler.handle(e);
-        } catch (IOException e) {
-            KapuaExceptionHandler.handle(e);
+            throw new GwtKapuaException(GwtKapuaErrorCode.INTERNAL_ERROR, e);
         }
         Collections.sort(tabs);
         return tabs;
@@ -81,7 +90,7 @@ public class GwtConsoleServiceImpl extends KapuaRemoteServiceServlet implements 
             Class<? extends KapuaService> serviceClass = Class.forName(serviceClassName).asSubclass(KapuaService.class);
             KapuaService service = locator.getService(serviceClass);
             if (service instanceof KapuaConfigurableService) {
-                KapuaConfigurableService configurableService = (KapuaConfigurableService)service;
+                KapuaConfigurableService configurableService = (KapuaConfigurableService) service;
                 //
                 // Checking validity of the given XSRF Token
                 checkXSRFToken(xsrfToken);
