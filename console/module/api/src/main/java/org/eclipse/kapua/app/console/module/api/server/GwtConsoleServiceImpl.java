@@ -32,26 +32,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 
 public class GwtConsoleServiceImpl extends KapuaRemoteServiceServlet implements GwtConsoleService {
 
+    private static final ServiceLoader<MainViewDescriptor> MAIN_VIEW_DESCRIPTORS = ServiceLoader.load(MainViewDescriptor.class);
+
     @Override
     public List<MainViewDescriptor> getCustomEntityViews() throws GwtKapuaException {
-        ServletContext context = getServletContext();
         List<MainViewDescriptor> views = new ArrayList<MainViewDescriptor>();
-        try {
-            List<String> viewDescriptorsClasses = FileUtils.readLines(new File(context.getRealPath("/WEB-INF/view-descriptors.txt")));
-            for (String viewDescriptorClass : viewDescriptorsClasses) {
-                views.add((MainViewDescriptor) Class.forName(viewDescriptorClass).newInstance());
-            }
-        } catch (InstantiationException e) {
-            KapuaExceptionHandler.handle(e);
-        } catch (IllegalAccessException e) {
-            KapuaExceptionHandler.handle(e);
-        } catch (ClassNotFoundException e) {
-            KapuaExceptionHandler.handle(e);
-        } catch (IOException e) {
-            KapuaExceptionHandler.handle(e);
+        for (MainViewDescriptor descriptor : MAIN_VIEW_DESCRIPTORS) {
+            views.add(descriptor);
         }
         Collections.sort(views);
         return views;
