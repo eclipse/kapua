@@ -40,6 +40,7 @@ import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
+import org.eclipse.kapua.service.datastore.model.StorableId;
 import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MetricPredicate;
@@ -166,12 +167,12 @@ public class DataMessages extends AbstractKapuaResource {
     @ApiOperation(nickname = "dataMessageStore",
             value = "Stores a new KapuaDataMessage", //
             notes = "Stores a new KapuaDataMessage under the account of the currently connected user. In this case, the provided message will only be stored in the back-end database and it will not be forwarded to the message broker.", //
-            response = InsertResponse.class)
-    public InsertResponse storeMessage(
+            response = StorableId.class)
+    public StorableEntityId storeMessage(
             @ApiParam(value = "The ScopeId in which to store the message", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,//
             @ApiParam(value = "The KapuaDataMessage to be stored") KapuaDataMessage message) throws Exception {
         message.setScopeId(scopeId);
-        return MESSAGE_STORE_SERVICE.store(message);
+        return new StorableEntityId(MESSAGE_STORE_SERVICE.store(message).toString());
     }
 
     /**

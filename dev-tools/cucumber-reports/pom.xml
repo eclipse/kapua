@@ -51,7 +51,7 @@
 
     <profiles>
         <profile>
-            <id>deploy</id>
+            <id>deployVagrant</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>

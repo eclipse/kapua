@@ -53,15 +53,40 @@
             <outputDirectory>authorization-service</outputDirectory>
             <directory>../../service/security/shiro/target/cucumber</directory>
         </fileSet>
-        
+
         <fileSet>
             <outputDirectory>user-service-i9n</outputDirectory>
             <directory>../../qa/target/cucumber/UserServiceI9n</directory>
         </fileSet>
 
         <fileSet>
+            <outputDirectory>device-service-i9n</outputDirectory>
+            <directory>../../qa/target/cucumber/DeviceI9n</directory>
+        </fileSet>
+
+        <fileSet>
             <outputDirectory>device-broker-i9n</outputDirectory>
             <directory>../../qa/target/cucumber/DeviceBrokerI9n</directory>
+        </fileSet>
+
+        <fileSet>
+            <outputDirectory>device-broker-ACL-i9n</outputDirectory>
+            <directory>../../qa/target/cucumber/BrokerACLI9n</directory>
+        </fileSet>
+
+        <fileSet>
+            <outputDirectory>device-manager-ACL-i9n</outputDirectory>
+            <directory>../../qa/target/cucumber/BrokerACLDeviceManageI9n</directory>
+        </fileSet>
+
+        <fileSet>
+            <outputDirectory>datastore-transport-i9n</outputDirectory>
+            <directory>../../qa/target/cucumber/DatastoreTransportI9n</directory>
+        </fileSet>
+
+        <fileSet>
+            <outputDirectory>datastore-rest-i9n</outputDirectory>
+            <directory>../../qa/target/cucumber/DatastoreRestI9n</directory>
         </fileSet>
     </fileSets>
 

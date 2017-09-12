@@ -24,7 +24,7 @@
     <name>${project.artifactId}</name>
 
     <properties>
-        <java.base.image>openjdk:8u121-jre-alpine</java.base.image>
+        <java.base.image>centos:7</java.base.image>
     </properties>
 
     <profiles>
@@ -49,7 +49,6 @@
                                         <from>${docker.account}/java-base</from>
                                         <runCmds>
                                             <runCmd><![CDATA[
-                                    apk update && apk add bash && \
                                     cd /home/kapua && \
                                     curl -s https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.2.v20170220/jetty-distribution-9.4.2.v20170220.tar.gz -o jetty-distribution.tar.gz && \
                                     mkdir -p jetty && cd jetty && \

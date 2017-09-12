@@ -85,7 +85,8 @@
         <docker-maven-plugin.version>0.19.1</docker-maven-plugin.version>
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
         <maven-dependency-plugin.version>3.0.1</maven-dependency-plugin.version>
-        <maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
+        <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
+        <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
         <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
         <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
@@ -144,7 +145,7 @@
                     <version>${maven-release-plugin.version}</version>
                     <configuration>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
-                        <releaseProfiles>javadoc,deploy,release,-console</releaseProfiles>
+                        <releaseProfiles>javadoc,deploy,release,!console</releaseProfiles>
                         <goals>deploy</goals>
                         <tagNameFormat>@{project.version}</tagNameFormat>
                     </configuration>
@@ -179,6 +180,11 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>${maven-javadoc-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>${maven-deploy-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -1183,8 +1189,6 @@
     <modules>
         <module>build-tools</module>
 
-        <module>external</module>
-
         <module>commons</module>
         <module>locator</module>
         <module>service</module>
@@ -1198,6 +1202,9 @@
 
         <module>sso</module>
 
+        <!-- Extras  -->
+        <module>extras</module>
+        
         <!-- Applications -->
         <module>rest-api</module>
 
@@ -1217,13 +1224,18 @@
         <!-- Profile used to exclude console module on release process -->
         <profile>
             <id>console</id>
-             <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <modules>
                 <module>console</module>
             </modules>
         </profile>
+        
+        <!-- Profile used to exclude external dependency modules -->
+        <!-- <profile>
+            <id>external</id>
+            <modules>
+                <module>external</module>
+            </modules>
+        </profile> -->
     
         <!-- Profile used only during release process. -->
         <profile>

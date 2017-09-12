@@ -24,7 +24,7 @@
     <name>${project.artifactId}</name>
 
     <properties>
-        <java.base.image>openjdk:8u121-jre-alpine</java.base.image>
+        <java.base.image>centos:7</java.base.image>
     </properties>
 
     <profiles>
