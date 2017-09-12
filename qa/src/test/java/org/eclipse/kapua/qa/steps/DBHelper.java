@@ -12,18 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.steps;
 
-import static com.google.common.base.MoreObjects.firstNonNull;
 import static org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers.resolveJdbcUrl;
 import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER;
 import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_PASSWORD;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_SCHEMA;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_SCHEMA_ENV;
 import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_USERNAME;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Optional;
 
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -69,7 +65,7 @@ public class DBHelper {
         SystemSetting config = SystemSetting.getInstance();
         String dbUsername = config.getString(DB_USERNAME);
         String dbPassword = config.getString(DB_PASSWORD);
-        String schema = firstNonNull(config.getString(DB_SCHEMA_ENV), config.getString(DB_SCHEMA));
+        // String schema = firstNonNull(config.getString(DB_SCHEMA_ENV), config.getString(DB_SCHEMA));
 
         String jdbcUrl = resolveJdbcUrl();
 
@@ -84,7 +80,7 @@ public class DBHelper {
             throw new RuntimeException(e);
         }
 
-        new KapuaLiquibaseClient(jdbcUrl, dbUsername, dbPassword, Optional.of(schema)).update();
+        new KapuaLiquibaseClient(jdbcUrl, dbUsername, dbPassword).update();
 
     }
 
