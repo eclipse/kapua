@@ -18,6 +18,7 @@ import org.eclipse.kapua.service.device.management.packages.model.DevicePackageB
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadOperation;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
+import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallRequest;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
 
 /**
@@ -72,6 +73,16 @@ public interface DevicePackageFactory extends KapuaObjectFactory {
      * @return
      */
     public DevicePackageDownloadOperation newPackageDownloadOperation();
+
+    //
+    // Install operation
+    //
+    /**
+     * Creates a new {@link DevicePackageInstallRequest}
+     *
+     * @return
+     */
+    public DevicePackageInstallRequest newPackageInstallRequest();
 
     //
     // Uninstall operation

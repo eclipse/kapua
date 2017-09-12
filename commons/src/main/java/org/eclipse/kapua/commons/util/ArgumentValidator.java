@@ -31,8 +31,8 @@ public class ArgumentValidator {
     public static final String PASSWORD_REGEXP = "^.*(?=.{12,})(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!\\~\\|]).*$";
     public static final String EMAIL_REGEXP = "^(\\w+)([-+.][\\w]+)*@(\\w[-\\w]*\\.){1,5}([A-Za-z]){2,4}$";
     public static final String TAG_NAME_REGEXP = "[A-Za-z0-9-_@#!$%^&*+=?<>]{3,255}";
-    public static final String IP_ADDRESS_REGEXP = "(^(http://)|(https://)|())([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])((.*)$)";
-    public static final String LOCAL_IP_ADDRESS_REGEXP = "(^(http://)|(https://))((127\\.0\\.0\\.1)|(10(\\.[0-9]+){3,3})|(172(\\.[0-9]+){3,3})|(192\\.168(\\.[0-9]+){2,2}))((.*)$)";
+    public static final String IP_ADDRESS_REGEXP = "(^(http://)|(https://)|())([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])($)";
+    public static final String LOCAL_IP_ADDRESS_REGEXP = "(^(http://)|(https://))(((127\\.0\\.0\\.1))|((10\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])))|((172\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])))|((192\\.168\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])))$)";
 
     // The standard (IEEE 802) format for printing MAC-48 addresses in human-friendly
     public static final String MAC_ADDRESS_REGEXP = "^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$";

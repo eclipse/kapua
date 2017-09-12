@@ -318,6 +318,67 @@ public class ArgumentValidatorTest extends Assert {
     }
 
     @Test
+    public void testLocalIPAddressRegExp() throws Exception {
+        String argRegLocalIPRegExp = "(^(http://)|(https://))(((127\\.0\\.0\\.1))|((10\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])))|((172\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])))|((192\\.168\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])))$)";
+        String[] notValidLocalIp = new String[] { "10.0.0.0","10.0.1.2","10.255.255.255","htt://10.0.0.0","htttp://10.0.0.1","htpp://10.19.20.20",
+            "htps://10.1.2.3","127.0.0.1","192.168.0.1","192.168.255.255","172.0.0.1","172.255.255.255","ttp://127.0.0.1","htttp://192.168.0.1",
+            "http:172.0.0.2","https:192.168.0.1","http://10.10.1888880.199", "https://10.10.10.19999999", "http://10.10.10.256", "http://127.0.0.2",
+            "https://127.0.0.2","http://10.256.256.256","https://10.1111.1111.1111","http://192.168.256.256","https://172.256.256.256",
+            "http://127.0.0.0.1","https://127.0.0.0.1","http://192.168.1.1.1","https://192.168.1.1.1","http://172.0.0.0.1","https://172.0.0.0.1",
+            "http://10.10.10.10.10","https://10.10.10.10.10","http://randomString","https://randomString","http://root@127.0.0.1","https://root@127.0.0.1",
+            "http://172.0.0.1:8080","https://172.0.0.1:8080","http://192.168.0.1:8080","https://192.168.0.1:8080","http://10.10.10.10:8080",
+            "https://10.10.10.10:8080","http:/127.0.0.1","https:/127.0.0.1","http:/10.10.10.10","https:/10.10.10.10","http:/172.0.1.2","https:/172.0.1.2",
+            "http:/192.168.0.1","https:/192.168.0.1"};
+        for (int i = 0; i <notValidLocalIp.length; i++) {
+            try {
+                ArgumentValidator.match(notValidLocalIp[i], argRegLocalIPRegExp, "LocalIP_test_case");
+                fail("Exception expected for: " + notValidLocalIp[i]);
+            } catch (Exception ex) {
+                // Expected
+            }
+        }
+        String[] validLocalIp = new String[] {"http://127.0.0.1", "http://10.0.0.1", "http://10.9.9.9","http://10.255.255.255","https://10.255.255.255",
+             "http://172.0.0.0","https://172.0.0.0","http://172.255.255.255","http://192.168.0.0","https://192.168.0.0","http://192.168.255.255",
+             "https://192.168.255.255"};
+        for (int i = 0; i <validLocalIp.length; i++) {
+            try {
+                ArgumentValidator.match(validLocalIp[i], argRegLocalIPRegExp, "LocalIP_test_case");
+            } catch (Exception ex) {
+                fail("No exception expected for: " + validLocalIp[i]);
+            }
+        }
+    }
+
+    @Test
+    public void testIPAddressRegExp() throws Exception {
+        String argRegIPRegExp = "(^(http://)|(https://)|())([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])($)";
+        String[] notValidIp = new String[] {"http://1.2.3.4.5","https://1.2.3.4.5","1.2.3.4.5","http://10.12.13.999","https://10.12.13.256",
+             "http://256.10.11.12","https://999.10.11.12","http://10.256.12.13","https://10.256.12.13","http://10.11.256.13","https://10.11.256.13",
+             "256.11.12.13","10.256.12.13","10.11.256.13","10.11.12.256","http:/10.11.12.13","https:/10.11.12.13","http:10.11.12.13","https:10.11.12.13",
+             "htp://10.11.12.13","htps://10.11.12.13","htpp://10.11.12.13","htpps://10.11.12.13","htttp://10.11.12.13","htttps://10.11.12.13",
+             "http://string","https://string","http://10.11.12.13:8080","https://10.11.12.13:8080","http://root@10.11.12.13","https://root@10.11.12.13"};
+        for (int i = 0; i <notValidIp.length; i++) {
+            try {
+                ArgumentValidator.match(notValidIp[i], argRegIPRegExp, "IP_test_case");
+                fail("Exception expected for: " + notValidIp[i]);
+            } catch (Exception ex) {
+                // Expected
+            }
+        }
+        String[] validIp = new String[] { "http://0.0.0.0", "https://0.0.0.0", "0.0.0.0","http://255.255.255.255","https://255.255.255.255",
+             "255.255.255.255","http://10.11.12.13","https://10.11.12.13","10.11.12.13","http://192.168.0.1","https://192.168.0.1","192.168.0.1",
+             "http://172.0.0.1","https://172.0.0.1","172.0.0.1","http://127.0.0.1","https://127.0.0.1","127.0.0.1","http://1.2.3.4","https://1.2.3.4",
+             "1.2.3.4"};
+        for (int i = 0; i <validIp.length; i++) {
+            try {
+                ArgumentValidator.match(validIp[i], argRegIPRegExp, "IP_test_case");
+            } catch (Exception ex) {
+                fail("No exception expected for: " + validIp[i]);
+            }
+        }
+    }
+
+    @Test
     public void testNotNull() throws Exception {
         byte byteVariable = 0;
         short shortVariable = 12;
