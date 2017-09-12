@@ -12,13 +12,10 @@
 
 -- liquibase formatted sql
 
--- changeset hekonsek:1 
+-- changeset device:1
 
-CREATE TABLE tst_liquibase (
-  id                         BIGINT(21) 	  UNSIGNED NOT NULL,
+ALTER TABLE dvc_device DROP INDEX idx_device_preferred_user_id;
 
-  PRIMARY KEY (id),
+ALTER TABLE dvc_device DROP COLUMN credentials_mode;
 
-  CHECK  id >= 0
-  
-) ENGINE = InnoDB DEFAULT CHARSET = utf8;
+ALTER TABLE dvc_device DROP COLUMN preferred_user_id;

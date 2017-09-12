@@ -12,9 +12,13 @@
 
 -- liquibase formatted sql
 
--- changeset atht_credential-expiration:1
+-- changeset domain:1
 
-ALTER TABLE atht_credential
-  ADD expiration_date             	TIMESTAMP(3);
-ALTER TABLE atht_credential
-  ADD credential_status             VARCHAR(64)	  NOT NULL DEFAULT 'ENABLED';
+ALTER TABLE athz_domain
+	ADD CHECK scope_id >= 0;
+
+ALTER TABLE athz_domain
+	ADD CHECK id >= 0;
+
+ALTER TABLE athz_domain
+	ADD CHECK created_by >= 0;

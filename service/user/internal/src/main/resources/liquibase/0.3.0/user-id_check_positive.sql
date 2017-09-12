@@ -1,5 +1,5 @@
 -- *******************************************************************************
--- Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+-- Copyright (c) 2017 Eurotech and/or its affiliates and others
 --
 -- All rights reserved. This program and the accompanying materials
 -- are made available under the terms of the Eclipse Public License v1.0
@@ -12,10 +12,16 @@
 
 -- liquibase formatted sql
 
--- changeset account:1
+-- changeset user:1
 
-ALTER TABLE act_account
-		ALTER COLUMN parent_account_path VARCHAR(1024);
-		
-ALTER TABLE act_account
-		ADD  CHECK (id > 0);
+ALTER TABLE usr_user
+	ADD CHECK scope_id >= 0;
+
+ALTER TABLE usr_user
+	ADD CHECK id >= 0;
+
+ALTER TABLE usr_user
+	ADD CHECK created_by >= 0;
+
+ALTER TABLE usr_user
+	ADD CHECK modified_by >= 0;

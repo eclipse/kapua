@@ -1,5 +1,6 @@
+
 -- *******************************************************************************
--- Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+-- Copyright (c) 2017 Eurotech and/or its affiliates and others
 --
 -- All rights reserved. This program and the accompanying materials
 -- are made available under the terms of the Eclipse Public License v1.0
@@ -12,13 +13,17 @@
 
 -- liquibase formatted sql
 
--- changeset hekonsek:1 
+-- changeset device_tag:1
 
-CREATE TABLE tst_liquibase (
-  id                         BIGINT(21) 	  UNSIGNED NOT NULL,
+CREATE TABLE dvc_device_tag (
+  device_id                 BIGINT(21) 	  UNSIGNED NOT NULL,
+  tag_id               		BIGINT(21) 	  UNSIGNED NOT NULL,
 
-  PRIMARY KEY (id),
+  PRIMARY KEY (device_id, tag_id),
 
-  CHECK  id >= 0
-  
-) ENGINE = InnoDB DEFAULT CHARSET = utf8;
+  CHECK device_id >= 0,
+  CHECK tag_id >= 0,
+
+  FOREIGN KEY (device_id) REFERENCES dvc_device(id) ON DELETE CASCADE
+
+) DEFAULT CHARSET=utf8;
