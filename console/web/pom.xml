@@ -24,14 +24,6 @@
     <artifactId>kapua-console-web</artifactId>
     <packaging>war</packaging>
 
-    <repositories>
-        <repository>
-            <id>kapua_addons</id>
-            <name>Kapua Addons Maven Repository</name>
-            <url>https://raw.github.com/eurotech/kapua_addons/mvn-repo/</url>
-        </repository>
-    </repositories>
-
     <properties>
         <webappDirectory>${project.build.directory}</webappDirectory>
         <site.basedir>${project.build.directory}/${project.build.finalName}</site.basedir>
