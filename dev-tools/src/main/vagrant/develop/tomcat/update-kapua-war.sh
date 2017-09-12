@@ -17,4 +17,4 @@ rm webapps/api.war
 echo 'create symbolic link to console web application'
 ln -s /kapua/console/web/target/admin.war webapps/admin.war
 echo 'create symbolic link to api web application'
-ln -s /kapua/rest-api/target/api.war webapps/api.war
+ln -s /kapua/rest-api/web/target/api.war webapps/api.war

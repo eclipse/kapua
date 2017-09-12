@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+
+<!-- This web.xml file is not required when using Servlet 3.0 container, 
+    see implementation details http://jersey.java.net/nonav/documentation/latest/jax-rs.html -->
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+    id="WebApp_ID" version="3.0">
+
+    <display-name>Kapua REST API</display-name>
+
+    <!-- -->
+    <!-- Listeners -->
+    <listener>
+        <listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>org.eclipse.kapua.app.api.web.RestApiListener</listener-class>
+    </listener>
+
+    <!-- -->
+    <!-- Filters -->
+    <filter>
+        <filter-name>ShiroFilter</filter-name>
+        <filter-class>org.apache.shiro.web.servlet.ShiroFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>ShiroFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+
+    <!-- -->
+    <!-- Servlets -->
+    <servlet>
+        <servlet-name>Jersey Web Application</servlet-name>
+        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>org.eclipse.kapua.app.api.web.RestApisApplication</param-value>
+        </init-param>
+        <init-param>
+            <param-name>jersey.config.server.provider.packages</param-name>
+            <param-value>
+                io.swagger.jaxrs.listing,
+                org.eclipse.kapua.app.api
+            </param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Jersey Web Application</servlet-name>
+        <url-pattern>/v1/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>Jersey2Config</servlet-name>
+        <servlet-class>io.swagger.jersey.config.JerseyJaxrsConfig</servlet-class>
+        <init-param>
+            <param-name>api.version</param-name>
+            <param-value>1.0.0</param-value>
+        </init-param>
+        <init-param>
+            <param-name>swagger.api.basepath</param-name>
+            <param-value>{API_BASE_PATH}</param-value>
+        </init-param>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+
+    <session-config>
+        <session-timeout>1</session-timeout>
+        <cookie-config>
+            <max-age>0</max-age>
+        </cookie-config>
+    </session-config>
+
+    <!-- | | Error Pages | -->
+    <error-page>
+        <error-code>400</error-code>
+        <location>/errorPages/400.html</location>
+    </error-page>
+    <error-page>
+        <error-code>401</error-code>
+        <location>/errorPages/401.html</location>
+    </error-page>
+    <error-page>
+        <error-code>403</error-code>
+        <location>/errorPages/403.html</location>
+    </error-page>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/errorPages/404.html</location>
+    </error-page>
+    <error-page>
+        <error-code>405</error-code>
+        <location>/errorPages/405.html</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/errorPages/500.html</location>
+    </error-page>
+    <error-page>
+        <exception-type>java.lang.Throwable</exception-type>
+        <location>/errorPages/error.jsp</location>
+    </error-page>
+</web-app>

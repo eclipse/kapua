@@ -774,7 +774,16 @@
                 <artifactId>kapua-qa</artifactId>
                 <version>${project.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-rest-api-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-rest-api-resources</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <!-- Console dependencies -->
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
