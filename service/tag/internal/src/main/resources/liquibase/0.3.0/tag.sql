@@ -15,21 +15,27 @@
 -- changeset tag:1
 
 CREATE TABLE tag_tag (
-  scope_id             		BIGINT(21) 	  UNSIGNED NOT NULL,
-  id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
-  created_on             	TIMESTAMP(3)  NOT NULL,
-  created_by             	BIGINT(21)    UNSIGNED NOT NULL,
-  modified_on               TIMESTAMP(3)  NOT NULL,
-  modified_by               BIGINT(21) 	  UNSIGNED NOT NULL,
+  scope_id    BIGINT(21) UNSIGNED NOT NULL,
+  id          BIGINT(21) UNSIGNED NOT NULL,
+  created_on  TIMESTAMP(3) NOT NULL,
+  created_by  BIGINT(21) UNSIGNED NOT NULL,
+  modified_on TIMESTAMP(3) NOT NULL,
+  modified_by BIGINT(21) UNSIGNED NOT NULL,
 
-  name 						VARCHAR(255)  NOT NULL,
-  
-  optlock                   INT UNSIGNED,
-  attributes				TEXT,
-  properties                TEXT,
-  
-  PRIMARY KEY (id)
+  name        VARCHAR(255) NOT NULL,
+
+  optlock     INT UNSIGNED,
+  attributes  TEXT,
+  properties  TEXT,
+
+  PRIMARY KEY (id),
+
+  CHECK scope_id >= 0,
+  CHECK id >= 0,
+  CHECK created_by >= 0,
+  CHECK modified_by >= 0
 
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
-CREATE UNIQUE INDEX idx_tag_name ON tag_tag (scope_id, name);
+CREATE UNIQUE INDEX idx_tag_name
+  ON tag_tag (scope_id, name);

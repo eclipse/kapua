@@ -23,7 +23,12 @@ CREATE TABLE collision_entity_test (
   attributes				TEXT,
   properties                TEXT,
 
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+
+  CHECK scope_id >= 0,
+  CHECK id >= 0,
+  CHECK created_by >= 0,
+  CHECK modified_by >= 0
 
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 

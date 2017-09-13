@@ -12,14 +12,17 @@
 
 -- liquibase formatted sql
 
--- changeset device_tag:1
+-- changeset group:1
 
-CREATE TABLE dvc_device_tag (
-  device_id                 BIGINT(21) 	  UNSIGNED NOT NULL,
-  tag_id               		BIGINT(21) 	  UNSIGNED NOT NULL,
-  
-  PRIMARY KEY (device_id, tag_id),
-  
-  FOREIGN KEY (device_id) REFERENCES dvc_device(id) ON DELETE CASCADE
- 
-) DEFAULT CHARSET=utf8;
+ALTER TABLE athz_group
+	ADD CHECK scope_id >= 0;
+
+ALTER TABLE athz_group
+	ADD CHECK id >= 0;
+
+ALTER TABLE athz_group
+	ADD CHECK created_by >= 0;
+
+ALTER TABLE athz_group
+	ADD CHECK modified_by >= 0;
+

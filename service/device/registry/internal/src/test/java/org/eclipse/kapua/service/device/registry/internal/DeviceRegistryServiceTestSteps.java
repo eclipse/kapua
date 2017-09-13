@@ -26,6 +26,7 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
@@ -283,7 +284,7 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
     @When("^I search for a device with a random ID$")
     public void findDeviceWithRandomId()
             throws KapuaException {
-        KapuaId tmpId = new KapuaEid(BigInteger.valueOf(random.nextLong()));
+        KapuaId tmpId = new KapuaEid(IdGenerator.generate());
         device = deviceRegistryService.find(rootScopeId, tmpId);
     }
 
@@ -373,7 +374,7 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
     @When("^I update a device with an invalid ID$")
     public void updateDeviceWithInvalidId()
             throws KapuaException {
-        device.setId(new KapuaEid(BigInteger.valueOf(random.nextLong())));
+        device.setId(new KapuaEid(IdGenerator.generate()));
         try {
             exceptionCaught = false;
             deviceRegistryService.update(device);
@@ -393,8 +394,8 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
     @When("^I delete a device with random IDs$")
     public void deleteDeviceWithRandomIds()
             throws KapuaException {
-        KapuaId rndScope = new KapuaEid(BigInteger.valueOf(random.nextLong()));
-        KapuaId rndDev = new KapuaEid(BigInteger.valueOf(random.nextLong()));
+        KapuaId rndScope = new KapuaEid(IdGenerator.generate());
+        KapuaId rndDev = new KapuaEid(IdGenerator.generate());
 
         try {
             exceptionCaught = false;
@@ -571,7 +572,7 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
         DeviceCreatorImpl tmpDeviceCreator = new DeviceCreatorImpl(accountId);
 
         tmpDeviceCreator.setClientId(client);
-        tmpDeviceCreator.setConnectionId(new KapuaEid(BigInteger.valueOf(random.nextLong())));
+        tmpDeviceCreator.setConnectionId(new KapuaEid(IdGenerator.generate()));
         tmpDeviceCreator.setDisplayName(TEST_DEVICE_NAME);
         tmpDeviceCreator.setSerialNumber("serialNumber");
         tmpDeviceCreator.setModelId("modelId");

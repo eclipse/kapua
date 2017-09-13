@@ -12,13 +12,7 @@
 
 -- liquibase formatted sql
 
--- changeset hekonsek:1 
+-- changeset account:1
 
-CREATE TABLE tst_liquibase (
-  id                         BIGINT(21) 	  UNSIGNED NOT NULL,
-
-  PRIMARY KEY (id),
-
-  CHECK  id >= 0
-  
-) ENGINE = InnoDB DEFAULT CHARSET = utf8;
+ALTER TABLE act_account
+  ALTER COLUMN parent_account_path VARCHAR(1024);

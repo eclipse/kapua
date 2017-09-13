@@ -18,6 +18,7 @@ import java.math.BigInteger;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.id.KapuaIdFactoryImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -143,7 +144,7 @@ public class DeviceRegistryValidationTestSteps extends AbstractKapuaSteps {
     @Given("^A regular device$")
     public void createRegularDevice()
             throws KapuaException {
-        device = prepareRegularDevice(rootScopeId, new KapuaEid(BigInteger.valueOf(random.nextLong())));
+        device = prepareRegularDevice(rootScopeId, new KapuaEid(IdGenerator.generate()));
     }
 
     @Given("^A null device$")
@@ -328,7 +329,7 @@ public class DeviceRegistryValidationTestSteps extends AbstractKapuaSteps {
         DeviceCreatorImpl tmpDeviceCreator = (DeviceCreatorImpl) deviceFactory.newCreator(accountId, client);
 
         tmpDeviceCreator.setClientId(client);
-        tmpDeviceCreator.setConnectionId(new KapuaEid(BigInteger.valueOf(random.nextLong())));
+        tmpDeviceCreator.setConnectionId(new KapuaEid(IdGenerator.generate()));
         tmpDeviceCreator.setDisplayName("test_name");
         tmpDeviceCreator.setSerialNumber("serialNumber");
         tmpDeviceCreator.setModelId("modelId");
@@ -360,7 +361,7 @@ public class DeviceRegistryValidationTestSteps extends AbstractKapuaSteps {
         DeviceImpl tmpDevice = (DeviceImpl) deviceFactory.newEntity(accountId);
 
         tmpDevice.setId(deviceId);
-        tmpDevice.setConnectionId(new KapuaEid(BigInteger.valueOf(random.nextLong())));
+        tmpDevice.setConnectionId(new KapuaEid(IdGenerator.generate()));
         tmpDevice.setDisplayName("test_name");
         tmpDevice.setSerialNumber("serialNumber");
         tmpDevice.setModelId("modelId");

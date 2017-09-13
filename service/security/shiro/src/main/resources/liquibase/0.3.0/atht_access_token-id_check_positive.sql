@@ -1,5 +1,5 @@
 -- *******************************************************************************
--- Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+-- Copyright (c) 2017 Eurotech and/or its affiliates and others
 --
 -- All rights reserved. This program and the accompanying materials
 -- are made available under the terms of the Eclipse Public License v1.0
@@ -12,13 +12,22 @@
 
 -- liquibase formatted sql
 
--- changeset hekonsek:1 
+-- changeset access_token:1
 
-CREATE TABLE tst_liquibase (
-  id                         BIGINT(21) 	  UNSIGNED NOT NULL,
+ALTER TABLE atht_access_token
+	ADD CHECK scope_id >= 0;
 
-  PRIMARY KEY (id),
+ALTER TABLE atht_access_token
+	ADD CHECK id >= 0;
 
-  CHECK  id >= 0
-  
-) ENGINE = InnoDB DEFAULT CHARSET = utf8;
+ALTER TABLE atht_access_token
+	ADD CHECK created_by >= 0;
+
+ALTER TABLE atht_access_token
+	ADD CHECK modified_by >= 0;
+
+ALTER TABLE atht_access_token
+	ADD CHECK user_id >= 0;
+
+
+

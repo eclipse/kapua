@@ -15,4 +15,4 @@
 -- changeset user-expiration:1
 
 ALTER TABLE usr_user
-  ADD expiration_date             	TIMESTAMP(3)
+  ADD expiration_date TIMESTAMP(3);

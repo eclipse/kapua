@@ -12,13 +12,24 @@
 
 -- liquibase formatted sql
 
--- changeset atht_credential-expiration:1
+-- changeset role_permission:1
 
-ALTER TABLE atht_credential
-  ADD login_failures               	INT NOT NULL DEFAULT 0;
-ALTER TABLE atht_credential
-  ADD first_login_failure           TIMESTAMP(3);
-ALTER TABLE atht_credential
-  ADD login_failures_reset          TIMESTAMP(3);
-ALTER TABLE atht_credential
-  ADD lockout_reset          TIMESTAMP(3);
+ALTER TABLE athz_role_permission
+	ADD CHECK scope_id >= 0;
+
+ALTER TABLE athz_role_permission
+	ADD CHECK id >= 0;
+
+ALTER TABLE athz_role_permission
+	ADD CHECK created_by >= 0;
+
+ALTER TABLE athz_role_permission
+	ADD CHECK role_id >= 0;
+
+ALTER TABLE athz_role_permission
+	ADD CHECK target_scope_id >= 0;
+
+ALTER TABLE athz_role_permission
+	ADD CHECK group_id >= 0;
+
+
