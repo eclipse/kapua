@@ -11,22 +11,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.servlet;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.eclipse.kapua.app.console.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.setting.ConsoleSettingKeys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.List;
+
 public class SkinServlet extends HttpServlet {
+
     private static final long serialVersionUID = -5374075152873372059L;
     private static final Logger LOGGER = LoggerFactory.getLogger(SkinServlet.class);
 
@@ -48,6 +50,11 @@ public class SkinServlet extends HttpServlet {
                     return;
                 }
 
+                List<String> resourceFragments = Arrays.asList(resourceName.split("\\\\|/"));
+                if(resourceFragments.contains("..")) {
+                    LOGGER.warn("No directory traversing allowed; requested path is {}", resourceFragments);
+                    return;
+                }
                 File fResourceFile = new File(fResourceDir, resourceName);
                 if (!fResourceFile.exists()) {
                     LOGGER.warn("Resource File {} does not exist", fResourceFile.getAbsolutePath());
