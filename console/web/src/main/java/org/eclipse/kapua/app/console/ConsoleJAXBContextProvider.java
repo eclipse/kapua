@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.core;
+package org.eclipse.kapua.app.console;
 
 import javax.xml.bind.JAXBContext;
 

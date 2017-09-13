@@ -21,7 +21,7 @@
     </listener>
 
     <listener>
-        <listener-class>org.eclipse.kapua.app.console.core.server.util.ConsoleListener</listener-class>
+        <listener-class>org.eclipse.kapua.app.console.server.util.ConsoleListener</listener-class>
     </listener>
 
     <listener>
