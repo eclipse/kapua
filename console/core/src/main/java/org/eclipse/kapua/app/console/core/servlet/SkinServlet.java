@@ -9,10 +9,10 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.servlet;
+package org.eclipse.kapua.app.console.core.servlet;
 
-import org.eclipse.kapua.app.console.setting.ConsoleSetting;
-import org.eclipse.kapua.app.console.setting.ConsoleSettingKeys;
+import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
+import org.eclipse.kapua.app.console.module.api.setting.ConsoleSettingKeys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +32,7 @@ public class SkinServlet extends HttpServlet {
     private static final long serialVersionUID = -5374075152873372059L;
     private static final Logger LOGGER = LoggerFactory.getLogger(SkinServlet.class);
 
+    @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         FileReader fr = null;
@@ -51,7 +52,7 @@ public class SkinServlet extends HttpServlet {
                 }
 
                 List<String> resourceFragments = Arrays.asList(resourceName.split("\\\\|/"));
-                if(resourceFragments.contains("..")) {
+                if (resourceFragments.contains("..")) {
                     LOGGER.warn("No directory traversing allowed; requested path is {}", resourceFragments);
                     return;
                 }
