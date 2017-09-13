@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.eclipse.kapua</groupId>
+        <artifactId>kapua-console</artifactId>
+        <version>0.3.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>kapua-console-web</artifactId>
+    <packaging>war</packaging>
+
+    <properties>
+        <webappDirectory>${project.build.directory}</webappDirectory>
+        <site.basedir>${project.build.directory}/${project.build.finalName}</site.basedir>
+    </properties>
+
+    <dependencies>
+        <!-- Console modules -->
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-console-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-console-core</artifactId>
+            <classifier>sources</classifier>
+        </dependency>
+        
+        <!-- External dependency -->
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-servlet</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.extjs</groupId>
+            <artifactId>gxt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.allen-sauer.gwt.log</groupId>
+            <artifactId>gwt-log</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>admin</finalName>
+
+        <plugins>
+            <plugin>
+                <!-- GWT Maven Plugin -->
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <configuration>
+                    <module>org.eclipse.kapua.app.console.admin</module>
+
+                    <webappDirectory>${project.build.directory}</webappDirectory>
+                    <hostedWebapp>${site.basedir}</hostedWebapp>
+                    <runTarget>console.jsp</runTarget>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>Create gxt resources</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.extjs</groupId>
+                                    <artifactId>gxt-ui</artifactId>
+                                    <version>${com.extjs.gxt.version}</version>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${site.basedir}</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <pluginManagement>
+            <plugins>
+                
+                <!-- To help IntelliJ IDEA correctly recognize the source path when using Maven Auto Import -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <configuration>
+                        <attachClasses>true</attachClasses>
+                        <webResources>
+                            <resource>
+                                <directory>${site.basedir}</directory>
+                            </resource>
+                            <resource>
+                                <directory>${basedir}</directory>
+                                <includes>
+                                    <include>about.html</include>
+                                    <include>epl-v10.html</include>
+                                    <include>notice.html</include>
+                                </includes>
+                            </resource>
+                        </webResources>
+                        <!-- exclude slf4j-api and logback as the web container has to provide this -->
+                        <packagingExcludes>
+                            WEB-INF/lib/slf4j-api-*.jar,
+                            WEB-INF/lib/logback*.jar
+                        </packagingExcludes>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <profiles>
+        <!-- profile to speed up local development builds  -->
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>gwt-maven-plugin</artifactId>
+                        <configuration>
+                            <!-- we can always enable draft compile -->
+                            <draftCompile>true</draftCompile>
+                            <!-- use "dev" profile, limiting permutations -->
+                            <module>org.eclipse.kapua.app.console.adminDev</module>
+                            <!-- don't optimize -->
+                            <optimizationLevel>0</optimizationLevel>
+                            <!-- enable details -->
+                            <style>DETAILED</style>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

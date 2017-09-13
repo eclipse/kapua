@@ -15,6 +15,6 @@ rm webapps/admin.war
 echo 'remove old symbolic link to api web application'
 rm webapps/api.war
 echo 'create symbolic link to console web application'
-ln -s /kapua/console/target/admin.war webapps/admin.war
+ln -s /kapua/console/web/target/admin.war webapps/admin.war
 echo 'create symbolic link to api web application'
 ln -s /kapua/rest-api/target/api.war webapps/api.war

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>kapua-console-module</artifactId>
+        <groupId>org.eclipse.kapua</groupId>
+        <version>0.3.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>kapua-console-module-account</artifactId>
+
+    <dependencies>
+        <!-- Console modules -->
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-console-module-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-console-module-user</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-console-module-authorization</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-console-module-authentication</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-console-module-data</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-console-module-device</artifactId>
+        </dependency>
+
+        <!-- Internal dependencies -->
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-broker-core</artifactId>
+        </dependency>
+
+        <!-- External Dependencies -->
+        <dependency>
+            <!-- Imaging utils used to handle device component configuration  icons -->
+            <!-- Former commons-imaging changed because the 1.0-FINAL was not contined/supported in maven -->
+            <groupId>org.apache.sanselan</groupId>
+            <artifactId>sanselan</artifactId>
+            <version>0.97-incubator</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <!-- GWT Maven Plugin -->
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <configuration>
+                    <module>org.eclipse.kapua.app.console.module.account.adminModuleAccount</module>
+                    <i18nMessagesBundles>
+                        <i18nMessagesBundle>org.eclipse.kapua.app.console.module.account.client.messages.ConsoleAccountMessages</i18nMessagesBundle>
+                    </i18nMessagesBundles>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
