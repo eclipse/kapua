@@ -49,7 +49,7 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
 
     private EntityCRUDToolbar<M> entityCRUDToolbar;
     protected KapuaGrid<M> entityGrid;
-    private BasePagingLoader<PagingLoadResult<M>> entityLoader;
+    protected BasePagingLoader<PagingLoadResult<M>> entityLoader;
     protected ListStore<M> entityStore;
     private PagingToolBar entityPagingToolbar;
 

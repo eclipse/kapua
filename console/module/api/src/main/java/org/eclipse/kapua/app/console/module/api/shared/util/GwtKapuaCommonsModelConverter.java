@@ -60,7 +60,7 @@ public class GwtKapuaCommonsModelConverter {
      *            The {@link KapuaEntity} into which to copy values
      * @since 1.0.0
      */
-    private static void convertEntity(GwtEntityModel gwtEntity, KapuaEntity kapuaEntity) {
+    public static void convertEntity(GwtEntityModel gwtEntity, KapuaEntity kapuaEntity) {
         if (kapuaEntity == null || gwtEntity == null) {
             return;
         }

@@ -462,6 +462,7 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     public void setJobDeletePermission(boolean hasJobDeletePermission) {
         this.hasJobDeletePermission = hasJobDeletePermission;
     }
+
     public String getUserName() {
         return userName;
     }

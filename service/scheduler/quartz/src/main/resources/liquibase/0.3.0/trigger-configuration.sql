@@ -15,6 +15,7 @@
 -- changeset trigger-configuration:1
 
 INSERT INTO sys_configuration (
+  ID,
   SCOPE_ID,
   PID,
   CONFIGURATIONS,
@@ -25,7 +26,7 @@ INSERT INTO sys_configuration (
   OPTLOCK,
   ATTRIBUTES,
   PROPERTIES)
-VALUES (1,
+VALUES (9, 1,
         'org.eclipse.kapua.service.scheduler.TriggerService',
         CONCAT('#', CURRENT_TIMESTAMP(), CHAR(13), CHAR(10),
                'maxNumberChildEntities=0', CHAR(13), CHAR(10),

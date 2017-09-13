@@ -33,6 +33,7 @@
         <module>tag</module>
         <module>user</module>
         <module>welcome</module>
+        <module>job</module>
     </modules>
 
     <build>
