@@ -13,11 +13,11 @@ package org.eclipse.kapua.service.device.management.command.job.definition;
 
 import org.eclipse.kapua.service.job.step.definition.JobPropertyKey;
 
-public class DeviceCommandExecPropertyKeys implements JobPropertyKey {
+public class DeviceBundlePropertyKeys implements JobPropertyKey {
 
-    public static final String COMMAND_INPUT = "commandInput";
+    public static final String BUNDLE_ID = "bundleId";
     public static final String TIMEOUT = "timeout";
 
-    private DeviceCommandExecPropertyKeys() {
+    private DeviceBundlePropertyKeys() {
     }
 }
