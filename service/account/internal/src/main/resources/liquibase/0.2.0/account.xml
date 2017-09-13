@@ -20,9 +20,6 @@
     <include relativeToChangelogFile="true" file="../common-properties.xml" />
 
     <changeSet id="changelog-account-0.2.0_createTable" author="eurotech">
-        <!-- Old SQL file
-        <sqlFile relativeToChangelogFile="true" path="./account.sql" />
-        -->
         <createTable tableName="act_account">
             <column name="scope_id" type="bigint(21) unsigned"/>
             <column name="id" type="bigint(21) unsigned">

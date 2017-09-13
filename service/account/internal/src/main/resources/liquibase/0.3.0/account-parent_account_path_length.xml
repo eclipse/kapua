@@ -10,14 +10,23 @@
     Contributors:
         Eurotech - initial API and implementation
  -->
- <databaseChangeLog
+<databaseChangeLog
   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
   logicalFilePath="KapuaDB/changelog-account-0.3.0.xml">
 
-    <include relativeToChangelogFile="true" file="./account-parent_account_path_length.xml" />
-    <include relativeToChangelogFile="true" file="./account-id_check_positive.sql" />
+    <include relativeToChangelogFile="true" file="../common-properties.xml" />
+
+    <changeSet id="changelog-account-0.3.0" author="eurotech">
+        <modifyDataType tableName="act_account" columnName="parent_account_path" newDataType="varchar(1024)" />
+        
+<!--         <update tableName="act_account">
+            <column name="id">
+                <constraints checkConstraint="id > 0"/>
+            </column>        
+        </update> -->
+    </changeSet>
 
 </databaseChangeLog>
