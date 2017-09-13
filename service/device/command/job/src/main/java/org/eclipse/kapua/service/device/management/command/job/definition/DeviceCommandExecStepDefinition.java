@@ -11,16 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.command.job.definition;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
-import org.eclipse.kapua.service.device.management.command.job.DeviceCommandTargetProcessor;
+import org.eclipse.kapua.service.device.management.command.job.DeviceCommandExecTargetProcessor;
 import org.eclipse.kapua.service.job.commons.step.definition.AbstractTargetJobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionFactory;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class DeviceCommandExecStepDefinition extends AbstractTargetJobStepDefinition implements JobStepDefinition {
 
@@ -41,7 +41,7 @@ public class DeviceCommandExecStepDefinition extends AbstractTargetJobStepDefini
 
     @Override
     public String getProcessorName() {
-        return DeviceCommandTargetProcessor.class.getName();
+        return DeviceCommandExecTargetProcessor.class.getName();
     }
 
     @Override
