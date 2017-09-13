@@ -11,7 +11,7 @@
         Eurotech - initial API and implementation
         Red Hat Inc
  -->
-<web-app version="3.0" 
+<web-app version="3.0"
          xmlns="http://java.sun.com/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
@@ -134,7 +134,7 @@
         <servlet-name>deviceExporterServlet</servlet-name>
         <url-pattern>/exporter_device/*</url-pattern>
     </servlet-mapping>
-    
+
     <servlet>
         <servlet-name>deviceEventExporterServlet</servlet-name>
         <servlet-class>org.eclipse.kapua.app.console.module.device.servlet.DeviceEventExporterServlet</servlet-class>
@@ -326,7 +326,7 @@
     </servlet-mapping>
 
     <listener>
-      <listener-class>org.apache.commons.fileupload.servlet.FileCleanerCleanup</listener-class>
+        <listener-class>org.apache.commons.fileupload.servlet.FileCleanerCleanup</listener-class>
     </listener>
 
     <servlet>
@@ -336,6 +336,15 @@
     <servlet-mapping>
         <servlet-name>fileServlet</servlet-name>
         <url-pattern>/file/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>skinServlet</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.core.servlet.SkinServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>skinServlet</servlet-name>
+        <url-pattern>/skin/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
