@@ -11,11 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.jbatch;
 
-import java.util.List;
-
-import javax.xml.bind.JAXBException;
-
+import com.google.common.collect.Lists;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.job.engine.JobEngineService;
@@ -27,7 +25,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
 import org.eclipse.kapua.service.device.management.command.internal.DeviceCommandInputImpl;
 import org.eclipse.kapua.service.device.management.command.job.definition.DeviceCommandExecPropertyKeys;
-import org.eclipse.kapua.service.device.management.command.job.definition.DeviceCommandExecStepDefinition;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.job.Job;
@@ -40,6 +37,8 @@ import org.eclipse.kapua.service.job.step.JobStepService;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionCreator;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionFactory;
+import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionPredicates;
+import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionQuery;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 import org.eclipse.kapua.service.job.step.definition.internal.JobStepPropertyImpl;
@@ -51,7 +50,8 @@ import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
 import org.quartz.impl.StdSchedulerFactory;
 
-import com.google.common.collect.Lists;
+import javax.xml.bind.JAXBException;
+import java.util.List;
 
 public class Main {
 
@@ -73,8 +73,7 @@ public class Main {
     private static JobStepDefinitionService jobStepDefinitionService = locator.getService(JobStepDefinitionService.class);
     private static JobStepDefinitionFactory jobStepDefinitionFactory = locator.getFactory(JobStepDefinitionFactory.class);
 
-    private static LogStepDefinition logStep = new LogStepDefinition();
-    private static DeviceCommandExecStepDefinition commandExecStep = new DeviceCommandExecStepDefinition();
+    private static List<JobStepDefinition> jobStepDefinitions = Lists.newArrayList(new LogStepDefinition()); //new DeviceCommandExecStepDefinition()
 
     private static Scheduler scheduler;
 
@@ -147,7 +146,7 @@ public class Main {
         // return;
         // }
 
-        KapuaSecurityUtils.doPrivileged(() -> jobEngineService.startJob(job.getScopeId(), job.getId()));
+        //        KapuaSecurityUtils.doPrivileged(() -> jobEngineService.startJob(job.getScopeId(), job.getId()));
 
         if (scheduler != null) {
             // scheduler.shutdown();
@@ -156,30 +155,29 @@ public class Main {
 
     private static Job doThings() throws Exception {
 
-//        Device device210 = KapuaSecurityUtils.doPrivileged(() -> deviceRegistryService.findByClientId(KapuaId.ONE, "Kura_2-1-0"));
-//        Device device140 = KapuaSecurityUtils.doPrivileged(() -> deviceRegistryService.findByClientId(KapuaId.ONE, "Kura_1-4-0"));
-        Device device = KapuaSecurityUtils.doPrivileged(() -> deviceRegistryService.findByClientId(KapuaId.ONE, "B8:27:EB:59:53:C1"));
-        JobStepDefinitionCreator jobStepDefinitionCreator = jobStepDefinitionFactory.newCreator(KapuaId.ONE);
-        jobStepDefinitionCreator.setName(commandExecStep.getName());
-        jobStepDefinitionCreator.setDescription(commandExecStep.getDescription());
-        jobStepDefinitionCreator.setStepType(commandExecStep.getStepType());
-        jobStepDefinitionCreator.setReaderName(commandExecStep.getReaderName());
-        jobStepDefinitionCreator.setProcessorName(commandExecStep.getProcessorName());
-        jobStepDefinitionCreator.setWriterName(commandExecStep.getWriterName());
-        jobStepDefinitionCreator.setStepProperties(commandExecStep.getStepProperties());
+        Device device210 = KapuaSecurityUtils.doPrivileged(() -> deviceRegistryService.findByClientId(KapuaId.ONE, "Kura_2-1-0"));
+        Device device140 = KapuaSecurityUtils.doPrivileged(() -> deviceRegistryService.findByClientId(KapuaId.ONE, "Kura_1-4-0"));
 
-        JobStepDefinition targetJobStepDefinition = jobStepDefinitionService.create(jobStepDefinitionCreator);
+        for (JobStepDefinition jsp : jobStepDefinitions) {
+            JobStepDefinitionCreator jobStepDefinitionCreator = jobStepDefinitionFactory.newCreator(KapuaId.ONE);
+            jobStepDefinitionCreator.setName(jsp.getName());
+            jobStepDefinitionCreator.setDescription(jsp.getDescription());
+            jobStepDefinitionCreator.setStepType(jsp.getStepType());
+            jobStepDefinitionCreator.setReaderName(jsp.getReaderName());
+            jobStepDefinitionCreator.setProcessorName(jsp.getProcessorName());
+            jobStepDefinitionCreator.setWriterName(jsp.getWriterName());
+            jobStepDefinitionCreator.setStepProperties(jsp.getStepProperties());
 
-        jobStepDefinitionCreator = jobStepDefinitionFactory.newCreator(KapuaId.ONE);
-        jobStepDefinitionCreator.setName(logStep.getName());
-        jobStepDefinitionCreator.setDescription(logStep.getDescription());
-        jobStepDefinitionCreator.setStepType(logStep.getStepType());
-        jobStepDefinitionCreator.setReaderName(logStep.getReaderName());
-        jobStepDefinitionCreator.setProcessorName(logStep.getProcessorName());
-        jobStepDefinitionCreator.setWriterName(logStep.getWriterName());
-        jobStepDefinitionCreator.setStepProperties(logStep.getStepProperties());
+            jobStepDefinitionService.create(jobStepDefinitionCreator);
+        }
 
-        JobStepDefinition logJobStepDefinition = jobStepDefinitionService.create(jobStepDefinitionCreator);
+        JobStepDefinitionQuery jspQuery = jobStepDefinitionFactory.newQuery(KapuaId.ONE);
+        jspQuery.setPredicate(new AttributePredicate<>(JobStepDefinitionPredicates.NAME, "Device Command Management Execution"));
+
+        JobStepDefinition commandJobStepDefinition = jobStepDefinitionService.query(jspQuery).getFirstItem();
+
+        jspQuery.setPredicate(new AttributePredicate<>(JobStepDefinitionPredicates.NAME, "Log step"));
+        JobStepDefinition logJobStepDefinition = jobStepDefinitionService.query(jspQuery).getFirstItem();
 
         JobCreator jobCreator = jobFactory.newCreator(KapuaId.ONE);
         jobCreator.setName("testJob");
@@ -188,20 +186,20 @@ public class Main {
 
         JobTargetCreator jobTargetCreator = jobTargetFactory.newCreator(KapuaId.ONE);
         jobTargetCreator.setJobId(job.getId());
-        jobTargetCreator.setJobTargetId(device.getId());
+        jobTargetCreator.setJobTargetId(device210.getId());
 
         jobTargetService.create(jobTargetCreator);
 
         jobTargetCreator = jobTargetFactory.newCreator(KapuaId.ONE);
         jobTargetCreator.setJobId(job.getId());
-        jobTargetCreator.setJobTargetId(device.getId());
+        jobTargetCreator.setJobTargetId(device140.getId());
 
         jobTargetService.create(jobTargetCreator);
 
         JobStepCreator jobStepCreator = jobStepFactory.newCreator(KapuaId.ONE);
         jobStepCreator.setName("Command Exec 1");
         jobStepCreator.setJobId(job.getId());
-        jobStepCreator.setJobStepDefinitionId(targetJobStepDefinition.getId());
+        jobStepCreator.setJobStepDefinitionId(commandJobStepDefinition.getId());
         jobStepCreator.setJobStepProperties(createCommandStepProperties1());
         jobStepCreator.setStepIndex(0);
 
@@ -218,7 +216,7 @@ public class Main {
         jobStepCreator = jobStepFactory.newCreator(KapuaId.ONE);
         jobStepCreator.setName("Command Exec 2");
         jobStepCreator.setJobId(job.getId());
-        jobStepCreator.setJobStepDefinitionId(targetJobStepDefinition.getId());
+        jobStepCreator.setJobStepDefinitionId(commandJobStepDefinition.getId());
         jobStepCreator.setJobStepProperties(createCommandStepProperties2());
         jobStepCreator.setStepIndex(2);
 
