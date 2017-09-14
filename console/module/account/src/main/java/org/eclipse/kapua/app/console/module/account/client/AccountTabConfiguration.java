@@ -63,11 +63,11 @@ public class AccountTabConfiguration extends KapuaTabItem<GwtAccount> {
 
         add(configComponents);
     }
-    
+
     public void setDescriptionTab(AccountDetailsTabDescription accountDetailsTabDescription) {
-    	this.accountDetailsTabDescription = accountDetailsTabDescription;
-         configComponents.setDescriptionTab(accountDetailsTabDescription);
+        this.accountDetailsTabDescription = accountDetailsTabDescription;
+        configComponents.setDescriptionTab(accountDetailsTabDescription);
 
     }
-   
+
 }

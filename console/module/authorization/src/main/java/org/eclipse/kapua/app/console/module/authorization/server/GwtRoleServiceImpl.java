@@ -20,7 +20,6 @@ import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
-import org.eclipse.kapua.app.console.module.api.shared.util.KapuaGwtCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtPermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRoleCreator;
@@ -239,10 +238,10 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             RolePermissionListResult list = rolePermissionService.findByRoleId(scopeId, roleId);
 
             if (list != null) {
-                for (RolePermission permission : list.getItems()) {
+                for (RolePermission rolePermission : list.getItems()) {
                     gwtRolePermissions.add(KapuaGwtAuthorizationModelConverter.convertRolePermission(rolePermission));
                     for (GwtRolePermission gwtRolePermission : gwtRolePermissions) {
-                        User user = userService.find(scopeId, permission.getCreatedBy());
+                        User user = userService.find(scopeId, rolePermission.getCreatedBy());
                         if (user != null) {
                             gwtRolePermission.setUserName(user.getDisplayName());
                         }

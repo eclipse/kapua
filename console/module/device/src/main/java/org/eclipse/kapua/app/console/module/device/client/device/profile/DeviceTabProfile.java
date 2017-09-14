@@ -97,8 +97,8 @@ public class DeviceTabProfile extends KapuaTabItem<GwtDevice> {
         store = new GroupingStore<GwtGroupedNVPair>(loader);
         store.groupBy("groupLoc");
 
-        ColumnConfig name = new ColumnConfig("nameLoc", DEVICE_MSGS.devicePropName(), 50);
-        ColumnConfig value = new ColumnConfig("value", DEVICE_MSGS.devicePropValue(), 50);
+        ColumnConfig name = new ColumnConfig("nameLoc", MSGS.devicePropName(), 50);
+        ColumnConfig value = new ColumnConfig("value", MSGS.devicePropValue(), 50);
 
         GridCellRenderer<GwtGroupedNVPair> renderer = new GridCellRenderer<GwtGroupedNVPair>() {
 

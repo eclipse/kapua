@@ -14,7 +14,6 @@ package org.eclipse.kapua.app.console.module.device.client.device.configuration;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.util.SwappableListStore;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 
