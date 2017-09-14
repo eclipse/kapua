@@ -14,15 +14,17 @@
   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+  logicalFilePath="KapuaDB/changelog-device-0.3.0.xml">
 
-    <include relativeToChangelogFile="true" file="./device-network-interface.sql" />
-    <include relativeToChangelogFile="true" file="./device-remove_credential_options.sql" />
-    <include relativeToChangelogFile="true" file="./device_connection-add_connection_options.sql" />
-    <include relativeToChangelogFile="true" file="./device_connection-configuration.sql" />
-    <include relativeToChangelogFile="true" file="./device_tag.sql" />
+    <include relativeToChangelogFile="true" file="./device-network_interface.xml" />
+    <include relativeToChangelogFile="true" file="./device-remove_credential_options.xml" />
+    <include relativeToChangelogFile="true" file="./device_connection-add_connection_options.xml" />
+    <include relativeToChangelogFile="true" file="./device_connection-configuration.xml" />
+    <include relativeToChangelogFile="true" file="./device-tag.xml" />
 
-    <include relativeToChangelogFile="true" file="./device-id_check_positive.sql" />
-    <include relativeToChangelogFile="true" file="./device_connection-id_check_positive.sql" />
-    <include relativeToChangelogFile="true" file="./device_event-id_check_positive.sql" />
+    <include relativeToChangelogFile="true" file="./device_connection-id_check_positive.xml" />
+    <include relativeToChangelogFile="true" file="./device_event-id_check_positive.xml" />
+    <include relativeToChangelogFile="true" file="./device-id_check_positive.xml" />
+
 </databaseChangeLog>

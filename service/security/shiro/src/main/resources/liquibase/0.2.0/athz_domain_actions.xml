@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+  logicalFilePath="KapuaDB/changelog-authorization-0.2.0.xml">
+
+    <include relativeToChangelogFile="true" file="../common-properties.xml" />
+    
+    <changeSet id="changelog-authorization-domain-actions-0.2.0" author="eurotech">
+        <!-- Old SQL file
+        <sqlFile relativeToChangelogFile="true" path="./athz_domain_actions.sql" />
+        -->
+        <createTable tableName="athz_domain_actions">
+            <column name="domain_id" type="bigint(21) unsigned">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="action" type="varchar(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="domain_id_fk" baseTableName="athz_domain_actions" baseColumnNames="domain_id" referencedTableName="athz_domain" referencedColumnNames="id" onDelete="CASCADE"/>
+        
+        <!-- Seed values -->
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="1"/>
+            <column name="action" value="read"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="1"/>
+            <column name="action" value="write"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="1"/>
+            <column name="action" value="delete"/>
+        </insert>
+        
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="2"/>
+            <column name="action" value="connect"/>
+        </insert>
+
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="3"/>
+            <column name="action" value="read"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="3"/>
+            <column name="action" value="write"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="3"/>
+            <column name="action" value="delete"/>
+        </insert>
+
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="4"/>
+            <column name="action" value="read"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="4"/>
+            <column name="action" value="write"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="4"/>
+            <column name="action" value="delete"/>
+        </insert>
+
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="5"/>
+            <column name="action" value="read"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="5"/>
+            <column name="action" value="write"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="5"/>
+            <column name="action" value="delete"/>
+        </insert>
+
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="6"/>
+            <column name="action" value="read"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="6"/>
+            <column name="action" value="write"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="6"/>
+            <column name="action" value="delete"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="6"/>
+            <column name="action" value="execute"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="6"/>
+            <column name="action" value="connect"/>
+        </insert>
+
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="7"/>
+            <column name="action" value="read"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="7"/>
+            <column name="action" value="write"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="7"/>
+            <column name="action" value="delete"/>
+        </insert>
+
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="8"/>
+            <column name="action" value="read"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="8"/>
+            <column name="action" value="write"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="8"/>
+            <column name="action" value="delete"/>
+        </insert>
+
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="9"/>
+            <column name="action" value="read"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="9"/>
+            <column name="action" value="write"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="9"/>
+            <column name="action" value="delete"/>
+        </insert>
+
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="10"/>
+            <column name="action" value="read"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="10"/>
+            <column name="action" value="write"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="10"/>
+            <column name="action" value="delete"/>
+        </insert>
+
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="11"/>
+            <column name="action" value="read"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="11"/>
+            <column name="action" value="write"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="11"/>
+            <column name="action" value="delete"/>
+        </insert>
+
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="12"/>
+            <column name="action" value="read"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="12"/>
+            <column name="action" value="write"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="12"/>
+            <column name="action" value="delete"/>
+        </insert>
+
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="13"/>
+            <column name="action" value="read"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="13"/>
+            <column name="action" value="write"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="13"/>
+            <column name="action" value="delete"/>
+        </insert>
+
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="14"/>
+            <column name="action" value="read"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="14"/>
+            <column name="action" value="write"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="14"/>
+            <column name="action" value="delete"/>
+        </insert>
+
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="15"/>
+            <column name="action" value="read"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="15"/>
+            <column name="action" value="write"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" value="15"/>
+            <column name="action" value="delete"/>
+        </insert>
+
+        <rollback>
+            <dropTable tableName="athz_domain_actions"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

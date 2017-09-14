@@ -14,11 +14,12 @@
   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
-    
-    <include relativeToChangelogFile="true" file="./device.sql" />                  
-    <include relativeToChangelogFile="true" file="./device_event.sql" />
-    <include relativeToChangelogFile="true" file="./device_connection.sql" />
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+  logicalFilePath="KapuaDB/changelog-device-0.2.0.xml">
 
-    <include relativeToChangelogFile="true" file="./device-configuration.sql" />
+    <include relativeToChangelogFile="true" file="./device.xml" />
+    <include relativeToChangelogFile="true" file="./device-event.xml" />
+    <include relativeToChangelogFile="true" file="./device-connection.xml" />
+    <include relativeToChangelogFile="true" file="./device-configuration.xml" />
+    
 </databaseChangeLog>

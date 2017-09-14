@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+  logicalFilePath="KapuaDB/changelog-device-0.2.0.xml">
+
+    <include relativeToChangelogFile="true" file="../common-properties.xml" />
+        
+    <changeSet id="changelog-device-configuration-0.2.0_seed" author="eurotech">
+        <insert tableName="sys_configuration">
+            <column name="scope_id" value="1"/>
+            <column name="pid" value='org.eclipse.kapua.service.device.registry.DeviceRegistryService'/>
+            <column name="configurations" valueComputed="CONCAT('#', ${now}, CHAR(13), CHAR(10),
+               'maxNumberChildEntities=0', CHAR(13), CHAR(10),
+               'infiniteChildEntities=true')"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="1"/>
+            <column name="modified_on" valueComputed="${now}"/>
+            <column name="modified_by" value="1"/>
+            <column name="optlock" value="0"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

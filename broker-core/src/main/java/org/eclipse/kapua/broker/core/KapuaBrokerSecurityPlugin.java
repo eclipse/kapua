@@ -17,6 +17,7 @@ import static org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers.resolveJd
 import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_PASSWORD;
 import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_SCHEMA;
 import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_SCHEMA_ENV;
+import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_SCHEMA_UPDATE;
 import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_USERNAME;
 
 import java.io.InputStream;
@@ -58,12 +59,14 @@ public class KapuaBrokerSecurityPlugin implements BrokerPlugin {
     public Broker installPlugin(final Broker broker) throws Exception {
         logger.info("Installing Kapua broker plugin.");
 
-        logger.debug("Starting Liquibase embedded client.");
         SystemSetting config = SystemSetting.getInstance();
-        String dbUsername = config.getString(DB_USERNAME);
-        String dbPassword = config.getString(DB_PASSWORD);
-        String schema = firstNonNull(config.getString(DB_SCHEMA_ENV), config.getString(DB_SCHEMA));
-        new KapuaLiquibaseClient(resolveJdbcUrl(), dbUsername, dbPassword, Optional.of(schema)).update();
+        if(config.getBoolean(DB_SCHEMA_UPDATE, false)) {
+            logger.debug("Starting Liquibase embedded client.");
+            String dbUsername = config.getString(DB_USERNAME);
+            String dbPassword = config.getString(DB_PASSWORD);
+            String schema = firstNonNull(config.getString(DB_SCHEMA_ENV), config.getString(DB_SCHEMA));
+            new KapuaLiquibaseClient(resolveJdbcUrl(), dbUsername, dbPassword, Optional.of(schema)).update();
+        }
 
         try {
             // initialize shiro context for broker plugin from shiro ini file

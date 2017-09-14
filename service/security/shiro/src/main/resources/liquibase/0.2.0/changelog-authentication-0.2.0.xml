@@ -14,9 +14,10 @@
   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
-                      
-    <include relativeToChangelogFile="true" file="./atht_access_token.sql" />
-    <include relativeToChangelogFile="true" file="./atht_credential.sql" />
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+  logicalFilePath="KapuaDB/changelog-authentication-0.2.0.xml">
+
+    <include relativeToChangelogFile="true" file="./atht_access_token.xml" />
+    <include relativeToChangelogFile="true" file="./atht_credential.xml" />
 
 </databaseChangeLog>

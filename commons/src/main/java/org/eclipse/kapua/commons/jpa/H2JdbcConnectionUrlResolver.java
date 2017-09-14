@@ -20,7 +20,7 @@ public class H2JdbcConnectionUrlResolver implements JdbcConnectionUrlResolver {
 
     @Override
     public String connectionUrl() {
-        return "jdbc:h2:mem:kapua;MODE=MySQL;INIT=create schema if not exists kapuadb";
+        return "jdbc:h2:mem:kapua;MODE=MySQL";
     }
 
 }

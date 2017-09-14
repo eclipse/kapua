@@ -84,7 +84,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         // Check if the parent account exists
         if (findById(accountCreator.getScopeId()) == null) {
-            throw new KapuaIllegalArgumentException("scopeId", "parent account does not exist");
+            throw new KapuaIllegalArgumentException("scopeId", "parent account does not exist: " + accountCreator.getScopeId() + "::");
         }
 
         // Check child account policy
