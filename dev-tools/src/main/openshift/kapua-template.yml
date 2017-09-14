@@ -226,6 +226,7 @@ objects:
             value:
               -Dcommons.db.connection.host=$SQL_SERVICE_HOST
               -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT
+              -Dcommons.db.schema.update=true
               -Dmetrics.enable.jmx=true
               -Ddatastore.elasticsearch.nodes=$ELASTICSEARCH_PORT_9200_TCP_ADDR
               -javaagent:/jolokia-jvm-agent.jar=port=8778,protocol=https,caCert=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt,clientPrincipal=cn=system:master-proxy,useSslClientAuthentication=true,extraClientCheck=true,host=0.0.0.0,discoveryEnabled=false,user=${JOLOKIA_USER},password=${JOLOKIA_PASSWORD}
@@ -285,6 +286,7 @@ objects:
               -Xmx1G
               -Dcommons.db.connection.host=$SQL_SERVICE_HOST
               -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT
+              -Dcommons.db.schema.update=true
               -Dbroker.host=$KAPUA_BROKER_SERVICE_HOST
               -Ddatastore.elasticsearch.nodes=$ELASTICSEARCH_PORT_9200_TCP_ADDR
               -javaagent:/jolokia-jvm-agent.jar=port=8778,protocol=https,caCert=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt,clientPrincipal=cn=system:master-proxy,useSslClientAuthentication=true,extraClientCheck=true,host=0.0.0.0,discoveryEnabled=false,user=${JOLOKIA_USER},password=${JOLOKIA_PASSWORD}
@@ -339,6 +341,7 @@ objects:
               -Xmx1G
               -Dcommons.db.connection.host=$SQL_SERVICE_HOST
               -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT
+              -Dcommons.db.schema.update=true
               -Dbroker.host=$KAPUA_BROKER_SERVICE_HOST
               -Ddatastore.elasticsearch.nodes=$ELASTICSEARCH_PORT_9200_TCP_ADDR
               -javaagent:/jolokia-jvm-agent.jar=port=8778,protocol=https,caCert=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt,clientPrincipal=cn=system:master-proxy,useSslClientAuthentication=true,extraClientCheck=true,host=0.0.0.0,discoveryEnabled=false,user=${JOLOKIA_USER},password=${JOLOKIA_PASSWORD}
