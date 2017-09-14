@@ -16,7 +16,7 @@
 
 CREATE TABLE job_job_step_definition (
   scope_id       BIGINT(21) UNSIGNED NOT NULL,
-  id             BIGINT(21) UNSIGNED NOT NULL,
+  id             BIGINT(21) UNSIGNED AUTO_INCREMENT NOT NULL,
   created_on     TIMESTAMP(3) DEFAULT 0,
   created_by     BIGINT(21) UNSIGNED NOT NULL,
   modified_on    TIMESTAMP(3) NOT NULL,
