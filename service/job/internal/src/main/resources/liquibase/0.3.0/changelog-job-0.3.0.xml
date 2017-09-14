@@ -16,12 +16,12 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
-    <include relativeToChangelogFile="true" file="./job-configuration.sql"/>
+    <include relativeToChangelogFile="true" file="./job-configuration.xml"/>
 
-    <include relativeToChangelogFile="true" file="./job.sql"/>
-    <include relativeToChangelogFile="true" file="./job_execution.sql"/>
-    <include relativeToChangelogFile="true" file="./job_step.sql"/>
-    <include relativeToChangelogFile="true" file="./job_step_properties.sql"/>
-    <include relativeToChangelogFile="true" file="./job_target.sql"/>
+    <include relativeToChangelogFile="true" file="./job.xml"/>
+    <include relativeToChangelogFile="true" file="./job_execution.xml"/>
+    <include relativeToChangelogFile="true" file="./job_step.xml"/>
+    <include relativeToChangelogFile="true" file="./job_step_properties.xml"/>
+    <include relativeToChangelogFile="true" file="./job_target.xml"/>
 
 </databaseChangeLog>
