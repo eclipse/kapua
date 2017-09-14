@@ -11,32 +11,32 @@
         Eurotech - initial API and implementation
  -->
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
-    logicalFilePath="KapuaDB/changelog-foreignkeys-0.3.0.xml">
+                   logicalFilePath="KapuaDB/changelog-foreignkeys-0.3.0.xml">
 
-    <include relativeToChangelogFile="true" file="./account-foreignkey.xml" />
-    
-    <include relativeToChangelogFile="true" file="./atht_credential-foreignkey.xml" />
-    <include relativeToChangelogFile="true" file="./atht_access_token-foreignkey.xml" />
-    
-    <include relativeToChangelogFile="true" file="./athz_access_info-foreignkey.xml" />
-    <include relativeToChangelogFile="true" file="./athz_group-foreignkey.xml" />
-    <include relativeToChangelogFile="true" file="./athz_role-foreignkey.xml" />
-    
-    <include relativeToChangelogFile="true" file="./device-foreignkey.xml" />
-    <include relativeToChangelogFile="true" file="./device-connection-foreignkey.xml" />
-    <include relativeToChangelogFile="true" file="./device-tag-foreignkey.xml" />
-    
-    <include relativeToChangelogFile="true" file="./job-foreignkey.sql"/>
-    <include relativeToChangelogFile="true" file="./job_step_definition-foreignkey.sql"/>
+    <include relativeToChangelogFile="true" file="./account-foreignkey.xml"/>
 
-    <include relativeToChangelogFile="true" file="./schdl_trigger-foreignkey.sql"/>
+    <include relativeToChangelogFile="true" file="./atht_credential-foreignkey.xml"/>
+    <include relativeToChangelogFile="true" file="./atht_access_token-foreignkey.xml"/>
 
-    <include relativeToChangelogFile="true" file="./user-foreignkey.xml" />
+    <include relativeToChangelogFile="true" file="./athz_access_info-foreignkey.xml"/>
+    <include relativeToChangelogFile="true" file="./athz_group-foreignkey.xml"/>
+    <include relativeToChangelogFile="true" file="./athz_role-foreignkey.xml"/>
 
-    
-    <include relativeToChangelogFile="true" file="./tag-foreignkey.xml" />
+    <include relativeToChangelogFile="true" file="./device-foreignkey.xml"/>
+    <include relativeToChangelogFile="true" file="./device-connection-foreignkey.xml"/>
+    <include relativeToChangelogFile="true" file="./device-tag-foreignkey.xml"/>
+
+    <include relativeToChangelogFile="true" file="./job-foreignkey.xml"/>
+    <include relativeToChangelogFile="true" file="./job_step_definition-foreignkey.xml"/>
+
+    <include relativeToChangelogFile="true" file="./trigger-foreignkey.xml"/>
+
+    <include relativeToChangelogFile="true" file="./user-foreignkey.xml"/>
+
+
+    <include relativeToChangelogFile="true" file="./tag-foreignkey.xml"/>
 
 </databaseChangeLog>
