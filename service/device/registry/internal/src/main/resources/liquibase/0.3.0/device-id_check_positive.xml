@@ -15,17 +15,18 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
-  logicalFilePath="KapuaDB/changelog-authentication-0.3.0.xml">
+  logicalFilePath="KapuaDB/changelog-device-0.3.0.xml">
 
-    <changeSet id="atht_credential-lockout_policy-0.3.0" author="eurotech">
-        <addColumn tableName="atht_credential">
-            <column name="login_failures" type="int" defaultValueNumeric="0">
-                <constraints nullable="false"/>
-            </column>
-            <column name="first_login_failure" type="timestamp(3)"/>
-            <column name="login_failures_reset" type="timestamp(3)"/>
-            <column name="lockout_reset" type="timestamp(3)"/>
-        </addColumn>
+    <include relativeToChangelogFile="true" file="../common-properties.xml" />
+
+    <changeSet id="device-id_check_positive-0.3.0" author="eurotech">
+        <sql>ALTER TABLE dvc_device ADD CHECK scope_id >= 0;</sql>
+        <sql>ALTER TABLE dvc_device ADD CHECK id >= 0;</sql>
+        <sql>ALTER TABLE dvc_device ADD CHECK created_by >= 0;</sql>
+        <sql>ALTER TABLE dvc_device ADD CHECK modified_by >= 0;</sql>
+        <sql>ALTER TABLE dvc_device ADD CHECK group_id >= 0;</sql>
+        <sql>ALTER TABLE dvc_device ADD CHECK connection_id >= 0;</sql>
+        <sql>ALTER TABLE dvc_device ADD CHECK last_event_id >= 0;</sql>
     </changeSet>
 
 </databaseChangeLog>

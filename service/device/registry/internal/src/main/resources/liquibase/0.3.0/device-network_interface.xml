@@ -9,15 +9,22 @@
 
     Contributors:
         Eurotech - initial API and implementation
- -->
- <databaseChangeLog
+-->
+<databaseChangeLog
   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
-  logicalFilePath="KapuaDB/changelog-account-0.3.0.xml">
+  logicalFilePath="KapuaDB/changelog-device-0.3.0.xml">
 
-    <include relativeToChangelogFile="true" file="./account-parent_account_path_length.xml" />
-    <include relativeToChangelogFile="true" file="./account-id_check_positive.xml" />
+    <changeSet id="device-network_interface-0.3.0" author="eurotech">
+        <!-- Old SQL file
+        <sqlFile relativeToChangelogFile="true" path="./device-network-interface.sql" />
+        -->
+        <addColumn tableName="dvc_device">
+            <column name="connection_interface" type="varchar(255)" />
+            <column name="connection_ip" type="varchar(64)" />
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

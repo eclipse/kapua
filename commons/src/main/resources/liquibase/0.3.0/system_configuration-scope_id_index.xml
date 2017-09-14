@@ -10,14 +10,22 @@
     Contributors:
         Eurotech - initial API and implementation
  -->
- <databaseChangeLog
+<databaseChangeLog
   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
-  logicalFilePath="KapuaDB/changelog-account-0.3.0.xml">
-
-    <include relativeToChangelogFile="true" file="./account-parent_account_path_length.xml" />
-    <include relativeToChangelogFile="true" file="./account-id_check_positive.xml" />
+  logicalFilePath="KapuaDB/changelog-system-configuration-0.3.0.xml">
+                      
+    <changeSet id="system-configuration-scope_id_index-0.3.0" author="eurotech">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="idx_configurationScopeId" />
+            </not>
+        </preConditions>
+        <createIndex tableName="sys_configuration" indexName="idx_configurationScopeId">
+            <column name="scope_id" />
+        </createIndex>
+    </changeSet>
 
 </databaseChangeLog>

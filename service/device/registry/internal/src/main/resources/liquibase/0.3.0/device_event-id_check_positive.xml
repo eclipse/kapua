@@ -9,15 +9,21 @@
 
     Contributors:
         Eurotech - initial API and implementation
- -->
- <databaseChangeLog
+-->
+<databaseChangeLog
   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
-  logicalFilePath="KapuaDB/changelog-account-0.3.0.xml">
+  logicalFilePath="KapuaDB/changelog-device-0.3.0.xml">
 
-    <include relativeToChangelogFile="true" file="./account-parent_account_path_length.xml" />
-    <include relativeToChangelogFile="true" file="./account-id_check_positive.xml" />
+    <include relativeToChangelogFile="true" file="../common-properties.xml" />
+
+    <changeSet id="device_event-id_check_positive-0.3.0" author="eurotech">
+        <sql>ALTER TABLE dvc_device_event ADD CHECK scope_id >= 0;</sql>
+        <sql>ALTER TABLE dvc_device_event ADD CHECK id >= 0;</sql>
+        <sql>ALTER TABLE dvc_device_event ADD CHECK created_by >= 0;</sql>
+        <sql>ALTER TABLE dvc_device_event ADD CHECK device_id >= 0;</sql>
+    </changeSet>
 
 </databaseChangeLog>

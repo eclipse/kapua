@@ -9,22 +9,21 @@
 
     Contributors:
         Eurotech - initial API and implementation
--->
+ -->
 <databaseChangeLog
   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
-  logicalFilePath="KapuaDB/changelog-device-0.3.0.xml">
+  logicalFilePath="KapuaDB/changelog-authorization-0.3.0.xml">
 
-    <changeSet id="changelog-device-network-interface-0.3.0" author="eurotech">
-        <!-- Old SQL file
-        <sqlFile relativeToChangelogFile="true" path="./device-network-interface.sql" />
-        -->
-        <addColumn tableName="dvc_device">
-            <column name="connection_interface" type="varchar(255)" />
-            <column name="connection_ip" type="varchar(64)" />
-        </addColumn>
+    <changeSet id="athz_access_info-id_check_positive-0.3.0" author="eurotech">
+        <sql>ALTER TABLE athz_access_permission ADD CHECK scope_id >= 0;</sql>
+        <sql>ALTER TABLE athz_access_permission ADD CHECK id >= 0;</sql>
+        <sql>ALTER TABLE athz_access_permission ADD CHECK created_by >= 0;</sql>
+        <sql>ALTER TABLE athz_access_permission ADD CHECK access_info_id >= 0;</sql>
+        <sql>ALTER TABLE athz_access_permission ADD CHECK target_scope_id >= 0;</sql>
+        <sql>ALTER TABLE athz_access_permission ADD CHECK group_id >= 0;</sql>
     </changeSet>
 
 </databaseChangeLog>

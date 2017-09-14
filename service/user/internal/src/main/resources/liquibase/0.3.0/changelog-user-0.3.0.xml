@@ -18,6 +18,6 @@
   logicalFilePath="KapuaDB/changelog-user-0.3.0.xml">
 
     <include relativeToChangelogFile="true" file="./user-expiration.xml" />
-    <include relativeToChangelogFile="true" file="./user-id_check_positive.sql" />
+    <include relativeToChangelogFile="true" file="./user-id_check_positive.xml" />
 
 </databaseChangeLog>

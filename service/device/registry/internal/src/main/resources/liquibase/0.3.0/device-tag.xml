@@ -17,16 +17,16 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
   logicalFilePath="KapuaDB/changelog-device-0.3.0.xml">
 
-    <changeSet id="changelog-device-tag-0.3.0" author="eurotech">
+    <changeSet id="device-tag-0.3.0" author="eurotech">
         <!-- Old SQL file
         <sqlFile relativeToChangelogFile="true" path="./device-tag.sql" />
         -->
         <createTable tableName="dvc_device_tag">
             <column name="device_id" type="bigint(21) unsigned">
-                <constraints nullable="false" primaryKey="true"/>
+                <constraints nullable="false" primaryKey="true" checkConstraint=">= 0"/>
             </column>
             <column name="tag_id" type="bigint(21) unsigned">
-                <constraints nullable="false" primaryKey="true"/>
+                <constraints nullable="false" primaryKey="true" checkConstraint=">= 0"/>
             </column>
         </createTable>
 

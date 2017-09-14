@@ -17,7 +17,7 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
   logicalFilePath="KapuaDB/changelog-system-configuration-0.3.0.xml">
                       
-    <include relativeToChangelogFile="true" file="./system-configuration-scope-id-index.xml" />
-    <include relativeToChangelogFile="true" file="./system_configuration-id_check_positive.sql" />
+    <include relativeToChangelogFile="true" file="./system_configuration-scope_id_index.xml" />
+    <include relativeToChangelogFile="true" file="./system_configuration-id_check_positive.xml" />
 
 </databaseChangeLog>

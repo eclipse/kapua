@@ -28,7 +28,7 @@
                                  baseColumnNames="group_id"
                                  referencedTableName="athz_group"
                                  referencedColumnNames="id"
-                                 deleteCascade="true"/>
+                                 onDelete="SET NULL"/>
     </changeSet>
 
 </databaseChangeLog>

@@ -19,18 +19,12 @@
 
     <include relativeToChangelogFile="true" file="../common-properties.xml" />
 
-    <changeSet id="changelog-device-connection-configuration-0.3.0_seed" author="eurotech">
-        <insert tableName="sys_configuration">
-            <column name="scope_id" value="1"/>
-            <column name="pid" value='org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService'/>
-            <column name="configurations" valueComputed="CONCAT('#', ${now}, CHAR(13), CHAR(10),
-               'deviceConnectionUserCouplingDefaultMode=LOOSE')"/>
-            <column name="created_on" valueComputed="${now}"/>
-            <column name="created_by" value="1"/>
-            <column name="modified_on" valueComputed="${now}"/>
-            <column name="modified_by" value="1"/>
-            <column name="optlock" value="0"/>
-        </insert>
+    <changeSet id="device_connection-id_check_positive-0.3.0" author="eurotech">
+        <sql>ALTER TABLE dvc_device_connection ADD CHECK scope_id >= 0;</sql>
+        <sql>ALTER TABLE dvc_device_connection ADD CHECK id >= 0;</sql>
+        <sql>ALTER TABLE dvc_device_connection ADD CHECK created_by >= 0;</sql>
+        <sql>ALTER TABLE dvc_device_connection ADD CHECK modified_by >= 0;</sql>
+        <sql>ALTER TABLE dvc_device_connection ADD CHECK reserved_user_id >= 0;</sql>
     </changeSet>
 
 </databaseChangeLog>

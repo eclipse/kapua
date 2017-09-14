@@ -17,7 +17,7 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
   logicalFilePath="KapuaDB/changelog-device-0.3.0.xml">
 
-    <changeSet id="changelog-device-connection-0.3.0" author="eurotech">
+    <changeSet id="device_connection-add_connection_options-0.3.0" author="eurotech">
         <!-- Old SQL file
         <sqlFile relativeToChangelogFile="true" path="./device_connection.sql" />
         -->

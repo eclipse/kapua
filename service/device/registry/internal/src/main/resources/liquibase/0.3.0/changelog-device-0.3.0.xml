@@ -17,10 +17,14 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
   logicalFilePath="KapuaDB/changelog-device-0.3.0.xml">
 
-    <include relativeToChangelogFile="true" file="./device-network-interface.xml" />
-    <include relativeToChangelogFile="true" file="./device.xml" />
-    <include relativeToChangelogFile="true" file="./device-connection.xml" />
-    <include relativeToChangelogFile="true" file="./device-connection-configuration.xml" />
+    <include relativeToChangelogFile="true" file="./device-network_interface.xml" />
+    <include relativeToChangelogFile="true" file="./device-remove_credential_options.xml" />
+    <include relativeToChangelogFile="true" file="./device_connection-add_connection_options.xml" />
+    <include relativeToChangelogFile="true" file="./device_connection-configuration.xml" />
     <include relativeToChangelogFile="true" file="./device-tag.xml" />
+
+    <include relativeToChangelogFile="true" file="./device_connection-id_check_positive.xml" />
+    <include relativeToChangelogFile="true" file="./device_event-id_check_positive.xml" />
+    <include relativeToChangelogFile="true" file="./device-id_check_positive.xml" />
 
 </databaseChangeLog>

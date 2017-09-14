@@ -19,14 +19,8 @@
 
     <include relativeToChangelogFile="true" file="../common-properties.xml" />
 
-    <changeSet id="changelog-account-0.3.0" author="eurotech">
+    <changeSet id="account-parent_account_path_length-0.3.0" author="eurotech">
         <modifyDataType tableName="act_account" columnName="parent_account_path" newDataType="varchar(1024)" />
-        
-<!--         <update tableName="act_account">
-            <column name="id">
-                <constraints checkConstraint="id > 0"/>
-            </column>        
-        </update> -->
     </changeSet>
 
 </databaseChangeLog>
