@@ -131,6 +131,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         gwtTriggerCreator.setRetryInterval(retryInterval.getValue() != null ? retryInterval.getValue().longValue() : null);
         gwtTriggerCreator.setCronScheduling(cronExpression.getValue());
         List<GwtTriggerProperty> gwtTriggerPropertyList = new ArrayList<GwtTriggerProperty>();
+        gwtTriggerPropertyList.add(new GwtTriggerProperty("scopeId", KAPUA_ID_CLASS_NAME, currentSession.getSelectedAccountId()));
         gwtTriggerPropertyList.add(new GwtTriggerProperty("jobId", KAPUA_ID_CLASS_NAME, jobId));
         gwtTriggerCreator.setTriggerProperties(gwtTriggerPropertyList);
 
