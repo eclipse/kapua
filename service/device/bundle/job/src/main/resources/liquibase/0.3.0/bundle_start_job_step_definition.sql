@@ -12,7 +12,7 @@
 
 -- liquibase formatted sql
 
--- changeset command-job:1
+-- changeset bundle-job:1
 
 INSERT INTO job_job_step_definition
 VALUES (1,

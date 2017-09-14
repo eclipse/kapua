@@ -12,7 +12,7 @@
 
 -- liquibase formatted sql
 
--- changeset bundle-job:1
+-- changeset configuration-job:1
 
 INSERT INTO job_job_step_definition
 VALUES (1,
@@ -21,11 +21,11 @@ VALUES (1,
   1,
   CURRENT_TIMESTAMP(),
   1,
-  'Device Bundle Management Stop',
-  'Stops a bundle using the Device Bundle Management Service',
+  'Device Configuration Management Configuration',
+  'Sends a configuration using the Device Configuration Management Service',
   'TARGET',
   NULL,
-  'org.eclipse.kapua.service.device.management.bundle.job.DeviceBundleStopTargetProcessor',
+  'org.eclipse.kapua.service.device.management.configuration.job.DeviceConfigurationPutTargetProcessor',
         NULL,
         0,
         NULL,
@@ -37,15 +37,15 @@ VALUES
   (
     SELECT id
     FROM job_job_step_definition
-    WHERE name = 'Device Bundle Management Stop',
-    'bundleId',
-    'java.lang.String',
+    WHERE name = 'Device Configuration Management Configuration',
+    'configuration',
+    'org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration',
     NULL
   ),
   (
     SELECT id
     FROM job_job_step_definition
-    WHERE name = 'Device Bundle Management Stop',
+    WHERE name = 'Device Configuration Management Configuration',
     'timeout',
     'java.lang.Long',
     '30000'
