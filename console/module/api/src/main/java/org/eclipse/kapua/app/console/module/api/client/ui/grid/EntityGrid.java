@@ -168,8 +168,8 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
     }
 
     public void setFilterPanel(EntityFilterPanel<M> filterPanel) {
-    	this.filterPanel = filterPanel; 
-    	entityCRUDToolbar.setFilterPanel(filterPanel);
+        this.filterPanel = filterPanel;
+        entityCRUDToolbar.setFilterPanel(filterPanel);
     }
 
     protected void selectionChangedEvent(M selectedItem) {

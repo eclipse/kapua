@@ -11,12 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.client.device.bundles;
 
-import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractTabDescriptor;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractEntityTabDescriptor;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.device.client.device.DeviceView;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 
-public class DeviceTabBundlesDescriptor extends AbstractTabDescriptor<GwtDevice, DeviceTabBundles, DeviceView> {
+public class DeviceTabBundlesDescriptor extends AbstractEntityTabDescriptor<GwtDevice, DeviceTabBundles, DeviceView> {
 
     @Override
     public DeviceTabBundles getTabViewInstance(DeviceView view, GwtSession currentSession) {

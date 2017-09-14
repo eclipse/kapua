@@ -19,6 +19,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.ActionDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
+import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
@@ -60,11 +61,11 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
 
     protected RefreshButton refreshEntityButton;
     private boolean refreshEntityButtonShow = true;
-    
+
     protected ToggleButton filterButton;
-    private boolean filterButtonShow=true;
-    
-    protected EntityFilterPanel<M> filterPanel; 
+    private boolean filterButtonShow = true;
+
+    protected EntityFilterPanel<M> filterPanel;
 
     public EntityCRUDToolbar(GwtSession currentSession) {
         this.currentSession = currentSession;
@@ -97,24 +98,24 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
             add(refreshEntityButton);
             add(new FillToolItem());
         }
-      
-        if (filterButtonShow) {
-        	filterButton = new ToggleButton(MSGS.deviceTableToolbarCloseFilter(), new SelectionListener<ButtonEvent>() {
 
-				@Override
-				public void componentSelected(ButtonEvent ce) {
-					if (filterButton.isPressed()) {
-						filterPanel.show();
-						filterButton.setText(MSGS.deviceTableToolbarCloseFilter());
-					} else {
-						filterPanel.hide();
-						filterButton.setText(MSGS.deviceTableToolbarOpenFilter());
-					}
-					
-				}
-			});
-        	filterButton.toggle(true);
-        	add(filterButton);
+        if (filterButtonShow) {
+            filterButton = new ToggleButton(MSGS.deviceTableToolbarCloseFilter(), new SelectionListener<ButtonEvent>() {
+
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    if (filterButton.isPressed()) {
+                        filterPanel.show();
+                        filterButton.setText(MSGS.deviceTableToolbarCloseFilter());
+                    } else {
+                        filterPanel.hide();
+                        filterButton.setText(MSGS.deviceTableToolbarOpenFilter());
+                    }
+
+                }
+            });
+            filterButton.toggle(true);
+            add(filterButton);
         }
     }
 
@@ -169,9 +170,9 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
     public void setEditButtonVisible(boolean show) {
         this.editEntityButtonShow = show;
     }
-    
+
     public void setFilterButtonVisible(boolean show) {
-    	this.filterButtonShow = show;
+        this.filterButtonShow = show;
     }
 
     //
@@ -282,9 +283,9 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
         if (refreshEntityButton != null) {
             refreshEntityButton.enable();
         }
-        
+
         if (filterButton != null) {
-        	filterButton.enable();
+            filterButton.enable();
         }
     }
 
@@ -303,12 +304,12 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
     public RefreshButton getRefreshEntityButton() {
         return refreshEntityButton;
     }
-    
+
     public ToggleButton getFilterButton() {
-    	return filterButton;
+        return filterButton;
     }
-    
+
     public void setFilterPanel(EntityFilterPanel<M> filterPanel) {
-    	this.filterPanel = filterPanel;
+        this.filterPanel = filterPanel;
     }
 }

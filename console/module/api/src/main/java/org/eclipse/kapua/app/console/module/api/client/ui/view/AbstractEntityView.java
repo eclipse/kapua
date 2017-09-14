@@ -62,7 +62,7 @@ public abstract class AbstractEntityView<M extends GwtEntityModel> extends Abstr
         setLayout(new FitLayout());
         setBorders(false);
 
-        LayoutContainer mf = new LayoutContainer();
+        final LayoutContainer mf = new LayoutContainer();
         mf.setBorders(false);
         mf.setLayout(new BorderLayout());
 
@@ -89,7 +89,7 @@ public abstract class AbstractEntityView<M extends GwtEntityModel> extends Abstr
         centerMainPanel.setMargins(new Margins(0, 5, 0, 0));
         centerMainPanel.setSplit(false);
 
-        LayoutContainer resultContainer = new LayoutContainer(new BorderLayout());
+        final LayoutContainer resultContainer = new LayoutContainer(new BorderLayout());
         resultContainer.setBorders(false);
 
         mf.add(filterPanel, eastData);
