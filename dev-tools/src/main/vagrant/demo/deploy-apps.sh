@@ -16,6 +16,6 @@ vagrant ssh demo -c "echo 'deploying the Kapua broker'
 	echo 'copying Kapua console web application'
 	sudo cp /kapua/console/web/target/admin.war webapps/admin.war
 	echo 'copying Kapua api web application'
-	sudo cp /kapua/rest-api/target/api.war webapps/api.war
+	sudo cp /kapua/rest-api/web/target/api.war webapps/api.war
 	cd ..
 	sudo chown -R vagrant:vagrant apache-tomcat-${TOMCAT_VERSION}"
