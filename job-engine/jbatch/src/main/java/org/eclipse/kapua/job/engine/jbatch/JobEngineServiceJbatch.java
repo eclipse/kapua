@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
+import javax.batch.operations.JobExecutionNotRunningException;
 import javax.batch.operations.JobSecurityException;
 import javax.batch.operations.NoSuchJobException;
 import javax.batch.operations.NoSuchJobExecutionException;
@@ -179,9 +180,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         try {
             BatchRuntime.getJobOperator().start(jobXmlDefinitionFile.getAbsolutePath().replaceAll("\\.xml$", ""), new Properties());
         } catch (NoSuchJobExecutionException | NoSuchJobException | JobSecurityException e) {
-            String message = String.format("Cannot start job '[%s]': [%s]", jobId, e.getMessage());
-            logger.error(message, e);
-            throw new KapuaIllegalStateException(message);
+            throw new KapuaIllegalStateException(String.format("Cannot start job '[%s]': [%s]", jobId, e.getMessage()), e);
         }
 
     }
@@ -207,26 +206,46 @@ public class JobEngineServiceJbatch implements JobEngineService {
         //
         // Stop the job
         try {
-            Long jbatchJobExecutionId = getRunningJobExecution(getJbatchJobName(job));
-            BatchRuntime.getJobOperator().stop(jbatchJobExecutionId);
-            // wait for stop completed
-            for (int i = 0; i < ON_STOP_MAX_WAIT; i++) {
-                if (BatchStatus.STOPPED.equals(BatchRuntime.getJobOperator().getJobExecution(jbatchJobExecutionId).getBatchStatus())) {
-                    BatchRuntime.getJobOperator().abandon(jbatchJobExecutionId);
-                    break;
-                }
-                try {
-                    Thread.sleep(ON_STOP_WAIT_STEP);
-                }
-                catch (InterruptedException e) {
-                    //ignore it
-                }
-            }
+            String jobName = getJbatchJobName(job);
+            Long jbatchJobExecutionId = getRunningJobExecution(jobName);
+            internalStopJob(jbatchJobExecutionId, jobName);
+            internalAbandonJob(jbatchJobExecutionId, jobName);
         } catch (NoSuchJobExecutionException | NoSuchJobException | JobSecurityException e) {
-            String message = String.format("Cannot stop job '[%s]': [%s]", jobId, e.getMessage());
-            logger.error(message, e);
-            throw new KapuaIllegalStateException(message);
+            throw new KapuaIllegalStateException(String.format("Cannot stop job '[%s]': [%s]", jobId, e.getMessage()), e);
         }
+    }
+
+    private void internalStopJob(Long jbatchJobExecutionId, String jobName) {
+        try {
+            BatchRuntime.getJobOperator().stop(jbatchJobExecutionId);
+        } catch (JobExecutionNotRunningException ei) {
+            // ignore this exception. It means that the job is already stopped
+            logger.info(String.format("The job [%s] is already stopped. The procedure will continue!", jobName));
+        }
+    }
+
+    private void internalAbandonJob(Long jbatchJobExecutionId, String jobName) {
+        // wait for stop completed
+        for (int i = 0; i < ON_STOP_MAX_WAIT; i++) {
+            BatchStatus status = BatchRuntime.getJobOperator().getJobExecution(jbatchJobExecutionId).getBatchStatus();
+            // if the job already ended (so failed, completed or abandoned) then just return
+            if (BatchStatus.ABANDONED.equals(status) || BatchStatus.FAILED.equals(status) || BatchStatus.COMPLETED.equals(status)) {
+                logger.info(String.format("The job [%s] is already stopped. The procedure will continue!", jobName));
+                return;
+            }
+            if (BatchStatus.STOPPED.equals(status)) {
+                BatchRuntime.getJobOperator().abandon(jbatchJobExecutionId);
+                logger.info(String.format("The job [%s] is correctly stopped.", jobName));
+                return;
+            }
+            logger.info(String.format("The job [%s] is still not stopped. Wait for a while [%d]", jobName, (i * ON_STOP_WAIT_STEP)));
+            try {
+                Thread.sleep(ON_STOP_WAIT_STEP);
+            } catch (InterruptedException e) {
+                // ignore it
+            }
+        }
+        throw new KapuaIllegalStateException(String.format("The job [%s] is not completely stopped after a while. The stop procedure will be abbandoned!", jobName));
     }
 
     private String getJbatchJobName(Job job) throws KapuaException {
