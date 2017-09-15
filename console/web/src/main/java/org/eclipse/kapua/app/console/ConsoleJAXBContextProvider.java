@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console;
 
-import javax.xml.bind.JAXBContext;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.TscalarImpl;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
@@ -34,11 +32,15 @@ import org.eclipse.kapua.service.device.management.asset.DeviceAssetXmlRegistry;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
+import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
+import org.eclipse.kapua.service.device.management.command.DeviceCommandOutput;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
+
+import javax.xml.bind.JAXBContext;
 
 public class ConsoleJAXBContextProvider implements JAXBContextProvider {
 
@@ -56,11 +58,15 @@ public class ConsoleJAXBContextProvider implements JAXBContextProvider {
                         KuraBundle.class,
                         KuraBundles.class,
                         KuraBundleInfo.class,
-                        DevicePackages.class,
+
                         DeviceBundle.class,
                         DeviceBundles.class,
+                        DeviceCommandInput.class,
+                        DeviceCommandOutput.class,
                         DeviceConfiguration.class,
                         DeviceComponentConfiguration.class,
+                        DevicePackages.class,
+
                         KuraSnapshotIds.class,
                         DeviceSnapshots.class,
                         KapuaTocd.class,
