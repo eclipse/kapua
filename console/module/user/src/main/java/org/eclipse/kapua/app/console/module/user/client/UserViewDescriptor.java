@@ -36,7 +36,7 @@ public class UserViewDescriptor extends AbstractEntityViewDescriptor<GwtUser> {
 
     @Override
     public Integer getOrder() {
-        return 700;
+        return 800;
     }
 
     @Override

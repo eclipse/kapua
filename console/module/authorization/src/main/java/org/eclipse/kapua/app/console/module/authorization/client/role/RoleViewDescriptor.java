@@ -31,7 +31,7 @@ public class RoleViewDescriptor extends AbstractEntityViewDescriptor<GwtRole> {
 
     @Override
     public Integer getOrder() {
-        return 800;
+        return 900;
     }
 
     @Override

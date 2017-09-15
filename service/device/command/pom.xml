@@ -28,6 +28,8 @@
         <module>api</module>
         <module>internal</module>
         <module>test</module>
+
+        <module>job</module>
     </modules>
 
 </project>

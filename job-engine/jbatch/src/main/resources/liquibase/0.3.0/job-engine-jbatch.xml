@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+-->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+
+        logicalFilePath="KapuaDB/changelog-job-engine-jbatch-0.3.0.xml">
+
+    <include relativeToChangelogFile="true" file="../common-properties.xml"/>
+
+    <changeSet id="changelog-job-engine-jbatch-0.3.0_createTables" author="eurotech">
+        <createTable tableName="checkpointdata">
+            <column name="id" type="varchar(512)"/>
+            <column name="obj" type="blob"/>
+        </createTable>
+
+        <createTable tableName="jobinstancedata">
+            <column name="jobinstanceid" type="bigint" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(512)"/>
+            <column name="apptag" type="varchar(512)"/>
+        </createTable>
+
+        <createTable tableName="executioninstancedata">
+            <column name="jobexecid" type="bigint" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="jobinstanceid" type="bigint"/>
+            <column name="createtime" type="timestamp(3)"/>
+            <column name="starttime" type="timestamp(3)"/>
+            <column name="endtime" type="timestamp(3)"/>
+            <column name="updatetime" type="timestamp(3)"/>
+            <column name="parameters" type="blob"/>
+            <column name="batchstatus" type="varchar(512)"/>
+            <column name="exitstatus" type="varchar(512)"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="executioninstancedata"
+                                 baseColumnNames="jobinstanceid"
+                                 constraintName="fk_executioninstancedata_jobinstanceid"
+                                 referencedTableName="jobinstancedata"
+                                 referencedColumnNames="jobinstanceid"
+                                 onDelete="CASCADE"/>
+
+        <createTable tableName="jobstatus">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="obj" type="blob"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="jobstatus"
+                                 baseColumnNames="id"
+                                 constraintName="fk_jobstatus_id"
+                                 referencedTableName="jobinstancedata"
+                                 referencedColumnNames="jobinstanceid"
+                                 onDelete="CASCADE"/>
+
+        <createTable tableName="stepexecutioninstancedata">
+            <column name="stepexecid" type="bigint" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="jobexecid" type="bigint"/>
+            <column name="batchstatus" type="varchar(512)"/>
+            <column name="exitstatus" type="varchar(512)"/>
+            <column name="stepname" type="varchar(512)"/>
+            <column name="readcount" type="integer"/>
+            <column name="writecount" type="integer"/>
+            <column name="commitcount" type="integer"/>
+            <column name="rollbackcount" type="integer"/>
+            <column name="readskipcount" type="integer"/>
+            <column name="processskipcount" type="integer"/>
+            <column name="filtercount" type="integer"/>
+            <column name="writeskipcount" type="integer"/>
+            <column name="startTime" type="timestamp(3)"/>
+            <column name="endTime" type="timestamp(3)"/>
+            <column name="persistentData" type="blob"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="stepexecutioninstancedata"
+                                 baseColumnNames="jobexecid"
+                                 constraintName="fk_stepexecutioninstancedata_jobexecid"
+                                 referencedTableName="executioninstancedata"
+                                 referencedColumnNames="jobexecid"
+                                 onDelete="CASCADE"/>
+
+        <createTable tableName="stepstatus">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="obj" type="blob"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="stepstatus"
+                                 baseColumnNames="id"
+                                 constraintName="fk_stepstatus_id"
+                                 referencedTableName="stepexecutioninstancedata"
+                                 referencedColumnNames="stepexecid"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+
+</databaseChangeLog>

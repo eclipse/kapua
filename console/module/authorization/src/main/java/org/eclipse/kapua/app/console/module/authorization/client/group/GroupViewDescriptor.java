@@ -31,7 +31,7 @@ public class GroupViewDescriptor extends AbstractEntityViewDescriptor<GwtGroup> 
 
     @Override
     public Integer getOrder() {
-        return 500;
+        return 600;
     }
 
     @Override

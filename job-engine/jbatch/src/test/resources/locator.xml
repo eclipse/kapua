@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+<!DOCTYPE xml>
+<locator-config>
+    <provided>
+        <api>org.eclipse.kapua.service.device.call.DeviceCallFactory</api>        
+
+        <api>org.eclipse.kapua.service.device.registry.event.DeviceEventService</api>
+        <api>org.eclipse.kapua.service.device.registry.event.DeviceEventFactory</api>
+    
+        <api>org.eclipse.kapua.service.device.registry.DeviceRegistryService</api>
+        <api>org.eclipse.kapua.service.device.registry.DeviceFactory</api>
+
+        <api>org.eclipse.kapua.service.device.management.command.DeviceCommandManagementService</api>
+        <api>org.eclipse.kapua.service.device.management.command.DeviceCommandFactory</api>
+    
+        <api>org.eclipse.kapua.service.scheduler.trigger.TriggerService</api>
+        <api>org.eclipse.kapua.service.scheduler.trigger.TriggerFactory</api>
+    
+        <api>org.eclipse.kapua.service.job.JobFactory</api>
+        <api>org.eclipse.kapua.service.job.JobService</api>
+        
+        <api>org.eclipse.kapua.service.job.context.JobContextFactory</api>
+        <api>org.eclipse.kapua.job.engine.JobEngineService</api>
+        
+        <api>org.eclipse.kapua.service.job.execution.JobExecutionService</api>
+        <api>org.eclipse.kapua.service.job.execution.JobExecutionFactory</api>
+        
+        <api>org.eclipse.kapua.service.job.targets.JobTargetService</api>
+        <api>org.eclipse.kapua.service.job.targets.JobTargetFactory</api>
+        
+        <api>org.eclipse.kapua.service.job.step.JobStepService</api>
+        <api>org.eclipse.kapua.service.job.step.JobStepFactory</api>
+        
+        <api>org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService</api>
+        <api>org.eclipse.kapua.service.job.step.definition.JobStepDefinitionFactory</api>
+
+
+        <api>org.eclipse.kapua.service.account.AccountService</api>
+        <api>org.eclipse.kapua.service.account.AccountFactory</api>
+        
+        <api>org.eclipse.kapua.service.authorization.AuthorizationService</api>
+        
+        <api>org.eclipse.kapua.service.authorization.access.AccessInfoService</api>
+        <api>org.eclipse.kapua.service.authorization.access.AccessInfoFactory</api>
+        <api>org.eclipse.kapua.service.authorization.access.AccessPermissionService</api>
+        <api>org.eclipse.kapua.service.authorization.access.AccessPermissionFactory</api>
+        <api>org.eclipse.kapua.service.authorization.access.AccessRoleService</api>
+        <api>org.eclipse.kapua.service.authorization.access.AccessRoleFactory</api>
+
+        <api>org.eclipse.kapua.service.authorization.permission.PermissionFactory</api>
+        
+        <api>org.eclipse.kapua.service.authorization.group.GroupService</api>
+        
+        <api>org.eclipse.kapua.service.authorization.role.RoleService</api>
+        <api>org.eclipse.kapua.service.authorization.role.RoleFactory</api>
+        <api>org.eclipse.kapua.service.authorization.role.RolePermissionService</api>
+        <api>org.eclipse.kapua.service.authorization.role.RolePermissionFactory</api>
+        
+        <api>org.eclipse.kapua.service.tag.TagService</api>
+        
+        <api>org.eclipse.kapua.translator.Translator</api>
+        <api>org.eclipse.kapua.transport.TransportClientFactory</api>
+        
+        <api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
+        <api>org.eclipse.kapua.model.id.KapuaIdFactory</api>
+    </provided>
+    <packages>
+        <package>org.eclipse.kapua.commons</package>
+        <package>org.eclipse.kapua.job</package>
+        <package>org.eclipse.kapua.service</package>
+        <package>org.eclipse.kapua.transport</package>
+    </packages>
+</locator-config>

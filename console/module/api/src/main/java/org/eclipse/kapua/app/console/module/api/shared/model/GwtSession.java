@@ -79,6 +79,11 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     private String rootAccountName;
     private String selectedAccountName;
 
+    private boolean hasJobCreatePermission;
+    private boolean hasJobReadPermission;
+    private boolean hasJobUpdatePermission;
+    private boolean hasJobDeletePermission;
+
     public GwtSession() {
     }
 
@@ -424,6 +429,38 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
 
     public void setConnectionDeletePermission(boolean hasConnectionDeletePermission) {
         this.hasConnectionDeletePermission = hasConnectionDeletePermission;
+    }
+
+    public boolean hasJobCreatePermission() {
+        return hasJobCreatePermission;
+    }
+
+    public void setJobCreatePermission(boolean hasJobCreatePermission) {
+        this.hasJobCreatePermission = hasJobCreatePermission;
+    }
+
+    public boolean hasJobReadPermission() {
+        return hasJobReadPermission;
+    }
+
+    public void setJobReadPermission(boolean hasJobReadPermission) {
+        this.hasJobReadPermission = hasJobReadPermission;
+    }
+
+    public boolean hasJobUpdatePermission() {
+        return hasJobUpdatePermission;
+    }
+
+    public void setJobUpdatePermission(boolean hasJobUpdatePermission) {
+        this.hasJobUpdatePermission = hasJobUpdatePermission;
+    }
+
+    public boolean hasJobDeletePermission() {
+        return hasJobDeletePermission;
+    }
+
+    public void setJobDeletePermission(boolean hasJobDeletePermission) {
+        this.hasJobDeletePermission = hasJobDeletePermission;
     }
 
     public String getUserName() {

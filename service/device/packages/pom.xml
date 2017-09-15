@@ -27,6 +27,8 @@
     <modules>
         <module>api</module>
         <module>internal</module>
+
+        <module>job</module>
     </modules>
 
 </project>

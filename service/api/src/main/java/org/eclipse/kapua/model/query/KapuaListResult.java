@@ -12,6 +12,7 @@
 package org.eclipse.kapua.model.query;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -105,4 +106,12 @@ public interface KapuaListResult<E extends KapuaEntity> extends KapuaSerializabl
      * Clear item result list
      */
     public void clearItems();
+
+    /**
+     * Sorts the list result according to the given {@link Comparator}.
+     * 
+     * @param comparator
+     *            The {@link Comparator} used to compare items.
+     */
+    public void sort(Comparator<E> comparator);
 }

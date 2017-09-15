@@ -67,6 +67,9 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
             configOverrides.put("eclipselink.connection-pool.default.max", config.getString(SystemSettingKey.DB_POOL_SIZE_MAX));
             configOverrides.put("eclipselink.connection-pool.default.wait", config.getString(SystemSettingKey.DB_POOL_BORROW_TIMEOUT));
 
+            configOverrides.put("eclipselink.logging.level", "FINE");
+            configOverrides.put("eclipselink.logging.parameters", "true");
+
             // Standalone JPA
             entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnitName, configOverrides);
         } catch (Throwable ex) {

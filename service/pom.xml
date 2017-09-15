@@ -25,15 +25,20 @@
     <artifactId>kapua-service</artifactId>
 
     <modules>
+        <module>liquibase</module>
+
         <module>api</module>
-        <module>security</module>
+        
+        <module>account</module>
         <module>datastore</module>
         <module>device</module>
-        <module>user</module>
-        <module>account</module>
-        <module>tag</module>
-        <module>liquibase</module>
+        <module>job</module>
+        <module>scheduler</module>
+        <module>security</module>
         <module>stream</module>
+        <module>tag</module>
+        <module>user</module>
+        
     </modules>
 
 </project>

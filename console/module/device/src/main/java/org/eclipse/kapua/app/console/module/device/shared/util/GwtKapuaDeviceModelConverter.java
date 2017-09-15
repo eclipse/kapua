@@ -124,8 +124,10 @@ public class GwtKapuaDeviceModelConverter {
         DeviceFactory deviceFactory = locator.getFactory(DeviceFactory.class);
 
         DeviceQuery deviceQuery = deviceFactory.newQuery(KapuaEid.parseCompactId(gwtDeviceQuery.getScopeId()));
-        deviceQuery.setLimit(loadConfig.getLimit() + 1);
-        deviceQuery.setOffset(loadConfig.getOffset());
+        if (loadConfig != null) {
+            deviceQuery.setLimit(loadConfig.getLimit() + 1);
+            deviceQuery.setOffset(loadConfig.getOffset());
+        }
 
         GwtDeviceQueryPredicates predicates = gwtDeviceQuery.getPredicates();
         AndPredicate andPred = new AndPredicate();

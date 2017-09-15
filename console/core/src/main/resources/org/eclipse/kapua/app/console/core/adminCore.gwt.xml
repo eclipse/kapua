@@ -48,6 +48,7 @@
     <inherits name="org.eclipse.kapua.app.console.module.about.adminModuleAbout" />
     <inherits name="org.eclipse.kapua.app.console.module.welcome.adminModuleWelcome" />
     <inherits name="org.eclipse.kapua.app.console.module.tag.adminModuleTag" />
+    <inherits name="org.eclipse.kapua.app.console.module.job.adminModuleJob" />
 
     <!-- Locales: English language, independent of country              -->
     <extend-property name="locale" values="en" />

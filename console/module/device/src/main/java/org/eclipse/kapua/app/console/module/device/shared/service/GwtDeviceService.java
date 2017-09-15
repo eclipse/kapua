@@ -12,6 +12,7 @@
 package org.eclipse.kapua.app.console.module.device.shared.service;
 
 import java.util.Date;
+import java.util.List;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
@@ -47,10 +48,19 @@ public interface GwtDeviceService extends RemoteService {
      * Finds devices in an account with query
      * 
      * @param loadConfig
-     * @param gwtUserQuery
+     * @param gwtDeviceQuery
      * @return
      */
-    public PagingLoadResult<GwtDevice> query(PagingLoadConfig loadConfig, GwtDeviceQuery gwtUserQuery)
+    public PagingLoadResult<GwtDevice> query(PagingLoadConfig loadConfig, GwtDeviceQuery gwtDeviceQuery)
+            throws GwtKapuaException;
+
+    /**
+     * Finds devices in an account with query
+     *
+     * @param gwtDeviceQuery
+     * @return
+     */
+    public List<GwtDevice> query(GwtDeviceQuery gwtDeviceQuery)
             throws GwtKapuaException;
 
     /**

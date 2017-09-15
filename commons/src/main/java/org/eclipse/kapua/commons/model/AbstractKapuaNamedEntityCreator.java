@@ -25,7 +25,7 @@ import org.eclipse.kapua.model.id.KapuaId;
  *
  */
 @SuppressWarnings("serial")
-public abstract class AbstractKapuaNamedEntityCreator<E extends KapuaEntity> extends AbstractKapuaEntityCreator<E> implements KapuaNamedEntityCreator<E> {
+public abstract class AbstractKapuaNamedEntityCreator<E extends KapuaEntity> extends AbstractKapuaUpdatableEntityCreator<E> implements KapuaNamedEntityCreator<E> {
 
     protected String name;
 
