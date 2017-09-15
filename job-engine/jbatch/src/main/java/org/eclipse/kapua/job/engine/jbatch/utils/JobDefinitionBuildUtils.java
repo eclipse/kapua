@@ -103,10 +103,12 @@ public class JobDefinitionBuildUtils {
         //
         // Add custom values
         for (JobStepProperty jobStepProperty : jobStep.getStepProperties()) {
-            Property jslStepProperty = new Property();
-            jslStepProperty.setName(jobStepProperty.getName());
-            jslStepProperty.setValue(jobStepProperty.getPropertyValue());
-            customStepProperties.put(jobStepProperty.getName(), jslStepProperty);
+            if (jobStepProperty.getPropertyValue() != null) {
+                Property jslStepProperty = new Property();
+                jslStepProperty.setName(jobStepProperty.getName());
+                jslStepProperty.setValue(jobStepProperty.getPropertyValue());
+                customStepProperties.put(jobStepProperty.getName(), jslStepProperty);
+            }
         }
 
         return customStepProperties.values();
