@@ -53,14 +53,7 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
     public void beforeJob() throws Exception {
         KapuaJobContext kapuaJobContext = JOB_CONTEXT_FACTORY.newJobContext(jobContext);
 
-        LOG.info("JOB {} - Running before job...", kapuaJobContext.getJobId());
-
-        // prevent another instance running for the same job name (once a job is submitted its status is changed to STARTING by jbatch so,
-        // at that point, if there are more than 1 job execution in running state (so STARTING, STARTED, STOPPING) it means that another instance is already running.
-        List<Long> runningExecutionsIds = BatchRuntime.getJobOperator().getRunningExecutions(kapuaJobContext.getJobName());
-        if (runningExecutionsIds != null && runningExecutionsIds.size() > 1) {
-            throw new KapuaIllegalStateException(String.format("Cannot start job [%s]. Another instance of this job is running.", kapuaJobContext.getJobName()));
-        }
+        LOG.info("JOB {} - {} - Running before job...", new Object[] { kapuaJobContext.getJobId(), kapuaJobContext.getJobName() });
 
         JobExecutionCreator jobExecutionCreator = JOB_EXECUTION_FACTORY.newCreator(kapuaJobContext.getScopeId());
 
@@ -72,18 +65,28 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
 
         kapuaJobContext.setKapuaExecutionId(jobExecution.getId());
 
-        LOG.info("JOB {} - Running before job... DONE!", kapuaJobContext.getJobId());
+        // prevent another instance running for the same job name (once a job is submitted its status is changed to STARTING by jbatch so,
+        // at that point, if there are more than 1 job execution in running state (so STARTING, STARTED, STOPPING) it means that another instance is already running.
+        List<Long> runningExecutionsIds = BatchRuntime.getJobOperator().getRunningExecutions(kapuaJobContext.getJobName());
+        if (runningExecutionsIds != null && runningExecutionsIds.size() > 1) {
+            throw new KapuaIllegalStateException(String.format("Cannot start job [%s]. Another instance of this job is running.", kapuaJobContext.getJobName()));
+        }
+
+        LOG.info("JOB {} - {} - Running before job... DONE!", new Object[] { kapuaJobContext.getJobId(), kapuaJobContext.getJobName() });
     }
 
     @Override
     public void afterJob() throws Exception {
         KapuaJobContext kapuaJobContext = JOB_CONTEXT_FACTORY.newJobContext(jobContext);
 
-        LOG.info("JOB {} - Running after job...", kapuaJobContext.getJobId());
+        LOG.info("JOB {} - {} - Running after job...", new Object[] { kapuaJobContext.getJobId(), kapuaJobContext.getJobName() });
 
         KapuaId kapuaExecutionId = kapuaJobContext.getKapuaExecutionId();
         if (kapuaExecutionId == null) {
-            throw new KapuaIllegalStateException(String.format("Cannot update job execution (internal reference [%d]). Cannot find execution id", kapuaJobContext.getExecutionId()));
+            // don't send any exception to prevent the job engine to set the job exit status as failed
+            String msg = String.format("Cannot update job execution (internal reference [%d]). Cannot find execution id", kapuaJobContext.getExecutionId());
+            LOG.error(msg);
+            // TODO will send service events when the feature will be implemented
         }
         JobExecution jobExecution = KapuaSecurityUtils.doPrivileged(() -> JOB_EXECUTION_SERVICE.find(kapuaJobContext.getScopeId(), kapuaExecutionId));
 
@@ -91,6 +94,6 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
 
         KapuaSecurityUtils.doPrivileged(() -> JOB_EXECUTION_SERVICE.update(jobExecution));
 
-        LOG.info("JOB {} - Running after job... DONE!", kapuaJobContext.getJobId());
+        LOG.info("JOB {} - {} - Running after job... DONE!", new Object[] { kapuaJobContext.getJobId(), kapuaJobContext.getJobName() });
     }
 }

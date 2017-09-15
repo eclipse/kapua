@@ -30,4 +30,14 @@ public class KapuaIllegalStateException extends KapuaRuntimeException {
         super(KapuaErrorCodes.ILLEGAL_STATE, null, message);
     }
 
+    /**
+     * Constructor
+     * 
+     * @param message
+     * @param t
+     */
+    public KapuaIllegalStateException(String message, Throwable t) {
+        super(KapuaErrorCodes.ILLEGAL_STATE, t, message);
+    }
+
 }
