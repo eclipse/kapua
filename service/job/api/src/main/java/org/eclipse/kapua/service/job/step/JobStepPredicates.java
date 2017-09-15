@@ -17,5 +17,6 @@ public interface JobStepPredicates extends KapuaUpdatableEntityPredicates {
 
     public String JOB_ID = "jobId";
     public String STEP_INDEX = "stepIndex";
+    public String JOB_STEP_DEFINITION_ID = "jobStepDefinitionId";
 
 }

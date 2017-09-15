@@ -32,7 +32,7 @@ import org.eclipse.kapua.service.job.JobService;
 
 /**
  * {@link JobService} implementation
- * 
+ *
  * @since 1.0.0
  */
 @KapuaProvider
@@ -53,6 +53,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         // Argument Validation
         ArgumentValidator.notNull(creator, "jobCreator");
         ArgumentValidator.notNull(creator.getScopeId(), "jobCreator.scopeId");
+        ArgumentValidator.notNull(creator.getName(), "jobCreator.name");
 
         //
         // Check access
@@ -69,6 +70,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         // Argument Validation
         ArgumentValidator.notNull(job, "job");
         ArgumentValidator.notNull(job.getScopeId(), "job.scopeId");
+        ArgumentValidator.notNull(job.getName(), "job.name");
 
         //
         // Check access
