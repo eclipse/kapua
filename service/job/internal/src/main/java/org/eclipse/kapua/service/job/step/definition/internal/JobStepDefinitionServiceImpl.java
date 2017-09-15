@@ -36,9 +36,8 @@ import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
  * {@link JobStepDefinitionService} exposes APIs to manage JobStepDefinition objects.<br>
  * It includes APIs to create, update, find, list and delete StepDefinitions.<br>
  * Instances of the JobStepDefinitionService can be acquired through the ServiceLocator object.
- * 
+ *
  * @since 1.0
- * 
  */
 @KapuaProvider
 public class JobStepDefinitionServiceImpl
@@ -61,6 +60,9 @@ public class JobStepDefinitionServiceImpl
         // Argument Validation
         ArgumentValidator.notNull(creator, "stepDefinitionCreator");
         ArgumentValidator.notNull(creator.getScopeId(), "stepDefinitionCreator.scopeId");
+        ArgumentValidator.notNull(creator.getStepType(), "stepDefinitionCreator.stepType");
+        ArgumentValidator.notEmptyOrNull(creator.getName(), "stepDefinitionCreator.name");
+        ArgumentValidator.notEmptyOrNull(creator.getProcessorName(), "stepDefinitionCreator.processorName");
 
         //
         // Check access
@@ -77,6 +79,9 @@ public class JobStepDefinitionServiceImpl
         // Argument Validation
         ArgumentValidator.notNull(jobStepDefinition, "stepDefinition");
         ArgumentValidator.notNull(jobStepDefinition.getScopeId(), "stepDefinition.scopeId");
+        ArgumentValidator.notNull(jobStepDefinition.getStepType(), "jobStepDefinition.stepType");
+        ArgumentValidator.notEmptyOrNull(jobStepDefinition.getName(), "jobStepDefinition.name");
+        ArgumentValidator.notEmptyOrNull(jobStepDefinition.getProcessorName(), "jobStepDefinition.processorName");
 
         //
         // Check access

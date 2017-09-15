@@ -33,9 +33,8 @@ import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerF
 
 /**
  * {@link DomainService} implementation.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @KapuaProvider
 public class DomainServiceImpl extends AbstractKapuaService implements DomainService {
@@ -52,7 +51,7 @@ public class DomainServiceImpl extends AbstractKapuaService implements DomainSer
         ArgumentValidator.notNull(domainCreator, "domainCreator");
         ArgumentValidator.notEmptyOrNull(domainCreator.getName(), "domainCreator.name");
         ArgumentValidator.notEmptyOrNull(domainCreator.getServiceName(), "domainCreator.serviceName");
-        ArgumentValidator.notNull(domainCreator.getActions(), "roleCreator.actions");
+        ArgumentValidator.notNull(domainCreator.getActions(), "domainCreator.actions");
 
         //
         // Check Access
@@ -114,7 +113,7 @@ public class DomainServiceImpl extends AbstractKapuaService implements DomainSer
         return entityManagerSession.onResult(em -> {
             DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
             DomainQuery query = domainFactory.newQuery(null);
-            query.setPredicate(new AttributePredicate<String>(DomainPredicates.SERVICE_NAME, serviceName));
+            query.setPredicate(new AttributePredicate<>(DomainPredicates.SERVICE_NAME, serviceName));
 
             DomainListResult results = DomainDAO.query(em, query);
 
