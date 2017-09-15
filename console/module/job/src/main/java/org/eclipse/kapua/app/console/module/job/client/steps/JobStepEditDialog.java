@@ -37,7 +37,6 @@ public class JobStepEditDialog extends JobStepAddDialog {
     private static final GwtJobStepDefinitionServiceAsync JOB_STEP_DEFINITION_SERVICE = GWT.create(GwtJobStepDefinitionService.class);
     private static final GwtJobStepServiceAsync JOB_STEP_SERVICE = GWT.create(GwtJobStepService.class);
 
-
     public JobStepEditDialog(GwtSession currentSession, GwtJobStep selectedJobStep) {
         super(currentSession, selectedJobStep.getJobId());
         this.selectedJobStep = selectedJobStep;
@@ -53,12 +52,12 @@ public class JobStepEditDialog extends JobStepAddDialog {
     private void loadJobStep() {
         maskDialog();
         jobStepDefinitionCombo.getStore().getLoader().addLoadListener(new StepDefinitionLoadListener());
-//        populateEditDialog(selectedJobStep);
+        //        populateEditDialog(selectedJobStep);
         jobStepDefinitionCombo.getStore().getLoader().load();
 
     }
 
-     public void populateEditDialog(final GwtJobStep gwtJobStep) {
+    public void populateEditDialog(final GwtJobStep gwtJobStep) {
         JOB_STEP_DEFINITION_SERVICE.find(gwtJobStep.getScopeId(), gwtJobStep.getJobStepDefinitionId(), new AsyncCallback<GwtJobStepDefinition>() {
 
             @Override
@@ -75,14 +74,14 @@ public class JobStepEditDialog extends JobStepAddDialog {
                 jobStepDescription.setValue(gwtJobStep.getDescription());
                 jobStepDefinitionCombo.setValue(result);
                 Map<String, String> propertiesMap = new HashMap<String, String>();
-                for(GwtJobStepProperty property : gwtJobStep.getStepProperties()) {
+                for (GwtJobStepProperty property : gwtJobStep.getStepProperties()) {
                     propertiesMap.put(property.getPropertyName(), property.getPropertyValue());
                 }
-                for(Component component : jobStepPropertiesPanel.getItems()) {
-                    Field<String> field = (Field<String>)component;
+                for (Component component : jobStepPropertiesPanel.getItems()) {
+                    Field<String> field = (Field<String>) component;
                     field.setValue(propertiesMap.get(field.getData(PROPERTY_NAME).toString()));
                 }
-                JobStepEditDialog.this.unmaskDialog();
+                unmaskDialog();
             }
         });
     }
@@ -95,10 +94,10 @@ public class JobStepEditDialog extends JobStepAddDialog {
 
         List<GwtJobStepProperty> gwtJobStepPropertyList = new ArrayList<GwtJobStepProperty>();
         for (Component component : jobStepPropertiesPanel.getItems()) {
-            Field field = (Field)component;
+            Field field = (Field) component;
             GwtJobStepProperty property = new GwtJobStepProperty();
             property.setPropertyType(field.getClass().getName());
-            property.setPropertyValue(field.getRawValue());
+            property.setPropertyValue(!field.getRawValue().isEmpty() ? field.getRawValue() : null);
             property.setPropertyName(field.getData("propertyName").toString());
             gwtJobStepPropertyList.add(property);
         }
@@ -127,7 +126,7 @@ public class JobStepEditDialog extends JobStepAddDialog {
         @Override
         public void loaderLoad(LoadEvent le) {
             super.loaderLoad(le);
-            JobStepEditDialog.this.populateEditDialog(selectedJobStep);
+            populateEditDialog(selectedJobStep);
         }
     }
 
