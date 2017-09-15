@@ -137,10 +137,10 @@ public class JobStepAddDialog extends EntityAddEditDialog {
         gwtJobStepCreator.setStepIndex(jobStepIndex);
         List<GwtJobStepProperty> gwtJobStepPropertyList = new ArrayList<GwtJobStepProperty>();
         for (Component component : jobStepPropertiesPanel.getItems()) {
-            Field field = (Field)component;
+            Field field = (Field) component;
             GwtJobStepProperty property = new GwtJobStepProperty();
             property.setPropertyType(field.getClass().getName());
-            property.setPropertyValue(field.getRawValue());
+            property.setPropertyValue(field.getRawValue().isEmpty() ? field.getRawValue() : null);
             property.setPropertyName(field.getData("propertyName").toString());
             gwtJobStepPropertyList.add(property);
         }
