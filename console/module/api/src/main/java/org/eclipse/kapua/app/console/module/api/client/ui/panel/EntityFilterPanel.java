@@ -78,7 +78,7 @@ public abstract class EntityFilterPanel<M extends GwtEntityModel> extends Conten
         });
 
         searchButton = new Button(MSGS.deviceFilteringPanelSearch());
-        searchButton.setStyleAttribute("margin-left", "5px");
+        searchButton.setStyleAttribute("margin-right", "5px");
         searchButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
 
             @Override

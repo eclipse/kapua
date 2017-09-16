@@ -69,7 +69,7 @@ public class GwtDeviceConnectionServiceImpl extends KapuaRemoteServiceServlet im
                 gwtDeviceConnections.add(KapuaGwtDeviceModelConverter.convertDeviceConnection(dc));
                 for (GwtDeviceConnection gwtDeviceConnection : gwtDeviceConnections) {
                     User user = userService.find(dc.getScopeId(), dc.getUserId());
-                    if ( user != null ) {
+                    if (user != null) {
                         gwtDeviceConnection.setUserName(user.getName());
                     }
                 }
@@ -113,11 +113,13 @@ public class GwtDeviceConnectionServiceImpl extends KapuaRemoteServiceServlet im
             User user = userService.find(scopeId, deviceConnection.getUserId());
 
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionStatus", deviceConnection.getStatus().toString()));
-            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionFirstEstablishedOn", deviceConnection.getCreatedOn().toString()));
-            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionFirstEstablishedBy", deviceConnection.getCreatedBy().toCompactId()));
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionModifiedOn", deviceConnection.getModifiedOn().toString()));
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionModifiedBy", deviceConnection.getModifiedBy().toCompactId()));
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionProtocol", deviceConnection.getProtocol()));
+            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionClientId", deviceConnection.getClientId()));
+            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionUser", deviceConnection.getUserId().toCompactId()));
+            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionClientIp", deviceConnection.getClientIp()));
+            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionServerIp", deviceConnection.getServerIp()));
             GwtConnectionUserCouplingMode gwtConnectionUserCouplingMode = null;
             if (deviceConnection.getUserCouplingMode() != null) {
                 gwtConnectionUserCouplingMode = GwtConnectionUserCouplingMode.valueOf(deviceConnection.getUserCouplingMode().name());
@@ -126,18 +128,9 @@ public class GwtDeviceConnectionServiceImpl extends KapuaRemoteServiceServlet im
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionUserBoundInfo", "reservedUserId",
                     deviceConnection.getReservedUserId() != null ? deviceConnection.getReservedUserId().toCompactId() : null));
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionUserBoundInfo", "allowUserChange", deviceConnection.getAllowUserChange()));
-
-            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionClientId", deviceConnection.getClientId()));
-            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionUser", deviceConnection.getUserId().toCompactId()));
-            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionClientIp", deviceConnection.getClientIp()));
-            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionServerIp", deviceConnection.getServerIp()));
-            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "protocol", deviceConnection.getProtocol()));
-            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionProtocol", deviceConnection.getProtocol()));
-            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionStatus", deviceConnection.getStatus().toString()));
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionFirstEstablishedOn", deviceConnection.getCreatedOn().toString()));
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionFirstEstablishedBy", deviceConnection.getCreatedBy().toCompactId()));
-            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionModifiedOn", deviceConnection.getModifiedOn().toString()));
-            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionModifiedBy", deviceConnection.getModifiedBy().toCompactId()));
+
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }

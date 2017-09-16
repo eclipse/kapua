@@ -40,7 +40,6 @@ public class GroupTabDescription extends EntityDescriptionTabItem<GwtGroup> {
                     AsyncCallback<ListLoadResult<GwtGroupedNVPair>> callback) {
                 GWT_GROUP_SERVICE.getGroupDescription(selectedEntity.getScopeId(),
                         selectedEntity.getId(), callback);
-
             }
         };
     }
@@ -48,6 +47,5 @@ public class GroupTabDescription extends EntityDescriptionTabItem<GwtGroup> {
     @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
-        setBorders(false);
     }
 }

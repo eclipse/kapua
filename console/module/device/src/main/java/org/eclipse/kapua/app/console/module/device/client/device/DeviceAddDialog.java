@@ -140,7 +140,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         clientIdField = new TextField<String>();
         clientIdField.setAllowBlank(false);
         clientIdField.setName("clientID");
-        clientIdField.setFieldLabel(DEVICE_MSGS.deviceFormClientID());
+        clientIdField.setFieldLabel("* " + DEVICE_MSGS.deviceFormClientID());
         clientIdField.setValidator(new TextFieldValidator(clientIdField, FieldType.DEVICE_CLIENT_ID));
         clientIdField.setWidth(225);
 
@@ -169,7 +169,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
 
         groupCombo = new ComboBox<GwtGroup>();
         groupCombo.setStore(new ListStore<GwtGroup>());
-        groupCombo.setFieldLabel(DEVICE_MSGS.deviceFormGroup());
+        groupCombo.setFieldLabel("* " + DEVICE_MSGS.deviceFormGroup());
         groupCombo.setForceSelection(true);
         groupCombo.setTypeAhead(false);
         groupCombo.setTriggerAction(TriggerAction.ALL);

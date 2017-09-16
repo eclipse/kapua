@@ -65,7 +65,7 @@ public class UserFilterPanel extends EntityFilterPanel<GwtUser> {
         nameField.setStyleAttribute("margin-bottom", "10px");
         fieldsPanel.add(nameField);
 
-        final Label userStatusLabel = new Label("UserStatus");
+        final Label userStatusLabel = new Label(USER_MSGS.filterFieldStatusLabel());
         userStatusLabel.setWidth(WIDTH);
         userStatusLabel.setStyleAttribute("margin", "5px");
 
@@ -78,7 +78,6 @@ public class UserFilterPanel extends EntityFilterPanel<GwtUser> {
         statusCombo.setStyleAttribute("margin-left", "5px");
         statusCombo.setStyleAttribute("margin-right", "5px");
         statusCombo.setStyleAttribute("margin-bottom", "10px");
-        statusCombo.setEmptyText("Select A User Status. . .");
         statusCombo.add(GwtUser.GwtUserStatus.ANY);
         statusCombo.add(GwtUser.GwtUserStatus.ENABLED);
         statusCombo.add(GwtUser.GwtUserStatus.DISABLED);

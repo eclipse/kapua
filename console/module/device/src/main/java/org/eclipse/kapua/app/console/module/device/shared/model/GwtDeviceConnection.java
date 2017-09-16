@@ -85,7 +85,7 @@ public class GwtDeviceConnection extends GwtUpdatableEntityModel implements Seri
     }
 
     public String getUserId() {
-        return get("userName");
+        return get("userId");
     }
 
     public void setUserId(String userId) {
