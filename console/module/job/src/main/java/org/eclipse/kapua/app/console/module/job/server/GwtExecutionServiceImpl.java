@@ -44,7 +44,7 @@ public class GwtExecutionServiceImpl extends KapuaRemoteServiceServlet implement
         gwtExecutionQuery.setScopeId(scopeId);
         gwtExecutionQuery.setJobId(jobId);
         try {
-            JobExecutionQuery executionQuery = GwtKapuaJobModelConverter.convertJobExecutionQuery(gwtExecutionQuery);
+            JobExecutionQuery executionQuery = GwtKapuaJobModelConverter.convertJobExecutionQuery(loadConfig, gwtExecutionQuery);
             JobExecutionListResult jobExecutionList = EXECUTION_SERVICE.query(executionQuery);
 
             if (!jobExecutionList.isEmpty()) {

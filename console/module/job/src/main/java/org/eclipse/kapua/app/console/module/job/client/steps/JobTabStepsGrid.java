@@ -74,6 +74,9 @@ public class JobTabStepsGrid extends EntityGrid<GwtJobStep> {
         columnConfig = new ColumnConfig("jobStepName", MSGS.gridJobStepColumnHeaderJobName(), 400);
         columnConfigs.add(columnConfig);
 
+        columnConfig = new ColumnConfig("jobStepDefinitionName", MSGS.gridJobStepColumnHeaderJobDefinitionName(), 400);
+        columnConfigs.add(columnConfig);
+
         columnConfig = new ColumnConfig("description", MSGS.gridJobStepColumnHeaderDescription(), 400);
         columnConfigs.add(columnConfig);
 
