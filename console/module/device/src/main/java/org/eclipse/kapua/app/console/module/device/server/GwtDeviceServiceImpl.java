@@ -94,7 +94,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
         return gwtDevice;
     }
 
-    public ListLoadResult<GwtGroupedNVPair> findDeviceProfile(String scopeIdString, String clientId)
+    public ListLoadResult<GwtGroupedNVPair> findDeviceProfile(String scopeIdString, String deviceIdString)
             throws GwtKapuaException {
         List<GwtGroupedNVPair> pairs = new ArrayList<GwtGroupedNVPair>();
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -108,8 +108,8 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
         try {
 
             KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
-
-            Device device = deviceRegistryService.findByClientId(scopeId, clientId);
+            KapuaId deviceId = KapuaEid.parseCompactId(deviceIdString);
+            Device device = deviceRegistryService.find(scopeId, deviceId);
 
             if (device != null) {
                 pairs.add(new GwtGroupedNVPair("devInfo", "devStatus", device.getStatus().toString()));

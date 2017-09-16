@@ -41,7 +41,6 @@ public class ConnectionDescriptionTab extends EntityDescriptionTabItem<GwtDevice
     @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
-        setBorders(false);
     }
 
 }

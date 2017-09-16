@@ -73,6 +73,10 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
         }
     }
 
+    public void setSelectedUserName(String selectedUserName) {
+        this.selectedUserName = selectedUserName;
+    }
+
     private void updateAddButtonEnabled() {
         if (selectedUserId == null) {
             getAddEntityButton().disable();

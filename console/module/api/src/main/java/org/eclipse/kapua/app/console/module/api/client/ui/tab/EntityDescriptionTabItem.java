@@ -84,19 +84,19 @@ public abstract class EntityDescriptionTabItem<M extends GwtEntityModel> extends
 
         //
         // Grid
-        GroupingView gropingView = new GroupingView();
-        gropingView.setShowGroupedColumn(false);
-        gropingView.setForceFit(true);
-        gropingView.setAutoFill(true);
-        gropingView.setSortingEnabled(false);
-        gropingView.setShowGroupedColumn(false);
-        gropingView.setEmptyText(MSGS.entityTabDescriptionNoSelection());
-        gropingView.setEnableNoGroups(false);
-        gropingView.setEnableGroupingMenu(false);
-
+        GroupingView groupingView = new GroupingView();
+        groupingView.setShowGroupedColumn(false);
+        groupingView.setForceFit(true);
+        groupingView.setAutoFill(true);
+        groupingView.setSortingEnabled(false);
+        groupingView.setShowGroupedColumn(false);
+        groupingView.setEmptyText(MSGS.entityTabDescriptionNoSelection());
+        groupingView.setEnableNoGroups(false);
+        groupingView.setEnableGroupingMenu(false);
         descriptionGrid = new KapuaGrid<GwtGroupedNVPair>(descriptionValuesStore, cm);
-        descriptionGrid.setView(gropingView);
+        descriptionGrid.setView(groupingView);
 
+        this.setStyleAttribute("border-top-width: 0px", "!important;");
         add(descriptionGrid);
     }
 

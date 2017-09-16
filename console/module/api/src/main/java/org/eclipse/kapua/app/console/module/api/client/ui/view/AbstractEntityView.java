@@ -62,7 +62,7 @@ public abstract class AbstractEntityView<M extends GwtEntityModel> extends Abstr
         setLayout(new FitLayout());
         setBorders(false);
 
-        final LayoutContainer mf = new LayoutContainer();
+        LayoutContainer mf = new LayoutContainer();
         mf.setBorders(false);
         mf.setLayout(new BorderLayout());
 
@@ -117,23 +117,22 @@ public abstract class AbstractEntityView<M extends GwtEntityModel> extends Abstr
 
             @Override
             public void onSuccess(List<TabDescriptor> result) {
-        tabsPanel = new KapuaTabPanel<M>();
+                tabsPanel = new KapuaTabPanel<M>();
 
                 for (TabDescriptor tabDescriptor : result) {
                     if (tabDescriptor.isEnabled(currentSession)) {
                         tabsPanel.add(tabDescriptor.getTabViewInstance(AbstractEntityView.this, currentSession));
                     }
-        }
+                }
 
-        KapuaBorderLayoutData centerData = new KapuaBorderLayoutData(LayoutRegion.CENTER, .55F);
-        centerData.setMarginTop(5);
+                KapuaBorderLayoutData centerData = new KapuaBorderLayoutData(LayoutRegion.CENTER, .55F);
+                centerData.setMarginTop(10);
 
-        resultContainer.add(tabsPanel, centerData);
-
-        add(mf);
-    }
+                resultContainer.add(tabsPanel, centerData);
+                resultContainer.layout(true);
+            }
         });
-
+        add(mf);
     }
 
     public abstract EntityGrid<M> getEntityGrid(AbstractEntityView<M> entityView, GwtSession currentSession);

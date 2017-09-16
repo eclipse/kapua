@@ -46,6 +46,7 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
     private static final GwtCredentialServiceAsync GWT_CREDENTIAL_SERVICE = GWT.create(GwtCredentialService.class);
     private GwtCredentialQuery query;
     private String selectedUserId;
+    private String selectedUserName;
 
     private CredentialToolbar toolbar;
 
@@ -169,6 +170,11 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
             query.setUserId(selectedUserId);
         }
         ((CredentialToolbar) getToolbar()).setSelectedUserId(selectedUserId);
+    }
+
+    public void setSelectedUserName(String selectedUserName) {
+        this.selectedUserName = selectedUserName;
+        ((CredentialToolbar) getToolbar()).setSelectedUserName(selectedUserName);
     }
 
     @Override

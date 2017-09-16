@@ -29,9 +29,9 @@ public class AccountTabConfiguration extends KapuaTabItem<GwtAccount> {
     private AccountDetailsView accountDetailsView;
     private AccountDetailsTabDescription accountDetailsTabDescription;
 
-    public AccountTabConfiguration(GwtSession currentSession, AccountDetailsView accoountDetailsView) {
+    public AccountTabConfiguration(GwtSession currentSession, AccountDetailsView accountDetailsView) {
         super("Settings", new KapuaIcon(IconSet.COG));
-        this.accountDetailsView = accoountDetailsView;
+        this.accountDetailsView = accountDetailsView;
         configComponents = new AccountConfigComponents(currentSession, this);
         setBorders(false);
         setLayout(new FitLayout());

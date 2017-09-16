@@ -25,9 +25,6 @@ import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserServiceAs
 
 public class UserTabDescription extends EntityDescriptionTabItem<GwtUser> {
 
-    public UserTabDescription() {
-    }
-
     private static final GwtUserServiceAsync GWT_USER_SERVICE = GWT.create(GwtUserService.class);
 
     @Override
@@ -38,7 +35,6 @@ public class UserTabDescription extends EntityDescriptionTabItem<GwtUser> {
             protected void load(Object loadConfig,
                     AsyncCallback<ListLoadResult<GwtGroupedNVPair>> callback) {
                 GWT_USER_SERVICE.getUserDescription(selectedEntity.getScopeId(), selectedEntity.getId(), callback);
-
             }
         };
     }
@@ -46,7 +42,6 @@ public class UserTabDescription extends EntityDescriptionTabItem<GwtUser> {
     @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
-        setBorders(true);
     }
 
 }

@@ -29,7 +29,6 @@ public class RoleTabDescription extends EntityDescriptionTabItem<GwtRole> {
 
     @Override
     protected RpcProxy<ListLoadResult<GwtGroupedNVPair>> getDataProxy() {
-
         return new RpcProxy<ListLoadResult<GwtGroupedNVPair>>() {
 
             @Override
@@ -42,6 +41,5 @@ public class RoleTabDescription extends EntityDescriptionTabItem<GwtRole> {
     @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
-        setBorders(false);
     }
 }
