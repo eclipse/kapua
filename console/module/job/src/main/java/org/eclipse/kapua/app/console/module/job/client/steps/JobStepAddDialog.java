@@ -23,8 +23,10 @@ import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.Field;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.layout.MarginData;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -56,6 +58,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
     protected final TextField<String> jobStepName;
     protected final TextField<String> jobStepDescription;
     protected final FormPanel mainPanel;
+    protected final FieldSet jobStepPropertiesFieldSet;
     protected final FormPanel jobStepPropertiesPanel;
 
     protected static final String PROPERTY_NAME = "propertyName";
@@ -72,6 +75,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
         jobStepName = new TextField<String>();
         jobStepDescription = new TextField<String>();
         mainPanel = new FormPanel(150);
+        jobStepPropertiesFieldSet = new FieldSet();
         jobStepPropertiesPanel = new FormPanel(150);
         DialogUtils.resizeDialog(this, 600, 400);
     }
@@ -108,18 +112,23 @@ public class JobStepAddDialog extends EntityAddEditDialog {
                 refreshJobStepDefinition(selectionChangedEvent.getSelectedItem());
             }
         });
-        jobStepDefinitionDescription.setStyleAttribute("margin-left", "5px");
+
+        jobStepDefinitionDescription.setStyleAttribute("display", "block");
 
         jobStepName.setFieldLabel(JOB_MSGS.dialogAddStepJobNameLabel());
         jobStepName.setAllowBlank(false);
 
         jobStepDescription.setFieldLabel(JOB_MSGS.dialogAddStepJobDescriptionLabel());
 
-        mainPanel.add(jobStepDefinitionCombo);
+        jobStepPropertiesFieldSet.setHeading(JOB_MSGS.jobStepPropertiesFieldSetHeading());
+        jobStepPropertiesFieldSet.setVisible(false);
+        jobStepPropertiesFieldSet.add(jobStepPropertiesPanel);
+
         mainPanel.add(jobStepName);
         mainPanel.add(jobStepDescription);
-        mainPanel.add(jobStepDefinitionDescription);
-        mainPanel.add(jobStepPropertiesPanel);
+        mainPanel.add(jobStepDefinitionCombo);
+        mainPanel.add(jobStepDefinitionDescription, new MarginData(15, 0, 15, 0));
+        mainPanel.add(jobStepPropertiesFieldSet);
 
         bodyPanel.add(mainPanel);
     }
@@ -182,8 +191,8 @@ public class JobStepAddDialog extends EntityAddEditDialog {
     }
 
     private void refreshJobStepDefinition(GwtJobStepDefinition gwtJobStepDefinition) {
+        jobStepPropertiesFieldSet.setVisible(true);
         jobStepDefinitionDescription.setText(gwtJobStepDefinition.getDescription());
-
         jobStepPropertiesPanel.removeAll();
 
         for (GwtJobStepProperty property : gwtJobStepDefinition.getStepProperties()) {

@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.job.shared.util;
 
+import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtExecutionQuery;
@@ -57,7 +58,8 @@ import java.util.List;
 
 public class GwtKapuaJobModelConverter {
 
-    private GwtKapuaJobModelConverter() { }
+    private GwtKapuaJobModelConverter() {
+    }
 
     public static Job convertJob(GwtJob gwtJob) {
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -214,11 +216,14 @@ public class GwtKapuaJobModelConverter {
         return triggerPropertyList;
     }
 
-    public static JobExecutionQuery convertJobExecutionQuery(GwtExecutionQuery gwtExecutionQuery) {
+    public static JobExecutionQuery convertJobExecutionQuery(PagingLoadConfig pagingLoadConfig, GwtExecutionQuery gwtExecutionQuery) {
         KapuaLocator locator = KapuaLocator.getInstance();
         JobExecutionFactory factory = locator.getFactory(JobExecutionFactory.class);
         JobExecutionQuery query = factory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtExecutionQuery.getScopeId()));
         query.setPredicate(new AttributePredicate<KapuaId>(JobExecutionPredicates.JOB_ID, GwtKapuaCommonsModelConverter.convertKapuaId(gwtExecutionQuery.getJobId())));
+        if (pagingLoadConfig.getSortField() != null) {
+            query.setSortCriteria(new FieldSortCriteria(pagingLoadConfig.getSortField(), pagingLoadConfig.getSortDir() == SortDir.ASC ? SortOrder.ASCENDING : SortOrder.DESCENDING));
+        }
         return query;
     }
 

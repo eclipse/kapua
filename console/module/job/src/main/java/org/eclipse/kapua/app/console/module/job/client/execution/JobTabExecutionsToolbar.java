@@ -30,12 +30,19 @@ public class JobTabExecutionsToolbar extends EntityCRUDToolbar<GwtExecution> {
 
     public void setJobId(String jobId) {
         this.jobId = jobId;
+        checkButtons();
     }
 
     @Override
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
-        refreshEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null);
+        checkButtons();
+    }
+
+    private void checkButtons() {
+        if (refreshEntityButton != null) {
+            refreshEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null);
+        }
     }
 
 }

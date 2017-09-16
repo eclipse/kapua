@@ -58,6 +58,14 @@ public class GwtJobStep extends GwtUpdatableEntityModel implements IsSerializabl
         set("jobStepDefinitionId", jobStepDefinitionId);
     }
 
+    public String getJobStepDefinitionName() {
+        return get("jobStepDefinitionName");
+    }
+
+    public void setJobStepDefinitionName(String jobStepDefinitionName) {
+        set("jobStepDefinitionName", jobStepDefinitionName);
+    }
+
     public <P extends GwtJobStepProperty> List<P> getStepProperties() {
         return get("jobStepProperties");
     }

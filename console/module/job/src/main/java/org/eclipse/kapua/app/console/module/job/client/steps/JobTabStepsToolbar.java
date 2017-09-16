@@ -37,6 +37,7 @@ public class JobTabStepsToolbar extends EntityCRUDToolbar<GwtJobStep> {
 
     public void setJobId(String jobId) {
         this.jobId = jobId;
+        checkButtons();
     }
 
     @Override
@@ -67,6 +68,10 @@ public class JobTabStepsToolbar extends EntityCRUDToolbar<GwtJobStep> {
     @Override
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
+        checkButtons();
+    }
+
+    private void checkButtons() {
         if (jobId != null) {
             JOB_SERVICE.find(currentSession.getSelectedAccountId(), jobId, new AsyncCallback<GwtJob>() {
 
@@ -77,15 +82,27 @@ public class JobTabStepsToolbar extends EntityCRUDToolbar<GwtJobStep> {
 
                 @Override
                 public void onSuccess(GwtJob result) {
-                    addEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null && result.getJobXmlDefinition() == null);
-                    editEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null && result.getJobXmlDefinition() == null);
-                    deleteEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null && result.getJobXmlDefinition() == null);
+                    if (addEntityButton != null) {
+                        addEntityButton.setEnabled(result.getJobXmlDefinition() == null);
+                    }
+                    if (editEntityButton != null) {
+                        editEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null && result.getJobXmlDefinition() == null);
+                    }
+                    if (deleteEntityButton != null) {
+                        deleteEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null && result.getJobXmlDefinition() == null);
+                    }
                 }
             });
         } else {
-            addEntityButton.setEnabled(false);
-            editEntityButton.setEnabled(false);
-            deleteEntityButton.setEnabled(false);
+            if (addEntityButton != null) {
+                addEntityButton.setEnabled(false);
+            }
+            if (editEntityButton != null) {
+                editEntityButton.setEnabled(false);
+            }
+            if (deleteEntityButton != null) {
+                deleteEntityButton.setEnabled(false);
+            }
         }
     }
 }
