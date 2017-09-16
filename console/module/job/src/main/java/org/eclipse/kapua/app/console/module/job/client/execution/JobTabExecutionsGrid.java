@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.job.client.execution;
 
+import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
@@ -109,5 +110,7 @@ public class JobTabExecutionsGrid extends EntityGrid<GwtExecution> {
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
         entityLoader.setRemoteSort(true);
+        entityLoader.setSortField("startedOn");
+        entityLoader.setSortDir(SortDir.DESC);
     }
 }
