@@ -11,17 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.util;
 
-import java.util.Collection;
-import java.util.Date;
-
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.KapuaIllegalNullArgumentException;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.Objects;
 
 /**
  * Utility class to validate arguments passed in a parameters in service methods.
  *
  * @since 1.0
- *
  */
 public class ArgumentValidator {
 
@@ -52,6 +52,21 @@ public class ArgumentValidator {
             throws KapuaIllegalArgumentException {
         if (argValue != null && !argValue.matches(argRegExp)) {
             throw new KapuaIllegalArgumentException(argName, argValue);
+        }
+    }
+
+    /**
+     * Throws KapuaIllegalArgumentException if the supplied argValue1 is not equal to the supplied argValue2
+     *
+     * @param actual
+     * @param expected
+     * @param argName
+     * @throws KapuaIllegalArgumentException
+     */
+    public static void areEqual(String actual, String expected, String argName)
+            throws KapuaIllegalArgumentException {
+        if (!Objects.equals(actual, expected)) {
+            throw new KapuaIllegalArgumentException(argName, actual);
         }
     }
 
@@ -113,7 +128,7 @@ public class ArgumentValidator {
 
     /**
      * Throws an KapuaIllegalNullArgumentException if the array for the specified argument is empty or null.
-     * 
+     *
      * @param value
      * @param argumentName
      * @throws KapuaIllegalNullArgumentException
@@ -127,7 +142,7 @@ public class ArgumentValidator {
 
     /**
      * Throws an KapuaIllegalNullArgumentException if the collection for the specified argument is empty or null.
-     * 
+     *
      * @param value
      * @param argumentName
      * @throws KapuaIllegalNullArgumentException
@@ -155,7 +170,7 @@ public class ArgumentValidator {
 
     /**
      * Throws an KapuaIllegalNullArgumentException if StartDate comes after EndDate.
-     * 
+     *
      * @param startDate
      * @param endDate
      * @throws KapuaIllegalArgumentException
@@ -167,7 +182,7 @@ public class ArgumentValidator {
 
     /**
      * Throws an KapuaIllegalNullArgumentException if StartDate comes after EndDate.
-     * 
+     *
      * @param startDate
      * @param endDate
      * @throws KapuaIllegalArgumentException
