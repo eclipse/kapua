@@ -35,6 +35,8 @@ import org.eclipse.kapua.service.job.step.JobStepCreator;
 import org.eclipse.kapua.service.job.step.JobStepListResult;
 import org.eclipse.kapua.service.job.step.JobStepQuery;
 import org.eclipse.kapua.service.job.step.JobStepService;
+import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
+import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +52,7 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             JobStepService jobStepService = locator.getService(JobStepService.class);
-
+            JobStepDefinitionService jobStepDefinitionService = locator.getService(JobStepDefinitionService.class);
             // Convert from GWT entity
             JobStepQuery jobStepQuery = GwtKapuaJobModelConverter.convertJobStepQuery(gwtJobStepQuery, loadConfig);
 
@@ -68,7 +70,10 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
 
                 // Converto to GWT entity
                 for (JobStep js : jobStepList.getItems()) {
-                    gwtJobStepList.add(KapuaGwtJobModelConverter.convertJobStep(js));
+                    GwtJobStep gwtJobStep = KapuaGwtJobModelConverter.convertJobStep(js);
+                    JobStepDefinition jobStepDefinition = jobStepDefinitionService.find(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobStep.getScopeId()), GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobStep.getJobStepDefinitionId()));
+                    gwtJobStep.setJobStepDefinitionName(jobStepDefinition.getName());
+                    gwtJobStepList.add(gwtJobStep);
                 }
             }
 

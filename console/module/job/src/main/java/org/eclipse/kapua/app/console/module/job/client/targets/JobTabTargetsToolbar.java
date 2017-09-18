@@ -33,6 +33,7 @@ public class JobTabTargetsToolbar extends EntityCRUDToolbar<GwtJobTarget> {
 
     public void setJobId(String jobId) {
         this.jobId = jobId;
+        checkButtons();
     }
 
     public String getJobId() {
@@ -57,6 +58,10 @@ public class JobTabTargetsToolbar extends EntityCRUDToolbar<GwtJobTarget> {
     @Override
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
+        checkButtons();
+    }
+
+    private void checkButtons() {
         if (jobId != null) {
             JOB_SERVICE.find(currentSession.getSelectedAccountId(), jobId, new AsyncCallback<GwtJob>() {
 
@@ -67,13 +72,21 @@ public class JobTabTargetsToolbar extends EntityCRUDToolbar<GwtJobTarget> {
 
                 @Override
                 public void onSuccess(GwtJob result) {
-                    addEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null && result.getJobXmlDefinition() == null);
-                    deleteEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null && result.getJobXmlDefinition() == null);
+                    if (addEntityButton != null) {
+                        addEntityButton.setEnabled(result.getJobXmlDefinition() == null);
+                    }
+                    if (deleteEntityButton != null) {
+                        deleteEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null && result.getJobXmlDefinition() == null);
+                    }
                 }
             });
         } else {
-            addEntityButton.setEnabled(false);
-            deleteEntityButton.setEnabled(false);
+            if (addEntityButton != null) {
+                addEntityButton.setEnabled(false);
+            }
+            if (deleteEntityButton != null) {
+                deleteEntityButton.setEnabled(false);
+            }
         }
     }
 }
