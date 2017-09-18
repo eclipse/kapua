@@ -22,15 +22,6 @@ public class GwtDeviceConnectionQuery extends GwtQuery {
 
     private String clientId;
     private String connectionStatus;
-    private String clientIP;
-
-    public String getClientIP() {
-        return clientIP;
-    }
-
-    public void setClientIP(String clientIP) {
-        this.clientIP = clientIP;
-    }
 
     public String getClientId() {
         return clientId;

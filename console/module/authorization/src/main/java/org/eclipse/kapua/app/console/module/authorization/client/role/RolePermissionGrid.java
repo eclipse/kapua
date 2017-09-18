@@ -95,6 +95,9 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
         columnConfig = new ColumnConfig("groupId", ROLE_MSGS.gridRolePermissionColumnHeaderTargetGroup(), 100);
         columnConfigs.add(columnConfig);
 
+        columnConfig = new ColumnConfig("targetScopeId", ROLE_MSGS.gridRolePermissionColumnHeaderTargetScopeId(), 100);
+        columnConfigs.add(columnConfig);
+
         columnConfig = new ColumnConfig("forwardable", ROLE_MSGS.gridRolePermissionColumnHeaderForwardable(), 200);
         columnConfig.setRenderer(new GridCellRenderer<GwtRolePermission>() {
 
@@ -105,7 +108,7 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
         });
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("userName", ROLE_MSGS.gridRolePermissionColumnHeaderCreatedBy(), 100);
+        columnConfig = new ColumnConfig("createdBy", ROLE_MSGS.gridRolePermissionColumnHeaderCreatedBy(), 100);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("createdOnFormatted", ROLE_MSGS.gridRolePermissionColumnHeaderCreatedOn(), 100);

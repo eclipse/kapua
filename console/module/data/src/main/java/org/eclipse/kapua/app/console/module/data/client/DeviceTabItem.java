@@ -66,7 +66,7 @@ public class DeviceTabItem extends TabItem {
 
         setWidth("100%");
 
-        BorderLayoutData messageLayout = new BorderLayoutData(LayoutRegion.NORTH, 0.02f);
+        BorderLayoutData messageLayout = new BorderLayoutData(LayoutRegion.NORTH, 0.06f);
         messageLayout.setMargins(new Margins(5));
         Text welcomeMessage = new Text();
         welcomeMessage.setText(MSGS.deviceTabItemMessage());
@@ -78,7 +78,7 @@ public class DeviceTabItem extends TabItem {
         tablesLayout.setMinSize(250);
         add(tables, tablesLayout);
 
-        BorderLayoutData refreshButtonLayout = new BorderLayoutData(LayoutRegion.NORTH, 0.08f);
+        BorderLayoutData refreshButtonLayout = new BorderLayoutData(LayoutRegion.NORTH, 0.1f);
         refreshButtonLayout.setMargins(new Margins(5));
         refreshButton = new Button(MSGS.refresh(), new KapuaIcon(IconSet.REFRESH), new SelectionListener<ButtonEvent>() {
 
@@ -89,6 +89,7 @@ public class DeviceTabItem extends TabItem {
                 resultsTable.refresh();
             }
         });
+        refreshButton.disable();
         TableLayout refreshButtonTL = new TableLayout();
         refreshButtonTL.setCellPadding(0);
         LayoutContainer refreshButtonContainer = new LayoutContainer(refreshButtonTL);

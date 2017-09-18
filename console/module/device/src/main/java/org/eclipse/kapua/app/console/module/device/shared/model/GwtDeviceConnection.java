@@ -116,14 +116,6 @@ public class GwtDeviceConnection extends GwtUpdatableEntityModel implements Seri
         set("serverIp", serverIp);
     }
 
-    public String getUserName() {
-        return get("userName");
-    }
-
-    public void setUserName(String userName) {
-        set("userName", userName);
-    }
-
     public String getConnectionUserCouplingMode() {
         return get("connectionUserCouplingMode");
     }

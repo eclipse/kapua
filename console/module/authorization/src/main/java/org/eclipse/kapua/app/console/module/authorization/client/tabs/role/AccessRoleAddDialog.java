@@ -104,12 +104,12 @@ public class AccessRoleAddDialog extends EntityAddEditDialog {
 
     @Override
     public String getHeaderMessage() {
-        return MSGS.dialogAddRoleHeader();
+        return MSGS.dialogAddHeader();
     }
 
     @Override
     public String getInfoMessage() {
-        return MSGS.dialogAddRoleInfo();
+        return MSGS.dialogAddInfo();
     }
 
     @Override

@@ -90,6 +90,9 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
         columnConfig = new ColumnConfig("permissionAction", USR_MSGS.gridAccessRoleColumnHeaderAction(), 200);
         columnConfigs.add(columnConfig);
 
+        columnConfig = new ColumnConfig("permissionTargetScopeId", USR_MSGS.gridAccessRoleColumnHeaderTargetScopeId(), 200);
+        columnConfigs.add(columnConfig);
+
         columnConfig = new ColumnConfig("permissionGroupId", USR_MSGS.gridAccessRoleColumnHeaderGroupId(), 200);
         columnConfigs.add(columnConfig);
 
@@ -103,7 +106,7 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
         });
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("userName", USR_MSGS.gridAccessRoleColumnHeaderCreatedBy(), 200);
+        columnConfig = new ColumnConfig("createdBy", USR_MSGS.gridAccessRoleColumnHeaderCreatedBy(), 200);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("createdOn", USR_MSGS.gridAccessRoleColumnHeaderCreatedOn(), 200);
@@ -134,7 +137,6 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
         if (toolbar == null) {
             toolbar = new UserTabPermissionToolbar(currentSession);
             toolbar.setEditButtonVisible(false);
-            toolbar.setBorders(false);
         }
         return toolbar;
     }

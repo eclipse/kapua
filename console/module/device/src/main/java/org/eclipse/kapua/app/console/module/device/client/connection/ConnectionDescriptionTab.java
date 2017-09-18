@@ -19,7 +19,6 @@ import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceConne
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceConnectionServiceAsync;
 
@@ -36,11 +35,6 @@ public class ConnectionDescriptionTab extends EntityDescriptionTabItem<GwtDevice
                 GWT_DEVICE_CONNECTION_SERVICE.getConnectionInfo(selectedEntity.getScopeId(), selectedEntity.getId(), callback);
             }
         };
-    }
-
-    @Override
-    protected void onRender(Element parent, int index) {
-        super.onRender(parent, index);
     }
 
 }

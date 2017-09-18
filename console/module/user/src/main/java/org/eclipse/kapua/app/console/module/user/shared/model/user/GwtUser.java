@@ -23,7 +23,7 @@ public class GwtUser extends GwtUpdatableEntityModel implements IsSerializable {
     private static final long serialVersionUID = -3731370307878410611L;
 
     public enum GwtUserStatus implements IsSerializable {
-        ENABLED, DISABLED, ANY;
+        ENABLED, DISABLED;
 
         GwtUserStatus() {
         }

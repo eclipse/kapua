@@ -15,8 +15,6 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
@@ -26,6 +24,7 @@ import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 
 import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
@@ -52,6 +51,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
     private final GwtGroupServiceAsync groupService = GWT.create(GwtGroupService.class);
     private final GwtSession currentSession;
 
+    private final Text infoLabel;
     private final TextField<String> clientIdField;
     private final TextField<String> serialNumberField;
     private final TextField<String> displayNameField;
@@ -69,10 +69,15 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         entityGrid = entityView.getEntityGrid(entityView, currentSession);
         this.currentSession = currentSession;
 
-        setIcon(new KapuaIcon(IconSet.FILTER));
-        setHeading(DEVICE_MSGS.deviceFilteringPanelHeading());
-
         VerticalPanel fieldsPanel = getFieldsPanel();
+
+        //
+        // Top explanation
+        infoLabel = new Text(DEVICE_MSGS.deviceFilteringPanelInfo());
+        infoLabel.setWidth(WIDTH + 5);
+        infoLabel.setStyleAttribute("margin", "5px");
+
+        fieldsPanel.add(infoLabel);
 
         //
         // ClientId

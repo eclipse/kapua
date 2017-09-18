@@ -74,7 +74,7 @@ public class MetricsTable extends LayoutContainer {
         super.onRender(parent, index);
 
         setLayout(new FitLayout());
-        setBorders(false);
+        setBorders(true);
 
         initMetricsTable();
         add(tableContainer);
@@ -84,7 +84,8 @@ public class MetricsTable extends LayoutContainer {
         initChannelInfoGrid();
 
         tableContainer = new ContentPanel();
-        tableContainer.setBodyBorder(true);
+        tableContainer.setBorders(false);
+        tableContainer.setBodyBorder(false);
         tableContainer.setHeaderVisible(true);
         switch (type) {
         case TOPIC:
@@ -112,7 +113,7 @@ public class MetricsTable extends LayoutContainer {
         configs.add(selectionModel.getColumn());
         ColumnConfig column;
         if (type == Type.ASSET) {
-            column = new ColumnConfig("name", MSGS.metricsTableMetricHeader(), 100);
+            column = new ColumnConfig("name", MSGS.metricsTableChannelHeader(), 100);
         } else {
             column = new ColumnConfig("name", MSGS.metricsTableMetricHeader(), 100);
         }

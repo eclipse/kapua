@@ -41,7 +41,7 @@ public class KapuaGwtUserModelConverter {
         gwtUser.setDisplayName(user.getDisplayName());
         gwtUser.setEmail(user.getEmail());
         gwtUser.setPhoneNumber(user.getPhoneNumber());
-        gwtUser.setStatus(user.getStatus().toString());
+        gwtUser.setStatus(user.getStatus().name());
         gwtUser.setExpirationDate(user.getExpirationDate());
 
         //

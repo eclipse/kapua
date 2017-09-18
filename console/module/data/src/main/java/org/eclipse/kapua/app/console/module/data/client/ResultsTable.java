@@ -99,7 +99,7 @@ public class ResultsTable extends LayoutContainer {
         super.onRender(parent, index);
 
         setLayout(new FitLayout());
-        setBorders(false);
+        setBorders(true);
 
         initResultsTable();
         add(tableContainer);
