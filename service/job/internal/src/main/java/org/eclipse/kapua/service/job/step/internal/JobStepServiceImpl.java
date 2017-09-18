@@ -31,10 +31,13 @@ import org.eclipse.kapua.service.job.step.JobStepFactory;
 import org.eclipse.kapua.service.job.step.JobStepListResult;
 import org.eclipse.kapua.service.job.step.JobStepQuery;
 import org.eclipse.kapua.service.job.step.JobStepService;
+import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
+import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
+import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 
 /**
  * {@link JobStepService} implementation
- * 
+ *
  * @since 1.0.0
  */
 @KapuaProvider
@@ -42,9 +45,13 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
         implements JobStepService {
 
     private static final Domain JOB_DOMAIN = new JobDomain();
+
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
     private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
+
+    private static final JobStepDefinitionService JOB_STEP_DEFINITION_SERVICE = LOCATOR.getService(JobStepDefinitionService.class);
 
     protected JobStepServiceImpl() {
         super(JobStepService.class.getName(), JOB_DOMAIN, JobEntityManagerFactory.getInstance(), JobStepService.class, JobStepFactory.class);
@@ -56,6 +63,20 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
         // Argument Validation
         ArgumentValidator.notNull(creator, "jobStepCreator");
         ArgumentValidator.notNull(creator.getScopeId(), "jobStepCreator.scopeId");
+        ArgumentValidator.notNull(creator.getName(), "jobStepCreator.name");
+        ArgumentValidator.notNull(creator.getJobStepDefinitionId(), "jobStepCreator.stepDefinitionId");
+
+        JobStepDefinition jobStepDefinition = JOB_STEP_DEFINITION_SERVICE.find(creator.getScopeId(), creator.getJobStepDefinitionId());
+        ArgumentValidator.notNull(jobStepDefinition, "jobStepCreator.jobStepDefinitionId");
+
+        for (JobStepProperty jsp : creator.getStepProperties()) {
+            for (JobStepProperty jsdp : jobStepDefinition.getStepProperties()) {
+                if (jsp.getName().equals(jsdp.getName())) {
+                    ArgumentValidator.areEqual(jsp.getPropertyType(), jsdp.getPropertyType(), "jobStepCreator.stepProperties{}." + jsp.getName());
+                    break;
+                }
+            }
+        }
 
         //
         // Check access
@@ -72,6 +93,19 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
         // Argument Validation
         ArgumentValidator.notNull(jobStep, "jobStep");
         ArgumentValidator.notNull(jobStep.getScopeId(), "jobStep.scopeId");
+        ArgumentValidator.notNull(jobStep.getName(), "jobStep.name");
+        ArgumentValidator.notNull(jobStep.getJobStepDefinitionId(), "jobStep.stepDefinitionId");
+
+        JobStepDefinition jobStepDefinition = JOB_STEP_DEFINITION_SERVICE.find(jobStep.getScopeId(), jobStep.getJobStepDefinitionId());
+        ArgumentValidator.notNull(jobStepDefinition, "jobStepCreator.jobStepDefinitionId");
+
+        for (JobStepProperty jsp : jobStep.getStepProperties()) {
+            for (JobStepProperty jsdp : jobStepDefinition.getStepProperties()) {
+                if (jsp.getName().equals(jsdp.getName())) {
+                    ArgumentValidator.areEqual(jsp.getPropertyType(), jsdp.getPropertyType(), "jobStepCreator.stepProperties{}." + jsp.getName());
+                }
+            }
+        }
 
         //
         // Check access

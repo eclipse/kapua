@@ -11,9 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.commons.operation;
 
-import javax.batch.runtime.context.JobContext;
-import javax.batch.runtime.context.StepContext;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.job.context.JobContextFactory;
@@ -24,6 +21,9 @@ import org.eclipse.kapua.service.job.targets.JobTarget;
 import org.eclipse.kapua.service.job.targets.JobTargetStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.batch.runtime.context.JobContext;
+import javax.batch.runtime.context.StepContext;
 
 public abstract class AbstractTargetProcessor implements TargetOperation {
 
@@ -49,7 +49,7 @@ public abstract class AbstractTargetProcessor implements TargetOperation {
             jobTarget.setException(e);
         }
 
-        LOG.info("Processing item:{} - DONE!", jobTarget.getId());
+        LOG.info("Processing item: {} - Done!", jobTarget.getId());
         return jobTarget;
     }
 

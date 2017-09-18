@@ -23,9 +23,8 @@ import org.eclipse.kapua.service.job.step.JobStepListResult;
 
 /**
  * JobStep DAO
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class JobStepDAO {
 
@@ -34,7 +33,7 @@ public class JobStepDAO {
 
     /**
      * Creates and return new JobStep
-     * 
+     *
      * @param em
      * @param jobStepCreator
      * @return
@@ -51,14 +50,14 @@ public class JobStepDAO {
         jobStepImpl.setJobId(jobStepCreator.getJobId());
         jobStepImpl.setJobStepDefinitionId(jobStepCreator.getJobStepDefinitionId());
         jobStepImpl.setStepIndex(jobStepCreator.getStepIndex());
-        jobStepImpl.setStepProperties(jobStepCreator.getJobStepProperties());
+        jobStepImpl.setStepProperties(jobStepCreator.getStepProperties());
 
         return ServiceDAO.create(em, jobStepImpl);
     }
 
     /**
      * Updates the provided jobStep
-     * 
+     *
      * @param em
      * @param jobStep
      * @return
@@ -75,11 +74,10 @@ public class JobStepDAO {
 
     /**
      * Deletes the jobStep by jobStep identifier
-     * 
+     *
      * @param em
      * @param jobStepId
-     * @throws KapuaEntityNotFoundException
-     *             If the {@link JobStep} is not found
+     * @throws KapuaEntityNotFoundException If the {@link JobStep} is not found
      */
     public static void delete(EntityManager em, KapuaId jobStepId) throws KapuaEntityNotFoundException {
         ServiceDAO.delete(em, JobStepImpl.class, jobStepId);
@@ -94,7 +92,7 @@ public class JobStepDAO {
 
     /**
      * Finds the jobStep by name
-     * 
+     *
      * @param em
      * @param name
      * @return
@@ -105,7 +103,7 @@ public class JobStepDAO {
 
     /**
      * Returns the jobStep list matching the provided query
-     * 
+     *
      * @param em
      * @param jobStepQuery
      * @return
@@ -118,7 +116,7 @@ public class JobStepDAO {
 
     /**
      * Returns the jobStep count matching the provided query
-     * 
+     *
      * @param em
      * @param jobStepQuery
      * @return
