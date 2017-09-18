@@ -11,20 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.job.client.schedule;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJob;
 import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtTrigger;
-import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobService;
-import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobServiceAsync;
 
 public class JobTabSchedulesToolbar extends EntityCRUDToolbar<GwtTrigger> {
-
-    private static final GwtJobServiceAsync JOB_SERVICE = GWT.create(GwtJobService.class);
 
     private String jobId;
 
@@ -38,31 +31,13 @@ public class JobTabSchedulesToolbar extends EntityCRUDToolbar<GwtTrigger> {
 
     public void setJobId(String jobId) {
         this.jobId = jobId;
+        checkButtons();
     }
 
     @Override
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
-        if (jobId != null) {
-            JOB_SERVICE.find(currentSession.getSelectedAccountId(), jobId, new AsyncCallback<GwtJob>() {
-
-                @Override
-                public void onFailure(Throwable caught) {
-
-                }
-
-                @Override
-                public void onSuccess(GwtJob result) {
-                    addEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null && result.getJobXmlDefinition() == null);
-                    editEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null && result.getJobXmlDefinition() == null);
-                    deleteEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null && result.getJobXmlDefinition() == null);
-                }
-            });
-        } else {
-            addEntityButton.setEnabled(false);
-            editEntityButton.setEnabled(false);
-            deleteEntityButton.setEnabled(false);
-        }
+        checkButtons();
     }
 
     @Override
@@ -88,5 +63,17 @@ public class JobTabSchedulesToolbar extends EntityCRUDToolbar<GwtTrigger> {
             dialog = new JobScheduleDeleteDialog(selectedJobStep);
         }
         return dialog;
+    }
+
+    private void checkButtons() {
+        if (addEntityButton != null) {
+            addEntityButton.setEnabled(jobId != null);
+        }
+        if (editEntityButton != null) {
+            editEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null);
+        }
+        if (deleteEntityButton != null) {
+            deleteEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null);
+        }
     }
 }

@@ -71,6 +71,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
 
         startsOn.setFieldLabel(JOB_MSGS.dialogAddScheduleStartsOnLabel());
         startsOn.setFormatValue(true);
+        startsOn.setAllowBlank(false);
         startsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         mainPanel.add(startsOn);
 
@@ -86,7 +87,6 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         mainPanel.add(retryInterval);
 
         cronExpression.setFieldLabel(JOB_MSGS.dialogAddScheduleCronScheduleLabel());
-        cronExpression.setAllowBlank(false);
         mainPanel.add(cronExpression);
 
         bodyPanel.add(mainPanel);
@@ -96,6 +96,12 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
     protected void preSubmit() {
         if (triggerName.getValue() == null) {
             triggerName.markInvalid(VAL_MSGS.nameRequiredMsg());
+            return;
+        }
+        if (cronExpression.getValue() == null && retryInterval.getValue() == null) {
+            cronExpression.markInvalid(VAL_MSGS.retryIntervalOrCronRequired());
+            retryInterval.markInvalid(VAL_MSGS.retryIntervalOrCronRequired());
+            return;
         }
         if (cronExpression.getValue() != null) {
             TRIGGER_SERVICE.validateCronExpression(cronExpression.getValue(), new AsyncCallback<Boolean>() {

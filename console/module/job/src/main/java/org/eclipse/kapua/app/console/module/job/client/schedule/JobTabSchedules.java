@@ -40,8 +40,6 @@ public class JobTabSchedules extends KapuaTabItem<GwtJob> {
     @Override
     protected void doRefresh() {
         schedulesGrid.refresh();
-        schedulesGrid.getToolbar().getAddEntityButton().setEnabled(selectedEntity != null && selectedEntity.getJobXmlDefinition() == null);
-        schedulesGrid.getToolbar().getRefreshEntityButton().setEnabled(selectedEntity != null);
     }
 
     @Override
