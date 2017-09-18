@@ -99,7 +99,7 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
             add(new FillToolItem());
         }
 
-        if (filterButtonShow) {
+        if (filterButtonShow && filterPanel != null) {
             filterButton = new ToggleButton(MSGS.deviceTableToolbarCloseFilter(), new SelectionListener<ButtonEvent>() {
 
                 @Override
