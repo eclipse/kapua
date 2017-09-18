@@ -88,8 +88,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
 
             @Override
             protected void load(Object loadConfig, AsyncCallback<ListLoadResult<GwtJobStepDefinition>> callback) {
-                JOB_STEP_DEFINITION_SERVICE.findAll(currentSession.getSelectedAccountId(),
-                        callback);
+                JOB_STEP_DEFINITION_SERVICE.findAll(callback);
             }
         };
 
@@ -149,7 +148,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
             Field field = (Field) component;
             GwtJobStepProperty property = new GwtJobStepProperty();
             property.setPropertyType(field.getClass().getName());
-            property.setPropertyValue(field.getRawValue().isEmpty() ? field.getRawValue() : null);
+            property.setPropertyValue(!field.getRawValue().isEmpty() ? field.getRawValue() : null);
             property.setPropertyName(field.getData("propertyName").toString());
             gwtJobStepPropertyList.add(property);
         }

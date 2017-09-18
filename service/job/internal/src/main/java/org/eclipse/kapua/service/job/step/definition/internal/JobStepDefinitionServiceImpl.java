@@ -66,7 +66,7 @@ public class JobStepDefinitionServiceImpl
 
         //
         // Check access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.write, creator.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.write, null));
 
         //
         // Do create
@@ -85,7 +85,7 @@ public class JobStepDefinitionServiceImpl
 
         //
         // Check access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.write, jobStepDefinition.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.write, null));
 
         return entityManagerSession.onTransactedResult(em -> JobStepDefinitionDAO.update(em, jobStepDefinition));
     }
@@ -94,12 +94,11 @@ public class JobStepDefinitionServiceImpl
     public JobStepDefinition find(KapuaId scopeId, KapuaId stepDefinitionId) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(stepDefinitionId, "stepDefinitionId");
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.write, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.write, KapuaId.ANY));
 
         //
         // Do find
@@ -111,11 +110,10 @@ public class JobStepDefinitionServiceImpl
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.read, KapuaId.ANY));
 
         //
         // Do query
@@ -127,11 +125,10 @@ public class JobStepDefinitionServiceImpl
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.read, KapuaId.ANY));
 
         //
         // Do query
@@ -147,7 +144,7 @@ public class JobStepDefinitionServiceImpl
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.delete, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.delete, null));
 
         //
         // Do delete

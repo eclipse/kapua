@@ -21,10 +21,10 @@ import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobStepPrope
 @RemoteServiceRelativePath("jobStepDefinition")
 public interface GwtJobStepDefinitionService extends RemoteService {
 
-    ListLoadResult<GwtJobStepDefinition> findAll(String scopeId)
+    ListLoadResult<GwtJobStepDefinition> findAll()
             throws GwtKapuaException;
 
-    GwtJobStepDefinition find(String scopeId, String jobStepDefinitionId)
+    GwtJobStepDefinition find(String jobStepDefinitionId)
             throws GwtKapuaException;
 
     // Just to make Gwt serialize GwtJobStepProperty
