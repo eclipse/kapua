@@ -26,9 +26,7 @@ import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobStepDefinit
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobStepService;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobStepServiceAsync;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class JobStepEditDialog extends JobStepAddDialog {
@@ -52,9 +50,7 @@ public class JobStepEditDialog extends JobStepAddDialog {
     private void loadJobStep() {
         maskDialog();
         jobStepDefinitionCombo.getStore().getLoader().addLoadListener(new StepDefinitionLoadListener());
-        //        populateEditDialog(selectedJobStep);
         jobStepDefinitionCombo.getStore().getLoader().load();
-
     }
 
     public void populateEditDialog(final GwtJobStep gwtJobStep) {
@@ -73,14 +69,17 @@ public class JobStepEditDialog extends JobStepAddDialog {
                 jobStepName.setValue(gwtJobStep.getJobStepName());
                 jobStepDescription.setValue(gwtJobStep.getDescription());
                 jobStepDefinitionCombo.setValue(result);
+
                 Map<String, String> propertiesMap = new HashMap<String, String>();
                 for (GwtJobStepProperty property : gwtJobStep.getStepProperties()) {
                     propertiesMap.put(property.getPropertyName(), property.getPropertyValue());
                 }
+
                 for (Component component : jobStepPropertiesPanel.getItems()) {
                     Field<String> field = (Field<String>) component;
                     field.setValue(propertiesMap.get(field.getData(PROPERTY_NAME).toString()));
                 }
+
                 unmaskDialog();
             }
         });
@@ -91,17 +90,7 @@ public class JobStepEditDialog extends JobStepAddDialog {
         selectedJobStep.setJobStepName(jobStepName.getValue());
         selectedJobStep.setDescription(jobStepDescription.getValue());
         selectedJobStep.setJobStepDefinitionId(jobStepDefinitionCombo.getValue().getId());
-
-        List<GwtJobStepProperty> gwtJobStepPropertyList = new ArrayList<GwtJobStepProperty>();
-        for (Component component : jobStepPropertiesPanel.getItems()) {
-            Field field = (Field) component;
-            GwtJobStepProperty property = new GwtJobStepProperty();
-            property.setPropertyType(field.getClass().getName());
-            property.setPropertyValue(!field.getRawValue().isEmpty() ? field.getRawValue() : null);
-            property.setPropertyName(field.getData("propertyName").toString());
-            gwtJobStepPropertyList.add(property);
-        }
-        selectedJobStep.setStepProperties(gwtJobStepPropertyList);
+        selectedJobStep.setStepProperties(readStepProperties());
 
         JOB_STEP_SERVICE.update(xsrfToken, selectedJobStep, new AsyncCallback<GwtJobStep>() {
 

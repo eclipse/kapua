@@ -26,7 +26,6 @@ import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.layout.MarginData;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -53,12 +52,12 @@ public class JobStepAddDialog extends EntityAddEditDialog {
 
     private final String jobId;
     protected int jobStepIndex;
-    protected final ComboBox<GwtJobStepDefinition> jobStepDefinitionCombo;
-    protected final Label jobStepDefinitionDescription;
+
     protected final TextField<String> jobStepName;
     protected final TextField<String> jobStepDescription;
-    protected final FormPanel mainPanel;
+    protected final ComboBox<GwtJobStepDefinition> jobStepDefinitionCombo;
     protected final FieldSet jobStepPropertiesFieldSet;
+    protected final Label jobStepDefinitionDescription;
     protected final FormPanel jobStepPropertiesPanel;
 
     protected static final String PROPERTY_NAME = "propertyName";
@@ -69,19 +68,28 @@ public class JobStepAddDialog extends EntityAddEditDialog {
 
     public JobStepAddDialog(GwtSession currentSession, String jobId) {
         super(currentSession);
+
         this.jobId = jobId;
-        jobStepDefinitionCombo = new ComboBox<GwtJobStepDefinition>();
-        jobStepDefinitionDescription = new Label();
+
         jobStepName = new TextField<String>();
         jobStepDescription = new TextField<String>();
-        mainPanel = new FormPanel(150);
+        jobStepDefinitionCombo = new ComboBox<GwtJobStepDefinition>();
         jobStepPropertiesFieldSet = new FieldSet();
-        jobStepPropertiesPanel = new FormPanel(150);
+        jobStepDefinitionDescription = new Label();
+        jobStepPropertiesPanel = new FormPanel(FORM_LABEL_WIDTH);
+
         DialogUtils.resizeDialog(this, 600, 400);
     }
 
     @Override
     public void createBody() {
+        FormPanel jobStepFormPanel = new FormPanel(FORM_LABEL_WIDTH);
+
+        jobStepName.setFieldLabel(JOB_MSGS.dialogAddStepJobNameLabel());
+        jobStepName.setAllowBlank(false);
+
+        jobStepDescription.setFieldLabel(JOB_MSGS.dialogAddStepJobDescriptionLabel());
+
         GwtJobStepDefinitionQuery query = new GwtJobStepDefinitionQuery();
         query.setScopeId(currentSession.getSelectedAccountId());
         RpcProxy<ListLoadResult<GwtJobStepDefinition>> jobStepDefinitionProxy = new RpcProxy<ListLoadResult<GwtJobStepDefinition>>() {
@@ -95,7 +103,6 @@ public class JobStepAddDialog extends EntityAddEditDialog {
         BaseListLoader<ListLoadResult<GwtJobStepDefinition>> jobStepDefinitionLoader = new BaseListLoader<ListLoadResult<GwtJobStepDefinition>>(jobStepDefinitionProxy);
         ListStore<GwtJobStepDefinition> jobStepDefinitionStore = new ListStore<GwtJobStepDefinition>(jobStepDefinitionLoader);
         jobStepDefinitionCombo.setStore(jobStepDefinitionStore);
-        jobStepDefinitionCombo.setStyleAttribute("margin-left", "5px");
         jobStepDefinitionCombo.setDisplayField("jobStepDefinitionName");
         jobStepDefinitionCombo.setFieldLabel(JOB_MSGS.dialogAddStepDefinitionCombo());
         jobStepDefinitionCombo.setEmptyText(JOB_MSGS.dialogAddStepDefinitionComboEmpty());
@@ -112,24 +119,20 @@ public class JobStepAddDialog extends EntityAddEditDialog {
             }
         });
 
-        jobStepDefinitionDescription.setStyleAttribute("display", "block");
-
-        jobStepName.setFieldLabel(JOB_MSGS.dialogAddStepJobNameLabel());
-        jobStepName.setAllowBlank(false);
-
-        jobStepDescription.setFieldLabel(JOB_MSGS.dialogAddStepJobDescriptionLabel());
-
         jobStepPropertiesFieldSet.setHeading(JOB_MSGS.jobStepPropertiesFieldSetHeading());
         jobStepPropertiesFieldSet.setVisible(false);
+
+        jobStepDefinitionDescription.setStyleAttribute("display", "block");
+
+        jobStepPropertiesFieldSet.add(jobStepDefinitionDescription);
         jobStepPropertiesFieldSet.add(jobStepPropertiesPanel);
 
-        mainPanel.add(jobStepName);
-        mainPanel.add(jobStepDescription);
-        mainPanel.add(jobStepDefinitionCombo);
-        mainPanel.add(jobStepDefinitionDescription, new MarginData(15, 0, 15, 0));
-        mainPanel.add(jobStepPropertiesFieldSet);
+        jobStepFormPanel.add(jobStepName);
+        jobStepFormPanel.add(jobStepDescription);
+        jobStepFormPanel.add(jobStepDefinitionCombo);
+        jobStepFormPanel.add(jobStepPropertiesFieldSet);
 
-        bodyPanel.add(mainPanel);
+        bodyPanel.add(jobStepFormPanel);
     }
 
     @Override
@@ -143,16 +146,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
         gwtJobStepCreator.setJobId(jobId);
         gwtJobStepCreator.setJobStepDefinitionId(jobStepDefinitionCombo.getValue().getId());
         gwtJobStepCreator.setStepIndex(jobStepIndex);
-        List<GwtJobStepProperty> gwtJobStepPropertyList = new ArrayList<GwtJobStepProperty>();
-        for (Component component : jobStepPropertiesPanel.getItems()) {
-            Field field = (Field) component;
-            GwtJobStepProperty property = new GwtJobStepProperty();
-            property.setPropertyType(field.getClass().getName());
-            property.setPropertyValue(!field.getRawValue().isEmpty() ? field.getRawValue() : null);
-            property.setPropertyName(field.getData("propertyName").toString());
-            gwtJobStepPropertyList.add(property);
-        }
-        gwtJobStepCreator.setProperties(gwtJobStepPropertyList);
+        gwtJobStepCreator.setProperties(readStepProperties());
 
         JOB_STEP_SERVICE.create(xsrfToken, gwtJobStepCreator, new AsyncCallback<GwtJobStep>() {
 
@@ -241,5 +235,17 @@ public class JobStepAddDialog extends EntityAddEditDialog {
                 jobStepIndex = result;
             }
         });
+    }
+
+    protected List<GwtJobStepProperty> readStepProperties() {
+        List<GwtJobStepProperty> jobStepProperties = new ArrayList<GwtJobStepProperty>();
+        for (Component component : jobStepPropertiesPanel.getItems()) {
+            Field field = (Field) component;
+            GwtJobStepProperty property = new GwtJobStepProperty();
+            property.setPropertyValue(!field.getRawValue().isEmpty() ? field.getRawValue() : null);
+            property.setPropertyName(field.getData(PROPERTY_NAME).toString());
+            jobStepProperties.add(property);
+        }
+        return jobStepProperties;
     }
 }
