@@ -4,12 +4,12 @@ The section describes how Eclipse Kapua docker images can be used.
 
 ### Build
 
-    mvn -Pdocker install
+    mvn -Pdocker install,console
 
 If you want to speed up the build process you can ask Maven to ignore `-SNAPSHOT` updates
 force it to use only locally present artifacts with the argument `-nsu`:
 
-    mvn -Pdocker install -nsu
+    mvn -Pdocker install,console -nsu
 
 ### Pushing
 
