@@ -57,6 +57,9 @@ public class GwtKapuaUserModelConverter {
         if (gwtUserQuery.getUserStatus() != null && !gwtUserQuery.getUserStatus().equals(GwtUserStatus.ANY.toString())) {
             predicate.and(new AttributePredicate<UserStatus>("status", convertUserStatus(gwtUserQuery.getUserStatus()), Operator.EQUAL));
         }
+        if (gwtUserQuery.getUserStatus() != null && !gwtUserQuery.getUserStatus().equals(GwtUserStatus.ANY.toString())) {
+            predicate.and(new AttributePredicate<UserStatus>("status", convertUserStatus(gwtUserQuery.getUserStatus()), Operator.EQUAL));
+        }
         userQuery.setOffset(loadConfig.getOffset());
         userQuery.setLimit(loadConfig.getLimit());
         userQuery.setPredicate(predicate);

@@ -96,6 +96,26 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
         if (refreshEntityButtonShow) {
             refreshEntityButton = new RefreshButton(getRefreshButtonSelectionListener());
             add(refreshEntityButton);
+            add(new FillToolItem());
+        }
+
+        if (filterButtonShow) {
+            filterButton = new ToggleButton(MSGS.deviceTableToolbarCloseFilter(), new SelectionListener<ButtonEvent>() {
+
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    if (filterButton.isPressed()) {
+                        filterPanel.show();
+                        filterButton.setText(MSGS.deviceTableToolbarCloseFilter());
+                    } else {
+                        filterPanel.hide();
+                        filterButton.setText(MSGS.deviceTableToolbarOpenFilter());
+                    }
+
+                }
+            });
+            filterButton.toggle(true);
+            add(filterButton);
         }
 
         if (filterButtonShow && filterPanel != null) {

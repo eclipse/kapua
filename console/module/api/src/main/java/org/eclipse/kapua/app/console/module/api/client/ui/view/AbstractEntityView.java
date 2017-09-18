@@ -24,6 +24,7 @@ import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.util.Margins;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
@@ -70,7 +71,19 @@ public abstract class AbstractEntityView<M extends GwtEntityModel> extends Abstr
         eastData.setCollapsible(false);
         eastData.setSplit(false);
         filterPanel = getEntityFilterPanel(this, currentSession);
+        ContentPanel panel = new ContentPanel();
+        panel.setLayout(new FitLayout());
+        panel.setBorders(false);
+        panel.setBodyBorder(false);
+        //
+        // East Panel: Filtering menu
 
+        if (filterPanel != null) {
+            panel.add(filterPanel);
+            panel.setHeaderVisible(hidden);
+        }
+
+        //
         // Center Main panel:
         BorderLayoutData centerMainPanel = new BorderLayoutData(LayoutRegion.CENTER);
         centerMainPanel.setMargins(new Margins(0, 5, 0, 0));
@@ -79,6 +92,7 @@ public abstract class AbstractEntityView<M extends GwtEntityModel> extends Abstr
         final LayoutContainer resultContainer = new LayoutContainer(new BorderLayout());
         resultContainer.setBorders(false);
 
+        mf.add(filterPanel, eastData);
         mf.add(resultContainer, centerMainPanel);
 
         //
