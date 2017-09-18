@@ -96,10 +96,11 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
         if (refreshEntityButtonShow) {
             refreshEntityButton = new RefreshButton(getRefreshButtonSelectionListener());
             add(refreshEntityButton);
-            add(new FillToolItem());
         }
 
         if (filterButtonShow && filterPanel != null) {
+            //FIXME when providing additional buttons and also the filter button it will probably display weird
+            add(new FillToolItem());
             filterButton = new ToggleButton(MSGS.deviceTableToolbarCloseFilter(), new SelectionListener<ButtonEvent>() {
 
                 @Override
