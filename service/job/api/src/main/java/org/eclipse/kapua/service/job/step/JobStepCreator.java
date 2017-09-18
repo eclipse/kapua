@@ -11,23 +11,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.step;
 
-import java.util.List;
+import org.eclipse.kapua.model.KapuaNamedEntityCreator;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
-import org.eclipse.kapua.model.KapuaNamedEntityCreator;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
+import java.util.List;
 
 /**
  * {@link JobStepCreator} encapsulates all the information needed to create a new JobStep in the system.<br>
  * The data provided will be used to seed the new JobStep.
- * 
- * @since 1.0.0
  *
+ * @since 1.0.0
  */
 @XmlRootElement(name = "jobCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -50,7 +48,7 @@ public interface JobStepCreator extends KapuaNamedEntityCreator<JobStep> {
 
     public void setJobStepDefinitionId(KapuaId jobStepDefinitionId);
 
-    public <P extends JobStepProperty> List<P> getJobStepProperties();
+    public <P extends JobStepProperty> List<P> getStepProperties();
 
     public void setJobStepProperties(List<JobStepProperty> jobStepProperties);
 }

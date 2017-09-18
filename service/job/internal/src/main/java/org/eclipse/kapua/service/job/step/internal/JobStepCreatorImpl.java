@@ -11,9 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.step.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntityCreator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -22,12 +19,14 @@ import org.eclipse.kapua.service.job.step.JobStepCreator;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionCreator;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * {@link JobStepDefinitionCreator} encapsulates all the information needed to create a new JobStepDefinition in the system.<br>
  * The data provided will be used to seed the new JobStepDefinition.
- * 
- * @since 1.0.0
  *
+ * @since 1.0.0
  */
 @KapuaProvider
 public class JobStepCreatorImpl extends AbstractKapuaNamedEntityCreator<JobStep> implements JobStepCreator {
@@ -85,9 +84,9 @@ public class JobStepCreatorImpl extends AbstractKapuaNamedEntityCreator<JobStep>
     }
 
     @Override
-    public List<JobStepProperty> getJobStepProperties() {
+    public List<JobStepProperty> getStepProperties() {
         if (jobStepProperty == null) {
-            this.jobStepProperty = new ArrayList<>();
+            jobStepProperty = new ArrayList<>();
         }
 
         return jobStepProperty;

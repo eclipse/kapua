@@ -146,6 +146,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
             }
 
             JobDAO.delete(em, jobId);
+
         });
 
     }

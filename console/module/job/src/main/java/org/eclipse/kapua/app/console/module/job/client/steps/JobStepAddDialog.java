@@ -61,6 +61,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
     protected final FormPanel jobStepPropertiesPanel;
 
     protected static final String PROPERTY_NAME = "propertyName";
+    protected static final String PROPERTY_TYPE = "propertyType";
 
     protected static final ConsoleJobMessages JOB_MSGS = GWT.create(ConsoleJobMessages.class);
     private static final GwtJobStepDefinitionServiceAsync JOB_STEP_DEFINITION_SERVICE = GWT.create(GwtJobStepDefinitionService.class);
@@ -200,18 +201,21 @@ public class JobStepAddDialog extends EntityAddEditDialog {
                 TextField<String> textField = new TextField<String>();
                 textField.setFieldLabel(property.getPropertyName());
                 textField.setEmptyText(KapuaSafeHtmlUtils.htmlUnescape(property.getPropertyValue()));
+                textField.setData(PROPERTY_TYPE, property.getPropertyType());
                 textField.setData(PROPERTY_NAME, property.getPropertyName());
                 jobStepPropertiesPanel.add(textField);
             } else if (propertyType.equals(Boolean.class.getName())) {
                 CheckBox checkBox = new CheckBox();
                 checkBox.setFieldLabel(property.getPropertyName());
                 checkBox.setValue(Boolean.valueOf(property.getPropertyValue()));
+                checkBox.setData(PROPERTY_TYPE, property.getPropertyType());
                 checkBox.setData(PROPERTY_NAME, property.getPropertyName());
                 jobStepPropertiesPanel.add(checkBox);
             } else {
                 TextArea textArea = new TextArea();
                 textArea.setFieldLabel(property.getPropertyName());
                 textArea.setEmptyText(KapuaSafeHtmlUtils.htmlUnescape(property.getPropertyValue()));
+                textArea.setData(PROPERTY_TYPE, property.getPropertyType());
                 textArea.setData(PROPERTY_NAME, property.getPropertyName());
                 jobStepPropertiesPanel.add(textArea);
             }
@@ -243,6 +247,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
             Field field = (Field) component;
             GwtJobStepProperty property = new GwtJobStepProperty();
             property.setPropertyValue(!field.getRawValue().isEmpty() ? field.getRawValue() : null);
+            property.setPropertyType(field.getData(PROPERTY_TYPE).toString());
             property.setPropertyName(field.getData(PROPERTY_NAME).toString());
             jobStepProperties.add(property);
         }
