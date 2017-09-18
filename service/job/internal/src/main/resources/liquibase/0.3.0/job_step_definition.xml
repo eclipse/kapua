@@ -39,7 +39,7 @@
             </column>
 
             <column name="name" type="varchar(255)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true"/>
             </column>
             <column name="description" type="text"/>
             <column name="job_step_type" type="varchar(255)">

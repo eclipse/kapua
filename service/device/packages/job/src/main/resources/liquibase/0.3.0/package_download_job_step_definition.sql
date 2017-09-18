@@ -15,7 +15,7 @@
 -- changeset bundle-job:1
 
 INSERT INTO job_job_step_definition
-VALUES (1,
+VALUES (NULL,
   NULL,
   CURRENT_TIMESTAMP(),
   1,
