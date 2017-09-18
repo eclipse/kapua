@@ -34,8 +34,8 @@ public class AccountEditDialog extends AccountAddDialog {
     @Override
     protected void onRender(Element parent, int pos) {
         super.onRender(parent, pos);
-//        fieldSet.remove(accountPassword);
-//        fieldSet.remove(confirmPassword);
+        fieldSet.remove(accountPassword);
+        fieldSet.remove(confirmPassword);
         fieldSet.remove(accountNameField);
         accountNameLabel.setVisible(true);
         parentAccountName.setValue(currentSession.getSelectedAccountName());
@@ -114,7 +114,7 @@ public class AccountEditDialog extends AccountAddDialog {
 
     @Override
     public String getHeaderMessage() {
-        return MSGS.accountEditDialogHeader(selectedAccount.getName());
+        return MSGS.accountEditDialogHeader();
     }
 
     @Override

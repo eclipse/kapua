@@ -43,8 +43,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.predicate.KapuaAndPredicate;
 import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
-import org.eclipse.kapua.service.authorization.group.Group;
-import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
@@ -60,8 +58,6 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventPredicates;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
-import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.service.user.UserService;
 
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
@@ -94,7 +90,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
         return gwtDevice;
     }
 
-    public ListLoadResult<GwtGroupedNVPair> findDeviceProfile(String scopeIdString, String deviceIdString)
+    public ListLoadResult<GwtGroupedNVPair> findDeviceProfile(String scopeIdString, String clientId)
             throws GwtKapuaException {
         List<GwtGroupedNVPair> pairs = new ArrayList<GwtGroupedNVPair>();
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -102,14 +98,11 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
         DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
         DeviceEventService deviceEventService = locator.getService(DeviceEventService.class);
         DeviceConnectionService deviceConnectionService = locator.getService(DeviceConnectionService.class);
-        GroupService groupService = locator.getService(GroupService.class);
-        UserService userService = locator.getService(UserService.class);
-
         try {
 
             KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
-            KapuaId deviceId = KapuaEid.parseCompactId(deviceIdString);
-            Device device = deviceRegistryService.find(scopeId, deviceId);
+
+            Device device = deviceRegistryService.findByClientId(scopeId, clientId);
 
             if (device != null) {
                 pairs.add(new GwtGroupedNVPair("devInfo", "devStatus", device.getStatus().toString()));
@@ -120,10 +113,9 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                 }
 
                 if (deviceConnection != null) {
-                    User user = userService.find(scopeId, deviceConnection.getUserId());
                     pairs.add(new GwtGroupedNVPair("connInfo", "connConnectionStatus", deviceConnection.getStatus().toString()));
                     pairs.add(new GwtGroupedNVPair("connInfo", "connClientId", device.getClientId()));
-                    pairs.add(new GwtGroupedNVPair("connInfo", "connUserName", user.getDisplayName()));
+                    pairs.add(new GwtGroupedNVPair("connInfo", "connUserId", deviceConnection.getUserId().toCompactId()));
                     pairs.add(new GwtGroupedNVPair("connInfo", "connReservedUserId", deviceConnection.getReservedUserId() != null ? deviceConnection.getReservedUserId().toCompactId() : null));
                     pairs.add(new GwtGroupedNVPair("connInfo", "connUserCouplingMode", GwtConnectionUserCouplingMode.valueOf(deviceConnection.getUserCouplingMode().name()).getLabel()));
                     pairs.add(new GwtGroupedNVPair("connInfo", "connClientIp", deviceConnection.getClientIp()));
@@ -147,15 +139,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
 
                 pairs.add(new GwtGroupedNVPair("devInfo", "devClientId", device.getClientId()));
                 pairs.add(new GwtGroupedNVPair("devInfo", "devDisplayName", device.getDisplayName()));
-
-                if (device.getGroupId() != null) {
-                    Group group = groupService.find(scopeId, device.getGroupId());
-                    if (group != null) {
-                        pairs.add(new GwtGroupedNVPair("devInfo", "devGroupName", group.getName()));             
-                    } 
-                } else {
-                    pairs.add(new GwtGroupedNVPair("devInfo", "devGroupName", null));
-                }
+                pairs.add(new GwtGroupedNVPair("devInfo", "devGroupId", device.getGroupId() != null ? device.getGroupId().toCompactId() : null));
 
                 if (device.getLastEventId() != null) {
                     DeviceEvent lastEvent = deviceEventService.find(scopeId, device.getLastEventId());

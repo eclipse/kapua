@@ -73,7 +73,7 @@ public class TopicsTable extends LayoutContainer {
         super.onRender(parent, index);
 
         setLayout(new FitLayout());
-        setBorders(false);
+        setBorders(true);
 
         inittopicInfoTable();
         add(tableContainer);
@@ -84,7 +84,7 @@ public class TopicsTable extends LayoutContainer {
 
         tableContainer = new ContentPanel();
         tableContainer.setBorders(false);
-        tableContainer.setBodyBorder(true);
+        tableContainer.setBodyBorder(false);
         tableContainer.setHeaderVisible(true);
         tableContainer.setHeading(MSGS.topicInfoTableHeader());
         tableContainer.setScrollMode(Scroll.AUTOY);

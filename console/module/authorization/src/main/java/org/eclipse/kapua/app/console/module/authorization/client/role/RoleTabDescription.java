@@ -19,7 +19,6 @@ import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRole
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRoleServiceAsync;
 
@@ -29,6 +28,7 @@ public class RoleTabDescription extends EntityDescriptionTabItem<GwtRole> {
 
     @Override
     protected RpcProxy<ListLoadResult<GwtGroupedNVPair>> getDataProxy() {
+
         return new RpcProxy<ListLoadResult<GwtGroupedNVPair>>() {
 
             @Override
@@ -36,10 +36,5 @@ public class RoleTabDescription extends EntityDescriptionTabItem<GwtRole> {
                 GWT_ROLE_SERVICE.getRoleDescription(selectedEntity.getScopeId(), selectedEntity.getId(), callback);
             }
         };
-    }
-
-    @Override
-    protected void onRender(Element parent, int index) {
-        super.onRender(parent, index);
     }
 }

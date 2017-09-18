@@ -11,11 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.tag.client;
 
-import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractEntityTabDescriptor;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractTabDescriptor;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
 
-public class TagTabDescriptionDescriptor extends AbstractEntityTabDescriptor<GwtTag, TagTabDescription, TagView> {
+public class TagTabDescriptionDescriptor extends AbstractTabDescriptor<GwtTag, TagTabDescription, TagView> {
 
     @Override
     public TagTabDescription getTabViewInstance(TagView view, GwtSession currentSession) {

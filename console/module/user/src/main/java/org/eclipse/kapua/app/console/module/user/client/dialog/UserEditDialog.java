@@ -98,7 +98,6 @@ public class UserEditDialog extends UserAddDialog {
         return MSGS.dialogEditInfo();
     }
 
-
     private void populateEditDialog(GwtUser gwtUser) {
         username.setValue(gwtUser.getUsername());
         username.disable();

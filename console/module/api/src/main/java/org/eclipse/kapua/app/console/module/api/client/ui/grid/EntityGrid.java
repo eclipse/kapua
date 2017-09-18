@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.ContentPanel;
-import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolBar;
@@ -52,8 +51,7 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
     protected KapuaGrid<M> entityGrid;
     protected BasePagingLoader<PagingLoadResult<M>> entityLoader;
     protected ListStore<M> entityStore;
-    protected PagingToolBar entityPagingToolbar;
-    protected EntityFilterPanel<M> filterPanel;
+    private PagingToolBar entityPagingToolbar;
 
     protected EntityGrid(AbstractEntityView<M> entityView, GwtSession currentSession) {
         super(new FitLayout());
@@ -161,15 +159,10 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
     }
 
     public void refresh(GwtQuery query) {
-        // m_filterPredicates = predicates;
+//        m_filterPredicates = predicates;
         setFilterQuery(query);
         entityLoader.load();
         entityPagingToolbar.enable();
-    }
-
-    public void setFilterPanel(EntityFilterPanel<M> filterPanel) {
-        this.filterPanel = filterPanel;
-        entityCRUDToolbar.setFilterPanel(filterPanel);
     }
 
     protected void selectionChangedEvent(M selectedItem) {

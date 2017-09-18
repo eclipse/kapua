@@ -19,7 +19,6 @@ import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGrou
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupServiceAsync;
 
@@ -40,12 +39,8 @@ public class GroupTabDescription extends EntityDescriptionTabItem<GwtGroup> {
                     AsyncCallback<ListLoadResult<GwtGroupedNVPair>> callback) {
                 GWT_GROUP_SERVICE.getGroupDescription(selectedEntity.getScopeId(),
                         selectedEntity.getId(), callback);
+
             }
         };
-    }
-
-    @Override
-    protected void onRender(Element parent, int index) {
-        super.onRender(parent, index);
     }
 }

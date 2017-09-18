@@ -11,11 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor;
 
-import org.eclipse.kapua.app.console.module.api.client.ui.tab.TabItem;
-import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractView;
+import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 
-public interface TabDescriptor<T extends TabItem, V extends AbstractView> extends ViewDescriptor {
+public interface TabDescriptor<M extends GwtEntityModel, T extends KapuaTabItem<M>, V extends AbstractEntityView<M>> extends ViewDescriptor {
 
     T getTabViewInstance(V view, GwtSession currentSession);
 

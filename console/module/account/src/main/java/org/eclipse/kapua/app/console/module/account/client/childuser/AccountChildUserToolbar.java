@@ -89,7 +89,6 @@ public class AccountChildUserToolbar extends EntityCRUDToolbar<GwtUser> {
     @Override
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
-        setBorders(false);
         if (selectedAccountSession.getSelectedAccountId() != null && currentSession != null && currentSession.hasUserCreatePermission()) {
             getAddEntityButton().enable();
         } else {

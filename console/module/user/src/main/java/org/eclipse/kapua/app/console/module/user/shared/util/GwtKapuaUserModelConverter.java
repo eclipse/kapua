@@ -15,7 +15,6 @@ import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser.GwtUserStatus;
 import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUserQuery;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
@@ -32,14 +31,16 @@ import org.eclipse.kapua.service.user.internal.UserPredicates;
  */
 public class GwtKapuaUserModelConverter {
 
-    private GwtKapuaUserModelConverter() {
+    private GwtKapuaUserModelConverter(){
     }
 
     /**
      * Converts a {@link GwtUserQuery} into a {@link UserQuery} object for backend usage
      *
-     * @param loadConfig   the load configuration
-     * @param gwtUserQuery the {@link GwtUserQuery} to convertKapuaId
+     * @param loadConfig
+     *            the load configuration
+     * @param gwtUserQuery
+     *            the {@link GwtUserQuery} to convertKapuaId
      * @return the converted {@link UserQuery}
      */
     public static UserQuery convertUserQuery(PagingLoadConfig loadConfig, GwtUserQuery gwtUserQuery) {
@@ -48,7 +49,6 @@ public class GwtKapuaUserModelConverter {
         KapuaLocator locator = KapuaLocator.getInstance();
         UserFactory userFactory = locator.getFactory(UserFactory.class);
 
-        AndPredicate predicate = new AndPredicate();
         // Convert query
         UserQuery userQuery = userFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtUserQuery.getScopeId()));
         if (gwtUserQuery.getName() != null && !gwtUserQuery.getName().isEmpty()) {
@@ -57,19 +57,12 @@ public class GwtKapuaUserModelConverter {
         if (gwtUserQuery.getUserStatus() != null && !gwtUserQuery.getUserStatus().equals(GwtUserStatus.ANY.toString())) {
             predicate.and(new AttributePredicate<UserStatus>("status", convertUserStatus(gwtUserQuery.getUserStatus()), Operator.EQUAL));
         }
-        if (gwtUserQuery.getUserStatus() != null && !gwtUserQuery.getUserStatus().equals(GwtUserStatus.ANY.toString())) {
-            predicate.and(new AttributePredicate<UserStatus>("status", convertUserStatus(gwtUserQuery.getUserStatus()), Operator.EQUAL));
-        }
         userQuery.setOffset(loadConfig.getOffset());
         userQuery.setLimit(loadConfig.getLimit());
-        userQuery.setPredicate(predicate);
+
         //
         // Return converted
         return userQuery;
-    }
-
-    private static UserStatus convertUserStatus(String userStatus) {
-        return UserStatus.valueOf(userStatus);
     }
 
     public static UserStatus convertUserStatus(GwtUserStatus gwtUserStatus) {

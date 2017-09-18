@@ -59,44 +59,52 @@ public abstract class EntityDescriptionTabItem<M extends GwtEntityModel> extends
         RpcProxy<ListLoadResult<GwtGroupedNVPair>> proxy = getDataProxy();
         descriptionValuesloader = new BaseListLoader<ListLoadResult<GwtGroupedNVPair>>(proxy);
         descriptionValuesStore = new GroupingStore<GwtGroupedNVPair>(descriptionValuesloader);
-        descriptionValuesStore.groupBy("groupLoc");
+        descriptionValuesStore.groupBy("group");
 
         //
         // Columns
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
-        ColumnConfig name = new ColumnConfig("nameLoc", MSGS.entityTabDescriptionName(), 50);
-        ColumnConfig value = new ColumnConfig("value", MSGS.devicePropValue(), 50);
+
         // Name column
         GridCellRenderer<GwtGroupedNVPair> renderer = new GridCellRenderer<GwtGroupedNVPair>() {
 
             @Override
             public Object render(GwtGroupedNVPair model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtGroupedNVPair> store, Grid<GwtGroupedNVPair> grid) {
-                Object value = model.getValue();
-                return value;
+                return renderNameCell(model, property, config, rowIndex, colIndex, store, grid);
             }
         };
 
-        value.setRenderer(renderer);
-        columns.add(name);
-        columns.add(value);
+        ColumnConfig column = new ColumnConfig("name", MSGS.entityTabDescriptionName(), 50);
+        column.setRenderer(renderer);
+        columns.add(column);
 
-        ColumnModel cm = new ColumnModel(columns);
+        // Value column
+        renderer = new GridCellRenderer<GwtGroupedNVPair>() {
+
+            @Override
+            public Object render(GwtGroupedNVPair model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtGroupedNVPair> store, Grid<GwtGroupedNVPair> grid) {
+                return renderValueCell(model, property, config, rowIndex, colIndex, store, grid);
+            }
+        };
+        column = new ColumnConfig("value", MSGS.entityTabDescriptionValue(), 50);
+        column.setRenderer(renderer);
+        columns.add(column);
 
         //
         // Grid
-        GroupingView groupingView = new GroupingView();
-        groupingView.setShowGroupedColumn(false);
-        groupingView.setForceFit(true);
-        groupingView.setAutoFill(true);
-        groupingView.setSortingEnabled(false);
-        groupingView.setShowGroupedColumn(false);
-        groupingView.setEmptyText(MSGS.entityTabDescriptionNoSelection());
-        groupingView.setEnableNoGroups(false);
-        groupingView.setEnableGroupingMenu(false);
-        descriptionGrid = new KapuaGrid<GwtGroupedNVPair>(descriptionValuesStore, cm);
-        descriptionGrid.setView(groupingView);
+        GroupingView gropingView = new GroupingView();
+        gropingView.setShowGroupedColumn(false);
+        gropingView.setForceFit(true);
+        gropingView.setAutoFill(true);
+        gropingView.setSortingEnabled(false);
+        gropingView.setShowGroupedColumn(false);
+        gropingView.setEmptyText(MSGS.entityTabDescriptionNoSelection());
+        gropingView.setEnableNoGroups(false);
+        gropingView.setEnableGroupingMenu(false);
 
-        this.setStyleAttribute("border-top-width: 0px", "!important;");
+        descriptionGrid = new KapuaGrid<GwtGroupedNVPair>(descriptionValuesStore, new ColumnModel(columns));
+        descriptionGrid.setView(gropingView);
+
         add(descriptionGrid);
     }
 

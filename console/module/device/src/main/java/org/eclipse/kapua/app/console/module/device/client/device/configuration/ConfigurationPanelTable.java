@@ -34,17 +34,14 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtChannel;
 
 public class ConfigurationPanelTable extends LayoutContainer {
 
     private ContentPanel tableContainer;
     private ToolBar toolBar;
-    private static final ConsoleDeviceMessages MSGS = GWT.create(ConsoleDeviceMessages.class);
 
     public ConfigurationPanelTable(GwtSession currentSession) {
     }
@@ -62,25 +59,25 @@ public class ConfigurationPanelTable extends LayoutContainer {
 
     private void initConfigurationPanelTableGrid() {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
-        ColumnConfig id = new ColumnConfig("id", MSGS.channelId(), 150);
+        ColumnConfig id = new ColumnConfig("id", "ID", 150);
         id.setAlignment(HorizontalAlignment.CENTER);
         configs.add(id);
-        ColumnConfig name = new ColumnConfig("name", MSGS.channelName(), 150);
+        ColumnConfig name = new ColumnConfig("name", "Name", 150);
         name.setAlignment(HorizontalAlignment.CENTER);
         configs.add(name);
-        ColumnConfig type = new ColumnConfig("type", MSGS.channelType(), 150);
+        ColumnConfig type = new ColumnConfig("type", "Type", 150);
         type.setAlignment(HorizontalAlignment.CENTER);
         configs.add(type);
-        ColumnConfig valueType = new ColumnConfig("valueType", MSGS.channelValueType(), 150);
+        ColumnConfig valueType = new ColumnConfig("valueType", "Value Type", 150);
         valueType.setAlignment(HorizontalAlignment.CENTER);
         configs.add(valueType);
-        ColumnConfig unitId = new ColumnConfig("unitId", MSGS.channelUnitId(), 150);
+        ColumnConfig unitId = new ColumnConfig("unitId", "unit_id", 150);
         unitId.setAlignment(HorizontalAlignment.CENTER);
         configs.add(unitId);
-        ColumnConfig primaryTable = new ColumnConfig("primaryTable", MSGS.channelPrimaryTable(), 150);
+        ColumnConfig primaryTable = new ColumnConfig("primaryTable", "primary_table", 150);
         primaryTable.setAlignment(HorizontalAlignment.CENTER);
         configs.add(primaryTable);
-        ColumnConfig memoryAddress = new ColumnConfig("memoryAddress", MSGS.channelMemoryAddress(), 150);
+        ColumnConfig memoryAddress = new ColumnConfig("memoryAddress", "memmory_address", 150);
         memoryAddress.setAlignment(HorizontalAlignment.CENTER);
         configs.add(memoryAddress);
 
@@ -98,7 +95,7 @@ public class ConfigurationPanelTable extends LayoutContainer {
         Grid<GwtChannel> grid = new Grid<GwtChannel>(store, new ColumnModel(configs));
         tableContainer.add(grid);
         toolBar = new ToolBar();
-        Label label = new Label(MSGS.assetDriverLabel());
+        Label label = new Label("Asset 1(Driver)");
         toolBar.add(label);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(new FillToolItem());

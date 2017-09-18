@@ -17,7 +17,6 @@ import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
 import org.eclipse.kapua.app.console.module.tag.shared.service.GwtTagService;
@@ -32,6 +31,7 @@ public class TagTabDescription extends EntityDescriptionTabItem<GwtTag> {
 
     @Override
     protected RpcProxy<ListLoadResult<GwtGroupedNVPair>> getDataProxy() {
+
         return new RpcProxy<ListLoadResult<GwtGroupedNVPair>>() {
 
             @Override
@@ -40,10 +40,5 @@ public class TagTabDescription extends EntityDescriptionTabItem<GwtTag> {
 
             }
         };
-    }
-
-    @Override
-    protected void onRender(Element parent, int index) {
-        super.onRender(parent, index);
     }
 }
