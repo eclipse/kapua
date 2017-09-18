@@ -30,11 +30,6 @@
         </fileSet>
 
         <fileSet>
-            <outputDirectory>shiro-authorization</outputDirectory>
-            <directory>../../service/security/shiro/target/cucumber</directory>
-        </fileSet>
-
-        <fileSet>
             <outputDirectory>account-service</outputDirectory>
             <directory>../../service/account/internal/target/cucumber</directory>
         </fileSet>
@@ -60,8 +55,23 @@
         </fileSet>
 
         <fileSet>
+            <outputDirectory>user-service-lockout-i9n</outputDirectory>
+            <directory>../../qa/target/cucumber/LockoutExpirationI9n</directory>
+        </fileSet>
+
+        <fileSet>
             <outputDirectory>device-service-i9n</outputDirectory>
             <directory>../../qa/target/cucumber/DeviceI9n</directory>
+        </fileSet>
+
+        <fileSet>
+            <outputDirectory>device-lifecycle-service-i9n</outputDirectory>
+            <directory>../../qa/target/cucumber/DeviceLifecycleI9n</directory>
+        </fileSet>
+
+        <fileSet>
+            <outputDirectory>connection-user-coupling-i9n</outputDirectory>
+            <directory>../../qa/target/cucumber/ConnectionI9n</directory>
         </fileSet>
 
         <fileSet>
@@ -70,7 +80,12 @@
         </fileSet>
 
         <fileSet>
-            <outputDirectory>device-broker-ACL-i9n</outputDirectory>
+            <outputDirectory>device-data-i9n</outputDirectory>
+            <directory>../../qa/target/cucumber/DeviceDataI9n</directory>
+        </fileSet>
+
+        <fileSet>
+            <outputDirectory>broker-ACL-i9n</outputDirectory>
             <directory>../../qa/target/cucumber/BrokerACLI9n</directory>
         </fileSet>
 
@@ -88,6 +103,11 @@
             <outputDirectory>datastore-rest-i9n</outputDirectory>
             <directory>../../qa/target/cucumber/DatastoreRestI9n</directory>
         </fileSet>
-    </fileSets>
+
+        <fileSet>
+            <outputDirectory>tag-service-i9n</outputDirectory>
+            <directory>../../qa/target/cucumber/TagService</directory>
+        </fileSet>
+        </fileSets>
 
 </assembly>
