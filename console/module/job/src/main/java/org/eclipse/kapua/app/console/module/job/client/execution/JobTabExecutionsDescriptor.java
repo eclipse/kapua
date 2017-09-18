@@ -37,4 +37,5 @@ public class JobTabExecutionsDescriptor extends AbstractEntityTabDescriptor<GwtJ
     public Boolean isEnabled(GwtSession currentSession) {
         return true;
     }
+
 }
