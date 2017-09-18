@@ -18,14 +18,12 @@ import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserService;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserServiceAsync;
 
 public class UserTabDescription extends EntityDescriptionTabItem<GwtUser> {
-
-    public UserTabDescription() {
-    }
 
     private static final GwtUserServiceAsync GWT_USER_SERVICE = GWT.create(GwtUserService.class);
 
@@ -37,9 +35,13 @@ public class UserTabDescription extends EntityDescriptionTabItem<GwtUser> {
             protected void load(Object loadConfig,
                     AsyncCallback<ListLoadResult<GwtGroupedNVPair>> callback) {
                 GWT_USER_SERVICE.getUserDescription(selectedEntity.getScopeId(), selectedEntity.getId(), callback);
-
             }
         };
+    }
+
+    @Override
+    protected void onRender(Element parent, int index) {
+        super.onRender(parent, index);
     }
 
 }

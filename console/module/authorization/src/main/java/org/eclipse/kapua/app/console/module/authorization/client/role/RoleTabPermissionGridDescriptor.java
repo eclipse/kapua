@@ -11,11 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.client.role;
 
-import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractTabDescriptor;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractEntityTabDescriptor;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
 
-public class RoleTabPermissionGridDescriptor extends AbstractTabDescriptor<GwtRole, RoleTabPermissionGrid, RoleView> {
+public class RoleTabPermissionGridDescriptor extends AbstractEntityTabDescriptor<GwtRole, RoleTabPermissionGrid, RoleView> {
 
     @Override
     public RoleTabPermissionGrid getTabViewInstance(RoleView view, GwtSession currentSession) {

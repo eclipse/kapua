@@ -69,7 +69,7 @@ public class AssetTable extends LayoutContainer {
         super.onRender(parent, index);
 
         setLayout(new FitLayout());
-        setBorders(true);
+        setBorders(false);
 
         initAssetTable();
         add(tableContainer);
@@ -81,7 +81,7 @@ public class AssetTable extends LayoutContainer {
 
         tableContainer = new ContentPanel();
         tableContainer.setBorders(false);
-        tableContainer.setBodyBorder(false);
+        tableContainer.setBodyBorder(true);
         tableContainer.setHeaderVisible(true);
         tableContainer.setHeading(MSGS.assetTableHeader());
         tableContainer.setScrollMode(Scroll.AUTOY);
@@ -92,8 +92,6 @@ public class AssetTable extends LayoutContainer {
     private void initAssetGrid() {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
         ColumnConfig column = new ColumnConfig("asset", MSGS.assetTableAssetHeader(), 100);
-        configs.add(column);
-        column = new ColumnConfig("driver", MSGS.assetTableDriverHeader(), 100);
         configs.add(column);
         RpcProxy<ListLoadResult<GwtDatastoreAsset>> proxy = new RpcProxy<ListLoadResult<GwtDatastoreAsset>>() {
 
