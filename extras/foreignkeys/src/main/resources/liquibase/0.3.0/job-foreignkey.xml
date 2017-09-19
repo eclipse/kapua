@@ -17,6 +17,12 @@
                    logicalFilePath="KapuaDB/changelog-foreignkeys-0.3.0.xml">
 
     <changeSet id="changelog-job-foreignkey-0.3.0" author="eurotech">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="job_job" schemaName="KAPUADB"/>
+                <tableExists tableName="act_account" schemaName="KAPUADB"/>
+            </and>
+        </preConditions>
         <addForeignKeyConstraint constraintName="fk_job_job_scopeId"
                                  baseTableName="job_job"
                                  baseColumnNames="scope_id"

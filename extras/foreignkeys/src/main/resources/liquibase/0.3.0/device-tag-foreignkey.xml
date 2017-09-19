@@ -17,6 +17,12 @@
     logicalFilePath="KapuaDB/changelog-foreignkeys-0.3.0.xml">
 
     <changeSet id="changelog-device-tag-0.3.0" author="eurotech">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="dvc_device_tag" schemaName="KAPUADB"/>
+                <tableExists tableName="tag_tag" schemaName="KAPUADB"/>
+            </and>
+        </preConditions>
         <addForeignKeyConstraint constraintName="fk_dvc_device_tag_tagId"
                                  baseTableName="dvc_device_tag"
                                  baseColumnNames="tag_id"
