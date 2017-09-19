@@ -183,6 +183,10 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-foreignkeys</artifactId>
+        </dependency>
+        <dependency>
             <!-- Google protobuf for message encoding -->
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
