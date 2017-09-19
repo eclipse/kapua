@@ -11,15 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
-import javax.inject.Inject;
-
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -41,11 +36,15 @@ import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
+import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
 import org.quartz.SimpleScheduleBuilder;
 import org.quartz.TriggerBuilder;
+import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
+
+import javax.inject.Inject;
 
 /**
  * {@link TriggerService} implementation.
@@ -66,7 +65,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
     /**
      * Constructor.
-     * 
+     *
      * @since 1.0.0
      */
     public TriggerServiceImpl() {
@@ -87,40 +86,66 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         authorizationService.checkPermission(permissionFactory.newPermission(SCHEDULER_DOMAIN, Actions.write, triggerCreator.getScopeId()));
 
         return entityManagerSession.onTransactedInsert(em -> {
+            // Kapua Trigger definition
             Trigger trigger = TriggerDAO.create(em, triggerCreator);
+
+            // Quartz Job definition and creation
+            JobKey jobkey = JobKey.jobKey(KapuaJobLauncer.class.getName(), "USER");
+
+            SchedulerFactory sf = new StdSchedulerFactory();
+            Scheduler scheduler;
+            try {
+                scheduler = sf.getScheduler();
+            } catch (SchedulerException se) {
+                se.printStackTrace();
+                throw new RuntimeException(se);
+            }
+
+            JobDetail kapuaJobLauncherJobDetail;
+            try {
+                kapuaJobLauncherJobDetail = scheduler.getJobDetail(jobkey);
+
+                if (kapuaJobLauncherJobDetail == null) {
+                    kapuaJobLauncherJobDetail = JobBuilder.newJob(KapuaJobLauncer.class)
+                            .withIdentity(jobkey)
+                            .storeDurably()
+                            .build();
+
+                    scheduler.addJob(kapuaJobLauncherJobDetail, false);
+                }
+            } catch (SchedulerException se) {
+                se.printStackTrace();
+                throw new RuntimeException(se);
+            }
+
+            // Quartz Trigger data map definition
+            TriggerKey triggerKey = TriggerKey.triggerKey(trigger.getId().toCompactId(), trigger.getScopeId().toCompactId());
 
             JobDataMap triggerDataMap = new JobDataMap();
             for (TriggerProperty tp : trigger.getTriggerProperties()) {
                 triggerDataMap.put(tp.getName(), KapuaEid.parseCompactId(tp.getPropertyValue()));
             }
 
-            JobDetail jobLauncherDetail = JobBuilder.newJob(KapuaJobLauncer.class)
-                    .withIdentity(JobKey.createUniqueName(KapuaJobLauncer.class.getName()), KapuaJobLauncer.class.getName())
-                    .build();
+            // Quartz Trigger definition
+            TriggerBuilder<org.quartz.Trigger> triggerBuilder = TriggerBuilder.newTrigger()
+                    .forJob(kapuaJobLauncherJobDetail)
+                    .withIdentity(triggerKey)
+                    .usingJobData(triggerDataMap)
+                    .startAt(trigger.getStartsOn())
+                    .endAt(trigger.getEndsOn());
 
-            org.quartz.Trigger quarztTrigger = null;
             if (trigger.getRetryInterval() != null) {
-                quarztTrigger = TriggerBuilder.newTrigger()
-                        .usingJobData(triggerDataMap)
-                        .startAt(trigger.getStartsOn())
-                        .endAt(trigger.getEndsOn())
-                        .withSchedule(SimpleScheduleBuilder.repeatSecondlyForever(trigger.getRetryInterval().intValue()))
-                        .build();
+                triggerBuilder.withSchedule(SimpleScheduleBuilder.repeatSecondlyForever(trigger.getRetryInterval().intValue()));
             } else {
-                quarztTrigger = TriggerBuilder.newTrigger()
-                        .usingJobData(triggerDataMap)
-                        .startAt(trigger.getStartsOn())
-                        .endAt(trigger.getEndsOn())
-                        .withSchedule(CronScheduleBuilder.cronSchedule(trigger.getCronScheduling()))
-                        .build();
+                triggerBuilder.withSchedule(CronScheduleBuilder.cronSchedule(trigger.getCronScheduling()));
             }
 
-            SchedulerFactory sf = new StdSchedulerFactory();
+            org.quartz.Trigger quarztTrigger = triggerBuilder.build();
             try {
-                sf.getScheduler().scheduleJob(jobLauncherDetail, quarztTrigger);
-            } catch (SchedulerException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                scheduler.scheduleJob(quarztTrigger);
+            } catch (SchedulerException se) {
+                se.printStackTrace();
+                throw new RuntimeException(se);
             }
             return trigger;
         });
@@ -166,17 +191,22 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
                 throw new KapuaEntityNotFoundException(Trigger.TYPE, triggerId);
             }
 
-            // do not allow deletion of the kapua admin trigger
-            SystemSetting settings = SystemSetting.getInstance();
-            if (settings.getString(SystemSettingKey.SYS_PROVISION_ACCOUNT_NAME).equals(triggerx.getName())) {
-                throw new KapuaIllegalAccessException(action.name());
-            }
-
-            if (settings.getString(SystemSettingKey.SYS_ADMIN_ACCOUNT).equals(triggerx.getName())) {
-                throw new KapuaIllegalAccessException(action.name());
-            }
-
             TriggerDAO.delete(em, triggerId);
+
+            try {
+                SchedulerFactory sf = new StdSchedulerFactory();
+                Scheduler scheduler = sf.getScheduler();
+
+                TriggerKey triggerKey = TriggerKey.triggerKey(triggerId.toCompactId(), scopeId.toCompactId());
+
+                //                org.quartz.Trigger trigger = scheduler.getTrigger(triggerKey);
+
+                scheduler.unscheduleJob(triggerKey);
+
+            } catch (SchedulerException se) {
+                se.printStackTrace();
+                throw new RuntimeException(se);
+            }
         });
     }
 
