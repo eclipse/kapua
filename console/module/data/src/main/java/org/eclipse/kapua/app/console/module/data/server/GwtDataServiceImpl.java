@@ -310,7 +310,11 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         andPredicate.getPredicates().add(dateRangePredicate);
         query.setPredicate(andPredicate);
         if (!StringUtils.isEmpty(loadConfig.getSortField())) {
-            query.setSortFields(Collections.singletonList(SortField.of(SortDirection.valueOf(loadConfig.getSortDir().name()), loadConfig.getSortField())));
+            String sortField = loadConfig.getSortField();
+            if (sortField.equals("timestampFormatted")) {
+                sortField = "timestamp";
+            }
+            query.setSortFields(Collections.singletonList(SortField.of(SortDirection.valueOf(loadConfig.getSortDir().name()), sortField)));
         }
         messages = getMessagesList(query, headers);
         try {
