@@ -999,7 +999,11 @@
                 <version>${project.version}</version>
                 <classifier>sources</classifier>
             </dependency>
-
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-foreignkeys</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- External dependencies -->
 

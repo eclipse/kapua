@@ -17,6 +17,16 @@
     logicalFilePath="KapuaDB/changelog-foreignkeys-0.3.0.xml">
 
     <changeSet id="changelog-athz_access_info-foreignkey-0.3.0" author="eurotech">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="athz_access_info" schemaName="KAPUADB"/>
+                <tableExists tableName="act_account" schemaName="KAPUADB"/>
+            </and>
+            <and>
+                <tableExists tableName="athz_access_info" schemaName="KAPUADB"/>
+                <tableExists tableName="usr_user" schemaName="KAPUADB"/>
+            </and>
+        </preConditions>
         <addForeignKeyConstraint constraintName="fk_athz_access_info_scopeId"
                                  baseTableName="athz_access_info"
                                  baseColumnNames="scope_id"
