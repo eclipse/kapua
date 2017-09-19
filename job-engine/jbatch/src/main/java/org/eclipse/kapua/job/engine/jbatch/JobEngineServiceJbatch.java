@@ -11,25 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.jbatch;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
-
-import javax.batch.operations.JobExecutionNotRunningException;
-import javax.batch.operations.JobSecurityException;
-import javax.batch.operations.NoSuchJobException;
-import javax.batch.operations.NoSuchJobExecutionException;
-import javax.batch.runtime.BatchRuntime;
-//import javax.batch.runtime.BatchStatus;
-//import javax.batch.runtime.JobExecution;
-//import javax.batch.runtime.JobInstance;
-import javax.batch.runtime.BatchStatus;
-
+import com.ibm.jbatch.container.jsl.ExecutionElement;
+import com.ibm.jbatch.container.jsl.ModelSerializerFactory;
+import com.ibm.jbatch.jsl.model.JSLJob;
+import com.ibm.jbatch.jsl.model.Step;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
@@ -38,6 +23,8 @@ import org.eclipse.kapua.KapuaIllegalStateException;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.job.engine.JobEngineService;
+import org.eclipse.kapua.job.engine.jbatch.exception.KapuaJobEngineErrorCodes;
+import org.eclipse.kapua.job.engine.jbatch.exception.KapuaJobEngineException;
 import org.eclipse.kapua.job.engine.jbatch.utils.JobDefinitionBuildUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -57,13 +44,31 @@ import org.eclipse.kapua.service.job.step.JobStepQuery;
 import org.eclipse.kapua.service.job.step.JobStepService;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
+import org.eclipse.kapua.service.job.targets.JobTargetFactory;
+import org.eclipse.kapua.service.job.targets.JobTargetPredicates;
+import org.eclipse.kapua.service.job.targets.JobTargetQuery;
+import org.eclipse.kapua.service.job.targets.JobTargetService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ibm.jbatch.container.jsl.ExecutionElement;
-import com.ibm.jbatch.container.jsl.ModelSerializerFactory;
-import com.ibm.jbatch.jsl.model.JSLJob;
-import com.ibm.jbatch.jsl.model.Step;
+import javax.batch.operations.JobExecutionNotRunningException;
+import javax.batch.operations.JobSecurityException;
+import javax.batch.operations.NoSuchJobException;
+import javax.batch.operations.NoSuchJobExecutionException;
+import javax.batch.runtime.BatchRuntime;
+import javax.batch.runtime.BatchStatus;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+
+//import javax.batch.runtime.BatchStatus;
+//import javax.batch.runtime.JobExecution;
+//import javax.batch.runtime.JobInstance;
 
 @KapuaProvider
 public class JobEngineServiceJbatch implements JobEngineService {
@@ -85,6 +90,9 @@ public class JobEngineServiceJbatch implements JobEngineService {
     private static final JobStepService JOB_STEP_SERVICE = LOCATOR.getService(JobStepService.class);
     private static final JobStepFactory JOB_STEP_FACTORY = LOCATOR.getFactory(JobStepFactory.class);
 
+    private static final JobTargetService JOB_TARGET_SERVICE = LOCATOR.getService(JobTargetService.class);
+    private static final JobTargetFactory JOB_TARGET_FACTORY = LOCATOR.getFactory(JobTargetFactory.class);
+
     private static final JobStepDefinitionService STEP_DEFINITION_SERVICE = LOCATOR.getService(JobStepDefinitionService.class);
 
     @Override
@@ -99,10 +107,22 @@ public class JobEngineServiceJbatch implements JobEngineService {
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.execute, scopeId));
 
         //
-        // Check existence
+        // Check Job Configuration
         Job job = JOB_SERVICE.find(scopeId, jobId);
         if (job == null) {
             throw new KapuaEntityNotFoundException(Job.TYPE, jobId);
+        }
+
+        JobTargetQuery jobTargetQuery = JOB_TARGET_FACTORY.newQuery(scopeId);
+        jobTargetQuery.setPredicate(new AttributePredicate<>(JobTargetPredicates.JOB_ID, jobId));
+        if (!(JOB_TARGET_SERVICE.count(jobTargetQuery) > 0)) {
+            throw new KapuaJobEngineException(KapuaJobEngineErrorCodes.JOB_TARGET_MISSING);
+        }
+
+        JobStepQuery jobStepQuery = JOB_STEP_FACTORY.newQuery(scopeId);
+        jobStepQuery.setPredicate(new AttributePredicate<>(JobStepPredicates.JOB_ID, jobId));
+        if (!(JOB_STEP_SERVICE.count(jobStepQuery) > 0)) {
+            throw new KapuaJobEngineException(KapuaJobEngineErrorCodes.JOB_STEP_MISSING);
         }
 
         //
@@ -111,8 +131,6 @@ public class JobEngineServiceJbatch implements JobEngineService {
         // Retrieve job XML definition. Create it if not exists
         String jobXmlDefinition = job.getJobXmlDefinition();
         if (jobXmlDefinition == null) {
-            JobStepQuery jobStepQuery = JOB_STEP_FACTORY.newQuery(job.getScopeId());
-            jobStepQuery.setPredicate(new AttributePredicate<>(JobStepPredicates.JOB_ID, job.getId()));
 
             JobStepListResult jobSteps = JOB_STEP_SERVICE.query(jobStepQuery);
             jobSteps.sort(Comparator.comparing(JobStep::getStepIndex));
