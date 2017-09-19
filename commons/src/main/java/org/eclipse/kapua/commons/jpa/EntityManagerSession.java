@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -85,7 +85,7 @@ public class EntityManagerSession {
             entityManagerActionCallback.onAction(manager);
 
             if (manager.isTransactionActive()) {
-                appendKapuaEvent(null, manager);
+                appendKapuaEvent(manager);
             }
 
             transactionManager.commit(manager);
@@ -233,31 +233,44 @@ public class EntityManagerSession {
         return instance;
     }
 
+    private <T> KapuaEvent appendKapuaEvent(EntityManager manager) throws KapuaException {
+        return appendKapuaEvent(null, manager);
+    }
+
     private <T> KapuaEvent appendKapuaEvent(Object instance, EntityManager manager) throws KapuaException {
         KapuaEvent persistedKapuaEvent = null;
 
-        // If a kapua event is in scope then persist it along with the entity
-        KapuaEvent kapuaEvent = EventScope.get();
+        //persist the kapua event only if the instance is not a kapua event instance
+        if (!(instance instanceof KapuaEvent)) {
 
-        if (kapuaEvent!=null && instance instanceof KapuaEntity) {
-            //make sense to override the entity id and type without checking for previous empty values?
-            //override only if parameters are not evaluated
-            if (kapuaEvent.getEntityType() == null || kapuaEvent.getEntityType().trim().length()<=0) {
-                logger.debug("Kapua event - update entity type to '{}'", instance.getClass().getName());
-                kapuaEvent.setEntityType(instance.getClass().getName());
+            // If a kapua event is in scope then persist it along with the entity
+            KapuaEvent kapuaEvent = EventScope.get();
+            if (kapuaEvent!=null) {
+                if (instance instanceof KapuaEntity) {
+                    //make sense to override the entity id and type without checking for previous empty values?
+                    //override only if parameters are not evaluated
+                    if (kapuaEvent.getEntityType() == null || kapuaEvent.getEntityType().trim().length()<=0) {
+                        logger.debug("Kapua event - update entity type to '{}'", instance.getClass().getName());
+                        kapuaEvent.setEntityType(instance.getClass().getName());
+                    }
+                    if (kapuaEvent.getEntityId()==null) {
+                        logger.debug("Kapua event - update entity id to '{}'", ((KapuaEntity) instance).getId());
+                        kapuaEvent.setEntityId(((KapuaEntity) instance).getId());
+                    }
+                    logger.info("Entity '{}' with id '{}' found!", new Object[]{instance.getClass().getName(), ((KapuaEntity) instance).getId()});
+                }
+
+                //insert the kapua event only if it's a new entity
+                if (isNewEntity(kapuaEvent)) {
+                    persistedKapuaEvent = KapuaEventStoreDAO.create(manager, kapuaEvent);
+                }
             }
-            if (kapuaEvent.getEntityId()==null) {
-                logger.debug("Kapua event - update entity id to '{}'", ((KapuaEntity) instance).getId());
-                kapuaEvent.setEntityId(((KapuaEntity) instance).getId());
-            }
-            logger.info("Entity '{}' with id '{}' found!", new Object[]{instance.getClass().getName(), ((KapuaEntity) instance).getId()});
         }
-
-        if (kapuaEvent != null) {
-            persistedKapuaEvent = KapuaEventStoreDAO.create(manager, kapuaEvent);
-        }
-
         return persistedKapuaEvent;
+    }
+
+    private boolean isNewEntity(KapuaEntity entity) {
+        return (entity.getId() == null || entity.getId().getId() == null);
     }
 
 }
