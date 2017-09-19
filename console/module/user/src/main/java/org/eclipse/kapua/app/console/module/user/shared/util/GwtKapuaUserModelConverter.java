@@ -52,7 +52,7 @@ public class GwtKapuaUserModelConverter {
         // Convert query
         UserQuery userQuery = userFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtUserQuery.getScopeId()));
         if (gwtUserQuery.getName() != null && !gwtUserQuery.getName().isEmpty()) {
-            userQuery.setPredicate(new AttributePredicate<String>(UserPredicates.NAME, gwtUserQuery.getName(), Operator.LIKE));
+            predicate.and(new AttributePredicate<String>(UserPredicates.NAME, gwtUserQuery.getName(), Operator.LIKE));
         }
         userQuery.setOffset(loadConfig.getOffset());
         userQuery.setLimit(loadConfig.getLimit());

@@ -309,10 +309,10 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         customAttribute1Field.setValue("");
         customAttribute2Field.setValue("");
         groupsCombo.setValue(allGroup);
-        // FIXME:
-        GwtDeviceConnectionQuery query = new GwtDeviceConnectionQuery();
-        // query.setScopeId(currentSession.getSelectedAccount().getId());
-        // entityGrid.refresh(query);
+        GwtDeviceQuery query = new GwtDeviceQuery();
+        query.setScopeId(currentSession.getSelectedAccountId());
+        query.setPredicates(new GwtDeviceQueryPredicates());
+        entityGrid.refresh(query);
     }
 
     @Override
