@@ -15,12 +15,15 @@ import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
+import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsolePermissionMessages;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessPermission;
 
 public class UserTabPermissionToolbar extends EntityCRUDToolbar<GwtAccessPermission> {
 
     private String userId;
+    private static final ConsolePermissionMessages MSGS = GWT.create(ConsolePermissionMessages.class);
 
     public UserTabPermissionToolbar(GwtSession currentSession) {
         super(currentSession);
@@ -52,9 +55,12 @@ public class UserTabPermissionToolbar extends EntityCRUDToolbar<GwtAccessPermiss
     @Override
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
+        addEntityButton.setText(MSGS.dialogAddTitle());
+        deleteEntityButton.setText(MSGS.dialogDeleteTitle());
         addEntityButton.setEnabled(userId != null);
         deleteEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null);
         refreshEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null);
+        filterButton.hide();
     }
 
 }

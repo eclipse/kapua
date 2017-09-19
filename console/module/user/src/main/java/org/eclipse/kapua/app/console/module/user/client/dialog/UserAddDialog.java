@@ -33,6 +33,7 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser.GwtUserStatus;
 import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUserCreator;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserService;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserServiceAsync;
@@ -151,9 +152,8 @@ public class UserAddDialog extends EntityAddEditDialog {
         userStatus.setTypeAhead(true);
         userStatus.setTriggerAction(ComboBox.TriggerAction.ALL);
         // show account status combo box
-        for (GwtUser.GwtUserStatus userStatus : GwtUser.GwtUserStatus.values()) {
-            this.userStatus.add(userStatus);
-        }
+        userStatus.add(GwtUserStatus.ENABLED);
+        userStatus.add(GwtUserStatus.DISABLED);
         userStatus.setSimpleValue(GwtUser.GwtUserStatus.ENABLED);
         statusFieldSet.add(userStatus);
 
