@@ -23,9 +23,11 @@ import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.TabDes
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
+import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleService;
@@ -41,9 +43,6 @@ public abstract class AbstractEntityView<M extends GwtEntityModel> extends Abstr
 
     public AbstractEntityView() {
         super();
-
-        setLayout(new BorderLayout());
-        setBorders(false);
     }
 
     public AbstractEntityView(GwtSession currentSession) {
@@ -59,22 +58,28 @@ public abstract class AbstractEntityView<M extends GwtEntityModel> extends Abstr
 
         super.onRender(parent, index);
 
-        //
-        // East Panel: Filtering menu
-        filterPanel = getEntityFilterPanel(this, currentSession);
-        if (filterPanel != null) {
-            KapuaBorderLayoutData eastData = new KapuaBorderLayoutData(LayoutRegion.EAST, 250);
-            eastData.setMarginLeft(5);
-            add(filterPanel, eastData);
-        }
+        setLayout(new FitLayout());
+        setBorders(false);
 
-        //
+        LayoutContainer mf = new LayoutContainer();
+        mf.setBorders(false);
+        mf.setLayout(new BorderLayout());
+
+        BorderLayoutData eastData = new BorderLayoutData(LayoutRegion.EAST, 220);
+        eastData.setMargins(new Margins(0, 0, 0, 0));
+        eastData.setCollapsible(false);
+        eastData.setSplit(false);
+        filterPanel = getEntityFilterPanel(this, currentSession);
+
         // Center Main panel:
+        BorderLayoutData centerMainPanel = new BorderLayoutData(LayoutRegion.CENTER);
+        centerMainPanel.setMargins(new Margins(0, 5, 0, 0));
+        centerMainPanel.setSplit(false);
+
         final LayoutContainer resultContainer = new LayoutContainer(new BorderLayout());
         resultContainer.setBorders(false);
 
-        KapuaBorderLayoutData centerMainPanel = new KapuaBorderLayoutData(LayoutRegion.CENTER);
-        add(resultContainer, centerMainPanel);
+        mf.add(resultContainer, centerMainPanel);
 
         //
         // North sub panel: Entity grid
@@ -82,6 +87,8 @@ public abstract class AbstractEntityView<M extends GwtEntityModel> extends Abstr
 
         if (filterPanel != null) {
             filterPanel.setEntityGrid(entityGrid);
+            entityGrid.setFilterPanel(filterPanel);
+            mf.add(filterPanel, eastData);
         }
 
         BorderLayoutData northData = new KapuaBorderLayoutData(LayoutRegion.NORTH, .45F);
@@ -105,15 +112,14 @@ public abstract class AbstractEntityView<M extends GwtEntityModel> extends Abstr
                     }
                 }
 
-                KapuaBorderLayoutData centerData = new KapuaBorderLayoutData(LayoutRegion.CENTER);
-                centerData.setMarginTop(5);
+                KapuaBorderLayoutData centerData = new KapuaBorderLayoutData(LayoutRegion.CENTER, .55F);
+                centerData.setMarginTop(10);
 
                 resultContainer.add(tabsPanel, centerData);
-
-                layout(true);
+                resultContainer.layout(true);
             }
         });
-
+        add(mf);
     }
 
     public abstract EntityGrid<M> getEntityGrid(AbstractEntityView<M> entityView, GwtSession currentSession);

@@ -99,6 +99,9 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
                         user = usersCache.get(credential.getUserId());
                     }
                     gwtCredentials.add(KapuaGwtAuthenticationModelConverter.convertCredential(credential, user));
+                    for (GwtCredential gwtCredential : gwtCredentials) {
+                        gwtCredential.setUsername(user.getDisplayName());
+                    }
                 }
             }
 

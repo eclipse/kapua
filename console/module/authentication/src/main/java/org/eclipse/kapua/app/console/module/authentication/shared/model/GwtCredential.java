@@ -11,10 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authentication.shared.model;
 
+import java.util.Date;
 import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtUpdatableEntityModel;
-
-import java.util.Date;
 
 public class GwtCredential extends GwtUpdatableEntityModel {
 
@@ -25,6 +24,8 @@ public class GwtCredential extends GwtUpdatableEntityModel {
     public <X> X get(String property) {
         if ("credentialTypeEnum".equals(property)) {
             return (X) GwtCredentialType.valueOf(getCredentialType());
+        } else if ("statusEnum".equals(property)) {
+            return (X) GwtCredentialStatus.valueOf(getStatus());
         } else if ("subjectTypeEnum".equals(property)) {
             return (X) GwtSubjectType.valueOf(getSubjectType());
         } else if ("credentialStatusEnum".equals(property)) {
@@ -34,6 +35,10 @@ public class GwtCredential extends GwtUpdatableEntityModel {
         } else {
             return super.get(property);
         }
+    }
+
+    public String getStatus() {
+        return (String) get("status");
     }
 
     public GwtCredential() {

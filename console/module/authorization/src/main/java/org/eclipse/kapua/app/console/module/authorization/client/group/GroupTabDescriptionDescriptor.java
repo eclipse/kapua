@@ -11,11 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.client.group;
 
-import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractTabDescriptor;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractEntityTabDescriptor;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroup;
 
-public class GroupTabDescriptionDescriptor extends AbstractTabDescriptor<GwtGroup, GroupTabDescription, GroupView> {
+public class GroupTabDescriptionDescriptor extends AbstractEntityTabDescriptor<GwtGroup, GroupTabDescription, GroupView> {
 
     @Override
     public GroupTabDescription getTabViewInstance(GroupView view, GwtSession currentSession) {

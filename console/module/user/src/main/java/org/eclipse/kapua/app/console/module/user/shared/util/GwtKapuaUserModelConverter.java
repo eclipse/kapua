@@ -32,16 +32,14 @@ import org.eclipse.kapua.service.user.internal.UserPredicates;
  */
 public class GwtKapuaUserModelConverter {
 
-    private GwtKapuaUserModelConverter(){
+    private GwtKapuaUserModelConverter() {
     }
 
     /**
      * Converts a {@link GwtUserQuery} into a {@link UserQuery} object for backend usage
      *
-     * @param loadConfig
-     *            the load configuration
-     * @param gwtUserQuery
-     *            the {@link GwtUserQuery} to convertKapuaId
+     * @param loadConfig   the load configuration
+     * @param gwtUserQuery the {@link GwtUserQuery} to convertKapuaId
      * @return the converted {@link UserQuery}
      */
     public static UserQuery convertUserQuery(PagingLoadConfig loadConfig, GwtUserQuery gwtUserQuery) {
@@ -56,12 +54,19 @@ public class GwtKapuaUserModelConverter {
         if (gwtUserQuery.getName() != null && !gwtUserQuery.getName().isEmpty()) {
             predicate.and(new AttributePredicate<String>(UserPredicates.NAME, gwtUserQuery.getName(), Operator.LIKE));
         }
+        if (gwtUserQuery.getUserStatus() != null && !gwtUserQuery.getUserStatus().equals(GwtUserStatus.ANY.toString())) {
+            predicate.and(new AttributePredicate<UserStatus>("status", convertUserStatus(gwtUserQuery.getUserStatus()), Operator.EQUAL));
+        }
         userQuery.setOffset(loadConfig.getOffset());
         userQuery.setLimit(loadConfig.getLimit());
         userQuery.setPredicate(predicate);
         //
         // Return converted
         return userQuery;
+    }
+
+    private static UserStatus convertUserStatus(String userStatus) {
+        return UserStatus.valueOf(userStatus);
     }
 
     public static UserStatus convertUserStatus(GwtUserStatus gwtUserStatus) {

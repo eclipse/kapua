@@ -26,9 +26,12 @@ import com.google.gwt.user.client.Element;
 public class AccountTabConfiguration extends KapuaTabItem<GwtAccount> {
 
     private AccountConfigComponents configComponents;
+    private AccountDetailsView accountDetailsView;
+    private AccountDetailsTabDescription accountDetailsTabDescription;
 
-    public AccountTabConfiguration(GwtSession currentSession) {
+    public AccountTabConfiguration(GwtSession currentSession, AccountDetailsView accountDetailsView) {
         super("Settings", new KapuaIcon(IconSet.COG));
+        this.accountDetailsView = accountDetailsView;
         configComponents = new AccountConfigComponents(currentSession, this);
         setBorders(false);
         setLayout(new FitLayout());
@@ -60,4 +63,11 @@ public class AccountTabConfiguration extends KapuaTabItem<GwtAccount> {
 
         add(configComponents);
     }
+
+    public void setDescriptionTab(AccountDetailsTabDescription accountDetailsTabDescription) {
+        this.accountDetailsTabDescription = accountDetailsTabDescription;
+        configComponents.setDescriptionTab(accountDetailsTabDescription);
+
+    }
+
 }

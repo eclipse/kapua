@@ -67,13 +67,10 @@ public class RoleGrid extends EntityGrid<GwtRole> {
     protected List<ColumnConfig> getColumns() {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
-        ColumnConfig columnConfig = new ColumnConfig("id", MSGS.gridRoleColumnHeaderId(), 100);
+        ColumnConfig columnConfig = new ColumnConfig("name", MSGS.gridRoleColumnHeaderName(), 400);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("name", MSGS.gridRoleColumnHeaderName(), 400);
-        columnConfigs.add(columnConfig);
-
-        columnConfig = new ColumnConfig("createdBy", MSGS.gridRoleColumnHeaderCreatedBy(), 200);
+        columnConfig = new ColumnConfig("userName", MSGS.gridRoleColumnHeaderCreatedBy(), 200);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("createdOnFormatted", MSGS.gridRoleColumnHeaderCreatedOn(), 200);
