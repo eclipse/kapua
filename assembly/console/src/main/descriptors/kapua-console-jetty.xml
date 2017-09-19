@@ -40,6 +40,7 @@
 
             <includes>
                 <include>${pom.groupId}:kapua-console-web:war</include>
+                <include>${pom.groupId}:kapua-foreignkeys</include>
             </includes>
 
         </dependencySet>
