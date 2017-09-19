@@ -40,8 +40,14 @@
             <artifactId>kapua-console-core</artifactId>
             <classifier>sources</classifier>
         </dependency>
-        
-        <!-- External dependency -->
+
+        <!-- Internal dependencies -->
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-foreignkeys</artifactId>
+        </dependency>
+
+        <!-- External dependencies -->
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-servlet</artifactId>
@@ -112,7 +118,7 @@
         </plugins>
         <pluginManagement>
             <plugins>
-                
+
                 <!-- To help IntelliJ IDEA correctly recognize the source path when using Maven Auto Import -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
