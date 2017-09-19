@@ -68,7 +68,7 @@ public class AssetTabItem extends TabItem {
 
         setWidth("100%");
 
-        BorderLayoutData messageLayout = new BorderLayoutData(LayoutRegion.NORTH, 0.06f);
+        BorderLayoutData messageLayout = new BorderLayoutData(LayoutRegion.NORTH, 0.02f);
         messageLayout.setMargins(new Margins(5));
         Text welcomeMessage = new Text();
         welcomeMessage.setText(MSGS.assetTabItemMessage());
@@ -80,7 +80,7 @@ public class AssetTabItem extends TabItem {
         tablesLayout.setMinSize(250);
         add(tables, tablesLayout);
 
-        BorderLayoutData refreshButtonLayout = new BorderLayoutData(LayoutRegion.NORTH, 0.1f);
+        BorderLayoutData refreshButtonLayout = new BorderLayoutData(LayoutRegion.NORTH, 0.08f);
         refreshButtonLayout.setMargins(new Margins(5));
         refreshButton = new Button(MSGS.refresh(), new KapuaIcon(IconSet.REFRESH), new SelectionListener<ButtonEvent>() {
 
@@ -90,7 +90,6 @@ public class AssetTabItem extends TabItem {
                 resultsTable.refresh();
             }
         });
-        refreshButton.disable();
         TableLayout refreshButtonTL = new TableLayout();
         refreshButtonTL.setCellPadding(0);
         LayoutContainer refreshButtonContainer = new LayoutContainer(refreshButtonTL);
@@ -129,9 +128,10 @@ public class AssetTabItem extends TabItem {
         tables.add(assetTable, assetLayout);
 
         BorderLayoutData channelLayout = new BorderLayoutData(LayoutRegion.EAST, 0.33f);
-        channelLayout.setMargins(new Margins(0, 0, 0, 5));
+        channelLayout.setMargins(new Margins(0, 0, 0, 3));
         channelLayout.setSplit(true);
         metricsTable = new MetricsTable(currentSession, MetricsTable.Type.ASSET);
+        metricsTable.setStyleAttribute("padding-left", "2px");
         metricsTable.addSelectionListener(new SelectionChangedListener<GwtHeader>() {
 
             @Override

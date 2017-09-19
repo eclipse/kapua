@@ -66,7 +66,7 @@ public class DeviceTable extends LayoutContainer {
         super.onRender(parent, index);
 
         setLayout(new FitLayout());
-        setBorders(true);
+        setBorders(false);
 
         initDeviceTable();
         add(tableContainer);
@@ -78,7 +78,7 @@ public class DeviceTable extends LayoutContainer {
 
         tableContainer = new ContentPanel();
         tableContainer.setBorders(false);
-        tableContainer.setBodyBorder(false);
+        tableContainer.setBodyBorder(true);
         tableContainer.setHeaderVisible(true);
         tableContainer.setHeading(MSGS.deviceInfoTableHeader());
         tableContainer.setScrollMode(Scroll.AUTOY);

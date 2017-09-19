@@ -217,16 +217,6 @@ public class PermissionAddDialog extends EntityAddEditDialog {
 
         permissionFormPanel.add(actionsCombo);
 
-        //
-        // Target scope id
-        targetScopeIdTxtField = new TextField<String>();
-        targetScopeIdTxtField.setFieldLabel(MSGS.dialogAddPermissionTargetScopeId());
-        targetScopeIdTxtField.setValue(currentSession.getSelectedAccountId());
-        targetScopeIdTxtField.setEnabled(false);
-
-        permissionFormPanel.add(targetScopeIdTxtField);
-
-        //
         // Groups
         groupsCombo = new ComboBox<GwtGroup>();
         groupsCombo.setStore(new ListStore<GwtGroup>());

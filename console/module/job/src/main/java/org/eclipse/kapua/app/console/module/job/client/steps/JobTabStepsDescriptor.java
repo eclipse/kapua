@@ -11,12 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.job.client.steps;
 
-import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractTabDescriptor;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractEntityTabDescriptor;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.job.client.JobView;
 import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJob;
 
-public class JobTabStepsDescriptor extends AbstractTabDescriptor<GwtJob, JobTabSteps, JobView> {
+public class JobTabStepsDescriptor extends AbstractEntityTabDescriptor<GwtJob, JobTabSteps, JobView> {
 
     @Override
     public JobTabSteps getTabViewInstance(JobView view, GwtSession currentSession) {

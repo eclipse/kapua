@@ -46,6 +46,7 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
     private static final GwtCredentialServiceAsync GWT_CREDENTIAL_SERVICE = GWT.create(GwtCredentialService.class);
     private GwtCredentialQuery query;
     private String selectedUserId;
+    private String selectedUserName;
 
     private CredentialToolbar toolbar;
 
@@ -87,8 +88,28 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
 
             public String render(GwtCredential gwtUser, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtCredential> deviceList, Grid<GwtCredential> grid) {
 
-                KapuaIcon icon = new KapuaIcon(IconSet.KEY);
-                icon.setColor(Color.GREY);
+                KapuaIcon icon;
+                if (gwtUser.getCredentialStatusEnum() != null) {
+                    switch (gwtUser.getCredentialStatusEnum()) {
+                    case DISABLED:
+                        icon = new KapuaIcon(IconSet.KEY);
+                        icon.setColor(Color.RED);
+                        break;
+
+                    case ENABLED:
+                        icon = new KapuaIcon(IconSet.KEY);
+                        icon.setColor(Color.GREEN);
+                        break;
+
+                    default:
+                         icon = new KapuaIcon(IconSet.KEY);
+                            icon.setColor(Color.GREY);
+                        break;
+                    }
+                } else {
+                    icon = new KapuaIcon(IconSet.KEY);
+                    icon.setColor(Color.GREY);
+                }
                 return icon.getInlineHTML();
             }
         };
@@ -101,9 +122,6 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
         columnConfig.setHidden(true);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("username", MSGS.gridCredentialColumnHeaderUsername(), 400);
-        columnConfigs.add(columnConfig);
-
         columnConfig = new ColumnConfig("credentialType", MSGS.gridCredentialColumnHeaderCredentialType(), 400);
         columnConfigs.add(columnConfig);
 
@@ -113,14 +131,14 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
         columnConfig = new ColumnConfig("createdOn", MSGS.gridCredentialColumnHeaderCreatedOn(), 200);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("createdBy", MSGS.gridCredentialColumnHeaderCreatedBy(), 200);
+        columnConfig = new ColumnConfig("username", MSGS.gridCredentialColumnHeaderCreatedBy(), 200);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("modifiedOn", MSGS.gridCredentialColumnHeaderModifiedOn(), 200);
         columnConfig.setHidden(true);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("modifiedBy", MSGS.gridCredentialColumnHeaderModifiedBy(), 200);
+        columnConfig = new ColumnConfig("username", MSGS.gridCredentialColumnHeaderModifiedBy(), 200);
         columnConfig.setHidden(true);
         columnConfigs.add(columnConfig);
 
@@ -141,6 +159,7 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
     public EntityCRUDToolbar<GwtCredential> getToolbar() {
         if (toolbar == null) {
             toolbar = new CredentialToolbar(currentSession);
+            toolbar.setBorders(false);
         }
         return toolbar;
     }
@@ -151,6 +170,11 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
             query.setUserId(selectedUserId);
         }
         ((CredentialToolbar) getToolbar()).setSelectedUserId(selectedUserId);
+    }
+
+    public void setSelectedUserName(String selectedUserName) {
+        this.selectedUserName = selectedUserName;
+        ((CredentialToolbar) getToolbar()).setSelectedUserName(selectedUserName);
     }
 
     @Override

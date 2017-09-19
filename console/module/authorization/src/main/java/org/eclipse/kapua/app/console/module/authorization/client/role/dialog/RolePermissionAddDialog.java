@@ -78,7 +78,7 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
     public void createBody() {
         FormPanel formPanel = new FormPanel();
         formPanel.setHeaderVisible(false);
-
+        formPanel.setBodyBorder(false);
         //
         // Domain
         DOMAIN_SERVICE.findAll(new AsyncCallback<List<GwtDomain>>() {

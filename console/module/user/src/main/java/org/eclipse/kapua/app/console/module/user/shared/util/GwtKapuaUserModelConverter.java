@@ -31,16 +31,14 @@ import org.eclipse.kapua.service.user.internal.UserPredicates;
  */
 public class GwtKapuaUserModelConverter {
 
-    private GwtKapuaUserModelConverter(){
+    private GwtKapuaUserModelConverter() {
     }
 
     /**
      * Converts a {@link GwtUserQuery} into a {@link UserQuery} object for backend usage
      *
-     * @param loadConfig
-     *            the load configuration
-     * @param gwtUserQuery
-     *            the {@link GwtUserQuery} to convertKapuaId
+     * @param loadConfig   the load configuration
+     * @param gwtUserQuery the {@link GwtUserQuery} to convertKapuaId
      * @return the converted {@link UserQuery}
      */
     public static UserQuery convertUserQuery(PagingLoadConfig loadConfig, GwtUserQuery gwtUserQuery) {
@@ -63,6 +61,10 @@ public class GwtKapuaUserModelConverter {
         //
         // Return converted
         return userQuery;
+    }
+
+    private static UserStatus convertUserStatus(String userStatus) {
+        return UserStatus.valueOf(userStatus);
     }
 
     public static UserStatus convertUserStatus(GwtUserStatus gwtUserStatus) {

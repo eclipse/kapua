@@ -11,12 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.user.client.tabs.credentials;
 
-import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractTabDescriptor;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractEntityTabDescriptor;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.user.client.UserView;
 import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
 
-public class UserTabItemCredentialsDescriptor extends AbstractTabDescriptor<GwtUser, UserTabItemCredentials, UserView> {
+public class UserTabItemCredentialsDescriptor extends AbstractEntityTabDescriptor<GwtUser, UserTabItemCredentials, UserView> {
 
     @Override
     public UserTabItemCredentials getTabViewInstance(UserView view, GwtSession currentSession) {

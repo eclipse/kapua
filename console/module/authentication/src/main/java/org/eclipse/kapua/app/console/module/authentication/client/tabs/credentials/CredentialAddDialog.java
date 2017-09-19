@@ -13,8 +13,13 @@ package org.eclipse.kapua.app.console.module.authentication.client.tabs.credenti
 
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.DateField;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
+import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
@@ -30,17 +35,6 @@ import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCrede
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialType;
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialService;
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialServiceAsync;
-
-import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.widget.Dialog;
-import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.DateField;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.layout.FormLayout;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 
 public class CredentialAddDialog extends EntityAddEditDialog {
 
@@ -70,6 +64,12 @@ public class CredentialAddDialog extends EntityAddEditDialog {
 
         FormPanel credentialFormPanel = new FormPanel(FORM_LABEL_WIDTH);
 
+        subject = new TextField<String>();
+        subject.setValue(selectedUserName);
+        subject.disable();
+        subject.setFieldLabel(MSGS.dialogAddFieldSubject());
+        credentialFormPanel.add(subject);
+
         credentialType = new SimpleComboBox<GwtCredentialType>();
         credentialType.setEditable(false);
         credentialType.setTypeAhead(false);
@@ -78,6 +78,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         credentialType.setTriggerAction(ComboBox.TriggerAction.ALL);
         credentialType.add(GwtCredentialType.PASSWORD);
         credentialType.add(GwtCredentialType.API_KEY);
+        credentialType.setEmptyText(MSGS.credentialTypePlaceHolder());
         credentialType.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<GwtCredentialType>>() {
 
             @Override
@@ -89,13 +90,6 @@ public class CredentialAddDialog extends EntityAddEditDialog {
             }
         });
         credentialFormPanel.add(credentialType);
-
-        subject = new TextField<String>();
-        subject.setValue(selectedUserName);
-        subject.disable();
-        subject.setAllowBlank(false);
-        subject.setFieldLabel(MSGS.dialogAddFieldSubject());
-        credentialFormPanel.add(subject);
 
         password = new TextField<String>();
         password.setAllowBlank(false);
@@ -129,11 +123,13 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         credentialStatus.setEditable(false);
         credentialStatus.setTypeAhead(true);
         credentialStatus.setTriggerAction(ComboBox.TriggerAction.ALL);
+        credentialStatus.setEmptyText(MSGS.credentialStatusPlaceHolder());
         // show account status combo box
         for (GwtCredentialStatus credentialStatus : GwtCredentialStatus.values()) {
             this.credentialStatus.add(credentialStatus);
         }
         credentialStatus.setSimpleValue(GwtCredentialStatus.ENABLED);
+
         credentialFormPanel.add(credentialStatus);
 
         optlock = new NumberField();
@@ -162,15 +158,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
             @Override
             public void onSuccess(GwtCredential arg0) {
                 if (gwtCredentialCreator.getCredentialType() == GwtCredentialType.API_KEY) {
-                    Dialog apiKeyConfirmationDialog = new Dialog();
-                    apiKeyConfirmationDialog.setButtons(Dialog.OK);
-                    apiKeyConfirmationDialog.setHideOnButtonClick(true);
-                    apiKeyConfirmationDialog.setLayout(new FormLayout());
-                    apiKeyConfirmationDialog.setSize(450, 200);
-                    apiKeyConfirmationDialog.setScrollMode(Scroll.AUTO);
-                    Label valueMessage = new Label(new SafeHtmlBuilder().appendEscapedLines(MSGS.dialogAddConfirmationApiKey(arg0.getCredentialKey())).toSafeHtml().asString());
-                    valueMessage.setStyleAttribute("font-size", "14px");
-                    apiKeyConfirmationDialog.add(valueMessage);
+                    ApiKeyConfirmationDialog apiKeyConfirmationDialog = new ApiKeyConfirmationDialog(arg0.getCredentialKey());
                     apiKeyConfirmationDialog.show();
                 }
                 exitStatus = true;

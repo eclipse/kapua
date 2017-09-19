@@ -43,7 +43,7 @@ public class TagAddDialog extends EntityAddEditDialog {
         FormPanel tagFormPanel = new FormPanel(FORM_LABEL_WIDTH);
         tagNameField = new TextField<String>();
         tagNameField.setAllowBlank(false);
-        tagNameField.setFieldLabel(MSGS.dialogAddFieldName());
+        tagNameField.setFieldLabel("* " + MSGS.dialogAddFieldName());
         tagNameField.setToolTip(MSGS.dialogAddFieldNameTooltip());
         tagFormPanel.add(tagNameField);
         bodyPanel.add(tagFormPanel);
