@@ -15,6 +15,7 @@ import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser.GwtUserStatus;
 import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUserQuery;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
@@ -49,6 +50,7 @@ public class GwtKapuaUserModelConverter {
         KapuaLocator locator = KapuaLocator.getInstance();
         UserFactory userFactory = locator.getFactory(UserFactory.class);
 
+        AndPredicate predicate = new AndPredicate();
         // Convert query
         UserQuery userQuery = userFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtUserQuery.getScopeId()));
         if (gwtUserQuery.getName() != null && !gwtUserQuery.getName().isEmpty()) {
@@ -56,7 +58,7 @@ public class GwtKapuaUserModelConverter {
         }
         userQuery.setOffset(loadConfig.getOffset());
         userQuery.setLimit(loadConfig.getLimit());
-
+        userQuery.setPredicate(predicate);
         //
         // Return converted
         return userQuery;
