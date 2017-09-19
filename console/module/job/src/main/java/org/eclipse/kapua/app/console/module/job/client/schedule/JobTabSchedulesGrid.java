@@ -22,11 +22,8 @@ import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityVie
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJob;
 import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtTrigger;
 import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtTriggerQuery;
-import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobService;
-import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobServiceAsync;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtTriggerService;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtTriggerServiceAsync;
 
@@ -36,7 +33,6 @@ import java.util.List;
 public class JobTabSchedulesGrid extends EntityGrid<GwtTrigger> {
 
     private static final GwtTriggerServiceAsync TRIGGER_SERVICE = GWT.create(GwtTriggerService.class);
-    private static final GwtJobServiceAsync JOB_SERVICE = GWT.create(GwtJobService.class);
     private static final ConsoleJobMessages JOB_MSGS = GWT.create(ConsoleJobMessages.class);
 
     private String jobId;
@@ -54,7 +50,7 @@ public class JobTabSchedulesGrid extends EntityGrid<GwtTrigger> {
 
             @Override
             protected void load(Object o, AsyncCallback<PagingLoadResult<GwtTrigger>> asyncCallback) {
-                TRIGGER_SERVICE.findByJobId((PagingLoadConfig)o, currentSession.getSelectedAccountId(), jobId, asyncCallback);
+                TRIGGER_SERVICE.findByJobId((PagingLoadConfig) o, currentSession.getSelectedAccountId(), jobId, asyncCallback);
             }
         };
     }
@@ -88,7 +84,7 @@ public class JobTabSchedulesGrid extends EntityGrid<GwtTrigger> {
 
     @Override
     protected void setFilterQuery(GwtQuery filterQuery) {
-        this.query = (GwtTriggerQuery) filterQuery;
+        query = (GwtTriggerQuery) filterQuery;
     }
 
     public String getJobId() {
@@ -103,37 +99,9 @@ public class JobTabSchedulesGrid extends EntityGrid<GwtTrigger> {
     protected JobTabSchedulesToolbar getToolbar() {
         if (toolbar == null) {
             toolbar = new JobTabSchedulesToolbar(currentSession);
+
+            toolbar.setEditButtonVisible(false);
         }
         return toolbar;
-    }
-
-    @Override
-    protected void selectionChangedEvent(final GwtTrigger selectedItem) {
-        super.selectionChangedEvent(selectedItem);
-        JOB_SERVICE.find(currentSession.getSelectedAccountId(), jobId, new AsyncCallback<GwtJob>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-
-            }
-
-            @Override
-            public void onSuccess(GwtJob result) {
-                if (result.getJobXmlDefinition() == null) {
-                    JobTabSchedulesGrid.this.toolbar.getAddEntityButton().enable();
-                    if (selectedItem == null) {
-                        JobTabSchedulesGrid.this.toolbar.getEditEntityButton().disable();
-                        JobTabSchedulesGrid.this.toolbar.getDeleteEntityButton().disable();
-                    } else {
-                        JobTabSchedulesGrid.this.toolbar.getEditEntityButton().enable();
-                        JobTabSchedulesGrid.this.toolbar.getDeleteEntityButton().enable();
-                    }
-                } else {
-                    JobTabSchedulesGrid.this.toolbar.getAddEntityButton().disable();
-                    JobTabSchedulesGrid.this.toolbar.getEditEntityButton().disable();
-                    JobTabSchedulesGrid.this.toolbar.getDeleteEntityButton().disable();
-                }
-            }
-        });
     }
 }

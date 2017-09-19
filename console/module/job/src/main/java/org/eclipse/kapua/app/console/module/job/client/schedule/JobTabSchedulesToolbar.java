@@ -31,28 +31,16 @@ public class JobTabSchedulesToolbar extends EntityCRUDToolbar<GwtTrigger> {
 
     public void setJobId(String jobId) {
         this.jobId = jobId;
-        checkButtons();
     }
 
     @Override
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
-        checkButtons();
     }
 
     @Override
     protected KapuaDialog getAddDialog() {
         return new JobScheduleAddDialog(currentSession, jobId);
-    }
-
-    @Override
-    protected KapuaDialog getEditDialog() {
-        GwtTrigger selectedItem = gridSelectionModel.getSelectedItem();
-        JobScheduleEditDialog dialog = null;
-        if (selectedItem != null) {
-            dialog = new JobScheduleEditDialog(currentSession, selectedItem);
-        }
-        return dialog;
     }
 
     @Override
@@ -63,17 +51,5 @@ public class JobTabSchedulesToolbar extends EntityCRUDToolbar<GwtTrigger> {
             dialog = new JobScheduleDeleteDialog(selectedJobStep);
         }
         return dialog;
-    }
-
-    private void checkButtons() {
-        if (addEntityButton != null) {
-            addEntityButton.setEnabled(jobId != null);
-        }
-        if (editEntityButton != null) {
-            editEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null);
-        }
-        if (deleteEntityButton != null) {
-            deleteEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null);
-        }
     }
 }

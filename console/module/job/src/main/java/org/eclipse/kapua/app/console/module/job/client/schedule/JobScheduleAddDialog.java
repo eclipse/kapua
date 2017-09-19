@@ -98,12 +98,14 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
             triggerName.markInvalid(VAL_MSGS.nameRequiredMsg());
             return;
         }
+
         if (cronExpression.getValue() == null && retryInterval.getValue() == null) {
             cronExpression.markInvalid(VAL_MSGS.retryIntervalOrCronRequired());
             retryInterval.markInvalid(VAL_MSGS.retryIntervalOrCronRequired());
             return;
-        }
-        if (cronExpression.getValue() != null) {
+        } else if (retryInterval.getValue() != null) {
+            super.preSubmit();
+        } else if (cronExpression.getValue() != null) {
             TRIGGER_SERVICE.validateCronExpression(cronExpression.getValue(), new AsyncCallback<Boolean>() {
 
                 @Override
