@@ -56,7 +56,7 @@
             <exclusions>
                 <exclusion>
                     <!-- This is not required. We are using EclipseLink connection pooling. -->
-                    <groupId>com.mchange</groupId>
+                    <groupId>c3p0</groupId>
                     <artifactId>c3p0</artifactId>
                 </exclusion>
             </exclusions>
