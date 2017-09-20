@@ -11,7 +11,8 @@
         Eurotech - initial API and implementation
  -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.eclipse.kapua</groupId>
@@ -47,13 +48,20 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-liquibase</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
             <version>2.2.3</version>
+            <exclusions>
+                <exclusion>
+                    <!-- This is not required. We are using EclipseLink connection pooling. -->
+                    <groupId>com.mchange</groupId>
+                    <artifactId>c3p0</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-        
+
         <!-- External dependencies -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
@@ -63,6 +71,6 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-job-engine-api</artifactId>
         </dependency>
-        
+
     </dependencies>
 </project>
