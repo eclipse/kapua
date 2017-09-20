@@ -186,14 +186,7 @@
                 <include>org.elasticsearch.plugin:percolator-client</include>
                 <include>org.elasticsearch.client:rest</include>
                 <include>org.elasticsearch:securesm</include>
-                <include>io.netty:netty-buffer</include>
-                <include>io.netty:netty-codec</include>
-                <include>io.netty:netty-codec-http</include>
-                <include>io.netty:netty-common</include>
-                <include>io.netty:netty-handler</include>
-                <include>io.netty:netty-resolver</include>
-                <include>io.netty:netty-transport</include>
-                <include>io.netty:netty-transport-native-epoll</include>
+                <include>io.netty:netty-all</include>
                 <include>org.apache.logging.log4j:log4j-api</include>
                 <include>org.slf4j:slf4j-api</include>
                 <include>org.slf4j:log4j-over-slf4j</include>
@@ -214,7 +207,7 @@
                 <include>org.eclipse.paho:org.eclipse.paho.client.mqttv3</include>
                 <include>org.apache.qpid:qpid-jms-client</include>
                 <include>org.apache.qpid:proton-j</include>
-                <include>javax.jms:javax.jms-api</include>
+                <include>org.apache.geronimo.specs:geronimo-jms_2.0_spec</include>
                 <include>org.apache.commons:commons-pool2</include>
                 <include>org.bitbucket.b_c:jose4j</include>
                 <include>org.reflections:reflections</include>

@@ -80,10 +80,9 @@
             <groupId>org.apache.qpid</groupId>
             <artifactId>qpid-jms-client</artifactId>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/javax.jms/javax.jms-api -->
         <dependency>
-            <groupId>javax.jms</groupId>
-            <artifactId>javax.jms-api</artifactId>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
         </dependency>
 
         <dependency>

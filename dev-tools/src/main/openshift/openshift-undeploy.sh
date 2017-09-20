@@ -10,16 +10,15 @@
 #
 ###############################################################################
 
-set -e
-
-# Configuration
-
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 . $SCRIPT_DIR/openshift-common.sh
 
   : OPENSHIFT_HOST=${OPENSHIFT_HOST:=localhost:8443}
 
+echo Undeploying Eclipse Kapua from Openshift
 
-# Create Kapua project
+# deleting entire project with related resources
 $OC login $OPENSHIFT_HOST -u admin -p admin
-$OC new-project "$OPENSHIFT_PROJECT_NAME" --description="Open source IoT Platform" --display-name="Eclipse Kapua"
+oc delete project eclipse-kapua
+
+echo Eclipse Kapua undeployed from Openshift

@@ -236,8 +236,9 @@
             <artifactId>qpid-jms-client</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.jms</groupId>
-            <artifactId>javax.jms-api</artifactId>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jms_2.0_spec</artifactId>
+            <version>1.0-alpha-2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.qpid</groupId>
@@ -544,14 +545,6 @@
                                     <groupId>org.apache.qpid</groupId>
                                     <artifactId>proton-j</artifactId>
                                     <version>${qpid-proton.version}</version>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>target/broker_dependency</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>javax.jms</groupId>
-                                    <artifactId>javax.jms-api</artifactId>
-                                    <version>${javax.jms-api.version}</version>
                                     <type>jar</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>target/broker_dependency</outputDirectory>

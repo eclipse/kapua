@@ -10,11 +10,31 @@ setup and not on a full blown production setup.
 
 ## Docker containers
 
-Running Kapua on local docker containers is as easy as:
+Before running Kapua on Docker, you need to 
 
 1. Install docker
-1. Run `mvn -f assembly -Pdocker` once
-1. Run the docker images you want to start, see [assembly/README.md](https://github.com/eclipse/kapua/blob/develop/assembly/README.md) 
+1. Run `mvn -f assembly -Pdocker` once to build containers
+
+
+Now, you can start Kapua by using Docker Compose. To do so, run
+  
+    kapua/dev-tools/src/main/docker/docker-deploy.sh
+    
+After Kapua has been started, you can navigate your browser to http://localhost:8080 and log in using the following credentials:
+`kapua-sys` : `kapua-password`
+
+You can access the API using: http://localhost:8081
+
+**Note**: If you are using Docker on Windows the hostname will most likely not be `localhost` but
+the IP address of your docker instance.
+
+By default, the `latest` version of images will be used. If you want to run some other version of Kapua, set the `IMAGE_VERSION` environment variable, like
+
+    export IMAGE_VERSION=0.2.0
+    
+To stop Kapua, run
+    
+    kapua/dev-tools/src/main/docker/docker-undeploy.sh
 
 ## OpenShift
 
@@ -36,6 +56,14 @@ If you are running your OpenShift cluster for a first time, execute the followin
     kapua/dev-tools/src/main/openshift/openshift-initialize.sh
 
 Initialization script is responsible for logging you into a cluster and creating new OpenShift project for Kapua.
+
+If your Openshift cluster is not on the localhost, set the `OPENSHIFT_HOST` environment variable. For example, something like
+
+    export OPENSHIFT_HOST=192.168.64.2:8443
+    
+If you're using Minishift, you can obtain the IP of the cluster by executing
+    
+    minishift ip
 
 If for some reasons, you cannot start your cluster, try to execute the startup script with option `DOCKERIZED=FALSE`:
 

@@ -346,7 +346,7 @@
                                                 -Ddatastore.elasticsearch.nodes=\${DATASTORE_ADDR} \
                                                 -Ddatastore.elasticsearch.port=\${DATASTORE_PORT} \
                                                 -Ddatastore.client.class=\${DATASTORE_CLIENT} \
-                                                -Dcommons.eventbus.url=\${SERVICE_BROKER_ADDR}
+                                                -Dcommons.eventbus.url=\${SERVICE_BROKER_ADDR} \
                                                 -Dcertificate.jwt.private.key=file:///home/kapua/key.pk8 \
                                                 -Dcertificate.jwt.certificate=file:///home/kapua/cert.pem
                                             </JAVA_OPTS>

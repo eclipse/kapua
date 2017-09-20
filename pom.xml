@@ -71,15 +71,14 @@
         <elasticsearch-client-transport.version>5.3.0</elasticsearch-client-transport.version>
         <elasticsearch-client-rest.version>5.3.0</elasticsearch-client-rest.version>
         <elasticsearch-netty-3.version>3.10.6.Final</elasticsearch-netty-3.version>
-        <elasticsearch-netty-4.version>4.1.7.Final</elasticsearch-netty-4.version>
+        <elasticsearch-netty-4.version>4.1.15.Final</elasticsearch-netty-4.version>
         <jackson.version>2.8.6</jackson.version> <!-- same version used by elasticsearch -->
         <log4j-api.version>2.8.2</log4j-api.version> <!-- same version used by elasticsearch -->
         <log4j-to-slf4j.version>2.8.2</log4j-to-slf4j.version> <!-- same version used by elasticsearch -->
         <log4j2-mock.version>0.0.1</log4j2-mock.version>
         <tomcat.version>8.0.41</tomcat.version>
-        <qpid-jms-client.version>0.23.0</qpid-jms-client.version>
+        <qpid-jms-client.version>0.24.0</qpid-jms-client.version>
         <qpid-proton.version>0.20.0</qpid-proton.version>
-        <javax.jms-api.version>2.0</javax.jms-api.version>
 
         <!-- Plugins versions -->
         <checkstyle-maven-plugin.version>2.17</checkstyle-maven-plugin.version>
@@ -1316,16 +1315,22 @@
                 <groupId>org.apache.qpid</groupId>
                 <artifactId>qpid-jms-client</artifactId>
                 <version>${qpid-jms-client.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>io.netty</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-all</artifactId>
+                <version>${elasticsearch-netty-4.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.activemq</groupId>
                 <artifactId>activemq-client</artifactId>
                 <version>${activemq.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.jms</groupId>
-                <artifactId>javax.jms-api</artifactId>
-                <version>${javax.jms-api.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
