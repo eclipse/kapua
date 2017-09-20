@@ -1,6 +1,6 @@
-# Kapua on OpenShift
+# Kapua on Docker
 
-To learn more on how to run Kapua in Openshift, please consult [developer manual](https://github.com/eclipse/kapua/blob/develop/docs/developer-guide/en/running.md#openshift).
+To learn more on how to run Kapua using Docker, please consult [developer manual](https://github.com/eclipse/kapua/blob/develop/docs/developer-guide/en/running.md#docker).
 
 The most recent version of the documentation can be viewed online at:
 

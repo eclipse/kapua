@@ -234,13 +234,21 @@ objects:
             timeoutSeconds: 1
             tcpSocket:
               port: 5672
+          env:
+          - name: ARTEMIS_CONFIGURATION
+            value: /run/secrets
           volumeMounts:
+          - mountPath: /run/secrets
+            name: config
           - mountPath: /maven/data
             name: events-broker-volume-1
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         terminationGracePeriodSeconds: 30
         volumes:
+        - name: config
+          secret:
+            secretName: events-broker-conf
         - name: events-broker-volume-1
           emptyDir: {}
 

@@ -8,18 +8,15 @@
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-v10.html
 #
+# Contributors:
+#     Red Hat Inc - initial API and implementation
+#     Eurotech
 ###############################################################################
 
-set -e
-
-# Configuration
-
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-. $SCRIPT_DIR/openshift-common.sh
+. $SCRIPT_DIR/docker-common.sh
 
-  : OPENSHIFT_HOST=${OPENSHIFT_HOST:=localhost:8443}
-
-
-# Create Kapua project
-$OC login $OPENSHIFT_HOST -u admin -p admin
-$OC new-project "$OPENSHIFT_PROJECT_NAME" --description="Open source IoT Platform" --display-name="Eclipse Kapua"
+echo Deploying Eclipse Kapua
+docker-compose up -d
+echo Deploying Eclipse Kapua ... done!
+echo Run \'docker-compose logs -f\' for container logs

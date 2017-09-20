@@ -331,8 +331,13 @@
                                             <DATASTORE_ADDR>\${ES_PORT_9200_TCP_ADDR}</DATASTORE_ADDR>
                                             <SERVICE_BROKER_ADDR>failover:(amqp://\${SERVICE_PORT_5672_TCP_ADDR}:\${SERVICE_PORT_5672_TCP_PORT})?jms.sendTimeout=1000</SERVICE_BROKER_ADDR>
                                             <DATASTORE_CLIENT>org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient</DATASTORE_CLIENT>
-                                            <JAVA_OPTS>-Dcommons.db.connection.host=\${SQL_DB_ADDR} -Dcommons.db.connection.port=\${SQL_DB_PORT} -Dbroker.host=\${BROKER_PORT_1883_TCP_ADDR} \
-                                                -Ddatastore.elasticsearch.nodes=\${DATASTORE_ADDR} -Ddatastore.elasticsearch.port=\${DATASTORE_PORT} -Ddatastore.client.class=\${DATASTORE_CLIENT} -Dcommons.eventbus.url=\${SERVICE_BROKER_ADDR}
+                                            <JAVA_OPTS>-Dcommons.db.connection.host=db \
+                                                -Dcommons.db.connection.port=3306 \
+                                                -Dbroker.host=broker \
+                                                -Ddatastore.elasticsearch.nodes=es \
+                                                -Ddatastore.elasticsearch.port=9200 \
+                                                -Ddatastore.client.class=\${DATASTORE_CLIENT} \
+                                                -Dcommons.eventbus.url="failover:(amqp://events-broker:5672)?jms.sendTimeout=1000"
                                             </JAVA_OPTS>
                                         </env>
                                         <user>kapua</user>
