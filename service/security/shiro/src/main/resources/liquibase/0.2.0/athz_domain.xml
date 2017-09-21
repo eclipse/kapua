@@ -11,21 +11,18 @@
         Eurotech - initial API and implementation
  -->
 <databaseChangeLog
-  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
-  logicalFilePath="KapuaDB/changelog-authorization-0.2.0.xml">
+        logicalFilePath="KapuaDB/changelog-authorization-0.2.0.xml">
 
-    <include relativeToChangelogFile="true" file="../common-properties.xml" />
+    <include relativeToChangelogFile="true" file="../common-properties.xml"/>
 
     <changeSet id="changelog-authorization-domain-0.2.0" author="eurotech">
-        <!-- Old SQL file
-        <sqlFile relativeToChangelogFile="true" path="./athz_domain.sql" />
-        -->
         <createTable tableName="athz_domain">
             <column name="scope_id" type="bigint(21) unsigned"/>
-            <column name="id" type="bigint(21) unsigned">
+            <column name="id" type="bigint(21) unsigned" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="created_on" type="timestamp(3)" defaultValueComputed="${now}">
@@ -34,7 +31,7 @@
             <column name="created_by" type="bigint(21) unsigned">
                 <constraints nullable="false"/>
             </column>
-            
+
             <column name="name" type="varchar(255)">
                 <constraints nullable="false" unique="true"/>
             </column>
@@ -42,113 +39,6 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-
-        <!-- Seed values -->
-        <insert tableName="athz_domain">
-            <column name="id" value="1"/>
-            <column name="created_on" valueComputed="${now}"/>
-            <column name="created_by" value="1"/>
-            <column name="name" value="account"/>
-            <column name="serviceName" value="accountService"/>
-        </insert>
-        <insert tableName="athz_domain">
-            <column name="id" value="2"/>
-            <column name="created_on" valueComputed="${now}"/>
-            <column name="created_by" value="1"/>
-            <column name="name" value="broker"/>
-            <column name="serviceName" value="brokerService"/>
-        </insert>
-        <insert tableName="athz_domain">
-            <column name="id" value="3"/>
-            <column name="created_on" valueComputed="${now}"/>
-            <column name="created_by" value="1"/>
-            <column name="name" value="credential"/>
-            <column name="serviceName" value="credentialService"/>
-        </insert>
-        <insert tableName="athz_domain">
-            <column name="id" value="4"/>
-            <column name="created_on" valueComputed="${now}"/>
-            <column name="created_by" value="1"/>
-            <column name="name" value="device"/>
-            <column name="serviceName" value="deviceService"/>
-        </insert>
-        <insert tableName="athz_domain">
-            <column name="id" value="5"/>
-            <column name="created_on" valueComputed="${now}"/>
-            <column name="created_by" value="1"/>
-            <column name="name" value="device_connection"/>
-            <column name="serviceName" value="deviceConnectionService"/>
-        </insert>
-        <insert tableName="athz_domain">
-            <column name="id" value="6"/>
-            <column name="created_on" valueComputed="${now}"/>
-            <column name="created_by" value="1"/>
-            <column name="name" value="device_management"/>
-            <column name="serviceName" value="deviceManagementService"/>
-        </insert>
-        <insert tableName="athz_domain">
-            <column name="id" value="7"/>
-            <column name="created_on" valueComputed="${now}"/>
-            <column name="created_by" value="1"/>
-            <column name="name" value="device_event"/>
-            <column name="serviceName" value="deviceEventService"/>
-        </insert>
-        <insert tableName="athz_domain">
-            <column name="id" value="8"/>
-            <column name="created_on" valueComputed="${now}"/>
-            <column name="created_by" value="1"/>
-            <column name="name" value="device_lifecycle"/>
-            <column name="serviceName" value="deviceLifecycleService"/>
-        </insert>
-        <insert tableName="athz_domain">
-            <column name="id" value="9"/>
-            <column name="created_on" valueComputed="${now}"/>
-            <column name="created_by" value="1"/>
-            <column name="name" value="datastore"/>
-            <column name="serviceName" value="datastoreService"/>
-        </insert>
-        <insert tableName="athz_domain">
-            <column name="id" value="10"/>
-            <column name="created_on" valueComputed="${now}"/>
-            <column name="created_by" value="1"/>
-            <column name="name" value="domain"/>
-            <column name="serviceName" value="domainService"/>
-        </insert>
-        <insert tableName="athz_domain">
-            <column name="id" value="11"/>
-            <column name="created_on" valueComputed="${now}"/>
-            <column name="created_by" value="1"/>
-            <column name="name" value="group"/>
-            <column name="serviceName" value="groupService"/>
-        </insert>
-        <insert tableName="athz_domain">
-            <column name="id" value="12"/>
-            <column name="created_on" valueComputed="${now}"/>
-            <column name="created_by" value="1"/>
-            <column name="name" value="access_info"/>
-            <column name="serviceName" value="accessInfoService"/>
-        </insert>
-        <insert tableName="athz_domain">
-            <column name="id" value="13"/>
-            <column name="created_on" valueComputed="${now}"/>
-            <column name="created_by" value="1"/>
-            <column name="name" value="access_token"/>
-            <column name="serviceName" value="accessTokenService"/>
-        </insert>
-        <insert tableName="athz_domain">
-            <column name="id" value="14"/>
-            <column name="created_on" valueComputed="${now}"/>
-            <column name="created_by" value="1"/>
-            <column name="name" value="role"/>
-            <column name="serviceName" value="roleService"/>
-        </insert>
-        <insert tableName="athz_domain">
-            <column name="id" value="15"/>
-            <column name="created_on" valueComputed="${now}"/>
-            <column name="created_by" value="1"/>
-            <column name="name" value="user"/>
-            <column name="serviceName" value="userService"/>
-        </insert>
 
         <rollback>
             <dropTable tableName="athz_domain"/>
