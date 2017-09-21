@@ -18,7 +18,7 @@
   logicalFilePath="KapuaDB/changelog-authorization-0.3.0.xml">
 
     <changeSet id="athz_domain_actions-id_check_positive-0.3.0" author="eurotech">
-        <sql>ALTER TABLE athz_domain_actions ADD CHECK domain_id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE athz_domain_actions ADD CHECK domain_id >= 0;</sql>
     </changeSet>
 
 </databaseChangeLog>

@@ -86,7 +86,7 @@
             <column name="job_data" type="blob"/>
         </createTable>
 
-        <addForeignKeyConstraint constraintName="fk_schdl_qrtz_triggers_sched_name_trigger_name_trigger_group"
+        <addForeignKeyConstraint constraintName="fk_schdl_qrtz_triggers"
                                  baseTableName="schdl_qrtz_triggers"
                                  baseColumnNames="sched_name,job_name,job_group"
                                  referencedTableName="schdl_qrtz_job_details"
@@ -113,7 +113,7 @@
             </column>
         </createTable>
 
-        <addForeignKeyConstraint constraintName="fk_schdl_qrtz_simple_triggers_sched_name_trigger_name_trigger_group"
+        <addForeignKeyConstraint constraintName="fk_schdl_qrtz_simple_triggers"
                                  baseTableName="schdl_qrtz_simple_triggers"
                                  baseColumnNames="sched_name,trigger_name,trigger_group"
                                  referencedTableName="schdl_qrtz_triggers"
@@ -135,7 +135,7 @@
             <column name="time_zone_id" type="varchar(80)"/>
         </createTable>
 
-        <addForeignKeyConstraint constraintName="fk_schdl_qrtz_cron_triggers_sched_name_trigger_name_trigger_group"
+        <addForeignKeyConstraint constraintName="fk_schdl_qrtz_cron_triggers"
                                  baseTableName="schdl_qrtz_cron_triggers"
                                  baseColumnNames="sched_name,trigger_name,trigger_group"
                                  referencedTableName="schdl_qrtz_triggers"
@@ -164,7 +164,7 @@
             <column name="bool_prop_2" type="varchar(5)"/>
         </createTable>
 
-        <addForeignKeyConstraint constraintName="fk_schdl_qrtz_simprop_triggers_sched_name_trigger_name_trigger_group"
+        <addForeignKeyConstraint constraintName="fk_schdl_qrtz_simprop_triggers"
                                  baseTableName="schdl_qrtz_simprop_triggers"
                                  baseColumnNames="sched_name,trigger_name,trigger_group"
                                  referencedTableName="schdl_qrtz_triggers"
@@ -183,7 +183,7 @@
             <column name="blob_data" type="blob"/>
         </createTable>
 
-        <addForeignKeyConstraint constraintName="fk_schdl_qrtz_blob_triggers_sched_name_trigger_name_trigger_group"
+        <addForeignKeyConstraint constraintName="fk_schdl_qrtz_blob_triggers"
                                  baseTableName="schdl_qrtz_blob_triggers"
                                  baseColumnNames="sched_name,trigger_name,trigger_group"
                                  referencedTableName="schdl_qrtz_triggers"

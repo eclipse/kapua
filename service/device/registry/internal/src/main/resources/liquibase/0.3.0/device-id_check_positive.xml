@@ -20,13 +20,13 @@
     <include relativeToChangelogFile="true" file="../common-properties.xml" />
 
     <changeSet id="device-id_check_positive-0.3.0" author="eurotech">
-        <sql>ALTER TABLE dvc_device ADD CHECK scope_id >= 0;</sql>
-        <sql>ALTER TABLE dvc_device ADD CHECK id >= 0;</sql>
-        <sql>ALTER TABLE dvc_device ADD CHECK created_by >= 0;</sql>
-        <sql>ALTER TABLE dvc_device ADD CHECK modified_by >= 0;</sql>
-        <sql>ALTER TABLE dvc_device ADD CHECK group_id >= 0;</sql>
-        <sql>ALTER TABLE dvc_device ADD CHECK connection_id >= 0;</sql>
-        <sql>ALTER TABLE dvc_device ADD CHECK last_event_id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE dvc_device ADD CHECK scope_id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE dvc_device ADD CHECK id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE dvc_device ADD CHECK created_by >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE dvc_device ADD CHECK modified_by >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE dvc_device ADD CHECK group_id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE dvc_device ADD CHECK connection_id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE dvc_device ADD CHECK last_event_id >= 0;</sql>
     </changeSet>
 
 </databaseChangeLog>
