@@ -41,7 +41,7 @@
                 <constraints nullable="false"/>
             </column>
             
-            <column name="starts_on" type="timestamp(3)">
+            <column name="starts_on" type="timestamp(3)" defaultValueComputed="${now}">
                 <constraints nullable="false"/>
             </column>
             <column name="ends_on" type="timestamp(3)"/>
@@ -53,10 +53,10 @@
             <column name="properties" type="text"/>
         </createTable>
 
-        <sql>ALTER TABLE schdl_trigger ADD CHECK scope_id >= 0;</sql>
-        <sql>ALTER TABLE schdl_trigger ADD CHECK id >= 0;</sql>
-        <sql>ALTER TABLE schdl_trigger ADD CHECK created_by >= 0;</sql>
-        <sql>ALTER TABLE schdl_trigger ADD CHECK modified_by >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE schdl_trigger ADD CHECK scope_id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE schdl_trigger ADD CHECK id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE schdl_trigger ADD CHECK created_by >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE schdl_trigger ADD CHECK modified_by >= 0;</sql>
 
         <createIndex tableName="schdl_trigger" indexName="idx_schdl_trigger_scope_id">
             <column name="scope_id"/>

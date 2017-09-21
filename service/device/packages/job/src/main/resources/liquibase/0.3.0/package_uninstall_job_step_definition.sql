@@ -35,17 +35,17 @@ VALUES (NULL,
 INSERT INTO job_job_step_definition_properties
 VALUES
   (
-    SELECT id
+    (SELECT id
     FROM job_job_step_definition
-    WHERE name = 'Device Packages Management Uninstall Execution',
+    WHERE name = 'Device Packages Management Uninstall Execution'),
     'packageUninstallRequest',
     'org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest',
     NULL
   ),
   (
-    SELECT id
+    (SELECT id
     FROM job_job_step_definition
-    WHERE name = 'Device Packages Management Uninstall Execution',
+    WHERE name = 'Device Packages Management Uninstall Execution'),
     'timeout',
     'java.lang.Long',
     '30000'

@@ -56,10 +56,10 @@
             <column name="properties" type="text"/>
         </createTable>
 
-        <sql>ALTER TABLE job_job_step_definition ADD CHECK scope_id >= 0;</sql>
-        <sql>ALTER TABLE job_job_step_definition ADD CHECK id >= 0;</sql>
-        <sql>ALTER TABLE job_job_step_definition ADD CHECK created_by >= 0;</sql>
-        <sql>ALTER TABLE job_job_step_definition ADD CHECK modified_by >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE job_job_step_definition ADD CHECK scope_id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE job_job_step_definition ADD CHECK id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE job_job_step_definition ADD CHECK created_by >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE job_job_step_definition ADD CHECK modified_by >= 0;</sql>
 
         <createIndex tableName="job_job_step_definition" indexName="idx_job_job_step_definition_scope_id">
             <column name="scope_id"/>

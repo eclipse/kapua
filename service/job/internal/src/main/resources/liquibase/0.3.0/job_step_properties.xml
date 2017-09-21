@@ -35,7 +35,7 @@
             <column name="property_value" type="text"/>
         </createTable>
 
-        <sql>ALTER TABLE job_job_step_properties ADD CHECK step_id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE job_job_step_properties ADD CHECK step_id >= 0;</sql>
 
         <addForeignKeyConstraint constraintName="fk_job_job_step_property_step_id"
                                  baseTableName="job_job_step_properties"

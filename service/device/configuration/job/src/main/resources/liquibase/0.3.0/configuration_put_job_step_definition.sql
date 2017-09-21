@@ -35,9 +35,9 @@ VALUES (NULL,
 INSERT INTO job_job_step_definition_properties
 VALUES
   (
-    SELECT id
+    (SELECT id
     FROM job_job_step_definition
-    WHERE name = 'Device Configuration Management Configuration',
+    WHERE name = 'Device Configuration Management Configuration'),
     'configuration',
     'org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration',
     NULL

@@ -56,12 +56,12 @@
             <column name="properties" type="text"/>
         </createTable>
 
-        <sql>ALTER TABLE job_job_target ADD CHECK scope_id >= 0;</sql>
-        <sql>ALTER TABLE job_job_target ADD CHECK id >= 0;</sql>
-        <sql>ALTER TABLE job_job_target ADD CHECK created_by >= 0;</sql>
-        <sql>ALTER TABLE job_job_target ADD CHECK modified_by >= 0;</sql>
-        <sql>ALTER TABLE job_job_target ADD CHECK job_id >= 0;</sql>
-        <sql>ALTER TABLE job_job_target ADD CHECK job_target_id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE job_job_target ADD CHECK scope_id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE job_job_target ADD CHECK id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE job_job_target ADD CHECK created_by >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE job_job_target ADD CHECK modified_by >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE job_job_target ADD CHECK job_id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE job_job_target ADD CHECK job_target_id >= 0;</sql>
 
         <addForeignKeyConstraint constraintName="fk_job_job_target_job_id"
                                  baseTableName="job_job_target"
