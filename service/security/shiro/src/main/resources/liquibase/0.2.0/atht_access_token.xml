@@ -45,13 +45,13 @@
             <column name="token_id" type="text">
                 <constraints nullable="false"/>
             </column>
-            <column name="expires_on" type="timestamp(3)">
+            <column name="expires_on" type="timestamp(3)" defaultValueComputed="${now}">
                 <constraints nullable="false"/>
             </column>
             <column name="refresh_token" type="text">
                 <constraints nullable="false"/>
             </column>
-            <column name="refresh_expires_on" type="timestamp(3)">
+            <column name="refresh_expires_on" type="timestamp(3)" defaultValueComputed="${now}">
                 <constraints nullable="false"/>
             </column>
             <column name="invalidated_on" type="timestamp(3)"/>

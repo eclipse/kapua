@@ -20,10 +20,10 @@
     <include relativeToChangelogFile="true" file="../common-properties.xml" />
 
     <changeSet id="account-id_check_positive-0.3.0" author="eurotech">
-        <sql>ALTER TABLE act_account ADD CHECK scope_id >= 0;</sql>
-        <sql>ALTER TABLE act_account ADD CHECK id >= 0;</sql>
-        <sql>ALTER TABLE act_account ADD CHECK created_by >= 0;</sql>
-        <sql>ALTER TABLE act_account ADD CHECK modified_by >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE act_account ADD CHECK scope_id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE act_account ADD CHECK id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE act_account ADD CHECK created_by >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE act_account ADD CHECK modified_by >= 0;</sql>
     </changeSet>
 
 </databaseChangeLog>

@@ -35,17 +35,17 @@ VALUES (1,
 INSERT INTO job_job_step_definition_properties
 VALUES
   (
-    SELECT id
+    (SELECT id
     FROM job_job_step_definition
-    WHERE name = 'Device Asset Management Write',
+    WHERE name = 'Device Asset Management Write'),
     'assets',
     'org.eclipse.kapua.service.device.management.asset.DeviceAssets',
     NULL
   ),
   (
-    SELECT id
+    (SELECT id
     FROM job_job_step_definition
-    WHERE name = 'Device Asset Management Write',
+    WHERE name = 'Device Asset Management Write'),
     'timeout',
     'java.lang.Long',
     '30000'

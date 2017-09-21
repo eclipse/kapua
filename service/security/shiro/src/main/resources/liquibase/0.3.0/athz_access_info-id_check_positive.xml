@@ -18,12 +18,12 @@
   logicalFilePath="KapuaDB/changelog-authorization-0.3.0.xml">
 
     <changeSet id="athz_access_info-id_check_positive-0.3.0" author="eurotech">
-        <sql>ALTER TABLE athz_access_permission ADD CHECK scope_id >= 0;</sql>
-        <sql>ALTER TABLE athz_access_permission ADD CHECK id >= 0;</sql>
-        <sql>ALTER TABLE athz_access_permission ADD CHECK created_by >= 0;</sql>
-        <sql>ALTER TABLE athz_access_permission ADD CHECK access_info_id >= 0;</sql>
-        <sql>ALTER TABLE athz_access_permission ADD CHECK target_scope_id >= 0;</sql>
-        <sql>ALTER TABLE athz_access_permission ADD CHECK group_id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE athz_access_permission ADD CHECK scope_id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE athz_access_permission ADD CHECK id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE athz_access_permission ADD CHECK created_by >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE athz_access_permission ADD CHECK access_info_id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE athz_access_permission ADD CHECK target_scope_id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE athz_access_permission ADD CHECK group_id >= 0;</sql>
     </changeSet>
 
 </databaseChangeLog>

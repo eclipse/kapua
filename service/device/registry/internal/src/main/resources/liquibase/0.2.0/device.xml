@@ -25,7 +25,7 @@
         -->
         <createTable tableName="dvc_device">
             <column name="scope_id" type="bigint(21) unsigned">
-                <constraints nullable="false" primaryKey="true"/>
+                <constraints nullable="false"/>
             </column>
             <column name="id" type="bigint(21) unsigned">
                 <constraints nullable="false" primaryKey="true"/>

@@ -35,17 +35,17 @@ VALUES (1,
 INSERT INTO job_job_step_definition_properties
 VALUES
   (
-    SELECT id
+    (SELECT id
     FROM job_job_step_definition
-    WHERE name = 'Device Packages Management Download Execution',
+    WHERE name = 'Device Packages Management Download Execution'),
     'packageDownloadRequest',
     'org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest',
     NULL
   ),
   (
-    SELECT id
+    (SELECT id
     FROM job_job_step_definition
-    WHERE name = 'Device Packages Management Download Execution',
+    WHERE name = 'Device Packages Management Download Execution'),
     'timeout',
     'java.lang.Long',
     '30000'

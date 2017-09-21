@@ -35,17 +35,17 @@ VALUES (1,
 INSERT INTO job_job_step_definition_properties
 VALUES
   (
-    SELECT id
+    (SELECT id
     FROM job_job_step_definition
-    WHERE name = 'Device Bundle Management Stop',
+    WHERE name = 'Device Bundle Management Stop'),
     'bundleId',
     'java.lang.String',
     NULL
   ),
   (
-    SELECT id
+    (SELECT id
     FROM job_job_step_definition
-    WHERE name = 'Device Bundle Management Stop',
+    WHERE name = 'Device Bundle Management Stop'),
     'timeout',
     'java.lang.Long',
     '30000'

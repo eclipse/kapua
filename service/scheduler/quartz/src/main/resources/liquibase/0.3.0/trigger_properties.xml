@@ -35,7 +35,7 @@
             <column name="property_value" type="text"/>
         </createTable>
 
-        <sql>ALTER TABLE schdl_trigger_properties ADD CHECK trigger_id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE schdl_trigger_properties ADD CHECK trigger_id >= 0;</sql>
 
         <addForeignKeyConstraint constraintName="fk_schdl_trigger_properties_step_id"
                                  baseTableName="schdl_trigger_properties"

@@ -35,17 +35,17 @@ VALUES (1,
 INSERT INTO job_job_step_definition_properties
 VALUES
   (
-    SELECT id
+    (SELECT id
     FROM job_job_step_definition
-    WHERE name = 'Device Command Management Execution',
+    WHERE name = 'Device Command Management Execution'),
     'commandInput',
     'org.eclipse.kapua.service.device.management.command.DeviceCommandInput',
     NULL
   ),
   (
-    SELECT id
+    (SELECT id
     FROM job_job_step_definition
-    WHERE name = 'Device Command Management Execution',
+    WHERE name = 'Device Command Management Execution'),
     'timeout',
     'java.lang.Long',
     '30000'

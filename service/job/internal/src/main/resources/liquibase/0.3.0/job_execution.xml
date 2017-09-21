@@ -41,21 +41,21 @@
             <column name="job_id" type="bigint(21) unsigned">
                 <constraints nullable="false"/>
             </column>
-            <column name="started_on" type="timestamp(3)">
+            <column name="started_on" type="timestamp(3)" defaultValueComputed="${now}">
                 <constraints nullable="false"/>
             </column>
-            <column name="ended_on" type="timestamp(3)"/>
+            <column name="ended_on" type="timestamp(3)" defaultValueComputed="${now}"/>
 
             <column name="optlock" type="int unsigned"/>
             <column name="attributes" type="text"/>
             <column name="properties" type="text"/>
         </createTable>
 
-        <sql>ALTER TABLE job_job_execution ADD CHECK scope_id >= 0;</sql>
-        <sql>ALTER TABLE job_job_execution ADD CHECK id >= 0;</sql>
-        <sql>ALTER TABLE job_job_execution ADD CHECK created_by >= 0;</sql>
-        <sql>ALTER TABLE job_job_execution ADD CHECK modified_by >= 0;</sql>
-        <sql>ALTER TABLE job_job_execution ADD CHECK job_id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE job_job_execution ADD CHECK scope_id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE job_job_execution ADD CHECK id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE job_job_execution ADD CHECK created_by >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE job_job_execution ADD CHECK modified_by >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE job_job_execution ADD CHECK job_id >= 0;</sql>
 
         <addForeignKeyConstraint constraintName="fk_job_job_execution_job_id"
                                  baseTableName="job_job_execution"
