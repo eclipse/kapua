@@ -1305,6 +1305,9 @@
 
         <!-- Extras  -->
         <module>extras</module>
+        
+        <!-- External --> 
+        <module>external</module>
 
         <!-- Applications -->
         <module>rest-api</module>
