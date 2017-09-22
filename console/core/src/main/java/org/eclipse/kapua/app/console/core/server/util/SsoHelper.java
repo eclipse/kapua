@@ -16,6 +16,8 @@ import java.net.URI;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSettingKeys;
 
+import javax.servlet.http.HttpServletRequest;
+
 public final class SsoHelper {
 
     private SsoHelper() {
@@ -25,17 +27,17 @@ public final class SsoHelper {
         return ConsoleSetting.getInstance();
     }
 
-    public static String getHomeUri() {
-        return getSettings().getString(ConsoleSettingKeys.SITE_HOME_URI);
+    public static String getHomeUri(HttpServletRequest request) {
+        return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/" + request.getContextPath();
     }
 
-    public static URI getRedirectUri() {
+    public static URI getRedirectUri(HttpServletRequest request) {
         String result = getSettings().getString(ConsoleSettingKeys.SSO_REDIRECT_URI);
         if (result != null && !result.isEmpty()) {
             return URI.create(result);
         }
 
-        result = getHomeUri();
+        result = getHomeUri(request);
         if (result != null && !result.isEmpty()) {
             return URI.create(result + "/sso/callback");
         }

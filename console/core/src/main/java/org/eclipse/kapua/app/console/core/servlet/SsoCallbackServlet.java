@@ -43,13 +43,13 @@ public class SsoCallbackServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         final String authCode = req.getParameter("code");
 
-        final URI redirectUri = SsoHelper.getRedirectUri();
+        final URI redirectUri = SsoHelper.getRedirectUri(req);
 
         final JsonObject jsonObject = locator.getService().getAccessToken(authCode, redirectUri);
 
         // Get and clean jwks_uri property
         final String accessToken = jsonObject.getString("access_token");
-        final String homeUri = SsoHelper.getHomeUri();
+        final String homeUri = SsoHelper.getHomeUri(req);
 
         try {
             final URIBuilder redirect = new URIBuilder(homeUri);
