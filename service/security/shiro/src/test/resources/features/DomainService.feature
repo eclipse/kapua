@@ -12,10 +12,10 @@
 Feature: Domain Service CRUD tests
 
 Scenario: Count domains in a blank database
-    The default domain table must contain 15 preset entries.
+    The default domain table must contain 8 preset entries.
 
     When I count the domain entries in the database
-    Then I get 15 as result
+    Then I get 8 as result
 
 Scenario: Regular domain
     Create a regular domain entry. The newly created entry must match the
