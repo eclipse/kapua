@@ -14,11 +14,13 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
-
-    <include relativeToChangelogFile="true" file="./job-configuration.xml"/>
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="KapuaDB/changelog-job-0.3.0.xml">
 
     <include relativeToChangelogFile="true" file="./job.xml"/>
+    <include relativeToChangelogFile="true" file="./job-configuration.xml"/>
+    <include relativeToChangelogFile="true" file="./job-domain.xml"/>
+
     <include relativeToChangelogFile="true" file="./job_execution.xml"/>
     <include relativeToChangelogFile="true" file="./job_step.xml"/>
     <include relativeToChangelogFile="true" file="./job_step_properties.xml"/>

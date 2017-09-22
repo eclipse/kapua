@@ -15,10 +15,8 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
-        logicalFilePath="KapuaDB/changelog-tag-0.3.0.xml">
+        logicalFilePath="KapuaDB/changelog-broker-0.2.0.xml">
 
-    <include relativeToChangelogFile="true" file="./tag.xml"/>
-    <include relativeToChangelogFile="true" file="./tag-configuration.xml"/>
-    <include relativeToChangelogFile="true" file="./tag-domain.xml"/>
+    <include relativeToChangelogFile="true" file="./broker-domain.xml"/>
 
 </databaseChangeLog>
