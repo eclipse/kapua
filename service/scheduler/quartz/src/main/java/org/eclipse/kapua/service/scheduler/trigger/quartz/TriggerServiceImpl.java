@@ -45,6 +45,7 @@ import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
 
 import javax.inject.Inject;
+import java.util.TimeZone;
 
 /**
  * {@link TriggerService} implementation.
@@ -137,7 +138,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
             if (trigger.getRetryInterval() != null) {
                 triggerBuilder.withSchedule(SimpleScheduleBuilder.repeatSecondlyForever(trigger.getRetryInterval().intValue()));
             } else {
-                triggerBuilder.withSchedule(CronScheduleBuilder.cronSchedule(trigger.getCronScheduling()));
+                triggerBuilder.withSchedule(CronScheduleBuilder.cronSchedule(trigger.getCronScheduling()).inTimeZone(TimeZone.getTimeZone("UTC")));
             }
 
             org.quartz.Trigger quarztTrigger = triggerBuilder.build();
