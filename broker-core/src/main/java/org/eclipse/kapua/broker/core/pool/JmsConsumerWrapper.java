@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,53 +13,52 @@ package org.eclipse.kapua.broker.core.pool;
 
 import javax.jms.Connection;
 import javax.jms.JMSException;
-import javax.jms.MessageProducer;
+import javax.jms.MessageConsumer;
+import javax.jms.MessageListener;
 import javax.jms.Session;
 
-import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Jms producer wrapper.<BR>
+ * Jms consumer wrapper.<BR>
  * This class wrap a single session per connection and manage the close operation of connection on session close.<BR>
  * The connection is taken from a connection pool ({@link org.apache.activemq.ActiveMQConnectionFactory})
  * 
  * @since 1.0
  */
-public abstract class JmsProducerWrapper {
+public class JmsConsumerWrapper {
 
-    private static final Logger logger = LoggerFactory.getLogger(JmsProducerWrapper.class);
+    private static final Logger logger = LoggerFactory.getLogger(JmsConsumerWrapper.class);
 
     protected String destination;
     protected Connection connection;
     protected Session session;
-    protected MessageProducer producer;
+    protected MessageConsumer consumer;
 
     /**
      * 
-     * @param vmconnFactory
      * @param destination
-     *            if it's null the producer will not be bound to any destination so it can sends messages to the whole topic space.<BR>
-     *            Otherwise if it isn't null the producer will be bound to a queue destination as specified by the parameter.
      * @param transacted
      * @param start
      *            start activeMQ connection
      * @throws JMSException
      * @throws KapuaException
      */
-    protected JmsProducerWrapper(ActiveMQConnectionFactory vmconnFactory, String destination, boolean transacted, boolean start) throws JMSException, KapuaException {
-        connection = vmconnFactory.createConnection();
+    public JmsConsumerWrapper(String destination, boolean transacted, boolean start, MessageListener messageListener) throws JMSException, KapuaException {
+        if (StringUtils.isEmpty(destination)) {
+            throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, "Invalid destination (empty)!");
+        }
+        connection = JmsConnectionFactory.VM_CONN_FACTORY.createConnection();
         if (start == true) {
             connection.start();
         }
         session = connection.createSession(transacted, Session.AUTO_ACKNOWLEDGE);
-        if (destination != null && destination.trim().length() > 0) {
-            producer = session.createProducer(session.createQueue(destination));
-        } else {
-            producer = session.createProducer(null);
-        }
+        consumer = session.createConsumer(session.createTopic(destination));
+        consumer.setMessageListener(messageListener);
         this.destination = destination;
     }
 
@@ -69,10 +68,6 @@ public abstract class JmsProducerWrapper {
         } catch (JMSException e) {
             logger.error("Exception on connection close {}", e.getMessage(), e);
         }
-    }
-
-    public String getDestination() {
-        return destination;
     }
 
     @Override

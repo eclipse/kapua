@@ -25,4 +25,6 @@ public interface CamelConstants {
     public String JMS_HEADER_TIMESTAMP = "JMSTimestamp";
     public String JMS_HEADER_DESTINATION = "JMSDestination";
 
+    public String JMS_CORRELATION_ID = "JMSCorrelationID";
+
 }

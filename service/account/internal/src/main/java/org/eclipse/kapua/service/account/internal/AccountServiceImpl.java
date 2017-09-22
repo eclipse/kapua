@@ -18,6 +18,7 @@ import java.util.Objects;
 import javax.inject.Inject;
 import javax.persistence.TypedQuery;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
@@ -88,6 +89,14 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         // Check if the parent account exists
         if (findById(accountCreator.getScopeId()) == null) {
             throw new KapuaIllegalArgumentException("scopeId", "parent account does not exist: " + accountCreator.getScopeId() + "::");
+        }
+
+        // check if the account collides with the SystemSettingKey#COMMONS_CONTROL_TOPIC_CLASSIFIER
+        if (!StringUtils.isEmpty(SystemSetting.getInstance().getMessageClassifier())) {
+            if (SystemSetting.getInstance().getMessageClassifier().equals(accountCreator.getName())) {
+                throw new KapuaIllegalArgumentException("name", "Reserved account name");// obfuscate this message? or change to something more clear like "the account name collides with some system
+                                                                                 // configuration parameter"?
+            }
         }
 
         // Check child account policy
@@ -188,7 +197,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
                 throw new KapuaIllegalAccessException(action.name());
             }
 
-            if (settings.getString(SystemSettingKey.SYS_ADMIN_ACCOUNT).equals(accountx.getName())) {
+            if (settings.getString(SystemSettingKey.SYS_ADMIN_USERNAME).equals(accountx.getName())) {
                 throw new KapuaIllegalAccessException(action.name());
             }
 

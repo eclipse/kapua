@@ -14,6 +14,7 @@ package org.eclipse.kapua.broker.core.converter;
 import java.util.Base64;
 
 import org.apache.camel.Exchange;
+import org.apache.commons.lang.SerializationException;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.shiro.util.ThreadContext;
 import org.eclipse.kapua.KapuaException;
@@ -21,12 +22,16 @@ import org.eclipse.kapua.broker.core.listener.AbstractListener;
 import org.eclipse.kapua.broker.core.message.MessageConstants;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Kapua Camel session filter used to bind/unbind Kapua session to the thread context
  *
  */
 public class KapuaCamelFilter extends AbstractListener {
+
+    private final static Logger logger = LoggerFactory.getLogger(KapuaCamelFilter.class);
 
     public KapuaCamelFilter() {
         super("filter");
@@ -41,9 +46,16 @@ public class KapuaCamelFilter extends AbstractListener {
      */
     public void bindSession(Exchange exchange, Object value) throws KapuaException {
         ThreadContext.unbindSubject();
-        // FIX #164
-        byte[] kapuaSession = Base64.getDecoder().decode(exchange.getIn().getHeader(MessageConstants.HEADER_KAPUA_SESSION, String.class));
-        KapuaSecurityUtils.setSession((KapuaSession) SerializationUtils.deserialize(kapuaSession));
+        if (!exchange.getIn().getHeader(MessageConstants.HEADER_KAPUA_BROKER_CONTEXT, boolean.class)) {
+            try {
+                // FIX #164
+                KapuaSecurityUtils
+                        .setSession((KapuaSession) SerializationUtils.deserialize(Base64.getDecoder().decode(exchange.getIn().getHeader(MessageConstants.HEADER_KAPUA_SESSION, String.class))));
+            } catch (IllegalArgumentException | SerializationException e) {
+                // continue without session
+                logger.debug("Cannot restore Kapua session: {}", e.getMessage(), e);
+            }
+        }
     }
 
     /**

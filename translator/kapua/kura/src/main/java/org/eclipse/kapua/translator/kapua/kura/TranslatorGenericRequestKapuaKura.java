@@ -13,11 +13,10 @@ package org.eclipse.kapua.translator.kapua.kura;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestChannel;
 import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestMessage;
 import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestPayload;
-import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSetting;
-import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSettingKeys;
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetRequestMessage;
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestChannel;
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestMessage;
@@ -30,7 +29,7 @@ import org.eclipse.kapua.service.device.management.request.message.request.Gener
  */
 public class TranslatorGenericRequestKapuaKura extends AbstractTranslatorKapuaKura<GenericRequestChannel, GenericRequestPayload, GenericRequestMessage> {
 
-    private static final String CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
+    private static final String CONTROL_MESSAGE_CLASSIFIER = SystemSetting.getInstance().getMessageClassifier();
 
     protected KuraRequestChannel translateChannel(GenericRequestChannel kapuaChannel) throws KapuaException {
         KuraRequestChannel kuraRequestChannel = new KuraRequestChannel();

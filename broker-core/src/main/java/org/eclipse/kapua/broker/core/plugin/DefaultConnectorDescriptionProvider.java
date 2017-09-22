@@ -61,6 +61,8 @@ class DefaultConnectorDescriptionProvider implements ConnectorDescriptorProvider
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultConnectorDescriptionProvider.class);
 
+    public final static String DEFAULT_TRANSPORT_PROTOCOL = "MQTT";
+
     private final Map<String, ConnectorDescriptor> configuration = new HashMap<>();
     private final ConnectorDescriptor defaultDescriptor;
 
@@ -114,6 +116,8 @@ class DefaultConnectorDescriptionProvider implements ConnectorDescriptorProvider
         final Map<MessageType, Class<? extends DeviceMessage<?, ?>>> deviceClasses = new HashMap<>();
         final Map<MessageType, Class<? extends KapuaMessage<?, ?>>> kapuaClasses = new HashMap<>();
 
+        String transportProtocol = p.getProperty(String.format("%s.transport_protocol", transport));
+
         for (MessageType mt : MessageType.values()) {
 
             {
@@ -142,7 +146,7 @@ class DefaultConnectorDescriptionProvider implements ConnectorDescriptorProvider
 
         }
 
-        return new ConnectorDescriptor(deviceClasses, kapuaClasses);
+        return new ConnectorDescriptor(transportProtocol, deviceClasses, kapuaClasses);
     }
 
     /**
@@ -169,7 +173,7 @@ class DefaultConnectorDescriptionProvider implements ConnectorDescriptorProvider
         kapuaClass.put(MessageType.UNMATCHED, org.eclipse.kapua.message.device.lifecycle.KapuaUnmatchedMessage.class);
         kapuaClass.put(MessageType.DATA, org.eclipse.kapua.message.device.data.KapuaDataMessage.class);
 
-        return new ConnectorDescriptor(deviceClass, kapuaClass);
+        return new ConnectorDescriptor(DEFAULT_TRANSPORT_PROTOCOL, deviceClass, kapuaClass);
     }
 
 }

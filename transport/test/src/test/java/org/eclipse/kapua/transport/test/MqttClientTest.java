@@ -13,6 +13,7 @@ package org.eclipse.kapua.transport.test;
 
 import java.util.Date;
 
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.util.SystemUtils;
 import org.eclipse.kapua.transport.message.mqtt.MqttMessage;
 import org.eclipse.kapua.transport.message.mqtt.MqttPayload;
@@ -94,7 +95,7 @@ public class MqttClientTest extends Assert {
 
         //
         // Send
-        String sendTopic = "$EDC/kapua-sys/" + mqttClient.getClientId() + "/" + MqttClientTest.class.getSimpleName() + "/testMqttClientSendTopic";
+        String sendTopic = SystemSetting.getInstance().getMessageClassifier() + "/kapua-sys/" + mqttClient.getClientId() + "/" + MqttClientTest.class.getSimpleName() + "/testMqttClientSendTopic";
 
         MqttTopic mqttTopic = new MqttTopic(sendTopic);
         MqttPayload mqttPayload = new MqttPayload("testMqttClientSendPayload".getBytes());

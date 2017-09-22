@@ -51,6 +51,8 @@
     <bean id="kapuaCamelFilter" class="org.eclipse.kapua.broker.core.converter.KapuaCamelFilter">
     </bean>
 
+    <bean id="kapuaCamelDefaultRouter" class="org.eclipse.kapua.broker.core.router.CamelKapuaDefaultRouter">
+    </bean>
     <!-- Converter -->
     <bean id="kapuaDataConverter" class="org.eclipse.kapua.broker.core.converter.KapuaDataConverter"/>
     <bean id="kapuaLifeCycleConverter" class="org.eclipse.kapua.broker.core.converter.KapuaLifeCycleConverter"/>
@@ -148,49 +150,15 @@
                 <to uri="activemq:queue:notProcessableMessage"/>
             </onException>
             <pipeline>
-                <bean ref="kapuaCamelFilter" method="bindSession"/>
-                <choice id="choice">
-                    <when id="systemMessageFilter">
-                        <simple>${header.originalTopic} regex '^\$EDC\..*'</simple>
-                        <choice id="choice">
-                            <when id="birthLifeCycleMessageFilter">
-                                <simple>${header.originalTopic} regex '^\$EDC\.(.*\.){2}MQTT\.BIRTH'</simple>
-                                <bean ref="kapuaLifeCycleConverter" method="convertToBirth"/>
-                                <to uri="bean:deviceMessageListener?method=processBirthMessage"/>
-                            </when>
-                            <when id="disconnectLifeCycleMessageFilter">
-                                <simple>${header.originalTopic} regex '^\$EDC\.(.*\.){2}MQTT\.DC'</simple>
-                                <bean ref="kapuaLifeCycleConverter" method="convertToDisconnect"/>
-                                <to uri="bean:deviceMessageListener?method=processDisconnectMessage"/>
-                            </when>
-                            <when id="appsLifeCycleMessageFilter">
-                                <simple>${header.originalTopic} regex '^\$EDC\.(.*\.){2}MQTT\.APPS'</simple>
-                                <bean ref="kapuaLifeCycleConverter" method="convertToApps"/>
-                                <to uri="bean:deviceMessageListener?method=processAppsMessage"/>
-                            </when>
-                            <when id="missingLifeCycleMessageFilter">
-                                <simple>${header.originalTopic} regex '^\$EDC\.(.*\.){2}MQTT\.LWT'</simple>
-                                <bean ref="kapuaLifeCycleConverter" method="convertToMissing"/>
-                                <to uri="bean:deviceMessageListener?method=processMissingMessage"/>
-                            </when>
-                            <when id="notifyLifeCycleMessageFilter">
-                                <simple>${header.originalTopic} regex '^\$EDC\.(.*\.){2}MQTT\.NOTIFY'</simple>
-                                <bean ref="kapuaLifeCycleConverter" method="convertToNotify"/>
-                                <to uri="bean:deviceMessageListener?method=processNotifyMessage"/>
-                            </when>
-                            <otherwise id="unmatchedLifeCycleMessageFilter">
-                                <bean ref="kapuaLifeCycleConverter" method="convertToUnmatched"/>
-                                <to uri="bean:deviceMessageListener?method=processUnmatchedMessage"/>
-                            </otherwise>
-                        </choice>
-                    </when>
-                    <!-- otherwise data messages -->
-                    <otherwise>
-                        <bean ref="kapuaDataConverter" method="convertToData"/>
-                        <to uri="bean:dataStorageMessageProcessor?method=processMessage"/>
-                    </otherwise>
-                </choice>
-                <bean ref="kapuaCamelFilter" method="unbindSession"/>
+                <doTry>
+                    <bean ref="kapuaCamelFilter" method="bindSession"/>
+                    <dynamicRouter>
+                        <method ref="kapuaCamelDefaultRouter" method="defaultRouter" ></method>
+                    </dynamicRouter>
+                    <doFinally>
+                        <bean ref="kapuaCamelFilter" method="unbindSession"/>
+                    </doFinally>
+                </doTry>
             </pipeline>
         </route>
         <route errorHandlerRef="messageErrorHandler" id="dataMessageCommunicationErrorRoute">

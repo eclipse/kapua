@@ -16,13 +16,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.service.device.call.kura.app.CommandMetrics;
 import org.eclipse.kapua.service.device.call.kura.app.ResponseMetrics;
 import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponseChannel;
 import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponseMessage;
 import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponsePayload;
-import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSetting;
-import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSettingKeys;
 import org.eclipse.kapua.service.device.management.command.internal.CommandAppProperties;
 import org.eclipse.kapua.service.device.management.command.message.internal.CommandResponseChannel;
 import org.eclipse.kapua.service.device.management.command.message.internal.CommandResponseMessage;
@@ -38,7 +37,7 @@ import org.eclipse.kapua.translator.exception.TranslatorException;
  */
 public class TranslatorAppCommandKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<CommandResponseChannel, CommandResponsePayload, CommandResponseMessage> {
 
-    private static final String CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
+    private static final String CONTROL_MESSAGE_CLASSIFIER = SystemSetting.getInstance().getMessageClassifier();
     private static final Map<CommandMetrics, CommandAppProperties> METRICS_DICTIONARY;
 
     static {

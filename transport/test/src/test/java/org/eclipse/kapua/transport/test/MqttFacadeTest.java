@@ -13,6 +13,7 @@ package org.eclipse.kapua.transport.test;
 
 import java.util.Date;
 
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.transport.TransportClientFactory;
 import org.eclipse.kapua.transport.TransportFacade;
@@ -45,7 +46,7 @@ public class MqttFacadeTest extends Assert {
 
         //
         // Send
-        String sendTopic = "$EDC/kapua-sys/" + transportFacade.getClientId() + "/" + MqttClientTest.class.getSimpleName() + "/testTransportFacadeSend";
+        String sendTopic = SystemSetting.getInstance().getMessageClassifier() + "/kapua-sys/" + transportFacade.getClientId() + "/" + MqttClientTest.class.getSimpleName() + "/testTransportFacadeSend";
 
         MqttTopic mqttTopic = new MqttTopic(sendTopic);
         MqttPayload mqttPayload = new MqttPayload("testTransportFacadeSendPayload".getBytes());

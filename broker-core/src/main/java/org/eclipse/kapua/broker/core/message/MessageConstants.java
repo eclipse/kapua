@@ -28,6 +28,9 @@ public class MessageConstants {
     public static final String METRIC_IP = "ip";
     public final static String PROPERTY_ORIGINAL_TOPIC = "originalTopic";
     public final static String PROPERTY_ENQUEUED_TIMESTAMP = "enqueuedTimestamp";
+    public static final String PROPERTY_BROKER_ID = "brokerId";
+    public static final String PROPERTY_CLIENT_ID = "clientId";
+    public static final String PROPERTY_SCOPE_ID = "scopeId";
 
     // used by login update info asynch
     public static final String METRIC_USER_ID = "userId";
@@ -37,5 +40,6 @@ public class MessageConstants {
     public static final String HEADER_KAPUA_CLIENT_ID = "KAPUA_CLIENT_ID";
     public static final String HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL = "KAPUA_DEVICE_PROTOCOL";
     public static final String HEADER_KAPUA_SESSION = "KAPUA_SESSION";
+    public static final String HEADER_KAPUA_BROKER_CONTEXT = "KAPUA_BROKER_CONTEXT";
 
 }

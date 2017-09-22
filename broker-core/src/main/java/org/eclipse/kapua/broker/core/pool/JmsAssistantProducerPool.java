@@ -42,10 +42,6 @@ public class JmsAssistantProducerPool extends GenericObjectPool<JmsAssistantProd
 
     public enum DESTINATIONS {
         /**
-         * Kapua service queue destination
-         */
-        KAPUA_SERVICE,
-        /**
          * To be used to send messages without known destination.
          * Otherwise the inactive monitor will not be able to remove the destination because it has a producer!
          */
@@ -61,8 +57,6 @@ public class JmsAssistantProducerPool extends GenericObjectPool<JmsAssistantProd
         // TODO parameter to be added to configuration
         // pools.put(DESTINATIONS.KAPUA_SERVICE,
         // new JmsAssistantProducerPool(new JmsAssistantProducerWrapperFactory(KapuaEnvironmentConfig.getInstance().getString(KapuaEnvironmentConfigKeys.SERVICE_QUEUE_NAME))));
-        pools.put(DESTINATIONS.KAPUA_SERVICE,
-                new JmsAssistantProducerPool(new JmsAssistantProducerWrapperFactory("KapuaService")));
         logger.info("Create NoDestination pool...");
         pools.put(DESTINATIONS.NO_DESTINATION,
                 new JmsAssistantProducerPool(new JmsAssistantProducerWrapperFactory(null)));
@@ -113,8 +107,6 @@ public class JmsAssistantProducerPool extends GenericObjectPool<JmsAssistantProd
      */
     public static void closePools() {
         if (pools != null) {
-            logger.info("Close Service pool...");
-            pools.get(DESTINATIONS.KAPUA_SERVICE).close();
             logger.info("Close NoDestination pool...");
             pools.get(DESTINATIONS.NO_DESTINATION).close();
             logger.info("Close pools... done.");

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.call.kura.app.BundleMetrics;
@@ -27,8 +28,6 @@ import org.eclipse.kapua.service.device.call.kura.model.bundle.KuraBundles;
 import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponseChannel;
 import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponseMessage;
 import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponsePayload;
-import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSetting;
-import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSettingKeys;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleFactory;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
@@ -49,7 +48,7 @@ import org.eclipse.kapua.translator.exception.TranslatorException;
  */
 public class TranslatorAppBundleKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<BundleResponseChannel, BundleResponsePayload, BundleResponseMessage> {
 
-    private static final String CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
+    private static final String CONTROL_MESSAGE_CLASSIFIER = SystemSetting.getInstance().getMessageClassifier();
     private static final Map<BundleMetrics, DeviceBundleAppProperties> METRICS_DICTIONARY;
 
     static {

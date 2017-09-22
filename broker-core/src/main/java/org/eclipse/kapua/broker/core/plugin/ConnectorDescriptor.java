@@ -70,6 +70,8 @@ public class ConnectorDescriptor implements Serializable {
     private final Map<MessageType, Class<? extends DeviceMessage<?, ?>>> deviceClass;
     private final Map<MessageType, Class<? extends KapuaMessage<?, ?>>> kapuaClass;
 
+    private String transportProtocol;
+
     /**
      * Constructs a new connector descriptor
      * 
@@ -78,12 +80,14 @@ public class ConnectorDescriptor implements Serializable {
      * @param kapuaClass
      *            Kapua level messages implementation classes
      */
-    public ConnectorDescriptor(Map<MessageType, Class<? extends DeviceMessage<?, ?>>> deviceClass, Map<MessageType, Class<? extends KapuaMessage<?, ?>>> kapuaClass) {
+    public ConnectorDescriptor(String transportProtocol, Map<MessageType, Class<? extends DeviceMessage<?, ?>>> deviceClass, Map<MessageType, Class<? extends KapuaMessage<?, ?>>> kapuaClass) {
         requireNonNull(deviceClass);
         requireNonNull(kapuaClass);
+        requireNonNull(transportProtocol);
 
         this.deviceClass = new HashMap<>(deviceClass);
         this.kapuaClass = new HashMap<>(kapuaClass);
+        this.transportProtocol = transportProtocol;
     }
 
     public Class<? extends DeviceMessage<?, ?>> getDeviceClass(MessageType messageType) throws KapuaException {
@@ -92,6 +96,10 @@ public class ConnectorDescriptor implements Serializable {
 
     public Class<? extends KapuaMessage<?, ?>> getKapuaClass(MessageType messageType) throws KapuaException {
         return this.kapuaClass.get(messageType);
+    }
+
+    public String getTransportProtocol() {
+        return transportProtocol;
     }
 
 }

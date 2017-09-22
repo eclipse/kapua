@@ -23,6 +23,7 @@ import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.service.device.call.kura.app.AssetMetrics;
 import org.eclipse.kapua.service.device.call.kura.model.asset.KuraAsset;
 import org.eclipse.kapua.service.device.call.kura.model.asset.KuraAssetChannel;
@@ -30,8 +31,6 @@ import org.eclipse.kapua.service.device.call.kura.model.asset.KuraAssets;
 import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestChannel;
 import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestMessage;
 import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestPayload;
-import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSetting;
-import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSettingKeys;
 import org.eclipse.kapua.service.device.management.asset.DeviceAsset;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
@@ -53,7 +52,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class TranslatorAppAssetKapuaKura extends AbstractTranslatorKapuaKura<AssetRequestChannel, AssetRequestPayload, AssetRequestMessage> {
 
-    private static final String CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
+    private static final String CONTROL_MESSAGE_CLASSIFIER = SystemSetting.getInstance().getMessageClassifier();
     private static final Map<DeviceAssetAppProperties, AssetMetrics> PROPERTIES_DICTIONARY = new HashMap<>();
 
     static {
