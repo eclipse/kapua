@@ -42,25 +42,31 @@ import java.util.ServiceLoader;
 
 public class GwtConsoleServiceImpl extends KapuaRemoteServiceServlet implements GwtConsoleService {
 
-    private static final ServiceLoader<MainViewDescriptor> MAIN_VIEW_DESCRIPTORS = ServiceLoader.load(MainViewDescriptor.class);
-    private static final JsonObject TAB_DESCRIPTORS;
+    private static final ServiceLoader<MainViewDescriptor> MAIN_VIEW_DESCRIPTOR_CLASSES = ServiceLoader.load(MainViewDescriptor.class);
+    private static final JsonArray MAIN_VIEW_DESCRIPTORS;
     private static JsonReader jsonReader;
 
     static {
         jsonReader = null;
         try {
-            jsonReader = Json.createReader(ResourceUtils.openAsReader(ResourceUtils.getResource("org/eclipse/kapua/app/console/tab-descriptors.json"), Charset.forName("UTF-8")));
+            jsonReader = Json.createReader(ResourceUtils.openAsReader(ResourceUtils.getResource("org/eclipse/kapua/app/console/view-descriptors.json"), Charset.forName("UTF-8")));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        TAB_DESCRIPTORS = jsonReader.readObject();
+        MAIN_VIEW_DESCRIPTORS = jsonReader.readArray();
     }
 
     @Override
     public List<MainViewDescriptor> getCustomEntityViews() throws GwtKapuaException {
         List<MainViewDescriptor> views = new ArrayList<MainViewDescriptor>();
-        for (MainViewDescriptor descriptor : MAIN_VIEW_DESCRIPTORS) {
-            views.add(descriptor);
+        for (MainViewDescriptor descriptorClass : MAIN_VIEW_DESCRIPTOR_CLASSES) {
+            for (int i = 0; i < MAIN_VIEW_DESCRIPTORS.size(); i++) {
+                JsonObject descriptor = MAIN_VIEW_DESCRIPTORS.getJsonObject(i);
+                if (descriptor.getString("descriptor").equals(descriptorClass.getClass().getName())) {
+                    views.add(descriptorClass);
+                    break;
+                }
+            }
         }
         Collections.sort(views);
         return views;
@@ -70,11 +76,13 @@ public class GwtConsoleServiceImpl extends KapuaRemoteServiceServlet implements 
     public List<TabDescriptor> getCustomTabsForView(String viewClass) throws GwtKapuaException {
         List<TabDescriptor> tabs = new ArrayList<TabDescriptor>();
         try {
-            JsonArray jsonArray = TAB_DESCRIPTORS.getJsonArray(viewClass);
-            if (jsonArray != null) {
-                for (JsonValue jsonValue : jsonArray) {
-                    if (jsonValue != null && jsonValue instanceof JsonString) {
-                        tabs.add((TabDescriptor) Class.forName(((JsonString) jsonValue).getString()).newInstance());
+            for (int i = 0; i < MAIN_VIEW_DESCRIPTORS.size(); i++) {
+                JsonObject descriptor = MAIN_VIEW_DESCRIPTORS.getJsonObject(i);
+                if (descriptor.getString("view").equals(viewClass)) {
+                    for (JsonValue jsonValue : descriptor.getJsonArray("tabs")) {
+                        if (jsonValue != null && jsonValue instanceof JsonString) {
+                            tabs.add((TabDescriptor) Class.forName(((JsonString) jsonValue).getString()).newInstance());
+                        }
                     }
                 }
             }
