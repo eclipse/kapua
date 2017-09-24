@@ -1,0 +1,90 @@
+[
+  {
+    "descriptor": "org.eclipse.kapua.app.console.module.data.client.DataViewDescriptor",
+    "view": "org.eclipse.kapua.app.console.module.data.client.DataView"
+  },
+  {
+    "descriptor": "org.eclipse.kapua.app.console.module.welcome.client.WelcomeViewDescriptor",
+    "view": "org.eclipse.kapua.app.console.module.welcome.client.WelcomeView"
+  },
+  {
+    "descriptor": "org.eclipse.kapua.app.console.module.about.client.about.AboutViewDescriptor",
+    "view": "org.eclipse.kapua.app.console.module.about.client.about.AboutView"
+  },
+  {
+    "descriptor": "org.eclipse.kapua.app.console.module.account.client.AccountDetailsViewDescriptor",
+    "view": "org.eclipse.kapua.app.console.module.account.client.AccountDetailsView"
+  },
+  {
+    "descriptor": "org.eclipse.kapua.app.console.module.account.client.AccountViewDescriptor",
+    "view": "org.eclipse.kapua.app.console.module.account.client.AccountViewDescriptor",
+    "tabs": [
+      "org.eclipse.kapua.app.console.module.account.client.AccountDescriptionTabDescriptor",
+      "org.eclipse.kapua.app.console.module.account.client.AccountTabConfigurationDescriptor",
+      "org.eclipse.kapua.app.console.module.account.client.childuser.AccountChildUserTabDescriptor"
+    ]
+  },
+  {
+    "descriptor": "org.eclipse.kapua.app.console.module.device.client.connection.ConnectionViewDescriptor",
+    "view": "org.eclipse.kapua.app.console.module.device.client.connection.ConnectionView",
+    "tabs": [
+      "org.eclipse.kapua.app.console.module.device.client.connection.ConnectionDescriptionTabDescriptor"
+    ]
+  },
+  {
+    "descriptor": "org.eclipse.kapua.app.console.module.device.client.device.DeviceViewDescriptor",
+    "view": "org.eclipse.kapua.app.console.module.device.client.device.DeviceView",
+    "tabs": [
+      "org.eclipse.kapua.app.console.module.device.client.device.assets.DeviceTabAssetsDescriptor",
+      "org.eclipse.kapua.app.console.module.device.client.device.bundles.DeviceTabBundlesDescriptor",
+      "org.eclipse.kapua.app.console.module.device.client.device.command.DeviceTabCommandDescriptor",
+      "org.eclipse.kapua.app.console.module.device.client.device.configuration.DeviceTabConfigurationDescriptor",
+      "org.eclipse.kapua.app.console.module.device.client.device.history.DeviceTabHistoryDescriptor",
+      "org.eclipse.kapua.app.console.module.device.client.device.packages.DeviceTabPackagesDescriptor",
+      "org.eclipse.kapua.app.console.module.device.client.device.profile.DeviceTabProfileDescriptor"
+    ]
+  },
+  {
+    "descriptor": "org.eclipse.kapua.app.console.module.authorization.client.group.GroupViewDescriptor",
+    "view": "org.eclipse.kapua.app.console.module.authorization.client.group.GroupView",
+    "tabs": [
+      "org.eclipse.kapua.app.console.module.authorization.client.group.GroupTabDescriptionDescriptor"
+    ]
+  },
+  {
+    "descriptor": "org.eclipse.kapua.app.console.module.job.client.JobViewDescriptor",
+    "view": "org.eclipse.kapua.app.console.module.job.client.JobView",
+    "tabs": [
+      "org.eclipse.kapua.app.console.module.job.client.targets.JobTabTargetsDescriptor",
+      "org.eclipse.kapua.app.console.module.job.client.steps.JobTabStepsDescriptor",
+      "org.eclipse.kapua.app.console.module.job.client.schedule.JobTabSchedulesDescriptor",
+      "org.eclipse.kapua.app.console.module.job.client.execution.JobTabExecutionsDescriptor"
+    ]
+  },
+  {
+    "descriptor": "org.eclipse.kapua.app.console.module.authorization.client.role.RoleViewDescriptor",
+    "view": "org.eclipse.kapua.app.console.module.authorization.client.role.RoleView",
+    "tabs": [
+      "org.eclipse.kapua.app.console.module.user.client.tabs.roles.UsersRoleTabItemDescriptor",
+      "org.eclipse.kapua.app.console.module.authorization.client.role.RoleTabDescriptionDescriptor",
+      "org.eclipse.kapua.app.console.module.authorization.client.role.RoleTabPermissionGridDescriptor"
+    ]
+  },
+  {
+    "descriptor": "org.eclipse.kapua.app.console.module.tag.client.TagViewDescriptor",
+    "view": "org.eclipse.kapua.app.console.module.tag.client.TagView",
+    "tabs": [
+      "org.eclipse.kapua.app.console.module.tag.client.TagTabDescriptionDescriptor"
+    ]
+  },
+  {
+    "descriptor": "org.eclipse.kapua.app.console.module.user.client.UserViewDescriptor",
+    "view": "org.eclipse.kapua.app.console.module.user.client.UserView",
+    "tabs": [
+      "org.eclipse.kapua.app.console.module.user.client.tabs.credentials.UserTabItemCredentialsDescriptor",
+      "org.eclipse.kapua.app.console.module.user.client.tabs.description.UserTabDescriptionDescriptor",
+      "org.eclipse.kapua.app.console.module.user.client.tabs.permission.UserTabItemPermissionDescriptor",
+      "org.eclipse.kapua.app.console.module.user.client.tabs.roles.UserTabItemAccessRoleDescriptor"
+    ]
+  }
+]
