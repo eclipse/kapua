@@ -12,11 +12,11 @@
 package org.eclipse.kapua.app.console.module.job.client;
 
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.module.api.client.ui.view.View;
-import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractMainViewDescriptor;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.EntityView;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractEntityViewDescriptor;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 
-public class JobViewDescriptor extends AbstractMainViewDescriptor {
+public class JobViewDescriptor extends AbstractEntityViewDescriptor {
 
     @Override
     public String getName() {
@@ -29,7 +29,7 @@ public class JobViewDescriptor extends AbstractMainViewDescriptor {
     }
 
     @Override
-    public View getViewInstance(GwtSession currentSession) {
+    public EntityView getViewInstance(GwtSession currentSession) {
         return new JobView(currentSession);
     }
 

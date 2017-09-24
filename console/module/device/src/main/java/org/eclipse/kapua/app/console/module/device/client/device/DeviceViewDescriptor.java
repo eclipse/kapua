@@ -12,11 +12,11 @@
 package org.eclipse.kapua.app.console.module.device.client.device;
 
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractMainViewDescriptor;
-import org.eclipse.kapua.app.console.module.api.client.ui.view.View;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.EntityView;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractEntityViewDescriptor;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 
-public class DeviceViewDescriptor extends AbstractMainViewDescriptor {
+public class DeviceViewDescriptor extends AbstractEntityViewDescriptor {
 
     @Override
     public String getViewId() {
@@ -39,7 +39,7 @@ public class DeviceViewDescriptor extends AbstractMainViewDescriptor {
     }
 
     @Override
-    public View getViewInstance(GwtSession currentSession) {
+    public EntityView getViewInstance(GwtSession currentSession) {
         return new DeviceView(currentSession);
     }
 
