@@ -30,10 +30,12 @@ This is a short introduction into how locally connect Kura and Kapua. Although s
 
 This part of the tutorial consists of several pieces. First you need to download Java VM, Docker and Kapua. You can get Java [here](https://java.com/en/download/) and Docker [here](https://docs.docker.com/engine/installation/#supported-platforms). After that follow steps bellow for downloading and building Kapua.
 
-1. Oper OS Shell (Terminal) and go to home directory.
+1. Open OS Shell (Terminal) and go to home directory.
 2. Download Kapua project from [Github repository](https://github.com/eclipse/kapua.git) with command `git clone https://github.com/eclipse/kapua.git`
-3. Go to Kapua folder and run command `mvn clean install -DskipTests` which will build the project.
-4. After build finishes run Docker containers one by one (execute in Terminal): 
+3. Go to Kapua folder and run command `mvn clean install -f external/pom.xml` which will build some additional resources required by Kapua.
+4. Go to Kapua folder and run command `mvn clean install -DskipTests -Pconsole` which will build the project with the Web Admin console.
+5
+6. After build finishes run Docker containers one by one (execute in Terminal): 
 ```
 docker run -td --name kapua-sql -p 8181:8181 -p 3306:3306 kapua/kapua-sql
 docker run -td --name kapua-elasticsearch -p 9200:9200 -p 9300:9300 elasticsearch:5.4.0 -Ecluster.name=kapua-datastore -Ediscovery.type=single-node -Etransport.host=_site_ -Etransport.ping_schedule=-1 -Etransport.tcp.connect_timeout=30s
