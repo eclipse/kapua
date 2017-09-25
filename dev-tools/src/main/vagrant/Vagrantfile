@@ -23,7 +23,20 @@ env_vars = {
   'KAPUA_VERSION'         => '0.3.0-SNAPSHOT'
 }
 
+# Vagrant 1.9.6 or major is required
+# since one of the previous version had a bug with Centos/7 box
+Vagrant.require_version ">= 1.9.6"
+
 Vagrant.configure("2") do |config|
+
+  # If Virtualbox provider
+  # Check that vagrant-vbguest plugin is installed
+  # If missing, install it.
+  config.vm.provider "virtualbox" do |vb|
+    unless Vagrant.has_plugin?("vagrant-vbguest")
+      system('if ! vagrant plugin list | grep -q vagrant-vbguest; then echo "Installing missing plugin: vagrant-vbguest" ;vagrant plugin install vagrant-vbguest; fi')
+    end
+  end
 
   # Share the kapua directory with the vagrant machine to allow
   # the ActiveMQ broker to access the kapua code (jars)
