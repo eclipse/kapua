@@ -18,7 +18,8 @@ The machines assigned IP is:
 
 The ports exposed are documented per service within the Vagrant files.
 
-**Note:** Before proceeding, check that Vagrant is installed in your PC, otherwise install it. In order to run Vagrant machines, VirtualBox or other virtualization software supported by Vagrant needs also to be installed. When using VirtualBox vagrant vagrant-vbguest plugin should also be installed.
+**Note:** Before proceeding, check that Vagrant is installed in your PC, otherwise install it. In order to run Vagrant machines, VirtualBox or other virtualization software supported by Vagrant needs also to be installed. 
+'_vagrant-vbguest_' plugin is required. If missing, it will be installed without prompt for confirmation.
 
 ## Demo machine quick start
 It is possible to create the **demo machine in only one step** (so create the base box, the demo vagrant machine, compile the Kapua project and start the services inside the vagrant demo machine) just using this script
@@ -68,9 +69,10 @@ Once the development machine has been created (or started manually as described 
 $ vagrant ssh
 ```
 
-***Note:*** to allow the database creation and seeding the broker and the Tomcat. Please run a full Kapua project build from the project root directory outside of the vagrant box (see the command below)
+***Note:*** to allow the database creation and seeding the broker and the Tomcat. Please run a full Kapua project build from the project root directory outside of the vagrant box (see the commands below)
 ```
-$ mvn clean install -DskipTests
+$ mvn clean install -f external/pom.xml
+$ mvn clean install -DskipTests -P console
 ```
 
 The broker installation directory is:
@@ -165,7 +167,9 @@ The fresh machine has both the ActiveMQ and Tomcat installed, but please don't u
 To start ***using properly the demo machine*** run a full Kapua build as follow:
 
 ```
-$ mvn clean install -PdeployVagrant -DskipTests
+$ mvn clean install -f external/pom.xml
+$ mvn clean install -DskipTests 
+$ mvn clean install -DskipTests -PdeployVagrant,console
 ```
 
 Once the full build is done, the machine has the broker with all the proper library and configuration installed in the directory
