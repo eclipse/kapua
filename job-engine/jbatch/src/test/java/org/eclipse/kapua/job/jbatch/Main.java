@@ -35,7 +35,6 @@ import org.eclipse.kapua.service.job.step.JobStepCreator;
 import org.eclipse.kapua.service.job.step.JobStepFactory;
 import org.eclipse.kapua.service.job.step.JobStepService;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
-import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionCreator;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionFactory;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionPredicates;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionQuery;
@@ -122,23 +121,6 @@ public class Main {
             return;
         }
 
-        // try {
-        // TriggerService triggerService = locator.getService(TriggerService.class);
-        // TriggerFactory triggerFactory = locator.getFactory(TriggerFactory.class);
-        //
-        //
-        // TriggerCreator triggerCreator = triggerFactory.newCreator(KapuaId.ONE);
-        // triggerCreator.setName("testTrigger");
-        // triggerCreator.setTriggerProperties(triggerProperties);
-        // Trigger trigger = KapuaSecurityUtils.doPrivileged(() -> triggerService.create(triggerCreator));
-        //
-        // } catch (Throwable e) {
-        // e.printStackTrace();
-        // return;
-        // }
-
-        //        KapuaSecurityUtils.doPrivileged(() -> jobEngineService.startJob(job.getScopeId(), job.getId()));
-
         try {
             List<TriggerProperty> triggerProperties = new ArrayList<>();
             triggerProperties.add(triggerFactory.newTriggerProperty("scopeId", KapuaId.class.getName(), job.getScopeId().toCompactId()));
@@ -158,10 +140,6 @@ public class Main {
         }
 
         //        KapuaSecurityUtils.doPrivileged(() -> jobEngineService.startJob(job.getScopeId(), job.getId()));
-
-        if (scheduler != null) {
-            // scheduler.shutdown();
-        }
     }
 
     private static Job doThings() throws Exception {
@@ -169,20 +147,7 @@ public class Main {
         Device device210 = KapuaSecurityUtils.doPrivileged(() -> deviceRegistryService.findByClientId(KapuaId.ONE, "Kura_2-1-0"));
         Device device140 = KapuaSecurityUtils.doPrivileged(() -> deviceRegistryService.findByClientId(KapuaId.ONE, "Kura_1-4-0"));
 
-        for (JobStepDefinition jsp : jobStepDefinitions) {
-            JobStepDefinitionCreator jobStepDefinitionCreator = jobStepDefinitionFactory.newCreator(KapuaId.ONE);
-            jobStepDefinitionCreator.setName(jsp.getName());
-            jobStepDefinitionCreator.setDescription(jsp.getDescription());
-            jobStepDefinitionCreator.setStepType(jsp.getStepType());
-            jobStepDefinitionCreator.setReaderName(jsp.getReaderName());
-            jobStepDefinitionCreator.setProcessorName(jsp.getProcessorName());
-            jobStepDefinitionCreator.setWriterName(jsp.getWriterName());
-            jobStepDefinitionCreator.setStepProperties(jsp.getStepProperties());
-
-            jobStepDefinitionService.create(jobStepDefinitionCreator);
-        }
-
-        JobStepDefinitionQuery jspQuery = jobStepDefinitionFactory.newQuery(KapuaId.ONE);
+        JobStepDefinitionQuery jspQuery = jobStepDefinitionFactory.newQuery(null);
         jspQuery.setPredicate(new AttributePredicate<>(JobStepDefinitionPredicates.NAME, "Device Command Management Execution"));
 
         JobStepDefinition commandJobStepDefinition = jobStepDefinitionService.query(jspQuery).getFirstItem();
