@@ -11,25 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.client.device.bundles;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.module.device.client.device.DeviceView;
-import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
-import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.module.api.client.util.KapuaLoadListener;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
-import org.eclipse.kapua.app.console.module.device.shared.model.device.management.bundles.GwtBundle;
-import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenService;
-import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenServiceAsync;
-
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.BaseListLoader;
@@ -58,8 +39,26 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
+import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.module.api.client.util.KapuaLoadListener;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenService;
+import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenServiceAsync;
+import org.eclipse.kapua.app.console.module.device.client.device.DeviceView;
+import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
+import org.eclipse.kapua.app.console.module.device.shared.model.device.management.bundles.GwtBundle;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementServiceAsync;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
 
@@ -85,8 +84,7 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
 
     protected boolean refreshProcess;
 
-    public DeviceTabBundles(GwtSession currentSession,
-            DeviceView devicesView) {
+    public DeviceTabBundles(GwtSession currentSession, DeviceView devicesView) {
         super(DEVICE_MSGS.tabBundles(), new KapuaIcon(IconSet.CUBES));
         this.devicesView = devicesView;
         initialized = false;
@@ -95,9 +93,15 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
     @Override
     public void setEntity(GwtDevice gwtDevice) {
         super.setEntity(gwtDevice);
+
+        setEnabled(gwtDevice != null &&
+                (gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_DEPLOY_V1) ||
+                        (gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_DEPLOY_V2))));
+
         doRefresh();
     }
 
+    @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
         setLayout(new FitLayout());
@@ -158,10 +162,12 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
 
         final AsyncCallback<Void> callback = new AsyncCallback<Void>() {
 
+            @Override
             public void onFailure(Throwable caught) {
                 FailureHandler.handle(caught);
             }
 
+            @Override
             public void onSuccess(Void arg0) {
                 // mark this panel dirty and also all the other pier panels
                 devicesView.setSelectedEntity(selectedEntity);
@@ -225,6 +231,7 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
                             DEVICE_MSGS.deviceStopBundle(bundleName),
                             new Listener<MessageBoxEvent>() {
 
+                                @Override
                                 public void handleEvent(MessageBoxEvent ce) {
                                     // if confirmed, stop
                                     Dialog dialog = ce.getDialog();
@@ -336,7 +343,7 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
 
     @Override
     public void doRefresh() {
-        if(initialized) {
+        if (initialized) {
             if (selectedEntity != null) {
                 loader.load();
                 toolBar.enable();
@@ -366,10 +373,12 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
         public DataLoadListener() {
         }
 
+        @Override
         public void loaderBeforeLoad(LoadEvent le) {
             grid.mask(MSGS.loading());
         }
 
+        @Override
         public void loaderLoad(LoadEvent le) {
             if (le.exception != null) {
                 FailureHandler.handle(le.exception);
@@ -379,6 +388,7 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
             grid.unmask();
         }
 
+        @Override
         public void loaderLoadException(LoadEvent le) {
 
             if (le.exception != null) {

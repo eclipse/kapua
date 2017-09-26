@@ -11,20 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.client.device.command;
 
-import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
-import org.eclipse.kapua.app.console.module.api.client.util.Constants;
-import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
-import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenService;
-import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenServiceAsync;
-
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -54,6 +40,19 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
+import org.eclipse.kapua.app.console.module.api.client.util.Constants;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenService;
+import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenServiceAsync;
+import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 
 public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
 
@@ -97,9 +96,13 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
     @Override
     public void setEntity(GwtDevice gwtDevice) {
         super.setEntity(gwtDevice);
+
+        setEnabled(gwtDevice != null && gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_COMMAND));
+
         doRefresh();
     }
 
+    @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
 
@@ -147,6 +150,7 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
         formPanel.add(fieldSet);
         formPanel.addListener(Events.Render, new Listener<BaseEvent>() {
 
+            @Override
             public void handleEvent(BaseEvent be) {
                 NodeList<com.google.gwt.dom.client.Element> nl = formPanel.getElement().getElementsByTagName("form");
                 if (nl.getLength() > 0) {
@@ -331,10 +335,10 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
     @Override
     public void doRefresh() {
         if (initialized && selectedEntity != null) {
-                commandInput.unmask();
+            commandInput.unmask();
             clearAll();
-            }
         }
+    }
 
     private void clearAll() {
         formPanel.reset();
@@ -347,6 +351,7 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
     //
     // --------------------------------------------------------------------------------------
 
+    @Override
     public void onUnload() {
         super.onUnload();
     }
