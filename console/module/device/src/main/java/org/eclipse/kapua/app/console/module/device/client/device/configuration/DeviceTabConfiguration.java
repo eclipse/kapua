@@ -11,16 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.client.device.configuration;
 
-import org.eclipse.kapua.app.console.module.device.client.device.configuration.DeviceConfigComponents;
-import org.eclipse.kapua.app.console.module.device.client.device.configuration.DeviceConfigSnapshots;
-import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
-import org.eclipse.kapua.app.console.module.api.client.ui.tab.TabItem;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -29,6 +19,13 @@ import com.extjs.gxt.ui.client.widget.TabPanel.TabPosition;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
+import org.eclipse.kapua.app.console.module.api.client.ui.tab.TabItem;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 
 public class DeviceTabConfiguration extends KapuaTabItem<GwtDevice> {
 
@@ -50,11 +47,13 @@ public class DeviceTabConfiguration extends KapuaTabItem<GwtDevice> {
     @Override
     public void setEntity(GwtDevice gwtDevice) {
         super.setEntity(gwtDevice);
+
+        setEnabled(gwtDevice != null && gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_CONFIGURATION));
+
         configComponents.setDevice(gwtDevice);
         configSnapshots.setDevice(gwtDevice);
         doRefresh();
     }
-
 
     @Override
     public void doRefresh() {
@@ -70,6 +69,7 @@ public class DeviceTabConfiguration extends KapuaTabItem<GwtDevice> {
         }
     }
 
+    @Override
     protected void onRender(Element parent, int index) {
 
         super.onRender(parent, index);
@@ -88,6 +88,7 @@ public class DeviceTabConfiguration extends KapuaTabItem<GwtDevice> {
         tabComponents.add(configComponents);
         tabComponents.addListener(Events.Select, new Listener<ComponentEvent>() {
 
+            @Override
             public void handleEvent(ComponentEvent be) {
                 configComponents.refresh();
             }
@@ -100,6 +101,7 @@ public class DeviceTabConfiguration extends KapuaTabItem<GwtDevice> {
         tabSnapshots.add(configSnapshots);
         tabSnapshots.addListener(Events.Select, new Listener<ComponentEvent>() {
 
+            @Override
             public void handleEvent(ComponentEvent be) {
                 configSnapshots.refresh();
             }

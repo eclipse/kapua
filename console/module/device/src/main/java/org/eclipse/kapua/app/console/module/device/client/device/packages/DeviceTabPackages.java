@@ -11,20 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.client.device.packages;
 
-import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
-import org.eclipse.kapua.app.console.module.device.client.device.DeviceView;
-import org.eclipse.kapua.app.console.module.device.client.device.packages.button.PackageInstallButton;
-import org.eclipse.kapua.app.console.module.device.client.device.packages.button.PackageUninstallButton;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
-import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog;
-import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog.InfoDialogType;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeploymentPackage;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -41,6 +27,19 @@ import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog;
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog.InfoDialogType;
+import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.device.client.device.DeviceView;
+import org.eclipse.kapua.app.console.module.device.client.device.packages.button.PackageInstallButton;
+import org.eclipse.kapua.app.console.module.device.client.device.packages.button.PackageUninstallButton;
+import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeploymentPackage;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 
 public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
@@ -70,13 +69,18 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
         super.setEntity(gwtDevice);
         setDirty();
 
-        if(initialized) {
+        setEnabled(gwtDevice != null &&
+                (gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_DEPLOY_V1) ||
+                        (gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_DEPLOY_V2))));
+
+        if (initialized) {
             tabsPanel.setSelection(installedPackageTab);
         }
 
         doRefresh();
     }
 
+    @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
         setLayout(new FitLayout());
@@ -174,6 +178,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
         installedPackageTab.addListener(Events.Select, new Listener<ComponentEvent>() {
 
+            @Override
             public void handleEvent(ComponentEvent be) {
                 refresh();
             }
@@ -188,6 +193,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
         inProgressPackageTab.addListener(Events.Select, new Listener<ComponentEvent>() {
 
+            @Override
             public void handleEvent(ComponentEvent be) {
                 refresh();
             }
@@ -298,24 +304,24 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
     //
     @Override
     public void doRefresh() {
-        if(initialized) {
-        //
-        // Refresh the installed tab if selected
-        if (tabsPanel.getSelectedItem().equals(installedPackageTab)) {
-            installedPackageTab.refresh();
-        } else {
-            inProgressPackageTab.refresh();
-        }
+        if (initialized) {
+            //
+            // Refresh the installed tab if selected
+            if (tabsPanel.getSelectedItem().equals(installedPackageTab)) {
+                installedPackageTab.refresh();
+            } else {
+                inProgressPackageTab.refresh();
+            }
 
-        //
-        // Manage buttons
+            //
+            // Manage buttons
             if (selectedEntity != null && selectedEntity.isOnline()) {
-            toolBar.enable();
-            uninstallButton.disable();
-        } else {
-            toolBar.disable();
+                toolBar.enable();
+                uninstallButton.disable();
+            } else {
+                toolBar.disable();
+            }
         }
-    }
     }
 
     //
