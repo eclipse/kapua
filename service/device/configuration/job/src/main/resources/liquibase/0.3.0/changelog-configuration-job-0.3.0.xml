@@ -16,6 +16,6 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
-    <include relativeToChangelogFile="true" file="./configuration_put_job_step_definition.sql"/>
+    <include relativeToChangelogFile="true" file="./configuration_put_job_step_definition.xml"/>
 
 </databaseChangeLog>
