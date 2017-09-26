@@ -11,10 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.api.client.ui.panel;
 
-import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
-
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
+import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
 
 public class KapuaTabPanel<M extends GwtEntityModel> extends TabPanel {
@@ -25,15 +24,23 @@ public class KapuaTabPanel<M extends GwtEntityModel> extends TabPanel {
         setBodyBorder(false);
     }
 
-    @SuppressWarnings("unchecked")
     public void setEntity(M entity) {
         for (TabItem t : getItems()) {
             ((KapuaTabItem<M>) t).setEntity(entity);
         }
 
         if (getSelectedItem() != null) {
+            if (!getSelectedItem().isEnabled()) {
+                selectDefaultTab();
+            }
+
             ((KapuaTabItem<M>) getSelectedItem()).refresh();
         }
     }
 
+    public void selectDefaultTab() {
+        if (!getItems().isEmpty()) {
+            setSelection(getItem(0));
+        }
+    }
 }
