@@ -17,7 +17,7 @@
   },
   {
     "descriptor": "org.eclipse.kapua.app.console.module.account.client.AccountViewDescriptor",
-    "view": "org.eclipse.kapua.app.console.module.account.client.AccountViewDescriptor",
+    "view": "org.eclipse.kapua.app.console.module.account.client.AccountView",
     "tabs": [
       "org.eclipse.kapua.app.console.module.account.client.AccountDescriptionTabDescriptor",
       "org.eclipse.kapua.app.console.module.account.client.AccountTabConfigurationDescriptor",
