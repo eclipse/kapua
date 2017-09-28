@@ -33,6 +33,8 @@ Pushing to a specific docker registry under a specific account:
     docker run -td --name kapua-console --link kapua-sql:db --link kapua-broker:broker --link kapua-elasticsearch:es --env commons.db.schema.update=true -p 8080:8080 kapua/kapua-console
     docker run -td --name kapua-api --link kapua-sql:db --link kapua-broker:broker --link kapua-elasticsearch:es --env commons.db.schema.update=true -p 8081:8080 kapua/kapua-api
 
+**Note**: Sometimes the `kapua-elasticsearch` container may crash after a few seconds from the related `docker run` command. Should that be the case, run `docker inspect kapua-elasticsearch` and look for the `State` object in the command output: if the `ExitCode` property value of such object is `137`, try raising the amount of RAM assigned to the Docker runtime in the Docker preferences to 6GB.
+
 ### Access
 
 Navigate your browser to http://localhost:8080 and log in using the following credentials:
