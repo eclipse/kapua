@@ -50,6 +50,7 @@
         <h2.version>1.4.192</h2.version>
         <httpcomponents.version>4.5.2</httpcomponents.version>
         <javassist.version>3.19.0-GA</javassist.version>
+        <javax-inject.version>1</javax-inject.version>
         <joda.version>2.9.4</joda.version>
         <junit.version>4.11</junit.version>
         <liquibase.version>3.0.5</liquibase.version>
@@ -1146,7 +1147,7 @@
             <dependency>
                 <groupId>javax.inject</groupId>
                 <artifactId>javax.inject</artifactId>
-                <version>1</version>
+                <version>${javax-inject.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.liquibase</groupId>
