@@ -46,6 +46,38 @@ jobs:
       script:
         - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Pdev verify
         - bash <(curl -s https://codecov.io/bash)
+    - stage: test
+      script:
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -PtestBrokerAcl verify
+        - bash <(curl -s https://codecov.io/bash)
+    - stage: test
+      script:
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -PtestTag verify
+        - bash <(curl -s https://codecov.io/bash)
+    - stage: test
+      script:
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -PtestBroker verify
+        - bash <(curl -s https://codecov.io/bash)
+    - stage: test
+      script:
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -PtestDevice verify
+        - bash <(curl -s https://codecov.io/bash)
+    - stage: test
+      script:
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -PtestConnection verify
+        - bash <(curl -s https://codecov.io/bash)
+    - stage: test
+      script:
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -PtestDatastore verify
+        - bash <(curl -s https://codecov.io/bash)
+    - stage: test
+      script:
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -PtestUser verify
+        - bash <(curl -s https://codecov.io/bash)
+    - stage: test
+      script:
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -PtestSecurity verify
+        - bash <(curl -s https://codecov.io/bash)
 
 # The following upgrades Java during the build in
 # order to work around an older Java 8 compiler issue
