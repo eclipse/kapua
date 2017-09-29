@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Red Hat Inc - initial API and implementation
+ *     Eurotech
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.about.client.about;
 
@@ -34,14 +35,14 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Image;
-import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractView;
-import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
-import org.eclipse.kapua.app.console.module.api.client.ui.view.View;
 import org.eclipse.kapua.app.console.module.about.client.messages.ConsoleAboutMessages;
 import org.eclipse.kapua.app.console.module.about.shared.model.GwtAboutDependency;
 import org.eclipse.kapua.app.console.module.about.shared.model.GwtAboutInformation;
 import org.eclipse.kapua.app.console.module.about.shared.service.GwtAboutService;
 import org.eclipse.kapua.app.console.module.about.shared.service.GwtAboutServiceAsync;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractView;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.View;
+import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -58,9 +59,7 @@ public class AboutView extends AbstractView implements View {
     private static final GwtAboutServiceAsync ABOUT_SERVICE = GWT.create(GwtAboutService.class);
 
     public AboutView() {
-        setBorders(false);
-//        setBodyBorder(false);
-//        setHeaderVisible(false);
+        setBorders(true);
     }
 
     public static String getName() {
