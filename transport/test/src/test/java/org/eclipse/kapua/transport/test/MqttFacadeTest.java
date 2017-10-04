@@ -40,7 +40,11 @@ public class MqttFacadeTest extends Assert {
         // Get facade
         KapuaLocator locator = KapuaLocator.getInstance();
         TransportClientFactory transportFacadeFactory = locator.getFactory(TransportClientFactory.class);
-        TransportFacade transportFacade = transportFacadeFactory.getFacade();
+        /* FIXME the following line will fail once the test will not be ignored anymore.
+           Now the facade needs the direct broker uri as a string to point to the broker
+           in a clustered environment
+        */
+        TransportFacade transportFacade = transportFacadeFactory.getFacade(null);
 
         assertNotNull("client.clientId", transportFacade.getClientId());
 

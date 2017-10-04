@@ -326,9 +326,8 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
                                 }
                                 gwtParam.setMin(ad.getMin());
                                 gwtParam.setMax(ad.getMax());
-
                                 Map<String, String> gwtEntries = new HashMap<String, String>();
-                                for (Entry<QName, String> entry : ad.getOtherAttributes().entrySet()) {
+                                for(Entry<QName, String> entry : ad.getOtherAttributes().entrySet()) {
                                     gwtEntries.put(entry.getKey().toString(), entry.getValue());
                                 }
                                 gwtParam.setOtherAttributes(gwtEntries);

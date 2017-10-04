@@ -348,9 +348,9 @@ public class AccountConfigPanel extends LayoutContainer {
             if (isEditingSelf && !allowSelfEdit) {
                 field.disable();
             }
-            final String restrictActorValue = param.getOtherAttributes() != null ? param.getOtherAttributes().get("restrictActor") : null;
-            final String restrictTargetValue = param.getOtherAttributes() != null ? param.getOtherAttributes().get("restrictTarget") : null;
-            if (restrictActorValue != null || restrictTargetValue != null) {
+            final String showOnlyForActorValue = param.getOtherAttributes() != null ? param.getOtherAttributes().get("showOnlyForActor") : null;
+            final String showOnlyForTargetValue = param.getOtherAttributes() != null ? param.getOtherAttributes().get("showOnlyForTarget") : null;
+            if (showOnlyForActorValue != null || showOnlyForTargetValue != null) {
                 ACCOUNT_SERVICE.find(selectedAccountId, new AsyncCallback<GwtAccount>() {
 
                     @Override
@@ -369,21 +369,21 @@ public class AccountConfigPanel extends LayoutContainer {
 
                             @Override
                             public void onSuccess(GwtAccount rootAccount) {
-                                if (restrictActorValue != null) {
-                                    boolean rootActorRestricted = restrictActorValue.equals("ROOT");
-                                    if (rootActorRestricted && !rootAccount.getId().equals(currentSession.getSelectedAccountId())) {
-                                        field.disable();
+                                if (showOnlyForActorValue != null) {
+                                    boolean onlyShownForRootActor = showOnlyForActorValue.equals("ROOT");
+                                    if (onlyShownForRootActor && !rootAccount.getId().equals(currentSession.getSelectedAccountId())) {
+                                        field.hide();
                                     }
                                 }
 
-                                if (restrictTargetValue != null) {
-                                    boolean rootChildrenTargetRestricted = restrictTargetValue.equals("ROOT_CHILDREN");
-                                    boolean rootTargetRestricted = restrictTargetValue.equals("ROOT");
-                                    if (rootChildrenTargetRestricted && (!rootAccount.getId().equals(targetAccount.getId()) &&
+                                if (showOnlyForTargetValue != null) {
+                                    boolean onlyShownForRootChildrenTarget = showOnlyForTargetValue.equals("ROOT_AND_CHILDREN");
+                                    boolean onlyShownForRootTarget = showOnlyForTargetValue.equals("ROOT");
+                                    if (onlyShownForRootChildrenTarget && (!rootAccount.getId().equals(targetAccount.getId()) &&
                                             !rootAccount.getId().equals(targetAccount.getParentAccountId()))) {
-                                        field.disable();
-                                    } else if (rootTargetRestricted && !rootAccount.getId().equals(targetAccount.getId())) {
-                                        field.disable();
+                                        field.hide();
+                                    } else if (onlyShownForRootTarget && !rootAccount.getId().equals(targetAccount.getId())) {
+                                        field.hide();
                                     }
                                 }
                             }
@@ -726,7 +726,7 @@ public class AccountConfigPanel extends LayoutContainer {
 
     /**
      * Apply the description of a parameter to a field
-     *
+     * 
      * @param param the parameter to take the description from
      * @param field the field to apply the description to
      */
@@ -747,11 +747,11 @@ public class AccountConfigPanel extends LayoutContainer {
      * available the second type will contain the field type. If
      * the description only consists of a field type, then the first
      * field will be an empty string.
-     *
+     * 
      * @param param the parameter to take the description from
      * @return {@code null} when the parameter or description of
-     * the parameter is {@code null}, otherwise an array containing
-     * description and field type
+     *         the parameter is {@code null}, otherwise an array containing
+     *         description and field type
      */
     private static String[] splitDescription(GwtConfigParameter param) {
         if (param == null || param.getDescription() == null) {
@@ -773,7 +773,7 @@ public class AccountConfigPanel extends LayoutContainer {
      * <br>
      * This cuts of any field type definition at the end of the
      * description
-     *
+     * 
      * @param param the parameter to take the description from
      * @return only the description information to two to the user
      */
@@ -791,7 +791,7 @@ public class AccountConfigPanel extends LayoutContainer {
      * This method will inspect the field type inside the description
      * and create the correct text field for this configuration
      * parameter.
-     *
+     * 
      * @param param the parameter to create a field for
      * @return a new field, never returns {@code null}
      */

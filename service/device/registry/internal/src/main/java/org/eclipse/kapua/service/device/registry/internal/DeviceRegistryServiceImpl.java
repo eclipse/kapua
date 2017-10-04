@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.internal;
 
+import com.google.common.collect.Lists;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
@@ -146,6 +147,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
 
         DeviceQueryImpl query = new DeviceQueryImpl(scopeId);
         KapuaPredicate predicate = new AttributePredicate<>(DevicePredicates.CLIENT_ID, clientId);
+        query.setFetchAttributes(Lists.newArrayList(DevicePredicates.CONNECTION, DevicePredicates.LAST_EVENT));
         query.setPredicate(predicate);
 
         //

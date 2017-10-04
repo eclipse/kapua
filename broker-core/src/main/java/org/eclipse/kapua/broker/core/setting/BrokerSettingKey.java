@@ -51,7 +51,7 @@ public enum BrokerSettingKey implements SettingKey {
     /**
      * Max wait time to properly startup the stealing link feature
      */
-    STEALING_LINK_INITIALIZATION_MAX_WAIT_TIME("broker.stealing_link.initialization_max_wait_time");
+    STEALING_LINK_INITIALIZATION_MAX_WAIT_TIME("broker.stealing_link.initialization_max_wait_time"),
     /**
      * Broker name (used also for the vm connector name)
      */

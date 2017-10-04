@@ -18,6 +18,9 @@ import org.eclipse.kapua.transport.mqtt.MqttClient;
 import org.eclipse.kapua.transport.mqtt.pooling.setting.MqttClientPoolSetting;
 import org.eclipse.kapua.transport.mqtt.pooling.setting.MqttClientPoolSettingKeys;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Client pool for {@link MqttClient} objects.
  * <p>
@@ -33,14 +36,7 @@ public class MqttClientPool extends GenericObjectPool<MqttClient> {
     /**
      * Singleton instance of {@link MqttClientPool}
      */
-    private static MqttClientPool mqttClientPoolInstance;
-
-    /**
-     * {@link MqttClientPool#mqttClientPoolInstance} initialization.
-     */
-    static {
-        mqttClientPoolInstance = new MqttClientPool(new PooledMqttClientFactory());
-    }
+    private static Map<String, MqttClientPool> mqttClientPoolInstances = new HashMap<>();
 
     /**
      * Initialize a {@link MqttClientPool} with the according configuration sourced from {@link MqttClientPoolSetting}.
@@ -75,8 +71,14 @@ public class MqttClientPool extends GenericObjectPool<MqttClient> {
      * @return The singleton instance of {@link MqttClientPool}.
      * @since 1.0.0
      */
-    public static MqttClientPool getInstance() {
-        return mqttClientPoolInstance;
+    public static MqttClientPool getInstance(String brokerUri) {
+        MqttClientPool mqttClientPool = mqttClientPoolInstances.get(brokerUri);
+        if (mqttClientPool == null) {
+            mqttClientPool = new MqttClientPool(new PooledMqttClientFactory(brokerUri));
+            mqttClientPoolInstances.put(brokerUri, mqttClientPool);
+        }
+
+        return mqttClientPool;
     }
 
     /**

@@ -11,11 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.account.server;
 
+import javax.xml.namespace.QName;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigInteger;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.MessageDigest;
@@ -29,31 +32,37 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+import com.extjs.gxt.ui.client.data.BaseListLoadResult;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringUtils;
 import org.apache.sanselan.ImageFormat;
 import org.apache.sanselan.Sanselan;
-import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
-import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
-import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
-import org.eclipse.kapua.app.console.module.account.shared.util.GwtKapuaAccountModelConverter;
-import org.eclipse.kapua.app.console.module.account.shared.util.KapuaGwtAccountModelConverter;
-import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
-import org.eclipse.kapua.app.console.module.api.setting.ConsoleSettingKeys;
-import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigComponent;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigParameter;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountCreator;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountQuery;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountStringListItem;
+import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
+import org.eclipse.kapua.app.console.module.account.shared.util.GwtKapuaAccountModelConverter;
+import org.eclipse.kapua.app.console.module.account.shared.util.KapuaGwtAccountModelConverter;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
+import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
+import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
+import org.eclipse.kapua.app.console.module.api.setting.ConsoleSettingKeys;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigComponent;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigParameter;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.broker.core.BrokerDomain;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.SystemUtils;
 import org.eclipse.kapua.commons.util.ThrowingRunnable;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -81,14 +90,6 @@ import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.extjs.gxt.ui.client.data.BaseListLoadResult;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
-
-import javax.xml.namespace.QName;
 
 /**
  * The server side implementation of the RPC service.
@@ -191,7 +192,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
     public ListLoadResult<GwtGroupedNVPair> getAccountInfo(String scopeIdString, String accountIdString)
             throws GwtKapuaException {
         final KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
-        KapuaId accountId = KapuaEid.parseCompactId(accountIdString);
+        final KapuaId accountId = KapuaEid.parseCompactId(accountIdString);
 
         KapuaLocator locator = KapuaLocator.getInstance();
         final AccountService accountService = locator.getService(AccountService.class);
@@ -200,20 +201,35 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         List<GwtGroupedNVPair> accountPropertiesPairs = new ArrayList<GwtGroupedNVPair>();
         try {
             final Account account = accountService.find(scopeId, accountId);
-            final KapuaId rootAccountId = GwtKapuaCommonsModelConverter.convertKapuaId(findRootAccount().getId());
             String brokerUri = KapuaSecurityUtils.doPrivileged(new Callable<String>() {
 
                 @Override
                 public String call() throws Exception {
-                    String brokerUriInternal;
-                    Object brokerUriObj = accountService.getConfigValues(rootAccountId).get("brokerUri");
-                    if (brokerUriObj == null) {
-                        brokerUriInternal = SystemUtils.getBrokerURI().toString();
-                    } else {
-                        brokerUriInternal = brokerUriObj.toString().isEmpty() ? SystemUtils.getBrokerURI().toString() : brokerUriObj.toString();
+                    String[] accountHierarchy = account.getParentAccountPath().split("/");
+                    URI defaultUri = SystemUtils.getBrokerURI();
+                    switch (accountHierarchy.length) {
+                    case 2:
+                        // "", "1": root account
+                        return StringUtils.isNotBlank(accountService.getConfigValues(accountId).get("deviceBrokerClusterUri").toString()) ?
+                                accountService.getConfigValues(accountId).get("deviceBrokerClusterUri").toString() :
+                                defaultUri.toString();
+                    default:
+                        // "", "1", "accountId": second level account (root child)
+                        // "", "1", "accountId", ["otherAccountId", ...], "otherAccountId": third level or more (non root and non root child)
+                        KapuaId rootAccountId = new KapuaEid(BigInteger.valueOf(Long.valueOf(accountHierarchy[1])));
+                        KapuaId secondLevelAccountId = new KapuaEid(BigInteger.valueOf(Long.valueOf(accountHierarchy[2])));
+                        String secondLevelBrokerUri = accountService.getConfigValues(secondLevelAccountId).get("deviceBrokerClusterUri").toString();
+                        if (StringUtils.isNotBlank(secondLevelBrokerUri)) {
+                            return secondLevelBrokerUri;
+                        } else {
+                            String rootBrokerUri = accountService.getConfigValues(rootAccountId).get("deviceBrokerClusterUri").toString();
+                            if (StringUtils.isNotBlank(rootBrokerUri)) {
+                                return rootBrokerUri;
+                            } else {
+                                return defaultUri.toString();
+                            }
+                        }
                     }
-
-                    return brokerUriInternal;
                 }
             });
 
@@ -484,7 +500,6 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                                 }
                                 gwtParam.setMin(ad.getMin());
                                 gwtParam.setMax(ad.getMax());
-
                                 Map<String, String> gwtEntries = new HashMap<String, String>();
                                 for (Entry<QName, String> entry : ad.getOtherAttributes().entrySet()) {
                                     gwtEntries.put(entry.getKey().toString(), entry.getValue());

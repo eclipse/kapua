@@ -13,10 +13,14 @@
 package org.eclipse.kapua.service.device.call.kura;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.device.call.DeviceCall;
 import org.eclipse.kapua.service.device.call.kura.exception.KuraMqttDeviceCallErrorCodes;
 import org.eclipse.kapua.service.device.call.kura.exception.KuraMqttDeviceCallException;
@@ -25,6 +29,8 @@ import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraReques
 import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestPayload;
 import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponseMessage;
 import org.eclipse.kapua.service.device.call.message.kura.KuraMessage;
+import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.transport.TransportClientFactory;
 import org.eclipse.kapua.transport.TransportFacade;
@@ -75,12 +81,19 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
     @SuppressWarnings({ "unchecked" })
     private KuraResponseMessage send(KuraRequestMessage requestMessage, Long timeout)
             throws KuraMqttDeviceCallException {
+        KapuaLocator locator = KapuaLocator.getInstance();
+        DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
+        AccountService accountService = locator.getService(AccountService.class);
         KuraResponseMessage response = null;
         TransportFacade transportFacade = null;
         try {
+            Account account = accountService.findByName(requestMessage.getChannel().getScope());
+            Device device = deviceRegistryService.findByClientId(account.getId(), requestMessage.getChannel().getClientId());
+            String serverIp = device.getConnection().getServerIp();
+
             //
             // Borrow a KapuaClient
-            transportFacade = borrowClient();
+            transportFacade = borrowClient(serverIp);
 
             //
             // Get Kura to transport translator for the request and vice versa
@@ -139,13 +152,15 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
     //
     // Private methods
     //
-    private TransportFacade borrowClient()
+    private TransportFacade borrowClient(String serverIp)
             throws KuraMqttDeviceCallException {
         TransportFacade transportFacade;
+        Map<String, Object> configParameters = new HashMap<>();
+        configParameters.put("serverIp", serverIp);
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             TransportClientFactory transportClientFactory = locator.getFactory(TransportClientFactory.class);
-            transportFacade = transportClientFactory.getFacade();
+            transportFacade = transportClientFactory.getFacade(configParameters);
         } catch (Exception e) {
             throw new KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes.CALL_ERROR, e);
         }

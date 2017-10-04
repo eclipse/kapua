@@ -14,7 +14,6 @@ package org.eclipse.kapua.transport.test;
 import java.util.Date;
 
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.util.SystemUtils;
 import org.eclipse.kapua.transport.message.mqtt.MqttMessage;
 import org.eclipse.kapua.transport.message.mqtt.MqttPayload;
 import org.eclipse.kapua.transport.message.mqtt.MqttTopic;
@@ -42,7 +41,8 @@ public class MqttClientTest extends Assert {
         clientConnectOptions.setClientId(ClientIdGenerator.getInstance().next(MqttClientTest.class.getSimpleName()));
         clientConnectOptions.setUsername(username);
         clientConnectOptions.setPassword(password.toCharArray());
-        clientConnectOptions.setEndpointURI(SystemUtils.getBrokerURI());
+        // Warning: SystemUtils has been removed; Broker URI is now an AccountService configuration
+//        clientConnectOptions.setEndpointURI(SystemUtils.getBrokerURI());
 
         //
         // Connect
@@ -80,7 +80,8 @@ public class MqttClientTest extends Assert {
         clientConnectOptions.setClientId(ClientIdGenerator.getInstance().next(MqttClientTest.class.getSimpleName()));
         clientConnectOptions.setUsername(username);
         clientConnectOptions.setPassword(password.toCharArray());
-        clientConnectOptions.setEndpointURI(SystemUtils.getBrokerURI());
+        // Warning: SystemUtils has been removed; Broker URI is now an AccountService configuration
+//        clientConnectOptions.setEndpointURI(SystemUtils.getBrokerURI());
 
         //
         // Connect

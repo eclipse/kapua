@@ -17,7 +17,6 @@ import org.apache.commons.pool2.BasePooledObjectFactory;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.util.SystemUtils;
 import org.eclipse.kapua.transport.mqtt.MqttClient;
 import org.eclipse.kapua.transport.mqtt.MqttClientConnectionOptions;
 import org.eclipse.kapua.transport.mqtt.pooling.setting.MqttClientPoolSetting;
@@ -33,6 +32,12 @@ import org.eclipse.kapua.transport.utils.ClientIdGenerator;
  *
  */
 public class PooledMqttClientFactory extends BasePooledObjectFactory<MqttClient> {
+
+    private final String brokerUri;
+
+    public PooledMqttClientFactory(String brokerUri) {
+        this.brokerUri = brokerUri;
+    }
 
     /**
      * Creates the {@link MqttClient} for the {@link MqttClientPool}.
@@ -56,7 +61,7 @@ public class PooledMqttClientFactory extends BasePooledObjectFactory<MqttClient>
         String username = mqttClientSettings.getString(MqttClientSettingKeys.TRANSPORT_CREDENTIAL_USERNAME);
         char[] password = mqttClientSettings.getString(MqttClientSettingKeys.TRANSPORT_CREDENTIAL_PASSWORD).toCharArray();
         String clientId = ClientIdGenerator.getInstance().next(mqttClientPoolSettings.getString(MqttClientPoolSettingKeys.CLIENT_POOL_CLIENT_ID_PREFIX));
-        URI brokerURI = SystemUtils.getBrokerURI();
+        URI brokerURI = URI.create(brokerUri);
 
         //
         // Get new client and connection options

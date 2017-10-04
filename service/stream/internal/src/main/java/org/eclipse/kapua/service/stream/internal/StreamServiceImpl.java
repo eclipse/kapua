@@ -22,6 +22,8 @@ import org.eclipse.kapua.service.device.call.kura.exception.KuraMqttDeviceCallEr
 import org.eclipse.kapua.service.device.call.kura.exception.KuraMqttDeviceCallException;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataMessage;
 import org.eclipse.kapua.service.device.management.response.KapuaResponseMessage;
+import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.stream.StreamService;
 import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.transport.TransportClientFactory;
@@ -29,6 +31,8 @@ import org.eclipse.kapua.transport.TransportFacade;
 import org.eclipse.kapua.transport.message.TransportMessage;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @KapuaProvider
 public class StreamServiceImpl implements StreamService {
@@ -37,13 +41,18 @@ public class StreamServiceImpl implements StreamService {
     public KapuaResponseMessage<?, ?> publish(KapuaDataMessage requestMessage, Long timeout)
             throws KapuaException {
         TransportFacade<?, ?, TransportMessage<?, ?>, ?> transportFacade = null;
+        KapuaLocator locator = KapuaLocator.getInstance();
+        DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
         try {
             ArgumentValidator.notNull(requestMessage.getClientId(), "clientId");
             ArgumentValidator.notNull(requestMessage.getScopeId(), "scopeId");
 
+            Device device = deviceRegistryService.find(requestMessage.getScopeId(), requestMessage.getDeviceId());
+            String brokerUri = device.getConnection().getServerIp();
+
             //
             // Borrow a KapuaClient
-            transportFacade = borrowClient();
+            transportFacade = borrowClient(brokerUri);
 
             //
             // Get Kura to transport translator for the request and vice versa
@@ -83,13 +92,16 @@ public class StreamServiceImpl implements StreamService {
     // Private methods
     //
     @SuppressWarnings("unchecked")
-    private TransportFacade<?, ?, TransportMessage<?, ?>, ?> borrowClient()
+    private TransportFacade<?, ?, TransportMessage<?, ?>, ?> borrowClient(String brokerUri)
             throws KuraMqttDeviceCallException {
         TransportFacade<?, ?, TransportMessage<?, ?>, ?> transportFacade;
+        Map<String, Object> configParameters = new HashMap<>();
+        configParameters.put("brokerUri", brokerUri);
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             TransportClientFactory<?, ?, ?, ?, ?, ?> transportClientFactory = locator.getFactory(TransportClientFactory.class);
-            transportFacade = (TransportFacade<?, ?, TransportMessage<?, ?>, ?>) transportClientFactory.getFacade();
+
+            transportFacade = (TransportFacade<?, ?, TransportMessage<?, ?>, ?>) transportClientFactory.getFacade(configParameters);
         } catch (Exception e) {
             throw new KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes.CALL_ERROR,
                     e,

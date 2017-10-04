@@ -18,7 +18,6 @@ import java.util.Set;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.util.SystemUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
@@ -47,8 +46,6 @@ import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraReques
 import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponseChannel;
 import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponseMessage;
 import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponsePayload;
-import org.eclipse.kapua.service.device.registry.Device;
-import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifecycleDomain;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
@@ -58,15 +55,12 @@ import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.transport.message.mqtt.MqttMessage;
 import org.eclipse.kapua.transport.message.mqtt.MqttPayload;
 import org.eclipse.kapua.transport.message.mqtt.MqttTopic;
-import org.eclipse.kapua.transport.utils.ClientIdGenerator;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
-import org.junit.Test;
 
 @Ignore
 public class DeviceCommandManagementServiceTest extends Assert {
@@ -171,6 +165,7 @@ public class DeviceCommandManagementServiceTest extends Assert {
 
     }
 
+    /*
     @Ignore
     @Test
     public void testCommandExecution()
@@ -182,6 +177,7 @@ public class DeviceCommandManagementServiceTest extends Assert {
         mqttConnectOptions.setUserName(user.getName());
         mqttConnectOptions.setPassword("kapua-password".toCharArray());
 
+        // Warning: SystemUtils has been removed; Broker URI is now an AccountService configuration
         MqttClient mqttClient = new MqttClient(SystemUtils.getBrokerURI().toString(),
                 ClientIdGenerator.getInstance().next("testCommandExecution"));
 
@@ -215,6 +211,7 @@ public class DeviceCommandManagementServiceTest extends Assert {
         assertEquals("output.stdout", commandOutput.getStdout());
 
     }
+*/
 
     private class MqttClientCommandCallback implements MqttCallback {
 
@@ -275,4 +272,5 @@ public class DeviceCommandManagementServiceTest extends Assert {
         }
 
     }
+
 }
