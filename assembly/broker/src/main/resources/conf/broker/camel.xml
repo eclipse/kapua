@@ -15,15 +15,12 @@
 <beans
         xmlns="http://www.springframework.org/schema/beans"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:util="http://www.springframework.org/schema/util"
         xsi:schemaLocation="http://www.springframework.org/schema/beans
          http://www.springframework.org/schema/beans/spring-beans.xsd
-         http://activemq.apache.org/schema/core
-         http://activemq.apache.org/schema/core/activemq-core.xsd
+
+
          http://camel.apache.org/schema/spring
-         http://camel.apache.org/schema/spring/camel-spring-2.15.1.xsd
-         http://www.springframework.org/schema/util
-         http://www.springframework.org/schema/util/spring-util-3.2.xsd">
+         http://camel.apache.org/schema/spring/camel-spring-2.15.1.xsd">
 
     <!-- Configure the ActiveMQ broker connection -->
     <!-- we can use also the tcp regular connection. it should be no performance difference! -->
@@ -54,6 +51,7 @@
     <!-- Converter -->
     <bean id="kapuaDataConverter" class="org.eclipse.kapua.broker.core.converter.KapuaDataConverter"/>
     <bean id="kapuaLifeCycleConverter" class="org.eclipse.kapua.broker.core.converter.KapuaLifeCycleConverter"/>
+    <bean id="kapuaPackageManagementNotifyConverter" class="org.eclipse.kapua.broker.core.converter.KapuaPackageManagementNotifyConverter"/>
 
     <!-- Consumer -->
     <!-- ASSISTANTS -->
@@ -61,6 +59,9 @@
     </bean>
     <bean id="dataStorageMessageProcessor" class="org.eclipse.kapua.broker.core.listener.DataStorageMessageProcessor">
     </bean>
+    <bean id="devicePackageManagementNotifyMessageListener" class="org.eclipse.kapua.broker.core.listener.DevicePackageManagementNotifyMessageListener">
+    </bean>
+
     <!-- ERROR -->
     <bean id="errorMessageListener" class="org.eclipse.kapua.broker.core.listener.ErrorMessageListener">
     </bean>
@@ -94,8 +95,8 @@
                       deadLetterUri="activemq:queue:notProcessableMessage"
                       useOriginalMessage="true">
         </errorHandler>
-        <redeliveryPolicyProfile id="kapuaRedeliveryPolicy" maximumRedeliveries="0" redeliveryDelay="0" retryAttemptedLogLevel="WARN" logRetryAttempted="true" />
-        <redeliveryPolicyProfile id="kapuaErrorRedeliveryPolicy" maximumRedeliveries="0" redeliveryDelay="0" retryAttemptedLogLevel="WARN" logRetryAttempted="true" />
+        <redeliveryPolicyProfile id="kapuaRedeliveryPolicy" maximumRedeliveries="0" redeliveryDelay="0" retryAttemptedLogLevel="WARN" logRetryAttempted="true"/>
+        <redeliveryPolicyProfile id="kapuaErrorRedeliveryPolicy" maximumRedeliveries="0" redeliveryDelay="0" retryAttemptedLogLevel="WARN" logRetryAttempted="true"/>
         <!--
         For the transaction/acknowledge mode please follow http://stackoverflow.com/questions/13498652/camel-jms-client-acknowledge-mode
 
@@ -174,9 +175,9 @@
                                 <to uri="bean:deviceMessageListener?method=processMissingMessage"/>
                             </when>
                             <when id="notifyLifeCycleMessageFilter">
-                                <simple>${header.originalTopic} regex '^\$EDC\.(.*\.){2}MQTT\.NOTIFY'</simple>
-                                <bean ref="kapuaLifeCycleConverter" method="convertToNotify"/>
-                                <to uri="bean:deviceMessageListener?method=processNotifyMessage"/>
+                                <simple>${header.originalTopic} regex '^\$EDC\.(.*\.){2}DEPLOY-V2\.NOTIFY\..*'</simple>
+                                <bean ref="kapuaPackageManagementNotifyConverter" method="convertToNotify"/>
+                                <to uri="bean:devicePackageManagementNotifyMessageListener?method=processNotifyMessage"/>
                             </when>
                             <otherwise id="unmatchedLifeCycleMessageFilter">
                                 <bean ref="kapuaLifeCycleConverter" method="convertToUnmatched"/>
@@ -229,7 +230,7 @@
                 <bean ref="kapuaCamelFilter" method="unbindSession"/>
             </pipeline>
         </route>
-        <route id="dataMessageNotProcessableErrorRoute" >
+        <route id="dataMessageNotProcessableErrorRoute">
             <from uri="activemq:queue:notProcessableMessage?asyncConsumer=false&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=2&amp;maxConcurrentConsumers=5"/>
             <pipeline>
                 <bean ref="kapuaCamelFilter" method="bindSession"/>
