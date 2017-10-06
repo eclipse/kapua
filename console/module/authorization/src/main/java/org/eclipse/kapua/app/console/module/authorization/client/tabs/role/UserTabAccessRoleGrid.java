@@ -54,6 +54,7 @@ public class UserTabAccessRoleGrid extends EntityGrid<GwtAccessRole> {
                         currentSession.getSelectedAccountId(),
                         userId,
                         callback);
+                toolbar.getAccessRoles();
             }
         };
     }
@@ -62,9 +63,9 @@ public class UserTabAccessRoleGrid extends EntityGrid<GwtAccessRole> {
     protected void selectionChangedEvent(GwtAccessRole selectedItem) {
         super.selectionChangedEvent(selectedItem);
         if (selectedItem == null) {
-            toolbar.getDeleteEntityButton().disable();
+            toolbar.getEditEntityButton().enable();
         } else {
-            toolbar.getDeleteEntityButton().enable();
+            toolbar.getEditEntityButton().enable();
         }
     }
 
@@ -111,7 +112,6 @@ public class UserTabAccessRoleGrid extends EntityGrid<GwtAccessRole> {
     public EntityCRUDToolbar<GwtAccessRole> getToolbar() {
         if (toolbar == null) {
             toolbar = new UserTabAccessRoleToolbar(currentSession);
-            toolbar.setEditButtonVisible(false);
             toolbar.setBorders(false);
         }
         return toolbar;
