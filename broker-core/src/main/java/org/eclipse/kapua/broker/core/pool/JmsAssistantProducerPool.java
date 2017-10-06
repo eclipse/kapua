@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,6 +16,8 @@ import java.util.Map;
 
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.eclipse.kapua.broker.core.setting.BrokerSetting;
+import org.eclipse.kapua.broker.core.setting.BrokerSettingKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,15 +54,11 @@ public class JmsAssistantProducerPool extends GenericObjectPool<JmsAssistantProd
 
     static {
         pools = new HashMap<JmsAssistantProducerPool.DESTINATIONS, JmsAssistantProducerPool>();
-        logger.info("Create pools for broker assistants (kapua server instance)");
-        logger.info("Create Service pool...");
-        // TODO parameter to be added to configuration
-        // pools.put(DESTINATIONS.KAPUA_SERVICE,
-        // new JmsAssistantProducerPool(new JmsAssistantProducerWrapperFactory(KapuaEnvironmentConfig.getInstance().getString(KapuaEnvironmentConfigKeys.SERVICE_QUEUE_NAME))));
+        logger.info("Create pools (internal broker use)...");
         logger.info("Create NoDestination pool...");
         pools.put(DESTINATIONS.NO_DESTINATION,
                 new JmsAssistantProducerPool(new JmsAssistantProducerWrapperFactory(null)));
-        logger.info("Create pools... done.");
+        logger.info("Create pools (internal broker use)... done.");
     }
 
     /**
@@ -70,13 +68,9 @@ public class JmsAssistantProducerPool extends GenericObjectPool<JmsAssistantProd
      */
     protected JmsAssistantProducerPool(JmsAssistantProducerWrapperFactory factory) {
         super(factory);
-        // TODO parameter to be added to configuration
-        // int totalMaxSize = KapuaEnvironmentConfig.getInstance().getString(KapuaEnvironmentConfigKeys.POOL_TOTAL_MAX_SIZE);
-        // int maxSize = KapuaEnvironmentConfig.getInstance().getString(KapuaEnvironmentConfigKeys.POOL_MAX_SIZE);
-        // int minSize = KapuaEnvironmentConfig.getInstance().getString(KapuaEnvironmentConfigKeys.POOL_MIN_SIZE);
-        int totalMaxSize = 25;
-        int maxSize = 25;
-        int minSize = 10;
+        int totalMaxSize = BrokerSetting.getInstance().getInt(BrokerSettingKey.BROKER_CLIENT_POOL_NO_DEST_TOTAL_MAX_SIZE, 10);
+        int maxSize = BrokerSetting.getInstance().getInt(BrokerSettingKey.BROKER_CLIENT_POOL_NO_DEST_MAX_SIZE, 10);
+        int minSize = BrokerSetting.getInstance().getInt(BrokerSettingKey.BROKER_CLIENT_POOL_NO_DEST_MIN_SIZE, 5);
 
         GenericObjectPoolConfig jmsPoolConfig = new GenericObjectPoolConfig();
         jmsPoolConfig.setMaxTotal(totalMaxSize);

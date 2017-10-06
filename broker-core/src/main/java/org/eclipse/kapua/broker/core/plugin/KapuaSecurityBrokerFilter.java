@@ -956,11 +956,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
         } else {
             messageSend.setProperty(MessageConstants.HEADER_KAPUA_BROKER_CONTEXT, true);
         }
-        if (messageSend.getContent() != null) {
-            metricPublishMessageSizeAllowed.update(messageSend.getContent().length);
-        } else {
-            logger.warn("Cannot update message size metric. Incoming message for topic {} has null content!", messageSend.getDestination());
-        }
+        metricPublishMessageSizeAllowed.update(messageSend.getSize());
         ActiveMQDestination destination = messageSend.getDestination();
         if (destination instanceof ActiveMQTopic) {
             ActiveMQTopic destinationTopic = (ActiveMQTopic) destination;

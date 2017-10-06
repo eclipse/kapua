@@ -41,5 +41,6 @@ public class MessageConstants {
     public static final String HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL = "KAPUA_DEVICE_PROTOCOL";
     public static final String HEADER_KAPUA_SESSION = "KAPUA_SESSION";
     public static final String HEADER_KAPUA_BROKER_CONTEXT = "KAPUA_BROKER_CONTEXT";
+    public static final String HEADER_KAPUA_PROCESSING_EXCEPTION = "KAPUA_PROCESSING_EXCEPTION";
 
 }

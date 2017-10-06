@@ -53,6 +53,18 @@ public enum BrokerSettingKey implements SettingKey {
      */
     STEALING_LINK_INITIALIZATION_MAX_WAIT_TIME("broker.stealing_link.initialization_max_wait_time"),
     /**
+     * No destination broker internal use client pool - maximun total size
+     */
+    BROKER_CLIENT_POOL_NO_DEST_TOTAL_MAX_SIZE("broker.client_pool.no_dest_total_max_size"),
+    /**
+     * No destination broker internal use client pool - maximun size
+     */
+    BROKER_CLIENT_POOL_NO_DEST_MAX_SIZE("broker.client_pool.no_dest_max_size"),
+    /**
+     * No destination broker internal use client pool - minimum size
+     */
+    BROKER_CLIENT_POOL_NO_DEST_MIN_SIZE("broker.client_pool.no_dest_min_size");
+	/**
      * Broker name (used also for the vm connector name)
      */
     BROKER_NAME("broker.name");

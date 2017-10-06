@@ -84,8 +84,4 @@ public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMes
         metricQueueGenericErrorCount.dec();
     }
 
-    public void notProcessableMessage(Exchange exchange, Object value) {
-        logger.info("notProcessableMessage");
-    }
-
 }

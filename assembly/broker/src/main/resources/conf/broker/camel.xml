@@ -88,7 +88,7 @@
         -->
         <errorHandler id="mainRouteMessageErrorHandler" redeliveryPolicyRef="kapuaRedeliveryPolicy"
                       type="DeadLetterChannel"
-                      deadLetterUri="bean:errorMessageListener?method=processMessage"
+                      deadLetterUri="activemq:queue:notProcessableMessage"
                       useOriginalMessage="true">
         </errorHandler>
         <errorHandler id="messageErrorHandler" redeliveryPolicyRef="kapuaErrorRedeliveryPolicy"
@@ -122,6 +122,7 @@
                 <handled>
                     <constant>true</constant>
                 </handled>
+                <bean ref="kapuaCamelFilter" method="bridgeError"/>
                 <to uri="activemq:queue:storeCommunicationException"/>
             </onException>
             <!-- handling configuration error -->
@@ -131,6 +132,7 @@
                 <handled>
                     <constant>true</constant>
                 </handled>
+                <bean ref="kapuaCamelFilter" method="bridgeError"/>
                 <to uri="activemq:queue:storeConfigurationException"/>
             </onException>
             <onException>
@@ -139,6 +141,7 @@
                 <handled>
                     <constant>true</constant>
                 </handled>
+                <bean ref="kapuaCamelFilter" method="bridgeError"/>
                 <to uri="activemq:queue:storeGenericException"/>
             </onException>
             <onException>
@@ -147,6 +150,7 @@
                 <handled>
                     <constant>true</constant>
                 </handled>
+                <bean ref="kapuaCamelFilter" method="bridgeError"/>
                 <to uri="activemq:queue:notProcessableMessage"/>
             </onException>
             <pipeline>
@@ -197,11 +201,11 @@
                 <bean ref="kapuaCamelFilter" method="unbindSession"/>
             </pipeline>
         </route>
-        <route id="dataMessageNotProcessableErrorRoute" >
+        <route id="notProcessableMessage" >
             <from uri="activemq:queue:notProcessableMessage?asyncConsumer=false&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=2&amp;maxConcurrentConsumers=5"/>
             <pipeline>
                 <bean ref="kapuaCamelFilter" method="bindSession"/>
-                <to uri="bean:dataStorageMessageProcessor?method=notProcessableMessage"/>
+                <to uri="bean:errorMessageListener?method=processMessage"/>
                 <bean ref="kapuaCamelFilter" method="unbindSession"/>
             </pipeline>
         </route>
