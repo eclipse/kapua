@@ -43,10 +43,12 @@ import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
+import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import org.eclipse.kapua.app.console.module.authorization.shared.util.GwtKapuaAuthorizationModelConverter;
 
 public class GwtAccessRoleServiceImpl extends KapuaRemoteServiceServlet implements GwtAccessRoleService {
 
@@ -148,12 +150,62 @@ public class GwtAccessRoleServiceImpl extends KapuaRemoteServiceServlet implemen
                         GwtAccessRole gwtAccessRole = KapuaGwtAuthorizationModelConverter.mergeRoleAccessRole(role, accessRole);
                         gwtAccessRole.setUserName(user.getName());
                         gwtAccessRoles.add(gwtAccessRole);
+                        }
                     }
-                }
             } catch (Throwable t) {
                 KapuaExceptionHandler.handle(t);
             }
         }
         return new BasePagingLoadResult<GwtAccessRole>(gwtAccessRoles, loadConfig.getOffset(), totalLegnth);
+    }
+
+    @Override
+    public GwtAccessRole createCheck(GwtXSRFToken xsrfToken, String accessRoleShortId, String userShortId, List<GwtAccessRoleCreator> listApp) throws GwtKapuaException {
+        checkXSRFToken(xsrfToken);
+        GwtAccessRole gwtAccessRole = null;
+        try {
+            KapuaLocator locator = KapuaLocator.getInstance();
+            KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(accessRoleShortId);
+            KapuaId userId = GwtKapuaCommonsModelConverter.convertKapuaId(userShortId);
+            AccessRoleService accessRoleService = locator.getService(AccessRoleService.class);
+            AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
+            AccessInfo accessInfo = accessInfoService.findByUserId(scopeId, userId);
+            AccessRoleListResult listDB = accessRoleService.findByAccessInfoId(scopeId, accessInfo.getId());
+            ArrayList<KapuaId> list = new ArrayList<KapuaId>();
+            ArrayList<KapuaId> listAppId = new ArrayList<KapuaId>();
+            for (AccessRole accessRole : listDB.getItems()) {
+                list.add(accessRole.getRoleId());
+            }
+            for (GwtAccessRoleCreator gwtAccessRoleCreator : listApp) {
+                KapuaId kapuaId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtAccessRoleCreator.getRoleId());
+                listAppId.add(kapuaId);
+            }
+            for (GwtAccessRoleCreator gwtAccessRoleCreator : listApp) {
+                if (!list.contains(GwtKapuaCommonsModelConverter.convertKapuaId(gwtAccessRoleCreator.getRoleId()))) {
+                    AccessRoleCreator roleCreator = GwtKapuaAuthorizationModelConverter.convertAccessRoleCreator(gwtAccessRoleCreator);
+                    AccessRole newAccessRole = accessRoleService.create(roleCreator);
+                    gwtAccessRole = KapuaGwtAuthorizationModelConverter.convertAccessRole(newAccessRole);
+                }
+            }
+            for (KapuaId accessRoleId : list) {
+                if (!listAppId.contains(accessRoleId)) {
+                    accessRoleService.delete(scopeId, getIdByRoleId(accessRoleId, listDB));
+                }
+            }
+        } catch (Throwable t) {
+            KapuaExceptionHandler.handle(t);
+        }
+        return gwtAccessRole;
+    }
+
+    public KapuaId getIdByRoleId(KapuaId accessRoleId, AccessRoleListResult listDB) {
+        KapuaId returnId = null;
+        for (AccessRole accessRole : listDB.getItems()) {
+            if (accessRole.getRoleId().equals(accessRoleId)) {
+                returnId = accessRole.getId();
+                break;
+            }
+        }
+        return returnId;
     }
 }

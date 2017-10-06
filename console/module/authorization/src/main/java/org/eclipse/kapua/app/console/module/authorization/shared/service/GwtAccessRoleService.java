@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.shared.service;
 
+import java.util.List;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 
@@ -32,4 +33,6 @@ public interface GwtAccessRoleService extends RemoteService {
 
     public PagingLoadResult<GwtAccessRole> findByUserId(PagingLoadConfig loadConfig, String scopeShortId, String userShortId)
             throws GwtKapuaException;
+
+    public GwtAccessRole createCheck(GwtXSRFToken xsrfToken, String accessRoleShortId, String userShortId, List<GwtAccessRoleCreator> list) throws GwtKapuaException;
 }

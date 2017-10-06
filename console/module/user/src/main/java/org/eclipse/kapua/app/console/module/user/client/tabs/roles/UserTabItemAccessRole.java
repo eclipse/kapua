@@ -59,7 +59,7 @@ public class UserTabItemAccessRole extends KapuaTabItem<GwtUser> {
     @Override
     protected void doRefresh() {
         accessRoleGrid.refresh();
-        accessRoleGrid.getToolbar().getAddEntityButton().setEnabled(selectedEntity != null);
+        accessRoleGrid.getToolbar().getEditEntityButton().setEnabled(selectedEntity != null);
         accessRoleGrid.getToolbar().getRefreshEntityButton().setEnabled(selectedEntity != null);
     }
 
