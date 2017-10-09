@@ -18,7 +18,7 @@
     <parent>
         <artifactId>kapua-assembly</artifactId>
         <groupId>org.eclipse.kapua</groupId>
-        <version>0.3.0</version>
+        <version>0.3.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>kapua-assembly-api</artifactId>
