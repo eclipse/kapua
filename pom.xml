@@ -149,6 +149,7 @@
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <releaseProfiles>javadoc,deploy,release,!console</releaseProfiles>
                         <goals>deploy</goals>
+                        <preparationGoals>clean install</preparationGoals>
                         <tagNameFormat>@{project.version}</tagNameFormat>
                     </configuration>
                 </plugin>
