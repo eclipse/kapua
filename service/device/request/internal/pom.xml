@@ -19,7 +19,7 @@
     <parent>
         <artifactId>kapua-device-request</artifactId>
         <groupId>org.eclipse.kapua</groupId>
-        <version>0.3.0-SNAPSHOT</version>
+        <version>0.3.0</version>
     </parent>
 
     <dependencies>

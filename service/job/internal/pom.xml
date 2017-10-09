@@ -15,7 +15,7 @@
     <parent>
         <groupId>org.eclipse.kapua</groupId>
         <artifactId>kapua-job</artifactId>
-        <version>0.3.0-SNAPSHOT</version>
+        <version>0.3.0</version>
     </parent>
 
     <artifactId>kapua-job-internal</artifactId>
