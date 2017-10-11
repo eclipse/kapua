@@ -19,16 +19,16 @@ import org.junit.runner.RunWith;
 
 @RunWith(CucumberWithProperties.class)
 @CucumberOptions(
-        features = {"classpath:features/broker/DeviceData.feature"},
+        features = {"classpath:features/broker/DeviceBrokerIpConfigFileI9n.feature"},
         glue = {"org.eclipse.kapua.qa.steps",
                 "org.eclipse.kapua.service.user.steps",
                 "org.eclipse.kapua.service.device.steps"
                },
-        plugin = {"pretty", 
-                  "html:target/cucumber/DeviceDataI9n",
-                  "json:target/DeviceDataI9n_cucumber.json"
+        plugin = {"pretty",
+                  "html:target/cucumber/DeviceBrokerIpConfigFileI9n",
+                  "json:target/DeviceBrokerIpConfigFileI9n_cucumber.json"
                  },
         monochrome = true )
-@CucumberProperty(key="broker.ip", value="192.168.33.10")
-@CucumberProperty(key="kapua.config.url", value="")
-public class RunDeviceDataI9nTest {}
+@CucumberProperty(key="broker.ip", value="")
+@CucumberProperty(key="kapua.config.url", value="broker.setting/kapua-broker-setting-1.properties")
+public class RunDeviceBrokerIpConfigFileI9nTest {}

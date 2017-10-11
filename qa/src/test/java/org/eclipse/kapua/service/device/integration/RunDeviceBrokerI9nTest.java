@@ -12,12 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.integration;
 
+import org.eclipse.kapua.test.cucumber.CucumberProperty;
+import org.eclipse.kapua.test.cucumber.CucumberWithProperties;
 import org.junit.runner.RunWith;
 
 import cucumber.api.CucumberOptions;
-import cucumber.api.junit.Cucumber;
 
-@RunWith(Cucumber.class)
+@RunWith(CucumberWithProperties.class)
 @CucumberOptions(
         features = {"classpath:features/broker/DeviceBrokerI9n.feature"},
         glue = {"org.eclipse.kapua.qa.steps",
@@ -29,5 +30,6 @@ import cucumber.api.junit.Cucumber;
                   "json:target/DeviceBrokerI9n_cucumber.json"
                  },
         monochrome = true )
-
+@CucumberProperty(key="broker.ip", value="localhost")
+@CucumberProperty(key="kapua.config.url", value="")
 public class RunDeviceBrokerI9nTest {}

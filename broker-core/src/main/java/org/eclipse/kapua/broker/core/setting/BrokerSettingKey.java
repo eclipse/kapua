@@ -29,7 +29,6 @@ public enum BrokerSettingKey implements SettingKey {
     /**
      * Broker IP resolver implementation (if not evaluated, the default resolver will be used).
      */
-
     BROKER_IP_RESOLVER_CLASS_NAME("broker.ip_resolver_class_name"),
     /**
      * Broker id resolver implementation
@@ -42,7 +41,6 @@ public enum BrokerSettingKey implements SettingKey {
     /**
      * System message creator implementation.
      */
-
     SYSTEM_MESSAGE_CREATOR_CLASS_NAME("broker.system.message_creator_class_name"),
     /**
      * Enable/disable the clustered stealing link feature
@@ -63,8 +61,8 @@ public enum BrokerSettingKey implements SettingKey {
     /**
      * No destination broker internal use client pool - minimum size
      */
-    BROKER_CLIENT_POOL_NO_DEST_MIN_SIZE("broker.client_pool.no_dest_min_size");
-	/**
+    BROKER_CLIENT_POOL_NO_DEST_MIN_SIZE("broker.client_pool.no_dest_min_size"),
+    /**
      * Broker name (used also for the vm connector name)
      */
     BROKER_NAME("broker.name");

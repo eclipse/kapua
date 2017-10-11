@@ -11,12 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.integration;
 
+import org.eclipse.kapua.test.cucumber.CucumberProperty;
+import org.eclipse.kapua.test.cucumber.CucumberWithProperties;
 import org.junit.runner.RunWith;
 
 import cucumber.api.CucumberOptions;
-import cucumber.api.junit.Cucumber;
 
-@RunWith(Cucumber.class)
+@RunWith(CucumberWithProperties.class)
 @CucumberOptions(
         features = {"classpath:features/device"
                    },
@@ -30,5 +31,6 @@ import cucumber.api.junit.Cucumber;
                   "json:target/DeviceI9n_cucumber.json"
                  },
         monochrome = true )
-
+@CucumberProperty(key="broker.ip", value="192.168.33.10")
+@CucumberProperty(key="kapua.config.url", value="")
 public class RunDeviceI9nTest {}

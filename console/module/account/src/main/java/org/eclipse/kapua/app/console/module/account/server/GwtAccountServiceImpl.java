@@ -147,7 +147,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
 
                 @Override
                 public void run() throws Exception {
-                    roleService.create(adminRoleCreator);
+            roleService.create(adminRoleCreator);
                 }
             });
 
@@ -162,7 +162,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
 
                 @Override
                 public void run() throws Exception {
-                    roleService.create(thingRoleCreator);
+            roleService.create(thingRoleCreator);
                 }
             });
         } catch (Throwable t) {
@@ -501,7 +501,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                                 gwtParam.setMin(ad.getMin());
                                 gwtParam.setMax(ad.getMax());
                                 Map<String, String> gwtEntries = new HashMap<String, String>();
-                                for (Entry<QName, String> entry : ad.getOtherAttributes().entrySet()) {
+                                for(Entry<QName, String> entry : ad.getOtherAttributes().entrySet()) {
                                     gwtEntries.put(entry.getKey().toString(), entry.getValue());
                                 }
                                 gwtParam.setOtherAttributes(gwtEntries);

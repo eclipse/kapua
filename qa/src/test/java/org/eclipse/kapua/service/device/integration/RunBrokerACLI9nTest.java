@@ -30,5 +30,7 @@ import org.junit.runner.RunWith;
                  },
         monochrome = true )
 @CucumberProperty(key="org.eclipse.kapua.qa.broker.extraStartupDelay", value="3")
+@CucumberProperty(key="broker.ip", value="192.168.33.10")
+@CucumberProperty(key="kapua.config.url", value="")
 public class RunBrokerACLI9nTest {
 }

@@ -28,6 +28,8 @@ import org.junit.runner.RunWith;
                 "json:target/TagService_cucumber.json"
         },
         monochrome = true)
+@CucumberProperty(key="broker.ip", value="192.168.33.10")
+@CucumberProperty(key="kapua.config.url", value="")
 @CucumberProperty(key="datastore.client.class", value="org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient")
 @CucumberProperty(key="org.eclipse.kapua.qa.datastore.extraStartupDelay", value="5")
 public class RunTagServiceTest {

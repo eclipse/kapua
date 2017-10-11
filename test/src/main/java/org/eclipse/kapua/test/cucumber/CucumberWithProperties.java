@@ -28,7 +28,11 @@ public class CucumberWithProperties extends Cucumber {
 
         CucumberProperty[] systemProperties = getProperties(clazz);
         for (CucumberProperty property : systemProperties) {
-            System.setProperty(property.key(), property.value());
+            if ((property.value() == null) || (property.value().length() == 0)) {
+                System.clearProperty(property.key());
+            } else {
+                System.setProperty(property.key(), property.value());
+            }
         }
     }
 
