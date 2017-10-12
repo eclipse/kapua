@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,17 +9,10 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.authentication;
+package org.eclipse.kapua.service.certificate.api;
 
-import java.security.KeyPair;
+import org.eclipse.kapua.service.KapuaEntityService;
 
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.service.KapuaService;
+public interface CertificateService extends KapuaEntityService<Certificate, CertificateCreator> {
 
-public interface CertificateService extends KapuaService {
-    /**
-     * Gets an encryption certificate
-     * @return an encryption certificate
-     */
-    public KeyPair getJwtKeyPair() throws KapuaException;
 }

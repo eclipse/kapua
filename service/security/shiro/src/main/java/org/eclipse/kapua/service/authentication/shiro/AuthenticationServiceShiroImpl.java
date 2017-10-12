@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro;
 
-import java.security.KeyPair;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -34,12 +33,18 @@ import org.apache.shiro.subject.Subject;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
-import org.eclipse.kapua.service.authentication.CertificateService;
+import org.eclipse.kapua.service.certificate.api.Certificate;
+import org.eclipse.kapua.service.certificate.api.CertificateFactory;
+import org.eclipse.kapua.service.certificate.api.CertificatePredicates;
+import org.eclipse.kapua.service.certificate.api.CertificateQuery;
+import org.eclipse.kapua.service.certificate.api.CertificateService;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.SessionCredentials;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
@@ -48,6 +53,7 @@ import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authentication.token.AccessTokenCreator;
 import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
 import org.eclipse.kapua.service.authentication.token.AccessTokenService;
+import org.eclipse.kapua.service.certificate.api.CertificateUtils;
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
@@ -480,12 +486,15 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             CertificateService certificateService = locator.getService(CertificateService.class);
-            KeyPair keyPair = certificateService.getJwtKeyPair();
+            CertificateFactory certificateFactory = locator.getFactory(CertificateFactory.class);
+            CertificateQuery certificateQuery = certificateFactory.newQuery(scopeId);
+            certificateQuery.setPredicate(new AndPredicate().and(new AttributePredicate<>(CertificatePredicates.FAMILY, "JWT")));
+            certificateQuery.setLimit(1);
+            Certificate certificate = certificateService.query(certificateQuery).getItem(0);
             JsonWebSignature jws = new JsonWebSignature();
             jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
             jws.setPayload(claims.toJson());
-            jws.setKey(keyPair.getPrivate());
-
+            jws.setKey(CertificateUtils.convertStringToPrivateKey(certificate.getPrivateKey()));
             jwt = jws.getCompactSerialization();
         } catch (JoseException | KapuaException e) {
             KapuaRuntimeException.internalError(e);

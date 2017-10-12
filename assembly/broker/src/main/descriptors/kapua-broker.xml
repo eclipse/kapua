@@ -22,6 +22,13 @@
         <format>tar.gz</format>
     </formats>
 
+    <files>
+        <file>
+            <source>src/main/resources/run-broker</source>
+            <outputDirectory>/</outputDirectory>
+            <fileMode>0755</fileMode>
+        </file>
+    </files>
     <fileSets>
         <!-- Expanded ActiveMQ Runtime -->
         <fileSet>
@@ -222,6 +229,8 @@
                 <include>${pom.groupId}:kapua-message-internal</include>
                 <include>${pom.groupId}:kapua-security-authentication-api</include>
                 <include>${pom.groupId}:kapua-security-authorization-api</include>
+                <include>${pom.groupId}:kapua-security-certificate-api</include>
+                <include>${pom.groupId}:kapua-security-certificate-internal</include>
                 <include>${pom.groupId}:kapua-security-shiro</include>
                 <include>${pom.groupId}:kapua-device-call-api</include>
                 <include>${pom.groupId}:kapua-device-call-kura</include>

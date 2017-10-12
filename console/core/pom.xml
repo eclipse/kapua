@@ -248,6 +248,10 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-job-internal</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-security-certificate-internal</artifactId>
+        </dependency>
         
         <!-- External dependencies -->
         <dependency>
