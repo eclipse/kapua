@@ -11,7 +11,7 @@
         Eurotech - initial API and implementation
         Red Hat Inc
  -->
- <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
@@ -117,6 +117,14 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-user-internal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-security-certificate-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-security-certificate-internal</artifactId>
         </dependency>
 
         <!-- dependencies added otherwise the unix assembly doesn't know the arctifact
@@ -386,41 +394,49 @@
         <profile>
             <id>docker</id>
             <build>
-                    <plugins>
-                        <plugin>
-                            <groupId>io.fabric8</groupId>
-                            <artifactId>docker-maven-plugin</artifactId>
-                            <configuration>
-                                <images>
-                                    <image>
-                                        <name>${docker.account}/kapua-api</name>
-                                        <build>
-                                            <from>${docker.account}/jetty-base</from>
-                                            <assembly>
-                                                <descriptor>${basedir}/src/main/descriptors/kapua-api-jetty.xml</descriptor>
-                                                <basedir>/var/lib/jetty</basedir>
-                                            </assembly>
-                                            <env>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <name>${docker.account}/kapua-api</name>
+                                    <build>
+                                        <from>${docker.account}/jetty-base</from>
+                                        <assembly>
+                                            <descriptor>${basedir}/src/main/descriptors/kapua-api-jetty.xml</descriptor>
+                                            <basedir>/var/lib/jetty</basedir>
+                                        </assembly>
+                                        <env>
                                             <SQL_DB_PORT>\${DB_PORT_3306_TCP_PORT}</SQL_DB_PORT>
                                             <SQL_DB_ADDR>\${DB_PORT_3306_TCP_ADDR}</SQL_DB_ADDR>
                                             <DATASTORE_PORT>\${ES_PORT_9200_TCP_PORT}</DATASTORE_PORT>
                                             <DATASTORE_ADDR>\${ES_PORT_9200_TCP_ADDR}</DATASTORE_ADDR>
                                             <DATASTORE_CLIENT>org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient</DATASTORE_CLIENT>
-                                            <JAVA_OPTS>-Dcommons.db.connection.host=\${SQL_DB_ADDR} \
+                                            <JAVA_OPTS>
+                                                -Dcommons.db.connection.host=\${SQL_DB_ADDR} \
                                                 -Dcommons.db.connection.port=\${SQL_DB_PORT} \
                                                 -Dbroker.host=\${BROKER_PORT_1883_TCP_ADDR} \
                                                 -Ddatastore.elasticsearch.nodes=\${DATASTORE_ADDR} \
                                                 -Ddatastore.elasticsearch.port=\${DATASTORE_PORT} \
-                                                -Ddatastore.client.class=\${DATASTORE_CLIENT}
+                                                -Ddatastore.client.class=\${DATASTORE_CLIENT} \
+                                                -Dcertificate.jwt.private.key=/home/kapua/key.pk8 \
+                                                -Dcertificate.jwt.certificate=/home/kapua/cert.pem
                                             </JAVA_OPTS>
-                                            </env>
-                                            <user>kapua</user>
-                                        </build>
-                                    </image>
-                                </images>
-                            </configuration>
-                        </plugin>
-                    </plugins>
+                                        </env>
+                                        <user>kapua</user>
+                                        <runCmds>
+                                            <runCmd>
+                                                chown -R kapua:kapua /home/kapua
+                                            </runCmd>
+                                        </runCmds>
+                                    </build>
+                                </image>
+                            </images>
+                        </configuration>
+                    </plugin>
+                </plugins>
             </build>
         </profile>
     </profiles>

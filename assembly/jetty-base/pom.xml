@@ -54,7 +54,6 @@
                                     mkdir -p jetty && cd jetty && \
                                     tar --strip=1 -xzf ../jetty-distribution.tar.gz && \
                                     rm ../jetty-distribution.tar.gz && \
-                                    chown -R kapua:kapua /home/kapua && \
                                     mkdir -p /var/lib/jetty/lib/ext /var/lib/jetty/start.d && \
                                     chown kapua:kapua /var/lib/jetty && \
                                     cd /var/lib/jetty && \
