@@ -113,6 +113,14 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-user-internal</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-security-certificate-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-security-certificate-internal</artifactId>
+        </dependency>
 
         <!-- dependencies added otherwise the unix assembly doesn't know the arctifact
             to add -->
@@ -329,7 +337,16 @@
                                            <DATASTORE_PORT>\${ES_PORT_9200_TCP_PORT}</DATASTORE_PORT>
                                            <DATASTORE_ADDR>\${ES_PORT_9200_TCP_ADDR}</DATASTORE_ADDR>
                                            <DATASTORE_CLIENT>org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient</DATASTORE_CLIENT>
-                                           <JAVA_OPTS>-Dcommons.db.connection.host=\${SQL_DB_ADDR} -Dcommons.db.connection.port=\${SQL_DB_PORT} -Dbroker.host=\${BROKER_PORT_1883_TCP_ADDR} -Ddatastore.elasticsearch.nodes=\${DATASTORE_ADDR} -Ddatastore.elasticsearch.port=\${DATASTORE_PORT} -Ddatastore.client.class=\${DATASTORE_CLIENT}</JAVA_OPTS>
+                                           <JAVA_OPTS>
+                                               -Dcommons.db.connection.host=\${SQL_DB_ADDR} \
+                                               -Dcommons.db.connection.port=\${SQL_DB_PORT} \
+                                               -Dbroker.host=\${BROKER_PORT_1883_TCP_ADDR} \
+                                               -Ddatastore.elasticsearch.nodes=\${DATASTORE_ADDR} \
+                                               -Ddatastore.elasticsearch.port=\${DATASTORE_PORT} \
+                                               -Ddatastore.client.class=\${DATASTORE_CLIENT} \
+                                               -Dcertificate.jwt.private.key=/home/kapua/key.pk8 \
+                                               -Dcertificate.jwt.certificate=/home/kapua/cert.pem
+                                           </JAVA_OPTS>
                                         </env>
                                         <user>kapua</user>
                                         <entryPoint>
@@ -337,6 +354,11 @@
                                                 <arg>/home/kapua/run-console</arg>
                                             </exec>
                                         </entryPoint>
+                                        <runCmds>
+                                            <runCmd>
+                                                chown -R kapua:kapua /home/kapua
+                                            </runCmd>
+                                        </runCmds>
                                     </build>
                                 </image>
                             </images>

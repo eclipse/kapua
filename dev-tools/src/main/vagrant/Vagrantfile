@@ -73,6 +73,12 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provision "shell", env: env_vars, inline: <<-SHELL
+    openssl req -x509 -newkey rsa:4096 -keyout /home/vagrant/key.pem -out /home/vagrant/cert.pem -days 365 -nodes -subj '/O=Eclipse Kapua/C=XX'
+    openssl pkcs8 -topk8 -in /home/vagrant/key.pem -out /home/vagrant/key.pk8 -nocrypt
+    rm /home/vagrant/key.pem
+  SHELL
+
+  config.vm.provision "shell", env: env_vars, inline: <<-SHELL
 
     # Setup permanent environment vars
     sudo ln -sf /kapua/dev-tools/src/main/vagrant/develop/etc/profile.d/kapua_env.sh /etc/profile.d/kapua_env.sh

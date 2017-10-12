@@ -140,6 +140,14 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-request-internal</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-security-certificate-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-security-certificate-internal</artifactId>
+        </dependency>
         <!-- activemq -->
         <dependency>
             <groupId>org.apache.activemq</groupId>
