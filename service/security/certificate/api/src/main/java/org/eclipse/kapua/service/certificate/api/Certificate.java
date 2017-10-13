@@ -13,12 +13,17 @@ package org.eclipse.kapua.service.certificate.api;
 
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
+import org.eclipse.kapua.service.certificate.api.xml.CertificateXmlRegistry;
+import org.eclipse.kapua.service.certificate.api.xml.PrivateKeyXmlAdapter;
+import org.eclipse.kapua.service.certificate.api.xml.X509CertificateXmlAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.security.PrivateKey;
+import java.security.cert.X509Certificate;
 import java.util.Date;
 
 @XmlRootElement(name = "certificate")
@@ -49,9 +54,11 @@ public interface Certificate extends KapuaUpdatableEntity {
         return TYPE;
     }
 
-    String getCertificate();
+    @XmlJavaTypeAdapter(X509CertificateXmlAdapter.class)
+    X509Certificate getCertificate();
 
-    void setCertificate(String certificate);
+    @XmlJavaTypeAdapter(X509CertificateXmlAdapter.class)
+    void setCertificate(X509Certificate certificate);
 
     String getFamily();
 
@@ -95,9 +102,11 @@ public interface Certificate extends KapuaUpdatableEntity {
 
     void setDigest(byte[] digest);
 
-    String getPrivateKey();
+    @XmlJavaTypeAdapter(PrivateKeyXmlAdapter.class)
+    PrivateKey getPrivateKey();
 
-    void setPrivateKey(String privateKey);
+    @XmlJavaTypeAdapter(PrivateKeyXmlAdapter.class)
+    void setPrivateKey(PrivateKey privateKey);
 
     Boolean getDefault();
 

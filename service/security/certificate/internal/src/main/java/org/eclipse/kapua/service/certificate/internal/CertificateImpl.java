@@ -16,13 +16,15 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.certificate.api.Certificate;
 import org.eclipse.kapua.service.certificate.api.CertificateStatus;
 
+import java.security.PrivateKey;
+import java.security.cert.X509Certificate;
 import java.util.Date;
 
 public class CertificateImpl extends AbstractKapuaUpdatableEntity implements Certificate {
 
-    private String certificate;
+    private X509Certificate certificate;
     private String family;
-    private String privateKey;
+    private PrivateKey privateKey;
 
     public CertificateImpl() {
     }
@@ -32,12 +34,12 @@ public class CertificateImpl extends AbstractKapuaUpdatableEntity implements Cer
     }
 
     @Override
-    public String getCertificate() {
+    public X509Certificate getCertificate() {
         return certificate;
     }
 
     @Override
-    public void setCertificate(String certificate) {
+    public void setCertificate(X509Certificate certificate) {
         this.certificate = certificate;
     }
 
@@ -52,12 +54,12 @@ public class CertificateImpl extends AbstractKapuaUpdatableEntity implements Cer
     }
 
     @Override
-    public String getPrivateKey() {
+    public PrivateKey getPrivateKey() {
         return privateKey;
     }
 
     @Override
-    public void setPrivateKey(String privateKey) {
+    public void setPrivateKey(PrivateKey privateKey) {
         this.privateKey = privateKey;
     }
 

@@ -12,6 +12,7 @@
 package org.eclipse.kapua.service.certificate.api;
 
 import org.eclipse.kapua.model.query.KapuaListResult;
+import org.eclipse.kapua.service.certificate.api.xml.CertificateXmlRegistry;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;

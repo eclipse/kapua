@@ -9,9 +9,13 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.certificate.api;
+package org.eclipse.kapua.service.certificate.api.xml;
 
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.certificate.api.Certificate;
+import org.eclipse.kapua.service.certificate.api.CertificateFactory;
+import org.eclipse.kapua.service.certificate.api.CertificateListResult;
+import org.eclipse.kapua.service.certificate.api.CertificateQuery;
 
 import javax.xml.bind.annotation.XmlRegistry;
 

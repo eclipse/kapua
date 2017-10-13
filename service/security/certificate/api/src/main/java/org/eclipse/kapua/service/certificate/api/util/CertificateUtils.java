@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.certificate.api;
+package org.eclipse.kapua.service.certificate.api.util;
 
 import org.eclipse.kapua.service.certificate.exception.KapuaCertificateErrorCodes;
 import org.eclipse.kapua.service.certificate.exception.KapuaCertificateException;
@@ -28,7 +28,7 @@ public class CertificateUtils {
 
     private CertificateUtils() { }
 
-    public static PrivateKey convertStringToPrivateKey(String privateKeyString) throws KapuaCertificateException {
+    public static PrivateKey stringToPrivateKey(String privateKeyString) throws KapuaCertificateException {
         try {
             byte[] decoded = Base64.getDecoder().decode(privateKeyString);
             PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(decoded);
@@ -39,7 +39,7 @@ public class CertificateUtils {
         }
     }
 
-    public static X509Certificate convertStringToCertificate(String certificateString) throws KapuaCertificateException {
+    public static X509Certificate stringToCertificate(String certificateString) throws KapuaCertificateException {
         try {
             byte[] decoded = Base64.getDecoder().decode(certificateString);
             java.security.cert.CertificateFactory cf = java.security.cert.CertificateFactory.getInstance("X.509");
