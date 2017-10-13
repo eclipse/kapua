@@ -53,7 +53,6 @@ import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authentication.token.AccessTokenCreator;
 import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
 import org.eclipse.kapua.service.authentication.token.AccessTokenService;
-import org.eclipse.kapua.service.certificate.api.CertificateUtils;
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
@@ -494,7 +493,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             JsonWebSignature jws = new JsonWebSignature();
             jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
             jws.setPayload(claims.toJson());
-            jws.setKey(CertificateUtils.convertStringToPrivateKey(certificate.getPrivateKey()));
+            jws.setKey(certificate.getPrivateKey());
             jwt = jws.getCompactSerialization();
         } catch (JoseException | KapuaException e) {
             KapuaRuntimeException.internalError(e);
