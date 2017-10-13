@@ -29,6 +29,8 @@ import java.util.Date;
 @XmlRootElement(name = "userCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = {
+        "certificate",
+        "family",
         "version",
         "serial",
         "algorithm",
@@ -45,6 +47,14 @@ import java.util.Date;
         "password"
 })
 public interface CertificateCreator extends KapuaNamedEntityCreator<Certificate> {
+
+    String getCertificate();
+
+    void setCertificate(String certificate);
+
+    String getFamily();
+
+    void setFamily(String family);
 
     Integer getVersion();
 
