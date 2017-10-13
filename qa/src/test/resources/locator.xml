@@ -13,8 +13,6 @@
  <!DOCTYPE xml>
 <locator-config>
     <provided>
-        <api>org.eclipse.kapua.service.event.KapuaEventFactory</api>
-
         <api>org.eclipse.kapua.service.account.AccountFactory</api>
         <api>org.eclipse.kapua.service.account.AccountService</api>
         <api>org.eclipse.kapua.service.user.UserFactory</api>

@@ -77,7 +77,7 @@
 
         <api>org.eclipse.kapua.model.id.KapuaIdFactory</api>
         
-        <api>org.eclipse.kapua.service.event.KapuaEventStoreFactory</api>
+        <api>org.eclipse.kapua.commons.event.service.api.ServiceEventStoreFactory</api>
 
         <provide>
             <interceptor>annotation</interceptor>

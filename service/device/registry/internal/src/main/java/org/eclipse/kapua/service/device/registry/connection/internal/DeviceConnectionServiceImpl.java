@@ -33,7 +33,7 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionPred
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
-import org.eclipse.kapua.service.event.KapuaEvent;
+import org.eclipse.kapua.service.event.ServiceEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -223,7 +223,7 @@ public class DeviceConnectionServiceImpl extends
     }
 
     @Override
-    public void onKapuaEvent(KapuaEvent kapuaEvent) throws KapuaException {
+    public void onKapuaEvent(ServiceEvent kapuaEvent) throws KapuaException {
         if (kapuaEvent == null) {
             //service bus error. Throw some exception?
         }

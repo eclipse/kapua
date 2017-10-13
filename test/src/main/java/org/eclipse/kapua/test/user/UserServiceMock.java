@@ -24,7 +24,7 @@ import org.eclipse.kapua.locator.guice.TestService;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.event.KapuaEvent;
+import org.eclipse.kapua.service.event.ServiceEvent;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserListResult;
@@ -150,7 +150,7 @@ public class UserServiceMock implements UserService {
     }
 
     @Override
-    public void onKapuaEvent(KapuaEvent kapuaEvent) throws KapuaException {
+    public void onKapuaEvent(ServiceEvent kapuaEvent) throws KapuaException {
         // TODO Auto-generated method stub
 
     }

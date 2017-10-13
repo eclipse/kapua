@@ -17,7 +17,7 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
   logicalFilePath="KapuaDB/changelog-account-0.3.0.xml">
 
-    <include relativeToChangelogFile="true" file="./sys-service-event-housekeeping-account-seed.sql" />
+    <include relativeToChangelogFile="true" file="./sys-service-event-housekeeping-account-seed.xml" />
     <include relativeToChangelogFile="true" file="./account-parent_account_path_length.xml" />
     <include relativeToChangelogFile="true" file="./account-id_check_positive.xml" />
 

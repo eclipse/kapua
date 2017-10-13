@@ -12,6 +12,10 @@
 
 DROP TABLE IF EXISTS DATABASECHANGELOG;
 
+DROP TABLE IF EXISTS sys_service_event;
+
+DROP TABLE IF EXISTS sys_service_event_housekeeping;
+
 DROP TABLE IF EXISTS act_account;
 
 DROP TABLE IF EXISTS atht_credential;

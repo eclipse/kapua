@@ -30,7 +30,7 @@ import org.eclipse.kapua.service.device.registry.DevicePredicates;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.common.DeviceValidation;
-import org.eclipse.kapua.service.event.KapuaEvent;
+import org.eclipse.kapua.service.event.ServiceEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -160,7 +160,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
     }
 
     @Override
-    public void onKapuaEvent(KapuaEvent kapuaEvent) throws KapuaException {
+    public void onKapuaEvent(ServiceEvent kapuaEvent) throws KapuaException {
         if (kapuaEvent == null) {
             //service bus error. Throw some exception?
         }

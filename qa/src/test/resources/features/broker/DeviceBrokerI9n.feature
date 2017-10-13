@@ -15,8 +15,11 @@ Feature: Device Broker Integration
   Each Scenario starts with BIRTH of device and then the communication over MQTT
   between device and Kapua.
 
-  @StartBroker
+  @StartEventBroker
   Scenario: Start broker for all scenarios
+
+  @StartBroker
+  Scenario: Start event broker for all scenarios
 
   @StartDatastore
   Scenario: Start datastore for all scenarios
@@ -45,4 +48,7 @@ Feature: Device Broker Integration
 
   @StopDatastore
   Scenario: Stop datastore after all scenarios
+
+  @StopEventBroker
+  Scenario: Stop event broker after all scenarios
 

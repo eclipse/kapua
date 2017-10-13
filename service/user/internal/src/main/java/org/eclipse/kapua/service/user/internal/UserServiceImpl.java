@@ -31,9 +31,8 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.event.KapuaEvent;
-import org.eclipse.kapua.service.event.ListenKapuaEvent;
-import org.eclipse.kapua.service.event.RaiseKapuaEvent;
+import org.eclipse.kapua.service.event.ServiceEvent;
+import org.eclipse.kapua.service.event.RaiseServiceEvent;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserFactory;
@@ -68,7 +67,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     }
 
     @Override
-    @RaiseKapuaEvent
+    @RaiseServiceEvent
     public User create(UserCreator userCreator)
             throws KapuaException {
         //
@@ -101,7 +100,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     }
 
     @Override
-    @RaiseKapuaEvent
+    @RaiseServiceEvent
     public User update(User user)
             throws KapuaException {
         // Validation of the fields
@@ -140,7 +139,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     }
 
     @Override
-    @RaiseKapuaEvent
+    @RaiseServiceEvent
     public void delete(KapuaId scopeId, KapuaId userId) throws KapuaException {
         // Validation of the fields
         ArgumentValidator.notNull(userId.getId(), "id");
@@ -257,8 +256,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     }
 
     @Override
-    @ListenKapuaEvent
-    public void onKapuaEvent(KapuaEvent kapuaEvent) throws KapuaException {
+    public void onKapuaEvent(ServiceEvent kapuaEvent) throws KapuaException {
         if (kapuaEvent == null) {
             //service bus error. Throw some exception?
         }

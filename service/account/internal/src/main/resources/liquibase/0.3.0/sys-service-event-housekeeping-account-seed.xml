@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+    logicalFilePath="KapuaDB/sys-service-event-housekeeping-account-seed-0.3.0.xml">
+
+
+    <changeSet id="changelog-account-0.3.0_sysServiceEventHousekeeping"
+        author="eurotech">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="sys_service_event_housekeeping" />
+            </not>
+        </preConditions>
+        <createTable tableName="sys_service_event_housekeeping">
+            <column name="service" type="varchar(64)">
+                <constraints nullable="false" primaryKey="true" />
+            </column>
+            <column name="last_run_on" type="timestamp(3)" />
+            <column name="last_run_by" type="varchar(64)" />
+            <column name="version" type="bigint(21) unsigned" />
+        </createTable>
+    </changeSet>
+    <changeSet id="changelog-account-0.3.0_sysServiceEventHousekeeping_seed"
+        author="eurotech">
+        <!-- Seed values -->
+        <insert tableName="sys_service_event_housekeeping">
+            <column name="service" value="account" />
+            <column name="last_run_on" valueComputed="${now}" />
+            <column name="version" value="1" />
+        </insert>
+    </changeSet>
+</databaseChangeLog>

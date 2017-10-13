@@ -27,7 +27,8 @@ public enum KapuaUserSettingKeys implements SettingKey {
     USER_KEY("user.key"),
     USER_INTERNAL_EVENT_ADDRESS("user.internalEventAddress"),
     USER_SERVICES_NAMES("user.servicesNames"),
-    ACCOUNT_USER_EVENT_ADDRESS("user.accountUserEventAddress");
+    ACCOUNT_EVENT_ADDRESS("account.eventAddress"),
+    USER_SUBSCRIPTION_NAME("user.subscriptionName");
 
     private String key;
 

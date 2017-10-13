@@ -14,6 +14,9 @@ Feature: Device Registry Integration
     Device Registy integration test scenarios. These scenarios test higher level device service functionality
     with all services live.
 
+  @StartEventBroker
+  Scenario: Start event broker for all scenarios
+
   @StartBroker
   Scenario: Start broker for all scenarios
 
@@ -308,3 +311,6 @@ Scenario: Creating new device, tagging it with specific Tag and then deleting th
 
   @StopDatastore
   Scenario: Stop datastore after all scenarios
+
+  @StopEventBroker
+  Scenario: Stop event broker for all scenarios

@@ -11,87 +11,44 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry;
 
-import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-
 import javax.inject.Inject;
 
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.core.ServiceModule;
-import org.eclipse.kapua.commons.event.bus.EventBusManager;
-import org.eclipse.kapua.commons.event.service.EventStoreHouseKeeperJob;
-import org.eclipse.kapua.commons.event.service.internal.ServiceMap;
+import org.eclipse.kapua.commons.event.module.ServiceEventListenerConfiguration;
+import org.eclipse.kapua.commons.event.module.ServiceEventModule;
+import org.eclipse.kapua.commons.event.module.ServiceEventModuleConfiguration;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
-import org.eclipse.kapua.service.event.KapuaEventBus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @KapuaProvider
-public class DeviceServiceModule implements ServiceModule {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(DeviceServiceModule.class);
-
-    private final static int MAX_WAIT_LOOP_ON_SHUTDOWN = 30;
-    private final static int SCHEDULED_EXECUTION_TIME_WINDOW = 30;
-    private final static long WAIT_TIME = 1000;
+public class DeviceServiceModule extends ServiceEventModule {
 
     @Inject
     private DeviceConnectionService deviceConnectionService;
     @Inject
     private DeviceRegistryService deviceRegistryService;
 
-    private List<String> servicesNames;
-    private ScheduledExecutorService houseKeeperScheduler;
-    private ScheduledFuture<?> houseKeeperHandler;
-    private EventStoreHouseKeeperJob houseKeeperJob;
-
     @Override
-    public void start() throws KapuaException {
-
-        KapuaEventBus eventbus = EventBusManager.getInstance();
-
-        // Listen to upstream service events
-        eventbus.subscribe("account", "account-deviceregistry", deviceRegistryService);
-        eventbus.subscribe("account", "account-deviceconnection", deviceConnectionService);
-        eventbus.subscribe("authorization", "authorization-deviceregistry", deviceRegistryService);
-
-        //register events to the service map
-        String serviceInternalEventAddress = KapuaDeviceRegistrySettings.getInstance().getString(KapuaDeviceRegistrySettingKeys.DEVICE_INTERNAL_EVENT_ADDRESS);
-        servicesNames = KapuaDeviceRegistrySettings.getInstance().getList(String.class, KapuaDeviceRegistrySettingKeys.DEVICE_SERVICES_NAMES);
-        ServiceMap.registerServices(serviceInternalEventAddress, servicesNames);
-
-        // Start the House keeper
-        houseKeeperScheduler = Executors.newScheduledThreadPool(1);
-        houseKeeperJob = new EventStoreHouseKeeperJob(DeviceEntityManagerFactory.instance(), eventbus, serviceInternalEventAddress, servicesNames);
-        // Start time can be made random from 0 to 30 seconds
-        houseKeeperHandler = houseKeeperScheduler.scheduleAtFixedRate(houseKeeperJob, SCHEDULED_EXECUTION_TIME_WINDOW, SCHEDULED_EXECUTION_TIME_WINDOW, TimeUnit.SECONDS);
+    protected ServiceEventModuleConfiguration initializeConfiguration() {
+        KapuaDeviceRegistrySettings kds = KapuaDeviceRegistrySettings.getInstance();
+        ServiceEventListenerConfiguration[] selc = new ServiceEventListenerConfiguration[3];
+        selc[0] = new ServiceEventListenerConfiguration(
+                kds.getString(KapuaDeviceRegistrySettingKeys.ACCOUNT_EVENT_ADDRESS),
+                kds.getString(KapuaDeviceRegistrySettingKeys.DEVICE_REGISTRY_SUBSCRIPTION_NAME),
+                deviceRegistryService);
+        selc[1] = new ServiceEventListenerConfiguration(
+                kds.getString(KapuaDeviceRegistrySettingKeys.ACCOUNT_EVENT_ADDRESS),
+                kds.getString(KapuaDeviceRegistrySettingKeys.DEVICE_CONNECTION_SUBSCRIPTION_NAME),
+                deviceConnectionService);
+        selc[2] = new ServiceEventListenerConfiguration(
+                kds.getString(KapuaDeviceRegistrySettingKeys.AUTHORIZATION_EVENT_ADDRESS),
+                kds.getString(KapuaDeviceRegistrySettingKeys.DEVICE_REGISTRY_SUBSCRIPTION_NAME),
+                deviceRegistryService);
+        return new ServiceEventModuleConfiguration(
+                kds.getString(KapuaDeviceRegistrySettingKeys.DEVICE_INTERNAL_EVENT_ADDRESS),
+                kds.getList(String.class, KapuaDeviceRegistrySettingKeys.DEVICE_SERVICES_NAMES),
+                DeviceEntityManagerFactory.instance(),
+                selc);
     }
 
-    @Override
-    public void stop() throws KapuaException {
-        if (houseKeeperJob!=null) {
-            houseKeeperJob.stop();
-        }
-        int waitLoop = 0;
-        while(houseKeeperHandler.isDone()) {
-            try {
-                Thread.sleep(WAIT_TIME);
-            } catch (InterruptedException e) {
-                //do nothing
-            }
-            if (waitLoop++ > MAX_WAIT_LOOP_ON_SHUTDOWN) {
-                LOGGER.warn("Cannot cancel the house keeper task afeter a while!");
-                break;
-            }
-        }
-        if (houseKeeperScheduler != null) {
-            houseKeeperScheduler.shutdown();
-        }
-        ServiceMap.unregisterServices(servicesNames);
-    }
 }

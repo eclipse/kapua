@@ -39,10 +39,9 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.event.KapuaEvent;
-import org.eclipse.kapua.service.event.KapuaEventBusListener;
-import org.eclipse.kapua.service.event.ListenKapuaEvent;
-import org.eclipse.kapua.service.event.RaiseKapuaEvent;
+import org.eclipse.kapua.service.event.ServiceEvent;
+import org.eclipse.kapua.service.event.ServiceEventBusListener;
+import org.eclipse.kapua.service.event.RaiseServiceEvent;
 
 /**
  * {@link AccountService} implementation.
@@ -51,7 +50,7 @@ import org.eclipse.kapua.service.event.RaiseKapuaEvent;
  */
 @KapuaProvider
 public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<Account, AccountCreator, AccountService, AccountListResult, AccountQuery, AccountFactory>
-        implements AccountService, KapuaEventBusListener {
+        implements AccountService, ServiceEventBusListener {
 
     private static final Domain ACCOUNT_DOMAIN = new AccountDomain();
 
@@ -72,7 +71,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     @Override
-    @RaiseKapuaEvent
+    @RaiseServiceEvent
     public Account create(AccountCreator accountCreator)
             throws KapuaException {
         //
@@ -112,7 +111,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     @Override
-    @RaiseKapuaEvent
+    @RaiseServiceEvent
     public Account update(Account account)
             throws KapuaException {
         //
@@ -158,7 +157,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     @Override
-    @RaiseKapuaEvent
+    @RaiseServiceEvent
     public void delete(KapuaId scopeId, KapuaId accountId)
             throws KapuaException {
 
@@ -344,8 +343,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     @Override
-    @ListenKapuaEvent
-    public void onKapuaEvent(KapuaEvent kapuaEvent) throws KapuaException {
+    public void onKapuaEvent(ServiceEvent kapuaEvent) throws KapuaException {
         // TODO Auto-generated method stub
 
     }

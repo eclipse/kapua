@@ -102,8 +102,8 @@
         <api>org.eclipse.kapua.transport.TransportClientFactory</api>
 
         <api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
-        
-        <api>org.eclipse.kapua.service.event.KapuaEventStoreFactory</api>
+
+        <api>org.eclipse.kapua.commons.event.service.api.ServiceEventStoreFactory</api>
     </provided>
     <packages>
         <package>org.eclipse.kapua.commons</package>

@@ -17,7 +17,7 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
-import org.eclipse.kapua.service.event.KapuaEventBusListener;
+import org.eclipse.kapua.service.event.ServiceEventBusListener;
 
 /**
  * {@link Group} service definition.
@@ -28,7 +28,7 @@ import org.eclipse.kapua.service.event.KapuaEventBusListener;
 public interface GroupService extends KapuaEntityService<Group, GroupCreator>,
         KapuaUpdatableEntityService<Group>,
         KapuaConfigurableService,
-        KapuaEventBusListener {
+        ServiceEventBusListener {
 
     /**
      * Creates a new {@link Group} based on the parameters provided in the {@link GroupCreator}.<br>

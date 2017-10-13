@@ -13,6 +13,10 @@ package org.eclipse.kapua.app.console;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.TscalarImpl;
+import org.eclipse.kapua.commons.event.service.api.ServiceEventCreator;
+import org.eclipse.kapua.commons.event.service.api.ServiceEventListResult;
+import org.eclipse.kapua.commons.event.service.api.ServiceEventStoreQuery;
+import org.eclipse.kapua.commons.event.service.api.ServiceEventStoreXmlRegistry;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTicon;
@@ -41,11 +45,7 @@ import org.eclipse.kapua.service.device.management.packages.model.download.Devic
 import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallRequest;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
-import org.eclipse.kapua.service.event.KapuaEvent;
-import org.eclipse.kapua.service.event.KapuaEventCreator;
-import org.eclipse.kapua.service.event.KapuaEventListResult;
-import org.eclipse.kapua.service.event.KapuaEventStoreQuery;
-import org.eclipse.kapua.service.event.KapuaEventStoreXmlRegistry;
+import org.eclipse.kapua.service.event.ServiceEvent;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
 
 import javax.xml.bind.JAXBContext;
@@ -98,11 +98,11 @@ public class ConsoleJAXBContextProvider implements JAXBContextProvider {
                         DeviceAssetXmlRegistry.class,
 
                         // KapuaEvent
-                        KapuaEvent.class,
-                        KapuaEventCreator.class,
-                        KapuaEventListResult.class,
-                        KapuaEventStoreQuery.class,
-                        KapuaEventStoreXmlRegistry.class
+                        ServiceEvent.class,
+                        ServiceEventCreator.class,
+                        ServiceEventListResult.class,
+                        ServiceEventStoreQuery.class,
+                        ServiceEventStoreXmlRegistry.class
 
                 }, null);
             }

@@ -12,7 +12,7 @@
 package org.eclipse.kapua.commons.core;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.event.bus.EventBusManager;
+import org.eclipse.kapua.commons.event.bus.ServiceEventBusManager;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ public class KapuaApplication {
         logger.info("Starting up...");
 
         logger.info("Startup Kapua Eventbus...");
-        EventBusManager.start();
+        ServiceEventBusManager.start();
 
         logger.info("Startup Kapua Service Modules...");
         ServiceModuleProvider moduleProvider = ServiceModuleLocator.getModuleProvider();
@@ -59,7 +59,7 @@ public class KapuaApplication {
         }
 
         logger.info("Shutdown Kapua Eventbus...");
-        EventBusManager.stop();
+        ServiceEventBusManager.stop();
 
         logger.info("Shutdown...DONE");
     }

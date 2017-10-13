@@ -19,5 +19,6 @@
                       
     <include relativeToChangelogFile="true" file="./system_configuration-scope_id_index.xml" />
     <include relativeToChangelogFile="true" file="./system_configuration-id_check_positive.xml" />
+    <include relativeToChangelogFile="true" file="./service-events.xml" />
 
 </databaseChangeLog>

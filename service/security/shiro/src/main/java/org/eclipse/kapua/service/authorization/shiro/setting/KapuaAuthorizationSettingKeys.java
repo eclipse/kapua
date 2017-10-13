@@ -21,11 +21,12 @@ public enum KapuaAuthorizationSettingKeys implements SettingKey {
     AUTHORIZATION_KEY("authorization.key"),
     AUTHORIZATION_INTERNAL_EVENT_ADDRESS("authorization.internalEventAddress"),
     AUTHORIZATION_SERVICES_NAMES("authorization.servicesNames"),
-    ACCOUNT_ACCESS_INFO_UPSTREAM_EVENT_ADDRESS("authorization.account.access_info.upstreamEventAddress"),
-    ACCOUNT_ROLE_UPSTREAM_EVENT_ADDRESS("authorization.account.role.upstreamEventAddress"),
-    ACCOUNT_DOMAIN_UPSTREAM_EVENT_ADDRESS("authorization.account.domain.upstreamEventAddress"),
-    ACCOUNT_GROUP_UPSTREAM_EVENT_ADDRESS("authorization.account.group.upstreamEventAddress"),
-    USER_ACCESS_INFO_UPSTREAM_EVENT_ADDRESS("authorization.user.access_info.upstreamEventAddress");
+    ACCOUNT_EVENT_ADDRESS("account.eventAddress"),
+    USER_EVENT_ADDRESS("user.eventAddress"),
+    ACCESS_INFO_SUBSCRIPTION_NAME("accessInfo.subscriptionName"),
+    ROLE_SUBSCRIPTION_NAME("role.subscriptionName"),
+    DOMAIN_SUBSCRIPTION_NAME("domain.subscriptionName"),
+    GROUP_SUBSCRIPTION_NAME("group.subscriptionName");
 
     private String key;
 

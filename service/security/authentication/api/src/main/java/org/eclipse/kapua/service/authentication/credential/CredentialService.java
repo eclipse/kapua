@@ -17,7 +17,7 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
-import org.eclipse.kapua.service.event.KapuaEventBusListener;
+import org.eclipse.kapua.service.event.ServiceEventBusListener;
 
 /**
  * Credential service definition.
@@ -25,7 +25,7 @@ import org.eclipse.kapua.service.event.KapuaEventBusListener;
  * @since 1.0
  *
  */
-public interface CredentialService extends KapuaEntityService<Credential, CredentialCreator>, KapuaUpdatableEntityService<Credential>, KapuaConfigurableService, KapuaEventBusListener {
+public interface CredentialService extends KapuaEntityService<Credential, CredentialCreator>, KapuaUpdatableEntityService<Credential>, KapuaConfigurableService, ServiceEventBusListener {
 
     /**
      * Return the credential list result looking by user identifier (and also scope identifier)

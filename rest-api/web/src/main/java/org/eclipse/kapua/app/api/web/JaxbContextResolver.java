@@ -18,6 +18,10 @@ import org.eclipse.kapua.app.api.core.exception.model.SubjectUnauthorizedExcepti
 import org.eclipse.kapua.app.api.core.exception.model.ThrowableInfo;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.StorableEntityId;
+import org.eclipse.kapua.commons.event.service.api.ServiceEventCreator;
+import org.eclipse.kapua.commons.event.service.api.ServiceEventListResult;
+import org.eclipse.kapua.commons.event.service.api.ServiceEventStoreQuery;
+import org.eclipse.kapua.commons.event.service.api.ServiceEventStoreXmlRegistry;
 import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
@@ -152,11 +156,7 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventXmlRegistry;
-import org.eclipse.kapua.service.event.KapuaEvent;
-import org.eclipse.kapua.service.event.KapuaEventCreator;
-import org.eclipse.kapua.service.event.KapuaEventListResult;
-import org.eclipse.kapua.service.event.KapuaEventStoreQuery;
-import org.eclipse.kapua.service.event.KapuaEventStoreXmlRegistry;
+import org.eclipse.kapua.service.event.ServiceEvent;
 import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.tag.TagCreator;
 import org.eclipse.kapua.service.tag.TagListResult;
@@ -414,11 +414,11 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     UserXmlRegistry.class,
 
                     // KapuaEvent
-                    KapuaEvent.class,
-                    KapuaEventCreator.class,
-                    KapuaEventListResult.class,
-                    KapuaEventStoreQuery.class,
-                    KapuaEventStoreXmlRegistry.class
+                    ServiceEvent.class,
+                    ServiceEventCreator.class,
+                    ServiceEventListResult.class,
+                    ServiceEventStoreQuery.class,
+                    ServiceEventStoreXmlRegistry.class
 
             }, properties);
         } catch (Exception e) {
