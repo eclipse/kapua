@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.shared.service;
 
+import java.util.List;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 
@@ -32,4 +33,6 @@ public interface GwtAccessPermissionService extends RemoteService {
 
     void delete(GwtXSRFToken gwtXsrfToken, String scopeShortId, String accessPermissionShortId)
             throws GwtKapuaException;
+
+    public GwtAccessPermission createCheck(GwtXSRFToken gwtXsrfToken, List<GwtAccessPermissionCreator> listOfCreators,String scopeShortId, String userShortId) throws GwtKapuaException;
 }
