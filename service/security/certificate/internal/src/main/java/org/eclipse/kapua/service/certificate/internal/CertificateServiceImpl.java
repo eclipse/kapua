@@ -14,9 +14,7 @@ package org.eclipse.kapua.service.certificate.internal;
 import java.io.File;
 import java.io.IOException;
 import java.security.PrivateKey;
-import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
-import java.util.Base64;
 
 import com.google.common.collect.Lists;
 import org.apache.commons.io.FileUtils;
@@ -31,7 +29,7 @@ import org.eclipse.kapua.service.certificate.api.CertificateCreator;
 import org.eclipse.kapua.service.certificate.api.CertificateFactory;
 import org.eclipse.kapua.service.certificate.api.CertificateListResult;
 import org.eclipse.kapua.service.certificate.api.CertificateService;
-import org.eclipse.kapua.service.certificate.api.CertificateUtils;
+import org.eclipse.kapua.service.certificate.api.util.CertificateUtils;
 import org.eclipse.kapua.service.certificate.exception.KapuaCertificateErrorCodes;
 import org.eclipse.kapua.service.certificate.exception.KapuaCertificateException;
 import org.eclipse.kapua.service.certificate.internal.setting.KapuaCertificateSetting;
@@ -77,7 +75,7 @@ CertificateServiceImpl implements CertificateService {
                     .replaceAll("(\r)?\n", "")
                     .replace("-----BEGIN PRIVATE KEY-----", "")
                     .replace("-----END PRIVATE KEY-----", "");
-            privateKey = CertificateUtils.convertStringToPrivateKey(keyFromFile);
+            privateKey = CertificateUtils.stringToPrivateKey(keyFromFile);
         } catch (IOException e) {
             throw new KapuaCertificateException(KapuaCertificateErrorCodes.PRIVATE_KEY_ERROR, e);
         }
@@ -91,7 +89,7 @@ CertificateServiceImpl implements CertificateService {
                     .replaceAll("(\r)?\n", "")
                     .replace("-----BEGIN CERTIFICATE-----", "")
                     .replace("-----END CERTIFICATE-----", "");
-            certificate = CertificateUtils.convertStringToCertificate(certificateFromFile);
+            certificate = CertificateUtils.stringToCertificate(certificateFromFile);
         } catch (IOException e) {
             throw new KapuaCertificateException(KapuaCertificateErrorCodes.CERTIFICATE_ERROR, e);
         }
@@ -110,16 +108,12 @@ CertificateServiceImpl implements CertificateService {
 
     @Override
     public KapuaListResult<Certificate> query(KapuaQuery<Certificate> query) throws KapuaException {
-        try {
-            Certificate kapuaCertificate = new CertificateImpl(query.getScopeId());
-            kapuaCertificate.setPrivateKey(Base64.getEncoder().encodeToString(privateKey.getEncoded()));
-            kapuaCertificate.setCertificate(Base64.getEncoder().encodeToString(certificate.getEncoded()));
-            CertificateListResult result = FACTORY.newListResult();
-            result.addItems(Lists.newArrayList(kapuaCertificate));
-            return result;
-        } catch (CertificateEncodingException e) {
-            throw new KapuaCertificateException(KapuaCertificateErrorCodes.CERTIFICATE_ERROR, e);
-        }
+        Certificate kapuaCertificate = new CertificateImpl(query.getScopeId());
+        kapuaCertificate.setPrivateKey(privateKey);
+        kapuaCertificate.setCertificate(certificate);
+        CertificateListResult result = FACTORY.newListResult();
+        result.addItems(Lists.newArrayList(kapuaCertificate));
+        return result;
     }
 
     @Override

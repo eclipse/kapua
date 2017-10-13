@@ -27,7 +27,6 @@ import org.eclipse.kapua.service.certificate.api.CertificateService;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
-import org.eclipse.kapua.service.certificate.api.CertificateUtils;
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
@@ -72,7 +71,7 @@ public class AccessTokenCredentialsMatcher implements CredentialsMatcher {
                 //
                 // Set validator
                 JwtConsumer jwtConsumer = new JwtConsumerBuilder()
-                        .setVerificationKey(CertificateUtils.convertStringToCertificate(certificate.getCertificate()).getPublicKey()) // Set public key
+                        .setVerificationKey(certificate.getCertificate().getPublicKey()) // Set public key
                         .setExpectedIssuer(issuer) // Set expected issuer
                         .setRequireIssuedAt() // Set require reserved claim: iat
                         .setRequireExpirationTime() // Set require reserved claim: exp
