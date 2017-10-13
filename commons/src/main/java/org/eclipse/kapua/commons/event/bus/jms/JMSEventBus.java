@@ -41,6 +41,7 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -84,7 +85,6 @@ public class JMSEventBus implements KapuaEventBus {
 
             jmsConnection = jmsConnectionFactory.createConnection(eventbusUsername, eventbusPassword);
             jmsConnection.start();
-
         } catch (JMSException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             throw new KapuaEventBusException(e);
         }

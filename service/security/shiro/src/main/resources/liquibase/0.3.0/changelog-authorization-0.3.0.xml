@@ -16,7 +16,6 @@
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
                       
-    <include relativeToChangelogFile="true" file="./athz_sys-service-event-housekeeping-seed.sql" />
     <include relativeToChangelogFile="true" file="./athz_access_info-id_check_positive.xml" />
     <include relativeToChangelogFile="true" file="./athz_access_permission-id_check_positive.xml" />
     <include relativeToChangelogFile="true" file="./athz_access_role-id_check_positive.xml" />
@@ -25,5 +24,6 @@
     <include relativeToChangelogFile="true" file="./athz_group-id_check_positive.xml" />
     <include relativeToChangelogFile="true" file="./athz_role-id_check_positive.xml" />
     <include relativeToChangelogFile="true" file="./athz_role_permission-id_check_positive.xml" />
+    <include relativeToChangelogFile="true" file="./athz_sys-service-event-housekeeping-seed.xml" />
 
 </databaseChangeLog>

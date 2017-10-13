@@ -23,10 +23,7 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaLocatorErrorCodes;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.service.KapuaService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Strings;
 import com.google.inject.Binding;
 import com.google.inject.ConfigurationException;
 import com.google.inject.Guice;
@@ -37,8 +34,6 @@ import com.google.inject.Key;
  * Kapua locator implementation bases on Guice framework
  */
 public class GuiceLocatorImpl extends KapuaLocator {
-
-    private static final Logger LOG = LoggerFactory.getLogger(GuiceLocatorImpl.class);
 
     private final Injector injector;
 

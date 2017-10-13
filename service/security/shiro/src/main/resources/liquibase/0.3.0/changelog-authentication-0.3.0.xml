@@ -17,11 +17,11 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
   logicalFilePath="KapuaDB/changelog-authentication-0.3.0.xml">
 
-    <include relativeToChangelogFile="true" file="./atht_sys-service-event-housekeeping-seed.sql" />
     <include relativeToChangelogFile="true" file="./atht_credential-expiration.xml" />
     <include relativeToChangelogFile="true" file="./atht_credential-lockout_policy.xml" />
 
     <include relativeToChangelogFile="true" file="./atht_access_token-id_check_positive.xml" />
     <include relativeToChangelogFile="true" file="./atht_credential-id_check_positive.xml" />
-    
+    <include relativeToChangelogFile="true" file="./atht_sys-service-event-housekeeping-seed.xml" />
+
 </databaseChangeLog>
