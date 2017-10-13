@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.shared.model;
 
+import java.util.List;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 import org.eclipse.kapua.app.console.module.api.shared.model.Enum;
 import org.eclipse.kapua.app.console.module.api.shared.model.KapuaBaseModel;
@@ -70,6 +72,15 @@ public class GwtPermission extends KapuaBaseModel {
         this();
         setDomain(domainName);
         setAction(action != null ? action.name() : null);
+        setTargetScopeId(targetScopeId);
+        setGroupId(groupId);
+        setForwardable(forwardable);
+    }
+
+    public GwtPermission(GwtDomain domain, GwtAction action, String targetScopeId, String groupId, boolean forwardable) {
+        setDomain(domain != null ? domain.name() : null);
+        setAction(action != null ? action.name() : null);
+
         setTargetScopeId(targetScopeId);
         setGroupId(groupId);
         setForwardable(forwardable);
@@ -147,6 +158,14 @@ public class GwtPermission extends KapuaBaseModel {
         set("action", action);
     }
 
+    public void setListOfActions(List<String> actions) {
+        set("actions", actions);
+    }
+
+    public List<GwtAction> getActions() {
+        return get("actions");
+    }
+
     /**
      * @return the target scope id of this permission
      * @since 1.0.0
@@ -179,4 +198,11 @@ public class GwtPermission extends KapuaBaseModel {
         set("forwardable", forwardable);
     }
 
+    public String getName() {
+        return get("name");
+    }
+
+    public void setName(String name) {
+        set("name", name);
+    }
 }

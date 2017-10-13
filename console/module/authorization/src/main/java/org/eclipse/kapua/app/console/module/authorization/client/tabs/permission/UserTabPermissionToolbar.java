@@ -11,19 +11,30 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.client.tabs.permission;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.authorization.client.tabs.permission.PermissionEditDialog;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsolePermissionMessages;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessPermission;
+import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessPermissionService;
+import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessPermissionServiceAsync;
+
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class UserTabPermissionToolbar extends EntityCRUDToolbar<GwtAccessPermission> {
 
     private String userId;
     private static final ConsolePermissionMessages MSGS = GWT.create(ConsolePermissionMessages.class);
+    private final static GwtAccessPermissionServiceAsync GWT_ACCESS_PERMISSION_SERVICE = GWT.create(GwtAccessPermissionService.class);
+    private List<GwtAccessPermission> listPermissions;
 
     public UserTabPermissionToolbar(GwtSession currentSession) {
         super(currentSession);
@@ -34,22 +45,13 @@ public class UserTabPermissionToolbar extends EntityCRUDToolbar<GwtAccessPermiss
     }
 
     @Override
-    protected KapuaDialog getDeleteDialog() {
-        GwtAccessPermission selectedAccessPermission = gridSelectionModel.getSelectedItem();
-        PermissionDeleteDialog dialog = null;
-        if (selectedAccessPermission != null) {
-            dialog = new PermissionDeleteDialog(selectedAccessPermission);
-        }
-        return dialog;
-    }
-
-    @Override
-    protected KapuaDialog getAddDialog() {
-        PermissionAddDialog dialog = null;
+    protected KapuaDialog getEditDialog() {
+        PermissionEditDialog editDialog = null;
         if (userId != null) {
-            dialog = new PermissionAddDialog(currentSession, userId);
+            editDialog = new PermissionEditDialog(currentSession, userId);
+            editDialog.setCheckedPermissionsList(listPermissions);
         }
-        return dialog;
+        return editDialog;
     }
 
     @Override
@@ -57,9 +59,27 @@ public class UserTabPermissionToolbar extends EntityCRUDToolbar<GwtAccessPermiss
         super.onRender(target, index);
         addEntityButton.setText(MSGS.dialogAddTitle());
         deleteEntityButton.setText(MSGS.dialogDeleteTitle());
-        addEntityButton.setEnabled(userId != null);
-        deleteEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null);
+        addEntityButton.hide();
+        editEntityButton.setEnabled(userId != null);
+        deleteEntityButton.hide();
         refreshEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null);
     }
 
+    public void getAccessPermissions() {
+        listPermissions = new ArrayList<GwtAccessPermission>();
+        GWT_ACCESS_PERMISSION_SERVICE.findByUserId(null, currentSession.getSelectedAccountId(), userId, new AsyncCallback<PagingLoadResult<GwtAccessPermission>>() {
+
+            @Override
+            public void onSuccess(PagingLoadResult<GwtAccessPermission> result) {
+                listPermissions = result.getData();
+
+            }
+
+            @Override
+            public void onFailure(Throwable caught) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+    }
 }

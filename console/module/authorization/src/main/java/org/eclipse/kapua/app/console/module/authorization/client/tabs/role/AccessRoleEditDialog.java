@@ -28,6 +28,7 @@ import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccess
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessInfoService;
 
+import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessRoleServiceAsync;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessRoleService;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
@@ -38,7 +39,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class AccessRoleEditDialog extends EntityAddEditDialog {
 
     private final static ConsolePermissionMessages MSGS = GWT.create(ConsolePermissionMessages.class);
-    private final static GwtAccessRoleService GWT_ACCESS_ROLE_SERVICE = GWT.create(GwtAccessRoleService.class);
+    private final static GwtAccessRoleServiceAsync GWT_ACCESS_ROLE_SERVICE = GWT.create(GwtAccessRoleService.class);
     private final static GwtAccessInfoServiceAsync GWT_ACCESS_INFO_SERVICE = GWT.create(GwtAccessInfoService.class);
     private List<SelectionChangedListener<GwtRole>> listeners = new ArrayList<SelectionChangedListener<GwtRole>>();
     private String accessInfoId;

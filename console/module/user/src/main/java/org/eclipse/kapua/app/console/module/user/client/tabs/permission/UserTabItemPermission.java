@@ -62,6 +62,7 @@ public class UserTabItemPermission extends KapuaTabItem<GwtUser> {
         permissionGrid.refresh();
         permissionGrid.getToolbar().getAddEntityButton().setEnabled(selectedEntity != null);
         permissionGrid.getToolbar().getRefreshEntityButton().setEnabled(selectedEntity != null);
+        permissionGrid.getToolbar().getEditEntityButton().setEnabled(selectedEntity != null);
     }
 
 }

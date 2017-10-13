@@ -61,6 +61,7 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
                         currentSession.getSelectedAccountId(),
                         userId,
                         callback);
+                toolbar.getAccessPermissions();
             }
         };
     }
@@ -138,7 +139,6 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
     public EntityCRUDToolbar<GwtAccessPermission> getToolbar() {
         if (toolbar == null) {
             toolbar = new UserTabPermissionToolbar(currentSession);
-            toolbar.setEditButtonVisible(false);
             toolbar.setBorders(false);
         }
         return toolbar;
