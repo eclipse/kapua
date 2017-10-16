@@ -82,16 +82,18 @@ public class AuthenticationServiceModule implements ServiceModule {
         if (houseKeeperJob!=null) {
             houseKeeperJob.stop();
         }
-        int waitLoop = 0;
-        while(houseKeeperHandler.isDone()) {
-            try {
-                Thread.sleep(WAIT_TIME);
-            } catch (InterruptedException e) {
-                //do nothing
-            }
-            if (waitLoop++ > MAX_WAIT_LOOP_ON_SHUTDOWN) {
-                LOGGER.warn("Cannot cancel the house keeper task afeter a while!");
-                break;
+        if (houseKeeperHandler!=null) {
+            int waitLoop = 0;
+            while(houseKeeperHandler.isDone()) {
+                try {
+                    Thread.sleep(WAIT_TIME);
+                } catch (InterruptedException e) {
+                    //do nothing
+                }
+                if (waitLoop++ > MAX_WAIT_LOOP_ON_SHUTDOWN) {
+                    LOGGER.warn("Cannot cancel the house keeper task afeter a while!");
+                    break;
+                }
             }
         }
         if (houseKeeperScheduler != null) {

@@ -177,6 +177,7 @@ public class JMSEventBus implements KapuaEventBus {
 
     private class Sender {
 
+        //TODO manage the session/producer in a stronger way (if the client disconnects due to a network error the connection will not be restored)
         private Session jmsSession;
         private MessageProducer jmsProducer;
 
