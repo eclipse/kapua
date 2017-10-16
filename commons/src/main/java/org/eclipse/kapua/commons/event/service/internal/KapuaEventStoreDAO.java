@@ -60,7 +60,6 @@ public class KapuaEventStoreDAO {
      * @param em
      * @param eventId
      * @throws KapuaEntityNotFoundException
-     *             If the {@link Account} is not found
      */
     public static void delete(EntityManager em, KapuaId eventId) throws KapuaEntityNotFoundException {
         ServiceDAO.delete(em, KapuaEventImpl.class, eventId);

@@ -30,8 +30,6 @@ public class KapuaEventCreatorImpl extends AbstractKapuaEntityCreator<KapuaEvent
      * Constructor
      * 
      * @param scopeId
-     * @param name
-     *            kapuaEvent name
      */
     public KapuaEventCreatorImpl(KapuaId scopeId) {
         super(scopeId);
