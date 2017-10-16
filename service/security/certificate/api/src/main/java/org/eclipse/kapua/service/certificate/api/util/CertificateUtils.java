@@ -11,10 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate.api.util;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.kapua.service.certificate.exception.KapuaCertificateErrorCodes;
 import org.eclipse.kapua.service.certificate.exception.KapuaCertificateException;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -27,6 +30,34 @@ import java.util.Base64;
 public class CertificateUtils {
 
     private CertificateUtils() { }
+
+    public static PrivateKey readPrivateKey(File file) throws KapuaCertificateException {
+        PrivateKey privateKey;
+        try {
+            String keyFromFile = FileUtils.readFileToString(file)
+                    .replaceAll("(\r)?\n", "")
+                    .replace("-----BEGIN PRIVATE KEY-----", "")
+                    .replace("-----END PRIVATE KEY-----", "");
+            privateKey = stringToPrivateKey(keyFromFile);
+        } catch (IOException e) {
+            throw new KapuaCertificateException(KapuaCertificateErrorCodes.PRIVATE_KEY_ERROR, e);
+        }
+        return privateKey;
+    }
+
+    public static X509Certificate readCertificate(File file) throws KapuaCertificateException {
+        X509Certificate certificate;
+        try {
+            String certificateFromFile = FileUtils.readFileToString(file)
+                    .replaceAll("(\r)?\n", "")
+                    .replace("-----BEGIN CERTIFICATE-----", "")
+                    .replace("-----END CERTIFICATE-----", "");
+            certificate = stringToCertificate(certificateFromFile);
+        } catch (IOException e) {
+            throw new KapuaCertificateException(KapuaCertificateErrorCodes.CERTIFICATE_ERROR, e);
+        }
+        return certificate;
+    }
 
     public static PrivateKey stringToPrivateKey(String privateKeyString) throws KapuaCertificateException {
         try {
