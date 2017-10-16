@@ -308,9 +308,8 @@ public class PermissionEditDialog extends EntityAddEditDialog {
                                 allTreeItem.addItem(rootTreeItem);
                                 childCheckBoxMapList.put(gwtAction, childTreeItemCheckox);
                                 for (GwtAccessPermission gwtAccessPermission : checkedPermissionsList) {
-                                    if (gwtAccessPermission.getPermissionDomain().toString().equals(gwtDomain.getDomainName())) {
-
-                                        if (gwtAccessPermission.getPermissionAction().toString().equals(gwtAction)) {
+                                    if (gwtAccessPermission.getPermissionDomain().equals(gwtDomain.getDomainName())) {
+                                        if (gwtAccessPermission.getPermissionAction().equals(gwtAction.toString())) {
                                             childTreeItemCheckox.setValue(true);
                                         }
                                     }
