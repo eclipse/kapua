@@ -35,4 +35,8 @@ public class AbstractKapuaService {
         this.entityManagerFactory = entityManagerFactory;
         this.entityManagerSession = new EntityManagerSession(entityManagerFactory);
     }
+
+    public EntityManagerSession getEntityManagerSession() {
+        return entityManagerSession;
+    }
 }

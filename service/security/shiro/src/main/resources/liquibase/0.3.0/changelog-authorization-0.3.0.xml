@@ -24,5 +24,6 @@
     <include relativeToChangelogFile="true" file="./athz_group-id_check_positive.xml" />
     <include relativeToChangelogFile="true" file="./athz_role-id_check_positive.xml" />
     <include relativeToChangelogFile="true" file="./athz_role_permission-id_check_positive.xml" />
+    <include relativeToChangelogFile="true" file="./athz_sys-service-event-housekeeping-seed.xml" />
 
 </databaseChangeLog>

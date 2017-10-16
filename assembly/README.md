@@ -4,36 +4,11 @@ The section describes how Eclipse Kapua docker images can be used.
 
 ### Build
 
-    mvn -Pdocker,console install
-
-If you want to speed up the build process you can ask Maven to ignore `-SNAPSHOT` updates
-force it to use only locally present artifacts with the argument `-nsu`:
-
-    mvn -Pdocker,console install -nsu
-
-### Pushing
-
-Pushing with default settings:
-
-    mvn -Pdocker deploy
-
-Pushing to a specific docker registry:
-
-    mvn -Pdocker deploy -Ddocker.push.registry=registry.hub.docker.com
-
-Pushing to a specific docker registry under a specific account:
-
-    mvn -Pdocker deploy -Ddocker.push.registry=registry.hub.docker.com -Ddocker.account=eclipse
+To learn how to build Kapua Docker images, please consult [developer manual](https://github.com/eclipse/kapua/blob/develop/docs/developer-guide/en/running.md#docker-containers).
 
 ### Run
 
-    docker run -td --name kapua-sql -p 8181:8181 -p 3306:3306 kapua/kapua-sql
-    docker run -td --name kapua-elasticsearch -p 9200:9200 -p 9300:9300 elasticsearch:5.4.0 -Ecluster.name=kapua-datastore -Ediscovery.type=single-node -Etransport.host=_site_ -Etransport.ping_schedule=-1 -Etransport.tcp.connect_timeout=30s
-    docker run -td --name kapua-broker --link kapua-sql:db --link kapua-elasticsearch:es --env commons.db.schema.update=true -p 1883:1883 -p 61614:61614 kapua/kapua-broker
-    docker run -td --name kapua-console --link kapua-sql:db --link kapua-broker:broker --link kapua-elasticsearch:es --env commons.db.schema.update=true -p 8080:8080 kapua/kapua-console
-    docker run -td --name kapua-api --link kapua-sql:db --link kapua-broker:broker --link kapua-elasticsearch:es --env commons.db.schema.update=true -p 8081:8080 kapua/kapua-api
-
-**Note**: Sometimes the `kapua-elasticsearch` container may crash after a few seconds from the related `docker run` command. Should that be the case, run `docker inspect kapua-elasticsearch` and look for the `State` object in the command output: if the `ExitCode` property value of such object is `137`, try raising the amount of RAM assigned to the Docker runtime in the Docker preferences to 6GB.
+To learn how to run Kapua in Docker, please consult [developer manual](https://github.com/eclipse/kapua/blob/c5b2617594d261cec7da50352ad25aafd0faf164/docs/developer-guide/en/building.md#docker-images).
 
 ### Access
 

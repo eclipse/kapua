@@ -161,6 +161,11 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventXmlRegistry;
+import org.eclipse.kapua.service.event.KapuaEvent;
+import org.eclipse.kapua.service.event.KapuaEventCreator;
+import org.eclipse.kapua.service.event.KapuaEventListResult;
+import org.eclipse.kapua.service.event.KapuaEventStoreQuery;
+import org.eclipse.kapua.service.event.KapuaEventStoreXmlRegistry;
 import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.tag.TagCreator;
 import org.eclipse.kapua.service.tag.TagListResult;
@@ -403,7 +408,14 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     UserCreator.class,
                     UserListResult.class,
                     UserQuery.class,
-                    UserXmlRegistry.class
+                    UserXmlRegistry.class,
+
+                    // KapuaEvent
+                    KapuaEvent.class,
+                    KapuaEventCreator.class,
+                    KapuaEventListResult.class,
+                    KapuaEventStoreQuery.class,
+                    KapuaEventStoreXmlRegistry.class
 
             }, properties);
         } catch (Exception e) {

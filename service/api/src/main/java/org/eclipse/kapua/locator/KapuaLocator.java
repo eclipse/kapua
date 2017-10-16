@@ -51,6 +51,7 @@ public abstract class KapuaLocator implements KapuaServiceLoader {
      * @return
      */
     private static KapuaLocator createInstance() {
+        try {
         logger.info("initializing Servicelocator instance... ");
         String locatorImplementation = locatorClassName();
         if (locatorImplementation != null && !locatorImplementation.trim().isEmpty()) {
@@ -70,7 +71,10 @@ public abstract class KapuaLocator implements KapuaServiceLoader {
             logger.info("initialize Servicelocator with the default instance... DONE");
             return locator;
         }
-
+        } catch (Throwable t) {
+            logger.error("Error initializing locator...", t);
+            throw t;
+        }
         // none returned
 
         throw new KapuaRuntimeException(KapuaRuntimeErrorCodes.SERVICE_LOCATOR_UNAVAILABLE);
