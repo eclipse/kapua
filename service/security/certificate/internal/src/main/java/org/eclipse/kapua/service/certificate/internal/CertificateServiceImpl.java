@@ -63,37 +63,9 @@ CertificateServiceImpl implements CertificateService {
         } else {
             File certificateFile = new File(certificatePath);
             File privateKeyFile = new File(privateKeyPath);
-            certificate = readCertificate(certificateFile);
-            privateKey = readPrivateKey(privateKeyFile);
+            certificate = CertificateUtils.readCertificate(certificateFile);
+            privateKey = CertificateUtils.readPrivateKey(privateKeyFile);
         }
-    }
-
-    private PrivateKey readPrivateKey(File file) throws KapuaCertificateException {
-        PrivateKey privateKey;
-        try {
-            String keyFromFile = FileUtils.readFileToString(file)
-                    .replaceAll("(\r)?\n", "")
-                    .replace("-----BEGIN PRIVATE KEY-----", "")
-                    .replace("-----END PRIVATE KEY-----", "");
-            privateKey = CertificateUtils.stringToPrivateKey(keyFromFile);
-        } catch (IOException e) {
-            throw new KapuaCertificateException(KapuaCertificateErrorCodes.PRIVATE_KEY_ERROR, e);
-        }
-        return privateKey;
-    }
-
-    private X509Certificate readCertificate(File file) throws KapuaCertificateException {
-        X509Certificate certificate;
-        try {
-            String certificateFromFile = FileUtils.readFileToString(file)
-                    .replaceAll("(\r)?\n", "")
-                    .replace("-----BEGIN CERTIFICATE-----", "")
-                    .replace("-----END CERTIFICATE-----", "");
-            certificate = CertificateUtils.stringToCertificate(certificateFromFile);
-        } catch (IOException e) {
-            throw new KapuaCertificateException(KapuaCertificateErrorCodes.CERTIFICATE_ERROR, e);
-        }
-        return certificate;
     }
 
     @Override
