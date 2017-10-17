@@ -12,8 +12,8 @@
 package org.eclipse.kapua.service.certificate.internal;
 
 import org.eclipse.kapua.commons.model.query.KapuaListResultImpl;
-import org.eclipse.kapua.service.certificate.api.Certificate;
-import org.eclipse.kapua.service.certificate.api.CertificateListResult;
+import org.eclipse.kapua.service.certificate.Certificate;
+import org.eclipse.kapua.service.certificate.CertificateListResult;
 
 /**
  * User result list definition.

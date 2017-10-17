@@ -13,8 +13,8 @@ package org.eclipse.kapua.service.certificate.internal;
 
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.certificate.api.Certificate;
-import org.eclipse.kapua.service.certificate.api.CertificateStatus;
+import org.eclipse.kapua.service.certificate.Certificate;
+import org.eclipse.kapua.service.certificate.CertificateStatus;
 
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
