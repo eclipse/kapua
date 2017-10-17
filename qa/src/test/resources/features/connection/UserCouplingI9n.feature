@@ -11,6 +11,9 @@
 ###############################################################################
 Feature: User Coupling
 
+  @StartEventBroker
+  Scenario: Start event broker for all scenarios
+
   @StartBroker
   Scenario: Start broker for all scenarios
 
@@ -1648,3 +1651,6 @@ Feature: User Coupling
 
   @StopBroker
   Scenario: Stop broker after all scenarios
+
+  @StopEventBroker
+  Scenario: Stop event broker for all scenarios

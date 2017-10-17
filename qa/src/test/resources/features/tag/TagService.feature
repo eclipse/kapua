@@ -21,6 +21,9 @@ Feature: Tag Service
         | boolean | infiniteChildEntities      | true  |
         | integer | maxNumberChildEntities     | 5     |
 
+  @StartEventBroker
+  Scenario: Start event broker for all scenarios
+
   @StartBroker
   Scenario: Start broker for all scenarios
 
@@ -44,3 +47,6 @@ Feature: Tag Service
 
   @StopBroker
   Scenario: Stop broker after all scenarios
+
+  @StopEventBroker
+  Scenario: Stop event broker for all scenarios

@@ -11,6 +11,9 @@
 ###############################################################################
 Feature: Device lifecycle scenarios
 
+  @StartEventBroker
+  Scenario: Start event broker for all scenarios
+
   @StartBroker
   Scenario: Start broker for all scenarios
 
@@ -73,3 +76,5 @@ Scenario: Installing a package
   @StopDatastore
   Scenario: Stop datastore after all scenarios
 
+  @StopEventBroker
+  Scenario: Stop event broker for all scenarios
