@@ -104,4 +104,14 @@ public class CertificateServiceImpl implements CertificateService {
     public void delete(KapuaId scopeId, KapuaId entityId) throws KapuaException {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public Certificate findByName(String name) throws KapuaException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Certificate update(Certificate entity) throws KapuaException {
+        throw new UnsupportedOperationException();
+    }
 }
