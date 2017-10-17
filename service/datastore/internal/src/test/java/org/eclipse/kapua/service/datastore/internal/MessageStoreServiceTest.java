@@ -121,7 +121,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     // otherwise, if the datastore service is initialized before the embedded es node startup, the transport connector is not able to be initialized (since it tries to connect to the node)
     // if the embedded node is initialized in @Before method of this class, the initialization happens after this is loaded by the classloader so the datastore service initialization, at that point,
     // is already done!
-    private static EsEmbeddedEngine esEmbeddedEngine = new EsEmbeddedEngine();
+    private static EsEmbeddedEngine esEmbeddedEngine;
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
@@ -146,6 +146,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      */
     @Before
     public void deleteAllIndices() throws Exception {
+        esEmbeddedEngine = new EsEmbeddedEngine();
         DatastoreMediator.getInstance().deleteAllIndexes();
     }
 
