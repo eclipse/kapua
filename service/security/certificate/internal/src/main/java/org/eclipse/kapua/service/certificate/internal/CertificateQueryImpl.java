@@ -13,8 +13,8 @@ package org.eclipse.kapua.service.certificate.internal;
 
 import org.eclipse.kapua.commons.model.query.predicate.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.certificate.api.Certificate;
-import org.eclipse.kapua.service.certificate.api.CertificateQuery;
+import org.eclipse.kapua.service.certificate.Certificate;
+import org.eclipse.kapua.service.certificate.CertificateQuery;
 
 public class CertificateQueryImpl extends AbstractKapuaQuery<Certificate> implements CertificateQuery {
 

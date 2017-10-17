@@ -9,16 +9,12 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.certificate.api;
+package org.eclipse.kapua.service.certificate;
 
-import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
+import org.eclipse.kapua.service.KapuaEntityService;
+import org.eclipse.kapua.service.KapuaNamedEntityService;
+import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 
-public interface CertificatePredicates extends KapuaUpdatableEntityPredicates {
+public interface CertificateService extends KapuaEntityService<Certificate, CertificateCreator>, KapuaNamedEntityService<Certificate>, KapuaUpdatableEntityService<Certificate> {
 
-    /**
-     * Certificate name
-     */
-    public static final String NAME = "name";
-
-    public static final String FAMILY = "family";
 }

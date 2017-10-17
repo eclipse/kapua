@@ -9,12 +9,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.certificate.api;
+package org.eclipse.kapua.service.certificate;
 
-import org.eclipse.kapua.service.KapuaEntityService;
-import org.eclipse.kapua.service.KapuaNamedEntityService;
-import org.eclipse.kapua.service.KapuaUpdatableEntityService;
+import org.eclipse.kapua.model.query.KapuaListResult;
+import org.eclipse.kapua.service.certificate.xml.CertificateXmlRegistry;
 
-public interface CertificateService extends KapuaEntityService<Certificate, CertificateCreator>, KapuaNamedEntityService<Certificate>, KapuaUpdatableEntityService<Certificate> {
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+@XmlRootElement(name = "certificates")
+@XmlType(factoryClass = CertificateXmlRegistry.class, factoryMethod = "newListResult")
+public interface CertificateListResult extends KapuaListResult<Certificate> {
 
 }
