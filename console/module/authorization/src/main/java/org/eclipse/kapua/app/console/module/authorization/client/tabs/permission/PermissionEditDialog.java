@@ -333,29 +333,37 @@ public class PermissionEditDialog extends EntityAddEditDialog {
                                     allCheckBox.setValue(allSelected);
                                 }
                             });
+                            allCheckBox.addListener(Events.OnClick, new Listener<BaseEvent>() {
+
+                                @Override
+                                public void handleEvent(BaseEvent be) {
+                                    if (allCheckBox.getValue()) {
+                                        for (CheckBox checkBox : listCheckBoxes) {
+                                            if (!checkBox.getValue()) {
+                                                checkBox.setValue(true);
+                                            }
+                                        }
+
+                                    } else {
+                                        for (CheckBox checkBox : listCheckBoxes) {
+                                            checkBox.setValue(false);
+                                        }
+                                    }
+                                    for (Map.Entry<GwtCheckedItems, CheckBox> mapDomains : listOfNewClass.entrySet()) {
+                                        for (Map.Entry<GwtAction, CheckBox> mapActions : mapDomains.getKey().getMap().entrySet()) {
+                                            if (mapActions.getValue().getValue()) {
+                                                mapActions.getValue().setValue(false);
+                                            }
+                                        }
+                                    }
+                                }
+                            });
                         }
 
                     });
 
                 }
 
-                allCheckBox.addListener(Events.OnClick, new Listener<BaseEvent>() {
-
-                    @Override
-                    public void handleEvent(BaseEvent be) {
-                        if (allCheckBox.getValue()) {
-                            for (CheckBox checkBox : listCheckBoxes) {
-                                if (!checkBox.getValue()) {
-                                    checkBox.setValue(true);
-                                }
-                            }
-                        } else {
-                            for (CheckBox checkBox : listCheckBoxes) {
-                                checkBox.setValue(false);
-                            }
-                        }
-                    }
-                });
                 tree.addItem(allTreeItem);
             }
         });
