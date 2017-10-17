@@ -489,7 +489,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             CertificateQuery certificateQuery = certificateFactory.newQuery(scopeId);
             certificateQuery.setPredicate(new AndPredicate().and(new AttributePredicate<>(CertificatePredicates.FAMILY, "JWT")));
             certificateQuery.setLimit(1);
-            Certificate certificate = certificateService.query(certificateQuery).getItem(0);
+            Certificate certificate = KapuaSecurityUtils.doPrivileged(() -> certificateService.query(certificateQuery)).getItem(0);
             JsonWebSignature jws = new JsonWebSignature();
             jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
             jws.setPayload(claims.toJson());
