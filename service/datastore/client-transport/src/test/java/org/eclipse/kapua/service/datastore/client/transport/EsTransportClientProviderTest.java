@@ -34,6 +34,7 @@ import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
 import org.eclipse.kapua.service.datastore.client.transport.ClientSettingsKey;
 import org.eclipse.kapua.service.datastore.client.transport.EsTransportClientProvider;
 import org.elasticsearch.client.Client;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class EsTransportClientProviderTest {
@@ -204,6 +205,7 @@ public class EsTransportClientProviderTest {
         assertThatResolvedAs(result.get(0), Inet4Address.class, "127.0.0.3", 1234);
     }
 
+    @Ignore("Disable until functionality of test is known. It locks tests on connect_timeout at connect on nonexisting address.")
     @Test
     public void testClient1() throws ClientUnavailableException {
         Map<String, Object> map = new HashMap<>();
@@ -227,6 +229,7 @@ public class EsTransportClientProviderTest {
                 .isThrownBy(() -> EsTransportClientProvider.init(Collections.emptyList(), null));
     }
 
+    @Ignore("Ignored until connect_timeout is resolved on Hudson CI.")
     @Test
     public void testUnknownHost() {
         Assertions.assertThatExceptionOfType(ClientUnavailableException.class) //
