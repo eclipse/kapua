@@ -26,7 +26,6 @@ import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -58,7 +57,6 @@ public class PermissionAddDialog extends EntityAddEditDialog {
 
     private ComboBox<GwtDomain> domainsCombo;
     private SimpleComboBox<GwtAction> actionsCombo;
-    private TextField<String> targetScopeIdTxtField;
     private ComboBox<GwtGroup> groupsCombo;
     private CheckBoxGroup forwardableChecboxGroup;
     private CheckBox forwardableChecbox;
@@ -101,7 +99,7 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         GwtPermission newPermission = new GwtPermission(//
                 domainsCombo.getValue().getDomainName(), //
                 actionsCombo.getValue().getValue(), //
-                targetScopeIdTxtField.getValue(), //
+                null, //
                 groupsCombo.getValue().getId(), //
                 forwardableChecboxGroup.getValue() != null);
 
