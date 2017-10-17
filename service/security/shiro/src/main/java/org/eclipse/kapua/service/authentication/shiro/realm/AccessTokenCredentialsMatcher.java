@@ -17,6 +17,7 @@ import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 import org.eclipse.kapua.service.certificate.api.Certificate;
@@ -67,7 +68,7 @@ public class AccessTokenCredentialsMatcher implements CredentialsMatcher {
                 CertificateQuery certificateQuery = certificateFactory.newQuery(null);
                 certificateQuery.setPredicate(new AndPredicate().and(new AttributePredicate<>(CertificatePredicates.FAMILY, "JWT")));
                 certificateQuery.setLimit(1);
-                Certificate certificate = certificateService.query(certificateQuery).getItem(0);
+                Certificate certificate = KapuaSecurityUtils.doPrivileged(() -> certificateService.query(certificateQuery)).getItem(0);
                 //
                 // Set validator
                 JwtConsumer jwtConsumer = new JwtConsumerBuilder()
