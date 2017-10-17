@@ -16,13 +16,13 @@ import org.eclipse.kapua.message.internal.KapuaChannelImpl;
 
 /**
  * Kapua notify message channel object reference implementation.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class KapuaNotifyChannelImpl extends KapuaChannelImpl implements KapuaNotifyChannel {
 
     private String clientId;
+    private String senderClientId;
 
     @Override
     public String getClientId() {

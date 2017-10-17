@@ -11,7 +11,8 @@
         Eurotech - initial API and implementation
         Red Hat Inc
  -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.eclipse.kapua</groupId>
@@ -22,6 +23,7 @@
     <artifactId>kapua-broker-core</artifactId>
 
     <dependencies>
+        <!-- Internal dependencies -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-commons</artifactId>
@@ -96,7 +98,6 @@
             <artifactId>kapua-tag-api</artifactId>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-translator-api</artifactId>
@@ -135,11 +136,25 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-request-api</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-request-internal</artifactId>
+            <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-registry-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-registry-internal</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- External dependencies -->
         <!-- activemq -->
         <dependency>
             <groupId>org.apache.activemq</groupId>
@@ -186,7 +201,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Testing -->
+        <!-- Test Dependencies -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

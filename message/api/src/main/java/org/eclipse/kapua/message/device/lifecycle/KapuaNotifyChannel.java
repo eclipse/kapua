@@ -15,24 +15,22 @@ import org.eclipse.kapua.message.KapuaChannel;
 
 /**
  * Kapua notify message channel object definition.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public interface KapuaNotifyChannel extends KapuaChannel {
 
     /**
      * Set client identifier
-     * 
+     *
      * @return
      */
     public String getClientId();
 
     /**
      * Set client identifier
-     * 
+     *
      * @param clientId
      */
     public void setClientId(String clientId);
-
 }

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+                   logicalFilePath="KapuaDB/changelog-foreignkeys-0.4.0.xml">
+
+    <changeSet id="changelog-device-management-registry-foreignkey-0.4.0" author="eurotech">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="dcvm_device_management_operation" schemaName="KAPUADB"/>
+                <tableExists tableName="dvc_device" schemaName="KAPUADB"/>
+                <tableExists tableName="act_account" schemaName="KAPUADB"/>
+            </and>
+        </preConditions>
+        
+        <addForeignKeyConstraint constraintName="fk_dvcm_device_management_operation_device_id"
+                                 baseTableName="dvcm_device_management_operation"
+                                 baseColumnNames="device_id"
+                                 referencedTableName="dvc_device"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint constraintName="fk_dcvm_device_management_operation_scopeId"
+                                 baseTableName="dcvm_device_management_operation"
+                                 baseColumnNames="scope_id"
+                                 referencedTableName="act_account"
+                                 referencedColumnNames="id"
+                                 deleteCascade="true"/>
+    </changeSet>
+
+</databaseChangeLog>

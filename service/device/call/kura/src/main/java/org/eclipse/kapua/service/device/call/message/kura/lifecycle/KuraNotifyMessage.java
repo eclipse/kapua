@@ -12,9 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
 
-import java.util.Date;
-
 import org.eclipse.kapua.service.device.call.message.kura.KuraMessage;
+
+import java.util.Date;
 
 /**
  * Kura device notify message implementation.
@@ -40,8 +40,7 @@ public class KuraNotifyMessage extends KuraMessage<KuraNotifyChannel, KuraNotify
      * @param timestamp
      * @param payload
      */
-    public KuraNotifyMessage(KuraNotifyChannel channel,
-            Date timestamp, KuraNotifyPayload payload) {
+    public KuraNotifyMessage(KuraNotifyChannel channel, Date timestamp, KuraNotifyPayload payload) {
         this.channel = channel;
         this.timestamp = timestamp;
         this.payload = payload;

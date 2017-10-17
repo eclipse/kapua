@@ -19,7 +19,7 @@ import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
 /**
  * Kura device notification message payload implementation.
  */
-public class KuraNotifyPayload extends KuraPayload implements DevicePayload {
+public abstract class KuraNotifyPayload extends KuraPayload implements DevicePayload {
 
     /**
      * Returns a string for displaying
@@ -29,4 +29,32 @@ public class KuraNotifyPayload extends KuraPayload implements DevicePayload {
     public String toDisplayString() {
         return Payloads.toDisplayString(metrics);
     }
+
+    public Long getOperationId() {
+        return (Long) getMetrics().get("job.id");
+    }
+
+    public String getOperationStatus() {
+        String status = (String) getMetrics().get(getStatusMetricName());
+        if (status != null) {
+            return status;
+        }
+
+        return status;
+    }
+
+    public Integer getOperationProgress() {
+        return (Integer) getMetrics().get(getProgressMetricName());
+    }
+
+    public String getErrorMessage() {
+        return (String) getMetrics().get(getErrorMetricName());
+    }
+
+    protected abstract String getStatusMetricName();
+
+    protected abstract String getProgressMetricName();
+
+    protected abstract String getErrorMetricName();
+
 }

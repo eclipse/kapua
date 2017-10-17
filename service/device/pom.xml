@@ -26,12 +26,16 @@
 
     <modules>
         <module>api</module>
-        <module>asset</module>
+
         <module>commons</module>
         <module>call</module>
+        
+        <module>registry</module>
+        <module>management-registry</module>
+
+        <module>asset</module>
         <module>configuration</module>
         <module>packages</module>
-        <module>registry</module>
         <module>bundle</module>
         <module>command</module>
         <module>request</module>

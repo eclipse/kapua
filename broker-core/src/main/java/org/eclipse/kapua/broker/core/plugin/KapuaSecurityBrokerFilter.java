@@ -945,7 +945,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                 true,
                 true)); // (topic, principal, read, write, admin)
 
-        // Write notify to any client Id and any application and operation
+        // Write notify to any client Id and any application and notification
         dme.addAll(createAuthorizationEntries(authDestinations,
                 MessageFormat.format(AclConstants.ACL_CTRL_ACC_NOTIFY, accountName, clientId),
                 principal,

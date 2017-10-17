@@ -57,17 +57,24 @@
 
         <api>org.eclipse.kapua.service.device.registry.DeviceFactory</api>
         <api>org.eclipse.kapua.service.device.registry.DeviceRegistryService</api>
+
+        <api>org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService</api>
+        <api>org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryFactory</api>
+        <api>org.eclipse.kapua.service.device.management.registry.operation.notification.DeviceManagementOperationNotificationRegistryService</api>
+        <api>org.eclipse.kapua.service.device.management.registry.operation.notification.DeviceManagementOperationNotificationRegistryFactory</api>
+
         <api>org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory</api>
         <api>org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService</api>
         <api>org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionFactory</api>
         <api>org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionService</api>
         <api>org.eclipse.kapua.service.device.registry.event.DeviceEventFactory</api>
         <api>org.eclipse.kapua.service.device.registry.event.DeviceEventService</api>
+
         <api>org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService</api>
 
         <api>org.eclipse.kapua.service.tag.TagFactory</api>
         <api>org.eclipse.kapua.service.tag.TagService</api>
-        
+
         <api>org.eclipse.kapua.service.user.UserFactory</api>
         <api>org.eclipse.kapua.service.user.UserService</api>
 

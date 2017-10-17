@@ -13,13 +13,60 @@ package org.eclipse.kapua.message.internal.device.lifecycle;
 
 import org.eclipse.kapua.message.device.lifecycle.KapuaNotifyPayload;
 import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
+import org.eclipse.kapua.model.id.KapuaId;
 
 /**
  * Kapua notify message payload object reference implementation.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class KapuaNotifyPayloadImpl extends KapuaPayloadImpl implements KapuaNotifyPayload {
 
+    private KapuaId operationId;
+
+    private String operationStatus;
+
+    private Integer operationProgress;
+
+    private String errorMessage;
+
+    @Override
+    public KapuaId getOperationId() {
+        return operationId;
+    }
+
+    @Override
+    public void setOperationId(KapuaId operationId) {
+        this.operationId = operationId;
+    }
+
+    @Override
+    public String getOperationStatus() {
+        return operationStatus;
+    }
+
+    @Override
+    public void setOperationStatus(String operationStatus) {
+        this.operationStatus = operationStatus;
+    }
+
+    @Override
+    public Integer getOperationProgress() {
+        return operationProgress;
+    }
+
+    @Override
+    public void setOperationProgress(Integer operationProgress) {
+        this.operationProgress = operationProgress;
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    @Override
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
 }

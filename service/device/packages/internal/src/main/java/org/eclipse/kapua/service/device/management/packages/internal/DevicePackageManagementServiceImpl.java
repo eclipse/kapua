@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.packages.internal;
 
-import java.util.Date;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -51,20 +49,32 @@ import org.eclipse.kapua.service.device.management.packages.model.internal.Devic
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallOperation;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.internal.DevicePackageUninstallOperationImpl;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationCreator;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryFactory;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService;
+import org.eclipse.kapua.service.device.management.registry.operation.OperationStatus;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 
+import javax.inject.Inject;
+import java.util.Date;
+
 /**
  * Device package service implementation.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @KapuaProvider
 public class DevicePackageManagementServiceImpl implements DevicePackageManagementService {
 
     private static final Domain DEVICE_MANAGEMENT_DOMAIN = new DeviceManagementDomain();
+
+    @Inject
+    private DeviceManagementOperationRegistryService deviceManagementOperationRegistryService;
+    @Inject
+    private DeviceManagementOperationRegistryFactory deviceManagementOperationRegistryFactory;
 
     @Override
     public DevicePackages getInstalled(KapuaId scopeId, KapuaId deviceId, Long timeout)
@@ -100,7 +110,6 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
 
         //
         // Do get
-        @SuppressWarnings({ "rawtypes", "unchecked" })
         DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(packageRequestMessage, timeout);
         PackageResponseMessage responseMessage = (PackageResponseMessage) deviceApplicationCall.send();
 
@@ -169,7 +178,31 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
 
         //
         // Generate requestId
-        KapuaId operationId = new KapuaEid(IdGenerator.generate());
+        DeviceManagementOperationCreator deviceManagementOperationCreator = deviceManagementOperationRegistryFactory.newCreator(scopeId);
+        deviceManagementOperationCreator.setDeviceId(deviceId);
+        deviceManagementOperationCreator.setAppId(PackageAppProperties.APP_NAME.getValue());
+        deviceManagementOperationCreator.setAction(KapuaMethod.EXECUTE);
+        deviceManagementOperationCreator.setResource(PackageResource.DOWNLOAD.name());
+        deviceManagementOperationCreator.setOperationStatus(OperationStatus.RUNNING);
+
+        if (packageDownloadRequest.getInstall() != null) {
+
+            deviceManagementOperationCreator.getInputProperties().add(deviceManagementOperationRegistryFactory
+                    .newStepProperty(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_NAME.getValue(), String.class.getName(), packageDownloadRequest.getName()));
+
+            deviceManagementOperationCreator.getInputProperties().add(deviceManagementOperationRegistryFactory
+                    .newStepProperty(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_VERSION.getValue(), String.class.getName(), packageDownloadRequest.getVersion()));
+
+            deviceManagementOperationCreator.getInputProperties().add(deviceManagementOperationRegistryFactory
+                    .newStepProperty(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_URI.getValue(), String.class.getName(), packageDownloadRequest.getUri().toString()));
+
+            if (packageDownloadRequest.getInstall() != null) {
+                deviceManagementOperationCreator.getInputProperties().add(deviceManagementOperationRegistryFactory
+                        .newStepProperty(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_INSTALL.getValue(), Boolean.class.getName(), packageDownloadRequest.getInstall().toString()));
+            }
+        }
+
+        DeviceManagementOperation deviceManagementOperation = deviceManagementOperationRegistryService.create(deviceManagementOperationCreator);
 
         //
         // Prepare the request
@@ -180,7 +213,7 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
         packageRequestChannel.setPackageResource(PackageResource.DOWNLOAD);
 
         PackageRequestPayload packageRequestPayload = new PackageRequestPayload();
-        packageRequestPayload.setOperationId(operationId);
+        packageRequestPayload.setOperationId(deviceManagementOperation.getId());
         packageRequestPayload.setPackageDownloadURI(packageDownloadRequest.getUri());
         packageRequestPayload.setPackageDownloadName(packageDownloadRequest.getName());
         packageRequestPayload.setPackageDownloadVersion(packageDownloadRequest.getVersion());
@@ -197,7 +230,6 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
 
         //
         // Do exec
-        @SuppressWarnings({ "rawtypes", "unchecked" })
         DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(packageRequestMessage, timeout);
         PackageResponseMessage responseMessage = (PackageResponseMessage) deviceApplicationCall.send();
 
@@ -250,7 +282,6 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
 
         //
         // Do del
-        @SuppressWarnings({ "rawtypes", "unchecked" })
         DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(packageRequestMessage, timeout);
         PackageResponseMessage responseMessage = (PackageResponseMessage) deviceApplicationCall.send();
 
@@ -303,7 +334,6 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
 
         //
         // Do get
-        @SuppressWarnings({ "rawtypes", "unchecked" })
         DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(packageRequestMessage, timeout);
         PackageResponseMessage responseMessage = (PackageResponseMessage) deviceApplicationCall.send();
 
@@ -377,7 +407,6 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
 
         //
         // Do get
-        @SuppressWarnings({ "rawtypes", "unchecked" })
         DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(packageRequestMessage, timeout);
         PackageResponseMessage responseMessage = (PackageResponseMessage) deviceApplicationCall.send();
 
@@ -431,7 +460,6 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
 
         //
         // Do get
-        @SuppressWarnings({ "rawtypes", "unchecked" })
         DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(packageRequestMessage, timeout);
         PackageResponseMessage responseMessage = (PackageResponseMessage) deviceApplicationCall.send();
 
@@ -518,7 +546,6 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
 
         //
         // Do get
-        @SuppressWarnings({ "rawtypes", "unchecked" })
         DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(packageRequestMessage, timeout);
         PackageResponseMessage responseMessage = (PackageResponseMessage) deviceApplicationCall.send();
 
@@ -571,7 +598,6 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
 
         //
         // Do get
-        @SuppressWarnings({ "rawtypes", "unchecked" })
         DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(packageRequestMessage, timeout);
         PackageResponseMessage responseMessage = (PackageResponseMessage) deviceApplicationCall.send();
 

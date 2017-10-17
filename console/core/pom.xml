@@ -124,7 +124,7 @@
             <artifactId>kapua-console-module-welcome</artifactId>
             <classifier>sources</classifier>
         </dependency>
-    
+
         <!-- Internal dependencies -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
@@ -196,6 +196,14 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-registry-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-registry-internal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-user-api</artifactId>
         </dependency>
         <dependency>
@@ -248,7 +256,7 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-job-internal</artifactId>
         </dependency>
-        
+
         <!-- External dependencies -->
         <dependency>
             <groupId>com.google.gwt</groupId>
