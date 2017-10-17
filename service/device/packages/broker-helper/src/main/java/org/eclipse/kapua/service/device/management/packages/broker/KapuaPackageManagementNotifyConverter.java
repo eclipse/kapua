@@ -9,12 +9,13 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.broker.core.converter;
+package org.eclipse.kapua.service.device.management.packages.broker;
 
 import com.codahale.metrics.Counter;
 import org.apache.camel.Converter;
 import org.apache.camel.Exchange;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.broker.core.converter.AbstractKapuaConverter;
 import org.eclipse.kapua.broker.core.message.CamelKapuaMessage;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor.MessageType;
 import org.slf4j.Logger;

@@ -29,6 +29,7 @@
         <module>internal</module>
 
         <module>job</module>
+        <module>broker-helper</module>
     </modules>
 
 </project>

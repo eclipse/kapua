@@ -9,10 +9,11 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.broker.core.listener;
+package org.eclipse.kapua.service.device.management.packages.broker;
 
 import com.codahale.metrics.Counter;
 import org.apache.camel.spi.UriEndpoint;
+import org.eclipse.kapua.broker.core.listener.AbstractListener;
 import org.eclipse.kapua.broker.core.message.CamelKapuaMessage;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;

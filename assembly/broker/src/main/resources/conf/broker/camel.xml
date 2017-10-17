@@ -51,7 +51,7 @@
     <!-- Converter -->
     <bean id="kapuaDataConverter" class="org.eclipse.kapua.broker.core.converter.KapuaDataConverter"/>
     <bean id="kapuaLifeCycleConverter" class="org.eclipse.kapua.broker.core.converter.KapuaLifeCycleConverter"/>
-    <bean id="kapuaPackageManagementNotifyConverter" class="org.eclipse.kapua.broker.core.converter.KapuaPackageManagementNotifyConverter"/>
+    <bean id="kapuaPackageManagementNotifyConverter" class="org.eclipse.kapua.service.device.management.packages.broker.KapuaPackageManagementNotifyConverter"/>
 
     <!-- Consumer -->
     <!-- ASSISTANTS -->
@@ -59,7 +59,7 @@
     </bean>
     <bean id="dataStorageMessageProcessor" class="org.eclipse.kapua.broker.core.listener.DataStorageMessageProcessor">
     </bean>
-    <bean id="devicePackageManagementNotifyMessageListener" class="org.eclipse.kapua.broker.core.listener.DevicePackageManagementNotifyMessageListener">
+    <bean id="devicePackageManagementNotifyMessageListener" class="org.eclipse.kapua.service.device.management.packages.broker.DevicePackageManagementNotifyMessageListener">
     </bean>
 
     <!-- ERROR -->
