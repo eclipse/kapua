@@ -9,23 +9,23 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.certificate.api.xml;
+package org.eclipse.kapua.service.certificate.xml;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
-import java.security.cert.X509Certificate;
+import java.security.PrivateKey;
 import java.util.Base64;
 
-import org.eclipse.kapua.service.certificate.api.util.CertificateUtils;
+import org.eclipse.kapua.service.certificate.util.CertificateUtils;
 
-public class X509CertificateXmlAdapter extends XmlAdapter<String, X509Certificate> {
+public class PrivateKeyXmlAdapter extends XmlAdapter<String, PrivateKey> {
 
     @Override
-    public X509Certificate unmarshal(String v) throws Exception {
-        return v == null ? null : CertificateUtils.stringToCertificate(v);
+    public PrivateKey unmarshal(String v) throws Exception {
+        return v == null ? null : CertificateUtils.stringToPrivateKey(v);
     }
 
     @Override
-    public String marshal(X509Certificate v) throws Exception {
+    public String marshal(PrivateKey v) throws Exception {
         return v == null ? null : Base64.getEncoder().encodeToString(v.getEncoded());
     }
 }

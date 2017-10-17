@@ -9,13 +9,12 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.certificate.api;
+package org.eclipse.kapua.service.certificate;
 
-import org.eclipse.kapua.model.KapuaUpdatableEntity;
+import org.eclipse.kapua.model.KapuaNamedEntityCreator;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
-import org.eclipse.kapua.service.certificate.api.xml.CertificateXmlRegistry;
-import org.eclipse.kapua.service.certificate.api.xml.PrivateKeyXmlAdapter;
-import org.eclipse.kapua.service.certificate.api.xml.X509CertificateXmlAdapter;
+import org.eclipse.kapua.service.certificate.xml.PrivateKeyXmlAdapter;
+import org.eclipse.kapua.service.certificate.xml.X509CertificateXmlAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -26,7 +25,12 @@ import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 
-@XmlRootElement(name = "certificate")
+/**
+ * CertificateCreator encapsulates all the information needed to create a new Certificate in the system.
+ *
+ * @since 1.0
+ */
+@XmlRootElement(name = "userCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = {
         "certificate",
@@ -45,14 +49,8 @@ import java.util.Date;
         "ca",
         "caId",
         "password"
-}, factoryClass = CertificateXmlRegistry.class, factoryMethod = "newCertificate")
-public interface Certificate extends KapuaUpdatableEntity {
-
-    String TYPE = "account";
-
-    default String getType() {
-        return TYPE;
-    }
+})
+public interface CertificateCreator extends KapuaNamedEntityCreator<Certificate> {
 
     @XmlJavaTypeAdapter(X509CertificateXmlAdapter.class)
     X509Certificate getCertificate();
@@ -66,7 +64,7 @@ public interface Certificate extends KapuaUpdatableEntity {
 
     Integer getVersion();
 
-    void setVersion(Integer version);
+    void setVersion(Integer family);
 
     String getSerial();
 
@@ -123,5 +121,4 @@ public interface Certificate extends KapuaUpdatableEntity {
     String getPassword();
 
     void setPassword(String password);
-
 }

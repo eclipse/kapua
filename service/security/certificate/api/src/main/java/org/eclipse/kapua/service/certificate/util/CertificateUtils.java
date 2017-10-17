@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.certificate.api.util;
+package org.eclipse.kapua.service.certificate.util;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.kapua.service.certificate.exception.KapuaCertificateErrorCodes;

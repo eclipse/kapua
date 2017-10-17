@@ -9,16 +9,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.certificate.api;
+package org.eclipse.kapua.service.certificate;
 
-import org.eclipse.kapua.model.query.KapuaListResult;
-import org.eclipse.kapua.service.certificate.api.xml.CertificateXmlRegistry;
+import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+public interface CertificatePredicates extends KapuaUpdatableEntityPredicates {
 
-@XmlRootElement(name = "certificates")
-@XmlType(factoryClass = CertificateXmlRegistry.class, factoryMethod = "newListResult")
-public interface CertificateListResult extends KapuaListResult<Certificate> {
+    /**
+     * Certificate name
+     */
+    public static final String NAME = "name";
 
+    public static final String FAMILY = "family";
 }

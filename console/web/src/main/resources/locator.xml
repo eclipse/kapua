@@ -42,8 +42,8 @@
         <api>org.eclipse.kapua.service.authorization.role.RolePermissionFactory</api>
         <api>org.eclipse.kapua.service.authorization.role.RolePermissionService</api>
 
-        <api>org.eclipse.kapua.service.certificate.api.CertificateService</api>
-        <api>org.eclipse.kapua.service.certificate.api.CertificateFactory</api>
+        <api>org.eclipse.kapua.service.certificate.CertificateService</api>
+        <api>org.eclipse.kapua.service.certificate.CertificateFactory</api>
 
         <api>org.eclipse.kapua.service.datastore.MessageStoreService</api>
         <api>org.eclipse.kapua.service.datastore.ClientInfoRegistryService</api>

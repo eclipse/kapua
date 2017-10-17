@@ -13,11 +13,11 @@ package org.eclipse.kapua.service.certificate.internal;
 
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.certificate.api.Certificate;
-import org.eclipse.kapua.service.certificate.api.CertificateCreator;
-import org.eclipse.kapua.service.certificate.api.CertificateFactory;
-import org.eclipse.kapua.service.certificate.api.CertificateListResult;
-import org.eclipse.kapua.service.certificate.api.CertificateQuery;
+import org.eclipse.kapua.service.certificate.Certificate;
+import org.eclipse.kapua.service.certificate.CertificateCreator;
+import org.eclipse.kapua.service.certificate.CertificateFactory;
+import org.eclipse.kapua.service.certificate.CertificateListResult;
+import org.eclipse.kapua.service.certificate.CertificateQuery;
 
 @KapuaProvider
 public class CertificateFactoryImpl implements CertificateFactory {
