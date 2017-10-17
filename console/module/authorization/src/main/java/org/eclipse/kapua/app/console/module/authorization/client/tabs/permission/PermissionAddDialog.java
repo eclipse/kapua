@@ -58,7 +58,6 @@ public class PermissionAddDialog extends EntityAddEditDialog {
 
     private ComboBox<GwtDomain> domainsCombo;
     private SimpleComboBox<GwtAction> actionsCombo;
-    private TextField<String> targetScopeIdTxtField;
     private ComboBox<GwtGroup> groupsCombo;
     private CheckBoxGroup forwardableChecboxGroup;
     private CheckBox forwardableChecbox;
@@ -101,7 +100,7 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         GwtPermission newPermission = new GwtPermission(//
                 domainsCombo.getValue().getDomainName(), //
                 actionsCombo.getValue().getValue(), //
-                targetScopeIdTxtField.getValue(), //
+                null, //
                 groupsCombo.getValue().getId(), //
                 forwardableChecboxGroup.getValue() != null);
 
