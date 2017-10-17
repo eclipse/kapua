@@ -12,7 +12,9 @@
 package org.eclipse.kapua.service.certificate.api;
 
 import org.eclipse.kapua.service.KapuaEntityService;
+import org.eclipse.kapua.service.KapuaNamedEntityService;
+import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 
-public interface CertificateService extends KapuaEntityService<Certificate, CertificateCreator> {
+public interface CertificateService extends KapuaEntityService<Certificate, CertificateCreator>, KapuaNamedEntityService<Certificate>, KapuaUpdatableEntityService<Certificate> {
 
 }
