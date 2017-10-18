@@ -10,7 +10,7 @@
  *     Eurotech - initial API and implementation
  *     Red Hat Inc
  *******************************************************************************/
-package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
+package org.eclipse.kapua.service.device.call.message.kura.management;
 
 import org.eclipse.kapua.commons.util.Payloads;
 import org.eclipse.kapua.service.device.call.message.DevicePayload;

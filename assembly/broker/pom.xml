@@ -12,7 +12,8 @@
         Eurotech
  -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -91,6 +92,14 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-registry-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-registry-internal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-tag-api</artifactId>
         </dependency>
         <dependency>
@@ -106,7 +115,7 @@
             <artifactId>kapua-user-internal</artifactId>
         </dependency>
 
-        <!-- dependencies added otherwise the unix assembly doesn't know the arctifact to add -->
+        <!-- dependencies added otherwise the unix assembly doesn't know the artifact to add -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-asset-api</artifactId>
@@ -145,6 +154,11 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-packages-internal</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-packages-broker-helper</artifactId>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -294,7 +308,7 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            </dependency>
+        </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-to-slf4j</artifactId>
@@ -619,7 +633,9 @@
                                             <DATASTORE_PORT>\${ES_PORT_9200_TCP_PORT}</DATASTORE_PORT>
                                             <DATASTORE_ADDR>\${ES_PORT_9200_TCP_ADDR}</DATASTORE_ADDR>
                                             <DATASTORE_CLIENT>org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient</DATASTORE_CLIENT>
-                                            <ACTIVEMQ_OPTS>-Dcommons.db.connection.host=\${SQL_DB_ADDR} -Dcommons.db.connection.port=\${SQL_DB_PORT} -Ddatastore.elasticsearch.nodes=\${DATASTORE_ADDR} -Ddatastore.elasticsearch.port=\${DATASTORE_PORT} -Ddatastore.client.class=\${DATASTORE_CLIENT}</ACTIVEMQ_OPTS>
+                                            <ACTIVEMQ_OPTS>-Dcommons.db.connection.host=\${SQL_DB_ADDR} -Dcommons.db.connection.port=\${SQL_DB_PORT} -Ddatastore.elasticsearch.nodes=\${DATASTORE_ADDR}
+                                                -Ddatastore.elasticsearch.port=\${DATASTORE_PORT} -Ddatastore.client.class=\${DATASTORE_CLIENT}
+                                            </ACTIVEMQ_OPTS>
                                         </env>
                                         <ports>
                                             <port>1883</port><!-- MQTT -->

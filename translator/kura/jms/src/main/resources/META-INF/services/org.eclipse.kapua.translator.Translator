@@ -1,9 +1,13 @@
+# JMS to Kura
 org.eclipse.kapua.translator.jms.kura.TranslatorDataJmsKura
+
+org.eclipse.kapua.translator.jms.kura.TranslatorManagementNotifyJmsKura
+
 org.eclipse.kapua.translator.jms.kura.TranslatorLifeAppsJmsKura
 org.eclipse.kapua.translator.jms.kura.TranslatorLifeBirthJmsKura
 org.eclipse.kapua.translator.jms.kura.TranslatorLifeDisconnectJmsKura
 org.eclipse.kapua.translator.jms.kura.TranslatorLifeMissingJmsKura
-org.eclipse.kapua.translator.jms.kura.TranslatorLifeNotifyJmsKura
 org.eclipse.kapua.translator.jms.kura.TranslatorLifeUnmatchedJmsKura
 
+# Kura to JMS
 org.eclipse.kapua.translator.kura.jms.TranslatorDataKuraJms

@@ -122,6 +122,6 @@ public class DeviceManagementOperationNotificationRegistryServiceImpl extends Ab
 
         //
         // Do delete
-        entityManagerSession.onResult(em -> DeviceManagementOperationNotificationDAO.find(em, devicePackageDownloadOperationNotificationId));
+        entityManagerSession.onTransactedAction(em -> DeviceManagementOperationNotificationDAO.delete(em, devicePackageDownloadOperationNotificationId));
     }
 }

@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.message.internal.device.lifecycle;
+package org.eclipse.kapua.message.internal.device.management;
 
 import org.eclipse.kapua.message.device.lifecycle.KapuaNotifyChannel;
 import org.eclipse.kapua.message.device.lifecycle.KapuaNotifyMessage;

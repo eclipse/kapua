@@ -9,7 +9,9 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
+package org.eclipse.kapua.service.device.call.message.kura.management.deploy;
+
+import org.eclipse.kapua.service.device.call.message.kura.management.KuraNotifyPayload;
 
 public class KuraNotifyPackageUninstallPayload extends KuraNotifyPayload {
 

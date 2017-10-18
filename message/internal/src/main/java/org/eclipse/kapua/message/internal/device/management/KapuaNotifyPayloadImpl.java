@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.message.internal.device.lifecycle;
+package org.eclipse.kapua.message.internal.device.management;
 
 import org.eclipse.kapua.message.device.lifecycle.KapuaNotifyPayload;
 import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
@@ -23,11 +23,8 @@ import org.eclipse.kapua.model.id.KapuaId;
 public class KapuaNotifyPayloadImpl extends KapuaPayloadImpl implements KapuaNotifyPayload {
 
     private KapuaId operationId;
-
     private String operationStatus;
-
     private Integer operationProgress;
-
     private String errorMessage;
 
     @Override

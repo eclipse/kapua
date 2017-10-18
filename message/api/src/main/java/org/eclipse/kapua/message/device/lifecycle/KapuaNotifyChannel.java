@@ -33,4 +33,8 @@ public interface KapuaNotifyChannel extends KapuaChannel {
      * @param clientId
      */
     public void setClientId(String clientId);
+
+    public String getResources();
+
+    public void setResources(String resources);
 }

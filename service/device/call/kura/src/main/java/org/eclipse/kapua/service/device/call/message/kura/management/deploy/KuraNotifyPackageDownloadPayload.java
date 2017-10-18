@@ -9,22 +9,24 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
+package org.eclipse.kapua.service.device.call.message.kura.management.deploy;
 
-public class KuraNotifyPackageInstallPayload extends KuraNotifyPayload {
+import org.eclipse.kapua.service.device.call.message.kura.management.KuraNotifyPayload;
+
+public class KuraNotifyPackageDownloadPayload extends KuraNotifyPayload {
 
     @Override
     protected String getStatusMetricName() {
-        return "dp.install.status";
+        return "dp.download.status";
     }
 
     @Override
     protected String getProgressMetricName() {
-        return "dp.install.progress";
+        return "dp.download.progress";
     }
 
     @Override
     protected String getErrorMetricName() {
-        return "dp.install.error.message";
+        return "dp.download.error.message";
     }
 }

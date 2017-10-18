@@ -17,15 +17,16 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.lifecycle.KapuaNotifyChannel;
 import org.eclipse.kapua.message.device.lifecycle.KapuaNotifyMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaNotifyPayload;
-import org.eclipse.kapua.message.internal.device.lifecycle.KapuaNotifyChannelImpl;
-import org.eclipse.kapua.message.internal.device.lifecycle.KapuaNotifyMessageImpl;
-import org.eclipse.kapua.message.internal.device.lifecycle.KapuaNotifyPayloadImpl;
+import org.eclipse.kapua.message.internal.device.management.KapuaNotifyChannelImpl;
+import org.eclipse.kapua.message.internal.device.management.KapuaNotifyMessageImpl;
+import org.eclipse.kapua.message.internal.device.management.KapuaNotifyPayloadImpl;
 import org.eclipse.kapua.model.id.KapuaIdFactory;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
-import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraNotifyChannel;
-import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraNotifyMessage;
-import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraNotifyPayload;
+import org.eclipse.kapua.service.device.call.message.kura.management.KuraNotifyChannel;
+import org.eclipse.kapua.service.device.call.message.kura.management.KuraNotifyMessage;
+import org.eclipse.kapua.service.device.call.message.kura.management.KuraNotifyPayload;
+import org.eclipse.kapua.service.device.management.registry.operation.OperationStatus;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.translator.Translator;
@@ -77,6 +78,7 @@ public class TranslatoManagementNotifyKuraKapua extends Translator<KuraNotifyMes
             throws KapuaException {
         KapuaNotifyChannel kapuaNotifyChannel = new KapuaNotifyChannelImpl();
         kapuaNotifyChannel.setClientId(kuraNotifyChannel.getSenderClientId());
+        kapuaNotifyChannel.setResources(kuraNotifyChannel.getResources());
         return kapuaNotifyChannel;
     }
 
@@ -87,11 +89,20 @@ public class TranslatoManagementNotifyKuraKapua extends Translator<KuraNotifyMes
         kapuaNotifyPayload.setMetrics(kuraNotifyPayload.getMetrics());
 
         kapuaNotifyPayload.setOperationId(kapuaIdFactory.newKapuaId(BigInteger.valueOf(kuraNotifyPayload.getOperationId())));
-        kapuaNotifyPayload.setOperationStatus(kuraNotifyPayload.getOperationStatus());
+        kapuaNotifyPayload.setOperationStatus(translateOperationStatus(kuraNotifyPayload.getOperationStatus()));
         kapuaNotifyPayload.setOperationProgress(kuraNotifyPayload.getOperationProgress());
         kapuaNotifyPayload.setErrorMessage(kuraNotifyPayload.getErrorMessage());
 
         return kapuaNotifyPayload;
+    }
+
+    private String translateOperationStatus(String kuraOperationStatus) {
+
+        if ("IN_PROGRESS".equals(kuraOperationStatus)) {
+            return OperationStatus.RUNNING.name();
+        }
+
+        return OperationStatus.valueOf(kuraOperationStatus).name();
     }
 
     @Override

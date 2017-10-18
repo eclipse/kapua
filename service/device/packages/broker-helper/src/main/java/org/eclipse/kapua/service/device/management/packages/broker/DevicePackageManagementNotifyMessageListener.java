@@ -13,10 +13,13 @@ package org.eclipse.kapua.service.device.management.packages.broker;
 
 import com.codahale.metrics.Counter;
 import org.apache.camel.spi.UriEndpoint;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.listener.AbstractListener;
 import org.eclipse.kapua.broker.core.message.CamelKapuaMessage;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.message.device.lifecycle.KapuaNotifyChannel;
 import org.eclipse.kapua.message.device.lifecycle.KapuaNotifyMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaNotifyPayload;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -26,7 +29,11 @@ import org.eclipse.kapua.service.device.management.registry.operation.DeviceMana
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService;
 import org.eclipse.kapua.service.device.management.registry.operation.OperationStatus;
+import org.eclipse.kapua.service.device.management.registry.operation.notification.DeviceManagementOperationNotification;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.DeviceManagementOperationNotificationCreator;
+import org.eclipse.kapua.service.device.management.registry.operation.notification.DeviceManagementOperationNotificationListResult;
+import org.eclipse.kapua.service.device.management.registry.operation.notification.DeviceManagementOperationNotificationPredicates;
+import org.eclipse.kapua.service.device.management.registry.operation.notification.DeviceManagementOperationNotificationQuery;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.DeviceManagementOperationNotificationRegistryFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.DeviceManagementOperationNotificationRegistryService;
 import org.slf4j.Logger;
@@ -73,39 +80,34 @@ public class DevicePackageManagementNotifyMessageListener extends AbstractListen
 
         KapuaNotifyMessage kapuaNotifyMessage = notifyMessage.getMessage();
         KapuaNotifyPayload kapuaNotifyPayload = kapuaNotifyMessage.getPayload();
+        KapuaNotifyChannel kapuaNotifyChannel = kapuaNotifyMessage.getChannel();
 
         try {
-            if (!"IN_PROGRESS".equalsIgnoreCase(kapuaNotifyPayload.getOperationStatus())) {
-                KapuaId operationId = kapuaNotifyMessage.getPayload().getOperationId();
+            KapuaSecurityUtils.doPrivileged(() -> {
+                if (!OperationStatus.RUNNING.name().equals(kapuaNotifyPayload.getOperationStatus())) {
+                    KapuaId operationId = kapuaNotifyMessage.getPayload().getOperationId();
 
-                DeviceManagementOperation deviceManagementOperation = KapuaSecurityUtils
-                        .doPrivileged(() -> deviceManagementOperationRegistryService.find(kapuaNotifyMessage.getScopeId(), operationId));
+                    DeviceManagementOperation deviceMngmtOperation = deviceManagementOperationRegistryService.find(kapuaNotifyMessage.getScopeId(), operationId);
 
-                boolean isInstall = false;
-                for (DeviceManagementOperationProperty ip : deviceManagementOperation.getInputProperties()) {
-                    if (ip.getName().equals(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_INSTALL.getValue())) {
-                        isInstall = Boolean.valueOf(ip.getPropertyValue());
+                    boolean isInstall = false;
+                    for (DeviceManagementOperationProperty ip : deviceMngmtOperation.getInputProperties()) {
+                        if (ip.getName().equals(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_INSTALL.getValue())) {
+                            isInstall = Boolean.valueOf(ip.getPropertyValue());
+                            break;
+                        }
                     }
+
+                    if (kapuaNotifyChannel.getResources().equals("download") && !isInstall) {
+                        operationEnded(deviceMngmtOperation, kapuaNotifyMessage);
+                    } else if (kapuaNotifyChannel.getResources().equals("install") && isInstall) {
+                        operationEnded(deviceMngmtOperation, kapuaNotifyMessage);
+                    } else {
+                        operationRunning(kapuaNotifyMessage);
+                    }
+                } else {
+                    operationRunning(kapuaNotifyMessage);
                 }
-
-                if ("COMPLETED".equals(kapuaNotifyPayload.getOperationStatus()) && !isInstall) {
-                    deviceManagementOperation.setOperationStatus(OperationStatus.COMPLETED);
-                } else if ("FAILED".equals(kapuaNotifyPayload.getOperationStatus())) {
-                    deviceManagementOperation.setOperationStatus(OperationStatus.FAILED);
-                }
-
-                KapuaSecurityUtils.doPrivileged(() -> deviceManagementOperationRegistryService.update(deviceManagementOperation));
-
-            } else {
-                DeviceManagementOperationNotificationCreator deviceManagementOperationNotificationCreator = deviceManagementOperationNotificationRegistryFactory
-                        .newCreator(kapuaNotifyMessage.getScopeId());
-                deviceManagementOperationNotificationCreator.setOperationId(kapuaNotifyPayload.getOperationId());
-                deviceManagementOperationNotificationCreator.setOperationStatus(OperationStatus.RUNNING);
-                deviceManagementOperationNotificationCreator.setProgress(kapuaNotifyPayload.getOperationProgress());
-                deviceManagementOperationNotificationCreator.setSentOn(kapuaNotifyMessage.getSentOn());
-
-                deviceManagementOperationNotificationRegistryService.create(deviceManagementOperationNotificationCreator);
-            }
+            });
         } catch (Exception e) {
             metricDeviceNotifyError.inc();
             logger.error("Error while processing device management package notification", e);
@@ -113,6 +115,34 @@ public class DevicePackageManagementNotifyMessageListener extends AbstractListen
         }
 
         metricDeviceNotifyMessage.inc();
+    }
+
+    protected void operationEnded(DeviceManagementOperation deviceManagementOperation, KapuaNotifyMessage kapuaNotifyMessage) throws KapuaException {
+        KapuaNotifyPayload kapuaNotifyPayload = kapuaNotifyMessage.getPayload();
+
+        deviceManagementOperation.setOperationStatus(OperationStatus.valueOf(kapuaNotifyPayload.getOperationStatus()));
+        deviceManagementOperationRegistryService.update(deviceManagementOperation);
+
+        DeviceManagementOperationNotificationQuery notificationQuery = deviceManagementOperationNotificationRegistryFactory.newQuery(deviceManagementOperation.getScopeId());
+        notificationQuery.setPredicate(new AttributePredicate<>(DeviceManagementOperationNotificationPredicates.OPERATION_ID, deviceManagementOperation.getId()));
+
+        DeviceManagementOperationNotificationListResult notificationListResult = deviceManagementOperationNotificationRegistryService.query(notificationQuery);
+
+        for (DeviceManagementOperationNotification deviceManagementOperationNotification : notificationListResult.getItems()) {
+            deviceManagementOperationNotificationRegistryService.delete(deviceManagementOperationNotification.getScopeId(), deviceManagementOperationNotification.getId());
+        }
+    }
+
+    protected void operationRunning(KapuaNotifyMessage kapuaNotifyMessage) throws KapuaException {
+        KapuaNotifyPayload kapuaNotifyPayload = kapuaNotifyMessage.getPayload();
+
+        DeviceManagementOperationNotificationCreator deviceManagementOperationNotificationCreator = deviceManagementOperationNotificationRegistryFactory.newCreator(kapuaNotifyMessage.getScopeId());
+        deviceManagementOperationNotificationCreator.setOperationId(kapuaNotifyPayload.getOperationId());
+        deviceManagementOperationNotificationCreator.setOperationStatus(OperationStatus.valueOf(kapuaNotifyPayload.getOperationStatus()));
+        deviceManagementOperationNotificationCreator.setProgress(kapuaNotifyPayload.getOperationProgress());
+        deviceManagementOperationNotificationCreator.setSentOn(kapuaNotifyMessage.getSentOn());
+
+        deviceManagementOperationNotificationRegistryService.create(deviceManagementOperationNotificationCreator);
     }
 
 }

@@ -15,4 +15,5 @@ import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
 
 public interface DeviceManagementOperationNotificationPredicates extends KapuaUpdatableEntityPredicates {
 
+    public static final String OPERATION_ID = "operationId";
 }

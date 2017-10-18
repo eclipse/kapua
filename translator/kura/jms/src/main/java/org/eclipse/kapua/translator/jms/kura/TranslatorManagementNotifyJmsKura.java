@@ -13,22 +13,23 @@ package org.eclipse.kapua.translator.jms.kura;
 
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraNotifyChannel;
-import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraNotifyMessage;
-import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraNotifyPackageDownloadPayload;
-import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraNotifyPackageInstallPayload;
-import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraNotifyPackageUninstallPayload;
-import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraNotifyPayload;
+import org.eclipse.kapua.service.device.call.message.kura.management.KuraNotifyChannel;
+import org.eclipse.kapua.service.device.call.message.kura.management.KuraNotifyMessage;
+import org.eclipse.kapua.service.device.call.message.kura.management.KuraNotifyPayload;
+import org.eclipse.kapua.service.device.call.message.kura.management.deploy.KuraDeployResources;
+import org.eclipse.kapua.service.device.call.message.kura.management.deploy.KuraNotifyPackageDownloadPayload;
+import org.eclipse.kapua.service.device.call.message.kura.management.deploy.KuraNotifyPackageInstallPayload;
+import org.eclipse.kapua.service.device.call.message.kura.management.deploy.KuraNotifyPackageUninstallPayload;
 import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.transport.message.jms.JmsMessage;
 import org.eclipse.kapua.transport.message.jms.JmsTopic;
 
 /**
- * Messages translator implementation from {@link org.eclipse.kapua.transport.message.jms.JmsMessage} to {@link org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraNotifyMessage}
+ * Messages translator implementation from {@link org.eclipse.kapua.transport.message.jms.JmsMessage} to {@link KuraNotifyMessage}
  *
  * @since 1.0
  */
-public class TranslatorLifeNotifyJmsKura extends Translator<JmsMessage, KuraNotifyMessage> {
+public class TranslatorManagementNotifyJmsKura extends Translator<JmsMessage, KuraNotifyMessage> {
 
     @Override
     public KuraNotifyMessage translate(JmsMessage jmsMessage)
@@ -57,11 +58,11 @@ public class TranslatorLifeNotifyJmsKura extends Translator<JmsMessage, KuraNoti
 
         KuraNotifyPayload kuraNotifyPayload;
 
-        if ("download".equals(resourceType)) {
+        if (KuraDeployResources.DOWNLOAD.equals(resourceType)) {
             kuraNotifyPayload = new KuraNotifyPackageDownloadPayload();
-        } else if ("install".equals(resourceType)) {
+        } else if (KuraDeployResources.INSTALL.equals(resourceType)) {
             kuraNotifyPayload = new KuraNotifyPackageInstallPayload();
-        } else if ("uninstall".equals(resourceType)) {
+        } else if (KuraDeployResources.UNINSTALL.equals(resourceType)) {
             kuraNotifyPayload = new KuraNotifyPackageUninstallPayload();
         } else {
             throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR);

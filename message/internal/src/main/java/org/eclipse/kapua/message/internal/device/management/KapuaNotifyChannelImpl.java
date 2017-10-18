@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.message.internal.device.lifecycle;
+package org.eclipse.kapua.message.internal.device.management;
 
 import org.eclipse.kapua.message.device.lifecycle.KapuaNotifyChannel;
 import org.eclipse.kapua.message.internal.KapuaChannelImpl;
@@ -22,7 +22,7 @@ import org.eclipse.kapua.message.internal.KapuaChannelImpl;
 public class KapuaNotifyChannelImpl extends KapuaChannelImpl implements KapuaNotifyChannel {
 
     private String clientId;
-    private String senderClientId;
+    private String resources;
 
     @Override
     public String getClientId() {
@@ -32,6 +32,16 @@ public class KapuaNotifyChannelImpl extends KapuaChannelImpl implements KapuaNot
     @Override
     public void setClientId(String clientId) {
         this.clientId = clientId;
+    }
+
+    @Override
+    public String getResources() {
+        return resources;
+    }
+
+    @Override
+    public void setResources(String resources) {
+        this.resources = resources;
     }
 
     @Override

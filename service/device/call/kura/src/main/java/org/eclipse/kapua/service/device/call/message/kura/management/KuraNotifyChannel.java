@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
+package org.eclipse.kapua.service.device.call.message.kura.management;
 
 import org.eclipse.kapua.service.device.call.message.app.kura.KuraAppChannel;
 
@@ -36,20 +36,20 @@ public class KuraNotifyChannel extends KuraAppChannel {
      * @param topicTokens
      */
     public KuraNotifyChannel(String[] topicTokens) {
-        this.messageClassification = topicTokens[0];
-        this.scopeNamespace = topicTokens[1];
-        this.clientId = topicTokens[2];
-        this.appId = topicTokens[3];
-        this.notifyPart = topicTokens[4];
-        this.senderClientId = topicTokens[5];
-        this.resources = topicTokens[6];
+        setMessageClassification(messageClassification = topicTokens[0]);
+        setScope(topicTokens[1]);
+        setClientId(topicTokens[2]);
+        setAppId(topicTokens[3]);
+        setNotifyPart(topicTokens[4]);
+        setSenderClientId(topicTokens[5]);
+        setResources(topicTokens[6]);
     }
 
     public String getSenderClientId() {
         return senderClientId;
     }
 
-    public void setSenderClientId(String senderClientId) {
+    protected void setSenderClientId(String senderClientId) {
         this.senderClientId = senderClientId;
     }
 
@@ -57,7 +57,7 @@ public class KuraNotifyChannel extends KuraAppChannel {
         return notifyPart;
     }
 
-    public void setNotifyPart(String notifyPart) {
+    protected void setNotifyPart(String notifyPart) {
         this.notifyPart = notifyPart;
     }
 
@@ -65,7 +65,8 @@ public class KuraNotifyChannel extends KuraAppChannel {
         return resources;
     }
 
-    public void setResources(String resources) {
+    protected void setResources(String resources) {
         this.resources = resources;
     }
+
 }
