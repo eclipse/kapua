@@ -38,7 +38,7 @@ public class JobCreatorImpl extends AbstractKapuaNamedEntityCreator<Job> impleme
     private List<JobStep> jobSteps;
     private String jobXmlDefinition;
 
-    protected JobCreatorImpl(KapuaId scopeId) {
+    public JobCreatorImpl(KapuaId scopeId) {
         super(scopeId);
     }
 
