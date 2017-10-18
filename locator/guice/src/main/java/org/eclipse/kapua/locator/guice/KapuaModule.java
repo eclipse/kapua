@@ -175,14 +175,15 @@ public class KapuaModule extends AbstractModule {
 
             // Bind service modules
             logger.info("Binding service modules ..");
+            //cast is safe by design
+            multibinders.put(ServiceModule.class, (Multibinder<Class<?>>) Multibinder.newSetBinder(binder(), (Class<?>)ServiceModule.class));
             for (Class<?> clazz : providers) {
                 if (ServiceModule.class.isAssignableFrom(clazz)) {
+                    @SuppressWarnings("rawtypes")
                     ComponentResolver resolver = ComponentResolver.newInstance(ServiceModule.class, clazz);
-                    if (!multibinders.containsKey(resolver.getProvidedClass())) {
-                        multibinders.put(resolver.getProvidedClass(), (Multibinder<Class<?>>) Multibinder.newSetBinder(binder(), resolver.getProvidedClass()));
-                    }
-
+                    //cast is safe by design
                     if (resolver.getProvidedClass().isAssignableFrom(clazz)) {
+                        logger.info("Assignable from {}", new Object[]{resolver.getProvidedClass(), clazz});
                         multibinders.get(resolver.getProvidedClass()).addBinding().to(resolver.getImplementationClass());
                     }
                     continue;

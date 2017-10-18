@@ -19,7 +19,7 @@
 
     <include relativeToChangelogFile="true" file="../common-properties.xml" />
 
-    <changeSet id="changelog-system-configuration-0.3.0" author="eurotech">
+    <changeSet id="system-configuration-service-events-0.3.0" author="eurotech">
         <createTable tableName="sys_service_event">
             <column name="scope_id" type="bigint(21) unsigned"/>
             <column name="id" type="bigint(21) unsigned" autoIncrement="true">
