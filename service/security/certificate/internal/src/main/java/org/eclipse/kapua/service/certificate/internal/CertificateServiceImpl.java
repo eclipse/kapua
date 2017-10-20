@@ -21,7 +21,6 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Actions;
@@ -86,7 +85,7 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public KapuaListResult<Certificate> query(KapuaQuery<Certificate> query) throws KapuaException {
+    public CertificateListResult query(KapuaQuery<Certificate> query) throws KapuaException {
         Certificate kapuaCertificate = new CertificateImpl(query.getScopeId());
         kapuaCertificate.setPrivateKey(privateKey);
         kapuaCertificate.setCertificate(certificate);
@@ -106,12 +105,23 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
+    public void delete(Certificate var1) throws KapuaException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public Certificate findByName(String name) throws KapuaException {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Certificate findByExternalId(String var1) throws KapuaException {
+        return null;
     }
 
     @Override
     public Certificate update(Certificate entity) throws KapuaException {
         throw new UnsupportedOperationException();
     }
+
 }
