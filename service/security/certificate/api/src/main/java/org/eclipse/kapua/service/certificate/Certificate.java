@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate;
 
-import org.eclipse.kapua.model.KapuaUpdatableEntity;
+import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
 import org.eclipse.kapua.service.certificate.xml.CertificateXmlRegistry;
 import org.eclipse.kapua.service.certificate.xml.PrivateKeyXmlAdapter;
@@ -46,7 +46,7 @@ import java.util.Date;
         "caId",
         "password"
 }, factoryClass = CertificateXmlRegistry.class, factoryMethod = "newCertificate")
-public interface Certificate extends KapuaUpdatableEntity {
+public interface Certificate extends KapuaNamedEntity {
 
     String TYPE = "account";
 
