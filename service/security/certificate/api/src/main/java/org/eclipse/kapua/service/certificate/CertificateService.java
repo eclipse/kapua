@@ -11,10 +11,27 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate;
 
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaNamedEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 
 public interface CertificateService extends KapuaEntityService<Certificate, CertificateCreator>, KapuaNamedEntityService<Certificate>, KapuaUpdatableEntityService<Certificate> {
+
+    Certificate create(CertificateCreator var1) throws KapuaException;
+
+    Certificate update(Certificate var1) throws KapuaException;
+
+    void delete(Certificate var1) throws KapuaException;
+
+    Certificate find(KapuaId var1, KapuaId var2) throws KapuaException;
+
+    Certificate findByName(String var1) throws KapuaException;
+
+    Certificate findByExternalId(String var1) throws KapuaException;
+
+    CertificateListResult query(KapuaQuery<Certificate> var1) throws KapuaException;
 
 }
