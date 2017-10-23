@@ -18,6 +18,7 @@ import java.security.cert.X509Certificate;
 import com.google.common.collect.Lists;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -55,7 +56,6 @@ public class CertificateServiceImpl implements CertificateService {
      */
     public CertificateServiceImpl() throws KapuaException {
         KapuaSecurityUtils.doPrivileged(() -> {
-            AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(CERTIFICATE_DOMAIN, Actions.write, KapuaId.ANY));
             KapuaCertificateSetting setting = KapuaCertificateSetting.getInstance();
 
             String privateKeyPath = setting.getString(KapuaCertificateSettingKeys.CERTIFICATE_JWT_PRIVATE_KEY, "");
@@ -86,6 +86,9 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public CertificateListResult query(KapuaQuery<Certificate> query) throws KapuaException {
+        ArgumentValidator.notNull(query, "query");
+        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(CERTIFICATE_DOMAIN, Actions.read, KapuaId.ANY));
         Certificate kapuaCertificate = new CertificateImpl(query.getScopeId());
         kapuaCertificate.setPrivateKey(privateKey);
         kapuaCertificate.setCertificate(certificate);
