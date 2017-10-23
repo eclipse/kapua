@@ -20,6 +20,7 @@ import org.junit.runner.RunWith;
 @CucumberOptions(features = "classpath:features",
         glue = { "org.eclipse.kapua.service.device.registry.common",
                 "org.eclipse.kapua.service.device.registry.internal",
+                "org.eclipse.kapua.service.device.registry.shared",
                 "org.eclipse.kapua.service.device.registry.connection.internal",
                 "org.eclipse.kapua.service.device.registry.event.internal" },
         plugin = { "pretty",

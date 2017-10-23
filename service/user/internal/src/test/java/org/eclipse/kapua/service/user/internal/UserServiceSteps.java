@@ -109,11 +109,6 @@ public class UserServiceSteps extends AbstractKapuaSteps {
     private long userCnt;
 
     /**
-     * Check if exception was fired in step.
-     */
-    private boolean isException;
-
-    /**
      * Currently executing scenario.
      */
     private Scenario scenario;
@@ -142,6 +137,14 @@ public class UserServiceSteps extends AbstractKapuaSteps {
      * Set of users that are found in step.
      */
     private Set<ComparableUser> iFoundUsers;
+
+    /**
+     * Scratchpad data related to exception checking
+     */
+    private boolean exceptionExpected;
+    private String exceptionName;
+    private String exceptionMessage;
+    private boolean exceptionCaught;
 
     /**
      * Setup DI with Google Guice DI.
@@ -190,11 +193,15 @@ public class UserServiceSteps extends AbstractKapuaSteps {
     public void beforeScenario(Scenario scenario) throws Exception {
 
         locator = KapuaLocator.getInstance();
-        this.userService = locator.getService(UserService.class);
-        this.userFactory = locator.getFactory(UserFactory.class);
+        userService = locator.getService(UserService.class);
+        userFactory = locator.getFactory(UserFactory.class);
 
         this.scenario = scenario;
-        this.isException = false;
+
+        exceptionExpected = false;
+        exceptionName = "";
+        exceptionMessage = "";
+        exceptionCaught = false;
 
         // Create User Service tables
         enableH2Connection();
@@ -220,6 +227,13 @@ public class UserServiceSteps extends AbstractKapuaSteps {
         KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
 
         KapuaSecurityUtils.clearSession();
+    }
+
+    @Given("^I expect the exception \"(.+)\" with the text \"(.+)\"$")
+    public void setExpectedExceptionDetails(String name, String text) {
+        exceptionExpected = true;
+        exceptionName = name;
+        exceptionMessage = text;
     }
 
     @Given("^User with name \"(.*)\" in scope with id (\\d+)$")
@@ -265,9 +279,10 @@ public class UserServiceSteps extends AbstractKapuaSteps {
     @When("^I delete user$")
     public void deleteUser() throws Exception {
         try {
+            primeException();
             userService.delete(user);
         } catch (KapuaException ke) {
-            isException = true;
+            verifyException(ke);
         }
     }
 
@@ -424,15 +439,16 @@ public class UserServiceSteps extends AbstractKapuaSteps {
     @Then("^I create same user$")
     public void createSameUser() throws Exception {
         try {
+            primeException();
             user = userService.create(userCreator);
         } catch (KapuaException ke) {
-            isException = true;
+            verifyException(ke);
         }
     }
 
     @Then("^I get Kapua exception$")
     public void getKapuaException() throws Exception {
-        if (!isException) {
+        if (!exceptionCaught) {
             fail("Should fail with KapuaException.");
         }
     }
@@ -443,20 +459,22 @@ public class UserServiceSteps extends AbstractKapuaSteps {
     }
 
     @When("^I update nonexistent user$")
-    public void updateNonexistenUser() {
+    public void updateNonexistenUser() throws Exception {
         try {
+            primeException();
             userService.update(user);
         } catch (KapuaException ke) {
-            isException = true;
+            verifyException(ke);
         }
     }
 
     @When("^I delete nonexistent user$")
-    public void deleteNonexistenUser() {
+    public void deleteNonexistenUser() throws Exception {
         try {
+            primeException();
             userService.delete(user);
         } catch (KapuaException ke) {
-            isException = true;
+            verifyException(ke);
         }
     }
 
@@ -464,6 +482,7 @@ public class UserServiceSteps extends AbstractKapuaSteps {
     public void haveUsers(List<UserImpl> userList) throws Exception {
         iHaveUsers = new HashSet<>();
         try {
+            primeException();
             for (User userItem : userList) {
                 String name = userItem.getName();
                 String displayName = userItem.getDisplayName();
@@ -478,7 +497,7 @@ public class UserServiceSteps extends AbstractKapuaSteps {
                 iHaveUsers.add(new ComparableUser(user));
             }
         } catch (KapuaException ke) {
-            isException = true;
+            verifyException(ke);
         }
     }
 
@@ -532,19 +551,18 @@ public class UserServiceSteps extends AbstractKapuaSteps {
     }
 
     @When("^I configure$")
-    public void setConfigurationValue(List<TestConfig> testConfigs)
-            throws KapuaException {
+    public void setConfigurationValue(List<TestConfig> testConfigs) throws Exception {
         Map<String, Object> valueMap = new HashMap<>();
 
         for (TestConfig config : testConfigs) {
             config.addConfigToMap(valueMap);
         }
         try {
-            isException = false;
+            primeException();
             userService.setConfigValues(new KapuaEid(BigInteger.valueOf(DEFAULT_SCOPE_ID)),
                     new KapuaEid(BigInteger.ONE), valueMap);
-        } catch (KapuaException ex) {
-            isException = true;
+        } catch (KapuaException ke) {
+            verifyException(ke);
         }
     }
 
@@ -594,6 +612,28 @@ public class UserServiceSteps extends AbstractKapuaSteps {
         userCreator.setPhoneNumber(phone);
 
         return userCreator;
+    }
+
+    private void primeException() {
+        exceptionCaught = false;
+    }
+
+    /**
+     * Check the exception that was caught. In case the exception was expected the type and message is shown in the cucumber logs.
+     * Otherwise the exception is rethrown failing the test and dumping the stack trace to help resolving problems.
+     */
+    private void verifyException(Exception ex)
+            throws Exception {
+
+        if (!exceptionExpected ||
+                (!exceptionName.isEmpty() && !ex.getClass().toGenericString().contains(exceptionName)) ||
+                (!exceptionMessage.isEmpty() && !exceptionMessage.trim().contentEquals("*") && !ex.getMessage().contains(exceptionMessage))) {
+            scenario.write("An unexpected exception was raised!");
+            throw(ex);
+        }
+
+        scenario.write("Exception raised as expected: " + ex.getClass().getCanonicalName() + ", " + ex.getMessage());
+        exceptionCaught = true;
     }
 
     // *****************
