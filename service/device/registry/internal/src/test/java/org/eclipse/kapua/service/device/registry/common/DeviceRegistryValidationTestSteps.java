@@ -38,6 +38,7 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceCreatorImpl;
 import org.eclipse.kapua.service.device.registry.internal.DeviceFactoryImpl;
 import org.eclipse.kapua.service.device.registry.internal.DeviceImpl;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceImpl;
+import org.eclipse.kapua.service.device.registry.shared.SharedTestSteps;
 import org.eclipse.kapua.test.MockedLocator;
 import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 import org.mockito.Mockito;
@@ -46,7 +47,6 @@ import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
 
@@ -65,9 +65,6 @@ public class DeviceRegistryValidationTestSteps extends AbstractKapuaSteps {
     // Currently executing scenario.
     Scenario scenario;
 
-    // Device validator object
-    // DeviceValidation deviceValidator = null;
-
     // Commons related objects
     KapuaIdFactory kapuaIdFactory = new KapuaIdFactoryImpl();
 
@@ -78,8 +75,8 @@ public class DeviceRegistryValidationTestSteps extends AbstractKapuaSteps {
     DeviceImpl device;
     DeviceQuery query;
 
-    // Check if exception was fired in step.
-    boolean exceptionCaught;
+    // Common test steps
+    SharedTestSteps sharedTests = new SharedTestSteps();
 
     // *************************************
     // Definition of Cucumber scenario steps
@@ -91,7 +88,6 @@ public class DeviceRegistryValidationTestSteps extends AbstractKapuaSteps {
     public void beforeScenario(Scenario scenario)
             throws Exception {
         this.scenario = scenario;
-        exceptionCaught = false;
 
         // Set up the mock locator
         MockedLocator mockLocator = (MockedLocator) locator;
@@ -190,29 +186,29 @@ public class DeviceRegistryValidationTestSteps extends AbstractKapuaSteps {
 
     @When("^I validate the device creator$")
     public void validateExistingDeviceCreator()
-            throws KapuaException {
+            throws Exception {
         try {
-            exceptionCaught = false;
+            sharedTests.primeException();
             DeviceValidation.validateCreatePreconditions(deviceCreator);
         } catch (KapuaException ex) {
-            exceptionCaught = true;
+            sharedTests.verifyException(ex);
         }
     }
 
     @When("^I validate the device for updates$")
     public void validateExistingDeviceForUpdates()
-            throws KapuaException {
+            throws Exception {
         try {
-            exceptionCaught = false;
+            sharedTests.primeException();
             DeviceValidation.validateUpdatePreconditions(device);
         } catch (KapuaException ex) {
-            exceptionCaught = true;
+            sharedTests.verifyException(ex);
         }
     }
 
     @When("^Validating a find operation for scope (.+) and device (.+)$")
     public void validateDeviceSearch(String scopeId, String deviceId)
-            throws KapuaException {
+            throws Exception {
         KapuaId scope;
         KapuaId dev;
 
@@ -229,16 +225,16 @@ public class DeviceRegistryValidationTestSteps extends AbstractKapuaSteps {
         }
 
         try {
-            exceptionCaught = false;
+            sharedTests.primeException();
             DeviceValidation.validateFindPreconditions(scope, dev);
         } catch (KapuaException ex) {
-            exceptionCaught = true;
+            sharedTests.verifyException(ex);
         }
     }
 
     @When("^Validating a find operation for scope (.+) and client \"(.*)\"$")
     public void validateDeviceSearchByClientId(String scopeId, String clientId)
-            throws KapuaException {
+            throws Exception {
         KapuaId scope;
         String client;
 
@@ -255,16 +251,16 @@ public class DeviceRegistryValidationTestSteps extends AbstractKapuaSteps {
         }
 
         try {
-            exceptionCaught = false;
+            sharedTests.primeException();
             DeviceValidation.validateFindByClientIdPreconditions(scope, client);
         } catch (KapuaException ex) {
-            exceptionCaught = true;
+            sharedTests.verifyException(ex);
         }
     }
 
     @When("^Validating a delete operation for scope (.+) and device (.+)$")
     public void validateDeviceDelete(String scopeId, String deviceId)
-            throws KapuaException {
+            throws Exception {
         KapuaId scope;
         KapuaId dev;
 
@@ -281,43 +277,33 @@ public class DeviceRegistryValidationTestSteps extends AbstractKapuaSteps {
         }
 
         try {
-            exceptionCaught = false;
+            sharedTests. primeException();
             DeviceValidation.validateDeletePreconditions(scope, dev);
         } catch (KapuaException ex) {
-            exceptionCaught = true;
+            sharedTests.verifyException(ex);
         }
     }
 
     @When("^I validate a query operation$")
     public void checkQueryOperation()
-            throws KapuaException {
+            throws Exception {
         try {
-            exceptionCaught = false;
+            sharedTests.primeException();
             DeviceValidation.validateQueryPreconditions(query);
         } catch (KapuaException ex) {
-            exceptionCaught = true;
+            sharedTests.verifyException(ex);
         }
     }
 
     @When("^I validate a count operation$")
     public void checkCountOperation()
-            throws KapuaException {
+            throws Exception {
         try {
-            exceptionCaught = false;
+            sharedTests.primeException();
             DeviceValidation.validateCountPreconditions(query);
         } catch (KapuaException ex) {
-            exceptionCaught = true;
+            sharedTests.verifyException(ex);
         }
-    }
-
-    @Then("^No exception is thrown$")
-    public void checkThatNoExceptionWasCaught() {
-        assertFalse(exceptionCaught);
-    }
-
-    @Then("^An exception is thrown$")
-    public void checkThatAnExceptionWasCaught() {
-        assertTrue(exceptionCaught);
     }
 
     // *******************

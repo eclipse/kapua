@@ -200,6 +200,7 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
 
     @Given("^I expect the exception \"(.+)\" with the text \"(.+)\"$")
     public void setExpectedExceptionDetails(String name, String text) {
+
         exceptionExpected = true;
         exceptionName = name;
         exceptionMessage = text;
@@ -213,6 +214,7 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     @Given("^An existing account with the name \"(.*)\"$")
     public void createTestAccountWithName(String name)
             throws Exception {
+
         accountCreator = prepareRegularAccountCreator(rootScopeId, name);
         try {
             primeException();
@@ -226,6 +228,7 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     @Given("^I create (\\d+) childs for account with Id (\\d+)$")
     public void createANumberOfAccounts(int num, int parentId)
             throws Exception {
+
         for (int i = 0; i < num; i++) {
             accountCreator = prepareRegularAccountCreator(new KapuaEid(BigInteger.valueOf(parentId)), "tmp_acc_" + String.format("%d", i));
             try {
@@ -241,8 +244,8 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     @Given("^I create (\\d+) childs for account with name \"(.*)\"$")
     public void createANumberOfChildrenForAccountWithName(int num, String name)
             throws Exception {
+
         Account tmpAcc = accountService.findByName(name);
-        exceptionCaught = false;
         for (int i = 0; i < num; i++) {
             accountCreator = prepareRegularAccountCreator(tmpAcc.getId(), "tmp_acc_" + String.format("%d", i));
             try {
@@ -258,7 +261,7 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     @Given("^I create (\\d+) accounts with organization name \"(.*)\"$")
     public void createANumberOfChildrenForAccountWithOrganizationName(int num, String name)
             throws Exception {
-        exceptionCaught = false;
+
         for (int i = 0; i < num; i++) {
             accountCreator = prepareRegularAccountCreator(rootScopeId, "tmp_acc_" + String.format("%d", i));
             accountCreator.setOrganizationName(name);
@@ -275,6 +278,7 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     @When("^I create account \"(.*)\"$")
     public void createAccount(String name)
             throws Exception {
+
         accountCreator = prepareRegularAccountCreator(rootScopeId, name);
         account = accountService.create(accountCreator);
         accountId = account.getId();
@@ -283,6 +287,7 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     @When("^I create a duplicate account \"(.*)\"$")
     public void createDuplicateAccount(String name)
             throws Exception {
+
         accountCreator = prepareRegularAccountCreator(rootScopeId, name);
         try {
             primeException();
@@ -295,6 +300,7 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     @When("^I create an account with a null name$")
     public void createAccountWithNullName()
             throws Exception {
+
         accountCreator = prepareRegularAccountCreator(rootScopeId, null);
         try {
             primeException();
@@ -307,6 +313,7 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     @When("^I modify the account \"(.*)\"$")
     public void changeAccountDetails(String name)
             throws KapuaException {
+
         account = accountService.findByName(name);
         Organization tmpOrg = account.getOrganization();
 
@@ -321,6 +328,7 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     @When("^I modify the current account$")
     public void updateAccount()
             throws Exception {
+
         try {
             primeException();
             accountService.update(account);
@@ -332,9 +340,10 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     @When("^I change the account \"(.*)\" name to \"(.*)\"$")
     public void changeAccountName(String accName, String name)
             throws Exception {
-        Account tmpAcc = accountService.findByName(accName);
 
+        Account tmpAcc = accountService.findByName(accName);
         tmpAcc.setName(name);
+
         try {
             primeException();
             accountService.update(tmpAcc);
@@ -346,10 +355,11 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     @When("^I change the parent path for account \"(.*)\"$")
     public void changeParentPathForAccount(String name)
             throws Exception {
+
         Account tmpAcc = accountService.findByName(name);
         String modParentPath = tmpAcc.getParentAccountPath() + "/mod";
-
         tmpAcc.setParentAccountPath(modParentPath);
+
         try {
             primeException();
             accountService.update(tmpAcc);
@@ -361,9 +371,10 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     @When("^I try to change the account \"(.*)\" scope Id to (\\d+)$")
     public void changeAccountScopeId(String name, int newScopeId)
             throws Exception {
-        AccountImpl tmpAcc = (AccountImpl) accountService.findByName(name);
 
+        AccountImpl tmpAcc = (AccountImpl) accountService.findByName(name);
         tmpAcc.setScopeId(new KapuaEid(BigInteger.valueOf(newScopeId)));
+
         try {
             primeException();
             accountService.update(tmpAcc);
@@ -382,6 +393,7 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     @When("^I try to delete the system account$")
     public void deleteSystemAccount()
             throws Exception {
+
         String adminUserName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_ACCOUNT);
         Account tmpAcc = accountService.findByName(adminUserName);
 
@@ -399,6 +411,7 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     @When("^I delete a random account$")
     public void deleteRandomAccount()
             throws Exception {
+
         try {
             primeException();
             accountService.delete(rootScopeId, new KapuaEid(IdGenerator.generate()));
