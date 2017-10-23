@@ -50,7 +50,7 @@ public class JobStepDefinitionServiceImpl
     private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
 
-    protected JobStepDefinitionServiceImpl() {
+    public JobStepDefinitionServiceImpl() {
         super(JobStepDefinitionService.class.getName(), JOB_DOMAIN, JobEntityManagerFactory.getInstance(), JobStepDefinitionService.class, JobStepDefinitionFactory.class);
     }
 
