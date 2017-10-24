@@ -24,13 +24,9 @@ public interface CertificateService extends KapuaEntityService<Certificate, Cert
 
     Certificate update(Certificate var1) throws KapuaException;
 
-    void delete(Certificate var1) throws KapuaException;
-
     Certificate find(KapuaId var1, KapuaId var2) throws KapuaException;
 
     Certificate findByName(String var1) throws KapuaException;
-
-    Certificate findByExternalId(String var1) throws KapuaException;
 
     CertificateListResult query(KapuaQuery<Certificate> var1) throws KapuaException;
 
