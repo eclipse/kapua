@@ -11,18 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate;
 
+import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.model.KapuaNamedEntityCreator;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
-import org.eclipse.kapua.service.certificate.xml.PrivateKeyXmlAdapter;
-import org.eclipse.kapua.service.certificate.xml.X509CertificateXmlAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.security.PrivateKey;
-import java.security.cert.X509Certificate;
 import java.util.Date;
 
 /**
@@ -52,11 +51,9 @@ import java.util.Date;
 })
 public interface CertificateCreator extends KapuaNamedEntityCreator<Certificate> {
 
-    @XmlJavaTypeAdapter(X509CertificateXmlAdapter.class)
-    X509Certificate getCertificate();
+    String getCertificate();
 
-    @XmlJavaTypeAdapter(X509CertificateXmlAdapter.class)
-    void setCertificate(X509Certificate certificate);
+    void setCertificate(String certificate);
 
     String getFamily();
 
@@ -100,11 +97,9 @@ public interface CertificateCreator extends KapuaNamedEntityCreator<Certificate>
 
     void setDigest(byte[] digest);
 
-    @XmlJavaTypeAdapter(PrivateKeyXmlAdapter.class)
-    PrivateKey getPrivateKey();
+    String getPrivateKey();
 
-    @XmlJavaTypeAdapter(PrivateKeyXmlAdapter.class)
-    void setPrivateKey(PrivateKey privateKey);
+    void setPrivateKey(String privateKey);
 
     Boolean getDefault();
 
@@ -114,9 +109,11 @@ public interface CertificateCreator extends KapuaNamedEntityCreator<Certificate>
 
     void setCa(Boolean isCa);
 
-    Integer getCaId();
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    @ApiModelProperty(dataType = "string")
+    KapuaId getCaId();
 
-    void setCaId(Integer caId);
+    void setCaId(KapuaId caId);
 
     String getPassword();
 

@@ -11,7 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate;
 
+import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.model.KapuaNamedEntity;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
 import org.eclipse.kapua.service.certificate.xml.CertificateXmlRegistry;
 import org.eclipse.kapua.service.certificate.xml.PrivateKeyXmlAdapter;
@@ -116,9 +119,11 @@ public interface Certificate extends KapuaNamedEntity {
 
     void setCa(Boolean isCa);
 
-    Integer getCaId();
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    @ApiModelProperty(dataType = "string")
+    KapuaId getCaId();
 
-    void setCaId(Integer caId);
+    void setCaId(KapuaId caId);
 
     String getPassword();
 

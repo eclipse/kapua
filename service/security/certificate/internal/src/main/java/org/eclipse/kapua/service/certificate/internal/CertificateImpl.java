@@ -184,12 +184,12 @@ public class CertificateImpl extends AbstractKapuaUpdatableEntity implements Cer
     }
 
     @Override
-    public Integer getCaId() {
+    public KapuaId getCaId() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void setCaId(Integer caId) {
+    public void setCaId(KapuaId caId) {
         throw new UnsupportedOperationException();
     }
 
