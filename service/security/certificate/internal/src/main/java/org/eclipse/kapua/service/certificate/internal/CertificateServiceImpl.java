@@ -108,18 +108,8 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public void delete(Certificate var1) throws KapuaException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public Certificate findByName(String name) throws KapuaException {
         throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Certificate findByExternalId(String var1) throws KapuaException {
-        return null;
     }
 
     @Override
