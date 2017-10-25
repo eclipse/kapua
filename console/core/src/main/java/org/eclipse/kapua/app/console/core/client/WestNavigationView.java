@@ -310,7 +310,6 @@ public class WestNavigationView extends LayoutContainer {
             // Icon
             KapuaIcon icon = new KapuaIcon((IconSet) model.get("icon"));
             icon.setEmSize(2);
-            icon.setColor(Color.BLUE_KAPUA);
 
             TableData iconTableData = new TableData(Style.HorizontalAlignment.CENTER, Style.VerticalAlignment.MIDDLE);
             iconTableData.setWidth("35px");
