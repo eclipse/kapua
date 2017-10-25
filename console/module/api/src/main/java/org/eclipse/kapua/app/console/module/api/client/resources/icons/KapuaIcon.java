@@ -22,11 +22,21 @@ public class KapuaIcon extends Text {
     Color color;
     Integer emSize;
 
+    private static Color defaultColor = Color.BLUE_KAPUA;
+
     public KapuaIcon(IconSet icon) {
         super();
 
         this.icon = icon;
-        this.color = Color.BLUE_KAPUA;
+        this.color = defaultColor;
+    }
+
+    public static Color getDefaultColor() {
+        return defaultColor;
+    }
+
+    public static void setDefaultColor(Color defaultColor) {
+        KapuaIcon.defaultColor = defaultColor;
     }
 
     public void setColor(Color color) {
