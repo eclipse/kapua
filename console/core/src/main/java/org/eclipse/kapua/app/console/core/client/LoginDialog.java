@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.client;
 
+import org.eclipse.kapua.app.console.core.client.messages.ConsoleCoreMessages;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationService;
 import org.eclipse.kapua.app.console.core.shared.service.GwtSettingsService;
@@ -50,6 +51,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class LoginDialog extends Dialog {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
+    private static final ConsoleCoreMessages CORE_MSGS = GWT.create(ConsoleCoreMessages.class);
 
     private final GwtAuthorizationServiceAsync gwtAuthorizationService = GWT.create(GwtAuthorizationService.class);
     private final GwtSettingsServiceAsync gwtSettingService = GWT.create(GwtSettingsService.class);
@@ -83,7 +85,7 @@ public class LoginDialog extends Dialog {
         setButtonAlign(HorizontalAlignment.LEFT);
         setButtons(""); // don't show OK button
         setIcon(IconHelper.createStyle("user"));
-        setHeading(MSGS.loginTitle());
+        setHeading(CORE_MSGS.loginTitle());
         setModal(false);
         setBodyBorder(true);
         setBodyStyle("padding: 8px;background: none");
@@ -113,7 +115,7 @@ public class LoginDialog extends Dialog {
         };
 
         username = new TextField<String>();
-        username.setFieldLabel(MSGS.loginUsername());
+        username.setFieldLabel(CORE_MSGS.loginUsername());
         username.addKeyListener(keyListener);
         username.addListener(Events.OnBlur, changeListener);
 
@@ -121,7 +123,7 @@ public class LoginDialog extends Dialog {
 
         password = new TextField<String>();
         password.setPassword(true);
-        password.setFieldLabel(MSGS.loginPassword());
+        password.setFieldLabel(CORE_MSGS.loginPassword());
         password.addKeyListener(keyListener);
         password.addListener(Events.OnBlur, changeListener);
 
@@ -133,7 +135,7 @@ public class LoginDialog extends Dialog {
 
             @Override
             public void onFailure(Throwable caught) {
-                ConsoleInfo.display(MSGS.loginSsoEnabledError(), caught.getLocalizedMessage());
+                ConsoleInfo.display(CORE_MSGS.loginSsoEnabledError(), caught.getLocalizedMessage());
             }
 
             @Override
@@ -160,7 +162,7 @@ public class LoginDialog extends Dialog {
         getButtonBar().add(status);
         getButtonBar().add(new FillToolItem());
 
-        reset = new Button(MSGS.loginReset());
+        reset = new Button(CORE_MSGS.loginReset());
         reset.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
             public void componentSelected(ButtonEvent ce) {
@@ -171,7 +173,7 @@ public class LoginDialog extends Dialog {
             }
         });
 
-        login = new Button(MSGS.loginLogin());
+        login = new Button(CORE_MSGS.loginLogin());
         login.disable();
         login.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
@@ -180,7 +182,7 @@ public class LoginDialog extends Dialog {
             }
         });
 
-        ssoLogin = new Button(MSGS.loginSsoLogin());
+        ssoLogin = new Button(CORE_MSGS.loginSsoLogin());
         ssoLogin.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
             @Override
@@ -200,7 +202,7 @@ public class LoginDialog extends Dialog {
 
             @Override
             public void onFailure(Throwable caught) {
-                ConsoleInfo.display(MSGS.loginSsoLogin(), caught.getLocalizedMessage());
+                ConsoleInfo.display(CORE_MSGS.loginSsoLogin(), caught.getLocalizedMessage());
             }
 
             @Override
@@ -233,7 +235,7 @@ public class LoginDialog extends Dialog {
 
             @Override
             public void onFailure(Throwable caught) {
-                ConsoleInfo.display(MSGS.loginError(), caught.getLocalizedMessage());
+                ConsoleInfo.display(CORE_MSGS.loginError(), caught.getLocalizedMessage());
                 reset();
             }
 
