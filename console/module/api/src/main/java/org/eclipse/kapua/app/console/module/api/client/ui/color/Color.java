@@ -47,6 +47,11 @@ public enum Color {
      */
     GREY(220, 220, 220),
 
+    /**
+     * Blue Sky - No, it's not a typo. Walter approved ;)
+     */
+    BLUE_SKY(75,144,207),
+
     ;
 
     int r;
