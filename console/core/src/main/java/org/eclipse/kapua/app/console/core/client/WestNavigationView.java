@@ -42,7 +42,6 @@ import org.eclipse.kapua.app.console.module.account.client.AccountDetailsView;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.module.api.client.ui.color.Color;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.ContentPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractView;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
