@@ -377,6 +377,7 @@
                     <execution>
                         <goals>
                             <goal>generateAsync</goal> <!-- Generate Async RPC interfaces -->
+                            <goal>i18n</goal>
                             <goal>compile</goal> <!-- Compile permutations -->
                         </goals>
                     </execution>
@@ -384,7 +385,9 @@
 
                 <configuration>
                     <module>org.eclipse.kapua.app.console.core.adminCore</module>
-
+                    <i18nMessagesBundles>
+                        <i18nMessagesBundle>org.eclipse.kapua.app.console.core.client.messages.ConsoleCoreMessages</i18nMessagesBundle>
+                    </i18nMessagesBundles>
                     <webappDirectory>${project.build.directory}</webappDirectory>
                     <hostedWebapp>${site.basedir}</hostedWebapp>
 

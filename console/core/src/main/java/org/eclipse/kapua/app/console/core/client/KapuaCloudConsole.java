@@ -13,6 +13,7 @@ package org.eclipse.kapua.app.console.core.client;
 
 import java.util.logging.Logger;
 
+import org.eclipse.kapua.app.console.core.client.messages.ConsoleCoreMessages;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.core.client.util.Logout;
@@ -65,6 +66,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 public class KapuaCloudConsole implements EntryPoint {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
+    private static final ConsoleCoreMessages CORE_MSGS = GWT.create(ConsoleCoreMessages.class);
     private static final Logger logger = Logger.getLogger(KapuaCloudConsole.class.getName());
 
     private GwtAuthorizationServiceAsync gwtAuthorizationService = GWT.create(GwtAuthorizationService.class);
@@ -358,7 +360,7 @@ public class KapuaCloudConsole implements EntryPoint {
             @Override
             public void onFailure(Throwable caught) {
                 dlg.hide();
-                ConsoleInfo.display(MSGS.loginError(), caught.getLocalizedMessage());
+                ConsoleInfo.display(CORE_MSGS.loginError(), caught.getLocalizedMessage());
 
                 Logout.logout();
             }
@@ -436,7 +438,7 @@ public class KapuaCloudConsole implements EntryPoint {
 
         // or else
 
-        ConsoleInfo.display(MSGS.error(), MSGS.loginError());
+        ConsoleInfo.display(MSGS.error(), CORE_MSGS.loginError());
         showLoginDialog(viewport);
     }
 }
