@@ -34,29 +34,35 @@ public class CertificateUtils {
     public static PrivateKey readPrivateKey(File file) throws KapuaCertificateException {
         PrivateKey privateKey;
         try {
-            String keyFromFile = FileUtils.readFileToString(file)
-                    .replaceAll("(\r)?\n", "")
-                    .replace("-----BEGIN PRIVATE KEY-----", "")
-                    .replace("-----END PRIVATE KEY-----", "");
-            privateKey = stringToPrivateKey(keyFromFile);
+            privateKey = stringToPrivateKey(readPrivateKeyAsString(file));
         } catch (IOException e) {
             throw new KapuaCertificateException(KapuaCertificateErrorCodes.PRIVATE_KEY_ERROR, e);
         }
         return privateKey;
     }
 
+    public static String readPrivateKeyAsString(File file) throws IOException {
+        return FileUtils.readFileToString(file)
+                .replaceAll("(\r)?\n", "")
+                .replace("-----BEGIN PRIVATE KEY-----", "")
+                .replace("-----END PRIVATE KEY-----", "");
+    }
+
     public static X509Certificate readCertificate(File file) throws KapuaCertificateException {
         X509Certificate certificate;
         try {
-            String certificateFromFile = FileUtils.readFileToString(file)
-                    .replaceAll("(\r)?\n", "")
-                    .replace("-----BEGIN CERTIFICATE-----", "")
-                    .replace("-----END CERTIFICATE-----", "");
-            certificate = stringToCertificate(certificateFromFile);
+            certificate = stringToCertificate(readCertificateAsString(file));
         } catch (IOException e) {
             throw new KapuaCertificateException(KapuaCertificateErrorCodes.CERTIFICATE_ERROR, e);
         }
         return certificate;
+    }
+
+    public static String readCertificateAsString(File file) throws IOException {
+        return FileUtils.readFileToString(file)
+                .replaceAll("(\r)?\n", "")
+                .replace("-----BEGIN CERTIFICATE-----", "")
+                .replace("-----END CERTIFICATE-----", "");
     }
 
     public static PrivateKey stringToPrivateKey(String privateKeyString) throws KapuaCertificateException {

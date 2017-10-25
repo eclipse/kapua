@@ -12,8 +12,6 @@
 package org.eclipse.kapua.service.certificate.internal;
 
 import java.io.File;
-import java.security.PrivateKey;
-import java.security.cert.X509Certificate;
 
 import com.google.common.collect.Lists;
 import org.eclipse.kapua.KapuaException;
@@ -42,8 +40,8 @@ import org.slf4j.LoggerFactory;
 @KapuaProvider
 public class CertificateServiceImpl implements CertificateService {
 
-    private X509Certificate certificate;
-    private PrivateKey privateKey;
+    private String certificate;
+    private String privateKey;
     public static final Logger LOGGER = LoggerFactory.getLogger(CertificateServiceImpl.class);
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
@@ -68,8 +66,8 @@ public class CertificateServiceImpl implements CertificateService {
             } else {
                 File certificateFile = new File(certificatePath);
                 File privateKeyFile = new File(privateKeyPath);
-                certificate = CertificateUtils.readCertificate(certificateFile);
-                privateKey = CertificateUtils.readPrivateKey(privateKeyFile);
+                certificate = CertificateUtils.readCertificateAsString(certificateFile);
+                privateKey = CertificateUtils.readPrivateKeyAsString(privateKeyFile);
             }
         });
     }
