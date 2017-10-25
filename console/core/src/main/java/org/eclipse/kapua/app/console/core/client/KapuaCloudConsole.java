@@ -237,11 +237,19 @@ public class KapuaCloudConsole implements EntryPoint {
             kapuaLogo.setStyleName("kapuaLogo-ie8");
         }
 
-        TableLayout layout = new TableLayout(1);
+        SimplePanel eclipseLogo = new SimplePanel();
+        if (!UserAgentUtils.isIE() || UserAgentUtils.getIEDocumentMode() > 8) {
+            eclipseLogo.setStyleName("eclipseLogo");
+        } else {
+            eclipseLogo.setStyleName("eclipseLogo-ie8");
+        }
+
+        TableLayout layout = new TableLayout(2);
         layout.setWidth("100%");
 
         LayoutContainer lcHeader = new LayoutContainer(layout);
         lcHeader.add(kapuaLogo, new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.BOTTOM));
+        lcHeader.add(eclipseLogo, new TableData(Style.HorizontalAlignment.RIGHT, Style.VerticalAlignment.BOTTOM));
         if (!UserAgentUtils.isIE() || UserAgentUtils.getIEDocumentMode() > 8) {
             lcHeader.setStyleName("loginHeader");
         } else {
