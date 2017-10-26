@@ -42,10 +42,8 @@ public class CertificateUtils {
     }
 
     public static String readPrivateKeyAsString(File file) throws IOException {
-        return FileUtils.readFileToString(file)
-                .replaceAll("(\r)?\n", "")
-                .replace("-----BEGIN PRIVATE KEY-----", "")
-                .replace("-----END PRIVATE KEY-----", "");
+        return getBytesOnly(FileUtils.readFileToString(file));
+
     }
 
     public static X509Certificate readCertificate(File file) throws KapuaCertificateException {
@@ -59,15 +57,12 @@ public class CertificateUtils {
     }
 
     public static String readCertificateAsString(File file) throws IOException {
-        return FileUtils.readFileToString(file)
-                .replaceAll("(\r)?\n", "")
-                .replace("-----BEGIN CERTIFICATE-----", "")
-                .replace("-----END CERTIFICATE-----", "");
+        return getBytesOnly(FileUtils.readFileToString(file));
     }
 
     public static PrivateKey stringToPrivateKey(String privateKeyString) throws KapuaCertificateException {
         try {
-            byte[] decoded = Base64.getDecoder().decode(privateKeyString);
+            byte[] decoded = Base64.getDecoder().decode(getBytesOnly(privateKeyString));
             PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(decoded);
             KeyFactory kf = KeyFactory.getInstance("RSA");
             return kf.generatePrivate(keySpec);
@@ -78,11 +73,18 @@ public class CertificateUtils {
 
     public static X509Certificate stringToCertificate(String certificateString) throws KapuaCertificateException {
         try {
-            byte[] decoded = Base64.getDecoder().decode(certificateString);
+            byte[] decoded = Base64.getDecoder().decode(getBytesOnly(certificateString));
             java.security.cert.CertificateFactory cf = java.security.cert.CertificateFactory.getInstance("X.509");
             return (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(decoded));
         } catch (CertificateException e) {
             throw new KapuaCertificateException(KapuaCertificateErrorCodes.CERTIFICATE_ERROR, e);
         }
+    }
+
+    private static String getBytesOnly(String keyOrCertificate) {
+        String lineEnding = "(\r)?\n";
+        return keyOrCertificate
+                .replaceAll("-----(BEGIN|END)(.*)-----(" + lineEnding + ")?", "")
+                .replaceAll(lineEnding, "");
     }
 }
