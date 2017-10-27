@@ -17,24 +17,28 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
-import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsolePermissionMessages;
-import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessInfoServiceAsync;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsolePermissionMessages;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessInfo;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessRole;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessRoleCreator;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessInfoService;
 
-import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessRoleServiceAsync;
+import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessInfoServiceAsync;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessRoleService;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessRoleServiceAsync;
+
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 
 public class AccessRoleEditDialog extends EntityAddEditDialog {
 
@@ -48,6 +52,8 @@ public class AccessRoleEditDialog extends EntityAddEditDialog {
     private List<GwtRole> roleList;
     private CheckBox checkBox;
     private Map<GwtRole, CheckBox> mapping;
+    protected static final int DIALOG_WIDTH = 300;
+    protected static final int DIALOG_HEIGHT = 135;
 
     public AccessRoleEditDialog(GwtSession currentSession, String userId) {
         super(currentSession);
@@ -75,38 +81,62 @@ public class AccessRoleEditDialog extends EntityAddEditDialog {
 
     @Override
     public void submit() {
-        List<GwtRole> result = new ArrayList<GwtRole>();
-        for (Map.Entry<GwtRole, CheckBox> e : mapping.entrySet()) {
-            if (e.getValue().getValue()) {
-                result.add(e.getKey());
+        final AccessRoleConfirmDialog confirmDialog = new AccessRoleConfirmDialog();
+        confirmDialog.setHeight(DIALOG_HEIGHT);
+        confirmDialog.setWidth(DIALOG_WIDTH);
+        confirmDialog.show();
+        confirmDialog.yesButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent be) {
+                confirmDialog.hide();
+                List<GwtRole> result = new ArrayList<GwtRole>();
+                for (Map.Entry<GwtRole, CheckBox> e : mapping.entrySet()) {
+                    if (e.getValue().getValue()) {
+                        result.add(e.getKey());
+                    }
+                }
+                List<GwtAccessRoleCreator> listCreator = new ArrayList<GwtAccessRoleCreator>();
+                for (GwtRole role : result) {
+                    GwtAccessRoleCreator gwtAccessRoleCreator = new GwtAccessRoleCreator();
+                    gwtAccessRoleCreator.setScopeId(currentSession.getSelectedAccountId());
+                    gwtAccessRoleCreator.setAccessInfoId(accessInfoId);
+                    gwtAccessRoleCreator.setRoleId(role.getId());
+                    listCreator.add(gwtAccessRoleCreator);
+                }
+
+                GWT_ACCESS_ROLE_SERVICE.createCheck(xsrfToken, currentSession.getSelectedAccountId(), userId, listCreator, new AsyncCallback<GwtAccessRole>() {
+
+                    @Override
+                    public void onSuccess(GwtAccessRole arg0) {
+                        exitStatus = true;
+                        exitMessage = MSGS.dialogEditRoleConfirmation();
+                        hide();
+                    }
+
+                    @Override
+                    public void onFailure(Throwable cause) {
+                        unmask();
+                        submitButton.enable();
+                        cancelButton.enable();
+                        status.hide();
+                        exitStatus = false;
+                        exitMessage = MSGS.dialogAddError(MSGS.dialogAddRoleError(cause.getLocalizedMessage()));
+                        hide();
+                    }
+                });
+
             }
-        }
-        List<GwtAccessRoleCreator> listCreator = new ArrayList<GwtAccessRoleCreator>();
-        for (GwtRole role : result) {
-            GwtAccessRoleCreator gwtAccessRoleCreator = new GwtAccessRoleCreator();
-            gwtAccessRoleCreator.setScopeId(currentSession.getSelectedAccountId());
-            gwtAccessRoleCreator.setAccessInfoId(accessInfoId);
-            gwtAccessRoleCreator.setRoleId(role.getId());
-            listCreator.add(gwtAccessRoleCreator);
-        }
-        GWT_ACCESS_ROLE_SERVICE.createCheck(xsrfToken, currentSession.getSelectedAccountId(), userId, listCreator, new AsyncCallback<GwtAccessRole>() {
+        });
+        confirmDialog.noButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
 
             @Override
-            public void onSuccess(GwtAccessRole arg0) {
-                exitStatus = true;
-                exitMessage = MSGS.dialogEditRoleConfirmation();
-                hide();
-            }
-
-            @Override
-            public void onFailure(Throwable cause) {
+            public void handleEvent(BaseEvent be) {
+                confirmDialog.hide();
                 unmask();
                 submitButton.enable();
                 cancelButton.enable();
                 status.hide();
                 exitStatus = false;
-                exitMessage = MSGS.dialogAddError(MSGS.dialogAddRoleError(cause.getLocalizedMessage()));
-                hide();
             }
         });
     }

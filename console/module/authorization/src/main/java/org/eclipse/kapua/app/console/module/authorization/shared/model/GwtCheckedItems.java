@@ -23,6 +23,7 @@ public class GwtCheckedItems implements IsSerializable {
 
     private GwtDomain name;
     private boolean isChecked;
+    private boolean isAllChecked;
     private Map<GwtAction, CheckBox> map;
 
     public GwtDomain getName() {
@@ -47,5 +48,13 @@ public class GwtCheckedItems implements IsSerializable {
 
     public void setMap(Map<GwtAction, CheckBox> map) {
         this.map = map;
+    }
+
+    public boolean isAllChecked() {
+        return isAllChecked;
+    }
+
+    public void setAllChecked(boolean isAllChecked) {
+        this.isAllChecked = isAllChecked;
     }
 }
