@@ -35,6 +35,7 @@ public class GwtSettingsServiceImpl extends RemoteServiceServlet implements GwtS
         final GwtLoginInformation result = new GwtLoginInformation();
         result.setBackgroundCredits(SETTINGS.getString(ConsoleSettingKeys.LOGIN_BACKGROUND_CREDITS));
         result.setInformationSnippet(SETTINGS.getString(ConsoleSettingKeys.LOGIN_GENERIC_SNIPPET));
+        result.setProductName(SETTINGS.getString(ConsoleSettingKeys.LOGIN_PRODUCT_NAME));
         return result;
     }
 

@@ -296,7 +296,7 @@ public class KapuaCloudConsole implements EntryPoint {
 
         RootPanel.get().add(viewport);
 
-        loadFooterData(lcFooter, genericNote, creditLabel);
+        loadLoginData(lcFooter, genericNote, creditLabel);
 
         // Check if coming from SSO login
         final String accessToken = Window.Location.getParameter(Logout.PARAMETER_ACCESS_TOKEN);
@@ -318,6 +318,22 @@ public class KapuaCloudConsole implements EntryPoint {
             public void handleEvent(ComponentEvent be) {
                 if (loginDialog.isAllowMainScreen()) {
                     renderMainScreen(viewport, loginDialog.getCurrentSession());
+                }
+            }
+        });
+
+        this.gwtSettingService.getLoginInformation(new AsyncCallback<GwtLoginInformation>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                ConsoleInfo.display(MSGS.error(), caught.getLocalizedMessage());
+            }
+
+            @Override
+            public void onSuccess(GwtLoginInformation result) {
+                if (result.getProductName() != null) {
+                    loginDialog.setHeading(CORE_MSGS.loginTitle(result.getProductName()));
+                    loginDialog.repaint();
                 }
             }
         });
@@ -374,7 +390,7 @@ public class KapuaCloudConsole implements EntryPoint {
         });
     }
 
-    private void loadFooterData(final LayoutContainer container, final Html genericNote, final Label creditLabel) {
+    private void loadLoginData(final LayoutContainer container, final Html genericNote, final Label creditLabel) {
         this.gwtSettingService.getLoginInformation(new AsyncCallback<GwtLoginInformation>() {
 
             @Override
