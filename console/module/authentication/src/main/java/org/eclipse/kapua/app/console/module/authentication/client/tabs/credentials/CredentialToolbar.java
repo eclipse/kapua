@@ -46,7 +46,7 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
                 if (selectedUserId != null && selectedCredential != null) {
                     showUnlockDialog(selectedCredential);
                 }
-            }
+    }
         });
     }
 
@@ -62,9 +62,6 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
         getDeleteEntityButton().disable();
         getRefreshEntityButton().disable();
         unlockButton.disable();
-        if (getFilterButton() != null) {
-            getFilterButton().hide();
-        }
         setBorders(false);
     }
 
@@ -114,7 +111,7 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
 
     public Button getUnlockButton() {
         return unlockButton;
-    }
+        }
 
     private void showUnlockDialog(GwtCredential selectedCredential) {
         CredentialUnlockDialog dialog = new CredentialUnlockDialog(selectedCredential);
