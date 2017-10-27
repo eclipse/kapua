@@ -85,7 +85,6 @@ public class LoginDialog extends Dialog {
         setButtonAlign(HorizontalAlignment.LEFT);
         setButtons(""); // don't show OK button
         setIcon(IconHelper.createStyle("user"));
-        setHeading(CORE_MSGS.loginTitle());
         setModal(false);
         setBodyBorder(true);
         setBodyStyle("padding: 8px;background: none");

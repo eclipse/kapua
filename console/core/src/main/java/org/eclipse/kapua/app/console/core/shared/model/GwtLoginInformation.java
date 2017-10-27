@@ -21,6 +21,8 @@ public class GwtLoginInformation implements Serializable {
 
     private String informationSnippet;
 
+    private String productName;
+
     public String getBackgroundCredits() {
         return backgroundCredits;
     }
@@ -35,5 +37,13 @@ public class GwtLoginInformation implements Serializable {
 
     public void setInformationSnippet(String informationSnippet) {
         this.informationSnippet = informationSnippet;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 }
