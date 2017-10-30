@@ -150,6 +150,11 @@ public class ConnectionGrid extends EntityGrid<GwtDeviceConnection> {
         column.setWidth(150);
         configs.add(column);
 
+        column = new ColumnConfig("clientIp", 120);
+        column.setHeader(MSGS.connectionTableClientIp());
+        column.setWidth(150);
+        configs.add(column);
+
         column = new ColumnConfig("modifiedOnFormatted", MSGS.connectionTableModifiedOn(), 130);
         configs.add(column);
         return configs;
