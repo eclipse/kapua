@@ -33,6 +33,11 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
         updateAddButtonEnabled();
         getEditEntityButton().disable();
         getDeleteEntityButton().disable();
+        getRefreshEntityButton().disable();
+        if (getFilterButton() != null) {
+            getFilterButton().hide();
+        }
+        setBorders(false);
     }
 
     @Override
@@ -68,6 +73,10 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
         if (this.isRendered()) {
             updateAddButtonEnabled();
         }
+    }
+
+    public void setSelectedUserName(String selectedUserName) {
+        this.selectedUserName = selectedUserName;
     }
 
     private void updateAddButtonEnabled() {
