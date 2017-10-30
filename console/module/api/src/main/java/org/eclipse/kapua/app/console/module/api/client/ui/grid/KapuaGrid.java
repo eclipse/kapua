@@ -37,6 +37,6 @@ public class KapuaGrid<M extends KapuaBaseModel> extends Grid<M> {
         GridView gridView = getView();
         gridView.setAutoFill(true);
         gridView.setForceFit(true);
-        gridView.setSortingEnabled(false);
+        gridView.setSortingEnabled(true);
     }
 }

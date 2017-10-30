@@ -91,7 +91,7 @@ public class AboutView extends AbstractView implements View {
         setLayout(new FitLayout());
 
         // Kapua logo
-        final Image kapuaIcon = new Image("img/icon-color.svg");
+        final Image kapuaIcon = new Image("img/logo-color.svg");
         kapuaIcon.setHeight("200px");
 
         // Kapua welcome
