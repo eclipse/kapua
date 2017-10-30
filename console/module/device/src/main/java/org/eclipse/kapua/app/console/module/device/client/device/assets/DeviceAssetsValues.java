@@ -398,9 +398,6 @@ public class DeviceAssetsValues extends LayoutContainer {
                         Dialog dialog = ce.getDialog();
                         if (dialog.yesText.equals(ce.getButtonClicked().getText())) {
 
-                            // mark the whole config panel dirty and for reload
-                            tabAssets.setEntity(selectedDevice);
-
                             assetValuesPanel.mask(MSGS.applying());
                             tree.mask();
                             apply.setEnabled(false);
