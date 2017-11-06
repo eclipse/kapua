@@ -11,9 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.tag.shared.util;
 
+import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTagQuery;
+import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
+import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
@@ -39,6 +43,13 @@ public class GwtKapuaTagModelConverter {
         if (gwtTagQuery.getName() != null && !gwtTagQuery.getName().isEmpty()) {
             tagQuery.setPredicate(new AttributePredicate<String>(TagPredicates.NAME, gwtTagQuery.getName(), Operator.LIKE));
         }
+        String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? TagPredicates.NAME : loadConfig.getSortField();
+        if (sortField.equals("tagName")) {
+            sortField = TagPredicates.NAME;
+        }
+        SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
+        FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
+        tagQuery.setSortCriteria(sortCriteria);
         tagQuery.setOffset(loadConfig.getOffset());
         tagQuery.setLimit(loadConfig.getLimit());
 

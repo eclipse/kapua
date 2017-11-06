@@ -81,10 +81,10 @@ public class JobGrid extends EntityGrid<GwtJob> {
     protected List<ColumnConfig> getColumns() {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
-        ColumnConfig columnConfig = new ColumnConfig("status", MSGS.gridJobColumnHeaderStatus(), 50);
-        columnConfigs.add(columnConfig);
+//        ColumnConfig columnConfig = new ColumnConfig("status", MSGS.gridJobColumnHeaderStatus(), 50);
+//        columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("id", MSGS.gridJobColumnHeaderId(), 100);
+        ColumnConfig columnConfig = new ColumnConfig("id", MSGS.gridJobColumnHeaderId(), 100);
         columnConfig.setHidden(true);
         columnConfigs.add(columnConfig);
 

@@ -19,4 +19,6 @@ public interface UserPredicates extends KapuaUpdatableEntityPredicates {
      * User name
      */
     public static final String NAME = "name";
+
+    String STATUS = "status";
 }

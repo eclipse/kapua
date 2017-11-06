@@ -95,11 +95,13 @@ public class AccountGrid extends EntityGrid<GwtAccount> {
         column = new ColumnConfig("orgName", 120);
         column.setHeader(MSGS.accountTableOrgName());
         column.setWidth(150);
+        column.setSortable(false);
         configs.add(column);
 
         column = new ColumnConfig("orgEmail", 120);
         column.setHeader(MSGS.accountTableOrgEmail());
         column.setWidth(150);
+        column.setSortable(false);
         configs.add(column);
 
         column = new ColumnConfig("modifiedOnFormatted", MSGS.accountTableModifiedOn(), 130);
