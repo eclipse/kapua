@@ -11,7 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.shared.util;
 
+import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionQuery;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionStatus;
@@ -41,6 +43,7 @@ import org.eclipse.kapua.service.device.registry.DevicePredicates;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionPredicates;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 
@@ -68,6 +71,15 @@ public class GwtKapuaDeviceModelConverter {
             predicate.and(new AttributePredicate<String>("clientIp", gwtDeviceConnectionQuery.getClientIP(), Operator.LIKE));
         }
 
+        String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? "clientId" : loadConfig.getSortField();
+        if (sortField.equals("connectionUserCouplingMode")) {
+            sortField = DeviceConnectionPredicates.USER_COUPLING_MODE;
+        } else if (sortField.equals("modifiedOnFormatted")) {
+            sortField = DeviceConnectionPredicates.MODIFIED_ON;
+        }
+        SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
+        FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
+        query.setSortCriteria(sortCriteria);
         query.setPredicate(predicate);
 
         return query;
@@ -130,6 +142,10 @@ public class GwtKapuaDeviceModelConverter {
         if (loadConfig != null) {
             deviceQuery.setLimit(loadConfig.getLimit() + 1);
             deviceQuery.setOffset(loadConfig.getOffset());
+            String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? DevicePredicates.CLIENT_ID : loadConfig.getSortField();
+            SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
+            FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
+            deviceQuery.setSortCriteria(sortCriteria);
         }
 
         GwtDeviceQueryPredicates predicates = gwtDeviceQuery.getPredicates();

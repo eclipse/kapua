@@ -132,6 +132,7 @@ public class ConnectionGrid extends EntityGrid<GwtDeviceConnection> {
 
         column = new ColumnConfig("userName", 120);
         column.setHeader(MSGS.connectionTableUserName());
+        column.setSortable(false);
         column.setWidth(150);
         configs.add(column);
 

@@ -44,4 +44,9 @@ public interface DeviceConnectionPredicates extends KapuaUpdatableEntityPredicat
      * Last user identifier
      */
     public static final String USER_ID = "userId";
+
+    /**
+     * Connection user coupling mode
+     */
+    String USER_COUPLING_MODE = "userCouplingMode";
 }
