@@ -11,14 +11,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authentication.shared.util;
 
+import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredential;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialCreator;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialQuery;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialStatus;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialType;
+import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
+import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -68,6 +72,10 @@ public class GwtKapuaAuthenticationModelConverter {
         if (gwtCredentialQuery.getType() != null && gwtCredentialQuery.getType() != GwtCredentialType.ALL) {
             andPredicate.and(new AttributePredicate<CredentialType>(CredentialPredicates.CREDENTIAL_TYPE, convertCredentialType(gwtCredentialQuery.getType()), Operator.EQUAL));
         }
+        String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? CredentialPredicates.CREDENTIAL_TYPE : loadConfig.getSortField();
+        SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
+        FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
+        credentialQuery.setSortCriteria(sortCriteria);
         credentialQuery.setPredicate(andPredicate);
         credentialQuery.setOffset(loadConfig.getOffset());
         credentialQuery.setLimit(loadConfig.getLimit());

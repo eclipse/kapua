@@ -11,10 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.user.shared.util;
 
+import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser.GwtUserStatus;
 import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUserQuery;
+import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
+import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -55,10 +59,17 @@ public class GwtKapuaUserModelConverter {
             predicate.and(new AttributePredicate<String>(UserPredicates.NAME, gwtUserQuery.getName(), Operator.LIKE));
         }
         if (gwtUserQuery.getUserStatus() != null && !gwtUserQuery.getUserStatus().equals(GwtUserStatus.ANY.toString())) {
-            predicate.and(new AttributePredicate<UserStatus>("status", convertUserStatus(gwtUserQuery.getUserStatus()), Operator.EQUAL));
+            predicate.and(new AttributePredicate<UserStatus>(UserPredicates.STATUS, convertUserStatus(gwtUserQuery.getUserStatus()), Operator.EQUAL));
         }
         userQuery.setOffset(loadConfig.getOffset());
         userQuery.setLimit(loadConfig.getLimit());
+        String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? UserPredicates.NAME : loadConfig.getSortField();
+        if (sortField.equals("username")) {
+            sortField = UserPredicates.NAME;
+        }
+        SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
+        FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
+        userQuery.setSortCriteria(sortCriteria);
         userQuery.setPredicate(predicate);
         //
         // Return converted
