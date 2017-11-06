@@ -47,10 +47,10 @@ public final class KapuaIdStatic implements KapuaId {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (getClass() != obj.getClass() && !(obj instanceof KapuaId)) {
             return false;
         }
-        KapuaIdStatic other = (KapuaIdStatic) obj;
+        KapuaId other = (KapuaId) obj;
         if (!getId().equals(other.getId())) {
             return false;
         }
