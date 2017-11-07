@@ -281,4 +281,27 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
         }
     }
 
+    @Override
+    public void unlock(GwtXSRFToken xsrfToken, String stringScopeId, String gwtCredentialId) throws GwtKapuaException {
+
+        try {
+            // //
+            // Checking XSRF token
+            checkXSRFToken(xsrfToken);
+
+            KapuaLocator locator = KapuaLocator.getInstance();
+            CredentialService credentialService = locator.getService(CredentialService.class);
+            KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(stringScopeId);
+            KapuaId credentialId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtCredentialId);
+
+            Credential credential = credentialService.find(scopeId, credentialId);
+            credential.setLoginFailures(0);
+            credential.setFirstLoginFailure(null);
+            credential.setLoginFailuresReset(null);
+            credential.setLockoutReset(null);
+            credentialService.update(credential);
+        } catch (Throwable t) {
+            KapuaExceptionHandler.handle(t);
+        }
+    }
 }
