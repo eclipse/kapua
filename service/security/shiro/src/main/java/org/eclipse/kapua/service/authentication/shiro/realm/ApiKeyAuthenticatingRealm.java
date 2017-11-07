@@ -173,7 +173,7 @@ public class ApiKeyAuthenticatingRealm extends AuthenticatingRealm {
         // Check if lockout policy is blocking credential
         Map<String, Object> credentialServiceConfig;
         try {
-            credentialServiceConfig = KapuaSecurityUtils.doPrivileged(() -> credentialService.getConfigValues(account.getScopeId()));
+            credentialServiceConfig = KapuaSecurityUtils.doPrivileged(() -> credentialService.getConfigValues(account.getId()));
             boolean lockoutPolicyEnabled = (boolean) credentialServiceConfig.get("lockoutPolicy.enabled");
             if (lockoutPolicyEnabled) {
                 Date now = new Date();
@@ -240,6 +240,7 @@ public class ApiKeyAuthenticatingRealm extends AuthenticatingRealm {
         Credential credential = (Credential) kapuaInfo.getCredentials();
         credential.setFirstLoginFailure(null);
         credential.setLoginFailuresReset(null);
+        credential.setLockoutReset(null);
         credential.setLoginFailures(0);
         try {
             KapuaSecurityUtils.doPrivileged(() -> credentialService.update(credential));
