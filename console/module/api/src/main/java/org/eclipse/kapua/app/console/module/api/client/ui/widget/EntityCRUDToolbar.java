@@ -223,7 +223,7 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
 
     //
     // Other methods
-    private Listener<? extends BaseEvent> getHideDialogListener() {
+    protected Listener<? extends BaseEvent> getHideDialogListener() {
         return new Listener<ComponentEvent>() {
 
             public void handleEvent(ComponentEvent be) {

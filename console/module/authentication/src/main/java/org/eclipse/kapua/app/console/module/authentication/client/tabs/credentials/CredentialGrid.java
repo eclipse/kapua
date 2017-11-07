@@ -28,7 +28,6 @@ import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon
 import org.eclipse.kapua.app.console.module.api.client.ui.color.Color;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
-import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.module.authentication.client.messages.ConsoleCredentialMessages;
@@ -156,7 +155,7 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
     }
 
     @Override
-    public EntityCRUDToolbar<GwtCredential> getToolbar() {
+    public CredentialToolbar getToolbar() {
         if (toolbar == null) {
             toolbar = new CredentialToolbar(currentSession);
             toolbar.setBorders(false);
@@ -169,12 +168,12 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
         if (selectedUserId != null) {
             query.setUserId(selectedUserId);
         }
-        ((CredentialToolbar) getToolbar()).setSelectedUserId(selectedUserId);
+        getToolbar().setSelectedUserId(selectedUserId);
     }
 
     public void setSelectedUserName(String selectedUserName) {
         this.selectedUserName = selectedUserName;
-        ((CredentialToolbar) getToolbar()).setSelectedUserName(selectedUserName);
+        getToolbar().setSelectedUserName(selectedUserName);
     }
 
     @Override
@@ -193,5 +192,6 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
         getToolbar().getAddEntityButton().setEnabled(selectedUserId != null);
         getToolbar().getEditEntityButton().setEnabled(getSelectionModel().getSelectedItem() != null && currentSession.hasCredentialUpdatePermission());
         getToolbar().getDeleteEntityButton().setEnabled(getSelectionModel().getSelectedItem() != null && currentSession.hasCredentialDeletePermission());
+        getToolbar().getUnlockButton().setEnabled(getSelectionModel().getSelectedItem() != null && currentSession.hasCredentialUpdatePermission());
     }
 }
