@@ -99,13 +99,14 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         GwtPermission newPermission = new GwtPermission(//
                 domainsCombo.getValue().getDomainName(), //
                 actionsCombo.getValue().getValue(), //
-                null, //
+                currentSession.getSelectedAccountId(), //
                 groupsCombo.getValue().getId(), //
                 forwardableChecboxGroup.getValue() != null);
 
         GwtAccessPermissionCreator gwtAccessPermissionCreator = new GwtAccessPermissionCreator();
         gwtAccessPermissionCreator.setScopeId(currentSession.getSelectedAccountId());
         gwtAccessPermissionCreator.setAccessInfoId(accessInfoId);
+
         gwtAccessPermissionCreator.setPermission(newPermission);
 
         GWT_ACCESS_PERMISSION_SERVICE.create(xsrfToken, gwtAccessPermissionCreator, new AsyncCallback<GwtAccessPermission>() {
