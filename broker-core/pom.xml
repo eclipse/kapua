@@ -16,7 +16,7 @@
     <parent>
         <groupId>org.eclipse.kapua</groupId>
         <artifactId>kapua</artifactId>
-        <version>0.3.0-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>kapua-broker-core</artifactId>
