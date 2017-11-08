@@ -38,11 +38,13 @@ public interface GwtJobTargetService extends RemoteService {
     /**
      * Creates a new job target under the account specified in the JobTargetCreator.
      *
+     * @param scopeId
+     * @param jobId
      * @param gwtJobTargetCreatorList
      * @return
      * @throws GwtKapuaException
      */
-     List<GwtJobTarget> create(GwtXSRFToken xsrfToken, List<GwtJobTargetCreator> gwtJobTargetCreatorList)
+     List<GwtJobTarget> create(GwtXSRFToken xsrfToken, String scopeId, String jobId, List<GwtJobTargetCreator> gwtJobTargetCreatorList)
             throws GwtKapuaException;
 
     /**

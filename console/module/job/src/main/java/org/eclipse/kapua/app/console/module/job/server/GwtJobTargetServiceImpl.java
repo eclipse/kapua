@@ -59,12 +59,7 @@ public class GwtJobTargetServiceImpl extends KapuaRemoteServiceServlet implement
             // If there are results
             if (!jobTargetList.isEmpty()) {
                 // count
-                if (jobTargetList.getSize() >= loadConfig.getLimit()) {
-                    totalLength = Long.valueOf(jobTargetService.count(jobTargetQuery)).intValue();
-                } else {
-                    totalLength = jobTargetList.getSize();
-                }
-
+                totalLength = Long.valueOf(jobTargetService.count(jobTargetQuery)).intValue();
                 // Converto to GWT entity
                 for (JobTarget jt : jobTargetList.getItems()) {
                     gwtJobTargetList.add(KapuaGwtJobModelConverter.convertJobTarget(jt));
@@ -75,7 +70,7 @@ public class GwtJobTargetServiceImpl extends KapuaRemoteServiceServlet implement
             KapuaExceptionHandler.handle(t);
         }
 
-        return new BasePagingLoadResult<GwtJobTarget>(gwtJobTargetList, loadConfig.getOffset(), totalLength);
+        return new BasePagingLoadResult<GwtJobTarget>(gwtJobTargetList, loadConfig != null ? loadConfig.getOffset() : 0, totalLength);
     }
 
     @Override
@@ -102,17 +97,20 @@ public class GwtJobTargetServiceImpl extends KapuaRemoteServiceServlet implement
     }
 
     @Override
-    public List<GwtJobTarget> create(GwtXSRFToken xsrfToken, List<GwtJobTargetCreator> gwtJobTargetCreatorList) throws GwtKapuaException {
+    public List<GwtJobTarget> create(GwtXSRFToken xsrfToken, String scopeId, String jobId, List<GwtJobTargetCreator> gwtJobTargetCreatorList) throws GwtKapuaException {
         checkXSRFToken(xsrfToken);
-
+        List<GwtJobTarget> existingTargets = findByJobId(scopeId, jobId, false);
         List<GwtJobTarget> gwtJobTargetList = new ArrayList<GwtJobTarget>();
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             JobTargetFactory jobTargetFactory = locator.getFactory(JobTargetFactory.class);
 
             for (GwtJobTargetCreator gwtJobTargetCreator : gwtJobTargetCreatorList) {
-                KapuaId scopeId = KapuaEid.parseCompactId(gwtJobTargetCreator.getScopeId());
-                JobTargetCreator jobTargetCreator = jobTargetFactory.newCreator(scopeId);
+                if (findExtistingTarget(gwtJobTargetCreator.getJobTargetId(), existingTargets)) {
+                    continue;
+                }
+                KapuaId creatorScopeId = KapuaEid.parseCompactId(gwtJobTargetCreator.getScopeId());
+                JobTargetCreator jobTargetCreator = jobTargetFactory.newCreator(creatorScopeId);
                 jobTargetCreator.setJobId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobTargetCreator.getJobId()));
                 jobTargetCreator.setJobTargetId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobTargetCreator.getJobTargetId()));
 
@@ -129,6 +127,15 @@ public class GwtJobTargetServiceImpl extends KapuaRemoteServiceServlet implement
         }
 
         return gwtJobTargetList;
+    }
+
+    private boolean findExtistingTarget(String jobTargetId, List<GwtJobTarget> existingTargets) {
+        for (GwtJobTarget existingTarget : existingTargets) {
+            if (existingTarget.getJobTargetId().equals(jobTargetId)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
