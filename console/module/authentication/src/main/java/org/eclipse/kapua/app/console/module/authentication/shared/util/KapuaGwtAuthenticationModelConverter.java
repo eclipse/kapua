@@ -29,6 +29,10 @@ public class KapuaGwtAuthenticationModelConverter {
         gwtCredential.setCredentialKey(credential.getCredentialKey());
         gwtCredential.setCredentialStatus(credential.getStatus().toString());
         gwtCredential.setExpirationDate(credential.getExpirationDate());
+        gwtCredential.setLoginFailures(credential.getLoginFailures());
+        gwtCredential.setFirstLoginFailure(credential.getFirstLoginFailure());
+        gwtCredential.setLoginFailuresReset(credential.getLoginFailuresReset());
+        gwtCredential.setLockoutReset(credential.getLockoutReset());
         if (user != null) {
             gwtCredential.setUsername(user.getName());
         }

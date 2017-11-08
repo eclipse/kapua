@@ -40,6 +40,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
 
     protected static final ConsoleCredentialMessages MSGS = GWT.create(ConsoleCredentialMessages.class);
 
+    protected FormPanel credentialFormPanel;
     private String selectedUserId;
     private String selectedUserName;
     SimpleComboBox<GwtCredentialType> credentialType;
@@ -62,7 +63,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
     @Override
     public void createBody() {
 
-        FormPanel credentialFormPanel = new FormPanel(FORM_LABEL_WIDTH);
+        credentialFormPanel = new FormPanel(FORM_LABEL_WIDTH);
 
         subject = new TextField<String>();
         subject.setValue(selectedUserName);
