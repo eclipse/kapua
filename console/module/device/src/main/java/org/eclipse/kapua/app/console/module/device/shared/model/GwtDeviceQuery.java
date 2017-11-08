@@ -21,12 +21,13 @@ public class GwtDeviceQuery extends GwtQuery {
 
     public GwtDeviceQuery() {
         super();
+
+        setPredicates(new GwtDeviceQueryPredicates());
     }
 
     public GwtDeviceQuery(String scopeId) {
-        super();
+        this();
         setScopeId(scopeId);
-        setPredicates(new GwtDeviceQueryPredicates());
     }
 
     public GwtDeviceQueryPredicates getPredicates() {

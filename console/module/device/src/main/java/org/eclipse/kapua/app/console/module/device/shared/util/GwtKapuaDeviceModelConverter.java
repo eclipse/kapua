@@ -140,8 +140,9 @@ public class GwtKapuaDeviceModelConverter {
 
         DeviceQuery deviceQuery = deviceFactory.newQuery(KapuaEid.parseCompactId(gwtDeviceQuery.getScopeId()));
         if (loadConfig != null) {
-            deviceQuery.setLimit(loadConfig.getLimit() + 1);
+            deviceQuery.setLimit(loadConfig.getLimit());
             deviceQuery.setOffset(loadConfig.getOffset());
+
             String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? DevicePredicates.CLIENT_ID : loadConfig.getSortField();
             SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
             FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);

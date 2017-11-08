@@ -16,6 +16,7 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -35,16 +36,21 @@ import java.util.List;
 
 public class JobTargetAddGrid extends EntityGrid<GwtDevice> {
 
-    private final String jobId;
     private static final GwtDeviceServiceAsync GWT_DEVICE_SERVICE = GWT.create(GwtDeviceService.class);
     private static final ConsoleDeviceMessages DVC_MSGS = GWT.create(ConsoleDeviceMessages.class);
 
     private final CheckBoxSelectionModel<GwtDevice> selectionModel = new CheckBoxSelectionModel<GwtDevice>();
 
+    private static final int ENTITY_PAGE_SIZE = 10;
+
+    private final String jobId;
+    private GwtDeviceQuery query;
+
     public JobTargetAddGrid(GwtSession currentSession, String jobId) {
         super(null, currentSession);
         this.jobId = jobId;
-        this.setPagingToolbar(new KapuaPagingToolBar(5));
+        query = new GwtDeviceQuery();
+        query.setScopeId(currentSession.getSelectedAccountId());
     }
 
     @Override
@@ -59,11 +65,16 @@ public class JobTargetAddGrid extends EntityGrid<GwtDevice> {
             @Override
             protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtDevice>> callback) {
                 GWT_DEVICE_SERVICE.query((PagingLoadConfig) loadConfig,
-                        new GwtDeviceQuery(currentSession.getSelectedAccountId()),
+                        query,
                         callback);
             }
 
         };
+    }
+
+    @Override
+    protected PagingToolBar getPagingToolbar() {
+        return new KapuaPagingToolBar(ENTITY_PAGE_SIZE);
     }
 
     @Override
@@ -103,12 +114,12 @@ public class JobTargetAddGrid extends EntityGrid<GwtDevice> {
 
     @Override
     protected GwtQuery getFilterQuery() {
-        return null;
+        return query;
     }
 
     @Override
     protected void setFilterQuery(GwtQuery filterQuery) {
-
+        this.query = (GwtDeviceQuery) filterQuery;
     }
 
 }
