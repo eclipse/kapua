@@ -133,7 +133,7 @@ public class JobTargetAddDialog extends EntityAddEditDialog {
             creator.setJobTargetId(target.getId());
             creatorList.add(creator);
         }
-        GWT_JOB_TARGET_SERVICE.create(xsrfToken, creatorList, new AsyncCallback<List<GwtJobTarget>>() {
+        GWT_JOB_TARGET_SERVICE.create(xsrfToken, currentSession.getSelectedAccountId(), jobId, creatorList, new AsyncCallback<List<GwtJobTarget>>() {
 
             @Override
             public void onSuccess(List<GwtJobTarget> arg0) {
