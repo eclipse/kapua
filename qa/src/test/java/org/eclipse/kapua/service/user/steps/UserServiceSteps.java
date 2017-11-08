@@ -333,7 +333,7 @@ public class UserServiceSteps extends AbstractKapuaSteps {
         }
         try {
             stepData.put("ExceptionCaught", false);
-            credentialService.setConfigValues(scopeId, accId, valueMap);
+            credentialService.setConfigValues(accId, scopeId, valueMap);
         } catch (KapuaException ex) {
             stepData.put("ExceptionCaught", true);
         }
