@@ -117,6 +117,26 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
+        columnConfig = new ColumnConfig("lockoutReset", MSGS.gridCredentialColumnHeaderLockStatus(), 50);
+        GridCellRenderer<GwtCredential> setLockoutIcon = new GridCellRenderer<GwtCredential>() {
+
+            public String render(GwtCredential gwtUser, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtCredential> deviceList, Grid<GwtCredential> grid) {
+                KapuaIcon icon;
+                if (gwtUser.getLockoutReset() != null) {
+                    icon = new KapuaIcon(IconSet.LOCK);
+                    icon.setColor(Color.RED);
+                } else {
+                    icon = new KapuaIcon(IconSet.UNLOCK);
+                    icon.setColor(Color.GREEN);
+                }
+                return icon.getInlineHTML();
+            }
+        };
+        columnConfig.setRenderer(setLockoutIcon);
+        columnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
+        columnConfig.setSortable(false);
+        columnConfigs.add(columnConfig);
+
         columnConfig = new ColumnConfig("id", MSGS.gridCredentialColumnHeaderId(), 100);
         columnConfig.setHidden(true);
         columnConfigs.add(columnConfig);
@@ -192,6 +212,6 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
         getToolbar().getAddEntityButton().setEnabled(selectedUserId != null);
         getToolbar().getEditEntityButton().setEnabled(getSelectionModel().getSelectedItem() != null && currentSession.hasCredentialUpdatePermission());
         getToolbar().getDeleteEntityButton().setEnabled(getSelectionModel().getSelectedItem() != null && currentSession.hasCredentialDeletePermission());
-        getToolbar().getUnlockButton().setEnabled(getSelectionModel().getSelectedItem() != null && currentSession.hasCredentialUpdatePermission());
+        getToolbar().getUnlockButton().setEnabled(getSelectionModel().getSelectedItem() != null && getSelectionModel().getSelectedItem().getLockoutReset() != null && currentSession.hasCredentialUpdatePermission());
     }
 }

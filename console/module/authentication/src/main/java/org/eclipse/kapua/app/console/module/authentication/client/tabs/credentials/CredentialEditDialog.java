@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authentication.client.tabs.credentials;
 
+import com.extjs.gxt.ui.client.widget.Label;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.ConfirmPasswordUpdateFieldValidator;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.PasswordUpdateFieldValidator;
@@ -25,6 +26,8 @@ import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCrede
 public class CredentialEditDialog extends CredentialAddDialog {
 
     private final GwtCredential selectedCredential;
+
+    private final Label lockedUntil = new Label();
 
     public CredentialEditDialog(GwtSession currentSession, GwtCredential selectedCredential, String selectedUserId, String selectedUserName) {
         super(currentSession, selectedUserId, selectedUserName);
@@ -93,6 +96,10 @@ public class CredentialEditDialog extends CredentialAddDialog {
         confirmPassword.setValidator(new ConfirmPasswordUpdateFieldValidator(confirmPassword, password));
         confirmPassword.setFieldLabel(MSGS.dialogEditFieldConfirmNewPassword());
         confirmPassword.setAllowBlank(true);
+        if(selectedCredential.getLockoutReset() != null) {
+            lockedUntil.setText(MSGS.dialogEditLockedUntil(selectedCredential.getLockoutResetFormatted()));
+            credentialFormPanel.add(lockedUntil);
+        }
     }
 
     @Override

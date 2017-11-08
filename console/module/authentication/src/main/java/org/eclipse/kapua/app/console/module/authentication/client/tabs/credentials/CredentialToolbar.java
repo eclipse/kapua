@@ -105,13 +105,8 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
     }
 
     private void updateButtonsEnabled() {
-        if (selectedUserId == null) {
-            getAddEntityButton().disable();
-            unlockButton.disable();
-        } else {
-            getAddEntityButton().enable();
-            unlockButton.enable();
-        }
+            getAddEntityButton().setEnabled(selectedUserId != null);
+//            unlockButton.setEnabled(selectedUserId != null);
     }
 
     public Button getUnlockButton() {
