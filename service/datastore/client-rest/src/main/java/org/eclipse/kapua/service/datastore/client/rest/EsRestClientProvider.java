@@ -14,8 +14,17 @@ package org.eclipse.kapua.service.datastore.client.rest;
 
 import static java.util.stream.Collectors.toList;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
+import java.nio.file.Files;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,12 +32,21 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import javax.net.ssl.SSLContext;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
+import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.ssl.SSLContexts;
+import org.apache.http.ssl.TrustStrategy;
 import org.eclipse.kapua.commons.setting.AbstractBaseKapuaSetting;
 import org.eclipse.kapua.service.datastore.client.ClientException;
 import org.eclipse.kapua.service.datastore.client.ClientProvider;
 import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
+import org.eclipse.kapua.service.datastore.client.rest.ssl.SkipCertificateCheckTrustStrategy;
 import org.elasticsearch.client.RestClient;
+import org.elasticsearch.client.RestClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,9 +64,13 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
     private static final String PROVIDER_ALREADY_INITIALIZED_MSG = "Provider already initialized! closing it before initialize the new one!";
     private static final String PROVIDER_NO_NODE_CONFIGURED_MSG = "No ElasticSearch nodes are configured";
     private static final String PROVIDER_FAILED_TO_CONFIGURE_MSG = "Failed to configure ElasticSearch rest client";
+    private static final String PROVIDER_FAILED_TO_CONFIGURE_SSL_MSG = "Failed to configure ElasticSearch ssl rest client layer";
     private static final String PROVIDER_CANNOT_CLOSE_CLIENT_MSG = "Cannot close ElasticSearch rest client. Client is already stopped or not initialized!";
 
     private static final int DEFAULT_PORT = 9200;
+    private static final String DEFAULT_KEY_STORE_TYPE = "jks";
+    private static final String SCHEMA_SSL = "https";
+    private static final String SCHEMA_UNTRUSTED = "http";
 
     private static EsRestClientProvider instance;
 
@@ -209,11 +231,83 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
             throw new ClientUnavailableException(PROVIDER_NO_NODE_CONFIGURED_MSG);
         }
         List<HttpHost> hosts = new ArrayList<HttpHost>();
+        boolean sslEnabled = ClientSettings.getInstance().getBoolean(ClientSettingsKey.ELASTICSEARCH_SSL_ENABLED, false);
+        logger.info("ES Rest Client - SSL {}enabled", (sslEnabled ? "" : "NOT "));
         for (InetSocketAddress address : addresses) {
-            hosts.add(new HttpHost(address.getAddress(), address.getHostName(), address.getPort(), "http"));
+            hosts.add(new HttpHost(address.getAddress(), address.getHostName(), address.getPort(), (sslEnabled ? SCHEMA_SSL : SCHEMA_UNTRUSTED)));
         }
-        RestClient client = RestClient.builder(hosts.toArray(new HttpHost[hosts.size()])).build();
-        return client;
+        RestClientBuilder restClientBuilder = RestClient.builder(hosts.toArray(new HttpHost[hosts.size()]));
+        if (sslEnabled) {
+            try {
+                SSLContextBuilder sslBuilder = SSLContexts.custom();
+                initKeyStore(sslBuilder);
+                initTrustStore(sslBuilder);
+
+                final SSLContext sslContext = sslBuilder.build();
+                restClientBuilder.setHttpClientConfigCallback(new RestClientBuilder.HttpClientConfigCallback() {
+
+                    @Override
+                    public HttpAsyncClientBuilder customizeHttpClient(HttpAsyncClientBuilder httpClientBuilder) {
+                        return httpClientBuilder.setSSLContext(sslContext);
+                    }
+                });
+            } catch (KeyStoreException | NoSuchAlgorithmException | KeyManagementException | UnrecoverableKeyException e) {
+                throw new ClientUnavailableException(PROVIDER_FAILED_TO_CONFIGURE_SSL_MSG, e);
+            }
+        }
+        return restClientBuilder.build();
+    }
+
+    static void initKeyStore(SSLContextBuilder sslBuilder) throws UnrecoverableKeyException, ClientUnavailableException, NoSuchAlgorithmException, KeyStoreException {
+        String keystorePath = ClientSettings.getInstance().getString(ClientSettingsKey.ELASTICSEARCH_SSL_KEYSTORE_PATH);
+        String keystorePassword = ClientSettings.getInstance().getString(ClientSettingsKey.ELASTICSEARCH_SSL_KEYSTORE_PASSWORD);
+        logger.info("ES Rest Client - Keystore path: {}", (StringUtils.isEmpty(keystorePath) ? "none" : keystorePath));
+        // set the keystore
+        if (!StringUtils.isEmpty(keystorePath)) {
+            sslBuilder.loadKeyMaterial(loadKeyStore(keystorePath, keystorePassword), null);
+        }
+    }
+
+    static void initTrustStore(SSLContextBuilder sslBuilder) throws NoSuchAlgorithmException, KeyStoreException, ClientUnavailableException {
+        boolean trustServerCertificate = ClientSettings.getInstance().getBoolean(ClientSettingsKey.ELASTICSEARCH_SSL_TRUST_SERVER_CERTIFICATE, false);
+        String truststorePath = ClientSettings.getInstance().getString(ClientSettingsKey.ELASTICSEARCH_SSL_TRUSTSTORE_PATH);
+        String truststorePassword = ClientSettings.getInstance().getString(ClientSettingsKey.ELASTICSEARCH_SSL_TRUSTSTORE_PASSWORD);
+        logger.info("ES Rest Client - SSL trust server certificate {}enabled", (trustServerCertificate ? "" : "NOT "));
+        logger.info("ES Rest Client - Truststore path: {}", (StringUtils.isEmpty(truststorePath) ? "none" : truststorePath));
+        // set the truststore
+        // truststore 3 available options:
+        // 1) no trust so disable the trustmanager
+        if (!trustServerCertificate) {
+            sslBuilder.loadTrustMaterial(null, new SkipCertificateCheckTrustStrategy());
+        }
+        // 2) set the custom trustmanager
+        else if (!StringUtils.isEmpty(truststorePath)) {
+            sslBuilder.loadTrustMaterial(loadKeyStore(truststorePath, truststorePassword), null);
+        }
+        // 3) else if the trust path is empty leave the jvm default truststore
+        else {
+            sslBuilder.loadTrustMaterial((TrustStrategy) null);
+        }
+    }
+
+    static KeyStore loadKeyStore(String keystorePath, String keystorePassword) throws ClientUnavailableException {
+        InputStream is = null;
+        try {
+            KeyStore keystore = KeyStore.getInstance(ClientSettings.getInstance().getString(ClientSettingsKey.ELASTICSEARCH_SSL_KEYSTORE_TYPE, DEFAULT_KEY_STORE_TYPE));
+            is = Files.newInputStream(new File(keystorePath).toPath());
+            keystore.load(is, keystorePassword.toCharArray());
+            return keystore;
+        } catch (IOException | KeyStoreException | CertificateException | NoSuchAlgorithmException e) {
+            throw new ClientUnavailableException(PROVIDER_FAILED_TO_CONFIGURE_SSL_MSG, e);
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    logger.warn("Cannot close the keystore file {}!", keystorePath, e);
+                }
+            }
+        }
     }
 
     static RestClient createClient(final AbstractBaseKapuaSetting<ClientSettingsKey> settings) throws ClientUnavailableException {
@@ -223,7 +317,6 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
         } catch (final ClientUnavailableException e) {
             throw e;
         } catch (final Exception e) {
-            e.printStackTrace();
             throw new ClientUnavailableException(PROVIDER_FAILED_TO_CONFIGURE_MSG, e);
         }
     }
