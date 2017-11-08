@@ -20,7 +20,7 @@ env_vars = {
   'H2DB_VERSION'          => '1.4.192',
   'ACTIVEMQ_VERSION'      => '5.14.5',
   'TOMCAT_VERSION'        => '8.0.41',
-  'KAPUA_VERSION'         => '0.3.0-SNAPSHOT'
+  'KAPUA_VERSION'         => '1.0.0-SNAPSHOT'
 }
 
 # Vagrant 1.9.6 or major is required
