@@ -39,6 +39,7 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
     public CredentialToolbar(GwtSession currentSession) {
         super(currentSession);
         unlockButton = new Button(MSGS.unlockButton(), new KapuaIcon(IconSet.UNLOCK), new SelectionListener<ButtonEvent>() {
+
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
                 GwtCredential selectedCredential = gridSelectionModel.getSelectedItem();
@@ -53,7 +54,9 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
         add(new SeparatorToolItem());
-        add(unlockButton);
+        if (currentSession.hasCredentialUpdatePermission()) {
+            add(unlockButton);
+        }
         updateButtonsEnabled();
         getEditEntityButton().disable();
         getDeleteEntityButton().disable();
@@ -105,8 +108,8 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
     }
 
     private void updateButtonsEnabled() {
-            getAddEntityButton().setEnabled(selectedUserId != null);
-//            unlockButton.setEnabled(selectedUserId != null);
+        getAddEntityButton().setEnabled(selectedUserId != null);
+        //            unlockButton.setEnabled(selectedUserId != null);
     }
 
     public Button getUnlockButton() {
@@ -119,6 +122,5 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
         dialog.addListener(Events.Hide, getHideDialogListener());
         dialog.show();
     }
-
 
 }
