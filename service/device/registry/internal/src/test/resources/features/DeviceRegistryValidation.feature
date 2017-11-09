@@ -9,6 +9,7 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
+@default
 Feature: Device Registry Validation Tests
     The Device Registry Validation helper is responsible for validating parameters
     and permissions before any operation is performed on the database.
