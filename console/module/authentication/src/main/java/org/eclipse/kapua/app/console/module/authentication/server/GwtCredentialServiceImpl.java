@@ -294,12 +294,7 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
             KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(stringScopeId);
             KapuaId credentialId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtCredentialId);
 
-            Credential credential = credentialService.find(scopeId, credentialId);
-            credential.setLoginFailures(0);
-            credential.setFirstLoginFailure(null);
-            credential.setLoginFailuresReset(null);
-            credential.setLockoutReset(null);
-            credentialService.update(credential);
+            credentialService.unlock(scopeId, credentialId);
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
