@@ -46,6 +46,7 @@ import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationErrorCo
 import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
+import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupDomain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -240,11 +241,11 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         boolean hasAccountDelete = authorizationService.isPermitted(permissionFactory.newPermission(ACCOUNT_DOMAIN, Actions.delete, kapuaSession.getScopeId()));
         boolean hasAccountAll = authorizationService.isPermitted(permissionFactory.newPermission(ACCOUNT_DOMAIN, null, null));
 
-        boolean hasDeviceCreate = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_DOMAIN, Actions.write, kapuaSession.getScopeId()));
-        boolean hasDeviceRead = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_DOMAIN, Actions.read, kapuaSession.getScopeId()));
-        boolean hasDeviceUpdate = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_DOMAIN, Actions.write, kapuaSession.getScopeId()));
-        boolean hasDeviceDelete = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_DOMAIN, Actions.delete, kapuaSession.getScopeId()));
-        boolean hasDeviceManage = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_DOMAIN, Actions.write, kapuaSession.getScopeId()));
+        boolean hasDeviceCreate = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_DOMAIN, Actions.write, kapuaSession.getScopeId(), Group.ANY));
+        boolean hasDeviceRead = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_DOMAIN, Actions.read, kapuaSession.getScopeId(), Group.ANY));
+        boolean hasDeviceUpdate = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_DOMAIN, Actions.write, kapuaSession.getScopeId(), Group.ANY));
+        boolean hasDeviceDelete = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_DOMAIN, Actions.delete, kapuaSession.getScopeId(), Group.ANY));
+        boolean hasDeviceManage = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_DOMAIN, Actions.write, kapuaSession.getScopeId(), Group.ANY));
 
         boolean hasDataRead = authorizationService.isPermitted(permissionFactory.newPermission(DATASTORE_DOMAIN, Actions.read, kapuaSession.getScopeId()));
 
