@@ -180,6 +180,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         List<GwtDatastoreDevice> devices = new ArrayList<GwtDatastoreDevice>();
         KapuaId convertedScopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeId);
         ClientInfoQuery query = new ClientInfoQueryImpl(convertedScopeId);
+        query.setLimit(10000);
         try {
             ClientInfoListResult result = clientInfoService.query(query);
             if (result != null && !result.isEmpty()) {
@@ -199,6 +200,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         List<GwtDatastoreAsset> asset = new ArrayList<GwtDatastoreAsset>();
         KapuaId convertedScopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeId);
         ChannelInfoQuery query = new ChannelInfoQueryImpl(convertedScopeId);
+        query.setLimit(10000);
         try {
             ChannelInfoListResult result = clientInfoService.query(query);
             if (result != null && !result.isEmpty()) {
@@ -275,6 +277,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     private ListLoadResult<GwtHeader> findHeaders(LoadConfig config, String scopeId, StorablePredicate predicate) throws GwtKapuaException {
         MetricInfoRegistryService metricService = LOCATOR.getService(MetricInfoRegistryService.class);
         MetricInfoQueryImpl query = new MetricInfoQueryImpl(GwtKapuaCommonsModelConverter.convertKapuaId(scopeId));
+        query.setLimit(10000);
         if (predicate != null) {
             query.setPredicate(predicate);
         }
