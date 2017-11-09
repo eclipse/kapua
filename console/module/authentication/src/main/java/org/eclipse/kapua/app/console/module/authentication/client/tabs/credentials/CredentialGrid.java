@@ -37,6 +37,7 @@ import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCre
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialServiceAsync;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class CredentialGrid extends EntityGrid<GwtCredential> {
@@ -120,9 +121,9 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
         columnConfig = new ColumnConfig("lockoutReset", MSGS.gridCredentialColumnHeaderLockStatus(), 50);
         GridCellRenderer<GwtCredential> setLockoutIcon = new GridCellRenderer<GwtCredential>() {
 
-            public String render(GwtCredential gwtUser, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtCredential> deviceList, Grid<GwtCredential> grid) {
+            public String render(GwtCredential gwtCredential, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtCredential> deviceList, Grid<GwtCredential> grid) {
                 KapuaIcon icon;
-                if (gwtUser.getLockoutReset() != null) {
+                if (gwtCredential.getLockoutReset() != null && gwtCredential.getLockoutReset().after(new Date())) {
                     icon = new KapuaIcon(IconSet.LOCK);
                     icon.setColor(Color.RED);
                 } else {

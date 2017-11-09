@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authentication.client.tabs.credentials;
 
+import java.util.Date;
+
 import com.extjs.gxt.ui.client.widget.Label;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.ConfirmPasswordUpdateFieldValidator;
@@ -96,7 +98,7 @@ public class CredentialEditDialog extends CredentialAddDialog {
         confirmPassword.setValidator(new ConfirmPasswordUpdateFieldValidator(confirmPassword, password));
         confirmPassword.setFieldLabel(MSGS.dialogEditFieldConfirmNewPassword());
         confirmPassword.setAllowBlank(true);
-        if(selectedCredential.getLockoutReset() != null) {
+        if(selectedCredential.getLockoutReset() != null && selectedCredential.getLockoutReset().after(new Date())) {
             lockedUntil.setText(MSGS.dialogEditLockedUntil(selectedCredential.getLockoutResetFormatted()));
             credentialFormPanel.add(lockedUntil);
         }
