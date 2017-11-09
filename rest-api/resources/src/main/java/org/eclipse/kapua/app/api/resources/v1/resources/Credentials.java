@@ -238,4 +238,25 @@ public class Credentials extends AbstractKapuaResource {
         return returnOk();
     }
 
+    /**
+     * Unlocks a {@link Credential} that has been locked due to a lockout policy
+     *
+     * @param credentialId
+     *            The id of the Credential to be unlocked.
+     * @return HTTP 200 if operation has completed successfully.
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.0.0
+     */
+    @ApiOperation(nickname = "credentialUnlock", value = "Unlock a Credential", notes = "Unlocks a Credential that has been locked due to a lockout policy.")
+    @POST
+    @Path("{credentialId}/unlock")
+    public Response unlockCredential(
+            @ApiParam(value = "The ScopeId of the Credential to delete.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "The id of the Credential to be unlocked", required = true) @PathParam("credentialId") EntityId credentialId) throws Exception {
+        credentialService.unlock(scopeId, credentialId);
+
+        return returnOk();
+    }
+
 }

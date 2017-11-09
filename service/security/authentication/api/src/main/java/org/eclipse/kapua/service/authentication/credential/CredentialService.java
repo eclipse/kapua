@@ -55,4 +55,12 @@ public interface CredentialService extends KapuaEntityService<Credential, Creden
      */
     public CredentialListResult query(KapuaQuery<Credential> query)
             throws KapuaException;
+
+    /**
+     * Unlocks a {@link Credential}
+     * @param scopeId
+     * @param credentialId
+     * @throws KapuaException
+     */
+    public void unlock(KapuaId scopeId, KapuaId credentialId) throws KapuaException;
 }

@@ -344,6 +344,28 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         return credential;
     }
 
+    @Override
+    public void unlock(KapuaId scopeId, KapuaId credentialId) throws KapuaException {
+        //
+        // Argument Validation
+        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(credentialId, "credentialId");
+
+        //
+        // Check Access
+        KapuaLocator locator = KapuaLocator.getInstance();
+        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
+        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
+        authorizationService.checkPermission(permissionFactory.newPermission(CREDENTIAL_DOMAIN, Actions.write, scopeId));
+
+        Credential credential = find(scopeId, credentialId);
+        credential.setLoginFailures(0);
+        credential.setFirstLoginFailure(null);
+        credential.setLoginFailuresReset(null);
+        credential.setLockoutReset(null);
+        update(credential);
+    }
+
     @SuppressWarnings("unused")
     private long countExistingCredentials(CredentialType credentialType, KapuaId scopeId, KapuaId userId) throws KapuaException {
         KapuaLocator locator = KapuaLocator.getInstance();
