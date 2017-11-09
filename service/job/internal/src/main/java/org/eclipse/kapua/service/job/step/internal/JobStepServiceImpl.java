@@ -53,7 +53,7 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
     private static final JobStepDefinitionService JOB_STEP_DEFINITION_SERVICE = LOCATOR.getService(JobStepDefinitionService.class);
 
-    protected JobStepServiceImpl() {
+    public JobStepServiceImpl() {
         super(JobStepService.class.getName(), JOB_DOMAIN, JobEntityManagerFactory.getInstance(), JobStepService.class, JobStepFactory.class);
     }
 

@@ -36,6 +36,8 @@ import org.eclipse.kapua.service.job.JobJAXBContextProvider;
 import org.eclipse.kapua.service.job.JobQuery;
 import org.eclipse.kapua.service.job.JobService;
 import org.eclipse.kapua.service.job.common.CommonData;
+import org.eclipse.kapua.service.job.step.JobStep;
+import org.eclipse.kapua.service.job.step.StepData;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.test.MockedLocator;
 import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
@@ -46,6 +48,7 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import java.math.BigInteger;
 import java.security.acl.Permission;
+import java.util.List;
 
 import static org.eclipse.kapua.commons.model.query.predicate.AttributePredicate.attributeIsEqualTo;
 import static org.mockito.Matchers.any;
@@ -76,12 +79,14 @@ public class JobServiceTestSteps extends AbstractKapuaSteps {
     // Interstep scratchpads
     CommonData commonData;
     JobData jobData;
+    StepData stepData;
 
     // Default constructor
     @Inject
-    public JobServiceTestSteps(CommonData commonData, JobData jobData) {
+    public JobServiceTestSteps(CommonData commonData, JobData jobData, StepData stepData) {
         this.commonData = commonData;
         this.jobData = jobData;
+        this.stepData = stepData;
     }
 
     // ************************************************************************************
@@ -271,6 +276,23 @@ public class JobServiceTestSteps extends AbstractKapuaSteps {
             throws Exception {
 
         jobData.job.setJobXmlDefinition(newDefinition);
+
+        try {
+            commonData.primeException();
+            jobData.job = jobService.update(jobData.job);
+        } catch (KapuaException ex) {
+            commonData.verifyException(ex);
+        }
+    }
+
+    @When("^I add the current step to the last job$")
+    public void updateJobWithSteps()
+            throws Exception {
+
+        List<JobStep> tmpStepList = jobData.job.getJobSteps();
+
+        tmpStepList.add(stepData.step);
+        jobData.job.setJobSteps(tmpStepList);
 
         try {
             commonData.primeException();
