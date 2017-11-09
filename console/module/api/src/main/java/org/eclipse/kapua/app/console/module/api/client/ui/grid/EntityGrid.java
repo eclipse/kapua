@@ -178,6 +178,10 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
         }
     }
 
+    public void updateFilterQueryScopeId() {
+        getFilterQuery().setScopeId(currentSession.getSelectedAccountId());
+    }
+
     public void setPagingToolbar(PagingToolBar entityPagingToolbar) {
         this.entityPagingToolbar = entityPagingToolbar;
     }

@@ -38,6 +38,7 @@ public abstract class AbstractEntityView<M extends GwtEntityModel> extends Abstr
     @Override
     public void onUserChange() {
         if (entityGrid != null) {
+            entityGrid.updateFilterQueryScopeId();
             entityGrid.refresh();
         }
     }

@@ -337,7 +337,7 @@ public class NorthView extends LayoutContainer {
 
                         if (((ContentPanel) parent.getCenterView().getItem(0)).getItem(0) instanceof AbstractView) {
                             @SuppressWarnings("rawtypes")
-                            AbstractEntityView aev = (AbstractEntityView) ((ContentPanel) parent.getCenterView().getItem(0)).getItem(0);
+                            AbstractView aev = (AbstractView) ((ContentPanel) parent.getCenterView().getItem(0)).getItem(0);
                             aev.onUserChange();
                         }
                         // Force the west view (which contains the navigation menu) to reload available components
