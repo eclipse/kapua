@@ -39,7 +39,7 @@ public class JobStepDefinitionCreatorImpl extends AbstractKapuaNamedEntityCreato
     private String writerName;
     private List<JobStepProperty> jobStepProperties;
 
-    protected JobStepDefinitionCreatorImpl(KapuaId scopeId) {
+    public JobStepDefinitionCreatorImpl(KapuaId scopeId) {
         super(scopeId);
     }
 

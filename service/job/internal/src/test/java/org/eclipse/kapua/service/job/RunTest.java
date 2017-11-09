@@ -18,7 +18,9 @@ import org.junit.runner.RunWith;
 
 @RunWith(CucumberWithProperties.class)
 @CucumberOptions(features = { "classpath:features/JobService.feature",
-                              "classpath:features/JobStepDefinitionService.feature" },
+                              "classpath:features/JobStepDefinitionService.feature",
+                              "classpath:features/JobStepService.feature",
+                              "classpath:features/JobTargetsService.feature"},
                  glue = { "org.eclipse.kapua.service.job" },
                  plugin = { "pretty", "html:target/cucumber",
                             "json:target/cucumber.json" },

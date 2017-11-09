@@ -125,6 +125,28 @@ Scenario: Update a nonexistent step definition
     When I change the step definition name to "SomeRandomNewName"
     Then An exception was thrown
 
+Scenario: Count step definition items
+
+    Given I create 10 step definition items
+    When I count the step definition in the database
+    Then There are exactly 10 items
+
+Scenario: Count step definitions in wrong (empty) scope
+
+    Given I create 10 step definition items
+    Given Scope with ID 20
+    When I count the step definition in the database
+    Then There are exactly 0 items
+
+Scenario: Query for step definitions
+
+    Given Scope with ID 10
+    Then I create 10 step definition items
+    Given Scope with ID 20
+    Then I create 20 step definition items
+    When I query for step definitions in scope 10
+    Then There are exactly 10 items
+
 Scenario: Step definition factory sanity checks
 
     Given I test the sanity of the step definition factory

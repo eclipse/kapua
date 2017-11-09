@@ -25,7 +25,7 @@ public class JobTargetCreatorImpl extends AbstractKapuaUpdatableEntityCreator<Jo
     private KapuaId jobId;
     private KapuaId jobTargetId;
 
-    protected JobTargetCreatorImpl(KapuaId scopeId) {
+    public JobTargetCreatorImpl(KapuaId scopeId) {
         super(scopeId);
     }
 

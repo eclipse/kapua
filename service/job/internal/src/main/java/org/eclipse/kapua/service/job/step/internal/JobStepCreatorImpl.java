@@ -33,7 +33,7 @@ public class JobStepCreatorImpl extends AbstractKapuaNamedEntityCreator<JobStep>
 
     private static final long serialVersionUID = 3119071638220738358L;
 
-    protected JobStepCreatorImpl(KapuaId scopeId) {
+    public JobStepCreatorImpl(KapuaId scopeId) {
         super(scopeId);
     }
 

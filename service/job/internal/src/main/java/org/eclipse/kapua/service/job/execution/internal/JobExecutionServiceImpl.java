@@ -47,7 +47,7 @@ public class JobExecutionServiceImpl
     private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
 
-    protected JobExecutionServiceImpl() {
+    public JobExecutionServiceImpl() {
         super(JobExecutionService.class.getName(), JOB_DOMAIN, JobEntityManagerFactory.getInstance(), JobExecutionService.class, JobExecutionFactory.class);
     }
 

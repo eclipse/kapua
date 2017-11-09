@@ -46,7 +46,7 @@ public class JobTargetServiceImpl extends AbstractKapuaConfigurableResourceLimit
     private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
 
-    protected JobTargetServiceImpl() {
+    public JobTargetServiceImpl() {
         super(JobTargetService.class.getName(), JOB_DOMAIN, JobEntityManagerFactory.getInstance(), JobTargetService.class, JobTargetFactory.class);
     }
 
