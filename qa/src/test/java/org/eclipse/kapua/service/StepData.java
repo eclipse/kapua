@@ -47,6 +47,10 @@ public class StepData {
         return stepDataMap.get(key);
     }
 
+    public boolean contains(String key) {
+        return stepDataMap.containsKey(key);
+    }
+
     public void remove(String key) {
         stepDataMap.remove(key);
     }

@@ -23,17 +23,21 @@ Feature: User and Credential expiration abd lockout features
     enabled, user can login into system. All other expiration settings are set for
     successful login. Only state is tested.
     When I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure account service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 50    |
     And I configure user service
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | integer | maxNumberChildEntities     | 20     |
     Given Account
       | name      | scopeId |
       | account-a | 1       |
     And I configure account service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities |  5    |
+      | integer | maxNumberChildEntities |  10    |
     And I configure user service
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -54,17 +58,21 @@ Feature: User and Credential expiration abd lockout features
     disabled, user can not login into system. All other expiration settings are set for
     successful login. Only state is tested.
     When I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure account service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 50    |
     And I configure user service
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | integer | maxNumberChildEntities     | 30    |
     Given Account
       | name      | scopeId |
       | account-a | 1       |
     And I configure account service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities |  5    |
+      | integer | maxNumberChildEntities | 10    |
     And I configure user service
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -76,6 +84,7 @@ Feature: User and Credential expiration abd lockout features
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | false   |
     And I logout
+    Given I expect the exception "KapuaAuthenticationException" with the text "Error: kapua-a"
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
     Then An exception was thrown
     And I logout
@@ -86,17 +95,21 @@ Feature: User and Credential expiration abd lockout features
     Expiration date on credentials is set one day in the past and is in state enabled.
     This prevents user from logging in.
     When I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure account service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 50    |
     And I configure user service
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | integer | maxNumberChildEntities     | 30    |
     Given Account
       | name      | scopeId |
       | account-a | 1       |
     And I configure account service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities |  5    |
+      | integer | maxNumberChildEntities | 20    |
     And I configure user service
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -108,6 +121,7 @@ Feature: User and Credential expiration abd lockout features
       | name    | password          | enabled | expirationDate |
       | kapua-a | ToManySecrets123# | true    | yesterday      |
     And I logout
+    Given I expect the exception "KapuaAuthenticationException" with the text "Error: kapua-a"
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
     Then An exception was thrown
     And I logout
@@ -116,17 +130,21 @@ Feature: User and Credential expiration abd lockout features
     Expiration date on credentials is set to today and is in state enabled.
     This prevents user from logging in, because expiration is today and is day inclusive.
     When I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure account service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 50    |
     And I configure user service
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | integer | maxNumberChildEntities     | 30    |
     Given Account
       | name      | scopeId |
       | account-a | 1       |
     And I configure account service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities |  5    |
+      | integer | maxNumberChildEntities | 20    |
     And I configure user service
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -138,6 +156,7 @@ Feature: User and Credential expiration abd lockout features
       | name    | password          | enabled | expirationDate |
       | kapua-a | ToManySecrets123# | true    | today          |
     And I logout
+    Given I expect the exception "KapuaAuthenticationException" with the text "Error: kapua-a"
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
     Then An exception was thrown
     And I logout
@@ -146,17 +165,21 @@ Feature: User and Credential expiration abd lockout features
     Expiration date on credentials is set to tomorrow and is in state enabled.
     This allows user to login, because expiration is not yet reached.
     When I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure account service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 50    |
     And I configure user service
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | integer | maxNumberChildEntities     | 30     |
     Given Account
       | name      | scopeId |
       | account-a | 1       |
     And I configure account service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities |  5    |
+      | integer | maxNumberChildEntities | 10    |
     And I configure user service
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -199,6 +222,7 @@ Feature: User and Credential expiration abd lockout features
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And I logout
+    Given I expect the exception "KapuaAuthenticationException" with the text "Error: kapua-a"
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
     Then An exception was thrown
     And I logout
@@ -230,6 +254,7 @@ Feature: User and Credential expiration abd lockout features
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And I logout
+    Given I expect the exception "KapuaAuthenticationException" with the text "Error: kapua-a"
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
     Then An exception was thrown
     And I logout
@@ -295,6 +320,7 @@ Feature: User and Credential expiration abd lockout features
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And I logout
+    Given I expect the exception "KapuaAuthenticationException" with the text "Error: kapua-a"
     When I login as user with name "kapua-a" and password "WrongPassword123#"
     When I login as user with name "kapua-a" and password "WrongPassword123#"
     When I login as user with name "kapua-a" and password "WrongPassword123#"
@@ -330,8 +356,11 @@ Feature: User and Credential expiration abd lockout features
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And I logout
+    Given I expect the exception "KapuaAuthenticationException" with the text "Error: kapua-a"
     When I login as user with name "kapua-a" and password "WrongPassword123#"
+    Then An exception was thrown
     When I login as user with name "kapua-a" and password "WrongPassword123#"
+    Then An exception was thrown
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
     Then No exception was thrown
     And I logout
@@ -370,7 +399,9 @@ Feature: User and Credential expiration abd lockout features
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And I logout
+    Given I expect the exception "KapuaAuthenticationException" with the text "Error: kapua-a"
     When I login as user with name "kapua-a" and password "WrongPassword123#"
+    Then An exception was thrown
     And I wait 1 second
     And I login as user with name "kapua-a" and password "ToManySecrets123#"
     Then No exception was thrown
@@ -411,8 +442,10 @@ Feature: User and Credential expiration abd lockout features
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And I logout
+    Given I expect the exception "KapuaAuthenticationException" with the text "Error: kapua-a"
     When I login as user with name "kapua-a" and password "WrongPassword123#"
-    And I wait 1 second
+    Then An exception was thrown
+    Then I wait 1 second
     And I login as user with name "kapua-a" and password "ToManySecrets123#"
     Then An exception was thrown
     And I logout
@@ -452,9 +485,12 @@ Feature: User and Credential expiration abd lockout features
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And I logout
+    Given I expect the exception "KapuaAuthenticationException" with the text "Error: kapua-a"
     When I login as user with name "kapua-a" and password "WrongPassword123#"
-    And I wait 2 seconds
+    Then An exception was thrown
+    Then I wait 2 seconds
     When I login as user with name "kapua-a" and password "WrongPassword123#"
+    Then An exception was thrown
     And I login as user with name "kapua-a" and password "ToManySecrets123#"
     Then No exception was thrown
     And I logout
