@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.shared.service;
 
-import org.eclipse.kapua.app.console.core.shared.model.GwtLoginInformation;
+import org.eclipse.kapua.app.console.core.shared.model.GwtProductInformation;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -22,7 +22,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("settings")
 public interface GwtSettingsService extends RemoteService {
 
-    public GwtLoginInformation getLoginInformation();
+    public GwtProductInformation getProductInformation();
 
     public String getSsoLoginUri();
 
