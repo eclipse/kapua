@@ -85,12 +85,15 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("permissionDomain", USR_MSGS.gridAccessRoleColumnHeaderDomain(), 200);
+        columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("permissionAction", USR_MSGS.gridAccessRoleColumnHeaderAction(), 200);
+        columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("permissionGroupId", USR_MSGS.gridAccessRoleColumnHeaderGroupId(), 200);
+        columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("permissionForwardable", USR_MSGS.gridAccessRoleColumnHeaderForwardable(), 200);
@@ -101,9 +104,11 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
                 return model.getPermissionForwardable() ? COMMONS_MSGS.yes() : COMMONS_MSGS.no();
             }
         });
+        columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("userName", USR_MSGS.gridAccessRoleColumnHeaderCreatedBy(), 200);
+        columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("createdOn", USR_MSGS.gridAccessRoleColumnHeaderCreatedOn(), 200);

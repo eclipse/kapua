@@ -14,6 +14,8 @@ package org.eclipse.kapua.app.console.module.authorization.server;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.Style.SortDir;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
@@ -24,11 +26,14 @@ import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccess
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessRoleService;
 import org.eclipse.kapua.app.console.module.authorization.shared.util.GwtKapuaAuthorizationModelConverter;
 import org.eclipse.kapua.app.console.module.authorization.shared.util.KapuaGwtAuthorizationModelConverter;
+import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
+import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
 import org.eclipse.kapua.service.authorization.access.AccessRoleCreator;
 import org.eclipse.kapua.service.authorization.access.AccessRoleFactory;
@@ -129,7 +134,10 @@ public class GwtAccessRoleServiceImpl extends KapuaRemoteServiceServlet implemen
                     query.setPredicate(new AttributePredicate<KapuaId>("accessInfoId", accessInfo.getId()));
                     query.setLimit(loadConfig.getLimit());
                     query.setOffset(loadConfig.getOffset());
-
+                    String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? "createdOn" : loadConfig.getSortField();
+                    SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
+                    FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
+                    query.setSortCriteria(sortCriteria);
                     AccessRoleListResult accessRoleList = accessRoleService.query(query);
                     if (!accessRoleList.isEmpty()) {
                         totalLegnth = Long.valueOf(accessRoleService.count(query)).intValue();
