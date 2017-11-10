@@ -106,6 +106,7 @@ import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -148,6 +149,13 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     public void deleteAllIndices() throws Exception {
         esEmbeddedEngine = new EsEmbeddedEngine();
         DatastoreMediator.getInstance().deleteAllIndexes();
+    }
+
+    @After
+    public void stopEsEmbeddedEngine() throws Exception {
+        if (esEmbeddedEngine != null) {
+            esEmbeddedEngine.close();
+        }
     }
 
     @Test
