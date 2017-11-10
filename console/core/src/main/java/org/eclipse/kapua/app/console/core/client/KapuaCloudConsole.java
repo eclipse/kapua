@@ -14,12 +14,12 @@ package org.eclipse.kapua.app.console.core.client;
 import java.util.logging.Logger;
 
 import org.eclipse.kapua.app.console.core.client.messages.ConsoleCoreMessages;
+import org.eclipse.kapua.app.console.core.shared.model.GwtProductInformation;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.core.client.util.Logout;
 import org.eclipse.kapua.app.console.module.api.client.util.UserAgentUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.Years;
-import org.eclipse.kapua.app.console.core.shared.model.GwtLoginInformation;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtJwtCredential;
 import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationService;
@@ -57,6 +57,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import java.util.logging.Level;
 
 /**
  * 
@@ -84,6 +85,8 @@ public class KapuaCloudConsole implements EntryPoint {
 
     private Label creditLabel;
 
+    private GwtProductInformation productInformation;
+
     /**
      * Note, we defer all application initialization code to {@link #onModuleLoad2()} so that the
      * UncaughtExceptionHandler can catch any unexpected exceptions.
@@ -107,26 +110,39 @@ public class KapuaCloudConsole implements EntryPoint {
      * This is the 'real' entry point method.
      */
     public void onModuleLoad2() {
-        //
-        // Check if a session has already been established on the server-side
-        gwtAuthorizationService.getCurrentSession(new AsyncCallback<GwtSession>() {
+        gwtSettingService.getProductInformation(new AsyncCallback<GwtProductInformation>() {
 
-            public void onFailure(Throwable t) {
-                // We do not have a valid session: display the login page
-                renderLoginDialog();
+            @Override
+            public void onFailure(Throwable caught) {
+                logger.log(Level.SEVERE, "Error fetching Product Informations");
             }
 
-            public void onSuccess(GwtSession gwtSession) {
-                if (gwtSession == null) {
-                    // We do not have a valid session: display the login page
-                    renderLoginDialog();
-                } else {
-                    //
-                    // We have a valid session
-                    currentSession = gwtSession;
+            @Override
+            public void onSuccess(GwtProductInformation result) {
+                productInformation = result;
 
-                    render(currentSession);
-                }
+                //
+                // Check if a session has already been established on the server-side
+                gwtAuthorizationService.getCurrentSession(new AsyncCallback<GwtSession>() {
+
+                    public void onFailure(Throwable t) {
+                        // We do not have a valid session: display the login page
+                        renderLoginDialog();
+                    }
+
+                    public void onSuccess(GwtSession gwtSession) {
+                        if (gwtSession == null) {
+                            // We do not have a valid session: display the login page
+                            renderLoginDialog();
+                        } else {
+                            //
+                            // We have a valid session
+                            currentSession = gwtSession;
+
+                            render(currentSession);
+                        }
+                    }
+                });
             }
         });
     }
@@ -191,7 +207,7 @@ public class KapuaCloudConsole implements EntryPoint {
         TableData tdVersion = new TableData();
         tdVersion.setHorizontalAlign(HorizontalAlignment.RIGHT);
 
-        Label copyright = new Label(MSGS.copyright(Integer.toString(Years.getCurrentYear())));
+        Label copyright = new Label(productInformation.getCopyright().replace("{0}", Integer.toString(Years.getCurrentYear())));
         copyright.setStyleName("x-form-label");
 
         Label version = new Label(currentSession.getVersion() + "-" + currentSession.getBuildNumber());
@@ -296,7 +312,8 @@ public class KapuaCloudConsole implements EntryPoint {
 
         RootPanel.get().add(viewport);
 
-        loadLoginData(lcFooter, genericNote, creditLabel);
+        genericNote.setHtml(productInformation.getInformationSnippet());
+        creditLabel.setText(productInformation.getBackgroundCredits());
 
         // Check if coming from SSO login
         final String accessToken = Window.Location.getParameter(Logout.PARAMETER_ACCESS_TOKEN);
@@ -322,21 +339,7 @@ public class KapuaCloudConsole implements EntryPoint {
             }
         });
 
-        this.gwtSettingService.getLoginInformation(new AsyncCallback<GwtLoginInformation>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-                ConsoleInfo.display(MSGS.error(), caught.getLocalizedMessage());
-            }
-
-            @Override
-            public void onSuccess(GwtLoginInformation result) {
-                if (result.getProductName() != null) {
-                    loginDialog.setHeading(CORE_MSGS.loginTitle(result.getProductName()));
-                    loginDialog.repaint();
-                }
-            }
-        });
+        loginDialog.setHeading(CORE_MSGS.loginTitle(productInformation.getProductName()));
 
         if (!UserAgentUtils.isIE()) {
             Window.addResizeHandler(new ResizeHandler() {
@@ -386,32 +389,6 @@ public class KapuaCloudConsole implements EntryPoint {
                 logger.fine("User: " + gwtSession.getUserId());
                 dlg.hide();
                 renderMainScreen(viewport, gwtSession);
-            }
-        });
-    }
-
-    private void loadLoginData(final LayoutContainer container, final Html genericNote, final Label creditLabel) {
-        this.gwtSettingService.getLoginInformation(new AsyncCallback<GwtLoginInformation>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-                ConsoleInfo.display(MSGS.error(), caught.getLocalizedMessage());
-            }
-
-            @Override
-            public void onSuccess(GwtLoginInformation result) {
-                if (result.getBackgroundCredits() != null) {
-                    creditLabel.setText(result.getBackgroundCredits());
-                    creditLabel.repaint();
-                }
-
-                if (result.getInformationSnippet() != null) {
-                    genericNote.setHtml(result.getInformationSnippet());
-                    genericNote.repaint();
-                }
-
-                // re-layout
-                container.layout(true);
             }
         });
     }
