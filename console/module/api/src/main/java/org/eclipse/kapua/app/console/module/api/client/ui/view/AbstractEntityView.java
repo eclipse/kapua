@@ -13,14 +13,15 @@ package org.eclipse.kapua.app.console.module.api.client.ui.view;
 
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.KapuaBorderLayoutData;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.KapuaTabPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.TabDescriptor;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleService;
+import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleServiceAsync;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.util.Margins;
@@ -28,12 +29,18 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleService;
-import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleServiceAsync;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public abstract class AbstractEntityView<M extends GwtEntityModel> extends AbstractView implements EntityView<M> {
+
+    @Override
+    public void onUserChange() {
+        if (entityGrid != null) {
+            entityGrid.refresh();
+        }
+    }
 
     private EntityFilterPanel<M> filterPanel;
     private EntityGrid<M> entityGrid;
