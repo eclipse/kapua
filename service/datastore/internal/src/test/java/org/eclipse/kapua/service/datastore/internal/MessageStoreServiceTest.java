@@ -106,8 +106,9 @@ import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
-import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -122,7 +123,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     // otherwise, if the datastore service is initialized before the embedded es node startup, the transport connector is not able to be initialized (since it tries to connect to the node)
     // if the embedded node is initialized in @Before method of this class, the initialization happens after this is loaded by the classloader so the datastore service initialization, at that point,
     // is already done!
-    private EsEmbeddedEngine esEmbeddedEngine;
+    private static EsEmbeddedEngine esEmbeddedEngine;
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
@@ -134,6 +135,12 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     private static final ChannelInfoRegistryService CHANNEL_INFO_REGISTRY_SERVICE = LOCATOR.getService(ChannelInfoRegistryService.class);
     private static final MetricInfoRegistryService METRIC_INFO_REGISTRY_SERVICE = LOCATOR.getService(MetricInfoRegistryService.class);
     private static final ClientInfoRegistryService CLIENT_INFO_REGISTRY_SERVICE = LOCATOR.getService(ClientInfoRegistryService.class);
+
+    @BeforeClass
+    public static void startEmbeddedEngine() throws Exception {
+        esEmbeddedEngine = new EsEmbeddedEngine();
+        Thread.sleep(5000);
+    }
 
     /**
      * This method deletes all indices of the current ES instance
@@ -147,16 +154,14 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      */
     @Before
     public void deleteAllIndices() throws Exception {
-        esEmbeddedEngine = new EsEmbeddedEngine();
-        Thread.sleep(3000);
         DatastoreMediator.getInstance().deleteAllIndexes();
     }
 
-    @After
-    public void stopEsEmbeddedEngine() throws Exception {
+    @AfterClass
+    public static void stopEsEmbeddedEngine() throws Exception {
         if (esEmbeddedEngine != null) {
             esEmbeddedEngine.close();
-            Thread.sleep(3000);
+            Thread.sleep(5000);
             esEmbeddedEngine = null;
         }
     }
