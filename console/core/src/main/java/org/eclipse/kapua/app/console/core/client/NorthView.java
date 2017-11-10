@@ -22,7 +22,6 @@ import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountSer
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractView;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.MainViewDescriptor;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaMenuItem;
