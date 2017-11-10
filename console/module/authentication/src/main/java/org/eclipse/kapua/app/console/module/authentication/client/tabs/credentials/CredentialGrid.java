@@ -152,6 +152,7 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("username", MSGS.gridCredentialColumnHeaderCreatedBy(), 200);
+        columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("modifiedOn", MSGS.gridCredentialColumnHeaderModifiedOn(), 200);
