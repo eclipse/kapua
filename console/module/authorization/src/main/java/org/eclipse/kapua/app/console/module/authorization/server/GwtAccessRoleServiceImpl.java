@@ -24,13 +24,16 @@ import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccess
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessRoleService;
 import org.eclipse.kapua.app.console.module.authorization.shared.util.GwtKapuaAuthorizationModelConverter;
 import org.eclipse.kapua.app.console.module.authorization.shared.util.KapuaGwtAuthorizationModelConverter;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
 import org.eclipse.kapua.service.authorization.access.AccessRoleCreator;
+import org.eclipse.kapua.service.authorization.access.AccessRoleFactory;
 import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
+import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 import org.eclipse.kapua.service.authorization.access.AccessRoleService;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleService;
@@ -103,6 +106,7 @@ public class GwtAccessRoleServiceImpl extends KapuaRemoteServiceServlet implemen
     public PagingLoadResult<GwtAccessRole> findByUserId(PagingLoadConfig loadConfig, String scopeShortId, String userShortId) throws GwtKapuaException {
         //
         // Do get
+        int totalLegnth = 0;
         List<GwtAccessRole> gwtAccessRoles = new ArrayList<GwtAccessRole>();
         if (userShortId != null) {
 
@@ -111,30 +115,37 @@ public class GwtAccessRoleServiceImpl extends KapuaRemoteServiceServlet implemen
                 RoleService roleService = locator.getService(RoleService.class);
                 AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
                 AccessRoleService accessRoleService = locator.getService(AccessRoleService.class);
+                AccessRoleFactory accessRoleFactory = locator.getFactory(AccessRoleFactory.class);
                 UserService userService = locator.getService(UserService.class);
 
                 KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeShortId);
                 KapuaId userId = GwtKapuaCommonsModelConverter.convertKapuaId(userShortId);
 
                 AccessInfo accessInfo = accessInfoService.findByUserId(scopeId, userId);
+                User user = userService.find(scopeId, userId);
 
                 if (accessInfo != null) {
-                    AccessRoleListResult accessRoleList = accessRoleService.findByAccessInfoId(scopeId, accessInfo.getId());
+                    AccessRoleQuery query = accessRoleFactory.newQuery(scopeId);
+                    query.setPredicate(new AttributePredicate<KapuaId>("accessInfoId", accessInfo.getId()));
+                    query.setLimit(loadConfig.getLimit());
+                    query.setOffset(loadConfig.getOffset());
+
+                    AccessRoleListResult accessRoleList = accessRoleService.query(query);
+                    if (!accessRoleList.isEmpty()) {
+                        totalLegnth = Long.valueOf(accessRoleService.count(query)).intValue();
+                    }
 
                     for (AccessRole accessRole : accessRoleList.getItems()) {
                         Role role = roleService.find(scopeId, accessRole.getRoleId());
-                        User user = userService.find(scopeId, userId);
                         GwtAccessRole gwtAccessRole = KapuaGwtAuthorizationModelConverter.mergeRoleAccessRole(role, accessRole);
+                        gwtAccessRole.setUserName(user.getName());
                         gwtAccessRoles.add(gwtAccessRole);
-                        for (GwtAccessRole gwtAccessRole2 : gwtAccessRoles) {
-                            gwtAccessRole2.setUserName(user.getDisplayName());
-                        }
                     }
                 }
             } catch (Throwable t) {
                 KapuaExceptionHandler.handle(t);
             }
         }
-        return new BasePagingLoadResult<GwtAccessRole>(gwtAccessRoles, 0, gwtAccessRoles.size());
+        return new BasePagingLoadResult<GwtAccessRole>(gwtAccessRoles, loadConfig.getOffset(), totalLegnth);
     }
 }

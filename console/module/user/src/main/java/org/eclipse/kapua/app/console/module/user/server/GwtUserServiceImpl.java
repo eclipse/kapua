@@ -31,6 +31,7 @@ import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserService;
 import org.eclipse.kapua.app.console.module.user.shared.util.GwtKapuaUserModelConverter;
 import org.eclipse.kapua.app.console.module.user.shared.util.KapuaGwtUserModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.Credential;
@@ -46,6 +47,7 @@ import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
+import org.eclipse.kapua.service.authorization.access.AccessRoleFactory;
 import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
 import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 import org.eclipse.kapua.service.authorization.access.AccessRoleService;
@@ -225,7 +227,11 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                     accessInfoService.delete(scopeId, accessInfoId);
 
                     AccessRoleService accessRoleService = locator.getService(AccessRoleService.class);
-                    AccessRoleListResult accessRoles = accessRoleService.findByAccessInfoId(scopeId, accessInfoId);
+                    AccessRoleFactory accessRoleFactory = locator.getFactory(AccessRoleFactory.class);
+                    AccessRoleQuery accessRoleQuery = accessRoleFactory.newQuery(scopeId);
+                    accessRoleQuery.setPredicate(new AttributePredicate<KapuaId>("accessInfoId", accessInfo.getId()));
+
+                    AccessRoleListResult accessRoles = accessRoleService.query(accessRoleQuery);
                     for (AccessRole accessRole : accessRoles.getItems()) {
                         accessRoleService.delete(scopeId, accessRole.getId());
                     }

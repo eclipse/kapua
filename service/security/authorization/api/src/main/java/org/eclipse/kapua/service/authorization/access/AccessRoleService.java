@@ -52,7 +52,7 @@ public interface AccessRoleService extends KapuaEntityService<AccessRole, Access
 
     /**
      * Finds the {@link AccessRole}s by scope identifier and {@link AccessInfo} id.
-     * 
+     *
      * @param scopeId
      *            The scope id in which to search.
      * @param accessInfoId
