@@ -87,6 +87,7 @@ public class RoleEditDialog extends RoleAddDialog {
             public void onFailure(Throwable cause) {
                 exitStatus = false;
                 exitMessage = MSGS.dialogEditError(cause.getLocalizedMessage());
+                hide();
             }
         });
 
