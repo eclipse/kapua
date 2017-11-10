@@ -14,6 +14,8 @@ package org.eclipse.kapua.app.console.module.authorization.server;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.Style.SortDir;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
@@ -30,6 +32,9 @@ import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRole
 import org.eclipse.kapua.app.console.module.authorization.shared.util.GwtKapuaAuthorizationModelConverter;
 import org.eclipse.kapua.app.console.module.authorization.shared.util.KapuaGwtAuthorizationModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
+import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.role.Role;
@@ -40,6 +45,7 @@ import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
 import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
+import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
 import org.eclipse.kapua.service.authorization.role.RolePermissionService;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleService;
@@ -221,19 +227,32 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     public PagingLoadResult<GwtRolePermission> getRolePermissions(PagingLoadConfig loadConfig, String scopeShortId, String roleShortId) throws GwtKapuaException {
         //
         // Do get
+        int totalLength = 0;
         List<GwtRolePermission> gwtRolePermissions = new ArrayList<GwtRolePermission>();
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             RolePermissionService rolePermissionService = locator.getService(RolePermissionService.class);
+            RolePermissionFactory rolePermissionFactory = locator.getFactory(RolePermissionFactory.class);
             UserService userService = locator.getService(UserService.class);
             // Convert from GWT Entity
             KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeShortId);
             KapuaId roleId = GwtKapuaCommonsModelConverter.convertKapuaId(roleShortId);
 
             // Get permissions assigned to the Role
-            RolePermissionListResult list = rolePermissionService.findByRoleId(scopeId, roleId);
-
+            RolePermissionQuery query = rolePermissionFactory.newQuery(scopeId);
+            query.setPredicate(new AttributePredicate<KapuaId>("roleId", roleId));
+            query.setLimit(loadConfig.getLimit());
+            query.setOffset(loadConfig.getOffset());
+            String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? "createdOnFormatted" : loadConfig.getSortField();
+            if (sortField.equals("createdOnFormatted")) {
+                sortField = "createdOn";
+            }
+            SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
+            FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
+            query.setSortCriteria(sortCriteria);
+            RolePermissionListResult list = rolePermissionService.query(query);
             if (list != null) {
+                totalLength = Long.valueOf(rolePermissionService.count(query)).intValue();
                 for (RolePermission rolePermission : list.getItems()) {
                     gwtRolePermissions.add(KapuaGwtAuthorizationModelConverter.convertRolePermission(rolePermission));
                     for (GwtRolePermission gwtRolePermission : gwtRolePermissions) {
@@ -249,7 +268,7 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             KapuaExceptionHandler.handle(t);
         }
 
-        return new BasePagingLoadResult<GwtRolePermission>(gwtRolePermissions, 0, gwtRolePermissions.size());
+        return new BasePagingLoadResult<GwtRolePermission>(gwtRolePermissions, loadConfig.getOffset(), totalLength);
     }
 
     @Override

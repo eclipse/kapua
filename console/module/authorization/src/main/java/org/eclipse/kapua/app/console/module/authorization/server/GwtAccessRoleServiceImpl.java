@@ -33,7 +33,6 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
-import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
 import org.eclipse.kapua.service.authorization.access.AccessRoleCreator;
 import org.eclipse.kapua.service.authorization.access.AccessRoleFactory;
@@ -138,7 +137,8 @@ public class GwtAccessRoleServiceImpl extends KapuaRemoteServiceServlet implemen
                     SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
                     FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
                     query.setSortCriteria(sortCriteria);
-                    AccessRoleListResult accessRoleList = accessRoleService.query(query);
+                    AccessRoleListResult accessRoleList =
+                            accessRoleService.query(query);
                     if (!accessRoleList.isEmpty()) {
                         totalLegnth = Long.valueOf(accessRoleService.count(query)).intValue();
                     }
