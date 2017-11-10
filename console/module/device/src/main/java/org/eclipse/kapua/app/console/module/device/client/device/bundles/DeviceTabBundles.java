@@ -137,8 +137,7 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
 
                     if (selectedEntity.isOnline()) {
                         toolBar.disable();
-                        refresh();
-
+                        doRefresh();
                         refreshProcess = false;
                     } else {
                         MessageBox.alert(MSGS.dialogAlerts(), DEVICE_MSGS.deviceOffline(),
