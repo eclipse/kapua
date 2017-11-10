@@ -20,7 +20,6 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessRole;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessRoleCreator;
-import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessRoleQuery;
 
 @RemoteServiceRelativePath("accessrole")
 public interface GwtAccessRoleService extends RemoteService {
@@ -31,5 +30,6 @@ public interface GwtAccessRoleService extends RemoteService {
     public void delete(GwtXSRFToken gwtXsrfToken, String scopeShortId, String accessRoleShortId)
             throws GwtKapuaException;
 
-    PagingLoadResult<GwtAccessRole> findByUserId(PagingLoadConfig loadConfig, String scopeShortId, String userShortId, GwtAccessRoleQuery gwtRoleQuery) throws GwtKapuaException;
+    public PagingLoadResult<GwtAccessRole> findByUserId(PagingLoadConfig loadConfig, String scopeShortId, String userShortId)
+            throws GwtKapuaException;
 }

@@ -28,7 +28,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessRole;
-import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessRoleQuery;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessRoleService;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessRoleServiceAsync;
 
@@ -42,12 +41,8 @@ public class UserTabAccessRoleGrid extends EntityGrid<GwtAccessRole> {
 
     private UserTabAccessRoleToolbar toolbar;
 
-    private GwtAccessRoleQuery query;
-
     public UserTabAccessRoleGrid(AbstractEntityView<GwtAccessRole> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
-        query = new GwtAccessRoleQuery();
-        query.setScopeId(currentSession.getSelectedAccountId());
     }
 
     @Override
@@ -59,7 +54,6 @@ public class UserTabAccessRoleGrid extends EntityGrid<GwtAccessRole> {
                 GWT_ACCESS_ROLE_SERVICE.findByUserId((PagingLoadConfig) loadConfig,
                         currentSession.getSelectedAccountId(),
                         userId,
-                        query,
                         callback);
             }
         };

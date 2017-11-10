@@ -21,7 +21,6 @@ import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessRole;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessRoleCreator;
-import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessRoleQuery;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessRoleService;
 import org.eclipse.kapua.app.console.module.authorization.shared.util.GwtKapuaAuthorizationModelConverter;
 import org.eclipse.kapua.app.console.module.authorization.shared.util.KapuaGwtAuthorizationModelConverter;
@@ -32,7 +31,6 @@ import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
 import org.eclipse.kapua.service.authorization.access.AccessRoleCreator;
 import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
-import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 import org.eclipse.kapua.service.authorization.access.AccessRoleService;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleService;
@@ -102,10 +100,9 @@ public class GwtAccessRoleServiceImpl extends KapuaRemoteServiceServlet implemen
     }
 
     @Override
-    public PagingLoadResult<GwtAccessRole> findByUserId(PagingLoadConfig loadConfig, String scopeShortId, String userShortId, GwtAccessRoleQuery gwtRoleQuery) throws GwtKapuaException {
+    public PagingLoadResult<GwtAccessRole> findByUserId(PagingLoadConfig loadConfig, String scopeShortId, String userShortId) throws GwtKapuaException {
         //
         // Do get
-        int totalLength = 0;
         List<GwtAccessRole> gwtAccessRoles = new ArrayList<GwtAccessRole>();
         if (userShortId != null) {
 
@@ -115,8 +112,6 @@ public class GwtAccessRoleServiceImpl extends KapuaRemoteServiceServlet implemen
                 AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
                 AccessRoleService accessRoleService = locator.getService(AccessRoleService.class);
                 UserService userService = locator.getService(UserService.class);
-                AccessRoleQuery accessRoleQuery = GwtKapuaAuthorizationModelConverter
-                        .convertAccessRoleQuery(loadConfig, gwtRoleQuery);
 
                 KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeShortId);
                 KapuaId userId = GwtKapuaCommonsModelConverter.convertKapuaId(userShortId);
@@ -125,7 +120,7 @@ public class GwtAccessRoleServiceImpl extends KapuaRemoteServiceServlet implemen
 
                 if (accessInfo != null) {
                     AccessRoleListResult accessRoleList = accessRoleService.findByAccessInfoId(scopeId, accessInfo.getId());
-                    totalLength = Long.valueOf(accessRoleService.count(accessRoleQuery)).intValue();
+
                     for (AccessRole accessRole : accessRoleList.getItems()) {
                         Role role = roleService.find(scopeId, accessRole.getRoleId());
                         User user = userService.find(scopeId, userId);
@@ -140,6 +135,6 @@ public class GwtAccessRoleServiceImpl extends KapuaRemoteServiceServlet implemen
                 KapuaExceptionHandler.handle(t);
             }
         }
-        return new BasePagingLoadResult<GwtAccessRole>(gwtAccessRoles, loadConfig.getOffset(), totalLength);
+        return new BasePagingLoadResult<GwtAccessRole>(gwtAccessRoles, 0, gwtAccessRoles.size());
     }
 }
