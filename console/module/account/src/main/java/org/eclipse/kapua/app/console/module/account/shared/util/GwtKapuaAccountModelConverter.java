@@ -55,6 +55,8 @@ public class GwtKapuaAccountModelConverter {
         SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
         FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
         query.setSortCriteria(sortCriteria);
+        query.setOffset(loadConfig.getOffset());
+        query.setLimit(loadConfig.getLimit());
         query.setPredicate(predicate);
 
         return query;

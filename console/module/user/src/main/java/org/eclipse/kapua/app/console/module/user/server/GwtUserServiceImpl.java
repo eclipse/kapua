@@ -304,11 +304,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             // If there are results
             if (!users.isEmpty()) {
                 // count
-                if (users.getSize() >= loadConfig.getLimit()) {
-                    totalLength = Long.valueOf(userService.count(userQuery)).intValue();
-                } else {
-                    totalLength = users.getSize();
-                }
+                totalLength = Long.valueOf(userService.count(userQuery)).intValue();
 
                 // Converto to GWT entity
                 for (User u : users.getItems()) {

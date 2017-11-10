@@ -117,12 +117,7 @@ public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtT
             UserService userService = locator.getService(UserService.class);
             TagListResult tags = tagService.query(tagQuery);
             if (!tags.isEmpty()) {
-                if (tags.getSize() >= loadConfig.getLimit()) {
-                    totalLength = Long.valueOf(tagService.count(tagQuery)).intValue();
-
-                } else {
-                    totalLength = tags.getSize();
-                }
+                totalLength = Long.valueOf(tagService.count(tagQuery)).intValue();
                 for (Tag g : tags.getItems()) {
                     gwtTagList.add(KapuaGwtTagModelConverter.convertTag(g));
                     for (GwtTag gwtTag : gwtTagList) {
@@ -130,8 +125,8 @@ public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtT
                         if (user != null) {
                             gwtTag.setUserName(user.getDisplayName());
                         }
+                    }
                 }
-            }
             }
         } catch (Exception e) {
             KapuaExceptionHandler.handle(e);

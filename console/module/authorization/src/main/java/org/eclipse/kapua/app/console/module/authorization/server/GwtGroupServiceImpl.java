@@ -118,12 +118,7 @@ public class GwtGroupServiceImpl extends KapuaRemoteServiceServlet implements Gw
                     gwtGroupQuery);
             GroupListResult groups = groupService.query(groupQuery);
             if (!groups.isEmpty()) {
-                if (groups.getSize() >= loadConfig.getLimit()) {
-                    totalLength = Long.valueOf(groupService.count(groupQuery)).intValue();
-
-                } else {
-                    totalLength = groups.getSize();
-                }
+                totalLength = Long.valueOf(groupService.count(groupQuery)).intValue();
                 for (Group g : groups.getItems()) {
                     gwtGroupList.add(KapuaGwtAuthorizationModelConverter.convertGroup(g));
                     for (GwtGroup gwtGroup : gwtGroupList) {

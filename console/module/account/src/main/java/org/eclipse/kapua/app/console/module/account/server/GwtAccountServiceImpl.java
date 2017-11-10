@@ -627,16 +627,13 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
 
         try {
             accounts = accountService.query(query);
-            if (accounts.getSize() >= loadConfig.getLimit()) {
+            if (!accounts.isEmpty()) {
                 totalLength = Long.valueOf(accountService.count(query)).intValue();
-            } else {
-                totalLength = accounts.getSize();
-            }
 
-            for (Account a : accounts.getItems()) {
-                gwtAccounts.add(KapuaGwtAccountModelConverter.convertAccount(a));
+                for (Account a : accounts.getItems()) {
+                    gwtAccounts.add(KapuaGwtAccountModelConverter.convertAccount(a));
+                }
             }
-
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
