@@ -121,12 +121,12 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
     }
 
     @Override
-    protected GwtQuery getFilterQuery() {
+    public GwtQuery getFilterQuery() {
         return null;
     }
 
     @Override
-    protected void setFilterQuery(GwtQuery filterQuery) {
+    public void setFilterQuery(GwtQuery filterQuery) {
     }
 
     @Override

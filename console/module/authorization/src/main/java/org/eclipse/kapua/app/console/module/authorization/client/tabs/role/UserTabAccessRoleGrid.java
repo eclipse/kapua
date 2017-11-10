@@ -98,12 +98,12 @@ public class UserTabAccessRoleGrid extends EntityGrid<GwtAccessRole> {
     }
 
     @Override
-    protected GwtQuery getFilterQuery() {
+    public GwtQuery getFilterQuery() {
         return null;
     }
 
     @Override
-    protected void setFilterQuery(GwtQuery filterQuery) {
+    public void setFilterQuery(GwtQuery filterQuery) {
     }
 
     @Override

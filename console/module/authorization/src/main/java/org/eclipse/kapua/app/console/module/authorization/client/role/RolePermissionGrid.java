@@ -136,12 +136,12 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
     }
 
     @Override
-    protected GwtQuery getFilterQuery() {
+    public GwtQuery getFilterQuery() {
         return filterQuery;
     }
 
     @Override
-    protected void setFilterQuery(GwtQuery query) {
+    public void setFilterQuery(GwtQuery query) {
         this.filterQuery = query;
     }
 
