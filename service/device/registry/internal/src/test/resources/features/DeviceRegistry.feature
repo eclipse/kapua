@@ -9,6 +9,7 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
+@default
 Feature: Device Registry Service
     The Device registry Service is responsible for CRUD operations for devices in the Kapua
     database.

@@ -9,6 +9,7 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
+@security
 Feature: Misc Authorization functionality CRUD tests
 
 Scenario: Permission factory sanity checks

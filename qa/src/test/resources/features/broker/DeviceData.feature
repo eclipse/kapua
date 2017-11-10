@@ -9,6 +9,7 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
+@device
 Feature: Device data scenarios
 
   @StartBroker

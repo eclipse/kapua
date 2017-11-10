@@ -422,6 +422,9 @@
                 <configuration>
                     <!-- Travis has an overall 3GB limit -->
                     <argLine>@{argLine} -Xmx1024m</argLine>
+                    <systemPropertyVariables>
+                        <cucumber.options>${cucumber.options}</cucumber.options>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
             <plugin>
@@ -1524,7 +1527,6 @@
                 </pluginManagement>
             </build>
         </profile>
-
     </profiles>
 
     <licenses>

@@ -10,7 +10,7 @@
 #     Eurotech - initial API and implementation
 #
 ###############################################################################
-
+@datastore
 Feature: Datastore tests
 
   @StartBroker
