@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.connection.steps;
 
+import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
@@ -22,6 +23,7 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.qa.steps.BaseQATests;
 import org.eclipse.kapua.qa.steps.DBHelper;
 import org.eclipse.kapua.service.StepData;
 import org.eclipse.kapua.service.TestJAXBContextProvider;
@@ -57,7 +59,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
 @ScenarioScoped
-public class ConnectionSteps {
+public class ConnectionSteps extends BaseQATests {
 
     /**
      * Authentication service.
@@ -103,9 +105,6 @@ public class ConnectionSteps {
      */
     private static AclCreator aclCreator;
 
-    // Scenario scoped Device Registry test data
-    private static StepData stepData;
-
     // Single point to database access.
     private static DBHelper dbHelper;
 
@@ -116,7 +115,7 @@ public class ConnectionSteps {
     }
 
     @Before
-    public void beforeScenario() {
+    public void beforeScenario(Scenario scenario) {
 
         KapuaLocator locator = KapuaLocator.getInstance();
         authenticationService = locator.getService(AuthenticationService.class);
@@ -134,6 +133,8 @@ public class ConnectionSteps {
 
         // Initialize the database
         dbHelper.setup();
+
+        this.scenario = scenario;
 
         XmlUtil.setContextProvider(new TestJAXBContextProvider());
     }
@@ -345,9 +346,12 @@ public class ConnectionSteps {
             tmpConn.setReservedUserId(userId);
             stepData.put("ExceptionCaught", false);
             try {
+                primeException();
                 deviceConnectionService.update(tmpConn);
             } catch (KapuaException ex) {
-                stepData.put("ExceptionCaught", true);
+                verifyException(ex);
+            } catch (Exception e) {
+                int a = 10;
             }
         });
     }

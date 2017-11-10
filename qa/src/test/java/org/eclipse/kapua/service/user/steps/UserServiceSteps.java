@@ -31,6 +31,7 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.qa.steps.BaseQATests;
 import org.eclipse.kapua.qa.steps.DBHelper;
 import org.eclipse.kapua.service.StepData;
 import org.eclipse.kapua.service.account.Account;
@@ -57,11 +58,9 @@ import org.eclipse.kapua.service.authorization.permission.shiro.PermissionFactor
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserService;
-import org.eclipse.kapua.service.user.internal.UserCreatorImpl;
 import org.eclipse.kapua.service.user.internal.UserDomain;
 import org.eclipse.kapua.service.user.internal.UserFactoryImpl;
 import org.eclipse.kapua.service.user.internal.UsersJAXBContextProvider;
-import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +77,7 @@ import cucumber.runtime.java.guice.ScenarioScoped;
  * Implementation of Gherkin steps used in UserServiceI9n.feature scenarios.
  */
 @ScenarioScoped
-public class UserServiceSteps extends AbstractKapuaSteps {
+public class UserServiceSteps extends BaseQATests {
 
     private static final Logger logger = LoggerFactory.getLogger(UserServiceSteps.class);
 
@@ -107,11 +106,6 @@ public class UserServiceSteps extends AbstractKapuaSteps {
      */
     private AccessInfoService accessInfoService;
 
-    /**
-     * Inter step data scratchpad.
-     */
-    private StepData stepData;
-
     private DBHelper database;
 
     @Inject
@@ -135,6 +129,9 @@ public class UserServiceSteps extends AbstractKapuaSteps {
         accessInfoService = locator.getService(AccessInfoService.class);
 
         XmlUtil.setContextProvider(new UsersJAXBContextProvider());
+
+        this.scenario = scenario;
+        this.stepData.clear();
     }
 
     @After
@@ -210,37 +207,18 @@ public class UserServiceSteps extends AbstractKapuaSteps {
         stepData.put("LastUser", tmpUser);
     }
 
-    @Given("^The following users? with full permissions$")
-    public void createFullPermissionUsers(List<TestUser> userList) throws Exception {
-
-        Account account = (Account)stepData.get("LastAccount");
-        createUsersInList(userList, account);
-
-        for (TestUser tmpUsr : userList) {
-            String tmpName = tmpUsr.getName();
-            String tmpPwd = tmpUsr.getPassword();
-
-            assertNotNull(tmpName);
-            assertNotNull(tmpPwd);
-
-            UserCreator usrCr = new UserCreatorImpl(account.getId(), tmpName);
-            //User tmpUsr = userService.create(usrCr);
-            // TODO: Finish this implementation!
-        }
-    }
-
     @When("^I login as user with name \"(.*)\" and password \"(.*)\"$")
-    public void loginUser(String userName, String password) throws KapuaException {
+    public void loginUser(String userName, String password) throws Exception {
 
         String passwd = password;
         LoginCredentials credentials = new UsernamePasswordCredentialsImpl(userName, passwd);
         authenticationService.logout();
-        stepData.put("ExceptionCaught", false);
+
+        primeException();
         try {
             authenticationService.login(credentials);
         } catch (KapuaException e) {
-            stepData.put("ExceptionCaught", true);
-            stepData.put("Exception", e);
+            verifyException(e);
         }
     }
 
@@ -256,41 +234,52 @@ public class UserServiceSteps extends AbstractKapuaSteps {
     }
 
     @Then("^I try to delete user \"(.*)\"$")
-    public void thenDeleteUser(String userName) throws KapuaException {
+    public void thenDeleteUser(String userName) throws Exception {
+
+        primeException();
         try {
-            stepData.put("ExceptionCaught", false);
             User userToDelete = userService.findByName(userName);
             if (userToDelete != null) {
                 userService.delete(userToDelete);
             }
         } catch (KapuaException e) {
-            stepData.put("ExceptionCaught", true);
+            verifyException(e);
         }
     }
 
     @When("^I configure account service$")
     public void setAccountServiceConfig(List<TestConfig> testConfigs)
-            throws KapuaException {
+            throws Exception {
         Map<String, Object> valueMap = new HashMap<>();
+        KapuaId accId;
+        KapuaId scopeId;
 
         for (TestConfig config : testConfigs) {
             config.addConfigToMap(valueMap);
         }
+
+        primeException();
         try {
-            stepData.put("ExceptionCaught", false);
             Account tmpAccount = (Account) stepData.get("LastAccount");
-            accountService.setConfigValues(tmpAccount.getId(), tmpAccount.getScopeId(), valueMap);
+            if (tmpAccount != null) {
+                accId = tmpAccount.getId();
+                scopeId = new KapuaEid(BigInteger.ONE);
+            } else {
+                accId = new KapuaEid(BigInteger.ONE);
+                scopeId = new KapuaEid(BigInteger.ONE);
+            }
+            accountService.setConfigValues(accId, scopeId, valueMap);
         } catch (KapuaException ex) {
-            stepData.put("ExceptionCaught", true);
+            verifyException(ex);
         }
     }
 
     @When("^I configure user service$")
     public void setUserServiceConfig(List<TestConfig> testConfigs)
-            throws KapuaException {
+            throws Exception {
         Map<String, Object> valueMap = new HashMap<>();
-        KapuaId accId = null;
-        KapuaId scopeId = null;
+        KapuaId accId;
+        KapuaId scopeId;
         Account tmpAccount = (Account) stepData.get("LastAccount");
 
         if (tmpAccount != null) {
@@ -304,20 +293,21 @@ public class UserServiceSteps extends AbstractKapuaSteps {
         for (TestConfig config : testConfigs) {
             config.addConfigToMap(valueMap);
         }
+
+        primeException();
         try {
-            stepData.put("ExceptionCaught", false);
             userService.setConfigValues(accId, scopeId, valueMap);
         } catch (KapuaException ex) {
-            stepData.put("ExceptionCaught", true);
+            verifyException(ex);
         }
     }
 
     @When("^I configure credential service$")
     public void setCredentialServiceConfig(List<TestConfig> testConfigs)
-            throws KapuaException {
+            throws Exception {
         Map<String, Object> valueMap = new HashMap<>();
-        KapuaId accId = null;
-        KapuaId scopeId = null;
+        KapuaId accId;
+        KapuaId scopeId;
         Account tmpAccount = (Account) stepData.get("LastAccount");
 
         if (tmpAccount != null) {
@@ -331,11 +321,12 @@ public class UserServiceSteps extends AbstractKapuaSteps {
         for (TestConfig config : testConfigs) {
             config.addConfigToMap(valueMap);
         }
+
+        primeException();
         try {
-            stepData.put("ExceptionCaught", false);
             credentialService.setConfigValues(accId, scopeId, valueMap);
         } catch (KapuaException ex) {
-            stepData.put("ExceptionCaught", true);
+            verifyException(ex);
         }
     }
 
@@ -364,8 +355,8 @@ public class UserServiceSteps extends AbstractKapuaSteps {
     private HashSet<ComparableUser> createUsersInList(List<TestUser> userList, Account account) throws Exception {
         HashSet<ComparableUser> users = new HashSet<>();
         KapuaSecurityUtils.doPrivileged(() -> {
+            primeException();
             try {
-                stepData.put("ExceptionCaught", false);
                 for (TestUser userItem : userList) {
                     String name = userItem.getName();
                     String displayName = userItem.getDisplayName();
@@ -379,7 +370,7 @@ public class UserServiceSteps extends AbstractKapuaSteps {
                     users.add(new ComparableUser(user));
                 }
             } catch (KapuaException ke) {
-                stepData.put("ExceptionCaught", true);
+                verifyException(ke);
             }
 
             return null;
@@ -401,13 +392,13 @@ public class UserServiceSteps extends AbstractKapuaSteps {
     private Account createAccount(TestAccount testAccount) throws Exception {
         List<Account> accountList = new ArrayList<>();
         KapuaSecurityUtils.doPrivileged(() -> {
+            primeException();
             try {
-                stepData.put("ExceptionCaught", false);
                 Account account = accountService.create(accountCreatorCreator(testAccount.getName(),
                         testAccount.getScopeId()));
                 accountList.add(account);
             } catch (KapuaException ke) {
-                stepData.put("ExceptionCaught", true);
+                verifyException(ke);
             }
 
             return null;
@@ -428,8 +419,8 @@ public class UserServiceSteps extends AbstractKapuaSteps {
         List<Credential> credentialList = new ArrayList<>();
 
         KapuaSecurityUtils.doPrivileged(() -> {
+            primeException();
             try {
-                stepData.put("ExceptionCaught", false);
                 User user = userService.findByName(testCredentials.getName());
 
                 Credential credential = credentialService.create(credentialCreatorCreator(user.getScopeId(),
@@ -437,7 +428,7 @@ public class UserServiceSteps extends AbstractKapuaSteps {
                         testCredentials.getStatus(), testCredentials.getExpirationDate()));
                 credentialList.add(credential);
             } catch (KapuaException ke) {
-                stepData.put("ExceptionCaught", true);
+                verifyException(ke);
             }
 
             return null;
@@ -462,11 +453,11 @@ public class UserServiceSteps extends AbstractKapuaSteps {
             throws Exception {
 
         KapuaSecurityUtils.doPrivileged(() -> {
+            primeException();
             try {
-                stepData.put("ExceptionCaught", false);
                 accessInfoService.create(accessInfoCreatorCreator(permissionList, user, account));
             } catch (KapuaException ke) {
-                stepData.put("ExceptionCaught", true);
+                verifyException(ke);
             }
 
             return null;

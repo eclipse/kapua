@@ -23,8 +23,11 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import cucumber.api.Scenario;
+import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.qa.steps.BaseQATests;
 import org.eclipse.kapua.service.StepData;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountFactory;
@@ -47,7 +50,8 @@ import cucumber.api.java.en.When;
 /**
  * Steps for testing Access Control List functionality on Broker service.
  */
-public class AclSteps {
+@ScenarioScoped
+public class AclSteps extends BaseQATests {
 
     public static final int BROKER_START_WAIT_MILLIS = 5000;
 
@@ -105,11 +109,6 @@ public class AclSteps {
      */
     private static AclCreator aclCreator;
 
-    /**
-     * Inter step data scratchpad.
-     */
-    private StepData stepData;
-
     @Inject
     public AclSteps(StepData stepData) {
 
@@ -117,7 +116,7 @@ public class AclSteps {
     }
 
     @Before
-    public void aclStepsBefore() {
+    public void aclStepsBefore(Scenario scenario) {
 
         KapuaLocator locator = KapuaLocator.getInstance();
         authenticationService = locator.getService(AuthenticationService.class);
@@ -130,6 +129,8 @@ public class AclSteps {
         mqttDevice = new MqttDevice();
         clientMqttMessage = new HashMap<>();
         listenerMqttMessage = new HashMap<>();
+
+        this.scenario = scenario;
 
         aclCreator = new AclCreator(accountService, accountFactory, userService, accessInfoService, credentialService);
     }
@@ -162,12 +163,14 @@ public class AclSteps {
     }
 
     @Given("^broker with clientId \"(.*)\" and user \"(.*)\" and password \"(.*)\" is listening on topic \"(.*)\"$")
-    public void connectClientToBroker(String clientId, String userName, String password, String topicFilter) {
+    public void connectClientToBroker(String clientId, String userName, String password, String topicFilter)
+            throws Exception {
 
         try {
+            primeException();
             mqttDevice.mqttClientConnect(clientId, userName, password, topicFilter);
         } catch (MqttException mqtte) {
-            stepData.put("exception", mqtte);
+            verifyException(mqtte);
         }
     }
 

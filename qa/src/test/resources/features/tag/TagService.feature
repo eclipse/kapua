@@ -24,6 +24,9 @@ Feature: Tag Service
   @StartBroker
   Scenario: Start broker for all scenarios
 
+  @StartDatastore
+  Scenario: Start datastore for all scenarios
+
   Scenario: Creating tag
     Create a tag entry, with specified name. Name is only tag specific attribute.
     Once created search for it and is should been created.
@@ -44,3 +47,6 @@ Feature: Tag Service
 
   @StopBroker
   Scenario: Stop broker after all scenarios
+
+  @StopDatastore
+  Scenario: Stop datastore after all scenarios

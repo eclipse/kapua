@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.tag.steps;
 
+import cucumber.api.Scenario;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -23,6 +24,7 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate;
+import org.eclipse.kapua.qa.steps.BaseQATests;
 import org.eclipse.kapua.service.StepData;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.tag.Tag;
@@ -45,7 +47,7 @@ import static org.junit.Assert.assertEquals;
  * Implementation of Gherkin steps used in TagService.feature scenarios.
  */
 @ScenarioScoped
-public class TagServiceSteps {
+public class TagServiceSteps extends BaseQATests {
 
     private static final KapuaEid DEFAULT_SCOPE_ID = new KapuaEid(BigInteger.valueOf(1L));
 
@@ -57,7 +59,7 @@ public class TagServiceSteps {
     /**
      * Inter step data scratchpad.
      */
-    private StepData stepData;
+//    private StepData stepData;
 
     @Inject
     public TagServiceSteps(StepData stepData) { 
@@ -66,16 +68,19 @@ public class TagServiceSteps {
     }
 
     @Before
-    public void tagStepsBefore() {
+    public void tagStepsBefore(Scenario scenario) {
 
         KapuaLocator locator = KapuaLocator.getInstance();
         tagService = locator.getService(TagService.class);
-        stepData.put("LastAccount", null);
+
+        this.scenario = scenario;
+        stepData.clear();
+//        stepData.put("LastAccount", null);
     }
 
     @Given("^Tag Service configuration$")
     public void setConfigurationValue(List<TestConfig> testConfigs)
-            throws KapuaException {
+            throws Exception {
 
         Account lastAcc = (Account) stepData.get("LastAccount");
         KapuaId scopeId = DEFAULT_SCOPE_ID;
@@ -90,11 +95,13 @@ public class TagServiceSteps {
             config.addConfigToMap(valueMap);
         }
         try {
-            stepData.put("isException", false);
+//            stepData.put("isException", false);
+            primeException();
             tagService.setConfigValues(scopeId, parentId, valueMap);
         } catch (KapuaException ke) {
-            stepData.put("isException", true);
-            stepData.put("exception", ke);
+//            stepData.put("isException", true);
+//            stepData.put("exception", ke);
+            verifyException(ke);
         }
     }
 

@@ -11,8 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.steps;
 
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import cucumber.api.java.Before;
+import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
@@ -47,6 +48,13 @@ public class BasicSteps extends Assert {
         }
     }
 
+    @Given("^I expect the exception \"(.+)\" with the text \"(.+)\"$")
+    public void setExpectedExceptionDetails(String name, String text) {
+        stepData.put("ExceptionExpected", true);
+        stepData.put("ExceptionName", name);
+        stepData.put("ExceptionMessage", text);
+    }
+
     @When("I wait (\\d+) seconds?.*")
     public void waitSeconds(int seconds) throws InterruptedException {
         double effectiveSeconds = ((double) seconds) * WAIT_MULTIPLIER;
@@ -60,15 +68,15 @@ public class BasicSteps extends Assert {
 
     @Then("^An exception was thrown$")
     public void exceptionCaught() {
-        assertTrue((boolean) stepData.get("ExceptionCaught"));
+        String exName = stepData.contains("ExceptionName") ? (String)stepData.get("ExceptionName") : "Unknown";
+        boolean exCaught = stepData.contains("ExceptionCaught") ? (boolean) stepData.get("ExceptionCaught") : false;
+        assertTrue(String.format("Exception %s was expected but was not raised.", exName), exCaught);
     }
 
     @Then("^No exception was thrown$")
     public void noExceptionCaught() {
-        Object val = stepData.get("ExceptionCaught");
-        if (val != null) {
-            assertFalse((boolean) val);
-        }
+        boolean exCaught = stepData.contains("ExceptionCaught") ? (boolean) stepData.get("ExceptionCaught") : false;
+        assertFalse("An unexpected exception was raised!", exCaught);
     }
 
     @Then("^I get (\\d+)$")

@@ -28,10 +28,10 @@ public class SharedTestSteps {
     private static Scenario scenario;
 
     // Scratchpad data related to exception checking
-    private static boolean exceptionExpected;
-    private static String exceptionName;
-    private static String exceptionMessage;
-    private static boolean exceptionCaught;
+    public static boolean exceptionExpected;
+    public static String exceptionName;
+    public static String exceptionMessage;
+    public static boolean exceptionCaught;
 
     // Setup and tear-down steps
 

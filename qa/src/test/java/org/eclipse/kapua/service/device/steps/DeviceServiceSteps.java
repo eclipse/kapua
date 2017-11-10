@@ -12,6 +12,10 @@
 package org.eclipse.kapua.service.device.steps;
 
 import static org.eclipse.kapua.commons.model.query.predicate.AttributePredicate.attributeIsEqualTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -20,6 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.Vector;
@@ -63,6 +68,7 @@ import org.eclipse.kapua.message.internal.device.lifecycle.KapuaMissingPayloadIm
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate;
+import org.eclipse.kapua.qa.steps.BaseQATests;
 import org.eclipse.kapua.qa.steps.DBHelper;
 import org.eclipse.kapua.service.StepData;
 import org.eclipse.kapua.service.TestJAXBContextProvider;
@@ -90,7 +96,7 @@ import org.eclipse.kapua.service.tag.TagService;
 import org.eclipse.kapua.service.tag.internal.TagFactoryImpl;
 import org.eclipse.kapua.service.tag.internal.TagPredicates;
 import org.eclipse.kapua.service.user.steps.TestConfig;
-import org.eclipse.kapua.test.KapuaTest;
+//import org.eclipse.kapua.test.KapuaTest;
 
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
@@ -103,18 +109,16 @@ import cucumber.runtime.java.guice.ScenarioScoped;
 
 // Implementation of Gherkin steps used in DeviceRegistryI9n.feature scenarios.
 @ScenarioScoped
-public class DeviceServiceSteps extends KapuaTest {
+public class DeviceServiceSteps extends BaseQATests /*KapuaTest*/ {
 
     private static final KapuaEid DEFAULT_SCOPE_ID = new KapuaEid(BigInteger.valueOf(1L));
-    private static final KapuaEid DEFAULT_SCOPE_ID2 = new KapuaEid(BigInteger.valueOf(123));
+    protected static Random random = new Random();
 
     // Device registry services
     private DeviceRegistryService deviceRegistryService;
     private DeviceEventService deviceEventsService;
     private DeviceLifeCycleService deviceLifeCycleService;
     private TagService tagService;
-    // Scenario scoped Device Registry test data
-    StepData stepData;
 
     // Single point to database access.
     private DBHelper dbHelper;
@@ -136,8 +140,12 @@ public class DeviceServiceSteps extends KapuaTest {
         deviceLifeCycleService = locator.getService(DeviceLifeCycleService.class);
         tagService = locator.getService(TagService.class);
 
+        this.scenario = scenario;
+
         // Initialize the database
         dbHelper.setup();
+
+        stepData.clear();
 
         XmlUtil.setContextProvider(new TestJAXBContextProvider());
     }
@@ -194,7 +202,7 @@ public class DeviceServiceSteps extends KapuaTest {
 
     @Given("^A disconnect message from device \"(.+)\"$")
     public void createADeathMessage(String clientId)
-            throws KapuaException {
+            throws Exception {
 
         Account tmpAccount = (Account) stepData.get("LastAccount");
         Device tmpDev;
@@ -224,16 +232,16 @@ public class DeviceServiceSteps extends KapuaTest {
         }
 
         try {
-            stepData.put("ExceptionCaught", false);
+            primeException();
             deviceLifeCycleService.death(generateRandomId(), tmpMsg);
         } catch (KapuaException ex) {
-            stepData.put("ExceptionCaught", true);
+            verifyException(ex);
         }
     }
 
     @Given("^A missing message from device \"(.+)\"$")
     public void createAMissingMessage(String clientId)
-            throws KapuaException {
+            throws Exception {
 
         Account tmpAccount = (Account) stepData.get("LastAccount");
         Device tmpDev;
@@ -262,16 +270,16 @@ public class DeviceServiceSteps extends KapuaTest {
         }
 
         try {
-            stepData.put("ExceptionCaught", false);
+            primeException();
             deviceLifeCycleService.missing(generateRandomId(), tmpMsg);
         } catch (KapuaException ex) {
-            stepData.put("ExceptionCaught", true);
+            verifyException(ex);
         }
     }
 
     @Given("^An application message from device \"(.+)\"$")
     public void createAnApplicationMessage(String clientId)
-            throws KapuaException {
+            throws Exception {
 
         Account tmpAccount = (Account) stepData.get("LastAccount");
         Device tmpDev;
@@ -300,15 +308,16 @@ public class DeviceServiceSteps extends KapuaTest {
         }
 
         try {
-            stepData.put("ExceptionCaught", false);
+            primeException();
             deviceLifeCycleService.applications(generateRandomId(), tmpMsg);
         } catch (KapuaException ex) {
+            verifyException(ex);
         }
     }
 
     @When("^I configure the device service$")
     public void setDeviceServiceConfig(List<TestConfig> testConfigs)
-            throws KapuaException {
+            throws Exception {
 
         Account tmpAccount = (Account) stepData.get("LastAccount");
         Map<String, Object> valueMap = new HashMap<>();
@@ -317,16 +326,16 @@ public class DeviceServiceSteps extends KapuaTest {
             config.addConfigToMap(valueMap);
         }
         try {
-            stepData.put("ExceptionCaught", false);
+            primeException();
             deviceRegistryService.setConfigValues(tmpAccount.getId(), tmpAccount.getScopeId(), valueMap);
         } catch (KapuaException ex) {
-            stepData.put("ExceptionCaught", true);
+            verifyException(ex);
         }
     }
 
     @When("^I configure the tag service$")
     public void setTagServiceConfig(List<TestConfig> testConfigs)
-            throws KapuaException {
+            throws Exception {
 
         Account tmpAccount = (Account) stepData.get("LastAccount");
         Map<String, Object> valueMap = new HashMap<>();
@@ -335,10 +344,10 @@ public class DeviceServiceSteps extends KapuaTest {
             config.addConfigToMap(valueMap);
         }
         try {
-            stepData.put("ExceptionCaught", false);
+            primeException();
             tagService.setConfigValues(tmpAccount.getId(), tmpAccount.getScopeId(), valueMap);
         } catch (KapuaException ex) {
-            stepData.put("ExceptionCaught", true);
+            verifyException(ex);
         }
     }
 
