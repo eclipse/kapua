@@ -245,6 +245,8 @@ public class GwtKapuaJobModelConverter {
         if (pagingLoadConfig.getSortField() != null) {
             query.setSortCriteria(new FieldSortCriteria(pagingLoadConfig.getSortField(), pagingLoadConfig.getSortDir() == SortDir.ASC ? SortOrder.ASCENDING : SortOrder.DESCENDING));
         }
+        query.setLimit(pagingLoadConfig.getLimit());
+        query.setOffset(pagingLoadConfig.getOffset());
         return query;
     }
 
