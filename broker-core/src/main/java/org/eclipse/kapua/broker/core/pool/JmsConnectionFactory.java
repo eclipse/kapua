@@ -12,6 +12,8 @@
 package org.eclipse.kapua.broker.core.pool;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.eclipse.kapua.broker.core.setting.BrokerSetting;
+import org.eclipse.kapua.broker.core.setting.BrokerSettingKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,14 +37,13 @@ public class JmsConnectionFactory {
     // the workers used the same string connection without asynch=true
     static {
         logger.info("Instantiate amq embedded connection factory...");
-        String connectionFactoryUri = null;
 
         // By default, the embedded broker operates in asynchronous mode, so that calls to a send method return immediately (in other words, messages are dispatched to consumers in a separate
         // thread). If you turn off asynchronous mode, however, you can reduce the amount of context switching. For example, you can disable asynchronous mode on a VM endpoint as follows:
         // https://access.redhat.com/documentation/en-US/Fuse_ESB_Enterprise/7.1/html/ActiveMQ_Tuning_Guide/files/GenTuning-Colocate.html
         // TODO parameter to be added to configuration
         // connectionFactoryUri = "vm://" + KapuaEnvironmentConfig.getInstance().getString(KapuaEnvironmentConfigKeys.BROKER_NAME) + "?create=false&waitForStart=3600000&async=true";
-        connectionFactoryUri = "vm://kapua?create=false&waitForStart=3600000&async=true";
+        String connectionFactoryUri = String.format("vm://%s?create=false&waitForStart=3600000&async=true", BrokerSetting.getInstance().getString(BrokerSettingKey.BROKER_NAME));
         logger.info("Using connection factory url: " + connectionFactoryUri);
 
         // connection factory
