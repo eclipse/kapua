@@ -68,12 +68,15 @@ public class RoleSubjectGrid extends EntityGrid<GwtUser> {
 
         ColumnConfig columnConfig = new ColumnConfig("id", MSGS.gridRoleSubjectColumnHeaderId(), 100);
         columnConfig.setHidden(true);
+        columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("username", MSGS.gridRoleSubjectColumnHeaderName(), 100);
+        columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("type", MSGS.gridRoleSubjectColumnHeaderType(), 100);
+        columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
         return columnConfigs;

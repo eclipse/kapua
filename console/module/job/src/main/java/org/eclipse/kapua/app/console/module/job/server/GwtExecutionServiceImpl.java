@@ -49,11 +49,7 @@ public class GwtExecutionServiceImpl extends KapuaRemoteServiceServlet implement
 
             if (!jobExecutionList.isEmpty()) {
                 // count
-                if (jobExecutionList.getSize() >= loadConfig.getLimit()) {
-                    totalLength = Long.valueOf(EXECUTION_SERVICE.count(executionQuery)).intValue();
-                } else {
-                    totalLength = jobExecutionList.getSize();
-                }
+                totalLength = Long.valueOf(EXECUTION_SERVICE.count(executionQuery)).intValue();
 
                 // Converto to GWT entity
                 for (JobExecution jobExecution : jobExecutionList.getItems()) {
