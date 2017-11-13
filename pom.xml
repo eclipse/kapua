@@ -156,13 +156,20 @@
                 <plugin>
                     <groupId>com.github.os72</groupId>
                     <artifactId>protoc-jar-maven-plugin</artifactId>
-                    <version>3.1.0.5</version>
+                    <version>3.4.0.2</version>
                 </plugin>
 
                 <plugin>
                     <groupId>io.fabric8</groupId>
                     <artifactId>docker-maven-plugin</artifactId>
                     <version>${docker-maven-plugin.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.github.jnr</groupId>
+                            <artifactId>jnr-unixsocket</artifactId>
+                            <version>0.14</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
