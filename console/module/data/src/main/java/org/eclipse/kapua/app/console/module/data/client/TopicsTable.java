@@ -49,13 +49,29 @@ public class TopicsTable extends LayoutContainer {
     private List<SelectionChangedListener<GwtTopic>> listeners = new ArrayList<SelectionChangedListener<GwtTopic>>();
     private TreeStore<GwtTopic> store;
 
+    AsyncCallback<List<GwtTopic>> topicsCallback;
+
     public TopicsTable(GwtSession currentGwtSession) {
         this.currentSession = currentGwtSession;
+        topicsCallback = new AsyncCallback<List<GwtTopic>>() {
+
+            @Override
+            public void onSuccess(List<GwtTopic> topics) {
+                store.add(topics, true);
+                topicInfoGrid.unmask();
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                FailureHandler.handle(t);
+                topicInfoGrid.unmask();
+            }
+        };
     }
 
     public GwtTopic getSelectedTopic() {
         if (topicInfoGrid != null) {
-            return (GwtTopic) topicInfoGrid.getSelectionModel().getSelectedItem();
+            return topicInfoGrid.getSelectionModel().getSelectedItem();
         }
         return null;
     }
@@ -66,6 +82,8 @@ public class TopicsTable extends LayoutContainer {
 
     public void refresh() {
         topicInfoGrid.getSelectionModel().deselect(getSelectedTopic());
+        clearTable();
+        dataService.findTopicsTree(currentSession.getSelectedAccountId(), topicsCallback);
     }
 
     @Override
@@ -104,20 +122,6 @@ public class TopicsTable extends LayoutContainer {
         configs.add(column);
 
         store = new TreeStore<GwtTopic>();
-        AsyncCallback<List<GwtTopic>> topicsCallback = new AsyncCallback<List<GwtTopic>>() {
-
-            @Override
-            public void onSuccess(List<GwtTopic> topics) {
-                store.add(topics, true);
-                topicInfoGrid.unmask();
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                FailureHandler.handle(t);
-                topicInfoGrid.unmask();
-            }
-        };
         dataService.findTopicsTree(currentSession.getSelectedAccountId(), topicsCallback);
         topicInfoGrid = new TreeGrid<GwtTopic>(store, new ColumnModel(configs));
         topicInfoGrid.setBorders(false);
@@ -144,5 +148,9 @@ public class TopicsTable extends LayoutContainer {
     // --------------------------------------------------------------------------------------
     public void onUnload() {
         super.onUnload();
+    }
+
+    public void clearTable() {
+        topicInfoGrid.getStore().removeAll();
     }
 }

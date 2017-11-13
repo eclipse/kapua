@@ -179,4 +179,19 @@ public class AssetTabItem extends TabItem {
 
         add(resultsTabPanel, resultsLayout);
     }
+
+    public void refreshTables() {
+        if (deviceTable != null) {
+            deviceTable.refresh();
+        }
+        if (assetTable != null) {
+            assetTable.clearTable();
+        }
+        if (metricsTable != null) {
+            metricsTable.clearTable();
+        }
+        if (resultsTable != null) {
+            resultsTable.clearTable();
+        }
+    }
 }

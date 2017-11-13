@@ -158,4 +158,16 @@ public class TopicsTabItem extends TabItem {
 
         add(resultsTabPanel, resultsLayout);
     }
+
+    public void refreshTables() {
+        if (topicTable != null) {
+            topicTable.refresh();
+        }
+        if (metricsTable != null) {
+            metricsTable.clearTable();
+        }
+        if (resultsTable != null) {
+            resultsTable.clearTable();
+        }
+    }
 }
