@@ -30,6 +30,11 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     private String selectedAccountId;
     private Set<String> permissions;
 
+    private String userName;
+    private String userDisplayName;
+    private String rootAccountName;
+    private String selectedAccountName;
+
     // Static loaded permission
     private boolean hasAccountCreatePermission;
     private boolean hasAccountReadPermission;
@@ -74,15 +79,16 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     private boolean hasConnectionReadPermission;
     private boolean hasConnectionUpdatePermission;
     private boolean hasConnectionDeletePermission;
-    private String userName;
-    private String userDisplayName;
-    private String rootAccountName;
-    private String selectedAccountName;
 
     private boolean hasJobCreatePermission;
     private boolean hasJobReadPermission;
     private boolean hasJobUpdatePermission;
     private boolean hasJobDeletePermission;
+
+    private boolean hasAccessInfoCreatePermission;
+    private boolean hasAccessInfoReadPermission;
+    private boolean hasAccessInfoUpdatePermission;
+    private boolean hasAccessInfoDeletePermission;
 
     public GwtSession() {
     }
@@ -117,6 +123,38 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
 
     public String getSelectedAccountId() {
         return selectedAccountId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserDisplayName() {
+        return userDisplayName;
+    }
+
+    public void setUserDisplayName(String userDisplayName) {
+        this.userDisplayName = userDisplayName;
+    }
+
+    public String getRootAccountName() {
+        return rootAccountName;
+    }
+
+    public void setRootAccountName(String rootAccountName) {
+        this.rootAccountName = rootAccountName;
+    }
+
+    public String getSelectedAccountName() {
+        return selectedAccountName;
+    }
+
+    public void setSelectedAccountName(String selectedAccountName) {
+        this.selectedAccountName = selectedAccountName;
     }
 
     public Set<String> getPermissions() {
@@ -463,35 +501,36 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
         this.hasJobDeletePermission = hasJobDeletePermission;
     }
 
-    public String getUserName() {
-        return userName;
+    public boolean hasAccessInfoCreatePermission() {
+        return hasAccessInfoCreatePermission;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setAccessInfoCreatePermission(boolean hasAccessInfoCreatePermission) {
+        this.hasAccessInfoCreatePermission = hasAccessInfoCreatePermission;
     }
 
-    public String getUserDisplayName() {
-        return userDisplayName;
+    public boolean hasAccessInfoReadPermission() {
+        return hasAccessInfoReadPermission;
     }
 
-    public void setUserDisplayName(String userDisplayName) {
-        this.userDisplayName = userDisplayName;
+    public void setAccessInfoReadPermission(boolean hasAccessInfoReadPermission) {
+        this.hasAccessInfoReadPermission = hasAccessInfoReadPermission;
     }
 
-    public String getRootAccountName() {
-        return rootAccountName;
+    public boolean hasAccessInfoUpdatePermission() {
+        return hasAccessInfoUpdatePermission;
     }
 
-    public void setRootAccountName(String rootAccountName) {
-        this.rootAccountName = rootAccountName;
+    public void setAccessInfoUpdatePermission(boolean hasAccessInfoUpdatePermission) {
+        this.hasAccessInfoUpdatePermission = hasAccessInfoUpdatePermission;
     }
 
-    public String getSelectedAccountName() {
-        return selectedAccountName;
+    public boolean hasAccessInfoDeletePermission() {
+        return hasAccessInfoDeletePermission;
     }
 
-    public void setSelectedAccountName(String selectedAccountName) {
-        this.selectedAccountName = selectedAccountName;
+    public void setAccessInfoDeletePermission(boolean hasAccessInfoDeletePermission) {
+        this.hasAccessInfoDeletePermission = hasAccessInfoDeletePermission;
     }
+
 }
