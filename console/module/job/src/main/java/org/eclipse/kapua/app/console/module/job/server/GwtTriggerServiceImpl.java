@@ -64,11 +64,7 @@ public class GwtTriggerServiceImpl extends KapuaRemoteServiceServlet implements 
             // If there are results
             if (!triggerListResult.isEmpty()) {
                 // count
-                if (triggerListResult.getSize() >= loadConfig.getLimit()) {
-                    totalLength = Long.valueOf(triggerService.count(triggerQuery)).intValue();
-                } else {
-                    totalLength = triggerListResult.getSize();
-                }
+                totalLength = Long.valueOf(triggerService.count(triggerQuery)).intValue();
 
                 // Converto to GWT entity
                 for (Trigger trigger : triggerListResult.getItems()) {
