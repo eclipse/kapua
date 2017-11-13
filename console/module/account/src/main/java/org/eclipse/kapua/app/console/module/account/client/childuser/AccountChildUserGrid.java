@@ -146,12 +146,12 @@ public class AccountChildUserGrid extends EntityGrid<GwtUser> {
     }
 
     @Override
-    protected GwtQuery getFilterQuery() {
+    public GwtQuery getFilterQuery() {
         return query;
     }
 
     @Override
-    protected void setFilterQuery(GwtQuery filterQuery) {
+    public void setFilterQuery(GwtQuery filterQuery) {
         this.query = (GwtUserQuery) filterQuery;
     }
 

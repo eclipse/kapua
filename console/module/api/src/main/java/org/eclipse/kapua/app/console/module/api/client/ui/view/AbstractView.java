@@ -18,4 +18,7 @@ public abstract class AbstractView extends LayoutContainer implements View {
 
     protected GwtSession currentSession;
 
+    public void onUserChange() {
+    }
+
 }

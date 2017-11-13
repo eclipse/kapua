@@ -25,6 +25,10 @@ public class DataView extends AbstractView {
     private GwtSession currentSession;
     private TabPanel tabsPanel;
 
+    private TopicsTabItem channelTabItem;
+    private DeviceTabItem deviceTabItem;
+    private AssetTabItem assetTabItem;
+
     private static final ConsoleDataMessages MSGS = GWT.create(ConsoleDataMessages.class);
 
     public DataView(GwtSession currentGwtSession) {
@@ -47,14 +51,21 @@ public class DataView extends AbstractView {
         tabsPanel.setBorders(false);
         tabsPanel.setBodyBorder(true);
 
-        TopicsTabItem channelTabItem = new TopicsTabItem(currentSession);
+        channelTabItem = new TopicsTabItem(currentSession);
         tabsPanel.add(channelTabItem);
-        DeviceTabItem deviceTabItem = new DeviceTabItem(currentSession);
+        deviceTabItem = new DeviceTabItem(currentSession);
         tabsPanel.add(deviceTabItem);
-        AssetTabItem assetTabItem = new AssetTabItem(currentSession);
+        assetTabItem = new AssetTabItem(currentSession);
         tabsPanel.add(assetTabItem);
 
         add(tabsPanel);
+    }
+
+    @Override
+    public void onUserChange() {
+        channelTabItem.refreshTables();
+        deviceTabItem.refreshTables();
+        assetTabItem.refreshTables();
     }
 
     // --------------------------------------------------------------------------------------

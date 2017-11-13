@@ -332,4 +332,8 @@ public class ResultsTable extends LayoutContainer {
     public void onUnload() {
         super.onUnload();
     }
+
+    public void clearTable() {
+        resultsGrid.getStore().removeAll();
+    }
 }

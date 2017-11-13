@@ -186,7 +186,7 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
         return entityGrid.getSelectionModel();
     }
 
-    protected abstract GwtQuery getFilterQuery();
+    public abstract GwtQuery getFilterQuery();
 
-    protected abstract void setFilterQuery(GwtQuery filterQuery);
+    public abstract void setFilterQuery(GwtQuery filterQuery);
 }
