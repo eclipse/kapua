@@ -78,12 +78,12 @@ public class JobTabSchedulesGrid extends EntityGrid<GwtTrigger> {
     }
 
     @Override
-    protected GwtQuery getFilterQuery() {
+    public GwtQuery getFilterQuery() {
         return query;
     }
 
     @Override
-    protected void setFilterQuery(GwtQuery filterQuery) {
+    public void setFilterQuery(GwtQuery filterQuery) {
         query = (GwtTriggerQuery) filterQuery;
     }
 

@@ -162,12 +162,12 @@ public class ConnectionGrid extends EntityGrid<GwtDeviceConnection> {
     }
 
     @Override
-    protected GwtQuery getFilterQuery() {
+    public GwtQuery getFilterQuery() {
         return filterQuery;
     }
 
     @Override
-    protected void setFilterQuery(GwtQuery filterQuery) {
+    public void setFilterQuery(GwtQuery filterQuery) {
         this.filterQuery = (GwtDeviceConnectionQuery) filterQuery;
     }
 }

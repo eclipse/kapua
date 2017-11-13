@@ -161,4 +161,16 @@ public class DeviceTabItem extends TabItem {
 
         add(resultsTabPanel, resultsLayout);
     }
+
+    public void refreshTables() {
+        if (deviceTable != null) {
+            deviceTable.refresh();
+        }
+        if (metricsTable != null) {
+            metricsTable.clearTable();
+        }
+        if (resultsTable != null) {
+            resultsTable.clearTable();
+        }
+    }
 }

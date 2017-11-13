@@ -104,12 +104,12 @@ public class JobGrid extends EntityGrid<GwtJob> {
     }
 
     @Override
-    protected GwtQuery getFilterQuery() {
+    public GwtQuery getFilterQuery() {
         return query;
     }
 
     @Override
-    protected void setFilterQuery(GwtQuery filterQuery) {
+    public void setFilterQuery(GwtQuery filterQuery) {
         query = (GwtJobQuery)filterQuery;
     }
 

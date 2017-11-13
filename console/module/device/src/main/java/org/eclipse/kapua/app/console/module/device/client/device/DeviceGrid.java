@@ -257,12 +257,12 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
     }
 
     @Override
-    protected GwtQuery getFilterQuery() {
+    public GwtQuery getFilterQuery() {
         return query;
     }
 
     @Override
-    protected void setFilterQuery(GwtQuery filterQuery) {
+    public void setFilterQuery(GwtQuery filterQuery) {
         query = (GwtDeviceQuery) filterQuery;
     }
 
