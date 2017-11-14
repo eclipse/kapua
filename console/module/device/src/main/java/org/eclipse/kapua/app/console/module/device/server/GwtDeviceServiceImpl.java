@@ -135,7 +135,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                 } else {
                     pairs.add(new GwtGroupedNVPair("connInfo", "connConnectionStatus", DeviceConnectionStatus.DISCONNECTED.toString()));
                     pairs.add(new GwtGroupedNVPair("connInfo", "connClientId", null));
-                    pairs.add(new GwtGroupedNVPair("connInfo", "connUserId", null));
+                    pairs.add(new GwtGroupedNVPair("connInfo", "connUserName", null));
                     pairs.add(new GwtGroupedNVPair("connInfo", "connReservedUserId", null));
                     pairs.add(new GwtGroupedNVPair("connInfo", "connUserCouplingMode", null));
                     pairs.add(new GwtGroupedNVPair("connInfo", "connClientIp", null));
