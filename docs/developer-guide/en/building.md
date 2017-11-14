@@ -6,8 +6,14 @@ We use `gitbook` to build the documentation.
 
 ## Kapua
 
-Kapua is being compiled with Maven. In order to perform a full build
-of Kapua simply issue the following command in the root of the Git repository:
+Kapua is being compiled with Maven. 
+
+In order to perform a full build of Kapua first you have to build the external 
+resources of Kapua with the following command in the root of the Git repository:
+
+    mvn clean install -f external/pom.xml
+
+Than you can run the Kapua full build issuing the command:
 
     mvn clean install
 
