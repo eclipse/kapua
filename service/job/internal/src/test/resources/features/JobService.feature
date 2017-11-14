@@ -97,6 +97,29 @@ Scenario: Update a job XML definition
     When I search for the job in the database
     Then The job XML definition is "SomeRandomNewDefinition"
 
+#Scenario: Update job steps
+#
+#    Given A regular job creator with the name "TestJob"
+#    Then I create a new job entity from the existing creator
+#    And A regular step definition with the name "TestDefinition" and the following properties
+#        | name  | type |
+#        | prop1 | t1   |
+#        | prop2 | t2   |
+#        | prop3 | t3   |
+#    And A regular step creator with the name "TestStep" and the following properties
+#        | name  | type | value |
+#        | prop1 | t1   | v1    |
+#    Then I create a new step entity from the existing creator
+#    When I add the current step to the last job
+#    And A regular step creator with the name "TestStep" and the following properties
+#        | name  | type | value |
+#        | prop1 | t1   | v1    |
+#    Then I create a new step entity from the existing creator
+#    When I add the current step to the last job
+#    And I search for the job in the database
+#    # This should be 2!!! For some reason the update method does not update the job entity steps.
+#    Then The job has 0 steps
+
 Scenario: Update a nonexistent job
 
     Given A regular job creator with the name "TestJob"

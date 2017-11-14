@@ -53,6 +53,58 @@ Scenario: Create and count multiple job targets
     When I count the targets in the current scope
     Then There are exactly 4 items
 
+Scenario: Query for the targets of a specific job
+
+    Given I create a job with the name "TestJob1"
+    And A regular job target item
+    And A regular job target item
+    And A regular job target item
+    And A regular job target item
+    Given I create a job with the name "TestJob2"
+    And A regular job target item
+    And A regular job target item
+    Given I create a job with the name "TestJob3"
+    And A regular job target item
+    And A regular job target item
+    And A regular job target item
+    Given I query for the job with the name "TestJob2"
+    When I query the targets for the current job
+    Then There are exactly 2 items
+    Given I query for the job with the name "TestJob1"
+    When I query the targets for the current job
+    Then There are exactly 4 items
+
+Scenario: Update a job target TargetId
+
+    Given I create a job with the name "TestJob1"
+    And A regular job target item
+    When I update the job target target id
+    Then No exception was thrown
+    And The job target matches the creator
+
+Scenario: Update a job target step index
+
+    Given I create a job with the name "TestJob1"
+    And A regular job target item
+    When I update the job target step number to 3
+    Then The target step index is indeed 3
+
+Scenario: Update a job target status
+
+    Given I create a job with the name "TestJob1"
+    And A regular job target item
+    When I update the job target step status to "PROCESS_OK"
+    Then The target step status is indeed "PROCESS_OK"
+    When I update the job target step status to "PROCESS_AWAITING"
+    Then The target step status is indeed "PROCESS_AWAITING"
+
+#Scenario: Update a job target step exception
+#
+#    Given I create a job with the name "TestJob1"
+#    And A regular job target item
+#    When I update the job target step exception message to "RandomExceptionText"
+#    Then The target step exception message is indeed "RandomExceptionText"
+
 Scenario: Job target factory sanity checks
 
     When I test the sanity of the job target factory
