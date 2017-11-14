@@ -84,7 +84,6 @@ public class RoleSubjectGrid extends EntityGrid<GwtUser> {
 
     @Override
     public GwtQuery getFilterQuery() {
-
         return query;
     }
 

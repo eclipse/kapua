@@ -29,7 +29,7 @@ import org.eclipse.kapua.service.authorization.role.RolePermission;
 
 /**
  * Group entity definition.<br>
- * Groups serve as tags for entities marked as {@link Groupable}.
+ * Groups serve as tag for entities marked as {@link Groupable}.
  * It is possible to assign a group to an entity.
  * It is possible to assign {@link AccessPermission} and {@link RolePermission} based on the {@link Group#getId()}.
  * {@link Group#getName()} must be unique within the scope.

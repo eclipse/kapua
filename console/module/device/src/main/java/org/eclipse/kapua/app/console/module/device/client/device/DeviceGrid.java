@@ -11,9 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.client.device;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
@@ -25,7 +22,6 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.color.Color;
@@ -34,11 +30,15 @@ import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityVie
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
+import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQuery;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPredicates;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceServiceAsync;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DeviceGrid extends EntityGrid<GwtDevice> {
 
@@ -54,23 +54,6 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
         query = new GwtDeviceQuery();
         query.setScopeId(currentSession.getSelectedAccountId());
         query.setPredicates(new GwtDeviceQueryPredicates());
-    }
-
-    @Override
-    protected void selectionChangedEvent(GwtDevice selectedItem) {
-        super.selectionChangedEvent(selectedItem);
-        if (selectedItem != null) {
-            if (currentSession.hasDeviceUpdatePermission()) {
-                getToolbar().getDeleteEntityButton().setEnabled(true);
-            }
-            if (currentSession.hasDeviceDeletePermission()) {
-                getToolbar().getEditEntityButton().setEnabled(true);
-            }
-        } else {
-            getToolbar().getEditEntityButton().setEnabled(false);
-            getToolbar().getDeleteEntityButton().setEnabled(false);
-        }
-
     }
 
     @Override
@@ -96,6 +79,7 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
         column.setAlignment(HorizontalAlignment.CENTER);
         GridCellRenderer<GwtDevice> setStatusIcon = new GridCellRenderer<GwtDevice>() {
 
+            @Override
             public String render(GwtDevice gwtDevice, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtDevice> deviceList, Grid<GwtDevice> grid) {
 
                 KapuaIcon icon;
@@ -154,27 +138,6 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
         column.setSortable(false);
         column.setHidden(true);
         columnConfigs.add(column);
-
-        // //
-        // // Device Management Certificate
-        // column = new ColumnConfig("Device Management Certificate Status", "DM", 50);
-        // column.setAlignment(HorizontalAlignment.CENTER);
-        // GridCellRenderer<GwtDevice> setDmStatusIcon = new GridCellRenderer<GwtDevice>() {
-        //
-        // public String render(GwtDevice gwtDevice, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtDevice> deviceList, Grid<GwtDevice> grid) {
-        // if (gwtDevice.getSignedCertificateId() == null) {
-        // // Device Management Communication is not signed
-        // return ImageUtils.toHTML(Resources.INSTANCE.dmUnlock16(), MSGS.deviceTableCertificateDMTooltipStatusNotSigned(), "14");
-        // } else {
-        // // Device Management Communication is signed
-        // return ImageUtils.toHTML(Resources.INSTANCE.lockGreen16(), MSGS.deviceTableCertificateDMTooltipStatusSigned(), "14");
-        // }
-        // }
-        // };
-        // column.setRenderer(setDmStatusIcon);
-        // column.setAlignment(HorizontalAlignment.CENTER);
-        // column.setSortable(false);
-        // configs.add(column);
 
         column = new ColumnConfig("applicationIdentifiers", MSGS.deviceTableApplications(), 100);
         column.setSortable(false);
