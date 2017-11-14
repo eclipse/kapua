@@ -37,6 +37,7 @@ import org.eclipse.kapua.service.authentication.credential.CredentialPredicates;
 import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
+import org.eclipse.kapua.service.authentication.credential.KapuaExistingCredentialException;
 import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
@@ -73,6 +74,16 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         if (credentialCreator.getCredentialType() != CredentialType.API_KEY) {
             ArgumentValidator.notEmptyOrNull(credentialCreator.getCredentialPlainKey(), "credentialCreator.credentialKey");
         }
+
+        //
+        // Check if a PASSWORD credential already exists for the user
+        CredentialListResult existingCredentials = findByUserId(credentialCreator.getScopeId(), credentialCreator.getUserId());
+        for (Credential credential : existingCredentials.getItems()) {
+            if (credential.getCredentialType().equals(CredentialType.PASSWORD)) {
+                throw new KapuaExistingCredentialException(CredentialType.PASSWORD, credential.getUserId().toCompactId());
+            }
+        }
+
         //
         // Check access
         KapuaLocator locator = KapuaLocator.getInstance();
