@@ -232,7 +232,7 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
-            UserService userService = locator.getService(UserService.class);
+            final UserService userService = locator.getService(UserService.class);
             final CredentialService credentialsService = locator.getService(CredentialService.class);
             final CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
             final CredentialsFactory credentialsFactory = locator.getFactory(CredentialsFactory.class);
@@ -240,7 +240,13 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
             final KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(stringScopeId);
             final KapuaId userId = GwtKapuaCommonsModelConverter.convertKapuaId(stringUserId);
 
-            User user = userService.find(scopeId, userId);
+            User user = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
+
+                @Override
+                public User call() throws Exception {
+                    return userService.find(scopeId, userId);
+                }
+            });
             final String username = user.getName();
             LoginCredentials loginCredentials = credentialsFactory.newUsernamePasswordCredentials(username, oldPassword);
 

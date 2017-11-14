@@ -13,6 +13,8 @@ package org.eclipse.kapua.app.console.core.server;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.util.concurrent.Callable;
+
 import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtJwtCredential;
 import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationService;
 import org.apache.shiro.SecurityUtils;
@@ -223,14 +225,20 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
 
         //
         // Get info from session
-        KapuaSession kapuaSession = KapuaSecurityUtils.getSession();
+        final KapuaSession kapuaSession = KapuaSecurityUtils.getSession();
         logger.debug("Kapua session: {}", kapuaSession);
 
         //
         // Get user info
-        UserService userService = locator.getService(UserService.class);
+        final UserService userService = locator.getService(UserService.class);
         logger.debug("Looking up - scopeId: {}, userId: {}", kapuaSession.getScopeId(), kapuaSession.getUserId());
-        User user = userService.find(kapuaSession.getScopeId(), kapuaSession.getUserId());
+        User user = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
+
+            @Override
+            public User call() throws Exception {
+                return userService.find(kapuaSession.getScopeId(), kapuaSession.getUserId());
+            }
+        });
 
         //
         // Get permission info
@@ -293,8 +301,14 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
 
         //
         // Get account info
-        AccountService accountService = locator.getService(AccountService.class);
-        Account account = accountService.find(kapuaSession.getScopeId());
+        final AccountService accountService = locator.getService(AccountService.class);
+        Account account = KapuaSecurityUtils.doPrivileged(new Callable<Account>() {
+
+            @Override
+            public Account call() throws Exception {
+                return accountService.find(kapuaSession.getScopeId());
+            }
+        });
 
         //
         // Convert entities
