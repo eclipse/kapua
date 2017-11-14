@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.tag.internal;
 
+import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
 import org.eclipse.kapua.service.tag.Tag;
@@ -20,10 +21,7 @@ import org.eclipse.kapua.service.tag.Tag;
  * 
  * @since 1.0.0
  */
-public class TagPredicates {
-
-    private TagPredicates() {
-    }
+public interface TagPredicates extends KapuaUpdatableEntityPredicates {
 
     /**
      * {@link Tag} name

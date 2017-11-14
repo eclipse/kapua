@@ -13,11 +13,15 @@ package org.eclipse.kapua.app.console.module.tag.shared.model;
 
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GwtTagQuery extends GwtQuery {
 
     private static final long serialVersionUID = -4379272962842143514L;
 
     private String name;
+    private List<String> ids;
 
     public String getName() {
         return name;
@@ -27,4 +31,15 @@ public class GwtTagQuery extends GwtQuery {
         this.name = name;
     }
 
+    public List<String> getIds() {
+        if (ids == null) {
+            ids = new ArrayList<String>();
+        }
+
+        return ids;
+    }
+
+    public void setIds(List<String> ids) {
+        this.ids = ids;
+    }
 }

@@ -37,15 +37,6 @@
             <artifactId>kapua-console-module-authentication</artifactId>
             <classifier>sources</classifier>
         </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-console-module-device</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-console-module-device</artifactId>
-            <classifier>sources</classifier>
-        </dependency>
         
         <!-- Internal dependencies -->
         <dependency>

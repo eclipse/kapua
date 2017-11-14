@@ -13,6 +13,7 @@ package org.eclipse.kapua.app.console.module.device.shared.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtUpdatableEntityModel;
 import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
@@ -94,6 +95,14 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
 
     public void setGroupId(String groupId) {
         set("groupId", groupId);
+    }
+
+    public List<String> getTagIds() {
+        return get("tagIds");
+    }
+
+    public void setTagIds(List<String> tagIds) {
+        set("tagIds", tagIds);
     }
 
     public Long getUptime() {
@@ -390,7 +399,6 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
 
     public void setImei(String imei) {
         set("imei", imei);
-
     }
 
     public String getImsi() {
@@ -399,7 +407,6 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
 
     public void setCertificateCommonName(String certificateCommonName) {
         set("certificateCommonName", certificateCommonName);
-
     }
 
     public String getCertificateCommonName() {
