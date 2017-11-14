@@ -59,12 +59,7 @@ public class GwtDeviceConnectionServiceImpl extends KapuaRemoteServiceServlet im
 
         try {
             deviceConnections = deviceConnectionService.query(query);
-            if (deviceConnections.getSize() >= loadConfig.getLimit()) {
-                totalLength = Long.valueOf(deviceConnectionService.count(query)).intValue();
-            } else {
-                totalLength = deviceConnections.getSize();
-            }
-
+            totalLength = Long.valueOf(deviceConnectionService.count(query)).intValue();
             for (DeviceConnection dc : deviceConnections.getItems()) {
                 gwtDeviceConnections.add(KapuaGwtDeviceModelConverter.convertDeviceConnection(dc));
                 for (GwtDeviceConnection gwtDeviceConnection : gwtDeviceConnections) {
