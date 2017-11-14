@@ -12,12 +12,15 @@
 package org.eclipse.kapua.app.console.module.device.server;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
+import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection.GwtConnectionUserCouplingMode;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionQuery;
@@ -32,6 +35,9 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserFactory;
+import org.eclipse.kapua.service.user.UserListResult;
+import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
 
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
@@ -56,18 +62,22 @@ public class GwtDeviceConnectionServiceImpl extends KapuaRemoteServiceServlet im
         DeviceConnectionService deviceConnectionService = locator.getService(DeviceConnectionService.class);
         DeviceConnectionQuery query = GwtKapuaDeviceModelConverter.convertConnectionQuery(loadConfig, gwtDeviceConnectionQuery);
         UserService userService = locator.getService(UserService.class);
-
+        UserFactory userFactory = locator.getFactory(UserFactory.class);
+        Map<String, String> users = new HashMap<String, String>();
+        UserQuery userQuery = userFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtDeviceConnectionQuery.getScopeId()));
         try {
+            UserListResult userList = userService.query(userQuery);
+            for (User user : userList.getItems()) {
+                users.put(user.getId().toCompactId(), user.getName());
+            }
             deviceConnections = deviceConnectionService.query(query);
             totalLength = Long.valueOf(deviceConnectionService.count(query)).intValue();
             for (DeviceConnection dc : deviceConnections.getItems()) {
-                gwtDeviceConnections.add(KapuaGwtDeviceModelConverter.convertDeviceConnection(dc));
-                for (GwtDeviceConnection gwtDeviceConnection : gwtDeviceConnections) {
-                    User user = userService.find(dc.getScopeId(), dc.getUserId());
-                    if (user != null) {
-                        gwtDeviceConnection.setUserName(user.getName());
-                    }
+                GwtDeviceConnection gwtDeviceConnection = KapuaGwtDeviceModelConverter.convertDeviceConnection(dc);
+                if (dc.getUserId() != null) {
+                    gwtDeviceConnection.setUserName(users.get(dc.getUserId().toCompactId()));
                 }
+                gwtDeviceConnections.add(gwtDeviceConnection);
             }
 
         } catch (Throwable t) {
