@@ -11,12 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.api.client.ui.tab;
 
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
 
 public abstract class KapuaTabItem<M extends GwtEntityModel> extends TabItem {
@@ -33,6 +32,7 @@ public abstract class KapuaTabItem<M extends GwtEntityModel> extends TabItem {
 
         addListener(Events.Select, new Listener<ComponentEvent>() {
 
+            @Override
             public void handleEvent(ComponentEvent be) {
                 refresh();
             }
@@ -46,10 +46,6 @@ public abstract class KapuaTabItem<M extends GwtEntityModel> extends TabItem {
 
     public M getSelectedEntity() {
         return selectedEntity;
-    }
-
-    public void setSelectedEntity(M selectedEntity) {
-        this.selectedEntity = selectedEntity;
     }
 
     public void refresh() {

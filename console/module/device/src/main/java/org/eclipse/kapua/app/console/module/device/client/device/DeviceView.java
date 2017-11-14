@@ -21,12 +21,10 @@ import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 
 public class DeviceView extends AbstractEntityView<GwtDevice> {
 
-    private DeviceGrid deviceGrid;
-
-    private DeviceFilterPanel deviceFilterPanel;
-    // private DeviceTabs deviceTabs;
-
     private static final ConsoleDeviceMessages MSGS = GWT.create(ConsoleDeviceMessages.class);
+
+    private DeviceGrid deviceGrid;
+    private DeviceFilterPanel deviceFilterPanel;
 
     public DeviceView(GwtSession currentSession) {
         super(currentSession);

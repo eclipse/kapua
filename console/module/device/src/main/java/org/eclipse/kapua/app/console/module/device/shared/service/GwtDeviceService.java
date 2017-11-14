@@ -11,22 +11,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.shared.service;
 
-import java.util.Date;
-import java.util.List;
-
-import com.google.gwt.user.client.rpc.RemoteService;
-import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceCreator;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceEvent;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
-
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceCreator;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceEvent;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQuery;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * The client side stub for the RPC service.
@@ -35,18 +34,18 @@ import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQuery;
 public interface GwtDeviceService extends RemoteService {
 
     /**
-     * Finds device given its clientId
-     * 
+     * Finds device given its deviceId
+     *
      * @param scopeIdString
-     * @param clientId
+     * @param deviceIdString
      * @return
      */
-    public GwtDevice findDevice(String scopeIdString, String clientId)
+    public GwtDevice findDevice(String scopeIdString, String deviceIdString)
             throws GwtKapuaException;
 
     /**
      * Finds devices in an account with query
-     * 
+     *
      * @param loadConfig
      * @param gwtDeviceQuery
      * @return
@@ -65,7 +64,7 @@ public interface GwtDeviceService extends RemoteService {
 
     /**
      * Creates a device entry for the account
-     * 
+     *
      * @param xsrfToken
      * @param gwtDeviceCreator
      * @return
@@ -76,7 +75,7 @@ public interface GwtDeviceService extends RemoteService {
 
     /**
      * Updates a device entity with the given gwtDevice new values for custom attributes, display name and associated tag
-     * 
+     *
      * @param gwtDevice
      * @return
      * @throws GwtKapuaException
@@ -86,14 +85,11 @@ public interface GwtDeviceService extends RemoteService {
 
     /**
      * Returns a list of device history events for a specified device within a specified date range.
-     * 
+     *
      * @param loadConfig
-     * @param gwtDevice
-     *            the device to return the history of
-     * @param startDate
-     *            the start of the date range in milliseconds since epoch (Date.getTime())
-     * @param endDate
-     *            the end of the date range in milliseconds since epoch (Date.getTime())
+     * @param gwtDevice  the device to return the history of
+     * @param startDate  the start of the date range in milliseconds since epoch (Date.getTime())
+     * @param endDate    the end of the date range in milliseconds since epoch (Date.getTime())
      * @return
      * @throws GwtKapuaException
      */
@@ -105,13 +101,33 @@ public interface GwtDeviceService extends RemoteService {
 
     /**
      * Deletes a device
-     * 
+     *
      * @param xsfrToken
      * @param scopeIdString
      * @param clientId
      */
     public void deleteDevice(GwtXSRFToken xsfrToken, String scopeIdString, String clientId)
             throws GwtKapuaException;
+
+    /**
+     * Adds the association between the Tag and the Device
+     *
+     * @param xsrfToken
+     * @param scopeIdString
+     * @param deviceIdString
+     * @param tagIdString
+     */
+    public void addDeviceTag(GwtXSRFToken xsrfToken, String scopeIdString, String deviceIdString, String tagIdString) throws GwtKapuaException;
+
+    /**
+     * Removes the association between the Tag and the Device
+     *
+     * @param xsfrToken
+     * @param scopeIdString
+     * @param deviceId
+     * @param tagId
+     */
+    public void deleteDeviceTag(GwtXSRFToken xsfrToken, String scopeIdString, String deviceId, String tagId) throws GwtKapuaException;
 
     /**
      * Return Maps Tile Endpoint
@@ -121,7 +137,7 @@ public interface GwtDeviceService extends RemoteService {
 
     /**
      * Returns whether the Map tab is enabled or not
-     * 
+     *
      * @return whether the Map tab is enabled or not
      */
     public boolean isMapEnabled()

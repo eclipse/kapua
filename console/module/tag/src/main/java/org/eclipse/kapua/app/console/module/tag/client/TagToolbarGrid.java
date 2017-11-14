@@ -20,12 +20,10 @@ public class TagToolbarGrid extends EntityCRUDToolbar<GwtTag> {
 
     public TagToolbarGrid(GwtSession currentSession) {
         super(currentSession);
-
     }
 
     @Override
     protected KapuaDialog getAddDialog() {
-
         return new TagAddDialog(currentSession);
     }
 

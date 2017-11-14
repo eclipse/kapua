@@ -22,6 +22,7 @@ import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceEvent;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAsset;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssetChannel;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssets;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.type.ObjectTypeConverter;
 import org.eclipse.kapua.model.type.ObjectValueConverter;
 import org.eclipse.kapua.service.device.management.asset.DeviceAsset;
@@ -71,6 +72,13 @@ public class KapuaGwtDeviceModelConverter {
         gwtDevice.setCustomAttribute4(device.getCustomAttribute4());
         gwtDevice.setCustomAttribute5(device.getCustomAttribute5());
         gwtDevice.setOptlock(device.getOptlock());
+
+        // Tag Ids
+        List<String> gwtTagIds = new ArrayList<String>();
+        for (KapuaId tagId : device.getTagIds()) {
+            gwtTagIds.add(KapuaGwtCommonsModelConverter.convertKapuaId(tagId));
+        }
+        gwtDevice.setTagIds(gwtTagIds);
 
         // Last device event
         if (device.getLastEvent() != null) {
