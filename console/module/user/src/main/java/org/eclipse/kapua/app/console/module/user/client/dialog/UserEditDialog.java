@@ -81,8 +81,9 @@ public class UserEditDialog extends UserAddDialog {
 
             @Override
             public void onFailure(Throwable cause) {
-                exitStatus = false;
+                exitStatus = true;
                 exitMessage = MSGS.dialogEditError(cause.getLocalizedMessage());
+                hide();
             }
         });
 
