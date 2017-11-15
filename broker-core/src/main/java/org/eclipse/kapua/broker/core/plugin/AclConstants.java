@@ -31,7 +31,6 @@ public class AclConstants {
     /**
      * VM connector
      */
-    public final static String CONNECTOR_NAME_VM = "vm://kapua";
     public final static String VT_CONSUMER_PREFIX = "Consumer";
     public final static String ACL_HASH = "VirtualTopic.>";
     public final static String ACL_AMQ_ADVISORY = "VirtualTopic.ActiveMQ.Advisory.>";

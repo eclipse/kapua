@@ -27,8 +27,8 @@
 
     <!-- Configure the ActiveMQ broker connection -->
     <!-- we can use also the tcp regular connection. it should be no performance difference! -->
-    <bean id="kapuaConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory" depends-on="kapua-broker">
-        <property name="brokerURL" value="vm://kapua?create=false"/>
+    <bean id="kapuaConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory" depends-on="message-broker-id">
+        <property name="brokerURL" value="vm://message-broker?create=false"/>
     </bean>
 
     <bean id="cachingConnectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">

@@ -32,8 +32,8 @@
     </bean>
 
     <broker xmlns="http://activemq.apache.org/schema/core"
-            brokerName="kapua"
-            id="kapua-broker"
+            brokerName="message-broker"
+            id="message-broker-id"
             persistent="true"
             dataDirectory="${activemq.data}"
             schedulePeriodForDestinationPurge="-1"
