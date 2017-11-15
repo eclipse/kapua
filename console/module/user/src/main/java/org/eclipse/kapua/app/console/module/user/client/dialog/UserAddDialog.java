@@ -125,17 +125,20 @@ public class UserAddDialog extends EntityAddEditDialog {
         displayName = new TextField<String>();
         displayName.setName("displayName");
         displayName.setFieldLabel(MSGS.dialogAddFieldDisplayName());
+        displayName.setMaxLength(256);
         infoFieldSet.add(displayName);
 
         email = new TextField<String>();
         email.setName("userEmail");
         email.setFieldLabel(MSGS.dialogAddFieldEmail());
         email.setValidator(new TextFieldValidator(email, FieldType.EMAIL));
+        email.setMaxLength(256);
         infoFieldSet.add(email);
 
         phoneNumber = new TextField<String>();
         phoneNumber.setName("phoneNumber");
         phoneNumber.setFieldLabel(MSGS.dialogAddFieldPhoneNumber());
+        phoneNumber.setMaxLength(64);
         infoFieldSet.add(phoneNumber);
 
         optlock = new NumberField();

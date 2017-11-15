@@ -14,11 +14,15 @@ package org.eclipse.kapua.app.console.module.job.server;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
+
+import org.eclipse.kapua.KapuaDuplicateNameException;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
+
 import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJob;
 import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobCreator;
 import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobQuery;
@@ -80,6 +84,14 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
 
         GwtJob gwtJob = null;
         try {
+            List<GwtJob> allJobs;
+            allJobs = findAll(gwtJobCreator.getScopeId());
+            for (GwtJob temp : allJobs) {
+                if (temp.getJobName().equals(gwtJobCreator.getName())) {
+                    throw new KapuaDuplicateNameException(gwtJobCreator.getName());
+                }
+            }
+
             KapuaLocator locator = KapuaLocator.getInstance();
             JobFactory jobFactory = locator.getFactory(JobFactory.class);
 
@@ -170,5 +182,22 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
+    }
+
+    public List<GwtJob> findAll(String scopeId) {
+        List<GwtJob> jobList = new ArrayList<GwtJob>();
+        KapuaLocator locator = KapuaLocator.getInstance();
+        JobService jobService = locator.getService(JobService.class);
+        JobFactory jobFactory = locator.getFactory(JobFactory.class);
+        JobQuery query = jobFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(scopeId));
+        try {
+            JobListResult result = jobService.query(query);
+            for (Job job : result.getItems()) {
+                jobList.add(KapuaGwtJobModelConverter.convertJob(job));
+            }
+        } catch (KapuaException e) {
+            e.printStackTrace();
+        }
+        return jobList;
     }
 }
