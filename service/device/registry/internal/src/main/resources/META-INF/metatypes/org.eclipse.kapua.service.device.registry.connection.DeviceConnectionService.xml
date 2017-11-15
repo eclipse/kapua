@@ -24,6 +24,8 @@
              required="true"
              default="LOOSE"
              description="Default device-user coupling value. Allowed values are: LOOSE (no check), STRICT (check the device lastUserId and/or reservedUserId fields)">
+             <Option label="LOOSE" value="LOOSE" />
+             <Option label="STRICT" value="STRICT" />
          </AD>
 
     </OCD>
