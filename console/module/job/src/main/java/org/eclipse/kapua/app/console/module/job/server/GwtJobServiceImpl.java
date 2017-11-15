@@ -15,7 +15,7 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
-import org.eclipse.kapua.KapuaErrorCodes;
+import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
@@ -86,33 +86,27 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
         try {
             List<GwtJob> allJobs;
             allJobs = findAll(gwtJobCreator.getScopeId());
-            boolean doesExist = false;
             for (GwtJob temp : allJobs) {
-               if(temp.getJobName().equals(gwtJobCreator.getName())) {
-                   doesExist = true;
-               }
+                if (temp.getJobName().equals(gwtJobCreator.getName())) {
+                    throw new KapuaDuplicateNameException(gwtJobCreator.getName());
+                }
             }
 
-            if(!doesExist) {
-                KapuaLocator locator = KapuaLocator.getInstance();
-                JobFactory jobFactory = locator.getFactory(JobFactory.class);
+            KapuaLocator locator = KapuaLocator.getInstance();
+            JobFactory jobFactory = locator.getFactory(JobFactory.class);
 
-                KapuaId scopeId = KapuaEid.parseCompactId(gwtJobCreator.getScopeId());
-                JobCreator jobCreator = jobFactory.newCreator(scopeId);
-                jobCreator.setName(gwtJobCreator.getName());
-                jobCreator.setDescription(gwtJobCreator.getDescription());
+            KapuaId scopeId = KapuaEid.parseCompactId(gwtJobCreator.getScopeId());
+            JobCreator jobCreator = jobFactory.newCreator(scopeId);
+            jobCreator.setName(gwtJobCreator.getName());
+            jobCreator.setDescription(gwtJobCreator.getDescription());
 
-                //
-                // Create the Job
-                JobService jobService = locator.getService(JobService.class);
-                Job job = jobService.create(jobCreator);
+            //
+            // Create the Job
+            JobService jobService = locator.getService(JobService.class);
+            Job job = jobService.create(jobCreator);
 
-                // convert to GwtJob and return
-                gwtJob = KapuaGwtJobModelConverter.convertJob(job);
-            } else {
-                throw new KapuaException(KapuaErrorCodes.DUPLICATE_JOB_NAME);
-            }
-
+            // convert to GwtJob and return
+            gwtJob = KapuaGwtJobModelConverter.convertJob(job);
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }

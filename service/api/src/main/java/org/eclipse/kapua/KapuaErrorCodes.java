@@ -32,10 +32,6 @@ public enum KapuaErrorCodes implements KapuaErrorCode {
      */
     DUPLICATE_NAME,
     /**
-     * Duplicate job name
-     */
-    DUPLICATE_JOB_NAME,
-    /**
      * Illegal access
      */
     ILLEGAL_ACCESS,
