@@ -51,9 +51,7 @@ public class DeviceEditDialog extends DeviceAddDialog {
             @Override
             public void onFailure(Throwable cause) {
                 exitStatus = false;
-                // FIXME
-                exitMessage = MSGS.error();
-                // exitMessage = MSGS.dialogEditLoadFailed(cause.getLocalizedMessage());
+                 exitMessage = DEVICE_MSGS.dialogFormEditLoadFailed(cause.getLocalizedMessage());
                 unmaskDialog();
                 hide();
             }
@@ -90,8 +88,7 @@ public class DeviceEditDialog extends DeviceAddDialog {
             public void onFailure(Throwable caught) {
                 // FailureHandler.handle(caught);
                 exitStatus = false;
-                // FIXME:
-                exitMessage = MSGS.error();
+                exitMessage = DEVICE_MSGS.deviceFormEditError(caught.getLocalizedMessage());
             }
 
             public void onSuccess(GwtDevice gwtDevice) {
