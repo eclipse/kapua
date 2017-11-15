@@ -49,6 +49,8 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.broker.core.BrokerDomain;
 import org.eclipse.kapua.broker.core.message.MessageConstants;
+import org.eclipse.kapua.broker.core.setting.BrokerSetting;
+import org.eclipse.kapua.broker.core.setting.BrokerSettingKey;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
@@ -109,6 +111,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     private final static Logger logger = LoggerFactory.getLogger(KapuaSecurityBrokerFilter.class);
 
     private final static Map<String, ConnectionId> CONNECTION_MAP = new ConcurrentHashMap<>();
+    private final static String CONNECTOR_NAME_VM = String.format("vm://%s", BrokerSetting.getInstance().getString(BrokerSettingKey.BROKER_NAME));
 
     private static final Domain BROKER_DOMAIN = new BrokerDomain();
     private static final Domain DATASTORE_DOMAIN = new DatastoreDomain();
@@ -228,7 +231,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
      */
     private boolean isPassThroughConnection(ConnectionContext context) {
         if (context != null) {
-            if (context.getConnector() == null || AclConstants.CONNECTOR_NAME_VM.equals(((TransportConnector) context.getConnector()).getName())) {
+            if (context.getConnector() == null || CONNECTOR_NAME_VM.equals(((TransportConnector) context.getConnector()).getName())) {
                 return true;
             }
 
