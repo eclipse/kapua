@@ -49,6 +49,7 @@
             cardinality="0"
             required="true"
             default="0"
+            min="0"
             description="Total data usage per month."/>
 
         <AD id="dataIndexBy"
