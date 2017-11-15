@@ -98,7 +98,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
     public DeviceAddDialog(GwtSession currentSession) {
         super(currentSession);
 
-         DialogUtils.resizeDialog(this, 550, 450);
+        DialogUtils.resizeDialog(this, 550, 450);
     }
 
     @Override
@@ -502,9 +502,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
                 status.hide();
 
                 exitStatus = false;
-                // FIXME:
-                exitMessage = MSGS.error();
-                // exitMessage = MSGS.dialogAddError(caught.getLocalizedMessage());
+                exitMessage = DEVICE_MSGS.deviceFormAddError(caught.getLocalizedMessage());
 
                 hide();
                 //
