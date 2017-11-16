@@ -75,12 +75,14 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
             ArgumentValidator.notEmptyOrNull(credentialCreator.getCredentialPlainKey(), "credentialCreator.credentialKey");
         }
 
-        //
-        // Check if a PASSWORD credential already exists for the user
-        CredentialListResult existingCredentials = findByUserId(credentialCreator.getScopeId(), credentialCreator.getUserId());
-        for (Credential credential : existingCredentials.getItems()) {
-            if (credential.getCredentialType().equals(CredentialType.PASSWORD)) {
-                throw new KapuaExistingCredentialException(CredentialType.PASSWORD, credential.getUserId().toCompactId());
+        if (credentialCreator.getCredentialType() == CredentialType.PASSWORD) {
+            //
+            // Check if a PASSWORD credential already exists for the user
+            CredentialListResult existingCredentials = findByUserId(credentialCreator.getScopeId(), credentialCreator.getUserId());
+            for (Credential credential : existingCredentials.getItems()) {
+                if (credential.getCredentialType().equals(CredentialType.PASSWORD)) {
+                    throw new KapuaExistingCredentialException(CredentialType.PASSWORD, credential.getUserId().toCompactId());
+                }
             }
         }
 
