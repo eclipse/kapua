@@ -18,6 +18,9 @@ import org.eclipse.kapua.service.certificate.CertificateCreator;
 import org.eclipse.kapua.service.certificate.CertificateFactory;
 import org.eclipse.kapua.service.certificate.CertificateListResult;
 import org.eclipse.kapua.service.certificate.CertificateQuery;
+import org.eclipse.kapua.service.certificate.CertificateUsage;
+import org.eclipse.kapua.service.certificate.KeyUsage;
+import org.eclipse.kapua.service.certificate.KeyUsageSetting;
 
 @KapuaProvider
 public class CertificateFactoryImpl implements CertificateFactory {
@@ -40,5 +43,19 @@ public class CertificateFactoryImpl implements CertificateFactory {
     @Override
     public CertificateListResult newListResult() {
         return new CertificateListResultImpl();
+    }
+
+    @Override public CertificateUsage newCertificateUsage(String name) {
+        return new CertificateUsageImpl(name);
+    }
+
+    @Override
+    public KeyUsageSetting newKeyUsageSetting(KeyUsage keyUsage, boolean allowed, Boolean kapuaAllowed) {
+        KeyUsageSetting keyUsageSetting = new KeyUsageSettingImpl();
+        keyUsageSetting.setKeyUsage(keyUsage);
+        keyUsageSetting.setAllowed(allowed);
+        keyUsageSetting.setKapuaAllowed(kapuaAllowed);
+
+        return keyUsageSetting;
     }
 }

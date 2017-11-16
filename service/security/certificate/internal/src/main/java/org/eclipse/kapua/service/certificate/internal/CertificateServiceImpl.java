@@ -11,8 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate.internal;
 
-import java.io.File;
-
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -29,13 +28,18 @@ import org.eclipse.kapua.service.certificate.CertificateCreator;
 import org.eclipse.kapua.service.certificate.CertificateFactory;
 import org.eclipse.kapua.service.certificate.CertificateListResult;
 import org.eclipse.kapua.service.certificate.CertificateService;
-import org.eclipse.kapua.service.certificate.util.CertificateUtils;
+import org.eclipse.kapua.service.certificate.CertificateUsage;
+import org.eclipse.kapua.service.certificate.KeyUsage;
+import org.eclipse.kapua.service.certificate.KeyUsageSetting;
 import org.eclipse.kapua.service.certificate.exception.KapuaCertificateErrorCodes;
 import org.eclipse.kapua.service.certificate.exception.KapuaCertificateException;
 import org.eclipse.kapua.service.certificate.internal.setting.KapuaCertificateSetting;
 import org.eclipse.kapua.service.certificate.internal.setting.KapuaCertificateSettingKeys;
+import org.eclipse.kapua.service.certificate.util.CertificateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
 
 @KapuaProvider
 public class CertificateServiceImpl implements CertificateService {
@@ -45,7 +49,7 @@ public class CertificateServiceImpl implements CertificateService {
     public static final Logger LOGGER = LoggerFactory.getLogger(CertificateServiceImpl.class);
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
-    private static final CertificateFactory CERTIFICATE_FACTORY= LOCATOR.getFactory(CertificateFactory.class);
+    private static final CertificateFactory CERTIFICATE_FACTORY = LOCATOR.getFactory(CertificateFactory.class);
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
     private static final CertificateDomain CERTIFICATE_DOMAIN = new CertificateDomain();
 
@@ -56,16 +60,17 @@ public class CertificateServiceImpl implements CertificateService {
         KapuaSecurityUtils.doPrivileged(() -> {
             KapuaCertificateSetting setting = KapuaCertificateSetting.getInstance();
 
-            String privateKeyPath = setting.getString(KapuaCertificateSettingKeys.CERTIFICATE_JWT_PRIVATE_KEY, "");
-            String certificatePath = setting.getString(KapuaCertificateSettingKeys.CERTIFICATE_JWT_CERTIFICATE, "");
+            String privateKeyPath = setting.getString(KapuaCertificateSettingKeys.CERTIFICATE_JWT_PRIVATE_KEY);
+            String certificatePath = setting.getString(KapuaCertificateSettingKeys.CERTIFICATE_JWT_CERTIFICATE);
 
-            if (privateKeyPath.isEmpty() && certificatePath.isEmpty()) {
+            if (Strings.isNullOrEmpty(privateKeyPath) && Strings.isNullOrEmpty(certificatePath)) {
                 // Fallback to generated
                 LOGGER.error("No private key and certificate path specified.\nPlease set authentication.session.jwt.private.key and authentication.session.jwt.certificate system properties.");
                 throw new KapuaCertificateException(KapuaCertificateErrorCodes.CERTIFICATE_ERROR);
             } else {
                 File certificateFile = new File(certificatePath);
                 File privateKeyFile = new File(privateKeyPath);
+
                 certificate = CertificateUtils.readCertificateAsString(certificateFile);
                 privateKey = CertificateUtils.readPrivateKeyAsString(privateKeyFile);
             }
@@ -84,14 +89,32 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public CertificateListResult query(KapuaQuery<Certificate> query) throws KapuaException {
+        //
+        // Argument Validation
         ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
+
+        //
+        // Check Access
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(CERTIFICATE_DOMAIN, Actions.read, KapuaId.ANY));
+
+        //
+        // Create the default certificate
+        CertificateUsage certificateUsage = new CertificateUsageImpl();
+        certificateUsage.setName("JWT");
+
+        KeyUsageSetting keyUsageSetting = new KeyUsageSettingImpl();
+        keyUsageSetting.setKeyUsage(KeyUsage.DIGITAL_SIGNATURE);
+        keyUsageSetting.setAllowed(true);
+        keyUsageSetting.setKapuaAllowed(true);
+
         Certificate kapuaCertificate = new CertificateImpl(query.getScopeId());
         kapuaCertificate.setPrivateKey(privateKey);
         kapuaCertificate.setCertificate(certificate);
+        kapuaCertificate.getKeyUsageSettings().add(keyUsageSetting);
+
         CertificateListResult result = CERTIFICATE_FACTORY.newListResult();
         result.addItems(Lists.newArrayList(kapuaCertificate));
+
         return result;
     }
 
