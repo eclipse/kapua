@@ -138,6 +138,9 @@ public class UserGrid extends EntityGrid<GwtUser> {
         columnConfig = new ColumnConfig("createdOn", MSGS.gridUserColumnHeaderCreatedOn(), 200);
         columnConfigs.add(columnConfig);
 
+        columnConfig = new ColumnConfig("expirationDate", MSGS.gridUserColumnHeaderExpirationDate(), 400);
+        columnConfigs.add(columnConfig);
+
         return columnConfigs;
     }
 
