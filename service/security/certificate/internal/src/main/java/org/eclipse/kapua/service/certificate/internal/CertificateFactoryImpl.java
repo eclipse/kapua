@@ -45,7 +45,8 @@ public class CertificateFactoryImpl implements CertificateFactory {
         return new CertificateListResultImpl();
     }
 
-    @Override public CertificateUsage newCertificateUsage(String name) {
+    @Override
+    public CertificateUsage newCertificateUsage(String name) {
         return new CertificateUsageImpl(name);
     }
 
