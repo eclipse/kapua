@@ -33,10 +33,10 @@ public class GwtSettingsServiceImpl extends RemoteServiceServlet implements GwtS
     @Override
     public GwtProductInformation getProductInformation() {
         final GwtProductInformation result = new GwtProductInformation();
-        result.setBackgroundCredits(SETTINGS.getString(ConsoleSettingKeys.LOGIN_BACKGROUND_CREDITS));
-        result.setInformationSnippet(SETTINGS.getString(ConsoleSettingKeys.LOGIN_GENERIC_SNIPPET));
-        result.setProductName(SETTINGS.getString(ConsoleSettingKeys.PRODUCT_NAME));
-        result.setCopyright(SETTINGS.getString(ConsoleSettingKeys.PRODUCT_COPYRIGHT));
+        result.setBackgroundCredits(SETTINGS.getString(ConsoleSettingKeys.LOGIN_BACKGROUND_CREDITS), "");
+        result.setInformationSnippet(SETTINGS.getString(ConsoleSettingKeys.LOGIN_GENERIC_SNIPPET), "");
+        result.setProductName(SETTINGS.getString(ConsoleSettingKeys.PRODUCT_NAME), "");
+        result.setCopyright(SETTINGS.getString(ConsoleSettingKeys.PRODUCT_COPYRIGHT), "");
         return result;
     }
 

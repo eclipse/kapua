@@ -11,11 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate;
 
-import org.eclipse.kapua.model.KapuaEntityFactory;
+public interface CertificateUsage {
 
-public interface CertificateFactory extends KapuaEntityFactory<Certificate, CertificateCreator, CertificateQuery, CertificateListResult> {
+    public String getName();
 
-    public CertificateUsage newCertificateUsage(String name);
+    public void setName(String name);
 
-    public KeyUsageSetting newKeyUsageSetting(KeyUsage usage, boolean allowed, Boolean kapuaAllowed);
 }

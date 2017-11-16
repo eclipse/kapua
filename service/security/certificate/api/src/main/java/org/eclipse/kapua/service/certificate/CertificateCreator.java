@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * CertificateCreator encapsulates all the information needed to create a new Certificate in the system.
@@ -33,7 +34,6 @@ import java.util.Date;
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = {
         "certificate",
-        "family",
         "version",
         "serial",
         "algorithm",
@@ -54,10 +54,6 @@ public interface CertificateCreator extends KapuaNamedEntityCreator<Certificate>
     String getCertificate();
 
     void setCertificate(String certificate);
-
-    String getFamily();
-
-    void setFamily(String family);
 
     Integer getVersion();
 
@@ -118,4 +114,20 @@ public interface CertificateCreator extends KapuaNamedEntityCreator<Certificate>
     String getPassword();
 
     void setPassword(String password);
+
+    public <K extends KeyUsageSetting> Set<K> getKeyUsageSettings();
+
+    public void setKeyUsageSettings(Set<KeyUsageSetting> keyUsages);
+
+    public void addKeyUsageSetting(KeyUsageSetting keyUsage);
+
+    public void removeKeyUsageSetting(KeyUsageSetting keyUsage);
+
+    public <C extends CertificateUsage> Set<C> getCertificateUsages();
+
+    public void setCertificateUsages(Set<CertificateUsage> certificateUsages);
+
+    public void addCertificateUsage(CertificateUsage certificateUsage);
+
+    public void removeCertificateUsage(CertificateUsage certificateUsage);
 }

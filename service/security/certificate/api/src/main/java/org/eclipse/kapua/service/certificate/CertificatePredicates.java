@@ -20,5 +20,8 @@ public interface CertificatePredicates extends KapuaUpdatableEntityPredicates {
      */
     public static final String NAME = "name";
 
-    public static final String FAMILY = "family";
+    public static final String USAGE = "certificateUsage";
+
+    public static final String USAGE_NAME = USAGE + ".name";
+
 }
