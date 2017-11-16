@@ -40,7 +40,7 @@ public class DeviceEditDialog extends DeviceAddDialog {
 
     private void loadDevice() {
         maskDialog();
-        gwtDeviceService.findDevice(selectedDevice.getScopeId(), selectedDevice.getClientId(), new AsyncCallback<GwtDevice>() {
+        gwtDeviceService.findDevice(selectedDevice.getScopeId(), selectedDevice.getId(), new AsyncCallback<GwtDevice>() {
 
             @Override
             public void onSuccess(GwtDevice gwtDevice) {
@@ -51,7 +51,7 @@ public class DeviceEditDialog extends DeviceAddDialog {
             @Override
             public void onFailure(Throwable cause) {
                 exitStatus = false;
-                 exitMessage = DEVICE_MSGS.dialogFormEditLoadFailed(cause.getLocalizedMessage());
+                exitMessage = DEVICE_MSGS.dialogFormEditLoadFailed(cause.getLocalizedMessage());
                 unmaskDialog();
                 hide();
             }
