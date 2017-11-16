@@ -99,8 +99,7 @@ public class CertificateServiceImpl implements CertificateService {
 
         //
         // Create the default certificate
-        CertificateUsage certificateUsage = new CertificateUsageImpl();
-        certificateUsage.setName("JWT");
+        CertificateUsage certificateUsage = new CertificateUsageImpl("JWT");
 
         KeyUsageSetting keyUsageSetting = new KeyUsageSettingImpl();
         keyUsageSetting.setKeyUsage(KeyUsage.DIGITAL_SIGNATURE);
