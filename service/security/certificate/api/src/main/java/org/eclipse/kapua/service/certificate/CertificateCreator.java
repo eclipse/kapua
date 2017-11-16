@@ -15,14 +15,12 @@ import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.model.KapuaNamedEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
-import org.eclipse.kapua.model.xml.DateXmlAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.util.Date;
 import java.util.Set;
 
 /**
@@ -34,18 +32,8 @@ import java.util.Set;
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = {
         "certificate",
-        "version",
-        "serial",
-        "algorithm",
-        "subject",
-        "issuer",
-        "notBefore",
-        "notAfter",
         "status",
-        "digest",
         "privateKey",
-        "default",
-        "ca",
         "caId",
         "password"
 })
@@ -55,55 +43,13 @@ public interface CertificateCreator extends KapuaNamedEntityCreator<Certificate>
 
     void setCertificate(String certificate);
 
-    Integer getVersion();
-
-    void setVersion(Integer family);
-
-    String getSerial();
-
-    void setSerial(String serial);
-
-    String getAlgorithm();
-
-    void setAlgorithm(String algorithm);
-
-    String getSubject();
-
-    void setSubject(String subject);
-
-    String getIssuer();
-
-    void setIssuer(String issuer);
-
-    @XmlJavaTypeAdapter(DateXmlAdapter.class)
-    Date getNotBefore();
-
-    void setNotBefore(Date notBefore);
-
-    @XmlJavaTypeAdapter(DateXmlAdapter.class)
-    Date getNotAfter();
-
-    void setNotAfter(Date notAfter);
-
     CertificateStatus getStatus();
 
     void setStatus(CertificateStatus status);
 
-    byte[] getDigest();
-
-    void setDigest(byte[] digest);
-
     String getPrivateKey();
 
     void setPrivateKey(String privateKey);
-
-    Boolean getDefault();
-
-    void setDefault(Boolean isDefault);
-
-    Boolean getCa();
-
-    void setCa(Boolean isCa);
 
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     @ApiModelProperty(dataType = "string")
@@ -115,19 +61,8 @@ public interface CertificateCreator extends KapuaNamedEntityCreator<Certificate>
 
     void setPassword(String password);
 
-    public <K extends KeyUsageSetting> Set<K> getKeyUsageSettings();
-
-    public void setKeyUsageSettings(Set<KeyUsageSetting> keyUsages);
-
-    public void addKeyUsageSetting(KeyUsageSetting keyUsage);
-
-    public void removeKeyUsageSetting(KeyUsageSetting keyUsage);
-
     public <C extends CertificateUsage> Set<C> getCertificateUsages();
 
     public void setCertificateUsages(Set<CertificateUsage> certificateUsages);
 
-    public void addCertificateUsage(CertificateUsage certificateUsage);
-
-    public void removeCertificateUsage(CertificateUsage certificateUsage);
 }
