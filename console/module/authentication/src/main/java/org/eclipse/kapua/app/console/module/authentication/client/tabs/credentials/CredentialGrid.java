@@ -145,7 +145,7 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
         columnConfig = new ColumnConfig("credentialType", MSGS.gridCredentialColumnHeaderCredentialType(), 400);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("", MSGS.gridCredentialColumnHeaderExpirationDate(), 200);
+        columnConfig = new ColumnConfig("expirationDate", MSGS.gridCredentialColumnHeaderExpirationDate(), 200);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("createdOn", MSGS.gridCredentialColumnHeaderCreatedOn(), 200);
