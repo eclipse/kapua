@@ -11,11 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate;
 
-import org.eclipse.kapua.model.KapuaEntityFactory;
+public enum KeyUsage {
 
-public interface CertificateFactory extends KapuaEntityFactory<Certificate, CertificateCreator, CertificateQuery, CertificateListResult> {
-
-    public CertificateUsage newCertificateUsage(String name);
-
-    public KeyUsageSetting newKeyUsageSetting(KeyUsage usage, boolean allowed, Boolean kapuaAllowed);
+    DIGITAL_SIGNATURE,
+    NON_REPUDIATION,
+    KEY_ENCIPHERMENT,
+    DATA_ENCIPHERMENT,
+    KEY_AGREEMENT,
+    KEY_CERT_SIGN,
+    CRL_SIGN,
+    ENCIPHER_ONLY,
+    DECIPHER_ONLY,
 }

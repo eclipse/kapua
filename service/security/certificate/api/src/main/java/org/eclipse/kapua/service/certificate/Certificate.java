@@ -24,12 +24,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Date;
+import java.util.Set;
 
 @XmlRootElement(name = "certificate")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = {
         "certificate",
-        "family",
         "version",
         "serial",
         "algorithm",
@@ -49,76 +49,88 @@ public interface Certificate extends KapuaNamedEntity {
 
     String TYPE = "account";
 
+    @Override
     default String getType() {
         return TYPE;
     }
 
-    String getCertificate();
+    public String getCertificate();
 
-    void setCertificate(String certificate);
+    public void setCertificate(String certificate);
 
-    String getFamily();
+    public Integer getVersion();
 
-    void setFamily(String family);
+    public void setVersion(Integer version);
 
-    Integer getVersion();
+    public String getSerial();
 
-    void setVersion(Integer version);
+    public void setSerial(String serial);
 
-    String getSerial();
+    public String getAlgorithm();
 
-    void setSerial(String serial);
+    public void setAlgorithm(String algorithm);
 
-    String getAlgorithm();
+    public String getSubject();
 
-    void setAlgorithm(String algorithm);
+    public void setSubject(String subject);
 
-    String getSubject();
+    public String getIssuer();
 
-    void setSubject(String subject);
-
-    String getIssuer();
-
-    void setIssuer(String issuer);
+    public void setIssuer(String issuer);
 
     @XmlJavaTypeAdapter(DateXmlAdapter.class)
-    Date getNotBefore();
+    public Date getNotBefore();
 
-    void setNotBefore(Date notBefore);
+    public void setNotBefore(Date notBefore);
 
     @XmlJavaTypeAdapter(DateXmlAdapter.class)
-    Date getNotAfter();
+    public Date getNotAfter();
 
-    void setNotAfter(Date notAfter);
+    public void setNotAfter(Date notAfter);
 
-    CertificateStatus getStatus();
+    public CertificateStatus getStatus();
 
-    void setStatus(CertificateStatus status);
+    public void setStatus(CertificateStatus status);
 
-    byte[] getDigest();
+    public byte[] getDigest();
 
-    void setDigest(byte[] digest);
+    public void setDigest(byte[] digest);
 
-    String getPrivateKey();
+    public String getPrivateKey();
 
-    void setPrivateKey(String privateKey);
+    public void setPrivateKey(String privateKey);
 
-    Boolean getDefault();
+    public Boolean getDefault();
 
-    void setDefault(Boolean isDefault);
+    public void setDefault(Boolean isDefault);
 
-    Boolean getCa();
+    public Boolean getCa();
 
-    void setCa(Boolean isCa);
+    public void setCa(Boolean isCa);
 
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     @ApiModelProperty(dataType = "string")
-    KapuaId getCaId();
+    public KapuaId getCaId();
 
-    void setCaId(KapuaId caId);
+    public void setCaId(KapuaId caId);
 
-    String getPassword();
+    public String getPassword();
 
-    void setPassword(String password);
+    public void setPassword(String password);
 
+    public <K extends KeyUsageSetting> Set<K> getKeyUsageSettings();
+
+    public void setKeyUsageSettings(Set<KeyUsageSetting> keyUsages);
+
+    public void addKeyUsageSetting(KeyUsageSetting keyUsage);
+
+    public void removeKeyUsageSetting(KeyUsageSetting keyUsage);
+
+    public <C extends CertificateUsage> Set<C> getCertificateUsages();
+
+    public void setCertificateUsages(Set<CertificateUsage> certificateUsages);
+
+    public void addCertificateUsage(CertificateUsage certificateUsage);
+
+    public void removeCertificateUsage(CertificateUsage certificateUsage);
 }

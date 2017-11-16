@@ -15,14 +15,19 @@ import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.certificate.Certificate;
 import org.eclipse.kapua.service.certificate.CertificateStatus;
+import org.eclipse.kapua.service.certificate.CertificateUsage;
+import org.eclipse.kapua.service.certificate.KeyUsageSetting;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 public class CertificateImpl extends AbstractKapuaUpdatableEntity implements Certificate {
 
     private String certificate;
-    private String family;
     private String privateKey;
+    private Set<KeyUsageSettingImpl> keyUsageSettings;
+    private Set<CertificateUsageImpl> certificateUsages;
 
     public CertificateImpl() {
     }
@@ -49,16 +54,6 @@ public class CertificateImpl extends AbstractKapuaUpdatableEntity implements Cer
     @Override
     public void setCertificate(String certificate) {
         this.certificate = certificate;
-    }
-
-    @Override
-    public String getFamily() {
-        return family;
-    }
-
-    @Override
-    public void setFamily(String family) {
-        this.family = family;
     }
 
     @Override
@@ -199,5 +194,57 @@ public class CertificateImpl extends AbstractKapuaUpdatableEntity implements Cer
     @Override
     public void setPassword(String password) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Set<KeyUsageSettingImpl> getKeyUsageSettings() {
+        if (keyUsageSettings == null) {
+            keyUsageSettings = new HashSet<>();
+        }
+
+        return keyUsageSettings;
+    }
+
+    @Override
+    public void setKeyUsageSettings(Set<KeyUsageSetting> keyUsageSettings) {
+        this.keyUsageSettings = new HashSet<>();
+
+        keyUsageSettings.stream().forEach((k) -> this.keyUsageSettings.add(KeyUsageSettingImpl.parse(k)));
+    }
+
+    @Override
+    public void addKeyUsageSetting(KeyUsageSetting keyUsageSetting) {
+        getKeyUsageSettings().add(KeyUsageSettingImpl.parse(keyUsageSetting));
+    }
+
+    @Override
+    public void removeKeyUsageSetting(KeyUsageSetting keyUsageSetting) {
+        getKeyUsageSettings().remove(KeyUsageSettingImpl.parse(keyUsageSetting));
+    }
+
+    @Override
+    public Set<CertificateUsageImpl> getCertificateUsages() {
+        if (certificateUsages == null) {
+            certificateUsages = new HashSet<>();
+        }
+
+        return certificateUsages;
+    }
+
+    @Override
+    public void setCertificateUsages(Set<CertificateUsage> certificateUsages) {
+        this.certificateUsages = new HashSet<>();
+
+        certificateUsages.stream().forEach((k) -> this.certificateUsages.add(CertificateUsageImpl.parse(k)));
+    }
+
+    @Override
+    public void addCertificateUsage(CertificateUsage certificateUsage) {
+        getCertificateUsages().add(CertificateUsageImpl.parse(certificateUsage));
+    }
+
+    @Override
+    public void removeCertificateUsage(CertificateUsage certificateUsage) {
+        getCertificateUsages().remove(CertificateUsageImpl.parse(certificateUsage));
     }
 }
