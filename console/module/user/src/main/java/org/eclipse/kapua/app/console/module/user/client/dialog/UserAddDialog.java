@@ -15,7 +15,6 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.regexp.shared.RegExp;
 
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
