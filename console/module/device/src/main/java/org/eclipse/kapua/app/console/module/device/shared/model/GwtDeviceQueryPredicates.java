@@ -78,14 +78,6 @@ public class GwtDeviceQueryPredicates extends KapuaBaseModel implements Serializ
         }
     }
 
-    public Long getTag() {
-        return (Long) get("tag");
-    }
-
-    public void setTag(Long gwtTag) {
-        set("tag", gwtTag);
-    }
-
     public String getClientId() {
         return (String) get("clientId");
     }
@@ -276,6 +268,14 @@ public class GwtDeviceQueryPredicates extends KapuaBaseModel implements Serializ
 
     public void setGroupId(String groupId) {
         set("groupId", groupId);
+    }
+
+    public String getTagId() {
+        return (String) get("tagId");
+    }
+
+    public void setTagId(String tagId) {
+        set("tagId", tagId);
     }
 
 }
