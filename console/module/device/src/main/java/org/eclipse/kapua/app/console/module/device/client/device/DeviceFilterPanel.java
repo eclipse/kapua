@@ -37,6 +37,9 @@ import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGrou
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQuery;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPredicates;
+import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
+import org.eclipse.kapua.app.console.module.tag.shared.service.GwtTagService;
+import org.eclipse.kapua.app.console.module.tag.shared.service.GwtTagServiceAsync;
 
 import java.util.List;
 
@@ -49,6 +52,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
     private EntityGrid<GwtDevice> entityGrid;
 
     private final GwtGroupServiceAsync groupService = GWT.create(GwtGroupService.class);
+    private final GwtTagServiceAsync tagService = GWT.create(GwtTagService.class);
     private final GwtSession currentSession;
 
     private final TextField<String> clientIdField;
@@ -62,6 +66,8 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
     private final TextField<String> customAttribute2Field;
     private final ComboBox<GwtGroup> groupsCombo;
     private final GwtGroup allGroup;
+    private final ComboBox<GwtTag> tagsCombo;
+    private final GwtTag allTag;
 
     public DeviceFilterPanel(AbstractEntityView<GwtDevice> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
@@ -285,6 +291,53 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         });
 
         fieldsPanel.add(groupsCombo);
+
+        //
+        // Groups
+        final Label tagLabel = new Label(DEVICE_MSGS.deviceFilteringPanelTag());
+        tagLabel.setWidth(WIDTH);
+        tagLabel.setStyleAttribute("margin", "5px");
+        fieldsPanel.add(tagLabel);
+
+        allTag = new GwtTag();
+        allTag.setTagName("ANY");
+        allTag.setId(null);
+
+        tagsCombo = new ComboBox<GwtTag>();
+        tagsCombo.setStore(new ListStore<GwtTag>());
+        tagsCombo.disable();
+        tagsCombo.setEditable(false);
+        tagsCombo.setTypeAhead(false);
+        tagsCombo.setAllowBlank(false);
+        tagsCombo.setEmptyText(DEVICE_MSGS.deviceFilteringPanelLoading());
+        tagsCombo.setDisplayField("tagName");
+        tagsCombo.setValueField("id");
+        tagsCombo.setName("tagId");
+        tagsCombo.setWidth(WIDTH);
+        tagsCombo.setStyleAttribute("margin-top", "0px");
+        tagsCombo.setStyleAttribute("margin-left", "5px");
+        tagsCombo.setStyleAttribute("margin-right", "5px");
+        tagsCombo.setStyleAttribute("margin-bottom", "10px");
+        tagsCombo.setTriggerAction(TriggerAction.ALL);
+        tagsCombo.setValue(allTag);
+        tagService.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<List<GwtTag>>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                ConsoleInfo.display(MSGS.popupError(), DEVICE_MSGS.deviceFilteringPanelTagsError());
+            }
+
+            @Override
+            public void onSuccess(List<GwtTag> result) {
+                tagsCombo.getStore().removeAll();
+                tagsCombo.getStore().add(allTag);
+                tagsCombo.getStore().add(result);
+                tagsCombo.setValue(allTag);
+                tagsCombo.enable();
+            }
+        });
+
+        fieldsPanel.add(tagsCombo);
     }
 
     public String unescapeValue(String value) {
@@ -303,6 +356,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         customAttribute1Field.setValue("");
         customAttribute2Field.setValue("");
         groupsCombo.setValue(allGroup);
+        tagsCombo.setValue(allTag);
         GwtDeviceQuery query = new GwtDeviceQuery();
         query.setScopeId(currentSession.getSelectedAccountId());
         query.setPredicates(new GwtDeviceQueryPredicates());
@@ -320,37 +374,40 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         GwtDeviceQuery query = new GwtDeviceQuery();
         query.setScopeId(currentSession.getSelectedAccountId());
 
-                GwtDeviceQueryPredicates predicates = new GwtDeviceQueryPredicates();
-                if (clientIdField.getValue() != null && !clientIdField.getValue().trim().isEmpty()) {
-                    predicates.setClientId(unescapeValue(clientIdField.getValue()));
-                }
-                if (displayNameField.getValue() != null && !displayNameField.getValue().trim().isEmpty()) {
-                    predicates.setDisplayName(unescapeValue(displayNameField.getValue()));
-                }
-                if (serialNumberField.getValue() != null && !serialNumberField.getValue().trim().isEmpty()) {
-                    predicates.setSerialNumber(unescapeValue(serialNumberField.getValue()));
-                }
-                if (!statusCombo.getValue().getValue().equals(GwtDeviceQueryPredicates.GwtDeviceStatus.ANY)) {
-                    predicates.setDeviceStatus(statusCombo.getValue().getValue().name());
-                }
-                if (!connectionStatusCombo.getValue().getValue().equals(GwtDeviceQueryPredicates.GwtDeviceConnectionStatus.ANY)) {
-                    predicates.setDeviceConnectionStatus(connectionStatusCombo.getValue().getValue().name());
-                }
-                if (iotFrameworkVersionField.getValue() != null && !iotFrameworkVersionField.getValue().trim().isEmpty()) {
-                    predicates.setIotFrameworkVersion(unescapeValue(iotFrameworkVersionField.getValue()));
-                }
-                if (applicationIdentifiersField.getValue() != null && !applicationIdentifiersField.getValue().trim().isEmpty()) {
-                    predicates.setApplicationIdentifiers(unescapeValue(applicationIdentifiersField.getValue()));
-                }
-                if (customAttribute1Field.getValue() != null && !customAttribute1Field.getValue().trim().isEmpty()) {
-                    predicates.setCustomAttribute1(unescapeValue(customAttribute1Field.getValue()));
-                }
-                if (customAttribute2Field.getValue() != null && !customAttribute2Field.getValue().trim().isEmpty()) {
-                    predicates.setCustomAttribute2(unescapeValue(customAttribute2Field.getValue()));
-                }
-                if (!groupsCombo.getValue() .equals(allGroup)) {
-                    predicates.setGroupId(groupsCombo.getValue().getId());
-                }
+        GwtDeviceQueryPredicates predicates = new GwtDeviceQueryPredicates();
+        if (clientIdField.getValue() != null && !clientIdField.getValue().trim().isEmpty()) {
+            predicates.setClientId(unescapeValue(clientIdField.getValue()));
+        }
+        if (displayNameField.getValue() != null && !displayNameField.getValue().trim().isEmpty()) {
+            predicates.setDisplayName(unescapeValue(displayNameField.getValue()));
+        }
+        if (serialNumberField.getValue() != null && !serialNumberField.getValue().trim().isEmpty()) {
+            predicates.setSerialNumber(unescapeValue(serialNumberField.getValue()));
+        }
+        if (!statusCombo.getValue().getValue().equals(GwtDeviceQueryPredicates.GwtDeviceStatus.ANY)) {
+            predicates.setDeviceStatus(statusCombo.getValue().getValue().name());
+        }
+        if (!connectionStatusCombo.getValue().getValue().equals(GwtDeviceQueryPredicates.GwtDeviceConnectionStatus.ANY)) {
+            predicates.setDeviceConnectionStatus(connectionStatusCombo.getValue().getValue().name());
+        }
+        if (iotFrameworkVersionField.getValue() != null && !iotFrameworkVersionField.getValue().trim().isEmpty()) {
+            predicates.setIotFrameworkVersion(unescapeValue(iotFrameworkVersionField.getValue()));
+        }
+        if (applicationIdentifiersField.getValue() != null && !applicationIdentifiersField.getValue().trim().isEmpty()) {
+            predicates.setApplicationIdentifiers(unescapeValue(applicationIdentifiersField.getValue()));
+        }
+        if (customAttribute1Field.getValue() != null && !customAttribute1Field.getValue().trim().isEmpty()) {
+            predicates.setCustomAttribute1(unescapeValue(customAttribute1Field.getValue()));
+        }
+        if (customAttribute2Field.getValue() != null && !customAttribute2Field.getValue().trim().isEmpty()) {
+            predicates.setCustomAttribute2(unescapeValue(customAttribute2Field.getValue()));
+        }
+        if (!groupsCombo.getValue().equals(allGroup)) {
+            predicates.setGroupId(groupsCombo.getValue().getId());
+        }
+        if (!tagsCombo.getValue().equals(allTag)) {
+            predicates.setTagId(tagsCombo.getValue().getId());
+        }
 
         query.setPredicates(predicates);
 

@@ -184,6 +184,9 @@ public class GwtKapuaDeviceModelConverter {
         if (predicates.getGroupId() != null) {
             andPred = andPred.and(new AttributePredicate<KapuaId>(DevicePredicates.GROUP_ID, KapuaEid.parseCompactId(predicates.getGroupId())));
         }
+        if(predicates.getTagId() != null) {
+            andPred = andPred.and(new AttributePredicate<KapuaId[]>(DevicePredicates.TAG_IDS, new KapuaId[] { GwtKapuaCommonsModelConverter.convertKapuaId(predicates.getTagId()) }));
+        }
 
         if (predicates.getSortAttribute() != null) {
             SortOrder sortOrder = SortOrder.ASCENDING;
