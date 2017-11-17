@@ -14,10 +14,8 @@ package org.eclipse.kapua.service.certificate.internal;
 import org.eclipse.kapua.service.certificate.KeyUsage;
 import org.eclipse.kapua.service.certificate.KeyUsageSetting;
 
-import javax.persistence.Embeddable;
 import java.util.Objects;
 
-@Embeddable
 public class KeyUsageSettingImpl implements KeyUsageSetting {
 
     private KeyUsage keyUsage;
