@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.common;
 
-import java.util.List;
-
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
@@ -39,6 +37,8 @@ import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.internal.DeviceDomain;
 import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.tag.TagService;
+
+import java.util.List;
 
 /**
  * Provides logic used to validate preconditions required to execute the device service operation.
@@ -133,7 +133,7 @@ public final class DeviceValidation {
 
         // Check that current user can manage the target group of the device
         if (device.getGroupId() != null) {
-            ArgumentValidator.notNull(groupService.find(device.getScopeId(), device.getGroupId()), "device.groupId");
+            ArgumentValidator.notNull(KapuaSecurityUtils.doPrivileged(() -> groupService.find(device.getScopeId(), device.getGroupId())), "device.groupId");
         }
         authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_DOMAIN, Actions.write, device.getScopeId(), device.getGroupId()));
 
@@ -227,10 +227,8 @@ public final class DeviceValidation {
     /**
      * Finds the current {@link Group} id assigned to the given {@link Device} id.
      *
-     * @param scopeId
-     *            The scope {@link KapuaId} of the {@link Device}
-     * @param entityId
-     *            The {@link KapuaEntity} {@link KapuaId} of the {@link Device}.
+     * @param scopeId  The scope {@link KapuaId} of the {@link Device}
+     * @param entityId The {@link KapuaEntity} {@link KapuaId} of the {@link Device}.
      * @return The {@link Group} id found.
      * @throws KapuaException
      * @since 1.0.0

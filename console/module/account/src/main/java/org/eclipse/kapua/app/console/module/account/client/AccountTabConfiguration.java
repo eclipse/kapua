@@ -11,17 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.account.client;
 
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
-
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.Element;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 
 public class AccountTabConfiguration extends KapuaTabItem<GwtAccount> {
 
@@ -30,13 +29,15 @@ public class AccountTabConfiguration extends KapuaTabItem<GwtAccount> {
     private AccountDetailsTabDescription accountDetailsTabDescription;
 
     public AccountTabConfiguration(GwtSession currentSession, AccountDetailsView accountDetailsView) {
-        super("Settings", new KapuaIcon(IconSet.COG));
+        super(currentSession, "Settings", new KapuaIcon(IconSet.COG));
         this.accountDetailsView = accountDetailsView;
         configComponents = new AccountConfigComponents(currentSession, this);
+
         setBorders(false);
         setLayout(new FitLayout());
         addListener(Events.Select, new Listener<ComponentEvent>() {
 
+            @Override
             public void handleEvent(ComponentEvent be) {
                 refresh();
             }
@@ -54,6 +55,7 @@ public class AccountTabConfiguration extends KapuaTabItem<GwtAccount> {
         configComponents.refresh();
     }
 
+    @Override
     protected void onRender(Element parent, int index) {
 
         super.onRender(parent, index);

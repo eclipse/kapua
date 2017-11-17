@@ -12,28 +12,27 @@
 package org.eclipse.kapua.app.console.module.device.client.device;
 
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-
-import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
-import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.google.gwt.core.client.GWT;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupService;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupServiceAsync;
+import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQuery;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPredicates;
@@ -64,10 +63,12 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
     private final TextField<String> applicationIdentifiersField;
     private final TextField<String> customAttribute1Field;
     private final TextField<String> customAttribute2Field;
-    private final ComboBox<GwtGroup> groupsCombo;
-    private final GwtGroup allGroup;
-    private final ComboBox<GwtTag> tagsCombo;
-    private final GwtTag allTag;
+
+    private ComboBox<GwtGroup> groupsCombo;
+    private GwtGroup allGroup;
+
+    private ComboBox<GwtTag> tagsCombo;
+    private GwtTag allTag;
 
     public DeviceFilterPanel(AbstractEntityView<GwtDevice> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
@@ -81,7 +82,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
 
         //
         // ClientId
-        final Label clientIdLabel = new Label(DEVICE_MSGS.deviceFilteringPanelClientId());
+        Label clientIdLabel = new Label(DEVICE_MSGS.deviceFilteringPanelClientId());
         clientIdLabel.setWidth(WIDTH);
         clientIdLabel.setStyleAttribute("margin", "5px");
 
@@ -98,7 +99,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
 
         //
         // DisplayName
-        final Label displayNameLabel = new Label(DEVICE_MSGS.deviceFilteringPanelDisplayName());
+        Label displayNameLabel = new Label(DEVICE_MSGS.deviceFilteringPanelDisplayName());
         displayNameLabel.setWidth(WIDTH);
         displayNameLabel.setStyleAttribute("margin", "5px");
         fieldsPanel.add(displayNameLabel);
@@ -114,7 +115,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
 
         //
         // Serial Number
-        final Label serialNumberLabel = new Label(DEVICE_MSGS.deviceFilteringPanelSerialNumber());
+        Label serialNumberLabel = new Label(DEVICE_MSGS.deviceFilteringPanelSerialNumber());
         serialNumberLabel.setWidth(WIDTH);
         serialNumberLabel.setStyleAttribute("margin", "5px");
         fieldsPanel.add(serialNumberLabel);
@@ -130,7 +131,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
 
         //
         // Status
-        final Label statusLabel = new Label(DEVICE_MSGS.deviceFilteringPanelStatus());
+        Label statusLabel = new Label(DEVICE_MSGS.deviceFilteringPanelStatus());
         statusLabel.setWidth(WIDTH);
         statusLabel.setStyleAttribute("margin", "5px");
         fieldsPanel.add(statusLabel);
@@ -156,7 +157,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
 
         //
         // Connection Status
-        final Label connectionStatusLabel = new Label(DEVICE_MSGS.deviceFilteringPanelConnectionStatus());
+        Label connectionStatusLabel = new Label(DEVICE_MSGS.deviceFilteringPanelConnectionStatus());
         connectionStatusLabel.setWidth(WIDTH);
         connectionStatusLabel.setStyleAttribute("margin", "5px");
         fieldsPanel.add(connectionStatusLabel);
@@ -183,7 +184,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
 
         //
         // Esf Version
-        final Label iotFrameworkVersionLabel = new Label(DEVICE_MSGS.deviceFilteringPanelESFVersion());
+        Label iotFrameworkVersionLabel = new Label(DEVICE_MSGS.deviceFilteringPanelESFVersion());
         iotFrameworkVersionLabel.setWidth(WIDTH);
         iotFrameworkVersionLabel.setStyleAttribute("margin", "5px");
         fieldsPanel.add(iotFrameworkVersionLabel);
@@ -199,7 +200,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
 
         //
         // Application Identifiers
-        final Label applicationIdentifiersLabel = new Label(DEVICE_MSGS.deviceFilteringPanelApplications());
+        Label applicationIdentifiersLabel = new Label(DEVICE_MSGS.deviceFilteringPanelApplications());
         applicationIdentifiersLabel.setWidth(WIDTH);
         applicationIdentifiersLabel.setStyleAttribute("margin", "5px");
         fieldsPanel.add(applicationIdentifiersLabel);
@@ -215,7 +216,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
 
         //
         // Custom Attribute 1
-        final Label customAttribute1Label = new Label(DEVICE_MSGS.deviceFilteringPanelCustomAttribute1());
+        Label customAttribute1Label = new Label(DEVICE_MSGS.deviceFilteringPanelCustomAttribute1());
         customAttribute1Label.setWidth(WIDTH);
         customAttribute1Label.setStyleAttribute("margin", "5px");
         fieldsPanel.add(customAttribute1Label);
@@ -231,7 +232,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
 
         //
         // Custom Attribute 2
-        final Label customAttribute2Label = new Label(DEVICE_MSGS.deviceFilteringPanelCustomAttribute2());
+        Label customAttribute2Label = new Label(DEVICE_MSGS.deviceFilteringPanelCustomAttribute2());
         customAttribute2Label.setWidth(WIDTH);
         customAttribute2Label.setStyleAttribute("margin", "5px");
         fieldsPanel.add(customAttribute2Label);
@@ -247,97 +248,101 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
 
         //
         // Groups
-        final Label groupLabel = new Label(DEVICE_MSGS.deviceFilteringPanelGroup());
-        groupLabel.setWidth(WIDTH);
-        groupLabel.setStyleAttribute("margin", "5px");
-        fieldsPanel.add(groupLabel);
+        if (currentSession.hasGroupReadPermission()) {
+            Label groupLabel = new Label(DEVICE_MSGS.deviceFilteringPanelGroup());
+            groupLabel.setWidth(WIDTH);
+            groupLabel.setStyleAttribute("margin", "5px");
+            fieldsPanel.add(groupLabel);
 
-        allGroup = new GwtGroup();
-        allGroup.setGroupName("ANY");
-        allGroup.setId(null);
+            allGroup = new GwtGroup();
+            allGroup.setGroupName("ANY");
+            allGroup.setId(null);
 
-        groupsCombo = new ComboBox<GwtGroup>();
-        groupsCombo.setStore(new ListStore<GwtGroup>());
-        groupsCombo.disable();
-        groupsCombo.setEditable(false);
-        groupsCombo.setTypeAhead(false);
-        groupsCombo.setAllowBlank(false);
-        groupsCombo.setEmptyText(DEVICE_MSGS.deviceFilteringPanelLoading());
-        groupsCombo.setDisplayField("groupName");
-        groupsCombo.setValueField("id");
-        groupsCombo.setName("groupId");
-        groupsCombo.setWidth(WIDTH);
-        groupsCombo.setStyleAttribute("margin-top", "0px");
-        groupsCombo.setStyleAttribute("margin-left", "5px");
-        groupsCombo.setStyleAttribute("margin-right", "5px");
-        groupsCombo.setStyleAttribute("margin-bottom", "10px");
-        groupsCombo.setTriggerAction(TriggerAction.ALL);
-        groupsCombo.setValue(allGroup);
-        groupService.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<List<GwtGroup>>() {
+            groupsCombo = new ComboBox<GwtGroup>();
+            groupsCombo.setStore(new ListStore<GwtGroup>());
+            groupsCombo.disable();
+            groupsCombo.setEditable(false);
+            groupsCombo.setTypeAhead(false);
+            groupsCombo.setAllowBlank(false);
+            groupsCombo.setEmptyText(DEVICE_MSGS.deviceFilteringPanelLoading());
+            groupsCombo.setDisplayField("groupName");
+            groupsCombo.setValueField("id");
+            groupsCombo.setName("groupId");
+            groupsCombo.setWidth(WIDTH);
+            groupsCombo.setStyleAttribute("margin-top", "0px");
+            groupsCombo.setStyleAttribute("margin-left", "5px");
+            groupsCombo.setStyleAttribute("margin-right", "5px");
+            groupsCombo.setStyleAttribute("margin-bottom", "10px");
+            groupsCombo.setTriggerAction(TriggerAction.ALL);
+            groupsCombo.setValue(allGroup);
+            groupService.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<List<GwtGroup>>() {
 
-            @Override
-            public void onFailure(Throwable caught) {
-                ConsoleInfo.display(MSGS.popupError(), DEVICE_MSGS.deviceFilteringPanelGroupsError());
-            }
+                @Override
+                public void onFailure(Throwable caught) {
+                    ConsoleInfo.display(MSGS.popupError(), DEVICE_MSGS.deviceFilteringPanelGroupsError());
+                }
 
-            @Override
-            public void onSuccess(List<GwtGroup> result) {
-                groupsCombo.getStore().removeAll();
-                groupsCombo.getStore().add(allGroup);
-                groupsCombo.getStore().add(result);
-                groupsCombo.setValue(allGroup);
-                groupsCombo.enable();
-            }
-        });
+                @Override
+                public void onSuccess(List<GwtGroup> result) {
+                    groupsCombo.getStore().removeAll();
+                    groupsCombo.getStore().add(allGroup);
+                    groupsCombo.getStore().add(result);
+                    groupsCombo.setValue(allGroup);
+                    groupsCombo.enable();
+                }
+            });
 
-        fieldsPanel.add(groupsCombo);
+            fieldsPanel.add(groupsCombo);
+        }
 
         //
-        // Groups
-        final Label tagLabel = new Label(DEVICE_MSGS.deviceFilteringPanelTag());
-        tagLabel.setWidth(WIDTH);
-        tagLabel.setStyleAttribute("margin", "5px");
-        fieldsPanel.add(tagLabel);
+        // Tags
+        if (currentSession.hasTagReadPermission()) {
+            Label tagLabel = new Label(DEVICE_MSGS.deviceFilteringPanelTag());
+            tagLabel.setWidth(WIDTH);
+            tagLabel.setStyleAttribute("margin", "5px");
+            fieldsPanel.add(tagLabel);
 
-        allTag = new GwtTag();
-        allTag.setTagName("ANY");
-        allTag.setId(null);
+            allTag = new GwtTag();
+            allTag.setTagName("ANY");
+            allTag.setId(null);
 
-        tagsCombo = new ComboBox<GwtTag>();
-        tagsCombo.setStore(new ListStore<GwtTag>());
-        tagsCombo.disable();
-        tagsCombo.setEditable(false);
-        tagsCombo.setTypeAhead(false);
-        tagsCombo.setAllowBlank(false);
-        tagsCombo.setEmptyText(DEVICE_MSGS.deviceFilteringPanelLoading());
-        tagsCombo.setDisplayField("tagName");
-        tagsCombo.setValueField("id");
-        tagsCombo.setName("tagId");
-        tagsCombo.setWidth(WIDTH);
-        tagsCombo.setStyleAttribute("margin-top", "0px");
-        tagsCombo.setStyleAttribute("margin-left", "5px");
-        tagsCombo.setStyleAttribute("margin-right", "5px");
-        tagsCombo.setStyleAttribute("margin-bottom", "10px");
-        tagsCombo.setTriggerAction(TriggerAction.ALL);
-        tagsCombo.setValue(allTag);
-        tagService.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<List<GwtTag>>() {
+            tagsCombo = new ComboBox<GwtTag>();
+            tagsCombo.setStore(new ListStore<GwtTag>());
+            tagsCombo.disable();
+            tagsCombo.setEditable(false);
+            tagsCombo.setTypeAhead(false);
+            tagsCombo.setAllowBlank(false);
+            tagsCombo.setEmptyText(DEVICE_MSGS.deviceFilteringPanelLoading());
+            tagsCombo.setDisplayField("tagName");
+            tagsCombo.setValueField("id");
+            tagsCombo.setName("tagId");
+            tagsCombo.setWidth(WIDTH);
+            tagsCombo.setStyleAttribute("margin-top", "0px");
+            tagsCombo.setStyleAttribute("margin-left", "5px");
+            tagsCombo.setStyleAttribute("margin-right", "5px");
+            tagsCombo.setStyleAttribute("margin-bottom", "10px");
+            tagsCombo.setTriggerAction(TriggerAction.ALL);
+            tagsCombo.setValue(allTag);
+            tagService.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<List<GwtTag>>() {
 
-            @Override
-            public void onFailure(Throwable caught) {
-                ConsoleInfo.display(MSGS.popupError(), DEVICE_MSGS.deviceFilteringPanelTagsError());
-            }
+                @Override
+                public void onFailure(Throwable caught) {
+                    ConsoleInfo.display(MSGS.popupError(), DEVICE_MSGS.deviceFilteringPanelTagsError());
+                }
 
-            @Override
-            public void onSuccess(List<GwtTag> result) {
-                tagsCombo.getStore().removeAll();
-                tagsCombo.getStore().add(allTag);
-                tagsCombo.getStore().add(result);
-                tagsCombo.setValue(allTag);
-                tagsCombo.enable();
-            }
-        });
+                @Override
+                public void onSuccess(List<GwtTag> result) {
+                    tagsCombo.getStore().removeAll();
+                    tagsCombo.getStore().add(allTag);
+                    tagsCombo.getStore().add(result);
+                    tagsCombo.setValue(allTag);
+                    tagsCombo.enable();
+                }
+            });
 
-        fieldsPanel.add(tagsCombo);
+            fieldsPanel.add(tagsCombo);
+        }
     }
 
     public String unescapeValue(String value) {
@@ -355,8 +360,14 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         applicationIdentifiersField.setValue("");
         customAttribute1Field.setValue("");
         customAttribute2Field.setValue("");
-        groupsCombo.setValue(allGroup);
-        tagsCombo.setValue(allTag);
+
+        if (currentSession.hasGroupReadPermission()) {
+            groupsCombo.setValue(allGroup);
+        }
+        if (currentSession.hasTagReadPermission()) {
+            tagsCombo.setValue(allTag);
+        }
+
         GwtDeviceQuery query = new GwtDeviceQuery();
         query.setScopeId(currentSession.getSelectedAccountId());
         query.setPredicates(new GwtDeviceQueryPredicates());
@@ -365,12 +376,6 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
 
     @Override
     public void doFilter() {
-        // FIXME
-        // GwtDeviceConnectionQuery query = new GwtDeviceConnectionQuery();
-        // query.setScopeId(currentSession.getSelectedAccount().getId());
-        // query.setClientId(clientIdField.getValue());
-        // query.setConnectionStatus(connectionStatusCombo.getSimpleValue().toString());
-
         GwtDeviceQuery query = new GwtDeviceQuery();
         query.setScopeId(currentSession.getSelectedAccountId());
 
@@ -402,10 +407,10 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         if (customAttribute2Field.getValue() != null && !customAttribute2Field.getValue().trim().isEmpty()) {
             predicates.setCustomAttribute2(unescapeValue(customAttribute2Field.getValue()));
         }
-        if (!groupsCombo.getValue().equals(allGroup)) {
+        if (groupsCombo != null && !groupsCombo.getValue().equals(allGroup)) {
             predicates.setGroupId(groupsCombo.getValue().getId());
         }
-        if (!tagsCombo.getValue().equals(allTag)) {
+        if (tagsCombo != null && !tagsCombo.getValue().equals(allTag)) {
             predicates.setTagId(tagsCombo.getValue().getId());
         }
 

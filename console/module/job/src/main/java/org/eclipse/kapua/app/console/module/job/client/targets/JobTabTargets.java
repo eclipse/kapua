@@ -27,7 +27,8 @@ public class JobTabTargets extends KapuaTabItem<GwtJob> {
     private JobTabTargetsGrid targetsGrid;
 
     public JobTabTargets(GwtSession currentSession) {
-        super(MSGS.gridJobTabTargetsLabel(), new KapuaIcon(IconSet.BULLSEYE));
+        super(currentSession, MSGS.gridJobTabTargetsLabel(), new KapuaIcon(IconSet.BULLSEYE));
+
         targetsGrid = new JobTabTargetsGrid(null, currentSession);
     }
 

@@ -19,7 +19,7 @@ public class ConnectionDescriptionTabDescriptor extends AbstractEntityTabDescrip
 
     @Override
     public ConnectionDescriptionTab getTabViewInstance(ConnectionView view, GwtSession currentSession) {
-        return new ConnectionDescriptionTab();
+        return new ConnectionDescriptionTab(currentSession);
     }
 
     @Override

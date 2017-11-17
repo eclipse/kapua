@@ -20,7 +20,7 @@ public class DeviceTabProfileDescriptor extends AbstractEntityTabDescriptor<GwtD
 
     @Override
     public DeviceTabProfile getTabViewInstance(DeviceView view, GwtSession currentSession) {
-        return new DeviceTabProfile();
+        return new DeviceTabProfile(currentSession);
     }
 
     @Override

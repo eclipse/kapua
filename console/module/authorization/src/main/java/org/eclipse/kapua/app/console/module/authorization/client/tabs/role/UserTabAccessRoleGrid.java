@@ -11,25 +11,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.client.tabs.role;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
-import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
-import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
-
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessRole;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessRoleService;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessRoleServiceAsync;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserTabAccessRoleGrid extends EntityGrid<GwtAccessRole> {
 
@@ -41,7 +40,7 @@ public class UserTabAccessRoleGrid extends EntityGrid<GwtAccessRole> {
 
     private UserTabAccessRoleToolbar toolbar;
 
-    public UserTabAccessRoleGrid(AbstractEntityView<GwtAccessRole> entityView, GwtSession currentSession) {
+    public UserTabAccessRoleGrid(GwtSession currentSession, AbstractEntityView<GwtAccessRole> entityView) {
         super(entityView, currentSession);
     }
 

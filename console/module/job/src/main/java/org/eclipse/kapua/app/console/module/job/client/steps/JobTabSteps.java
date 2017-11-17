@@ -26,7 +26,7 @@ public class JobTabSteps extends KapuaTabItem<GwtJob> {
     private JobTabStepsGrid stepsGrid;
 
     public JobTabSteps(GwtSession currentSession) {
-        super(MSGS.gridJobTabStepsLabel(), new KapuaIcon(IconSet.TACHOMETER));
+        super(currentSession, MSGS.gridJobTabStepsLabel(), new KapuaIcon(IconSet.TACHOMETER));
         stepsGrid = new JobTabStepsGrid(null, currentSession);
     }
 

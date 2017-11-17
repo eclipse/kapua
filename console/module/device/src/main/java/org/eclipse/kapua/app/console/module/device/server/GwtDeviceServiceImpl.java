@@ -39,14 +39,19 @@ import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.predicate.KapuaAndPredicate;
 import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.group.GroupService;
+import org.eclipse.kapua.service.authorization.group.shiro.GroupDomain;
+import org.eclipse.kapua.service.authorization.permission.Actions;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
@@ -62,6 +67,7 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventPredicates;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
+import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventDomain;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 
@@ -69,6 +75,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 /**
  * The server side implementation of the Device RPC service.
@@ -76,6 +83,10 @@ import java.util.Set;
 public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements GwtDeviceService {
 
     private static final long serialVersionUID = -1391026997499175151L;
+
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
+    private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
 
     @Override
     public GwtDevice findDevice(String scopeIdString, String deviceIdString)
@@ -104,7 +115,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
 
         DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
         DeviceEventService deviceEventService = locator.getService(DeviceEventService.class);
-        DeviceConnectionService deviceConnectionService = locator.getService(DeviceConnectionService.class);
+        final DeviceConnectionService deviceConnectionService = locator.getService(DeviceConnectionService.class);
         GroupService groupService = locator.getService(GroupService.class);
         UserService userService = locator.getService(UserService.class);
 
@@ -112,14 +123,24 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
 
             KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
             KapuaId deviceId = KapuaEid.parseCompactId(deviceIdString);
-            Device device = deviceRegistryService.find(scopeId, deviceId);
+            final Device device = deviceRegistryService.find(scopeId, deviceId);
 
             if (device != null) {
                 pairs.add(new GwtGroupedNVPair("devInfo", "devStatus", device.getStatus().toString()));
 
                 DeviceConnection deviceConnection = null;
                 if (device.getConnectionId() != null) {
-                    deviceConnection = deviceConnectionService.find(scopeId, device.getConnectionId());
+                    if (device.getConnection() != null) {
+                        deviceConnection = device.getConnection();
+                    } else {
+                        deviceConnection = KapuaSecurityUtils.doPrivileged(new Callable<DeviceConnection>() {
+
+                            @Override
+                            public DeviceConnection call() throws Exception {
+                                return deviceConnectionService.find(device.getScopeId(), device.getConnectionId());
+                            }
+                        });
+                    }
                 }
 
                 if (deviceConnection != null) {
@@ -151,32 +172,36 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                 pairs.add(new GwtGroupedNVPair("devInfo", "devClientId", device.getClientId()));
                 pairs.add(new GwtGroupedNVPair("devInfo", "devDisplayName", device.getDisplayName()));
 
-                if (device.getGroupId() != null) {
-                    Group group = groupService.find(scopeId, device.getGroupId());
-                    if (group != null) {
-                        pairs.add(new GwtGroupedNVPair("devInfo", "devGroupName", group.getName()));
+                if (AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(new GroupDomain(), Actions.read, device.getScopeId()))) {
+                    if (device.getGroupId() != null) {
+                        Group group = groupService.find(scopeId, device.getGroupId());
+                        if (group != null) {
+                            pairs.add(new GwtGroupedNVPair("devInfo", "devGroupName", group.getName()));
+                        }
+                    } else {
+                        pairs.add(new GwtGroupedNVPair("devInfo", "devGroupName", null));
                     }
-                } else {
-                    pairs.add(new GwtGroupedNVPair("devInfo", "devGroupName", null));
                 }
 
-                if (device.getLastEventId() != null) {
-                    DeviceEvent lastEvent = deviceEventService.find(scopeId, device.getLastEventId());
+                if (AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(new DeviceEventDomain(), Actions.read, device.getScopeId()))) {
+                    if (device.getLastEventId() != null) {
+                        DeviceEvent lastEvent = deviceEventService.find(scopeId, device.getLastEventId());
 
-                    if (lastEvent != null) {
-                        pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventType", lastEvent.getResource()));
-                        pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", lastEvent.getReceivedOn() != null ? lastEvent.getReceivedOn().getTime() : null));
+                        if (lastEvent != null) {
+                            pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventType", lastEvent.getResource()));
+                            pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", lastEvent.getReceivedOn() != null ? lastEvent.getReceivedOn().getTime() : null));
+                        } else {
+                            pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventType", null));
+                            pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", null));
+                        }
                     } else {
-                        pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventType", null));
-                        pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", null));
-                    }
-                } else {
-                    if (deviceConnection != null) {
-                        pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventType", deviceConnection.getStatus().name()));
-                        pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", deviceConnection.getModifiedOn().getTime()));
-                    } else {
-                        pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventType", null));
-                        pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", null));
+                        if (deviceConnection != null) {
+                            pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventType", deviceConnection.getStatus().name()));
+                            pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", deviceConnection.getModifiedOn().getTime()));
+                        } else {
+                            pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventType", null));
+                            pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", null));
+                        }
                     }
                 }
 
@@ -200,29 +225,31 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                 pairs.add(new GwtGroupedNVPair("devJava", "devJvmVersion", device.getJvmVersion()));
 
                 // GPS infos retrieval
-                DeviceEventFactory deviceEventFactory = locator.getFactory(DeviceEventFactory.class);
-                DeviceEventQuery eventQuery = deviceEventFactory.newQuery(device.getScopeId());
-                eventQuery.setLimit(1);
-                eventQuery.setSortCriteria(new FieldSortCriteria(DeviceEventPredicates.RECEIVED_ON, SortOrder.DESCENDING));
+                if (AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(new DeviceEventDomain(), Actions.read, device.getScopeId()))) {
+                    DeviceEventFactory deviceEventFactory = locator.getFactory(DeviceEventFactory.class);
+                    DeviceEventQuery eventQuery = deviceEventFactory.newQuery(device.getScopeId());
+                    eventQuery.setLimit(1);
+                    eventQuery.setSortCriteria(new FieldSortCriteria(DeviceEventPredicates.RECEIVED_ON, SortOrder.DESCENDING));
 
-                AndPredicate andPredicate = new AndPredicate();
-                andPredicate.and(new AttributePredicate<KapuaId>(DeviceEventPredicates.DEVICE_ID, device.getId()));
-                andPredicate.and(new AttributePredicate<String>(DeviceEventPredicates.RESOURCE, "BIRTH"));
+                    AndPredicate andPredicate = new AndPredicate();
+                    andPredicate.and(new AttributePredicate<KapuaId>(DeviceEventPredicates.DEVICE_ID, device.getId()));
+                    andPredicate.and(new AttributePredicate<String>(DeviceEventPredicates.RESOURCE, "BIRTH"));
 
-                eventQuery.setPredicate(andPredicate);
+                    eventQuery.setPredicate(andPredicate);
 
-                KapuaListResult<DeviceEvent> events = deviceEventService.query(eventQuery);
-                if (!events.isEmpty()) {
-                    DeviceEvent lastEvent = events.getItem(0);
-                    KapuaPosition eventPosition = lastEvent.getPosition();
+                    KapuaListResult<DeviceEvent> events = deviceEventService.query(eventQuery);
+                    if (!events.isEmpty()) {
+                        DeviceEvent lastEvent = events.getItem(0);
+                        KapuaPosition eventPosition = lastEvent.getPosition();
 
-                    if (eventPosition != null) {
-                        pairs.add(new GwtGroupedNVPair("gpsInfo", "gpsLat", String.valueOf(eventPosition.getLatitude())));
-                        pairs.add(new GwtGroupedNVPair("gpsInfo", "gpsLong", String.valueOf(eventPosition.getLongitude())));
+                        if (eventPosition != null) {
+                            pairs.add(new GwtGroupedNVPair("gpsInfo", "gpsLat", String.valueOf(eventPosition.getLatitude())));
+                            pairs.add(new GwtGroupedNVPair("gpsInfo", "gpsLong", String.valueOf(eventPosition.getLongitude())));
+                        }
+                    } else {
+                        pairs.add(new GwtGroupedNVPair("gpsInfo", "gpsLat", null));
+                        pairs.add(new GwtGroupedNVPair("gpsInfo", "gpsLong", null));
                     }
-                } else {
-                    pairs.add(new GwtGroupedNVPair("gpsInfo", "gpsLat", null));
-                    pairs.add(new GwtGroupedNVPair("gpsInfo", "gpsLong", null));
                 }
 
                 pairs.add(new GwtGroupedNVPair("modemInfo", "modemImei", device.getImei()));

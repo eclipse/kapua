@@ -11,13 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.user.client.tabs.roles;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsolePermissionMessages;
 import org.eclipse.kapua.app.console.module.authorization.client.tabs.role.UserTabAccessRoleGrid;
 import org.eclipse.kapua.app.console.module.authorization.client.tabs.role.UserTabAccessRoleToolbar;
@@ -30,8 +29,8 @@ public class UserTabItemAccessRole extends KapuaTabItem<GwtUser> {
     private UserTabAccessRoleGrid accessRoleGrid;
 
     public UserTabItemAccessRole(GwtSession currentSession) {
-        super(MSGS.gridUserTabRolesLabel(), new KapuaIcon(IconSet.STREET_VIEW));
-        accessRoleGrid = new UserTabAccessRoleGrid(null, currentSession);
+        super(currentSession, MSGS.gridUserTabRolesLabel(), new KapuaIcon(IconSet.STREET_VIEW));
+        accessRoleGrid = new UserTabAccessRoleGrid(currentSession, null);
     }
 
     public UserTabAccessRoleGrid getAccessRoleGrid() {
