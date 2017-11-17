@@ -38,16 +38,15 @@ import java.util.Set;
         "notBefore",
         "notAfter",
         "status",
-        "digest",
+        "signature",
         "privateKey",
-        "default",
         "ca",
         "caId",
         "password"
 }, factoryClass = CertificateXmlRegistry.class, factoryMethod = "newCertificate")
 public interface Certificate extends KapuaNamedEntity {
 
-    String TYPE = "account";
+    String TYPE = "certificate";
 
     @Override
     default String getType() {
@@ -92,9 +91,9 @@ public interface Certificate extends KapuaNamedEntity {
 
     public void setStatus(CertificateStatus status);
 
-    public byte[] getDigest();
+    public byte[] getSignature();
 
-    public void setDigest(byte[] digest);
+    public void setSignature(byte[] digest);
 
     public String getPrivateKey();
 
