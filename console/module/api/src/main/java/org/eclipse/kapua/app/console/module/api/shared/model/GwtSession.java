@@ -46,7 +46,15 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     private boolean hasDeviceReadPermission;
     private boolean hasDeviceUpdatePermission;
     private boolean hasDeviceDeletePermission;
-    private boolean hasDeviceManagePermission;
+
+    private boolean hasDeviceEventCreatePermission;
+    private boolean hasDeviceEventReadPermission;
+    private boolean hasDeviceEventUpdatePermission;
+    private boolean hasDeviceEventDeletePermission;
+
+    private boolean hasDeviceManageReadPermission;
+    private boolean hasDeviceManageWritePermission;
+    private boolean hasDeviceManageExecutePermission;
 
     private boolean hasDataReadPermission;
 
@@ -397,12 +405,60 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
         this.hasDeviceDeletePermission = hasDeviceDeletePermission;
     }
 
-    public boolean hasDeviceManagePermission() {
-        return hasDeviceManagePermission;
+    public boolean hasDeviceEventCreatePermission() {
+        return hasDeviceEventCreatePermission;
     }
 
-    public void setDeviceManagePermission(boolean hasDeviceManagePermission) {
-        this.hasDeviceManagePermission = hasDeviceManagePermission;
+    public void setDeviceEventCreatePermission(boolean hasDeviceEventCreatePermission) {
+        this.hasDeviceEventCreatePermission = hasDeviceEventCreatePermission;
+    }
+
+    public boolean hasDeviceEventReadPermission() {
+        return hasDeviceEventReadPermission;
+    }
+
+    public void setDeviceEventReadPermission(boolean hasDeviceEventReadPermission) {
+        this.hasDeviceEventReadPermission = hasDeviceEventReadPermission;
+    }
+
+    public boolean hasDeviceEventUpdatePermission() {
+        return hasDeviceEventUpdatePermission;
+    }
+
+    public void setDeviceEventUpdatePermission(boolean hasDeviceEventUpdatePermission) {
+        this.hasDeviceEventUpdatePermission = hasDeviceEventUpdatePermission;
+    }
+
+    public boolean hasDeviceEventDeletePermission() {
+        return hasDeviceEventDeletePermission;
+    }
+
+    public void setDeviceEventDeletePermission(boolean hasDeviceEventDeletePermission) {
+        this.hasDeviceEventDeletePermission = hasDeviceEventDeletePermission;
+    }
+
+    public boolean hasDeviceManageReadPermission() {
+        return hasDeviceManageReadPermission;
+    }
+
+    public void setDeviceManageReadPermission(boolean hasDeviceManageReadPermission) {
+        this.hasDeviceManageReadPermission = hasDeviceManageReadPermission;
+    }
+
+    public boolean hasDeviceManageWritePermission() {
+        return hasDeviceManageWritePermission;
+    }
+
+    public void setDeviceManageWritePermission(boolean hasDeviceManageWritePermission) {
+        this.hasDeviceManageWritePermission = hasDeviceManageWritePermission;
+    }
+
+    public boolean hasDeviceManageExecutePermission() {
+        return hasDeviceManageExecutePermission;
+    }
+
+    public void setDeviceManageExecutePermission(boolean hasDeviceManageExecutePermission) {
+        this.hasDeviceManageExecutePermission = hasDeviceManageExecutePermission;
     }
 
     public boolean hasCredentialCreatePermission() {

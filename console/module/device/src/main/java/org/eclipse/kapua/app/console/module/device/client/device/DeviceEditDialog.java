@@ -64,12 +64,10 @@ public class DeviceEditDialog extends DeviceAddDialog {
         // General info
         selectedDevice.setDisplayName(KapuaSafeHtmlUtils.htmlUnescape(displayNameField.getValue()));
         selectedDevice.setGwtDeviceStatus(statusCombo.getSimpleValue().name());
-        selectedDevice.setGroupId(groupCombo.getValue().getId());
 
-        // Security Options
-        // m_selectedDevice.setCredentialsTight(GwtDeviceCredentialsTight.getEnumFromLabel(credentialsTightCombo.getSimpleValue()).name());
-        // m_selectedDevice.setCredentialsAllowChange(allowCredentialsChangeCheckbox.getValue());
-        // m_selectedDevice.setDeviceUserId(deviceUserCombo.getValue().getId());
+        if (currentSession.hasGroupReadPermission()) {
+            selectedDevice.setGroupId(groupCombo.getValue().getId());
+        }
 
         // Custom attributes
         selectedDevice.setCustomAttribute1(KapuaSafeHtmlUtils.htmlUnescape(customAttribute1Field.getValue()));
@@ -85,12 +83,13 @@ public class DeviceEditDialog extends DeviceAddDialog {
         // Submit
         gwtDeviceService.updateAttributes(xsrfToken, selectedDevice, new AsyncCallback<GwtDevice>() {
 
+            @Override
             public void onFailure(Throwable caught) {
-                // FailureHandler.handle(caught);
                 exitStatus = false;
                 exitMessage = DEVICE_MSGS.deviceFormEditError(caught.getLocalizedMessage());
             }
 
+            @Override
             public void onSuccess(GwtDevice gwtDevice) {
                 exitStatus = true;
                 exitMessage = DEVICE_MSGS.deviceUpdateSuccess();
@@ -119,38 +118,25 @@ public class DeviceEditDialog extends DeviceAddDialog {
             displayNameField.setValue(device.getUnescapedDisplayName());
             statusCombo.setSimpleValue(GwtDeviceQueryPredicates.GwtDeviceStatus.valueOf(device.getGwtDeviceStatus()));
 
-            // Security options data
-            // credentialsTightCombo.setSimpleValue(m_selectedDevice.getCredentialTightEnum().getLabel());
-            // allowCredentialsChangeCheckbox.setValue(m_selectedDevice.getCredentialsAllowChange());
-            // gwtUserService.find(m_currentSession.getSelectedAccount().getId(), m_selectedDevice.getDeviceUserId(), new AsyncCallback<GwtUser>() {
-            // @Override
-            // public void onFailure(Throwable caught)
-            // {
-            // FailureHandler.handle(caught);
-            // }
-            //
-            // @Override
-            // public void onSuccess(GwtUser gwtUser)
-            // {
-            // deviceUserCombo.setValue(gwtUser);
-            // }
-            // });
-            if (device.getGroupId() != null) {
-                gwtGroupService.find(currentSession.getSelectedAccountId(), device.getGroupId(), new AsyncCallback<GwtGroup>() {
+            if (currentSession.hasGroupReadPermission()) {
+                if (device.getGroupId() != null) {
+                    gwtGroupService.find(currentSession.getSelectedAccountId(), device.getGroupId(), new AsyncCallback<GwtGroup>() {
 
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        FailureHandler.handle(caught);
-                    }
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            FailureHandler.handle(caught);
+                        }
 
-                    @Override
-                    public void onSuccess(GwtGroup result) {
-                        groupCombo.setValue(result);
-                    }
-                });
-            } else {
-                groupCombo.setValue(NO_GROUP);
+                        @Override
+                        public void onSuccess(GwtGroup result) {
+                            groupCombo.setValue(result);
+                        }
+                    });
+                } else {
+                    groupCombo.setValue(NO_GROUP);
+                }
             }
+
             // // Custom attributes data
             customAttribute1Field.setValue(device.getUnescapedCustomAttribute1());
             customAttribute2Field.setValue(device.getUnescapedCustomAttribute2());

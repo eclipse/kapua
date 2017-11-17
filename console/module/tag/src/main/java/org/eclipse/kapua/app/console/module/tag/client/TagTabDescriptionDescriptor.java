@@ -19,7 +19,7 @@ public class TagTabDescriptionDescriptor extends AbstractEntityTabDescriptor<Gwt
 
     @Override
     public TagTabDescription getTabViewInstance(TagView view, GwtSession currentSession) {
-        return new TagTabDescription();
+        return new TagTabDescription(currentSession);
     }
 
     @Override

@@ -11,13 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.account.client.childuser;
 
+import com.google.gwt.user.client.Element;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
-
-import com.google.gwt.user.client.Element;
 
 public class AccountChildUserTab extends KapuaTabItem<GwtAccount> {
 
@@ -25,7 +24,7 @@ public class AccountChildUserTab extends KapuaTabItem<GwtAccount> {
     protected GwtSession currentSession;
 
     public AccountChildUserTab(GwtSession currentSession) {
-        super("Users", new KapuaIcon(IconSet.USERS));
+        super(currentSession, "Users", new KapuaIcon(IconSet.USERS));
         this.currentSession = currentSession;
         userGrid = new AccountChildUserGrid(currentSession);
 

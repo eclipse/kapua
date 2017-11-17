@@ -11,25 +11,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.server;
 
-import javax.servlet.http.HttpServletRequest;
-
-import java.util.concurrent.Callable;
-
-import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtJwtCredential;
-import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
-import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
-import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtJwtCredential;
+import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtLoginCredential;
+import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationService;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.account.shared.util.KapuaGwtAccountModelConverter;
-import org.eclipse.kapua.app.console.module.user.shared.util.KapuaGwtUserModelConverter;
-import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtLoginCredential;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
+import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.util.KapuaGwtUserModelConverter;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -55,7 +51,9 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleDomain;
 import org.eclipse.kapua.service.datastore.DatastoreDomain;
+import org.eclipse.kapua.service.device.management.commons.DeviceManagementDomain;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionDomain;
+import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventDomain;
 import org.eclipse.kapua.service.device.registry.internal.DeviceDomain;
 import org.eclipse.kapua.service.job.internal.JobDomain;
 import org.eclipse.kapua.service.tag.internal.TagDomain;
@@ -65,6 +63,9 @@ import org.eclipse.kapua.service.user.internal.UserDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.concurrent.Callable;
+
 public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet implements GwtAuthorizationService {
 
     private static final long serialVersionUID = -3919578632016541047L;
@@ -73,6 +74,8 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
 
     private static final Domain ACCOUNT_DOMAIN = new AccountDomain();
     private static final Domain DEVICE_DOMAIN = new DeviceDomain();
+    private static final Domain DEVICE_EVENT_DOMAIN = new DeviceEventDomain();
+    private static final Domain DEVICE_MANAGEMENT_DOMAIN = new DeviceManagementDomain();
     private static final Domain DATASTORE_DOMAIN = new DatastoreDomain();
     private static final Domain TAG_DOMAIN = new TagDomain();
     private static final Domain USER_DOMAIN = new UserDomain();
@@ -143,16 +146,16 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         return null;
     }
 
-    private void handleLogin(final AuthenticationService authenticationService, final JwtCredentials credentials) throws KapuaException {
+    private void handleLogin(AuthenticationService authenticationService, JwtCredentials credentials) throws KapuaException {
         try {
             authenticationService.login(credentials);
-        } catch (final KapuaAuthenticationException e) {
+        } catch (KapuaAuthenticationException e) {
             logger.debug("First level login attempt failed", e);
             handleLoginError(authenticationService, credentials, e);
         }
     }
 
-    private void handleLoginError(final AuthenticationService authenticationService, final JwtCredentials credentials, final KapuaAuthenticationException e) throws KapuaException {
+    private void handleLoginError(AuthenticationService authenticationService, JwtCredentials credentials, KapuaAuthenticationException e) throws KapuaException {
         logger.debug("Handling error code: {}", e.getCode());
 
         if (!isAccountCreationEnabled()) {
@@ -255,7 +258,15 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         boolean hasDeviceRead = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_DOMAIN, Actions.read, kapuaSession.getScopeId(), Group.ANY));
         boolean hasDeviceUpdate = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_DOMAIN, Actions.write, kapuaSession.getScopeId(), Group.ANY));
         boolean hasDeviceDelete = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_DOMAIN, Actions.delete, kapuaSession.getScopeId(), Group.ANY));
-        boolean hasDeviceManage = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_DOMAIN, Actions.write, kapuaSession.getScopeId(), Group.ANY));
+
+        boolean hasDeviceEventCreate = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_EVENT_DOMAIN, Actions.write, kapuaSession.getScopeId()));
+        boolean hasDeviceEventRead = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_EVENT_DOMAIN, Actions.read, kapuaSession.getScopeId()));
+        boolean hasDeviceEventUpdate = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_EVENT_DOMAIN, Actions.write, kapuaSession.getScopeId()));
+        boolean hasDeviceEventDelete = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_EVENT_DOMAIN, Actions.delete, kapuaSession.getScopeId()));
+
+        boolean hasDeviceManageRead = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.read, kapuaSession.getScopeId()));
+        boolean hasDeviceManageWrite = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.write, kapuaSession.getScopeId()));
+        boolean hasDeviceManageExecute = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.execute, kapuaSession.getScopeId()));
 
         boolean hasDataRead = authorizationService.isPermitted(permissionFactory.newPermission(DATASTORE_DOMAIN, Actions.read, kapuaSession.getScopeId()));
 
@@ -347,7 +358,15 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         gwtSession.setDeviceReadPermission(hasDeviceRead);
         gwtSession.setDeviceUpdatePermission(hasDeviceUpdate);
         gwtSession.setDeviceDeletePermission(hasDeviceDelete);
-        gwtSession.setDeviceManagePermission(hasDeviceManage);
+
+        gwtSession.setDeviceManageReadPermission(hasDeviceManageRead);
+        gwtSession.setDeviceManageWritePermission(hasDeviceManageWrite);
+        gwtSession.setDeviceManageExecutePermission(hasDeviceManageExecute);
+
+        gwtSession.setDeviceEventCreatePermission(hasDeviceEventCreate);
+        gwtSession.setDeviceEventReadPermission(hasDeviceEventRead);
+        gwtSession.setDeviceEventUpdatePermission(hasDeviceEventUpdate);
+        gwtSession.setDeviceEventDeletePermission(hasDeviceEventDelete);
 
         gwtSession.setDataReadPermission(hasDataRead);
 
