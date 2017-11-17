@@ -147,12 +147,12 @@ public class CertificateImpl extends AbstractKapuaUpdatableEntity implements Cer
     }
 
     @Override
-    public byte[] getDigest() {
+    public byte[] getSignature() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void setDigest(byte[] digest) {
+    public void setSignature(byte[] digest) {
         throw new UnsupportedOperationException();
     }
 
