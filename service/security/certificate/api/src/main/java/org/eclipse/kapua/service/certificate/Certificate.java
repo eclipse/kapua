@@ -100,10 +100,6 @@ public interface Certificate extends KapuaNamedEntity {
 
     public void setPrivateKey(String privateKey);
 
-    public Boolean getDefault();
-
-    public void setDefault(Boolean isDefault);
-
     public Boolean getCa();
 
     public void setCa(Boolean isCa);
