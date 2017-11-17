@@ -157,16 +157,6 @@ public class CertificateImpl extends AbstractKapuaUpdatableEntity implements Cer
     }
 
     @Override
-    public Boolean getDefault() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void setDefault(Boolean isDefault) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public Boolean getCa() {
         throw new UnsupportedOperationException();
     }
