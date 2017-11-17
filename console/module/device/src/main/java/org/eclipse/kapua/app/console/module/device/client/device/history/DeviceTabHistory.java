@@ -11,25 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.client.device.history;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.ExportButton;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
-import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
-import org.eclipse.kapua.app.console.module.api.client.ui.widget.DateRangeSelector;
-import org.eclipse.kapua.app.console.module.api.client.ui.widget.DateRangeSelectorListener;
-import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaMenuItem;
-import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.module.api.client.util.KapuaLoadListener;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceEvent;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
@@ -64,8 +45,26 @@ import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.ExportButton;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
+import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.DateRangeSelector;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.DateRangeSelectorListener;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaMenuItem;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.module.api.client.util.KapuaLoadListener;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceEvent;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceServiceAsync;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
 
@@ -93,11 +92,19 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
     protected boolean refreshProcess;
 
     public DeviceTabHistory(GwtSession currentSession) {
-        super(DEVICES_MSGS.tabHistory(), new KapuaIcon(IconSet.HISTORY));
+        super(currentSession, DEVICES_MSGS.tabHistory(), new KapuaIcon(IconSet.HISTORY));
         this.currentSession = currentSession;
         initialized = false;
     }
 
+    @Override
+    public void setEntity(GwtDevice gwtDevice) {
+        super.setEntity(gwtDevice);
+
+        setEnabled(gwtDevice != null && currentSession.hasDeviceEventReadPermission());
+    }
+
+    @Override
     protected void onRender(Element parent, int index) {
 
         super.onRender(parent, index);
@@ -172,6 +179,7 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
         dateRangeSelector = new DateRangeSelector();
         dateRangeSelector.setListener(new DateRangeSelectorListener() {
 
+            @Override
             public void onUpdate() {
                 refresh();
             }
@@ -321,6 +329,7 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
         public DataLoadListener() {
         }
 
+        @Override
         public void loaderLoad(LoadEvent le) {
             if (le.exception != null) {
                 FailureHandler.handle(le.exception);

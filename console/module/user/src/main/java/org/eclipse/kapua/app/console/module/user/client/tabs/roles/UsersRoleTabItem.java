@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.user.client.tabs.roles;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
@@ -18,17 +20,14 @@ import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Element;
-
 public class UsersRoleTabItem extends KapuaTabItem<GwtRole> {
 
     private static final ConsoleRoleMessages MSGS = GWT.create(ConsoleRoleMessages.class);
     RoleSubjectGrid rolePermissionGrid;
 
-    public UsersRoleTabItem(GwtSession gwtSession) {
-        super(MSGS.roleTabSubjectGridTitle(), new KapuaIcon(IconSet.SUPPORT));
-        rolePermissionGrid = new RoleSubjectGrid(null, gwtSession);
+    public UsersRoleTabItem(GwtSession currentSession) {
+        super(currentSession, MSGS.roleTabSubjectGridTitle(), new KapuaIcon(IconSet.SUPPORT));
+        rolePermissionGrid = new RoleSubjectGrid(null, currentSession);
 
     }
 

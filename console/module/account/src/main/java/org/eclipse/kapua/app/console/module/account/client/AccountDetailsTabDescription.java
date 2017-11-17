@@ -67,13 +67,11 @@ public class AccountDetailsTabDescription extends KapuaTabItem<GwtAccount> {
     private boolean dirty;
     private boolean initialized;
     private GwtAccount selectedAccount;
-    private GwtSession currentSession;
     private AccountDetailsView accoountDetailsView;
     private ToolBar accountsToolBar;
 
     public AccountDetailsTabDescription(GwtSession currentSession, AccountDetailsView accoountDetailsView, AccountView centerAccountView) {
-        super(MSGS.entityTabDescriptionTitle(), new KapuaIcon(IconSet.INFO));
-        this.currentSession = currentSession;
+        super(currentSession, MSGS.entityTabDescriptionTitle(), new KapuaIcon(IconSet.INFO));
         this.accoountDetailsView = accoountDetailsView;
         this.centerAccountView = centerAccountView;
 
@@ -108,7 +106,7 @@ public class AccountDetailsTabDescription extends KapuaTabItem<GwtAccount> {
         RpcProxy<ListLoadResult<GwtGroupedNVPair>> proxy = new RpcProxy<ListLoadResult<GwtGroupedNVPair>>() {
 
             @Override
-            protected void load(Object loadConfig, final AsyncCallback<ListLoadResult<GwtGroupedNVPair>> callback) {
+            protected void load(Object loadConfig, AsyncCallback<ListLoadResult<GwtGroupedNVPair>> callback) {
                 gwtAccountService.getAccountInfo(selectedAccount.getId(), callback);
             }
         };
@@ -165,6 +163,7 @@ public class AccountDetailsTabDescription extends KapuaTabItem<GwtAccount> {
                         final AccountForm accountForm = new AccountForm(currentSession, selectedAccount);
                         accountForm.addListener(Events.Hide, new Listener<ComponentEvent>() {
 
+                            @Override
                             public void handleEvent(ComponentEvent be) {
 
                                 // reload the account and update the grid
@@ -187,6 +186,7 @@ public class AccountDetailsTabDescription extends KapuaTabItem<GwtAccount> {
         return accountsToolBar;
     }
 
+    @Override
     public void refresh() {
         if (initialized && dirty && selectedAccount != null) {
             updateAccountInfo();
@@ -215,6 +215,7 @@ public class AccountDetailsTabDescription extends KapuaTabItem<GwtAccount> {
         public DataLoadListener() {
         }
 
+        @Override
         public void loaderLoad(LoadEvent le) {
             if (le.exception != null) {
                 FailureHandler.handle(le.exception);

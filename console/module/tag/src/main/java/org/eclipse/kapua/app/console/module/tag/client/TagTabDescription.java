@@ -11,21 +11,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.tag.client;
 
-import org.eclipse.kapua.app.console.module.api.client.ui.tab.EntityDescriptionTabItem;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
-
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.ui.tab.EntityDescriptionTabItem;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
 import org.eclipse.kapua.app.console.module.tag.shared.service.GwtTagService;
 import org.eclipse.kapua.app.console.module.tag.shared.service.GwtTagServiceAsync;
 
 public class TagTabDescription extends EntityDescriptionTabItem<GwtTag> {
 
-    public TagTabDescription() {
+    public TagTabDescription(GwtSession currentSession) {
+        super(currentSession);
     }
 
     private static final GwtTagServiceAsync GWT_TAG_SERVICE = GWT.create(GwtTagService.class);

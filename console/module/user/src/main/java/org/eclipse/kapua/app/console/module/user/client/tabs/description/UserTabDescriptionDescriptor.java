@@ -20,7 +20,7 @@ public class UserTabDescriptionDescriptor extends AbstractEntityTabDescriptor<Gw
 
     @Override
     public UserTabDescription getTabViewInstance(UserView view, GwtSession currentSession) {
-        return new UserTabDescription();
+        return new UserTabDescription(currentSession);
     }
 
     @Override

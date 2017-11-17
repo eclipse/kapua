@@ -25,7 +25,6 @@ import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.util.Constants;
@@ -38,6 +37,7 @@ import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupService;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupServiceAsync;
+import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceCreator;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPredicates;
@@ -167,99 +167,34 @@ public class DeviceAddDialog extends EntityAddEditDialog {
 
         fieldSet.add(statusCombo, formData);
 
-        groupCombo = new ComboBox<GwtGroup>();
-        groupCombo.setStore(new ListStore<GwtGroup>());
-        groupCombo.setFieldLabel("* " + DEVICE_MSGS.deviceFormGroup());
-        groupCombo.setForceSelection(true);
-        groupCombo.setTypeAhead(false);
-        groupCombo.setTriggerAction(TriggerAction.ALL);
-        groupCombo.setAllowBlank(false);
-        groupCombo.setEditable(false);
-        groupCombo.setDisplayField("groupName");
-        groupCombo.setValueField("id");
+        if (currentSession.hasGroupReadPermission()) {
+            groupCombo = new ComboBox<GwtGroup>();
+            groupCombo.setStore(new ListStore<GwtGroup>());
+            groupCombo.setFieldLabel("* " + DEVICE_MSGS.deviceFormGroup());
+            groupCombo.setForceSelection(true);
+            groupCombo.setTypeAhead(false);
+            groupCombo.setTriggerAction(TriggerAction.ALL);
+            groupCombo.setAllowBlank(false);
+            groupCombo.setEditable(false);
+            groupCombo.setDisplayField("groupName");
+            groupCombo.setValueField("id");
 
-        gwtGroupService.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<List<GwtGroup>>() {
+            gwtGroupService.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<List<GwtGroup>>() {
 
-            @Override
-            public void onFailure(Throwable caught) {
-                FailureHandler.handle(caught);
-            }
+                @Override
+                public void onFailure(Throwable caught) {
+                    FailureHandler.handle(caught);
+                }
 
-            @Override
-            public void onSuccess(List<GwtGroup> result) {
-                groupCombo.getStore().removeAll();
-                groupCombo.getStore().add(NO_GROUP);
-                groupCombo.getStore().add(result);
-            }
-        });
-        fieldSet.add(groupCombo, formData);
-
-        // Tag fieldset
-        // FieldSet fieldSetTags = new FieldSet();
-        // FormLayout layoutTags = new FormLayout();
-        // layoutTags.setLabelWidth(Constants.LABEL_WIDTH_DEVICE_FORM);
-        // fieldSetTags.setLayout(layoutTags);
-        // fieldSetTags.setHeading(MSGS.deviceFormFieldsetTags());
-
-        // Device Custom attributes fieldset
-        FormLayout layoutSecurityOptions = new FormLayout();
-        layoutSecurityOptions.setLabelWidth(Constants.LABEL_WIDTH_DEVICE_FORM);
-
-        // FieldSet fieldSetSecurityOptions = new FieldSet();
-        // fieldSetSecurityOptions.setLayout(layoutSecurityOptions);
-        // fieldSetSecurityOptions.setHeading(MSGS.deviceFormFieldsetSecurityOptions());
-
-        // Provisioned Credentials Tight
-        // credentialsTightCombo = new SimpleComboBox<String>();
-        // credentialsTightCombo.setName("provisionedCredentialsTight");
-        // credentialsTightCombo.setEditable(false);
-        // credentialsTightCombo.setTypeAhead(false);
-        // credentialsTightCombo.setAllowBlank(false);
-        // credentialsTightCombo.setFieldLabel(MSGS.deviceFormProvisionedCredentialsTight());
-        // credentialsTightCombo.setToolTip(MSGS.deviceFormProvisionedCredentialsTightTooltip());
-        // credentialsTightCombo.setTriggerAction(TriggerAction.ALL);
-
-        // fieldSetSecurityOptions.add(credentialsTightCombo, formData);
-
-        // credentialsTightCombo.add(GwtDeviceCredentialsTight.INHERITED.getLabel());
-        // credentialsTightCombo.add(GwtDeviceCredentialsTight.LOOSE.getLabel());
-        // credentialsTightCombo.add(GwtDeviceCredentialsTight.STRICT.getLabel());
-        //
-        // credentialsTightCombo.setSimpleValue(GwtDeviceCredentialsTight.INHERITED.getLabel());
-
-        // Device User
-        // RpcProxy<ListLoadResult<GwtUser>> deviceUserProxy = new RpcProxy<ListLoadResult<GwtUser>>() {
-        // @Override
-        // protected void load(Object loadConfig, AsyncCallback<ListLoadResult<GwtUser>> callback)
-        // {
-        // gwtUserService.findAll(m_currentSession.getSelectedAccount().getId(),
-        // callback);
-        // }
-        // };
-
-        // BaseListLoader<ListLoadResult<GwtUser>> deviceUserLoader = new BaseListLoader<ListLoadResult<GwtUser>>(deviceUserProxy);
-        // ListStore<GwtUser> deviceUserStore = new ListStore<GwtUser>(deviceUserLoader);
-
-        // deviceUserCombo = new ComboBox<GwtUser>();
-        // deviceUserCombo.setName("deviceUserCombo");
-        // deviceUserCombo.setEditable(false);
-        // deviceUserCombo.setTypeAhead(false);
-        // deviceUserCombo.setAllowBlank(false);
-        // deviceUserCombo.setFieldLabel(MSGS.deviceFormDeviceUser());
-        // deviceUserCombo.setTriggerAction(TriggerAction.ALL);
-        // deviceUserCombo.setStore(deviceUserStore);
-        // deviceUserCombo.setDisplayField("username");
-        // deviceUserCombo.setValueField("id");
-        // fieldSetSecurityOptions.add(deviceUserCombo, formData);
-
-        // Allow credential change
-        // allowCredentialsChangeCheckbox = new CheckBox();
-        // allowCredentialsChangeCheckbox.setName("allowNewUnprovisionedDevicesCheckbox");
-        // allowCredentialsChangeCheckbox.setFieldLabel(MSGS.deviceFormAllowCredentialsChange());
-        // allowCredentialsChangeCheckbox.setToolTip(MSGS.deviceFormAllowCredentialsChangeTooltip());
-        // allowCredentialsChangeCheckbox.setBoxLabel("");
-        // allowCredentialsChangeCheckbox.hide();
-        // fieldSetSecurityOptions.add(allowCredentialsChangeCheckbox, formData);
+                @Override
+                public void onSuccess(List<GwtGroup> result) {
+                    groupCombo.getStore().removeAll();
+                    groupCombo.getStore().add(NO_GROUP);
+                    groupCombo.getStore().add(result);
+                }
+            });
+            fieldSet.add(groupCombo, formData);
+        }
 
         // Device Custom attributes fieldset
         FieldSet fieldSetCustomAttributes = new FieldSet();
@@ -311,176 +246,21 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         fieldSet.add(optlock, formData);
 
         formPanel.add(fieldSet);
-        // m_formPanel.add(fieldSetTags);
-        // m_formPanel.add(fieldSetSecurityOptions);
         formPanel.add(fieldSetCustomAttributes);
-
-        // formPanel.setButtonAlign(HorizontalAlignment.CENTER);
-        //
-        // Button submitButton = new Button(MSGS.deviceFormSubmitButton());
-        // submitButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
-        //
-        // @Override
-        // public void handleEvent(BaseEvent be) {
-        // // make sure all visible fields are valid before performing the action
-        // for (Field<?> field : formPanel.getFields()) {
-        // if (field.isVisible() && !field.isValid()) {
-        // MessageBox.alert(MSGS.error(), MSGS.formErrors(), null);
-        // return;
-        // }
-        // }
-        //
-        // if (selectedDevice == null) {
-        //
-        // final GwtDeviceCreator gwtDeviceCreator = new GwtDeviceCreator();
-        // gwtDeviceCreator.setScopeId(currentSession.getSelectedAccount().getId());
-        //
-        // gwtDeviceCreator.setClientId(clientIdField.getValue());
-        // gwtDeviceCreator.setGroupId(groupCombo.getValue().getId());
-        // gwtDeviceCreator.setDisplayName(displayNameField.getValue());
-        //
-        // // Security Options
-        // // gwtDeviceCreator.setGwtCredentialsTight(credentialsTightCombo.getSimpleValue());
-        // // gwtDeviceCreator.setGwtPreferredUserId(deviceUserCombo.getValue().getId());
-        //
-        // // Custom attributes
-        // gwtDeviceCreator.setCustomAttribute1(unescapeValue(customAttribute1Field.getValue()));
-        // gwtDeviceCreator.setCustomAttribute2(unescapeValue(customAttribute2Field.getValue()));
-        // gwtDeviceCreator.setCustomAttribute3(unescapeValue(customAttribute3Field.getValue()));
-        // gwtDeviceCreator.setCustomAttribute4(unescapeValue(customAttribute4Field.getValue()));
-        // gwtDeviceCreator.setCustomAttribute5(unescapeValue(customAttribute5Field.getValue()));
-        //
-        // //
-        // // Getting XSRF token
-        // gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
-        //
-        // @Override
-        // public void onFailure(Throwable ex) {
-        // FailureHandler.handle(ex);
-        // }
-        //
-        // @Override
-        // public void onSuccess(GwtXSRFToken token) {
-        // gwtDeviceService.createDevice(token, gwtDeviceCreator, new AsyncCallback<GwtDevice>() {
-        //
-        // @Override
-        // public void onFailure(Throwable caught) {
-        // FailureHandler.handle(caught);
-        // }
-        //
-        // public void onSuccess(final GwtDevice gwtDevice) {
-        // //
-        // // Getting XSRF token
-        // gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
-        //
-        // @Override
-        // public void onFailure(Throwable ex) {
-        // FailureHandler.handle(ex);
-        // }
-        //
-        // @Override
-        // public void onSuccess(GwtXSRFToken token) {
-        // hide();
-        // ConsoleInfo.display(MSGS.info(), MSGS.deviceUpdateSuccess());
-        // }
-        // });
-        //
-        // }
-        // });
-        // }
-        // });
-        // }
-        // // Edit
-        // else {
-        // // General info
-        // selectedDevice.setDisplayName(unescapeValue(displayNameField.getValue()));
-        // selectedDevice.setGwtDeviceStatus(statusCombo.getSimpleValue().name());
-        // selectedDevice.setGroupId(groupCombo.getValue().getId());
-        //
-        // // Security Options
-        // // m_selectedDevice.setCredentialsTight(GwtDeviceCredentialsTight.getEnumFromLabel(credentialsTightCombo.getSimpleValue()).name());
-        // // m_selectedDevice.setCredentialsAllowChange(allowCredentialsChangeCheckbox.getValue());
-        // // m_selectedDevice.setDeviceUserId(deviceUserCombo.getValue().getId());
-        //
-        // // Custom attributes
-        // selectedDevice.setCustomAttribute1(unescapeValue(customAttribute1Field.getValue()));
-        // selectedDevice.setCustomAttribute2(unescapeValue(customAttribute2Field.getValue()));
-        // selectedDevice.setCustomAttribute3(unescapeValue(customAttribute3Field.getValue()));
-        // selectedDevice.setCustomAttribute4(unescapeValue(customAttribute4Field.getValue()));
-        // selectedDevice.setCustomAttribute5(unescapeValue(customAttribute5Field.getValue()));
-        //
-        // // Optlock
-        // selectedDevice.setOptlock(optlock.getValue().intValue());
-        //
-        // //
-        // // Getting XSRF token
-        // gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
-        //
-        // @Override
-        // public void onFailure(Throwable ex) {
-        // FailureHandler.handle(ex);
-        // }
-        //
-        // @Override
-        // public void onSuccess(GwtXSRFToken token) {
-        // gwtDeviceService.updateAttributes(token, selectedDevice, new AsyncCallback<GwtDevice>() {
-        //
-        // public void onFailure(Throwable caught) {
-        // FailureHandler.handle(caught);
-        // }
-        //
-        // public void onSuccess(GwtDevice gwtDevice) {
-        // //
-        // // Getting XSRF token
-        // gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
-        //
-        // @Override
-        // public void onFailure(Throwable ex) {
-        // FailureHandler.handle(ex);
-        // }
-        //
-        // @Override
-        // public void onSuccess(GwtXSRFToken token) {
-        // hide();
-        // ConsoleInfo.display(MSGS.info(), selectedDevice == null ? MSGS.deviceCreationSuccess() : MSGS.deviceUpdateSuccess());
-        // }
-        // });
-        //
-        // }
-        // });
-        // }
-        // });
-        // }
-        // }
-        // });
-        //
-        // Button cancelButton = new Button(MSGS.deviceFormCancelButton());
-        // cancelButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
-        //
-        // @Override
-        // public void handleEvent(BaseEvent be) {
-        // hide();
-        // }
-        // });
-        //
-        // formPanel.addButton(submitButton);
-        // formPanel.addButton(cancelButton);
 
         bodyPanel.add(formPanel);
     }
 
     @Override
     public void submit() {
-        final GwtDeviceCreator gwtDeviceCreator = new GwtDeviceCreator();
+        GwtDeviceCreator gwtDeviceCreator = new GwtDeviceCreator();
         gwtDeviceCreator.setScopeId(currentSession.getSelectedAccountId());
 
         gwtDeviceCreator.setClientId(clientIdField.getValue());
-        gwtDeviceCreator.setGroupId(groupCombo.getValue().getId());
+        if (currentSession.hasGroupReadPermission()) {
+            gwtDeviceCreator.setGroupId(groupCombo.getValue().getId());
+        }
         gwtDeviceCreator.setDisplayName(displayNameField.getValue());
-
-        // Security Options
-        // gwtDeviceCreator.setGwtCredentialsTight(credentialsTightCombo.getSimpleValue());
-        // gwtDeviceCreator.setGwtPreferredUserId(deviceUserCombo.getValue().getId());
 
         // Custom attributes
         gwtDeviceCreator.setCustomAttribute1(KapuaSafeHtmlUtils.htmlUnescape(customAttribute1Field.getValue()));
@@ -509,48 +289,13 @@ public class DeviceAddDialog extends EntityAddEditDialog {
                 // FailureHandler.handle(caught);
             }
 
-            public void onSuccess(final GwtDevice gwtDevice) {
+            @Override
+            public void onSuccess(GwtDevice gwtDevice) {
                 exitStatus = true;
                 exitMessage = DEVICE_MSGS.deviceUpdateSuccess();
                 hide();
             }
         });
-
-        // GwtUserCreator gwtUserCreator = new GwtUserCreator();
-        //
-        // gwtUserCreator.setScopeId(currentSession.getSelectedAccount().getId());
-        //
-        // gwtUserCreator.setUsername(username.getValue());
-        // gwtUserCreator.setPassword(password.getValue());
-        // gwtUserCreator.setDisplayName(displayName.getValue());
-        // gwtUserCreator.setEmail(email.getValue());
-        // gwtUserCreator.setPhoneNumber(phoneNumber.getValue());
-        // gwtUserCreator.setUserStatus(userStatus.getValue().getValue());
-        // gwtUserCreator.setExpirationDate(expirationDate.getValue());
-        //
-        // gwtUserService.create(xsrfToken, gwtUserCreator, new AsyncCallback<GwtUser>() {
-        //
-        // @Override
-        // public void onSuccess(GwtUser arg0) {
-        // exitStatus = true;
-        // exitMessage = MSGS.dialogAddConfirmation();
-        // hide();
-        // }
-        //
-        // @Override
-        // public void onFailure(Throwable cause) {
-        // unmask();
-        //
-        // submitButton.enable();
-        // cancelButton.enable();
-        // status.hide();
-        //
-        // exitStatus = false;
-        // exitMessage = MSGS.dialogAddError(cause.getLocalizedMessage());
-        //
-        // hide();
-        // }
-        // });
     }
 
     @Override
@@ -560,9 +305,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
 
     @Override
     public String getInfoMessage() {
-        // FIXME
         return null;
-        // return MSGS.dialogAddInfo();
     }
 
 }

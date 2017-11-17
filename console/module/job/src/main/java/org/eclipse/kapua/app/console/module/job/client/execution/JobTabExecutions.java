@@ -27,7 +27,8 @@ public class JobTabExecutions extends KapuaTabItem<GwtJob> {
     private final JobTabExecutionsGrid executionsGrid;
 
     public JobTabExecutions(GwtSession currentSession) {
-        super(JOB_MSGS.gridJobTabExecutionsLabel(), new KapuaIcon(IconSet.CLIPBOARD));
+        super(currentSession, JOB_MSGS.gridJobTabExecutionsLabel(), new KapuaIcon(IconSet.CLIPBOARD));
+
         executionsGrid = new JobTabExecutionsGrid(null, currentSession);
     }
 

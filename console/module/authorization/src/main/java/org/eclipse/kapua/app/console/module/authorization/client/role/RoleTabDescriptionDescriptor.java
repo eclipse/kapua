@@ -19,7 +19,7 @@ public class RoleTabDescriptionDescriptor extends AbstractEntityTabDescriptor<Gw
 
     @Override
     public RoleTabDescription getTabViewInstance(RoleView view, GwtSession currentSession) {
-        return new RoleTabDescription();
+        return new RoleTabDescription(currentSession);
     }
 
     @Override

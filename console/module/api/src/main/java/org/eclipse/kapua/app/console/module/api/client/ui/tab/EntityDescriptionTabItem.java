@@ -31,6 +31,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.grid.KapuaGrid;
 import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,8 +45,8 @@ public abstract class EntityDescriptionTabItem<M extends GwtEntityModel> extends
     private GroupingStore<GwtGroupedNVPair> descriptionValuesStore;
     private BaseListLoader<ListLoadResult<GwtGroupedNVPair>> descriptionValuesloader;
 
-    public EntityDescriptionTabItem() {
-        super(MSGS.entityTabDescriptionTitle(), new KapuaIcon(IconSet.INFO));
+    public EntityDescriptionTabItem(GwtSession currentSession) {
+        super(currentSession, MSGS.entityTabDescriptionTitle(), new KapuaIcon(IconSet.INFO));
     }
 
     @Override
