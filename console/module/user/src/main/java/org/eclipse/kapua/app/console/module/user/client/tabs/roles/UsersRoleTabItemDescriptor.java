@@ -30,7 +30,7 @@ public class UsersRoleTabItemDescriptor extends AbstractEntityTabDescriptor<GwtR
 
     @Override
     public Boolean isEnabled(GwtSession currentSession) {
-        return true;
+        return currentSession.hasUserReadPermission();
     }
 
     @Override
