@@ -35,6 +35,6 @@ public class AccountChildUserTabDescriptor extends AbstractEntityTabDescriptor<G
 
     @Override
     public Boolean isEnabled(GwtSession currentSession) {
-        return true;
+        return currentSession.hasUserReadPermission();
     }
 }
