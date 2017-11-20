@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.module.user.client.tabs.roles;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
@@ -56,6 +57,8 @@ public class RoleSubjectGrid extends EntityGrid<GwtUser> {
                     AsyncCallback<PagingLoadResult<GwtUser>> callback) {
                 if (selectedRole != null) {
                     USER_SERVICE.getUsersForRole((PagingLoadConfig) loadConfig, query, callback);
+                } else {
+                    callback.onSuccess(new BasePagingLoadResult<GwtUser>(new ArrayList<GwtUser>(), 0, 0));
                 }
             }
 
