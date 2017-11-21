@@ -11,14 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection.internal;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import com.google.common.collect.Lists;
 import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 
-import com.google.common.collect.Lists;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Device connection domain
@@ -32,6 +31,7 @@ public class DeviceConnectionDomain extends AbstractKapuaEntity implements Domai
     private String name = "device_connection";
     private String serviceName = "DeviceConnectionService";
     private Set<Actions> actions = new HashSet<>(Lists.newArrayList(Actions.read, Actions.delete, Actions.write));
+    private boolean groupable;
 
     @Override
     public void setName(String name) {
@@ -61,5 +61,15 @@ public class DeviceConnectionDomain extends AbstractKapuaEntity implements Domai
     @Override
     public Set<Actions> getActions() {
         return actions;
+    }
+
+    @Override
+    public void setGroupable(boolean groupable) {
+        this.groupable = groupable;
+    }
+
+    @Override
+    public boolean getGroupable() {
+        return groupable;
     }
 }

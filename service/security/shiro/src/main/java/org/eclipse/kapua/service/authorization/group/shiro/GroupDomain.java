@@ -11,23 +11,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.group.shiro;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import com.google.common.collect.Lists;
 import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 
-import com.google.common.collect.Lists;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Group domain.<br>
  * Used to describe the {@link Group} domain in the {@link GroupService}.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class GroupDomain extends AbstractKapuaEntity implements Domain {
 
@@ -36,6 +34,7 @@ public class GroupDomain extends AbstractKapuaEntity implements Domain {
     private String name = "group";
     private String serviceName = "groupService";
     private Set<Actions> actions = new HashSet<>(Lists.newArrayList(Actions.read, Actions.delete, Actions.write));
+    private boolean groupable;
 
     @Override
     public void setName(String name) {
@@ -65,5 +64,15 @@ public class GroupDomain extends AbstractKapuaEntity implements Domain {
     @Override
     public Set<Actions> getActions() {
         return actions;
+    }
+
+    @Override
+    public void setGroupable(boolean groupable) {
+        this.groupable = groupable;
+    }
+
+    @Override
+    public boolean getGroupable() {
+        return groupable;
     }
 }

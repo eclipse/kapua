@@ -11,23 +11,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.tag.internal;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import com.google.common.collect.Lists;
 import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.tag.TagService;
 
-import com.google.common.collect.Lists;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * Tag domain.<br>
- * Used to describe the {@link Tag} domain in the {@link TagService}.
- * 
- * @since 1.0.0
+ * {@link Tag} domain.<br>
+ * Used to describe the {@link Tag} {@link Domain} in the {@link TagService}.
  *
+ * @since 1.0.0
  */
 public class TagDomain extends AbstractKapuaEntity implements Domain {
 
@@ -36,6 +34,7 @@ public class TagDomain extends AbstractKapuaEntity implements Domain {
     private String name = "tag";
     private String serviceName = "tagService";
     private Set<Actions> actions = new HashSet<>(Lists.newArrayList(Actions.read, Actions.delete, Actions.write));
+    private boolean groupable;
 
     @Override
     public void setName(String name) {
@@ -65,5 +64,15 @@ public class TagDomain extends AbstractKapuaEntity implements Domain {
     @Override
     public Set<Actions> getActions() {
         return actions;
+    }
+
+    @Override
+    public void setGroupable(boolean groupable) {
+        this.groupable = groupable;
+    }
+
+    @Override
+    public boolean getGroupable() {
+        return groupable;
     }
 }

@@ -11,14 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.model.misc;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import com.google.common.collect.Lists;
 import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 
-import com.google.common.collect.Lists;
+import java.util.HashSet;
+import java.util.Set;
 
 public class CollisionEntityDomain extends AbstractKapuaEntity implements Domain {
 
@@ -27,6 +26,7 @@ public class CollisionEntityDomain extends AbstractKapuaEntity implements Domain
     private String name = "collisionEntity";
     private String serviceName = "collistionEntityService";
     private Set<Actions> actions = new HashSet<>(Lists.newArrayList(Actions.read, Actions.delete, Actions.write));
+    private boolean groupable;
 
     @Override
     public void setName(String name) {
@@ -56,5 +56,15 @@ public class CollisionEntityDomain extends AbstractKapuaEntity implements Domain
     @Override
     public Set<Actions> getActions() {
         return actions;
+    }
+
+    @Override
+    public void setGroupable(boolean groupable) {
+        this.groupable = groupable;
+    }
+
+    @Override
+    public boolean getGroupable() {
+        return groupable;
     }
 }

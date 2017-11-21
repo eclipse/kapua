@@ -11,14 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.server;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
-import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtDomain;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtPermission.GwtAction;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtDomainService;
@@ -33,6 +29,10 @@ import org.eclipse.kapua.service.authorization.domain.DomainQuery;
 import org.eclipse.kapua.service.authorization.domain.DomainService;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainPredicates;
 import org.eclipse.kapua.service.authorization.permission.Action;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class GwtDomainServiceImpl extends KapuaRemoteServiceServlet implements GwtDomainService {
 
@@ -49,7 +49,7 @@ public class GwtDomainServiceImpl extends KapuaRemoteServiceServlet implements G
             DomainListResult list = domainService.query(query);
 
             for (Domain domain : list.getItems()) {
-                gwtDomainList.add(KapuaGwtAuthorizationModelConverter.convertDomain(domain.getName()));
+                gwtDomainList.add(KapuaGwtAuthorizationModelConverter.convertDomain(domain));
             }
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);

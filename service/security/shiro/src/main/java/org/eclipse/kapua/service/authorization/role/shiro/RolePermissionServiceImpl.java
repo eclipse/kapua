@@ -25,6 +25,7 @@ import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.authorization.permission.shiro.PermissionValidator;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
@@ -36,9 +37,8 @@ import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerF
 
 /**
  * {@link RolePermission} service implementation.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @KapuaProvider
 public class RolePermissionServiceImpl extends AbstractKapuaService implements RolePermissionService {
@@ -69,6 +69,10 @@ public class RolePermissionServiceImpl extends AbstractKapuaService implements R
         if (ROLE_SERVICE.find(rolePermissionCreator.getScopeId(), rolePermissionCreator.getRoleId()) == null) {
             throw new KapuaEntityNotFoundException(Role.TYPE, rolePermissionCreator.getRoleId());
         }
+
+        //
+        // Check that the given permission matches the definition of the Domains.
+        PermissionValidator.validatePermission(rolePermissionCreator.getPermission());
 
         //
         // If permission are created out of the role permission scope, check that the current user has the permission on the external scopeId.

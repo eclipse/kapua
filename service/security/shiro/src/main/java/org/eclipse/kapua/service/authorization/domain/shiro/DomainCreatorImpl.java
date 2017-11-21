@@ -11,19 +11,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.domain.shiro;
 
-import java.util.Set;
-
 import org.eclipse.kapua.commons.model.AbstractKapuaEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.domain.DomainCreator;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 
+import java.util.Set;
+
 /**
  * Role creator service implementation.
- * 
+ *
  * @since 1.0
- * 
  */
 public class DomainCreatorImpl extends AbstractKapuaEntityCreator<Domain> implements DomainCreator {
 
@@ -32,15 +31,13 @@ public class DomainCreatorImpl extends AbstractKapuaEntityCreator<Domain> implem
     private String name;
     private String serviceName;
     private Set<Actions> actions;
+    private boolean groupable;
 
     /**
      * Constructor
-     * 
-     * @param name
-     *            The name to set for this {@link DomainCreator}.
-     * @param serviceName
-     *            The service name that creates this {@link DomainCreator}.
-     * 
+     *
+     * @param name        The name to set for this {@link DomainCreator}.
+     * @param serviceName The service name that creates this {@link DomainCreator}.
      * @since 1.0.0
      */
     public DomainCreatorImpl(String name, String serviceName) {
@@ -79,4 +76,15 @@ public class DomainCreatorImpl extends AbstractKapuaEntityCreator<Domain> implem
     public void setActions(Set<Actions> actions) {
         this.actions = actions;
     }
+
+    @Override
+    public boolean getGroupable() {
+        return groupable;
+    }
+
+    @Override
+    public void setGroupable(boolean groupable) {
+        this.groupable = groupable;
+    }
+
 }

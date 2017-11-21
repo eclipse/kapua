@@ -37,5 +37,4 @@ public class PermissionFactoryMock implements PermissionFactory {
     public Permission newPermission(Domain domain, Actions action, KapuaId targetScopeId, KapuaId groupId, boolean forwardable) {
         return null;
     }
-
 }

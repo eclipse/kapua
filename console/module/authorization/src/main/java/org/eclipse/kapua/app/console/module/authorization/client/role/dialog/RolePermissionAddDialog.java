@@ -11,8 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.client.role.dialog;
 
-import java.util.List;
-
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
@@ -32,16 +40,7 @@ import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGrou
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRoleService;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRoleServiceAsync;
 
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.List;
 
 public class RolePermissionAddDialog extends EntityAddEditDialog {
 
@@ -64,10 +63,11 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
 
     public RolePermissionAddDialog(GwtSession currentSession) {
         super(currentSession);
-        DialogUtils.resizeDialog(this, 400, 250);
         allGroup = new GwtGroup();
         allGroup.setId(null);
         allGroup.setGroupName("ALL");
+
+        DialogUtils.resizeDialog(this, 500, 250);
     }
 
     public void setSelectedRole(GwtRole selectedRole) {
@@ -112,7 +112,9 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
 
             @Override
             public void selectionChanged(SelectionChangedEvent<GwtDomain> se) {
-                GWT_DOMAIN_SERVICE.findActionsByDomainName(se.getSelectedItem().getDomainName(), new AsyncCallback<List<GwtAction>>() {
+                final GwtDomain selectedDomain = se.getSelectedItem();
+
+                GWT_DOMAIN_SERVICE.findActionsByDomainName(selectedDomain.getDomainName(), new AsyncCallback<List<GwtAction>>() {
 
                     @Override
                     public void onFailure(Throwable caught) {
@@ -128,6 +130,16 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
                         actionsCombo.add(result);
                         actionsCombo.setSimpleValue(allAction);
                         actionsCombo.enable();
+
+                        if (selectedDomain.getGroupable()) {
+                            groupsCombo.setEnabled(selectedDomain.getGroupable());
+                            groupsCombo.setValue(allGroup);
+
+                        } else {
+                            groupsCombo.setEnabled(selectedDomain.getGroupable());
+                            groupsCombo.setRawValue(MSGS.permissionAddDialogGroupNotGroupable());
+                        }
+
                     }
                 });
 
