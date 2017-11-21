@@ -38,6 +38,7 @@ import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.authorization.permission.shiro.PermissionValidator;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
@@ -46,7 +47,7 @@ import org.eclipse.kapua.service.authorization.shiro.KapuaAuthorizationException
 
 /**
  * {@link AccessInfoService} implementation based on JPA.
- * 
+ *
  * @since 1.0.0
  */
 @KapuaProvider
@@ -57,7 +58,7 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
     /**
      * Constructor.<br>
      * It initialize the {@link AbstractEntityManagerFactory} with the specific {@link AuthorizationEntityManagerFactory#getInstance()}.
-     * 
+     *
      * @since 1.0.0
      */
     public AccessInfoServiceImpl() {
@@ -85,6 +86,8 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
                 }
             }
         }
+
+        PermissionValidator.validatePermissions(accessInfoCreator.getPermissions());
 
         RoleService roleService = locator.getService(RoleService.class);
         if (accessInfoCreator.getRoleIds() != null) {
@@ -159,7 +162,7 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(ACCESS_INFO_DOMAIN, Actions.read, scopeId));
         AccessInfoQuery query = accessInfoFactory.newQuery(scopeId);
-        query.setPredicate(new AttributePredicate<KapuaId>(AccessInfoPredicates.USER_ID, userId));
+        query.setPredicate(new AttributePredicate<>(AccessInfoPredicates.USER_ID, userId));
         AccessInfoListResult result = entityManagerSession.onResult(em -> AccessInfoDAO.query(em, query));
         if (!result.isEmpty()) {
             return result.getFirstItem();

@@ -31,13 +31,13 @@ import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.authorization.permission.shiro.PermissionValidator;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
 
 /**
  * {@link AccessPermission} service implementation.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @KapuaProvider
 public class AccessPermissionServiceImpl extends AbstractKapuaService implements AccessPermissionService {
@@ -68,6 +68,8 @@ public class AccessPermissionServiceImpl extends AbstractKapuaService implements
         if (permission.getTargetScopeId() == null || !permission.getTargetScopeId().equals(accessPermissionCreator.getScopeId())) {
             authorizationService.checkPermission(permission);
         }
+
+        PermissionValidator.validatePermission(permission);
 
         return entityManagerSession.onTransactedInsert(em -> {
             //
@@ -127,7 +129,7 @@ public class AccessPermissionServiceImpl extends AbstractKapuaService implements
         //
         // Build query
         AccessPermissionQuery query = new AccessPermissionQueryImpl(scopeId);
-        query.setPredicate(new AttributePredicate<KapuaId>(AccessPermissionPredicates.ACCESS_INFO_ID, accessInfoId));
+        query.setPredicate(new AttributePredicate<>(AccessPermissionPredicates.ACCESS_INFO_ID, accessInfoId));
 
         return query(query);
     }

@@ -13,9 +13,8 @@ package org.eclipse.kapua.service.authorization.domain.shiro;
 
 /**
  * Query predicate attribute name for role entity.
- * 
+ *
  * @since 1.0
- * 
  */
 public class DomainPredicates {
 
@@ -31,4 +30,5 @@ public class DomainPredicates {
      * Domain service name
      */
     public static final String SERVICE_NAME = "serviceName";
+
 }

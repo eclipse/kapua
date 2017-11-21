@@ -25,6 +25,7 @@ import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.authorization.permission.shiro.PermissionValidator;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
 import org.eclipse.kapua.service.authorization.role.RoleFactory;
@@ -37,9 +38,8 @@ import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerF
 
 /**
  * Role service implementation.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @KapuaProvider
 public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<Role, RoleCreator, RoleService, RoleListResult, RoleQuery, RoleFactory> implements RoleService {
@@ -73,6 +73,10 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
                 }
             }
         }
+
+        //
+        // Check that the given permission matches the definition of the Domains.
+        PermissionValidator.validatePermissions(roleCreator.getPermissions());
 
         if (allowedChildEntities(roleCreator.getScopeId()) <= 0) {
             throw new KapuaIllegalArgumentException("scopeId", "max roles reached");
