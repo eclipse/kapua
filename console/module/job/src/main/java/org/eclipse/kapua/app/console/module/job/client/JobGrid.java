@@ -94,7 +94,8 @@ public class JobGrid extends EntityGrid<GwtJob> {
         columnConfig = new ColumnConfig("description", MSGS.gridJobColumnHeaderDescription(), 400);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("createdBy", MSGS.gridJobColumnHeaderCreatedBy(), 200);
+        columnConfig = new ColumnConfig("userName", MSGS.gridJobColumnHeaderCreatedBy(), 200);
+        columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("createdOn", MSGS.gridJobColumnHeaderCreatedOn(), 200);

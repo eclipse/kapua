@@ -76,7 +76,7 @@ public class TagGrid extends EntityGrid<GwtTag> {
         columnConfig = new ColumnConfig("createdOn", MSGS.gridTagColumnHeaderCreatedOn(), 200);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("createdBy", MSGS.gridTagColumnHeaderCreatedBy(), 200);
+        columnConfig = new ColumnConfig("userName", MSGS.gridTagColumnHeaderCreatedBy(), 200);
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 

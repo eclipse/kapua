@@ -107,7 +107,7 @@ public class AccountDetailsTabDescription extends KapuaTabItem<GwtAccount> {
 
             @Override
             protected void load(Object loadConfig, AsyncCallback<ListLoadResult<GwtGroupedNVPair>> callback) {
-                gwtAccountService.getAccountInfo(selectedAccount.getId(), callback);
+                gwtAccountService.getAccountInfo(currentSession.getSelectedAccountId(), selectedAccount.getId(), callback);
             }
         };
 

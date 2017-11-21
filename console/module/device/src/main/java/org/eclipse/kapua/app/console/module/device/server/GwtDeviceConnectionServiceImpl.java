@@ -77,6 +77,9 @@ public class GwtDeviceConnectionServiceImpl extends KapuaRemoteServiceServlet im
                 if (dc.getUserId() != null) {
                     gwtDeviceConnection.setUserName(users.get(dc.getUserId().toCompactId()));
                 }
+                if (dc.getReservedUserId() != null) {
+                    gwtDeviceConnection.setReservedUserName(users.get(dc.getReservedUserId().toCompactId()));
+                }
                 gwtDeviceConnections.add(gwtDeviceConnection);
             }
 
@@ -107,22 +110,53 @@ public class GwtDeviceConnectionServiceImpl extends KapuaRemoteServiceServlet im
     @Override
     public ListLoadResult<GwtGroupedNVPair> getConnectionInfo(String scopeIdString, String gwtDeviceConnectionId) throws GwtKapuaException {
         KapuaId deviceConnectionId = KapuaEid.parseCompactId(gwtDeviceConnectionId);
-        KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
+        final KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
         KapuaLocator locator = KapuaLocator.getInstance();
         DeviceConnectionService deviceConnectionService = locator.getService(DeviceConnectionService.class);
-        UserService userService = locator.getService(UserService.class);
+        final UserService userService = locator.getService(UserService.class);
 
         List<GwtGroupedNVPair> deviceConnectionPropertiesPairs = new ArrayList<GwtGroupedNVPair>();
         try {
-            DeviceConnection deviceConnection = deviceConnectionService.find(scopeId, deviceConnectionId);
-            User user = userService.find(scopeId, deviceConnection.getUserId());
+            final DeviceConnection deviceConnection = deviceConnectionService.find(scopeId, deviceConnectionId);
+            User connectionUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
 
+                @Override
+                public User call() throws Exception {
+                    return userService.find(scopeId, deviceConnection.getUserId());
+                }
+            });
+            User createdUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
+
+                @Override
+                public User call() throws Exception {
+                    return userService.find(scopeId, deviceConnection.getCreatedBy());
+                }
+            });
+            User modifiledUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
+
+                @Override
+                public User call() throws Exception {
+                    return userService.find(scopeId, deviceConnection.getModifiedBy());
+                }
+            });
+            User reservedUser;
+            if (deviceConnection.getReservedUserId() != null) {
+                reservedUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
+
+                    @Override
+                    public User call() throws Exception {
+                        return userService.find(scopeId, deviceConnection.getReservedUserId());
+                    }
+                });
+            } else {
+                reservedUser = null;
+            }
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionStatus", deviceConnection.getStatus().toString()));
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionModifiedOn", deviceConnection.getModifiedOn().toString()));
-            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionModifiedBy", deviceConnection.getModifiedBy().toCompactId()));
+            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionModifiedBy", modifiledUser.getName()));
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionProtocol", deviceConnection.getProtocol()));
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionClientId", deviceConnection.getClientId()));
-            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionUser", deviceConnection.getUserId().toCompactId()));
+            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionUser", connectionUser.getName()));
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionClientIp", deviceConnection.getClientIp()));
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionServerIp", deviceConnection.getServerIp()));
             GwtConnectionUserCouplingMode gwtConnectionUserCouplingMode = null;
@@ -130,11 +164,11 @@ public class GwtDeviceConnectionServiceImpl extends KapuaRemoteServiceServlet im
                 gwtConnectionUserCouplingMode = GwtConnectionUserCouplingMode.valueOf(deviceConnection.getUserCouplingMode().name());
             }
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionUserBoundInfo", "connectionUserBound", gwtConnectionUserCouplingMode.getLabel()));
-            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionUserBoundInfo", "reservedUserId",
-                    deviceConnection.getReservedUserId() != null ? deviceConnection.getReservedUserId().toCompactId() : null));
+            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionUserBoundInfo", "reservedUserName",
+                    reservedUser != null ? reservedUser.getName() : null));
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionUserBoundInfo", "allowUserChange", deviceConnection.getAllowUserChange()));
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionFirstEstablishedOn", deviceConnection.getCreatedOn().toString()));
-            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionFirstEstablishedBy", deviceConnection.getCreatedBy().toCompactId()));
+            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionFirstEstablishedBy", createdUser.getName()));
 
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
