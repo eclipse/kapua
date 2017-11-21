@@ -24,18 +24,16 @@ import org.eclipse.kapua.service.authorization.domain.DomainQuery;
 
 /**
  * {@link Domain} DAO
- * 
+ *
  * @since 1.0.0
  */
 public class DomainDAO extends ServiceDAO {
 
     /**
      * Creates and returns new {@link Domain}
-     * 
-     * @param em
-     *            The {@link EntityManager} that holds the transaction.
-     * @param creator
-     *            The {@link DomainCreator} object from which create the new {@link Domain}.
+     *
+     * @param em      The {@link EntityManager} that holds the transaction.
+     * @param creator The {@link DomainCreator} object from which create the new {@link Domain}.
      * @return The newly created {@link Domain}.
      * @throws KapuaException
      * @since 1.0.0
@@ -46,6 +44,7 @@ public class DomainDAO extends ServiceDAO {
 
         domain.setName(creator.getName());
         domain.setServiceName(creator.getServiceName());
+        domain.setGroupable(creator.getGroupable());
 
         if (creator.getActions() != null) {
             domain.setActions(creator.getActions());
@@ -56,11 +55,9 @@ public class DomainDAO extends ServiceDAO {
 
     /**
      * Finds the {@link Domain} by {@link Domain} identifier
-     * 
-     * @param em
-     *            The {@link EntityManager} that holds the transaction.
-     * @param domainId
-     *            The {@link Domain} id to search.
+     *
+     * @param em       The {@link EntityManager} that holds the transaction.
+     * @param domainId The {@link Domain} id to search.
      * @return The found {@link Domain} or {@code null} if not found.
      * @since 1.0.0
      */
@@ -70,13 +67,10 @@ public class DomainDAO extends ServiceDAO {
 
     /**
      * Deletes the {@link Domain} by {@link Domain} identifier
-     * 
-     * @param em
-     *            The {@link EntityManager} that holds the transaction.
-     * @param domainId
-     *            The {@link Domain} id to delete.
-     * @throws KapuaEntityNotFoundException
-     *             If {@link Domain} is not found.
+     *
+     * @param em       The {@link EntityManager} that holds the transaction.
+     * @param domainId The {@link Domain} id to delete.
+     * @throws KapuaEntityNotFoundException If {@link Domain} is not found.
      * @since 1.0.0
      */
     public static void delete(EntityManager em, KapuaId domainId) throws KapuaEntityNotFoundException {
@@ -85,11 +79,9 @@ public class DomainDAO extends ServiceDAO {
 
     /**
      * Returns the {@link Domain} list matching the provided query.
-     * 
-     * @param em
-     *            The {@link EntityManager} that holds the transaction.
-     * @param domainQuery
-     *            The {@link DomainQuery} used to filter results.
+     *
+     * @param em          The {@link EntityManager} that holds the transaction.
+     * @param domainQuery The {@link DomainQuery} used to filter results.
      * @return The list of {@link Domain}s that matches the given query.
      * @throws KapuaException
      * @since 1.0.0
@@ -102,11 +94,9 @@ public class DomainDAO extends ServiceDAO {
 
     /**
      * Return the {@link Domain} count matching the provided query
-     * 
-     * @param em
-     *            The {@link EntityManager} that holds the transaction.
-     * @param domainQuery
-     *            The {@link DomainQuery} used to filter results.
+     *
+     * @param em          The {@link EntityManager} that holds the transaction.
+     * @param domainQuery The {@link DomainQuery} used to filter results.
      * @return
      * @throws KapuaException
      * @since 1.0.0

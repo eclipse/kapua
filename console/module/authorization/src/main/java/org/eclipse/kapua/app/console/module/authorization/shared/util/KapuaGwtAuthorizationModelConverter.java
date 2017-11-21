@@ -24,6 +24,7 @@ import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRolePe
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
+import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.permission.Action;
 import org.eclipse.kapua.service.authorization.permission.Actions;
@@ -269,12 +270,16 @@ public class KapuaGwtAuthorizationModelConverter {
     /**
      * Converts a {@link String} domain into a {@link GwtDomain}
      *
-     * @param domainName The name of the domain to convert
+     * @param domain the {@link Domain} to convert
      * @return The converted {@link GwtDomain}
      * @since 1.0.0
      */
-    public static GwtDomain convertDomain(String domainName) {
-        return new GwtDomain(domainName);
+    public static GwtDomain convertDomain(Domain domain) {
+        GwtDomain gwtDomain = new GwtDomain();
+        gwtDomain.setDomainName(domain.getName());
+        gwtDomain.setGroupable(domain.getGroupable());
+
+        return gwtDomain;
     }
 
     /**

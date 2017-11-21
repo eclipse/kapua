@@ -11,20 +11,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.lifecycle;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import com.google.common.collect.Lists;
 import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 
-import com.google.common.collect.Lists;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Device life cycle domain.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class DeviceLifecycleDomain extends AbstractKapuaEntity implements Domain {
 
@@ -33,6 +31,7 @@ public class DeviceLifecycleDomain extends AbstractKapuaEntity implements Domain
     private String name = "device_lifecycle";
     private String serviceName = "deviceLifecycleService";
     private Set<Actions> actions = new HashSet<>(Lists.newArrayList(Actions.read, Actions.delete, Actions.write));
+    private boolean groupable;
 
     @Override
     public void setName(String name) {
@@ -62,5 +61,15 @@ public class DeviceLifecycleDomain extends AbstractKapuaEntity implements Domain
     @Override
     public Set<Actions> getActions() {
         return actions;
+    }
+
+    @Override
+    public void setGroupable(boolean groupable) {
+        this.groupable = groupable;
+    }
+
+    @Override
+    public boolean getGroupable() {
+        return groupable;
     }
 }

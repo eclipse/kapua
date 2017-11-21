@@ -45,4 +45,13 @@ public class GwtDomain extends KapuaBaseModel implements IsSerializable, Compara
     public String name() {
         return getDomainName();
     }
+
+    public Boolean getGroupable() {
+        return get("groupable");
+    }
+
+    public void setGroupable(boolean groupable) {
+        set("groupable", groupable);
+    }
+
 }
