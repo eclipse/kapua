@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
@@ -28,6 +29,7 @@ import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceConne
 import org.eclipse.kapua.app.console.module.device.shared.util.GwtKapuaDeviceModelConverter;
 import org.eclipse.kapua.app.console.module.device.shared.util.KapuaGwtDeviceModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
