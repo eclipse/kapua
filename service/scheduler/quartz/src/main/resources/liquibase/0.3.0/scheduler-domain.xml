@@ -15,13 +15,13 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
-        logicalFilePath="KapuaDB/changelog-job-0.3.0.xml">
+        logicalFilePath="KapuaDB/changelog-scheduler-0.3.0.xml">
 
-    <property name="selectJobDomainQuery" value="(SELECT id FROM athz_domain WHERE name = 'job')"/>
+    <property name="selectSchedulerDomainQuery" value="(SELECT id FROM athz_domain WHERE name = 'scheduler')"/>
 
     <include relativeToChangelogFile="true" file="../common-properties.xml"/>
 
-    <changeSet id="changelog-job-domain-0.3.0" author="eurotech">
+    <changeSet id="changelog-scheduler-domain-0.3.0" author="eurotech">
 
         <preConditions onFail="CONTINUE">
             <and>
@@ -34,20 +34,20 @@
         <insert tableName="athz_domain">
             <column name="created_on" valueComputed="${now}"/>
             <column name="created_by" value="1"/>
-            <column name="name" value="job"/>
-            <column name="serviceName" value="jobService"/>
+            <column name="name" value="scheduler"/>
+            <column name="serviceName" value="schedulerService"/>
         </insert>
 
         <insert tableName="athz_domain_actions">
-            <column name="domain_id" valueComputed="${selectJobDomainQuery}"/>
+            <column name="domain_id" valueComputed="${selectSchedulerDomainQuery}"/>
             <column name="action" value="read"/>
         </insert>
         <insert tableName="athz_domain_actions">
-            <column name="domain_id" valueComputed="${selectJobDomainQuery}"/>
+            <column name="domain_id" valueComputed="${selectSchedulerDomainQuery}"/>
             <column name="action" value="write"/>
         </insert>
         <insert tableName="athz_domain_actions">
-            <column name="domain_id" valueComputed="${selectJobDomainQuery}"/>
+            <column name="domain_id" valueComputed="${selectSchedulerDomainQuery}"/>
             <column name="action" value="delete"/>
         </insert>
     </changeSet>

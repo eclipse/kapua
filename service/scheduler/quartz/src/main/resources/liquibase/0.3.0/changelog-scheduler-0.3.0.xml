@@ -20,6 +20,7 @@
     <include relativeToChangelogFile="true" file="./trigger_properties.xml"/>
     <include relativeToChangelogFile="true" file="./trigger-configuration.xml"/>
 
+    <include relativeToChangelogFile="true" file="./scheduler-domain.xml"/>
     <include relativeToChangelogFile="true" file="./scheduler-engine-quartz.xml"/>
 
 </databaseChangeLog>
