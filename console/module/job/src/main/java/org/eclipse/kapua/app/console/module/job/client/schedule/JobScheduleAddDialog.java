@@ -169,9 +169,12 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         Date startsOnDate = startsOn.getValue();
         startsOnDate.setTime(startsOnDate.getTime() + (3600 * 1000 * startsOnTime.getValue().getHour()) + 60 * 1000 * startsOnTime.getValue().getMinutes());
         gwtTriggerCreator.setStartsOn(startsOnDate);
-        Date endsOnDate = endsOn.getValue();
-        endsOnDate.setTime(endsOnDate.getTime() + (3600 * 1000 * endsOnTime.getValue().getHour()) + 60 * 1000 * endsOnTime.getValue().getMinutes());
-        gwtTriggerCreator.setEndsOn(endsOnDate);
+        if (endsOn.getValue() != null && endsOnTime.getValue() != null) {
+            // According to validation, endsOn and endsOnTime should be both either null or having a value
+            Date endsOnDate = endsOn.getValue();
+            endsOnDate.setTime(endsOnDate.getTime() + (3600 * 1000 * endsOnTime.getValue().getHour()) + 60 * 1000 * endsOnTime.getValue().getMinutes());
+            gwtTriggerCreator.setEndsOn(endsOnDate);
+        }
         gwtTriggerCreator.setRetryInterval(retryInterval.getValue() != null ? retryInterval.getValue().longValue() : null);
         gwtTriggerCreator.setCronScheduling(cronExpression.getValue());
         List<GwtTriggerProperty> gwtTriggerPropertyList = new ArrayList<GwtTriggerProperty>();
