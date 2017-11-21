@@ -144,6 +144,14 @@ public class GwtDeviceConnection extends GwtUpdatableEntityModel implements Seri
         set("reservedUserId", userId);
     }
 
+    public String getReservedUserName() {
+        return get("reservedUserName");
+    }
+
+    public void setReservedUserName(String userName) {
+        set("reservedUserName", userName);
+    }
+
     public Boolean getAllowUserChange() {
         return get("allowUserChange");
     }

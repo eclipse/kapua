@@ -117,18 +117,18 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
         DeviceEventService deviceEventService = locator.getService(DeviceEventService.class);
         final DeviceConnectionService deviceConnectionService = locator.getService(DeviceConnectionService.class);
         GroupService groupService = locator.getService(GroupService.class);
-        UserService userService = locator.getService(UserService.class);
+        final UserService userService = locator.getService(UserService.class);
 
         try {
 
-            KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
+            final KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
             KapuaId deviceId = KapuaEid.parseCompactId(deviceIdString);
             final Device device = deviceRegistryService.find(scopeId, deviceId);
 
             if (device != null) {
                 pairs.add(new GwtGroupedNVPair("devInfo", "devStatus", device.getStatus().toString()));
 
-                DeviceConnection deviceConnection = null;
+                final DeviceConnection deviceConnection;
                 if (device.getConnectionId() != null) {
                     if (device.getConnection() != null) {
                         deviceConnection = device.getConnection();
@@ -141,10 +141,17 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                             }
                         });
                     }
+                } else {
+                    deviceConnection = null;
                 }
-
                 if (deviceConnection != null) {
-                    User user = userService.find(scopeId, deviceConnection.getUserId());
+                    User user = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
+
+                        @Override
+                        public User call() throws Exception {
+                            return userService.find(scopeId, deviceConnection.getUserId());
+                        }
+                    });
                     pairs.add(new GwtGroupedNVPair("connInfo", "connConnectionStatus", deviceConnection.getStatus().toString()));
                     pairs.add(new GwtGroupedNVPair("connInfo", "connClientId", device.getClientId()));
                     pairs.add(new GwtGroupedNVPair("connInfo", "connUserName", user.getDisplayName()));

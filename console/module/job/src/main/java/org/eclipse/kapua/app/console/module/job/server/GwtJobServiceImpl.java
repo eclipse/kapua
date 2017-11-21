@@ -30,6 +30,7 @@ import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobService;
 import org.eclipse.kapua.app.console.module.job.shared.util.GwtKapuaJobModelConverter;
 import org.eclipse.kapua.app.console.module.job.shared.util.KapuaGwtJobModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.Job;
@@ -38,14 +39,21 @@ import org.eclipse.kapua.service.job.JobFactory;
 import org.eclipse.kapua.service.job.JobListResult;
 import org.eclipse.kapua.service.job.JobQuery;
 import org.eclipse.kapua.service.job.JobService;
+import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserFactory;
+import org.eclipse.kapua.service.user.UserListResult;
+import org.eclipse.kapua.service.user.UserService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
 
 public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJobService {
 
     @Override
-    public PagingLoadResult<GwtJob> query(PagingLoadConfig loadConfig, GwtJobQuery gwtJobQuery) throws GwtKapuaException {
+    public PagingLoadResult<GwtJob> query(PagingLoadConfig loadConfig, final GwtJobQuery gwtJobQuery) throws GwtKapuaException {
         //
         // Do query
         int totalLength = 0;
@@ -62,12 +70,27 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
 
             // If there are results
             if (!jobs.isEmpty()) {
+                final UserService userService = locator.getService(UserService.class);
+                final UserFactory userFactory = locator.getFactory(UserFactory.class);
+                UserListResult userListResult = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
+
+                    @Override
+                    public UserListResult call() throws Exception {
+                        return userService.query(userFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobQuery.getScopeId())));
+                    }
+                });
+                Map<String, String> usernameMap = new HashMap<String, String>();
+                for (User user : userListResult.getItems()) {
+                    usernameMap.put(user.getId().toCompactId(), user.getName());
+                }
                 // count
                 totalLength = Long.valueOf(jobService.count(userQuery)).intValue();
 
                 // Converto to GWT entity
                 for (Job j : jobs.getItems()) {
-                    gwtJobs.add(KapuaGwtJobModelConverter.convertJob(j));
+                    GwtJob gwtJob = KapuaGwtJobModelConverter.convertJob(j);
+                    gwtJob.setUserName(usernameMap.get(j.getCreatedBy().toCompactId()));
+                    gwtJobs.add(gwtJob);
                 }
             }
 

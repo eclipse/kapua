@@ -80,7 +80,9 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
         lastUserField.setToolTip(MSGS.connectionFormLastUserTooltip());
         lastUserField.setWidth(225);
         lastUserField.setReadOnly(true);
-        fieldSetSecurityOptions.add(lastUserField);
+        if (currentSession.hasUserReadPermission()) {
+            fieldSetSecurityOptions.add(lastUserField);
+        }
 
         // Connection user coupling mode
         couplingModeCombo = new SimpleComboBox<String>();
@@ -99,26 +101,6 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
         couplingModeCombo.setSimpleValue(GwtConnectionUserCouplingMode.INHERITED.getLabel());
         fieldSetSecurityOptions.add(couplingModeCombo);
 
-        // Device User
-        GWT_USER_SERVICE.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<ListLoadResult<GwtUser>>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-                FailureHandler.handle(caught);
-            }
-
-            @Override
-            public void onSuccess(ListLoadResult<GwtUser> result) {
-                reservedUserCombo.getStore().removeAll();
-                reservedUserCombo.getStore().add(NO_USER);
-                for (GwtUser gwtUser : result.getData()) {
-                    reservedUserCombo.getStore().add(gwtUser);
-                }
-                setReservedUser();
-            }
-
-        });
-
         reservedUserCombo = new ComboBox<GwtUser>();
         reservedUserCombo.setName("connectionUserReservedUserCombo");
         reservedUserCombo.setEditable(false);
@@ -129,7 +111,35 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
         reservedUserCombo.setStore(new ListStore<GwtUser>());
         reservedUserCombo.setDisplayField("username");
         reservedUserCombo.setValueField("id");
-        fieldSetSecurityOptions.add(reservedUserCombo);
+
+        if (currentSession.hasUserReadPermission()) {
+            // Device User
+            GWT_USER_SERVICE.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<ListLoadResult<GwtUser>>() {
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    FailureHandler.handle(caught);
+                }
+
+                @Override
+                public void onSuccess(ListLoadResult<GwtUser> result) {
+                    reservedUserCombo.getStore().removeAll();
+                    reservedUserCombo.getStore().add(NO_USER);
+                    for (GwtUser gwtUser : result.getData()) {
+                        reservedUserCombo.getStore().add(gwtUser);
+                    }
+                    setReservedUser();
+                }
+
+            });
+
+            fieldSetSecurityOptions.add(reservedUserCombo);
+        } else {
+            GwtUser selectedUser = new GwtUser();
+            selectedUser.setId(selectedDeviceConnection.getReservedUserId());
+            reservedUserCombo.getStore().add(selectedUser);
+            reservedUserCombo.setValue(selectedUser);
+        }
 
         // Allow credential change
         allowUserChangeCheckbox = new CheckBox();
@@ -182,7 +192,7 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
     }
 
     private void populateEditDialog(GwtDeviceConnection gwtDeviceConnection) {
-        if (gwtDeviceConnection.getUserId() != null) {
+        if (currentSession.hasUserReadPermission() && gwtDeviceConnection.getUserId() != null) {
             GWT_USER_SERVICE.find(currentSession.getSelectedAccountId(), gwtDeviceConnection.getUserId(), new AsyncCallback<GwtUser>() {
 
                 @Override

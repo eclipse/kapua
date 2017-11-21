@@ -37,7 +37,7 @@ public class AccountDescriptionTab extends EntityDescriptionTabItem<GwtAccount> 
 
             @Override
             protected void load(Object loadConfig, AsyncCallback<ListLoadResult<GwtGroupedNVPair>> callback) {
-                GWT_ACCOUNT_SERVICE.getAccountInfo(selectedEntity.getId(), callback);
+                GWT_ACCOUNT_SERVICE.getAccountInfo(currentSession.getSelectedAccountId(), selectedEntity.getId(), callback);
             }
         };
     }

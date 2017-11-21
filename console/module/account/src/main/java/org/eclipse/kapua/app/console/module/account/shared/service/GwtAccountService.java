@@ -70,7 +70,7 @@ public interface GwtAccountService extends RemoteService {
      * @return
      * @throws GwtKapuaException
      */
-    public ListLoadResult<GwtGroupedNVPair> getAccountInfo(String gwtAccountId)
+    public ListLoadResult<GwtGroupedNVPair> getAccountInfo(String gwtScopeId, String gwtAccountId)
             throws GwtKapuaException;
 
     /**

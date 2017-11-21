@@ -22,16 +22,16 @@ public class GwtJob extends GwtUpdatableEntityModel implements IsSerializable {
         return get("description");
     }
 
+    public void setDescription(String description) {
+        set("description", description);
+    }
+
     public String getJobName() {
         return get("jobName");
     }
 
     public void setJobName(String jobName) {
         set("jobName", jobName);
-    }
-
-    public void setDescription(String description) {
-        set("description", description);
     }
 
     public List<GwtJobStep> getJobSteps() {
@@ -48,6 +48,14 @@ public class GwtJob extends GwtUpdatableEntityModel implements IsSerializable {
 
     public void setJobXmlDefinition(String xmlJobDefinition) {
         set("jobXmlDefinition", xmlJobDefinition);
+    }
+
+    public String getUserName() {
+        return get("userName");
+    }
+
+    public void setUserName(String userName) {
+        set("userName", userName);
     }
 
 }
