@@ -67,4 +67,8 @@ public enum KapuaErrorCodes implements KapuaErrorCode {
      * Something very very bad! An error that the system does not expect at all and that is unmanaged.
      */
     SEVERE_INTERNAL_ERROR,
+    /**
+     * Child Accounts limit valuation
+     */
+    PARENT_LIMIT_EXCEEDED_IN_CONFIG,
 }
