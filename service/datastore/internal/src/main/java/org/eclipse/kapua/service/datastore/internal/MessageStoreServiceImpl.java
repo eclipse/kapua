@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
+import java.util.Date;
 import java.util.UUID;
 
 import org.eclipse.kapua.KapuaErrorCodes;
@@ -224,9 +225,21 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         }
     }
 
+    @Override
+    public void deleteByDate(KapuaId scopeId, Date startDate, Date endDate) throws KapuaException {
+        ArgumentValidator.notNull(startDate, "startDate");
+        ArgumentValidator.notNull(endDate, "endDate");
+        ArgumentValidator.dateRange(startDate, endDate);
+
+        checkDataAccess(scopeId, Actions.delete);
+
+        messageStoreFacade.deleteByDate(scopeId, startDate, endDate);
+    }
+
     private void checkDataAccess(KapuaId scopeId, Actions action)
             throws KapuaException {
         Permission permission = permissionFactory.newPermission(DATASTORE_DOMAIN, action, scopeId);
         authorizationService.checkPermission(permission);
     }
+
 }

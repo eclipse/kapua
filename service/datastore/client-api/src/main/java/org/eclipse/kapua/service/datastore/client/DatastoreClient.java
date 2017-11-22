@@ -171,6 +171,18 @@ public interface DatastoreClient {
      */
     void deleteAllIndexes() throws ClientException;
 
+    /**
+     * Delete the specified indexes.<br>
+     * <b>WARNING!<br>
+     * Once dropped the indexes cannot be restored!<br>
+     * Be careful using it! :)
+     * </b>
+     * 
+     * @param indexes
+     * @throws ClientException
+     */
+    public void deleteIndexes(String... indexes) throws ClientException;
+
     // ModelContext
 
     /**

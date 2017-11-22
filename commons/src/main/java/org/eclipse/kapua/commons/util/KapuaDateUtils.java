@@ -17,6 +17,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+//import java.time.format.ResolverStyle;
 import java.util.Date;
 import java.util.Locale;
 
@@ -31,9 +32,9 @@ public final class KapuaDateUtils {
     public static final String ISO_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"; // example 24/01/2017T11:22:10.999Z
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter
-            .ofPattern(ISO_DATE_PATTERN, Locale.US)
-            .withZone(ZoneOffset.UTC);
-
+            .ofPattern(ISO_DATE_PATTERN)
+            .withLocale(KapuaDateUtils.getLocale())
+            .withZone(getTimeZone());
     /**
      * Get current date
      *
@@ -45,6 +46,10 @@ public final class KapuaDateUtils {
 
     public static ZoneId getTimeZone() {
         return ZoneOffset.UTC;
+    }
+
+    public static Locale getLocale() {
+        return Locale.US;
     }
 
     /**

@@ -81,6 +81,8 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
     private final static String PUT_ACTION = "PUT";
     private final static String HEAD_ACTION = "HEAD";
 
+    private final static String INDEX_ALL = "ALL";
+
     private static final String KEY_DOC = "doc";
     private static final String KEY_DOC_AS_UPSERT = "doc_as_upsert";
     private static final String KEY_DOC_ID = "_id";
@@ -625,7 +627,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
                         getRefreshAllIndexesPath(),
                         Collections.<String, String>emptyMap());
             }
-        }, "ALL", "REFRESH INDEX");
+        }, INDEX_ALL, "REFRESH INDEX");
         if (!isRequestSuccessful(refreshIndexResponse)) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR,
                     (refreshIndexResponse != null && refreshIndexResponse.getStatusLine() != null) ? refreshIndexResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
@@ -645,10 +647,35 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
                         getIndexPath("_all"),
                         Collections.<String, String>emptyMap());
             }
-        }, "ALL", "DELETE INDEX");
+        }, INDEX_ALL, "DELETE INDEX");
         if (!isRequestSuccessful(deleteIndexResponse)) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR,
                     (deleteIndexResponse != null && deleteIndexResponse.getStatusLine() != null) ? deleteIndexResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
+        }
+    }
+
+    @Override
+    public void deleteIndexes(String... indexes) throws ClientException {
+        logger.debug("Delete indexes");
+        checkClient();
+        for (String index : indexes) {
+            logger.debug("Delete index {}", index);
+            Response deleteIndexResponse = restCallTimeoutHandler(new Callable<Response>() {
+
+                @Override
+                public Response call() throws Exception {
+                    return esClientProvider.getClient().performRequest(
+                            DELETE_ACTION,
+                            getIndexPath(index),
+                            Collections.<String, String>emptyMap());
+                }
+            }, index, "DELETE INDEX");
+            // for that call the deleteIndexResponse=null case could be considered as good response since if an index doesn't exist (404) the delete could be considered successful.
+            // the deleteIndexResponse is null also if the error is due to a bad index request (400) but this error, except if there is an application bug, shouldn't never happen.
+            if (deleteIndexResponse != null && !isRequestSuccessful(deleteIndexResponse)) {
+                throw new ClientException(ClientErrorCodes.ACTION_ERROR,
+                        (deleteIndexResponse != null && deleteIndexResponse.getStatusLine() != null) ? deleteIndexResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
+            }
         }
     }
 

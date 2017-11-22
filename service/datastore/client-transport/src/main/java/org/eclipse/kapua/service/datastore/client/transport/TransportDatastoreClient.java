@@ -96,6 +96,9 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
     private static final String CLIENT_CANNOT_DELETE_INDEX_ERROR_MSG = "Cannot delete indexes!";
     private static final String CLIENT_CANNOT_REFRESH_INDEX_ERROR_MSG = "Cannot refresh indexes!";
 
+    private static final String INDEXES_ALL = "_all";
+    private static final String DOC = "_doc";
+
     private static TransportDatastoreClient instance;
 
     private ClientProvider<Client> esClientProvider;
@@ -361,7 +364,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
             scrollResponse = esClientProvider.getClient().prepareSearch(typeDescriptor.getIndex())
                     .setTypes(typeDescriptor.getType())
                     .setFetchSource(false)
-                    .addSort("_doc", SortOrder.ASC)
+                    .addSort(DOC, SortOrder.ASC)
                     .setVersion(true)
                     .setScroll(scrollTimeout)
                     .setSource(toSearchSourceBuilder(queryMap))
@@ -482,7 +485,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
     @Override
     public void deleteAllIndexes() throws ClientException {
         final DeleteIndexRequest request = DeleteIndexAction.INSTANCE.newRequestBuilder(esClientProvider.getClient()).request();
-        request.indices("_all");
+        request.indices(INDEXES_ALL);
         try {
             DeleteIndexResponse deleteResponse = esClientProvider.getClient().admin().indices().delete(request).actionGet(getQueryTimeout());
             if (!deleteResponse.isAcknowledged()) {
@@ -494,10 +497,31 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
     }
 
     @Override
+    public void deleteIndexes(String... indexes) throws ClientException {
+        final DeleteIndexRequest request = DeleteIndexAction.INSTANCE.newRequestBuilder(esClientProvider.getClient()).request();
+        for (String index : indexes) {
+            request.indices(index);
+            try {
+                DeleteIndexResponse deleteResponse = esClientProvider.getClient().admin().indices().delete(request).actionGet(getQueryTimeout());
+                if (!deleteResponse.isAcknowledged()) {
+                    throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_CANNOT_DELETE_INDEX_ERROR_MSG);
+                }
+            } catch (IllegalStateException e) {
+                throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, CLIENT_CANNOT_DELETE_INDEX_ERROR_MSG);
+            } catch (IndexNotFoundException e) {
+                // do nothing it's not an error
+                // switch the log level to debug?
+                logger.info("Cannot delete index {}. The index does not exist!", index);
+            }
+        }
+
+    }
+
+    @Override
     public void refreshAllIndexes() throws ClientException {
         // final RefreshRequest request = new RefreshRequestBuilder(client, action).request();//DeleteIndexAction.INSTANCE.newRequestBuilder(esClientProvider.getClient()).request();
         final RefreshRequest request = RefreshAction.INSTANCE.newRequestBuilder(esClientProvider.getClient()).request();
-        request.indices("_all");
+        request.indices(INDEXES_ALL);
         try {
             RefreshResponse refreshResponse = esClientProvider.getClient().admin().indices().refresh(request).actionGet(getQueryTimeout());
             if (refreshResponse.getFailedShards() > 0) {
