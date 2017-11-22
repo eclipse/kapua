@@ -13,6 +13,7 @@
 package org.eclipse.kapua.translator.kapua.kura;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaChannel;
 import org.eclipse.kapua.message.KapuaMessage;
@@ -41,7 +42,7 @@ public abstract class AbstractTranslatorKapuaKura<FROM_C extends KapuaChannel, F
         // Kura channel
         KapuaLocator locator = KapuaLocator.getInstance();
         AccountService accountService = locator.getService(AccountService.class);
-        Account account = accountService.find(kapuaMessage.getScopeId());
+        Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.find(kapuaMessage.getScopeId()));
 
         Device device = null;
         DeviceRegistryService deviceService = locator.getService(DeviceRegistryService.class);

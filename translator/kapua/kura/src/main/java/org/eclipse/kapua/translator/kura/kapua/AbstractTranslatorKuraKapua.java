@@ -14,6 +14,7 @@ package org.eclipse.kapua.translator.kura.kapua;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaChannel;
 import org.eclipse.kapua.message.KapuaMessage;
@@ -32,7 +33,7 @@ public abstract class AbstractTranslatorKuraKapua<TO_C extends KapuaChannel, TO_
 
         final KapuaLocator locator = KapuaLocator.getInstance();
         final AccountService accountService = locator.getService(AccountService.class);
-        final Account account = accountService.findByName(kuraMessage.getChannel().getScope());
+        final Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.findByName(kuraMessage.getChannel().getScope()));
 
         if (account == null) {
             throw new KapuaEntityNotFoundException(Account.TYPE, kuraMessage.getChannel().getScope());
