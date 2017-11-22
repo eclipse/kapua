@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.StringTokenizer;
 
 import org.apache.commons.codec.binary.Base64;
@@ -90,10 +91,10 @@ import org.slf4j.LoggerFactory;
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 
+import javax.xml.namespace.QName;
+
 /**
- *
  * The server side implementation of the Device RPC service.
- *
  */
 public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet implements GwtDeviceManagementService {
 
@@ -325,6 +326,12 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
                                 }
                                 gwtParam.setMin(ad.getMin());
                                 gwtParam.setMax(ad.getMax());
+
+                                Map<String, String> gwtEntries = new HashMap<String, String>();
+                                for (Entry<QName, String> entry : ad.getOtherAttributes().entrySet()) {
+                                    gwtEntries.put(entry.getKey().toString(), entry.getValue());
+                                }
+                                gwtParam.setOtherAttributes(gwtEntries);
 
                                 if (config.getProperties() != null) {
 
@@ -760,16 +767,15 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
      * Checks the source of the icon.
      * The component config icon can be one of the well known icon (i.e. MqttDataTransport icon)
      * as well as an icon loaded from external source with an HTTP link.
-     *
+     * <p>
      * We need to filter HTTP link to protect the console page and also to have content always served from
      * EC console. Otherwise browsers can alert the user that content is served from domain different from
      * *.everyware-cloud.com and over insicure connection.
-     *
+     * <p>
      * To avoid this we will download the image locally on the server temporary directory and give back the page
      * a token URL to get the file.
      *
-     * @param icon
-     *            The icon from the OCD of the component configuration.
+     * @param icon The icon from the OCD of the component configuration.
      */
     private void checkIconResource(KapuaTicon icon) {
         ConsoleSetting config = ConsoleSetting.getInstance();

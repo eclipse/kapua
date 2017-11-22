@@ -174,15 +174,6 @@ public class AccountForm extends Window {
         layoutDeployment.setLabelWidth(LABEL_WIDTH_FORM);
         fieldSetDeployment.setLayout(layoutDeployment);
 
-        //
-        // broker cluster
-        //
-        final LabelField accountClusterLabel = new LabelField();
-        accountClusterLabel.setName("accountBrokerLabel");
-        accountClusterLabel.setFieldLabel(MSGS.accountFormBrokerCluster());
-        accountClusterLabel.setLabelSeparator(":");
-        fieldSetDeployment.add(accountClusterLabel, formData);
-
         final NumberField optlock = new NumberField();
         optlock.setName("optlock");
         optlock.setEditable(false);
@@ -190,7 +181,7 @@ public class AccountForm extends Window {
         fieldSetDeployment.add(optlock, formData);
 
         // add the field set and reset
-        formPanel.add(fieldSetDeployment);
+//        formPanel.add(fieldSetDeployment);
 
         // //////////////////////////////////////////
         // Organization Information field set
@@ -289,7 +280,6 @@ public class AccountForm extends Window {
         if (existingAccount == null) {
             // Show editable name, password, confirm password
             accountNameLabel.setVisible(false);
-            accountClusterLabel.setVisible(false);
         }
         //
         // If is an update of an existing account
@@ -467,8 +457,6 @@ public class AccountForm extends Window {
                     accountNameLabel.setValue(account.getName());
                     accountNameField.setValue(account.getName());
                     accountNameField.setOriginalValue(account.getName());
-
-                    accountClusterLabel.setValue(account.getBrokerURL());
 
                     organizationName.setValue(account.getGwtOrganization().getName());
                     organizationName.setOriginalValue(account.getGwtOrganization().getName());

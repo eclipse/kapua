@@ -179,7 +179,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @return
      * @throws KapuaException
      */
-    private static Map<String, Object> toValues(KapuaTocd ocd, Properties props) throws KapuaException {
+    protected static Map<String, Object> toValues(KapuaTocd ocd, Properties props) throws KapuaException {
         List<KapuaTad> ads = ocd.getAD();
         Map<String, Object> values = new HashMap<>();
         for (KapuaTad ad : ads) {

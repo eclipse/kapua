@@ -43,8 +43,6 @@ public class AccountEditDialog extends AccountAddDialog {
         accountNameLabel.setValue(selectedAccount.getName());
         accountNameField.setValue(selectedAccount.getName());
 
-        accountClusterLabel.setValue(selectedAccount.getBrokerURL());
-
         organizationName.setValue(selectedAccount.getGwtOrganization().getName());
         organizationName.setOriginalValue(selectedAccount.getGwtOrganization().getName());
 

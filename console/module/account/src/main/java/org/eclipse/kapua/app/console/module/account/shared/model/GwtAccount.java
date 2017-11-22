@@ -89,14 +89,6 @@ public class GwtAccount extends GwtUpdatableEntityModel implements Serializable 
         this.gwtOrganization = gwtOrganization;
     }
 
-    public String getBrokerURL() {
-        return brokerUrl;
-    }
-
-    public void setBrokerURL(String brokerUrl) {
-        this.brokerUrl = brokerUrl;
-    }
-
     public void setParentAccountId(String parentAccountId) {
         set("parentAccountId", parentAccountId);
     }

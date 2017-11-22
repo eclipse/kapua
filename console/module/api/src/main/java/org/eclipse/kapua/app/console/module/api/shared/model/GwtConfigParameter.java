@@ -48,6 +48,7 @@ public class GwtConfigParameter implements Serializable {
     private String max;
     private String value;      // used for fields with single cardinality
     private String[] values;     // used for fields with multiple cardinality
+    private Map<String, String> otherAttributes;
 
     public GwtConfigParameter() {
     }
@@ -146,5 +147,13 @@ public class GwtConfigParameter implements Serializable {
 
     public void setValues(String[] values) {
         this.values = values;
+    }
+
+    public Map<String, String> getOtherAttributes() {
+        return otherAttributes;
+    }
+
+    public void setOtherAttributes(Map<String, String> otherAttributes) {
+        this.otherAttributes = otherAttributes;
     }
 }

@@ -14,11 +14,8 @@ package org.eclipse.kapua.app.console.module.account.shared.util;
 import org.eclipse.kapua.app.console.module.api.shared.util.KapuaGwtCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtOrganization;
-import org.eclipse.kapua.commons.util.SystemUtils;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.Organization;
-
-import java.net.URISyntaxException;
 
 public class KapuaGwtAccountModelConverter {
 
@@ -47,12 +44,6 @@ public class KapuaGwtAccountModelConverter {
         gwtAccount.setOptlock(account.getOptlock());
         gwtAccount.set("orgName", account.getOrganization().getName());
         gwtAccount.set("orgEmail", account.getOrganization().getEmail());
-
-        try {
-            gwtAccount.setBrokerURL(SystemUtils.getBrokerURI().toString());
-        } catch (URISyntaxException use) {
-            gwtAccount.setBrokerURL("");
-        }
 
         //
         // Return converted entity
