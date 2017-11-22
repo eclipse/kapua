@@ -358,6 +358,21 @@ public final class MessageStoreFacade {
         client.deleteByQuery(typeDescriptor, query);
     }
 
+    /**
+     * Delete the data messages by date range.<br>
+     * Date range must be valid (so no null dates and start date before end date).<br>
+     * <b>Be careful using this function since it doesn't guarantee the datastore consistency.<br>
+     * It just deletes the messages that matching the date range without checking the consistency of the registries.</b>
+     * 
+     * @param scopeId
+     * @param startDate
+     * @param endDate
+     * @throws ClientException
+     */
+    public void deleteByDate(KapuaId scopeId, Date startDate, Date endDate) throws ClientException {
+        client.deleteIndexes(DatastoreUtils.convertToDataIndexes(scopeId, startDate.toInstant(), endDate.toInstant()));
+    }
+
     // TODO cache will not be reset from the client code it should be automatically reset
     // after some time.
     @SuppressWarnings("unused")

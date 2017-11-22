@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore;
 
+import java.util.Date;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -111,6 +113,22 @@ public interface MessageStoreService extends KapuaService, KapuaConfigurableServ
      * @since 1.0.0
      */
     void delete(MessageQuery query)
+            throws KapuaException;
+
+    /**
+     * Delete the data messages by date range.<br>
+     * Date range must be valid (so no null dates and start date before end date).<br>
+     * <b>Be careful using this function since it doesn't guarantee the datastore consistency.<br>
+     * It just deletes the messages that matching the date range without checking the consistency of the registries.</b>
+     * 
+     * @param scopeId
+     * @param startDate
+     * @param endDate
+     * @throws KapuaException
+     * 
+     * @since 1.0.0
+     */
+    void deleteByDate(KapuaId scopeId, Date startDate, Date endDate)
             throws KapuaException;
 
 }
