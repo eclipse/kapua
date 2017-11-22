@@ -45,6 +45,7 @@ import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationExcepti
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoDomain;
 import org.eclipse.kapua.service.authorization.domain.Domain;
+import org.eclipse.kapua.service.authorization.domain.shiro.DomainDomain;
 import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupDomain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
@@ -85,6 +86,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
     private static final Domain CONNECTION_DOMAIN = new DeviceConnectionDomain();
     private static final Domain JOB_DOMAIN = new JobDomain();
     private static final Domain ACCESS_INFO_DOMAIN = new AccessInfoDomain();
+    private static final Domain DOMAIN_DOMAIN = new DomainDomain();
 
     public static final String SESSION_CURRENT = "console.current.session";
     public static final String SESSION_CURRENT_USER = "console.current.user";
@@ -310,6 +312,11 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         boolean hasAccessInfoUpdate = authorizationService.isPermitted(permissionFactory.newPermission(ACCESS_INFO_DOMAIN, Actions.write, kapuaSession.getScopeId()));
         boolean hasAccessInfoDelete = authorizationService.isPermitted(permissionFactory.newPermission(ACCESS_INFO_DOMAIN, Actions.delete, kapuaSession.getScopeId()));
 
+        boolean hasDomainCreate = authorizationService.isPermitted(permissionFactory.newPermission(DOMAIN_DOMAIN, Actions.write, kapuaSession.getScopeId()));
+        boolean hasDomainRead = authorizationService.isPermitted(permissionFactory.newPermission(DOMAIN_DOMAIN, Actions.read, kapuaSession.getScopeId()));
+        boolean hasDomainUpdate = authorizationService.isPermitted(permissionFactory.newPermission(DOMAIN_DOMAIN, Actions.write, kapuaSession.getScopeId()));
+        boolean hasDomainDelete = authorizationService.isPermitted(permissionFactory.newPermission(DOMAIN_DOMAIN, Actions.delete, kapuaSession.getScopeId()));
+
         //
         // Get account info
         final AccountService accountService = locator.getService(AccountService.class);
@@ -409,6 +416,11 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         gwtSession.setAccessInfoReadPermission(hasAccessInfoRead);
         gwtSession.setAccessInfoUpdatePermission(hasAccessInfoUpdate);
         gwtSession.setAccessInfoDeletePermission(hasAccessInfoDelete);
+
+        gwtSession.setDomainCreatePermission(hasDomainCreate);
+        gwtSession.setDomainReadPermission(hasDomainRead);
+        gwtSession.setDomainUpdatePermission(hasDomainUpdate);
+        gwtSession.setDomainDeletePermission(hasDomainDelete);
 
         //
         // Saving session data in session

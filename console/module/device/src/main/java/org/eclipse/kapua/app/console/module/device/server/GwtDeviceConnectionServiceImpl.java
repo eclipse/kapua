@@ -63,12 +63,18 @@ public class GwtDeviceConnectionServiceImpl extends KapuaRemoteServiceServlet im
         KapuaLocator locator = KapuaLocator.getInstance();
         DeviceConnectionService deviceConnectionService = locator.getService(DeviceConnectionService.class);
         DeviceConnectionQuery query = GwtKapuaDeviceModelConverter.convertConnectionQuery(loadConfig, gwtDeviceConnectionQuery);
-        UserService userService = locator.getService(UserService.class);
-        UserFactory userFactory = locator.getFactory(UserFactory.class);
+        final UserService userService = locator.getService(UserService.class);
+        final UserFactory userFactory = locator.getFactory(UserFactory.class);
         Map<String, String> users = new HashMap<String, String>();
-        UserQuery userQuery = userFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtDeviceConnectionQuery.getScopeId()));
+        final UserQuery userQuery = userFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtDeviceConnectionQuery.getScopeId()));
         try {
-            UserListResult userList = userService.query(userQuery);
+            UserListResult userList = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
+
+                @Override
+                public UserListResult call() throws Exception {
+                    return userService.query(userQuery);
+                }
+            });
             for (User user : userList.getItems()) {
                 users.put(user.getId().toCompactId(), user.getName());
             }

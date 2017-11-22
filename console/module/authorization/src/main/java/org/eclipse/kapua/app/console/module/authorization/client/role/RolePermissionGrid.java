@@ -129,6 +129,7 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
     @Override
     protected void selectionChangedEvent(GwtRolePermission selectedItem) {
         super.selectionChangedEvent(selectedItem);
+        rolePermissionToolBar.getAddEntityButton().setEnabled(currentSession.hasDomainReadPermission());
         if (selectedItem == null) {
             rolePermissionToolBar.getDeleteEntityButton().disable();
         } else {
