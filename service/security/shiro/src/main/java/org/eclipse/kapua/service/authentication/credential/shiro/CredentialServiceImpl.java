@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.shiro;
 
-import java.security.SecureRandom;
-
 import org.apache.shiro.codec.Base64;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
@@ -46,11 +44,12 @@ import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 
+import java.security.SecureRandom;
+
 /**
  * Credential service implementation.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @KapuaProvider
 public class CredentialServiceImpl extends AbstractKapuaConfigurableService implements CredentialService {
@@ -113,7 +112,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
 
                 byte[] bPre = new byte[preLength];
                 random.nextBytes(bPre);
-                String pre = Base64.encodeToString(bPre);
+                String pre = Base64.encodeToString(bPre).substring(0, preLength);
 
                 byte[] bKey = new byte[keyLength];
                 random.nextBytes(bKey);
@@ -379,7 +378,6 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         update(credential);
     }
 
-    @SuppressWarnings("unused")
     private long countExistingCredentials(CredentialType credentialType, KapuaId scopeId, KapuaId userId) throws KapuaException {
         KapuaLocator locator = KapuaLocator.getInstance();
         CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
