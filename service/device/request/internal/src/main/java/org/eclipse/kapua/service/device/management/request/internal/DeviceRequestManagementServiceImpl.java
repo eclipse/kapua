@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.device.management.request.internal;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -115,7 +116,7 @@ public class DeviceRequestManagementServiceImpl implements DeviceRequestManageme
         deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
         deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
 
-        deviceEventService.create(deviceEventCreator);
+        KapuaSecurityUtils.doPrivileged(() -> deviceEventService.create(deviceEventCreator));
 
         return responseMessage;
     }

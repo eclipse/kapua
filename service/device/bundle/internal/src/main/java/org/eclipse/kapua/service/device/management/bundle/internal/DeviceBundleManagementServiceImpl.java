@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.device.management.bundle.internal;
 import java.util.Date;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -123,7 +124,7 @@ public class DeviceBundleManagementServiceImpl implements DeviceBundleManagement
         deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
         deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
 
-        deviceEventService.create(deviceEventCreator);
+        KapuaSecurityUtils.doPrivileged(() -> deviceEventService.create(deviceEventCreator));
 
         return deviceBundleList;
     }
@@ -180,7 +181,7 @@ public class DeviceBundleManagementServiceImpl implements DeviceBundleManagement
         deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
         deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
 
-        deviceEventService.create(deviceEventCreator);
+        KapuaSecurityUtils.doPrivileged(() -> deviceEventService.create(deviceEventCreator));
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -235,7 +236,7 @@ public class DeviceBundleManagementServiceImpl implements DeviceBundleManagement
         deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
         deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
 
-        deviceEventService.create(deviceEventCreator);
+        KapuaSecurityUtils.doPrivileged(() -> deviceEventService.create(deviceEventCreator));
     }
 
 }

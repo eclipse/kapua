@@ -19,6 +19,7 @@ import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -120,7 +121,7 @@ public class DeviceAssetManagementServiceImpl implements DeviceAssetManagementSe
         deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
         deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
 
-        deviceEventService.create(deviceEventCreator);
+        KapuaSecurityUtils.doPrivileged(() -> deviceEventService.create(deviceEventCreator));
 
         return deviceAssetsResponse;
     }
@@ -190,7 +191,7 @@ public class DeviceAssetManagementServiceImpl implements DeviceAssetManagementSe
         deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
         deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
 
-        deviceEventService.create(deviceEventCreator);
+        KapuaSecurityUtils.doPrivileged(() -> deviceEventService.create(deviceEventCreator));
 
         return deviceAssetsResponse;
     }
@@ -260,7 +261,7 @@ public class DeviceAssetManagementServiceImpl implements DeviceAssetManagementSe
         deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
         deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
 
-        deviceEventService.create(deviceEventCreator);
+        KapuaSecurityUtils.doPrivileged(() -> deviceEventService.create(deviceEventCreator));
 
         return deviceAssetsResponse;
     }

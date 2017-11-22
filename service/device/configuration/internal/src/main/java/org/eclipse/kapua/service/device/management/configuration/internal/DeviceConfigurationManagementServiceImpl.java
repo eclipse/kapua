@@ -20,6 +20,7 @@ import javax.xml.stream.XMLStreamException;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -136,7 +137,7 @@ public class DeviceConfigurationManagementServiceImpl implements DeviceConfigura
         deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
         deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
 
-        deviceEventService.create(deviceEventCreator);
+        KapuaSecurityUtils.doPrivileged(() -> deviceEventService.create(deviceEventCreator));
 
         return deviceConfiguration;
     }
@@ -210,7 +211,7 @@ public class DeviceConfigurationManagementServiceImpl implements DeviceConfigura
         deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
         deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
 
-        deviceEventService.create(deviceEventCreator);
+        KapuaSecurityUtils.doPrivileged(() -> deviceEventService.create(deviceEventCreator));
 
     }
 
@@ -291,6 +292,6 @@ public class DeviceConfigurationManagementServiceImpl implements DeviceConfigura
         deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
         deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
 
-        deviceEventService.create(deviceEventCreator);
+        KapuaSecurityUtils.doPrivileged(() -> deviceEventService.create(deviceEventCreator));
     }
 }

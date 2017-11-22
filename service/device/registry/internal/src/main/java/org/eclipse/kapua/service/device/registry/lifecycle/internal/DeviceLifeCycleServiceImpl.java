@@ -12,6 +12,7 @@
 package org.eclipse.kapua.service.device.registry.lifecycle.internal;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.message.KapuaPayload;
@@ -122,7 +123,7 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
             deviceEventCreator.setPosition(position);
         }
 
-        deviceEventService.create(deviceEventCreator);
+        KapuaSecurityUtils.doPrivileged(() -> deviceEventService.create(deviceEventCreator));
     }
 
     @Override
@@ -151,7 +152,7 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
             deviceEventCreator.setPosition(position);
         }
 
-        deviceEventService.create(deviceEventCreator);
+        KapuaSecurityUtils.doPrivileged(() -> deviceEventService.create(deviceEventCreator));
     }
 
     @Override
@@ -183,7 +184,7 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
             deviceEventCreator.setPosition(position);
         }
 
-        deviceEventService.create(deviceEventCreator);
+        KapuaSecurityUtils.doPrivileged(() -> deviceEventService.create(deviceEventCreator));
 
     }
 
@@ -216,6 +217,6 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
             deviceEventCreator.setPosition(position);
         }
 
-        deviceEventService.create(deviceEventCreator);
+        KapuaSecurityUtils.doPrivileged(() -> deviceEventService.create(deviceEventCreator));
     }
 }

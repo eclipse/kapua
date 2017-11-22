@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.device.management.command.internal;
 import java.util.Date;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -108,7 +109,7 @@ public class DeviceCommandManagementServiceImpl implements DeviceCommandManageme
         deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
         deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
 
-        deviceEventService.create(deviceEventCreator);
+        KapuaSecurityUtils.doPrivileged(() -> deviceEventService.create(deviceEventCreator));
 
         //
         // Parse the response

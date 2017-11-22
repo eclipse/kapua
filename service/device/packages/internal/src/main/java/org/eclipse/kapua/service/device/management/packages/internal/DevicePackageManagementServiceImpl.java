@@ -16,6 +16,7 @@ import java.util.Date;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -143,7 +144,7 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
         deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
         deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
 
-        deviceEventService.create(deviceEventCreator);
+        KapuaSecurityUtils.doPrivileged(() -> deviceEventService.create(deviceEventCreator));
 
         return devicePackages;
     }
@@ -213,7 +214,7 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
         deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
         deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
 
-        deviceEventService.create(deviceEventCreator);
+        KapuaSecurityUtils.doPrivileged(() -> deviceEventService.create(deviceEventCreator));
     }
 
     @Override
@@ -266,7 +267,7 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
         deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
         deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
 
-        deviceEventService.create(deviceEventCreator);
+        KapuaSecurityUtils.doPrivileged(() -> deviceEventService.create(deviceEventCreator));
     }
 
     @Override
@@ -328,7 +329,7 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
         deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
         deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
 
-        deviceEventService.create(deviceEventCreator);
+        KapuaSecurityUtils.doPrivileged(() -> deviceEventService.create(deviceEventCreator));
 
         return downloadOperation;
     }
@@ -393,7 +394,7 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
         deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
         deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
 
-        deviceEventService.create(deviceEventCreator);
+        KapuaSecurityUtils.doPrivileged(() -> deviceEventService.create(deviceEventCreator));
 
     }
 
@@ -470,7 +471,7 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
         deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
         deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
 
-        deviceEventService.create(deviceEventCreator);
+        KapuaSecurityUtils.doPrivileged(() -> deviceEventService.create(deviceEventCreator));
 
         return installOperation;
     }
@@ -534,7 +535,7 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
         deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
         deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
 
-        deviceEventService.create(deviceEventCreator);
+        KapuaSecurityUtils.doPrivileged(() -> deviceEventService.create(deviceEventCreator));
     }
 
     @Override
@@ -610,7 +611,7 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
         deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
         deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
 
-        deviceEventService.create(deviceEventCreator);
+        KapuaSecurityUtils.doPrivileged(() -> deviceEventService.create(deviceEventCreator));
 
         return uninstallOperation;
     }
