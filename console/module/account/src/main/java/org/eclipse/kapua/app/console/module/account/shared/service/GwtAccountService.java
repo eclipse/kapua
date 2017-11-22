@@ -37,7 +37,7 @@ public interface GwtAccountService extends RemoteService {
     /**
      * Creates a new Account based on the information provided in the supplied GwtAccountCreator. Each new account results in the creation of an Organization, a set of Users, and a provisioning step
      * to seed users into the MQTT broker instance.
-     * 
+     *
      * @param gwtAccountCreator
      * @return
      * @throws GwtKapuaException
@@ -47,7 +47,7 @@ public interface GwtAccountService extends RemoteService {
 
     /**
      * Returns a GwtAccount by its Id or null if an account with such Id does not exist.
-     * 
+     *
      * @param accountId
      * @return
      */
@@ -65,7 +65,7 @@ public interface GwtAccountService extends RemoteService {
 
     /**
      * Get account info ad name values pairs
-     * 
+     *
      * @param gwtAccountId
      * @return
      * @throws GwtKapuaException
@@ -75,7 +75,7 @@ public interface GwtAccountService extends RemoteService {
 
     /**
      * Updates GwtAccount PROPERTIES ONLY in the database and returns the refreshed/reloaded entity instance.
-     * 
+     *
      * @param xsfrToken
      * @param gwtAccount
      * @return
@@ -86,7 +86,7 @@ public interface GwtAccountService extends RemoteService {
 
     /**
      * Updates a GwtAccount in the database and returns the refreshed/reloaded entity instance.
-     * 
+     *
      * @param xsfrToken
      * @param gwtAccount
      * @return
@@ -97,7 +97,7 @@ public interface GwtAccountService extends RemoteService {
 
     /**
      * Deletes the supplied GwtAccount.
-     * 
+     *
      * @param xsfrToken
      * @param gwtAccount
      * @throws GwtKapuaException
@@ -107,9 +107,9 @@ public interface GwtAccountService extends RemoteService {
 
     /**
      * Lists GwtAccounts.
-     * 
+     *
      * FIXME: Add query predicates, ordering and pagination.
-     * 
+     *
      * @throws GwtKapuaException
      */
     public ListLoadResult<GwtAccount> findAll(String scopeId)
@@ -117,7 +117,7 @@ public interface GwtAccountService extends RemoteService {
 
     /**
      * Lists GwtAccounts child of the given accountId.
-     * 
+     *
      * @param accountId
      *            The account id for which to find children
      * @param recoursive
@@ -130,7 +130,7 @@ public interface GwtAccountService extends RemoteService {
 
     /**
      * Lists all child of the given account id as a list of strings
-     * 
+     *
      * @param scopeId
      *            The account id for which to find children
      * @param recoursive
@@ -152,12 +152,21 @@ public interface GwtAccountService extends RemoteService {
 
     /**
      * Returns the list of all Account matching the query.
-     * 
+     *
      * @param gwtAccountQuery
      * @return
      * @throws GwtKapuaException
-     * 
+     *
      */
     PagingLoadResult<GwtAccount> query(PagingLoadConfig loadConfig, GwtAccountQuery gwtAccountQuery)
+            throws GwtKapuaException;
+
+    /**
+     * Returns the root account
+     *
+     * @return A {@link GwtAccount} pointing to the root account
+     * @throws GwtKapuaException
+     */
+    public GwtAccount findRootAccount()
             throws GwtKapuaException;
 }

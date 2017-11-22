@@ -16,6 +16,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
+import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.util.Constants;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
@@ -80,6 +83,8 @@ public class AccountConfigPanel extends LayoutContainer {
     private final GwtSession currentSession;
 
     private String selectedAccountId;
+
+    private static final GwtAccountServiceAsync ACCOUNT_SERVICE = GWT.create(GwtAccountService.class);
 
     public AccountConfigPanel(GwtConfigComponent configComponent, GwtSession currentSession, GwtAccount selectedAccount) {
         super(new FitLayout());
@@ -314,19 +319,61 @@ public class AccountConfigPanel extends LayoutContainer {
         layout.setLabelWidth(Constants.LABEL_WIDTH_CONFIG_FORM);
         actionFieldSet.setLayout(layout);
 
-        Field<?> field = null;
-        for (GwtConfigParameter param : configComponent.getParameters()) {
-
+        for (final GwtConfigParameter param : configComponent.getParameters()) {
+            if (Boolean.parseBoolean(param.getOtherAttributes().get("hidden"))) {
+                continue;
+            }
+            final Field<?> field;
             if (param.getCardinality() == 0 || param.getCardinality() == 1 || param.getCardinality() == -1) {
                 field = paintConfigParameter(param);
             } else {
                 field = paintMultiFieldConfigParameter(param);
             }
-            String allowSelfEditValue = param.getOptions() != null ? param.getOptions().get("allowSelfEdit") : null;
+            String allowSelfEditValue = param.getOtherAttributes() != null ? param.getOtherAttributes().get("allowSelfEdit") : null;
             boolean allowSelfEdit = allowSelfEditValue != null && allowSelfEditValue.equals("true");
             boolean isEditingSelf = selectedAccountId == null || selectedAccountId.equals(currentSession.getSelectedAccountId());
             if (isEditingSelf && !allowSelfEdit) {
                 field.disable();
+            }
+            final String restrictActorValue = param.getOtherAttributes() != null ? param.getOtherAttributes().get("restrictActor") : null;
+            final String restrictTargetValue = param.getOtherAttributes() != null ? param.getOtherAttributes().get("restrictTarget") : null;
+            if (restrictActorValue != null || restrictTargetValue != null) {
+                ACCOUNT_SERVICE.find(selectedAccountId, new AsyncCallback<GwtAccount>() {
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        FailureHandler.handle(caught);
+                    }
+
+                    @Override
+                    public void onSuccess(final GwtAccount targetAccount) {
+                        ACCOUNT_SERVICE.findRootAccount(new AsyncCallback<GwtAccount>() {
+
+                            @Override
+                            public void onFailure(Throwable caught) {
+                                FailureHandler.handle(caught);
+                            }
+
+                            @Override
+                            public void onSuccess(GwtAccount rootAccount) {
+                                if (restrictActorValue != null) {
+                                    boolean rootActorRestricted = restrictActorValue.equals("ROOT");
+                                    if (rootActorRestricted && !rootAccount.getId().equals(currentSession.getSelectedAccountId())) {
+                                        field.disable();
+                                    }
+                                }
+
+                                if (restrictTargetValue != null) {
+                                    boolean rootChildrenTargetRestricted = restrictTargetValue.equals("ROOT_CHILDREN");
+                                    if (rootChildrenTargetRestricted && (!rootAccount.getId().equals(targetAccount.getId()) &&
+                                            !rootAccount.getId().equals(targetAccount.getParentAccountId()))) {
+                                        field.disable();
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
             }
             actionFieldSet.add(field, formData);
         }
@@ -663,11 +710,9 @@ public class AccountConfigPanel extends LayoutContainer {
 
     /**
      * Apply the description of a parameter to a field
-     * 
-     * @param param
-     *            the parameter to take the description from
-     * @param field
-     *            the field to apply the description to
+     *
+     * @param param the parameter to take the description from
+     * @param field the field to apply the description to
      */
     private void applyDescription(GwtConfigParameter param, Field<?> field) {
         String description = extractDescription(param);
@@ -686,12 +731,11 @@ public class AccountConfigPanel extends LayoutContainer {
      * available the second type will contain the field type. If
      * the description only consists of a field type, then the first
      * field will be an empty string.
-     * 
-     * @param param
-     *            the parameter to take the description from
+     *
+     * @param param the parameter to take the description from
      * @return {@code null} when the parameter or description of
-     *         the parameter is {@code null}, otherwise an array containing
-     *         description and field type
+     * the parameter is {@code null}, otherwise an array containing
+     * description and field type
      */
     private static String[] splitDescription(GwtConfigParameter param) {
         if (param == null || param.getDescription() == null) {
@@ -713,9 +757,8 @@ public class AccountConfigPanel extends LayoutContainer {
      * <br>
      * This cuts of any field type definition at the end of the
      * description
-     * 
-     * @param param
-     *            the parameter to take the description from
+     *
+     * @param param the parameter to take the description from
      * @return only the description information to two to the user
      */
     private static String extractDescription(GwtConfigParameter param) {
@@ -732,9 +775,8 @@ public class AccountConfigPanel extends LayoutContainer {
      * This method will inspect the field type inside the description
      * and create the correct text field for this configuration
      * parameter.
-     * 
-     * @param param
-     *            the parameter to create a field for
+     *
+     * @param param the parameter to create a field for
      * @return a new field, never returns {@code null}
      */
     private static TextField<String> createTextFieldOrArea(GwtConfigParameter param) {
