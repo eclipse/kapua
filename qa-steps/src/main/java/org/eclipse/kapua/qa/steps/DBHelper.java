@@ -21,7 +21,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtilsWithResources;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.slf4j.Logger;
@@ -41,12 +41,12 @@ public class DBHelper {
     /**
      * Path to root of full DB scripts.
      */
-    public static final String FULL_SCHEMA_PATH = "../dev-tools/src/main/database/";
+    public static final String FULL_SCHEMA_PATH = "database";
 
     /**
      * Filter for deleting all new DB data except base data.
      */
-    public static final String DELETE_FILTER = "all_delete.sql";
+    public static final String DELETE_SCRIPT = "all_delete.sql";
 
     private boolean setup;
 
@@ -89,7 +89,7 @@ public class DBHelper {
 
         try {
             if (setup) {
-                KapuaConfigurableServiceSchemaUtils.scriptSession(FULL_SCHEMA_PATH, DELETE_FILTER);
+                KapuaConfigurableServiceSchemaUtilsWithResources.scriptSession(FULL_SCHEMA_PATH, DELETE_SCRIPT);
             }
         } finally {
 

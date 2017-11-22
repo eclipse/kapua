@@ -843,6 +843,11 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-qa-steps</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-qa</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -1304,6 +1309,7 @@
         <module>broker-core</module>
         <module>test</module>
         <module>qa</module>
+        <module>qa-steps</module>
         <module>qa-openshift</module>
 
         <module>sso</module>
