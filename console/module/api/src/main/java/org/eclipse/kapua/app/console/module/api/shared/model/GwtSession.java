@@ -98,6 +98,11 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     private boolean hasAccessInfoUpdatePermission;
     private boolean hasAccessInfoDeletePermission;
 
+    private boolean hasDomainCreatePermission;
+    private boolean hasDomainReadPermission;
+    private boolean hasDomainUpdatePermission;
+    private boolean hasDomainDeletePermission;
+
     public GwtSession() {
     }
 
@@ -587,6 +592,38 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
 
     public void setAccessInfoDeletePermission(boolean hasAccessInfoDeletePermission) {
         this.hasAccessInfoDeletePermission = hasAccessInfoDeletePermission;
+    }
+
+    public boolean hasDomainCreatePermission() {
+        return hasDomainCreatePermission;
+    }
+
+    public void setDomainCreatePermission(boolean hasDomainCreatePermission) {
+        this.hasDomainCreatePermission = hasDomainCreatePermission;
+    }
+
+    public boolean hasDomainReadPermission() {
+        return hasDomainReadPermission;
+    }
+
+    public void setDomainReadPermission(boolean hasDomainReadPermission) {
+        this.hasDomainReadPermission = hasDomainReadPermission;
+    }
+
+    public boolean hasDomainUpdatePermission() {
+        return hasDomainUpdatePermission;
+    }
+
+    public void setDomainUpdatePermission(boolean hasDomainUpdatePermission) {
+        this.hasDomainUpdatePermission = hasDomainUpdatePermission;
+    }
+
+    public boolean hasDomainDeletePermission() {
+        return hasDomainDeletePermission;
+    }
+
+    public void setDomainDeletePermission(boolean hasDomainDeletePermission) {
+        this.hasDomainDeletePermission = hasDomainDeletePermission;
     }
 
 }

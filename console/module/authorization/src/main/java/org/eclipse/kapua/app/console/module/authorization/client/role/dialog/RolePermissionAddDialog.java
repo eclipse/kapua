@@ -159,25 +159,30 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
         groupsCombo.setTriggerAction(TriggerAction.ALL);
         groupsCombo.setEmptyText(MSGS.permissionAddDialogLoading());
         groupsCombo.disable();
-        GWT_GROUP_SERVICE.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<List<GwtGroup>>() {
+        if (currentSession.hasGroupReadPermission()) {
+            GWT_GROUP_SERVICE.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<List<GwtGroup>>() {
 
-            @Override
-            public void onFailure(Throwable caught) {
-                exitMessage = MSGS.dialogAddError(caught.getLocalizedMessage());
-                exitStatus = false;
-                hide();
-            }
+                @Override
+                public void onFailure(Throwable caught) {
+                    exitMessage = MSGS.dialogAddError(caught.getLocalizedMessage());
+                    exitStatus = false;
+                    hide();
+                }
 
-            @Override
-            public void onSuccess(List<GwtGroup> result) {
-                groupsCombo.getStore().removeAll();
-                groupsCombo.getStore().add(allGroup);
-                groupsCombo.getStore().add(result);
-                groupsCombo.setValue(allGroup);
-                groupsCombo.enable();
-            }
-        });
-        permissionFormPanel.add(groupsCombo);
+                @Override
+                public void onSuccess(List<GwtGroup> result) {
+                    groupsCombo.getStore().removeAll();
+                    groupsCombo.getStore().add(allGroup);
+                    groupsCombo.getStore().add(result);
+                    groupsCombo.setValue(allGroup);
+                    groupsCombo.enable();
+                }
+            });
+            permissionFormPanel.add(groupsCombo);
+        } else {
+            groupsCombo.getStore().add(allGroup);
+            groupsCombo.setValue(allGroup);
+        }
 
         //
         // Forwardable

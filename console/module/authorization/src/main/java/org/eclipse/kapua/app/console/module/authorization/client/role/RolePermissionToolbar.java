@@ -54,11 +54,7 @@ public class RolePermissionToolbar extends EntityCRUDToolbar<GwtRolePermission> 
 
     private void checkAddButton() {
         if (getAddEntityButton() != null) {
-            if (selectedRole == null) {
-                getAddEntityButton().setEnabled(false);
-            } else {
-                getAddEntityButton().setEnabled(true);
-            }
+            getAddEntityButton().setEnabled(selectedRole != null && currentSession.hasDomainReadPermission());
         }
     }
 
