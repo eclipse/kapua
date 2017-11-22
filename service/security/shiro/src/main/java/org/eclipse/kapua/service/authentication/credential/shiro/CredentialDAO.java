@@ -27,15 +27,14 @@ import org.eclipse.kapua.service.authentication.shiro.utils.CryptAlgorithm;
 
 /**
  * Credential DAO.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class CredentialDAO extends ServiceDAO {
 
     /**
      * Creates and return new credential
-     * 
+     *
      * @param em
      * @param credentialCreator
      * @return
@@ -73,7 +72,7 @@ public class CredentialDAO extends ServiceDAO {
 
     /**
      * Update the provided credential
-     * 
+     *
      * @param em
      * @param credential
      * @return
@@ -90,11 +89,10 @@ public class CredentialDAO extends ServiceDAO {
 
     /**
      * Delete the credential by credential identifier
-     * 
+     *
      * @param em
      * @param credentialId
-     * @throws KapuaEntityNotFoundException
-     *             If {@link Credential} is now found.
+     * @throws KapuaEntityNotFoundException If {@link Credential} is now found.
      */
     public static void delete(EntityManager em, KapuaId credentialId) throws KapuaEntityNotFoundException {
         ServiceDAO.delete(em, CredentialImpl.class, credentialId);
@@ -102,7 +100,7 @@ public class CredentialDAO extends ServiceDAO {
 
     /**
      * Find the credential by credential identifier
-     * 
+     *
      * @param em
      * @param credentialId
      * @return
@@ -113,7 +111,7 @@ public class CredentialDAO extends ServiceDAO {
 
     /**
      * Return the credential list matching the provided query
-     * 
+     *
      * @param em
      * @param credentialQuery
      * @return
@@ -126,7 +124,7 @@ public class CredentialDAO extends ServiceDAO {
 
     /**
      * Return the credential count matching the provided query
-     * 
+     *
      * @param em
      * @param credentialQuery
      * @return
@@ -151,7 +149,7 @@ public class CredentialDAO extends ServiceDAO {
 
         String hashedValue = credentialPlainKey.substring(0, preLength); // Add the pre in clear text
         hashedValue += preSeparator; // Add separator
-        hashedValue += AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, credentialPlainKey.substring(preLength, credentialPlainKey.length() - 1)); // Bcrypt the rest
+        hashedValue += AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, credentialPlainKey.substring(preLength, credentialPlainKey.length())); // Bcrypt the rest
 
         return hashedValue;
     }
