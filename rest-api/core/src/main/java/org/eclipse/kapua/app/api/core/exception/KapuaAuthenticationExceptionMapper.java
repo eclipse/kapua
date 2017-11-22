@@ -11,12 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception;
 
+import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationException;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
 
-import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationException;
-
+@Provider
 public class KapuaAuthenticationExceptionMapper implements ExceptionMapper<KapuaAuthenticationException> {
 
     @Override
