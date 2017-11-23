@@ -56,6 +56,7 @@ import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.SystemUtils;
+import org.eclipse.kapua.commons.util.ThrowingRunnable;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTicon;
@@ -132,26 +133,38 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             gwtAccount = KapuaGwtAccountModelConverter.convertAccount(account);
 
             // Create roles
-            RoleService roleService = locator.getService(RoleService.class);
+            final RoleService roleService = locator.getService(RoleService.class);
             RoleFactory roleFactory = locator.getFactory(RoleFactory.class);
             PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
             Permission adminPermission = permissionFactory.newPermission(null, null, account.getId(), null, true);
-            RoleCreator adminRoleCreator = roleFactory.newCreator(account.getId());
+            final RoleCreator adminRoleCreator = roleFactory.newCreator(account.getId());
             Set<Permission> adminPermissions = new HashSet<Permission>();
             adminPermissions.add(adminPermission);
             adminRoleCreator.setName("admin");
             adminRoleCreator.setScopeId(account.getId());
             adminRoleCreator.setPermissions(adminPermissions);
-            roleService.create(adminRoleCreator);
+            KapuaSecurityUtils.doPrivileged(new ThrowingRunnable() {
 
-            RoleCreator thingRoleCreator = roleFactory.newCreator(account.getId());
+                @Override
+                public void run() throws Exception {
+                    roleService.create(adminRoleCreator);
+                }
+            });
+
+            final RoleCreator thingRoleCreator = roleFactory.newCreator(account.getId());
             Permission thingPermission = permissionFactory.newPermission(new BrokerDomain(), Actions.connect, account.getId(), null, false);
             Set<Permission> thingPermissions = new HashSet<Permission>();
             thingPermissions.add(thingPermission);
             thingRoleCreator.setName("thing");
             thingRoleCreator.setScopeId(account.getId());
             thingRoleCreator.setPermissions(thingPermissions);
-            roleService.create(thingRoleCreator);
+            KapuaSecurityUtils.doPrivileged(new ThrowingRunnable() {
+
+                @Override
+                public void run() throws Exception {
+                    roleService.create(thingRoleCreator);
+                }
+            });
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
@@ -274,11 +287,12 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         checkXSRFToken(xsrfToken);
 
         GwtAccount gwtAccountUpdated = null;
-        KapuaId scopeId = KapuaEid.parseCompactId(gwtAccount.getId());
+        KapuaId scopeId = gwtAccount.getScopeId() != null ? KapuaEid.parseCompactId(gwtAccount.getScopeId()) : null;
+        KapuaId accountId = KapuaEid.parseCompactId(gwtAccount.getId());
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             AccountService accountService = locator.getService(AccountService.class);
-            Account account = accountService.find(scopeId);
+            Account account = scopeId != null ? accountService.find(scopeId, accountId) : accountService.find(accountId);
 
             account.getOrganization().setName(gwtAccount.getGwtOrganization().getName());
             account.getOrganization().setPersonName(gwtAccount.getGwtOrganization().getPersonName());
@@ -309,11 +323,12 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         // Checking validity of the given XSRF Token
         checkXSRFToken(xsrfToken);
 
-        KapuaId kapuaId = KapuaEid.parseCompactId(gwtAccount.getId());
+        KapuaId scopeId = gwtAccount.getScopeId() != null ? KapuaEid.parseCompactId(gwtAccount.getScopeId()) : null;
+        KapuaId accountId = KapuaEid.parseCompactId(gwtAccount.getId());
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             AccountService accountService = locator.getService(AccountService.class);
-            Account account = accountService.find(kapuaId);
+            Account account = accountService.find(scopeId, accountId);
 
             if (account != null) {
                 accountService.delete(account.getScopeId(), account.getId());

@@ -23,6 +23,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -115,7 +116,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
                 properties.put(ad.getId(), ad.getDefault());
             }
         }
-        setConfigValues(createdAccount.getId(), createdAccount.getScopeId(), toValues(configMetadata, properties));
+        KapuaSecurityUtils.doPrivileged(() -> setConfigValues(createdAccount.getId(), createdAccount.getScopeId(), toValues(configMetadata, properties)));
 
         return createdAccount;
     }
@@ -132,7 +133,13 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(ACCOUNT_DOMAIN, Actions.write, account.getId()));
+        if (KapuaSecurityUtils.getSession().getScopeId().equals(account.getId())) {
+            // Editing self
+            authorizationService.checkPermission(permissionFactory.newPermission(ACCOUNT_DOMAIN, Actions.write, account.getId()));
+        } else {
+            // Editing child
+            authorizationService.checkPermission(permissionFactory.newPermission(ACCOUNT_DOMAIN, Actions.write, account.getScopeId()));
+        }
 
         //
         // Do update
