@@ -11,16 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.api.client.resources.icons;
 
-import org.eclipse.kapua.app.console.module.api.client.ui.color.Color;
-
 import com.extjs.gxt.ui.client.widget.Text;
 import com.google.gwt.user.client.Element;
+import org.eclipse.kapua.app.console.module.api.client.ui.color.Color;
 
 public class KapuaIcon extends Text {
 
-    IconSet icon;
-    Color color;
-    Integer emSize;
+    private IconSet icon;
+    private Color color;
+    private Integer emSize;
+    private boolean spin;
 
     private static Color defaultColor = Color.BLUE_KAPUA;
 
@@ -47,6 +47,10 @@ public class KapuaIcon extends Text {
         this.emSize = emSize;
     }
 
+    public void setSpin(boolean spin) {
+        this.spin = spin;
+    }
+
     @Override
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
@@ -58,28 +62,40 @@ public class KapuaIcon extends Text {
         StringBuilder sb = new StringBuilder("<i class='fa ");
         sb.append(icon.getStyleName());
 
+        //
+        // Spin
+        if (spin) {
+            sb.append(" fa-spin");
+        }
+
+        //
+        // Size
         if (emSize != null) {
             switch (emSize) {
             case 2:
-                sb.append(" fa-2x' ");
+                sb.append(" fa-2x");
                 break;
             case 3:
-                sb.append(" fa-3x' ");
+                sb.append(" fa-3x");
                 break;
             case 4:
-                sb.append(" fa-4x' ");
+                sb.append(" fa-4x");
                 break;
             case 5:
-                sb.append(" fa-5x' ");
+                sb.append(" fa-5x");
                 break;
             default:
-                sb.append(" fa-lg' ");
+                sb.append(" fa-lg");
                 break;
             }
         } else {
-            sb.append(" fa-lg' ");
+            sb.append(" fa-lg");
         }
 
+        sb.append("' ");
+
+        //
+        // Color
         if (color != null) {
             sb.append("style='color:rgb(") //
                     .append(color.getR()) //
