@@ -15,10 +15,16 @@ import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
@@ -52,7 +58,7 @@ public class JobTabExecutionsGrid extends EntityGrid<GwtExecution> {
 
             @Override
             protected void load(Object o, AsyncCallback<PagingLoadResult<GwtExecution>> asyncCallback) {
-                EXECUTION_SERVICE.findByJobId((PagingLoadConfig)o, currentSession.getSelectedAccountId(), jobId, asyncCallback);
+                EXECUTION_SERVICE.findByJobId((PagingLoadConfig) o, currentSession.getSelectedAccountId(), jobId, asyncCallback);
             }
         };
     }
@@ -61,7 +67,27 @@ public class JobTabExecutionsGrid extends EntityGrid<GwtExecution> {
     protected List<ColumnConfig> getColumns() {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
-        ColumnConfig columnConfig = new ColumnConfig("startedOn", JOB_MSGS.gridJobExecutionsColumnHeaderStartedOnFormatted(), 200);
+        ColumnConfig columnConfig = new ColumnConfig("status", null, 30);
+        columnConfig.setSortable(false);
+        columnConfig.setRenderer(new GridCellRenderer<GwtExecution>() {
+
+            @Override
+            public Object render(GwtExecution gwtExecution, String s, ColumnData columnData, int i, int i1, ListStore listStore, Grid grid) {
+                KapuaIcon icon;
+
+                if (gwtExecution.getEndedOn() == null) {
+                    icon = new KapuaIcon(IconSet.CIRCLE_O_NOTCH);
+                    icon.setSpin(true);
+                } else {
+                    icon = new KapuaIcon(IconSet.FLAG_CHECKERED);
+                }
+
+                return icon.getInlineHTML();
+            }
+        });
+        columnConfigs.add(columnConfig);
+
+        columnConfig = new ColumnConfig("startedOn", JOB_MSGS.gridJobExecutionsColumnHeaderStartedOnFormatted(), 200);
         columnConfig.setSortable(true);
         columnConfigs.add(columnConfig);
 
@@ -102,7 +128,7 @@ public class JobTabExecutionsGrid extends EntityGrid<GwtExecution> {
     }
 
     @Override
-    protected void selectionChangedEvent(final GwtExecution selectedItem) {
+    protected void selectionChangedEvent(GwtExecution selectedItem) {
         super.selectionChangedEvent(selectedItem);
     }
 
