@@ -11,7 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception;
 
-import org.eclipse.kapua.service.authorization.shiro.exception.KapuaAuthorizationException;
+import org.eclipse.kapua.app.api.core.exception.model.SubjectUnauthorizedExceptionInfo;
+import org.eclipse.kapua.service.authorization.shiro.exception.SubjectUnauthorizedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -19,11 +22,17 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class KapuaAuthorizationExceptionMapper implements ExceptionMapper<KapuaAuthorizationException> {
+public class SubjectUnathorizedExceptionMapper implements ExceptionMapper<SubjectUnauthorizedException> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SubjectUnathorizedExceptionMapper.class);
 
     @Override
-    public Response toResponse(KapuaAuthorizationException exception) {
-        return Response.status(Status.FORBIDDEN).build();
+    public Response toResponse(SubjectUnauthorizedException exception) {
+        LOG.error("Subject not authorized!", exception);
+        return Response//
+                .status(Status.FORBIDDEN) //
+                .entity(new SubjectUnauthorizedExceptionInfo(Status.FORBIDDEN, exception)) //
+                .build();
     }
 
 }

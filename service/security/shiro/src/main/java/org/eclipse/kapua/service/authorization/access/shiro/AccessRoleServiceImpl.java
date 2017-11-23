@@ -33,14 +33,13 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleDAO;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
-import org.eclipse.kapua.service.authorization.shiro.KapuaAuthorizationErrorCodes;
-import org.eclipse.kapua.service.authorization.shiro.KapuaAuthorizationException;
+import org.eclipse.kapua.service.authorization.shiro.exception.KapuaAuthorizationErrorCodes;
+import org.eclipse.kapua.service.authorization.shiro.exception.KapuaAuthorizationException;
 
 /**
  * {@link AccessRole} service implementation.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @KapuaProvider
 public class AccessRoleServiceImpl extends AbstractKapuaService implements AccessRoleService {
@@ -138,7 +137,7 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
         //
         // Build query
         AccessRoleQuery query = new AccessRoleQueryImpl(scopeId);
-        query.setPredicate(new AttributePredicate<KapuaId>(AccessRolePredicates.ACCESS_INFO_ID, accessInfoId));
+        query.setPredicate(new AttributePredicate<>(AccessRolePredicates.ACCESS_INFO_ID, accessInfoId));
 
         return query(query);
     }

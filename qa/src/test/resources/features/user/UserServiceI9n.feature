@@ -80,6 +80,7 @@ Feature: User Service Integration
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
     When I try to delete user "kapua-g"
     Then No exception was thrown
+    Given I expect the exception "SubjectUnauthorizedException" with the text "Error: user:read:"
     When I try to delete user "kapua-b"
     Then An exception was thrown
     And I logout
@@ -114,12 +115,12 @@ Feature: User Service Integration
       | integer | lockoutPolicy.lockDuration | 3     |
     And User A
       | name    | displayName  | email             | phoneNumber     | status  | userType |
-     | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
+      | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
     And Credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And Permissions
-     | domain | action |
+      | domain | action |
       | user   | read   |
       | user   | write  |
       | user   | delete |
@@ -147,6 +148,8 @@ Feature: User Service Integration
       | user   | delete |
     And I logout
     When I login as user with name "kapua-b" and password "ToManySecrets123#"
+    Then No exception was thrown
+    Given I expect the exception "SubjectUnauthorizedException" with the text "Error: user:read:"
     When I try to delete user "kapua-a"
     Then An exception was thrown
     And I logout
