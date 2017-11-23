@@ -11,19 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.web;
 
-import java.security.acl.Permission;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.ext.ContextResolver;
-import javax.ws.rs.ext.Provider;
-import javax.xml.bind.JAXBContext;
-
 import org.eclipse.kapua.app.api.core.exception.model.EntityNotFoundExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.IllegalArgumentExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.IllegalNullArgumentExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.SubjectUnauthorizedExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.ThrowableInfo;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.StorableEntityId;
@@ -174,6 +165,15 @@ import org.eclipse.kapua.service.user.UserXmlRegistry;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.ext.ContextResolver;
+import javax.ws.rs.ext.Provider;
+import javax.xml.bind.JAXBContext;
+import java.security.acl.Permission;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Provide a customized JAXBContext that makes the concrete implementations
  * known and available for marshalling
@@ -188,7 +188,7 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
 
     public JaxbContextResolver() {
         try {
-            Map<String, Object> properties = new HashMap<String, Object>(1);
+            Map<String, Object> properties = new HashMap<>(1);
             properties.put(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
 
             jaxbContext = JAXBContextFactory.createContext(new Class[] {
@@ -197,6 +197,9 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
 
                     // REST API exception models
                     ThrowableInfo.class,
+
+                    SubjectUnauthorizedExceptionInfo.class,
+
                     EntityNotFoundExceptionInfo.class,
                     IllegalArgumentExceptionInfo.class,
                     IllegalNullArgumentExceptionInfo.class,

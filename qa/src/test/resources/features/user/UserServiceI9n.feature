@@ -36,7 +36,7 @@ Feature: User Service Integration
     And I configure account service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities |  5    |
+      | integer | maxNumberChildEntities | 5     |
     And I configure user service
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -85,7 +85,7 @@ Feature: User Service Integration
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
     When I try to delete user "kapua-g"
     Then No exception was thrown
-    Given I expect the exception "KapuaException" with the text "Error during Persistence Operation"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "Error: user:read:"
     When I try to delete user "kapua-b"
     Then An exception was thrown
     And I logout
@@ -162,7 +162,7 @@ Feature: User Service Integration
     And I logout
     When I login as user with name "kapua-b" and password "ToManySecrets123#"
     Then No exception was thrown
-    Given I expect the exception "KapuaException" with the text "Error during Persistence Operation"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "Error: user:read:"
     When I try to delete user "kapua-a"
     Then An exception was thrown
     And I logout

@@ -12,8 +12,6 @@
 package org.eclipse.kapua.service.authorization.shiro;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authz.AuthorizationException;
-import org.apache.shiro.subject.Subject;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaUnauthenticatedException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -21,10 +19,11 @@ import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
+import org.eclipse.kapua.service.authorization.shiro.exception.SubjectUnauthorizedException;
 
 /**
  * {@link AuthorizationService} implementation.
- * 
+ *
  * @since 1.0.0
  */
 @KapuaProvider
@@ -33,29 +32,20 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     @Override
     public boolean isPermitted(Permission permission)
             throws KapuaException {
-        boolean isPermitted = true;
-
-        try {
-            checkPermission(permission);
-        } catch (AuthorizationException e) {
-            isPermitted = false;
-        }
-
-        return isPermitted;
-    }
-
-    @Override
-    public void checkPermission(Permission permission)
-            throws KapuaException {
         KapuaSession session = KapuaSecurityUtils.getSession();
 
         if (session == null) {
             throw new KapuaUnauthenticatedException();
         }
 
-        if (!session.isTrustedMode()) {
-            Subject subject = SecurityUtils.getSubject();
-            subject.checkPermission((org.apache.shiro.authz.Permission) permission);
+        return session.isTrustedMode() ? true : SecurityUtils.getSubject().isPermitted((org.apache.shiro.authz.Permission) permission);
+    }
+
+    @Override
+    public void checkPermission(Permission permission)
+            throws KapuaException {
+        if (!isPermitted(permission)) {
+            throw new SubjectUnauthorizedException(permission);
         }
     }
 }
