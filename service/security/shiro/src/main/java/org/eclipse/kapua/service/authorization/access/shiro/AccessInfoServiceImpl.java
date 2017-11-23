@@ -42,8 +42,8 @@ import org.eclipse.kapua.service.authorization.permission.shiro.PermissionValida
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
-import org.eclipse.kapua.service.authorization.shiro.KapuaAuthorizationErrorCodes;
-import org.eclipse.kapua.service.authorization.shiro.KapuaAuthorizationException;
+import org.eclipse.kapua.service.authorization.shiro.exception.KapuaAuthorizationErrorCodes;
+import org.eclipse.kapua.service.authorization.shiro.exception.KapuaAuthorizationException;
 
 /**
  * {@link AccessInfoService} implementation based on JPA.

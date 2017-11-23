@@ -9,15 +9,14 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.authorization.shiro;
+package org.eclipse.kapua.service.authorization.shiro.exception;
 
 import org.eclipse.kapua.KapuaException;
 
 /**
  * Authorization exception.
- * 
+ *
  * @since 1.0
- * 
  */
 public class KapuaAuthorizationException extends KapuaException {
 
@@ -27,9 +26,8 @@ public class KapuaAuthorizationException extends KapuaException {
 
     /**
      * Constructs the exception by error code
-     * 
-     * @param code
-     *            error code
+     *
+     * @param code error code
      */
     public KapuaAuthorizationException(KapuaAuthorizationErrorCodes code) {
         super(code);
@@ -37,11 +35,9 @@ public class KapuaAuthorizationException extends KapuaException {
 
     /**
      * Constructs the exception by error code and custom arguments
-     * 
-     * @param code
-     *            error code
-     * @param arguments
-     *            arguments
+     *
+     * @param code      error code
+     * @param arguments arguments
      */
     public KapuaAuthorizationException(KapuaAuthorizationErrorCodes code, Object... arguments) {
         super(code, arguments);
@@ -49,18 +45,16 @@ public class KapuaAuthorizationException extends KapuaException {
 
     /**
      * Constructs the exception by error code, custom arguments and cause
-     * 
-     * @param code
-     *            error code
-     * @param cause
-     *            original cause
-     * @param arguments
-     *            arguments
+     *
+     * @param code      error code
+     * @param cause     original cause
+     * @param arguments arguments
      */
     public KapuaAuthorizationException(KapuaAuthorizationErrorCodes code, Throwable cause, Object... arguments) {
         super(code, cause, arguments);
     }
 
+    @Override
     protected String getKapuaErrorMessagesBundle() {
         return KAPUA_ERROR_MESSAGES;
     }

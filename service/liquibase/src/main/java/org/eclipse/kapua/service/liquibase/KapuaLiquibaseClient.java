@@ -12,8 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.liquibase;
 
-import static java.lang.Boolean.parseBoolean;
-import static org.apache.commons.lang3.SystemUtils.getJavaIoTmpDir;
+import liquibase.Liquibase;
+import liquibase.database.Database;
+import liquibase.database.DatabaseFactory;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.exception.DatabaseException;
+import liquibase.exception.LiquibaseException;
+import liquibase.resource.FileSystemResourceAccessor;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.reflections.Reflections;
+import org.reflections.scanners.ResourcesScanner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,20 +40,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.reflections.Reflections;
-import org.reflections.scanners.ResourcesScanner;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import liquibase.Liquibase;
-import liquibase.database.Database;
-import liquibase.database.DatabaseFactory;
-import liquibase.database.jvm.JdbcConnection;
-import liquibase.exception.DatabaseException;
-import liquibase.exception.LiquibaseException;
-import liquibase.resource.FileSystemResourceAccessor;
+import static java.lang.Boolean.parseBoolean;
+import static org.apache.commons.lang3.SystemUtils.getJavaIoTmpDir;
 
 public class KapuaLiquibaseClient {
 
