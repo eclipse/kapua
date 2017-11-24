@@ -32,6 +32,7 @@ public class UserTabItemPermission extends KapuaTabItem<GwtUser> {
         super(currentSession, MSGS.gridUserTabPermissionsLabel(), new KapuaIcon(IconSet.CHECK_CIRCLE));
 
         permissionGrid = new UserTabPermissionGrid(null, currentSession);
+        permissionGrid.setRefreshOnRender(false);
     }
 
     public UserTabPermissionGrid getPermissionGrid() {

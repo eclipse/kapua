@@ -53,6 +53,7 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
     protected ListStore<M> entityStore;
     protected PagingToolBar entityPagingToolbar;
     protected EntityFilterPanel<M> filterPanel;
+    protected boolean refreshOnRender = true;
 
     protected EntityGrid(AbstractEntityView<M> entityView, GwtSession currentSession) {
         super(new FitLayout());
@@ -139,7 +140,9 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
 
         //
         // Do first load
-        refresh();
+        if (refreshOnRender) {
+            refresh();
+        }
     }
 
     protected EntityCRUDToolbar<M> getToolbar() {
@@ -188,6 +191,14 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
 
     public GridSelectionModel<M> getSelectionModel() {
         return entityGrid.getSelectionModel();
+    }
+
+    public boolean isRefreshOnRender() {
+        return refreshOnRender;
+    }
+
+    public void setRefreshOnRender(boolean refreshOnRender) {
+        this.refreshOnRender = refreshOnRender;
     }
 
     public abstract GwtQuery getFilterQuery();

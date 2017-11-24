@@ -31,6 +31,7 @@ public class UserTabItemCredentials extends KapuaTabItem<GwtUser> {
         super(currentSession, MSGS.gridTabCredentialsLabel(), new KapuaIcon(IconSet.KEY));
 
         credentialsGrid = new CredentialGrid(null, currentSession);
+        credentialsGrid.setRefreshOnRender(false);
     }
 
     @Override

@@ -35,7 +35,7 @@ public class RoleTabPermissionGrid extends KapuaTabItem<GwtRole> {
         super(currentSession, MSGS.roleTabPermissionGridTitle(), new KapuaIcon(IconSet.TASKS));
 
         rolePermissionGrid = new RolePermissionGrid(entityView, currentSession);
-
+        rolePermissionGrid.setRefreshOnRender(false);
     }
 
     @Override

@@ -13,6 +13,7 @@ package org.eclipse.kapua.app.console.module.api.client.ui.tab;
 
 import com.extjs.gxt.ui.client.data.BaseListLoader;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -29,6 +30,7 @@ import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.KapuaGrid;
 import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
+import org.eclipse.kapua.app.console.module.api.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
@@ -59,6 +61,7 @@ public abstract class EntityDescriptionTabItem<M extends GwtEntityModel> extends
 
         RpcProxy<ListLoadResult<GwtGroupedNVPair>> proxy = getDataProxy();
         descriptionValuesloader = new BaseListLoader<ListLoadResult<GwtGroupedNVPair>>(proxy);
+        descriptionValuesloader.addLoadListener(new DescriptionLoadListener());
         descriptionValuesStore = new GroupingStore<GwtGroupedNVPair>(descriptionValuesloader);
         descriptionValuesStore.groupBy("groupLoc");
 
@@ -127,6 +130,15 @@ public abstract class EntityDescriptionTabItem<M extends GwtEntityModel> extends
             descriptionValuesloader.load();
         } else {
             descriptionValuesStore.removeAll();
+        }
+    }
+
+    private class DescriptionLoadListener extends KapuaLoadListener {
+
+        @Override
+        public void loaderLoadException(LoadEvent le) {
+            super.loaderLoadException(le);
+            descriptionGrid.unmask();
         }
     }
 }
