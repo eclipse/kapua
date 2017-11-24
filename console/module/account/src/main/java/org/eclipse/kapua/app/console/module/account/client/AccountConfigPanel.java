@@ -16,21 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
-import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
-import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.module.api.client.util.Constants;
-import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.module.api.client.util.FormUtils;
-import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
-import org.eclipse.kapua.app.console.module.api.client.util.MessageUtils;
-import org.eclipse.kapua.app.console.module.api.client.util.UserAgentUtils;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigComponent;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigParameter;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
-
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
@@ -67,6 +52,20 @@ import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
+import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
+import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.util.Constants;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.module.api.client.util.FormUtils;
+import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
+import org.eclipse.kapua.app.console.module.api.client.util.MessageUtils;
+import org.eclipse.kapua.app.console.module.api.client.util.UserAgentUtils;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigComponent;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigParameter;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 
 @SuppressWarnings("Duplicates")
 public class AccountConfigPanel extends LayoutContainer {
@@ -131,7 +130,6 @@ public class AccountConfigPanel extends LayoutContainer {
                 });
             }
         };
-
         paintConfig();
     }
 
@@ -329,6 +327,21 @@ public class AccountConfigPanel extends LayoutContainer {
             } else {
                 field = paintMultiFieldConfigParameter(param);
             }
+            ACCOUNT_SERVICE.findRootAccount(new AsyncCallback<GwtAccount>() {
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    FailureHandler.handle(caught);
+                }
+
+                @Override
+                public void onSuccess(GwtAccount gwtRootAccount) {
+                    String hideFor = param.getOtherAttributes().get("hideFor");
+                    if (hideFor != null && hideFor.equals("NON_ROOT") && !selectedAccountId.equals(gwtRootAccount.getId())) {
+                        field.hide();
+                    }
+                }
+            });
             String allowSelfEditValue = param.getOtherAttributes() != null ? param.getOtherAttributes().get("allowSelfEdit") : null;
             boolean allowSelfEdit = allowSelfEditValue != null && allowSelfEditValue.equals("true");
             boolean isEditingSelf = selectedAccountId == null || selectedAccountId.equals(currentSession.getSelectedAccountId());
@@ -365,8 +378,11 @@ public class AccountConfigPanel extends LayoutContainer {
 
                                 if (restrictTargetValue != null) {
                                     boolean rootChildrenTargetRestricted = restrictTargetValue.equals("ROOT_CHILDREN");
+                                    boolean rootTargetRestricted = restrictTargetValue.equals("ROOT");
                                     if (rootChildrenTargetRestricted && (!rootAccount.getId().equals(targetAccount.getId()) &&
                                             !rootAccount.getId().equals(targetAccount.getParentAccountId()))) {
+                                        field.disable();
+                                    } else if (rootTargetRestricted && !rootAccount.getId().equals(targetAccount.getId())) {
                                         field.disable();
                                     }
                                 }
