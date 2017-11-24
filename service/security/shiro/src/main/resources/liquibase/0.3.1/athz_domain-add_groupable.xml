@@ -19,7 +19,7 @@
 
     <changeSet id="athz_domain-add_groupable-0.3.1" author="eurotech">
         <addColumn tableName="athz_domain">
-            <column name="groupable" type="boolean" defaultValue="false">
+            <column name="groupable" type="boolean" defaultValueBoolean="false">
                 <constraints nullable="false"/>
             </column>
         </addColumn>
