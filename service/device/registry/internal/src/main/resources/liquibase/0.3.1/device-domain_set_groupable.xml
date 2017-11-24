@@ -29,7 +29,7 @@
         </preConditions>
 
         <update tableName="athz_domain">
-            <column name="groupable" value="true"/>
+            <column name="groupable" valueBoolean="true"/>
             <where>name = 'device'</where>
         </update>
 
