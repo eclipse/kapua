@@ -22,8 +22,8 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.client.ClientException;
 import org.eclipse.kapua.service.datastore.client.DatamodelMappingException;
 import org.eclipse.kapua.service.datastore.client.DatastoreClient;
-import org.eclipse.kapua.service.datastore.client.model.IndexExistsRequest;
-import org.eclipse.kapua.service.datastore.client.model.IndexExistsResponse;
+import org.eclipse.kapua.service.datastore.client.model.IndexRequest;
+import org.eclipse.kapua.service.datastore.client.model.IndexResponse;
 import org.eclipse.kapua.service.datastore.client.model.TypeDescriptor;
 import org.eclipse.kapua.service.datastore.internal.DatastoreCacheManager;
 import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
@@ -89,7 +89,7 @@ public class Schema {
             logger.debug("Entered updating metadata");
             DatastoreClient datastoreClient = DatastoreClientFactory.getInstance();
             // Check existence of the data index
-            IndexExistsResponse dataIndexExistsResponse = datastoreClient.isIndexExists(new IndexExistsRequest(dataIndexName));
+            IndexResponse dataIndexExistsResponse = datastoreClient.isIndexExists(new IndexRequest(dataIndexName));
             if (!dataIndexExistsResponse.isIndexExists()) {
                 datastoreClient.createIndex(dataIndexName, getMappingSchema(dataIndexName));
                 logger.info("Data index created: " + dataIndexName);
@@ -101,7 +101,7 @@ public class Schema {
             datastoreClient.putMapping(new TypeDescriptor(dataIndexName, MessageSchema.MESSAGE_TYPE_NAME), MessageSchema.getMesageTypeSchema(enableAllField, enableSourceField));
             // Check existence of the kapua internal index
             String registryIndexName = DatastoreUtils.getRegistryIndexName(scopeId);
-            IndexExistsResponse registryIndexExistsResponse = datastoreClient.isIndexExists(new IndexExistsRequest(registryIndexName));
+            IndexResponse registryIndexExistsResponse = datastoreClient.isIndexExists(new IndexRequest(registryIndexName));
             if (!registryIndexExistsResponse.isIndexExists()) {
                 datastoreClient.createIndex(registryIndexName, getMappingSchema(registryIndexName));
                 logger.info("Metadata index created: " + registryIndexExistsResponse);

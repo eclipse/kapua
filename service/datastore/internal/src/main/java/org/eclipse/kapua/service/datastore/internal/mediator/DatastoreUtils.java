@@ -262,18 +262,13 @@ public class DatastoreUtils {
      * @param start
      * @param end
      * @return
+     * @throws DatastoreException
      */
-    public static String[] convertToDataIndexes(KapuaId scopeId, Instant start, Instant end) {
+    public static String[] convertToDataIndexes(KapuaId scopeId, Instant start, Instant end) throws DatastoreException {
         // drop partial week so start from "from + 1 week" to "end - 1 week" included
         // if the start date is not the first day of the week and the end date is not the end day of the week
-        Instant startInstant = start.plusMillis(0);// smarter way to clone it
-        Instant endInstant = end.plusMillis(0); // smarter way to clone it
-        if (!isStartingDayOfTheWeek(startInstant)) {
-            startInstant = startInstant.plus(7, ChronoUnit.DAYS);
-        }
-        if (!isEndingDayOfTheWeek(endInstant)) {
-            endInstant = endInstant.minus(7, ChronoUnit.DAYS);
-        }
+        Instant startInstant = getFirstDayOfTheWeek(start);
+        Instant endInstant = getLastDayOfTheWeek(end);
         // this code:
         // int startYear = Year.from(startInstant).getValue();
         // int endYear = Year.from(startInstant).getValue();
@@ -287,7 +282,9 @@ public class DatastoreUtils {
 
         List<String> indexes = new ArrayList<>();
         while (startInstant.isBefore(endInstant) || areInThesameWeek(startInstant, endInstant)) {
-            indexes.add(DatastoreUtils.getDataIndexName(scopeId, startInstant.toEpochMilli()));
+            String index = DatastoreUtils.getDataIndexName(scopeId, startInstant.toEpochMilli());
+            logger.info("Adding index: {}", index);
+            indexes.add(index);
             startInstant = startInstant.plus(7, ChronoUnit.DAYS);
         }
         //add last week of years (this algorithm can skip the last week of the year depending on the start date)
@@ -303,17 +300,45 @@ public class DatastoreUtils {
                     String indexToAdd = DatastoreUtils.getDataIndexName(scopeId, KapuaDateUtils.parseDate(dateToCheck).toInstant().toEpochMilli());
                     logger.info("Index to add {} - date {}", new Object[] { indexToAdd, dateToCheck });
                     if (!indexes.contains(indexToAdd)) {
+                        logger.info("Adding index: {}", indexToAdd);
                         indexes.add(indexToAdd);
-                        logger.info(">>> Add index {} - date {}", new Object[] { indexToAdd, dateToCheck });
+                        logger.debug(">>> Add index {} - date {}", new Object[] { indexToAdd, dateToCheck });
                     } else {
                         logger.debug("Index {} already present in the list", indexToAdd);
                     }
                 } catch (ParseException e) {
-                    logger.warn("Cannot evaluate week of the year for the date", e);
+                    logger.error("Cannot evaluate week of the year for the date", e);
+                    throw new DatastoreException(DatastoreErrorCodes.INTERNAL_ERROR, e);
                 }
             }
         }
         return indexes.toArray(new String[indexes.size()]);
+    }
+
+    public static List<String> filterIndexesBeforeDate(KapuaId scopeId, String[] indexes, Instant startInstant) {
+        //see https://docs.oracle.com/javase/8/docs/api/java/util/List.html#remove-int-
+        List<String> filteredIndexes = new ArrayList<>();
+        String lastIndexToInclude = DatastoreUtils.getDataIndexName(scopeId, getLastDayOfTheWeek(startInstant).toEpochMilli());
+        for (String index : indexes) {
+            if (lastIndexToInclude.compareTo(index)>=0) {
+                filteredIndexes.add(index);
+            }
+        }
+        return filteredIndexes;
+    }
+
+    private static Instant getLastDayOfTheWeek(Instant instant) {
+        while (!isEndingDayOfTheWeek(instant)) {
+            instant = instant.minus(1, ChronoUnit.DAYS);
+        }
+        return instant;
+    }
+
+    private static Instant getFirstDayOfTheWeek(Instant instant) {
+        while (!isStartingDayOfTheWeek(instant)) {
+            instant = instant.plus(1, ChronoUnit.DAYS);
+        }
+        return instant;
     }
 
     private static boolean isStartingDayOfTheWeek(Instant instant) {

@@ -43,6 +43,17 @@ public class ClientException extends KapuaException {
     }
 
     /**
+     * Construct the exception with the provided code and message
+     *
+     * @param code
+     * @param message
+     * @param t
+     */
+    public ClientException(KapuaErrorCode code, String message, Throwable t) {
+        super(code, message, t);
+    }
+
+    /**
      * Construct the exception with the provided code, throwable and message
      * 
      * @param code
