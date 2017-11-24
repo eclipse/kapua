@@ -30,6 +30,7 @@ public class JobTabTargets extends KapuaTabItem<GwtJob> {
         super(currentSession, MSGS.gridJobTabTargetsLabel(), new KapuaIcon(IconSet.BULLSEYE));
 
         targetsGrid = new JobTabTargetsGrid(null, currentSession);
+        targetsGrid.setRefreshOnRender(false);
     }
 
     @Override

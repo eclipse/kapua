@@ -28,7 +28,7 @@ public class UsersRoleTabItem extends KapuaTabItem<GwtRole> {
     public UsersRoleTabItem(GwtSession currentSession) {
         super(currentSession, MSGS.roleTabSubjectGridTitle(), new KapuaIcon(IconSet.SUPPORT));
         rolePermissionGrid = new RoleSubjectGrid(null, currentSession);
-
+        rolePermissionGrid.setRefreshOnRender(false);
     }
 
     @Override
