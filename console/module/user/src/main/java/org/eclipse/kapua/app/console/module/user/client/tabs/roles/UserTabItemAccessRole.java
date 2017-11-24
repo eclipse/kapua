@@ -31,6 +31,7 @@ public class UserTabItemAccessRole extends KapuaTabItem<GwtUser> {
     public UserTabItemAccessRole(GwtSession currentSession) {
         super(currentSession, MSGS.gridUserTabRolesLabel(), new KapuaIcon(IconSet.STREET_VIEW));
         accessRoleGrid = new UserTabAccessRoleGrid(currentSession, null);
+        accessRoleGrid.setRefreshOnRender(false);
     }
 
     public UserTabAccessRoleGrid getAccessRoleGrid() {

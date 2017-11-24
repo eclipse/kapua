@@ -29,6 +29,7 @@ public class JobTabSchedules extends KapuaTabItem<GwtJob> {
     public JobTabSchedules(GwtSession currentSession) {
         super(currentSession, JOB_MSGS.gridJobTabSchedulesLabel(), new KapuaIcon(IconSet.CLOCK_O));
         schedulesGrid = new JobTabSchedulesGrid(null, currentSession);
+        schedulesGrid.setRefreshOnRender(false);
     }
 
     @Override

@@ -27,7 +27,7 @@ public class AccountChildUserTab extends KapuaTabItem<GwtAccount> {
         super(currentSession, "Users", new KapuaIcon(IconSet.USERS));
         this.currentSession = currentSession;
         userGrid = new AccountChildUserGrid(currentSession);
-
+        userGrid.setRefreshOnRender(false);
     }
 
     @Override
