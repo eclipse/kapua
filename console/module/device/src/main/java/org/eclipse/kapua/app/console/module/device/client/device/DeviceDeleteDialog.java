@@ -17,6 +17,7 @@ import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityDeleteDialog;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceServiceAsync;
@@ -58,9 +59,9 @@ public class DeviceDeleteDialog extends EntityDeleteDialog {
                 new AsyncCallback<Void>() {
 
                     public void onFailure(Throwable caught) {
+                        FailureHandler.handle(caught);
                         exitStatus = false;
-                        // TODO
-                        // exitMessage = MSGS.dialogDeleteError(caught.getLocalizedMessage());
+                        exitMessage = DEVICE_MSGS.dialogDeviceDeleteError(caught.getLocalizedMessage());
                         hide();
                     }
 
