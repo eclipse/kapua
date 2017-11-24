@@ -11,12 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.server;
 
-import com.extjs.gxt.ui.client.data.BaseListLoadResult;
-import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Callable;
+
+import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
@@ -70,12 +71,14 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventDomain;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Callable;
+import org.eclipse.kapua.service.tag.Tag;
+import org.eclipse.kapua.service.tag.TagService;
+import com.extjs.gxt.ui.client.data.BaseListLoadResult;
+import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
 /**
  * The server side implementation of the Device RPC service.
@@ -87,6 +90,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
+    private boolean isSameId;
 
     @Override
     public GwtDevice findDevice(String scopeIdString, String deviceIdString)
@@ -181,6 +185,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
 
                 if (AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(new GroupDomain(), Actions.read, device.getScopeId()))) {
                     if (device.getGroupId() != null) {
+
                         Group group = groupService.find(scopeId, device.getGroupId());
                         if (group != null) {
                             pairs.add(new GwtGroupedNVPair("devInfo", "devGroupName", group.getName()));
@@ -234,7 +239,8 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                 // GPS infos retrieval
                 if (AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(new DeviceEventDomain(), Actions.read, device.getScopeId()))) {
                     DeviceEventFactory deviceEventFactory = locator.getFactory(DeviceEventFactory.class);
-                    DeviceEventQuery eventQuery = deviceEventFactory.newQuery(device.getScopeId());
+                    DeviceEventQuery eventQuery = deviceEventFactory
+                            .newQuery(device.getScopeId());
                     eventQuery.setLimit(1);
                     eventQuery.setSortCriteria(new FieldSortCriteria(DeviceEventPredicates.RECEIVED_ON, SortOrder.DESCENDING));
 
@@ -449,14 +455,22 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
 
             KapuaLocator locator = KapuaLocator.getInstance();
             DeviceRegistryService drs = locator.getService(DeviceRegistryService.class);
-
+            TagService tagService = locator.getService(TagService.class);
             Device device = drs.find(scopeId, deviceId);
 
             Set<KapuaId> tagIds = device.getTagIds();
+            if (tagIds.contains(tagId)) {
+                Tag tag = tagService.find(scopeId, tagId);
+                isSameId = true;
+                if (tag != null) {
+                    throw new KapuaDuplicateNameException(tag.getName());
+                }
+            }
             tagIds.add(tagId);
             device.setTagIds(tagIds);
 
             drs.update(device);
+
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }

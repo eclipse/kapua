@@ -67,11 +67,9 @@ public class DeviceTagAddDialog extends EntityAddEditDialog {
             @Override
             public void onFailure(Throwable cause) {
                 unmask();
-
                 submitButton.enable();
                 cancelButton.enable();
                 status.hide();
-
                 exitStatus = false;
                 exitMessage = MSGS.dialogDeviceTagAddError(cause.getLocalizedMessage());
 
@@ -103,7 +101,7 @@ public class DeviceTagAddDialog extends EntityAddEditDialog {
         tagsCombo.setTypeAhead(false);
         tagsCombo.setAllowBlank(false);
         tagsCombo.disable();
-        //        tagsCombo.setEmptyText(MSGS.dialogDeviceTagAddFieldTagEmptyText());
+        // tagsCombo.setEmptyText(MSGS.dialogDeviceTagAddFieldTagEmptyText());
         tagsCombo.setFieldLabel(MSGS.dialogDeviceTagAddFieldTag());
         tagsCombo.setTriggerAction(TriggerAction.ALL);
         tagsCombo.setDisplayField("tagName");
