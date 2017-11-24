@@ -71,4 +71,8 @@ public enum KapuaErrorCodes implements KapuaErrorCode {
      * Child Accounts limit valuation
      */
     PARENT_LIMIT_EXCEEDED_IN_CONFIG,
+    /**
+     * User unauthorized
+     */
+    SUBJECT_UNAUTHORIZED,
 }

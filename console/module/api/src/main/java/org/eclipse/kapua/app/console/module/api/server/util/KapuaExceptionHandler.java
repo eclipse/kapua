@@ -119,6 +119,10 @@ public class KapuaExceptionHandler {
             // all others => log and throw internal error code
             logger.warn("Child accounts limitation error", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.PARENT_LIMIT_EXCEEDED_IN_CONFIG, t, t.getLocalizedMessage());
+        } else if(t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.SUBJECT_UNAUTHORIZED.name())) {
+            // all others => log and throw internal error code
+            logger.warn("User unauthorize", t);
+            throw new GwtKapuaException(GwtKapuaErrorCode.SUBJECT_UNAUTHORIZED, t, t.getLocalizedMessage());
         } else {
 
             // all others => log and throw internal error code
