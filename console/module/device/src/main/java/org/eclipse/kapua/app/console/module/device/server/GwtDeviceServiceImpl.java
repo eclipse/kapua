@@ -87,6 +87,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
+    private boolean isSameId;
 
     @Override
     public GwtDevice findDevice(String scopeIdString, String deviceIdString)
@@ -437,7 +438,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
     }
 
     @Override
-    public void addDeviceTag(GwtXSRFToken xsrfToken, String scopeIdString, String deviceIdString, String tagIdString) throws GwtKapuaException {
+    public boolean addDeviceTag(GwtXSRFToken xsrfToken, String scopeIdString, String deviceIdString, String tagIdString) throws GwtKapuaException {
         //
         // Checking validity of the given XSRF Token
         checkXSRFToken(xsrfToken);
@@ -453,13 +454,21 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
             Device device = drs.find(scopeId, deviceId);
 
             Set<KapuaId> tagIds = device.getTagIds();
+            if (tagIds.contains(tagId)) {
+                isSameId = true;
+            } else {
+                isSameId = false;
+            }
             tagIds.add(tagId);
             device.setTagIds(tagIds);
 
             drs.update(device);
+
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
+        return isSameId;
+
     }
 
     @Override
