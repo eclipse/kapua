@@ -117,7 +117,7 @@ public interface GwtDeviceService extends RemoteService {
      * @param deviceIdString
      * @param tagIdString
      */
-    public void addDeviceTag(GwtXSRFToken xsrfToken, String scopeIdString, String deviceIdString, String tagIdString) throws GwtKapuaException;
+    public boolean addDeviceTag(GwtXSRFToken xsrfToken, String scopeIdString, String deviceIdString, String tagIdString) throws GwtKapuaException;
 
     /**
      * Removes the association between the Tag and the Device

@@ -55,12 +55,17 @@ public class DeviceTagAddDialog extends EntityAddEditDialog {
 
         String tagId = tagsCombo.getValue().getId();
 
-        GWT_DEVICE_SERVICE.addDeviceTag(xsrfToken, selectedDevice.getScopeId(), selectedDevice.getId(), tagId, new AsyncCallback<Void>() {
+        GWT_DEVICE_SERVICE.addDeviceTag(xsrfToken, selectedDevice.getScopeId(), selectedDevice.getId(), tagId, new AsyncCallback<Boolean>() {
 
             @Override
-            public void onSuccess(Void gwtAccessPermission) {
+            public void onSuccess(Boolean gwtAccessPermission) {
                 exitStatus = true;
-                exitMessage = MSGS.dialogDeviceTagAddConfirmation();
+                if (gwtAccessPermission) {
+                    exitMessage = MSGS.dialogDeviceTagAddErrorSameId();
+                } else {
+                    exitMessage = MSGS.dialogDeviceTagAddConfirmation();
+                }
+
                 hide();
             }
 
@@ -103,7 +108,7 @@ public class DeviceTagAddDialog extends EntityAddEditDialog {
         tagsCombo.setTypeAhead(false);
         tagsCombo.setAllowBlank(false);
         tagsCombo.disable();
-        //        tagsCombo.setEmptyText(MSGS.dialogDeviceTagAddFieldTagEmptyText());
+        // tagsCombo.setEmptyText(MSGS.dialogDeviceTagAddFieldTagEmptyText());
         tagsCombo.setFieldLabel(MSGS.dialogDeviceTagAddFieldTag());
         tagsCombo.setTriggerAction(TriggerAction.ALL);
         tagsCombo.setDisplayField("tagName");
