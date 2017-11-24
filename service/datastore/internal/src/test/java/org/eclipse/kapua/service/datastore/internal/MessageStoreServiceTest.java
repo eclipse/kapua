@@ -60,11 +60,14 @@ import org.eclipse.kapua.service.datastore.ClientInfoRegistryService;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
+import org.eclipse.kapua.service.datastore.client.DatastoreClient;
 import org.eclipse.kapua.service.datastore.client.embedded.EsEmbeddedEngine;
+import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreChannel;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
+import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreConfiguration;
 import org.eclipse.kapua.service.datastore.internal.mediator.MetricInfoField;
@@ -135,6 +138,15 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     private static final ChannelInfoRegistryService CHANNEL_INFO_REGISTRY_SERVICE = LOCATOR.getService(ChannelInfoRegistryService.class);
     private static final MetricInfoRegistryService METRIC_INFO_REGISTRY_SERVICE = LOCATOR.getService(MetricInfoRegistryService.class);
     private static final ClientInfoRegistryService CLIENT_INFO_REGISTRY_SERVICE = LOCATOR.getService(ClientInfoRegistryService.class);
+    private static DatastoreClient datastoreClient;
+
+    static {
+        try {
+            datastoreClient = DatastoreClientFactory.getInstance();
+        } catch (Exception e) {
+            logger.error("Error getting data store client!", e);
+        }
+    }
 
     /**
      * This method deletes all indices of the current ES instance
@@ -219,28 +231,33 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
         // delete by month window
         messagesCount -= 56;
-        MESSAGE_STORE_SERVICE.deleteByDate(KapuaEid.ONE, KapuaDateUtils.parseDate("2016-12-01T00:00:00.000Z"), KapuaDateUtils.parseDate("2016-12-31T00:00:00.000Z"));
+        String[] indexes = DatastoreUtils.convertToDataIndexes(KapuaEid.ONE, KapuaDateUtils.parseDate("2016-12-01T00:00:00.000Z").toInstant(),
+                KapuaDateUtils.parseDate("2016-12-31T00:00:00.000Z").toInstant());
+        datastoreClient.deleteIndexes(indexes);
         DatastoreMediator.getInstance().refreshAllIndexes();
         count = MESSAGE_STORE_SERVICE.count(messageQuery);
         assertEquals(messagesCount, count);
 
         // delete by month window
         messagesCount -= 28;
-        MESSAGE_STORE_SERVICE.deleteByDate(KapuaEid.ONE, KapuaDateUtils.parseDate("2017-01-01T00:00:00.000Z"), KapuaDateUtils.parseDate("2017-01-31T00:00:00.000Z"));
+        indexes = DatastoreUtils.convertToDataIndexes(KapuaEid.ONE, KapuaDateUtils.parseDate("2017-01-01T00:00:00.000Z").toInstant(), KapuaDateUtils.parseDate("2017-01-31T00:00:00.000Z").toInstant());
+        datastoreClient.deleteIndexes(indexes);
         DatastoreMediator.getInstance().refreshAllIndexes();
         count = MESSAGE_STORE_SERVICE.count(messageQuery);
         assertEquals(messagesCount, count);
 
         // delete by month window
         messagesCount -= 63;
-        MESSAGE_STORE_SERVICE.deleteByDate(KapuaEid.ONE, KapuaDateUtils.parseDate("2017-02-01T00:00:00.000Z"), KapuaDateUtils.parseDate("2017-02-31T00:00:00.000Z"));
+        indexes = DatastoreUtils.convertToDataIndexes(KapuaEid.ONE, KapuaDateUtils.parseDate("2017-02-01T00:00:00.000Z").toInstant(), KapuaDateUtils.parseDate("2017-02-31T00:00:00.000Z").toInstant());
+        datastoreClient.deleteIndexes(indexes);
         DatastoreMediator.getInstance().refreshAllIndexes();
         count = MESSAGE_STORE_SERVICE.count(messageQuery);
         assertEquals(messagesCount, count);
 
         // do a new query
         messagesCount = 0;
-        MESSAGE_STORE_SERVICE.deleteByDate(KapuaEid.ONE, Date.from(startDate.toInstant().minus(7, ChronoUnit.DAYS)), Date.from(endDate.toInstant().plus(7, ChronoUnit.DAYS)));
+        indexes = DatastoreUtils.convertToDataIndexes(KapuaEid.ONE, startDate.toInstant().minus(7, ChronoUnit.DAYS), endDate.toInstant().plus(7, ChronoUnit.DAYS));
+        datastoreClient.deleteIndexes(indexes);
         DatastoreMediator.getInstance().refreshAllIndexes();
         MESSAGE_STORE_SERVICE.count(messageQuery);
         count = MESSAGE_STORE_SERVICE.count(messageQuery);

@@ -31,5 +31,9 @@ public enum DatastoreErrorCodes implements KapuaErrorCode {
     /**
      * Error on communication with the underlying datastore layer (timeout, no node available ...)
      */
-    COMMUNICATION_ERROR
+    COMMUNICATION_ERROR,
+    /**
+     * Generic internal error
+     */
+    INTERNAL_ERROR;
 }

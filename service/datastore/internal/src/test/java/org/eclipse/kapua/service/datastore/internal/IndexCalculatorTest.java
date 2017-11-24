@@ -22,6 +22,7 @@ import java.util.TimeZone;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
+import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.test.KapuaTest;
 import org.junit.Test;
@@ -70,7 +71,7 @@ public class IndexCalculatorTest extends KapuaTest {
         performTest(sdf.parse("01/01/2017 13:12"), sdf.parse("06/01/2017 13:12"), null);
     }
 
-    private void performTest(Date startDate, Date endDate, String[] expectedIndexes) {
+    private void performTest(Date startDate, Date endDate, String[] expectedIndexes) throws DatastoreException {
         Calendar calStartDate = Calendar.getInstance(TimeZone.getTimeZone("UTC"), KapuaDateUtils.getLocale());
         calStartDate.setTimeInMillis(startDate.getTime());
         Calendar calEndDate = Calendar.getInstance(TimeZone.getTimeZone("UTC"), KapuaDateUtils.getLocale());
