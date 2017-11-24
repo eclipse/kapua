@@ -30,7 +30,6 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.sanselan.ImageFormat;
 import org.apache.sanselan.Sanselan;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
@@ -195,18 +194,21 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         KapuaId accountId = KapuaEid.parseCompactId(accountIdString);
 
         KapuaLocator locator = KapuaLocator.getInstance();
-        AccountService accountService = locator.getService(AccountService.class);
+        final AccountService accountService = locator.getService(AccountService.class);
         final UserService userService = locator.getService(UserService.class);
 
         List<GwtGroupedNVPair> accountPropertiesPairs = new ArrayList<GwtGroupedNVPair>();
         try {
             final Account account = accountService.find(scopeId, accountId);
-            String brokerUrl;
-            if (accountService.getConfigValues(account.getId()).get("deviceBrokerClusterUri") != null && StringUtils.isNotEmpty(accountService.getConfigValues(account.getId()).get("deviceBrokerClusterUri").toString())) {
-                brokerUrl = accountService.getConfigValues(account.getId()).get("deviceBrokerClusterUri").toString();
-            } else {
-                brokerUrl = SystemUtils.getBrokerURI().toString();
-            }
+            final KapuaId rootAccountId = GwtKapuaCommonsModelConverter.convertKapuaId(findRootAccount().getId());
+            String brokerUrl = KapuaSecurityUtils.doPrivileged(new Callable<String>() {
+
+                @Override
+                public String call() throws Exception {
+                    return accountService.getConfigValues(rootAccountId).get("brokerUri") != null ? accountService.getConfigValues(rootAccountId).get("brokerUri").toString() : SystemUtils.getBrokerURI().toString();
+                }
+            });
+
             User userCreatedBy = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
 
                 @Override
