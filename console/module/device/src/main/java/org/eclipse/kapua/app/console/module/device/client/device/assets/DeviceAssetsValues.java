@@ -259,7 +259,6 @@ public class DeviceAssetsValues extends LayoutContainer {
 
         loader = new BaseTreeLoader<GwtDeviceAsset>(proxy);
         loader.addLoadListener(new DataLoadListener());
-
         treeStore = new TreeStore<ModelData>(loader);
 
         tree = new TreePanel<ModelData>(treeStore);
@@ -267,7 +266,7 @@ public class DeviceAssetsValues extends LayoutContainer {
         tree.setDisplayProperty("componentName");
         tree.setBorders(true);
         tree.setLabelProvider(modelStringProvider);
-        tree.setAutoSelect(true);
+        tree.setAutoSelect(false);
         tree.setStyleAttribute("background-color", "white");
 
         assetValuesContainer.add(tree, westData);
