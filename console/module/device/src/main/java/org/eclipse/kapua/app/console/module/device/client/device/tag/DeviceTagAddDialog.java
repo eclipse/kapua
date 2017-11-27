@@ -55,28 +55,21 @@ public class DeviceTagAddDialog extends EntityAddEditDialog {
 
         String tagId = tagsCombo.getValue().getId();
 
-        GWT_DEVICE_SERVICE.addDeviceTag(xsrfToken, selectedDevice.getScopeId(), selectedDevice.getId(), tagId, new AsyncCallback<Boolean>() {
+        GWT_DEVICE_SERVICE.addDeviceTag(xsrfToken, selectedDevice.getScopeId(), selectedDevice.getId(), tagId, new AsyncCallback<Void>() {
 
             @Override
-            public void onSuccess(Boolean gwtAccessPermission) {
+            public void onSuccess(Void gwtAccessPermission) {
                 exitStatus = true;
-                if (gwtAccessPermission) {
-                    exitMessage = MSGS.dialogDeviceTagAddErrorSameId();
-                } else {
-                    exitMessage = MSGS.dialogDeviceTagAddConfirmation();
-                }
-
+                exitMessage = MSGS.dialogDeviceTagAddConfirmation();
                 hide();
             }
 
             @Override
             public void onFailure(Throwable cause) {
                 unmask();
-
                 submitButton.enable();
                 cancelButton.enable();
                 status.hide();
-
                 exitStatus = false;
                 exitMessage = MSGS.dialogDeviceTagAddError(cause.getLocalizedMessage());
 
