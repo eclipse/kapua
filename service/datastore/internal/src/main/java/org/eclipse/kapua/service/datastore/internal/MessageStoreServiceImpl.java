@@ -11,6 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.kapua.KapuaErrorCodes;
@@ -20,6 +24,7 @@ import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
+import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.message.KapuaMessage;
@@ -38,13 +43,18 @@ import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationExcept
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreCommunicationException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
+import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.StorableId;
+import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
+import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
+import org.eclipse.kapua.service.datastore.model.query.StorablePredicate;
+import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
 
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Timer;
@@ -58,8 +68,10 @@ import com.codahale.metrics.Timer.Context;
 @KapuaProvider
 public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService implements MessageStoreService {
 
+    private final static String DATA_TTL_KEY = "dataTTL";
     protected static final Domain DATASTORE_DOMAIN = new DatastoreDomain();
     protected static final String METRIC_COMPONENT_NAME = "datastore";
+
 
     protected static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     // metrics
@@ -75,10 +87,11 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
     private final Counter metricQueueConfigurationErrorCount;
     private final Counter metricQueueGenericErrorCount;
 
-    protected final AccountService accountService = LOCATOR.getService(AccountService.class);
-    protected final AuthorizationService authorizationService = LOCATOR.getService(AuthorizationService.class);
-    protected final PermissionFactory permissionFactory = LOCATOR.getFactory(PermissionFactory.class);
-    protected final static Integer MAX_ENTRIES_ON_DELETE = DatastoreSettings.getInstance().get(Integer.class, DatastoreSettingKey.CONFIG_MAX_ENTRIES_ON_DELETE);
+    private static final StorablePredicateFactory STORABLE_PREDICATE_FACTORY = LOCATOR.getFactory(StorablePredicateFactory.class);
+    private final AccountService accountService = LOCATOR.getService(AccountService.class);
+    private final AuthorizationService authorizationService = LOCATOR.getService(AuthorizationService.class);
+    private final PermissionFactory permissionFactory = LOCATOR.getFactory(PermissionFactory.class);
+    private final static Integer MAX_ENTRIES_ON_DELETE = DatastoreSettings.getInstance().get(Integer.class, DatastoreSettingKey.CONFIG_MAX_ENTRIES_ON_DELETE);
 
     protected final MessageStoreFacade messageStoreFacade;
 
@@ -194,6 +207,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
             throws KapuaException {
         checkDataAccess(query.getScopeId(), Actions.read);
         try {
+            adjustStartDate(query);
             return messageStoreFacade.query(query);
         } catch (Exception e) {
             throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e);
@@ -205,6 +219,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
             throws KapuaException {
         checkDataAccess(query.getScopeId(), Actions.read);
         try {
+            adjustStartDate(query);
             return messageStoreFacade.count(query);
         } catch (Exception e) {
             throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e);
@@ -230,4 +245,86 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         authorizationService.checkPermission(permission);
     }
 
+    protected void adjustStartDate(MessageQuery query) throws KapuaException {
+        Map<String, Object> datastoreConfiguration = getConfigValues(query.getScopeId());
+        Integer dataTtl = (Integer) datastoreConfiguration.get(DATA_TTL_KEY);
+        if (dataTtl != null) {
+            Instant currentDate = KapuaDateUtils.getKapuaSysDate();
+            Date dateTo = Date.from(currentDate);
+            Date dateFrom = Date.from(currentDate.minus(dataTtl, ChronoUnit.DAYS));
+            RangePredicate ttlPredicate = STORABLE_PREDICATE_FACTORY.newRangePredicate(MessageField.TIMESTAMP.field(), dateFrom, dateTo);
+            StorablePredicate predicate = query.getPredicate();
+            if (predicate != null) {
+                if (predicate instanceof AndPredicate) {
+                    AndPredicate andPredicate = (AndPredicate) predicate;
+                    andPredicate.getPredicates().add(ttlPredicate);
+                } else {
+                    AndPredicate andPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
+                    andPredicate.getPredicates().add(ttlPredicate);
+                    andPredicate.getPredicates().add(predicate);
+                    query.setPredicate(andPredicate);
+                }
+            } else {
+                AndPredicate andPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
+                andPredicate.getPredicates().add(ttlPredicate);
+                query.setPredicate(andPredicate);
+            }
+        }
+    }
+
+    protected void adjustStartDateByCopy(MessageQuery query) throws KapuaException {
+        Map<String, Object> datastoreConfiguration = getConfigValues(query.getScopeId());
+        Integer dataTtl = (Integer) datastoreConfiguration.get(DATA_TTL_KEY);
+        if (dataTtl != null) {
+            StorablePredicate predicate = query.getPredicate();
+            query.setPredicate(parseChild(predicate, dataTtl));
+        }
+    }
+
+    protected StorablePredicate parseChild(StorablePredicate predicate, Integer dataTtl) {
+        if (predicate != null) {
+            if (predicate instanceof AndPredicate) {
+                AndPredicate andPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
+                for (StorablePredicate tmpPredicate : ((AndPredicate)predicate).getPredicates()) {
+                    andPredicate.getPredicates().add(parseChild(tmpPredicate, dataTtl));
+                }
+                return andPredicate;
+            } else if (predicate instanceof RangePredicate && 
+                    MessageField.TIMESTAMP.field().equals(((RangePredicate) predicate).getField())) {
+                return buildTtlRangePredicateFromOriginal((RangePredicate) predicate, dataTtl);
+            }
+            else {
+                AndPredicate andPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
+                andPredicate.getPredicates().add(buildTtlRangePredicate(dataTtl));
+                andPredicate.getPredicates().add(predicate);
+                return andPredicate;
+            }
+        }
+        else {
+            AndPredicate andPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
+            andPredicate.getPredicates().add(buildTtlRangePredicate(dataTtl));
+            return andPredicate;
+        }
+    }
+
+    private RangePredicate buildTtlRangePredicate(Integer dataTtl) {
+        Instant currentDate = KapuaDateUtils.getKapuaSysDate();
+        Date dateTo = Date.from(currentDate);
+        Date dateFrom = Date.from(currentDate.minus(dataTtl, ChronoUnit.DAYS));
+        return STORABLE_PREDICATE_FACTORY.newRangePredicate(MessageField.TIMESTAMP.field(), dateFrom, dateTo);
+    }
+
+    private RangePredicate buildTtlRangePredicateFromOriginal(RangePredicate rangePredicate, Integer dataTtl) {
+        Instant startInstant = KapuaDateUtils.getKapuaSysDate();
+        Instant endInstant = startInstant.minus(dataTtl, ChronoUnit.DAYS);
+        Instant evaluatedStartInstant = null;
+        Instant evaluatedEndInstant = null;
+        if (rangePredicate.getMinValue() == null || endInstant.isAfter(rangePredicate.getMinValue(Date.class).toInstant())) {
+            evaluatedEndInstant = endInstant;
+        }
+        if (rangePredicate.getMaxValue() == null || startInstant.isBefore(rangePredicate.getMaxValue(Date.class).toInstant())) {
+            evaluatedStartInstant = startInstant;
+        }
+        return STORABLE_PREDICATE_FACTORY.newRangePredicate(MessageField.TIMESTAMP.field(), Date.from(evaluatedStartInstant), Date.from(evaluatedEndInstant));
+    }
 }
