@@ -11,19 +11,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception;
 
+import org.eclipse.kapua.app.api.core.exception.model.ThrowableInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.eclipse.kapua.app.api.core.exception.model.ThrowableInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @Provider
-public class TrowableMapper implements ExceptionMapper<Throwable> {
+public class ThrowableMapper implements ExceptionMapper<Throwable> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TrowableMapper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ThrowableMapper.class);
 
     @Override
     public Response toResponse(Throwable throwable) {
