@@ -694,21 +694,23 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
 
                 @Override
                 public Response call() throws Exception {
-                    logger.info("Deleting index {}", index);
+                    logger.debug("Deleting index {}", index);
                     return esClientProvider.getClient().performRequest(
                             DELETE_ACTION,
                             getIndexPath(index),
                             Collections.<String, String>emptyMap());
                 }
             }, index, "DELETE INDEX");
+
             // for that call the deleteIndexResponse=null case could be considered as good response since if an index doesn't exist (404) the delete could be considered successful.
             // the deleteIndexResponse is null also if the error is due to a bad index request (400) but this error, except if there is an application bug, shouldn't never happen.
-            if (deleteIndexResponse != null && !isRequestSuccessful(deleteIndexResponse)) {
-                logger.info("Error deleting index {}", index);
+            if (deleteIndexResponse == null) {
+                logger.debug("Deleting index {} : index does not exist", index);               
+            } else if (!isRequestSuccessful(deleteIndexResponse)) {
                 throw new ClientException(ClientErrorCodes.ACTION_ERROR,
                         (deleteIndexResponse != null && deleteIndexResponse.getStatusLine() != null) ? deleteIndexResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
             }
-            logger.info("Deleting index {} DONE", index);
+            logger.debug("Deleting index {} DONE", index);
         }
     }
 
