@@ -518,19 +518,18 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
         for (String index : indexes) {
             request.indices(index);
             try {
-                logger.info("Deleting index {}", index);
+                logger.debug("Deleting index {}", index);
                 DeleteIndexResponse deleteResponse = esClientProvider.getClient().admin().indices().delete(request).actionGet(getQueryTimeout());
                 if (!deleteResponse.isAcknowledged()) {
                     throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_CANNOT_DELETE_INDEX_ERROR_MSG);
                 }
-                logger.info("Deleting index {} DONE", index);
+                logger.debug("Deleting index {} DONE", index);
             } catch (IllegalStateException e) {
-                logger.info("Error deleting index {}", index);
                 throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, CLIENT_CANNOT_DELETE_INDEX_ERROR_MSG);
             } catch (IndexNotFoundException e) {
                 // do nothing it's not an error
                 // switch the log level to debug?
-                logger.info("Cannot delete index {}. The index does not exist!", index);
+                logger.debug("Deleting index {} : index does not exist!", index);
             }
         }
 
