@@ -20,9 +20,6 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.authorization.AuthorizationService;
-import org.eclipse.kapua.service.authorization.permission.Actions;
-import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.certificate.Certificate;
 import org.eclipse.kapua.service.certificate.CertificateCreator;
 import org.eclipse.kapua.service.certificate.CertificateFactory;
@@ -48,10 +45,7 @@ public class CertificateServiceImpl implements CertificateService {
     private String privateKey;
     public static final Logger LOGGER = LoggerFactory.getLogger(CertificateServiceImpl.class);
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
     private static final CertificateFactory CERTIFICATE_FACTORY = LOCATOR.getFactory(CertificateFactory.class);
-    private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
-    private static final CertificateDomain CERTIFICATE_DOMAIN = new CertificateDomain();
 
     /**
      * Constructor
@@ -92,10 +86,6 @@ public class CertificateServiceImpl implements CertificateService {
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-
-        //
-        // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(CERTIFICATE_DOMAIN, Actions.read, KapuaId.ANY));
 
         //
         // Create the default certificate
