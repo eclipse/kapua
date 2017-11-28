@@ -301,6 +301,12 @@ Feature: Datastore tests
     And Account for "kapua-sys"
     And The device "test-device-1"
     And I set the database to device timestamp indexing
+    And I configure datastore service
+      | type    | name            | value               |
+      | boolean | enabled         | true                |
+      | integer | dataTTL         | 365                 |
+      | integer | rxByteLimit     | 0                   |
+      | string  | dataIndexBy     | DEVICE_TIMESTAMP    |
     When I prepare a number of messages with the following details and remember the list as "TestMessages"
       |clientId      |topic                            |captured                 |
       |test-client-1 |ci_client_by_pd_by_account/1/2/3 |2017-07-03T09:00:00.000Z |
@@ -402,6 +408,12 @@ Feature: Datastore tests
     And Account for "kapua-sys"
     And The device "test-device-1"
     And I set the database to device timestamp indexing
+    And I configure datastore service
+      | type    | name            | value               |
+      | boolean | enabled         | true                |
+      | integer | dataTTL         | 365                 |
+      | integer | rxByteLimit     | 0                   |
+      | string  | dataIndexBy     | DEVICE_TIMESTAMP    |
     When I prepare a number of messages with the following details and remember the list as "TestMessages"
       |clientId      |topic            |captured                 |
       |test-client-1 |test_topic/1/2/3 |2017-07-03T09:00:00.000Z |
@@ -523,6 +535,12 @@ Feature: Datastore tests
     And Account for "kapua-sys"
     And The device "test-device-1"
     And I set the database to device timestamp indexing
+    And I configure datastore service
+      | type    | name            | value               |
+      | boolean | enabled         | true                |
+      | integer | dataTTL         | 365                 |
+      | integer | rxByteLimit     | 0                   |
+      | string  | dataIndexBy     | DEVICE_TIMESTAMP    |
     When I prepare a number of messages with the following details and remember the list as "TestMessages"
       |clientId      |topic            |captured                 |
       |test-client-1 |test_topic/1/2/3 |2017-07-03T09:00:00.000Z |

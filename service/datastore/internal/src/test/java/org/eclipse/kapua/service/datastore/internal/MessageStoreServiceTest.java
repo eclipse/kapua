@@ -564,6 +564,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
             sort.add(orderConstraint(ascending(MessageSchema.MESSAGE_TIMESTAMP), Date.class));
             MessageQuery messageQuery = getMessageOrderedQuery(account.getId(), 100, sort);
 
+            Thread.sleep(2*PUBLISH_DATE_TEST_CHECK_TIME_WINDOW); // wait for messages because of TTL filter
             MessageListResult messageList = MESSAGE_STORE_SERVICE.query(messageQuery);
             checkMessagesCount(messageList, semanticTopic.length);
             for (int i = 0; i < messageList.getSize(); i++) {
@@ -867,6 +868,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         MessageQuery messageQuery = getMessageOrderedQuery(account.getId(), messagesCount + 1, sort);
         setMessageQueryBaseCriteria(messageQuery, new DateRange(capturedOn1, capturedOn2));
 
+        Thread.sleep(5000); // wait for messages because of TTL filter
         MessageListResult messageList = MESSAGE_STORE_SERVICE.query(messageQuery);
         checkMessagesCount(messageList, messagesCount);
         checkMessagesDateBound(messageList, new Date(capturedOn1.getTime()), new Date(capturedOn2.getTime()));
@@ -1069,6 +1071,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         ChannelInfoQuery channelInfoQuery = getBaseChannelInfoQuery(account.getId());
         setChannelInfoQueryBaseCriteria(channelInfoQuery, new DateRange(messageTime, capturedOnThirdMessage));
 
+        Thread.sleep(2*PUBLISH_DATE_TEST_CHECK_TIME_WINDOW); // wait for messages because of TTL filter
         ChannelInfoListResult channelList = CHANNEL_INFO_REGISTRY_SERVICE.query(channelInfoQuery);
         checkChannelInfoClientIdsAndTopics(channelList, 2, clientIds, semanticTopic);
 
@@ -1290,7 +1293,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         DatastoreMediator.getInstance().refreshAllIndexes();
 
         // start queries
-
+        Thread.sleep(2*PUBLISH_DATE_TEST_CHECK_TIME_WINDOW); // wait for messages because of TTL filter
         MetricInfoQuery metricInfoQuery = getBaseMetricInfoQuery(account.getId());
         setMetricInfoQueryBaseCriteria(metricInfoQuery, new DateRange(capturedOn, capturedOnThirdMessage));
 
@@ -1576,6 +1579,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         ClientInfoQuery clientInfoQuery = getBaseClientInfoQuery(account.getId(), 100);
         setClientInfoQueryBaseCriteria(clientInfoQuery, new DateRange(capturedOn, capturedOnThirdMessage));
 
+        Thread.sleep(2*PUBLISH_DATE_TEST_CHECK_TIME_WINDOW); // wait for messages because of TTL filter
         ClientInfoListResult clientList = CLIENT_INFO_REGISTRY_SERVICE.query(clientInfoQuery);
         checkClientInfo(clientList, 2, clientIds);
         for (ClientInfo clientInfo : clientList.getItems()) {
