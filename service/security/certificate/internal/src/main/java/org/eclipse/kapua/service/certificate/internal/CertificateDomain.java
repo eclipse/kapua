@@ -35,6 +35,7 @@ public class CertificateDomain extends AbstractKapuaEntity implements Domain {
     private String name = "certificate";
     private String serviceName = "certificateService";
     private Set<Actions> actions = new HashSet<>(Lists.newArrayList(Actions.read, Actions.delete, Actions.write));
+    private boolean groupable;
 
     @Override
     public void setName(String name) {
@@ -64,5 +65,14 @@ public class CertificateDomain extends AbstractKapuaEntity implements Domain {
     @Override
     public Set<Actions> getActions() {
         return actions;
+    }
+
+    public boolean getGroupable() {
+        return groupable;
+    }
+
+    @Override
+    public void setGroupable(boolean groupable) {
+        this.groupable = groupable;
     }
 }
