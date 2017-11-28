@@ -28,7 +28,7 @@ import java.util.Set;
  *
  * @since 1.0
  */
-@XmlRootElement(name = "userCreator")
+@XmlRootElement(name = "certificateCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = {
         "certificate",

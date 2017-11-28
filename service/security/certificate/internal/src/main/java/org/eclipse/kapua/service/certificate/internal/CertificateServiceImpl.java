@@ -23,6 +23,7 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.certificate.Certificate;
 import org.eclipse.kapua.service.certificate.CertificateCreator;
 import org.eclipse.kapua.service.certificate.CertificateFactory;
+import org.eclipse.kapua.service.certificate.CertificateGenerator;
 import org.eclipse.kapua.service.certificate.CertificateListResult;
 import org.eclipse.kapua.service.certificate.CertificateService;
 import org.eclipse.kapua.service.certificate.CertificateUsage;
@@ -127,4 +128,8 @@ public class CertificateServiceImpl implements CertificateService {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public Certificate generate(CertificateGenerator generator) throws KapuaException {
+        throw new UnsupportedOperationException();
+    }
 }
