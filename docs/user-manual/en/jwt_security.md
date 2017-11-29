@@ -13,7 +13,7 @@ In both the Vagrant develop machine and the Docker deployment, a certificate and
 If you want to use a custom certificate you can generate it, along with its private key, with [OpenSSL](https://www.openssl.org/). In order to create those files you can use the following commands:
 
 ```bash
-openssl req -x509 -newkey rsa:4096 -keyout <path_to_key> -out <path_to_certificate>-days 365 -nodes -subj '/O=Eclipse Kapua/C=XX'
+openssl req -x509 -newkey rsa:4096 -keyout <path_to_key> -out <path_to_certificate> -days 365 -nodes -subj '/O=Eclipse Kapua/C=XX'
 openssl pkcs8 -topk8 -in <path_to_key> -out <path_to_pkcs8_key> -nocrypt
 rm <path_to_key>
 ```

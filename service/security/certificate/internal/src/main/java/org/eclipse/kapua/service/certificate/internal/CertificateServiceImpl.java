@@ -16,6 +16,7 @@ import com.google.common.collect.Lists;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
+import org.eclipse.kapua.commons.util.KapuaFileUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -37,8 +38,6 @@ import org.eclipse.kapua.service.certificate.util.CertificateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-
 @KapuaProvider
 public class CertificateServiceImpl implements CertificateService {
 
@@ -59,15 +58,11 @@ public class CertificateServiceImpl implements CertificateService {
             String certificatePath = setting.getString(KapuaCertificateSettingKeys.CERTIFICATE_JWT_CERTIFICATE);
 
             if (Strings.isNullOrEmpty(privateKeyPath) && Strings.isNullOrEmpty(certificatePath)) {
-                // Fallback to generated
                 LOGGER.error("No private key and certificate path specified.\nPlease set authentication.session.jwt.private.key and authentication.session.jwt.certificate system properties.");
                 throw new KapuaCertificateException(KapuaCertificateErrorCodes.CERTIFICATE_ERROR);
             } else {
-                File certificateFile = new File(certificatePath);
-                File privateKeyFile = new File(privateKeyPath);
-
-                certificate = CertificateUtils.readCertificateAsString(certificateFile);
-                privateKey = CertificateUtils.readPrivateKeyAsString(privateKeyFile);
+                certificate = CertificateUtils.readCertificateAsString(KapuaFileUtils.getAsFile(certificatePath));
+                privateKey = CertificateUtils.readPrivateKeyAsString(KapuaFileUtils.getAsFile(privateKeyPath));
             }
         });
     }

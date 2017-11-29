@@ -12,7 +12,8 @@
         Eurotech
  -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -332,21 +333,21 @@
                                             <basedir>/</basedir>
                                         </assembly>
                                         <env>
-                                           <SQL_DB_PORT>\${DB_PORT_3306_TCP_PORT}</SQL_DB_PORT>
-                                           <SQL_DB_ADDR>\${DB_PORT_3306_TCP_ADDR}</SQL_DB_ADDR>
-                                           <DATASTORE_PORT>\${ES_PORT_9200_TCP_PORT}</DATASTORE_PORT>
-                                           <DATASTORE_ADDR>\${ES_PORT_9200_TCP_ADDR}</DATASTORE_ADDR>
-                                           <DATASTORE_CLIENT>org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient</DATASTORE_CLIENT>
-                                           <JAVA_OPTS>
-                                               -Dcommons.db.connection.host=\${SQL_DB_ADDR} \
-                                               -Dcommons.db.connection.port=\${SQL_DB_PORT} \
-                                               -Dbroker.host=\${BROKER_PORT_1883_TCP_ADDR} \
-                                               -Ddatastore.elasticsearch.nodes=\${DATASTORE_ADDR} \
-                                               -Ddatastore.elasticsearch.port=\${DATASTORE_PORT} \
-                                               -Ddatastore.client.class=\${DATASTORE_CLIENT} \
-                                               -Dcertificate.jwt.private.key=/home/kapua/key.pk8 \
-                                               -Dcertificate.jwt.certificate=/home/kapua/cert.pem
-                                           </JAVA_OPTS>
+                                            <SQL_DB_PORT>\${DB_PORT_3306_TCP_PORT}</SQL_DB_PORT>
+                                            <SQL_DB_ADDR>\${DB_PORT_3306_TCP_ADDR}</SQL_DB_ADDR>
+                                            <DATASTORE_PORT>\${ES_PORT_9200_TCP_PORT}</DATASTORE_PORT>
+                                            <DATASTORE_ADDR>\${ES_PORT_9200_TCP_ADDR}</DATASTORE_ADDR>
+                                            <DATASTORE_CLIENT>org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient</DATASTORE_CLIENT>
+                                            <JAVA_OPTS>
+                                                -Dcommons.db.connection.host=\${SQL_DB_ADDR} \
+                                                -Dcommons.db.connection.port=\${SQL_DB_PORT} \
+                                                -Dbroker.host=\${BROKER_PORT_1883_TCP_ADDR} \
+                                                -Ddatastore.elasticsearch.nodes=\${DATASTORE_ADDR} \
+                                                -Ddatastore.elasticsearch.port=\${DATASTORE_PORT} \
+                                                -Ddatastore.client.class=\${DATASTORE_CLIENT} \
+                                                -Dcertificate.jwt.private.key=file:///home/kapua/key.pk8 \
+                                                -Dcertificate.jwt.certificate=file:///home/kapua/cert.pem
+                                            </JAVA_OPTS>
                                         </env>
                                         <user>kapua</user>
                                         <entryPoint>
