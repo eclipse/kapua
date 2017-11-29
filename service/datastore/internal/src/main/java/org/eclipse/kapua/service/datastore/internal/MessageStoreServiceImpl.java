@@ -13,6 +13,7 @@ package org.eclipse.kapua.service.datastore.internal;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
@@ -41,20 +42,25 @@ import org.eclipse.kapua.service.datastore.client.ClientCommunicationException;
 import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
 import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreCommunicationException;
+import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreErrorCodes;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
+import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.StorableId;
 import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
+import org.eclipse.kapua.service.datastore.model.query.ExistsPredicate;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
+import org.eclipse.kapua.service.datastore.model.query.SortField;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 import org.eclipse.kapua.service.datastore.model.query.StorablePredicate;
 import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
+import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
 
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Timer;
@@ -207,8 +213,8 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
             throws KapuaException {
         checkDataAccess(query.getScopeId(), Actions.read);
         try {
-            adjustStartDate(query);
-            return messageStoreFacade.query(query);
+            MessageQuery queryCopy = adjustStartDate(query);
+            return messageStoreFacade.query(queryCopy);
         } catch (Exception e) {
             throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e);
         }
@@ -219,8 +225,8 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
             throws KapuaException {
         checkDataAccess(query.getScopeId(), Actions.read);
         try {
-            adjustStartDate(query);
-            return messageStoreFacade.count(query);
+            MessageQuery queryCopy = adjustStartDate(query);
+            return messageStoreFacade.count(queryCopy);
         } catch (Exception e) {
             throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e);
         }
@@ -245,15 +251,20 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         authorizationService.checkPermission(permission);
     }
 
-    protected void adjustStartDate(MessageQuery query) throws KapuaException {
+    protected MessageQuery adjustStartDate(MessageQuery query) throws KapuaException {
+        MessageQueryImpl queryCopy = new MessageQueryImpl(query.getScopeId());
+        queryCopy.setFetchStyle(query.getFetchStyle());
+        queryCopy.setLimit(query.getLimit());
+        queryCopy.setOffset(query.getOffset());
+        queryCopy.setSortFields(new ArrayList<SortField>(query.getSortFields()));
+        queryCopy.setAskTotalCount(query.isAskTotalCount());
+        queryCopy.setPredicate(copyCompositePredicate(query.getPredicate()));
+
         Map<String, Object> datastoreConfiguration = getConfigValues(query.getScopeId());
         Integer dataTtl = (Integer) datastoreConfiguration.get(DATA_TTL_KEY);
         if (dataTtl != null) {
-            Instant currentDate = KapuaDateUtils.getKapuaSysDate();
-            Date dateTo = Date.from(currentDate);
-            Date dateFrom = Date.from(currentDate.minus(dataTtl, ChronoUnit.DAYS));
-            RangePredicate ttlPredicate = STORABLE_PREDICATE_FACTORY.newRangePredicate(MessageField.TIMESTAMP.field(), dateFrom, dateTo);
-            StorablePredicate predicate = query.getPredicate();
+            RangePredicate ttlPredicate = rangePredicateFromTtl(dataTtl);
+            StorablePredicate predicate = queryCopy.getPredicate();
             if (predicate != null) {
                 if (predicate instanceof AndPredicate) {
                     AndPredicate andPredicate = (AndPredicate) predicate;
@@ -262,69 +273,81 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
                     AndPredicate andPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
                     andPredicate.getPredicates().add(ttlPredicate);
                     andPredicate.getPredicates().add(predicate);
-                    query.setPredicate(andPredicate);
+                    queryCopy.setPredicate(andPredicate);
                 }
             } else {
                 AndPredicate andPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
                 andPredicate.getPredicates().add(ttlPredicate);
-                query.setPredicate(andPredicate);
+                queryCopy.setPredicate(andPredicate);
             }
         }
+
+        return queryCopy;
     }
 
-    protected void adjustStartDateByCopy(MessageQuery query) throws KapuaException {
-        Map<String, Object> datastoreConfiguration = getConfigValues(query.getScopeId());
-        Integer dataTtl = (Integer) datastoreConfiguration.get(DATA_TTL_KEY);
-        if (dataTtl != null) {
-            StorablePredicate predicate = query.getPredicate();
-            query.setPredicate(parseChild(predicate, dataTtl));
+    private StorablePredicate copyCompositePredicate(StorablePredicate predicate) throws DatastoreException {        
+        if (predicate == null) {
+            return null;
         }
+
+        StorablePredicate copyPredicate = null;
+        if (predicate instanceof AndPredicate) {
+            copyPredicate = copyAndPredicate((AndPredicate)predicate);
+        } else if (predicate instanceof RangePredicate) {
+            copyPredicate = copyRangePredicate((RangePredicate) predicate);
+        } else if (predicate instanceof TermPredicate) {
+            copyPredicate = copyTermPredicate((TermPredicate) predicate);
+        } else if (predicate instanceof ExistsPredicate) {
+            copyPredicate = copyExistsPredicate((ExistsPredicate) predicate);
+        } else {
+            throw new DatastoreException(DatastoreErrorCodes.UNHANDLED_QUERY_PREDICATE_TYPE, "Unhadled predicate type: " + predicate.getClass().getName());
+        }
+
+        return copyPredicate;
     }
 
-    protected StorablePredicate parseChild(StorablePredicate predicate, Integer dataTtl) {
-        if (predicate != null) {
-            if (predicate instanceof AndPredicate) {
-                AndPredicate andPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
-                for (StorablePredicate tmpPredicate : ((AndPredicate)predicate).getPredicates()) {
-                    andPredicate.getPredicates().add(parseChild(tmpPredicate, dataTtl));
-                }
-                return andPredicate;
-            } else if (predicate instanceof RangePredicate && 
-                    MessageField.TIMESTAMP.field().equals(((RangePredicate) predicate).getField())) {
-                return buildTtlRangePredicateFromOriginal((RangePredicate) predicate, dataTtl);
-            }
-            else {
-                AndPredicate andPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
-                andPredicate.getPredicates().add(buildTtlRangePredicate(dataTtl));
-                andPredicate.getPredicates().add(predicate);
-                return andPredicate;
-            }
+    private AndPredicate copyAndPredicate(AndPredicate andPredicate) throws DatastoreException {
+        if (andPredicate == null) {
+            return null;
         }
-        else {
-            AndPredicate andPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
-            andPredicate.getPredicates().add(buildTtlRangePredicate(dataTtl));
-            return andPredicate;
+
+        AndPredicate copyPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
+        for (StorablePredicate tmpPredicate : andPredicate.getPredicates()) {
+            copyPredicate.getPredicates().add(copyCompositePredicate(tmpPredicate));
         }
+
+        return copyPredicate;
     }
 
-    private RangePredicate buildTtlRangePredicate(Integer dataTtl) {
+    @SuppressWarnings("unchecked")
+    private RangePredicate copyRangePredicate(RangePredicate rangePredicate) {
+        if (rangePredicate == null) {
+            return null;
+        }
+
+        return STORABLE_PREDICATE_FACTORY.newRangePredicate(rangePredicate.getField(), rangePredicate.getMinValue(Comparable.class), rangePredicate.getMaxValue(Comparable.class));
+    }
+
+    private TermPredicate copyTermPredicate(TermPredicate termPredicate) {
+        if (termPredicate == null) {
+            return null;
+        }
+
+        return STORABLE_PREDICATE_FACTORY.newTermPredicate(termPredicate.getField(), termPredicate.getValue());
+    }
+
+    private ExistsPredicate copyExistsPredicate(ExistsPredicate existsPredicate) {
+        if (existsPredicate == null) {
+            return null;
+        }
+
+        return STORABLE_PREDICATE_FACTORY.newExistsPredicate(existsPredicate.getName());
+    }
+
+    private RangePredicate rangePredicateFromTtl(Integer dataTtl) {
         Instant currentDate = KapuaDateUtils.getKapuaSysDate();
         Date dateTo = Date.from(currentDate);
         Date dateFrom = Date.from(currentDate.minus(dataTtl, ChronoUnit.DAYS));
         return STORABLE_PREDICATE_FACTORY.newRangePredicate(MessageField.TIMESTAMP.field(), dateFrom, dateTo);
-    }
-
-    private RangePredicate buildTtlRangePredicateFromOriginal(RangePredicate rangePredicate, Integer dataTtl) {
-        Instant startInstant = KapuaDateUtils.getKapuaSysDate();
-        Instant endInstant = startInstant.minus(dataTtl, ChronoUnit.DAYS);
-        Instant evaluatedStartInstant = null;
-        Instant evaluatedEndInstant = null;
-        if (rangePredicate.getMinValue() == null || endInstant.isAfter(rangePredicate.getMinValue(Date.class).toInstant())) {
-            evaluatedEndInstant = endInstant;
-        }
-        if (rangePredicate.getMaxValue() == null || startInstant.isBefore(rangePredicate.getMaxValue(Date.class).toInstant())) {
-            evaluatedStartInstant = startInstant;
-        }
-        return STORABLE_PREDICATE_FACTORY.newRangePredicate(MessageField.TIMESTAMP.field(), Date.from(evaluatedStartInstant), Date.from(evaluatedEndInstant));
     }
 }

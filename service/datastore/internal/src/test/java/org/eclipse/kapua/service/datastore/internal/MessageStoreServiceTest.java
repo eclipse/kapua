@@ -2387,8 +2387,13 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
     private void checkMetricDateBound(MetricInfoListResult result, Date startDate, Date endDate) {
         for (MetricInfo metric : result.getItems()) {
-            assertTrue(String.format("Metric '[%s]' date is after upper bound", metric.getName()), !metric.getLastMessageOn().after(endDate));
-            assertTrue(String.format("Metric '[%s]' date is before lower bound", metric.getName()), !metric.getLastMessageOn().before(startDate));
+            if (metric.getLastMessageOn() == null) {
+                logger.debug(String.format("Metric '[%s]' lastMessageOn is NULL", metric.getName()));
+                continue;
+            } else {
+                assertTrue(String.format("Metric '[%s]' date is after upper bound", metric.getName()), !metric.getLastMessageOn().after(endDate));
+                assertTrue(String.format("Metric '[%s]' date is before lower bound", metric.getName()), !metric.getLastMessageOn().before(startDate));
+            }
         }
     }
 

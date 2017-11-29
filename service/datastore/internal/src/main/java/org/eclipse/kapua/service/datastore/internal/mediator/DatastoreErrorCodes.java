@@ -33,7 +33,12 @@ public enum DatastoreErrorCodes implements KapuaErrorCode {
      */
     COMMUNICATION_ERROR,
     /**
+     * Unhandled query predicate type
+     */
+    UNHANDLED_QUERY_PREDICATE_TYPE,
+    /*
      * Generic internal error
      */
     INTERNAL_ERROR;
+
 }
