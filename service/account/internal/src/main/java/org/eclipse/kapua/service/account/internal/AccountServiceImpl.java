@@ -102,19 +102,6 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             return AccountDAO.update(em, account);
         });
 
-//        KapuaTocd configMetadata = getConfigMetadata();
-//        Properties properties = new Properties();
-//        Account parentAccount = find(createdAccount.getScopeId());
-//        String brokerUri = getConfigValues(parentAccount.getId()).get("deviceBrokerClusterUri").toString();
-//        for (KapuaTad ad : configMetadata.getAD()) {
-//            if (ad.getName().equals("deviceBrokerClusterUri")) {
-//                properties.put("deviceBrokerClusterUri", brokerUri);
-//            } else {
-//                properties.put(ad.getId(), ad.getDefault());
-//            }
-//        }
-//        KapuaSecurityUtils.doPrivileged(() -> setConfigValues(createdAccount.getId(), createdAccount.getScopeId(), toValues(configMetadata, properties)));
-
         return createdAccount;
     }
 
