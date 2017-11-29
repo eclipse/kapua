@@ -11,6 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.setting.system;
 
+import java.time.DayOfWeek;
+import java.time.temporal.WeekFields;
+import java.util.Locale;
+
 import javax.persistence.EntityExistsException;
 
 import org.eclipse.kapua.commons.setting.SettingKey;
@@ -179,6 +183,24 @@ public enum SystemSettingKey implements SettingKey {
      * Maximum allowed retry (due to a {@link EntityExistsException}, so already exists key) on insert operation
      */
     KAPUA_INSERT_MAX_RETRY("commons.entity.insert.max.retry"),
+
+    /**
+     * Locale zone ID (Default UTC). See {@link java.time.ZoneId} for more information about allowed settings for this parameter
+     */
+    LOCALE_ZONE_ID("commons.locale.zoneId"),
+    /**
+     * Locale ID (Default en_US). See {@link Locale} for more information about allowed settings for this parameter
+     */
+    LOCALE_ID("commons.locale.id"),
+    /**
+     * Local minimal days in first week (Deafault 7). See {@link WeekFields} for more information about allowed settings for this parameter
+     */
+    LOCALE_MINIMAL_DAYS_IN_FIRST_WEEK("commons.locale.minimalDaysInFirstWeek"),
+    /**
+     * Locale first day of the week. (Default 1 - 1-MONDAY/7-SUNDAY). See {@link DayOfWeek} for more information about allowed settings for this parameter
+     */
+    //1 MONDAY - 7 SUNDAY
+    LOCALE_FIRST_DAY_OF_THE_WEEK("commons.locale.firstDayOfTheWeek"),
 
     /**
      * Url of the event bus

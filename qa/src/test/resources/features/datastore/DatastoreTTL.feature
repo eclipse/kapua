@@ -13,6 +13,9 @@
 @datastore
 Feature: Datastore TTL tests
 
+    @StartEventBroker
+    Scenario: Start event broker for all scenarios
+
     @StartBroker
     Scenario: Start broker for all scenarios
 
@@ -123,3 +126,6 @@ Feature: Datastore TTL tests
 
     @StopDatastore
     Scenario: Stop datastore after all scenarios
+
+    @StopEventBroker
+    Scenario: Stop event broker for all scenarios

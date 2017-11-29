@@ -252,7 +252,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
             assertEquals(messagesCount, count);
 
             // delete by month window
-            messagesCount -= 56;
+            messagesCount -= 42;
             String[] indexes = DatastoreUtils.convertToDataIndexes(KapuaEid.ONE, KapuaDateUtils.parseDate("2016-12-01T00:00:00.000Z").toInstant(),
                     KapuaDateUtils.parseDate("2016-12-31T00:00:00.000Z").toInstant());
             datastoreClient.deleteIndexes(indexes);
@@ -261,16 +261,8 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
             assertEquals(messagesCount, count);
 
             // delete by month window
-            messagesCount -= 28;
-            indexes = DatastoreUtils.convertToDataIndexes(KapuaEid.ONE, KapuaDateUtils.parseDate("2017-01-01T00:00:00.000Z").toInstant(), KapuaDateUtils.parseDate("2017-01-31T00:00:00.000Z").toInstant());
-            datastoreClient.deleteIndexes(indexes);
-            DatastoreMediator.getInstance().refreshAllIndexes();
-            count = MESSAGE_STORE_SERVICE.count(messageQuery);
-            assertEquals(messagesCount, count);
-
-            // delete by month window
             messagesCount -= 63;
-            indexes = DatastoreUtils.convertToDataIndexes(KapuaEid.ONE, KapuaDateUtils.parseDate("2017-02-01T00:00:00.000Z").toInstant(), KapuaDateUtils.parseDate("2017-02-31T00:00:00.000Z").toInstant());
+            indexes = DatastoreUtils.convertToDataIndexes(KapuaEid.ONE, KapuaDateUtils.parseDate("2017-02-01T00:00:00.000Z").toInstant(), KapuaDateUtils.parseDate("2017-02-28T00:00:00.000Z").toInstant());
             datastoreClient.deleteIndexes(indexes);
             DatastoreMediator.getInstance().refreshAllIndexes();
             count = MESSAGE_STORE_SERVICE.count(messageQuery);

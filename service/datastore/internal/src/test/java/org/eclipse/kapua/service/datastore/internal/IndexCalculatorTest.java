@@ -13,6 +13,7 @@ package org.eclipse.kapua.service.datastore.internal;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -60,21 +61,25 @@ public class IndexCalculatorTest extends KapuaTest {
         // 53// 2020 for locale us - 52 for locale "Europe"
         //
         // }));
-        performTest(sdf.parse("02/01/2017 13:12"), sdf.parse("02/07/2017 13:12"), buildExpectedResult("1", 2, 2017, 26, 2017, null));
-        performTest(sdf.parse("02/01/2017 13:12"), sdf.parse("01/07/2017 13:12"), buildExpectedResult("1", 2, 2017, 26, 2017, null));
+        performTest(sdf.parse("02/01/2017 13:12"), sdf.parse("02/07/2017 13:12"), buildExpectedResult("1", 1, 2017, 26, 2017, null));
+        performTest(sdf.parse("02/01/2017 13:12"), sdf.parse("01/07/2017 13:12"), buildExpectedResult("1", 1, 2017, 25, 2017, null));
         performTest(sdf.parse("01/01/2017 13:12"), sdf.parse("02/07/2017 13:12"), buildExpectedResult("1", 1, 2017, 26, 2017, null));
         performTest(sdf.parse("31/12/2016 13:12"), sdf.parse("02/07/2017 13:12"), buildExpectedResult("1", 1, 2017, 26, 2017, null));
-        performTest(sdf.parse("01/01/2017 13:12"), sdf.parse("01/07/2017 13:12"), buildExpectedResult("1", 1, 2017, 26, 2017, null));
+        performTest(sdf.parse("01/01/2017 13:12"), sdf.parse("01/07/2017 13:12"), buildExpectedResult("1", 1, 2017, 25, 2017, null));
 
         performTest(sdf.parse("01/01/2017 13:12"), sdf.parse("08/01/2017 13:12"), buildExpectedResult("1", 1, 2017, 1, 2017, null));
-        performTest(sdf.parse("01/01/2017 13:12"), sdf.parse("07/01/2017 13:12"), buildExpectedResult("1", 1, 2017, 1, 2017, null));
+        performTest(sdf.parse("01/01/2017 13:12"), sdf.parse("07/01/2017 13:12"), null);
         performTest(sdf.parse("01/01/2017 13:12"), sdf.parse("06/01/2017 13:12"), null);
     }
 
     private void performTest(Date startDate, Date endDate, String[] expectedIndexes) throws DatastoreException {
-        Calendar calStartDate = Calendar.getInstance(TimeZone.getTimeZone("UTC"), KapuaDateUtils.getLocale());
+        Calendar calStartDate = Calendar.getInstance(TimeZone.getTimeZone(KapuaDateUtils.getTimeZone()), KapuaDateUtils.getLocale());
+        calStartDate.setFirstDayOfWeek(translateDayOfWeek(KapuaDateUtils.getFirstDayOfTheWeek()));
+        calStartDate.setMinimalDaysInFirstWeek(KapuaDateUtils.getMinimalDaysInFirstWeek());
         calStartDate.setTimeInMillis(startDate.getTime());
-        Calendar calEndDate = Calendar.getInstance(TimeZone.getTimeZone("UTC"), KapuaDateUtils.getLocale());
+        Calendar calEndDate = Calendar.getInstance(TimeZone.getTimeZone(KapuaDateUtils.getTimeZone()), KapuaDateUtils.getLocale());
+        calEndDate.setFirstDayOfWeek(translateDayOfWeek(KapuaDateUtils.getFirstDayOfTheWeek()));
+        calEndDate.setMinimalDaysInFirstWeek(KapuaDateUtils.getMinimalDaysInFirstWeek());
         calEndDate.setTimeInMillis(endDate.getTime());
         logger.info("StartDate week {} - day {} *** EndDate week {} - day {}",
                 new Object[] { calStartDate.get(Calendar.WEEK_OF_YEAR), calStartDate.get(Calendar.DAY_OF_WEEK), calEndDate.get(Calendar.WEEK_OF_YEAR), calEndDate.get(Calendar.DAY_OF_WEEK) });
@@ -82,16 +87,37 @@ public class IndexCalculatorTest extends KapuaTest {
         compareResult(expectedIndexes, index);
     }
 
+    private int translateDayOfWeek(DayOfWeek dayOfWeek) {
+        switch (dayOfWeek) {
+        case MONDAY:
+            return Calendar.MONDAY;
+        case TUESDAY:
+            return Calendar.TUESDAY;
+        case WEDNESDAY:
+            return Calendar.WEDNESDAY;
+        case THURSDAY:
+            return Calendar.THURSDAY;
+        case FRIDAY:
+            return Calendar.FRIDAY;
+        case SATURDAY:
+            return Calendar.SATURDAY;
+        case SUNDAY:
+            return Calendar.SUNDAY;
+        default:
+            return -1;
+        }
+    }
+
     private String[] buildExpectedResult(String scopeId, int startWeek, int startYear, int endWeek, int endYear, int[] weekCountByYear) {
         List<String> result = new ArrayList<>();
         for (int i = startYear; i <= endYear; i++) {
-            int startWeekForCurrentYear = startWeek;
-            if (i != endYear) {
-                startWeekForCurrentYear = 1;
+            int startWeekForCurrentYear = 1;
+            if (i==startYear) {
+                startWeekForCurrentYear = startWeek;
             }
             int endWeekForCurrentYear = endWeek;
             if (i != endYear) {
-                endWeekForCurrentYear = weekCountByYear[endYear - i];
+                endWeekForCurrentYear = weekCountByYear[endYear - i - 1];
             }
             for (int j = startWeekForCurrentYear; j <= endWeekForCurrentYear; j++) {
                 result.add(String.format("%s-%s-%s", scopeId, i, (j < 10 ? "0" + j : j)));

@@ -16,7 +16,6 @@ import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
 import java.time.temporal.ChronoUnit;
@@ -75,13 +74,13 @@ public class DatastoreUtils {
     public static final String CLIENT_METRIC_TYPE_BOOLEAN_ACRONYM = "bln";
     public static final String CLIENT_METRIC_TYPE_BINARY_ACRONYM = "bin";
 
+    private static final String YEAR_WEEK_PATTERN = "YYYY-ww";
     private static final DateTimeFormatter DATA_INDEX_FORMATTER = DateTimeFormatter
-            .ofPattern("YYYY-ww")
+            .ofPattern(YEAR_WEEK_PATTERN)
             .withLocale(KapuaDateUtils.getLocale())
             .withResolverStyle(ResolverStyle.STRICT)
             .withZone(KapuaDateUtils.getTimeZone());
-    private static final TemporalField WEEK_OF_MONTH = WeekFields.of(KapuaDateUtils.getLocale()).weekOfMonth();
-    private static final TemporalField WEEK_OF_YEAR = WeekFields.of(KapuaDateUtils.getLocale()).weekOfYear();
+    private static final TemporalField WEEK_OF_YEAR = WeekFields.of(KapuaDateUtils.getFirstDayOfTheWeek(), KapuaDateUtils.getMinimalDaysInFirstWeek()).weekOfYear();
 
     /**
      * Return the hash code for the provided components (typically components are a sequence of account - client id - channel ...)
@@ -228,7 +227,7 @@ public class DatastoreUtils {
     public static String getDataIndexName(KapuaId scopeId, long timestamp) {
         final String actualName = DatastoreUtils.normalizedIndexName(scopeId.toStringId());
         final StringBuilder sb = new StringBuilder(actualName).append('-');
-        DATA_INDEX_FORMATTER.formatTo(Instant.ofEpochMilli(timestamp).atOffset(ZoneOffset.UTC), sb);
+        DATA_INDEX_FORMATTER.formatTo(Instant.ofEpochMilli(timestamp).atZone(KapuaDateUtils.getTimeZone()), sb);
         return sb.toString();
     }
 
@@ -267,8 +266,8 @@ public class DatastoreUtils {
     public static String[] convertToDataIndexes(KapuaId scopeId, Instant start, Instant end) throws DatastoreException {
         // drop partial week so start from "from + 1 week" to "end - 1 week" included
         // if the start date is not the first day of the week and the end date is not the end day of the week
-        Instant startInstant = getFirstDayOfTheWeek(start);
-        Instant endInstant = getLastDayOfTheWeek(end);
+        Instant startInstant = getFirstDayOfTheClosestWeekInTheFuture(start);
+        Instant endInstant = getLastDayOfTheClosestWeekInThePast(end);
         // this code:
         // int startYear = Year.from(startInstant).getValue();
         // int endYear = Year.from(startInstant).getValue();
@@ -318,7 +317,7 @@ public class DatastoreUtils {
     public static List<String> filterIndexesBeforeDate(KapuaId scopeId, String[] indexes, Instant startInstant) {
         //see https://docs.oracle.com/javase/8/docs/api/java/util/List.html#remove-int-
         List<String> filteredIndexes = new ArrayList<>();
-        String lastIndexToInclude = DatastoreUtils.getDataIndexName(scopeId, getLastDayOfTheWeek(startInstant).toEpochMilli());
+        String lastIndexToInclude = DatastoreUtils.getDataIndexName(scopeId, getLastDayOfTheClosestWeekInThePast(startInstant).toEpochMilli());
         for (String index : indexes) {
             if (lastIndexToInclude.compareTo(index)>=0) {
                 filteredIndexes.add(index);
@@ -327,14 +326,24 @@ public class DatastoreUtils {
         return filteredIndexes;
     }
 
-    private static Instant getLastDayOfTheWeek(Instant instant) {
+    /**
+     * return the last day of the previous week if the instant is not the last day of the week, otherwise return the instant
+     * @param instant
+     * @return
+     */
+    private static Instant getLastDayOfTheClosestWeekInThePast(Instant instant) {
         while (!isEndingDayOfTheWeek(instant)) {
             instant = instant.minus(1, ChronoUnit.DAYS);
         }
         return instant;
     }
 
-    private static Instant getFirstDayOfTheWeek(Instant instant) {
+    /**
+     * return the first day of the next week if the instant is not the first day of the week, otherwise return the instant
+     * @param instant
+     * @return
+     */
+    private static Instant getFirstDayOfTheClosestWeekInTheFuture(Instant instant) {
         while (!isStartingDayOfTheWeek(instant)) {
             instant = instant.plus(1, ChronoUnit.DAYS);
         }
@@ -342,23 +351,35 @@ public class DatastoreUtils {
     }
 
     private static boolean isStartingDayOfTheWeek(Instant instant) {
-        LocalDate localDate = instant.atZone(ZoneOffset.UTC).toLocalDate();
-        LocalDate localDateNextDay = instant.atZone(ZoneOffset.UTC).minusDays(1).toLocalDate();
-        return localDate.get(WEEK_OF_YEAR) != localDateNextDay.get(WEEK_OF_YEAR);
+        LocalDate localDate = instant.atZone(KapuaDateUtils.getTimeZone()).toLocalDate();
+        LocalDate localDatePreviousDay = instant.atZone(KapuaDateUtils.getTimeZone()).minusDays(1).toLocalDate();
+        //handle week 0 case (see WeekFields javadoc)
+        if (localDate.get(WEEK_OF_YEAR) == 0) {
+            return false;
+        }
+        else {
+            return localDate.get(WEEK_OF_YEAR) != localDatePreviousDay.get(WEEK_OF_YEAR);
+        }
         // DayOfWeek firstDayOfWeek = WeekFields.of(KapuaDateUtils.getLocale()).getFirstDayOfWeek();
         // LocalDate startOfCurrentWeek = localDate.with(TemporalAdjusters.previousOrSame(firstDayOfWeek));
         // return startOfCurrentWeek.isEqual(localDate);
     }
 
     private static boolean isEndingDayOfTheWeek(Instant instant) {
-        LocalDate localDate = instant.atZone(ZoneOffset.UTC).toLocalDate();
-        LocalDate localDateNextDay = instant.atZone(ZoneOffset.UTC).plusDays(1).toLocalDate();
-        return localDate.get(WEEK_OF_YEAR) != localDateNextDay.get(WEEK_OF_YEAR);
+        LocalDate localDate = instant.atZone(KapuaDateUtils.getTimeZone()).toLocalDate();
+        LocalDate localDateNextDay = instant.atZone(KapuaDateUtils.getTimeZone()).plusDays(1).toLocalDate();
+        //handle week 0 case (see WeekFields javadoc)
+        if (localDateNextDay.get(WEEK_OF_YEAR) == 0) {
+            return false;
+        }
+        else {
+            return localDate.get(WEEK_OF_YEAR) != localDateNextDay.get(WEEK_OF_YEAR);
+        }
     }
 
     private static boolean areInThesameWeek(Instant instant1, Instant instant2) {
-        LocalDate localDate1 = instant1.atZone(ZoneOffset.UTC).toLocalDate();
-        LocalDate localDate2 = instant2.atZone(ZoneOffset.UTC).toLocalDate();
+        LocalDate localDate1 = instant1.atZone(KapuaDateUtils.getTimeZone()).toLocalDate();
+        LocalDate localDate2 = instant2.atZone(KapuaDateUtils.getTimeZone()).toLocalDate();
         return localDate1.get(WEEK_OF_YEAR) == localDate2.get(WEEK_OF_YEAR);
     }
 
