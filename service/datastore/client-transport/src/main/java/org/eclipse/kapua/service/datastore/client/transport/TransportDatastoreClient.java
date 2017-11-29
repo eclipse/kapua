@@ -12,7 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.client.transport;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.kapua.service.datastore.client.ClientErrorCodes;
@@ -24,8 +26,8 @@ import org.eclipse.kapua.service.datastore.client.ModelContext;
 import org.eclipse.kapua.service.datastore.client.QueryConverter;
 import org.eclipse.kapua.service.datastore.client.model.BulkUpdateRequest;
 import org.eclipse.kapua.service.datastore.client.model.BulkUpdateResponse;
-import org.eclipse.kapua.service.datastore.client.model.IndexExistsRequest;
-import org.eclipse.kapua.service.datastore.client.model.IndexExistsResponse;
+import org.eclipse.kapua.service.datastore.client.model.IndexRequest;
+import org.eclipse.kapua.service.datastore.client.model.IndexResponse;
 import org.eclipse.kapua.service.datastore.client.model.InsertRequest;
 import org.eclipse.kapua.service.datastore.client.model.InsertResponse;
 import org.eclipse.kapua.service.datastore.client.model.ResultList;
@@ -42,12 +44,11 @@ import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsResponse;
 import org.elasticsearch.action.admin.indices.refresh.RefreshAction;
 import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
 import org.elasticsearch.action.admin.indices.refresh.RefreshResponse;
+import org.elasticsearch.action.admin.indices.settings.get.GetSettingsResponse;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
-import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchPhaseExecutionException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -95,6 +96,9 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
     private static final String CLIENT_QUERY_PARSING_ERROR_MSG = "Cannot parse query!";
     private static final String CLIENT_CANNOT_DELETE_INDEX_ERROR_MSG = "Cannot delete indexes!";
     private static final String CLIENT_CANNOT_REFRESH_INDEX_ERROR_MSG = "Cannot refresh indexes!";
+
+    private static final String INDEXES_ALL = "_all";
+    private static final String DOC = "_doc";
 
     private static TransportDatastoreClient instance;
 
@@ -193,11 +197,11 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
         checkClient();
         Map<String, Object> storableMap = modelContext.marshal(insertRequest.getStorable());
         logger.debug("Insert - converted object: '{}'", storableMap);
-        IndexRequest idxRequest = new IndexRequest(insertRequest.getTypeDescriptor().getIndex(), insertRequest.getTypeDescriptor().getType()).source(storableMap);
+        org.elasticsearch.action.index.IndexRequest idxRequest = new org.elasticsearch.action.index.IndexRequest(insertRequest.getTypeDescriptor().getIndex(), insertRequest.getTypeDescriptor().getType()).source(storableMap);
         if (insertRequest.getId() != null) {
             idxRequest.id(insertRequest.getId()).version(1).versionType(VersionType.EXTERNAL);
         }
-        IndexResponse response = esClientProvider.getClient().index(idxRequest).actionGet(getQueryTimeout());
+        org.elasticsearch.action.index.IndexResponse response = esClientProvider.getClient().index(idxRequest).actionGet(getQueryTimeout());
         return new InsertResponse(response.getId(), insertRequest.getTypeDescriptor());
     }
 
@@ -206,7 +210,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
         checkClient();
         Map<String, Object> storableMap = modelContext.marshal(upsertRequest.getStorable());
         logger.debug("Upsert - converted object: '{}'", storableMap);
-        IndexRequest idxRequest = new IndexRequest(upsertRequest.getTypeDescriptor().getIndex(), upsertRequest.getTypeDescriptor().getType(), upsertRequest.getId()).source(storableMap);
+        org.elasticsearch.action.index.IndexRequest idxRequest = new org.elasticsearch.action.index.IndexRequest(upsertRequest.getTypeDescriptor().getIndex(), upsertRequest.getTypeDescriptor().getType(), upsertRequest.getId()).source(storableMap);
         org.elasticsearch.action.update.UpdateRequest updateRequest = new org.elasticsearch.action.update.UpdateRequest(upsertRequest.getTypeDescriptor().getIndex(),
                 upsertRequest.getTypeDescriptor().getType(), upsertRequest.getId()).doc(storableMap);
         org.elasticsearch.action.update.UpdateResponse response = esClientProvider.getClient().update(updateRequest.upsert(idxRequest)).actionGet(getQueryTimeout());
@@ -223,7 +227,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
             String id = upsertRequest.getId();
             Map<String, Object> mappedObject = modelContext.marshal(upsertRequest.getStorable());
             logger.debug("Upsert - converted object: '{}'", mappedObject);
-            IndexRequest idxRequest = new IndexRequest(index, type, id).source(mappedObject);
+            org.elasticsearch.action.index.IndexRequest idxRequest = new org.elasticsearch.action.index.IndexRequest(index, type, id).source(mappedObject);
             org.elasticsearch.action.update.UpdateRequest updateRequest = new org.elasticsearch.action.update.UpdateRequest(index, type, id).doc(mappedObject);
             updateRequest.upsert(idxRequest);
             bulkRequest.add(updateRequest);
@@ -361,7 +365,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
             scrollResponse = esClientProvider.getClient().prepareSearch(typeDescriptor.getIndex())
                     .setTypes(typeDescriptor.getType())
                     .setFetchSource(false)
-                    .addSort("_doc", SortOrder.ASC)
+                    .addSort(DOC, SortOrder.ASC)
                     .setVersion(true)
                     .setScroll(scrollTimeout)
                     .setSource(toSearchSourceBuilder(queryMap))
@@ -400,12 +404,27 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
     }
 
     @Override
-    public IndexExistsResponse isIndexExists(IndexExistsRequest indexExistsRequest) throws ClientException {
+    public IndexResponse isIndexExists(IndexRequest indexRequest) throws ClientException {
         checkClient();
         IndicesExistsResponse response = esClientProvider.getClient().admin().indices()
-                .exists(new IndicesExistsRequest(indexExistsRequest.getIndex()))
+                .exists(new IndicesExistsRequest(indexRequest.getIndex()))
                 .actionGet(getQueryTimeout());
-        return new IndexExistsResponse(response.isExists());
+        return new IndexResponse(response.isExists());
+    }
+
+    @Override
+    public IndexResponse findIndexes(IndexRequest indexRequest) throws ClientException {
+        checkClient();
+        try {
+            GetSettingsResponse response = esClientProvider.getClient().admin().indices().prepareGetSettings(indexRequest.getIndex())
+                    .get(getQueryTimeout());
+            List<String> list = new ArrayList<>();
+            response.getIndexToSettings().keysIt().forEachRemaining(list::add);
+            return new IndexResponse(list.toArray(new String[list.size()]));
+        }
+        catch (IndexNotFoundException e) {
+            return new IndexResponse(new String[0]);
+        }
     }
 
     @Override
@@ -482,7 +501,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
     @Override
     public void deleteAllIndexes() throws ClientException {
         final DeleteIndexRequest request = DeleteIndexAction.INSTANCE.newRequestBuilder(esClientProvider.getClient()).request();
-        request.indices("_all");
+        request.indices(INDEXES_ALL);
         try {
             DeleteIndexResponse deleteResponse = esClientProvider.getClient().admin().indices().delete(request).actionGet(getQueryTimeout());
             if (!deleteResponse.isAcknowledged()) {
@@ -494,10 +513,33 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
     }
 
     @Override
+    public void deleteIndexes(String... indexes) throws ClientException {
+        final DeleteIndexRequest request = DeleteIndexAction.INSTANCE.newRequestBuilder(esClientProvider.getClient()).request();
+        for (String index : indexes) {
+            request.indices(index);
+            try {
+                logger.debug("Deleting index {}", index);
+                DeleteIndexResponse deleteResponse = esClientProvider.getClient().admin().indices().delete(request).actionGet(getQueryTimeout());
+                if (!deleteResponse.isAcknowledged()) {
+                    throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_CANNOT_DELETE_INDEX_ERROR_MSG);
+                }
+                logger.debug("Deleting index {} DONE", index);
+            } catch (IllegalStateException e) {
+                throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, CLIENT_CANNOT_DELETE_INDEX_ERROR_MSG);
+            } catch (IndexNotFoundException e) {
+                // do nothing it's not an error
+                // switch the log level to debug?
+                logger.debug("Deleting index {} : index does not exist!", index);
+            }
+        }
+
+    }
+
+    @Override
     public void refreshAllIndexes() throws ClientException {
         // final RefreshRequest request = new RefreshRequestBuilder(client, action).request();//DeleteIndexAction.INSTANCE.newRequestBuilder(esClientProvider.getClient()).request();
         final RefreshRequest request = RefreshAction.INSTANCE.newRequestBuilder(esClientProvider.getClient()).request();
-        request.indices("_all");
+        request.indices(INDEXES_ALL);
         try {
             RefreshResponse refreshResponse = esClientProvider.getClient().admin().indices().refresh(request).actionGet(getQueryTimeout());
             if (refreshResponse.getFailedShards() > 0) {

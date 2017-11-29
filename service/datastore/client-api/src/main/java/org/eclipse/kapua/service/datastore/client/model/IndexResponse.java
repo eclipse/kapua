@@ -12,30 +12,39 @@
 package org.eclipse.kapua.service.datastore.client.model;
 
 /**
- * Index find request
+ * Index find response
  * 
  * @since 1.0
  */
-public class IndexExistsRequest {
+public class IndexResponse {
 
-    private String index;
+    private boolean indexExists;
+    private String[] indexes;
 
     /**
      * Default constructor
      * 
-     * @param index
+     * @param indexExists
      */
-    public IndexExistsRequest(String index) {
-        this.index = index;
+    public IndexResponse(boolean indexExists) {
+        this.indexExists = indexExists;
+    }
+
+    public IndexResponse(String[] indexes) {
+        this.indexes = indexes;
     }
 
     /**
-     * Get the index name
+     * Get the index exists
      * 
      * @return
      */
-    public String getIndex() {
-        return index;
+    public boolean isIndexExists() {
+        return indexExists;
+    }
+
+    public String[] getIndexes() {
+        return indexes;
     }
 
 }

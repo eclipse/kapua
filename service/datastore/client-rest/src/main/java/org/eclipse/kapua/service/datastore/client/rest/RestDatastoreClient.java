@@ -24,6 +24,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.ParseException;
 import org.apache.http.client.entity.EntityBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.message.BasicHeader;
@@ -43,8 +44,8 @@ import org.eclipse.kapua.service.datastore.client.QueryConverter;
 import org.eclipse.kapua.service.datastore.client.SchemaKeys;
 import org.eclipse.kapua.service.datastore.client.model.BulkUpdateRequest;
 import org.eclipse.kapua.service.datastore.client.model.BulkUpdateResponse;
-import org.eclipse.kapua.service.datastore.client.model.IndexExistsRequest;
-import org.eclipse.kapua.service.datastore.client.model.IndexExistsResponse;
+import org.eclipse.kapua.service.datastore.client.model.IndexRequest;
+import org.eclipse.kapua.service.datastore.client.model.IndexResponse;
 import org.eclipse.kapua.service.datastore.client.model.InsertRequest;
 import org.eclipse.kapua.service.datastore.client.model.InsertResponse;
 import org.eclipse.kapua.service.datastore.client.model.ResultList;
@@ -81,6 +82,8 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
     private final static String PUT_ACTION = "PUT";
     private final static String HEAD_ACTION = "HEAD";
 
+    private final static String INDEX_ALL = "ALL";
+
     private static final String KEY_DOC = "doc";
     private static final String KEY_DOC_AS_UPSERT = "doc_as_upsert";
     private static final String KEY_DOC_ID = "_id";
@@ -99,6 +102,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
 
     private static final String MSG_EMPTY_ERROR = "Empty error message";
 
+    private static final String CLIENT_CANNOT_PARSE_INDEX_RESPONSE_ERROR_MSG = "Cannot convert the indexes list";
     private static final String CLIENT_HITS_MAX_VALUE_EXCEDEED = "Total hits exceeds integer max value";
     private static final String CLIENT_UNDEFINED_MSG = "Elasticsearch client must be not null";
     private static final String CLIENT_CLEANUP_ERROR_MSG = "Cannot cleanup rest datastore driver. Cannot close Elasticsearch client instance";
@@ -518,8 +522,8 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
     }
 
     @Override
-    public IndexExistsResponse isIndexExists(IndexExistsRequest indexExistsRequest) throws ClientException {
-        logger.debug("Index exists - index name: '{}'", indexExistsRequest.getIndex());
+    public IndexResponse isIndexExists(IndexRequest indexRequest) throws ClientException {
+        logger.debug("Index exists - index name: '{}'", indexRequest.getIndex());
         checkClient();
         Response isIndexExistsResponse = restCallTimeoutHandler(new Callable<Response>() {
 
@@ -527,15 +531,43 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
             public Response call() throws Exception {
                 return esClientProvider.getClient().performRequest(
                         HEAD_ACTION,
-                        getIndexPath(indexExistsRequest.getIndex()),
+                        getIndexPath(indexRequest.getIndex()),
                         Collections.<String, String>emptyMap());
             }
-        }, indexExistsRequest.getIndex(), "INDEX EXIST");
+        }, indexRequest.getIndex(), "INDEX EXIST");
         if (isIndexExistsResponse != null && isIndexExistsResponse.getStatusLine() != null) {
             if (isIndexExistsResponse.getStatusLine().getStatusCode() == 200) {
-                return new IndexExistsResponse(true);
+                return new IndexResponse(true);
             } else if (isIndexExistsResponse.getStatusLine().getStatusCode() == 404) {
-                return new IndexExistsResponse(false);
+                return new IndexResponse(false);
+            }
+        }
+        throw new ClientException(ClientErrorCodes.ACTION_ERROR,
+                (isIndexExistsResponse != null && isIndexExistsResponse.getStatusLine() != null) ? isIndexExistsResponse.getStatusLine().getReasonPhrase() : "");
+    }
+
+    @Override
+    public IndexResponse findIndexes(IndexRequest indexRequest) throws ClientException {
+        logger.debug("Find indexes - index prefix: '{}'", indexRequest.getIndex());
+        Response isIndexExistsResponse = restCallTimeoutHandler(new Callable<Response>() {
+
+            @Override
+            public Response call() throws Exception {
+                return esClientProvider.getClient().performRequest(
+                        GET_ACTION,
+                        getFindIndexPath(indexRequest.getIndex()),
+                        Collections.singletonMap("pretty", "true"));
+            }
+        }, "*", "INDEX EXIST");
+        if (isIndexExistsResponse != null && isIndexExistsResponse.getStatusLine() != null) {
+            if (isIndexExistsResponse.getStatusLine().getStatusCode() == 200) {
+                try {
+                    return new IndexResponse(EntityUtils.toString(isIndexExistsResponse.getEntity()).split("\n"));
+                } catch (ParseException | IOException e) {
+                    throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_CANNOT_PARSE_INDEX_RESPONSE_ERROR_MSG, e);
+                }
+            } else if (isIndexExistsResponse.getStatusLine().getStatusCode() == 404) {
+                return new IndexResponse(null);
             }
         }
         throw new ClientException(ClientErrorCodes.ACTION_ERROR,
@@ -625,7 +657,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
                         getRefreshAllIndexesPath(),
                         Collections.<String, String>emptyMap());
             }
-        }, "ALL", "REFRESH INDEX");
+        }, INDEX_ALL, "REFRESH INDEX");
         if (!isRequestSuccessful(refreshIndexResponse)) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR,
                     (refreshIndexResponse != null && refreshIndexResponse.getStatusLine() != null) ? refreshIndexResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
@@ -645,10 +677,40 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
                         getIndexPath("_all"),
                         Collections.<String, String>emptyMap());
             }
-        }, "ALL", "DELETE INDEX");
+        }, INDEX_ALL, "DELETE INDEX");
         if (!isRequestSuccessful(deleteIndexResponse)) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR,
                     (deleteIndexResponse != null && deleteIndexResponse.getStatusLine() != null) ? deleteIndexResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
+        }
+    }
+
+    @Override
+    public void deleteIndexes(String... indexes) throws ClientException {
+        logger.debug("Delete indexes");
+        checkClient();
+        for (String index : indexes) {
+            logger.debug("Delete index {}", index);
+            Response deleteIndexResponse = restCallTimeoutHandler(new Callable<Response>() {
+
+                @Override
+                public Response call() throws Exception {
+                    logger.debug("Deleting index {}", index);
+                    return esClientProvider.getClient().performRequest(
+                            DELETE_ACTION,
+                            getIndexPath(index),
+                            Collections.<String, String>emptyMap());
+                }
+            }, index, "DELETE INDEX");
+
+            // for that call the deleteIndexResponse=null case could be considered as good response since if an index doesn't exist (404) the delete could be considered successful.
+            // the deleteIndexResponse is null also if the error is due to a bad index request (400) but this error, except if there is an application bug, shouldn't never happen.
+            if (deleteIndexResponse == null) {
+                logger.debug("Deleting index {} : index does not exist", index);               
+            } else if (!isRequestSuccessful(deleteIndexResponse)) {
+                throw new ClientException(ClientErrorCodes.ACTION_ERROR,
+                        (deleteIndexResponse != null && deleteIndexResponse.getStatusLine() != null) ? deleteIndexResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
+            }
+            logger.debug("Deleting index {} DONE", index);
         }
     }
 
@@ -724,6 +786,10 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
 
     private String getIndexPath(String index) {
         return String.format("/%s", index);
+    }
+
+    private String getFindIndexPath(String index) {
+        return String.format("/_cat/indices?h=index&index=%s", index);
     }
 
     private String getBulkPath() {

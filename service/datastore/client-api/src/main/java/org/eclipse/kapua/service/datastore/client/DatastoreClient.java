@@ -13,8 +13,8 @@ package org.eclipse.kapua.service.datastore.client;
 
 import org.eclipse.kapua.service.datastore.client.model.BulkUpdateRequest;
 import org.eclipse.kapua.service.datastore.client.model.BulkUpdateResponse;
-import org.eclipse.kapua.service.datastore.client.model.IndexExistsRequest;
-import org.eclipse.kapua.service.datastore.client.model.IndexExistsResponse;
+import org.eclipse.kapua.service.datastore.client.model.IndexRequest;
+import org.eclipse.kapua.service.datastore.client.model.IndexResponse;
 import org.eclipse.kapua.service.datastore.client.model.InsertRequest;
 import org.eclipse.kapua.service.datastore.client.model.InsertResponse;
 import org.eclipse.kapua.service.datastore.client.model.ResultList;
@@ -122,11 +122,11 @@ public interface DatastoreClient {
     /**
      * Check if the index exists
      * 
-     * @param indexExistsRequest
+     * @param indexRequest
      * @return
      * @throws ClientException
      */
-    IndexExistsResponse isIndexExists(IndexExistsRequest indexExistsRequest) throws ClientException;
+    IndexResponse isIndexExists(IndexRequest indexRequest) throws ClientException;
 
     /**
      * Create the index
@@ -170,6 +170,27 @@ public interface DatastoreClient {
      * </b>
      */
     void deleteAllIndexes() throws ClientException;
+
+    /**
+     * Delete the specified indexes.<br>
+     * <b>WARNING!<br>
+     * Once dropped the indexes cannot be restored!<br>
+     * Be careful using it! :)
+     * </b>
+     * 
+     * @param indexes
+     * @throws ClientException
+     */
+    public void deleteIndexes(String... indexes) throws ClientException;
+
+    /**
+     * Find indexes by prefix.
+     * 
+     * @param indexRequest
+     * @return
+     * @throws ClientException
+     */
+    public IndexResponse findIndexes(IndexRequest indexRequest) throws ClientException;
 
     // ModelContext
 

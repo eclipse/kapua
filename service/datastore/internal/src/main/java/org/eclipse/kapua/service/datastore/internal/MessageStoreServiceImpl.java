@@ -58,10 +58,10 @@ import com.codahale.metrics.Timer.Context;
 @KapuaProvider
 public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService implements MessageStoreService {
 
-    private static final Domain DATASTORE_DOMAIN = new DatastoreDomain();
-    private static final String METRIC_COMPONENT_NAME = "datastore";
+    protected static final Domain DATASTORE_DOMAIN = new DatastoreDomain();
+    protected static final String METRIC_COMPONENT_NAME = "datastore";
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    protected static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     // metrics
     private final Counter metricMessageCount;
     private final Counter metricCommunicationErrorCount;
@@ -75,12 +75,12 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
     private final Counter metricQueueConfigurationErrorCount;
     private final Counter metricQueueGenericErrorCount;
 
-    private final AccountService accountService = LOCATOR.getService(AccountService.class);
-    private final AuthorizationService authorizationService = LOCATOR.getService(AuthorizationService.class);
-    private final PermissionFactory permissionFactory = LOCATOR.getFactory(PermissionFactory.class);
-    private final static Integer MAX_ENTRIES_ON_DELETE = DatastoreSettings.getInstance().get(Integer.class, DatastoreSettingKey.CONFIG_MAX_ENTRIES_ON_DELETE);
+    protected final AccountService accountService = LOCATOR.getService(AccountService.class);
+    protected final AuthorizationService authorizationService = LOCATOR.getService(AuthorizationService.class);
+    protected final PermissionFactory permissionFactory = LOCATOR.getFactory(PermissionFactory.class);
+    protected final static Integer MAX_ENTRIES_ON_DELETE = DatastoreSettings.getInstance().get(Integer.class, DatastoreSettingKey.CONFIG_MAX_ENTRIES_ON_DELETE);
 
-    private final MessageStoreFacade messageStoreFacade;
+    protected final MessageStoreFacade messageStoreFacade;
 
     /**
      * Default constructor
@@ -224,9 +224,10 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         }
     }
 
-    private void checkDataAccess(KapuaId scopeId, Actions action)
+    protected void checkDataAccess(KapuaId scopeId, Actions action)
             throws KapuaException {
         Permission permission = permissionFactory.newPermission(DATASTORE_DOMAIN, action, scopeId);
         authorizationService.checkPermission(permission);
     }
+
 }

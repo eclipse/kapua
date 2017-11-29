@@ -22,6 +22,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -40,6 +41,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaChannel;
@@ -58,11 +60,14 @@ import org.eclipse.kapua.service.datastore.ClientInfoRegistryService;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
+import org.eclipse.kapua.service.datastore.client.DatastoreClient;
 import org.eclipse.kapua.service.datastore.client.embedded.EsEmbeddedEngine;
+import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreChannel;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
+import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreConfiguration;
 import org.eclipse.kapua.service.datastore.internal.mediator.MetricInfoField;
@@ -135,6 +140,15 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     private static final ChannelInfoRegistryService CHANNEL_INFO_REGISTRY_SERVICE = LOCATOR.getService(ChannelInfoRegistryService.class);
     private static final MetricInfoRegistryService METRIC_INFO_REGISTRY_SERVICE = LOCATOR.getService(MetricInfoRegistryService.class);
     private static final ClientInfoRegistryService CLIENT_INFO_REGISTRY_SERVICE = LOCATOR.getService(ClientInfoRegistryService.class);
+    private static DatastoreClient datastoreClient;
+
+    static {
+        try {
+            datastoreClient = DatastoreClientFactory.getInstance();
+        } catch (Exception e) {
+            logger.error("Error getting data store client!", e);
+        }
+    }
 
     @BeforeClass
     public static void startEmbeddedEngine() throws Exception {
@@ -164,6 +178,150 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
             Thread.sleep(5000);
             esEmbeddedEngine = null;
         }
+    }
+
+    @Test
+    public void deleteByDate() throws InterruptedException, KapuaException, ParseException {
+        Account account = getTestAccountCreator(adminScopeId);
+        String[] semanticTopic = new String[] {
+                "delete/by/date/test"
+        };
+
+        String clientId = String.format("device-%d", new Date().getTime());
+        DeviceCreator deviceCreator = DEVICE_FACTORY.newCreator(account.getId(), clientId);
+        Device device = DEVICE_REGISTRY_SERVICE.create(deviceCreator);
+
+        // leave the message index by as default (DEVICE_TIMESTAMP)
+        String stringPayload = "Hello delete by date message!";
+        byte[] payload = stringPayload.getBytes();
+
+        Date startDate = KapuaDateUtils.parseDate("2016-11-01T00:00:00.000Z");
+        Date endDate = KapuaDateUtils.parseDate("2017-03-31T00:00:00.000Z");
+        Instant startInstant = startDate.toInstant();
+        Instant endInstant = endDate.toInstant();
+        Date sentOn = startDate;
+        int messagesCount = 0;
+        while (sentOn.before(endDate)) {
+            insertMessage(account, clientId, device.getId(), semanticTopic[0], payload, sentOn);
+            messagesCount++;
+            startInstant = startInstant.plus(1, ChronoUnit.DAYS);
+            sentOn = Date.from(startInstant);
+        }
+
+        // insert 2 messages/day for the window
+        Date startDate1 = KapuaDateUtils.parseDate("2016-12-01T00:00:00.000Z");
+        Date endDate1 = KapuaDateUtils.parseDate("2016-12-31T00:00:00.000Z");
+        Instant startInstant1 = startDate1.toInstant();
+        Instant endInstant1 = endDate1.toInstant();
+        sentOn = startDate1;
+        while (!sentOn.after(endDate1)) {
+            sentOn = Date.from(startInstant1.plus(600, ChronoUnit.SECONDS));
+            insertMessage(account, clientId, device.getId(), semanticTopic[0], payload, sentOn);
+            messagesCount++;
+            startInstant1 = startInstant1.plus(1, ChronoUnit.DAYS);
+            sentOn = Date.from(startInstant1);
+        }
+
+        // insert 3 messages/day for the window
+        Date startDate2 = KapuaDateUtils.parseDate("2017-02-01T00:00:00.000Z");
+        Date endDate2 = KapuaDateUtils.parseDate("2017-02-28T00:00:00.000Z");
+        Instant startInstant2 = startDate2.toInstant();
+        Instant endInstant2 = endDate2.toInstant();
+        sentOn = startDate2;
+        while (!sentOn.after(endDate2)) {
+            sentOn = Date.from(startInstant2.plus(600, ChronoUnit.SECONDS));
+            insertMessage(account, clientId, device.getId(), semanticTopic[0], payload, sentOn);
+            sentOn = Date.from(startInstant2.plus(2 * 600, ChronoUnit.SECONDS));
+            insertMessage(account, clientId, device.getId(), semanticTopic[0], payload, sentOn);
+            messagesCount += 2;
+            startInstant2 = startInstant2.plus(1, ChronoUnit.DAYS);
+            sentOn = Date.from(startInstant2);
+        }
+
+        // do a first query count
+        DatastoreMediator.getInstance().refreshAllIndexes();
+        MessageQuery messageQuery = getBaseMessageQuery(KapuaEid.ONE, 1000);
+        setMessageQueryBaseCriteria(messageQuery, clientId, new DateRange(startDate, endDate));
+        long count = MESSAGE_STORE_SERVICE.count(messageQuery);
+        assertEquals(messagesCount, count);
+
+        // delete by month window
+        messagesCount -= 56;
+        String[] indexes = DatastoreUtils.convertToDataIndexes(KapuaEid.ONE, KapuaDateUtils.parseDate("2016-12-01T00:00:00.000Z").toInstant(),
+                KapuaDateUtils.parseDate("2016-12-31T00:00:00.000Z").toInstant());
+        datastoreClient.deleteIndexes(indexes);
+        DatastoreMediator.getInstance().refreshAllIndexes();
+        count = MESSAGE_STORE_SERVICE.count(messageQuery);
+        assertEquals(messagesCount, count);
+
+        // delete by month window
+        messagesCount -= 28;
+        indexes = DatastoreUtils.convertToDataIndexes(KapuaEid.ONE, KapuaDateUtils.parseDate("2017-01-01T00:00:00.000Z").toInstant(), KapuaDateUtils.parseDate("2017-01-31T00:00:00.000Z").toInstant());
+        datastoreClient.deleteIndexes(indexes);
+        DatastoreMediator.getInstance().refreshAllIndexes();
+        count = MESSAGE_STORE_SERVICE.count(messageQuery);
+        assertEquals(messagesCount, count);
+
+        // delete by month window
+        messagesCount -= 63;
+        indexes = DatastoreUtils.convertToDataIndexes(KapuaEid.ONE, KapuaDateUtils.parseDate("2017-02-01T00:00:00.000Z").toInstant(), KapuaDateUtils.parseDate("2017-02-31T00:00:00.000Z").toInstant());
+        datastoreClient.deleteIndexes(indexes);
+        DatastoreMediator.getInstance().refreshAllIndexes();
+        count = MESSAGE_STORE_SERVICE.count(messageQuery);
+        assertEquals(messagesCount, count);
+
+        // do a new query
+        messagesCount = 0;
+        indexes = DatastoreUtils.convertToDataIndexes(KapuaEid.ONE, startDate.toInstant().minus(7, ChronoUnit.DAYS), endDate.toInstant().plus(7, ChronoUnit.DAYS));
+        datastoreClient.deleteIndexes(indexes);
+        DatastoreMediator.getInstance().refreshAllIndexes();
+        MESSAGE_STORE_SERVICE.count(messageQuery);
+        count = MESSAGE_STORE_SERVICE.count(messageQuery);
+        assertEquals(messagesCount, count);
+    }
+
+    // private void printMessages(MessageQuery messageQuery) throws KapuaException {
+    // MessageListResult result = MESSAGE_STORE_SERVICE.query(messageQuery);
+    // List<DatastoreMessage> list = result.getItems();
+    // for (DatastoreMessage message : list) {
+    // logger.info("Date: {}", message.getSentOn());
+    // }
+    // }
+
+    // private void logMessagesByMonth(String clientId) throws ParseException, KapuaException {
+    // MessageQuery messageQuery1 = getBaseMessageQuery(KapuaEid.ONE, 1000);
+    // setMessageQueryBaseCriteria(messageQuery1, clientId, new DateRange(KapuaDateUtils.parseDate("2016-11-01T00:00:00.000Z"), KapuaDateUtils.parseDate("2017-05-31T00:00:00.000Z")));
+    // long count0 = MESSAGE_STORE_SERVICE.count(messageQuery1);
+    // setMessageQueryBaseCriteria(messageQuery1, clientId, new DateRange(KapuaDateUtils.parseDate("2016-11-01T00:00:00.000Z"), KapuaDateUtils.parseDate("2016-11-30T00:00:00.000Z")));
+    // long count1 = MESSAGE_STORE_SERVICE.count(messageQuery1);
+    // setMessageQueryBaseCriteria(messageQuery1, clientId, new DateRange(KapuaDateUtils.parseDate("2016-12-01T00:00:00.000Z"), KapuaDateUtils.parseDate("2016-12-31T00:00:00.000Z")));
+    // long count2 = MESSAGE_STORE_SERVICE.count(messageQuery1);
+    // setMessageQueryBaseCriteria(messageQuery1, clientId, new DateRange(KapuaDateUtils.parseDate("2017-01-01T00:00:00.000Z"), KapuaDateUtils.parseDate("2017-01-31T00:00:00.000Z")));
+    // long count3 = MESSAGE_STORE_SERVICE.count(messageQuery1);
+    // setMessageQueryBaseCriteria(messageQuery1, clientId, new DateRange(KapuaDateUtils.parseDate("2017-02-01T00:00:00.000Z"), KapuaDateUtils.parseDate("2017-02-28T00:00:00.000Z")));
+    // long count4 = MESSAGE_STORE_SERVICE.count(messageQuery1);
+    // setMessageQueryBaseCriteria(messageQuery1, clientId, new DateRange(KapuaDateUtils.parseDate("2017-03-01T00:00:00.000Z"), KapuaDateUtils.parseDate("2017-03-31T00:00:00.000Z")));
+    // long count5 = MESSAGE_STORE_SERVICE.count(messageQuery1);
+    // setMessageQueryBaseCriteria(messageQuery1, clientId, new DateRange(KapuaDateUtils.parseDate("2017-04-01T00:00:00.000Z"), KapuaDateUtils.parseDate("2017-04-30T00:00:00.000Z")));
+    // long count6 = MESSAGE_STORE_SERVICE.count(messageQuery1);
+    // setMessageQueryBaseCriteria(messageQuery1, clientId, new DateRange(KapuaDateUtils.parseDate("2017-05-01T00:00:00.000Z"), KapuaDateUtils.parseDate("2017-05-31T00:00:00.000Z")));
+    // long count7 = MESSAGE_STORE_SERVICE.count(messageQuery1);
+    // logger.info("{} - {} - {} - {} - {} - {} - {} - {}", new Object[] { count0, count1, count2, count3, count4, count5, count6, count7 });
+    // }
+
+    private KapuaDataMessage insertMessage(Account account, String clientId, KapuaId deviceId, String semanticTopic, byte[] payload, Date sentOn) throws InterruptedException {
+        KapuaDataPayloadImpl messagePayload = new KapuaDataPayloadImpl();
+        Map<String, Object> metrics = new HashMap<String, Object>();
+        metrics.put("float", new Float((float) 0.01));
+        messagePayload.setMetrics(metrics);
+        messagePayload.setBody(payload);
+        Date receivedOn = Date.from(KapuaDateUtils.getKapuaSysDate());
+        Date capturedOn = sentOn;
+        KapuaDataMessage message = createMessage(clientId, account.getId(), deviceId, receivedOn, capturedOn, sentOn);
+        setChannel(message, semanticTopic);
+        updatePayload(message, messagePayload);
+        List<StorableId> messageStoredIds = insertMessages(message);
+        return message;
     }
 
     @Test
