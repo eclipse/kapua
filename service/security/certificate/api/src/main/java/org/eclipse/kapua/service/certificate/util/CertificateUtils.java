@@ -29,7 +29,8 @@ import java.util.Base64;
 
 public class CertificateUtils {
 
-    private CertificateUtils() { }
+    private CertificateUtils() {
+    }
 
     public static PrivateKey readPrivateKey(File file) throws KapuaCertificateException {
         PrivateKey privateKey;
