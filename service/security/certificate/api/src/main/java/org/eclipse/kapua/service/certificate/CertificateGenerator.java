@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlType;
 import java.util.Date;
 
 /**
- * CertificateGenarator encapsulates all the information needed to generate a new Certificate in the system.
+ * {@link CertificateGenerator} encapsulates all the information needed to generate a new Certificate in the system.
  *
  * @since 1.0
  */
