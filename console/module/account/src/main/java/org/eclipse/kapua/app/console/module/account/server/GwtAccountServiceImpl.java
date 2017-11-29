@@ -201,11 +201,19 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         try {
             final Account account = accountService.find(scopeId, accountId);
             final KapuaId rootAccountId = GwtKapuaCommonsModelConverter.convertKapuaId(findRootAccount().getId());
-            String brokerUrl = KapuaSecurityUtils.doPrivileged(new Callable<String>() {
+            String brokerUri = KapuaSecurityUtils.doPrivileged(new Callable<String>() {
 
                 @Override
                 public String call() throws Exception {
-                    return accountService.getConfigValues(rootAccountId).get("brokerUri") != null ? accountService.getConfigValues(rootAccountId).get("brokerUri").toString() : SystemUtils.getBrokerURI().toString();
+                    String brokerUriInternal;
+                    Object brokerUriObj = accountService.getConfigValues(rootAccountId).get("brokerUri");
+                    if (brokerUriObj == null) {
+                        brokerUriInternal = SystemUtils.getBrokerURI().toString();
+                    } else {
+                        brokerUriInternal = brokerUriObj.toString().isEmpty() ? SystemUtils.getBrokerURI().toString() : brokerUriObj.toString();
+                    }
+
+                    return brokerUriInternal;
                 }
             });
 
@@ -231,7 +239,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountCreatedOn", account.getCreatedOn().toString()));
             accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountCreatedBy", userCreatedBy.getName()));
 
-            accountPropertiesPairs.add(new GwtGroupedNVPair("deploymentInfo", "deploymentBrokerURL", brokerUrl));
+            accountPropertiesPairs.add(new GwtGroupedNVPair("deploymentInfo", "deploymentBrokerURL", brokerUri));
 
             accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationName", account.getOrganization().getName()));
             accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationPersonName", account.getOrganization().getPersonName()));
