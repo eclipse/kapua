@@ -18,4 +18,7 @@ public interface CertificateFactory extends KapuaEntityFactory<Certificate, Cert
     public CertificateUsage newCertificateUsage(String name);
 
     public KeyUsageSetting newKeyUsageSetting(KeyUsage usage, boolean allowed, Boolean kapuaAllowed);
+
+    public CertificateGenerator newCertificateGenerator();
+
 }
