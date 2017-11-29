@@ -12,26 +12,23 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.setting;
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.DataConfiguration;
 import org.apache.commons.configuration.EnvironmentConfiguration;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
-import org.eclipse.kapua.commons.util.ResourceUtils;
+import org.eclipse.kapua.commons.util.KapuaFileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.net.URL;
 
 /**
  * Setting reference abstract implementation.
  *
- * @param <K>
- *            Setting key type
- *
+ * @param <K> Setting key type
  * @since 1.0.0
  */
 public abstract class AbstractKapuaSetting<K extends SettingKey> extends AbstractBaseKapuaSetting<K> {
@@ -45,7 +42,6 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> extends Abstrac
      * Constructor.
      *
      * @param configResourceName
-     * 
      * @since 1.0.0
      */
     protected AbstractKapuaSetting(String configResourceName) {
@@ -85,16 +81,11 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> extends Abstrac
      * If the given directory name refer to a file or a not existing directory an error will be thrown.
      * If the directory exists and it is empty, no error will be thrown.
      * Note that this can only work with local files.
-     * 
-     * @param compositeConfig
-     *            The {@link CompositeConfiguration} where load the resources.
-     * @param configResourceDirName
-     *            The directory path to scan.
-     * @throws KapuaSettingException
-     *             When directory is not found, or loading them causes an exception.
-     * 
+     *
+     * @param compositeConfig       The {@link CompositeConfiguration} where load the resources.
+     * @param configResourceDirName The directory path to scan.
+     * @throws KapuaSettingException When directory is not found, or loading them causes an exception.
      * @see #loadConfigResource(CompositeConfiguration, String)
-     * 
      * @since 1.0.0
      */
     private static void loadConfigResources(CompositeConfiguration compositeConfig, String configResourceDirName) throws KapuaSettingException {
@@ -133,25 +124,17 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> extends Abstrac
      * Search the configuration resource name and loads it into the given {@link CompositeConfiguration} parameter.<br>
      * It can handle resources on the class path and file in the file system (prefixed by 'file://')
      * or file over HTTP/HTTPS (prefixed by 'http://'|'https://')
-     * 
-     * @param compositeConfig
-     *            The {@link CompositeConfiguration} where load the given resource.
-     * @param configResourceName
-     *            The resource name to search and load.
-     * @throws KapuaSettingException
-     *             When error occurs while loading setting resource.
-     * 
+     *
+     * @param compositeConfig    The {@link CompositeConfiguration} where load the given resource.
+     * @param configResourceName The resource name to search and load.
+     * @throws KapuaSettingException When error occurs while loading setting resource.
      * @since 1.0.0
      */
     private static void loadConfigResource(CompositeConfiguration compositeConfig, String configResourceName) throws KapuaSettingException {
 
         URL configUrl = null;
         try {
-            if (hasValidScheme(configResourceName)) {
-                configUrl = new URL(configResourceName);
-            } else {
-                configUrl = ResourceUtils.getResource(configResourceName);
-            }
+            configUrl = KapuaFileUtils.getAsURL(configResourceName);
 
             if (configUrl != null) {
                 compositeConfig.addConfiguration(new PropertiesConfiguration(configUrl));
@@ -160,29 +143,9 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> extends Abstrac
                 LOG.error("Unable to locate configuration resource: '{}'", configResourceName);
                 throw new KapuaSettingException(KapuaSettingErrorCodes.RESOURCE_NOT_FOUND, null, configResourceName);
             }
-        } catch (MalformedURLException mue) {
-            throw new KapuaSettingException(KapuaSettingErrorCodes.INVALID_RESOURCE_NAME, mue, configResourceName);
         } catch (ConfigurationException ce) {
             throw new KapuaSettingException(KapuaSettingErrorCodes.INVALID_RESOURCE_FILE, ce, configUrl);
         }
     }
 
-    /**
-     * Scans the given string URL to check that contains a valid scheme.<br>
-     * Scheme accepted are:
-     * <ul>
-     * <li>file://</li>
-     * <li>http://</li>
-     * <li>https://</li>
-     * </ul>
-     * 
-     * @param stringURL
-     *            The URL in {@link String} form to check
-     * @return {@code true} if it is a valid {@link URL}, false otherwise
-     * 
-     * @since 1.0.0
-     */
-    private static boolean hasValidScheme(String stringURL) {
-        return stringURL != null && (stringURL.startsWith("file://") || stringURL.startsWith("http://") || stringURL.startsWith("https://"));
-    }
 }

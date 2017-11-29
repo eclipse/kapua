@@ -421,8 +421,8 @@
                                                 -Ddatastore.elasticsearch.nodes=\${DATASTORE_ADDR} \
                                                 -Ddatastore.elasticsearch.port=\${DATASTORE_PORT} \
                                                 -Ddatastore.client.class=\${DATASTORE_CLIENT} \
-                                                -Dcertificate.jwt.private.key=/home/kapua/key.pk8 \
-                                                -Dcertificate.jwt.certificate=/home/kapua/cert.pem
+                                                -Dcertificate.jwt.private.key=file:///home/kapua/key.pk8 \
+                                                -Dcertificate.jwt.certificate=file:///home/kapua/cert.pem
                                             </JAVA_OPTS>
                                         </env>
                                         <user>kapua</user>
