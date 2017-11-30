@@ -707,7 +707,19 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
 
     @Override
     public GwtAccount findRootAccount() throws GwtKapuaException {
-        return findByAccountName(SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_ACCOUNT));
+        GwtAccount gwtAccount = null;
+        try {
+            gwtAccount = KapuaSecurityUtils.doPrivileged(new Callable<GwtAccount>() {
+
+                @Override
+                public GwtAccount call() throws Exception {
+                    return findByAccountName(SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_ACCOUNT));
+                }
+            });
+        } catch (Throwable t) {
+            KapuaExceptionHandler.handle(t);
+        }
+        return gwtAccount;
     }
 
 }
