@@ -69,8 +69,8 @@ Feature: User Service Integration
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-b | Kapua User B | kapua_b@kapua.com | +386 31 323 555 | ENABLED | INTERNAL |
     And Credentials
-      | name    | password          |
-      | kapua-b | ToManySecrets123# |
+      | name    | password          | enabled |
+      | kapua-b | ToManySecrets123# | true    |
     And Permissions
       | domain | action |
       | user   | read   |
@@ -80,7 +80,6 @@ Feature: User Service Integration
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
     When I try to delete user "kapua-g"
     Then No exception was thrown
-    Given I expect the exception "SubjectUnauthorizedException" with the text "Error: user:read:"
     When I try to delete user "kapua-b"
     Then An exception was thrown
     And I logout
@@ -139,8 +138,8 @@ Feature: User Service Integration
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-b | Kapua User B | kapua_b@kapua.com | +386 31 323 555 | ENABLED | INTERNAL |
     And Credentials
-      | name    | password          |
-      | kapua-b | ToManySecrets123# |
+      | name    | password          | enabled |
+      | kapua-b | ToManySecrets123# | true    |
     And Permissions
       | domain | action |
       | user   | read   |
@@ -149,7 +148,6 @@ Feature: User Service Integration
     And I logout
     When I login as user with name "kapua-b" and password "ToManySecrets123#"
     Then No exception was thrown
-    Given I expect the exception "SubjectUnauthorizedException" with the text "Error: user:read:"
     When I try to delete user "kapua-a"
     Then An exception was thrown
     And I logout
