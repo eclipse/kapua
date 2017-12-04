@@ -256,7 +256,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         queryCopy.setFetchStyle(query.getFetchStyle());
         queryCopy.setLimit(query.getLimit());
         queryCopy.setOffset(query.getOffset());
-        queryCopy.setSortFields(new ArrayList<SortField>(query.getSortFields()));
+        queryCopy.setSortFields(query.getSortFields() != null ? new ArrayList<SortField>(query.getSortFields()) : null);
         queryCopy.setAskTotalCount(query.isAskTotalCount());
         queryCopy.setPredicate(copyCompositePredicate(query.getPredicate()));
 
