@@ -17,6 +17,7 @@
 
     <inherits name="org.eclipse.kapua.app.console.module.api.adminModuleApi"/>
     <inherits name="org.eclipse.kapua.app.console.module.authorization.adminModuleAuthorization"/>
+    <inherits name="org.eclipse.kapua.app.console.module.tag.adminModuleTag"/>
     <inherits name="org.eclipse.kapua.app.console.module.user.adminModuleUser"/>
 
     <!-- Specify the paths for translatable code                        -->

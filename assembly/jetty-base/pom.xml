@@ -17,7 +17,7 @@
     <parent>
         <groupId>org.eclipse.kapua</groupId>
         <artifactId>kapua-assembly</artifactId>
-        <version>0.3.1-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>kapua-assembly-jetty-base</artifactId>
@@ -54,7 +54,6 @@
                                     mkdir -p jetty && cd jetty && \
                                     tar --strip=1 -xzf ../jetty-distribution.tar.gz && \
                                     rm ../jetty-distribution.tar.gz && \
-                                    chown -R kapua:kapua /home/kapua && \
                                     mkdir -p /var/lib/jetty/lib/ext /var/lib/jetty/start.d && \
                                     chown kapua:kapua /var/lib/jetty && \
                                     cd /var/lib/jetty && \

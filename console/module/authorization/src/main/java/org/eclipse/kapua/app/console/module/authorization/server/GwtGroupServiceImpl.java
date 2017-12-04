@@ -12,7 +12,10 @@
 package org.eclipse.kapua.app.console.module.authorization.server;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
@@ -27,6 +30,7 @@ import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModel
 import org.eclipse.kapua.app.console.module.authorization.shared.util.GwtKapuaAuthorizationModelConverter;
 import org.eclipse.kapua.app.console.module.authorization.shared.util.KapuaGwtAuthorizationModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.group.Group;
@@ -36,6 +40,8 @@ import org.eclipse.kapua.service.authorization.group.GroupListResult;
 import org.eclipse.kapua.service.authorization.group.GroupQuery;
 import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserFactory;
+import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserService;
 
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
@@ -107,32 +113,35 @@ public class GwtGroupServiceImpl extends KapuaRemoteServiceServlet implements Gw
 
     @Override
     public PagingLoadResult<GwtGroup> query(PagingLoadConfig loadConfig,
-            GwtGroupQuery gwtGroupQuery) throws GwtKapuaException {
+            final GwtGroupQuery gwtGroupQuery) throws GwtKapuaException {
         int totalLength = 0;
         List<GwtGroup> gwtGroupList = new ArrayList<GwtGroup>();
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             GroupService groupService = locator.getService(GroupService.class);
-            UserService userService = locator.getService(UserService.class);
+            final UserService userService = locator.getService(UserService.class);
+            final UserFactory userFactory = locator.getFactory(UserFactory.class);
             GroupQuery groupQuery = GwtKapuaAuthorizationModelConverter.convertGroupQuery(loadConfig,
                     gwtGroupQuery);
             GroupListResult groups = groupService.query(groupQuery);
-            if (!groups.isEmpty()) {
-                if (groups.getSize() >= loadConfig.getLimit()) {
-                    totalLength = Long.valueOf(groupService.count(groupQuery)).intValue();
+            UserListResult userListResult = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
 
-                } else {
-                    totalLength = groups.getSize();
+                @Override
+                public UserListResult call() throws Exception {
+                    return userService.query(userFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtGroupQuery.getScopeId())));
                 }
-                for (Group g : groups.getItems()) {
-                    gwtGroupList.add(KapuaGwtAuthorizationModelConverter.convertGroup(g));
-                    for (GwtGroup gwtGroup : gwtGroupList) {
-                        User user = userService.find(g.getScopeId(), g.getCreatedBy());
-                        if (user != null) {
-                            gwtGroup.setUserName(user.getDisplayName());
-                        }
-                }
+            });
+            Map<String, String> usernameMap = new HashMap<String, String>();
+            for (User user : userListResult.getItems()) {
+                usernameMap.put(user.getId().toCompactId(), user.getName());
             }
+            if (!groups.isEmpty()) {
+                totalLength = Long.valueOf(groupService.count(groupQuery)).intValue();
+                for (Group g : groups.getItems()) {
+                    GwtGroup gwtGroup = KapuaGwtAuthorizationModelConverter.convertGroup(g);
+                    gwtGroup.setUserName(usernameMap.get(g.getCreatedBy().toCompactId()));
+                    gwtGroupList.add(gwtGroup);
+                }
             }
         } catch (Exception e) {
             KapuaExceptionHandler.handle(e);
@@ -163,11 +172,17 @@ public class GwtGroupServiceImpl extends KapuaRemoteServiceServlet implements Gw
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             GroupService groupService = locator.getService(GroupService.class);
-            UserService userService = locator.getService(UserService.class);
-            KapuaId scopeId = KapuaEid.parseCompactId(scopeShortId);
+            final UserService userService = locator.getService(UserService.class);
+            final KapuaId scopeId = KapuaEid.parseCompactId(scopeShortId);
             KapuaId groupId = KapuaEid.parseCompactId(groupShortId);
-            Group group = groupService.find(scopeId, groupId);
-            User user = userService.find(scopeId, group.getCreatedBy());
+            final Group group = groupService.find(scopeId, groupId);
+            User user = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
+
+                @Override
+                public User call() throws Exception {
+                    return userService.find(scopeId, group.getCreatedBy());
+                }
+            });
 
             if (group != null) {
                 // gwtGroupDescription.add(new GwtGroupedNVPair("Entity", "Scope
@@ -177,11 +192,11 @@ public class GwtGroupServiceImpl extends KapuaRemoteServiceServlet implements Gw
                 gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupModifiedOn",
                         group.getModifiedOn().toString()));
                 gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupModifiedBy",
-                        user.getDisplayName()));
+                        user.getName()));
                 gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupCreatedOn",
                         group.getCreatedOn().toString()));
                 gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupCreatedBy",
-                        user.getDisplayName()));
+                        user.getName()));
 
             }
         } catch (Exception e) {

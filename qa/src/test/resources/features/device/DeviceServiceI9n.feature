@@ -9,6 +9,7 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
+@device
 Feature: Device Registry Integration
     Device Registy integration test scenarios. These scenarios test higher level device service functionality
     with all services live.
@@ -134,6 +135,7 @@ Scenario: Handling of a disconnect message from a non existing device
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
       | integer | maxNumberChildEntities |  10   |
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "*"
     When A disconnect message from device "device_1"
     Then An exception was thrown
     And I logout

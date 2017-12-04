@@ -12,6 +12,11 @@
 #        Red Hat Inc - initial API and implementation
 ################################################################################
 
+# Generate X509 certificate and private key
+openssl req -x509 -newkey rsa:4096 -keyout /home/kapua/key.pem -out /home/kapua/cert.pem -days 365 -nodes -subj '/O=Eclipse Kapua/C=XX'
+openssl pkcs8 -topk8 -in /home/kapua/key.pem -out /home/kapua/key.pk8 -nocrypt
+rm /home/kapua/key.pem
+
 START_ARGS="$START_ARGS -Djetty.home=/home/kapua/jetty"
 START_ARGS="$START_ARGS -Djetty.base=/var/lib/jetty"
 

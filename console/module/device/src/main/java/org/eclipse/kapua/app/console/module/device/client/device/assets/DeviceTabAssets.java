@@ -38,7 +38,7 @@ public class DeviceTabAssets extends KapuaTabItem<GwtDevice> {
     // private DeviceConfigSnapshots assetsConfiguration;
 
     public DeviceTabAssets(GwtSession currentSession) {
-        super(MSGS.asset(), new KapuaIcon(IconSet.RETWEET));
+        super(currentSession, MSGS.asset(), new KapuaIcon(IconSet.RETWEET));
         assetsValues = new DeviceAssetsValues(currentSession, this);
     }
 
@@ -46,7 +46,7 @@ public class DeviceTabAssets extends KapuaTabItem<GwtDevice> {
     public void setEntity(GwtDevice gwtDevice) {
         super.setEntity(gwtDevice);
 
-        setEnabled(gwtDevice != null && gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_ASSET_V1));
+        setEnabled(gwtDevice != null && currentSession.hasDeviceManageReadPermission() && gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_ASSET_V1));
 
         assetsValues.setDevice(gwtDevice);
         doRefresh();
@@ -89,18 +89,6 @@ public class DeviceTabAssets extends KapuaTabItem<GwtDevice> {
             }
         });
         tabsPanel.add(tabValues);
-
-        // tabConfiguration = new TabItem(msgs.deviceConfigSnapshots(), new KapuaIcon(IconSet.ARCHIVE));
-        // tabConfiguration.setBorders(false);
-        // tabConfiguration.setLayout(new FitLayout());
-        // tabConfiguration.add(assetsConfiguration);
-        // tabConfiguration.addListener(Events.Select, new Listener<ComponentEvent>() {
-        //
-        // public void handleEvent(ComponentEvent be) {
-        // assetsConfiguration.refresh();
-        // }
-        // });
-        // tabsPanel.add(tabConfiguration);
 
         add(tabsPanel);
     }

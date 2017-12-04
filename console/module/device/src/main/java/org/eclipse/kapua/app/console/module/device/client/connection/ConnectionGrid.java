@@ -132,6 +132,7 @@ public class ConnectionGrid extends EntityGrid<GwtDeviceConnection> {
 
         column = new ColumnConfig("userName", 120);
         column.setHeader(MSGS.connectionTableUserName());
+        column.setSortable(false);
         column.setWidth(150);
         configs.add(column);
 
@@ -145,8 +146,14 @@ public class ConnectionGrid extends EntityGrid<GwtDeviceConnection> {
         column.setWidth(150);
         configs.add(column);
 
-        column = new ColumnConfig("reservedUserId", 120);
-        column.setHeader(MSGS.connectionTableReservedUserId());
+        column = new ColumnConfig("reservedUserName", 120);
+        column.setHeader(MSGS.connectionTableReservedUserName());
+        column.setWidth(150);
+        column.setSortable(false);
+        configs.add(column);
+
+        column = new ColumnConfig("clientIp", 120);
+        column.setHeader(MSGS.connectionTableClientIp());
         column.setWidth(150);
         configs.add(column);
 
@@ -156,12 +163,12 @@ public class ConnectionGrid extends EntityGrid<GwtDeviceConnection> {
     }
 
     @Override
-    protected GwtQuery getFilterQuery() {
+    public GwtQuery getFilterQuery() {
         return filterQuery;
     }
 
     @Override
-    protected void setFilterQuery(GwtQuery filterQuery) {
+    public void setFilterQuery(GwtQuery filterQuery) {
         this.filterQuery = (GwtDeviceConnectionQuery) filterQuery;
     }
 }

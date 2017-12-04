@@ -9,6 +9,7 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
+@default
 Feature: User Service
     User Service is responsible for CRUD operations on User objects in Kapua
     database.
@@ -43,7 +44,8 @@ Scenario: Create user with short name
         | integer | lockoutPolicy.maxFailures  | 3     |
         | integer | lockoutPolicy.resetAfter   | 300   |
         | integer | lockoutPolicy.lockDuration | 3     |
-    Given I have following user
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided"
+    And I have following user
         | name | displayName        | email              | phoneNumber     | status  |
         | u1   |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 | ENABLED |
     Then I get Kapua exception
@@ -59,7 +61,8 @@ Scenario: Create user that has more than DB allowed length
         | integer | lockoutPolicy.maxFailures  | 3     |
         | integer | lockoutPolicy.resetAfter   | 300   |
         | integer | lockoutPolicy.lockDuration | 3     |
-    Given I have following user
+    Given I expect the exception "KapuaException" with the text "*"
+    And I have following user
         | name | displayName        | email              | phoneNumber     | status  |
         | uuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaa  |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 | ENABLED |
     Then I get Kapua exception
@@ -76,7 +79,8 @@ Scenario: Create user with special characters in his name
         | integer | lockoutPolicy.maxFailures  | 3     |
         | integer | lockoutPolicy.resetAfter   | 300   |
         | integer | lockoutPolicy.lockDuration | 3     |
-    Given I have following user
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided"
+    And I have following user
         | name      | displayName        | email              | phoneNumber     | status  |
         | ###$$$%%% | Kapua User 1       | kapua_u1@kapua.com | +386 31 323 555 | ENABLED |
     Then I get Kapua exception
@@ -211,14 +215,16 @@ Scenario: Create user that already exist
         | integer | lockoutPolicy.lockDuration | 3     |
     Given User with name "kapua-user" in scope with id 42
     When I create user
-    And I create same user
+    And I expect the exception "KapuaException" with the text "Error during Persistence Operation"
+    When I create same user
     Then I get Kapua exception
 
 Scenario: Update user that doesn't exist
     Create user that is not persisted and than run update statement on that user.
     As user doesn't exist KapuaException should be thrown.
 
-    Given User that doesn't exist
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "*"
+    And User that doesn't exist
     When I update nonexistent user
     Then I get Kapua exception
 
@@ -226,7 +232,8 @@ Scenario: Delete user that doesn't exist
     Create user that is not persisted and than try to delete that user. As user
     doesn't exist KapuaException should be thrown.
 
-    Given User that doesn't exist
+    Given I expect the exception "KapuaEntityNotFoundException" with the text "The entity of type user with id/name"
+    And User that doesn't exist
     When I delete nonexistent user
     Then I get Kapua exception
 
@@ -249,6 +256,7 @@ Scenario: Delete Kapua system user
     for "kapua-sys" user and than delete it. KapuaException should be thrown.
 
     Given I search for user with name "kapua-sys"
+    And I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided"
     When I delete user
     Then I get Kapua exception
 

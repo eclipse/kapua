@@ -60,7 +60,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
     public DeviceTabPackages(GwtSession currentSession,
             DeviceView deviceTabs) {
-        super(MSGS.tabPackages(), new KapuaIcon(IconSet.INBOX));
+        super(currentSession, MSGS.tabPackages(), new KapuaIcon(IconSet.INBOX));
         this.deviceTabs = deviceTabs;
     }
 
@@ -69,7 +69,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
         super.setEntity(gwtDevice);
         setDirty();
 
-        setEnabled(gwtDevice != null &&
+        setEnabled(gwtDevice != null && currentSession.hasDeviceManageReadPermission() &&
                 (gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_DEPLOY_V1) ||
                         (gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_DEPLOY_V2))));
 
@@ -248,7 +248,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
     }
 
     private void openUninstallDialog() {
-        final GwtDeploymentPackage selectedDeploymentPackage = installedPackageTab.getSelectedDeploymentPackage();
+        GwtDeploymentPackage selectedDeploymentPackage = installedPackageTab.getSelectedDeploymentPackage();
 
         if (selectedDeploymentPackage != null) {
             toolBar.disable();

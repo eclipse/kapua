@@ -11,18 +11,23 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro.realm;
 
-import java.security.KeyPair;
-
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
-import org.eclipse.kapua.service.authentication.CertificateService;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
+import org.eclipse.kapua.service.certificate.Certificate;
+import org.eclipse.kapua.service.certificate.CertificateFactory;
+import org.eclipse.kapua.service.certificate.CertificatePredicates;
+import org.eclipse.kapua.service.certificate.CertificateQuery;
+import org.eclipse.kapua.service.certificate.CertificateService;
+import org.eclipse.kapua.service.certificate.util.CertificateUtils;
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
@@ -31,9 +36,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * {@link AccessTokenCredentials} credential matcher implementation
- * 
+ *
  * @since 1.0
- * 
  */
 public class AccessTokenCredentialsMatcher implements CredentialsMatcher {
 
@@ -58,12 +62,19 @@ public class AccessTokenCredentialsMatcher implements CredentialsMatcher {
             try {
                 String issuer = settings.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_SESSION_JWT_ISSUER);
                 KapuaLocator locator = KapuaLocator.getInstance();
+
                 CertificateService certificateService = locator.getService(CertificateService.class);
-                KeyPair keyPair = certificateService.getJwtKeyPair();
+                CertificateFactory certificateFactory = locator.getFactory(CertificateFactory.class);
+                CertificateQuery certificateQuery = certificateFactory.newQuery(null);
+                certificateQuery.setPredicate(new AttributePredicate<>(CertificatePredicates.USAGE_NAME, "JWT"));
+                certificateQuery.setLimit(1);
+
+                Certificate certificate = KapuaSecurityUtils.doPrivileged(() -> certificateService.query(certificateQuery)).getItem(0);
+
                 //
                 // Set validator
                 JwtConsumer jwtConsumer = new JwtConsumerBuilder()
-                        .setVerificationKey(keyPair.getPublic()) // Set public key
+                        .setVerificationKey(CertificateUtils.stringToCertificate(certificate.getCertificate()).getPublicKey()) // Set public key
                         .setExpectedIssuer(issuer) // Set expected issuer
                         .setRequireIssuedAt() // Set require reserved claim: iat
                         .setRequireExpirationTime() // Set require reserved claim: exp

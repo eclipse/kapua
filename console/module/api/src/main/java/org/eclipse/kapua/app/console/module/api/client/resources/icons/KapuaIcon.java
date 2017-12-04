@@ -24,8 +24,6 @@ public class KapuaIcon extends Text {
 
     private static Color defaultColor = Color.BLUE_KAPUA;
 
-    private static Color defaultColor = Color.BLUE_KAPUA;
-
     public KapuaIcon(IconSet icon) {
         super();
 

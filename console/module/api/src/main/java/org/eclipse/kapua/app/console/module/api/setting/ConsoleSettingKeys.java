@@ -18,7 +18,9 @@ public enum ConsoleSettingKeys implements SettingKey {
 
     LOGIN_BACKGROUND_CREDITS("console.login.background.credits"), //
     LOGIN_GENERIC_SNIPPET("console.login.generic.snippet"), //
-    LOGIN_PRODUCT_NAME("console.login.product.name"), //
+
+    PRODUCT_NAME("console.product.name"), //
+    PRODUCT_COPYRIGHT("console.product.copyright"),
 
     PRODUCT_NAME("console.product.name"), //
     PRODUCT_COPYRIGHT("console.product.copyright"),

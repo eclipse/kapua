@@ -11,16 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.server;
 
-import java.util.UUID;
-
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.eclipse.kapua.app.console.core.server.util.SsoHelper;
 import org.eclipse.kapua.app.console.core.server.util.SsoLocator;
-import org.eclipse.kapua.app.console.core.shared.model.GwtLoginInformation;
+import org.eclipse.kapua.app.console.core.shared.model.GwtProductInformation;
 import org.eclipse.kapua.app.console.core.shared.service.GwtSettingsService;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSettingKeys;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import java.util.UUID;
 
 /**
  * This is the security token service, a concrete implementation to fix the XSFR security problem.
@@ -31,11 +30,12 @@ public class GwtSettingsServiceImpl extends RemoteServiceServlet implements GwtS
     private static final ConsoleSetting SETTINGS = ConsoleSetting.getInstance();
 
     @Override
-    public GwtLoginInformation getLoginInformation() {
-        final GwtLoginInformation result = new GwtLoginInformation();
-        result.setBackgroundCredits(SETTINGS.getString(ConsoleSettingKeys.LOGIN_BACKGROUND_CREDITS));
-        result.setInformationSnippet(SETTINGS.getString(ConsoleSettingKeys.LOGIN_GENERIC_SNIPPET));
-        result.setProductName(SETTINGS.getString(ConsoleSettingKeys.LOGIN_PRODUCT_NAME));
+    public GwtProductInformation getProductInformation() {
+        GwtProductInformation result = new GwtProductInformation();
+        result.setBackgroundCredits(SETTINGS.getString(ConsoleSettingKeys.LOGIN_BACKGROUND_CREDITS, ""));
+        result.setInformationSnippet(SETTINGS.getString(ConsoleSettingKeys.LOGIN_GENERIC_SNIPPET, ""));
+        result.setProductName(SETTINGS.getString(ConsoleSettingKeys.PRODUCT_NAME, ""));
+        result.setCopyright(SETTINGS.getString(ConsoleSettingKeys.PRODUCT_COPYRIGHT, ""));
         return result;
     }
 

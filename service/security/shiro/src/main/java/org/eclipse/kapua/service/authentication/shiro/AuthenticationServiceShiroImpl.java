@@ -11,12 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro;
 
-import java.security.KeyPair;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.UUID;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -34,12 +28,12 @@ import org.apache.shiro.subject.Subject;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
-import org.eclipse.kapua.service.authentication.CertificateService;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.SessionCredentials;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
@@ -48,6 +42,12 @@ import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authentication.token.AccessTokenCreator;
 import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
 import org.eclipse.kapua.service.authentication.token.AccessTokenService;
+import org.eclipse.kapua.service.certificate.Certificate;
+import org.eclipse.kapua.service.certificate.CertificateFactory;
+import org.eclipse.kapua.service.certificate.CertificatePredicates;
+import org.eclipse.kapua.service.certificate.CertificateQuery;
+import org.eclipse.kapua.service.certificate.CertificateService;
+import org.eclipse.kapua.service.certificate.util.CertificateUtils;
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
@@ -57,11 +57,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.UUID;
+
 /**
  * Authentication service implementation.
- *
+ * <p>
  * since 1.0
- *
  */
 @KapuaProvider
 public class AuthenticationServiceShiroImpl implements AuthenticationService {
@@ -368,9 +372,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
      * Checks if the Shiro {@link Subject} is authenticated or not.
      * If {@link Subject#isAuthenticated()} {@code equals true}, {@link KapuaAuthenticationException} is raised.
      *
-     * @throws KapuaAuthenticationException
-     *             If {@link Subject#isAuthenticated()} {@code equals true}
-     *
+     * @throws KapuaAuthenticationException If {@link Subject#isAuthenticated()} {@code equals true}
      * @since 1.0
      */
     private void checkCurrentSubjectNotAuthenticated()
@@ -386,11 +388,9 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
     /**
      * Create and persist a {@link AccessToken} from the data contained in the Shiro {@link Session}
      *
-     * @param session
-     *            The Shiro {@link Session} from which extract data
+     * @param session The Shiro {@link Session} from which extract data
      * @return The persisted {@link AccessToken}
      * @throws KapuaException
-     *
      * @since 1.0
      */
     private AccessToken createAccessToken(Session session) throws KapuaException {
@@ -405,13 +405,10 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
     /**
      * Create and persist a {@link AccessToken} from a scopeId and a userId
      *
-     * @param scopeId
-     *            The scopeID
-     * @param userId
-     *            The userID
+     * @param scopeId The scopeID
+     * @param userId  The userID
      * @return The persisted {@link AccessToken}
      * @throws KapuaException
-     *
      * @since 1.0
      */
     private AccessToken createAccessToken(KapuaEid scopeId, KapuaEid userId) throws KapuaException {
@@ -480,12 +477,17 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             CertificateService certificateService = locator.getService(CertificateService.class);
-            KeyPair keyPair = certificateService.getJwtKeyPair();
+            CertificateFactory certificateFactory = locator.getFactory(CertificateFactory.class);
+            CertificateQuery certificateQuery = certificateFactory.newQuery(scopeId);
+            certificateQuery.setPredicate(new AttributePredicate<>(CertificatePredicates.USAGE_NAME, "JWT"));
+            certificateQuery.setLimit(1);
+
+            Certificate certificate = KapuaSecurityUtils.doPrivileged(() -> certificateService.query(certificateQuery)).getItem(0);
+
             JsonWebSignature jws = new JsonWebSignature();
             jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
             jws.setPayload(claims.toJson());
-            jws.setKey(keyPair.getPrivate());
-
+            jws.setKey(CertificateUtils.stringToPrivateKey(certificate.getPrivateKey()));
             jwt = jws.getCompactSerialization();
         } catch (JoseException | KapuaException e) {
             KapuaRuntimeException.internalError(e);

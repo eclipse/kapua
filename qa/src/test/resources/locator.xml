@@ -19,7 +19,6 @@
         <api>org.eclipse.kapua.service.user.UserService</api>
 
         <api>org.eclipse.kapua.service.authentication.AuthenticationService</api>
-        <api>org.eclipse.kapua.service.authentication.CertificateService</api>
         <api>org.eclipse.kapua.service.authentication.CredentialsFactory</api>
         <api>org.eclipse.kapua.service.authentication.credential.CredentialFactory</api>
         <api>org.eclipse.kapua.service.authentication.credential.CredentialService</api>
@@ -42,6 +41,9 @@
         <api>org.eclipse.kapua.service.authorization.role.RoleFactory</api>
         <api>org.eclipse.kapua.service.authorization.role.RolePermissionFactory</api>
         <api>org.eclipse.kapua.service.authorization.role.RolePermissionService</api>
+
+        <api>org.eclipse.kapua.service.certificate.CertificateService</api>
+        <api>org.eclipse.kapua.service.certificate.CertificateFactory</api>
 
         <!-- datastore -->
         <api>org.eclipse.kapua.service.datastore.MessageStoreService</api>

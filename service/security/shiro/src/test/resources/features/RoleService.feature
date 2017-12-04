@@ -9,6 +9,7 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
+@security
 Feature: Role Service CRUD tests
 
 Scenario: Regular role creation

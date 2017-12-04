@@ -284,7 +284,9 @@ public class AccountConfigComponents extends LayoutContainer {
 
                 final GwtConfigComponent componentToSwitchTo = (GwtConfigComponent) se.getModel();
                 if (devConfPanel != null && devConfPanel.isDirty()) {
-                    accountDetailsTabDescription.updateAccountInfo();
+                    if (accountDetailsTabDescription != null) {
+                        accountDetailsTabDescription.updateAccountInfo();
+                    }
                     // cancel the event first
                     be.setCancelled(true);
 

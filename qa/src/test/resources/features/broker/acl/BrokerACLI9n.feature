@@ -9,6 +9,7 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
+@brokerAcl
 Feature: Broker ACL tests
   These tests are validating correct access control rights of broker security.
   User with one or more profile connects to the broker and tries to issue actions such as
@@ -103,9 +104,10 @@ Feature: Broker ACL tests
     Given Mqtt Device is started
       And broker account and user are created
       And other broker account and user are created
+    Given I expect the exception "MqttException" with the text "*"
     When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "$EDC/domino/client-1/CONF-V1/REPLY"
-    Then exception is thrown
-      And clients are disconnected
+    Then An exception was thrown
+    And clients are disconnected
       And Mqtt Device is stoped
 
   Scenario: B5 Broker publish to CTRL_ACC is not allowed
@@ -136,8 +138,9 @@ Feature: Broker ACL tests
     Subscribe is not allowed.
     Given Mqtt Device is started
       And broker account and user are created
+    Given I expect the exception "MqttException" with the text "*"
     When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "$EDC/acme"
-    Then exception is thrown
+    Then An exception was thrown
       And clients are disconnected
       And Mqtt Device is stoped
 
@@ -181,8 +184,9 @@ Feature: Broker ACL tests
     Subscribe is not allowed.
     Given Mqtt Device is started
       And broker account and user are created
+    Given I expect the exception "MqttException" with the text "*"
     When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "acme"
-    Then exception is thrown
+    Then An exception was thrown
       And clients are disconnected
       And Mqtt Device is stoped
 
@@ -227,8 +231,9 @@ Feature: Broker ACL tests
     Subscribe is not allowed.
     Given Mqtt Device is started
       And broker account and user are created
+    Given I expect the exception "MqttException" with the text "*"
     When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "$EDC/acme/foo/bar/NOTIFY/client-1"
-    Then exception is thrown
+    Then An exception was thrown
       And clients are disconnected
       And Mqtt Device is stoped
 #
@@ -277,8 +282,9 @@ Feature: Broker ACL tests
     Given Mqtt Device is started
       And device account and user are created
       And other broker account and user are created
+    Given I expect the exception "MqttException" with the text "*"
     When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "$EDC/domino/client-1/CONF-V1/REPLY"
-    Then exception is thrown
+    Then An exception was thrown
       And clients are disconnected
       And Mqtt Device is stoped
 
@@ -334,8 +340,9 @@ Feature: Broker ACL tests
     Subscribe is not allowed.
     Given Mqtt Device is started
       And device account and user are created
+    Given I expect the exception "MqttException" with the text "*"
     When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "acme"
-    Then exception is thrown
+    Then An exception was thrown
       And clients are disconnected
       And Mqtt Device is stoped
 
@@ -380,10 +387,11 @@ Feature: Broker ACL tests
     Subscribe is not allowed.
     Given Mqtt Device is started
       And device account and user are created
+    Given I expect the exception "MqttException" with the text "*"
     When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "$EDC/acme/foo/bar/NOTIFY/client-1"
-    Then exception is thrown
-      And clients are disconnected
-      And Mqtt Device is stoped
+#    Then An exception was thrown
+#      And clients are disconnected
+#      And Mqtt Device is stoped
 #
 # Data view
 #
@@ -430,8 +438,9 @@ Feature: Broker ACL tests
     Given Mqtt Device is started
       And data view account and user are created
       And other broker account and user are created
+    Given I expect the exception "MqttException" with the text "*"
     When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "$EDC/domino/client-1/CONF-V1/REPLY"
-    Then exception is thrown
+    Then An exception was thrown
       And clients are disconnected
       And Mqtt Device is stoped
 
@@ -463,8 +472,9 @@ Feature: Broker ACL tests
     Subscribe is not allowed.
     Given Mqtt Device is started
       And data view account and user are created
+    Given I expect the exception "MqttException" with the text "*"
     When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "$EDC/acme"
-    Then exception is thrown
+    Then An exception was thrown
       And clients are disconnected
       And Mqtt Device is stoped
 
@@ -583,8 +593,9 @@ Feature: Broker ACL tests
     Subscribe is not allowed.
     Given Mqtt Device is started
       And data view account and user are created
+    Given I expect the exception "MqttException" with the text "*"
     When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "$EDC/acme/foo/bar/NOTIFY/client-1"
-    Then exception is thrown
+    Then An exception was thrown
       And clients are disconnected
       And Mqtt Device is stoped
 

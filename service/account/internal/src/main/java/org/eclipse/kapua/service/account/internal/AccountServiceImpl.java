@@ -16,7 +16,6 @@ import javax.inject.Inject;
 import javax.persistence.TypedQuery;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Properties;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
@@ -28,8 +27,6 @@ import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaProvider;
-import org.eclipse.kapua.model.config.metatype.KapuaTad;
-import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.account.Account;
@@ -104,19 +101,6 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             account.setParentAccountPath(parentAccountPath);
             return AccountDAO.update(em, account);
         });
-
-        KapuaTocd configMetadata = getConfigMetadata();
-        Properties properties = new Properties();
-        Account parentAccount = find(createdAccount.getScopeId());
-        String brokerUri = getConfigValues(parentAccount.getId()).get("deviceBrokerClusterUri").toString();
-        for (KapuaTad ad : configMetadata.getAD()) {
-            if (ad.getName().equals("deviceBrokerClusterUri")) {
-                properties.put("deviceBrokerClusterUri", brokerUri);
-            } else {
-                properties.put(ad.getId(), ad.getDefault());
-            }
-        }
-        KapuaSecurityUtils.doPrivileged(() -> setConfigValues(createdAccount.getId(), createdAccount.getScopeId(), toValues(configMetadata, properties)));
 
         return createdAccount;
     }

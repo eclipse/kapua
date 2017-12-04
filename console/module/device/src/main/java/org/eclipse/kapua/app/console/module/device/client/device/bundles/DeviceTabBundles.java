@@ -85,7 +85,7 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
     protected boolean refreshProcess;
 
     public DeviceTabBundles(GwtSession currentSession, DeviceView devicesView) {
-        super(DEVICE_MSGS.tabBundles(), new KapuaIcon(IconSet.CUBES));
+        super(currentSession, DEVICE_MSGS.tabBundles(), new KapuaIcon(IconSet.CUBES));
         this.devicesView = devicesView;
         initialized = false;
     }
@@ -94,7 +94,7 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
     public void setEntity(GwtDevice gwtDevice) {
         super.setEntity(gwtDevice);
 
-        setEnabled(gwtDevice != null &&
+        setEnabled(gwtDevice != null && currentSession.hasDeviceManageReadPermission() &&
                 (gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_DEPLOY_V1) ||
                         (gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_DEPLOY_V2))));
 
@@ -137,8 +137,7 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
 
                     if (selectedEntity.isOnline()) {
                         toolBar.disable();
-                        refresh();
-
+                        doRefresh();
                         refreshProcess = false;
                     } else {
                         MessageBox.alert(MSGS.dialogAlerts(), DEVICE_MSGS.deviceOffline(),
@@ -281,7 +280,7 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
         RpcProxy<ListLoadResult<GwtBundle>> proxy = new RpcProxy<ListLoadResult<GwtBundle>>() {
 
             @Override
-            protected void load(Object loadConfig, final AsyncCallback<ListLoadResult<GwtBundle>> callback) {
+            protected void load(Object loadConfig, AsyncCallback<ListLoadResult<GwtBundle>> callback) {
                 if (selectedEntity != null) {
                     if (selectedEntity.isOnline()) {
                         gwtDeviceManagementService.findBundles(selectedEntity, callback);

@@ -18,6 +18,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.EntityDescriptionTabItem;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceServiceAsync;
@@ -25,6 +26,10 @@ import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceServi
 public class DeviceTabProfile extends EntityDescriptionTabItem<GwtDevice> {
 
     private final GwtDeviceServiceAsync gwtDeviceService = GWT.create(GwtDeviceService.class);
+
+    public DeviceTabProfile(GwtSession currentSession) {
+        super(currentSession);
+    }
 
     @Override
     protected RpcProxy<ListLoadResult<GwtGroupedNVPair>> getDataProxy() {

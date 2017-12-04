@@ -111,7 +111,9 @@ import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -148,6 +150,12 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         }
     }
 
+    @BeforeClass
+    public static void startEmbeddedEngine() throws Exception {
+        esEmbeddedEngine = new EsEmbeddedEngine();
+        Thread.sleep(5000);
+    }
+
     /**
      * This method deletes all indices of the current ES instance
      * <p>
@@ -160,8 +168,16 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      */
     @Before
     public void deleteAllIndices() throws Exception {
-        esEmbeddedEngine = new EsEmbeddedEngine();
         DatastoreMediator.getInstance().deleteAllIndexes();
+    }
+
+    @AfterClass
+    public static void stopEsEmbeddedEngine() throws Exception {
+        if (esEmbeddedEngine != null) {
+            esEmbeddedEngine.close();
+            Thread.sleep(5000);
+            esEmbeddedEngine = null;
+        }
     }
 
     @Test

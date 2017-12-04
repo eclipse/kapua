@@ -11,17 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.api.client.ui.grid;
 
-import java.util.List;
-
-import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.module.api.client.ui.panel.ContentPanel;
-import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
-import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
-import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
-import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolBar;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
@@ -37,7 +26,17 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.ui.panel.ContentPanel;
+import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolBar;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
+
+import java.util.List;
 
 public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel {
 
@@ -54,6 +53,7 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
     protected ListStore<M> entityStore;
     protected PagingToolBar entityPagingToolbar;
     protected EntityFilterPanel<M> filterPanel;
+    protected boolean refreshOnRender = true;
 
     protected EntityGrid(AbstractEntityView<M> entityView, GwtSession currentSession) {
         super(new FitLayout());
@@ -140,7 +140,9 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
 
         //
         // Do first load
-        refresh();
+        if (refreshOnRender) {
+            refresh();
+        }
     }
 
     protected EntityCRUDToolbar<M> getToolbar() {
@@ -155,16 +157,17 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
 
     protected abstract List<ColumnConfig> getColumns();
 
+    public void clearGridElement() {
+        entityStore.removeAll();
+    }
+
     public void refresh() {
         entityLoader.load();
-        entityPagingToolbar.enable();
     }
 
     public void refresh(GwtQuery query) {
-        // m_filterPredicates = predicates;
         setFilterQuery(query);
         entityLoader.load();
-        entityPagingToolbar.enable();
     }
 
     public void setFilterPanel(EntityFilterPanel<M> filterPanel) {
@@ -176,6 +179,10 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
         if (parentEntityView != null) {
             parentEntityView.setSelectedEntity(selectedItem);
         }
+
+        if (entityCRUDToolbar != null) {
+            entityCRUDToolbar.setSelectedEntity(selectedItem);
+        }
     }
 
     public void setPagingToolbar(PagingToolBar entityPagingToolbar) {
@@ -186,7 +193,15 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
         return entityGrid.getSelectionModel();
     }
 
-    protected abstract GwtQuery getFilterQuery();
+    public boolean isRefreshOnRender() {
+        return refreshOnRender;
+    }
 
-    protected abstract void setFilterQuery(GwtQuery filterQuery);
+    public void setRefreshOnRender(boolean refreshOnRender) {
+        this.refreshOnRender = refreshOnRender;
+    }
+
+    public abstract GwtQuery getFilterQuery();
+
+    public abstract void setFilterQuery(GwtQuery filterQuery);
 }

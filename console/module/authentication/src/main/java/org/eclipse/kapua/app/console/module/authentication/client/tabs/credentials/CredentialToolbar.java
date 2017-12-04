@@ -11,11 +11,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authentication.client.tabs.credentials;
 
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
+import com.google.gwt.core.client.GWT;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 
 import com.google.gwt.user.client.Element;
+import org.eclipse.kapua.app.console.module.authentication.client.messages.ConsoleCredentialMessages;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredential;
 
 public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
@@ -23,17 +32,36 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
     private String selectedUserId;
     private String selectedUserName;
 
+    private final Button unlockButton;
+
+    private static final ConsoleCredentialMessages MSGS = GWT.create(ConsoleCredentialMessages.class);
+
     public CredentialToolbar(GwtSession currentSession) {
         super(currentSession);
+        unlockButton = new Button(MSGS.unlockButton(), new KapuaIcon(IconSet.UNLOCK), new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                GwtCredential selectedCredential = gridSelectionModel.getSelectedItem();
+                if (selectedUserId != null && selectedCredential != null) {
+                    showUnlockDialog(selectedCredential);
+                }
+            }
+        });
     }
 
     @Override
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
-        updateAddButtonEnabled();
+        add(new SeparatorToolItem());
+        if (currentSession.hasCredentialUpdatePermission()) {
+            add(unlockButton);
+        }
+        updateButtonsEnabled();
         getEditEntityButton().disable();
         getDeleteEntityButton().disable();
         getRefreshEntityButton().disable();
+        unlockButton.disable();
         if (getFilterButton() != null) {
             getFilterButton().hide();
         }
@@ -70,8 +98,8 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
 
     public void setSelectedUserId(String selectedUserId) {
         this.selectedUserId = selectedUserId;
-        if (this.isRendered()) {
-            updateAddButtonEnabled();
+        if (isRendered()) {
+            updateButtonsEnabled();
         }
     }
 
@@ -79,11 +107,20 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
         this.selectedUserName = selectedUserName;
     }
 
-    private void updateAddButtonEnabled() {
-        if (selectedUserId == null) {
-            getAddEntityButton().disable();
-        } else {
-            getAddEntityButton().enable();
-        }
+    private void updateButtonsEnabled() {
+        getAddEntityButton().setEnabled(selectedUserId != null);
+        //            unlockButton.setEnabled(selectedUserId != null);
     }
+
+    public Button getUnlockButton() {
+        return unlockButton;
+    }
+
+    private void showUnlockDialog(GwtCredential selectedCredential) {
+        CredentialUnlockDialog dialog = new CredentialUnlockDialog(selectedCredential);
+        thisToolbar.disable();
+        dialog.addListener(Events.Hide, getHideDialogListener());
+        dialog.show();
+    }
+
 }

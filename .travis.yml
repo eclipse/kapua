@@ -44,7 +44,39 @@ jobs:
         - $M2_HOME/bin/mvn -B javadoc:jar
     - stage: test
       script:
-        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Pdev verify
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcucumber.options="--tags @default" -Pdev verify
+        - bash <(curl -s https://codecov.io/bash)
+    - stage: test
+      script:
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcucumber.options="--tags @brokerAcl" verify
+        - bash <(curl -s https://codecov.io/bash)
+    - stage: test
+      script:
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcucumber.options="--tags @tag" verify
+        - bash <(curl -s https://codecov.io/bash)
+    - stage: test
+      script:
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcucumber.options="--tags @broker" verify
+        - bash <(curl -s https://codecov.io/bash)
+    - stage: test
+      script:
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcucumber.options="--tags @device" verify
+        - bash <(curl -s https://codecov.io/bash)
+    - stage: test
+      script:
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcucumber.options="--tags @connection" verify
+        - bash <(curl -s https://codecov.io/bash)
+    - stage: test
+      script:
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcucumber.options="--tags @datastore" verify
+        - bash <(curl -s https://codecov.io/bash)
+    - stage: test
+      script:
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcucumber.options="--tags @user" verify
+        - bash <(curl -s https://codecov.io/bash)
+    - stage: test
+      script:
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcucumber.options="--tags @security" verify
         - bash <(curl -s https://codecov.io/bash)
 
 # The following upgrades Java during the build in

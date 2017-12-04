@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,17 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.internal;
 
-import static org.eclipse.kapua.commons.model.query.predicate.AttributePredicate.attributeIsEqualTo;
-import static org.eclipse.kapua.commons.model.query.predicate.AttributePredicate.attributeIsNotEqualTo;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-
-import java.math.BigInteger;
-import java.security.acl.Permission;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import cucumber.api.Scenario;
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
+import cucumber.api.java.en.And;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
@@ -43,19 +40,22 @@ import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
 import org.eclipse.kapua.service.device.registry.RegistryJAXBContextProvider;
 import org.eclipse.kapua.service.device.registry.TestConfig;
+import org.eclipse.kapua.service.device.registry.shared.SharedTestSteps;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.test.MockedLocator;
 import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 import org.mockito.Mockito;
 
-import cucumber.api.Scenario;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.And;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
-import cucumber.runtime.java.guice.ScenarioScoped;
+import java.math.BigInteger;
+import java.security.acl.Permission;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.eclipse.kapua.commons.model.query.predicate.AttributePredicate.attributeIsEqualTo;
+import static org.eclipse.kapua.commons.model.query.predicate.AttributePredicate.attributeIsNotEqualTo;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
 
 /**
  * Implementation of Gherkin steps used in DeviceRegistry.feature scenarios.
@@ -87,6 +87,9 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
 
     KapuaId rootScopeId = new KapuaEid(BigInteger.ONE);
 
+    // Common test steps
+    SharedTestSteps sharedTests;
+
     // Currently executing scenario.
     Scenario scenario;
 
@@ -100,9 +103,6 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
 
     // The registry ID of a device
     KapuaId deviceId;
-
-    // Check if exception was fired in step.
-    boolean exceptionCaught;
 
     // A list result for device query operations
     DeviceListResult deviceList;
@@ -127,7 +127,6 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
     public void beforeScenario(Scenario scenario)
             throws Exception {
         this.scenario = scenario;
-        exceptionCaught = false;
 
         // Create User Service tables
         enableH2Connection();
@@ -171,6 +170,8 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
 
         // Setup JAXB context
         XmlUtil.setContextProvider(new RegistryJAXBContextProvider());
+
+        sharedTests = new SharedTestSteps();
     }
 
     @After
@@ -249,7 +250,7 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
 
     @When("^I configure$")
     public void setConfigurationValue(List<TestConfig> testConfigs)
-            throws KapuaException {
+            throws Exception {
         Map<String, Object> valueMap = new HashMap<>();
         KapuaEid scopeId = null;
         KapuaEid parentScopeId = null;
@@ -260,11 +261,10 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
             parentScopeId = new KapuaEid(BigInteger.valueOf(Long.valueOf(config.getParentScopeId())));
         }
         try {
-            exceptionCaught = false;
-            deviceRegistryService.setConfigValues(scopeId,
-                    parentScopeId, valueMap);
+            sharedTests.primeException();
+            deviceRegistryService.setConfigValues(scopeId, parentScopeId, valueMap);
         } catch (KapuaException ex) {
-            exceptionCaught = true;
+            sharedTests.verifyException(ex);
         }
     }
 
@@ -302,7 +302,7 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
 
         // Search for the known bios version string
         tmpQuery.setPredicate(attributeIsEqualTo("biosVersion", version));
-        deviceList = (DeviceListResult) deviceRegistryService.query(tmpQuery);
+        deviceList = deviceRegistryService.query(tmpQuery);
         assertNotNull(deviceList);
     }
 
@@ -313,7 +313,7 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
 
         // Search for the known bios version string
         tmpQuery.setPredicate(attributeIsNotEqualTo("biosVersion", version));
-        deviceList = (DeviceListResult) deviceRegistryService.query(tmpQuery);
+        deviceList = deviceRegistryService.query(tmpQuery);
         assertNotNull(deviceList);
     }
 
@@ -324,7 +324,7 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
 
         // Search for the known bios version string
         tmpQuery.setPredicate(attributeIsEqualTo("clientId", id));
-        deviceList = (DeviceListResult) deviceRegistryService.query(tmpQuery);
+        deviceList = deviceRegistryService.query(tmpQuery);
         assertNotNull(deviceList);
     }
 
@@ -373,13 +373,14 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
 
     @When("^I update a device with an invalid ID$")
     public void updateDeviceWithInvalidId()
-            throws KapuaException {
+            throws Exception {
+
         device.setId(new KapuaEid(IdGenerator.generate()));
         try {
-            exceptionCaught = false;
+            sharedTests.primeException();
             deviceRegistryService.update(device);
         } catch (KapuaEntityNotFoundException ex) {
-            exceptionCaught = true;
+            sharedTests.verifyException(ex);
         }
     }
 
@@ -393,15 +394,16 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
 
     @When("^I delete a device with random IDs$")
     public void deleteDeviceWithRandomIds()
-            throws KapuaException {
+            throws Exception {
+
         KapuaId rndScope = new KapuaEid(IdGenerator.generate());
         KapuaId rndDev = new KapuaEid(IdGenerator.generate());
 
         try {
-            exceptionCaught = false;
+            sharedTests.primeException();
             deviceRegistryService.delete(rndScope, rndDev);
         } catch (KapuaEntityNotFoundException ex) {
-            exceptionCaught = true;
+            sharedTests.verifyException(ex);
         }
     }
 
@@ -539,11 +541,6 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
         assertNull(device);
     }
 
-    @Then("^An exception is caught$")
-    public void checkThatAnExceptionWasCaught() {
-        assertTrue(exceptionCaught);
-    }
-
     @Then("^All device factory functions must return non null values$")
     public void exerciseAllDeviceFactoryFunctions() {
         Device tmpDevice = null;
@@ -568,7 +565,6 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
 
     // Create a device creator object. The creator is pre-filled with default data.
     private DeviceCreator prepareRegularDeviceCreator(KapuaId accountId, String client) {
-        // DeviceCreator tmpDeviceCreator = deviceFactory.newCreator(accountId, client);
         DeviceCreatorImpl tmpDeviceCreator = new DeviceCreatorImpl(accountId);
 
         tmpDeviceCreator.setClientId(client);

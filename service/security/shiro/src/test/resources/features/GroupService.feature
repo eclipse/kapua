@@ -9,6 +9,7 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
+@security
 Feature: Group Service CRUD tests
 
 Scenario: Count groups in a blank database

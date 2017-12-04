@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.module.job.client.schedule;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.form.TimeField;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -22,7 +23,6 @@ import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAd
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
-import org.eclipse.kapua.app.console.module.api.client.util.validator.BeforeDateValidator;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
 import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtTrigger;
@@ -32,6 +32,7 @@ import org.eclipse.kapua.app.console.module.job.shared.service.GwtTriggerService
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtTriggerServiceAsync;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class JobScheduleAddDialog extends EntityAddEditDialog {
@@ -44,7 +45,9 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
     private final String jobId;
     protected final TextField<String> triggerName;
     protected final DateField startsOn;
+    protected final TimeField startsOnTime;
     protected final DateField endsOn;
+    protected final TimeField endsOnTime;
     protected final NumberField retryInterval;
     protected final TextField<String> cronExpression;
 
@@ -54,7 +57,9 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
 
         triggerName = new TextField<String>();
         startsOn = new DateField();
+        startsOnTime = new TimeField();
         endsOn = new DateField();
+        endsOnTime = new TimeField();
         retryInterval = new NumberField();
         cronExpression = new TextField<String>();
 
@@ -75,11 +80,19 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         startsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         mainPanel.add(startsOn);
 
+        startsOnTime.setAllowBlank(false);
+        startsOnTime.setFieldLabel(JOB_MSGS.dialogAddScheduleStartsOnTimeLabel());
+        startsOnTime.setFormat(DateTimeFormat.getFormat("HH:mm"));
+        mainPanel.add(startsOnTime);
+
         endsOn.setFieldLabel(JOB_MSGS.dialogAddScheduleEndsOnLabel());
         endsOn.setFormatValue(true);
-        endsOn.setValidator(new BeforeDateValidator(startsOn));
         endsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         mainPanel.add(endsOn);
+
+        endsOnTime.setFieldLabel(JOB_MSGS.dialogAddScheduleEndsOnTimeLabel());
+        endsOnTime.setFormat(DateTimeFormat.getFormat("HH:mm"));
+        mainPanel.add(endsOnTime);
 
         retryInterval.setFieldLabel(JOB_MSGS.dialogAddScheduleRetryIntervalLabel());
         retryInterval.setAllowDecimals(false);
@@ -97,6 +110,25 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         if (triggerName.getValue() == null) {
             triggerName.markInvalid(VAL_MSGS.nameRequiredMsg());
             return;
+        }
+
+        if (endsOn.getValue() == null && endsOnTime.getValue() != null) {
+            endsOn.markInvalid(VAL_MSGS.endTimeWithoutEndDate());
+        }
+
+        if (endsOn.getValue() != null) {
+            if (endsOnTime.getValue() == null) {
+                endsOnTime.markInvalid(VAL_MSGS.endDateWithoutEndTime());
+                return;
+            } else {
+                if (endsOn.getValue().before(startsOn.getValue())) {
+                    endsOn.markInvalid(VAL_MSGS.endsOnDateEarlierThanStartsOn());
+                    return;
+                } else if (endsOn.getValue().equals(startsOn.getValue()) && endsOnTime.getValue().getDate().before(startsOnTime.getValue().getDate())) {
+                    endsOnTime.markInvalid(VAL_MSGS.endsOnTimeEarlierThanStartsOn());
+                    return;
+                }
+            }
         }
 
         if (cronExpression.getValue() == null && retryInterval.getValue() == null) {
@@ -134,8 +166,15 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         gwtTriggerCreator.setScopeId(currentSession.getSelectedAccountId());
 
         gwtTriggerCreator.setTriggerName(triggerName.getValue());
-        gwtTriggerCreator.setStartsOn(startsOn.getValue());
-        gwtTriggerCreator.setEndsOn(endsOn.getValue());
+        Date startsOnDate = startsOn.getValue();
+        startsOnDate.setTime(startsOnDate.getTime() + (3600 * 1000 * startsOnTime.getValue().getHour()) + 60 * 1000 * startsOnTime.getValue().getMinutes());
+        gwtTriggerCreator.setStartsOn(startsOnDate);
+        if (endsOn.getValue() != null && endsOnTime.getValue() != null) {
+            // According to validation, endsOn and endsOnTime should be both either null or having a value
+            Date endsOnDate = endsOn.getValue();
+            endsOnDate.setTime(endsOnDate.getTime() + (3600 * 1000 * endsOnTime.getValue().getHour()) + 60 * 1000 * endsOnTime.getValue().getMinutes());
+            gwtTriggerCreator.setEndsOn(endsOnDate);
+        }
         gwtTriggerCreator.setRetryInterval(retryInterval.getValue() != null ? retryInterval.getValue().longValue() : null);
         gwtTriggerCreator.setCronScheduling(cronExpression.getValue());
         List<GwtTriggerProperty> gwtTriggerPropertyList = new ArrayList<GwtTriggerProperty>();

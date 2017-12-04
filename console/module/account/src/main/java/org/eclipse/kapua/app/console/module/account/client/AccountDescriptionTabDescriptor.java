@@ -11,15 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.account.client;
 
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractEntityTabDescriptor;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 
 public class AccountDescriptionTabDescriptor extends AbstractEntityTabDescriptor<GwtAccount, AccountDescriptionTab, AccountView> {
 
     @Override
     public AccountDescriptionTab getTabViewInstance(AccountView view, GwtSession currentSession) {
-        return new AccountDescriptionTab();
+        return new AccountDescriptionTab(currentSession);
     }
 
     @Override

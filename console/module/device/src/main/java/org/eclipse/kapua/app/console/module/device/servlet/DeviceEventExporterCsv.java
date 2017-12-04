@@ -19,12 +19,14 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.model.query.KapuaListResult;
@@ -46,14 +48,20 @@ public class DeviceEventExporterCsv extends DeviceEventExporter {
     }
 
     @Override
-    public void init(String scopeId)
+    public void init(final String scopeId)
             throws ServletException, IOException {
         this.scopeId = scopeId;
 
-        AccountService accountService = KapuaLocator.getInstance().getService(AccountService.class);
+        final AccountService accountService = KapuaLocator.getInstance().getService(AccountService.class);
         Account account = null;
         try {
-            account = accountService.find(KapuaEid.parseCompactId(scopeId));
+            account = KapuaSecurityUtils.doPrivileged(new Callable<Account>() {
+
+                @Override
+                public Account call() throws Exception {
+                    return accountService.find(KapuaEid.parseCompactId(scopeId));
+                }
+            });
             accountName = account.getName();
         } catch (KapuaException e) {
             KapuaException.internalError(e);

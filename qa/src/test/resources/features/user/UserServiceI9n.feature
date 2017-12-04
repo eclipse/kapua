@@ -9,6 +9,7 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
+@user
 Feature: User Service Integration
   User Service integration scenarios
 
@@ -17,6 +18,10 @@ Feature: User Service Integration
   level higher than scope of B. Scope of A is parent of scope B. This allows user A to delete
   user B.
     When I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure account service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 50    |
     And I configure user service
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -31,7 +36,7 @@ Feature: User Service Integration
     And I configure account service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities |  5    |
+      | integer | maxNumberChildEntities | 5     |
     And I configure user service
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -90,10 +95,14 @@ Feature: User Service Integration
   level lower than scope of A. Scope of A is parent of scope B. Subordinate scope should not be
   allowed to delete user in parent scope, unless it has permissions in that scope.
     When I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure account service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 50    |
     And I configure user service
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | integer | maxNumberChildEntities     | 50    |
       | boolean | lockoutPolicy.enabled      | false |
       | integer | lockoutPolicy.maxFailures  | 3     |
       | integer | lockoutPolicy.resetAfter   | 300   |
@@ -104,7 +113,7 @@ Feature: User Service Integration
     And I configure account service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities |  5    |
+      | integer | maxNumberChildEntities | 10    |
     And I configure user service
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -124,9 +133,13 @@ Feature: User Service Integration
       | user   | read   |
       | user   | write  |
       | user   | delete |
-    And Account
+    Given Account
       | name      |
       | account-b |
+    And I configure account service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
     And I configure user service
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -139,8 +152,8 @@ Feature: User Service Integration
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-b | Kapua User B | kapua_b@kapua.com | +386 31 323 555 | ENABLED | INTERNAL |
     And Credentials
-      | name    | password          |
-      | kapua-b | ToManySecrets123# |
+      | name    | password          | enabled |
+      | kapua-b | ToManySecrets123# | true    |
     And Permissions
       | domain | action |
       | user   | read   |

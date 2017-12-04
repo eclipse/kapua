@@ -11,12 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.tag.client;
 
-
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
@@ -33,14 +33,20 @@ import java.util.List;
 
 public class TagGrid extends EntityGrid<GwtTag> {
 
-    private static final GwtTagServiceAsync GWT_TAG_SERVICE = GWT.create(GwtTagService.class);
     private static final ConsoleTagMessages MSGS = GWT.create(ConsoleTagMessages.class);
-    private GwtTagQuery query;
+
+    protected static final GwtTagServiceAsync GWT_TAG_SERVICE = GWT.create(GwtTagService.class);
+    protected GwtTagQuery query;
 
     protected TagGrid(AbstractEntityView<GwtTag> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
         query = new GwtTagQuery();
         query.setScopeId(currentSession.getSelectedAccountId());
+    }
+
+    @Override
+    protected void onRender(Element parent, int index) {
+        super.onRender(parent, index);
     }
 
     @Override
@@ -71,20 +77,20 @@ public class TagGrid extends EntityGrid<GwtTag> {
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("userName", MSGS.gridTagColumnHeaderCreatedBy(), 200);
+        columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
         return columnConfigs;
     }
 
     @Override
-    protected GwtQuery getFilterQuery() {
+    public GwtQuery getFilterQuery() {
         return query;
     }
 
     @Override
-    protected void setFilterQuery(GwtQuery filterQuery) {
+    public void setFilterQuery(GwtQuery filterQuery) {
         this.query = (GwtTagQuery) filterQuery;
-
     }
 
     @Override

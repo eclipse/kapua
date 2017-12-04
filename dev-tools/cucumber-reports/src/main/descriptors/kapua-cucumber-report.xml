@@ -50,6 +50,11 @@
         </fileSet>
 
         <fileSet>
+            <outputDirectory>job-service</outputDirectory>
+            <directory>../../service/job/internal/target/cucumber</directory>
+        </fileSet>
+
+        <fileSet>
             <outputDirectory>user-service-i9n</outputDirectory>
             <directory>../../qa/target/cucumber/UserServiceI9n</directory>
         </fileSet>

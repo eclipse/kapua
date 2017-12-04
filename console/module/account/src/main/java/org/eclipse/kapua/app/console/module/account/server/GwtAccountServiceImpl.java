@@ -24,8 +24,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.sanselan.ImageFormat;
@@ -49,7 +51,11 @@ import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountStrin
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.broker.core.BrokerDomain;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.SystemUtils;
+import org.eclipse.kapua.commons.util.ThrowingRunnable;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTicon;
@@ -71,6 +77,8 @@ import org.eclipse.kapua.service.authorization.role.RoleCreator;
 import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
+import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,6 +87,8 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
+
+import javax.xml.namespace.QName;
 
 /**
  * The server side implementation of the RPC service.
@@ -122,26 +132,38 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             gwtAccount = KapuaGwtAccountModelConverter.convertAccount(account);
 
             // Create roles
-            RoleService roleService = locator.getService(RoleService.class);
+            final RoleService roleService = locator.getService(RoleService.class);
             RoleFactory roleFactory = locator.getFactory(RoleFactory.class);
             PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
             Permission adminPermission = permissionFactory.newPermission(null, null, account.getId(), null, true);
-            RoleCreator adminRoleCreator = roleFactory.newCreator(account.getId());
+            final RoleCreator adminRoleCreator = roleFactory.newCreator(account.getId());
             Set<Permission> adminPermissions = new HashSet<Permission>();
             adminPermissions.add(adminPermission);
             adminRoleCreator.setName("admin");
             adminRoleCreator.setScopeId(account.getId());
             adminRoleCreator.setPermissions(adminPermissions);
-            roleService.create(adminRoleCreator);
+            KapuaSecurityUtils.doPrivileged(new ThrowingRunnable() {
 
-            RoleCreator thingRoleCreator = roleFactory.newCreator(account.getId());
+                @Override
+                public void run() throws Exception {
+                    roleService.create(adminRoleCreator);
+                }
+            });
+
+            final RoleCreator thingRoleCreator = roleFactory.newCreator(account.getId());
             Permission thingPermission = permissionFactory.newPermission(new BrokerDomain(), Actions.connect, account.getId(), null, false);
             Set<Permission> thingPermissions = new HashSet<Permission>();
             thingPermissions.add(thingPermission);
             thingRoleCreator.setName("thing");
             thingRoleCreator.setScopeId(account.getId());
             thingRoleCreator.setPermissions(thingPermissions);
-            roleService.create(thingRoleCreator);
+            KapuaSecurityUtils.doPrivileged(new ThrowingRunnable() {
+
+                @Override
+                public void run() throws Exception {
+                    roleService.create(thingRoleCreator);
+                }
+            });
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
@@ -166,24 +188,58 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
     }
 
     @Override
-    public ListLoadResult<GwtGroupedNVPair> getAccountInfo(String accountIdString)
+    public ListLoadResult<GwtGroupedNVPair> getAccountInfo(String scopeIdString, String accountIdString)
             throws GwtKapuaException {
+        final KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
         KapuaId accountId = KapuaEid.parseCompactId(accountIdString);
 
         KapuaLocator locator = KapuaLocator.getInstance();
-        AccountService accountService = locator.getService(AccountService.class);
+        final AccountService accountService = locator.getService(AccountService.class);
+        final UserService userService = locator.getService(UserService.class);
 
         List<GwtGroupedNVPair> accountPropertiesPairs = new ArrayList<GwtGroupedNVPair>();
         try {
-            Account account = accountService.find(accountId);
+            final Account account = accountService.find(scopeId, accountId);
+            final KapuaId rootAccountId = GwtKapuaCommonsModelConverter.convertKapuaId(findRootAccount().getId());
+            String brokerUri = KapuaSecurityUtils.doPrivileged(new Callable<String>() {
+
+                @Override
+                public String call() throws Exception {
+                    String brokerUriInternal;
+                    Object brokerUriObj = accountService.getConfigValues(rootAccountId).get("brokerUri");
+                    if (brokerUriObj == null) {
+                        brokerUriInternal = SystemUtils.getBrokerURI().toString();
+                    } else {
+                        brokerUriInternal = brokerUriObj.toString().isEmpty() ? SystemUtils.getBrokerURI().toString() : brokerUriObj.toString();
+                    }
+
+                    return brokerUriInternal;
+                }
+            });
+
+            User userCreatedBy = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
+
+                @Override
+                public User call() throws Exception {
+                    return userService.find(scopeId, account.getCreatedBy());
+                }
+            });
+
+            User userModifiedBy = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
+
+                @Override
+                public User call() throws Exception {
+                    return userService.find(scopeId, account.getModifiedBy());
+                }
+            });
 
             accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountName", account.getName()));
             accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountModifiedOn", account.getModifiedOn().toString()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountModifiedBy", account.getName()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountModifiedBy", userModifiedBy.getName()));
             accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountCreatedOn", account.getCreatedOn().toString()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountCreatedBy", account.getName()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountCreatedBy", userCreatedBy.getName()));
 
-            accountPropertiesPairs.add(new GwtGroupedNVPair("deploymentInfo", "deploymentBrokerURL", SystemUtils.getBrokerURI().toString()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair("deploymentInfo", "deploymentBrokerURL", brokerUri));
 
             accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationName", account.getOrganization().getName()));
             accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationPersonName", account.getOrganization().getPersonName()));
@@ -241,11 +297,12 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         checkXSRFToken(xsrfToken);
 
         GwtAccount gwtAccountUpdated = null;
-        KapuaId scopeId = KapuaEid.parseCompactId(gwtAccount.getId());
+        KapuaId scopeId = gwtAccount.getScopeId() != null ? KapuaEid.parseCompactId(gwtAccount.getScopeId()) : null;
+        KapuaId accountId = KapuaEid.parseCompactId(gwtAccount.getId());
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             AccountService accountService = locator.getService(AccountService.class);
-            Account account = accountService.find(scopeId);
+            Account account = scopeId != null ? accountService.find(scopeId, accountId) : accountService.find(accountId);
 
             account.getOrganization().setName(gwtAccount.getGwtOrganization().getName());
             account.getOrganization().setPersonName(gwtAccount.getGwtOrganization().getPersonName());
@@ -276,11 +333,12 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         // Checking validity of the given XSRF Token
         checkXSRFToken(xsrfToken);
 
-        KapuaId kapuaId = KapuaEid.parseCompactId(gwtAccount.getId());
+        KapuaId scopeId = gwtAccount.getScopeId() != null ? KapuaEid.parseCompactId(gwtAccount.getScopeId()) : null;
+        KapuaId accountId = KapuaEid.parseCompactId(gwtAccount.getId());
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             AccountService accountService = locator.getService(AccountService.class);
-            Account account = accountService.find(kapuaId);
+            Account account = accountService.find(scopeId, accountId);
 
             if (account != null) {
                 accountService.delete(account.getScopeId(), account.getId());
@@ -426,6 +484,12 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                                 }
                                 gwtParam.setMin(ad.getMin());
                                 gwtParam.setMax(ad.getMax());
+
+                                Map<String, String> gwtEntries = new HashMap<String, String>();
+                                for (Entry<QName, String> entry : ad.getOtherAttributes().entrySet()) {
+                                    gwtEntries.put(entry.getKey().toString(), entry.getValue());
+                                }
+                                gwtParam.setOtherAttributes(gwtEntries);
 
                                 if (!values.isEmpty()) {
                                     int cardinality = ad.getCardinality();
@@ -627,21 +691,35 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
 
         try {
             accounts = accountService.query(query);
-            if (accounts.getSize() >= loadConfig.getLimit()) {
+            if (!accounts.isEmpty()) {
                 totalLength = Long.valueOf(accountService.count(query)).intValue();
-            } else {
-                totalLength = accounts.getSize();
-            }
 
-            for (Account a : accounts.getItems()) {
-                gwtAccounts.add(KapuaGwtAccountModelConverter.convertAccount(a));
+                for (Account a : accounts.getItems()) {
+                    gwtAccounts.add(KapuaGwtAccountModelConverter.convertAccount(a));
+                }
             }
-
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
 
         return new BasePagingLoadResult<GwtAccount>(gwtAccounts, loadConfig.getOffset(), totalLength);
+    }
+
+    @Override
+    public GwtAccount findRootAccount() throws GwtKapuaException {
+        GwtAccount gwtAccount = null;
+        try {
+            gwtAccount = KapuaSecurityUtils.doPrivileged(new Callable<GwtAccount>() {
+
+                @Override
+                public GwtAccount call() throws Exception {
+                    return findByAccountName(SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_ACCOUNT));
+                }
+            });
+        } catch (Throwable t) {
+            KapuaExceptionHandler.handle(t);
+        }
+        return gwtAccount;
     }
 
 }

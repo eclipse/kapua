@@ -11,29 +11,38 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.api.client.ui.view;
 
-import java.util.List;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
-import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
-import org.eclipse.kapua.app.console.module.api.client.ui.panel.KapuaBorderLayoutData;
-import org.eclipse.kapua.app.console.module.api.client.ui.panel.KapuaTabPanel;
-import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.TabDescriptor;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
-
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
+import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
+import org.eclipse.kapua.app.console.module.api.client.ui.panel.KapuaBorderLayoutData;
+import org.eclipse.kapua.app.console.module.api.client.ui.panel.KapuaTabPanel;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.TabDescriptor;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleService;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleServiceAsync;
 
+import java.util.List;
+
 public abstract class AbstractEntityView<M extends GwtEntityModel> extends AbstractView implements EntityView<M> {
+
+    @Override
+    public void onUserChange() {
+        if (entityGrid != null) {
+            entityGrid.getFilterQuery().setScopeId(currentSession.getSelectedAccountId());
+            entityGrid.refresh();
+        }
+    }
 
     private EntityFilterPanel<M> filterPanel;
     private EntityGrid<M> entityGrid;
@@ -54,6 +63,7 @@ public abstract class AbstractEntityView<M extends GwtEntityModel> extends Abstr
         tabsPanel.setEntity(entity);
     }
 
+    @Override
     protected void onRender(final Element parent, int index) {
 
         super.onRender(parent, index);
@@ -65,7 +75,7 @@ public abstract class AbstractEntityView<M extends GwtEntityModel> extends Abstr
         mf.setBorders(false);
         mf.setLayout(new BorderLayout());
 
-        BorderLayoutData eastData = new BorderLayoutData(LayoutRegion.EAST, 220);
+        BorderLayoutData eastData = new BorderLayoutData(Style.LayoutRegion.EAST, 220);
         eastData.setMargins(new Margins(0, 0, 0, 0));
         eastData.setCollapsible(false);
         eastData.setSplit(false);
@@ -97,9 +107,8 @@ public abstract class AbstractEntityView<M extends GwtEntityModel> extends Abstr
         CONSOLE_SERVICE.getCustomTabsForView(getClass().getName(), new AsyncCallback<List<TabDescriptor>>() {
 
             @Override
-            public void onFailure(Throwable caught) {
-                // TODO Manage
-                System.out.println("Failure!");
+            public void onFailure(Throwable t) {
+                FailureHandler.handle(t);
             }
 
             @Override
@@ -126,6 +135,7 @@ public abstract class AbstractEntityView<M extends GwtEntityModel> extends Abstr
 
     public abstract EntityFilterPanel<M> getEntityFilterPanel(AbstractEntityView<M> entityView, GwtSession currentSession2);
 
+    @Override
     public void onUnload() {
         super.onUnload();
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -32,7 +32,6 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
-import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCreator;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
@@ -42,6 +41,7 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionServ
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionSummary;
 import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
+import org.eclipse.kapua.service.device.registry.shared.SharedTestSteps;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.test.MockedLocator;
 import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
@@ -82,6 +82,9 @@ public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
     // Currently executing scenario.
     Scenario scenario;
 
+    // Common test steps
+    SharedTestSteps sharedTests;
+
     // Various device connection related service references
     DeviceConnectionService deviceConnectionService;
     DeviceConnectionFactory deviceConnectionFactory;
@@ -92,21 +95,14 @@ public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
 
     // Device registry related objects
     DeviceConnectionCreator connectionCreator;
-    Device device;
 
     // The registry IDs
     KapuaId userId;
     KapuaId scopeId;
     KapuaId connectionId;
-    KapuaId deviceId;
 
     // Scratchpad data
     String stringVal = "";
-    int intVal;
-    boolean boolVal;
-
-    // Check if exception was fired in step.
-    boolean exceptionCaught;
 
     // *************************************
     // Definition of Cucumber scenario steps
@@ -118,7 +114,6 @@ public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
     public void beforeScenario(Scenario scenario)
             throws Exception {
         this.scenario = scenario;
-        exceptionCaught = false;
 
         // Create User Service tables
         enableH2Connection();
@@ -162,6 +157,8 @@ public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
         // Default the scope ID to the root ID and the user ID to the system user ID
         scopeId = rootScopeId;
         userId = rootUserId;
+
+        sharedTests = new SharedTestSteps();
     }
 
     @After
@@ -205,9 +202,9 @@ public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
 
     @Given("^I have the following connection(?:|s)$")
     public void createConnections(List<DeviceConnectionImpl> connections)
-            throws KapuaException {
+            throws Exception {
         try {
-            exceptionCaught = false;
+            sharedTests.primeException();
             for (DeviceConnection connItem : connections) {
                 connectionCreator = new DeviceConnectionCreatorImpl(scopeId);
                 connectionCreator.setUserId(userId);
@@ -221,18 +218,18 @@ public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
                 connectionId = connection.getId();
             }
         } catch (KapuaException ex) {
-            exceptionCaught = true;
+            sharedTests.verifyException(ex);
         }
     }
 
     @Given("^I modify the connection details to$")
     public void updateConnectionDetails(List<DeviceConnectionImpl> connections)
-            throws KapuaException {
+            throws Exception {
         // Only a single connection must be specified for this test!
         assertNotNull(connections);
         assertEquals(1, connections.size());
         try {
-            exceptionCaught = false;
+            sharedTests.primeException();
             // try to modify the existing connection
             // Slight workaround for cucumber limitations: Remember the desired
             // connection settings via the global connectionCreator variable
@@ -254,7 +251,7 @@ public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
             }
             connection = deviceConnectionService.update(connection);
         } catch (KapuaException ex) {
-            exceptionCaught = true;
+            sharedTests.verifyException(ex);
         }
     }
 
@@ -270,16 +267,16 @@ public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
 
     @When("^I try to modify the connection Id$")
     public void changeConnectionIdRandomly()
-            throws KapuaException {
+            throws Exception {
         // Try to update the connection ID
         KapuaId newId = new KapuaEid(IdGenerator.generate());
         connection.setId(newId);
         try {
-            exceptionCaught = false;
+            sharedTests.primeException();
             connection = deviceConnectionService.update(connection);
         } catch (KapuaException ex) {
             // Since the ID is not updatable there should be an exception
-            exceptionCaught = true;
+            sharedTests.verifyException(ex);
         }
     }
 
@@ -362,13 +359,15 @@ public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
     }
 
     @When("^I try to delete a random connection ID$")
-    public void deleteRandomConnection() {
+    public void deleteRandomConnection()
+            throws Exception {
+
         KapuaId tmpId = new KapuaEid(IdGenerator.generate());
         try {
-            exceptionCaught = false;
+            sharedTests.primeException();
             deviceConnectionService.delete(scopeId, tmpId);
         } catch (KapuaException ex) {
-            exceptionCaught = true;
+            sharedTests.verifyException(ex);
         }
     }
 
@@ -418,16 +417,6 @@ public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
     @Then("^No connection was found$")
     public void checkThatConnectionIsNull() {
         assertNull(connection);
-    }
-
-    @Then("^An exception was thrown$")
-    public void checkThatExceptionWasThrown() {
-        assertTrue(exceptionCaught);
-    }
-
-    @Then("^No exception was thrown$")
-    public void checkThatExceptionWasNotThrown() {
-        assertFalse(exceptionCaught);
     }
 
     @Then("^All connection factory functions must return non null values$")

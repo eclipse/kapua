@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+    Copyright (c) 2016, 2017 Eurotech and/or its affiliates and others
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -9,7 +9,6 @@
 
     Contributors:
         Eurotech - initial API and implementation
-        Red Hat Inc
  -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -18,7 +17,7 @@
 
     <groupId>org.eclipse.kapua</groupId>
     <artifactId>kapua</artifactId>
-    <version>0.3.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>kapua</name>
     <packaging>pom</packaging>
 
@@ -422,6 +421,9 @@
                 <configuration>
                     <!-- Travis has an overall 3GB limit -->
                     <argLine>@{argLine} -Xmx1024m</argLine>
+                    <systemPropertyVariables>
+                        <cucumber.options>${cucumber.options}</cucumber.options>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
             <plugin>
@@ -840,6 +842,11 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-qa-steps</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-qa</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -851,6 +858,16 @@
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-rest-api-resources</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-security-certificate-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-security-certificate-internal</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <!-- Console dependencies -->
@@ -1301,6 +1318,7 @@
         <module>broker-core</module>
         <module>test</module>
         <module>qa</module>
+        <module>qa-steps</module>
         <module>qa-openshift</module>
 
         <module>sso</module>
@@ -1524,7 +1542,6 @@
                 </pluginManagement>
             </build>
         </profile>
-
     </profiles>
 
     <licenses>

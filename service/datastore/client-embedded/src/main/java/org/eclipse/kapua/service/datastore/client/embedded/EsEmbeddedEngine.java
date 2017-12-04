@@ -41,15 +41,16 @@ public class EsEmbeddedEngine {
 
     private static final Logger logger = LoggerFactory.getLogger(EsEmbeddedEngine.class);
 
-    private static final String DEFAULT_DATA_DIRECTORY = "target/elasticsearch/data/" + UUIDs.randomBase64UUID();
+    private static String defaultDataDirectory;
     private static Node node;
 
     public EsEmbeddedEngine() {
         // lazy synchronization
         if (node == null) {
-            synchronized (DEFAULT_DATA_DIRECTORY) {
+            synchronized (EsEmbeddedEngine.this) {
+                defaultDataDirectory = "target/elasticsearch/data/" + UUIDs.randomBase64UUID();
                 if (node == null) {
-                    logger.info("Starting Elasticsearch embedded node... (data directory: '{}')", DEFAULT_DATA_DIRECTORY);
+                    logger.info("Starting Elasticsearch embedded node... (data directory: '{}')", defaultDataDirectory);
                     EmbeddedNodeSettings clientSettings = EmbeddedNodeSettings.getInstance();
                     String clusterName = clientSettings.getString(EmbeddedNodeSettingsKey.ELASTICSEARCH_CLUSTER);
                     logger.info("Cluster name [{}]", clusterName);
@@ -66,7 +67,7 @@ public class EsEmbeddedEngine {
                     // ES 5.3 FIX
                     // Builder elasticsearchSettings = Settings.settingsBuilder()
                     // .put("http.enabled", "false")
-                    // .put("path.data", DEFAULT_DATA_DIRECTORY)
+                    // .put("path.data", defaultDataDirectory)
                     // .put("path.home", ".");
                     Settings settings = Settings.builder()
                             .put("cluster.name", clusterName)
@@ -76,7 +77,7 @@ public class EsEmbeddedEngine {
                             .put("http.type", "netty4")
                             .put("http.host", restTcpHost)
                             .put("http.port", restTcpPort)
-                            .put("path.data", DEFAULT_DATA_DIRECTORY)
+                            .put("path.data", defaultDataDirectory)
                             .put("path.home", ".").build();
                     // ES 5.3 FIX
                     // node = NodeBuilder.nodeBuilder()
