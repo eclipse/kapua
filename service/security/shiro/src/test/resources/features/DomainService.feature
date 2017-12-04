@@ -15,7 +15,7 @@ Scenario: Count domains in a blank database
     The default domain table must contain 8 preset entries.
 
     When I count the domain entries in the database
-    Then I get 10 as result
+    Then I get 8 as result
 
 Scenario: Regular domain
     Create a regular domain entry. The newly created entry must match the
@@ -31,7 +31,8 @@ Scenario: Domain with null name
     It must not be possible to create a domain entry with a null name. In
     such case the domain service must throw an exception.
 
-    Given I create the domain
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
+    When I create the domain
     |serviceName    |actions   |
     |test_service_1 |read,write|
     Then An exception was thrown
@@ -40,7 +41,8 @@ Scenario: Domain with null service name
     It must not be possible to create a domain entry with a null service name. In
     such case the domain service must throw an exception.
 
-    Given I create the domain
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
+    When I create the domain
     |name        |actions   |
     |test_name_1 |read,write|
     Then An exception was thrown
@@ -49,7 +51,8 @@ Scenario: Domain with null actions
     It must not be possible to create a domain entry with a null set of supported actions. In
     such case the domain service must throw an exception.
 
-    Given I create the domain
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
+    When I create the domain
     |name        |serviceName    |
     |test_name_1 |test_service_1 |
     Then An exception was thrown
@@ -63,6 +66,7 @@ Scenario: Domains with duplicate names
     |test_name_1 |test_service_1 |read,write|
     Then A domain was created
     And The domain matches the creator
+    Given I expect the exception "KapuaException" with the text "Error during Persistence Operation"
     When I create the domain
     |name        |serviceName    |actions   |
     |test_name_1 |test_service_1 |read,write|
@@ -108,10 +112,11 @@ Scenario: Delete the last created domain entry
     And I search for the last created domain
     Then There is no domain
 
-  Scenario: Delete an inexistent domain
+Scenario: Delete a nonexistent domain
     If the requested ID is not found in the database, the delete function must throw
     an exception.
 
+    Given I expect the exception "KapuaEntityNotFoundException" with the text "The entity of type domain"
     When I try to delete domain with a random ID
     Then An exception was thrown
 

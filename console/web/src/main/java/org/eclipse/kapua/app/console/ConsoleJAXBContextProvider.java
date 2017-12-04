@@ -37,9 +37,6 @@ import org.eclipse.kapua.service.device.management.command.DeviceCommandOutput;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
-import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
-import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallRequest;
-import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
 
@@ -62,20 +59,12 @@ public class ConsoleJAXBContextProvider implements JAXBContextProvider {
                         KuraBundles.class,
                         KuraBundleInfo.class,
 
-                        DeviceAssets.class,
-
                         DeviceBundle.class,
                         DeviceBundles.class,
-
                         DeviceCommandInput.class,
                         DeviceCommandOutput.class,
-
                         DeviceConfiguration.class,
                         DeviceComponentConfiguration.class,
-
-                        DevicePackageDownloadRequest.class,
-                        DevicePackageInstallRequest.class,
-                        DevicePackageUninstallRequest.class,
                         DevicePackages.class,
 
                         KuraSnapshotIds.class,

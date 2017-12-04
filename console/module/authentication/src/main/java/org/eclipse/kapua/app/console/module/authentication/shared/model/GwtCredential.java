@@ -12,7 +12,6 @@
 package org.eclipse.kapua.app.console.module.authentication.shared.model;
 
 import java.util.Date;
-
 import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtUpdatableEntityModel;
 
@@ -33,12 +32,6 @@ public class GwtCredential extends GwtUpdatableEntityModel {
             return (X) GwtCredentialStatus.valueOf(getCredentialStatus());
         } else if ("expirationDateFormatted".equals(property)) {
             return (X) (DateUtils.formatDateTime(getExpirationDate()));
-        } else if ("firstLoginFailureFormatted".equals(property)) {
-            return (X) (DateUtils.formatDateTime(getFirstLoginFailure()));
-        } else if ("loginFailuresResetFormatted".equals(property)) {
-            return (X) (DateUtils.formatDateTime(getLoginFailuresReset()));
-        } else if ("lockoutResetFormatted".equals(property)) {
-            return (X) (DateUtils.formatDateTime(getLockoutReset()));
         } else {
             return super.get(property);
         }
@@ -122,49 +115,5 @@ public class GwtCredential extends GwtUpdatableEntityModel {
 
     public void setExpirationDate(Date expirationDate) {
         set("expirationDate", expirationDate);
-    }
-
-    public String getFirstLoginFailureFormatted() {
-        return get("firstLoginFailureFormatted");
-    }
-
-    public Integer getLoginFailures() {
-        return get("loginFailures");
-    }
-
-    public void setLoginFailures(Integer loginFailures) {
-        set("loginFailures", loginFailures);
-    }
-
-    public Date getFirstLoginFailure() {
-        return get("firstLoginFailure");
-    }
-
-    public void setFirstLoginFailure(Date firstLoginFailure) {
-        set("firstLoginFailure", firstLoginFailure);
-    }
-
-    public String getLoginFailuresResetFormatted() {
-        return get("loginFailuresResetFormatted");
-    }
-
-    public Date getLoginFailuresReset() {
-        return get("loginFailuresReset");
-    }
-
-    public void setLoginFailuresReset(Date loginFailuresReset) {
-        set("loginFailuresReset", loginFailuresReset);
-    }
-
-    public String getLockoutResetFormatted() {
-        return get("lockoutResetFormatted");
-    }
-
-    public Date getLockoutReset() {
-        return get("lockoutReset");
-    }
-
-    public void setLockoutReset(Date lockoutReset) {
-        set("lockoutReset", lockoutReset);
     }
 }

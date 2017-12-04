@@ -41,8 +41,7 @@
       "org.eclipse.kapua.app.console.module.device.client.device.configuration.DeviceTabConfigurationDescriptor",
       "org.eclipse.kapua.app.console.module.device.client.device.history.DeviceTabHistoryDescriptor",
       "org.eclipse.kapua.app.console.module.device.client.device.packages.DeviceTabPackagesDescriptor",
-      "org.eclipse.kapua.app.console.module.device.client.device.profile.DeviceTabProfileDescriptor",
-      "org.eclipse.kapua.app.console.module.device.client.device.tag.DeviceTabTagsDescriptor"
+      "org.eclipse.kapua.app.console.module.device.client.device.profile.DeviceTabProfileDescriptor"
     ]
   },
   {

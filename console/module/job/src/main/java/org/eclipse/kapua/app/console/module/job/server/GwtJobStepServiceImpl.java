@@ -62,13 +62,16 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
             // If there are results
             if (!jobStepList.isEmpty()) {
                 // count
-                totalLength = Long.valueOf(jobStepService.count(jobStepQuery)).intValue();
+                if (jobStepList.getSize() >= loadConfig.getLimit()) {
+                    totalLength = Long.valueOf(jobStepService.count(jobStepQuery)).intValue();
+                } else {
+                    totalLength = jobStepList.getSize();
+                }
 
                 // Converto to GWT entity
                 for (JobStep js : jobStepList.getItems()) {
                     GwtJobStep gwtJobStep = KapuaGwtJobModelConverter.convertJobStep(js);
-                    JobStepDefinition jobStepDefinition = jobStepDefinitionService
-                            .find(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobStep.getScopeId()), GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobStep.getJobStepDefinitionId()));
+                    JobStepDefinition jobStepDefinition = jobStepDefinitionService.find(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobStep.getScopeId()), GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobStep.getJobStepDefinitionId()));
                     gwtJobStep.setJobStepDefinitionName(jobStepDefinition.getName());
                     gwtJobStepList.add(gwtJobStep);
                 }

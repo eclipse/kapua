@@ -22,7 +22,7 @@
     <include relativeToChangelogFile="true" file="../common-properties.xml"/>
 
     <changeSet id="changelog-job-domain-0.3.0" author="eurotech">
-
+        
         <preConditions onFail="CONTINUE">
             <and>
                 <tableExists tableName="athz_domain"/>
@@ -50,6 +50,7 @@
             <column name="domain_id" valueComputed="${selectJobDomainQuery}"/>
             <column name="action" value="delete"/>
         </insert>
+
     </changeSet>
 
 </databaseChangeLog>

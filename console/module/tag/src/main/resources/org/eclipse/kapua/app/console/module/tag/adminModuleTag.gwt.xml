@@ -16,6 +16,7 @@
 <module rename-to="adminModuleTag">
 
     <inherits name="org.eclipse.kapua.app.console.module.api.adminModuleApi"/>
+    <inherits name="org.eclipse.kapua.app.console.module.device.adminModuleDevice"/>
 
     <!-- Specify the paths for translatable code                        -->
     <source path='shared'/>

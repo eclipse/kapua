@@ -80,6 +80,7 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
 
     // Test data scratchpads
     private CommonTestData commonData;
+    private CommonTestSteps commonSteps;
     private AccessInfoServiceTestData accessData;
 
     // Various Access service related service references
@@ -98,7 +99,6 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
     private RoleFactory roleFactory;
 
     // Currently executing scenario.
-    @SuppressWarnings("unused")
     private Scenario scenario;
 
     @Inject
@@ -136,6 +136,7 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
         // Clean up the test data scratchpads
         accessData.clearData();
         commonData.clearData();
+        commonData.scenario = this.scenario;
     }
 
     // *************************************
@@ -228,7 +229,7 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
 
     @Given("^The role \"(.*)\"$")
     public void provideRoleForDomain(String name)
-            throws KapuaException {
+            throws Exception {
 
         assertNotNull(commonData.scopeId);
         assertNotNull(accessData.permissions);
@@ -244,13 +245,13 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
         accessData.roleCreator.setPermissions(accessData.permissions);
 
         try {
-            commonData.exceptionCaught = false;
+            commonData.primeException();
             KapuaSecurityUtils.doPrivileged(() -> {
                 accessData.role = roleService.create(accessData.roleCreator);
                 return null;
             });
         } catch (KapuaException e) {
-            commonData.exceptionCaught = true;
+            commonData.verifyException(e);
             return;
         }
         assertNotNull(accessData.role);
@@ -277,7 +278,7 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
 
     @When("^I create the access role$")
     public void createAccessRole()
-            throws KapuaException {
+            throws Exception {
 
         assertNotNull(commonData.scopeId);
         assertNotNull(accessData.accessInfo);
@@ -292,18 +293,19 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
         tmpCreator.setRoleId(accessData.role.getId());
 
         try {
-            commonData.exceptionCaught = false;
+            commonData.primeException();
             KapuaSecurityUtils.doPrivileged(() -> {
                 accessData.accessRole = accessRoleService.create(tmpCreator);
                 return null;
             });
         } catch (KapuaException e) {
-            commonData.exceptionCaught = true;
+            commonData.verifyException(e);
         }
     }
 
     @When("^I create the access info entity$")
-    public void createAccessInfoEntity() {
+    public void createAccessInfoEntity()
+            throws Exception {
 
         assertNotNull(commonData.scopeId);
         assertNotNull(accessData.user);
@@ -326,13 +328,13 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
         }
 
         try {
+            commonData.primeException();
             KapuaSecurityUtils.doPrivileged(() -> {
-                commonData.exceptionCaught = false;
                 accessData.accessInfo = accessInfoService.create(accessData.accessInfoCreator);
                 return null;
             });
         } catch (KapuaException ex) {
-            commonData.exceptionCaught = true;
+            commonData.verifyException(ex);
         }
     }
 
@@ -419,37 +421,37 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
 
     @When("^I delete the last created access role entry$")
     public void deleteLastCreatedAccessRoleEntry()
-            throws KapuaException {
+            throws Exception {
         assertNotNull(commonData.scopeId);
         assertNotNull(accessData.accessRole);
         assertNotNull(accessData.accessRole.getId());
 
         try {
-            commonData.exceptionCaught = false;
+            commonData.primeException();
             KapuaSecurityUtils.doPrivileged(() -> {
                 accessRoleService.delete(commonData.scopeId, accessData.accessRole.getId());
                 return null;
             });
         } catch (KapuaException e) {
-            commonData.exceptionCaught = true;
+            commonData.verifyException(e);
         }
     }
 
     @When("^I delete the existing access info entity$")
     public void deleteLastCreatedAccessInfoEntity()
-            throws KapuaException {
+            throws Exception {
         assertNotNull(commonData.scopeId);
         assertNotNull(accessData.accessInfo);
         assertNotNull(accessData.accessInfo.getId());
 
         try {
-            commonData.exceptionCaught = false;
+            commonData.primeException();
             KapuaSecurityUtils.doPrivileged(() -> {
                 accessInfoService.delete(commonData.scopeId, accessData.accessInfo.getId());
                 return null;
             });
         } catch (KapuaException ex) {
-            commonData.exceptionCaught = true;
+            commonData.verifyException(ex);
         }
     }
 
@@ -489,7 +491,7 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
 
     @When("^I create the permission(?:|s)$")
     public void createPermissionEntries()
-            throws KapuaException {
+            throws Exception {
         assertNotNull(commonData.scopeId);
         assertNotNull(accessData.accessInfo);
         assertNotNull(accessData.accessInfo.getId());
@@ -500,7 +502,7 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
         accessData.accessPermissionCreator.setAccessInfoId(accessData.accessInfo.getId());
 
         try {
-            commonData.exceptionCaught = false;
+            commonData.primeException();
             for (Permission tmpPerm : accessData.permissions) {
                 accessData.accessPermissionCreator.setPermission(tmpPerm);
                 KapuaSecurityUtils.doPrivileged(() -> {
@@ -509,7 +511,7 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
                 });
             }
         } catch (KapuaException ex) {
-            commonData.exceptionCaught = true;
+            commonData.verifyException(ex);
         }
     }
 
@@ -525,19 +527,19 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
 
     @When("^I delete the last created access permission$")
     public void deleteLastCreatedPermission()
-            throws KapuaException {
+            throws Exception {
 
         assertNotNull(commonData.scopeId);
         assertNotNull(accessData.accessPermission);
 
         try {
-            commonData.exceptionCaught = false;
+            commonData.primeException();
             KapuaSecurityUtils.doPrivileged(() -> {
                 accessPermissionService.delete(commonData.scopeId, accessData.accessPermission.getId());
                 return null;
             });
         } catch (KapuaException ex) {
-            commonData.exceptionCaught = true;
+            commonData.verifyException(ex);
         }
     }
 
@@ -556,9 +558,11 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
     }
 
     @When("^I check the sanity of the access info factory$")
-    public void accessInfoServiceSanityCheck() {
+    public void accessInfoServiceSanityCheck()
+            throws Exception {
+
         try {
-            commonData.exceptionCaught = false;
+            commonData.primeException();
 
             assertNotNull(accessInfoFactory.newCreator(generateId()));
             assertNotNull(accessInfoFactory.newEntity(null));
@@ -583,7 +587,7 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
             tmpAccInfo2.setUserId(null);
             assertNull(tmpAccInfo2.getUserId());
         } catch (KapuaException ex) {
-            commonData.exceptionCaught = true;
+            commonData.verifyException(ex);
         }
     }
 
@@ -621,9 +625,12 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
     }
 
     @When("^I check the sanity of the access role factory$")
-    public void accessRoleFactorySanityCheck() {
+    public void accessRoleFactorySanityCheck()
+            throws Exception {
+
         try {
-            commonData.exceptionCaught = false;
+            commonData.primeException();
+
             assertNotNull(accessRoleFactory.newCreator(generateId()));
             assertNotNull(accessRoleFactory.newEntity(generateId()));
             assertNotNull(accessRoleFactory.newQuery(generateId()));
@@ -650,7 +657,7 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
             tmpRole.setRoleId(null);
             assertNull(tmpRole.getRoleId());
         } catch (KapuaException ex) {
-            commonData.exceptionCaught = true;
+            commonData.verifyException(ex);
         }
     }
 

@@ -15,7 +15,7 @@ import java.util.UUID;
 
 import org.eclipse.kapua.app.console.core.server.util.SsoHelper;
 import org.eclipse.kapua.app.console.core.server.util.SsoLocator;
-import org.eclipse.kapua.app.console.core.shared.model.GwtProductInformation;
+import org.eclipse.kapua.app.console.core.shared.model.GwtLoginInformation;
 import org.eclipse.kapua.app.console.core.shared.service.GwtSettingsService;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSettingKeys;
@@ -31,12 +31,11 @@ public class GwtSettingsServiceImpl extends RemoteServiceServlet implements GwtS
     private static final ConsoleSetting SETTINGS = ConsoleSetting.getInstance();
 
     @Override
-    public GwtProductInformation getProductInformation() {
-        final GwtProductInformation result = new GwtProductInformation();
+    public GwtLoginInformation getLoginInformation() {
+        final GwtLoginInformation result = new GwtLoginInformation();
         result.setBackgroundCredits(SETTINGS.getString(ConsoleSettingKeys.LOGIN_BACKGROUND_CREDITS));
         result.setInformationSnippet(SETTINGS.getString(ConsoleSettingKeys.LOGIN_GENERIC_SNIPPET));
-        result.setProductName(SETTINGS.getString(ConsoleSettingKeys.PRODUCT_NAME));
-        result.setCopyright(SETTINGS.getString(ConsoleSettingKeys.PRODUCT_COPYRIGHT));
+        result.setProductName(SETTINGS.getString(ConsoleSettingKeys.LOGIN_PRODUCT_NAME));
         return result;
     }
 

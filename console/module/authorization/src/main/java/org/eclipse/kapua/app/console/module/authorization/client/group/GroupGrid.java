@@ -70,19 +70,18 @@ public class GroupGrid extends EntityGrid<GwtGroup> {
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("userName", MSGS.gridGroupColumnHeaderCreatedBy(), 200);
-        columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
         return columnConfigs;
     }
 
     @Override
-    public GwtQuery getFilterQuery() {
+    protected GwtQuery getFilterQuery() {
         return query;
     }
 
     @Override
-    public void setFilterQuery(GwtQuery filterQuery) {
+    protected void setFilterQuery(GwtQuery filterQuery) {
         this.query = (GwtGroupQuery) filterQuery;
 
     }

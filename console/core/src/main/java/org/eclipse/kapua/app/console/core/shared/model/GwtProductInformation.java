@@ -13,7 +13,7 @@ package org.eclipse.kapua.app.console.core.shared.model;
 
 import java.io.Serializable;
 
-public class GwtProductInformation implements Serializable {
+public class GwtLoginInformation implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -22,8 +22,6 @@ public class GwtProductInformation implements Serializable {
     private String informationSnippet;
 
     private String productName;
-
-    private String copyright;
 
     public String getBackgroundCredits() {
         return backgroundCredits;
@@ -47,13 +45,5 @@ public class GwtProductInformation implements Serializable {
 
     public void setProductName(String productName) {
         this.productName = productName;
-    }
-
-    public String getCopyright() {
-        return copyright;
-    }
-
-    public void setCopyright(String copyright) {
-        this.copyright = copyright;
     }
 }

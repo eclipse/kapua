@@ -25,4 +25,7 @@
 
     <!-- ignore backport of SLF4J logging from EclipseLink -->
     <suppress checks=".*" files="org.eclipse.persistence.logging.slf4j.*" />
+
+    <!-- ignore console-v2 folder -->
+    <suppress checks=".*" files="console-v2[\\\/]?.*" />
 </suppressions>

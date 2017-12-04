@@ -87,15 +87,12 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("domain", ROLE_MSGS.gridRolePermissionColumnHeaderDomain(), 100);
-        columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("action", ROLE_MSGS.gridRolePermissionColumnHeaderAction(), 100);
-        columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("groupId", ROLE_MSGS.gridRolePermissionColumnHeaderTargetGroup(), 100);
-        columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("forwardable", ROLE_MSGS.gridRolePermissionColumnHeaderForwardable(), 200);
@@ -106,11 +103,9 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
                 return model.getForwardable() ? COMMONS_MSGS.yes() : COMMONS_MSGS.no();
             }
         });
-        columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("userName", ROLE_MSGS.gridRolePermissionColumnHeaderCreatedBy(), 100);
-        columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("createdOnFormatted", ROLE_MSGS.gridRolePermissionColumnHeaderCreatedOn(), 100);
@@ -129,7 +124,6 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
     @Override
     protected void selectionChangedEvent(GwtRolePermission selectedItem) {
         super.selectionChangedEvent(selectedItem);
-        rolePermissionToolBar.getAddEntityButton().setEnabled(currentSession.hasDomainReadPermission());
         if (selectedItem == null) {
             rolePermissionToolBar.getDeleteEntityButton().disable();
         } else {
@@ -142,12 +136,12 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
     }
 
     @Override
-    public GwtQuery getFilterQuery() {
+    protected GwtQuery getFilterQuery() {
         return filterQuery;
     }
 
     @Override
-    public void setFilterQuery(GwtQuery query) {
+    protected void setFilterQuery(GwtQuery query) {
         this.filterQuery = query;
     }
 

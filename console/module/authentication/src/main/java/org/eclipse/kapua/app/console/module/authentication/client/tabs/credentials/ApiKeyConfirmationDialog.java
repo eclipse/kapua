@@ -36,7 +36,7 @@ public class ApiKeyConfirmationDialog extends KapuaDialog {
         super.onRender(parent, pos);
         setButtons(Dialog.OK);
         setHideOnButtonClick(true);
-        setSize(350, 175);
+        setSize(350, 250);
         setScrollMode(Scroll.AUTO);
     }
 

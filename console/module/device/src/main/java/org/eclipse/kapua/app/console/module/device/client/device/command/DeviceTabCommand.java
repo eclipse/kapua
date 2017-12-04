@@ -89,7 +89,7 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
     protected boolean resetProcess;
 
     public DeviceTabCommand(GwtSession currentSession) {
-        super(currentSession, DEVICE_MSGS.tabCommand(), new KapuaIcon(IconSet.TERMINAL));
+        super(DEVICE_MSGS.tabCommand(), new KapuaIcon(IconSet.TERMINAL));
         initialized = false;
     }
 
@@ -97,7 +97,7 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
     public void setEntity(GwtDevice gwtDevice) {
         super.setEntity(gwtDevice);
 
-        setEnabled(gwtDevice != null && currentSession.hasDeviceManageExecutePermission() && gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_COMMAND));
+        setEnabled(gwtDevice != null && gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_COMMAND));
 
         doRefresh();
     }

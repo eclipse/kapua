@@ -39,7 +39,7 @@ public class DeviceTabConfiguration extends KapuaTabItem<GwtDevice> {
     private DeviceConfigSnapshots configSnapshots;
 
     public DeviceTabConfiguration(GwtSession currentSession) {
-        super(currentSession, MSGS.tabConfiguration(), new KapuaIcon(IconSet.WRENCH));
+        super(MSGS.tabConfiguration(), new KapuaIcon(IconSet.WRENCH));
         configComponents = new DeviceConfigComponents(currentSession, this);
         configSnapshots = new DeviceConfigSnapshots(currentSession, this);
     }
@@ -48,7 +48,7 @@ public class DeviceTabConfiguration extends KapuaTabItem<GwtDevice> {
     public void setEntity(GwtDevice gwtDevice) {
         super.setEntity(gwtDevice);
 
-        setEnabled(gwtDevice != null && currentSession.hasDeviceManageReadPermission() && gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_CONFIGURATION));
+        setEnabled(gwtDevice != null && gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_CONFIGURATION));
 
         configComponents.setDevice(gwtDevice);
         configSnapshots.setDevice(gwtDevice);

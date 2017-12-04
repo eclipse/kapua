@@ -43,7 +43,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
     private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
 
-    protected JobServiceImpl() {
+    public JobServiceImpl() {
         super(JobService.class.getName(), JOB_DOMAIN, JobEntityManagerFactory.getInstance(), JobService.class, JobFactory.class);
     }
 

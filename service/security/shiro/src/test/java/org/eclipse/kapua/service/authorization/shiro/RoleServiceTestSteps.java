@@ -90,7 +90,6 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
     public void beforeScenario(Scenario scenario)
             throws Exception {
         this.scenario = scenario;
-        commonData.exceptionCaught = false;
 
         // Instantiate all the services and factories that are required by the tests
         roleService = new RoleServiceImpl();
@@ -106,6 +105,7 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
 
         // Clean up the test data scratchpads
         commonData.clearData();
+        commonData.scenario = this.scenario;
         roleData.clearData();
     }
 
@@ -114,7 +114,7 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
     // *************************************
     @When("^I configure role$")
     public void setConfigurationValue(List<TestConfig> testConfigs)
-            throws KapuaException {
+            throws Exception {
 
         KapuaSecurityUtils.doPrivileged(() -> {
             Map<String, Object> valueMap = new HashMap<>();
@@ -127,10 +127,10 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
                 parentScopeId = new KapuaEid(BigInteger.valueOf(Long.valueOf(config.getParentScopeId())));
             }
             try {
-                commonData.exceptionCaught = false;
+                commonData.primeException();
                 roleService.setConfigValues(scopeId, parentScopeId, valueMap);
             } catch (KapuaException ex) {
-                commonData.exceptionCaught = true;
+                commonData.verifyException(ex);
             }
 
             return null;
@@ -139,9 +139,10 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
 
     @Given("^I create the following role(?:|s)$")
     public void createAListOfRoles(List<CucRole> roles)
-            throws KapuaException {
+            throws Exception {
+
+        commonData.primeException();
         for (CucRole tmpRole : roles) {
-            commonData.exceptionCaught = false;
             tmpRole.doParse();
             roleData.permissions = new HashSet<>();
             if ((tmpRole.getActions() != null) && (tmpRole.getActions().size() > 0)) {
@@ -156,7 +157,7 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
                 try {
                     roleData.role = roleService.create(roleCreator);
                 } catch (KapuaException ex) {
-                    commonData.exceptionCaught = true;
+                    commonData.verifyException(ex);
                 }
                 return null;
             });
@@ -169,7 +170,7 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
 
     @Given("^I create the following role permission(?:|s)$")
     public void createAListOfRolePermissions(List<CucRolePermission> perms)
-            throws KapuaException {
+            throws Exception {
 
         assertNotNull(roleData.role);
         assertNotNull(roleData.role.getId());
@@ -179,6 +180,7 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
         TestDomain tmpDom = new TestDomain();
         tmpDom.setName("test_domain");
 
+        commonData.primeException();
         for (CucRolePermission tmpCPerm : perms) {
             tmpCPerm.doParse();
             assertNotNull(tmpCPerm.getScopeId());
@@ -192,10 +194,9 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
 
             KapuaSecurityUtils.doPrivileged(() -> {
                 try {
-                    commonData.exceptionCaught = false;
                     roleData.rolePermission = rolePermissionService.create(rolePermissionCreator);
                 } catch (KapuaException ex) {
-                    commonData.exceptionCaught = true;
+                    commonData.verifyException(ex);
                     return null;
                 }
                 return null;
@@ -210,10 +211,10 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
         Thread.sleep(100);
         KapuaSecurityUtils.doPrivileged(() -> {
             try {
-                commonData.exceptionCaught = false;
+                commonData.primeException();
                 roleService.update(roleData.role);
             } catch (KapuaException ex) {
-                commonData.exceptionCaught = true;
+                commonData.verifyException(ex);
             }
             return null;
         });
@@ -261,13 +262,13 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
 
     @When("^I delete the last created role$")
     public void deleteLastCreatedRole()
-            throws KapuaException {
+            throws Exception {
         KapuaSecurityUtils.doPrivileged(() -> {
             try {
-                commonData.exceptionCaught = false;
+                commonData.primeException();
                 roleService.delete(roleData.role.getScopeId(), roleData.role.getId());
             } catch (KapuaException ex) {
-                commonData.exceptionCaught = true;
+                commonData.verifyException(ex);
             }
             return null;
         });
@@ -275,14 +276,14 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
 
     @When("^I delete the last created role permission$")
     public void deleteLastCreatedRolePermission()
-            throws KapuaException {
+            throws Exception {
         KapuaSecurityUtils.doPrivileged(() -> {
             try {
-                commonData.exceptionCaught = false;
+                commonData.primeException();
                 rolePermissionService.delete(
                         roleData.rolePermission.getScopeId(), roleData.rolePermission.getId());
             } catch (KapuaException ex) {
-                commonData.exceptionCaught = true;
+                commonData.verifyException(ex);
             }
             return null;
         });

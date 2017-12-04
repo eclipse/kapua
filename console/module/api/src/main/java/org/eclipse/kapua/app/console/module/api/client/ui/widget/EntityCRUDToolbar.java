@@ -11,19 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.api.client.ui.widget;
 
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.button.ToggleButton;
-import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
-import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.AddButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.DeleteButton;
@@ -37,6 +24,20 @@ import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.button.ToggleButton;
+import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
+import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Element;
+
 public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
 
     private final static ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
@@ -44,6 +45,7 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
     protected GwtSession currentSession;
 
     protected EntityGrid<M> entityGrid;
+
     protected GridSelectionModel<M> gridSelectionModel;
 
     protected ToolBar thisToolbar = this;
@@ -64,8 +66,6 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
     private boolean filterButtonShow = true;
 
     protected EntityFilterPanel<M> filterPanel;
-
-    protected M selectedEntity;
 
     public EntityCRUDToolbar(GwtSession currentSession) {
         this.currentSession = currentSession;
@@ -118,8 +118,6 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
             filterButton.toggle(true);
             add(filterButton);
         }
-
-        updateButtonEnablement();
     }
 
     //
@@ -132,6 +130,7 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
             public void componentSelected(ButtonEvent ce) {
                 KapuaDialog dialog = getAddDialog();
                 if (dialog != null) {
+                    thisToolbar.disable();
                     dialog.addListener(Events.Hide, getHideDialogListener());
                     dialog.show();
                 }
@@ -157,6 +156,7 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
             public void componentSelected(ButtonEvent ce) {
                 KapuaDialog dialog = getEditDialog();
                 if (dialog != null) {
+                    thisToolbar.disable();
                     dialog.addListener(Events.Hide, getHideDialogListener());
                     dialog.show();
                 }
@@ -186,6 +186,7 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
             public void componentSelected(ButtonEvent ce) {
                 KapuaDialog dialog = getDeleteDialog();
                 if (dialog != null) {
+                    thisToolbar.disable();
                     dialog.addListener(Events.Hide, getHideDialogListener());
                     dialog.show();
                 }
@@ -209,7 +210,9 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
+                thisToolbar.disable();
                 entityGrid.refresh();
+                thisToolbar.enable();
             }
         };
     }
@@ -220,12 +223,11 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
 
     //
     // Other methods
-    //
-    protected Listener<? extends BaseEvent> getHideDialogListener() {
+    private Listener<? extends BaseEvent> getHideDialogListener() {
         return new Listener<ComponentEvent>() {
 
-            @Override
             public void handleEvent(ComponentEvent be) {
+
                 //
                 // Show exit popup
                 ActionDialog dialog = be.getComponent();
@@ -238,6 +240,7 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
                 }
 
                 entityGrid.refresh();
+                thisToolbar.enable();
             }
         };
     }
@@ -247,27 +250,43 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
         this.gridSelectionModel = entityGrid.getSelectionModel();
     }
 
-    public void setSelectedEntity(M selectedEntity) {
-        this.selectedEntity = selectedEntity;
+    protected void disableButtons() {
+        if (addEntityButton != null) {
+            addEntityButton.disable();
+        }
 
-        updateButtonEnablement();
+        if (editEntityButton != null) {
+            editEntityButton.disable();
+        }
+
+        if (deleteEntityButton != null) {
+            deleteEntityButton.disable();
+        }
+
+        if (refreshEntityButton != null) {
+            refreshEntityButton.disable();
+        }
     }
 
-    protected void updateButtonEnablement() {
-        if (addEntityButtonShow) {
-            addEntityButton.setEnabled(true);
+    protected void enableButtons() {
+        if (addEntityButton != null) {
+            addEntityButton.enable();
         }
 
-        if (editEntityButtonShow) {
-            editEntityButton.setEnabled(selectedEntity != null);
+        if (editEntityButton != null) {
+            editEntityButton.enable();
         }
 
-        if (deleteEntityButtonShow) {
-            deleteEntityButton.setEnabled(selectedEntity != null);
+        if (deleteEntityButton != null) {
+            deleteEntityButton.enable();
         }
 
-        if (refreshEntityButtonShow) {
-            refreshEntityButton.setEnabled(true);
+        if (refreshEntityButton != null) {
+            refreshEntityButton.enable();
+        }
+
+        if (filterButton != null) {
+            filterButton.enable();
         }
     }
 

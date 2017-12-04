@@ -91,7 +91,7 @@ public class UserFilterPanel extends EntityFilterPanel<GwtUser> {
     @Override
     public void resetFields() {
         nameField.setValue(null);
-        statusCombo.setSimpleValue(GwtUser.GwtUserStatus.ANY);
+        statusCombo.setValue(null);
         GwtUserQuery query = new GwtUserQuery();
         query.setScopeId(currentSession.getSelectedAccountId());
         entityGrid.refresh(query);

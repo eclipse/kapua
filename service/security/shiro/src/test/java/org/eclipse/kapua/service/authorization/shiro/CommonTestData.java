@@ -13,25 +13,53 @@ package org.eclipse.kapua.service.authorization.shiro;
 
 import javax.inject.Singleton;
 
+import cucumber.api.Scenario;
 import org.eclipse.kapua.model.id.KapuaId;
 
 @Singleton
 public class CommonTestData {
 
-    /**
-     * A flag to mark that an exception was thrown in the preceding steps.
-     */
+    public Scenario scenario;
+
+    // Scratchpad data related to exception checking
+    public boolean exceptionExpected;
+    public String exceptionName;
+    public String exceptionMessage;
     public boolean exceptionCaught;
+
     public long count;
     public int intValue;
     public String stringValue;
     public KapuaId scopeId;
 
     public void clearData() {
+        exceptionExpected = false;
+        exceptionName = "";
+        exceptionMessage = "";
         exceptionCaught = false;
         count = 0;
         intValue = 0;
         stringValue = "";
         scopeId = null;
+    }
+
+    public void primeException() {
+        exceptionCaught = false;
+    }
+
+    // Check the exception that was caught. In case the exception was expected the type and message is shown in the cucumber logs.
+    // Otherwise the exception is rethrown failing the test and dumping the stack trace to help resolving problems.
+    public void verifyException(Exception ex)
+            throws Exception {
+
+        if (!exceptionExpected ||
+                (!exceptionName.isEmpty() && !ex.getClass().toGenericString().contains(exceptionName)) ||
+                (!exceptionMessage.isEmpty() && !exceptionMessage.trim().contentEquals("*") && !ex.getMessage().contains(exceptionMessage))) {
+            scenario.write("An unexpected exception was raised!");
+            throw(ex);
+        }
+
+        scenario.write("Exception raised as expected: " + ex.getClass().getCanonicalName() + ", " + ex.getMessage());
+        exceptionCaught = true;
     }
 }

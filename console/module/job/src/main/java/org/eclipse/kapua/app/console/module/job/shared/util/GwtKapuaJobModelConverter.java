@@ -13,7 +13,6 @@ package org.eclipse.kapua.app.console.module.job.shared.util;
 
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtExecutionQuery;
 import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJob;
@@ -34,7 +33,6 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.JobFactory;
-import org.eclipse.kapua.service.job.JobPredicates;
 import org.eclipse.kapua.service.job.JobQuery;
 import org.eclipse.kapua.service.job.execution.JobExecutionFactory;
 import org.eclipse.kapua.service.job.execution.JobExecutionPredicates;
@@ -110,13 +108,6 @@ public class GwtKapuaJobModelConverter {
         JobQuery jobQuery = jobFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobQuery.getScopeId()));
         jobQuery.setLimit(loadConfig.getLimit());
         jobQuery.setOffset(loadConfig.getOffset());
-        String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? JobPredicates.NAME : loadConfig.getSortField();
-        if (sortField.equals("jobName")) {
-            sortField = JobPredicates.NAME;
-        }
-        SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
-        FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
-        jobQuery.setSortCriteria(sortCriteria);
         return jobQuery;
     }
 
@@ -132,10 +123,6 @@ public class GwtKapuaJobModelConverter {
         if (loadConfig != null) {
             jobTargetQuery.setLimit(loadConfig.getLimit());
             jobTargetQuery.setOffset(loadConfig.getOffset());
-            String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? JobTargetPredicates.ENTITY_ID : loadConfig.getSortField();
-            SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
-            FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
-            jobTargetQuery.setSortCriteria(sortCriteria);
         }
         return jobTargetQuery;
     }
@@ -163,10 +150,6 @@ public class GwtKapuaJobModelConverter {
             jobStepQuery.setSortCriteria(criteria);
         }
         jobStepQuery.setPredicate(andPredicate);
-        String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? JobStepPredicates.STEP_INDEX : loadConfig.getSortField();
-        SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
-        FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
-        jobStepQuery.setSortCriteria(sortCriteria);
         jobStepQuery.setLimit(loadConfig.getLimit());
         jobStepQuery.setOffset(loadConfig.getOffset());
         return jobStepQuery;
@@ -216,10 +199,6 @@ public class GwtKapuaJobModelConverter {
         AttributePredicate<String> kapuaPropertyValueAttributePredicate = new AttributePredicate<String>(TriggerPredicates.TRIGGER_PROPERTIES_VALUE, gwtTriggerQuery.getJobId());
         AttributePredicate<String> kapuaPropertyTypeAttributePredicate = new AttributePredicate<String>(TriggerPredicates.TRIGGER_PROPERTIES_TYPE, KapuaId.class.getName());
         AndPredicate andPredicate = new AndPredicate().and(kapuaPropertyNameAttributePredicate).and(kapuaPropertyValueAttributePredicate).and(kapuaPropertyTypeAttributePredicate);
-        String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? TriggerPredicates.ENTITY_ID : loadConfig.getSortField();
-        SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
-        FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
-        triggerQuery.setSortCriteria(sortCriteria);
         triggerQuery.setPredicate(andPredicate);
         triggerQuery.setLimit(loadConfig.getLimit());
         triggerQuery.setOffset(loadConfig.getOffset());
@@ -245,8 +224,6 @@ public class GwtKapuaJobModelConverter {
         if (pagingLoadConfig.getSortField() != null) {
             query.setSortCriteria(new FieldSortCriteria(pagingLoadConfig.getSortField(), pagingLoadConfig.getSortDir() == SortDir.ASC ? SortOrder.ASCENDING : SortOrder.DESCENDING));
         }
-        query.setLimit(pagingLoadConfig.getLimit());
-        query.setOffset(pagingLoadConfig.getOffset());
         return query;
     }
 
