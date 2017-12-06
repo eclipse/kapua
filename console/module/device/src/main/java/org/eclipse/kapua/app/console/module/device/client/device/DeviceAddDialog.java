@@ -292,7 +292,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
             @Override
             public void onSuccess(GwtDevice gwtDevice) {
                 exitStatus = true;
-                exitMessage = DEVICE_MSGS.deviceUpdateSuccess();
+                exitMessage = DEVICE_MSGS.deviceCreationSuccess();
                 hide();
             }
         });
