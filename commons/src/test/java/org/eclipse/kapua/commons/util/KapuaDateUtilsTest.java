@@ -13,12 +13,18 @@
 package org.eclipse.kapua.commons.util;
 
 import java.lang.reflect.Constructor;
+import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 public class KapuaDateUtilsTest extends Assert {
+
+    private static final SimpleDateFormat SDF = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
     @Test
     public void testConstructor() throws Exception {
@@ -89,6 +95,77 @@ public class KapuaDateUtilsTest extends Assert {
             KapuaDateUtils.formatDate(permittedDate);
         } catch (Exception ex) {
             fail("No exception expected for: " + permittedDate);
+        }
+    }
+
+    @Test
+    public void testFirstWeekOfYearWithISO8601() throws Exception{
+
+        Object[][] dates = {
+                {"01/01/2000 13:12", 52},
+                {"01/01/2001 13:12", 1},
+                {"01/01/2002 13:12", 1},
+                {"01/01/2003 13:12", 1},
+                {"01/01/2004 13:12", 1},
+                {"01/01/2005 13:12", 53},
+                {"01/01/2006 13:12", 52},
+                {"01/01/2007 13:12", 1},
+                {"01/01/2008 13:12", 1},
+                {"01/01/2009 13:12", 1},
+                {"01/01/2010 13:12", 53},
+                {"01/01/2011 13:12", 52},
+                {"01/01/2012 13:12", 52},
+                {"01/01/2013 13:12", 1},
+                {"01/01/2014 13:12", 1},
+                {"01/01/2015 13:12", 1},
+                {"01/01/2016 13:12", 53},
+                {"01/01/2017 13:12", 52},
+                {"01/01/2018 13:12", 1},
+                {"01/01/2019 13:12", 1},
+                {"01/01/2020 13:12", 1},
+                {"01/01/2021 13:12", 53},
+                {"01/01/2022 13:12", 52},
+                {"01/01/2023 13:12", 52},
+                {"01/01/2024 13:12", 1},
+                {"01/01/2025 13:12", 1},
+                {"01/01/2026 13:12", 1},
+        };
+
+        for (Object[] dateX: dates) {
+            String dateStr = (String)dateX[0];
+            Integer expectWeekNum = (Integer)dateX[1];
+
+            Date date = SDF.parse(dateStr);
+            Calendar calDate = Calendar.getInstance(TimeZone.getTimeZone(KapuaDateUtils.getTimeZone()), KapuaDateUtils.getLocale());
+            calDate.setFirstDayOfWeek(translateDayOfWeek(KapuaDateUtils.getFirstDayOfTheWeek()));
+            calDate.setMinimalDaysInFirstWeek(KapuaDateUtils.getMinimalDaysInFirstWeek());
+            calDate.setTimeInMillis(date.getTime());
+
+            int weekOfYear = calDate.get(Calendar.WEEK_OF_YEAR);
+
+            assertEquals("For date " + dateStr, expectWeekNum, Integer.valueOf(weekOfYear));
+        }
+
+    }
+
+    private int translateDayOfWeek(DayOfWeek dayOfWeek) {
+        switch (dayOfWeek) {
+        case MONDAY:
+            return Calendar.MONDAY;
+        case TUESDAY:
+            return Calendar.TUESDAY;
+        case WEDNESDAY:
+            return Calendar.WEDNESDAY;
+        case THURSDAY:
+            return Calendar.THURSDAY;
+        case FRIDAY:
+            return Calendar.FRIDAY;
+        case SATURDAY:
+            return Calendar.SATURDAY;
+        case SUNDAY:
+            return Calendar.SUNDAY;
+        default:
+            return -1;
         }
     }
 }
