@@ -13,9 +13,9 @@ package org.eclipse.kapua.service.authorization;
 
 import javax.inject.Inject;
 
-import org.eclipse.kapua.commons.event.module.ServiceEventListenerConfiguration;
-import org.eclipse.kapua.commons.event.module.ServiceEventModule;
-import org.eclipse.kapua.commons.event.module.ServiceEventModuleConfiguration;
+import org.eclipse.kapua.commons.event.ServiceEventListenerConfiguration;
+import org.eclipse.kapua.commons.event.ServiceEventModule;
+import org.eclipse.kapua.commons.event.ServiceEventModuleConfiguration;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.domain.DomainService;

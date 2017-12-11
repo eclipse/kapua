@@ -12,12 +12,12 @@
 package org.eclipse.kapua.service.device.registry;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.event.ServiceEventBusListener;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
-import org.eclipse.kapua.service.event.ServiceEventBusListener;
 
 /**
  * Device registry service definition.

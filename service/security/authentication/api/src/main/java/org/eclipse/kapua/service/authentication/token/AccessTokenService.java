@@ -14,9 +14,9 @@ package org.eclipse.kapua.service.authentication.token;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaEntityService;
+import org.eclipse.kapua.service.KapuaEventListenerService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
-import org.eclipse.kapua.service.event.ServiceEventBusListener;
 
 /**
  * Access token service API
@@ -24,7 +24,7 @@ import org.eclipse.kapua.service.event.ServiceEventBusListener;
  * @since 1.0
  *
  */
-public interface AccessTokenService extends KapuaEntityService<AccessToken, AccessTokenCreator>, KapuaUpdatableEntityService<AccessToken>, ServiceEventBusListener {
+public interface AccessTokenService extends KapuaEntityService<AccessToken, AccessTokenCreator>, KapuaUpdatableEntityService<AccessToken>, KapuaEventListenerService {
 
     /**
      * Find all access token associated with the given userId.

@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -24,7 +25,6 @@ import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
-import org.eclipse.kapua.service.event.ServiceEvent;
 
 @KapuaProvider
 public class DeviceRegistryServiceMock implements DeviceRegistryService {

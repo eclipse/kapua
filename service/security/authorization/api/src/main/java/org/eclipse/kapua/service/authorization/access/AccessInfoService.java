@@ -15,7 +15,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
-import org.eclipse.kapua.service.event.ServiceEventBusListener;
+import org.eclipse.kapua.service.KapuaEventListenerService;
 import org.eclipse.kapua.service.user.User;
 
 /**
@@ -23,7 +23,7 @@ import org.eclipse.kapua.service.user.User;
  * 
  * @since 1.0.0
  */
-public interface AccessInfoService extends KapuaEntityService<AccessInfo, AccessInfoCreator>, ServiceEventBusListener {
+public interface AccessInfoService extends KapuaEntityService<AccessInfo, AccessInfoCreator>, KapuaEventListenerService {
 
     /**
      * Creates a new {@link AccessInfo} entity.<br>

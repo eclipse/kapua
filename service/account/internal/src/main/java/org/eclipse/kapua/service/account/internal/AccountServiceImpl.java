@@ -26,6 +26,9 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
+import org.eclipse.kapua.event.ServiceEventBusListener;
+import org.eclipse.kapua.event.RaiseServiceEvent;
+import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -39,9 +42,6 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.event.ServiceEvent;
-import org.eclipse.kapua.service.event.ServiceEventBusListener;
-import org.eclipse.kapua.service.event.RaiseServiceEvent;
 
 /**
  * {@link AccountService} implementation.

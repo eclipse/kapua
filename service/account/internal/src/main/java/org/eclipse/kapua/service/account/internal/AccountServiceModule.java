@@ -11,8 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
-import org.eclipse.kapua.commons.event.module.ServiceEventModule;
-import org.eclipse.kapua.commons.event.module.ServiceEventModuleConfiguration;
+import org.eclipse.kapua.commons.event.ServiceEventModule;
+import org.eclipse.kapua.commons.event.ServiceEventModuleConfiguration;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.account.internal.setting.KapuaAccountSetting;
 import org.eclipse.kapua.service.account.internal.setting.KapuaAccountSettingKeys;

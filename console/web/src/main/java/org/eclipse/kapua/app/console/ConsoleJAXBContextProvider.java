@@ -13,11 +13,12 @@ package org.eclipse.kapua.app.console;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.TscalarImpl;
-import org.eclipse.kapua.commons.event.service.api.ServiceEventCreator;
-import org.eclipse.kapua.commons.event.service.api.ServiceEventListResult;
-import org.eclipse.kapua.commons.event.service.api.ServiceEventStoreQuery;
-import org.eclipse.kapua.commons.event.service.api.ServiceEventStoreXmlRegistry;
+import org.eclipse.kapua.commons.service.event.api.ServiceEventCreator;
+import org.eclipse.kapua.commons.service.event.api.ServiceEventListResult;
+import org.eclipse.kapua.commons.service.event.api.ServiceEventStoreQuery;
+import org.eclipse.kapua.commons.service.event.api.ServiceEventStoreXmlRegistry;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
+import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTicon;
 import org.eclipse.kapua.model.config.metatype.KapuaTmetadata;
@@ -45,7 +46,6 @@ import org.eclipse.kapua.service.device.management.packages.model.download.Devic
 import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallRequest;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
-import org.eclipse.kapua.service.event.ServiceEvent;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
 
 import javax.xml.bind.JAXBContext;

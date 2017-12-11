@@ -24,7 +24,7 @@
         <class>org.eclipse.kapua.commons.configuration.ServiceConfigImpl</class>
 
         <!-- event -->
-        <class>org.eclipse.kapua.commons.event.service.internal.ServiceEventImpl</class>
+        <class>org.eclipse.kapua.commons.service.event.internal.ServiceEventImpl</class>
         <class>org.eclipse.kapua.commons.event.ServiceEventHousekeeper</class>
 
         <!-- Base classes and External classes -->

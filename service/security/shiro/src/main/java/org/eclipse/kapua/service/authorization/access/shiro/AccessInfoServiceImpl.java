@@ -17,6 +17,7 @@ import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
+import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -42,7 +43,6 @@ import org.eclipse.kapua.service.authorization.permission.shiro.PermissionValida
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
-import org.eclipse.kapua.service.event.ServiceEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.eclipse.kapua.service.authorization.shiro.exception.KapuaAuthorizationErrorCodes;

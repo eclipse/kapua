@@ -14,7 +14,7 @@ package org.eclipse.kapua.commons.event;
 import java.util.Stack;
 import java.util.UUID;
 
-import org.eclipse.kapua.service.event.ServiceEvent;
+import org.eclipse.kapua.event.ServiceEvent;
 
 /**
  * Utility class to handle the thread context event stack.

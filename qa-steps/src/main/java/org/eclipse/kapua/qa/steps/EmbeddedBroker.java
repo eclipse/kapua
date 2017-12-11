@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.apache.activemq.broker.BrokerFactory;
 import org.apache.activemq.broker.BrokerService;
-import org.eclipse.kapua.commons.event.bus.ServiceEventBusManager;
+import org.eclipse.kapua.commons.event.ServiceEventBusManager;
 import org.eclipse.kapua.qa.utils.Suppressed;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
 import org.elasticsearch.common.UUIDs;

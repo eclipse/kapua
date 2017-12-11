@@ -16,10 +16,10 @@ import javax.persistence.PersistenceException;
 import org.eclipse.kapua.KapuaEntityExistsException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.event.ServiceEventScope;
-import org.eclipse.kapua.commons.event.service.api.ServiceEvent;
-import org.eclipse.kapua.commons.event.service.api.ServiceEventUtil;
-import org.eclipse.kapua.commons.event.service.internal.ServiceEventStoreDAO;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.service.event.api.ServiceEvent;
+import org.eclipse.kapua.commons.service.event.api.ServiceEventUtil;
+import org.eclipse.kapua.commons.service.event.internal.ServiceEventStoreDAO;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
@@ -246,7 +246,7 @@ public class EntityManagerSession {
         if (!(instance instanceof ServiceEvent)) {
 
             // If a kapua event is in scope then persist it along with the entity
-            org.eclipse.kapua.service.event.ServiceEvent serviceEventBus = ServiceEventScope.get();
+            org.eclipse.kapua.event.ServiceEvent serviceEventBus = ServiceEventScope.get();
             if (serviceEventBus != null) {
                 if (instance instanceof KapuaEntity) {
                     //make sense to override the entity id and type without checking for previous empty values?
@@ -278,7 +278,7 @@ public class EntityManagerSession {
         return persistedKapuaEvent;
     }
 
-    private boolean isNewEvent(org.eclipse.kapua.service.event.ServiceEvent event) {
+    private boolean isNewEvent(org.eclipse.kapua.event.ServiceEvent event) {
         return (event.getId() == null);
     }
 

@@ -13,9 +13,9 @@ package org.eclipse.kapua.service.authentication;
 
 import javax.inject.Inject;
 
-import org.eclipse.kapua.commons.event.module.ServiceEventListenerConfiguration;
-import org.eclipse.kapua.commons.event.module.ServiceEventModule;
-import org.eclipse.kapua.commons.event.module.ServiceEventModuleConfiguration;
+import org.eclipse.kapua.commons.event.ServiceEventListenerConfiguration;
+import org.eclipse.kapua.commons.event.ServiceEventModule;
+import org.eclipse.kapua.commons.event.ServiceEventModuleConfiguration;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
