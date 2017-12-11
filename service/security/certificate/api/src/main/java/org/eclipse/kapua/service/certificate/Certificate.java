@@ -20,6 +20,8 @@ import org.eclipse.kapua.service.certificate.xml.CertificateXmlRegistry;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlInlineBinaryData;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -42,7 +44,9 @@ import java.util.Set;
         "privateKey",
         "ca",
         "caId",
-        "password"
+        "password",
+        "certificateUsages",
+        "keyUsageSettings"
 }, factoryClass = CertificateXmlRegistry.class, factoryMethod = "newCertificate")
 public interface Certificate extends KapuaNamedEntity {
 
@@ -91,9 +95,11 @@ public interface Certificate extends KapuaNamedEntity {
 
     public void setStatus(CertificateStatus status);
 
+    @XmlInlineBinaryData
+    @XmlElement(name = "signature")
     public byte[] getSignature();
 
-    public void setSignature(byte[] digest);
+    public void setSignature(byte[] signature);
 
     public String getPrivateKey();
 

@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.model.KapuaNamedEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.service.certificate.xml.CertificateXmlRegistry;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -35,8 +36,9 @@ import java.util.Set;
         "status",
         "privateKey",
         "caId",
-        "password"
-})
+        "password",
+        "certificateUsages"
+}, factoryClass = CertificateXmlRegistry.class, factoryMethod = "newCreator")
 public interface CertificateCreator extends KapuaNamedEntityCreator<Certificate> {
 
     String getCertificate();
