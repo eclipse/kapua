@@ -14,6 +14,8 @@ package org.eclipse.kapua.app.console.module.job.server;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
+
+import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
@@ -87,8 +89,17 @@ public class GwtTriggerServiceImpl extends KapuaRemoteServiceServlet implements 
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             TriggerFactory triggerFactory = locator.getFactory(TriggerFactory.class);
+            TriggerService triggerService = locator.getService(TriggerService.class);
 
             KapuaId scopeId = KapuaEid.parseCompactId(gwtTriggerCreator.getScopeId());
+            TriggerQuery query = triggerFactory.newQuery(scopeId);
+            TriggerListResult list = triggerService.query(query);
+            for (Trigger trigger : list.getItems()) {
+                if (trigger.getName().equals(gwtTriggerCreator.getTriggerName())) {
+                    throw new KapuaDuplicateNameException(gwtTriggerCreator.getTriggerName());
+                }
+            }
+
             TriggerCreator triggerCreator = triggerFactory.newCreator(scopeId);
             triggerCreator.setName(gwtTriggerCreator.getTriggerName());
             triggerCreator.setStartsOn(gwtTriggerCreator.getStartsOn());
@@ -99,7 +110,6 @@ public class GwtTriggerServiceImpl extends KapuaRemoteServiceServlet implements 
 
             //
             // Create the User
-            TriggerService triggerService = locator.getService(TriggerService.class);
             Trigger trigger = triggerService.create(triggerCreator);
 
             // convert to GwtAccount and return
