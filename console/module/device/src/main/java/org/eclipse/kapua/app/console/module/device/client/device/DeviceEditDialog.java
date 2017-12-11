@@ -87,6 +87,7 @@ public class DeviceEditDialog extends DeviceAddDialog {
             public void onFailure(Throwable caught) {
                 exitStatus = false;
                 exitMessage = DEVICE_MSGS.deviceFormEditError(caught.getLocalizedMessage());
+                hide();
             }
 
             @Override
