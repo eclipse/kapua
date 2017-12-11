@@ -42,22 +42,19 @@ public class KapuaSecurityContext extends SecurityContext {
     private boolean hasDeviceView;
     private boolean hasDeviceManage;
 
-    public KapuaSecurityContext(KapuaPrincipal principal,
-            AuthorizationMap authMap,
-            KapuaId connectionId,
-            ConnectionId brokerConnectionId,
-            ConnectorDescriptor connectorDescriptor) {
-        super(principal.getName());
+    public KapuaSecurityContext(KapuaConnectionContext kcc,
+            AuthorizationMap authMap) {
+        super(kcc.getPrincipal().getName());
 
-        this.principal = principal;
+        this.principal = kcc.getPrincipal();
         this.kapuaSession = KapuaSession.createFrom();
         principals = new HashSet<Principal>();
         principals.add(principal);
 
         this.authMap = authMap;
-        this.connectionId = connectionId;
-        this.connectorDescriptor = connectorDescriptor;
-        this.brokerConnectionId = brokerConnectionId;
+        this.connectionId = kcc.getKapuaConnectionId();
+        this.connectorDescriptor = kcc.getConnectorDescriptor();
+        this.brokerConnectionId = kcc.getConnectionId();
     }
 
     public Principal getMainPrincipal() {
