@@ -37,6 +37,7 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.apache.qpid.jms.JmsConnectionFactory;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
+import org.eclipse.kapua.commons.event.ServiceEventMarshaler;
 import org.eclipse.kapua.commons.event.ServiceEventScope;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
@@ -279,7 +280,7 @@ public class JMSServiceEventBus implements ServiceEventBus, ExceptionListener {
                             try {
                                 if (message instanceof TextMessage) {
                                     TextMessage textMessage = (TextMessage) message;
-                                    final ServiceEvent kapuaEvent = eventBusMarshaler.unmarshal(textMessage);
+                                    final ServiceEvent kapuaEvent = eventBusMarshaler.unmarshal(textMessage.getText());
                                     setSession(kapuaEvent);
                                     KapuaSecurityUtils.doPrivileged(() -> {
                                         try {
@@ -324,7 +325,8 @@ public class JMSServiceEventBus implements ServiceEventBus, ExceptionListener {
                 try {
                     TextMessage message = jmsSession.createTextMessage();
                     // Serialize outgoing kapua event based on platform configuration
-                    eventBusMarshaler.marshal(message, kapuaEvent);
+                    message.setText(eventBusMarshaler.marshal(kapuaEvent));
+                    message.setStringProperty(ServiceEventMarshaler.CONTENT_TYPE_KEY, eventBusMarshaler.getContentType());
                     jmsProducer.send(message);
                 } catch (JMSException | KapuaException e) {
                     LOGGER.error("Message publish interrupted: {}", e.getMessage());
