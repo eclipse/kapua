@@ -44,6 +44,10 @@ public enum BrokerSettingKey implements SettingKey {
      */
     SYSTEM_MESSAGE_CREATOR_CLASS_NAME("broker.system.message_creator_class_name"),
     /**
+     * Authenticator implementation
+     */
+    AUTHENTICATOR_CLASS_NAME("broker.authenticator_class_name"),
+    /**
      * Enable/disable the clustered stealing link feature
      */
     BROKER_STEALING_LINK_ENABLED("broker.stealing_link.enabled"),

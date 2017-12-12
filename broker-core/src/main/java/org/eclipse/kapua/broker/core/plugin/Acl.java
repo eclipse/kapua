@@ -35,14 +35,29 @@ public class Acl {
         this.admin = admin;
     }
 
+    /**
+     * Has read rights
+     * 
+     * @return
+     */
     public boolean isRead() {
         return read;
     }
 
+    /**
+     * Has write rights
+     * 
+     * @return
+     */
     public boolean isWrite() {
         return write;
     }
 
+    /**
+     * Has admin rights
+     * 
+     * @return
+     */
     public boolean isAdmin() {
         return admin;
     }

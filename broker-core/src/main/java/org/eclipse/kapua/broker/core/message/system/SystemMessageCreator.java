@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.message.system;
 
-import org.eclipse.kapua.broker.core.plugin.KapuaBrokerContext;
+import org.eclipse.kapua.broker.core.plugin.KapuaConnectionContext;
 
 /**
  * System message creator (i.e message sent by the broker on device connect)
@@ -31,6 +31,6 @@ public interface SystemMessageCreator {
      * @param kbc
      * @return
      */
-    String createMessage(SystemMessageType systemMessageType, KapuaBrokerContext kbc);
+    String createMessage(SystemMessageType systemMessageType, KapuaConnectionContext kbc);
 
 }

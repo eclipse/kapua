@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.message.system;
 
-import org.eclipse.kapua.broker.core.plugin.KapuaBrokerContext;
+import org.eclipse.kapua.broker.core.plugin.KapuaConnectionContext;
 
 /**
  * Default system message creator
@@ -23,7 +23,7 @@ public class DefaultSystemMessageCreator implements SystemMessageCreator {
     private final static String CONNECT_MESSAGE_TEMPLATE = "Device: [%s] - connected by user: [%s]";
 
     @Override
-    public String createMessage(SystemMessageType systemMessageType, KapuaBrokerContext kbc) {
+    public String createMessage(SystemMessageType systemMessageType, KapuaConnectionContext kbc) {
         return String.format(CONNECT_MESSAGE_TEMPLATE,
                 kbc.getClientId(),
                 kbc.getUserName());

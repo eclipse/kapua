@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,7 +17,7 @@ import org.apache.activemq.command.ActiveMQDestination;
 import org.apache.activemq.command.ActiveMQTopic;
 import org.apache.camel.Message;
 import org.eclipse.kapua.broker.core.listener.CamelConstants;
-import org.eclipse.kapua.broker.core.plugin.AclConstants;
+import org.eclipse.kapua.broker.core.plugin.KapuaSecurityBrokerFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +48,7 @@ public class CamelUtil {
             ActiveMQDestination destination = message.getHeader(CamelConstants.JMS_HEADER_DESTINATION, ActiveMQDestination.class);
             if (destination instanceof ActiveMQTopic) {
                 ActiveMQTopic destinationTopic = (ActiveMQTopic) destination;
-                return destinationTopic.getTopicName().substring(AclConstants.VT_TOPIC_PREFIX.length());
+                return destinationTopic.getTopicName().substring(KapuaSecurityBrokerFilter.VT_TOPIC_PREFIX.length());
             } else {
                 logger.warn("jmsMessage destination is not a Topic or Queue: {}", destination);
                 throw new JMSException(String.format("Unable to extract the destination. Wrong destination %s", destination));

@@ -15,7 +15,6 @@ import java.security.Principal;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.activemq.command.ConnectionId;
 import org.apache.activemq.security.AuthorizationMap;
 import org.apache.activemq.security.SecurityContext;
 import org.eclipse.kapua.commons.security.KapuaSession;
@@ -34,7 +33,7 @@ public class KapuaSecurityContext extends SecurityContext {
     private KapuaId connectionId;
     private Set<Principal> principals;
     private ConnectorDescriptor connectorDescriptor;
-    private ConnectionId brokerConnectionId;
+    private String brokerConnectionId;
 
     private AuthorizationMap authMap;
     private boolean hasDataView;
@@ -73,7 +72,7 @@ public class KapuaSecurityContext extends SecurityContext {
         return connectionId;
     }
 
-    public ConnectionId getBrokerConnectionId() {
+    public String getBrokerConnectionId() {
         return brokerConnectionId;
     }
 
