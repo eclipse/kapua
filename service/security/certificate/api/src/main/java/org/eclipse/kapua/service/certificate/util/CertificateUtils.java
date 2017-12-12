@@ -11,13 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate.util;
 
-import org.apache.commons.io.FileUtils;
-import org.eclipse.kapua.service.certificate.exception.KapuaCertificateErrorCodes;
-import org.eclipse.kapua.service.certificate.exception.KapuaCertificateException;
-
+import javax.crypto.EncryptedPrivateKeyInfo;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.Key;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -27,24 +28,18 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.kapua.service.certificate.exception.KapuaCertificateErrorCodes;
+import org.eclipse.kapua.service.certificate.exception.KapuaCertificateException;
+
 public class CertificateUtils {
 
     private CertificateUtils() {
     }
 
-    public static PrivateKey readPrivateKey(File file) throws KapuaCertificateException {
-        PrivateKey privateKey;
-        try {
-            privateKey = stringToPrivateKey(readPrivateKeyAsString(file));
-        } catch (IOException e) {
-            throw new KapuaCertificateException(KapuaCertificateErrorCodes.PRIVATE_KEY_ERROR, e);
-        }
-        return privateKey;
-    }
-
     public static String readPrivateKeyAsString(File file) throws IOException {
         return getBytesOnly(FileUtils.readFileToString(file));
-
     }
 
     public static X509Certificate readCertificate(File file) throws KapuaCertificateException {
@@ -61,13 +56,23 @@ public class CertificateUtils {
         return getBytesOnly(FileUtils.readFileToString(file));
     }
 
-    public static PrivateKey stringToPrivateKey(String privateKeyString) throws KapuaCertificateException {
+    public static PrivateKey stringToPrivateKey(String privateKeyString, String password) throws KapuaCertificateException {
         try {
-            byte[] decoded = Base64.getDecoder().decode(getBytesOnly(privateKeyString));
-            PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(decoded);
-            KeyFactory kf = KeyFactory.getInstance("RSA");
-            return kf.generatePrivate(keySpec);
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            byte[] pkcs8Data = Base64.getDecoder().decode(getBytesOnly(privateKeyString));
+            KeyFactory keyFactory;
+            PKCS8EncodedKeySpec pkcs8EncodedKeySpec;
+            if (StringUtils.isNotEmpty(password)) {
+                PBEKeySpec pbeKeySpec = new PBEKeySpec(password.toCharArray());
+                EncryptedPrivateKeyInfo encryptedPrivateKeyInfo = new EncryptedPrivateKeyInfo(pkcs8Data);
+                SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance(encryptedPrivateKeyInfo.getAlgName());
+                Key secretKey = secretKeyFactory.generateSecret(pbeKeySpec);
+                pkcs8EncodedKeySpec = encryptedPrivateKeyInfo.getKeySpec(secretKey);
+            } else {
+                pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(pkcs8Data);
+            }
+            keyFactory = KeyFactory.getInstance("RSA");
+            return keyFactory.generatePrivate(pkcs8EncodedKeySpec);
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException | IOException | InvalidKeyException e) {
             throw new KapuaCertificateException(KapuaCertificateErrorCodes.PRIVATE_KEY_ERROR, e);
         }
     }

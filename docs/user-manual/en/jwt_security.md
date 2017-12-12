@@ -14,8 +14,10 @@ If you want to use a custom certificate you can generate it, along with its priv
 
 ```bash
 openssl req -x509 -newkey rsa:4096 -keyout <path_to_key> -out <path_to_certificate> -days 365 -nodes -subj '/O=Eclipse Kapua/C=XX'
-openssl pkcs8 -topk8 -in <path_to_key> -out <path_to_pkcs8_key> -nocrypt
+openssl pkcs8 -topk8 -in <path_to_key> -out <path_to_pkcs8_key>
 rm <path_to_key>
 ```
 
-The private key must be in PKCS8 non encrypted format (encrypted private keys are currently not supported). 
+When converting the private key in PKCS8 format you can avoid password encryption by adding the `-nocrypt` switch to the `openssl pkcs8` command above.
+ 
+Both the certificate and the private key must be in PKCS8 format. If the private key is password encrypted, you can specify it with the `certificate.jwt.private.key.password` system property. 

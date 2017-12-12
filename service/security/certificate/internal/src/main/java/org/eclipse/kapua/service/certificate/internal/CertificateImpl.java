@@ -26,11 +26,9 @@ public class CertificateImpl extends AbstractKapuaUpdatableEntity implements Cer
 
     private String certificate;
     private String privateKey;
+    private String password;
     private Set<KeyUsageSettingImpl> keyUsageSettings;
     private Set<CertificateUsageImpl> certificateUsages;
-
-    public CertificateImpl() {
-    }
 
     public CertificateImpl(KapuaId scopeId) {
         super(scopeId);
@@ -178,12 +176,12 @@ public class CertificateImpl extends AbstractKapuaUpdatableEntity implements Cer
 
     @Override
     public String getPassword() {
-        throw new UnsupportedOperationException();
+        return password;
     }
 
     @Override
     public void setPassword(String password) {
-        throw new UnsupportedOperationException();
+        this.password = password;
     }
 
     @Override
