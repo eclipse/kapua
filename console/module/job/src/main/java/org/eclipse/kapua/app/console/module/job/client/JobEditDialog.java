@@ -53,6 +53,7 @@ public class JobEditDialog extends JobAddDialog {
             public void onFailure(Throwable cause) {
                 exitStatus = false;
                 exitMessage = JOB_MSGS.dialogEditError(cause.getLocalizedMessage());
+                hide();
             }
         });
 
