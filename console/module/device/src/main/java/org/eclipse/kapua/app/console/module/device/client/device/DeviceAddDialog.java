@@ -151,6 +151,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         displayNameField.setAllowBlank(true);
         displayNameField.setName("displayName");
         displayNameField.setFieldLabel(DEVICE_MSGS.deviceFormDisplayName());
+        displayNameField.setValidator(new TextFieldValidator(displayNameField, FieldType.NAME));
         displayNameField.setWidth(225);
         fieldSet.add(displayNameField, formData);
 
