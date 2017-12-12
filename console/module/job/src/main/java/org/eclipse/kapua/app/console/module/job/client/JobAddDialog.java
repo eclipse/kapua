@@ -85,7 +85,6 @@ public class JobAddDialog extends EntityAddEditDialog {
 
                 exitStatus = false;
                 exitMessage = JOB_MSGS.dialogAddError(cause.getLocalizedMessage());
-
                 hide();
             }
         });
