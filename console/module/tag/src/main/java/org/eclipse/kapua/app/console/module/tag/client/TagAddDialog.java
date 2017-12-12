@@ -15,6 +15,8 @@ import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAd
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator;
+import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator.FieldType;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 
 import com.extjs.gxt.ui.client.widget.form.TextField;
@@ -43,8 +45,8 @@ public class TagAddDialog extends EntityAddEditDialog {
         FormPanel tagFormPanel = new FormPanel(FORM_LABEL_WIDTH);
         tagNameField = new TextField<String>();
         tagNameField.setAllowBlank(false);
+        tagNameField.setValidator(new TextFieldValidator(tagNameField, FieldType.NAME));
         tagNameField.setFieldLabel("* " + MSGS.dialogAddFieldName());
-        tagNameField.setToolTip(MSGS.dialogAddFieldNameTooltip());
         tagFormPanel.add(tagNameField);
         bodyPanel.add(tagFormPanel);
     }
