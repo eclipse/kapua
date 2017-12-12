@@ -13,19 +13,43 @@ package org.eclipse.kapua.broker.core.plugin.authentication;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.plugin.Acl;
-import org.eclipse.kapua.broker.core.plugin.AclConstants;
 import org.eclipse.kapua.broker.core.plugin.KapuaConnectionContext;
 
+/**
+ * Admin profile authentication logic implementation
+ * 
+ * @since 1.0
+ */
 public class AdminAuthenticationLogic extends AuthenticationLogic {
 
-    public List<AuthorizationEntry> buildAuthorizationMap(KapuaConnectionContext kcc) {
-        ArrayList<AuthorizationEntry> ael = new ArrayList<AuthorizationEntry>();
-        ael.add(createAuthorizationEntry(kcc, Acl.ALL, AclConstants.ACL_HASH));
-        ael.add(createAuthorizationEntry(kcc, Acl.WRITE_ADMIN, AclConstants.ACL_AMQ_ADVISORY));
+    /**
+     * Default constuctor
+     * 
+     * @param options
+     */
+    public AdminAuthenticationLogic(Map<String, Object> options) {
+        super((String) options.get(Authenticator.ADDRESS_PREFIX_KEY), (String) options.get(Authenticator.ADDRESS_CLASSIFIER_KEY), (String) options.get(Authenticator.ADDRESS_ADVISORY_PREFIX_KEY));
+    }
 
+    @Override
+    public List<AuthorizationEntry> connect(KapuaConnectionContext kcc) throws KapuaException {
+        return buildAuthorizationMap(kcc);
+    }
+
+    @Override
+    public void disconnect(KapuaConnectionContext kcc, Throwable error) {
+    }
+
+    protected List<AuthorizationEntry> buildAuthorizationMap(KapuaConnectionContext kcc) {
+        ArrayList<AuthorizationEntry> ael = new ArrayList<AuthorizationEntry>();
+        ael.add(createAuthorizationEntry(kcc, Acl.ALL, aclHash));
+        ael.add(createAuthorizationEntry(kcc, Acl.WRITE_ADMIN, aclAdvisory));
         kcc.logAuthDestinationToLog();
         return ael;
     }
+
 }
