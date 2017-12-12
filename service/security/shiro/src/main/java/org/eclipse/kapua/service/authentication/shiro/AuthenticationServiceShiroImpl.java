@@ -487,7 +487,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             JsonWebSignature jws = new JsonWebSignature();
             jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
             jws.setPayload(claims.toJson());
-            jws.setKey(CertificateUtils.stringToPrivateKey(certificate.getPrivateKey()));
+            jws.setKey(CertificateUtils.stringToPrivateKey(certificate.getPrivateKey(), certificate.getPassword()));
             jwt = jws.getCompactSerialization();
         } catch (JoseException | KapuaException e) {
             KapuaRuntimeException.internalError(e);

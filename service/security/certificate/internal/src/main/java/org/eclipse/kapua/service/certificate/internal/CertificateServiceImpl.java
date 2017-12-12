@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate.internal;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import org.eclipse.kapua.KapuaException;
@@ -85,17 +88,23 @@ public class CertificateServiceImpl implements CertificateService {
 
         //
         // Create the default certificate
-        CertificateUsage certificateUsage = new CertificateUsageImpl("JWT");
+        CertificateUsage jwtCertificateUsage = new CertificateUsageImpl("JWT");
+        Set<CertificateUsage> certificateUsages = new HashSet<>();
+        certificateUsages.add(jwtCertificateUsage);
 
         KeyUsageSetting keyUsageSetting = new KeyUsageSettingImpl();
         keyUsageSetting.setKeyUsage(KeyUsage.DIGITAL_SIGNATURE);
         keyUsageSetting.setAllowed(true);
         keyUsageSetting.setKapuaAllowed(true);
 
+        KapuaCertificateSetting setting = KapuaCertificateSetting.getInstance();
+
         Certificate kapuaCertificate = new CertificateImpl(query.getScopeId());
         kapuaCertificate.setPrivateKey(privateKey);
         kapuaCertificate.setCertificate(certificate);
         kapuaCertificate.getKeyUsageSettings().add(keyUsageSetting);
+        kapuaCertificate.setCertificateUsages(certificateUsages);
+        kapuaCertificate.setPassword(setting.getString(KapuaCertificateSettingKeys.CERTIFICATE_JWT_PRIVATE_KEY_PASSWORD));
 
         CertificateListResult result = CERTIFICATE_FACTORY.newListResult();
         result.addItems(Lists.newArrayList(kapuaCertificate));
