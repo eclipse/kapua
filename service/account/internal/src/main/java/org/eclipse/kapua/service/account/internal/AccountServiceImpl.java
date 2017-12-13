@@ -12,10 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
-import javax.inject.Inject;
-import javax.persistence.TypedQuery;
 import java.util.Map;
 import java.util.Objects;
+
+import javax.inject.Inject;
+import javax.persistence.TypedQuery;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
@@ -26,9 +27,7 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.event.ServiceEventBusListener;
 import org.eclipse.kapua.event.RaiseServiceEvent;
-import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -50,7 +49,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
  */
 @KapuaProvider
 public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<Account, AccountCreator, AccountService, AccountListResult, AccountQuery, AccountFactory>
-        implements AccountService, ServiceEventBusListener {
+        implements AccountService {
 
     private static final Domain ACCOUNT_DOMAIN = new AccountDomain();
 
@@ -340,12 +339,6 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     @Override
     protected Map<String, Object> getConfigValues(Account entity) throws KapuaException {
         return super.getConfigValues(entity.getId());
-    }
-
-    @Override
-    public void onKapuaEvent(ServiceEvent kapuaEvent) throws KapuaException {
-        // TODO Auto-generated method stub
-
     }
 
 }

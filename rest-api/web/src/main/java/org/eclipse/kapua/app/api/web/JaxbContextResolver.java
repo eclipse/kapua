@@ -18,10 +18,10 @@ import org.eclipse.kapua.app.api.core.exception.model.SubjectUnauthorizedExcepti
 import org.eclipse.kapua.app.api.core.exception.model.ThrowableInfo;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.StorableEntityId;
-import org.eclipse.kapua.commons.service.event.api.ServiceEventCreator;
-import org.eclipse.kapua.commons.service.event.api.ServiceEventListResult;
-import org.eclipse.kapua.commons.service.event.api.ServiceEventStoreQuery;
-import org.eclipse.kapua.commons.service.event.api.ServiceEventStoreXmlRegistry;
+import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordCreator;
+import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordListResult;
+import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordQuery;
+import org.eclipse.kapua.commons.service.event.store.api.EventStoreXmlRegistry;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
@@ -415,10 +415,10 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
 
                     // KapuaEvent
                     ServiceEvent.class,
-                    ServiceEventCreator.class,
-                    ServiceEventListResult.class,
-                    ServiceEventStoreQuery.class,
-                    ServiceEventStoreXmlRegistry.class
+                    EventStoreRecordCreator.class,
+                    EventStoreRecordListResult.class,
+                    EventStoreRecordQuery.class,
+                    EventStoreXmlRegistry.class
 
             }, properties);
         } catch (Exception e) {

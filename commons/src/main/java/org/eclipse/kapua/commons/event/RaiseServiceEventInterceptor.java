@@ -20,8 +20,8 @@ import org.eclipse.kapua.commons.core.InterceptorBind;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
-import org.eclipse.kapua.commons.service.event.api.ServiceEventUtil;
-import org.eclipse.kapua.commons.service.event.internal.ServiceEventStoreDAO;
+import org.eclipse.kapua.commons.service.event.store.api.ServiceEventUtil;
+import org.eclipse.kapua.commons.service.event.store.internal.EventStoreDAO;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.event.RaiseServiceEvent;
 import org.eclipse.kapua.event.ServiceEvent;
@@ -180,8 +180,8 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
             try {
                 serviceEventBus.setStatus(newServiceEventStatus);
                 ((AbstractKapuaService) invocation.getThis()).getEntityManagerSession().onTransactedAction(
-                        em -> ServiceEventStoreDAO.update(em,
-                                ServiceEventUtil.mergeToEntity(ServiceEventStoreDAO.find(em, KapuaEid.parseCompactId(serviceEventBus.getId())), serviceEventBus)));
+                        em -> EventStoreDAO.update(em,
+                                ServiceEventUtil.mergeToEntity(EventStoreDAO.find(em, KapuaEid.parseCompactId(serviceEventBus.getId())), serviceEventBus)));
             }
             catch (Throwable t) {
                 //this may be a valid condition if the HouseKeeper is doing the update concurrently with this task

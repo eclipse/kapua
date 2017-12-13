@@ -35,15 +35,15 @@ public class DeviceServiceModule extends ServiceEventModule {
         selc[0] = new ServiceEventListenerConfiguration(
                 kds.getString(KapuaDeviceRegistrySettingKeys.ACCOUNT_EVENT_ADDRESS),
                 kds.getString(KapuaDeviceRegistrySettingKeys.DEVICE_REGISTRY_SUBSCRIPTION_NAME),
-                deviceRegistryService);
+                (serviceEvent) -> deviceRegistryService.onKapuaEvent(serviceEvent));
         selc[1] = new ServiceEventListenerConfiguration(
                 kds.getString(KapuaDeviceRegistrySettingKeys.ACCOUNT_EVENT_ADDRESS),
                 kds.getString(KapuaDeviceRegistrySettingKeys.DEVICE_CONNECTION_SUBSCRIPTION_NAME),
-                deviceConnectionService);
+                (serviceEvent) -> deviceConnectionService.onKapuaEvent(serviceEvent));
         selc[2] = new ServiceEventListenerConfiguration(
                 kds.getString(KapuaDeviceRegistrySettingKeys.AUTHORIZATION_EVENT_ADDRESS),
                 kds.getString(KapuaDeviceRegistrySettingKeys.DEVICE_REGISTRY_SUBSCRIPTION_NAME),
-                deviceRegistryService);
+                (serviceEvent) -> deviceRegistryService.onKapuaEvent(serviceEvent));
         return new ServiceEventModuleConfiguration(
                 kds.getString(KapuaDeviceRegistrySettingKeys.DEVICE_INTERNAL_EVENT_ADDRESS),
                 kds.getList(String.class, KapuaDeviceRegistrySettingKeys.DEVICE_SERVICES_NAMES),

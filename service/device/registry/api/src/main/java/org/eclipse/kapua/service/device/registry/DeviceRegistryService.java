@@ -12,10 +12,10 @@
 package org.eclipse.kapua.service.device.registry;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.event.ServiceEventBusListener;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
+import org.eclipse.kapua.service.KapuaEventListenerService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
@@ -28,7 +28,7 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
 public interface DeviceRegistryService extends KapuaEntityService<Device, DeviceCreator>,
         KapuaUpdatableEntityService<Device>,
         KapuaConfigurableService,
-        ServiceEventBusListener {
+        KapuaEventListenerService {
 
     /**
      * Returns the {@link DeviceListResult} with elements matching the provided query.

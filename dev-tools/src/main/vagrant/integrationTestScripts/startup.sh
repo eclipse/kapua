@@ -12,6 +12,6 @@
 #*******************************************************************************
 
 echo 'VARGRANT UP......'
-vagrant box list | grep -q kapua-dev-box/0.5 || ../start.sh base-box
+vagrant box list | grep -q kapua-dev-box/0.6 || ../start.sh base-box
 vagrant up
 echo 'VARGRANT UP...... DONE'

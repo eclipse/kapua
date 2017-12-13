@@ -11,12 +11,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.service;
 
-import org.eclipse.kapua.event.ServiceEventBusListener;
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.event.ServiceEvent;
 
 /**
  * Event listener definition
  * 
  * @since 1.0
  */
-public interface KapuaEventListenerService extends ServiceEventBusListener, KapuaService {
+public interface KapuaEventListenerService extends KapuaService {
+
+    /**
+     * Process the on event business logic<BR>
+     * 
+     * @param kapuaEvent
+     * @throws KapuaException
+     */
+    public void onKapuaEvent(ServiceEvent kapuaEvent) throws KapuaException;
 }

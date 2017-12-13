@@ -34,7 +34,7 @@ public class UserServiceModule extends ServiceEventModule {
         selc[0] = new ServiceEventListenerConfiguration(
                 kas.getString(KapuaUserSettingKeys.ACCOUNT_EVENT_ADDRESS),
                 kas.getString(KapuaUserSettingKeys.USER_SUBSCRIPTION_NAME),
-                userService);
+                (serviceEvent) -> userService.onKapuaEvent(serviceEvent));
         return new ServiceEventModuleConfiguration(
                 kas.getString(KapuaUserSettingKeys.USER_INTERNAL_EVENT_ADDRESS),
                 kas.getList(String.class, KapuaUserSettingKeys.USER_SERVICES_NAMES), 

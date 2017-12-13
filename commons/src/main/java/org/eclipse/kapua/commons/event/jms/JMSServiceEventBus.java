@@ -37,6 +37,8 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.apache.qpid.jms.JmsConnectionFactory;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
+import org.eclipse.kapua.commons.event.ServiceEventBusDriver;
+import org.eclipse.kapua.commons.event.ServiceEventBusManager;
 import org.eclipse.kapua.commons.event.ServiceEventMarshaler;
 import org.eclipse.kapua.commons.event.ServiceEventScope;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -55,7 +57,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @since 1.0
  */
-public class JMSServiceEventBus implements ServiceEventBus, ExceptionListener {
+public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDriver, ExceptionListener {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(JMSServiceEventBus.class);
 
@@ -80,11 +82,17 @@ public class JMSServiceEventBus implements ServiceEventBus, ExceptionListener {
         eventBusJMSConnectionBridge = new EventBusJMSConnectionBridge(this);
     }
 
+    @Override
+    public String getType() {
+        return ServiceEventBusManager.JMS_20_EVENT_BUS;
+    }
+
     /**
      * Start the event bus
      * 
      * @throws ServiceEventBusException
      */
+    @Override
     public void start() throws ServiceEventBusException {
         try {
             //initialize event bus marshaler
@@ -129,8 +137,14 @@ public class JMSServiceEventBus implements ServiceEventBus, ExceptionListener {
      * 
      * @throws ServiceEventBusException
      */
+    @Override
     public void stop() throws ServiceEventBusException {
         eventBusJMSConnectionBridge.stop();
+    }
+
+    @Override
+    public ServiceEventBus getEventBus() {
+        return this;
     }
 
     @Override

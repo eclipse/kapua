@@ -19,6 +19,5 @@
 
     <include relativeToChangelogFile="true" file="./user-expiration.xml" />
     <include relativeToChangelogFile="true" file="./user-id_check_positive.xml" />
-    <include relativeToChangelogFile="true" file="./sys-service-event-housekeeping-user-seed.xml" />
 
 </databaseChangeLog>

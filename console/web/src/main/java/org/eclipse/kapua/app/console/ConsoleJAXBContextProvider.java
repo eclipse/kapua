@@ -13,10 +13,10 @@ package org.eclipse.kapua.app.console;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.TscalarImpl;
-import org.eclipse.kapua.commons.service.event.api.ServiceEventCreator;
-import org.eclipse.kapua.commons.service.event.api.ServiceEventListResult;
-import org.eclipse.kapua.commons.service.event.api.ServiceEventStoreQuery;
-import org.eclipse.kapua.commons.service.event.api.ServiceEventStoreXmlRegistry;
+import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordCreator;
+import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordListResult;
+import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordQuery;
+import org.eclipse.kapua.commons.service.event.store.api.EventStoreXmlRegistry;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
@@ -99,10 +99,10 @@ public class ConsoleJAXBContextProvider implements JAXBContextProvider {
 
                         // KapuaEvent
                         ServiceEvent.class,
-                        ServiceEventCreator.class,
-                        ServiceEventListResult.class,
-                        ServiceEventStoreQuery.class,
-                        ServiceEventStoreXmlRegistry.class
+                        EventStoreRecordCreator.class,
+                        EventStoreRecordListResult.class,
+                        EventStoreRecordQuery.class,
+                        EventStoreXmlRegistry.class
 
                 }, null);
             }

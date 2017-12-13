@@ -44,23 +44,23 @@ public class AuthorizationServiceModule extends ServiceEventModule {
         selc[0] = new ServiceEventListenerConfiguration(
                 kdrs.getString(KapuaAuthorizationSettingKeys.ACCOUNT_EVENT_ADDRESS),
                 kdrs.getString(KapuaAuthorizationSettingKeys.ACCESS_INFO_SUBSCRIPTION_NAME),
-                accessInfoService);
+                (serviceEvent) -> accessInfoService.onKapuaEvent(serviceEvent));
         selc[1] = new ServiceEventListenerConfiguration(
                 kdrs.getString(KapuaAuthorizationSettingKeys.ACCOUNT_EVENT_ADDRESS),
                 kdrs.getString(KapuaAuthorizationSettingKeys.ROLE_SUBSCRIPTION_NAME),
-                roleService);
+                (serviceEvent) -> roleService.onKapuaEvent(serviceEvent));
         selc[2] = new ServiceEventListenerConfiguration(
                 kdrs.getString(KapuaAuthorizationSettingKeys.ACCOUNT_EVENT_ADDRESS),
                 kdrs.getString(KapuaAuthorizationSettingKeys.DOMAIN_SUBSCRIPTION_NAME),
-                domainService);
+                (serviceEvent) -> domainService.onKapuaEvent(serviceEvent));
         selc[3] = new ServiceEventListenerConfiguration(
                 kdrs.getString(KapuaAuthorizationSettingKeys.ACCOUNT_EVENT_ADDRESS),
                 kdrs.getString(KapuaAuthorizationSettingKeys.GROUP_SUBSCRIPTION_NAME),
-                groupService);
+                (serviceEvent) -> groupService.onKapuaEvent(serviceEvent));
         selc[4] = new ServiceEventListenerConfiguration(
                 kdrs.getString(KapuaAuthorizationSettingKeys.USER_EVENT_ADDRESS),
                 kdrs.getString(KapuaAuthorizationSettingKeys.ACCESS_INFO_SUBSCRIPTION_NAME),
-                accessInfoService);
+                (serviceEvent) -> accessInfoService.onKapuaEvent(serviceEvent));
         return new ServiceEventModuleConfiguration(
                 kdrs.getString(KapuaAuthorizationSettingKeys.AUTHORIZATION_INTERNAL_EVENT_ADDRESS),
                 kdrs.getList(String.class, KapuaAuthorizationSettingKeys.AUTHORIZATION_SERVICES_NAMES),

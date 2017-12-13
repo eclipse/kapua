@@ -38,19 +38,19 @@ public class AuthenticationServiceModule extends ServiceEventModule {
         selc[0] = new ServiceEventListenerConfiguration(
                 kas.getString(KapuaAuthenticationSettingKeys.USER_EVENT_ADDRESS),
                 kas.getString(KapuaAuthenticationSettingKeys.CREDENTIAL_SUBSCRIPTION_NAME),
-                credentialService);
+                (serviceEvent) -> credentialService.onKapuaEvent(serviceEvent));
         selc[1] = new ServiceEventListenerConfiguration(
                 kas.getString(KapuaAuthenticationSettingKeys.USER_EVENT_ADDRESS),
                 kas.getString(KapuaAuthenticationSettingKeys.ACCESS_TOKEN_SUBSCRIPTION_NAME),
-                accessTokenService);
+                (serviceEvent) -> accessTokenService.onKapuaEvent(serviceEvent));
         selc[2] = new ServiceEventListenerConfiguration(
                 kas.getString(KapuaAuthenticationSettingKeys.ACCOUNT_EVENT_ADDRESS),
                 kas.getString(KapuaAuthenticationSettingKeys.CREDENTIAL_SUBSCRIPTION_NAME),
-                credentialService);
+                (serviceEvent) -> credentialService.onKapuaEvent(serviceEvent));
         selc[3] = new ServiceEventListenerConfiguration(
                 kas.getString(KapuaAuthenticationSettingKeys.ACCOUNT_EVENT_ADDRESS),
                 kas.getString(KapuaAuthenticationSettingKeys.ACCESS_TOKEN_SUBSCRIPTION_NAME),
-                accessTokenService);
+                (serviceEvent) -> accessTokenService.onKapuaEvent(serviceEvent));
         return new ServiceEventModuleConfiguration(
                 kas.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_INTERNAL_EVENT_ADDRESS),
                 kas.getList(String.class, KapuaAuthenticationSettingKeys.AUTHENTICATION_SERVICES_NAMES),

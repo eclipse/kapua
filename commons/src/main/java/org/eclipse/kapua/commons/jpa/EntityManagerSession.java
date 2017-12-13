@@ -17,9 +17,9 @@ import org.eclipse.kapua.KapuaEntityExistsException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.event.ServiceEventScope;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.service.event.api.ServiceEvent;
-import org.eclipse.kapua.commons.service.event.api.ServiceEventUtil;
-import org.eclipse.kapua.commons.service.event.internal.ServiceEventStoreDAO;
+import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecord;
+import org.eclipse.kapua.commons.service.event.store.api.ServiceEventUtil;
+import org.eclipse.kapua.commons.service.event.store.internal.EventStoreDAO;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
@@ -235,15 +235,15 @@ public class EntityManagerSession {
         return instance;
     }
 
-    private <T> ServiceEvent appendKapuaEvent(EntityManager manager) throws KapuaException {
+    private <T> EventStoreRecord appendKapuaEvent(EntityManager manager) throws KapuaException {
         return appendKapuaEvent(null, manager);
     }
 
-    private <T> ServiceEvent appendKapuaEvent(Object instance, EntityManager manager) throws KapuaException {
-        ServiceEvent persistedKapuaEvent = null;
+    private <T> EventStoreRecord appendKapuaEvent(Object instance, EntityManager manager) throws KapuaException {
+        EventStoreRecord persistedKapuaEvent = null;
 
         //persist the kapua event only if the instance is not a kapua event instance
-        if (!(instance instanceof ServiceEvent)) {
+        if (!(instance instanceof EventStoreRecord)) {
 
             // If a kapua event is in scope then persist it along with the entity
             org.eclipse.kapua.event.ServiceEvent serviceEventBus = ServiceEventScope.get();
@@ -264,10 +264,10 @@ public class EntityManagerSession {
 
                 //insert the kapua event only if it's a new entity
                 if (isNewEvent(serviceEventBus)) {
-                    persistedKapuaEvent = ServiceEventStoreDAO.create(manager, ServiceEventUtil.fromServiceEventBus(serviceEventBus));
+                    persistedKapuaEvent = EventStoreDAO.create(manager, ServiceEventUtil.fromServiceEventBus(serviceEventBus));
                 } else {
-                    persistedKapuaEvent = ServiceEventStoreDAO.update(manager,
-                            ServiceEventUtil.mergeToEntity(ServiceEventStoreDAO.find(
+                    persistedKapuaEvent = EventStoreDAO.update(manager,
+                            ServiceEventUtil.mergeToEntity(EventStoreDAO.find(
                                     manager, KapuaEid.parseCompactId(serviceEventBus.getId())), serviceEventBus));
                 }
                 // update event id on Event

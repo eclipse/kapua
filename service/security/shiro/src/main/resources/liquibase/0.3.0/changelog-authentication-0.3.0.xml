@@ -22,6 +22,5 @@
 
     <include relativeToChangelogFile="true" file="./atht_access_token-id_check_positive.xml" />
     <include relativeToChangelogFile="true" file="./atht_credential-id_check_positive.xml" />
-    <include relativeToChangelogFile="true" file="./atht_sys-service-event-housekeeping-seed.xml" />
 
 </databaseChangeLog>
