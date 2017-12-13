@@ -57,6 +57,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.broker.core.BrokerDomain;
+import org.eclipse.kapua.broker.core.BrokerJAXBContextProvider;
 import org.eclipse.kapua.broker.core.message.MessageConstants;
 import org.eclipse.kapua.broker.core.message.system.DefaultSystemMessageCreator;
 import org.eclipse.kapua.broker.core.message.system.SystemMessageCreator;

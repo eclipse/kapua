@@ -11,17 +11,31 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.router;
 
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Header;
 import org.apache.camel.Properties;
+import org.eclipse.kapua.KapuaErrorCodes;
+import org.eclipse.kapua.KapuaRuntimeException;
+import org.eclipse.kapua.broker.core.BrokerJAXBContextProvider;
 import org.eclipse.kapua.broker.core.listener.CamelConstants;
 import org.eclipse.kapua.broker.core.message.MessageConstants;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.broker.core.setting.BrokerSetting;
+import org.eclipse.kapua.broker.core.setting.BrokerSettingKey;
+import org.eclipse.kapua.commons.setting.KapuaSettingException;
+import org.eclipse.kapua.commons.util.KapuaFileUtils;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 /**
  * Default message router
@@ -32,58 +46,58 @@ public class CamelKapuaDefaultRouter {
 
     private final static Logger logger = LoggerFactory.getLogger(CamelKapuaDefaultRouter.class);
 
-    private final static String REGEX_REPLACEMENT_CHARS = "([\\\\\\.\\)\\]\\}\\(‌​\\[\\{\\*\\+\\?\\^\\$\\|])";
-
-    private final static String ESCAPED_CLASSIFIER = "^" +
-            SystemSetting.getInstance().getMessageClassifier().replaceAll(REGEX_REPLACEMENT_CHARS, "\\\\$0") +
-            "\\.";
-    public static final Pattern CONTROL_TOPIC_PATTERN = Pattern.compile(ESCAPED_CLASSIFIER + ".*");
-    public static final Pattern CONTROL_TOPIC_BIRTH_PATTERN = Pattern.compile(ESCAPED_CLASSIFIER + "(.*\\.){2}MQTT\\.BIRTH");
-    public static final Pattern CONTROL_TOPIC_DC_PATTERN = Pattern.compile(ESCAPED_CLASSIFIER + "(.*\\.){2}MQTT\\.DC");
-    public static final Pattern CONTROL_TOPIC_APPS_PATTERN = Pattern.compile(ESCAPED_CLASSIFIER + "(.*\\.){2}MQTT\\.APPS");
-    public static final Pattern CONTROL_TOPIC_LWT_PATTERN = Pattern.compile(ESCAPED_CLASSIFIER + "(.*\\.){2}MQTT\\.LWT");
-    public static final Pattern CONTROL_TOPIC_NOTIFY_PATTERN = Pattern.compile(ESCAPED_CLASSIFIER + "(.*\\.){2}MQTT\\.NOTIFY");
-
-    private final static String DESTINATION_PATTERN = "%s";
-
-    private final static String DST_BIRTH = "bean:kapuaLifeCycleConverter?method=convertToBirth,bean:deviceMessageListener?method=processBirthMessage";
-    private final static String DST_DC = "bean:kapuaLifeCycleConverter?method=convertToDisconnect,bean:deviceMessageListener?method=processDisconnectMessage";
-    private final static String DST_APPS = "bean:kapuaLifeCycleConverter?method=convertToApps,bean:deviceMessageListener?method=processAppsMessage";
-    private final static String DST_MISSING = "bean:kapuaLifeCycleConverter?method=convertToMissing,bean:deviceMessageListener?method=processMissingMessage";
-    private final static String DST_NOTIFY = "bean:kapuaLifeCycleConverter?method=convertToNotify,bean:deviceMessageListener?method=processNotifyMessage";
-    private final static String DST_UNMATCHED = "activemq:queue:lifeCycleUnmatchedMessage";
-    private final static String DST_DATA = "bean:kapuaDataConverter?method=convertToData,bean:dataStorageMessageProcessor?method=processMessage";
+    private EndPointContainer endPointContainer;
 
     public CamelKapuaDefaultRouter() {
+        String configurationFileName = BrokerSetting.getInstance().getString(BrokerSettingKey.CAMEL_DEFAULT_ROUTE_CONFIGURATION_FILE_NAME);
+        URL url = null;
+        try {
+            url = KapuaFileUtils.getAsURL(configurationFileName);
+        } catch (KapuaSettingException e) {
+            throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, e, "Cannot find configuration file!");
+        }
+        logger.info("Default Camel routing... Loading configuration from file {}", url.getFile());
+        FileReader configurationFileReader = null;
+        try {
+            XmlUtil.setContextProvider(new BrokerJAXBContextProvider());
+            configurationFileReader = new FileReader(url.getFile());
+            endPointContainer = XmlUtil.unmarshal(configurationFileReader, EndPointContainer.class);
+            logger.info("Default Camel routing... Loading configuration from file {} Found {} parent endpoints in the route", configurationFileName,
+                    (endPointContainer.getEndPoints() != null ? endPointContainer.getEndPoints().size() : 0));
+            logLoadedEndPoints(endPointContainer.getEndPoints());
+        } catch (XMLStreamException | JAXBException | SAXException | IOException e) {
+            throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, e, "Cannot load configuration!");
+        } finally {
+            if (configurationFileReader != null) {
+                try {
+                    configurationFileReader.close();
+                } catch (IOException e) {
+                    logger.warn("Cannot close configuration file '{}'!", configurationFileName, e);
+                }
+            }
+        }
+        logger.info("Default Camel routing... Loading configuration '{}' from file '{}' DONE", configurationFileName, url.getFile());
     }
 
-    public String defaultRouter(Exchange exchange, Object value, @Header(Exchange.SLIP_ENDPOINT) String previous, @Properties Map<String, Object> properties) {
+    public String defaultRoute(Exchange exchange, Object value, @Header(Exchange.SLIP_ENDPOINT) String previous, @Properties Map<String, Object> properties) {
         logger.trace("Received message on topic {} - Previous slip endpoint {} - id {}",
                 new Object[] { exchange.getIn().getHeader(MessageConstants.PROPERTY_ORIGINAL_TOPIC, String.class), previous,
                         exchange.getIn().getHeader(CamelConstants.JMS_CORRELATION_ID) });
-        if (previous != null) {
-            return null;
-        } else {
-            String originaTopic = exchange.getIn().getHeader(MessageConstants.PROPERTY_ORIGINAL_TOPIC, String.class);
-            if (CONTROL_TOPIC_PATTERN.matcher(originaTopic).matches()) {
-                if (CONTROL_TOPIC_BIRTH_PATTERN.matcher(originaTopic).matches()) {
-                    return String.format(DESTINATION_PATTERN, DST_BIRTH);
-                } else if (CONTROL_TOPIC_DC_PATTERN.matcher(originaTopic).matches()) {
-                    return String.format(DESTINATION_PATTERN, DST_DC);
-                } else if (CONTROL_TOPIC_APPS_PATTERN.matcher(originaTopic).matches()) {
-                    return String.format(DESTINATION_PATTERN, DST_APPS);
-                } else if (CONTROL_TOPIC_LWT_PATTERN.matcher(originaTopic).matches()) {
-                    return String.format(DESTINATION_PATTERN, DST_MISSING);
-                } else if (CONTROL_TOPIC_NOTIFY_PATTERN.matcher(originaTopic).matches()) {
-                    return String.format(DESTINATION_PATTERN, DST_NOTIFY);
-                } else {
-                    return String.format(DESTINATION_PATTERN, DST_UNMATCHED);
-                }
-            } else {
-                // data message
-                return String.format(DESTINATION_PATTERN, DST_DATA);
+        for (EndPoint endPoint : endPointContainer.getEndPoints()) {
+            if (endPoint.matches(exchange, value, previous, properties)) {
+                return endPoint.getEndpoint(exchange, value, previous, properties);
             }
         }
+        return null;
+    }
+
+    private void logLoadedEndPoints(List<EndPoint> endPoints) {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("\n");
+        for (EndPoint endPoint : endPoints) {
+            endPoint.toLog(buffer, "");
+        }
+        logger.info(buffer.toString());
     }
 
 }

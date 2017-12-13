@@ -12,6 +12,7 @@
 package org.eclipse.kapua.broker.core.setting;
 
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor;
+import org.eclipse.kapua.broker.core.router.CamelKapuaDefaultRouter;
 import org.eclipse.kapua.commons.setting.SettingKey;
 
 /**
@@ -65,7 +66,12 @@ public enum BrokerSettingKey implements SettingKey {
     /**
      * Broker name (used also for the vm connector name)
      */
-    BROKER_NAME("broker.name");
+    BROKER_NAME("broker.name"),
+    /**
+     * Camel default route configuration file name. (please specify just the name. The file path will be discovered by the class loader)
+     * Used by the {@link CamelKapuaDefaultRouter} to load the routing configuration.
+     */
+    CAMEL_DEFAULT_ROUTE_CONFIGURATION_FILE_NAME("camel.default_route.configuration_file_name");
 
     private String key;
 

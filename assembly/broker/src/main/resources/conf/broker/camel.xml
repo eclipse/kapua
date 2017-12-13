@@ -157,7 +157,7 @@
                 <doTry>
                     <bean ref="kapuaCamelFilter" method="bindSession"/>
                     <dynamicRouter>
-                        <method ref="kapuaCamelDefaultRouter" method="defaultRouter" ></method>
+                        <method ref="kapuaCamelDefaultRouter" method="defaultRoute" ></method>
                     </dynamicRouter>
                     <doFinally>
                         <bean ref="kapuaCamelFilter" method="unbindSession"/>
