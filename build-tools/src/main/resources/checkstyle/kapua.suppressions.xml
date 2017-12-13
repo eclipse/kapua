@@ -20,8 +20,8 @@
     <!-- ignore all files in target/ folder -->
     <suppress checks=".*" files=".*[\\\/]?target[\\\/].+\.java"/>
 
-    <!-- ignore all files in .repository folder for Jenkins build -->
-    <suppress checks=".*" files=".*[\\\/]?\.repository[\\\/].+\.java"/>
+    <!-- ignore .repository folder for Jenkins build -->
+    <suppress checks=".*" files="\.repository[\\\/]?.*" />
 
     <!-- ignore the about.html file -->
     <suppress checks="FileTabCharacter" files="about\.html"/>
