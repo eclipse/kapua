@@ -71,6 +71,9 @@ public abstract class KapuaDialog extends Dialog {
             headingMessage = "";
         }
         setHeading(headingMessage);
+        getHeader().setStyleAttribute("white-space", "nowrap");
+        getHeader().setStyleAttribute("text-overflow", "ellipsis");
+        getHeader().setStyleAttribute("overflow", "hidden");
 
         // Icon (if implementation needs one)
         KapuaIcon infoIcon = getInfoIcon();
