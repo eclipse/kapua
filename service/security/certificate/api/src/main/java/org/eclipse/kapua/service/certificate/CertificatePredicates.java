@@ -24,4 +24,6 @@ public interface CertificatePredicates extends KapuaUpdatableEntityPredicates {
 
     public static final String USAGE_NAME = USAGE + ".name";
 
+    public static final String STATUS = "status";
+
 }
