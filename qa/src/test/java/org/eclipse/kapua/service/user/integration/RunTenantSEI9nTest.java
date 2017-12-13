@@ -8,28 +8,26 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.user.integration;
 
+import cucumber.api.CucumberOptions;
 import org.eclipse.kapua.test.cucumber.CucumberProperty;
 import org.eclipse.kapua.test.cucumber.CucumberWithProperties;
 import org.junit.runner.RunWith;
 
-import cucumber.api.CucumberOptions;
-
 @RunWith(CucumberWithProperties.class)
 @CucumberOptions(
-        features = "classpath:features/user/UserServiceI9n.feature",
+        features = "classpath:features/user/TenantSEI9n.feature",
         glue = {"org.eclipse.kapua.qa.steps",
                 "org.eclipse.kapua.service.user.steps"
                },
         plugin = {"pretty", 
-                  "html:target/cucumber/UserServiceI9n",
-                  "json:target/UserServiceI9n_cucumber.json"
+                  "html:target/cucumber/TenantSEI9n",
+                  "json:target/TenantSEI9n_cucumber.json"
                  },
         monochrome=true)
 @CucumberProperty(key="datastore.client.class", value="org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient")
-@CucumberProperty(key="org.eclipse.kapua.qa.datastore.extraStartupDelay", value="5")
-@CucumberProperty(key="org.eclipse.kapua.qa.broker.extraStartupDelay", value="5")
-public class RunUserServiceI9nTest {}
+@CucumberProperty(key="org.eclipse.kapua.qa.datastore.extraStartupDelay", value="1")
+@CucumberProperty(key="org.eclipse.kapua.qa.broker.extraStartupDelay", value="1")
+public class RunTenantSEI9nTest {}

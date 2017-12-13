@@ -13,6 +13,9 @@
 Feature: User Service Integration
   User Service integration scenarios
 
+  @StartEventBroker
+  Scenario: Start event broker for all scenarios
+
   Scenario: Deleting user in account that is lower in hierarchy
   Using user A in in different scope than user B, try to delete user B. Scope of user A is one
   level higher than scope of B. Scope of A is parent of scope B. This allows user A to delete
@@ -166,3 +169,6 @@ Feature: User Service Integration
     When I try to delete user "kapua-a"
     Then An exception was thrown
     And I logout
+
+  @StopEventBroker
+  Scenario: Stop event broker for all scenarios

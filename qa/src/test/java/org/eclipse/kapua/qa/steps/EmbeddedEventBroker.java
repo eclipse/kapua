@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.steps;
 
+import static java.time.Duration.ofSeconds;
 import static org.eclipse.kapua.qa.utils.Suppressed.withRuntimeException;
 
 import java.util.Arrays;
@@ -25,6 +26,7 @@ import org.apache.activemq.artemis.jms.server.config.JMSConfiguration;
 import org.apache.activemq.artemis.jms.server.config.impl.ConnectionFactoryConfigurationImpl;
 import org.apache.activemq.artemis.jms.server.config.impl.JMSConfigurationImpl;
 import org.apache.activemq.artemis.jms.server.embedded.EmbeddedJMS;
+import org.eclipse.kapua.commons.event.ServiceEventBusManager;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.qa.utils.Suppressed;
 import org.elasticsearch.common.UUIDs;
@@ -44,6 +46,8 @@ public class EmbeddedEventBroker {
 
     private static final String DEFAULT_DATA_DIRECTORY_PREFIX = "target/artemis" + UUIDs.randomBase64UUID();
     private static final String DEFAULT_DATA_DIRECTORY = DEFAULT_DATA_DIRECTORY_PREFIX + "/data/journal";
+
+    private static final int EXTRA_STARTUP_DELAY = Integer.getInteger("org.eclipse.kapua.qa.broker.extraStartupDelay", 0);
 
     private Map<String, List<AutoCloseable>> closables = new HashMap<>();
 
@@ -77,6 +81,14 @@ public class EmbeddedEventBroker {
             jmsConfig.getConnectionFactoryConfigurations().add(cfConfig);
 
             jmsServer = new EmbeddedJMS().setConfiguration(configuration).setJmsConfiguration(jmsConfig).start();
+
+            if (EXTRA_STARTUP_DELAY > 0) {
+                Thread.sleep(ofSeconds(EXTRA_STARTUP_DELAY).toMillis());
+            }
+
+            //TODO to remove once the application life cycle will be implemented
+            //init JmsEventBus
+            ServiceEventBusManager.start();
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
