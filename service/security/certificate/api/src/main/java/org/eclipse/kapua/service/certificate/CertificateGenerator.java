@@ -13,9 +13,12 @@ package org.eclipse.kapua.service.certificate;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * {@link CertificateGenerator} encapsulates all the information needed to generate a new Certificate in the system.
@@ -25,13 +28,20 @@ import java.util.Date;
 @XmlRootElement(name = "certificateGenerator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = {
+        "name",
         "subject",
         "issuer",
         "keyLength",
         "notBefore",
         "notAfter",
+        "status",
+        "certificateUsages"
 })
 public interface CertificateGenerator {
+
+    String getName();
+
+    void setName(String name);
 
     String getSubject();
 
@@ -52,4 +62,14 @@ public interface CertificateGenerator {
     Date getNotAfter();
 
     void setNotAfter(Date notAfter);
+
+    CertificateStatus getStatus();
+
+    void setStatus(CertificateStatus status);
+
+    @XmlElementWrapper(name = "certificateUsages")
+    @XmlElement(name = "certificateUsage")
+    Set<CertificateUsage> getCertificateUsages();
+
+    void setCertificateUsages(Set<CertificateUsage> certificateUsages);
 }
