@@ -28,6 +28,7 @@ import org.apache.shiro.subject.Subject;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
@@ -47,6 +48,7 @@ import org.eclipse.kapua.service.certificate.CertificateFactory;
 import org.eclipse.kapua.service.certificate.CertificatePredicates;
 import org.eclipse.kapua.service.certificate.CertificateQuery;
 import org.eclipse.kapua.service.certificate.CertificateService;
+import org.eclipse.kapua.service.certificate.CertificateStatus;
 import org.eclipse.kapua.service.certificate.util.CertificateUtils;
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jws.JsonWebSignature;
@@ -479,7 +481,9 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             CertificateService certificateService = locator.getService(CertificateService.class);
             CertificateFactory certificateFactory = locator.getFactory(CertificateFactory.class);
             CertificateQuery certificateQuery = certificateFactory.newQuery(scopeId);
-            certificateQuery.setPredicate(new AttributePredicate<>(CertificatePredicates.USAGE_NAME, "JWT"));
+            certificateQuery.setPredicate(new AndPredicate()
+                    .and(new AttributePredicate<>(CertificatePredicates.USAGE_NAME, "JWT"))
+                    .and(new AttributePredicate<>(CertificatePredicates.STATUS, CertificateStatus.VALID)));
             certificateQuery.setLimit(1);
 
             Certificate certificate = KapuaSecurityUtils.doPrivileged(() -> certificateService.query(certificateQuery)).getItem(0);
