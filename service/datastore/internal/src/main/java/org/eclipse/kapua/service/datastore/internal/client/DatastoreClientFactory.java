@@ -16,6 +16,7 @@ import org.eclipse.kapua.service.datastore.client.DatastoreClient;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.eclipse.kapua.service.datastore.client.ClientException;
 import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
 import org.eclipse.kapua.service.datastore.internal.converter.ModelContextImpl;
 import org.eclipse.kapua.service.datastore.internal.converter.QueryConverterImpl;
@@ -41,7 +42,6 @@ public class DatastoreClientFactory {
     }
 
     private DatastoreClientFactory() {
-
     }
 
     /**
@@ -79,6 +79,25 @@ public class DatastoreClientFactory {
             }
         }
         return instance;
+    }
+
+    /**
+     * Close the client instance
+     * 
+     * @throws ClientException
+     */
+    public static void close() throws ClientException {
+        if (instance != null) {
+            synchronized (DatastoreClientFactory.class) {
+                if (instance != null) {
+                    try {
+                        instance.close();
+                    } finally {
+                        instance = null;
+                    }
+                }
+            }
+        }
     }
 
 }
