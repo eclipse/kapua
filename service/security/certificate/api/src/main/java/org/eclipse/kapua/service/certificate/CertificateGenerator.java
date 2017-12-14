@@ -20,6 +20,8 @@ import javax.xml.bind.annotation.XmlType;
 import java.util.Date;
 import java.util.Set;
 
+import org.eclipse.kapua.service.certificate.xml.CertificateXmlRegistry;
+
 /**
  * {@link CertificateGenerator} encapsulates all the information needed to generate a new Certificate in the system.
  *
@@ -36,7 +38,7 @@ import java.util.Set;
         "notAfter",
         "status",
         "certificateUsages"
-})
+}, factoryClass = CertificateXmlRegistry.class, factoryMethod = "newCertificateGenerator")
 public interface CertificateGenerator {
 
     String getName();
