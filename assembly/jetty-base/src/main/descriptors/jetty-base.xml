@@ -9,17 +9,36 @@
 
     Contributors:
         Red Hat Inc - initial API and implementation
+        Eurotech
 -->
 <assembly
-    xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+        xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
 
     <id>jetty-base</id>
 
     <formats>
         <format>tar.gz</format>
     </formats>
+
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>var/lib/jetty/webapps/root/WEB-INF/lib/</outputDirectory>
+            <unpack>false</unpack>
+            <scope>runtime</scope>
+            <useProjectArtifact>false</useProjectArtifact>
+            <useTransitiveDependencies>false</useTransitiveDependencies>
+            <fileMode>0644</fileMode>
+
+            <includes>
+                <include>org.slf4j:slf4j-api</include>
+                <include>ch.qos.logback:logback-core</include>
+                <include>ch.qos.logback:logback-classic</include>
+            </includes>
+
+        </dependencySet>
+    </dependencySets>
 
     <fileSets>
         <fileSet>

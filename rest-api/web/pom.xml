@@ -10,7 +10,8 @@
     Contributors:
         Eurotech - initial API and implementation
  -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.eclipse.kapua</groupId>
@@ -18,9 +19,9 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>kapua-rest-api-web</artifactId>
-    
+
     <packaging>war</packaging>
-    
+
     <properties>
         <jersey.version>2.23.2</jersey.version>
         <swagger.version>1.5.12</swagger.version>
@@ -106,7 +107,7 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-message-internal</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-security-shiro</artifactId>
@@ -206,7 +207,7 @@
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
         </dependency>
-        
+
         <!-- use logback only for testing -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -220,7 +221,7 @@
             <artifactId>slf4j-api</artifactId>
             <scope>provided</scope>
         </dependency>
-    
+
         <!-- Elasticsearch Dependencies -->
         <dependency>
             <groupId>org.elasticsearch</groupId>
@@ -256,14 +257,14 @@
             <version>${elasticsearch-client-transport.version}</version>
         </dependency>
         <!-- log4j2 for ES -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-to-slf4j</artifactId>
-        </dependency>
+        <!--<dependency>-->
+        <!--<groupId>org.apache.logging.log4j</groupId>-->
+        <!--<artifactId>log4j-api</artifactId>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+        <!--<groupId>org.apache.logging.log4j</groupId>-->
+        <!--<artifactId>log4j-to-slf4j</artifactId>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-request-api</artifactId>
@@ -329,17 +330,17 @@
                             <target>
                                 <echo>Swagger-ui: create doc dir</echo>
                                 <copy todir="${project.build.directory}/${project.build.finalName}/doc">
-                                    <fileset dir="${project.build.directory}/tmp/swagger-ui/" />
+                                    <fileset dir="${project.build.directory}/tmp/swagger-ui/"/>
                                 </copy>
                                 <echo>Swagger-ui-lib: create lib dir for swagger-ui</echo>
                                 <copy todir="${project.build.directory}/${project.build.finalName}/doc/lib">
-                                    <fileset dir="${project.build.directory}/tmp/swagger-ui-lib/" />
+                                    <fileset dir="${project.build.directory}/tmp/swagger-ui-lib/"/>
                                 </copy>
                             </target>
                         </configuration>
                     </execution>
                 </executions>
-                
+
             </plugin>
 
             <!-- To help IntelliJ IDEA correctly recognize the source path when using Maven Auto Import -->
