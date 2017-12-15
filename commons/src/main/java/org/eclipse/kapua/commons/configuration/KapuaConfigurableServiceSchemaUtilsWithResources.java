@@ -18,8 +18,6 @@ import org.eclipse.kapua.commons.jpa.ResourceSqlScriptExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-
 /**
  * Configurable service database schema utilities with resources based
  * SQL scripts.
@@ -49,8 +47,7 @@ public class KapuaConfigurableServiceSchemaUtilsWithResources {
             em.beginTransaction();
 
             ResourceSqlScriptExecutor sqlScriptExecutor = new ResourceSqlScriptExecutor();
-            String sep = String.valueOf(File.separatorChar);
-            sqlScriptExecutor.addQuery(path + sep + filename);
+            sqlScriptExecutor.addQuery(path + "/" + filename);
             sqlScriptExecutor.executeUpdate(em);
 
             em.commit();
