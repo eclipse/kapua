@@ -23,12 +23,15 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GroupingView;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.KapuaGrid;
+import org.eclipse.kapua.app.console.module.api.client.ui.panel.ContentPanel;
 import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
@@ -43,6 +46,8 @@ public abstract class EntityDescriptionTabItem<M extends GwtEntityModel> extends
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
+    private ContentPanel contentPanel;
+    private ToolBar toolbar;
     private Grid<GwtGroupedNVPair> descriptionGrid;
     private GroupingStore<GwtGroupedNVPair> descriptionValuesStore;
     private BaseListLoader<ListLoadResult<GwtGroupedNVPair>> descriptionValuesloader;
@@ -55,6 +60,11 @@ public abstract class EntityDescriptionTabItem<M extends GwtEntityModel> extends
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
 
+        contentPanel = new ContentPanel();
+        contentPanel.setBodyBorder(false);
+        contentPanel.setBorders(false);
+        contentPanel.setHeaderVisible(false);
+        contentPanel.setLayout(new FitLayout());
         //
         // Container borders
         setBorders(true);
@@ -101,7 +111,14 @@ public abstract class EntityDescriptionTabItem<M extends GwtEntityModel> extends
         descriptionGrid.setView(groupingView);
 
         this.setStyleAttribute("border-top-width: 0px", "!important;");
-        add(descriptionGrid);
+
+        toolbar = getToolbar();
+        if (toolbar != null) {
+            contentPanel.setTopComponent(toolbar);
+        }
+        contentPanel.add(descriptionGrid);
+
+        add(contentPanel);
     }
 
     @Override
@@ -140,5 +157,9 @@ public abstract class EntityDescriptionTabItem<M extends GwtEntityModel> extends
             super.loaderLoadException(le);
             descriptionGrid.unmask();
         }
+    }
+
+    protected ToolBar getToolbar() {
+        return null;
     }
 }
