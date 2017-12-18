@@ -13,6 +13,7 @@ package org.eclipse.kapua.commons.event.jms;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -28,13 +29,15 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
+import javax.naming.Context;
+import javax.naming.NamingException;
 
 import org.apache.commons.pool2.BasePooledObjectFactory;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
-import org.apache.qpid.jms.JmsConnectionFactory;
+import org.apache.qpid.jms.jndi.JmsInitialContextFactory;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.event.ServiceEventBusDriver;
@@ -45,10 +48,10 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
-import org.eclipse.kapua.event.ServiceEventBusListener;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.event.ServiceEventBusException;
+import org.eclipse.kapua.event.ServiceEventBusListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,6 +70,7 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
     private final static int PRODUCER_POOL_EVICTION_INTERVAL = SystemSetting.getInstance().getInt(SystemSettingKey.EVENT_BUS_PRODUCER_EVICTION_INTERVAL);
     private final static int CONSUMER_POOL_SIZE = SystemSetting.getInstance().getInt(SystemSettingKey.EVENT_BUS_CONSUMER_POOL_SIZE);
     private final static String MESSAGE_SERIALIZER = SystemSetting.getInstance().getString(SystemSettingKey.EVENT_BUS_MESSAGE_SERIALIZER);
+    private final static String TRANSPORT_USE_EPOLL = SystemSetting.getInstance().getString(SystemSettingKey.EVENT_BUS_TRANSPORT_USE_EPOLL);
 
     private List<Subscription> subscriptionList = new ArrayList<>();
     private EventBusJMSConnectionBridge eventBusJMSConnectionBridge;
@@ -77,9 +81,17 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
      * 
      * @throws ServiceEventBusException
      * @throws JMSException
+     * @throws NamingException 
      */
-    public JMSServiceEventBus() throws ServiceEventBusException, JMSException {
-        eventBusJMSConnectionBridge = new EventBusJMSConnectionBridge(this);
+    public JMSServiceEventBus() throws JMSException, NamingException {
+        try {
+            eventBusJMSConnectionBridge = new EventBusJMSConnectionBridge(this);
+        } catch (JMSException|NamingException e) {
+            // Since the class is instantiated by the means of the ServiceLoader,
+            // adding a log message here is helpful.
+            LOGGER.error(e.getMessage(), e);
+            throw e;
+        }
     }
 
     @Override
@@ -189,7 +201,7 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
             instanceToCleanUp = eventBusJMSConnectionBridge;
             eventBusJMSConnectionBridge = newInstance;
         } catch (Throwable t) {
-            throw t;
+            throw new ServiceEventBusException(t);
         }
         finally {
             try {
@@ -213,11 +225,18 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
         private Connection jmsConnection;
         private Map<String, SenderPool> senders = new HashMap<>();
 
-        public EventBusJMSConnectionBridge(ExceptionListener exceptionListener) throws JMSException {
+        public EventBusJMSConnectionBridge(ExceptionListener exceptionListener) throws JMSException, NamingException {
             String eventbusUrl = SystemSetting.getInstance().getString(SystemSettingKey.EVENT_BUS_URL);
             String eventbusUsername = SystemSetting.getInstance().getString(SystemSettingKey.EVENT_BUS_USERNAME);
             String eventbusPassword = SystemSetting.getInstance().getString(SystemSettingKey.EVENT_BUS_PASSWORD);
-            ConnectionFactory jmsConnectionFactory = new JmsConnectionFactory(eventbusUrl);
+
+            Hashtable<String, String> environment = new Hashtable<>();
+            environment.put("connectionfactory.eventBusUrl", eventbusUrl);
+            environment.put("transport.useEpoll", TRANSPORT_USE_EPOLL);
+
+            JmsInitialContextFactory initialContextFactory = new JmsInitialContextFactory();
+            Context context = initialContextFactory.getInitialContext(environment);
+            ConnectionFactory jmsConnectionFactory = (ConnectionFactory) context.lookup("eventBusUrl");
 
             jmsConnection = jmsConnectionFactory.createConnection(eventbusUsername, eventbusPassword);
             jmsConnection.setExceptionListener(exceptionListener);

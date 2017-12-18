@@ -69,6 +69,10 @@ public class ServiceEventBusManager {
         if (!started) {
             throw new ServiceEventBusException("The event bus isn't initialized! Cannot perform any operation!");
         }
+
+        // Currently hard wired to use the provided instance of JMS_20_EVENT_BUS
+        // May be extended in future versions
+
         if (serviceEventBusDrivers.get(JMS_20_EVENT_BUS) == null) {
             throw new ServiceEventBusException(String.format("No eventbus drivers found for type %s", JMS_20_EVENT_BUS));
         }

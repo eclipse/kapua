@@ -222,6 +222,11 @@ public enum SystemSettingKey implements SettingKey {
     EVENT_BUS_MESSAGE_SERIALIZER("commons.eventbus.messageSerializer"),
 
     /**
+     * If true the transport will use the native Epoll layer when available instead of the NIO layer.
+     */
+    EVENT_BUS_TRANSPORT_USE_EPOLL("commons.eventbus.transport.useEpoll"),
+
+    /**
      * Wait time between housekeeper executions (in milliseconds)
      */
     HOUSEKEEPER_EXECUTION_WAIT_TIME("commons.eventbus.houskeeper.waitTime"),
