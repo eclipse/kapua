@@ -20,8 +20,8 @@
     <changeSet id="changelog-trigger-foreignkey-0.3.0" author="eurotech">
         <preConditions onFail="CONTINUE">
             <and>
-                <tableExists tableName="schdl_trigger" schemaName="KAPUADB"/>
-                <tableExists tableName="act_account" schemaName="KAPUADB"/>
+                <tableExists tableName="schdl_trigger"/>
+                <tableExists tableName="act_account"/>
             </and>
         </preConditions>
         <addForeignKeyConstraint constraintName="fk_schdl_trigger_scopeId"

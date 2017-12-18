@@ -19,8 +19,8 @@
     <changeSet id="changelog-job-step-definition-foreignkey-0.3.0" author="eurotech">
         <preConditions onFail="CONTINUE">
             <and>
-                <tableExists tableName="job_job_step_definition" schemaName="KAPUADB"/>
-                <tableExists tableName="act_account" schemaName="KAPUADB"/>
+                <tableExists tableName="job_job_step_definition"/>
+                <tableExists tableName="act_account"/>
             </and>
         </preConditions>
         <addForeignKeyConstraint constraintName="fk_job_job_step_definition_scopeId"

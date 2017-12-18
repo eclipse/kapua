@@ -11,22 +11,15 @@
         Eurotech - initial API and implementation
  -->
 <databaseChangeLog
-  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
-  logicalFilePath="KapuaDB/changelog-tag-0.3.0.xml">
+        logicalFilePath="KapuaDB/changelog-tag-0.3.0.xml">
 
-    <include relativeToChangelogFile="true" file="../common-properties.xml" />
+    <include relativeToChangelogFile="true" file="../common-properties.xml"/>
 
     <changeSet id="changelog-tag-0.3.0_createTable" author="eurotech">
-        <!-- Old SQL file
-        <sqlFile relativeToChangelogFile="true" path="./tag.sql" />
-        -->
-        <preConditions onFail="MARK_RAN">
-            <not><tableExists tableName="tag_tag"></tableExists></not>
-        </preConditions>
-        
         <createTable tableName="tag_tag">
             <column name="scope_id" type="bigint(21) unsigned">
                 <constraints nullable="false" checkConstraint=">= 0"/>
@@ -46,21 +39,21 @@
             <column name="modified_by" type="bigint(21) unsigned">
                 <constraints nullable="false" checkConstraint=">= 0"/>
             </column>
-            
+
             <column name="name" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            
-            <column name="optlock" type="int unsigned" />
-            <column name="attributes" type="text" />
-            <column name="properties" type="text" />
+
+            <column name="optlock" type="int unsigned"/>
+            <column name="attributes" type="text"/>
+            <column name="properties" type="text"/>
         </createTable>
 
         <createIndex tableName="tag_tag" indexName="idx_tag_name" unique="true">
             <column name="scope_id"/>
             <column name="name"/>
         </createIndex>
-        
+
         <rollback>
             <dropIndex tableName="tag_tag" indexName="idx_tag_name"/>
             <dropTable tableName="tag_tag"/>
