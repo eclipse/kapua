@@ -11,16 +11,16 @@
         Eurotech - initial API and implementation
  -->
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
-    logicalFilePath="KapuaDB/changelog-foreignkeys-0.3.0.xml">
+                   logicalFilePath="KapuaDB/changelog-foreignkeys-0.3.0.xml">
 
     <changeSet id="changelog-athz_role-foreignkey-0.3.0" author="eurotech">
         <preConditions onFail="CONTINUE">
             <and>
-                <tableExists tableName="athz_role" schemaName="KAPUADB"/>
-                <tableExists tableName="act_account" schemaName="KAPUADB"/>
+                <tableExists tableName="athz_role"/>
+                <tableExists tableName="act_account"/>
             </and>
         </preConditions>
         <addForeignKeyConstraint constraintName="fk_athz_role_scopeId"
