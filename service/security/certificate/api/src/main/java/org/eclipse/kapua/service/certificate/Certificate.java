@@ -46,7 +46,8 @@ import java.util.Set;
         "caId",
         "password",
         "certificateUsages",
-        "keyUsageSettings"
+        "keyUsageSettings",
+        "forwardable"
 }, factoryClass = CertificateXmlRegistry.class, factoryMethod = "newCertificate")
 public interface Certificate extends KapuaNamedEntity {
 
@@ -134,4 +135,8 @@ public interface Certificate extends KapuaNamedEntity {
     public void addCertificateUsage(CertificateUsage certificateUsage);
 
     public void removeCertificateUsage(CertificateUsage certificateUsage);
+
+    public Boolean getForwardable();
+
+    public void setForwardable(Boolean forwardable);
 }

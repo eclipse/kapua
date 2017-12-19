@@ -235,4 +235,12 @@ public class CertificateImpl extends AbstractKapuaUpdatableEntity implements Cer
     public void removeCertificateUsage(CertificateUsage certificateUsage) {
         getCertificateUsages().remove(CertificateUsageImpl.parse(certificateUsage));
     }
+
+    @Override
+    public Boolean getForwardable() {
+        return null;
+    }
+
+    @Override
+    public void setForwardable(Boolean forwardable) { }
 }
