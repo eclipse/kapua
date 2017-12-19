@@ -22,6 +22,17 @@ services:
     ports:
     - 8181:8181
     - 3306:3306
+  es:
+    image: elasticsearch:5.4.0
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      - cluster.name=kapua-datastore
+      - discovery.type=single-node
+      - transport.host=_site_
+      - transport.ping_schedule=-1
+      - transport.tcp.connect_timeout=30s
   events-broker:
     image: enmasseproject/activemq-artemis:2.2.0-1
     ports:
