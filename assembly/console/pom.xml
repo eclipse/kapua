@@ -280,27 +280,6 @@
             <artifactId>tomcat-websocket-api</artifactId>
             <version>8.0.38</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.qpid</groupId>
-            <artifactId>qpid-jms-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-jms_2.0_spec</artifactId>
-            <version>1.0-alpha-2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.qpid</groupId>
-            <artifactId>proton-j</artifactId>
-            <version>${qpid-proton.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-transport-native-epoll</artifactId>
-            <!-- used both by qpid and elasticsearch -->
-            <version>${elasticsearch-netty-4.version}</version>
-        </dependency>
     </dependencies>
 
     <build>
