@@ -44,6 +44,7 @@ import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigParameter;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountCreator;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountQuery;
@@ -126,6 +127,13 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
 
             // create the Account
             AccountService accountService = locator.getService(AccountService.class);
+            AccountQuery query = accountFactory.newQuery(parentAccountId);
+            AccountListResult list = accountService.query(query);
+            for (Account account : list.getItems()) {
+                if (account.getName().equals(gwtAccountCreator.getAccountName())) {
+                    throw new KapuaDuplicateNameException(gwtAccountCreator.getAccountName());
+                }
+            }
             Account account = accountService.create(accountCreator);
 
             // convertKapuaId to GwtAccount and return

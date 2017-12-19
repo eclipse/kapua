@@ -75,4 +75,8 @@ public enum KapuaErrorCodes implements KapuaErrorCode {
      * User unauthorized
      */
     SUBJECT_UNAUTHORIZED,
+    /**
+     * Entity already exist in another account
+     */
+    ENTITY_ALREADY_EXIST_IN_ANOTHER_ACCOUNT
 }
