@@ -12,6 +12,7 @@
 package org.eclipse.kapua.service.certificate.internal;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.google.common.base.Strings;
@@ -138,7 +139,7 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public CertificateListResult findAncestorsCertificates(KapuaId scopeId) {
+    public List<Certificate> findAncestorsCertificates(KapuaId scopeId, CertificateUsage usage) {
         throw new UnsupportedOperationException();
     }
 }
