@@ -19,6 +19,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.user.UserStatus;
 import org.eclipse.kapua.service.user.UserType;
 
@@ -35,11 +37,11 @@ public class TestUser {
 
     private String phoneNumber;
 
-    private UserStatus status;
+    private String status;
 
-    private UserType userType;
+    private String userType;
 
-    private BigInteger scopeId;
+    private int scopeId;
 
     private String password;
 
@@ -86,26 +88,44 @@ public class TestUser {
     }
 
     public UserStatus getStatus() {
-        return status;
+
+        if (status == null) {
+            return null;
+        }
+
+        switch (status.trim().toUpperCase()) {
+            case "ENABLED": return UserStatus.ENABLED;
+            case "DISABLED": return UserStatus.DISABLED;
+            default: return null;
+        }
     }
 
-    public void setStatus(UserStatus status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
     public UserType getUserType() {
-        return userType;
+
+        if (userType == null) {
+            return null;
+        }
+
+        switch (userType.trim().toUpperCase()) {
+            case "DEVICE": return UserType.DEVICE;
+            case "INTERNAL": return UserType.INTERNAL;
+            case "EXTERNAL": return UserType.EXTERNAL;
+            default: return null;
+        }
     }
 
-    public void setUserType(UserType userType) {
+    public void setUserType(String userType) {
         this.userType = userType;
     }
 
-    public BigInteger getScopeId() {
-        return scopeId;
-    }
+    public KapuaId getScopeId() {
+        return new KapuaEid(BigInteger.valueOf(scopeId)); }
 
-    public void setScopeId(BigInteger scopeId) {
+    public void setScopeId(int scopeId) {
         this.scopeId = scopeId;
     }
 

@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.user.internal;
+package org.eclipse.kapua.service.user.test;
 
 import cucumber.api.CucumberOptions;
 import org.eclipse.kapua.test.cucumber.CucumberProperty;
@@ -18,10 +18,16 @@ import org.junit.runner.RunWith;
 
 @RunWith(CucumberWithProperties.class)
 @CucumberOptions(
-        features = "classpath:features",
-        plugin = { "pretty", "html:target/cucumber",
-                "json:target/cucumber.json" },
-        monochrome = true)
+        features = "classpath:features/UserService.feature",
+        glue = { "org.eclipse.kapua.qa.steps",
+                 "org.eclipse.kapua.service.user.steps"
+               },
+        plugin = {"pretty",
+                  "html:target/cucumber",
+                  "json:target/cucumber.json"
+                 },
+        monochrome = true )
 @CucumberProperty(key="locator.class.impl", value="org.eclipse.kapua.test.MockedLocator")
+@CucumberProperty(key="test.type", value="unit")
 public class RunTest {
 }
