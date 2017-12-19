@@ -37,7 +37,8 @@ import org.eclipse.kapua.service.certificate.xml.CertificateXmlRegistry;
         "notBefore",
         "notAfter",
         "status",
-        "certificateUsages"
+        "certificateUsages",
+        "forwardable"
 }, factoryClass = CertificateXmlRegistry.class, factoryMethod = "newCertificateGenerator")
 public interface CertificateGenerator {
 
@@ -74,4 +75,8 @@ public interface CertificateGenerator {
     Set<CertificateUsage> getCertificateUsages();
 
     void setCertificateUsages(Set<CertificateUsage> certificateUsages);
+
+    public Boolean getForwardable();
+
+    public void setForwardable(Boolean forwardable);
 }

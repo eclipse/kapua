@@ -37,7 +37,8 @@ import java.util.Set;
         "privateKey",
         "caId",
         "password",
-        "certificateUsages"
+        "certificateUsages",
+        "forwardable"
 }, factoryClass = CertificateXmlRegistry.class, factoryMethod = "newCreator")
 public interface CertificateCreator extends KapuaNamedEntityCreator<Certificate> {
 
@@ -67,4 +68,7 @@ public interface CertificateCreator extends KapuaNamedEntityCreator<Certificate>
 
     public void setCertificateUsages(Set<CertificateUsage> certificateUsages);
 
+    public Boolean getForwardable();
+
+    public void setForwardable(Boolean forwardable);
 }
