@@ -136,4 +136,9 @@ public class CertificateServiceImpl implements CertificateService {
     public Certificate generate(CertificateGenerator generator) throws KapuaException {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public CertificateListResult findAncestorsCertificates(KapuaId scopeId) {
+        throw new UnsupportedOperationException();
+    }
 }
