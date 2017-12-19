@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate;
 
+import java.util.List;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -32,5 +34,5 @@ public interface CertificateService extends KapuaEntityService<Certificate, Cert
 
     Certificate generate(CertificateGenerator generator) throws KapuaException;
 
-    CertificateListResult findAncestorsCertificates(KapuaId scopeId);
+    List<Certificate> findAncestorsCertificates(KapuaId scopeId, CertificateUsage usage) throws KapuaException;
 }
