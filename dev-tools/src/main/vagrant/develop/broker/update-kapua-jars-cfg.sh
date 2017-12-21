@@ -21,7 +21,9 @@ echo 'create the symbolic links to Kapua jars DONE'
 echo 'remove old config links'
 rm /usr/local/activemq/apache-activemq-ACTIVEMQ_VERSION/conf/activemq.xml
 rm /usr/local/activemq/apache-activemq-ACTIVEMQ_VERSION/conf/camel.xml
+rm /usr/local/activemq/apache-activemq-ACTIVEMQ_VERSION/conf/locator.xml
 echo 'create new config links'
 ln -s /kapua/assembly/broker/src/main/resources/conf/broker/activemq.xml /usr/local/activemq/apache-activemq-ACTIVEMQ_VERSION/conf/activemq.xml
 ln -s /kapua/assembly/broker/src/main/resources/conf/broker/camel.xml /usr/local/activemq/apache-activemq-ACTIVEMQ_VERSION/conf/camel.xml
+ln -s /kapua/assembly/broker/src/main/resources/conf/broker/locator.xml /usr/local/activemq/apache-activemq-ACTIVEMQ_VERSION/conf/locator.xml
 ln -s /kapua/assembly/broker/src/main/resources/conf/broker/logback.xml /usr/local/activemq/apache-activemq-ACTIVEMQ_VERSION/conf/logback.xml
