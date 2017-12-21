@@ -11,18 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.message;
 
-import java.util.Map;
+import org.eclipse.kapua.message.xml.MessageXmlRegistry;
+import org.eclipse.kapua.message.xml.MetricsXmlAdapter;
+import org.eclipse.kapua.model.xml.BinaryXmlAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlInlineBinaryData;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.eclipse.kapua.message.xml.MessageXmlRegistry;
-import org.eclipse.kapua.message.xml.MetricsXmlAdapter;
+import java.util.Map;
 
 /**
  * Kapua message payload object definition.
@@ -59,7 +58,7 @@ public interface KapuaPayload extends Payload {
      * @return
      */
     @XmlElement(name = "body")
-    @XmlInlineBinaryData
+    @XmlJavaTypeAdapter(BinaryXmlAdapter.class)
     public byte[] getBody();
 
     /**

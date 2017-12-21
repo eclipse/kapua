@@ -15,13 +15,13 @@ import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.model.xml.BinaryXmlAdapter;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
 import org.eclipse.kapua.service.certificate.xml.CertificateXmlRegistry;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlInlineBinaryData;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -96,8 +96,8 @@ public interface Certificate extends KapuaNamedEntity {
 
     public void setStatus(CertificateStatus status);
 
-    @XmlInlineBinaryData
     @XmlElement(name = "signature")
+    @XmlJavaTypeAdapter(BinaryXmlAdapter.class)
     public byte[] getSignature();
 
     public void setSignature(byte[] signature);
