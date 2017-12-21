@@ -12,9 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.commons.call;
 
+import org.eclipse.kapua.service.device.call.message.app.response.DeviceResponseCode;
 import org.eclipse.kapua.service.device.call.message.app.response.DeviceResponseMessage;
 import org.eclipse.kapua.service.device.call.message.app.response.DeviceResponsePayload;
-import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponseCode;
 import org.eclipse.kapua.service.device.management.commons.exception.DeviceManagementErrorCodes;
 import org.eclipse.kapua.service.device.management.commons.exception.DeviceManagementException;
 
@@ -22,11 +22,8 @@ import org.eclipse.kapua.service.device.management.commons.exception.DeviceManag
  * Device application call response handler.<br>
  * This handler gets the call response from a device and convert it to the expected object type.
  *
- * @param <T>
- *            expected response type
- *
+ * @param <T> expected response type
  * @since 1.0
- *
  */
 public abstract class AbstractDeviceApplicationCallResponseHandler<T> {
 
@@ -42,20 +39,16 @@ public abstract class AbstractDeviceApplicationCallResponseHandler<T> {
         if (responseMessage != null) {
             DeviceResponsePayload responsePayload = responseMessage.getPayload();
             if (responsePayload != null) {
-                KuraResponseCode responseCode = responsePayload.getResponseCode();
+                DeviceResponseCode responseCode = responsePayload.getResponseCode();
 
-                switch (responseCode) {
-                case ACCEPTED:
+                if (responseCode.isAccepted()) {
                     return handleAcceptedRequest(responseMessage);
-                case BAD_REQUEST:
+                } else if (responseCode.isAccepted()) {
                     handleBadRequestReply(responseMessage);
-                    break;
-                case INTERNAL_ERROR:
-                    handleDeviceInternalErrorReply(responseMessage);
-                    break;
-                case NOT_FOUND:
+                } else if (responseCode.isAccepted()) {
                     handleNotFoundReply(responseMessage);
-                    break;
+                } else if (responseCode.isAccepted()) {
+                    handleDeviceInternalErrorReply(responseMessage);
                 }
             }
         }
@@ -82,7 +75,7 @@ public abstract class AbstractDeviceApplicationCallResponseHandler<T> {
     protected void handleBadRequestReply(DeviceResponseMessage<?, ?> responseMessage)
             throws DeviceManagementException {
         DeviceResponsePayload responsePayload = responseMessage.getPayload();
-        KuraResponseCode responseCode = responsePayload.getResponseCode();
+        DeviceResponseCode responseCode = responsePayload.getResponseCode();
 
         throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_BAD_REQUEST,
                 null,
@@ -100,7 +93,7 @@ public abstract class AbstractDeviceApplicationCallResponseHandler<T> {
     protected void handleDeviceInternalErrorReply(DeviceResponseMessage<?, ?> responseMessage)
             throws DeviceManagementException {
         DeviceResponsePayload responsePayload = responseMessage.getPayload();
-        KuraResponseCode responseCode = responsePayload.getResponseCode();
+        DeviceResponseCode responseCode = responsePayload.getResponseCode();
 
         throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_INTERNAL_ERROR,
                 null,
@@ -118,7 +111,7 @@ public abstract class AbstractDeviceApplicationCallResponseHandler<T> {
     protected void handleNotFoundReply(DeviceResponseMessage<?, ?> responseMessage)
             throws DeviceManagementException {
         DeviceResponsePayload responsePayload = responseMessage.getPayload();
-        KuraResponseCode responseCode = responsePayload.getResponseCode();
+        DeviceResponseCode responseCode = responsePayload.getResponseCode();
 
         throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_NOT_FOUND,
                 null,
@@ -126,5 +119,4 @@ public abstract class AbstractDeviceApplicationCallResponseHandler<T> {
                         responsePayload.getExceptionMessage(),
                         responsePayload.getExceptionStack() });
     }
-
 }
