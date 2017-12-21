@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.type;
 
-import javax.xml.bind.DatatypeConverter;
-
 public class ObjectValueConverter {
 
     private ObjectValueConverter() {
@@ -23,8 +21,10 @@ public class ObjectValueConverter {
         String stringValue = null;
         if (value != null) {
             Class<?> clazz = value.getClass();
-            if (clazz == byte[].class || clazz == Byte[].class) {
-                stringValue = DatatypeConverter.printBase64Binary((byte[]) value);
+            if (clazz == byte[].class) {
+                stringValue = ByteArrayConverter.toString((byte[]) value);
+            } else if (clazz == byte[].class) {
+                stringValue = ByteArrayConverter.toString((Byte[]) value);
             } else {
                 // String
                 // Integer
@@ -56,7 +56,7 @@ public class ObjectValueConverter {
             } else if (type == Boolean.class) {
                 value = Boolean.parseBoolean(stringValue);
             } else if (type == byte[].class || type == Byte[].class) {
-                value = DatatypeConverter.parseBase64Binary(stringValue);
+                value = ByteArrayConverter.fromString(stringValue);
             } else {
                 value = stringValue;
             }
