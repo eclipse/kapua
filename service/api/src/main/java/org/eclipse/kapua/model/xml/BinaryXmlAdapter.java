@@ -11,19 +11,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.xml;
 
-import org.eclipse.kapua.model.type.ObjectTypeConverter;
+import org.eclipse.kapua.model.type.ByteArrayConverter;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-public class ObjectTypeXmlAdapter extends XmlAdapter<String, Class<?>> {
+public class BinaryXmlAdapter extends XmlAdapter<String, byte[]> {
 
     @Override
-    public String marshal(Class<?> clazz) {
-        return ObjectTypeConverter.toString(clazz);
+    public String marshal(byte[] binary) {
+        return binary != null ? ByteArrayConverter.toString(binary) : null;
     }
 
     @Override
-    public Class<?> unmarshal(String value) throws ClassNotFoundException {
-        return ObjectTypeConverter.fromString(value);
+    public byte[] unmarshal(String binary) {
+        return binary != null ? ByteArrayConverter.fromString(binary) : null;
     }
 }
