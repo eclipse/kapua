@@ -51,7 +51,7 @@ import java.util.Set;
 }, factoryClass = CertificateXmlRegistry.class, factoryMethod = "newCertificate")
 public interface Certificate extends KapuaNamedEntity {
 
-    String TYPE = "certificate";
+    public static final String TYPE = "certificate";
 
     @Override
     default String getType() {
