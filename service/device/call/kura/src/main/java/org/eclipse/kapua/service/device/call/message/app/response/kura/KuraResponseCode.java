@@ -15,9 +15,8 @@ import org.eclipse.kapua.service.device.call.message.app.response.DeviceResponse
 
 /**
  * Kura device response code definition.
- * 
+ *
  * @since 1.0
- * 
  */
 public enum KuraResponseCode implements DeviceResponseCode {
     /**
@@ -41,7 +40,7 @@ public enum KuraResponseCode implements DeviceResponseCode {
 
     /**
      * Constructor
-     * 
+     *
      * @param code
      */
     KuraResponseCode(int code) {
@@ -50,7 +49,7 @@ public enum KuraResponseCode implements DeviceResponseCode {
 
     /**
      * Get the response code
-     * 
+     *
      * @return
      */
     public int getCode() {
@@ -59,7 +58,7 @@ public enum KuraResponseCode implements DeviceResponseCode {
 
     /**
      * Constructs a {@link KuraResponseCode} from a string representation
-     * 
+     *
      * @param responseCode
      * @return
      */
@@ -69,7 +68,7 @@ public enum KuraResponseCode implements DeviceResponseCode {
 
     /**
      * Constructs a {@link KuraResponseCode} from an integer representation
-     * 
+     *
      * @param responseCode
      * @return
      */
@@ -83,5 +82,25 @@ public enum KuraResponseCode implements DeviceResponseCode {
         }
 
         return result;
+    }
+
+    @Override
+    public boolean isAccepted() {
+        return ACCEPTED.equals(this);
+    }
+
+    @Override
+    public boolean isBadRequest() {
+        return BAD_REQUEST.equals(this);
+    }
+
+    @Override
+    public boolean isNotFound() {
+        return NOT_FOUND.equals(this);
+    }
+
+    @Override
+    public boolean isInternalError() {
+        return INTERNAL_ERROR.equals(this);
     }
 }
