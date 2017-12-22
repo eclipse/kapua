@@ -52,8 +52,36 @@ public enum ClientSettingsKey implements SettingKey {
     /**
      * Scroll timeout
      */
-    SCROLL_TIMEOUT("datastore.scroll.timeout");
-
+    SCROLL_TIMEOUT("datastore.scroll.timeout"),
+    /**
+     * Enable Elastichsearch client ssl connection (at the present only the rest client supports it)
+     */
+    ELASTICSEARCH_SSL_ENABLED("datastore.elasticsearch.ssl.enabled"),
+    /**
+     * Force Elastichsearch client to trust the server certificate on the ssl connection handshake so, if true, no check will be performed for the server certificate (at the present only the rest
+     * client supports it)
+     */
+    ELASTICSEARCH_SSL_TRUST_SERVER_CERTIFICATE("datastore.elasticsearch.ssl.trust_server_certificate"),
+    /**
+     * Set the keystore type
+     */
+    ELASTICSEARCH_SSL_KEYSTORE_TYPE("datastore.elasticsearch.ssl.keystore_type"),
+    /**
+     * Elastichsearch client key store path (at the present only the rest client supports it)
+     */
+    ELASTICSEARCH_SSL_KEYSTORE_PATH("datastore.elasticsearch.ssl.keystore_path"),
+    /**
+     * Elastichsearch client key store password (at the present only the rest client supports it)
+     */
+    ELASTICSEARCH_SSL_KEYSTORE_PASSWORD("datastore.elasticsearch.ssl.keystore_password"),
+    /**
+     * Elastichsearch client trust store path (at the present only the rest client supports it)
+     */
+    ELASTICSEARCH_SSL_TRUSTSTORE_PATH("datastore.elasticsearch.ssl.truststore_path"),
+    /**
+     * Elastichsearch client trust store password (at the present only the rest client supports it)
+     */
+    ELASTICSEARCH_SSL_TRUSTSTORE_PASSWORD("datastore.elasticsearch.ssl.truststore_password");
 
     private String key;
 
