@@ -430,6 +430,9 @@
                                             <runCmd>
                                                 chown -R kapua:kapua /home/kapua
                                             </runCmd>
+                                            <runCmd>
+                                               chmod og+rwx /home/kapua
+                                            </runCmd>
                                         </runCmds>
                                     </build>
                                 </image>
