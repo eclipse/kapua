@@ -17,12 +17,11 @@ import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.google.gwt.resources.client.ImageResource;
 
 public class InfoDialog extends KapuaDialog {
 
     public enum InfoDialogType {
-        SUCCESS, INFO, ERROR;
+        SUCCESS, INFO, ERROR
     }
 
     private String headerMessage;
@@ -56,15 +55,15 @@ public class InfoDialog extends KapuaDialog {
         this.infoMessage = infoMessage;
     }
 
-    public InfoDialog(ImageResource headerIcon,
+    public InfoDialog(
             String headerMessage,
-            ImageResource infoIcon,
+            KapuaIcon infoIcon,
             String infoMessage) {
         super();
 
         this.headerMessage = headerMessage;
         this.infoMessage = infoMessage;
-
+        this.infoIcon = infoIcon;
         setWidth(450);
     }
 

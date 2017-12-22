@@ -34,7 +34,7 @@ public abstract class SimpleDialog extends ActionDialog {
         bodyPanel.setBodyBorder(false);
         bodyPanel.setHeaderVisible(false);
         bodyPanel.setStyleAttribute("background-color", "#F0F0F0");
-        bodyPanel.setBodyStyle("background-color:transparent");
+        bodyPanel.setBodyStyle("background-color: #F0F0F0");
 
         createBody();
 
