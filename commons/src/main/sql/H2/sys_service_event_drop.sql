@@ -10,5 +10,5 @@
  *     Eurotech - initial API and implementation
  *******************************************************************************/
 
-DROP TABLE IF EXISTS sys_service_event;
-DROP TABLE IF EXISTS sys_service_event_housekeeping;
+DROP TABLE IF EXISTS SYS_EVENT_STORE;
+DROP TABLE IF EXISTS SYS_HOUSEKEEPER_RUN;

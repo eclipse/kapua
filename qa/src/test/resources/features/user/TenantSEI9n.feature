@@ -18,7 +18,7 @@ Feature: Tenant service with Service Events
   Scenario: Start event broker for all scenarios
 
   Scenario: To be defined
-
+    Given this step says to skip
     When I login as user with name "kapua-sys" and password "kapua-password"
     And I configure account service
       | type    | name                   | value |

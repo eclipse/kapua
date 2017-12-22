@@ -79,7 +79,6 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
     /**
      * Default constructor
      * 
-     * @throws ServiceEventBusException
      * @throws JMSException
      * @throws NamingException
      */

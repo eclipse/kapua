@@ -24,7 +24,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
 @Entity
-@Table(name = "sys_service_event_housekeeping")
+@Table(name = "SYS_HOUSEKEEPER_RUN")
 public class HousekeeperRun implements Serializable {
 
     private static final long serialVersionUID = 1900974835246471451L;

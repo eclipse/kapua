@@ -74,8 +74,8 @@ public class EmbeddedEventBroker {
             configuration.setJournalDirectory(DEFAULT_DATA_DIRECTORY);
             configuration.setSecurityEnabled(false);
             configuration.addAcceptorConfiguration("amqp", 
-                    "tcp://localhost:5672?protocols=AMQP");
-            configuration.addConnectorConfiguration("connector", "tcp://localhost:5672");
+                    "tcp://127.0.0.1:5672?protocols=AMQP");
+            configuration.addConnectorConfiguration("connector", "tcp://127.0.0.1:5672");
             JMSConfiguration jmsConfig = new JMSConfigurationImpl();
             ConnectionFactoryConfiguration cfConfig = new ConnectionFactoryConfigurationImpl().setName("cf").setConnectorNames(Arrays.asList("connector")).setBindings("cf");
             jmsConfig.getConnectionFactoryConfigurations().add(cfConfig);
