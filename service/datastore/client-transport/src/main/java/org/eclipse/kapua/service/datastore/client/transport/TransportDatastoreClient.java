@@ -92,6 +92,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
     private static final Logger logger = LoggerFactory.getLogger(TransportDatastoreClient.class);
 
     private static final String CLIENT_UNDEFINED_MSG = "Elasticsearch client must be not null";
+    private static final String CLIENT_CLEANUP_CANNOT_CLOSE_CLIENT_MSG = "Client instance is null. Cannot close the client!";
     private static final String CLIENT_CLEANUP_ERROR_MSG = "Cannot cleanup transport datastore driver. Cannot close Elasticsearch client instance";
     private static final String CLIENT_QUERY_PARSING_ERROR_MSG = "Cannot parse query!";
     private static final String CLIENT_CANNOT_DELETE_INDEX_ERROR_MSG = "Cannot delete indexes!";
@@ -121,6 +122,13 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
                 }
             }
         }
+        else if (instance.getClientProvider() == null) {
+            synchronized (TransportDatastoreClient.class) {
+                if (instance.getClientProvider() == null) {
+                    instance.initClientProvider();
+                }
+            }
+        }
         return instance;
     }
 
@@ -138,12 +146,20 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
                     if (esClientProvider != null) {
                         cleanupClient(true);
                     }
-                    logger.info("Starting Elasticsearch transport client...");
-                    esClientProvider = EsTransportClientProvider.init();
-                    logger.info("Starting Elasticsearch transport client... DONE");
+                    initClientProvider();
                 }
             }
         }
+    }
+
+    private void initClientProvider() throws ClientUnavailableException {
+        logger.info("Starting Elasticsearch transport client...");
+        esClientProvider = EsTransportClientProvider.init();
+        logger.info("Starting Elasticsearch transport client... DONE");
+    }
+
+    private ClientProvider<Client> getClientProvider() {
+        return esClientProvider;
     }
 
     @Override
@@ -168,9 +184,12 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
     private void cleanupClient(boolean raiseException) throws ClientUnavailableException {
         Throwable cause = null;
         try {
-            esClientProvider.getClient().close();
+            if (esClientProvider != null && esClientProvider.getClient() != null) {
+                esClientProvider.getClient().close();
+            } else {
+                logger.warn(CLIENT_CLEANUP_CANNOT_CLOSE_CLIENT_MSG);
+            }
             esClientProvider = null;
-            instance = null;
         } catch (Throwable e) {
             cause = e;
             logger.error(CLIENT_CLEANUP_ERROR_MSG, e);

@@ -105,6 +105,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
     private static final String CLIENT_CANNOT_PARSE_INDEX_RESPONSE_ERROR_MSG = "Cannot convert the indexes list";
     private static final String CLIENT_HITS_MAX_VALUE_EXCEDEED = "Total hits exceeds integer max value";
     private static final String CLIENT_UNDEFINED_MSG = "Elasticsearch client must be not null";
+    private static final String CLIENT_CLEANUP_CANNOT_CLOSE_CLIENT_MSG = "Client instance is null. Cannot close the client!";
     private static final String CLIENT_CLEANUP_ERROR_MSG = "Cannot cleanup rest datastore driver. Cannot close Elasticsearch client instance";
     private static final String CLIENT_COMMUNICATION_TIMEOUT_MSG = "Elasticsearch client timeout";
     private static final String CLIENT_GENERIC_ERROR_MSG = "Generic client error";
@@ -145,6 +146,13 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
                 }
             }
         }
+        else if (instance.getClientProvider() == null) {
+            synchronized (RestDatastoreClient.class) {
+                if (instance.getClientProvider() == null) {
+                    instance.initClientProvider();
+                }
+            }
+        }
         return instance;
     }
 
@@ -162,15 +170,23 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
                     if (esClientProvider != null) {
                         cleanupClient(true);
                     }
-                    logger.info("Starting Elasticsearch rest client...");
-                    esClientProvider = EsRestClientProvider.init();
-                    logger.info("Starting Elasticsearch rest client... DONE");
+                    initClientProvider();
                     restCallRuntimeExecCount = metricService.getCounter("datastore-rest-client", "rest-client", new String[]{"runtime_exc", "count"});
                     timeoutRetryCount = metricService.getCounter("datastore-rest-client", "rest-client", new String[]{"timeout_retry", "count"});
                     timeoutRetryLimitReachedCount = metricService.getCounter("datastore-rest-client", "rest-client", new String[] { "timeout_retry_limit_reached", "count" });
                 }
             }
         }
+    }
+
+    private void initClientProvider() throws ClientUnavailableException {
+        logger.info("Starting Elasticsearch rest client...");
+        esClientProvider = EsRestClientProvider.init();
+        logger.info("Starting Elasticsearch rest client... DONE");
+    }
+
+    private ClientProvider<RestClient> getClientProvider() {
+        return esClientProvider;
     }
 
     @Override
@@ -195,9 +211,12 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
     private void cleanupClient(boolean raiseException) throws ClientUnavailableException {
         Throwable cause = null;
         try {
-            esClientProvider.getClient().close();
+            if (esClientProvider != null && esClientProvider.getClient() != null) {
+                esClientProvider.getClient().close();
+            } else {
+                logger.warn(CLIENT_CLEANUP_CANNOT_CLOSE_CLIENT_MSG);
+            }
             esClientProvider = null;
-            instance = null;
         } catch (Throwable e) {
             cause = e;
             logger.error(CLIENT_CLEANUP_ERROR_MSG, e);
@@ -829,7 +848,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
     }
 
     private void checkClient() throws ClientUndefinedException {
-        if (esClientProvider.getClient() == null) {
+        if (esClientProvider == null || esClientProvider.getClient() == null) {
             throw new ClientUndefinedException(CLIENT_UNDEFINED_MSG);
         }
     }
