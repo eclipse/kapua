@@ -650,6 +650,9 @@
                                     chmod -R a+rw /maven && \
                                     find /maven -type d -exec chmod a+x {} +
                                     ]]></run>
+                                            <runCmd>
+                                               chmod og+rwx /home/kapua
+                                            </runCmd>
                                         </runCmds>
                                         <volumes>
                                             <volume>/maven/data</volume>
