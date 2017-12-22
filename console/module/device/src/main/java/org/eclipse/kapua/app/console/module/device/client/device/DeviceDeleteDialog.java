@@ -67,7 +67,7 @@ public class DeviceDeleteDialog extends EntityDeleteDialog {
                         // refresh(filterPredicates);
                         exitStatus = true;
                         // TODO
-                        // exitMessage = MSGS.dialogDeleteConfirmation();
+                         exitMessage = DEVICE_MSGS.dialogDeleteConfirmation();
                         hide();
                     }
                 }
