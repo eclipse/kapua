@@ -11,17 +11,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user.internal;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
-import org.eclipse.kapua.commons.event.ServiceEventListenerConfiguration;
+import org.eclipse.kapua.commons.event.ServiceEventClientConfiguration;
 import org.eclipse.kapua.commons.event.ServiceEventModule;
 import org.eclipse.kapua.commons.event.ServiceEventModuleConfiguration;
-import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.commons.event.ServiceInspector;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.internal.setting.KapuaUserSetting;
 import org.eclipse.kapua.service.user.internal.setting.KapuaUserSettingKeys;
 
-@KapuaProvider
+//@KapuaProvider
 public class UserServiceModule extends ServiceEventModule {
 
     @Inject
@@ -30,16 +32,10 @@ public class UserServiceModule extends ServiceEventModule {
     @Override
     protected ServiceEventModuleConfiguration initializeConfiguration() {
         KapuaUserSetting kas = KapuaUserSetting.getInstance();
-        ServiceEventListenerConfiguration[] selc = new ServiceEventListenerConfiguration[1];
-        selc[0] = new ServiceEventListenerConfiguration(
-                kas.getString(KapuaUserSettingKeys.ACCOUNT_EVENT_ADDRESS),
-                kas.getString(KapuaUserSettingKeys.USER_SUBSCRIPTION_NAME),
-                (serviceEvent) -> userService.onKapuaEvent(serviceEvent));
+        List<ServiceEventClientConfiguration> selc = ServiceInspector.getEventBusClients(userService, UserService.class);
         return new ServiceEventModuleConfiguration(
-                kas.getString(KapuaUserSettingKeys.USER_INTERNAL_EVENT_ADDRESS),
-                kas.getList(String.class, KapuaUserSettingKeys.USER_SERVICES_NAMES), 
+                kas.getString(KapuaUserSettingKeys.USER_EVENT_ADDRESS), 
                 UserEntityManagerFactory.getInstance(), 
-                selc);
+                selc.toArray(new ServiceEventClientConfiguration[0]));
     }
-
 }

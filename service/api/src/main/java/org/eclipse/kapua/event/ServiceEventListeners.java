@@ -11,23 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.event;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.ElementType;
-
-/**
- * Raise event definition
- * 
- * @since 1.0
- *
- */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface RaiseServiceEvent {
-    String service() default "";
-    String entityType() default "";
-    String operation() default "";
-    String note() default "";
+public @interface ServiceEventListeners {
+    ListenServiceEvent[] value();
 }

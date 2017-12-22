@@ -111,7 +111,6 @@ public class DeviceRegistryServiceMock implements DeviceRegistryService {
 
     }
 
-    @Override
     public void onKapuaEvent(ServiceEvent kapuaEvent) throws KapuaException {
         // TODO Auto-generated method stub
     }

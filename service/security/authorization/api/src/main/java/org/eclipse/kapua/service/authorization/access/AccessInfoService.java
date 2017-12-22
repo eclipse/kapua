@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,20 +15,19 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
-import org.eclipse.kapua.service.KapuaEventListenerService;
 import org.eclipse.kapua.service.user.User;
 
 /**
  * {@link AccessInfo} service definition.
- * 
+ *
  * @since 1.0.0
  */
-public interface AccessInfoService extends KapuaEntityService<AccessInfo, AccessInfoCreator>, KapuaEventListenerService {
+public interface AccessInfoService extends KapuaEntityService<AccessInfo, AccessInfoCreator> {
 
     /**
      * Creates a new {@link AccessInfo} entity.<br>
      * Is up to the implementation whether or not to check the existence of the referred {@link User} entity.
-     * 
+     *
      * @param accessInfoCreator
      *            The {@link AccessInfoCreator} form which create the {@link AccessInfo}
      * @return The created {@link AccessInfo} entity.
@@ -40,7 +39,7 @@ public interface AccessInfoService extends KapuaEntityService<AccessInfo, Access
 
     /**
      * Finds the {@link AccessInfo} by scope identifier and {@link AccessInfo} id.
-     * 
+     *
      * @param scopeId
      *            The scope id in which to search.
      * @param userId
@@ -54,7 +53,7 @@ public interface AccessInfoService extends KapuaEntityService<AccessInfo, Access
 
     /**
      * Finds the {@link AccessInfo} by scope identifier and {@link User} id.
-     * 
+     *
      * @param scopeId
      *            The scope id in which to search.
      * @param accessInfoId
@@ -68,7 +67,7 @@ public interface AccessInfoService extends KapuaEntityService<AccessInfo, Access
 
     /**
      * Returns the {@link AccessInfoListResult} with elements matching the provided query.
-     * 
+     *
      * @param query
      *            The {@link AccessInfoQuery} used to filter results.
      * @return The {@link AccessInfoListResult} with elements matching the query parameter.
@@ -80,7 +79,7 @@ public interface AccessInfoService extends KapuaEntityService<AccessInfo, Access
 
     /**
      * Returns the count of the {@link AccessInfo} elements matching the provided query.
-     * 
+     *
      * @param query
      *            The {@link AccessInfoQuery} used to filter results.
      * @return The count of the {@link AccessInfo} elements matching the provided query.
@@ -92,7 +91,7 @@ public interface AccessInfoService extends KapuaEntityService<AccessInfo, Access
 
     /**
      * Delete the {@link AccessInfo} by scope id and {@link AccessInfo} id.
-     * 
+     *
      * @param scopeId
      *            The scope id in which to delete.
      * @param accessInfoId

@@ -20,7 +20,7 @@
         author="eurotech">
         <!-- Seed values -->
         <insert tableName="sys_housekeeper_run">
-            <column name="service" value="user" />
+            <column name="service" value="org.eclipse.kapua.service.user.UserService" />
             <column name="last_run_on" valueComputed="${now}" />
             <column name="version" value="1" />
         </insert>

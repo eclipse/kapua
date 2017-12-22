@@ -21,11 +21,11 @@
 
     <changeSet id="changelog-housekeeper-run-1.0.0-createTable" author="eurotech">
         <createTable tableName="sys_housekeeper_run">
-            <column name="service" type="varchar(64)">
+            <column name="service" type="varchar(256)">
                 <constraints nullable="false" primaryKey="true" />
             </column>
             <column name="last_run_on" type="timestamp(3)" />
-            <column name="last_run_by" type="varchar(64)" />
+            <column name="last_run_by" type="varchar(256)" />
             <column name="version" type="bigint(21) unsigned" />
         </createTable>
 

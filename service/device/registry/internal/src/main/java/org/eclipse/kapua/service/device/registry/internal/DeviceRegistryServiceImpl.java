@@ -159,7 +159,8 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
         return device;
     }
 
-    @Override
+    //@ListenServiceEvent(fromAddress="account")
+    //@ListenServiceEvent(fromAddress="authorization")
     public void onKapuaEvent(ServiceEvent kapuaEvent) throws KapuaException {
         if (kapuaEvent == null) {
             //service bus error. Throw some exception?

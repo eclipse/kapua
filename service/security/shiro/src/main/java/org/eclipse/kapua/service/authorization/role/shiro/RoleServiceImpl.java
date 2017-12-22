@@ -193,7 +193,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         return entityManagerSession.onResult(em -> RoleDAO.count(em, query));
     }
 
-    @Override
+    //@ListenServiceEvent(fromAddress="account")
     public void onKapuaEvent(ServiceEvent kapuaEvent) throws KapuaException {
         if (kapuaEvent == null) {
             //service bus error. Throw some exception?

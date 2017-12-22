@@ -23,7 +23,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.event.RaiseServiceEvent;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -67,7 +66,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     }
 
     @Override
-    @RaiseServiceEvent
+    //@RaiseServiceEvent
     public User create(UserCreator userCreator)
             throws KapuaException {
         //
@@ -100,7 +99,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     }
 
     @Override
-    @RaiseServiceEvent
+    //@RaiseServiceEvent
     public User update(User user)
             throws KapuaException {
         // Validation of the fields
@@ -139,7 +138,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     }
 
     @Override
-    @RaiseServiceEvent
+    //@RaiseServiceEvent
     public void delete(KapuaId scopeId, KapuaId userId) throws KapuaException {
         // Validation of the fields
         ArgumentValidator.notNull(userId.getId(), "id");
@@ -255,10 +254,10 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         }
     }
 
-    @Override
+    //@ListenServiceEvent(fromAddress = "account")
     public void onKapuaEvent(ServiceEvent kapuaEvent) throws KapuaException {
         if (kapuaEvent == null) {
-            //service bus error. Throw some exception?
+            // service bus error. Throw some exception?
         }
         LOGGER.info("UserService: received kapua event from {}, operation {}", kapuaEvent.getService(), kapuaEvent.getOperation());
         if ("account".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {

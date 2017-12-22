@@ -25,12 +25,7 @@ public enum KapuaDeviceRegistrySettingKeys implements SettingKey {
      * The key value in the configuration resources.
      */
     DEVICE_REGISTRY_KEY("device_registry.key"),
-    DEVICE_INTERNAL_EVENT_ADDRESS("device.internalEventAddress"),
-    DEVICE_SERVICES_NAMES("device.servicesNames"),
-    ACCOUNT_EVENT_ADDRESS("account.eventAddress"),
-    AUTHORIZATION_EVENT_ADDRESS("authorization.eventAddress"),
-    DEVICE_REGISTRY_SUBSCRIPTION_NAME("deviceRegistry.subscriptionName"),
-    DEVICE_CONNECTION_SUBSCRIPTION_NAME("deviceConnection.subscriptionName");
+    DEVICE_EVENT_ADDRESS("device.eventAddress");
 
     private String key;
 

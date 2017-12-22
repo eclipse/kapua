@@ -13,15 +13,15 @@ package org.eclipse.kapua.commons.event;
 
 import org.eclipse.kapua.event.ServiceEventBusListener;
 
-public class ServiceEventListenerConfiguration {
+public class ServiceEventClientConfiguration {
 
     private String address;
-    private String subscriberName;
+    private String clientName;
     private ServiceEventBusListener eventListener;
 
-    public ServiceEventListenerConfiguration(String address, String subscriberName, ServiceEventBusListener eventListener) {
+    public ServiceEventClientConfiguration(String address, String subscriberName, ServiceEventBusListener eventListener) {
         this.address = address;
-        this.subscriberName = subscriberName;
+        this.clientName = subscriberName;
         this.eventListener = eventListener;
     }
 
@@ -29,8 +29,8 @@ public class ServiceEventListenerConfiguration {
         return address;
     }
 
-    public String getSubscriberName() {
-        return subscriberName;
+    public String getClientName() {
+        return clientName;
     }
 
     public ServiceEventBusListener getEventListener() {

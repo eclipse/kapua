@@ -43,10 +43,10 @@ import org.eclipse.kapua.service.authorization.permission.shiro.PermissionValida
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.eclipse.kapua.service.authorization.shiro.exception.KapuaAuthorizationErrorCodes;
 import org.eclipse.kapua.service.authorization.shiro.exception.KapuaAuthorizationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link AccessInfoService} implementation based on JPA.
@@ -225,7 +225,8 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
         });
     }
 
-    @Override
+    //@ListenServiceEvent(fromAddress="account")
+    //@ListenServiceEvent(fromAddress="user")
     public void onKapuaEvent(ServiceEvent kapuaEvent) throws KapuaException {
         if (kapuaEvent == null) {
             //service bus error. Throw some exception?

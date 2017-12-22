@@ -160,7 +160,7 @@ public class DomainServiceImpl extends AbstractKapuaService implements DomainSer
         return entityManagerSession.onResult(em -> DomainDAO.count(em, query));
     }
 
-    @Override
+    //@ListenServiceEvent(fromAddress="account")
     public void onKapuaEvent(ServiceEvent kapuaEvent) throws KapuaException {
         if (kapuaEvent == null) {
             //service bus error. Throw some exception?

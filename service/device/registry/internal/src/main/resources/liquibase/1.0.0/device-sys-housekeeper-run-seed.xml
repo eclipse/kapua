@@ -20,17 +20,17 @@
         author="eurotech">
         <!-- Seed values -->
         <insert tableName="sys_housekeeper_run">
-            <column name="service" value="deviceevent" />
+            <column name="service" value="org.eclipse.kapua.service.device.registry.event.DeviceEventService" />
             <column name="last_run_on" valueComputed="${now}" />
             <column name="version" value="1" />
         </insert>
         <insert tableName="sys_housekeeper_run">
-            <column name="service" value="deviceregistry" />
+            <column name="service" value="org.eclipse.kapua.service.device.registry.DeviceRegistryService" />
             <column name="last_run_on" valueComputed="${now}" />
             <column name="version" value="1" />
         </insert>
         <insert tableName="sys_housekeeper_run">
-            <column name="service" value="deviceconnection" />
+            <column name="service" value="org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService" />
             <column name="last_run_on" valueComputed="${now}" />
             <column name="version" value="1" />
         </insert>

@@ -27,7 +27,6 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.event.RaiseServiceEvent;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -70,7 +69,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     @Override
-    @RaiseServiceEvent
+    //@RaiseServiceEvent
     public Account create(AccountCreator accountCreator)
             throws KapuaException {
         //
@@ -110,7 +109,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     @Override
-    @RaiseServiceEvent
+    //@RaiseServiceEvent
     public Account update(Account account)
             throws KapuaException {
         //
@@ -156,7 +155,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     @Override
-    @RaiseServiceEvent
+    //@RaiseServiceEvent
     public void delete(KapuaId scopeId, KapuaId accountId)
             throws KapuaException {
 

@@ -20,22 +20,22 @@
         author="eurotech">
         <!-- Seed values -->
         <insert tableName="sys_housekeeper_run">
-            <column name="service" value="accessinfo" />
+            <column name="service" value="org.eclipse.kapua.service.authorization.access.AccessInfoService" />
             <column name="last_run_on" valueComputed="${now}" />
             <column name="version" value="1" />
         </insert>
         <insert tableName="sys_housekeeper_run">
-            <column name="service" value="role" />
+            <column name="service" value="org.eclipse.kapua.service.authorization.role.RoleService" />
             <column name="last_run_on" valueComputed="${now}" />
             <column name="version" value="1" />
         </insert>
         <insert tableName="sys_housekeeper_run">
-            <column name="service" value="group" />
+            <column name="service" value="org.eclipse.kapua.service.authorization.group.GroupService" />
             <column name="last_run_on" valueComputed="${now}" />
             <column name="version" value="1" />
         </insert>
         <insert tableName="sys_housekeeper_run">
-            <column name="service" value="domain" />
+            <column name="service" value="org.eclipse.kapua.service.authorization.domain.DomainService" />
             <column name="last_run_on" valueComputed="${now}" />
             <column name="version" value="1" />
         </insert>

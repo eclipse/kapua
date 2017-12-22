@@ -11,12 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
-import org.eclipse.kapua.commons.event.ServiceEventListenerConfiguration;
+import org.eclipse.kapua.commons.event.ServiceEventClientConfiguration;
 import org.eclipse.kapua.commons.event.ServiceEventModule;
 import org.eclipse.kapua.commons.event.ServiceEventModuleConfiguration;
-import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.commons.event.ServiceInspector;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.domain.DomainService;
 import org.eclipse.kapua.service.authorization.group.GroupService;
@@ -25,7 +28,7 @@ import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerF
 import org.eclipse.kapua.service.authorization.shiro.setting.KapuaAuthorizationSetting;
 import org.eclipse.kapua.service.authorization.shiro.setting.KapuaAuthorizationSettingKeys;
 
-@KapuaProvider
+//@KapuaProvider
 public class AuthorizationServiceModule extends ServiceEventModule {
 
     @Inject
@@ -40,32 +43,15 @@ public class AuthorizationServiceModule extends ServiceEventModule {
     @Override
     protected ServiceEventModuleConfiguration initializeConfiguration() {
         KapuaAuthorizationSetting kdrs = KapuaAuthorizationSetting.getInstance();
-        ServiceEventListenerConfiguration[] selc = new ServiceEventListenerConfiguration[5];
-        selc[0] = new ServiceEventListenerConfiguration(
-                kdrs.getString(KapuaAuthorizationSettingKeys.ACCOUNT_EVENT_ADDRESS),
-                kdrs.getString(KapuaAuthorizationSettingKeys.ACCESS_INFO_SUBSCRIPTION_NAME),
-                (serviceEvent) -> accessInfoService.onKapuaEvent(serviceEvent));
-        selc[1] = new ServiceEventListenerConfiguration(
-                kdrs.getString(KapuaAuthorizationSettingKeys.ACCOUNT_EVENT_ADDRESS),
-                kdrs.getString(KapuaAuthorizationSettingKeys.ROLE_SUBSCRIPTION_NAME),
-                (serviceEvent) -> roleService.onKapuaEvent(serviceEvent));
-        selc[2] = new ServiceEventListenerConfiguration(
-                kdrs.getString(KapuaAuthorizationSettingKeys.ACCOUNT_EVENT_ADDRESS),
-                kdrs.getString(KapuaAuthorizationSettingKeys.DOMAIN_SUBSCRIPTION_NAME),
-                (serviceEvent) -> domainService.onKapuaEvent(serviceEvent));
-        selc[3] = new ServiceEventListenerConfiguration(
-                kdrs.getString(KapuaAuthorizationSettingKeys.ACCOUNT_EVENT_ADDRESS),
-                kdrs.getString(KapuaAuthorizationSettingKeys.GROUP_SUBSCRIPTION_NAME),
-                (serviceEvent) -> groupService.onKapuaEvent(serviceEvent));
-        selc[4] = new ServiceEventListenerConfiguration(
-                kdrs.getString(KapuaAuthorizationSettingKeys.USER_EVENT_ADDRESS),
-                kdrs.getString(KapuaAuthorizationSettingKeys.ACCESS_INFO_SUBSCRIPTION_NAME),
-                (serviceEvent) -> accessInfoService.onKapuaEvent(serviceEvent));
+        List<ServiceEventClientConfiguration> selc = new ArrayList<>();
+        selc.addAll(ServiceInspector.getEventBusClients(accessInfoService, AccessInfoService.class));
+        selc.addAll(ServiceInspector.getEventBusClients(roleService, RoleService.class));
+        selc.addAll(ServiceInspector.getEventBusClients(domainService, DomainService.class));
+        selc.addAll(ServiceInspector.getEventBusClients(groupService, GroupService.class));
         return new ServiceEventModuleConfiguration(
-                kdrs.getString(KapuaAuthorizationSettingKeys.AUTHORIZATION_INTERNAL_EVENT_ADDRESS),
-                kdrs.getList(String.class, KapuaAuthorizationSettingKeys.AUTHORIZATION_SERVICES_NAMES),
+                kdrs.getString(KapuaAuthorizationSettingKeys.AUTHORIZATION_EVENT_ADDRESS),
                 AuthorizationEntityManagerFactory.getInstance(),
-                selc);
+                selc.toArray(new ServiceEventClientConfiguration[0]));
     }
 
 }

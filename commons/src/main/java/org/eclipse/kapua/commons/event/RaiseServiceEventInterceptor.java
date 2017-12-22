@@ -60,14 +60,13 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
             serviceEvent.setScopeId(session.getScopeId());
             fillEvent(invocation, serviceEvent);
 
-            //execute the business logic
+            // execute the business logic
             returnObject = invocation.proceed();
 
             // Raise service event if the execution is successful
             try {
                 sendEvent(invocation, serviceEvent, returnObject);
-            }
-            catch (ServiceEventBusException e) {
+            } catch (ServiceEventBusException e) {
                 LOGGER.warn("Error sending event: {}", e.getMessage(), e);
             }
 
@@ -79,45 +78,46 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
     }
 
     private void fillEvent(MethodInvocation invocation, ServiceEvent serviceEvent) {
-        //fill the inputs
+        // fill the inputs
         StringBuilder inputs = new StringBuilder();
         for (Object obj : invocation.getArguments()) {
             inputs.append(obj != null ? obj.toString() : "null");
             inputs.append(", ");
         }
-        if (inputs.length()>2) {
-            inputs.replace(inputs.length()-2, inputs.length(), "");
+        if (inputs.length() > 2) {
+            inputs.replace(inputs.length() - 2, inputs.length(), "");
         }
         serviceEvent.setInputs(inputs.toString());
         if (invocation.getThis() instanceof AbstractKapuaService) {
-            //get the service name
-            //the service is wrapped by guice so getThis --> getSuperclass() should provide the intercepted class
-            //then keep the interface from this object
+            // get the service name
+            // the service is wrapped by guice so getThis --> getSuperclass() should provide the intercepted class
+            // then keep the interface from this object
             serviceEvent.setOperation(invocation.getMethod().getName());
-            Class<?> wrappedClass = ((AbstractKapuaService)invocation.getThis()).getClass().getSuperclass(); //this object should be not null
+            Class<?> wrappedClass = ((AbstractKapuaService) invocation.getThis()).getClass().getSuperclass(); // this object should be not null
             Class<?>[] impementedClass = wrappedClass.getInterfaces();
-            //assuming that the KapuaService implemented is specified by the first implementing interface
+            // assuming that the KapuaService implemented is specified by the first implementing interface
             String serviceInterfaceName = impementedClass[0].getName();
-            String splittedServiceInterfaceName[] = serviceInterfaceName.split("\\.");
-            String serviceName = splittedServiceInterfaceName.length > 0 ? splittedServiceInterfaceName[splittedServiceInterfaceName.length-1] : "";
-            String cleanedServiceName = serviceName.substring(0, serviceName.length()-"Service".length()).toLowerCase();
+            // String splittedServiceInterfaceName[] = serviceInterfaceName.split("\\.");
+            // String serviceName = splittedServiceInterfaceName.length > 0 ? splittedServiceInterfaceName[splittedServiceInterfaceName.length-1] : "";
+            // String cleanedServiceName = serviceName.substring(0, serviceName.length()-"Service".length()).toLowerCase();
+            String cleanedServiceName = serviceInterfaceName;
             LOGGER.info("Service name '{}' ", cleanedServiceName);
             serviceEvent.setService(cleanedServiceName);
             Object[] arguments = invocation.getArguments();
-            if (arguments!=null) {
+            if (arguments != null) {
                 for (Object tmp : arguments) {
-                    LOGGER.info("Scan for entity. Object: {}", tmp!=null ? tmp.getClass() : "null");
+                    LOGGER.info("Scan for entity. Object: {}", tmp != null ? tmp.getClass() : "null");
                     if (tmp instanceof KapuaEntity) {
                         serviceEvent.setEntityType(tmp.getClass().getName());
                         serviceEvent.setEntityId(((KapuaEntity) tmp).getId());
-                        LOGGER.info("Entity '{}' with id '{}' found!", new Object[]{tmp.getClass().getName(), ((KapuaEntity) tmp).getId()});
+                        LOGGER.info("Entity '{}' with id '{}' found!", new Object[] { tmp.getClass().getName(), ((KapuaEntity) tmp).getId() });
                         return;
                     }
                 }
-                //otherwise assume that the second identifier is the entity id (if there are more than one) or take the first one (if there is one)
+                // otherwise assume that the second identifier is the entity id (if there are more than one) or take the first one (if there is one)
                 int kapuaIdPosition = 0;
                 int kapuaIdFound = 0;
-                for (int i=0; i<arguments.length; i++) {
+                for (int i = 0; i < arguments.length; i++) {
                     Object tmp = arguments[i];
                     if (tmp instanceof KapuaId) {
                         kapuaIdPosition = i;
@@ -126,10 +126,10 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
                         }
                     }
                 }
-                if (kapuaIdFound>0) {
+                if (kapuaIdFound > 0) {
                     serviceEvent.setEntityId(((KapuaId) arguments[kapuaIdPosition]));
                     String serviceInterface = impementedClass[0].getAnnotatedInterfaces()[0].getType().getTypeName();
-                    String genericsList = serviceInterface.substring(serviceInterface.indexOf('<')+1, serviceInterface.indexOf('>'));
+                    String genericsList = serviceInterface.substring(serviceInterface.indexOf('<') + 1, serviceInterface.indexOf('>'));
                     String[] entityClassesToScan = genericsList.replaceAll("\\,", "").split(" ");
                     for (String str : entityClassesToScan) {
                         try {
@@ -137,14 +137,13 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
                                 serviceEvent.setEntityType(str);
                             }
                         } catch (ClassNotFoundException e) {
-                            //do nothing
+                            // do nothing
                             LOGGER.warn("Cannon find class {}", str, e);
                         }
                     }
                 }
             }
-        }
-        else {
+        } else {
             Annotation[] annotations = invocation.getMethod().getDeclaredAnnotations();
             for (Annotation annotation : annotations) {
                 if (RaiseServiceEvent.class.isAssignableFrom(annotation.annotationType())) {
@@ -163,14 +162,13 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
         String address = ServiceMap.getAddress(serviceEvent.getService());
         try {
             ServiceEventBusManager.getInstance().publish(address, serviceEvent);
-            LOGGER.info("SENT event from service {} - entity type {} - entity id {} - context id {}",
-                    new Object[] { serviceEvent.getService(), serviceEvent.getEntityType(), serviceEvent.getEntityId(), serviceEvent.getContextId() });
-            //if message was sent successfully then confirm the event in the event table
+            LOGGER.info("SENT event from service {} to {} - entity type {} - entity id {} - context id {}",
+                    new Object[] { serviceEvent.getService(), address, serviceEvent.getEntityType(), serviceEvent.getEntityId(), serviceEvent.getContextId() });
+            // if message was sent successfully then confirm the event in the event table
             updateEventStatus(invocation, serviceEvent, EventStatus.SENT);
-        }
-        catch (ServiceEventBusException e) {
+        } catch (ServiceEventBusException e) {
             LOGGER.warn("Error sending event", e);
-            //mark event status as SEND_ERROR
+            // mark event status as SEND_ERROR
             updateEventStatus(invocation, serviceEvent, EventStatus.SEND_ERROR);
         }
     }
@@ -182,9 +180,8 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
                 ((AbstractKapuaService) invocation.getThis()).getEntityManagerSession().onTransactedAction(
                         em -> EventStoreDAO.update(em,
                                 ServiceEventUtil.mergeToEntity(EventStoreDAO.find(em, KapuaEid.parseCompactId(serviceEventBus.getId())), serviceEventBus)));
-            }
-            catch (Throwable t) {
-                //this may be a valid condition if the HouseKeeper is doing the update concurrently with this task
+            } catch (Throwable t) {
+                // this may be a valid condition if the HouseKeeper is doing the update concurrently with this task
                 LOGGER.warn("Error updating event status: {}", t.getMessage(), t);
             }
         }

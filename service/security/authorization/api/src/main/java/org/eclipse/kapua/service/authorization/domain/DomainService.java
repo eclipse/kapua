@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,14 +15,13 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
-import org.eclipse.kapua.service.KapuaEventListenerService;
 
 /**
  * {@link Domain} service definition.
  *
  * @since 1.0.0
  */
-public interface DomainService extends KapuaEntityService<Domain, DomainCreator>, KapuaEventListenerService {
+public interface DomainService extends KapuaEntityService<Domain, DomainCreator> {
 
     /**
      * Creates a new {@link Domain} based on the parameters provided in the {@link DomainCreator}.<br>

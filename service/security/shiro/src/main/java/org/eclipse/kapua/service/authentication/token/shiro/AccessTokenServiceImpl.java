@@ -269,7 +269,8 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
         });
     }
 
-    @Override
+    //@ListenServiceEvent(fromAddress="account")
+    //@ListenServiceEvent(fromAddress="user")
     public void onKapuaEvent(ServiceEvent kapuaEvent) throws KapuaException {
         if (kapuaEvent == null) {
             //service bus error. Throw some exception?

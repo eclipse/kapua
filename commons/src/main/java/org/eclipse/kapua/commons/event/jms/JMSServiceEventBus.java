@@ -81,12 +81,12 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
      * 
      * @throws ServiceEventBusException
      * @throws JMSException
-     * @throws NamingException 
+     * @throws NamingException
      */
     public JMSServiceEventBus() throws JMSException, NamingException {
         try {
             eventBusJMSConnectionBridge = new EventBusJMSConnectionBridge(this);
-        } catch (JMSException|NamingException e) {
+        } catch (JMSException | NamingException e) {
             // Since the class is instantiated by the means of the ServiceLoader,
             // adding a log message here is helpful.
             LOGGER.error(e.getMessage(), e);
@@ -107,12 +107,11 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
     @Override
     public void start() throws ServiceEventBusException {
         try {
-            //initialize event bus marshaler
+            // initialize event bus marshaler
             Class<?> messageSerializerClazz = Class.forName(MESSAGE_SERIALIZER);
             if (ServiceEventMarshaler.class.isAssignableFrom(messageSerializerClazz)) {
                 eventBusMarshaler = (ServiceEventMarshaler) messageSerializerClazz.newInstance();
-            }
-            else {
+            } else {
                 throw new ServiceEventBusException(String.format("Wrong message serializer Object type ('%s')!", messageSerializerClazz));
             }
 
@@ -123,7 +122,7 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
     }
 
     @Override
-    public void publish(String address, ServiceEvent kapuaEvent) 
+    public void publish(String address, ServiceEvent kapuaEvent)
             throws ServiceEventBusException {
         eventBusJMSConnectionBridge.publish(address, kapuaEvent);
     }
@@ -202,14 +201,12 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
             eventBusJMSConnectionBridge = newInstance;
         } catch (Throwable t) {
             throw new ServiceEventBusException(t);
-        }
-        finally {
+        } finally {
             try {
                 if (instanceToCleanUp != null) {
                     LOGGER.info("Cleanup old JMSConnectionBridge instance...");
                     instanceToCleanUp.stop();
-                }
-                else {
+                } else {
                     LOGGER.warn("Null old JMSConnectionBridge instance. no cleanup will be done...");
                 }
             } catch (ServiceEventBusException e) {
@@ -253,8 +250,7 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
                 }
             } catch (JMSException e) {
                 throw new ServiceEventBusException(e);
-            }
-            finally {
+            } finally {
                 jmsConnection = null;
             }
 
@@ -302,6 +298,7 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
             try {
                 String subscriptionStr = String.format("events.%s", subscription.getAddress());
                 // create a bunch of sessions to allow parallel event processing
+                LOGGER.info("Subscribing to address {} - name {} ...", subscriptionStr, subscription.getName());
                 for (int i = 0; i < CONSUMER_POOL_SIZE; i++) {
                     final Session jmsSession = jmsConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
                     Topic jmsTopic = jmsSession.createTopic(subscriptionStr);
@@ -336,6 +333,7 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
                         }
                     });
                 }
+                LOGGER.info("Subscribing to address {} - name {} - pool size {} ...DONE", subscriptionStr, subscription.getName(), CONSUMER_POOL_SIZE);
             } catch (JMSException e) {
                 throw new ServiceEventBusException(e);
             }

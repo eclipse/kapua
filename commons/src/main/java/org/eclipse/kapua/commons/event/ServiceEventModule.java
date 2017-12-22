@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.event;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -37,6 +40,7 @@ public abstract class ServiceEventModule implements ServiceModule {
     private final static long WAIT_TIME = 1000;
 
     private ServiceEventModuleConfiguration serviceEventModuleConfiguration;
+    private Set<String> subscriberNames = new HashSet<>();
 
     private ScheduledExecutorService houseKeeperScheduler;
     private ScheduledFuture<?> houseKeeperHandler;
@@ -56,10 +60,13 @@ public abstract class ServiceEventModule implements ServiceModule {
         LOGGER.info("Starting service event module... initialize event bus");
         ServiceEventBus eventbus = ServiceEventBusManager.getInstance();
         LOGGER.info("Starting service event module... initialize event subscriptions");
-        if (serviceEventModuleConfiguration.getServiceEventListenerConfigurations() != null) {
-            for (ServiceEventListenerConfiguration selc : serviceEventModuleConfiguration.getServiceEventListenerConfigurations()) {
+        if (serviceEventModuleConfiguration.getServiceEventClientConfigurations() != null) {
+            for (ServiceEventClientConfiguration selc : serviceEventModuleConfiguration.getServiceEventClientConfigurations()) {
                 // Listen to upstream service events
-                eventbus.subscribe(selc.getAddress(), getSubscriptionName(selc.getAddress(), selc.getSubscriberName()), selc.getEventListener());
+                if (selc.getEventListener() != null) {
+                    eventbus.subscribe(selc.getAddress(), getSubscriptionName(selc.getAddress(), selc.getClientName()), selc.getEventListener());
+                }
+                subscriberNames.add(selc.getClientName()); // Set because names must be unique
             }
         } else {
             LOGGER.info("Configuration subscriptions are missing. No subscriptions added!");
@@ -67,16 +74,23 @@ public abstract class ServiceEventModule implements ServiceModule {
 
         // register events to the service map
         LOGGER.info("Starting service event module... register services names");
-        ServiceMap.registerServices(serviceEventModuleConfiguration.getInternalAddress(), serviceEventModuleConfiguration.getServicesNames());
+        ServiceMap.registerServices(serviceEventModuleConfiguration.getInternalAddress(), new ArrayList<String>(subscriberNames));
 
         // Start the House keeper
         LOGGER.info("Starting service event module... start housekeeper");
         houseKeeperScheduler = Executors.newScheduledThreadPool(1);
-        houseKeeperJob = new ServiceEventHousekeeper(serviceEventModuleConfiguration.getEntityManagerFactory(), eventbus, serviceEventModuleConfiguration.getInternalAddress(),
-                serviceEventModuleConfiguration.getServicesNames());
+        houseKeeperJob = new ServiceEventHousekeeper(
+                serviceEventModuleConfiguration.getEntityManagerFactory(), 
+                eventbus, 
+                serviceEventModuleConfiguration.getInternalAddress(),
+                new ArrayList<String>(subscriberNames));
         // Start time can be made random from 0 to 30 seconds
         houseKeeperHandler = houseKeeperScheduler.scheduleAtFixedRate(houseKeeperJob, SCHEDULED_EXECUTION_TIME_WINDOW, SCHEDULED_EXECUTION_TIME_WINDOW, TimeUnit.SECONDS);
         LOGGER.info("Starting service event module... DONE");
+    }
+
+    public String getEventAddress(String serviceName) {
+        return null;
     }
 
     @Override
@@ -116,7 +130,8 @@ public abstract class ServiceEventModule implements ServiceModule {
         }
         LOGGER.info("Stopping service event module... unregister services names");
         if (serviceEventModuleConfiguration != null) {
-            ServiceMap.unregisterServices(serviceEventModuleConfiguration.getServicesNames());
+            ServiceMap.unregisterServices(new ArrayList<String>(subscriberNames));
+            subscriberNames.clear();
         } else {
             LOGGER.warn("Cannot unregister services since configuration is null (initialization may not be successful)");
         }

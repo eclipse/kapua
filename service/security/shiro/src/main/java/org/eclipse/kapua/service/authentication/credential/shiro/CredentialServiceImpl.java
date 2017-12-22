@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,6 +10,8 @@
  *     Eurotech - initial API and implementation
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.shiro;
+
+import java.security.SecureRandom;
 
 import org.apache.shiro.codec.Base64;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
@@ -46,8 +48,6 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.security.SecureRandom;
 
 /**
  * Credential service implementation.
@@ -395,7 +395,8 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         return count(credentialQuery);
     }
 
-    @Override
+    //@ListenServiceEvent(fromAddress="account")
+    //@ListenServiceEvent(fromAddress="user")
     public void onKapuaEvent(ServiceEvent kapuaEvent) throws KapuaException {
         if (kapuaEvent == null) {
             //service bus error. Throw some exception?

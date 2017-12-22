@@ -9,23 +9,23 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service;
+package org.eclipse.kapua.event;
 
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.event.ServiceEvent;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Event listener definition
+ * Raise event definition
  * 
  * @since 1.0
+ *
  */
-public interface KapuaEventListenerService extends KapuaService {
-
-    /**
-     * Process the on event business logic<BR>
-     * 
-     * @param kapuaEvent
-     * @throws KapuaException
-     */
-    public void onKapuaEvent(ServiceEvent kapuaEvent) throws KapuaException;
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+@Repeatable(ServiceEventListeners.class)
+public @interface ListenServiceEvent {
+    String fromAddress();
 }

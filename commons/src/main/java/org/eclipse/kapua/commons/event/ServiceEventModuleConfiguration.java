@@ -11,38 +11,30 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.event;
 
-import java.util.List;
-
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 
 public class ServiceEventModuleConfiguration {
 
     private String internalAddress;
-    private List<String> servicesNames;
     private EntityManagerFactory entityManagerFactory;
-    private ServiceEventListenerConfiguration[] serviceEventListenerConfigurations;
+    private ServiceEventClientConfiguration[] serviceEventClientConfigurations;
 
-    public ServiceEventModuleConfiguration(String internalAddress, List<String> servicesNames, EntityManagerFactory entityManagerFactory,
-            ServiceEventListenerConfiguration[] serviceEventListenerConfigurations) {
+    public ServiceEventModuleConfiguration(String internalAddress, EntityManagerFactory entityManagerFactory,
+            ServiceEventClientConfiguration[] serviceEventListenerConfigurations) {
         this.internalAddress = internalAddress;
-        this.servicesNames = servicesNames;
         this.entityManagerFactory = entityManagerFactory;
-        this.serviceEventListenerConfigurations = serviceEventListenerConfigurations;
+        this.serviceEventClientConfigurations = serviceEventListenerConfigurations;
     }
 
     public String getInternalAddress() {
         return internalAddress;
     }
 
-    public List<String> getServicesNames() {
-        return servicesNames;
-    }
-
     public EntityManagerFactory getEntityManagerFactory() {
         return entityManagerFactory;
     }
 
-    public ServiceEventListenerConfiguration[] getServiceEventListenerConfigurations() {
-        return serviceEventListenerConfigurations;
+    public ServiceEventClientConfiguration[] getServiceEventClientConfigurations() {
+        return serviceEventClientConfigurations;
     }
 }

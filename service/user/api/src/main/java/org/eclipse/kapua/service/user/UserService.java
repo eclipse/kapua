@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,7 +15,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
-import org.eclipse.kapua.service.KapuaEventListenerService;
 import org.eclipse.kapua.service.KapuaNamedEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
@@ -30,8 +29,7 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
 public interface UserService extends KapuaEntityService<User, UserCreator>,
         KapuaUpdatableEntityService<User>,
         KapuaNamedEntityService<User>,
-        KapuaConfigurableService, 
-        KapuaEventListenerService {
+        KapuaConfigurableService {
 
     /**
      * Creates a new user under the account specified in the UserCreator.<br>

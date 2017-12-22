@@ -19,14 +19,7 @@ import org.eclipse.kapua.commons.setting.SettingKey;
  */
 public enum KapuaAuthorizationSettingKeys implements SettingKey {
     AUTHORIZATION_KEY("authorization.key"),
-    AUTHORIZATION_INTERNAL_EVENT_ADDRESS("authorization.internalEventAddress"),
-    AUTHORIZATION_SERVICES_NAMES("authorization.servicesNames"),
-    ACCOUNT_EVENT_ADDRESS("account.eventAddress"),
-    USER_EVENT_ADDRESS("user.eventAddress"),
-    ACCESS_INFO_SUBSCRIPTION_NAME("accessInfo.subscriptionName"),
-    ROLE_SUBSCRIPTION_NAME("role.subscriptionName"),
-    DOMAIN_SUBSCRIPTION_NAME("domain.subscriptionName"),
-    GROUP_SUBSCRIPTION_NAME("group.subscriptionName");
+    AUTHORIZATION_EVENT_ADDRESS("authorization.eventAddress");
 
     private String key;
 

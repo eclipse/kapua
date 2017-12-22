@@ -11,23 +11,33 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.eclipse.kapua.commons.event.ServiceEventClientConfiguration;
 import org.eclipse.kapua.commons.event.ServiceEventModule;
 import org.eclipse.kapua.commons.event.ServiceEventModuleConfiguration;
-import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.commons.event.ServiceInspector;
+import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.setting.KapuaAccountSetting;
 import org.eclipse.kapua.service.account.internal.setting.KapuaAccountSettingKeys;
 
-@KapuaProvider
+//@KapuaProvider
 public class AccountServiceModule extends ServiceEventModule {
+
+    @Inject
+    private AccountService accountService;
 
     @Override
     protected ServiceEventModuleConfiguration initializeConfiguration() {
-        KapuaAccountSetting kas = KapuaAccountSetting.getInstance();
+        KapuaAccountSetting settings = KapuaAccountSetting.getInstance();
+        String address = settings.getString(KapuaAccountSettingKeys.ACCOUNT_EVENT_ADDRESS);
+        List<ServiceEventClientConfiguration> secc = ServiceInspector.getEventBusClients(accountService, AccountService.class);
         return new ServiceEventModuleConfiguration(
-                kas.getString(KapuaAccountSettingKeys.ACCOUNT_INTERNAL_EVENT_ADDRESS),
-                kas.getList(String.class, KapuaAccountSettingKeys.ACCOUNT_SERVICES_NAMES),
+                address,
                 AccountEntityManagerFactory.getInstance(),
-                null);
+                secc.toArray(new ServiceEventClientConfiguration[0]));
     }
 
 }

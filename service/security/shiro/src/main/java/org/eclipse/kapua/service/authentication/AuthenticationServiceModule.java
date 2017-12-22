@@ -11,19 +11,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
-import org.eclipse.kapua.commons.event.ServiceEventListenerConfiguration;
+import org.eclipse.kapua.commons.event.ServiceEventClientConfiguration;
 import org.eclipse.kapua.commons.event.ServiceEventModule;
 import org.eclipse.kapua.commons.event.ServiceEventModuleConfiguration;
-import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.commons.event.ServiceInspector;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authentication.token.AccessTokenService;
 
-@KapuaProvider
+//@KapuaProvider
 public class AuthenticationServiceModule extends ServiceEventModule {
 
     @Inject
@@ -34,28 +37,13 @@ public class AuthenticationServiceModule extends ServiceEventModule {
     @Override
     protected ServiceEventModuleConfiguration initializeConfiguration() {
         KapuaAuthenticationSetting kas = KapuaAuthenticationSetting.getInstance();
-        ServiceEventListenerConfiguration[] selc = new ServiceEventListenerConfiguration[4];
-        selc[0] = new ServiceEventListenerConfiguration(
-                kas.getString(KapuaAuthenticationSettingKeys.USER_EVENT_ADDRESS),
-                kas.getString(KapuaAuthenticationSettingKeys.CREDENTIAL_SUBSCRIPTION_NAME),
-                (serviceEvent) -> credentialService.onKapuaEvent(serviceEvent));
-        selc[1] = new ServiceEventListenerConfiguration(
-                kas.getString(KapuaAuthenticationSettingKeys.USER_EVENT_ADDRESS),
-                kas.getString(KapuaAuthenticationSettingKeys.ACCESS_TOKEN_SUBSCRIPTION_NAME),
-                (serviceEvent) -> accessTokenService.onKapuaEvent(serviceEvent));
-        selc[2] = new ServiceEventListenerConfiguration(
-                kas.getString(KapuaAuthenticationSettingKeys.ACCOUNT_EVENT_ADDRESS),
-                kas.getString(KapuaAuthenticationSettingKeys.CREDENTIAL_SUBSCRIPTION_NAME),
-                (serviceEvent) -> credentialService.onKapuaEvent(serviceEvent));
-        selc[3] = new ServiceEventListenerConfiguration(
-                kas.getString(KapuaAuthenticationSettingKeys.ACCOUNT_EVENT_ADDRESS),
-                kas.getString(KapuaAuthenticationSettingKeys.ACCESS_TOKEN_SUBSCRIPTION_NAME),
-                (serviceEvent) -> accessTokenService.onKapuaEvent(serviceEvent));
+        List<ServiceEventClientConfiguration> selc = new ArrayList<>();
+        selc.addAll(ServiceInspector.getEventBusClients(credentialService, CredentialService.class));
+        selc.addAll(ServiceInspector.getEventBusClients(accessTokenService, AccessTokenService.class));
         return new ServiceEventModuleConfiguration(
-                kas.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_INTERNAL_EVENT_ADDRESS),
-                kas.getList(String.class, KapuaAuthenticationSettingKeys.AUTHENTICATION_SERVICES_NAMES),
+                kas.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_EVENT_ADDRESS),
                 AuthenticationEntityManagerFactory.getInstance(),
-                selc);
+                selc.toArray(new ServiceEventClientConfiguration[0]));
     }
 
 }
