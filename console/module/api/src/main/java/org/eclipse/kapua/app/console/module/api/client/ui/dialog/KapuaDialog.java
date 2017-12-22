@@ -63,7 +63,7 @@ public abstract class KapuaDialog extends Dialog {
         infoPanel.setHeaderVisible(false);
         infoPanel.setLayout(new TableLayout(2));
         infoPanel.setStyleAttribute("background-color", "#F0F0F0");
-        infoPanel.setBodyStyle("background-color:transparent");
+        infoPanel.setBodyStyle("background-color: #F0F0F0");
         add(infoPanel);
 
         // Heading Message (if implementation needs one)
