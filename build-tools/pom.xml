@@ -23,7 +23,7 @@
 
     <groupId>org.eclipse.kapua.build</groupId>
     <artifactId>kapua-build-tools</artifactId>
-    <version>0.3.2-SNAPSHOT</version>
+    <version>0.3.2</version>
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

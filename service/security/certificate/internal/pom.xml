@@ -17,7 +17,7 @@
     <parent>
         <artifactId>kapua-security-certificate</artifactId>
         <groupId>org.eclipse.kapua</groupId>
-        <version>0.3.2-SNAPSHOT</version>
+        <version>0.3.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
