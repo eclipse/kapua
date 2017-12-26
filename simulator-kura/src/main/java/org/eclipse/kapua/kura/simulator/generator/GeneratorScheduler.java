@@ -86,11 +86,7 @@ public class GeneratorScheduler implements AutoCloseable {
 
         for (final Entry task : this.tasks) {
             // If a task fails here, we still process others
-            try {
-                task.accept(timestamp);
-            } catch (final Exception e) {
-                logger.warn("Failed to tick", e);
-            }
+            task.accept(timestamp);
         }
     }
 
