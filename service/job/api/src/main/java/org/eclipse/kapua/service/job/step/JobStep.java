@@ -24,13 +24,13 @@ import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 
 /**
  * {@link JobStep} entity.
- * 
+ *
  * @since 1.0
  *
  */
 @XmlRootElement(name = "jobStep")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = JobStepXmlRegistry.class, factoryMethod = "newJobStep")
+@XmlType(factoryClass = JobStepXmlRegistry.class, factoryMethod = "newJob")
 public interface JobStep extends KapuaNamedEntity {
 
     public static final String TYPE = "jobStep";
