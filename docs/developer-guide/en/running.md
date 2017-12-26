@@ -60,10 +60,6 @@ Initialization script is responsible for logging you into a cluster and creating
 If your Openshift cluster is not on the localhost, set the `OPENSHIFT_HOST` environment variable. For example, something like
 
     export OPENSHIFT_HOST=192.168.64.2:8443
-    
-If you're using Minishift, you can obtain the IP of the cluster by executing
-    
-    minishift ip
 
 If for some reasons, you cannot start your cluster, try to execute the startup script with option `DOCKERIZED=FALSE`:
 
@@ -85,6 +81,53 @@ credentials:
 	<dt>username</dt><dd>kapua-sys</dd>
 	<dt>password</dt><dd>kapua-password</dd>
 </dl>
+
+
+## Using Minishift
+
+Minishift is a tool that helps you run OpenShift locally by running a single-node OpenShift cluster inside a VM. Follow [this guide](https://docs.openshift.org/latest/minishift/getting-started/index.html) for installing and having Minishift up and running.
+
+Steps to run Kapua on Minishift are the  following
+
+1. Start Minishift (make sure you have enough memory and cpu resources for your cluster)
+
+    ~~~bash
+    minishift start --memory 8GB --cpus 4
+    ~~~
+
+2. Export Minishift docker and oc tools
+
+    ~~~bash
+    eval $(minishift docker-env)
+    eval $(minishift oc-env)
+    ~~~
+
+3. Export address of the cluster
+
+    ~~~bash
+    export OPENSHIFT_HOST=$(minishift ip):8443
+    ~~~
+
+4. Initialize Kapua project
+
+    ~~~bash
+    kapua/dev-tools/src/main/openshift/openshift-initialize.sh
+    ~~~
+
+5. Deploy Kapua components
+
+    ~~~bash
+    cd kapua/dev-tools/src/main/openshift
+    ./openshift-deploy.sh
+    ~~~
+
+6. Visit Minishift console
+
+    ~~~bash
+    minishift dashboard
+    ~~~
+
+## Advanced OpenShift configuration
 
 ### External Node port for MQTT
 

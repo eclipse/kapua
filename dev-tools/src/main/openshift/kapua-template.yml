@@ -166,6 +166,8 @@ objects:
       spec:
         containers:
         - env:
+          - name: JAVA_OPTS
+            value: -Xmx1G
           - name: H2_OPTS
             value: -javaagent:/jolokia-jvm-agent.jar=port=8778,protocol=https,caCert=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt,clientPrincipal=cn=system:master-proxy,useSslClientAuthentication=true,extraClientCheck=true,host=0.0.0.0,discoveryEnabled=false,user=${JOLOKIA_USER},password=${JOLOKIA_PASSWORD}
           image: ${DOCKER_ACCOUNT}/kapua-sql:${IMAGE_VERSION}
@@ -286,7 +288,7 @@ objects:
               -Ddatastore.elasticsearch.nodes=$ELASTICSEARCH_PORT_9200_TCP_ADDR
               -Dcertificate.jwt.private.key=file:///home/kapua/key.pk8
               -Dcertificate.jwt.certificate=file:///home/kapua/cert.pem
-              -Dcommons.eventbus.url=failover:\(amqp://\${EVENTS_BROKER_PORT_5672_TCP_ADDR}:\${EVENTS_BROKER_PORT_5672_TCP_PORT}\)
+              -Dcommons.eventbus.url="failover:(amqp://${EVENTS_BROKER_PORT_5672_TCP_ADDR}:${EVENTS_BROKER_PORT_5672_TCP_PORT})"
               -Dcertificate.jwt.private.key=file:///home/kapua/key.pk8
               -Dcertificate.jwt.certificate=file:///home/kapua/cert.pem
               -javaagent:/jolokia-jvm-agent.jar=port=8778,protocol=https,caCert=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt,clientPrincipal=cn=system:master-proxy,useSslClientAuthentication=true,extraClientCheck=true,host=0.0.0.0,discoveryEnabled=false,user=${JOLOKIA_USER},password=${JOLOKIA_PASSWORD}
@@ -348,10 +350,10 @@ objects:
               -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT
               -Dcommons.db.schema.update=true
               -Dbroker.host=$KAPUA_BROKER_SERVICE_HOST
-              -Ddatastore.elasticsearch.nodes=$ELASTICSEARCH_PORT_9200_TCP_ADDR
+              -Ddatastore.elasticsearch.nodes=$ELASTICSEARCH_SERVICE_PORT_9200_TCP_ADDR
               -Dcertificate.jwt.private.key=file:///home/kapua/key.pk8
               -Dcertificate.jwt.certificate=file:///home/kapua/cert.pem
-              -Dcommons.eventbus.url=failover:\(amqp://\${EVENTS_BROKER_PORT_5672_TCP_ADDR}:\${EVENTS_BROKER_PORT_5672_TCP_PORT}\)
+              -Dcommons.eventbus.url="failover:(amqp://${EVENTS_BROKER_SERVICE_PORT_5672_TCP_ADDR}:${EVENTS_BROKER_SERVICE_PORT_5672_TCP_PORT})"
               -Dcertificate.jwt.private.key=file:///home/kapua/key.pk8
               -Dcertificate.jwt.certificate=file:///home/kapua/cert.pem
               -javaagent:/jolokia-jvm-agent.jar=port=8778,protocol=https,caCert=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt,clientPrincipal=cn=system:master-proxy,useSslClientAuthentication=true,extraClientCheck=true,host=0.0.0.0,discoveryEnabled=false,user=${JOLOKIA_USER},password=${JOLOKIA_PASSWORD}
@@ -408,15 +410,15 @@ objects:
               -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT
               -Dcommons.db.schema.update=true
               -Dbroker.host=$KAPUA_BROKER_SERVICE_HOST
-              -Ddatastore.elasticsearch.nodes=$ELASTICSEARCH_PORT_9200_TCP_ADDR
+              -Ddatastore.elasticsearch.nodes=$ELASTICSEARCH_SERVICE_PORT_9200_TCP_ADDR
               -Dcertificate.jwt.private.key=file:///home/kapua/key.pk8
               -Dcertificate.jwt.certificate=file:///home/kapua/cert.pem
-              -Dcommons.eventbus.url=failover:\(amqp://\${EVENTS_BROKER_PORT_5672_TCP_ADDR}:\${EVENTS_BROKER_PORT_5672_TCP_PORT}\)
+              -Dcommons.eventbus.url="failover:(amqp://${EVENTS_BROKER_SERVICE_PORT_5672_TCP_ADDR}:${EVENTS_BROKER_SERVICE_PORT_5672_TCP_PORT})"
               -javaagent:/jolokia-jvm-agent.jar=port=8778,protocol=https,caCert=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt,clientPrincipal=cn=system:master-proxy,useSslClientAuthentication=true,extraClientCheck=true,host=0.0.0.0,discoveryEnabled=false,user=${JOLOKIA_USER},password=${JOLOKIA_PASSWORD}
               ${JAVA_OPTS_EXTRA}
           image: ${DOCKER_ACCOUNT}/kapua-api:${IMAGE_VERSION}
           imagePullPolicy: IfNotPresent
-          name: kapua-console
+          name: kapua-api
           ports:
           - containerPort: 8778 
             name: jolokia
@@ -466,7 +468,7 @@ objects:
             - '-Etransport.host=_site_'
             - '-Ecluster.name=kapua-datastore'
             - '-Ediscovery.type=single-node'
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           name: elasticsearch
           ports:
           - containerPort: 9200
