@@ -416,6 +416,7 @@
                                             <SERVICE_BROKER_ADDR>failover:(amqp://\${SERVICE_PORT_5672_TCP_ADDR}:\${SERVICE_PORT_5672_TCP_PORT})?jms.sendTimeout=1000</SERVICE_BROKER_ADDR>
                                             <DATASTORE_CLIENT>org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient</DATASTORE_CLIENT>
                                             <JAVA_OPTS>
+                                                -Dcommons.db.schema.update=true \
                                                 -Dcommons.db.connection.host=db \
                                                 -Dcommons.db.connection.port=3306 \
                                                 -Dbroker.host=broker \
