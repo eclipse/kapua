@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -108,5 +109,9 @@ public class DeviceRegistryServiceMock implements DeviceRegistryService {
     @Override
     public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
 
+    }
+
+    public void onKapuaEvent(ServiceEvent kapuaEvent) throws KapuaException {
+        // TODO Auto-generated method stub
     }
 }

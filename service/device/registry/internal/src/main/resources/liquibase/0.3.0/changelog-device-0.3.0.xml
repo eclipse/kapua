@@ -22,7 +22,6 @@
     <include relativeToChangelogFile="true" file="./device_connection-add_connection_options.xml" />
     <include relativeToChangelogFile="true" file="./device_connection-configuration.xml" />
     <include relativeToChangelogFile="true" file="./device-tag.xml" />
-
     <include relativeToChangelogFile="true" file="./device_connection-id_check_positive.xml" />
     <include relativeToChangelogFile="true" file="./device_event-id_check_positive.xml" />
     <include relativeToChangelogFile="true" file="./device-id_check_positive.xml" />

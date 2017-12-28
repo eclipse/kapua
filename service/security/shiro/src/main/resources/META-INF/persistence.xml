@@ -30,6 +30,11 @@
         <class>org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity</class>
         <class>org.eclipse.kapua.commons.configuration.ServiceConfigImpl</class>
 
+
+        <!-- event -->
+        <class>org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImpl</class>
+        <class>org.eclipse.kapua.commons.event.ServiceEventHousekeeper</class>
+
         <properties>
             <!-- <property name="javax.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver" /> -->
             <property name="javax.persistence.lock.timeout" value="1000" />
@@ -61,6 +66,10 @@
         <class>org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity</class>
         <class>org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity</class>
         <class>org.eclipse.kapua.commons.configuration.ServiceConfigImpl</class>
+
+        <!-- event -->
+        <class>org.eclipse.kapua.commons.event.service.internal.ServiceEventImpl</class>
+        <class>org.eclipse.kapua.commons.event.ServiceEventHousekeeper</class>
 
         <properties>
             <property name="javax.persistence.lock.timeout" value="1000" />

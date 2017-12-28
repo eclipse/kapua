@@ -22,13 +22,12 @@ import java.util.Map;
 
 import org.apache.activemq.broker.BrokerFactory;
 import org.apache.activemq.broker.BrokerService;
+import org.eclipse.kapua.commons.event.ServiceEventBusManager;
 import org.eclipse.kapua.qa.utils.Suppressed;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
 import org.elasticsearch.common.UUIDs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.inject.Inject;
 
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
@@ -54,17 +53,11 @@ public class EmbeddedBroker {
 
     private static BrokerService broker;
 
-    private DBHelper database;
-
-    @Inject
-    public EmbeddedBroker(final DBHelper database) {
-        this.database = database;
+    public EmbeddedBroker() {
     }
 
     @Before(value = "@StartBroker")
     public void start() {
-
-        database.setup();
 
         logger.info("Starting new instance");
 
@@ -91,6 +84,10 @@ public class EmbeddedBroker {
             if (EXTRA_STARTUP_DELAY > 0) {
                 Thread.sleep(ofSeconds(EXTRA_STARTUP_DELAY).toMillis());
             }
+
+            //TODO to remove once the application life cycle will be implemented
+            //init JmsEventBus
+            ServiceEventBusManager.start();
 
         } catch (RuntimeException e) {
             throw e;

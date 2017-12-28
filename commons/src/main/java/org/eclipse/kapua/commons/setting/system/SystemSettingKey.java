@@ -174,7 +174,70 @@ public enum SystemSettingKey implements SettingKey {
     /**
      * Maximum allowed retry (due to a {@link EntityExistsException}, so already exists key) on insert operation
      */
-    KAPUA_INSERT_MAX_RETRY("commons.entity.insert.max.retry");
+    KAPUA_INSERT_MAX_RETRY("commons.entity.insert.max.retry"),
+
+    /**
+     * Url of the event bus
+     */
+    EVENT_BUS_URL("commons.eventbus.url"),
+
+    /**
+     * Username to connect to the event bus
+     */
+    EVENT_BUS_USERNAME("commons.eventbus.username"),
+
+    /**
+     * Password to connect to the event bus
+     */
+    EVENT_BUS_PASSWORD("commons.eventbus.password"),
+
+    /**
+     * Producers pool min size (per microservice)
+     */
+    EVENT_BUS_PRODUCER_POOL_MIN_SIZE("commons.eventbus.producerPool.minSize"),
+
+    /**
+     * Producers pool max size (per microservice)
+     */
+    EVENT_BUS_PRODUCER_POOL_MAX_SIZE("commons.eventbus.producerPool.maxSize"),
+
+    /**
+     * Producers pool max wait on borrow
+     */
+    EVENT_BUS_PRODUCER_POOL_BORROW_WAIT_MAX("commons.eventbus.producerPool.maxWaitOnBorrow"),
+
+    /**
+     * Producers pool eviction interval
+     */
+    EVENT_BUS_PRODUCER_EVICTION_INTERVAL("commons.eventbus.producerPool.evictionInterval"),
+
+    /**
+     * Consumers pool size (per microservice)
+     */
+    EVENT_BUS_CONSUMER_POOL_SIZE("commons.eventbus.consumerPool.size"),
+
+    /**
+     * Event message serializer class
+     */
+    EVENT_BUS_MESSAGE_SERIALIZER("commons.eventbus.messageSerializer"),
+
+    /**
+     * If true the transport will use the native Epoll layer when available instead of the NIO layer.
+     */
+    EVENT_BUS_TRANSPORT_USE_EPOLL("commons.eventbus.transport.useEpoll"),
+
+    /**
+     * Wait time between housekeeper executions (in milliseconds)
+     */
+    HOUSEKEEPER_EXECUTION_WAIT_TIME("commons.eventbus.houskeeper.waitTime"),
+    /**
+     * Housekeeper event scan window
+     */
+    HOUSEKEEPER_EVENT_SCAN_WINDOW("commons.eventbus.houskeeper.eventScanWindow"),
+    /**
+     * Time window to consider FIRED messages as "old" messages so ready to be processed by the housekeeper (in milliseconds)
+     */
+    HOUSEKEEPER_OLD_MESSAGES_TIME_WINDOW("commons.eventbus.houskeeper.oldMessagesTimeWindow");
 
     private String key;
 

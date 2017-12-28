@@ -24,7 +24,7 @@
     <!-- Listeners -->
     <listener>
         <listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
-    </listener>
+    </listener>    
 
     <listener>
         <listener-class>org.eclipse.kapua.app.api.web.RestApiListener</listener-class>

@@ -19,6 +19,7 @@ env_vars = {
   'ELASTICSEARCH_VERSION' => '5.4.0',
   'H2DB_VERSION'          => '1.4.192',
   'ACTIVEMQ_VERSION'      => '5.14.5',
+  'ARTEMIS_VERSION'       => '2.2.0',
   'TOMCAT_VERSION'        => '8.0.41',
   'KAPUA_VERSION'         => '1.0.0-SNAPSHOT'
 }
@@ -44,7 +45,7 @@ Vagrant.configure("2") do |config|
     owner: "vagrant", group: "vagrant",
     mount_options: ["dmode=775", "fmode=664"]
 
-  config.vm.box = "kapua-dev-box/0.5"
+  config.vm.box = "kapua-dev-box/0.6"
   config.vm.box_check_update = false
 
   # DBMS
@@ -55,6 +56,11 @@ Vagrant.configure("2") do |config|
   config.vm.network "forwarded_port", guest: 8883, host: 8883
   config.vm.network "forwarded_port", guest: 61614, host: 61614
   config.vm.network "forwarded_port", guest: 5005, host: 5005
+
+  # ActiveMQ Artemis
+  config.vm.network "forwarded_port", guest: 5672, host: 5672
+  config.vm.network "forwarded_port", guest: 8161, host: 8161
+  config.vm.network "forwarded_port", guest: 61616, host: 61616
 
   # Elasticsearch
   config.vm.network "forwarded_port", guest: 9200, host: 9200
@@ -155,20 +161,35 @@ Vagrant.configure("2") do |config|
       # ActiveMQ post-install setup
       cd /usr/local/activemq/apache-activemq-${ACTIVEMQ_VERSION}
       rm conf/activemq.xml
-      ln -s /kapua/org.eclipse.kapua.kapua-docker-broker/src/main/resources/conf/broker/activemq.xml conf/activemq.xml
-      ln -s /kapua/org.eclipse.kapua.kapua-docker-broker/src/main/resources/conf/broker/camel.xml conf/camel.xml
+
+      ln -s /kapua/assembly/broker/src/main/resources/conf/broker/activemq.xml conf/activemq.xml
+      ln -s /kapua/assembly/broker/src/main/resources/conf/broker/camel.xml conf/camel.xml
       echo 'configuring conf/log4j.properties'
       sudo sed -i 's/log4j.appender.logfile.layout.ConversionPattern=%d | %-5p | %m | %c | %t%n/log4j.appender.logfile.layout.ConversionPattern=%d | %-5p | %t | %c | %m%n/g' conf/log4j.properties
       sudo sed -i 's/log4j.appender.audit.layout.ConversionPattern=%-5p | %m | %t%n/log4j.appender.audit.layout.ConversionPattern=%-5p | %t%n | %m/g' conf/log4j.properties
 
-      cp /kapua/dev-tools/src/main/vagrant/develop/broker/*.sh .
+      cp /kapua/dev-tools/src/main/vagrant/develop/broker/update-kapua-jars-cfg.sh .
+      cp /kapua/dev-tools/src/main/vagrant/develop/broker/start-broker.sh .
       chmod 555 update-kapua-jars-cfg.sh
       chmod 555 start-broker.sh
-
+      
       # Enable debug
       sudo sed -i 's/\#ACTIVEMQ_DEBUG_OPTS=/ACTIVEMQ_DEBUG_OPTS=/g' bin/env
       sudo sed -i 's/ACTIVEMQ_VERSION/'"$ACTIVEMQ_VERSION"'/g' update-kapua-jars-cfg.sh
+      sudo sed -i 's/ACTIVEMQ_VERSION/'"$ACTIVEMQ_VERSION"'/g' start-broker.sh
+      sudo sed -i 's/ARTEMIS_VERSION/'"$ARTEMIS_VERSION"'/g' start-broker.sh
       sudo chown -R vagrant:vagrant /usr/local/activemq/apache-activemq-${ACTIVEMQ_VERSION}
+
+      ##############################
+      ### ActiveMQ Artemis setup ###
+      ##############################
+      cd /usr/local/artemis/apache-artemis-${ARTEMIS_VERSION}/kapua
+      echo "copy broker.xml"
+      sudo cp /kapua/assembly/events-broker/etc/broker.xml etc/
+      sudo sed -i '/<acceptor.*5672.*<\\/acceptor>/! s|<acceptor.*</acceptor>||g' etc/broker.xml
+      sudo sed -i "s|/usr/local/apache-artemis-${ARTEMIS_VERSION}|/usr/local/artemis/apache-artemis-${ARTEMIS_VERSION}|g" etc/artemis.profile
+      sudo sed -i "s|localhost:8161|${BINDING_IP}:8161|g" etc/bootstrap.xml
+      sudo chown -R vagrant:vagrant /usr/local/artemis/apache-artemis-${ARTEMIS_VERSION}
 
       ###########################
       ### Tomcat post install ###

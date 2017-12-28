@@ -17,14 +17,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.kapua.KapuaRuntimeException;
+import org.eclipse.kapua.commons.core.ServiceModuleConfiguration;
+import org.eclipse.kapua.commons.core.ServiceModuleProvider;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaLocatorErrorCodes;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.service.KapuaService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Strings;
 import com.google.inject.Binding;
 import com.google.inject.ConfigurationException;
 import com.google.inject.Guice;
@@ -36,25 +35,16 @@ import com.google.inject.Key;
  */
 public class GuiceLocatorImpl extends KapuaLocator {
 
-    private static final Logger LOG = LoggerFactory.getLogger(GuiceLocatorImpl.class);
-
     private final Injector injector;
 
     public GuiceLocatorImpl() {
-        this(null);
+        injector = Guice.createInjector(new KapuaModule());
+        ServiceModuleConfiguration.setModuleProvider(injector.getInstance(ServiceModuleProvider.class));
     }
 
     public GuiceLocatorImpl(String resourceName) {
-        try {
-            if (Strings.isNullOrEmpty(resourceName)) {
-                injector = Guice.createInjector(new KapuaModule());
-            } else {
-                injector = Guice.createInjector(new KapuaModule(resourceName));
-            }
-        } catch (Throwable e) {
-            LOG.error("Error on KapuaLocator initialization!", e);
-            throw e;
-        }
+        injector = Guice.createInjector(new KapuaModule(resourceName));
+        ServiceModuleConfiguration.setModuleProvider(injector.getInstance(ServiceModuleProvider.class));
     }
 
     @Override
@@ -72,6 +62,14 @@ public class GuiceLocatorImpl extends KapuaLocator {
             return injector.getInstance(factoryClass);
         } catch (ConfigurationException e) {
             throw new KapuaRuntimeException(KapuaLocatorErrorCodes.FACTORY_UNAVAILABLE, factoryClass);
+        }
+    }
+
+    public <T> T getComponent(Class<T> componentClass) {
+        try {
+            return injector.getInstance(componentClass);
+        } catch (ConfigurationException e) {
+            throw new KapuaRuntimeException(KapuaLocatorErrorCodes.COMPONENT_UNAVAILABLE, componentClass);
         }
     }
 

@@ -70,7 +70,7 @@ import static org.mockito.Mockito.mock;
 public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
 
     public static final String DEFAULT_PATH = "src/main/sql/H2";
-    public static final String DEFAULT_COMMONS_PATH = "../../../commons";
+    public static final String DEFAULT_COMMONS_PATH = "../../../../commons";
     public static final String CREATE_DEVICE_TABLES = "dvc_*_create.sql";
     public static final String DROP_DEVICE_TABLES = "dvc_*_drop.sql";
 

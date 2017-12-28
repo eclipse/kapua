@@ -22,6 +22,10 @@
         <class>org.eclipse.kapua.service.user.internal.UserImpl</class>
         <class>org.eclipse.kapua.commons.configuration.ServiceConfigImpl</class>
 
+        <!-- event -->
+        <class>org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImpl</class>
+        <class>org.eclipse.kapua.commons.event.ServiceEventHousekeeper</class>
+
         <!-- Base classes and External classes -->
         <class>org.eclipse.kapua.commons.model.id.KapuaEid</class>
         <class>org.eclipse.kapua.commons.model.AbstractKapuaEntity</class>

@@ -18,6 +18,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
+import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -25,6 +26,7 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authentication.token.AccessTokenCreator;
+import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
 import org.eclipse.kapua.service.authentication.token.AccessTokenListResult;
 import org.eclipse.kapua.service.authentication.token.AccessTokenPredicates;
 import org.eclipse.kapua.service.authentication.token.AccessTokenQuery;
@@ -33,6 +35,8 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Access token service implementation.
@@ -42,6 +46,8 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
  */
 @KapuaProvider
 public class AccessTokenServiceImpl extends AbstractKapuaService implements AccessTokenService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccessTokenServiceImpl.class);
 
     private static final Domain ACCESS_TOKEN_DOMAIN = new AccessTokenDomain();
 
@@ -261,5 +267,47 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
             accessToken.setInvalidatedOn(now);
             return AccessTokenDAO.update(em, accessToken);
         });
+    }
+
+    //@ListenServiceEvent(fromAddress="account")
+    //@ListenServiceEvent(fromAddress="user")
+    public void onKapuaEvent(ServiceEvent kapuaEvent) throws KapuaException {
+        if (kapuaEvent == null) {
+            //service bus error. Throw some exception?
+        }
+        LOGGER.info("AccessTokenService: received kapua event from {}, operation {}", kapuaEvent.getService(), kapuaEvent.getOperation());
+        if ("user".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {
+            deleteAccessTokenByUserId(kapuaEvent.getScopeId(), kapuaEvent.getEntityId());
+        }
+        else if ("account".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {
+            deleteAccessTokenByAccountId(kapuaEvent.getScopeId(), kapuaEvent.getEntityId());
+        }
+    }
+
+    private void deleteAccessTokenByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException {
+        KapuaLocator locator = KapuaLocator.getInstance();
+        AccessTokenFactory accessTokenFactory = locator.getFactory(AccessTokenFactory.class);
+
+        AccessTokenQuery query = accessTokenFactory.newQuery(scopeId);
+        query.setPredicate(new AttributePredicate<>(AccessTokenPredicates.USER_ID, userId));
+
+        AccessTokenListResult accessTokensToDelete = query(query);
+
+        for (AccessToken at : accessTokensToDelete.getItems()) {
+            delete(at.getScopeId(), at.getId());
+        }
+    }
+
+    private void deleteAccessTokenByAccountId(KapuaId scopeId, KapuaId accountId) throws KapuaException {
+        KapuaLocator locator = KapuaLocator.getInstance();
+        AccessTokenFactory accessTokenFactory = locator.getFactory(AccessTokenFactory.class);
+
+        AccessTokenQuery query = accessTokenFactory.newQuery(accountId);
+
+        AccessTokenListResult accessTokensToDelete = query(query);
+
+        for (AccessToken at : accessTokensToDelete.getItems()) {
+            delete(at.getScopeId(), at.getId());
+        }
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,6 +16,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
+import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -31,15 +32,19 @@ import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link GroupService} implementation.
- * 
+ *
  * @since 1.0
  *
  */
 @KapuaProvider
 public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<Group, GroupCreator, GroupService, GroupListResult, GroupQuery, GroupFactory> implements GroupService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(GroupServiceImpl.class);
 
     private static final Domain GROUP_DOMAIN = new GroupDomain();
 
@@ -158,5 +163,29 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
         authorizationService.checkPermission(permissionFactory.newPermission(GROUP_DOMAIN, Actions.read, query.getScopeId()));
 
         return entityManagerSession.onResult(em -> GroupDAO.count(em, query));
+    }
+
+    //@ListenServiceEvent(fromAddress="account")
+    public void onKapuaEvent(ServiceEvent kapuaEvent) throws KapuaException {
+        if (kapuaEvent == null) {
+            //service bus error. Throw some exception?
+        }
+        LOGGER.info("GroupService: received kapua event from {}, operation {}", kapuaEvent.getService(), kapuaEvent.getOperation());
+        if ("account".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {
+            deleteGroupByAccountId(kapuaEvent.getScopeId(), kapuaEvent.getEntityId());
+        }
+    }
+
+    private void deleteGroupByAccountId(KapuaId scopeId, KapuaId accountId) throws KapuaException {
+        KapuaLocator locator = KapuaLocator.getInstance();
+        GroupFactory groupFactory = locator.getFactory(GroupFactory.class);
+
+        GroupQuery query = groupFactory.newQuery(accountId);
+
+        GroupListResult groupsToDelete = query(query);
+
+        for (Group g : groupsToDelete.getItems()) {
+            delete(g.getScopeId(), g.getId());
+        }
     }
 }

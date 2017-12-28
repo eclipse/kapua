@@ -12,15 +12,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.locator.guice;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.aopalliance.intercept.MethodInterceptor;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
+import org.eclipse.kapua.commons.core.InterceptorBind;
+import org.eclipse.kapua.commons.core.ServiceModule;
+import org.eclipse.kapua.commons.core.ServiceModuleProvider;
+import org.eclipse.kapua.commons.core.ServiceModuleProviderImpl;
 import org.eclipse.kapua.commons.util.ResourceUtils;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.KapuaObjectFactory;
@@ -33,6 +42,9 @@ import com.google.common.reflect.ClassPath;
 import com.google.common.reflect.ClassPath.ClassInfo;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
+import com.google.inject.matcher.Matcher;
+import com.google.inject.matcher.Matchers;
+import com.google.inject.multibindings.Multibinder;
 
 public class KapuaModule extends AbstractModule {
 
@@ -44,6 +56,7 @@ public class KapuaModule extends AbstractModule {
     private static final String SERVICE_RESOURCE = "locator.xml";
 
     private String resourceName;
+    private Map<Class<?>, Multibinder<Class<?>>> multibinders;
 
     public KapuaModule() {
         this(SERVICE_RESOURCE);
@@ -75,7 +88,7 @@ public class KapuaModule extends AbstractModule {
 
             // Among all the classes in the configured packages, retain only the ones
             // annotated with @KapuaProvider annotation
-            Set<Class<?>> extendedClassInfo = new HashSet<>();
+            Set<Class<?>> providers = new HashSet<>();
             for (String packageName : packageNames) {
                 // Use the class loader of this (module) class
                 ImmutableSet<ClassInfo> classInfos = classPath.getTopLevelClassesRecursive(packageName);
@@ -84,7 +97,7 @@ public class KapuaModule extends AbstractModule {
                     Class<?> theClass = Class.forName(classInfo.getName(), !initialize, classLoader);
                     KapuaProvider serviceProvider = theClass.getAnnotation(KapuaProvider.class);
                     if (serviceProvider != null) {
-                        extendedClassInfo.add(theClass);
+                        providers.add(theClass);
                     }
                 }
             }
@@ -102,7 +115,7 @@ public class KapuaModule extends AbstractModule {
                 // When the provided object is a service ...
                 // ... add binding with a matching implementation
                 if (KapuaService.class.isAssignableFrom(kapuaObject)) {
-                    for (Class<?> clazz : extendedClassInfo) {
+                    for (Class<?> clazz : providers) {
                         if (kapuaObject.isAssignableFrom(clazz)) {
                             ServiceResolver<KapuaService, ?> resolver = ServiceResolver.newInstance(kapuaObject, clazz);
                             bind(resolver.getServiceClass()).to(resolver.getImplementationClass()).in(Singleton.class);
@@ -120,7 +133,7 @@ public class KapuaModule extends AbstractModule {
                 // When the provided object is a factory ...
                 // ... add binding with a matching implementation
                 if (KapuaObjectFactory.class.isAssignableFrom(kapuaObject)) {
-                    for (Class<?> clazz : extendedClassInfo) {
+                    for (Class<?> clazz : providers) {
                         if (kapuaObject.isAssignableFrom(clazz)) {
                             FactoryResolver<KapuaObjectFactory, ?> resolver = FactoryResolver.newInstance(kapuaObject, clazz);
                             bind(resolver.getFactoryClass()).to(resolver.getImplementationClass()).in(Singleton.class);
@@ -138,6 +151,45 @@ public class KapuaModule extends AbstractModule {
                 logger.warn("No provider found for {}", kapuaObject);
             }
 
+            // Bind interceptors
+            logger.info("Binding interceptors ..");
+            for (Class<?> clazz : providers) {
+                if (MethodInterceptor.class.isAssignableFrom(clazz)) {
+                    InterceptorBind annotation = clazz.getAnnotation(InterceptorBind.class);
+                    Class<?> parentClazz = annotation.matchSubclassOf();
+                    Class<? extends Annotation> methodAnnotation = annotation.matchAnnotatedWith();
+
+                    // Need to request injection explicitely otherwise the interceptor would not
+                    // be injected.
+                    MethodInterceptor interceptor = (MethodInterceptor) clazz.newInstance();
+                    requestInjection(interceptor);
+
+                    bindInterceptor(Matchers.subclassesOf(parentClazz), Matchers.annotatedWith(methodAnnotation), interceptor);
+                    logger.info("Bind service interceptor {} to subclasses of {} annotated with {}", clazz, parentClazz, methodAnnotation);
+                }
+            }
+
+            multibinders = new HashMap<>();
+
+            bind(ServiceModuleProvider.class).to(ServiceModuleProviderImpl.class).in(Singleton.class);
+
+            // Bind service modules
+            logger.info("Binding service modules ..");
+            //cast is safe by design
+            multibinders.put(ServiceModule.class, (Multibinder<Class<?>>) Multibinder.newSetBinder(binder(), (Class<?>)ServiceModule.class));
+            for (Class<?> clazz : providers) {
+                if (ServiceModule.class.isAssignableFrom(clazz)) {
+                    @SuppressWarnings("rawtypes")
+                    ComponentResolver resolver = ComponentResolver.newInstance(ServiceModule.class, clazz);
+                    //cast is safe by design
+                    if (resolver.getProvidedClass().isAssignableFrom(clazz)) {
+                        logger.info("Assignable from {}", new Object[]{resolver.getProvidedClass(), clazz});
+                        multibinders.get(resolver.getProvidedClass()).addBinding().to(resolver.getImplementationClass());
+                    }
+                    continue;
+                }
+            }
+
             logger.trace("Binding completed");
 
         } catch (Exception e) {
@@ -146,4 +198,8 @@ public class KapuaModule extends AbstractModule {
         }
     }
 
+    @Override
+    protected void bindInterceptor(Matcher<? super Class<?>> classMatcher, Matcher<? super Method> methodMatcher, MethodInterceptor... interceptors) {
+        super.bindInterceptor(classMatcher, Matchers.not(SyntheticMethodMatcher.getInstance()).and(methodMatcher), interceptors);
+    }
 }

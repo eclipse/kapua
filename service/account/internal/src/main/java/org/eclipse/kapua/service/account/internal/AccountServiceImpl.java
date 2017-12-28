@@ -12,10 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
-import javax.inject.Inject;
-import javax.persistence.TypedQuery;
 import java.util.Map;
 import java.util.Objects;
+
+import javax.inject.Inject;
+import javax.persistence.TypedQuery;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
@@ -51,6 +52,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
     private static final Domain ACCOUNT_DOMAIN = new AccountDomain();
 
+//    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     @Inject
     private AuthorizationService authorizationService;
 
@@ -67,6 +69,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     @Override
+    //@RaiseServiceEvent
     public Account create(AccountCreator accountCreator)
             throws KapuaException {
         //
@@ -106,6 +109,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     @Override
+    //@RaiseServiceEvent
     public Account update(Account account)
             throws KapuaException {
         //
@@ -151,6 +155,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     @Override
+    //@RaiseServiceEvent
     public void delete(KapuaId scopeId, KapuaId accountId)
             throws KapuaException {
 

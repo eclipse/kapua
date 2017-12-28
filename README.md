@@ -18,6 +18,7 @@ Eclipse Kapua&trade; runs as distributed application that exposes three basic se
 * The Web Administration Console
 
 Two more backend services are required that implement the data tier:
+* The Event Bus Service
 * The SQL database
 * The NoSQL datastore
 
@@ -42,40 +43,28 @@ The team maintains some docker images in a Docker Hub repository at [Kapua Repos
 
 Suppose the target is the current snapshot 1.0.0-SNAPSHOT.
 
-* Run Docker
-* Open an OS shell
-* Execute the following command lines
+* Clone Eclipse Kapua into a local directory
+* Open an OS shell and move to Kapua root dir
+* Start Docker runtime
+* Start Kapua:
 
-```
-docker run -td --name kapua-sql -p 8181:8181 -p 3306:3306 kapua/kapua-sql
-docker run -td --name kapua-elasticsearch -p 9200:9200 -p 9300:9300 elasticsearch:5.4.0 -Ecluster.name=kapua-datastore -Ediscovery.type=single-node -Etransport.host=_site_ -Etransport.ping_schedule=-1 -Etransport.tcp.connect_timeout=30s
-docker run -td --name kapua-broker --link kapua-sql:db --link kapua-elasticsearch:es --env commons.db.schema.update=true -p 1883:1883 -p 61614:61614 kapua/kapua-broker
-docker run -td --name kapua-console --link kapua-sql:db --link kapua-broker:broker --link kapua-elasticsearch:es --env commons.db.schema.update=true -p 8080:8080 kapua/kapua-console
-docker run -td --name kapua-api --link kapua-sql:db --link kapua-broker:broker --link kapua-elasticsearch:es --env commons.db.schema.update=true -p 8081:8080 kapua/kapua-api
-```
+    kapua/dev-tools/src/main/docker/docker-deploy.sh
 
-The command lines above start a Docker container for each of the services mentioned above.
+The command starts all the Kapua containers using Docker Compose.
 
-If the tag is not specified then the image tagged as _latest_ will be used by default.
+By default, the `latest` version of images will be used. If you want to run some other version of Kapua, set the `IMAGE_VERSION` environment variable, like
 
-The images will be downloaded from Docker Hub and all the containers will be started.
+    export IMAGE_VERSION=0.2.0
 
-You can check if every container is ok by typing the following command:
+You can check if the containers are running by typing the following command:
 
     docker ps -as
 
-The system will show the containers currently running:
+Docker will list the containers currently running.
 
-```
-CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS                                                                  NAMES
-f5e2b6ccabf3        kapua/kapua-api             "/home/kapua/run-j..."   8 minutes ago       Up 8 minutes        8778/tcp, 0.0.0.0:8081->8080/tcp                                       kapua-api
-47c973b1241e        kapua/kapua-console         "/home/kapua/run-c..."   19 minutes ago      Up 19 minutes       0.0.0.0:8080->8080/tcp, 8778/tcp                                       kapua-console
-915eeb9668d9        kapua/kapua-broker          "/maven/bin/active..."   19 minutes ago      Up 19 minutes       8778/tcp, 0.0.0.0:1883->1883/tcp, 0.0.0.0:61614->61614/tcp, 8883/tcp   kapua-broker
-dc682f7b1533        elasticsearch:5.3.0         "/docker-entrypoin..."   19 minutes ago      Up 19 minutes       0.0.0.0:9200->9200/tcp, 0.0.0.0:9300->9300/tcp                         kapua-elasticsearch
-42d408470cf0        kapua/kapua-sql             "/home/kapua/run-h2"     20 minutes ago      Up 20 minutes       0.0.0.0:3306->3306/tcp, 0.0.0.0:8181->8181/tcp, 8778/tcp               kapua-sql
-```
+To stop Kapua, run
 
-**Note:** in subsequent runs, before launching the new containers, ensure that there are no other containers already running.
+    kapua/dev-tools/src/main/docker/docker-undeploy.sh
 
 ### Access
 
@@ -90,6 +79,9 @@ The administration console is available at http://localhost:8080/. Copy paste th
 * Password: `kapua-password`
 
 Press _Login_ button and start working with the console.
+
+**Note**: If you are using Docker on Windows the hostname will most likely not be `localhost` but
+the IP address of your docker instance.
 
 #### RESTful APIs
 
@@ -129,6 +121,9 @@ The system will return a JSON object.
 
 Swagger will automatically add the authentication token to each subsequent request done using the Swagger UI. You're ready to try executing the documented APIs.
 
+**Note**: If you are using Docker on Windows the hostname will most likely not be `localhost` but
+the IP address of your docker instance.
+
 #### The Broker
 
 The broker container exposes an [Mqtt](http://mqtt.org/) end point at tcp://localhost:1883/.
@@ -142,6 +137,9 @@ The credentials for the user kapua-broker are the following:
 * Password: `kapua-password`
 
 **Note:** do not use the user `kapua-sys` to establish Mqtt connections.
+
+**Note**: If you are using Docker on Windows the hostname will most likely not be `localhost` but
+the IP address of your docker instance.
 
 #### Simulation
 

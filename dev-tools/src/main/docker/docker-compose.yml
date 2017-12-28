@@ -1,0 +1,63 @@
+version: '3.1'
+
+secrets:
+  broker.xml:
+    file: ${CONFIG}/broker.xml
+  bootstrap.xml:
+    file: ${CONFIG}/bootstrap.xml
+  artemis-users.properties:
+    file: ${CONFIG}/artemis-users.properties
+  artemis-roles.properties:
+    file: ${CONFIG}/artemis-roles.properties
+  login.config:
+    file: ${CONFIG}/login.config
+  logging.properties:
+    file: ${CONFIG}/logging.properties
+  artemis.profile:
+    file: ${CONFIG}/artemis.profile
+
+services:
+  db:
+    image: kapua/kapua-sql:${IMAGE_VERSION}
+    ports:
+    - 8181:8181
+    - 3306:3306
+  es:
+    image: elasticsearch:5.4.0
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      - cluster.name=kapua-datastore
+      - discovery.type=single-node
+      - transport.host=_site_
+      - transport.ping_schedule=-1
+      - transport.tcp.connect_timeout=30s
+  events-broker:
+    image: enmasseproject/activemq-artemis:2.2.0-1
+    ports:
+    - 5672:5672
+    environment:
+    - ARTEMIS_CONFIGURATION=/run/secrets
+    secrets:
+    - broker.xml
+    - bootstrap.xml
+    - artemis-users.properties
+    - artemis-roles.properties
+    - login.config
+    - logging.properties
+    - artemis.profile
+  broker:
+    image: kapua/kapua-broker:${IMAGE_VERSION}
+    ports:
+    - 1883:1883
+    - 61614:61614
+  kapua-console:
+    image: kapua/kapua-console:${IMAGE_VERSION}
+    ports:
+    - 8080:8080
+  kapua-api:
+    image: kapua/kapua-api:${IMAGE_VERSION}
+    ports:
+    - 8081:8080
+

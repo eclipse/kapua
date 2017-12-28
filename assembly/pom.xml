@@ -34,6 +34,7 @@
         <module>jetty-base</module>
         <module>sql</module>
         <module>broker</module>
+        <module>events-broker</module>
         <module>api</module>
     </modules>
     

@@ -37,6 +37,14 @@ public enum KapuaLocatorErrorCodes implements KapuaErrorCode {
      */
     FACTORY_PROVIDER_INVALID,
     /**
+     * Component unavailable
+     */
+    COMPONENT_UNAVAILABLE,
+    /**
+     * Invalid component provider
+     */
+    COMPONENT_PROVIDER_INVALID,
+    /**
      * Invalid locator configuration
      */
     INVALID_CONFIGURATION,

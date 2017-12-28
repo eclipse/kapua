@@ -16,11 +16,15 @@ import static org.eclipse.kapua.commons.util.ArgumentValidator.notEmptyOrNull;
 
 import java.util.Objects;
 
+import javax.inject.Inject;
+
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
+import org.eclipse.kapua.event.ServiceEvent;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -38,15 +42,13 @@ import org.eclipse.kapua.service.user.UserType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-
 /**
  * User service implementation.
  */
 @KapuaProvider
 public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<User, UserCreator, UserService, UserListResult, UserQuery, UserFactory> implements UserService {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private static final Domain USER_DOMAIN = new UserDomain();
 
@@ -64,6 +66,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     }
 
     @Override
+    //@RaiseServiceEvent
     public User create(UserCreator userCreator)
             throws KapuaException {
         //
@@ -84,7 +87,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         final int remainingChildEntities = allowedChildEntities(userCreator.getScopeId());
         if (remainingChildEntities <= 0) {
-            logger.info("Exceeded child limit - remaining: {}", remainingChildEntities);
+            LOGGER.info("Exceeded child limit - remaining: {}", remainingChildEntities);
             throw new KapuaIllegalArgumentException("scopeId", "max users reached");
         }
 
@@ -96,6 +99,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     }
 
     @Override
+    //@RaiseServiceEvent
     public User update(User user)
             throws KapuaException {
         // Validation of the fields
@@ -134,6 +138,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     }
 
     @Override
+    //@RaiseServiceEvent
     public void delete(KapuaId scopeId, KapuaId userId) throws KapuaException {
         // Validation of the fields
         ArgumentValidator.notNull(userId.getId(), "id");
@@ -246,6 +251,27 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         // FIXME-KAPUA: AuthenticationService get system user name via config
         if ("kapua-sys".equals(name)) {
             throw new KapuaIllegalArgumentException("name", "kapua-sys");
+        }
+    }
+
+    //@ListenServiceEvent(fromAddress = "account")
+    public void onKapuaEvent(ServiceEvent kapuaEvent) throws KapuaException {
+        if (kapuaEvent == null) {
+            // service bus error. Throw some exception?
+        }
+        LOGGER.info("UserService: received kapua event from {}, operation {}", kapuaEvent.getService(), kapuaEvent.getOperation());
+        if ("account".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {
+            deleteUserByAccountId(kapuaEvent.getScopeId(), kapuaEvent.getEntityId());
+        }
+    }
+
+    private void deleteUserByAccountId(KapuaId scopeId, KapuaId accountId) throws KapuaException {
+        KapuaLocator locator = KapuaLocator.getInstance();
+        UserFactory userFactory = locator.getFactory(UserFactory.class);
+        UserQuery query = userFactory.newQuery(accountId);
+        UserListResult usersToDelete = query(query);
+        for (User u : usersToDelete.getItems()) {
+            delete(u.getScopeId(), u.getId());
         }
     }
 

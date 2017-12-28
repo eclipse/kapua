@@ -110,6 +110,8 @@
 
         <api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
         <api>org.eclipse.kapua.model.id.KapuaIdFactory</api>
+        
+        <api>org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory</api>
     </provided>
     <packages>
         <package>org.eclipse.kapua.commons</package>

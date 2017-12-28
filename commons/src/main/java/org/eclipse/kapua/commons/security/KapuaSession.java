@@ -37,6 +37,7 @@ public class KapuaSession implements Serializable {
     static {
         TRUSTED_CLASSES.add("org.eclipse.kapua.broker.core.plugin.KapuaSecurityContext.<init>");
         TRUSTED_CLASSES.add("org.eclipse.kapua.commons.security.KapuaSecurityUtils.doPrivileged");
+        TRUSTED_CLASSES.add("org.eclipse.kapua.commons.event.jms.JMSServiceEventBus.setSession");
     }
 
     /**
@@ -67,6 +68,12 @@ public class KapuaSession implements Serializable {
         super();
     }
 
+    private KapuaSession(KapuaId scopeId, KapuaId userId, boolean trustedMode) {
+        this.scopeId = scopeId;
+        this.userId = userId;
+        this.trustedMode = trustedMode;
+    }
+
     /**
      * Creates a {@link KapuaSession} copy with trusted mode flag set to true (to be used only from trusted classes)
      *
@@ -80,6 +87,22 @@ public class KapuaSession implements Serializable {
                     kapuaSession.getUserId());
             kapuaSessionCopy.trustedMode = true;
             return kapuaSessionCopy;
+        } else {
+            // TODO to be replaced with a security exception
+            throw new RuntimeException("Method not allowed for the caller class");
+        }
+    }
+
+    /**
+     * Creates a new {@link KapuaSession} with trusted mode flag set to true (to be used only from trusted classes)
+     *
+     * @return
+     */
+    public static KapuaSession createFrom(KapuaId scopeId, KapuaId userId) {
+        if (isCallerClassTrusted()) {
+            KapuaSession session = new KapuaSession(scopeId, userId, true);
+            KapuaSecurityUtils.setSession(session);
+            return session;
         } else {
             // TODO to be replaced with a security exception
             throw new RuntimeException("Method not allowed for the caller class");

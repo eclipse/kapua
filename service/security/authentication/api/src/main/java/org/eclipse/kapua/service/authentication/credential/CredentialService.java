@@ -52,6 +52,8 @@ public interface CredentialService extends KapuaEntityService<Credential, Creden
 
     /**
      * Queries for all users
+     * 
+     * @param query
      */
     public CredentialListResult query(KapuaQuery<Credential> query)
             throws KapuaException;

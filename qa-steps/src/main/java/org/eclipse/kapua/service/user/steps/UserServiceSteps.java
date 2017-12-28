@@ -73,6 +73,9 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 /**
  * Implementation of Gherkin steps used in UserServiceI9n.feature scenarios.
  */
@@ -233,6 +236,15 @@ public class UserServiceSteps extends BaseQATests {
         }
     }
 
+    @When("^I try to delete account \"(.*)\"$")
+    public void deleteAccount(String accountName) throws KapuaException{
+        Account accountToDelete;
+        accountToDelete = accountService.findByName(accountName);
+        if (accountToDelete != null) {
+            accountService.delete(accountToDelete.getScopeId(), accountToDelete.getId());
+        }
+    }
+
     @Then("^I try to delete user \"(.*)\"$")
     public void thenDeleteUser(String userName) throws Exception {
 
@@ -242,6 +254,30 @@ public class UserServiceSteps extends BaseQATests {
             if (userToDelete != null) {
                 userService.delete(userToDelete);
             }
+        } catch (KapuaException e) {
+            verifyException(e);
+        }
+    }
+
+    @Then("^I find user \"(.*)\"$")
+    public void thenIFindUser(String userName) throws Exception {
+
+        primeException();
+        try {
+            User user = userService.findByName(userName);
+            assertNotNull("User doesn't exist.", user);
+        } catch (KapuaException e) {
+            verifyException(e);
+        }
+    }
+
+    @Then("^I don't find user \"(.*)\"$")
+    public void thenIdontFindUser(String userName) throws Exception {
+
+        primeException();
+        try {
+            User user = userService.findByName(userName);
+            assertNull("User still exists.", user);
         } catch (KapuaException e) {
             verifyException(e);
         }

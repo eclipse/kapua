@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,9 +15,15 @@ import javax.persistence.PersistenceException;
 
 import org.eclipse.kapua.KapuaEntityExistsException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.event.ServiceEventScope;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecord;
+import org.eclipse.kapua.commons.service.event.store.api.ServiceEventUtil;
+import org.eclipse.kapua.commons.service.event.store.internal.EventStoreDAO;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
+import org.eclipse.kapua.model.KapuaEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,6 +85,11 @@ public class EntityManagerSession {
             manager = entityManagerFactory.createEntityManager();
             transactionManager.beginTransaction(manager);
             entityManagerActionCallback.onAction(manager);
+
+            if (manager.isTransactionActive()) {
+                appendKapuaEvent(manager);
+            }
+
             transactionManager.commit(manager);
         } catch (Exception e) {
             if (manager != null) {
@@ -127,6 +138,11 @@ public class EntityManagerSession {
             manager = entityManagerFactory.createEntityManager();
             transactionManager.beginTransaction(manager);
             T result = entityManagerResultCallback.onResult(manager);
+
+            if (manager.isTransactionActive()) {
+                appendKapuaEvent(result, manager);
+            }
+
             transactionManager.commit(manager);
             return result;
         } catch (Exception e) {
@@ -184,6 +200,9 @@ public class EntityManagerSession {
                 try {
                     transactionManager.beginTransaction(manager);
                     instance = entityManagerInsertCallback.onInsert(manager);
+
+                    appendKapuaEvent(instance, manager);
+
                     transactionManager.commit(manager);
                     succeeded = true;
                 } catch (KapuaEntityExistsException e) {
@@ -214,6 +233,53 @@ public class EntityManagerSession {
             }
         }
         return instance;
+    }
+
+    private <T> EventStoreRecord appendKapuaEvent(EntityManager manager) throws KapuaException {
+        return appendKapuaEvent(null, manager);
+    }
+
+    private <T> EventStoreRecord appendKapuaEvent(Object instance, EntityManager manager) throws KapuaException {
+        EventStoreRecord persistedKapuaEvent = null;
+
+        //persist the kapua event only if the instance is not a kapua event instance
+        if (!(instance instanceof EventStoreRecord)) {
+
+            // If a kapua event is in scope then persist it along with the entity
+            org.eclipse.kapua.event.ServiceEvent serviceEventBus = ServiceEventScope.get();
+            if (serviceEventBus != null) {
+                if (instance instanceof KapuaEntity) {
+                    //make sense to override the entity id and type without checking for previous empty values?
+                    //override only if parameters are not evaluated
+                    if (serviceEventBus.getEntityType() == null || serviceEventBus.getEntityType().trim().length() <= 0) {
+                        logger.debug("Kapua event - update entity type to '{}'", instance.getClass().getName());
+                        serviceEventBus.setEntityType(instance.getClass().getName());
+                    }
+                    if (serviceEventBus.getEntityId() == null) {
+                        logger.debug("Kapua event - update entity id to '{}'", ((KapuaEntity) instance).getId());
+                        serviceEventBus.setEntityId(((KapuaEntity) instance).getId());
+                    }
+                    logger.info("Entity '{}' with id '{}' found!", new Object[]{instance.getClass().getName(), ((KapuaEntity) instance).getId()});
+                }
+
+                //insert the kapua event only if it's a new entity
+                if (isNewEvent(serviceEventBus)) {
+                    persistedKapuaEvent = EventStoreDAO.create(manager, ServiceEventUtil.fromServiceEventBus(serviceEventBus));
+                } else {
+                    persistedKapuaEvent = EventStoreDAO.update(manager,
+                            ServiceEventUtil.mergeToEntity(EventStoreDAO.find(
+                                    manager, KapuaEid.parseCompactId(serviceEventBus.getId())), serviceEventBus));
+                }
+                // update event id on Event
+                // persistedKapuaEvent.getId() cannot be null since is generated by the database
+                serviceEventBus.setId(persistedKapuaEvent.getId().toCompactId());
+            }
+        }
+        return persistedKapuaEvent;
+    }
+
+    private boolean isNewEvent(org.eclipse.kapua.event.ServiceEvent event) {
+        return (event.getId() == null);
     }
 
 }

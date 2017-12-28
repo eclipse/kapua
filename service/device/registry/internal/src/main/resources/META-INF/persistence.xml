@@ -19,6 +19,10 @@
 
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 
+        <!-- event -->
+        <class>org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImpl</class>
+        <class>org.eclipse.kapua.commons.event.ServiceEventHousekeeper</class>
+
         <!-- Device -->
         <class>org.eclipse.kapua.service.device.registry.internal.DeviceImpl</class>
         <class>org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionImpl</class>

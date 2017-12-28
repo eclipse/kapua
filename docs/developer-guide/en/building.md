@@ -73,27 +73,32 @@ We also use CI server sponsored by [Red Hat](https://www.redhat.com/en) to autom
 [Kapua DockerHub account](https://hub.docker.com/r/kapua/). Red Hat CI server checks for code changes every 15 minutes and pushes updated version
 of images if needed.
 
-## Building Kapua Docker images
+## Docker images
 
 Kapua Docker images are hosted under [Kapua DockerHub account](https://hub.docker.com/r/kapua/). The latest snapshots of images are updated every 15 minutes.
 
 In order to build Kapua Docker images yourself, execute Maven build with `docker` profile enabled:
 
-    cd kapua
-    mvn
-    cd assembly
-    mvn -Pdocker
+    mvn clean install -Pdocker
 
-In order to build and push images into DockerHub registry, execute build with Maven with `docker-push` profile enabled:
+If you want to speed up the build process you can ask Maven to ignore `-SNAPSHOT` updates
+force it to use only locally present artifacts with the `dev` profile. You can also skip unit tests to speed things even more.
 
-    cd kapua
-    mvn
-    cd assembly
-    mvn -Pdocker-push
+    mvn clean install -Pdocker,dev -DskipTests
 
-If you would like to change account name (for example to push to your own account, instead of `kapua`) use `docker.account` property:
+### Pushing
 
-    mvn -Ddocker.account=henry -Pdocker-push
+Pushing with default settings:
+
+    mvn -Pdocker deploy
+
+Pushing to a specific docker registry:
+
+    mvn -Pdocker deploy -Ddocker.push.registry=registry.hub.docker.com
+
+Pushing to a specific docker registry under a specific account:
+
+    mvn -Pdocker deploy -Ddocker.push.registry=registry.hub.docker.com -Ddocker.account=eclipse
 
 By default Kapua applies the following tags to the published images:
 - `latest`

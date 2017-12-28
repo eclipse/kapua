@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.locator.guice.TestService;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
@@ -144,6 +145,11 @@ public class UserServiceMock implements UserService {
     @Override
     public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values)
             throws KapuaException {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void onKapuaEvent(ServiceEvent kapuaEvent) throws KapuaException {
         // TODO Auto-generated method stub
 
     }

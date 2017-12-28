@@ -11,6 +11,9 @@
 #
 #*******************************************************************************
 # Kapua jars and activemq.xml need to be added before starting the activemq instance...
+cd /usr/local/artemis/apache-artemis-ARTEMIS_VERSION/kapua
+./bin/artemis-service start
+cd /usr/local/activemq/apache-activemq-ACTIVEMQ_VERSION
 ./update-kapua-jars-cfg.sh
 export ACTIVEMQ_OPTS="${ACTIVEMQ_OPTS} -Dorg.apache.activemq.SERIALIZABLE_PACKAGES=*"
 bin/activemq start xbean:conf/activemq.xml

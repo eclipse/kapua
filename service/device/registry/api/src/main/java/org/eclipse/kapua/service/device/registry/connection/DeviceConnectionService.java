@@ -25,7 +25,7 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
  * @since 1.0
  */
 public interface DeviceConnectionService extends KapuaEntityService<DeviceConnection, DeviceConnectionCreator>,
-        KapuaUpdatableEntityService<DeviceConnection>,
+        KapuaUpdatableEntityService<DeviceConnection>, 
         KapuaConfigurableService {
 
     /**

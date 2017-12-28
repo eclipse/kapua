@@ -25,6 +25,8 @@ import java.util.Optional;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.core.ServiceModuleBundle;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.slf4j.Logger;
@@ -33,6 +35,8 @@ import org.slf4j.LoggerFactory;
 public class RestApiListener implements ServletContextListener {
 
     private static final Logger logger = LoggerFactory.getLogger(RestApiListener.class);
+
+    private ServiceModuleBundle moduleBundle;
 
     @Override
     public void contextInitialized(final ServletContextEvent event) {
@@ -53,10 +57,33 @@ public class RestApiListener implements ServletContextListener {
             logger.debug("Starting Liquibase embedded client update - URL: {}, user/pass: {}/{}", new Object[]{resolveJdbcUrl(), dbUsername, dbPassword});
             new KapuaLiquibaseClient(resolveJdbcUrl(), dbUsername, dbPassword, Optional.of(schema)).update();
         }
+
+        // Start service modules
+        try {
+            logger.info("Starting service modules...");
+            if (moduleBundle == null) {
+                moduleBundle = new ServiceModuleBundle();
+            }
+            moduleBundle.startup();
+            logger.info("Starting service modules...DONE");
+        } catch (KapuaException e) {
+            logger.error("Cannot start service modules: {}", e.getMessage(), e);
+        }
     }
 
     @Override
     public void contextDestroyed(final ServletContextEvent event) {
+        // stop event modules
+        try {
+            logger.info("Stopping service modules...");
+            if (moduleBundle != null) {
+                moduleBundle.shutdown();;
+                moduleBundle = null;
+            }
+            logger.info("Stopping service modules...DONE");
+        } catch (KapuaException e) {
+            logger.error("Cannot stop service modules: {}", e.getMessage(), e);
+        }       
     }
 
 }

@@ -10,11 +10,31 @@ setup and not on a full blown production setup.
 
 ## Docker containers
 
-Running Kapua on local docker containers is as easy as:
+Before running Kapua on Docker, you need to 
 
 1. Install docker
-1. Run `mvn -f assembly -Pdocker` once
-1. Run the docker images you want to start, see [assembly/README.md](https://github.com/eclipse/kapua/blob/develop/assembly/README.md) 
+1. Run `mvn -f assembly -Pdocker` once to build containers
+
+
+Now, you can start Kapua by using Docker Compose. To do so, run
+  
+    kapua/dev-tools/src/main/docker/docker-deploy.sh
+    
+After Kapua has been started, you can navigate your browser to http://localhost:8080 and log in using the following credentials:
+`kapua-sys` : `kapua-password`
+
+You can access the API using: http://localhost:8081
+
+**Note**: If you are using Docker on Windows the hostname will most likely not be `localhost` but
+the IP address of your docker instance.
+
+By default, the `latest` version of images will be used. If you want to run some other version of Kapua, set the `IMAGE_VERSION` environment variable, like
+
+    export IMAGE_VERSION=0.2.0
+    
+To stop Kapua, run
+    
+    kapua/dev-tools/src/main/docker/docker-undeploy.sh
 
 ## OpenShift
 
@@ -37,6 +57,10 @@ If you are running your OpenShift cluster for a first time, execute the followin
 
 Initialization script is responsible for logging you into a cluster and creating new OpenShift project for Kapua.
 
+If your Openshift cluster is not on the localhost, set the `OPENSHIFT_HOST` environment variable. For example, something like
+
+    export OPENSHIFT_HOST=192.168.64.2:8443
+
 If for some reasons, you cannot start your cluster, try to execute the startup script with option `DOCKERIZED=FALSE`:
 
     sudo DOCKERIZED=FALSE kapua/dev-tools/src/main/openshift/openshift-start.sh
@@ -57,6 +81,53 @@ credentials:
 	<dt>username</dt><dd>kapua-sys</dd>
 	<dt>password</dt><dd>kapua-password</dd>
 </dl>
+
+
+## Using Minishift
+
+Minishift is a tool that helps you run OpenShift locally by running a single-node OpenShift cluster inside a VM. Follow [this guide](https://docs.openshift.org/latest/minishift/getting-started/index.html) for installing and having Minishift up and running.
+
+Steps to run Kapua on Minishift are the  following
+
+1. Start Minishift (make sure you have enough memory and cpu resources for your cluster)
+
+    ~~~bash
+    minishift start --memory 8GB --cpus 4
+    ~~~
+
+2. Export Minishift docker and oc tools
+
+    ~~~bash
+    eval $(minishift docker-env)
+    eval $(minishift oc-env)
+    ~~~
+
+3. Export address of the cluster
+
+    ~~~bash
+    export OPENSHIFT_HOST=$(minishift ip):8443
+    ~~~
+
+4. Initialize Kapua project
+
+    ~~~bash
+    kapua/dev-tools/src/main/openshift/openshift-initialize.sh
+    ~~~
+
+5. Deploy Kapua components
+
+    ~~~bash
+    cd kapua/dev-tools/src/main/openshift
+    ./openshift-deploy.sh
+    ~~~
+
+6. Visit Minishift console
+
+    ~~~bash
+    minishift dashboard
+    ~~~
+
+## Advanced OpenShift configuration
 
 ### External Node port for MQTT
 

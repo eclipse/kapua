@@ -34,7 +34,9 @@ Vagrant.configure(2) do |config|
     export ELASTICSEARCH_VERSION="5.4.0"
     export H2DB_VERSION="1.4.192"
     export ACTIVE_MQ_VERSION="5.14.5"
+    export ARTEMIS_VERSION="2.2.0"
     export TOMCAT_VERSION="8.0.41"
+    export BINDING_IP="192.168.33.10"
 
     # Install OpenJDK 8
     sudo yum clean all
@@ -55,6 +57,7 @@ Vagrant.configure(2) do |config|
     sudo rm -rf lib/activemq-openwire-legacy*
     sudo rm -rf lib/activemq-web-*
     sudo rm -rf lib/activemq-rar.txt
+    sudo rm -rf lib/geronimo-jms_1.1_spec-1.1.1.jar
     sudo rm -rf lib/geronimo-jta_1.0.1B_spec*
     sudo rm -rf lib/optional/activeio-core-*
     sudo rm -rf lib/optional/activemq-amqp-*
@@ -114,6 +117,30 @@ Vagrant.configure(2) do |config|
     sudo rm -rf docs/
     sudo rm -rf webapps/
     sudo rm -rf webapps-demo/
+
+    # Install ActiveMQ Artemis (service broker)
+    sudo mkdir -p /usr/local/artemis
+    cd /usr/local/artemis
+    sudo curl -O https://archive.apache.org/dist/activemq/activemq-artemis/${ARTEMIS_VERSION}/apache-artemis-${ARTEMIS_VERSION}-bin.tar.gz
+    sudo tar zxvf apache-artemis-${ARTEMIS_VERSION}-bin.tar.gz
+    sudo rm apache-artemis-${ARTEMIS_VERSION}-bin.tar.gz
+    cd apache-artemis-${ARTEMIS_VERSION}
+    #create server
+    ./bin/artemis create \
+    --allow-anonymous \
+    --autocreate \
+    --cluster-password password \
+    --cluster-user user \
+    --clustered false \
+    --data ./data/kapua --default-port 61616 \
+    --disable-persistence false \
+    --home /usr/local/apache-artemis-${ARTEMIS_VERSION} \
+    --host ${BINDING_IP} \
+    --name kapua \
+    --password password \
+    --allow-anonymous \
+    --user user \
+    --verbose kapua
 
     # Install H2 database
     sudo mkdir -p /usr/local/h2database/h2database-${H2DB_VERSION}

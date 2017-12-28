@@ -27,6 +27,7 @@ import javax.servlet.ServletContextListener;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.ConsoleJAXBContextProvider;
+import org.eclipse.kapua.commons.core.ServiceModuleBundle;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
@@ -38,6 +39,8 @@ import org.slf4j.LoggerFactory;
 public class ConsoleListener implements ServletContextListener {
 
     private static final Logger logger = LoggerFactory.getLogger(ConsoleListener.class);
+
+    private ServiceModuleBundle moduleBundle;
 
     @Override
     public void contextInitialized(final ServletContextEvent event) {
@@ -72,10 +75,33 @@ public class ConsoleListener implements ServletContextListener {
         }
         logger.info("Starting job scheduler... DONE");
 
+        // Start service modules
+        try {
+            logger.info("Starting service modules...");
+            if (moduleBundle == null) {
+                moduleBundle = new ServiceModuleBundle();
+            }
+            moduleBundle.startup();
+            logger.info("Starting service modules...DONE");
+        } catch (KapuaException e) {
+            logger.error("Cannot start service modules: {}", e.getMessage(), e);
+        }
     }
 
     @Override
     public void contextDestroyed(final ServletContextEvent event) {
+        // stop event modules
+        try {
+            logger.info("Stopping service modules...");
+            if (moduleBundle != null) {
+                moduleBundle.shutdown();;
+                moduleBundle = null;
+            }
+            logger.info("Stopping service modules...DONE");
+        } catch (KapuaException e) {
+            logger.error("Cannot stop service modules: {}", e.getMessage(), e);
+        }       
+
         // stop quarz scheduler
         logger.info("Stopping job scheduler...");
         SchedulerServiceInit.close();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.shiro;
 
+import java.security.SecureRandom;
+
 import org.apache.shiro.codec.Base64;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
@@ -21,6 +23,7 @@ import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
+import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -43,8 +46,8 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-
-import java.security.SecureRandom;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Credential service implementation.
@@ -53,6 +56,8 @@ import java.security.SecureRandom;
  */
 @KapuaProvider
 public class CredentialServiceImpl extends AbstractKapuaConfigurableService implements CredentialService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CredentialServiceImpl.class);
 
     private static final Domain CREDENTIAL_DOMAIN = new CredentialDomain();
 
@@ -389,4 +394,47 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         credentialQuery.setPredicate(andPredicate);
         return count(credentialQuery);
     }
+
+    //@ListenServiceEvent(fromAddress="account")
+    //@ListenServiceEvent(fromAddress="user")
+    public void onKapuaEvent(ServiceEvent kapuaEvent) throws KapuaException {
+        if (kapuaEvent == null) {
+            //service bus error. Throw some exception?
+        }
+        LOGGER.info("CredentialService: received kapua event from {}, operation {}", kapuaEvent.getService(), kapuaEvent.getOperation());
+        if ("user".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {
+            deleteCredentialByUserId(kapuaEvent.getScopeId(), kapuaEvent.getEntityId());
+        }
+        else if ("account".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {
+            deleteCredentialByAccountId(kapuaEvent.getScopeId(), kapuaEvent.getEntityId());
+        }
+    }
+
+    private void deleteCredentialByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException {
+        KapuaLocator locator = KapuaLocator.getInstance();
+        CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
+
+        CredentialQuery query = credentialFactory.newQuery(scopeId);
+        query.setPredicate(new AttributePredicate<>(CredentialPredicates.USER_ID, userId));
+
+        CredentialListResult credentialsToDelete = query(query);
+
+        for (Credential c : credentialsToDelete.getItems()) {
+            delete(c.getScopeId(), c.getId());
+        }
+    }
+
+    private void deleteCredentialByAccountId(KapuaId scopeId, KapuaId accountId) throws KapuaException {
+        KapuaLocator locator = KapuaLocator.getInstance();
+        CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
+
+        CredentialQuery query = credentialFactory.newQuery(accountId);
+
+        CredentialListResult credentialsToDelete = query(query);
+
+        for (Credential c : credentialsToDelete.getItems()) {
+            delete(c.getScopeId(), c.getId());
+        }
+    }
+
 }

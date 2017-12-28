@@ -36,6 +36,7 @@ import javax.xml.transform.sax.SAXSource;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
+import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -78,6 +79,13 @@ public class XmlUtil {
         return sw.toString();
     }
 
+    public static String marshalJson(Object object)
+            throws JAXBException {
+        StringWriter sw = new StringWriter();
+        marshalJson(object, sw);
+        return sw.toString();
+    }
+
     /**
      * Marshal the object to a writer
      *
@@ -93,6 +101,43 @@ public class XmlUtil {
         Marshaller marshaller = context.createMarshaller();
         marshaller.setSchema(null);
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        marshaller.setEventHandler(valEventHndlr);
+
+        try {
+            marshaller.marshal(object, w);
+        } catch (JAXBException je) {
+            throw je;
+        } catch (Exception e) {
+            throw new MarshalException(e.getMessage(), e);
+        }
+
+        if (valEventHndlr.hasEvents()) {
+            for (ValidationEvent valEvent : valEventHndlr.getEvents()) {
+                if (valEvent.getSeverity() != ValidationEvent.WARNING) {
+                    // throw a new Marshall Exception if there is a parsing error
+                    throw new MarshalException(valEvent.getMessage(), valEvent.getLinkedException());
+                }
+            }
+        }
+    }
+
+    /**
+     * Marshal the object to a writer in json format
+     *
+     * @param object
+     * @param w
+     * @throws JAXBException
+     */
+    public static void marshalJson(Object object, Writer w)
+            throws JAXBException {
+        JAXBContext context = get();
+
+        ValidationEventCollector valEventHndlr = new ValidationEventCollector();
+        Marshaller marshaller = context.createMarshaller();
+        marshaller.setSchema(null);
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        marshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
+        marshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, false);
         marshaller.setEventHandler(valEventHndlr);
 
         try {
@@ -164,6 +209,12 @@ public class XmlUtil {
         return unmarshal(sr, clazz, nsUri);
     }
 
+    public static <T> T unmarshalJson(String s, Class<T> clazz, String nsUri)
+            throws JAXBException, XMLStreamException, FactoryConfigurationError, SAXException {
+        StringReader sr = new StringReader(s);
+        return unmarshalJson(sr, clazz, nsUri);
+    }
+
     /**
      * Unmarshal method which injects the namespace URI provided in all the elements before attempting the parsing.
      *
@@ -184,6 +235,66 @@ public class XmlUtil {
         Unmarshaller unmarshaller = context.createUnmarshaller();
         unmarshaller.setSchema(null);
         unmarshaller.setEventHandler(valEventHndlr);
+
+        SAXSource saxSource;
+        if (nsUri == null) {
+            saxSource = new SAXSource(new InputSource(r));
+        } else {
+            boolean addNamespace = true;
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+            XmlNamespaceFilter filter = new XmlNamespaceFilter(nsUri, addNamespace);
+            filter.setParent(reader);
+            saxSource = new SAXSource(filter, new InputSource(r));
+        }
+
+        JAXBElement<T> elem = null;
+        try {
+            elem = unmarshaller.unmarshal(saxSource, clazz);
+        } catch (JAXBException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new UnmarshalException(e.getMessage(), e);
+        }
+
+        if (valEventHndlr.hasEvents()) {
+            for (ValidationEvent valEvent : valEventHndlr.getEvents()) {
+                if (valEvent.getSeverity() != ValidationEvent.WARNING) {
+                    // throw a new Unmarshall Exception if there is a parsing error
+                    String msg = MessageFormat.format("Line {0}, Col: {1}.{2}\tError message: {3}\n\tLinked exception message:{4}",
+                            valEvent.getLocator().getLineNumber(),
+                            valEvent.getLocator().getColumnNumber(),
+                            LINE_SEPARATOR,
+                            valEvent.getMessage() != null ? valEvent.getMessage() : "",
+                            valEvent.getLinkedException() != null ? valEvent.getLinkedException().getMessage() : "");
+                    throw new UnmarshalException(msg, valEvent.getLinkedException());
+                }
+            }
+        }
+        return elem.getValue();
+    }
+
+    /**
+     * Unmarshal method which injects the namespace URI provided in all the elements before attempting the parsing.
+     *
+     * @param r
+     * @param clazz
+     * @param nsUri
+     * @return
+     * @throws JAXBException
+     * @throws XMLStreamException
+     * @throws FactoryConfigurationError
+     * @throws SAXException
+     */
+    public static <T> T unmarshalJson(Reader r, Class<T> clazz, String nsUri)
+            throws JAXBException, XMLStreamException, FactoryConfigurationError, SAXException {
+        JAXBContext context = get();
+
+        ValidationEventCollector valEventHndlr = new ValidationEventCollector();
+        Unmarshaller unmarshaller = context.createUnmarshaller();
+        unmarshaller.setSchema(null);
+        unmarshaller.setEventHandler(valEventHndlr);
+        unmarshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
+        unmarshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, false);
 
         SAXSource saxSource;
         if (nsUri == null) {

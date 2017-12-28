@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,7 +23,8 @@ public enum KapuaAccountSettingKeys implements SettingKey {
     /**
      * The key value in the configuration resources.
      */
-    ACCOUNT_KEY("account.key");
+    ACCOUNT_KEY("account.key"),
+    ACCOUNT_EVENT_ADDRESS("account.eventAddress");
 
     private String key;
 
