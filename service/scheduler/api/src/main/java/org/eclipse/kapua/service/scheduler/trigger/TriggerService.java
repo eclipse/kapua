@@ -40,4 +40,6 @@ public interface TriggerService extends KapuaEntityService<Trigger, TriggerCreat
      */
     public TriggerListResult query(KapuaQuery<Trigger> query)
             throws KapuaException;
+
+    public void setQuery(KapuaQuery<Trigger> query) throws KapuaException;
 }

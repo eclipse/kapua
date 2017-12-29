@@ -11,6 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
+import java.util.TimeZone;
+
+import javax.inject.Inject;
+
+import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
@@ -44,9 +49,6 @@ import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
 
-import javax.inject.Inject;
-import java.util.TimeZone;
-
 /**
  * {@link TriggerService} implementation.
  *
@@ -57,6 +59,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         implements TriggerService {
 
     private static final Domain SCHEDULER_DOMAIN = new SchedulerDomain();
+    KapuaQuery<Trigger> queryByJobId;
 
     @Inject
     private AuthorizationService authorizationService;
@@ -87,7 +90,14 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         authorizationService.checkPermission(permissionFactory.newPermission(SCHEDULER_DOMAIN, Actions.write, triggerCreator.getScopeId()));
 
         return entityManagerSession.onTransactedInsert(em -> {
-            // Kapua Trigger definition
+
+            KapuaQuery<Trigger> triggerQuery = queryByJobId;
+            TriggerListResult list = query(triggerQuery);
+            for (Trigger trigger : list.getItems()) {
+                if (triggerCreator.getName().equals(trigger.getName())) {
+                    throw new KapuaDuplicateNameException(triggerCreator.getName());
+                }
+            }
             Trigger trigger = TriggerDAO.create(em, triggerCreator);
 
             // Quartz Job definition and creation
@@ -200,7 +210,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
                 TriggerKey triggerKey = TriggerKey.triggerKey(triggerId.toCompactId(), scopeId.toCompactId());
 
-                //                org.quartz.Trigger trigger = scheduler.getTrigger(triggerKey);
+                // org.quartz.Trigger trigger = scheduler.getTrigger(triggerKey);
 
                 scheduler.unscheduleJob(triggerKey);
 
@@ -252,5 +262,10 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         authorizationService.checkPermission(permissionFactory.newPermission(SCHEDULER_DOMAIN, Actions.read, query.getScopeId()));
 
         return entityManagerSession.onResult(em -> TriggerDAO.count(em, query));
+    }
+
+    @Override
+    public void setQuery(KapuaQuery<Trigger> query) throws KapuaException {
+        queryByJobId = query;
     }
 }
