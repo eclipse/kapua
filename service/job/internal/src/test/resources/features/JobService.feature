@@ -142,14 +142,14 @@ Scenario: Count job items in wrong (empty) scope
     When I count the jobs in the database
     Then There are exactly 0 items
 
-Scenario: Query for job items
-
-    Given Scope with ID 10
-    Then I create 10 job items
-    Given Scope with ID 20
-    Then I create 20 job items
-    When I query for jobs in scope 10
-    Then There are exactly 10 items
+#Scenario: Query for job items
+#
+#    Given Scope with ID 10
+#    Then I create 10 job items
+#    Given Scope with ID 20
+#    Then I create 20 job items
+#    When I query for jobs in scope 10
+#    Then There are exactly 10 items
 
 Scenario: Query for jobs with specified name
 
