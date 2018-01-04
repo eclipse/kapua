@@ -13,9 +13,17 @@
 package org.eclipse.kapua.qa.steps;
 
 import cucumber.api.Scenario;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.StepData;
 
+import java.util.Random;
+
 public class BaseQATests {
+
+    /**
+     * Common locator instance
+     */
+    public KapuaLocator locator;
 
     /**
      * Inter step data scratchpad.
@@ -23,11 +31,42 @@ public class BaseQATests {
     public StepData stepData;
 
     /**
+     * Common database helper
+     */
+    public DBHelper database;
+
+    /**
      * Current scenario scope
      */
     public Scenario scenario;
 
+    /**
+     * Current test type
+     * Either unit or integration
+     */
+    private String testType;
+
+    /**
+     * Random number generator
+     */
+    public Random random = new Random();
+
     public BaseQATests() {
+
+        testType = System.getProperty("test.type");
+        if (testType != null) {
+            testType = testType.trim().toLowerCase();
+        } else {
+            testType = "";
+        }
+    }
+
+    public boolean isUnitTest() {
+        return testType.equals("unit");
+    }
+
+    public boolean isIntegrationTest() {
+        return testType.isEmpty() || testType.equals("integration");
     }
 
     public void primeException() {
