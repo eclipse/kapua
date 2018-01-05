@@ -34,6 +34,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.qa.steps.BaseQATests;
 import org.eclipse.kapua.qa.steps.DBHelper;
 import org.eclipse.kapua.service.StepData;
+import org.eclipse.kapua.service.TestJAXBContextProvider;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountService;
@@ -135,6 +136,8 @@ public class UserServiceSteps extends BaseQATests {
 
         this.scenario = scenario;
         this.stepData.clear();
+
+        XmlUtil.setContextProvider(new TestJAXBContextProvider());
     }
 
     @After
@@ -243,6 +246,8 @@ public class UserServiceSteps extends BaseQATests {
         if (accountToDelete != null) {
             accountService.delete(accountToDelete.getScopeId(), accountToDelete.getId());
         }
+        accountToDelete = accountService.findByName(accountName);
+        assertNull("Account not deleted.", accountToDelete);
     }
 
     @Then("^I try to delete user \"(.*)\"$")
@@ -277,6 +282,10 @@ public class UserServiceSteps extends BaseQATests {
         primeException();
         try {
             User user = userService.findByName(userName);
+            assertNull("User still exists.", user);
+            Account findAcc = (Account) stepData.get("LastAccount");
+            ComparableUser findUser = (ComparableUser) stepData.get("LastUser");
+            user = userService.find(findAcc.getId(), findUser.getUser().getId());
             assertNull("User still exists.", user);
         } catch (KapuaException e) {
             verifyException(e);

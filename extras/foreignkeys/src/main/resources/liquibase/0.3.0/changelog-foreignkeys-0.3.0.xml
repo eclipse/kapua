@@ -34,7 +34,7 @@
 
     <include relativeToChangelogFile="true" file="./trigger-foreignkey.xml"/>
 
-    <include relativeToChangelogFile="true" file="./user-foreignkey.xml"/>
+    <!--<include relativeToChangelogFile="true" file="./user-foreignkey.xml"/>-->
 
 
     <include relativeToChangelogFile="true" file="./tag-foreignkey.xml"/>

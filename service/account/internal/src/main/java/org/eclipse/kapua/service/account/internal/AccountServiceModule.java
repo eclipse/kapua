@@ -19,11 +19,12 @@ import org.eclipse.kapua.commons.event.ServiceEventClientConfiguration;
 import org.eclipse.kapua.commons.event.ServiceEventModule;
 import org.eclipse.kapua.commons.event.ServiceEventModuleConfiguration;
 import org.eclipse.kapua.commons.event.ServiceInspector;
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.setting.KapuaAccountSetting;
 import org.eclipse.kapua.service.account.internal.setting.KapuaAccountSettingKeys;
 
-//@KapuaProvider
+@KapuaProvider
 public class AccountServiceModule extends ServiceEventModule {
 
     @Inject

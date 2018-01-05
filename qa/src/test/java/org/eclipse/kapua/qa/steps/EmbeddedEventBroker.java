@@ -26,6 +26,8 @@ import org.apache.activemq.artemis.jms.server.config.JMSConfiguration;
 import org.apache.activemq.artemis.jms.server.config.impl.ConnectionFactoryConfigurationImpl;
 import org.apache.activemq.artemis.jms.server.config.impl.JMSConfigurationImpl;
 import org.apache.activemq.artemis.jms.server.embedded.EmbeddedJMS;
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.core.ServiceModuleBundle;
 import org.eclipse.kapua.commons.event.ServiceEventBusManager;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.qa.utils.Suppressed;
@@ -54,6 +56,8 @@ public class EmbeddedEventBroker {
     private DBHelper database;
 
     private EmbeddedJMS jmsServer;
+
+    private ServiceModuleBundle moduleBundle;
 
     @Inject
     public EmbeddedEventBroker(final DBHelper database) {
@@ -94,11 +98,14 @@ public class EmbeddedEventBroker {
         } catch (Exception e) {
             throw new RuntimeException("Failed to start broker", e);
         }
+        startServiceModules();
+
     }
 
     @After(value = "@StopEventBroker")
     public void stop() {
         logger.info("Stopping instance ...");
+        stopServiceModules();
         try (final Suppressed<RuntimeException> s = withRuntimeException()) {
             // close all resources
             closables.values().stream().flatMap(values -> values.stream()).forEach(s::closeSuppressed);
@@ -111,6 +118,38 @@ public class EmbeddedEventBroker {
             throw new RuntimeException("Failed to stop broker", e);
         }
         logger.info("Stopping instance ... done!");
+    }
+
+    /**
+     * Start ServiceEvents modules.
+     * If not started messaging between services is not working.
+     */
+    private void startServiceModules() {
+        try {
+        logger.info("Starting QA service modules...");
+        if (moduleBundle == null) {
+            moduleBundle = new ServiceModuleBundle() {};
+        }
+        moduleBundle.startup();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to start QA service modules", e);
+        }
+    }
+
+    /**
+     * Stop ServiceEvents.
+     */
+    private void stopServiceModules() {
+        try {
+            logger.info("Stopping QA service modules...");
+            if (moduleBundle != null) {
+                moduleBundle.shutdown();;
+                moduleBundle = null;
+            }
+            logger.info("QA service modules stopped.");
+        } catch (KapuaException e) {
+            logger.error("Cannot stop QA service modules: {}", e.getMessage(), e);
+        }
     }
 
 }

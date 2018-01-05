@@ -16,6 +16,7 @@ import javax.xml.bind.JAXBContext;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.TscalarImpl;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
+import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTicon;
 import org.eclipse.kapua.model.config.metatype.KapuaTmetadata;
@@ -73,7 +74,8 @@ public class TestJAXBContextProvider implements JAXBContextProvider {
                         KapuaToption.class,
                         TscalarImpl.class,
                         MetatypeXmlRegistry.class,
-                        KapuaTmetadata.class
+                        KapuaTmetadata.class,
+                        ServiceEvent.class
                 }, null);
             }
             return context;
