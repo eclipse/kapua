@@ -16,7 +16,7 @@ package org.eclipse.kapua.broker.core.plugin;
  * 
  * @since 1.0
  */
-public class KapuaBrokerContextContainer {
+public class KapuaBrokerContext {
 
     private String userName;
     private String accountName;
@@ -25,12 +25,12 @@ public class KapuaBrokerContextContainer {
     private String clientIp;
     private String brokerId;
 
-    KapuaBrokerContextContainer(Long scopeId, String clientId) {
+    KapuaBrokerContext(Long scopeId, String clientId) {
         this.scopeId = scopeId;
         this.clientId = clientId;
     }
 
-    KapuaBrokerContextContainer(String brokerId, String userName, String clientId, String clientIp) {
+    KapuaBrokerContext(String brokerId, String userName, String clientId, String clientIp) {
         this.brokerId = brokerId;
         this.userName = userName;
         this.clientId = clientId;
