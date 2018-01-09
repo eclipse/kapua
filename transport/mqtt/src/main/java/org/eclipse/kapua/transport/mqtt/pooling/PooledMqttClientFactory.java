@@ -33,10 +33,10 @@ import org.eclipse.kapua.transport.utils.ClientIdGenerator;
  */
 public class PooledMqttClientFactory extends BasePooledObjectFactory<MqttClient> {
 
-    private final String brokerUri;
+    private final String nodeUri;
 
-    public PooledMqttClientFactory(String brokerUri) {
-        this.brokerUri = brokerUri;
+    public PooledMqttClientFactory(String nodeUri) {
+        this.nodeUri = nodeUri;
     }
 
     /**
@@ -61,7 +61,6 @@ public class PooledMqttClientFactory extends BasePooledObjectFactory<MqttClient>
         String username = mqttClientSettings.getString(MqttClientSettingKeys.TRANSPORT_CREDENTIAL_USERNAME);
         char[] password = mqttClientSettings.getString(MqttClientSettingKeys.TRANSPORT_CREDENTIAL_PASSWORD).toCharArray();
         String clientId = ClientIdGenerator.getInstance().next(mqttClientPoolSettings.getString(MqttClientPoolSettingKeys.CLIENT_POOL_CLIENT_ID_PREFIX));
-        URI brokerURI = URI.create(brokerUri);
 
         //
         // Get new client and connection options
@@ -69,7 +68,7 @@ public class PooledMqttClientFactory extends BasePooledObjectFactory<MqttClient>
         connectionOptions.setClientId(clientId);
         connectionOptions.setUsername(username);
         connectionOptions.setPassword(password);
-        connectionOptions.setEndpointURI(brokerURI);
+        connectionOptions.setEndpointURI(URI.create(nodeUri));
 
         //
         // Connect client

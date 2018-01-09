@@ -34,7 +34,7 @@ public class MqttClientFactoryImpl implements TransportClientFactory<MqttTopic, 
     @Override
     public MqttFacade getFacade(Map<String, Object> configParameters)
             throws KapuaException {
-        return new MqttFacade(formatBrokerUri(configParameters.get("serverIp").toString()));
+        return new MqttFacade(formatNodeUri(configParameters.get("serverAddress").toString()));
     }
 
     @Override
@@ -42,7 +42,7 @@ public class MqttClientFactoryImpl implements TransportClientFactory<MqttTopic, 
         return new MqttClientConnectionOptions();
     }
 
-    private String formatBrokerUri(String serverIp) {
-        return SystemSetting.getInstance().getString(SystemSettingKey.BROKER_SCHEME) + "://" + serverIp + ":" + SystemSetting.getInstance().getString(SystemSettingKey.BROKER_PORT);
+    private String formatNodeUri(String nodeAddress) {
+        return SystemSetting.getInstance().getString(SystemSettingKey.BROKER_SCHEME) + "://" + nodeAddress + ":" + SystemSetting.getInstance().getString(SystemSettingKey.BROKER_PORT);
     }
 }

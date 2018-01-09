@@ -71,11 +71,11 @@ public class MqttClientPool extends GenericObjectPool<MqttClient> {
      * @return The singleton instance of {@link MqttClientPool}.
      * @since 1.0.0
      */
-    public static MqttClientPool getInstance(String brokerUri) {
-        MqttClientPool mqttClientPool = mqttClientPoolInstances.get(brokerUri);
+    public static MqttClientPool getInstance(String nodeUri) {
+        MqttClientPool mqttClientPool = mqttClientPoolInstances.get(nodeUri);
         if (mqttClientPool == null) {
-            mqttClientPool = new MqttClientPool(new PooledMqttClientFactory(brokerUri));
-            mqttClientPoolInstances.put(brokerUri, mqttClientPool);
+            mqttClientPool = new MqttClientPool(new PooledMqttClientFactory(nodeUri));
+            mqttClientPoolInstances.put(nodeUri, mqttClientPool);
         }
 
         return mqttClientPool;

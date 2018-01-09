@@ -101,7 +101,7 @@ public class SimulatorSteps {
 
     private final SimulatorDevice currentDevice;
 
-    private String brokerUri;
+    private String nodeUri;
 
     private final Session session;
 
@@ -142,8 +142,8 @@ public class SimulatorSteps {
     }
 
     @Given("The broker URI is (.*)")
-    public void setBrokerUri(final String brokerUri) {
-        this.brokerUri = brokerUri;
+    public void setNodeUri(final String nodeUri) {
+        this.nodeUri = nodeUri;
     }
 
     @Given("My credentials are username \"(.*)\" and password \"(.*)\"")
@@ -156,7 +156,7 @@ public class SimulatorSteps {
 
         currentDevice.started();
 
-        final GatewayConfiguration configuration = new GatewayConfiguration(brokerUri, currentDevice.getAccountName(), currentDevice.getClientId());
+        final GatewayConfiguration configuration = new GatewayConfiguration(nodeUri, currentDevice.getAccountName(), currentDevice.getClientId());
 
         final Set<Application> apps = new HashSet<>();
         apps.add(new SimpleCommandApplication(s -> String.format("Command '%s' not found", s)));

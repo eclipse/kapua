@@ -48,11 +48,11 @@ public class StreamServiceImpl implements StreamService {
             ArgumentValidator.notNull(requestMessage.getScopeId(), "scopeId");
 
             Device device = deviceRegistryService.find(requestMessage.getScopeId(), requestMessage.getDeviceId());
-            String brokerUri = device.getConnection().getServerIp();
+            String nodeUri = device.getConnection().getServerIp();
 
             //
             // Borrow a KapuaClient
-            transportFacade = borrowClient(brokerUri);
+            transportFacade = borrowClient(nodeUri);
 
             //
             // Get Kura to transport translator for the request and vice versa
@@ -92,11 +92,11 @@ public class StreamServiceImpl implements StreamService {
     // Private methods
     //
     @SuppressWarnings("unchecked")
-    private TransportFacade<?, ?, TransportMessage<?, ?>, ?> borrowClient(String brokerUri)
+    private TransportFacade<?, ?, TransportMessage<?, ?>, ?> borrowClient(String serverUri)
             throws KuraMqttDeviceCallException {
         TransportFacade<?, ?, TransportMessage<?, ?>, ?> transportFacade;
         Map<String, Object> configParameters = new HashMap<>();
-        configParameters.put("brokerUri", brokerUri);
+        configParameters.put("serverAddress", serverUri);
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             TransportClientFactory<?, ?, ?, ?, ?, ?> transportClientFactory = locator.getFactory(TransportClientFactory.class);

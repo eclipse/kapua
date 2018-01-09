@@ -34,7 +34,7 @@ public class SystemUtils {
      * @return
      * @throws URISyntaxException
      */
-    public static URI getBrokerURI()
+    public static URI getNodeURI()
             throws URISyntaxException {
         SystemSetting envConfig = SystemSetting.getInstance();
         return new URI(envConfig.getString(SystemSettingKey.BROKER_SCHEME),

@@ -201,30 +201,30 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         List<GwtGroupedNVPair> accountPropertiesPairs = new ArrayList<GwtGroupedNVPair>();
         try {
             final Account account = accountService.find(scopeId, accountId);
-            String brokerUri = KapuaSecurityUtils.doPrivileged(new Callable<String>() {
+            String nodeUri = KapuaSecurityUtils.doPrivileged(new Callable<String>() {
 
                 @Override
                 public String call() throws Exception {
                     String[] accountHierarchy = account.getParentAccountPath().split("/");
-                    URI defaultUri = SystemUtils.getBrokerURI();
+                    URI defaultUri = SystemUtils.getNodeURI();
                     switch (accountHierarchy.length) {
                     case 2:
                         // "", "1": root account
-                        return StringUtils.isNotBlank(accountService.getConfigValues(accountId).get("deviceBrokerClusterUri").toString()) ?
-                                accountService.getConfigValues(accountId).get("deviceBrokerClusterUri").toString() :
+                        return StringUtils.isNotBlank(accountService.getConfigValues(accountId).get("messagingServiceUri").toString()) ?
+                                accountService.getConfigValues(accountId).get("messagingServiceUri").toString() :
                                 defaultUri.toString();
                     default:
                         // "", "1", "accountId": second level account (root child)
                         // "", "1", "accountId", ["otherAccountId", ...], "otherAccountId": third level or more (non root and non root child)
                         KapuaId rootAccountId = new KapuaEid(BigInteger.valueOf(Long.valueOf(accountHierarchy[1])));
                         KapuaId secondLevelAccountId = new KapuaEid(BigInteger.valueOf(Long.valueOf(accountHierarchy[2])));
-                        String secondLevelBrokerUri = accountService.getConfigValues(secondLevelAccountId).get("deviceBrokerClusterUri").toString();
-                        if (StringUtils.isNotBlank(secondLevelBrokerUri)) {
-                            return secondLevelBrokerUri;
+                        String secondLevelNodeUri = accountService.getConfigValues(secondLevelAccountId).get("messagingServiceUri").toString();
+                        if (StringUtils.isNotBlank(secondLevelNodeUri)) {
+                            return secondLevelNodeUri;
                         } else {
-                            String rootBrokerUri = accountService.getConfigValues(rootAccountId).get("deviceBrokerClusterUri").toString();
-                            if (StringUtils.isNotBlank(rootBrokerUri)) {
-                                return rootBrokerUri;
+                            String rootNodeUri = accountService.getConfigValues(rootAccountId).get("messagingServiceUri").toString();
+                            if (StringUtils.isNotBlank(rootNodeUri)) {
+                                return rootNodeUri;
                             } else {
                                 return defaultUri.toString();
                             }
@@ -255,7 +255,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountCreatedOn", account.getCreatedOn().toString()));
             accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountCreatedBy", userCreatedBy.getName()));
 
-            accountPropertiesPairs.add(new GwtGroupedNVPair("deploymentInfo", "deploymentBrokerURL", brokerUri));
+            accountPropertiesPairs.add(new GwtGroupedNVPair("deploymentInfo", "deploymentNodeURI", nodeUri));
 
             accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationName", account.getOrganization().getName()));
             accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationPersonName", account.getOrganization().getPersonName()));

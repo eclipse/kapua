@@ -156,7 +156,7 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
             throws KuraMqttDeviceCallException {
         TransportFacade transportFacade;
         Map<String, Object> configParameters = new HashMap<>();
-        configParameters.put("serverIp", serverIp);
+        configParameters.put("serverAddress", serverIp);
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             TransportClientFactory transportClientFactory = locator.getFactory(TransportClientFactory.class);

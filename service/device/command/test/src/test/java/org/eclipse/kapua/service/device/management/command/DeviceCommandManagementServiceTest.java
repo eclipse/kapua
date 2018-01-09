@@ -178,7 +178,7 @@ public class DeviceCommandManagementServiceTest extends Assert {
         mqttConnectOptions.setPassword("kapua-password".toCharArray());
 
         // Warning: SystemUtils has been removed; Broker URI is now an AccountService configuration
-        MqttClient mqttClient = new MqttClient(SystemUtils.getBrokerURI().toString(),
+        MqttClient mqttClient = new MqttClient(SystemUtils.getNodeURI().toString(),
                 ClientIdGenerator.getInstance().next("testCommandExecution"));
 
         mqttClient.connect(mqttConnectOptions);

@@ -42,7 +42,7 @@ public class MqttClientTest extends Assert {
         clientConnectOptions.setUsername(username);
         clientConnectOptions.setPassword(password.toCharArray());
         // Warning: SystemUtils has been removed; Broker URI is now an AccountService configuration
-//        clientConnectOptions.setEndpointURI(SystemUtils.getBrokerURI());
+//        clientConnectOptions.setEndpointURI(SystemUtils.getNodeURI());
 
         //
         // Connect
@@ -81,7 +81,7 @@ public class MqttClientTest extends Assert {
         clientConnectOptions.setUsername(username);
         clientConnectOptions.setPassword(password.toCharArray());
         // Warning: SystemUtils has been removed; Broker URI is now an AccountService configuration
-//        clientConnectOptions.setEndpointURI(SystemUtils.getBrokerURI());
+//        clientConnectOptions.setEndpointURI(SystemUtils.getNodeURI());
 
         //
         // Connect
