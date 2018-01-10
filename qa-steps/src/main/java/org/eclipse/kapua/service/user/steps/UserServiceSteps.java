@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -43,6 +43,7 @@ import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
+import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
@@ -76,6 +77,7 @@ import cucumber.runtime.java.guice.ScenarioScoped;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Implementation of Gherkin steps used in UserServiceI9n.feature scenarios.
@@ -287,6 +289,20 @@ public class UserServiceSteps extends BaseQATests {
             ComparableUser findUser = (ComparableUser) stepData.get("LastUser");
             user = userService.find(findAcc.getId(), findUser.getUser().getId());
             assertNull("User still exists.", user);
+        } catch (KapuaException e) {
+            verifyException(e);
+        }
+    }
+
+    @Then("^I don't find user credentials$")
+    public void thenIdontFindUserCredentials() throws Exception {
+
+        primeException();
+        try {
+            Account findAcc = (Account) stepData.get("LastAccount");
+            ComparableUser findUser = (ComparableUser) stepData.get("LastUser");
+            CredentialListResult credentials = credentialService.findByUserId(findAcc.getId(), findUser.getUser().getId());
+            assertTrue("Credentials for user still exists.", credentials.isEmpty());
         } catch (KapuaException e) {
             verifyException(e);
         }

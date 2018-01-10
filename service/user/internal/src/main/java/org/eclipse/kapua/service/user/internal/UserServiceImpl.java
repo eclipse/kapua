@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,6 +24,7 @@ import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ListenServiceEvent;
+import org.eclipse.kapua.event.RaiseServiceEvent;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -139,7 +140,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     }
 
     @Override
-    //@RaiseServiceEvent
+    @RaiseServiceEvent
     public void delete(KapuaId scopeId, KapuaId userId) throws KapuaException {
         // Validation of the fields
         ArgumentValidator.notNull(userId.getId(), "id");
@@ -234,6 +235,17 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         return entityManagerSession.onResult(em -> UserDAO.count(em, query));
     }
 
+    @ListenServiceEvent(fromAddress = "account")
+    public void onKapuaEvent(ServiceEvent kapuaEvent) throws KapuaException {
+        if (kapuaEvent == null) {
+            // service bus error. Throw some exception?
+        }
+        LOGGER.info("UserService: received kapua event from {}, operation {}", kapuaEvent.getService(), kapuaEvent.getOperation());
+        if ("org.eclipse.kapua.service.account.AccountService".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {
+            deleteUserByAccountId(kapuaEvent.getScopeId(), kapuaEvent.getEntityId());
+        }
+    }
+
     // -----------------------------------------------------------------------------------------
     //
     // Private Methods
@@ -252,17 +264,6 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         // FIXME-KAPUA: AuthenticationService get system user name via config
         if ("kapua-sys".equals(name)) {
             throw new KapuaIllegalArgumentException("name", "kapua-sys");
-        }
-    }
-
-    @ListenServiceEvent(fromAddress = "account")
-    public void onKapuaEvent(ServiceEvent kapuaEvent) throws KapuaException {
-        if (kapuaEvent == null) {
-            // service bus error. Throw some exception?
-        }
-        LOGGER.info("UserService: received kapua event from {}, operation {}", kapuaEvent.getService(), kapuaEvent.getOperation());
-        if ("org.eclipse.kapua.service.account.AccountService".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {
-            deleteUserByAccountId(kapuaEvent.getScopeId(), kapuaEvent.getEntityId());
         }
     }
 

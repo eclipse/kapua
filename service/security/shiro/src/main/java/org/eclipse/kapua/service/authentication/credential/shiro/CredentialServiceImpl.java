@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.shiro;
 
+import java.math.BigInteger;
 import java.security.SecureRandom;
 
 import org.apache.shiro.codec.Base64;
@@ -19,10 +20,12 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
 import org.eclipse.kapua.commons.jpa.EntityManager;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
+import org.eclipse.kapua.event.ListenServiceEvent;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -383,6 +386,39 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         update(credential);
     }
 
+    @ListenServiceEvent(fromAddress = "user")
+    public void onKapuaEvent(ServiceEvent kapuaEvent) throws KapuaException {
+        if (kapuaEvent == null) {
+            //service bus error. Throw some exception?
+        }
+        LOGGER.info("CredentialService: received kapua event from {}, operation {}", kapuaEvent.getService(), kapuaEvent.getOperation());
+        if ("org.eclipse.kapua.service.user.UserService".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {
+            String[] inputs = splitInputs(kapuaEvent.getInputs());
+            deleteCredentialByUserId(new KapuaEid(new BigInteger(inputs[0])), new KapuaEid(new BigInteger(inputs[1])));
+        }
+        else if ("org.eclipse.kapua.service.account.AccountService".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {
+            // FIXME Only user event should delete credentials (IMHO)
+            deleteCredentialByAccountId(kapuaEvent.getScopeId(), kapuaEvent.getEntityId());
+        }
+    }
+
+    /**
+     * Split comma separated string into array of tokens.
+     *
+     * @param inputs comma separated string
+     * @return array of tokens
+     */
+    private String[] splitInputs(String inputs) {
+        String[] tokens = null;
+
+        tokens = inputs.split(",");
+        for (int i = 0; i < tokens.length; i++) {
+            tokens[i] = tokens[i].trim();
+        }
+
+        return tokens;
+    }
+
     private long countExistingCredentials(CredentialType credentialType, KapuaId scopeId, KapuaId userId) throws KapuaException {
         KapuaLocator locator = KapuaLocator.getInstance();
         CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
@@ -393,21 +429,6 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         KapuaPredicate andPredicate = new AndPredicate().and(credentialTypePredicate).and(userIdPredicate);
         credentialQuery.setPredicate(andPredicate);
         return count(credentialQuery);
-    }
-
-    //@ListenServiceEvent(fromAddress="account")
-    //@ListenServiceEvent(fromAddress="user")
-    public void onKapuaEvent(ServiceEvent kapuaEvent) throws KapuaException {
-        if (kapuaEvent == null) {
-            //service bus error. Throw some exception?
-        }
-        LOGGER.info("CredentialService: received kapua event from {}, operation {}", kapuaEvent.getService(), kapuaEvent.getOperation());
-        if ("user".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {
-            deleteCredentialByUserId(kapuaEvent.getScopeId(), kapuaEvent.getEntityId());
-        }
-        else if ("account".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {
-            deleteCredentialByAccountId(kapuaEvent.getScopeId(), kapuaEvent.getEntityId());
-        }
     }
 
     private void deleteCredentialByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException {

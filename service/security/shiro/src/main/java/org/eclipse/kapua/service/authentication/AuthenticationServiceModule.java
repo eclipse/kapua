@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,13 +20,14 @@ import org.eclipse.kapua.commons.event.ServiceEventClientConfiguration;
 import org.eclipse.kapua.commons.event.ServiceEventModule;
 import org.eclipse.kapua.commons.event.ServiceEventModuleConfiguration;
 import org.eclipse.kapua.commons.event.ServiceInspector;
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authentication.token.AccessTokenService;
 
-//@KapuaProvider
+@KapuaProvider
 public class AuthenticationServiceModule extends ServiceEventModule {
 
     @Inject
