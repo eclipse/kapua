@@ -124,7 +124,7 @@
             <artifactId>kapua-console-module-welcome</artifactId>
             <classifier>sources</classifier>
         </dependency>
-    
+
         <!-- Internal dependencies -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
@@ -206,10 +206,7 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-security-shiro</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-call-kura</artifactId>
-        </dependency>
+        
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-sso-api</artifactId>
@@ -252,7 +249,7 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-security-certificate-internal</artifactId>
         </dependency>
-        
+
         <!-- External dependencies -->
         <dependency>
             <groupId>com.google.gwt</groupId>
