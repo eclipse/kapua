@@ -69,6 +69,7 @@ public class TagAddDialog extends EntityAddEditDialog {
                 status.hide();
                 formPanel.getButtonBar().enable();
                 unmask();
+                hide();
                 submitButton.enable();
                 cancelButton.enable();
             }

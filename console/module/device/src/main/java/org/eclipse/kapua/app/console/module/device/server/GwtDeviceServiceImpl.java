@@ -56,6 +56,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
+import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DevicePredicates;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
@@ -69,10 +70,11 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventPredicates;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventDomain;
-import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.tag.TagService;
+import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserService;
+
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
@@ -347,6 +349,14 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
 
         try {
             KapuaId scopeId = KapuaEid.parseCompactId(gwtDeviceCreator.getScopeId());
+
+            DeviceQuery query = deviceFactory.newQuery(scopeId);
+            DeviceListResult list = deviceRegistryService.query(query);
+            for (Device device : list.getItems()) {
+                if (device.getClientId().equals(gwtDeviceCreator.getClientId())) {
+                    throw new KapuaDuplicateNameException(gwtDeviceCreator.getClientId());
+                }
+            }
 
             DeviceCreator deviceCreator = deviceFactory.newCreator(scopeId, gwtDeviceCreator.getClientId());
             deviceCreator.setDisplayName(gwtDeviceCreator.getDisplayName());

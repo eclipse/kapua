@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
@@ -63,6 +64,13 @@ public class GwtGroupServiceImpl extends KapuaRemoteServiceServlet implements Gw
             KapuaId scopeId = KapuaEid.parseCompactId(gwtGroupCreator.getScopeId());
             GroupCreator groupCreator = groupFactory.newCreator(scopeId, gwtGroupCreator.getName());
             GroupService groupService = locator.getService(GroupService.class);
+            GroupQuery query = groupFactory.newQuery(scopeId);
+            GroupListResult listResult = groupService.query(query);
+            for (Group group : listResult.getItems()) {
+                if (group.getName().equals(gwtGroupCreator.getName())) {
+                    throw new KapuaDuplicateNameException(gwtGroupCreator.getName());
+                }
+            }
             Group group = groupService.create(groupCreator);
             gwtGroup = KapuaGwtAuthorizationModelConverter.convertGroup(group);
 
