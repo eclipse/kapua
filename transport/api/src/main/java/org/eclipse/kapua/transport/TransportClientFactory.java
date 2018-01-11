@@ -17,6 +17,8 @@ import org.eclipse.kapua.transport.message.TransportChannel;
 import org.eclipse.kapua.transport.message.TransportMessage;
 import org.eclipse.kapua.transport.message.TransportPayload;
 
+import java.util.Map;
+
 /**
  * Factory class for {@link TransportFacade} related objects
  *
@@ -40,9 +42,10 @@ public interface TransportClientFactory<D extends TransportChannel, P extends Tr
      * </p>
      *
      * @return An instance of the {@link TransportFacade} implementing class.
+     * @param configParameters a {@link Map} containing optional config values for the facade
      * @throws KapuaException FIXME [javadoc] document exception
      */
-    public C getFacade()
+    public C getFacade(Map<String, Object> configParameters)
             throws KapuaException;
 
     /**

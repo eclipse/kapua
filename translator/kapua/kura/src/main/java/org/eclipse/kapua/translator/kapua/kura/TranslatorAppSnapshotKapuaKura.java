@@ -18,12 +18,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.service.device.call.kura.app.SnapshotMetrics;
 import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestChannel;
 import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestMessage;
 import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestPayload;
-import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSetting;
-import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSettingKeys;
 import org.eclipse.kapua.service.device.management.configuration.snapshot.internal.SnapshotRequestChannel;
 import org.eclipse.kapua.service.device.management.configuration.snapshot.internal.SnapshotRequestMessage;
 import org.eclipse.kapua.service.device.management.configuration.snapshot.internal.SnapshotRequestPayload;
@@ -36,7 +35,8 @@ import org.eclipse.kapua.service.device.management.snapshot.internal.DeviceSnaps
  *
  */
 public class TranslatorAppSnapshotKapuaKura extends AbstractTranslatorKapuaKura<SnapshotRequestChannel, SnapshotRequestPayload, SnapshotRequestMessage> {
-    private static final String CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
+
+    private static final String CONTROL_MESSAGE_CLASSIFIER = SystemSetting.getInstance().getMessageClassifier();
     private static final Map<DeviceSnapshotAppProperties, SnapshotMetrics> PROPERTIES_DICTIONARY = new HashMap<>();
 
     static {

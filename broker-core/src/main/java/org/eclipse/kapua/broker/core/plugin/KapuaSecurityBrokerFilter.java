@@ -20,13 +20,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
+import javax.jms.JMSException;
+import javax.jms.MessageListener;
 import javax.security.auth.login.CredentialException;
 
 import org.apache.activemq.broker.Broker;
 import org.apache.activemq.broker.BrokerFilter;
+import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.broker.ConnectionContext;
 import org.apache.activemq.broker.ProducerBrokerExchange;
+import org.apache.activemq.broker.TransportConnection;
 import org.apache.activemq.broker.TransportConnector;
 import org.apache.activemq.broker.region.Subscription;
 import org.apache.activemq.command.ActiveMQDestination;
@@ -45,10 +52,20 @@ import org.apache.shiro.ShiroException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.util.ThreadContext;
 import org.eclipse.kapua.KapuaErrorCode;
+import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
+import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.broker.core.BrokerDomain;
+import org.eclipse.kapua.broker.core.BrokerJAXBContextProvider;
 import org.eclipse.kapua.broker.core.message.MessageConstants;
+import org.eclipse.kapua.broker.core.message.system.DefaultSystemMessageCreator;
+import org.eclipse.kapua.broker.core.message.system.SystemMessageCreator;
+import org.eclipse.kapua.broker.core.message.system.SystemMessageCreator.SystemMessageType;
+import org.eclipse.kapua.broker.core.pool.JmsAssistantProducerPool;
+import org.eclipse.kapua.broker.core.pool.JmsAssistantProducerPool.DESTINATIONS;
+import org.eclipse.kapua.broker.core.pool.JmsAssistantProducerWrapper;
+import org.eclipse.kapua.broker.core.pool.JmsConsumerWrapper;
 import org.eclipse.kapua.broker.core.setting.BrokerSetting;
 import org.eclipse.kapua.broker.core.setting.BrokerSettingKey;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
@@ -108,9 +125,34 @@ import com.codahale.metrics.Timer.Context;
  */
 public class KapuaSecurityBrokerFilter extends BrokerFilter {
 
-    private final static Logger logger = LoggerFactory.getLogger(KapuaSecurityBrokerFilter.class);
+    protected final static Logger logger = LoggerFactory.getLogger(KapuaSecurityBrokerFilter.class);
 
-    private final static Map<String, ConnectionId> CONNECTION_MAP = new ConcurrentHashMap<>();
+    private final static String CONNECT_MESSAGE_TOPIC_PATTERN = "VirtualTopic.%s.%s.%s.MQTT.CONNECT";
+    private final static String CANNOT_LOAD_INSTANCE_ERROR_MSG = "Cannot load instance %s for %s. Please check the configuration file!";
+    private final static String BROKER_IP_RESOLVER_CLASS_NAME;
+    private final static String BROKER_ID_RESOLVER_CLASS_NAME;
+    private final static String SYSTEM_MESSAGE_CREATOR_CLASS_NAME;
+    private final static Long STEALING_LINK_INITIALIZATION_MAX_WAIT_TIME;
+    private static boolean stealingLinkEnabled;
+    private Future<?> stealingLinkManagerFuture;
+
+    static {
+        BrokerSetting config = BrokerSetting.getInstance();
+        BROKER_IP_RESOLVER_CLASS_NAME = config.getString(BrokerSettingKey.BROKER_IP_RESOLVER_CLASS_NAME);
+        BROKER_ID_RESOLVER_CLASS_NAME = config.getString(BrokerSettingKey.BROKER_ID_RESOLVER_CLASS_NAME);
+        SYSTEM_MESSAGE_CREATOR_CLASS_NAME = config.getString(BrokerSettingKey.SYSTEM_MESSAGE_CREATOR_CLASS_NAME);
+        STEALING_LINK_INITIALIZATION_MAX_WAIT_TIME = config.getLong(BrokerSettingKey.STEALING_LINK_INITIALIZATION_MAX_WAIT_TIME);
+        stealingLinkEnabled = config.getBoolean(BrokerSettingKey.BROKER_STEALING_LINK_ENABLED);
+    }
+
+    protected BrokerService brokerService;
+    protected BrokerIpResolver brokerIpResolver;
+    protected BrokerIdResolver brokerIdResolver;
+    protected SystemMessageCreator systemMessageCreator;
+    protected JmsConsumerWrapper stealingLinkManagerConsumer;
+    protected String brokerId;
+
+    protected final static Map<String, ConnectionId> CONNECTION_MAP = new ConcurrentHashMap<>();
     private final static String CONNECTOR_NAME_VM = String.format("vm://%s", BrokerSetting.getInstance().getString(BrokerSettingKey.BROKER_NAME));
 
     private static final Domain BROKER_DOMAIN = new BrokerDomain();
@@ -126,6 +168,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     private Counter metricLoginNormalUserAttempt;
     private Counter metricLoginStealingLinkConnect;
     private Counter metricLoginStealingLinkDisconnect;
+    protected Counter metricLoginRemoteStealingLinkDisconnect;
     private Timer metricLoginAddConnectionTime;
     private Timer metricLoginNormalUserTime;
     private Timer metricLoginPreCheckTime;
@@ -175,6 +218,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
         metricLoginNormalUserAttempt = metricsService.getCounter("security", "login", "normal", "count");
         metricLoginStealingLinkConnect = metricsService.getCounter("security", "login", "stealing_link", "connect", "count");
         metricLoginStealingLinkDisconnect = metricsService.getCounter("security", "login", "stealing_link", "disconnect", "count");
+        metricLoginRemoteStealingLinkDisconnect = metricsService.getCounter("security", "login", "remote_stealing_link", "disconnect", "count");
         // login time
         metricLoginAddConnectionTime = metricsService.getTimer("security", "login", "add_connection", "time", "s");
         metricLoginNormalUserTime = metricsService.getTimer("security", "login", "user", "time", "s");
@@ -208,6 +252,19 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     @Override
     public void start()
             throws Exception {
+        logger.info(">>> Security broker filter: calling start...");
+        logger.info(">>> Security broker filter: calling start... Initialize broker ip resolver");
+        brokerIpResolver = newInstance(BROKER_IP_RESOLVER_CLASS_NAME, DefaultBrokerIpResolver.class);
+        logger.info(">>> Security broker filter: calling start... Initialize broker id resolver");
+        brokerIdResolver = newInstance(BROKER_ID_RESOLVER_CLASS_NAME, DefaultBrokerIdResolver.class);
+        brokerId = brokerIdResolver.getBrokerId(this);
+        logger.info(">>> Security broker filter: calling start... Initialize system message creator");
+        systemMessageCreator = newInstance(SYSTEM_MESSAGE_CREATOR_CLASS_NAME, DefaultSystemMessageCreator.class);
+        // start the stealing link manager
+        if (stealingLinkEnabled) {
+            logger.info(">>> Security broker filter: calling start... Initialize stealing link manager...");
+            registerStealingLinkManager();
+        }
         super.start();
     }
 
@@ -215,7 +272,130 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     public void stop()
             throws Exception {
         logger.info(">>> Security broker filter: calling stop...");
+        // stop the stealing link manager unregister
+        if (stealingLinkEnabled) {
+            logger.info(">>> Security broker filter: calling start... Unregister stealing link manager");
+            unregisterStealingLinkManager();
+        }
         super.stop();
+    }
+
+    protected void registerStealingLinkManager() throws KapuaRuntimeException, JMSException, KapuaException {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        stealingLinkManagerFuture = executorService.submit(new Runnable() {
+
+            @Override
+            public void run() {
+                getBrokerService().waitUntilStarted(STEALING_LINK_INITIALIZATION_MAX_WAIT_TIME);
+                if (!getBrokerService().isStarted()) {
+                    logger.error(
+                            ">>> Security broker filter: calling start... Register stealing link manager... ERROR - The broker is not started after {} milliseconds... Stealing link manager initialization will be skipped!",
+                            STEALING_LINK_INITIALIZATION_MAX_WAIT_TIME);
+                    // should be more appropriate to shutdown the system?
+                    throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR,
+                            String.format("Cannot start the stealing link manager. The broker instance is not ready after %d milliseconds!", STEALING_LINK_INITIALIZATION_MAX_WAIT_TIME));
+                }
+                logger.info(">>> Security broker filter: calling start... Register stealing link manager...");
+                try {
+                    subscribeStealingLinkManager();
+                    logger.info(">>> Security broker filter: calling start... Register stealing link manager... DONE");
+                } catch (KapuaRuntimeException | JMSException | KapuaException e) {
+                    logger.error(">>> Security broker filter: calling start... Register stealing link manager... ERROR: {}", e.getMessage(), e);
+                }
+            }
+        });
+    }
+
+    protected void subscribeStealingLinkManager() throws KapuaRuntimeException, JMSException, KapuaException {
+        stealingLinkManagerConsumer = new JmsConsumerWrapper(
+                String.format(KapuaSecurityBrokerFilter.CONNECT_MESSAGE_TOPIC_PATTERN + ".>", SystemSetting.getInstance().getMessageClassifier(), "*", "*"),
+                false, true, new MessageListener() {
+
+                    @Override
+                    public void onMessage(javax.jms.Message message) {
+                        // just for logging purpose
+                        String destination = null;
+                        String messageId = null;
+                        try {
+                            destination = message.getJMSDestination().toString();
+                            messageId = message.getJMSMessageID();
+                        } catch (JMSException e1) {
+                            // ignore it
+                        }
+                        logger.debug("Received connect message topic: '{}' - message id: '{}'", new Object[] { destination, messageId });
+                        String messageBrokerId;
+                        try {
+                            messageBrokerId = message.getStringProperty(MessageConstants.PROPERTY_BROKER_ID);
+                            if (!brokerId.equals(messageBrokerId)) {
+                                logger.debug("Received connect message from another broker id: '{}' topic: '{}' - message id: '{}'", new Object[] { messageBrokerId, destination, messageId });
+                                KapuaBrokerContext kbc = null;
+                                // try parsing from message context (if the message is coming from other brokers it has these fields evaluated)
+                                try {
+                                    logger.debug("Get connected device informations from the message session");
+                                    kbc = parseMessageSession(message);
+                                } catch (JMSException | KapuaException e) {
+                                    logger.debug("Get connected device informations from the topic");
+                                    // otherwise looking for these informations by looking at the topic
+                                    kbc = parseTopicInfo(message);
+                                }
+                                String fullClientId = getFullClientId(kbc);
+                                if (CONNECTION_MAP.get(fullClientId) != null) {
+                                    logger.debug("Stealing link detected - broker id: '{}' topic: '{}' - message id: '{}'", new Object[] { messageBrokerId, destination, messageId });
+                                    // stealing link detected!
+                                    List<TransportConnector> transportConnectors = getBrokerService().getTransportConnectors();
+                                    // iterate over all the transport connectors
+                                    for (TransportConnector transportConnector : transportConnectors) {
+                                        // assume that only one client with this client id is connected to the broker by one of the connection
+                                        for (TransportConnection conn : transportConnector.getConnections()) {
+                                            if (fullClientId.equals(conn.getConnectionId())) {
+                                                logger.info("New connection detected for {} on another broker.  Stopping the current connection on transport connector: {}.", fullClientId,
+                                                        transportConnector.getName());
+                                                metricLoginRemoteStealingLinkDisconnect.inc();
+                                                // Include KapuaDuplicateClientIdException to notify the security broker filter
+                                                conn.stopAsync(new KapuaDuplicateClientIdException(fullClientId));
+                                                // assume only one connection since this broker should have already handled any duplicates
+                                                return;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        } catch (JMSException | KapuaException e) {
+                            logger.error("Cannot enforce stealing link check in the received message on topic '{}'", destination, e);
+                        }
+                    }
+
+                    private KapuaBrokerContext parseMessageSession(javax.jms.Message message) throws JMSException, KapuaException {
+                        Long scopeId = message.propertyExists(MessageConstants.PROPERTY_SCOPE_ID) ? message.getLongProperty(MessageConstants.PROPERTY_SCOPE_ID) : null;
+                        String clientId = message.getStringProperty(MessageConstants.PROPERTY_CLIENT_ID);
+                        if (scopeId == null || scopeId.longValue() <= 0 || StringUtils.isEmpty(clientId)) {
+                            logger.debug("Invalid message context. Try parsing the topic.");
+                            throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Invalid message context");
+                        }
+                        return new KapuaBrokerContext(scopeId, clientId);
+                    }
+
+                    private KapuaBrokerContext parseTopicInfo(javax.jms.Message message) throws JMSException, KapuaException {
+                        String originalTopic = message.getStringProperty(MessageConstants.PROPERTY_ORIGINAL_TOPIC);
+                        String topic[] = originalTopic.split("\\.");
+                        if (topic.length != 5) {
+                            logger.error("Invalid topic format. Cannot process connect message.");
+                            throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "wrong connect message topic");
+                        }
+                        String accountName = topic[1];
+                        String clientId = topic[2];
+                        Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.findByName(accountName));
+                        Long scopeId = account.getId().getId().longValue();
+                        return new KapuaBrokerContext(scopeId, clientId);
+                    }
+
+                });
+    }
+
+    protected void unregisterStealingLinkManager() {
+        if (stealingLinkManagerConsumer != null) {
+            stealingLinkManagerConsumer.close();
+        }
     }
 
     // ------------------------------------------------------------------
@@ -300,12 +480,12 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
         ThreadContext.unbindSubject();
 
         Context loginTotalContext = metricLoginAddConnectionTime.time();
-
         String username = info.getUserName();
         String password = info.getPassword();
         String clientId = info.getClientId();
         String clientIp = info.getClientIp();
         ConnectionId connectionId = info.getConnectionId();
+        KapuaBrokerContext kbc = new KapuaBrokerContext(brokerIdResolver.getBrokerId(this), username, clientId, clientIp);
 
         List<String> authDestinations = null;
         if (logger.isDebugEnabled()) {
@@ -331,6 +511,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
 
             KapuaId scopeId = accessToken.getScopeId();
             KapuaId userId = accessToken.getUserId();
+            kbc.setScopeId(scopeId.getId().longValue());
 
             final Account account;
             try {
@@ -345,6 +526,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             }
 
             String accountName = account.getName();
+            kbc.setAccountName(accountName);
             loginShiroLoginTimeContext.stop();
 
             // if a user acts as a child MOVED INSIDE KapuaAuthorizingRealm otherwise through REST API and console this @accountName won't work
@@ -355,16 +537,23 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             // long accountId = kapuaSession.getSessionAccountId();
 
             // multiple account stealing link fix
-            String fullClientId = MessageFormat.format(AclConstants.MULTI_ACCOUNT_CLIENT_ID, scopeId.getId().longValue(), clientId);
+            String fullClientId = getFullClientId(scopeId.getId().longValue(), clientId);
 
             KapuaPrincipal principal = new KapuaPrincipalImpl(accessToken,
                     username,
                     clientId,
                     clientIp);
             DeviceConnection deviceConnection = null;
+
+            final String connectorName = (((TransportConnector) context.getConnector()).getName());
+            final ConnectorDescriptor connectorDescriptor = ConnectorDescriptorProviders.getDescriptor(connectorName);
+            if (connectorDescriptor == null) {
+                throw new IllegalStateException(String.format("Unable to find connector descriptor for connector '%s'", connectorName));
+            }
+
             // 3) check authorization
             DefaultAuthorizationMap authMap = null;
-            if (isAdminUser(username)) {
+            if (isAdminUser(kbc)) {
                 metricLoginKapuasysTokenAttempt.inc();
                 // 3-1) admin authMap
                 authMap = buildAdminAuthMap(authDestinations, principal, fullClientId);
@@ -406,16 +595,16 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                     DeviceConnectionCreator deviceConnectionCreator = deviceConnectionFactory.newCreator(scopeId);
                     deviceConnectionCreator.setClientId(clientId);
                     deviceConnectionCreator.setClientIp(clientIp);
-                    deviceConnectionCreator.setProtocol("MQTT");
-                    deviceConnectionCreator.setServerIp(null);// TODO to be filled with the proper value
+                    deviceConnectionCreator.setProtocol(connectorDescriptor.getTransportProtocol());
+                    deviceConnectionCreator.setServerIp(brokerIpResolver.getBrokerIpOrHostName());
                     deviceConnectionCreator.setUserId(userId);
                     deviceConnectionCreator.setUserCouplingMode(ConnectionUserCouplingMode.INHERITED);
                     deviceConnectionCreator.setAllowUserChange(false);
                     deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.create(deviceConnectionCreator));
                 } else {
                     deviceConnection.setClientIp(clientIp);
-                    deviceConnection.setProtocol("MQTT");
-                    deviceConnection.setServerIp(null);// TODO to be filled with the proper value
+                    deviceConnection.setProtocol(connectorDescriptor.getTransportProtocol());
+                    deviceConnection.setServerIp(brokerIpResolver.getBrokerIpOrHostName());
                     deviceConnection.setUserId(userId);
                     deviceConnection.setStatus(DeviceConnectionStatus.CONNECTED);
                     deviceConnection.setAllowUserChange(false);
@@ -437,18 +626,11 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                 loginFindDevTimeContext.stop();
 
                 loginNormalUserTimeContext.stop();
-                Context loginSendLogingUpdateMsgTimeContex = metricLoginSendLoginUpdateMsgTime.time();
-
-                loginSendLogingUpdateMsgTimeContex.stop();
+                sendConnectMessage(kbc);
                 metricClientConnectedClient.inc();
             }
             logAuthDestinationToLog(authDestinations);
 
-            final String connectorName = (((TransportConnector) context.getConnector()).getName());
-            final ConnectorDescriptor connectorDescriptor = ConnectorDescriptorProviders.getDescriptor(connectorName);
-            if (connectorDescriptor == null) {
-                throw new IllegalStateException(String.format("Unable to find connector descriptor for connector '%s'", connectorName));
-            }
             KapuaSecurityContext securityCtx = new KapuaSecurityContext(principal,
                     authMap,
                     (deviceConnection != null ? deviceConnection.getId() : null),
@@ -500,6 +682,35 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             loginShiroLogoutTimeContext.stop();
             loginTotalContext.stop();
         }
+    }
+
+    protected <T> T newInstance(String clazz, Class<T> defaultInstance) throws KapuaException {
+        logger.info("Initializing instance...");
+        T instance;
+        // lazy synchronization
+        try {
+            if (!StringUtils.isEmpty(clazz)) {
+                logger.info("Initializing instance of {}...", clazz);
+                @SuppressWarnings("unchecked")
+                Class<T> clazzToInstantiate = (Class<T>) Class.forName(clazz);
+                instance = clazzToInstantiate.newInstance();
+            } else {
+                logger.info("Initializing instance of. Instantiate default instance {} ...", defaultInstance);
+                instance = defaultInstance.newInstance();
+            }
+        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+            throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, e, String.format(CANNOT_LOAD_INSTANCE_ERROR_MSG, clazz));
+        }
+        logger.info("Initializing broker ip resolver... DONE");
+        return instance;
+    }
+
+    protected String getFullClientId(Long scopeId, String clientId) {
+        return MessageFormat.format(AclConstants.MULTI_ACCOUNT_CLIENT_ID, scopeId, clientId);
+    }
+
+    protected String getFullClientId(KapuaBrokerContext kbc) {
+        return MessageFormat.format(AclConstants.MULTI_ACCOUNT_CLIENT_ID, kbc.getScopeId(), kbc.getClientId());
     }
 
     private void enforceDeviceConnectionUserBound(Map<String, Object> options, DeviceConnection deviceConnection, KapuaId scopeId, KapuaId userId) throws KapuaException {
@@ -579,6 +790,26 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
         }
     }
 
+    protected void sendConnectMessage(KapuaBrokerContext kbc) {
+        Context loginSendLogingUpdateMsgTimeContex = metricLoginSendLoginUpdateMsgTime.time();
+        String message = systemMessageCreator.createMessage(SystemMessageType.CONNECT, kbc);
+        JmsAssistantProducerWrapper producerWrapper = null;
+        try {
+            producerWrapper = JmsAssistantProducerPool.getIOnstance(DESTINATIONS.NO_DESTINATION).borrowObject();
+            producerWrapper.send(String.format(CONNECT_MESSAGE_TOPIC_PATTERN,
+                    SystemSetting.getInstance().getMessageClassifier(), kbc.getAccountName(), kbc.getClientId()),
+                    message,
+                    kbc);
+        } catch (Exception e) {
+            logger.error("Exception sending the connect message: {}", e.getMessage(), e);
+        } finally {
+            if (producerWrapper != null) {
+                JmsAssistantProducerPool.getIOnstance(DESTINATIONS.NO_DESTINATION).returnObject(producerWrapper);
+            }
+        }
+        loginSendLogingUpdateMsgTimeContex.stop();
+    }
+
     @Override
     public void removeConnection(ConnectionContext context, ConnectionInfo info, Throwable error)
             throws Exception {
@@ -588,7 +819,6 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             try {
 
                 KapuaSecurityContext kapuaSecurityContext = getKapuaSecurityContext(context);
-
                 // TODO fix the kapua session when run as feature will be implemented
                 KapuaPrincipal kapuaPrincipal = ((KapuaPrincipal) kapuaSecurityContext.getMainPrincipal());
                 KapuaSession kapuaSession = new KapuaSession(null,
@@ -599,14 +829,14 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                 String clientId = kapuaPrincipal.getClientId();
                 KapuaId accountId = kapuaPrincipal.getAccountId();
                 String username = kapuaSecurityContext.getUserName();
-                String remoteAddress = (context.getConnection() != null) ? context.getConnection().getRemoteAddress() : "";
 
                 KapuaId scopeId = ((KapuaPrincipal) kapuaSecurityContext.getMainPrincipal()).getAccountId();
+                KapuaBrokerContext kbc = new KapuaBrokerContext(brokerIdResolver.getBrokerId(this), username, clientId, info.getClientIp());
 
                 // multiple account stealing link fix
-                fullClientId = MessageFormat.format(AclConstants.MULTI_ACCOUNT_CLIENT_ID, accountId, clientId);
+                fullClientId = getFullClientId(scopeId.getId().longValue(), clientId);
 
-                if (!isAdminUser(username)) {
+                if (!isAdminUser(kbc)) {
                     // Stealing link check
                     ConnectionId connectionId = CONNECTION_MAP.get(fullClientId);
 
@@ -631,19 +861,20 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                         }
                         if (deviceConnection != null) {
                             // the device connection must be not null
-                            // update device connection
-                            if (error == null) {
-                                deviceConnection.setStatus(DeviceConnectionStatus.DISCONNECTED);
+                            // update device connection (if the disconnection wasn't caused by a stealing link)
+                            if (error instanceof KapuaDuplicateClientIdException) {
+                                logger.debug("Skip device connection status update since is coming from a stealing link condition. Client id: {} - Connection id: {}",
+                                        new Object[] { clientId, connectionId != null ? connectionId.getValue() : "NULL" });
                             } else {
-                                deviceConnection.setStatus(DeviceConnectionStatus.MISSING);
-                            }
-                            try {
-                                KapuaSecurityUtils.doPrivileged(() -> {
-                                    deviceConnectionService.update(deviceConnection);
-                                    return null;
-                                });
-                            } catch (Exception e) {
-                                throw new ShiroException("Error while updating the device connection status!", e);
+                                deviceConnection.setStatus(error == null ? DeviceConnectionStatus.DISCONNECTED : DeviceConnectionStatus.MISSING);
+                                try {
+                                    KapuaSecurityUtils.doPrivileged(() -> {
+                                        deviceConnectionService.update(deviceConnection);
+                                        return null;
+                                    });
+                                } catch (Exception e) {
+                                    throw new ShiroException("Error while updating the device connection status!", e);
+                                }
                             }
                         }
                     }
@@ -722,12 +953,11 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             messageSend.setProperty(MessageConstants.HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL,
                     Base64.getEncoder().encodeToString(SerializationUtils.serialize(kapuaSecurityContext.getConnectorDescriptor())));
             messageSend.setProperty(MessageConstants.HEADER_KAPUA_SESSION, Base64.getEncoder().encodeToString(SerializationUtils.serialize(kapuaSecurityContext.getKapuaSession())));
-        }
-        if (messageSend.getContent() != null) {
-            metricPublishMessageSizeAllowed.update(messageSend.getContent().length);
+            messageSend.setProperty(MessageConstants.HEADER_KAPUA_BROKER_CONTEXT, false);
         } else {
-            logger.warn("Cannot update message size metric. Incoming message for topic {} has null content!", messageSend.getDestination());
+            messageSend.setProperty(MessageConstants.HEADER_KAPUA_BROKER_CONTEXT, true);
         }
+        metricPublishMessageSizeAllowed.update(messageSend.getSize());
         ActiveMQDestination destination = messageSend.getDestination();
         if (destination instanceof ActiveMQTopic) {
             ActiveMQTopic destinationTopic = (ActiveMQTopic) destination;
@@ -854,7 +1084,6 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
         dme.addAll(createAuthorizationEntries(authDestinations, MessageFormat.format(AclConstants.ACL_CTRL_ACC_CLI, accountName, clientId),
                 principal, clientId, fullClientId, true, false, false));// (topic, principal, read, write, admin)
 
-        // FIXME: check if is correct "$EDC.{0}.>" instead of ">"
         dme.addAll(createAuthorizationEntries(authDestinations, MessageFormat.format(AclConstants.ACL_CTRL_ACC, accountName),
                 principal, clientId, fullClientId, false, false, true));// (topic, principal, read, write, admin)
 
@@ -998,7 +1227,6 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                 admin ? "a" : "_",
                 topic));
         return entry;
-
     }
 
     protected AuthorizationEntry createAuthorizationEntry(List<String> authDestinations, String topic, KapuaPrincipal principal) {
@@ -1013,10 +1241,14 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
         entry.setAdminACLs(adminACLs);
         addAuthDestinationToLog(authDestinations, MessageFormat.format(AclConstants.PERMISSION_LOG, "r", "_", "_", topic));
         return entry;
-
     }
 
-    private void addAuthDestinationToLog(List<String> authDestinations, String message) {
+    protected boolean isAdminUser(KapuaBrokerContext kbc) {
+        String adminUsername = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
+        return kbc.getUserName().equals(adminUsername);
+    }
+
+    protected void addAuthDestinationToLog(List<String> authDestinations, String message) {
         if (logger.isDebugEnabled()) {
             authDestinations.add(message);
         }
@@ -1029,11 +1261,6 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                 logger.debug(str);
             }
         }
-    }
-
-    private boolean isAdminUser(String user) {
-        String adminAccount = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_ACCOUNT);
-        return user.equals(adminAccount);
     }
 
 }

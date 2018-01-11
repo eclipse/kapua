@@ -393,8 +393,7 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     @When("^I try to delete the system account$")
     public void deleteSystemAccount()
             throws Exception {
-
-        String adminUserName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_ACCOUNT);
+        String adminUserName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
         Account tmpAcc = accountService.findByName(adminUserName);
 
         assertNotNull(tmpAcc);
@@ -569,7 +568,7 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     @Then("^The System account exists$")
     public void findSystemAccount()
             throws KapuaException {
-        String adminUserName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_ACCOUNT);
+        String adminUserName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
         Account tmpAcc = accountService.findByName(adminUserName);
 
         assertNotNull(tmpAcc);

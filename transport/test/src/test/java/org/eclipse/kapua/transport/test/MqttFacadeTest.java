@@ -13,6 +13,7 @@ package org.eclipse.kapua.transport.test;
 
 import java.util.Date;
 
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.transport.TransportClientFactory;
 import org.eclipse.kapua.transport.TransportFacade;
@@ -39,13 +40,17 @@ public class MqttFacadeTest extends Assert {
         // Get facade
         KapuaLocator locator = KapuaLocator.getInstance();
         TransportClientFactory transportFacadeFactory = locator.getFactory(TransportClientFactory.class);
-        TransportFacade transportFacade = transportFacadeFactory.getFacade();
+        /* FIXME the following line will fail once the test will not be ignored anymore.
+           Now the facade needs the direct broker uri as a string to point to the broker
+           in a clustered environment
+        */
+        TransportFacade transportFacade = transportFacadeFactory.getFacade(null);
 
         assertNotNull("client.clientId", transportFacade.getClientId());
 
         //
         // Send
-        String sendTopic = "$EDC/kapua-sys/" + transportFacade.getClientId() + "/" + MqttClientTest.class.getSimpleName() + "/testTransportFacadeSend";
+        String sendTopic = SystemSetting.getInstance().getMessageClassifier() + "/kapua-sys/" + transportFacade.getClientId() + "/" + MqttClientTest.class.getSimpleName() + "/testTransportFacadeSend";
 
         MqttTopic mqttTopic = new MqttTopic(sendTopic);
         MqttPayload mqttPayload = new MqttPayload("testTransportFacadeSendPayload".getBytes());

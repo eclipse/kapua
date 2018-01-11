@@ -119,18 +119,4 @@ public class KapuaLifeCycleConverter extends AbstractKapuaConverter {
         return convertTo(exchange, value, MessageType.NOTIFY);
     }
 
-    /**
-     * Convert incoming message to a Kapua unmatched (life cycle) message
-     * 
-     * @param exchange
-     * @param value
-     * @return
-     * @throws KapuaException
-     */
-    @Converter
-    public CamelKapuaMessage<?> convertToUnmatched(Exchange exchange, Object value) throws KapuaException {
-        metricConverterNotifyMessage.inc();
-        return convertTo(exchange, value, MessageType.UNMATCHED);
-    }
-
 }

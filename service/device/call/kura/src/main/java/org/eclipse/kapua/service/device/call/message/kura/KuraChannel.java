@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,9 +14,8 @@ package org.eclipse.kapua.service.device.call.message.kura;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.service.device.call.message.DeviceChannel;
-import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSetting;
-import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSettingKeys;
 
 /**
  * Kura device channel implementation.
@@ -26,7 +25,7 @@ import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSett
  */
 public class KuraChannel implements DeviceChannel {
 
-    protected static final String DESTINATION_CONTROL_PREFIX = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
+    protected static final String DESTINATION_CONTROL_PREFIX = SystemSetting.getInstance().getMessageClassifier();
 
     protected String messageClassification;
     protected String scopeNamespace;

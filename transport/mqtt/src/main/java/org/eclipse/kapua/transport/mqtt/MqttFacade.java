@@ -45,17 +45,21 @@ public class MqttFacade implements TransportFacade<MqttTopic, MqttPayload, MqttM
      */
     private MqttClientCallback mqttClientCallback;
 
+    private final String nodeUri;
+
     /**
      * Initialize a transport facade to be used to send requests to devices.
      * 
      * @throws KapuaException
      *             When MQTT client is not available.
      */
-    public MqttFacade() throws KapuaException {
+    public MqttFacade(String nodeUri) throws KapuaException {
+        this.nodeUri = nodeUri;
+
         //
         // Get the client form the pool
         try {
-            borrowedClient = MqttClientPool.getInstance().borrowObject();
+            borrowedClient = MqttClientPool.getInstance(nodeUri).borrowObject();
         } catch (Exception e) {
             // FIXME use appropriate exception for this
             throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, e, (Object[]) null);
@@ -200,7 +204,7 @@ public class MqttFacade implements TransportFacade<MqttTopic, MqttPayload, MqttM
     public void clean() {
         //
         // Return the client form the pool
-        MqttClientPool.getInstance().returnObject(borrowedClient);
+        MqttClientPool.getInstance(nodeUri).returnObject(borrowedClient);
         borrowedClient = null;
     }
 }

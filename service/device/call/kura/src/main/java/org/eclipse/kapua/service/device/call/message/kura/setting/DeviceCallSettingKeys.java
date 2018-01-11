@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,7 +12,6 @@
 package org.eclipse.kapua.service.device.call.message.kura.setting;
 
 import org.eclipse.kapua.commons.setting.SettingKey;
-import org.eclipse.kapua.service.device.call.message.DeviceChannel;
 
 /**
  * Available settings key for device call service
@@ -21,11 +20,6 @@ import org.eclipse.kapua.service.device.call.message.DeviceChannel;
  *
  */
 public enum DeviceCallSettingKeys implements SettingKey {
-
-    /**
-     * Destination message classifier. {@link DeviceChannel#getMessageClassification} for more detail
-     */
-    DESTINATION_MESSAGE_CLASSIFIER("destination.message.classifier"),
 
     /**
      * Destination reply part

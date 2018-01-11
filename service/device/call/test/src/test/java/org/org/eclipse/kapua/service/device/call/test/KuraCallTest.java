@@ -13,6 +13,7 @@ package org.org.eclipse.kapua.service.device.call.test;
 
 import java.util.Date;
 
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.call.DeviceCall;
 import org.eclipse.kapua.service.device.call.DeviceCallFactory;
@@ -38,7 +39,7 @@ public class KuraCallTest extends Assert {
         DeviceCallFactory deviceCallFactory = locator.getFactory(DeviceCallFactory.class);
         DeviceCall<KuraRequestMessage,?> deviceCall = deviceCallFactory.newDeviceCall();
 
-        KuraRequestChannel requestChannel = new KuraRequestChannel("$EDC", "kapua-sys", "00:60:0C:82:52:34");
+        KuraRequestChannel requestChannel = new KuraRequestChannel(SystemSetting.getInstance().getMessageClassifier(), "kapua-sys", "00:60:0C:82:52:34");
         requestChannel.setAppId("CMD-V1");
         requestChannel.setMethod(KuraMethod.EXEC);
         requestChannel.setResources(new String[] { "command" });

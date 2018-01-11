@@ -61,6 +61,7 @@ public class MqttDevice {
     /**
      * Default quality of service - mqtt.
      */
+    // TODO switch to qos 1????
     private static final int DEFAULT_QOS = 0;
 
     /**
@@ -120,15 +121,25 @@ public class MqttDevice {
         subscribedClient.setCallback(new MqttCallback() {
             @Override
             public void connectionLost(Throwable throwable) {
-                logger.info("Listener connection to broker lost.");
+                logger.info("Listener connection to broker lost. {}", throwable.getMessage(), throwable);
             }
 
             @Override
             public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
-                logger.info("Message arrived in Listener with topic: " + topic);
-
-                listenerReceivedMqttMessage.clear();
-                listenerReceivedMqttMessage.put(topic, new String(mqttMessage.getPayload()));
+                logger.info("Message arrived in Listener with topic: {}", topic);
+                // exclude the connect messages sent by the broker (that may affect the tests)
+                // this messages can be received by this callback before the listenerReceivedMqttMessage is properly initialized. So a check for null should be performed
+                // TODO manage this client in a better way, so the list of the received messages should be internal and exposed as getter to the caller.
+                if (listenerReceivedMqttMessage != null) {
+                    if (!topic.contains("MQTT/CONNECT")) {
+                        listenerReceivedMqttMessage.clear();
+                        listenerReceivedMqttMessage.put(topic, new String(mqttMessage.getPayload()));
+                    } else {
+                        logger.info("Received CONNECT message. The message will be discarded!");
+                    }
+                } else {
+                    logger.info("Received message map is null. The message is not stored!");
+                }
             }
 
             @Override

@@ -36,7 +36,11 @@ public class MqttClientPoolTest extends Assert {
             throws Exception {
         //
         // Get pool
-        MqttClientPool transportPool = MqttClientPool.getInstance();
+        /* FIXME the following line will fail once the test will not be ignored anymore.
+           Now the facade needs the direct broker uri as a string to point to the broker
+           in a clustered environment
+        */
+        MqttClientPool transportPool = MqttClientPool.getInstance(null);
 
         //
         // Borrow client
@@ -71,7 +75,11 @@ public class MqttClientPoolTest extends Assert {
             throws Exception {
         //
         // Get pool
-        MqttClientPool transportPool = MqttClientPool.getInstance();
+        /* FIXME the following line will fail once the test will not be ignored anymore.
+           Now the facade needs the direct broker uri as a string to point to the broker
+           in a clustered environment
+        */
+        MqttClientPool transportPool = MqttClientPool.getInstance(null);
 
         //
         // Test max borrow clients

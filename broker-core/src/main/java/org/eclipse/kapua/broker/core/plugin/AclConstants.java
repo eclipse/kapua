@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,6 +15,8 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+
 /**
  * ACL constants
  * 
@@ -25,6 +27,7 @@ public class AclConstants {
     private AclConstants() {
     }
 
+    private final static String CONTROL_TOPIC_CLASSIFIER = SystemSetting.getInstance().getMessageClassifier();
     public static final String VT_TOPIC_PREFIX_TEMPLATE = "VirtualTopic.{0}";
     public static final String VT_TOPIC_PREFIX = "VirtualTopic.";
 
@@ -34,13 +37,13 @@ public class AclConstants {
     public final static String VT_CONSUMER_PREFIX = "Consumer";
     public final static String ACL_HASH = "VirtualTopic.>";
     public final static String ACL_AMQ_ADVISORY = "VirtualTopic.ActiveMQ.Advisory.>";
-    public final static String ACL_CTRL_ACC_REPLY = "VirtualTopic.$EDC.{0}.*.*.REPLY.>";
-    public final static String ACL_CTRL_ACC_CLI_MQTT_LIFE_CYCLE = "VirtualTopic.$EDC.{0}.{1}.MQTT.>";
-    public final static String ACL_CTRL_ACC = "VirtualTopic.$EDC.{0}.>";
-    public final static String ACL_CTRL_ACC_CLI = "VirtualTopic.$EDC.{0}.{1}.>";
+    public final static String ACL_CTRL_ACC_REPLY = "VirtualTopic." + CONTROL_TOPIC_CLASSIFIER + ".{0}.*.*.REPLY.>";
+    public final static String ACL_CTRL_ACC_CLI_MQTT_LIFE_CYCLE = "VirtualTopic." + CONTROL_TOPIC_CLASSIFIER + ".{0}.{1}.MQTT.>";
+    public final static String ACL_CTRL_ACC = "VirtualTopic." + CONTROL_TOPIC_CLASSIFIER + ".{0}.>";
+    public final static String ACL_CTRL_ACC_CLI = "VirtualTopic." + CONTROL_TOPIC_CLASSIFIER + ".{0}.{1}.>";
     public final static String ACL_DATA_ACC = "VirtualTopic.{0}.>";
     public final static String ACL_DATA_ACC_CLI = "VirtualTopic.{0}.{1}.>";
-    public final static String ACL_CTRL_ACC_NOTIFY = "VirtualTopic.$EDC.{0}.*.*.NOTIFY.{1}.>";
+    public final static String ACL_CTRL_ACC_NOTIFY = "VirtualTopic." + CONTROL_TOPIC_CLASSIFIER + ".{0}.*.*.NOTIFY.{1}.>";
 
     public final static List<String> ACL_VT_DURABLE_PREFIX = ImmutableList.of(
             "Consumer.{0}:AT_LEAST_ONCE.{1}", "Consumer.{0}:EXACTLY_ONCE.{1}");

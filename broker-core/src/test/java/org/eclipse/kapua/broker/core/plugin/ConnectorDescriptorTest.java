@@ -16,6 +16,9 @@ import static org.eclipse.kapua.broker.core.plugin.Tests.runWithProperties;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.kapua.KapuaErrorCodes;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor.MessageType;
 import org.eclipse.kapua.broker.core.setting.BrokerSetting;
 import org.eclipse.kapua.broker.core.setting.BrokerSettingKey;
@@ -24,6 +27,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ConnectorDescriptorTest {
+
+    private final static String BROKER_IP_RESOLVER_CLASS_NAME;
+
+    static {
+        BrokerSetting config = BrokerSetting.getInstance();
+        BROKER_IP_RESOLVER_CLASS_NAME = config.getString(BrokerSettingKey.BROKER_IP_RESOLVER_CLASS_NAME);
+    }
 
     @Before
     public void resetSettings() {
@@ -163,4 +173,70 @@ public class ConnectorDescriptorTest {
 
         runWithProperties(properties, DefaultConnectorDescriptionProvider::new);
     }
+
+    @Test
+    public void testBrokerIpOrHostNameConfigFile() throws Exception {
+        System.clearProperty("broker.ip");
+        System.setProperty("kapua.config.url", "broker.setting/kapua-broker-setting-1.properties");
+
+        BrokerIpResolver brokerIpResolver = newInstance(BROKER_IP_RESOLVER_CLASS_NAME, DefaultBrokerIpResolver.class);
+        String ipOrHostName = brokerIpResolver.getBrokerIpOrHostName();
+        Assert.assertEquals("192.168.33.10", ipOrHostName);
+    }
+
+    @Test
+    public void testBrokerIpOrHostNameEnvProperty() throws Exception {
+        System.clearProperty("kapua.config.url");
+        System.setProperty("broker.ip", "192.168.33.10");
+
+        BrokerIpResolver brokerIpResolver = newInstance(BROKER_IP_RESOLVER_CLASS_NAME, DefaultBrokerIpResolver.class);
+        String ipOrHostName = brokerIpResolver.getBrokerIpOrHostName();
+        Assert.assertEquals("192.168.33.10", ipOrHostName);
+    }
+
+    @Test(expected = Exception.class)
+    public void testBrokerIpOrHostNameEmptyConfigFile() throws Exception {
+        System.clearProperty("broker.ip");
+        System.setProperty("kapua.config.url", "broker.setting/kapua-broker-setting-2.properties");
+
+        BrokerIpResolver brokerIpResolver = newInstance(BROKER_IP_RESOLVER_CLASS_NAME, DefaultBrokerIpResolver.class);
+        brokerIpResolver.getBrokerIpOrHostName();
+    }
+
+    @Test(expected = Exception.class)
+    public void testBrokerIpOrHostNameNoEnvProperty() throws Exception {
+        System.clearProperty("broker.ip");
+        System.clearProperty("kapua.config.url");
+
+        BrokerIpResolver brokerIpResolver = newInstance(BROKER_IP_RESOLVER_CLASS_NAME, DefaultBrokerIpResolver.class);
+        brokerIpResolver.getBrokerIpOrHostName();
+    }
+
+    /**
+     * Code reused form KapuaSecurityBrokerFilter for instantiating broker ip resolver class.
+     *
+     * @param clazz class that instantiates broker ip resolver
+     * @param defaultInstance default instance of class
+     * @param <T> generic type
+     * @return instance of ip resolver
+     * @throws KapuaException
+     */
+    protected <T> T newInstance(String clazz, Class<T> defaultInstance) throws KapuaException {
+        T instance;
+        // lazy synchronization
+        try {
+            if (!StringUtils.isEmpty(clazz)) {
+                @SuppressWarnings("unchecked")
+                Class<T> clazzToInstantiate = (Class<T>) Class.forName(clazz);
+                instance = clazzToInstantiate.newInstance();
+            } else {
+                instance = defaultInstance.newInstance();
+            }
+        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+            throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, e, "Class instantiation exception " + clazz);
+        }
+
+        return instance;
+    }
+
 }

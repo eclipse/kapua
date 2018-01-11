@@ -8,28 +8,16 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *     Red Hat Inc
  *******************************************************************************/
-package org.eclipse.kapua.commons.util;
+package org.eclipse.kapua.broker.core.plugin;
 
-import java.lang.reflect.Constructor;
-import java.net.URISyntaxException;
-
-import org.junit.Assert;
+import org.eclipse.kapua.broker.core.router.CamelKapuaDefaultRouter;
 import org.junit.Test;
 
-public class SystemUtilsTest extends Assert {
+public class CamelRoutesLoaderTest {
 
     @Test
-    public void testConstructor() throws Exception {
-        Constructor<SystemUtils> systemUtils = SystemUtils.class.getDeclaredConstructor();
-        systemUtils.setAccessible(true);
-        systemUtils.newInstance();
-    }
-
-    @Test
-    public void getBrokerURITest()
-            throws URISyntaxException {
-        Assert.assertNotNull(SystemUtils.getBrokerURI());
+    public void testRouteLoad() {
+        new CamelKapuaDefaultRouter();
     }
 }

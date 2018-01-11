@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -32,7 +32,6 @@ public class KapuaPrincipalImpl implements KapuaPrincipal {
      */
     private final String tokenId;
     private final KapuaId userId;
-    private final String username;
     private final KapuaId accountId;
     private final String clientId;
     private final String clientIp;
@@ -46,13 +45,12 @@ public class KapuaPrincipalImpl implements KapuaPrincipal {
      * @param clientIp
      */
     public KapuaPrincipalImpl(AccessToken accessToken, String username, String clientId, String clientIp) {
-        this.username = username;
+        name = username;
         tokenId = accessToken.getTokenId();
         userId = accessToken.getUserId();
         accountId = accessToken.getScopeId();
         this.clientId = clientId;
         this.clientIp = clientIp;
-        name = new StringBuilder().append(accountId != null ? accountId : "null").append(":").append(username).toString();
     }
 
     @Override
@@ -91,7 +89,7 @@ public class KapuaPrincipalImpl implements KapuaPrincipal {
         int result = 1;
         result = prime * result
                 + (accountId == null ? 0 : accountId.hashCode());
-        result = prime * result + (username == null ? 0 : username.hashCode());
+        result = prime * result + (name == null ? 0 : name.hashCode());
         return result;
     }
 
@@ -114,11 +112,11 @@ public class KapuaPrincipalImpl implements KapuaPrincipal {
         } else if (!accountId.equals(other.accountId)) {
             return false;
         }
-        if (username == null) {
-            if (other.username != null) {
+        if (name == null) {
+            if (other.name != null) {
                 return false;
             }
-        } else if (!username.equals(other.username)) {
+        } else if (!name.equals(other.name)) {
             return false;
         }
         return true;

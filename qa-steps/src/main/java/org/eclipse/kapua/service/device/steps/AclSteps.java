@@ -208,7 +208,8 @@ public class AclSteps extends BaseQATests {
             String message = messages.get(topic);
             assertEquals(payload, message);
         } else {
-            fail("Message not received by broker.");
+            // TODO log (or append in the failure message) this error in a better way
+            fail("Message not received by broker." + (listenerMqttMessage != null && listenerMqttMessage.size() > 0 ? listenerMqttMessage.get(0) : " NULL"));
         }
     }
 

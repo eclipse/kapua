@@ -29,6 +29,8 @@ import cucumber.api.CucumberOptions;
                   "json:target/UserServiceI9n_cucumber.json"
                  },
         monochrome=true)
+@CucumberProperty(key="broker.ip", value="192.168.33.10")
+@CucumberProperty(key="kapua.config.url", value="")
 @CucumberProperty(key="datastore.client.class", value="org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient")
 @CucumberProperty(key="org.eclipse.kapua.qa.datastore.extraStartupDelay", value="5")
 @CucumberProperty(key="org.eclipse.kapua.qa.broker.extraStartupDelay", value="5")
