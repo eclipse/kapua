@@ -1,0 +1,8 @@
+# PR coverage configuration
+coverage:
+  status:
+    patch:
+      default:
+        target: auto
+        threshold: 2
+        base: auto 
