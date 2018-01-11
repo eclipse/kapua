@@ -1,0 +1,17 @@
+# PR coverage configuration
+coverage:
+  status:
+    patch:
+      default:
+        # basic
+        target: auto
+        threshold: 1
+        base: auto 
+        # advanced
+        branches: null
+        if_no_uploads: error
+        if_not_found: success
+        if_ci_failed: error
+        only_pulls: true
+        flags: null
+        paths: null
