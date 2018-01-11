@@ -113,6 +113,7 @@ public class DeviceTable extends LayoutContainer {
         deviceGrid.setLoadMask(true);
         deviceGrid.setStripeRows(true);
         deviceGrid.getView().setAutoFill(true);
+        deviceGrid.getView().setForceFit(true);
         deviceGrid.getView().setEmptyText(MSGS.deviceTableEmptyText());
         deviceGrid.disableTextSelection(false);
         for (SelectionChangedListener<GwtDatastoreDevice> listener : listeners) {

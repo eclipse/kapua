@@ -112,6 +112,7 @@ public class AssetTable extends LayoutContainer {
         assetGrid.setLoadMask(true);
         assetGrid.setStripeRows(true);
         assetGrid.getView().setAutoFill(true);
+        assetGrid.getView().setForceFit(true);
         assetGrid.getView().setEmptyText(MSGS.assetTableEmptyText());
         assetGrid.disableTextSelection(false);
         for (SelectionChangedListener<GwtDatastoreAsset> listener : listeners) {

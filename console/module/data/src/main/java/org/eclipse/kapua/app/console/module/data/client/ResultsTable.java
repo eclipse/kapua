@@ -172,6 +172,7 @@ public class ResultsTable extends LayoutContainer {
         resultsGrid.setLoadMask(true);
         resultsGrid.setStripeRows(true);
         resultsGrid.getView().setAutoFill(true);
+        resultsGrid.getView().setForceFit(true);
         resultsGrid.getView().setEmptyText(MSGS.resultsTableEmptyText());
         resultsGrid.disableTextSelection(false);
 

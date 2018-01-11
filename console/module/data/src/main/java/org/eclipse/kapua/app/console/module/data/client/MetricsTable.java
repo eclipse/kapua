@@ -150,6 +150,7 @@ public class MetricsTable extends LayoutContainer {
         metricsInfoGrid.setLoadMask(true);
         metricsInfoGrid.setStripeRows(true);
         metricsInfoGrid.getView().setAutoFill(true);
+        metricsInfoGrid.getView().setForceFit(true);
         metricsInfoGrid.getView().setEmptyText(MSGS.metricsTableEmptyText());
         metricsInfoGrid.disableTextSelection(false);
         for (SelectionChangedListener<GwtHeader> listener : listeners) {

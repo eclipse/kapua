@@ -130,6 +130,7 @@ public class TopicsTable extends LayoutContainer {
         topicInfoGrid.mask("Loading");
         topicInfoGrid.setStripeRows(true);
         topicInfoGrid.getView().setAutoFill(true);
+        topicInfoGrid.getView().setForceFit(true);
         topicInfoGrid.getView().setEmptyText(MSGS.topicInfoGridEmptyText());
         topicInfoGrid.disableTextSelection(false);
 

@@ -110,6 +110,7 @@ public class ChannelTable extends LayoutContainer {
         channelGrid.setLoadMask(true);
         channelGrid.setStripeRows(true);
         channelGrid.getView().setAutoFill(true);
+        channelGrid.getView().setForceFit(true);
         channelGrid.getView().setEmptyText(MSGS.channelTableEmptyText());
         channelGrid.disableTextSelection(false);
         for (SelectionChangedListener<GwtDatastoreChannel> listener : listeners) {
