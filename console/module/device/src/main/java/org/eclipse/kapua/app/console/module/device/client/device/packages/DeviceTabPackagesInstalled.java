@@ -97,6 +97,7 @@ public class DeviceTabPackagesInstalled extends TabItem {
         treeGrid.setTrackMouseOver(false);
         treeGrid.getAriaSupport().setLabelledBy(getHeader().getId() + "-label");
         treeGrid.getView().setAutoFill(true);
+        treeGrid.getView().setForceFit(true);
         treeGrid.getView().setEmptyText(DEVICE_MSGS.deviceNoDeviceSelectedOrOffline());
 
         treeGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<ModelData>() {

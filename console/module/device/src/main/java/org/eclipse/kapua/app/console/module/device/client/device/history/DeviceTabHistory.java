@@ -270,6 +270,7 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
         grid.setAutoExpandColumn("eventMessage");
         grid.disableTextSelection(false);
         grid.getView().setAutoFill(true);
+        grid.getView().setForceFit(true);
         grid.getView().setEmptyText(DEVICES_MSGS.deviceHistoryTableNoHistory());
 
         pagingToolBar = new PagingToolBar(DEVICE_PAGE_SIZE);
