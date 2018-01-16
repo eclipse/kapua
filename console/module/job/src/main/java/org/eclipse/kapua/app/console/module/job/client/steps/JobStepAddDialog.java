@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.job.client.steps;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.extjs.gxt.ui.client.data.BaseListLoader;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
@@ -24,6 +27,7 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.core.client.GWT;
@@ -44,9 +48,6 @@ import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobStepDefinit
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobStepDefinitionServiceAsync;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobStepService;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobStepServiceAsync;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class JobStepAddDialog extends EntityAddEditDialog {
 
@@ -191,19 +192,33 @@ public class JobStepAddDialog extends EntityAddEditDialog {
 
         for (GwtJobStepProperty property : gwtJobStepDefinition.getStepProperties()) {
             String propertyType = property.getPropertyType();
-            if (
-                    propertyType.equals(String.class.getName()) ||
-                            propertyType.equals(Long.class.getName()) ||
-                            propertyType.equals(Integer.class.getName()) ||
-                            propertyType.equals(Float.class.getName()) ||
-                            propertyType.equals(Double.class.getName())
-                    ) {
+            if (propertyType.equals(String.class.getName())) {
                 TextField<String> textField = new TextField<String>();
                 textField.setFieldLabel(property.getPropertyName());
                 textField.setEmptyText(KapuaSafeHtmlUtils.htmlUnescape(property.getPropertyValue()));
                 textField.setData(PROPERTY_TYPE, property.getPropertyType());
                 textField.setData(PROPERTY_NAME, property.getPropertyName());
                 jobStepPropertiesPanel.add(textField);
+            } else if (
+                    propertyType.equals(Long.class.getName()) ||
+                    propertyType.equals(Integer.class.getName()) ||
+                    propertyType.equals(Float.class.getName()) ||
+                    propertyType.equals(Double.class.getName())) {
+                NumberField numberField = new NumberField();
+                numberField.setFieldLabel(property.getPropertyName());
+                numberField.setEmptyText(KapuaSafeHtmlUtils.htmlUnescape(property.getPropertyValue()));
+                numberField.setData(PROPERTY_TYPE, property.getPropertyType());
+                numberField.setData(PROPERTY_NAME, property.getPropertyName());
+                if (propertyType.equals(Long.class.getName())) {
+                    numberField.setMaxValue(Long.MAX_VALUE);
+                } else if (propertyType.equals(Integer.class.getName())) {
+                    numberField.setMaxValue(Integer.MAX_VALUE);
+                } else if (propertyType.equals(Float.class.getName())) {
+                    numberField.setMaxValue(Float.MAX_VALUE);
+                } else if (propertyType.equals(Double.class.getName())) {
+                    numberField.setMaxValue(Double.MAX_VALUE);
+                }
+                jobStepPropertiesPanel.add(numberField);
             } else if (propertyType.equals(Boolean.class.getName())) {
                 CheckBox checkBox = new CheckBox();
                 checkBox.setFieldLabel(property.getPropertyName());
