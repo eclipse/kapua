@@ -66,6 +66,7 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
         ArgumentValidator.notEmptyOrNull(creator.getName(), "jobStepCreator.name");
         ArgumentValidator.numRange(creator.getName().length(), 1, 255, "jobStepCreator.name");
         ArgumentValidator.notNull(creator.getJobStepDefinitionId(), "jobStepCreator.stepDefinitionId");
+        ArgumentValidator.numRange(creator.getDescription().length(), 0, 8192, "jobStepCreator.description");
 
         JobStepDefinition jobStepDefinition = JOB_STEP_DEFINITION_SERVICE.find(creator.getScopeId(), creator.getJobStepDefinitionId());
         ArgumentValidator.notNull(jobStepDefinition, "jobStepCreator.jobStepDefinitionId");
