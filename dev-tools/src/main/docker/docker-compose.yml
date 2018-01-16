@@ -52,12 +52,23 @@ services:
     ports:
     - 1883:1883
     - 61614:61614
+    depends_on:
+      - db
+      - es
   kapua-console:
     image: kapua/kapua-console:${IMAGE_VERSION}
     ports:
     - 8080:8080
+    depends_on:
+      - broker
+      - db
+      - es
   kapua-api:
     image: kapua/kapua-api:${IMAGE_VERSION}
     ports:
     - 8081:8080
+    depends_on:
+      - broker
+      - db
+      - es
 
