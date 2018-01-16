@@ -80,7 +80,7 @@ public class DataExporterServlet extends HttpServlet {
                 topicOrDevice = device;
                 predicate.getPredicates().add(STORABLE_PREDICATE_FACTORY.newTermPredicate(MessageField.CLIENT_ID, device));
             } else if (asset != null) {
-                topicOrDevice = device;
+                topicOrDevice = asset;
                 predicate.getPredicates().add(STORABLE_PREDICATE_FACTORY.newTermPredicate(MessageField.CHANNEL, asset));
             } else {
                 throw new IllegalArgumentException("topic, device");
