@@ -675,7 +675,7 @@
                                                 -Dcommons.eventbus.url="failover:(amqp://events-broker:5672)?jms.sendTimeout=1000" \
                                                 -Dcertificate.jwt.private.key=file:///home/kapua/key.pk8 \
                                                 -Dcertificate.jwt.certificate=file:///home/kapua/cert.pem \
-                                                -Dbroker.ip=127.0.0.1
+                                                -Dbroker.ip=broker
                                             </ACTIVEMQ_OPTS>
                                         </env>
                                         <ports>
