@@ -24,8 +24,8 @@ import java.util.Properties;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalNullArgumentException;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
-import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.service.configuration.internal.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.util.KapuaServiceSchemaUtils;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -192,7 +192,7 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     public void afterScenario() throws Exception {
         // Drop the Account Service tables
         scriptSession(AccountEntityManagerFactory.getInstance(), DROP_ACCOUNT_TABLES);
-        KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
+        KapuaServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
         KapuaSecurityUtils.clearSession();
     }
 

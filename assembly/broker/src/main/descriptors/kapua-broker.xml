@@ -221,6 +221,8 @@
                 <include>${pom.groupId}:kapua-commons</include>
                 <include>${pom.groupId}:kapua-foreignkeys</include>
                 <include>${pom.groupId}:kapua-service-api</include>
+                <include>${pom.groupId}:kapua-service-configuration-api</include>
+                <include>${pom.groupId}:kapua-service-configuration-internal</include>
                 <include>${pom.groupId}:kapua-liquibase</include>
                 <include>${pom.groupId}:kapua-guice</include>
                 <include>${pom.groupId}:kapua-broker-core</include>

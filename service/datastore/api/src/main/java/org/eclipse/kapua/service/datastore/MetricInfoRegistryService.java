@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.datastore;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.config.KapuaConfigurableService;
+import org.eclipse.kapua.service.configuration.KapuaConfigurableService;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.StorableId;

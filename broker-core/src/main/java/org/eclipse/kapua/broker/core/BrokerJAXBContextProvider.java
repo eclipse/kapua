@@ -19,7 +19,7 @@ import org.eclipse.kapua.broker.core.router.EndChainEndPoint;
 import org.eclipse.kapua.broker.core.router.EndPointContainer;
 import org.eclipse.kapua.broker.core.router.ParentEndPoint;
 import org.eclipse.kapua.broker.core.router.SimpleEndPoint;
-import org.eclipse.kapua.commons.configuration.metatype.TscalarImpl;
+import org.eclipse.kapua.service.configuration.internal.metatype.TscalarImpl;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordCreator;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordListResult;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordQuery;

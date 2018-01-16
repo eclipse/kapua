@@ -19,7 +19,7 @@
 
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 
-        <class>org.eclipse.kapua.commons.configuration.ServiceConfigImpl</class>
+        <class>org.eclipse.kapua.service.configuration.internal.ServiceConfigImpl</class>
         
         <properties>
             <property name="eclipselink.logging.logger" value="org.eclipse.persistence.logging.slf4j.SLF4JLogger" />

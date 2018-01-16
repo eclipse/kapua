@@ -15,7 +15,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
-import org.eclipse.kapua.service.config.KapuaConfigurableService;
+import org.eclipse.kapua.service.configuration.KapuaConfigurableService;
 
 /**
  * {@link JobService} exposes APIs to manage Job objects.<br>

@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.eclipse.kapua.commons.configuration.metatype.XmlConfigPropertiesAdapter;
+import org.eclipse.kapua.service.configuration.internal.metatype.XmlConfigPropertiesAdapter;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 
 /**

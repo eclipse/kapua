@@ -12,7 +12,7 @@
 package org.eclipse.kapua.commons.model;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
+import org.eclipse.kapua.commons.util.KapuaServiceSchemaUtils;
 import org.eclipse.kapua.commons.jpa.CommonsEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.jpa.SimpleSqlScriptExecutor;
@@ -68,6 +68,6 @@ public abstract class AbstractCommonServiceTest {
     @AfterClass
     public static void tearDown() {
         scriptSession(DEFAULT_TEST_PATH, DROP_TEST_FILTER);
-        KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
+        KapuaServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
     }
 }

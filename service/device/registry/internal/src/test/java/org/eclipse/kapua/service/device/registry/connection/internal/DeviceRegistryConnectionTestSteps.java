@@ -21,8 +21,8 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
-import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.util.KapuaServiceSchemaUtils;
+import org.eclipse.kapua.service.configuration.internal.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -119,9 +119,9 @@ public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
         enableH2Connection();
 
         // Create the account service tables
-        KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
+        KapuaServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
         scriptSession(DeviceEntityManagerFactory.instance(), DROP_DEVICE_TABLES);
-        KapuaConfigurableServiceSchemaUtils.createSchemaObjects(DEFAULT_COMMONS_PATH);
+        KapuaServiceSchemaUtils.createSchemaObjects(DEFAULT_COMMONS_PATH);
         new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
 
         MockedLocator mockLocator = (MockedLocator) locator;
@@ -166,7 +166,7 @@ public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
             throws Exception {
         // Drop the Account Service tables
         scriptSession(DeviceEntityManagerFactory.instance(), DROP_DEVICE_TABLES);
-        KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
+        KapuaServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
         KapuaSecurityUtils.clearSession();
     }
 

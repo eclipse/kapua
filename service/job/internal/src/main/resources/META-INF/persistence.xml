@@ -24,7 +24,7 @@
         <class>org.eclipse.kapua.service.job.step.definition.internal.JobStepDefinitionImpl</class>
         <class>org.eclipse.kapua.service.job.targets.internal.JobTargetImpl</class>
         
-        <class>org.eclipse.kapua.commons.configuration.ServiceConfigImpl</class>
+        <class>org.eclipse.kapua.service.configuration.internal.ServiceConfigImpl</class>
 
         <!-- Base classes and External classes -->
         <class>org.eclipse.kapua.commons.model.id.KapuaEid</class>

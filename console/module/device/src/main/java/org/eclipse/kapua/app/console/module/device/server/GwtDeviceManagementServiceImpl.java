@@ -54,7 +54,7 @@ import org.eclipse.kapua.app.console.module.device.shared.model.device.managemen
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.packages.GwtPackageOperation;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.packages.GwtPackageUninstallRequest;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementService;
-import org.eclipse.kapua.commons.configuration.metatype.Password;
+import org.eclipse.kapua.service.configuration.internal.metatype.Password;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;

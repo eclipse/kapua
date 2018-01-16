@@ -21,11 +21,11 @@ import java.util.Map.Entry;
 import javax.xml.namespace.QName;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.metatype.Password;
-import org.eclipse.kapua.commons.configuration.metatype.TadImpl;
-import org.eclipse.kapua.commons.configuration.metatype.TiconImpl;
-import org.eclipse.kapua.commons.configuration.metatype.TocdImpl;
-import org.eclipse.kapua.commons.configuration.metatype.ToptionImpl;
+import org.eclipse.kapua.service.configuration.internal.metatype.Password;
+import org.eclipse.kapua.service.configuration.internal.metatype.TadImpl;
+import org.eclipse.kapua.service.configuration.internal.metatype.TiconImpl;
+import org.eclipse.kapua.service.configuration.internal.metatype.TocdImpl;
+import org.eclipse.kapua.service.configuration.internal.metatype.ToptionImpl;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;

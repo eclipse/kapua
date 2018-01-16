@@ -85,7 +85,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
 import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RoleService;
-import org.eclipse.kapua.service.config.KapuaConfigurableService;
+import org.eclipse.kapua.service.configuration.KapuaConfigurableService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.slf4j.Logger;

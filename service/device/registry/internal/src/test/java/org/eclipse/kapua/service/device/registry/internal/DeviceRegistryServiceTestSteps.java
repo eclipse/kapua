@@ -21,8 +21,8 @@ import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
-import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.util.KapuaServiceSchemaUtils;
+import org.eclipse.kapua.service.configuration.internal.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -134,10 +134,10 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
 
         // Drop the Device Registry Service tables
         scriptSession(DeviceEntityManagerFactory.instance(), DROP_DEVICE_TABLES);
-        KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
+        KapuaServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
 
         // Create the Device Registry Service tables
-        KapuaConfigurableServiceSchemaUtils.createSchemaObjects(DEFAULT_COMMONS_PATH);
+        KapuaServiceSchemaUtils.createSchemaObjects(DEFAULT_COMMONS_PATH);
         // XmlUtil.setContextProvider(new AccountsJAXBContextProvider());
 
         MockedLocator mockLocator = (MockedLocator) locator;
@@ -179,7 +179,7 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
             throws Exception {
         // Drop the Device Registry Service tables
         scriptSession(DeviceEntityManagerFactory.instance(), DROP_DEVICE_TABLES);
-        KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
+        KapuaServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
         KapuaSecurityUtils.clearSession();
     }
 

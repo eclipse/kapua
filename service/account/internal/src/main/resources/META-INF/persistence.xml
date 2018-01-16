@@ -21,7 +21,7 @@
 
         <class>org.eclipse.kapua.service.account.internal.AccountImpl</class>
         <class>org.eclipse.kapua.service.account.internal.OrganizationImpl</class>
-        <class>org.eclipse.kapua.commons.configuration.ServiceConfigImpl</class>
+        <class>org.eclipse.kapua.service.configuration.internal.ServiceConfigImpl</class>
 
         <!-- event -->
         <class>org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImpl</class>

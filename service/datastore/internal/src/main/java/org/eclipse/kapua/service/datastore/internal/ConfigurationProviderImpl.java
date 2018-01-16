@@ -16,7 +16,7 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
-import org.eclipse.kapua.service.config.KapuaConfigurableService;
+import org.eclipse.kapua.service.configuration.KapuaConfigurableService;
 import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageInfo;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreConfiguration;

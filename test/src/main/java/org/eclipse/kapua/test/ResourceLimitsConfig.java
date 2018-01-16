@@ -17,7 +17,7 @@ import java.util.Map;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.service.config.KapuaConfigurableService;
+import org.eclipse.kapua.service.configuration.KapuaConfigurableService;
 
 /**
  * Usage of this class instances is mainly in test cases that have to configure

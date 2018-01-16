@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
-import java.util.Map;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -23,7 +22,6 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
-import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
@@ -41,6 +39,7 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.configuration.internal.AbstractKapuaConfigurableResourceLimitedService;
 
 /**
  * {@link AccountService} implementation.
@@ -340,11 +339,6 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             AccountQuery query = new AccountQueryImpl(accountId);
             return AccountDAO.query(em, query);
         });
-    }
-
-    @Override
-    protected Map<String, Object> getConfigValues(Account entity) throws KapuaException {
-        return super.getConfigValues(entity.getId());
     }
 
 }

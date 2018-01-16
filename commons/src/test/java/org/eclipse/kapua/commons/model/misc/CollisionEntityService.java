@@ -13,7 +13,7 @@ package org.eclipse.kapua.commons.model.misc;
 
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaNamedEntityService;
-import org.eclipse.kapua.service.config.KapuaConfigurableService;
+import org.eclipse.kapua.service.configuration.KapuaConfigurableService;
 
 public interface CollisionEntityService extends KapuaEntityService<CollisionEntity, CollisionEntityCreator>,
         KapuaNamedEntityService<CollisionEntity>,

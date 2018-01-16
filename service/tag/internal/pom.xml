@@ -69,5 +69,9 @@
             <artifactId>cucumber-guice</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-service-configuration-internal</artifactId>
+        </dependency>
     </dependencies>
 </project>
