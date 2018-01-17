@@ -8,28 +8,26 @@
  *
  * Contributors:
  *      Eurotech - initial API and implementation
- *******************************************************************************//*
+ *******************************************************************************/
 
 package org.eclipse.kapua.commons.model.misc;
 
 import java.util.Map;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.authorization.domain.Domain;
 
-public class CollisionServiceImpl extends AbstractKapuaConfigurableService implements CollisionEntityService {
-
-    private static final Domain COLLISION_ENTITY_DOMAIN = new CollisionEntityDomain();
+public class CollisionServiceImpl extends AbstractKapuaService implements CollisionEntityService {
 
     @SuppressWarnings("unused")
     private static final long serialVersionUID = -5296593780771944081L;
 
     public CollisionServiceImpl() {
-        super(CollisionServiceImpl.class.getName(), COLLISION_ENTITY_DOMAIN, CollisionEntityManagerFactory.getInstance());
+        super(CollisionEntityManagerFactory.getInstance());
     }
 
     public CollisionEntity insert(String testField) throws KapuaException {
@@ -48,7 +46,6 @@ public class CollisionServiceImpl extends AbstractKapuaConfigurableService imple
                 throw e;
             }
         });
-        return null;
     }
 
     @Override
@@ -106,4 +103,3 @@ public class CollisionServiceImpl extends AbstractKapuaConfigurableService imple
     }
 
 }
-*/

@@ -1,4 +1,4 @@
-/*******************************************************************************
+/******************************************************************************
  * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
@@ -9,7 +9,7 @@
  * Contributors:
  *      Eurotech - initial API and implementation
  *      Red Hat Inc
- *******************************************************************************//*
+ ******************************************************************************/
 
 package org.eclipse.kapua.commons.model;
 
@@ -29,13 +29,12 @@ import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-*/
 /**
  * Test the random identifier generator retry mechanism.
  *
  * @since 1.0
- *
- *//*
+ */
+
 
 public class KapuaIdGeneratorTest extends AbstractCommonServiceTest {
 
@@ -48,11 +47,10 @@ public class KapuaIdGeneratorTest extends AbstractCommonServiceTest {
     }
 
     @Test
-    */
-/**
+    /*
      * Test the key collision behavior through collision emulation.<br>
      * Test 2 login, the first succeed at the first attempt, the second will fail after third attempt (due to key violation exception)
-     *//*
+     */
 
     public void testKeyCollision() {
         CollisionIdGenerator collisionIdGenerator = new CollisionIdGenerator("1000", new BigInteger("499"), 5);
@@ -72,11 +70,10 @@ public class KapuaIdGeneratorTest extends AbstractCommonServiceTest {
     }
 
     @Test
-    */
-/**
+    /*
      * Test the key collision behavior through collision emulation.<br>
      * Test 2 login, the first succeed at the first attempt, the second will succeed at the third attempt (so only 2 key violation will occur)
-     *//*
+     */
 
     public void testKeyPartialCollision() {
         CollisionIdGenerator collisionIdGenerator = new CollisionIdGenerator("2000", new BigInteger("1499"), 4);
@@ -96,11 +93,10 @@ public class KapuaIdGeneratorTest extends AbstractCommonServiceTest {
     }
 
     @Test
-    */
-/**
+    /*
      * Test the key collision behavior through collision emulation.<br>
      * Test 4 login, the first 3 succeed at the first attempt, the 4th will fail 3 times due to a duplicated unique field exception (not a table key)
-     *//*
+     */
 
     public void testKeyNoKeyCollision() {
         CollisionIdGenerator collisionIdGenerator = new CollisionIdGenerator("3000", new BigInteger("2499"), 0);
@@ -122,12 +118,11 @@ public class KapuaIdGeneratorTest extends AbstractCommonServiceTest {
     }
 
     @Test
-    */
-/**
+    /*
      * Just generate few ids and check if the numbers are fitted into the expected limits
      * 
      * @throws Exception
-     *//*
+     */
 
     public void testIdGeneratorBound() throws Exception {
         int idSize = SystemSetting.getInstance().getInt(SystemSettingKey.KAPUA_KEY_SIZE);
@@ -138,4 +133,3 @@ public class KapuaIdGeneratorTest extends AbstractCommonServiceTest {
         }
     }
 }
-*/
