@@ -194,19 +194,20 @@ public class ConnectorDescriptorTest {
         Assert.assertEquals("192.168.33.10", ipOrHostName);
     }
 
-    @Test(expected = Exception.class)
+    @Test
     public void testBrokerIpOrHostNameEmptyConfigFile() throws Exception {
         System.clearProperty("broker.ip");
         System.setProperty("kapua.config.url", "broker.setting/kapua-broker-setting-2.properties");
 
         BrokerIpResolver brokerIpResolver = newInstance(BROKER_IP_RESOLVER_CLASS_NAME, DefaultBrokerIpResolver.class);
-        brokerIpResolver.getBrokerIpOrHostName();
+        String ipOrHostName = brokerIpResolver.getBrokerIpOrHostName();
+        Assert.assertEquals("192.168.33.10", ipOrHostName);
     }
 
     @Test(expected = Exception.class)
     public void testBrokerIpOrHostNameNoEnvProperty() throws Exception {
         System.clearProperty("broker.ip");
-        System.clearProperty("kapua.config.url");
+        System.setProperty("kapua.config.url", "broker.setting/kapua-broker-setting-3.properties");
 
         BrokerIpResolver brokerIpResolver = newInstance(BROKER_IP_RESOLVER_CLASS_NAME, DefaultBrokerIpResolver.class);
         brokerIpResolver.getBrokerIpOrHostName();
