@@ -22,6 +22,9 @@ public enum ConsoleSettingKeys implements SettingKey {
     PRODUCT_NAME("console.product.name"), //
     PRODUCT_COPYRIGHT("console.product.copyright"),
 
+    PRODUCT_NAME("console.product.name"), //
+    PRODUCT_COPYRIGHT("console.product.copyright"),
+
     DEVICE_CONFIGURATION_ICON_FOLDER("console.device.configuration.icon.folder"), //
     DEVICE_CONFIGURATION_ICON_CACHE_TIME("console.device.configuration.icon.cache.time"), //
     DEVICE_CONFIGURATION_ICON_SIZE_MAX("console.device.configuration.icon.size.max"),
