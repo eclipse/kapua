@@ -28,4 +28,6 @@ public interface CertificatePredicates extends KapuaUpdatableEntityPredicates {
 
     public static final String FORWARDABLE = "forwardable";
 
+    public static final String CA_ID = "caId";
+
 }
