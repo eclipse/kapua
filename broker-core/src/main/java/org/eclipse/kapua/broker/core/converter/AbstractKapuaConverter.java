@@ -30,7 +30,6 @@ import org.eclipse.kapua.broker.core.message.CamelUtil;
 import org.eclipse.kapua.broker.core.message.JmsUtil;
 import org.eclipse.kapua.broker.core.message.MessageConstants;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor;
-import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor.MessageType;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -76,7 +75,7 @@ public abstract class AbstractKapuaConverter {
      * @throws KapuaException
      *             if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
      */
-    protected CamelKapuaMessage<?> convertTo(Exchange exchange, Object value, MessageType messageType) throws KapuaException {
+    protected CamelKapuaMessage<?> convertTo(Exchange exchange, Object value, String messageType) throws KapuaException {
         // assume that the message is a Camel Jms message
         JmsMessage message = exchange.getIn(JmsMessage.class);
         if (message.getJmsMessage() instanceof BytesMessage) {

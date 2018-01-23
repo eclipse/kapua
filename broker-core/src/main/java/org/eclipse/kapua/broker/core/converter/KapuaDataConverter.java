@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.converter;
 
+import static org.eclipse.kapua.broker.core.plugin.ConnectorDescriptorProvider.MSG_DATA_TYPE;
+
 import java.util.UUID;
 
 import org.apache.camel.Converter;
@@ -18,7 +20,6 @@ import org.apache.camel.Exchange;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.message.CamelKapuaMessage;
-import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor.MessageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +53,7 @@ public class KapuaDataConverter extends AbstractKapuaConverter {
     @Converter
     public CamelKapuaMessage<?> convertToData(Exchange exchange, Object value) throws KapuaException {
         metricConverterDataMessage.inc();
-        CamelKapuaMessage<?> message = convertTo(exchange, value, MessageType.DATA);
+        CamelKapuaMessage<?> message = convertTo(exchange, value, MSG_DATA_TYPE);
         if (StringUtils.isEmpty(message.getDatastoreId())) {
             message.setDatastoreId(UUID.randomUUID().toString());
         }
@@ -67,7 +68,7 @@ public class KapuaDataConverter extends AbstractKapuaConverter {
         if (value instanceof CamelKapuaMessage<?>) {
             message = (CamelKapuaMessage<?>) value;
         } else {
-            message = convertTo(exchange, value, MessageType.DATA);
+            message = convertTo(exchange, value, MSG_DATA_TYPE);
         }
         if (StringUtils.isEmpty(message.getDatastoreId())) {
             logger.warn("Reprocessing message without datastore message id.");

@@ -12,6 +12,8 @@
 package org.eclipse.kapua.broker.core.plugin;
 
 import static org.eclipse.kapua.broker.core.plugin.Tests.runWithProperties;
+import static org.eclipse.kapua.broker.core.plugin.ConnectorDescriptorProvider.MSG_APP_TYPE;
+import static org.eclipse.kapua.broker.core.plugin.ConnectorDescriptorProvider.MSG_DATA_TYPE;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +21,6 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor.MessageType;
 import org.eclipse.kapua.broker.core.setting.BrokerSetting;
 import org.eclipse.kapua.broker.core.setting.BrokerSettingKey;
 import org.junit.Assert;
@@ -143,11 +144,11 @@ public class ConnectorDescriptorTest {
             ConnectorDescriptor descriptor = provider.getDescriptor("mqtt");
             Assert.assertNotNull(descriptor);
 
-            Assert.assertEquals(org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraAppsMessage.class, descriptor.getDeviceClass(MessageType.APP));
-            Assert.assertEquals(org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage.class, descriptor.getKapuaClass(MessageType.APP));
+            Assert.assertEquals(org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraAppsMessage.class, descriptor.getDeviceClass(MSG_APP_TYPE));
+            Assert.assertEquals(org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage.class, descriptor.getKapuaClass(MSG_APP_TYPE));
 
-            Assert.assertNull(descriptor.getDeviceClass(MessageType.DATA));
-            Assert.assertNull(descriptor.getKapuaClass(MessageType.DATA));
+            Assert.assertNull(descriptor.getDeviceClass(MSG_DATA_TYPE));
+            Assert.assertNull(descriptor.getKapuaClass(MSG_DATA_TYPE));
         });
     }
 

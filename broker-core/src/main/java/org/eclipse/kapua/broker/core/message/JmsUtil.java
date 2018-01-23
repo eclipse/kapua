@@ -21,9 +21,8 @@ import javax.jms.Topic;
 import org.apache.activemq.command.ActiveMQMessage;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.converter.AbstractKapuaConverter;
+import org.eclipse.kapua.broker.core.plugin.AclConstants;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor;
-import org.eclipse.kapua.broker.core.plugin.KapuaSecurityBrokerFilter;
-import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor.MessageType;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.call.message.DeviceMessage;
@@ -72,7 +71,7 @@ public class JmsUtil {
      * @throws JMSException
      * @throws KapuaException
      */
-    public static CamelKapuaMessage<?> convertToKapuaMessage(ConnectorDescriptor connectorDescriptor, MessageType messageType, BytesMessage jmsMessage, KapuaId connectionId, String clientId)
+    public static CamelKapuaMessage<?> convertToKapuaMessage(ConnectorDescriptor connectorDescriptor, String messageType, BytesMessage jmsMessage, KapuaId connectionId, String clientId)
             throws JMSException, KapuaException {
         String jmsTopic = jmsMessage.getStringProperty(MessageConstants.PROPERTY_ORIGINAL_TOPIC);
         Date queuedOn = new Date(jmsMessage.getLongProperty(MessageConstants.PROPERTY_ENQUEUED_TIMESTAMP));
@@ -134,7 +133,7 @@ public class JmsUtil {
      * @return
      * @throws KapuaException
      */
-    public static CamelKapuaMessage<?> convertToCamelKapuaMessage(ConnectorDescriptor connectorDescriptor, MessageType messageType, byte[] messageBody, String jmsTopic, Date queuedOn,
+    public static CamelKapuaMessage<?> convertToCamelKapuaMessage(ConnectorDescriptor connectorDescriptor, String messageType, byte[] messageBody, String jmsTopic, Date queuedOn,
             KapuaId connectionId, String clientId)
             throws KapuaException {
         KapuaMessage<?, ?> kapuaMessage = convertToKapuaMessage(connectorDescriptor.getDeviceClass(messageType), connectorDescriptor.getKapuaClass(messageType), messageBody, jmsTopic, queuedOn,
@@ -178,7 +177,7 @@ public class JmsUtil {
      * @throws KapuaException
      * @throws ClassNotFoundException
      */
-    public static JmsMessage convertToJmsMessage(ConnectorDescriptor connectorDescriptor, MessageType messageType, KapuaMessage<?, ?> kapuaMessage) throws KapuaException, ClassNotFoundException {
+    public static JmsMessage convertToJmsMessage(ConnectorDescriptor connectorDescriptor, String messageType, KapuaMessage<?, ?> kapuaMessage) throws KapuaException, ClassNotFoundException {
         // first step... from Kapua to device level dependent protocol (unknown)
         Translator<KapuaMessage<?, ?>, DeviceMessage<?, ?>> translatorFromKapua = Translator
                 .getTranslatorFor(connectorDescriptor.getKapuaClass(messageType), connectorDescriptor.getDeviceClass(messageType));

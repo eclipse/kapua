@@ -13,11 +13,12 @@ package org.eclipse.kapua.broker.core.plugin;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor.MessageType;
 import org.eclipse.kapua.broker.core.setting.BrokerSetting;
 import org.eclipse.kapua.broker.core.setting.BrokerSettingKey;
 import org.eclipse.kapua.message.KapuaMessage;
@@ -65,6 +66,17 @@ class DefaultConnectorDescriptionProvider implements ConnectorDescriptorProvider
 
     private final Map<String, ConnectorDescriptor> configuration = new HashMap<>();
     private final ConnectorDescriptor defaultDescriptor;
+    private static List<String> availableMessagesType = new ArrayList<>();
+
+    static {
+        availableMessagesType.add(MSG_APP_TYPE);
+        availableMessagesType.add(MSG_BIRTH_TYPE);
+        availableMessagesType.add(MSG_DISCONNECT_TYPE);
+        availableMessagesType.add(MSG_MISSING_TYPE);
+        availableMessagesType.add(MSG_NOTIFY_TYPE);
+        availableMessagesType.add(MSG_UNMATCHED_TYPE);
+        availableMessagesType.add(MSG_DATA_TYPE);
+    }
 
     DefaultConnectorDescriptionProvider() {
         if (!BrokerSetting.getInstance().getBoolean(BrokerSettingKey.DISABLE_DEFAULT_CONNECTOR_DESCRIPTOR, false)) {
@@ -113,15 +125,15 @@ class DefaultConnectorDescriptionProvider implements ConnectorDescriptorProvider
 
     private static ConnectorDescriptor loadFromProperties(Properties p, String transport) throws ClassNotFoundException {
 
-        final Map<MessageType, Class<? extends DeviceMessage<?, ?>>> deviceClasses = new HashMap<>();
-        final Map<MessageType, Class<? extends KapuaMessage<?, ?>>> kapuaClasses = new HashMap<>();
+        final Map<String, Class<? extends DeviceMessage<?, ?>>> deviceClasses = new HashMap<>();
+        final Map<String, Class<? extends KapuaMessage<?, ?>>> kapuaClasses = new HashMap<>();
 
         String transportProtocol = p.getProperty(String.format("%s.transport_protocol", transport));
 
-        for (MessageType mt : MessageType.values()) {
+        for (String mt : availableMessagesType) {
 
             {
-                final String key = String.format("%s.device.%s", transport, mt.name());
+                final String key = String.format("%s.device.%s", transport, mt);
                 final String clazzName = p.getProperty(key);
                 if (clazzName != null && !clazzName.isEmpty()) {
                     @SuppressWarnings("unchecked")
@@ -133,7 +145,7 @@ class DefaultConnectorDescriptionProvider implements ConnectorDescriptorProvider
             }
 
             {
-                final String key = String.format("%s.kapua.%s", transport, mt.name());
+                final String key = String.format("%s.kapua.%s", transport, mt);
                 final String clazzName = p.getProperty(key);
                 if (clazzName != null && !clazzName.isEmpty()) {
                     @SuppressWarnings("unchecked")
@@ -155,23 +167,23 @@ class DefaultConnectorDescriptionProvider implements ConnectorDescriptorProvider
      * @return the default instance, never returns {@code null}
      */
     private static ConnectorDescriptor createDefaultDescriptor() {
-        final Map<MessageType, Class<? extends DeviceMessage<?, ?>>> deviceClass = new HashMap<>();
-        deviceClass.put(MessageType.APP, org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraAppsMessage.class);
-        deviceClass.put(MessageType.BIRTH, org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraBirthMessage.class);
-        deviceClass.put(MessageType.DISCONNECT, org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraDisconnectMessage.class);
-        deviceClass.put(MessageType.MISSING, org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraMissingMessage.class);
-        deviceClass.put(MessageType.NOTIFY, org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraNotifyMessage.class);
-        deviceClass.put(MessageType.UNMATCHED, org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraUnmatchedMessage.class);
-        deviceClass.put(MessageType.DATA, org.eclipse.kapua.service.device.call.message.kura.data.KuraDataMessage.class);
+        final Map<String, Class<? extends DeviceMessage<?, ?>>> deviceClass = new HashMap<>();
+        deviceClass.put(MSG_APP_TYPE, org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraAppsMessage.class);
+        deviceClass.put(MSG_BIRTH_TYPE, org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraBirthMessage.class);
+        deviceClass.put(MSG_DISCONNECT_TYPE, org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraDisconnectMessage.class);
+        deviceClass.put(MSG_MISSING_TYPE, org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraMissingMessage.class);
+        deviceClass.put(MSG_NOTIFY_TYPE, org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraNotifyMessage.class);
+        deviceClass.put(MSG_UNMATCHED_TYPE, org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraUnmatchedMessage.class);
+        deviceClass.put(MSG_DATA_TYPE, org.eclipse.kapua.service.device.call.message.kura.data.KuraDataMessage.class);
 
-        final Map<MessageType, Class<? extends KapuaMessage<?, ?>>> kapuaClass = new HashMap<>();
-        kapuaClass.put(MessageType.APP, org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage.class);
-        kapuaClass.put(MessageType.BIRTH, org.eclipse.kapua.message.device.lifecycle.KapuaBirthMessage.class);
-        kapuaClass.put(MessageType.DISCONNECT, org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectMessage.class);
-        kapuaClass.put(MessageType.MISSING, org.eclipse.kapua.message.device.lifecycle.KapuaMissingMessage.class);
-        kapuaClass.put(MessageType.NOTIFY, org.eclipse.kapua.message.device.lifecycle.KapuaNotifyMessage.class);
-        kapuaClass.put(MessageType.UNMATCHED, org.eclipse.kapua.message.device.lifecycle.KapuaUnmatchedMessage.class);
-        kapuaClass.put(MessageType.DATA, org.eclipse.kapua.message.device.data.KapuaDataMessage.class);
+        final Map<String, Class<? extends KapuaMessage<?, ?>>> kapuaClass = new HashMap<>();
+        kapuaClass.put(MSG_APP_TYPE, org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage.class);
+        kapuaClass.put(MSG_BIRTH_TYPE, org.eclipse.kapua.message.device.lifecycle.KapuaBirthMessage.class);
+        kapuaClass.put(MSG_DISCONNECT_TYPE, org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectMessage.class);
+        kapuaClass.put(MSG_MISSING_TYPE, org.eclipse.kapua.message.device.lifecycle.KapuaMissingMessage.class);
+        kapuaClass.put(MSG_NOTIFY_TYPE, org.eclipse.kapua.message.device.lifecycle.KapuaNotifyMessage.class);
+        kapuaClass.put(MSG_UNMATCHED_TYPE, org.eclipse.kapua.message.device.lifecycle.KapuaUnmatchedMessage.class);
+        kapuaClass.put(MSG_DATA_TYPE, org.eclipse.kapua.message.device.data.KapuaDataMessage.class);
 
         return new ConnectorDescriptor(DEFAULT_TRANSPORT_PROTOCOL, deviceClass, kapuaClass);
     }

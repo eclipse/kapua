@@ -16,6 +16,14 @@ package org.eclipse.kapua.broker.core.plugin;
  */
 public interface ConnectorDescriptorProvider {
 
+    String MSG_DATA_TYPE = "DATA";
+    String MSG_APP_TYPE = "APP";
+    String MSG_BIRTH_TYPE = "BIRTH";
+    String MSG_DISCONNECT_TYPE = "DISCONNECT";
+    String MSG_MISSING_TYPE = "MISSING";
+    String MSG_NOTIFY_TYPE = "NOTIFY";
+    String MSG_UNMATCHED_TYPE = "UNMATCHED";
+
     /**
      * Get a {@link ConnectorDescriptor} for the given transport name
      * 

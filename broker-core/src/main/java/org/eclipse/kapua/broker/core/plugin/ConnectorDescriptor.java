@@ -33,42 +33,8 @@ public class ConnectorDescriptor implements Serializable {
 
     private static final long serialVersionUID = -7220383679289083726L;
 
-    /**
-     * Allowed message types
-     */
-    public static enum MessageType {
-        /**
-         * Application message type
-         */
-        APP,
-        /**
-         * Birth message type
-         */
-        BIRTH,
-        /**
-         * Disconnect message type
-         */
-        DISCONNECT,
-        /**
-         * Missing message type
-         */
-        MISSING,
-        /**
-         * Notify message type
-         */
-        NOTIFY,
-        /**
-         * Unmatched filtering message type
-         */
-        UNMATCHED,
-        /**
-         * Data message type
-         */
-        DATA
-    }
-
-    private final Map<MessageType, Class<? extends DeviceMessage<?, ?>>> deviceClass;
-    private final Map<MessageType, Class<? extends KapuaMessage<?, ?>>> kapuaClass;
+    private final Map<String, Class<? extends DeviceMessage<?, ?>>> deviceClass;
+    private final Map<String, Class<? extends KapuaMessage<?, ?>>> kapuaClass;
 
     private String transportProtocol;
 
@@ -80,7 +46,7 @@ public class ConnectorDescriptor implements Serializable {
      * @param kapuaClass
      *            Kapua level messages implementation classes
      */
-    public ConnectorDescriptor(String transportProtocol, Map<MessageType, Class<? extends DeviceMessage<?, ?>>> deviceClass, Map<MessageType, Class<? extends KapuaMessage<?, ?>>> kapuaClass) {
+    public ConnectorDescriptor(String transportProtocol, Map<String, Class<? extends DeviceMessage<?, ?>>> deviceClass, Map<String, Class<? extends KapuaMessage<?, ?>>> kapuaClass) {
         requireNonNull(deviceClass);
         requireNonNull(kapuaClass);
         requireNonNull(transportProtocol);
@@ -90,11 +56,11 @@ public class ConnectorDescriptor implements Serializable {
         this.transportProtocol = transportProtocol;
     }
 
-    public Class<? extends DeviceMessage<?, ?>> getDeviceClass(MessageType messageType) throws KapuaException {
+    public Class<? extends DeviceMessage<?, ?>> getDeviceClass(String messageType) throws KapuaException {
         return this.deviceClass.get(messageType);
     }
 
-    public Class<? extends KapuaMessage<?, ?>> getKapuaClass(MessageType messageType) throws KapuaException {
+    public Class<? extends KapuaMessage<?, ?>> getKapuaClass(String messageType) throws KapuaException {
         return this.kapuaClass.get(messageType);
     }
 
