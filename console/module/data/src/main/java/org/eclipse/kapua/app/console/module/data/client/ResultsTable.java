@@ -21,6 +21,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.button.ExportButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.DateRangeSelector;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.DateRangeSelectorListener;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaMenuItem;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolBar;
 import org.eclipse.kapua.app.console.module.api.client.util.SwappableListStore;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 
@@ -46,7 +47,6 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
@@ -73,7 +73,7 @@ public class ResultsTable extends LayoutContainer {
     private ContentPanel tableContainer;
     private BasePagingLoader<PagingLoadResult<GwtMessage>> loader;
     private Grid<GwtMessage> resultsGrid;
-    private PagingToolBar pagingToolBar;
+    private KapuaPagingToolBar pagingToolBar;
     private ToolBar resultsToolBar;
     private ArrayList<ColumnConfig> columnConfigs;
     private ColumnConfig timestampColumn;
@@ -218,7 +218,7 @@ public class ResultsTable extends LayoutContainer {
         });
         resultsToolBar.add(dateRangeSelector);
 
-        pagingToolBar = new PagingToolBar(RESULTSTABLE_PAGE_SIZE);
+        pagingToolBar = new KapuaPagingToolBar(RESULTSTABLE_PAGE_SIZE);
         pagingToolBar.bind(loader);
         pagingToolBar.enable();
     }

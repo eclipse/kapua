@@ -36,7 +36,6 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
@@ -54,6 +53,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.DateRangeSelector;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.DateRangeSelectorListener;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaMenuItem;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolBar;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
@@ -86,7 +86,7 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
 
     private DateRangeSelector dateRangeSelector;
     private Grid<GwtDeviceEvent> grid;
-    private PagingToolBar pagingToolBar;
+    private KapuaPagingToolBar pagingToolBar;
     private BasePagingLoader<PagingLoadResult<GwtDeviceEvent>> loader;
 
     protected boolean refreshProcess;
@@ -273,7 +273,7 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
         grid.getView().setForceFit(true);
         grid.getView().setEmptyText(DEVICES_MSGS.deviceHistoryTableNoHistory());
 
-        pagingToolBar = new PagingToolBar(DEVICE_PAGE_SIZE);
+        pagingToolBar = new KapuaPagingToolBar(DEVICE_PAGE_SIZE);
         pagingToolBar.bind(loader);
 
         GridSelectionModel<GwtDeviceEvent> selectionModel = new GridSelectionModel<GwtDeviceEvent>();
