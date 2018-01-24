@@ -35,7 +35,7 @@ public class ConsoleInfo extends Info {
             text = KapuaSafeHtmlUtils.htmlEscape(text);
         }
 
-        int infoHeight = 25 + STEP_HEIGHT * (1 + ((text != null ? text.length() : 0) / CHAR_STEP));
+        int infoHeight = 25 + STEP_HEIGHT * (1 + ((text != null ? text.length() : 0) / CHAR_STEP)) + STEP_HEIGHT / 3;
 
         InfoConfig config = new InfoConfig(title, text);
         config.height = infoHeight;
