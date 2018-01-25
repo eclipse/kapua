@@ -28,6 +28,10 @@ public enum BrokerSettingKey implements SettingKey {
      */
     CONFIGURATION_URI("broker.connector.descriptor.configuration.uri"),
     /**
+     * Broker jaxb context provider class name
+     */
+    BROKER_JAXB_CONTEXT_CLASS_NAME("broker.jaxb_context_class_name"),
+    /**
      * Broker IP resolver implementation (if not evaluated, the default resolver will be used).
      */
     BROKER_IP_RESOLVER_CLASS_NAME("broker.ip_resolver_class_name"),

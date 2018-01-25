@@ -69,6 +69,7 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.util.ClassUtil;
+import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.account.Account;
@@ -112,6 +113,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     private final static String BROKER_IP_RESOLVER_CLASS_NAME;
     private final static String BROKER_ID_RESOLVER_CLASS_NAME;
     private final static String AUTHENTICATOR_CLASS_NAME;
+    private final static String BROKER_JAXB_CONTEXT_CLASS_NAME;
     private final static Long STEALING_LINK_INITIALIZATION_MAX_WAIT_TIME;
     private static boolean stealingLinkEnabled;
     private Future<?> stealingLinkManagerFuture;
@@ -121,6 +123,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
         BROKER_IP_RESOLVER_CLASS_NAME = config.getString(BrokerSettingKey.BROKER_IP_RESOLVER_CLASS_NAME);
         BROKER_ID_RESOLVER_CLASS_NAME = config.getString(BrokerSettingKey.BROKER_ID_RESOLVER_CLASS_NAME);
         AUTHENTICATOR_CLASS_NAME = config.getString(BrokerSettingKey.AUTHENTICATOR_CLASS_NAME);
+        BROKER_JAXB_CONTEXT_CLASS_NAME = config.getString(BrokerSettingKey.BROKER_JAXB_CONTEXT_CLASS_NAME);
         STEALING_LINK_INITIALIZATION_MAX_WAIT_TIME = config.getLong(BrokerSettingKey.STEALING_LINK_INITIALIZATION_MAX_WAIT_TIME);
         stealingLinkEnabled = config.getBoolean(BrokerSettingKey.BROKER_STEALING_LINK_ENABLED);
     }
@@ -152,14 +155,15 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
         options.put(Authenticator.ADDRESS_PREFIX_KEY, VT_TOPIC_PREFIX);
         options.put(Authenticator.ADDRESS_CLASSIFIER_KEY, SystemSetting.getInstance().getMessageClassifier());
         options.put(Authenticator.ADDRESS_CONNECT_PATTERN_KEY, CONNECT_MESSAGE_TOPIC_PATTERN);
-        XmlUtil.setContextProvider(new BrokerJAXBContextProvider());
-
     }
 
     @Override
     public void start()
             throws Exception {
         logger.info(">>> Security broker filter: calling start...");
+        logger.info(">>> Security broker filter: calling start... Initialize jaxb context");
+        JAXBContextProvider jaxbContextProvider = ClassUtil.newInstance(BROKER_JAXB_CONTEXT_CLASS_NAME, BrokerJAXBContextProvider.class);
+        XmlUtil.setContextProvider(jaxbContextProvider);
         logger.info(">>> Security broker filter: calling start... Initialize authenticator");
         authenticator = ClassUtil.newInstance(AUTHENTICATOR_CLASS_NAME, DefaultAuthenticator.class, new Class<?>[] { Map.class }, new Object[] { options });
         logger.info(">>> Security broker filter: calling start... Initialize broker ip resolver");
