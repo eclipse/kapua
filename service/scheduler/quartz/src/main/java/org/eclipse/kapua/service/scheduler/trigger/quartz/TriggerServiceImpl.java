@@ -82,7 +82,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     @Override
-    public Trigger create(TriggerCreator triggerCreator) 
+    public Trigger create(TriggerCreator triggerCreator)
             throws KapuaException {
         //
         // Validation of the fields
@@ -194,7 +194,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     @Override
-    public Trigger update(Trigger trigger) 
+    public Trigger update(Trigger trigger)
             throws KapuaException {
         //
         // Validation of the fields
@@ -213,7 +213,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     @Override
-    public void delete(KapuaId scopeId, KapuaId triggerId) 
+    public void delete(KapuaId scopeId, KapuaId triggerId)
             throws KapuaException {
 
         //
@@ -253,7 +253,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     @Override
-    public Trigger find(KapuaId scopeId, KapuaId triggerId) 
+    public Trigger find(KapuaId scopeId, KapuaId triggerId)
             throws KapuaException {
         //
         // Validation of the fields
@@ -270,7 +270,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     @Override
-    public TriggerListResult query(KapuaQuery<Trigger> query) 
+    public TriggerListResult query(KapuaQuery<Trigger> query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
@@ -283,7 +283,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     @Override
-    public long count(KapuaQuery<Trigger> query) 
+    public long count(KapuaQuery<Trigger> query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
