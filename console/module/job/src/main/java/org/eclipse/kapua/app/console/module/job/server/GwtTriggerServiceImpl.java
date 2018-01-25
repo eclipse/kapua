@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,9 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.job.server;
 
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
@@ -37,8 +37,9 @@ import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
 import org.quartz.CronExpression;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
 public class GwtTriggerServiceImpl extends KapuaRemoteServiceServlet implements GwtTriggerService {
 
@@ -57,7 +58,6 @@ public class GwtTriggerServiceImpl extends KapuaRemoteServiceServlet implements 
             gwtTriggerQuery.setScopeId(gwtScopeId);
             gwtTriggerQuery.setJobId(gwtJobId);
             TriggerQuery triggerQuery = GwtKapuaJobModelConverter.convertTriggerQuery(gwtTriggerQuery, loadConfig);
-
             // query
             TriggerListResult triggerListResult = triggerService.query(triggerQuery);
 
@@ -87,8 +87,10 @@ public class GwtTriggerServiceImpl extends KapuaRemoteServiceServlet implements 
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             TriggerFactory triggerFactory = locator.getFactory(TriggerFactory.class);
-
+            TriggerService triggerService = locator.getService(TriggerService.class);
+            //
             KapuaId scopeId = KapuaEid.parseCompactId(gwtTriggerCreator.getScopeId());
+
             TriggerCreator triggerCreator = triggerFactory.newCreator(scopeId);
             triggerCreator.setName(gwtTriggerCreator.getTriggerName());
             triggerCreator.setStartsOn(gwtTriggerCreator.getStartsOn());
@@ -97,9 +99,7 @@ public class GwtTriggerServiceImpl extends KapuaRemoteServiceServlet implements 
             triggerCreator.setRetryInterval(gwtTriggerCreator.getRetryInterval());
             triggerCreator.setTriggerProperties(GwtKapuaJobModelConverter.convertTriggerProperties(gwtTriggerCreator.getTriggerProperties()));
 
-            //
             // Create the User
-            TriggerService triggerService = locator.getService(TriggerService.class);
             Trigger trigger = triggerService.create(triggerCreator);
 
             // convert to GwtAccount and return

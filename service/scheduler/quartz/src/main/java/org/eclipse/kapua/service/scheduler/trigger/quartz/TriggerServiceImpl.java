@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,11 +11,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
+import java.util.List;
+import java.util.TimeZone;
+
+import javax.inject.Inject;
+
+import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -27,6 +36,7 @@ import org.eclipse.kapua.service.scheduler.trigger.Trigger;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerCreator;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerPredicates;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerProperty;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
@@ -44,9 +54,6 @@ import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
 
-import javax.inject.Inject;
-import java.util.TimeZone;
-
 /**
  * {@link TriggerService} implementation.
  *
@@ -57,6 +64,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         implements TriggerService {
 
     private static final Domain SCHEDULER_DOMAIN = new SchedulerDomain();
+    KapuaQuery<Trigger> queryByJobId;
 
     @Inject
     private AuthorizationService authorizationService;
@@ -87,7 +95,40 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         authorizationService.checkPermission(permissionFactory.newPermission(SCHEDULER_DOMAIN, Actions.write, triggerCreator.getScopeId()));
 
         return entityManagerSession.onTransactedInsert(em -> {
-            // Kapua Trigger definition
+
+            // KapuaQuery<Trigger> triggerQuery = queryByJobId;
+            List<TriggerProperty> propertiesList = triggerCreator.getTriggerProperties();
+            String jobId = null;
+            if (!propertiesList.isEmpty()) {
+                for (TriggerProperty triggerProperty : propertiesList) {
+                    if ("jobId".equals(triggerProperty.getName())) {
+                        jobId = triggerProperty.getPropertyValue();
+
+                    }
+                }
+            }
+            KapuaLocator locator = KapuaLocator.getInstance();
+            TriggerFactory triggerFactory = locator.getFactory(TriggerFactory.class);
+            TriggerQuery query = triggerFactory.newQuery(triggerCreator.getScopeId());
+            AttributePredicate<String> kapuaPropertyNameAttributePredicate = new AttributePredicate<>(
+                    TriggerPredicates.TRIGGER_PROPERTIES_NAME, "jobId");
+            AttributePredicate<String> kapuaPropertyValueAttributePredicate = new AttributePredicate<>(
+                    TriggerPredicates.TRIGGER_PROPERTIES_VALUE, jobId);
+            AttributePredicate<String> kapuaPropertyTypeAttributePredicate = new AttributePredicate<>(
+                    TriggerPredicates.TRIGGER_PROPERTIES_TYPE, KapuaId.class.getName());
+            AttributePredicate<String> kapuaTriggerNamePredicate = new AttributePredicate<>(
+                    TriggerPredicates.NAME, triggerCreator.getName());
+            AndPredicate andPredicate = new AndPredicate().and(kapuaPropertyNameAttributePredicate)
+                    .and(kapuaPropertyValueAttributePredicate)
+                    .and(kapuaPropertyTypeAttributePredicate)
+                    .and(kapuaTriggerNamePredicate);
+            query.setPredicate(andPredicate);
+            TriggerListResult result = TriggerDAO.query(em, query);
+            List<Trigger> items = result.getItems();
+            if (!items.isEmpty()) {
+                throw new KapuaDuplicateNameException(triggerCreator.getName());
+            }
+
             Trigger trigger = TriggerDAO.create(em, triggerCreator);
 
             // Quartz Job definition and creation
@@ -200,7 +241,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
                 TriggerKey triggerKey = TriggerKey.triggerKey(triggerId.toCompactId(), scopeId.toCompactId());
 
-                //                org.quartz.Trigger trigger = scheduler.getTrigger(triggerKey);
+                // org.quartz.Trigger trigger = scheduler.getTrigger(triggerKey);
 
                 scheduler.unscheduleJob(triggerKey);
 
@@ -253,4 +294,5 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         return entityManagerSession.onResult(em -> TriggerDAO.count(em, query));
     }
+
 }
