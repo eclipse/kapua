@@ -58,7 +58,6 @@ public class GwtTriggerServiceImpl extends KapuaRemoteServiceServlet implements 
             gwtTriggerQuery.setScopeId(gwtScopeId);
             gwtTriggerQuery.setJobId(gwtJobId);
             TriggerQuery triggerQuery = GwtKapuaJobModelConverter.convertTriggerQuery(gwtTriggerQuery, loadConfig);
-            triggerService.setQuery(triggerQuery);
             // query
             TriggerListResult triggerListResult = triggerService.query(triggerQuery);
 
