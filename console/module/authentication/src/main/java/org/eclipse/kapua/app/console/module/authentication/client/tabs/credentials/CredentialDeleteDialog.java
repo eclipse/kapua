@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,6 +18,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.authentication.client.messages.ConsoleCredentialMessages;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredential;
+import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialType;
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialService;
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialServiceAsync;
 
@@ -50,7 +51,13 @@ public class CredentialDeleteDialog extends EntityDeleteDialog {
             @Override
             public void onSuccess(Void arg0) {
                 exitStatus = true;
-                exitMessage = MSGS.dialogDeleteConfirmation();
+
+                if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.API_KEY) {
+                    exitMessage = MSGS.dialogDeleteConfirmationAPI();
+                } else if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.PASSWORD) {
+                    exitMessage = MSGS.dialogDeleteConfirmationPassword();
+                }
+
                 hide();
             }
 

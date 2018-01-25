@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,6 +24,7 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredential;
+import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialType;
 
 public class CredentialEditDialog extends CredentialAddDialog {
 
@@ -62,7 +63,13 @@ public class CredentialEditDialog extends CredentialAddDialog {
             @Override
             public void onSuccess(GwtCredential result) {
                 exitStatus = true;
-                exitMessage = MSGS.dialogEditConfirmation();
+
+                if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.API_KEY) {
+                    exitMessage = MSGS.dialogEditConfirmationAPI();
+                } else if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.PASSWORD) {
+                    exitMessage = MSGS.dialogEditConfirmationPassword();
+                }
+
                 hide();
             }
         });
