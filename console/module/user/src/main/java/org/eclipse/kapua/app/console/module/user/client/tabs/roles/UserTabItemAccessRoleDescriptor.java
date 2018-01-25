@@ -30,7 +30,7 @@ public class UserTabItemAccessRoleDescriptor extends AbstractEntityTabDescriptor
 
     @Override
     public Integer getOrder() {
-        return 200;
+        return 300;
     }
 
     @Override

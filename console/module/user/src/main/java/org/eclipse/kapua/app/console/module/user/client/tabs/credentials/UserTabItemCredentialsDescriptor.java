@@ -30,7 +30,7 @@ public class UserTabItemCredentialsDescriptor extends AbstractEntityTabDescripto
 
     @Override
     public Integer getOrder() {
-        return 400;
+        return 200;
     }
 
     @Override
