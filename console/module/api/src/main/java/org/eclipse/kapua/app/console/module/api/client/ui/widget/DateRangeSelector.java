@@ -234,6 +234,8 @@ public class DateRangeSelector extends LayoutContainer {
         startDateField.setAllowBlank(false);
         startDateField.setValue(start);
         startDateField.setEditable(false);
+        startDateField.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
+        startDateField.setFormatValue(true);
         form.add(startDateField, formData);
 
         final TimeField startTimeField = new TimeField();
@@ -250,6 +252,8 @@ public class DateRangeSelector extends LayoutContainer {
         endDateField.setAllowBlank(false);
         endDateField.setValue(end);
         endDateField.setEditable(false);
+        endDateField.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
+        endDateField.setFormatValue(true);
         form.add(endDateField, formData);
 
         final TimeField endTimeField = new TimeField();
@@ -318,7 +322,7 @@ public class DateRangeSelector extends LayoutContainer {
                     lEndDate = lEndDate + (long) endTimeField.getValue().getHour() * 60L * 60L * 1000L + (long) endTimeField.getValue().getMinutes() * 60L * 1000L;
                     endDate = new Date(lEndDate);
 
-                    DateTimeFormat dtf = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT);
+                    DateTimeFormat dtf = DateTimeFormat.getFormat("dd/MM/yyyy HH:mm");
                     StringBuilder sb = new StringBuilder();
                     sb.append(dtf.format(startDate))
                             .append(" - ")
