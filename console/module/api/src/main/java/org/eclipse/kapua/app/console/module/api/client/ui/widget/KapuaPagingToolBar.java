@@ -42,6 +42,6 @@ public class KapuaPagingToolBar extends PagingToolBar {
         pagingToolbarMessages.setLastText(MSGS.pagingToolbarLastPage());
         pagingToolbarMessages.setRefreshText(MSGS.pagingToolbarRefresh());
 
-        refresh.hide();
+        remove(refresh);
     }
 }
