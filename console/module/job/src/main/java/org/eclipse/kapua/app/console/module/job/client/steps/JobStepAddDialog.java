@@ -35,6 +35,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
@@ -55,7 +56,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
     protected int jobStepIndex;
 
     protected final TextField<String> jobStepName;
-    protected final TextField<String> jobStepDescription;
+    protected final KapuaTextField<String> jobStepDescription;
     protected final ComboBox<GwtJobStepDefinition> jobStepDefinitionCombo;
     protected final FieldSet jobStepPropertiesFieldSet;
     protected final Label jobStepDefinitionDescription;
@@ -74,7 +75,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
         this.jobId = jobId;
 
         jobStepName = new TextField<String>();
-        jobStepDescription = new TextField<String>();
+        jobStepDescription = new KapuaTextField<String>();
         jobStepDefinitionCombo = new ComboBox<GwtJobStepDefinition>();
         jobStepPropertiesFieldSet = new FieldSet();
         jobStepDefinitionDescription = new Label();
@@ -91,6 +92,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
         jobStepName.setAllowBlank(false);
 
         jobStepDescription.setFieldLabel(JOB_MSGS.dialogAddStepJobDescriptionLabel());
+        jobStepDescription.setMaxLength(8192);
 
         GwtJobStepDefinitionQuery query = new GwtJobStepDefinitionQuery();
         query.setScopeId(currentSession.getSelectedAccountId());
