@@ -59,7 +59,7 @@ public interface GwtTriggerService extends RemoteService {
     void delete(GwtXSRFToken xsrfToken, String gwtScopeId, String gwtTriggerId)
             throws GwtKapuaException;
 
-    boolean validateCronExpression(String cronExpression);
+    boolean validateCronExpression(String cronExpression) throws GwtKapuaException;
 
     GwtTriggerProperty trickGwt();
 

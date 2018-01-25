@@ -11,9 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.job.server;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
@@ -165,8 +167,13 @@ public class GwtTriggerServiceImpl extends KapuaRemoteServiceServlet implements 
     }
 
     @Override
-    public boolean validateCronExpression(String cronExpression) {
-        return CronExpression.isValidExpression(cronExpression);
+    public boolean validateCronExpression(String cronExpression) throws GwtKapuaException {
+        try {
+            new CronExpression(cronExpression);
+            return true;
+        } catch (ParseException paex) {
+            throw new GwtKapuaException(GwtKapuaErrorCode.UNABLE_TO_PARSE_CRON_EXPRESSION, paex, paex.getMessage());
+        }
     }
 
     @Override
