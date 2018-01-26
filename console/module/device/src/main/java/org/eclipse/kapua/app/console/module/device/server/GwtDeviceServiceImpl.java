@@ -17,6 +17,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+import com.extjs.gxt.ui.client.data.BaseListLoadResult;
+import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
@@ -69,16 +75,10 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventPredicates;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventDomain;
-import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.tag.TagService;
-import com.extjs.gxt.ui.client.data.BaseListLoadResult;
-import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserService;
 
 /**
  * The server side implementation of the Device RPC service.
@@ -149,17 +149,28 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                     deviceConnection = null;
                 }
                 if (deviceConnection != null) {
-                    User user = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
+                    User lastConnectedUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
 
                         @Override
                         public User call() throws Exception {
                             return userService.find(scopeId, deviceConnection.getUserId());
                         }
                     });
+                    User reservedUser = null;
+                    if (deviceConnection.getReservedUserId() != null) {
+                        reservedUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
+
+                            @Override
+                            public User call() throws Exception {
+                                return userService.find(scopeId, deviceConnection.getReservedUserId());
+                            }
+                        });
+                    }
+
                     pairs.add(new GwtGroupedNVPair("connInfo", "connConnectionStatus", deviceConnection.getStatus().toString()));
                     pairs.add(new GwtGroupedNVPair("connInfo", "connClientId", device.getClientId()));
-                    pairs.add(new GwtGroupedNVPair("connInfo", "connUserName", user.getDisplayName()));
-                    pairs.add(new GwtGroupedNVPair("connInfo", "connReservedUserId", deviceConnection.getReservedUserId() != null ? deviceConnection.getReservedUserId().toCompactId() : null));
+                    pairs.add(new GwtGroupedNVPair("connInfo", "connUserName", lastConnectedUser.getName()));
+                    pairs.add(new GwtGroupedNVPair("connInfo", "connReservedUserId", reservedUser != null ? reservedUser.getName() : null));
                     pairs.add(new GwtGroupedNVPair("connInfo", "connUserCouplingMode", GwtConnectionUserCouplingMode.valueOf(deviceConnection.getUserCouplingMode().name()).getLabel()));
                     pairs.add(new GwtGroupedNVPair("connInfo", "connClientIp", deviceConnection.getClientIp()));
                     pairs.add(new GwtGroupedNVPair("netInfo", "netConnIface", device.getConnectionInterface()));
@@ -201,7 +212,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
 
                         if (lastEvent != null) {
                             pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventType", lastEvent.getResource()));
-                            pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", lastEvent.getReceivedOn() != null ? lastEvent.getReceivedOn().getTime() : null));
+                            pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", lastEvent.getReceivedOn()));
                         } else {
                             pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventType", null));
                             pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", null));
@@ -209,7 +220,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                     } else {
                         if (deviceConnection != null) {
                             pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventType", deviceConnection.getStatus().name()));
-                            pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", deviceConnection.getModifiedOn().getTime()));
+                            pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", deviceConnection.getModifiedOn()));
                         } else {
                             pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventType", null));
                             pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", null));

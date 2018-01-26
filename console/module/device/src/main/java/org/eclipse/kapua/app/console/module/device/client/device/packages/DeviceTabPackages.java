@@ -56,7 +56,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
     private TabPanel tabsPanel;
     private DeviceTabPackagesInstalled installedPackageTab;
-    private DeviceTabPackagesInProgress inProgressPackageTab;
+//    private DeviceTabPackagesInProgress inProgressPackageTab;
 
     public DeviceTabPackages(GwtSession currentSession,
             DeviceView deviceTabs) {
@@ -188,18 +188,18 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
         //
         // In progress packages install tab
-        inProgressPackageTab = new DeviceTabPackagesInProgress(this);
-        inProgressPackageTab.setBorders(false);
-        inProgressPackageTab.setLayout(new FitLayout());
-
-        inProgressPackageTab.addListener(Events.Select, new Listener<ComponentEvent>() {
-
-            @Override
-            public void handleEvent(ComponentEvent be) {
-                refresh();
-            }
-        });
-        tabsPanel.add(inProgressPackageTab);
+//        inProgressPackageTab = new DeviceTabPackagesInProgress(this);
+//        inProgressPackageTab.setBorders(false);
+//        inProgressPackageTab.setLayout(new FitLayout());
+//
+//        inProgressPackageTab.addListener(Events.Select, new Listener<ComponentEvent>() {
+//
+//            @Override
+//            public void handleEvent(ComponentEvent be) {
+//                refresh();
+//            }
+//        });
+//        tabsPanel.add(inProgressPackageTab);
 
         add(tabsPanel);
     }
@@ -310,9 +310,9 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
             // Refresh the installed tab if selected
             if (tabsPanel.getSelectedItem().equals(installedPackageTab)) {
                 installedPackageTab.refresh();
-            } else {
+            }/* else {
                 inProgressPackageTab.refresh();
-            }
+            }*/
 
             //
             // Manage buttons
@@ -335,8 +335,9 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
     public void setDirty() {
         if (initialized) {
+            setDirty(true);
             installedPackageTab.setDirty(true);
-            inProgressPackageTab.setDirty(true);
+//            inProgressPackageTab.setDirty(true);
         }
     }
 

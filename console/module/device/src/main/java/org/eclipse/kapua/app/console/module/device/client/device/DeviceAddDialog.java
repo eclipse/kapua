@@ -24,7 +24,10 @@ import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.messages.ValidationMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.util.Constants;
@@ -282,6 +285,21 @@ public class DeviceAddDialog extends EntityAddEditDialog {
                 unmask();
                 submitButton.enable();
                 cancelButton.enable();
+                status.hide();
+
+                exitStatus = false;
+                exitMessage = DEVICE_MSGS.deviceFormAddError(caught.getLocalizedMessage());
+
+                 FailureHandler.handle(caught);
+
+                 if (caught instanceof GwtKapuaException) {
+                     GwtKapuaException gke = (GwtKapuaException)caught;
+                     if (gke.getCode() == GwtKapuaErrorCode.ENTITY_ALREADY_EXISTS) {
+                         ValidationMessages valMsgs = GWT.create(ValidationMessages.class);
+                         String msg = valMsgs.getString(GwtKapuaErrorCode.ENTITY_ALREADY_EXISTS.name());
+                         clientIdField.markInvalid(msg);
+                     }
+                 }
             }
 
             @Override

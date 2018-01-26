@@ -18,7 +18,6 @@ import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.module.api.client.ui.color.Color;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.TabItem;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtBundleInfo;
@@ -56,7 +55,6 @@ public class DeviceTabPackagesInstalled extends TabItem {
         super(DEVICE_MSGS.deviceInstallTabInstalled(), null);
 
         KapuaIcon icon = new KapuaIcon(IconSet.INBOX);
-        icon.setColor(Color.GREEN);
         setIcon(icon);
 
         this.rootTabPanel = rootTabPanel;

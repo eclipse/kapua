@@ -38,7 +38,7 @@ public class DeviceTabAssets extends KapuaTabItem<GwtDevice> {
     // private DeviceConfigSnapshots assetsConfiguration;
 
     public DeviceTabAssets(GwtSession currentSession) {
-        super(currentSession, MSGS.asset(), new KapuaIcon(IconSet.RETWEET));
+        super(currentSession, MSGS.assets(), new KapuaIcon(IconSet.RETWEET));
         assetsValues = new DeviceAssetsValues(currentSession, this);
     }
 

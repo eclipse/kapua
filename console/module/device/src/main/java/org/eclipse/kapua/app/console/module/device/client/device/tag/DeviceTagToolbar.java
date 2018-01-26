@@ -11,14 +11,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.client.device.tag;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.tag.client.TagToolbarGrid;
 
 public class DeviceTagToolbar extends TagToolbarGrid {
 
     private GwtDevice selectedDevice;
+    private static final ConsoleDeviceMessages DEVICE_MSGS = GWT.create(ConsoleDeviceMessages.class);
 
     public DeviceTagToolbar(GwtSession currentSession) {
         super(currentSession);
@@ -63,4 +67,10 @@ public class DeviceTagToolbar extends TagToolbarGrid {
         }
     }
 
+    @Override
+    protected void onRender(Element target, int index) {
+        super.onRender(target, index);
+        addEntityButton.setText(DEVICE_MSGS.tabTagsAddButton());
+        deleteEntityButton.setText(DEVICE_MSGS.tabTagsDeleteButton());
+    }
 }

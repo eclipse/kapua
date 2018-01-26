@@ -14,8 +14,6 @@ package org.eclipse.kapua.app.console.module.device.shared.model;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 import org.eclipse.kapua.app.console.module.api.shared.model.KapuaBaseModel;
 
@@ -47,9 +45,17 @@ public class GwtDeviceEvent extends KapuaBaseModel implements Serializable {
     @SuppressWarnings({ "unchecked" })
     public <X> X get(String property) {
         if ("sentOnFormatted".equals(property)) {
-            return (X) (DateUtils.formatDateTime(getSentOn()));
+            if (getSentOn() != null) {
+                return (X) (getSentOn());
+            } else {
+                return (X) "N/A";
+            }
         } else if ("receivedOnFormatted".equals(property)) {
-            return (X) (DateUtils.formatDateTime(getReceivedOn()));
+            if (getReceivedOn() != null) {
+                return (X) (getReceivedOn());
+            } else {
+                return (X) "N/A";
+            }
         } else if ("actionTypeEnum".equals(property)) {
             return (X) (GwtActionType.valueOf(getGwtActionType()));
         } else if ("respondeCodeEnum".equals(property)) {

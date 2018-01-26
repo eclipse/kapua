@@ -38,14 +38,12 @@ public class DeviceDeleteDialog extends EntityDeleteDialog {
 
     @Override
     public String getHeaderMessage() {
-        // return MSGS.dialogDeleteHeader(gwtDevice.getClientId());
-        return MSGS.confirm();
+        return DEVICE_MSGS.dialogDeleteHeader(gwtDevice.getClientId());
     }
 
     @Override
     public String getInfoMessage() {
-        // return MSGS.dialogDeleteInfo();
-        return DEVICE_MSGS.deviceDeleteConfirmation(gwtDevice.getClientId());
+        return DEVICE_MSGS.dialogDeleteInfo();
     }
 
     @Override
