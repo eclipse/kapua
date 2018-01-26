@@ -117,6 +117,9 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
         entityGrid = new KapuaGrid<M>(entityStore, columnModel);
         add(entityGrid);
 
+        // Force layout so the entityGrid gets rendered and its listeners initialized
+        layout();
+
         //
         // Bind the grid to CRUD toolbar
         entityCRUDToolbar.setEntityGrid(this);

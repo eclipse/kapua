@@ -15,6 +15,7 @@ import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
@@ -44,7 +45,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
     private String selectedUserId;
     private String selectedUserName;
     SimpleComboBox<GwtCredentialType> credentialType;
-    private TextField<String> subject;
+    private LabelField subject;
     protected TextField<String> password;
     protected TextField<String> confirmPassword;
     protected DateField expirationDate;
@@ -65,10 +66,10 @@ public class CredentialAddDialog extends EntityAddEditDialog {
 
         credentialFormPanel = new FormPanel(FORM_LABEL_WIDTH);
 
-        subject = new TextField<String>();
-        subject.setValue(selectedUserName);
-        subject.disable();
+        subject = new LabelField();
+        subject.setText(selectedUserName);
         subject.setFieldLabel(MSGS.dialogAddFieldSubject());
+        subject.setLabelSeparator(":");
         credentialFormPanel.add(subject);
 
         credentialType = new SimpleComboBox<GwtCredentialType>();

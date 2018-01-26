@@ -49,7 +49,7 @@ public abstract class EntityFilterPanel<M extends GwtEntityModel> extends Conten
 
         //
         // Top explanation
-        final Text infoLabel = new Text(MSGS.deviceFilteringPanelInfo());
+        final Text infoLabel = new Text(MSGS.filteringPanelInfo());
         infoLabel.setWidth(WIDTH + 5);
         infoLabel.setStyleAttribute("margin", "5px");
 
@@ -67,7 +67,7 @@ public abstract class EntityFilterPanel<M extends GwtEntityModel> extends Conten
         buttonPanel.setHeight(50);
 
         // Search and Reset buttons
-        resetButton = new Button(MSGS.deviceFilteringPanelReset());
+        resetButton = new Button(MSGS.filteringPanelReset());
         resetButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
 
             @Override
@@ -77,7 +77,7 @@ public abstract class EntityFilterPanel<M extends GwtEntityModel> extends Conten
 
         });
 
-        searchButton = new Button(MSGS.deviceFilteringPanelSearch());
+        searchButton = new Button(MSGS.filteringPanelSearch());
         searchButton.setStyleAttribute("margin-right", "5px");
         searchButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
 

@@ -11,6 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authentication.client.tabs.credentials;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
@@ -23,11 +27,13 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.color.Color;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
+import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.module.authentication.client.messages.ConsoleCredentialMessages;
@@ -36,13 +42,10 @@ import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCrede
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialService;
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialServiceAsync;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 public class CredentialGrid extends EntityGrid<GwtCredential> {
 
-    private static final ConsoleCredentialMessages MSGS = GWT.create(ConsoleCredentialMessages.class);
+    private static final ConsoleCredentialMessages CREDENTIAL_MSGS = GWT.create(ConsoleCredentialMessages.class);
+    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     private static final GwtCredentialServiceAsync GWT_CREDENTIAL_SERVICE = GWT.create(GwtCredentialService.class);
     private GwtCredentialQuery query;
     private String selectedUserId;
@@ -83,7 +86,7 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
     protected List<ColumnConfig> getColumns() {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
-        ColumnConfig columnConfig = new ColumnConfig("status", MSGS.gridCredentialColumnHeaderStatus(), 50);
+        ColumnConfig columnConfig = new ColumnConfig("status", CREDENTIAL_MSGS.gridCredentialColumnHeaderStatus(), 50);
         GridCellRenderer<GwtCredential> setStatusIcon = new GridCellRenderer<GwtCredential>() {
 
             public String render(GwtCredential gwtUser, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtCredential> deviceList, Grid<GwtCredential> grid) {
@@ -94,21 +97,25 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
                     case DISABLED:
                         icon = new KapuaIcon(IconSet.KEY);
                         icon.setColor(Color.RED);
+                        icon.setTitle(MSGS.disabled());
                         break;
 
                     case ENABLED:
                         icon = new KapuaIcon(IconSet.KEY);
                         icon.setColor(Color.GREEN);
+                        icon.setTitle(MSGS.enabled());
                         break;
 
                     default:
-                         icon = new KapuaIcon(IconSet.KEY);
-                            icon.setColor(Color.GREY);
+                        icon = new KapuaIcon(IconSet.KEY);
+                        icon.setColor(Color.GREY);
+                        icon.setTitle(MSGS.unknown());
                         break;
                     }
                 } else {
                     icon = new KapuaIcon(IconSet.KEY);
                     icon.setColor(Color.GREY);
+                    icon.setTitle(MSGS.unknown());
                 }
                 return icon.getInlineHTML();
             }
@@ -118,7 +125,7 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("lockoutReset", MSGS.gridCredentialColumnHeaderLockStatus(), 50);
+        columnConfig = new ColumnConfig("lockoutReset", CREDENTIAL_MSGS.gridCredentialColumnHeaderLockStatus(), 50);
         GridCellRenderer<GwtCredential> setLockoutIcon = new GridCellRenderer<GwtCredential>() {
 
             public String render(GwtCredential gwtCredential, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtCredential> deviceList, Grid<GwtCredential> grid) {
@@ -126,9 +133,11 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
                 if (gwtCredential.getLockoutReset() != null && gwtCredential.getLockoutReset().after(new Date())) {
                     icon = new KapuaIcon(IconSet.LOCK);
                     icon.setColor(Color.RED);
+                    icon.setTitle(CREDENTIAL_MSGS.gridCredentialLockedUntil(DateUtils.formatDateTime(gwtCredential.getLockoutReset())));
                 } else {
                     icon = new KapuaIcon(IconSet.UNLOCK);
                     icon.setColor(Color.GREEN);
+                    icon.setTitle(CREDENTIAL_MSGS.gridCredentialUnlocked());
                 }
                 return icon.getInlineHTML();
             }
@@ -138,29 +147,21 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("id", MSGS.gridCredentialColumnHeaderId(), 100);
+        columnConfig = new ColumnConfig("id", CREDENTIAL_MSGS.gridCredentialColumnHeaderId(), 100);
         columnConfig.setHidden(true);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("credentialType", MSGS.gridCredentialColumnHeaderCredentialType(), 400);
+        columnConfig = new ColumnConfig("credentialType", CREDENTIAL_MSGS.gridCredentialColumnHeaderCredentialType(), 400);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("expirationDate", MSGS.gridCredentialColumnHeaderExpirationDate(), 200);
+        columnConfig = new ColumnConfig("expirationDateFormatted", CREDENTIAL_MSGS.gridCredentialColumnHeaderExpirationDate(), 200);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("createdOn", MSGS.gridCredentialColumnHeaderCreatedOn(), 200);
+        columnConfig = new ColumnConfig("modifiedOn", CREDENTIAL_MSGS.gridCredentialColumnHeaderModifiedOn(), 200);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("username", MSGS.gridCredentialColumnHeaderCreatedBy(), 200);
+        columnConfig = new ColumnConfig("modifiedByName", CREDENTIAL_MSGS.gridCredentialColumnHeaderModifiedBy(), 200);
         columnConfig.setSortable(false);
-        columnConfigs.add(columnConfig);
-
-        columnConfig = new ColumnConfig("modifiedOn", MSGS.gridCredentialColumnHeaderModifiedOn(), 200);
-        columnConfig.setHidden(true);
-        columnConfigs.add(columnConfig);
-
-        columnConfig = new ColumnConfig("username", MSGS.gridCredentialColumnHeaderModifiedBy(), 200);
-        columnConfig.setHidden(true);
         columnConfigs.add(columnConfig);
 
         return columnConfigs;
@@ -214,6 +215,7 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
         getToolbar().getAddEntityButton().setEnabled(selectedUserId != null);
         getToolbar().getEditEntityButton().setEnabled(getSelectionModel().getSelectedItem() != null && currentSession.hasCredentialUpdatePermission());
         getToolbar().getDeleteEntityButton().setEnabled(getSelectionModel().getSelectedItem() != null && currentSession.hasCredentialDeletePermission());
-        getToolbar().getUnlockButton().setEnabled(getSelectionModel().getSelectedItem() != null && getSelectionModel().getSelectedItem().getLockoutReset() != null && currentSession.hasCredentialUpdatePermission());
+        getToolbar().getUnlockButton()
+                .setEnabled(getSelectionModel().getSelectedItem() != null && getSelectionModel().getSelectedItem().getLockoutReset() != null && currentSession.hasCredentialUpdatePermission());
     }
 }

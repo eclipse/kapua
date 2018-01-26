@@ -32,6 +32,7 @@ import org.eclipse.kapua.app.console.module.user.shared.util.GwtKapuaUserModelCo
 import org.eclipse.kapua.app.console.module.user.shared.util.KapuaGwtUserModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.Credential;
@@ -60,9 +61,11 @@ import org.eclipse.kapua.service.user.UserService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 /**
  * The server side implementation of the RPC service.
@@ -299,8 +302,9 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         List<GwtUser> gwtUsers = new ArrayList<GwtUser>();
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
-            UserService userService = locator.getService(UserService.class);
-
+            final UserService userService = locator.getService(UserService.class);
+            UserFactory userFactory = locator.getFactory(UserFactory.class);
+            HashMap<String, String> usernameMap = new HashMap<String, String>();
             // Convert from GWT entity
             UserQuery userQuery = GwtKapuaUserModelConverter.convertUserQuery(loadConfig, gwtUserQuery);
 
@@ -309,12 +313,26 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
             // If there are results
             if (!users.isEmpty()) {
+                final UserQuery allUsersQuery = userFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtUserQuery.getScopeId()));
+                UserListResult allUsers = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
+
+                    @Override
+                    public UserListResult call() throws Exception {
+                        return userService.query(allUsersQuery);
+                    }
+                });
+                for (User user : allUsers.getItems()) {
+                    usernameMap.put(user.getId().toCompactId(), user.getName());
+                }
                 // count
                 totalLength = Long.valueOf(userService.count(userQuery)).intValue();
 
-                // Converto to GWT entity
+                // Convert to GWT entity
                 for (User u : users.getItems()) {
-                    gwtUsers.add(KapuaGwtUserModelConverter.convertUser(u));
+                    GwtUser gwtUser = KapuaGwtUserModelConverter.convertUser(u);
+                    gwtUser.setCreatedByName(usernameMap.get(u.getCreatedBy().toCompactId()));
+                    gwtUser.setModifiedByName(usernameMap.get(u.getModifiedBy().toCompactId()));
+                    gwtUsers.add(gwtUser);
                 }
             }
 
@@ -331,21 +349,36 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         List<GwtGroupedNVPair> gwtUserDescription = new ArrayList<GwtGroupedNVPair>();
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
-            UserService userService = locator.getService(UserService.class);
-            KapuaId scopeId = KapuaEid.parseCompactId(shortScopeId);
-            KapuaId userId = KapuaEid.parseCompactId(shortUserId);
-            User user = userService.find(scopeId, userId);
+            final UserService userService = locator.getService(UserService.class);
+            final KapuaId scopeId = KapuaEid.parseCompactId(shortScopeId);
+            final KapuaId userId = KapuaEid.parseCompactId(shortUserId);
+            final User user = userService.find(scopeId, userId);
+            final User createdUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
 
+                @Override
+                public User call() throws Exception {
+                    return userService.find(scopeId, user.getCreatedBy());
+                }
+            });
+
+            User modifiedUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
+
+                @Override
+                public User call() throws Exception {
+                    return userService.find(scopeId, user.getModifiedBy());
+                }
+            });
             if (user != null) {
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userStatus", user.getStatus().toString()));
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userName", user.getName()));
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userDisplayName", user.getDisplayName()));
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userEmail", user.getEmail()));
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userPhoneNumber", user.getPhoneNumber()));
-                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userCreatedOn", user.getCreatedOn().toString()));
-                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userCreatedBy", user.getDisplayName()));
-                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userModifiedOn", user.getModifiedOn().toString()));
-                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userModifiedBy", user.getDisplayName()));
+                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userCreatedOn", user.getCreatedOn()));
+                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userCreatedBy", createdUser.getName()));
+                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userModifiedOn", user.getModifiedOn()));
+                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userModifiedBy", modifiedUser.getName()));
+                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userExpirationDate", user.getExpirationDate()));
             }
         } catch (Exception e) {
             KapuaExceptionHandler.handle(e);

@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.user.shared.model.user;
 
-import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtUpdatableEntityModel;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -35,7 +34,11 @@ public class GwtUser extends GwtUpdatableEntityModel implements IsSerializable {
         if ("statusEnum".equals(property)) {
             return (X) (GwtUserStatus.valueOf(getStatus()));
         } else if ("expirationDateFormatted".equals(property)) {
-            return (X) (DateUtils.formatDateTime(getExpirationDate()));
+            if (getExpirationDate() != null) {
+                return (X) (getExpirationDate());
+            } else {
+                return (X) "N/A";
+            }
         } else {
             return super.get(property);
         }

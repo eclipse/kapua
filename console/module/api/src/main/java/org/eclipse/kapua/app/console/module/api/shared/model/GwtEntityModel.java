@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.api.shared.model;
 
-import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
-
 import java.util.Date;
 
 public abstract class GwtEntityModel extends KapuaBaseModel {
@@ -27,7 +25,11 @@ public abstract class GwtEntityModel extends KapuaBaseModel {
     @SuppressWarnings({ "unchecked" })
     public <X> X get(String property) {
         if ("createdOnFormatted".equals(property)) {
-            return (X) (DateUtils.formatDateTime(getCreatedOn()));
+            if (getCreatedOn() != null) {
+                return (X) (getCreatedOn());
+            } else {
+                return (X) "N/A";
+            }
         } else {
             return super.get(property);
         }
@@ -68,4 +70,13 @@ public abstract class GwtEntityModel extends KapuaBaseModel {
     public void setCreatedBy(String createdBy) {
         set("createdBy", createdBy);
     }
+
+    public String getCreatedByName() {
+        return get("createdByName");
+    }
+
+    public void setCreatedByName(String createdByName) {
+        set("createdByName", createdByName);
+    }
+
 }

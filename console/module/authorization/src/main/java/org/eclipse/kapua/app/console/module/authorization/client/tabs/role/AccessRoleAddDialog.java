@@ -65,7 +65,7 @@ public class AccessRoleAddDialog extends EntityAddEditDialog {
             }
         });
 
-        DialogUtils.resizeDialog(this, 400, 400);
+        DialogUtils.resizeDialog(this, 400, 150);
     }
 
     @Override

@@ -22,6 +22,14 @@ public class KapuaGwtAuthenticationModelConverter {
     private KapuaGwtAuthenticationModelConverter() { }
 
     public static GwtCredential convertCredential(Credential credential, User user) {
+        GwtCredential gwtCredential = convertCredential(credential);
+        if (user != null) {
+            gwtCredential.setUsername(user.getName());
+        }
+        return gwtCredential;
+    }
+
+    public static GwtCredential convertCredential(Credential credential) {
         GwtCredential gwtCredential = new GwtCredential();
         KapuaGwtCommonsModelConverter.convertUpdatableEntity(credential, gwtCredential);
         gwtCredential.setUserId(credential.getUserId().toCompactId());
@@ -33,9 +41,6 @@ public class KapuaGwtAuthenticationModelConverter {
         gwtCredential.setFirstLoginFailure(credential.getFirstLoginFailure());
         gwtCredential.setLoginFailuresReset(credential.getLoginFailuresReset());
         gwtCredential.setLockoutReset(credential.getLockoutReset());
-        if (user != null) {
-            gwtCredential.setUsername(user.getName());
-        }
         gwtCredential.setSubjectType(GwtSubjectType.USER.toString());
         return gwtCredential;
     }

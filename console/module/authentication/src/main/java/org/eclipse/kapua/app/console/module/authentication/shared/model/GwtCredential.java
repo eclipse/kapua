@@ -13,7 +13,6 @@ package org.eclipse.kapua.app.console.module.authentication.shared.model;
 
 import java.util.Date;
 
-import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtUpdatableEntityModel;
 
 public class GwtCredential extends GwtUpdatableEntityModel {
@@ -32,13 +31,29 @@ public class GwtCredential extends GwtUpdatableEntityModel {
         } else if ("credentialStatusEnum".equals(property)) {
             return (X) GwtCredentialStatus.valueOf(getCredentialStatus());
         } else if ("expirationDateFormatted".equals(property)) {
-            return (X) (DateUtils.formatDateTime(getExpirationDate()));
+            if (getExpirationDate() != null) {
+                return (X) (getExpirationDate());
+            } else {
+                return (X) "N/A";
+            }
         } else if ("firstLoginFailureFormatted".equals(property)) {
-            return (X) (DateUtils.formatDateTime(getFirstLoginFailure()));
+            if (getFirstLoginFailure() != null) {
+                return (X) (getFirstLoginFailure());
+            } else {
+                return (X) "N/A";
+            }
         } else if ("loginFailuresResetFormatted".equals(property)) {
-            return (X) (DateUtils.formatDateTime(getLoginFailuresReset()));
+            if (getLoginFailuresReset() != null) {
+                return (X) (getLoginFailuresReset());
+            } else {
+                return (X) "N/A";
+            }
         } else if ("lockoutResetFormatted".equals(property)) {
-            return (X) (DateUtils.formatDateTime(getLockoutReset()));
+            if (getLockoutReset() != null) {
+                return (X) (getLockoutReset());
+            } else {
+                return (X) "N/A";
+            }
         } else {
             return super.get(property);
         }
