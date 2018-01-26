@@ -109,11 +109,11 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("userName", ROLE_MSGS.gridRolePermissionColumnHeaderCreatedBy(), 100);
-        columnConfig.setSortable(false);
+        columnConfig = new ColumnConfig("createdOnFormatted", ROLE_MSGS.gridRolePermissionColumnHeaderCreatedOn(), 100);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("createdOnFormatted", ROLE_MSGS.gridRolePermissionColumnHeaderCreatedOn(), 100);
+        columnConfig = new ColumnConfig("createdByName", ROLE_MSGS.gridRolePermissionColumnHeaderCreatedBy(), 100);
+        columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
         return columnConfigs;

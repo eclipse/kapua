@@ -26,7 +26,7 @@ public abstract class GwtUpdatableEntityModel extends GwtEntityModel {
     public <X> X get(String property) {
         if ("modifiedOnFormatted".equals(property)) {
             if (getModifiedOn() != null) {
-                return (X) (getModifiedOn());
+                return (X) (getModifiedOn().toString());
             } else {
                 return (X) "N/A";
             }

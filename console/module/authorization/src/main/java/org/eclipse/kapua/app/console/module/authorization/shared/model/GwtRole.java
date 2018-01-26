@@ -41,11 +41,4 @@ public class GwtRole extends GwtUpdatableEntityModel {
         this.rolePermissions = rolePermissions;
     }
 
-    public String getUserName() {
-        return get("userName");
-    }
-
-    public void setUserName(String userName) {
-        set("userName", userName);
-    }
 }

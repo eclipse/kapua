@@ -32,25 +32,25 @@ public class GwtCredential extends GwtUpdatableEntityModel {
             return (X) GwtCredentialStatus.valueOf(getCredentialStatus());
         } else if ("expirationDateFormatted".equals(property)) {
             if (getExpirationDate() != null) {
-                return (X) (getExpirationDate());
+                return (X) (getExpirationDate().toString());
             } else {
                 return (X) "N/A";
             }
         } else if ("firstLoginFailureFormatted".equals(property)) {
             if (getFirstLoginFailure() != null) {
-                return (X) (getFirstLoginFailure());
+                return (X) (getFirstLoginFailure().toString());
             } else {
                 return (X) "N/A";
             }
         } else if ("loginFailuresResetFormatted".equals(property)) {
             if (getLoginFailuresReset() != null) {
-                return (X) (getLoginFailuresReset());
+                return (X) (getLoginFailuresReset().toString());
             } else {
                 return (X) "N/A";
             }
         } else if ("lockoutResetFormatted".equals(property)) {
             if (getLockoutReset() != null) {
-                return (X) (getLockoutReset());
+                return (X) (getLockoutReset().toString());
             } else {
                 return (X) "N/A";
             }

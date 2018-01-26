@@ -32,8 +32,7 @@ public class UserEditDialog extends UserAddDialog {
     public UserEditDialog(GwtSession currentSession, GwtUser selectedUser) {
         super(currentSession);
         this.selectedUser = selectedUser;
-        DialogUtils.resizeDialog(this, 400, 385);
-
+        DialogUtils.resizeDialog(this, 400, 390);
     }
 
     @Override

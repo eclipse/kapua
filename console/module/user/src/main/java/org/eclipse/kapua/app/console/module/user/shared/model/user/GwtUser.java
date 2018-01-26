@@ -35,7 +35,7 @@ public class GwtUser extends GwtUpdatableEntityModel implements IsSerializable {
             return (X) (GwtUserStatus.valueOf(getStatus()));
         } else if ("expirationDateFormatted".equals(property)) {
             if (getExpirationDate() != null) {
-                return (X) (getExpirationDate());
+                return (X) (getExpirationDate().toString());
             } else {
                 return (X) "N/A";
             }

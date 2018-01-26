@@ -26,7 +26,7 @@ public abstract class GwtEntityModel extends KapuaBaseModel {
     public <X> X get(String property) {
         if ("createdOnFormatted".equals(property)) {
             if (getCreatedOn() != null) {
-                return (X) (getCreatedOn());
+                return (X) (getCreatedOn().toString());
             } else {
                 return (X) "N/A";
             }

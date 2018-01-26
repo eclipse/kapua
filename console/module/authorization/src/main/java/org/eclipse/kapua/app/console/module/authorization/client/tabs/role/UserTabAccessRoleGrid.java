@@ -80,11 +80,11 @@ public class UserTabAccessRoleGrid extends EntityGrid<GwtAccessRole> {
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("userName", MSGS.gridRoleColumnHeaderCreatedBy(), 200);
-        columnConfig.setSortable(false);
+        columnConfig = new ColumnConfig("createdOnFormatted", MSGS.gridRoleColumnHeaderCreatedOn(), 200);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("createdOn", MSGS.gridRoleColumnHeaderCreatedOn(), 200);
+        columnConfig = new ColumnConfig("createdByName", MSGS.gridRoleColumnHeaderCreatedBy(), 200);
+        columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
         return columnConfigs;

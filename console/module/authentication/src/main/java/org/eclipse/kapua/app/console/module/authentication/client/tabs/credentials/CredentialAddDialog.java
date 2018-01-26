@@ -58,7 +58,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         super(currentSession);
         this.selectedUserId = selectedUserId;
         this.selectedUserName = selectedUserName;
-        DialogUtils.resizeDialog(this, 400, 300);
+        DialogUtils.resizeDialog(this, 400, 285);
     }
 
     @Override

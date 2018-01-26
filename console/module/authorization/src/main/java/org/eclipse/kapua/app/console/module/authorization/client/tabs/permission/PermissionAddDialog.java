@@ -89,7 +89,7 @@ public class PermissionAddDialog extends EntityAddEditDialog {
             }
         });
 
-        DialogUtils.resizeDialog(this, 500, 250);
+        DialogUtils.resizeDialog(this, 500, 220);
     }
 
     @Override
