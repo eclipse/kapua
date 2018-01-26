@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -161,9 +161,11 @@ public class CredentialAddDialog extends EntityAddEditDialog {
                 if (gwtCredentialCreator.getCredentialType() == GwtCredentialType.API_KEY) {
                     ApiKeyConfirmationDialog apiKeyConfirmationDialog = new ApiKeyConfirmationDialog(arg0.getCredentialKey());
                     apiKeyConfirmationDialog.show();
+                    exitMessage = MSGS.dialogAddConfirmationAPI();
+                } else if (gwtCredentialCreator.getCredentialType() == GwtCredentialType.PASSWORD) {
+                    exitMessage = MSGS.dialogAddConfirmationPassword();
                 }
                 exitStatus = true;
-                exitMessage = MSGS.dialogAddConfirmation();
                 hide();
             }
 
