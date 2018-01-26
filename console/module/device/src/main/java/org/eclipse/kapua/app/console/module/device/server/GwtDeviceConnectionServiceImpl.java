@@ -171,11 +171,11 @@ public class GwtDeviceConnectionServiceImpl extends KapuaRemoteServiceServlet im
             if (deviceConnection.getUserCouplingMode() != null) {
                 gwtConnectionUserCouplingMode = GwtConnectionUserCouplingMode.valueOf(deviceConnection.getUserCouplingMode().name());
             }
-            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionUserBoundInfo", "connectionUserBound", gwtConnectionUserCouplingMode.getLabel()));
-            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionUserBoundInfo", "reservedUserName",
+            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionUserCouplingModeInfo", "connectionUserCouplingMode", gwtConnectionUserCouplingMode.getLabel()));
+            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionUserCouplingModeInfo", "connectionReservedUser",
                     reservedUser != null ? reservedUser.getName() : null));
-            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionUserBoundInfo", "allowUserChange", deviceConnection.getAllowUserChange()));
-            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionFirstEstablishedOn", deviceConnection.getCreatedOn().toString()));
+            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionUserCouplingModeInfo", "allowUserChange", deviceConnection.getAllowUserChange()));
+            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionFirstEstablishedOn", deviceConnection.getCreatedOn()));
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionFirstEstablishedBy", createdUser.getName()));
 
         } catch (Throwable t) {

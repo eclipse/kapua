@@ -37,8 +37,6 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.eclipse.kapua.app.console.module.api.shared.util.KapuaGwtCommonsModelConverter.convertEntity;
-
 public class KapuaGwtDeviceModelConverter {
 
     private KapuaGwtDeviceModelConverter() { }
@@ -120,7 +118,7 @@ public class KapuaGwtDeviceModelConverter {
 
         //
         // Convert commons attributes
-        convertEntity(deviceConnection, gwtDeviceConnection);
+        KapuaGwtCommonsModelConverter.convertUpdatableEntity(deviceConnection, gwtDeviceConnection);
 
         //
         // Convert other attributes
@@ -186,7 +184,7 @@ public class KapuaGwtDeviceModelConverter {
 
         //
         // Convert commons attributes
-        convertEntity(deviceConnectionOption, gwtDeviceConnectionOption);
+        KapuaGwtCommonsModelConverter.convertUpdatableEntity(deviceConnectionOption, gwtDeviceConnectionOption);
 
         // convertDeviceAssetChannel user coupling attributes
         gwtDeviceConnectionOption.setReservedUserId(KapuaGwtCommonsModelConverter.convertKapuaId(deviceConnectionOption.getReservedUserId()));

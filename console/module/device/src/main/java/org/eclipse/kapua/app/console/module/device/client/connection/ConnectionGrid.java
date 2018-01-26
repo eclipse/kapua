@@ -43,7 +43,7 @@ import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceConne
 
 public class ConnectionGrid extends EntityGrid<GwtDeviceConnection> {
 
-    private static final ConsoleConnectionMessages MSGS = GWT.create(ConsoleConnectionMessages.class);
+    private static final ConsoleConnectionMessages CONNECTION_MSGS = GWT.create(ConsoleConnectionMessages.class);
 
     private final GwtDeviceConnectionServiceAsync gwtDeviceConnectionService = GWT.create(GwtDeviceConnectionService.class);
 
@@ -85,7 +85,7 @@ public class ConnectionGrid extends EntityGrid<GwtDeviceConnection> {
         ColumnConfig column = null;
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
-        column = new ColumnConfig("connectionStatus", MSGS.connectionTableStatus(), 50);
+        column = new ColumnConfig("connectionStatus", CONNECTION_MSGS.connectionTableStatus(), 50);
         column.setAlignment(HorizontalAlignment.CENTER);
         GridCellRenderer<GwtDeviceConnection> setStatusIcon = new GridCellRenderer<GwtDeviceConnection>() {
 
@@ -98,23 +98,29 @@ public class ConnectionGrid extends EntityGrid<GwtDeviceConnection> {
                     case CONNECTED:
                         icon = new KapuaIcon(IconSet.PLUG);
                         icon.setColor(Color.GREEN);
+                        icon.setTitle(CONNECTION_MSGS.connected());
                         break;
                     case DISCONNECTED:
                         icon = new KapuaIcon(IconSet.PLUG);
                         icon.setColor(Color.YELLOW);
+                        icon.setTitle(CONNECTION_MSGS.disconnected());
                         break;
                     case MISSING:
                         icon = new KapuaIcon(IconSet.PLUG);
                         icon.setColor(Color.RED);
+                        icon.setTitle(CONNECTION_MSGS.missing());
                         break;
                     default:
                         icon = new KapuaIcon(IconSet.PLUG);
                         icon.setColor(Color.GREY);
+                        icon.setTitle(CONNECTION_MSGS.unknown());
+
                         break;
                     }
                 } else {
                     icon = new KapuaIcon(IconSet.PLUG);
                     icon.setColor(Color.GREY);
+                    icon.setTitle(CONNECTION_MSGS.unknown());
                 }
 
                 return icon.getInlineHTML();
@@ -126,38 +132,38 @@ public class ConnectionGrid extends EntityGrid<GwtDeviceConnection> {
         configs.add(column);
 
         column = new ColumnConfig("clientId", 120);
-        column.setHeader(MSGS.connectionTableClientId());
+        column.setHeader(CONNECTION_MSGS.connectionTableClientId());
         column.setWidth(150);
         configs.add(column);
 
         column = new ColumnConfig("userName", 120);
-        column.setHeader(MSGS.connectionTableUserName());
+        column.setHeader(CONNECTION_MSGS.connectionTableUserName());
         column.setSortable(false);
         column.setWidth(150);
         configs.add(column);
 
         column = new ColumnConfig("protocol", 120);
-        column.setHeader(MSGS.connectionTableProtocol());
+        column.setHeader(CONNECTION_MSGS.connectionTableProtocol());
         column.setWidth(150);
         configs.add(column);
 
         column = new ColumnConfig("connectionUserCouplingMode", 120);
-        column.setHeader(MSGS.connectionTableUserCouplingMode());
+        column.setHeader(CONNECTION_MSGS.connectionTableUserCouplingMode());
         column.setWidth(150);
         configs.add(column);
 
         column = new ColumnConfig("reservedUserName", 120);
-        column.setHeader(MSGS.connectionTableReservedUserName());
+        column.setHeader(CONNECTION_MSGS.connectionTableReservedUserName());
         column.setWidth(150);
         column.setSortable(false);
         configs.add(column);
 
         column = new ColumnConfig("clientIp", 120);
-        column.setHeader(MSGS.connectionTableClientIp());
+        column.setHeader(CONNECTION_MSGS.connectionTableClientIp());
         column.setWidth(150);
         configs.add(column);
 
-        column = new ColumnConfig("modifiedOnFormatted", MSGS.connectionTableModifiedOn(), 130);
+        column = new ColumnConfig("modifiedOnFormatted", CONNECTION_MSGS.connectionTableModifiedOn(), 130);
         configs.add(column);
         return configs;
     }

@@ -16,9 +16,8 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -49,7 +48,7 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
     private SimpleComboBox<String> couplingModeCombo;
     private ComboBox<GwtUser> reservedUserCombo;
     private CheckBox allowUserChangeCheckbox;
-    private TextField<String> lastUserField;
+    private LabelField lastUserField;
 
     private static final GwtUser NO_USER;
 
@@ -68,21 +67,17 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
     @Override
     public void createBody() {
         FormPanel groupFormPanel = new FormPanel(FORM_LABEL_WIDTH);
-        FieldSet fieldSetSecurityOptions = new FieldSet();
         FormLayout layoutSecurityOptions = new FormLayout();
         layoutSecurityOptions.setLabelWidth(Constants.LABEL_WIDTH_DEVICE_FORM);
-        fieldSetSecurityOptions.setLayout(layoutSecurityOptions);
-        fieldSetSecurityOptions.setHeading(MSGS.connectionFormFieldsetSecurityOptions());
 
-        lastUserField = new TextField<String>();
+        lastUserField = new LabelField();
         lastUserField.setName("connectionUserLastUserField");
+        lastUserField.setLabelSeparator(":");
         lastUserField.setFieldLabel(MSGS.connectionFormLastUser());
         lastUserField.setToolTip(MSGS.connectionFormLastUserTooltip());
         lastUserField.setWidth(225);
         lastUserField.setReadOnly(true);
-        if (currentSession.hasUserReadPermission()) {
-            fieldSetSecurityOptions.add(lastUserField);
-        }
+        groupFormPanel.add(lastUserField);
 
         // Connection user coupling mode
         couplingModeCombo = new SimpleComboBox<String>();
@@ -99,7 +94,7 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
         couplingModeCombo.add(GwtConnectionUserCouplingMode.STRICT.getLabel());
 
         couplingModeCombo.setSimpleValue(GwtConnectionUserCouplingMode.INHERITED.getLabel());
-        fieldSetSecurityOptions.add(couplingModeCombo);
+        groupFormPanel.add(couplingModeCombo);
 
         reservedUserCombo = new ComboBox<GwtUser>();
         reservedUserCombo.setName("connectionUserReservedUserCombo");
@@ -133,7 +128,7 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
 
             });
 
-            fieldSetSecurityOptions.add(reservedUserCombo);
+            groupFormPanel.add(reservedUserCombo);
         } else {
             GwtUser selectedUser = new GwtUser();
             selectedUser.setId(selectedDeviceConnection.getReservedUserId());
@@ -147,9 +142,7 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
         allowUserChangeCheckbox.setFieldLabel(MSGS.connectionFormAllowUserChange());
         allowUserChangeCheckbox.setToolTip(MSGS.connectionFormAllowUserChangeTooltip());
         allowUserChangeCheckbox.setBoxLabel("");
-        fieldSetSecurityOptions.add(allowUserChangeCheckbox);
-
-        groupFormPanel.add(fieldSetSecurityOptions);
+        groupFormPanel.add(allowUserChangeCheckbox);
 
         bodyPanel.add(groupFormPanel);
         populateEditDialog(selectedDeviceConnection);
@@ -218,7 +211,7 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
         }
         couplingModeCombo.setSimpleValue(gwtConnectionUserCouplingMode != null ? gwtConnectionUserCouplingMode.getLabel() : "N/A");
         allowUserChangeCheckbox.setValue(gwtDeviceConnection.getAllowUserChange());
-     }
+    }
 
     private void setReservedUser() {
         for (GwtUser gwtUser : reservedUserCombo.getStore().getModels()) {

@@ -30,6 +30,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityVie
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
+import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleConnectionMessages;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQuery;
@@ -47,7 +48,8 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
 
     private static final GwtDeviceServiceAsync GWT_DEVICE_SERVICE = GWT.create(GwtDeviceService.class);
 
-    private static final ConsoleDeviceMessages MSGS = GWT.create(ConsoleDeviceMessages.class);
+    private static final ConsoleDeviceMessages DEVICE_MSGS = GWT.create(ConsoleDeviceMessages.class);
+    private static final ConsoleConnectionMessages CONNECTION_MSGS = GWT.create(ConsoleConnectionMessages.class);
 
     public DeviceGrid(AbstractEntityView<GwtDevice> entityView, final GwtSession currentSession) {
         super(entityView, currentSession);
@@ -75,7 +77,7 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
         // Column Configuration
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
-        ColumnConfig column = new ColumnConfig("status", MSGS.deviceTableStatus(), 50);
+        ColumnConfig column = new ColumnConfig("status", DEVICE_MSGS.deviceTableStatus(), 50);
         column.setAlignment(HorizontalAlignment.CENTER);
         GridCellRenderer<GwtDevice> setStatusIcon = new GridCellRenderer<GwtDevice>() {
 
@@ -88,24 +90,29 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
                     case CONNECTED:
                         icon = new KapuaIcon(IconSet.PLUG);
                         icon.setColor(Color.GREEN);
+                        icon.setTitle(CONNECTION_MSGS.connected());
                         break;
                     case DISCONNECTED:
                         icon = new KapuaIcon(IconSet.PLUG);
                         icon.setColor(Color.YELLOW);
+                        icon.setTitle(CONNECTION_MSGS.disconnected());
                         break;
                     case MISSING:
                         icon = new KapuaIcon(IconSet.PLUG);
                         icon.setColor(Color.RED);
+                        icon.setTitle(CONNECTION_MSGS.missing());
                         break;
                     case ANY:
                     default:
                         icon = new KapuaIcon(IconSet.PLUG);
                         icon.setColor(Color.GREY);
+                        icon.setTitle(CONNECTION_MSGS.unknown());
                         break;
                     }
                 } else {
                     icon = new KapuaIcon(IconSet.PLUG);
                     icon.setColor(Color.GREY);
+                    icon.setTitle(CONNECTION_MSGS.unknown());
                 }
 
                 return icon.getInlineHTML();
@@ -116,101 +123,101 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
         column.setSortable(false);
         columnConfigs.add(column);
 
-        column = new ColumnConfig("clientId", MSGS.deviceTableClientID(), 175);
+        column = new ColumnConfig("clientId", DEVICE_MSGS.deviceTableClientID(), 175);
         column.setSortable(true);
         columnConfigs.add(column);
 
-        column = new ColumnConfig("displayName", MSGS.deviceTableDisplayName(), 150);
+        column = new ColumnConfig("displayName", DEVICE_MSGS.deviceTableDisplayName(), 150);
         column.setSortable(true);
         columnConfigs.add(column);
 
-        column = new ColumnConfig("lastEventOnFormatted", MSGS.deviceTableLastReportedDate(), 130);
+        column = new ColumnConfig("lastEventOnFormatted", DEVICE_MSGS.deviceTableLastReportedDate(), 130);
         column.setSortable(true);
         column.setAlignment(HorizontalAlignment.CENTER);
         columnConfigs.add(column);
 
-        column = new ColumnConfig("lastEventType", MSGS.deviceTableLastEventType(), 130);
+        column = new ColumnConfig("lastEventType", DEVICE_MSGS.deviceTableLastEventType(), 130);
         column.setSortable(false);
         column.setAlignment(HorizontalAlignment.CENTER);
         columnConfigs.add(column);
 
-        column = new ColumnConfig("serialNumber", MSGS.deviceTableSerialNumber(), 100);
+        column = new ColumnConfig("serialNumber", DEVICE_MSGS.deviceTableSerialNumber(), 100);
         column.setSortable(false);
         column.setHidden(true);
         columnConfigs.add(column);
 
-        column = new ColumnConfig("applicationIdentifiers", MSGS.deviceTableApplications(), 100);
+        column = new ColumnConfig("applicationIdentifiers", DEVICE_MSGS.deviceTableApplications(), 100);
         column.setSortable(false);
         column.setHidden(false);
         columnConfigs.add(column);
 
-        column = new ColumnConfig("iotFrameworkVersion", MSGS.deviceTableEsfKuraVersion(), 80);
+        column = new ColumnConfig("iotFrameworkVersion", DEVICE_MSGS.deviceTableEsfKuraVersion(), 80);
         column.setSortable(false);
         column.setAlignment(HorizontalAlignment.CENTER);
         columnConfigs.add(column);
 
-        column = new ColumnConfig("customAttribute1", MSGS.deviceTableCustomAttribute1(), 100);
+        column = new ColumnConfig("customAttribute1", DEVICE_MSGS.deviceTableCustomAttribute1(), 100);
         column.setSortable(false);
         column.setHidden(true);
         columnConfigs.add(column);
 
-        column = new ColumnConfig("customAttribute2", MSGS.deviceTableCustomAttribute2(), 100);
+        column = new ColumnConfig("customAttribute2", DEVICE_MSGS.deviceTableCustomAttribute2(), 100);
         column.setSortable(false);
         column.setHidden(true);
         columnConfigs.add(column);
 
-        column = new ColumnConfig("connectionIp", MSGS.deviceTableIpAddress(), 100);
+        column = new ColumnConfig("connectionIp", DEVICE_MSGS.deviceTableIpAddress(), 100);
         column.setSortable(false);
         column.setHidden(true);
         columnConfigs.add(column);
 
-        column = new ColumnConfig("modelId", MSGS.deviceTableModelId(), 100);
+        column = new ColumnConfig("modelId", DEVICE_MSGS.deviceTableModelId(), 100);
         column.setSortable(false);
         column.setHidden(true);
         columnConfigs.add(column);
 
-        column = new ColumnConfig("firmwareVersion", MSGS.deviceTableFirmwareVersion(), 100);
+        column = new ColumnConfig("firmwareVersion", DEVICE_MSGS.deviceTableFirmwareVersion(), 100);
         column.setSortable(false);
         column.setHidden(true);
         columnConfigs.add(column);
 
-        column = new ColumnConfig("biosVersion", MSGS.deviceTableBiosVersion(), 100);
+        column = new ColumnConfig("biosVersion", DEVICE_MSGS.deviceTableBiosVersion(), 100);
         column.setSortable(false);
         column.setHidden(true);
         columnConfigs.add(column);
 
-        column = new ColumnConfig("osVersion", MSGS.deviceTableOsVersion(), 100);
+        column = new ColumnConfig("osVersion", DEVICE_MSGS.deviceTableOsVersion(), 100);
         column.setSortable(false);
         column.setHidden(true);
         columnConfigs.add(column);
 
-        column = new ColumnConfig("jvmVersion", MSGS.deviceTableJvmVersion(), 100);
+        column = new ColumnConfig("jvmVersion", DEVICE_MSGS.deviceTableJvmVersion(), 100);
         column.setSortable(false);
         column.setHidden(true);
         columnConfigs.add(column);
 
-        column = new ColumnConfig("osgiFrameworkVersion", MSGS.deviceTableOsgiVersion(), 100);
+        column = new ColumnConfig("osgiFrameworkVersion", DEVICE_MSGS.deviceTableOsgiVersion(), 100);
         column.setSortable(false);
         column.setHidden(true);
         columnConfigs.add(column);
 
-        column = new ColumnConfig("imei", MSGS.deviceTableImei(), 100);
+        column = new ColumnConfig("imei", DEVICE_MSGS.deviceTableImei(), 100);
         column.setSortable(false);
         column.setHidden(true);
         columnConfigs.add(column);
 
-        column = new ColumnConfig("imsi", MSGS.deviceTableImsi(), 100);
+        column = new ColumnConfig("imsi", DEVICE_MSGS.deviceTableImsi(), 100);
         column.setSortable(false);
         column.setHidden(true);
         columnConfigs.add(column);
 
-        column = new ColumnConfig("iccid", MSGS.deviceTableIccid(), 100);
+        column = new ColumnConfig("iccid", DEVICE_MSGS.deviceTableIccid(), 100);
         column.setSortable(false);
         column.setHidden(true);
         columnConfigs.add(column);
 
         // signedCertificateId
-        column = new ColumnConfig("signedCertificateId", MSGS.deviceTableCertificate(), 100);
+        column = new ColumnConfig("signedCertificateId", DEVICE_MSGS.deviceTableCertificate(), 100);
         column.setSortable(false);
         column.setHidden(true);
 
