@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011 , 2017 , 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,11 +16,15 @@ import static org.eclipse.kapua.commons.util.ArgumentValidator.notEmptyOrNull;
 
 import java.util.Objects;
 
+import org.eclipse.kapua.KapuaDuplicateNameException;
+import org.eclipse.kapua.KapuaDuplicateNameInAnotherAccountError;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -80,6 +84,19 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
             ArgumentValidator.notEmptyOrNull(userCreator.getExternalId(), "externalId");
         } else {
             ArgumentValidator.isEmptyOrNull(userCreator.getExternalId(), "externalId");
+        }
+
+        UserQuery query = new UserQueryImpl(userCreator.getScopeId());
+        query.setPredicate(new AttributePredicate<String>(UserPredicates.NAME, userCreator.getName()));
+        KapuaLocator locator = KapuaLocator.getInstance();
+        UserService userService = locator.getService(UserService.class);
+        UserListResult userListResult = userService.query(query);
+        if (!userListResult.isEmpty()) {
+             throw new KapuaDuplicateNameException(userCreator.getName());
+        }
+
+        if(findByName(userCreator.getName()) != null) {
+            throw new KapuaDuplicateNameInAnotherAccountError(userCreator.getName());
         }
 
         final int remainingChildEntities = allowedChildEntities(userCreator.getScopeId());

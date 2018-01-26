@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011 , 2017 , 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -104,5 +104,15 @@ public interface GroupService extends KapuaEntityService<Group, GroupCreator>,
      */
     public void delete(KapuaId scopeId, KapuaId groupId)
             throws KapuaException;
+
+    /**
+     * Finds the {@link Group} by name.
+     * 
+     * @param name
+     * @return The {@link Group} found or {@code null} if no entity was found.
+     * @throws KapuaException
+     * @since 1.0.0
+     */
+    Group findByName(String name) throws KapuaException;
 
 }

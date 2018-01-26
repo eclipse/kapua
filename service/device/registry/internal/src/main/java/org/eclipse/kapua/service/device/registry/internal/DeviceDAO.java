@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011 , 2017 , 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -171,5 +171,16 @@ public class DeviceDAO extends ServiceDAO {
      */
     public static void delete(EntityManager em, KapuaId deviceId) throws KapuaEntityNotFoundException {
         ServiceDAO.delete(em, DeviceImpl.class, deviceId);
+    }
+
+    /**
+     * Finds the device by clientId
+     *
+     * @param em
+     * @param name
+     * @return
+     */
+    public static Device findByClientId(EntityManager em, String clientId) {
+        return ServiceDAO.findByField(em, DeviceImpl.class, "clientId", clientId);
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,8 +17,6 @@ import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
-import org.eclipse.kapua.KapuaDuplicateNameException;
-import org.eclipse.kapua.KapuaDuplicateNameInAnotherAccountError;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
@@ -95,20 +93,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             //
             // Create the User
             UserService userService = locator.getService(UserService.class);
-            UserQuery query = userFactory.newQuery(scopeId);
-            UserListResult list = userService.query(query);
-            for (User user : list.getItems()) {
-                if (user.getName().equals(gwtUserCreator.getUsername())) {
-                    throw new KapuaDuplicateNameException(gwtUserCreator.getUsername());
-                }
-            }
-
-            User user = userService.findByName(userCreator.getName());
-            if (user != null) {
-                throw new KapuaDuplicateNameInAnotherAccountError(gwtUserCreator.getUsername());
-            } else {
-                user = userService.create(userCreator);
-            }
+            User user = userService.create(userCreator);
 
             //
             // Create permissions

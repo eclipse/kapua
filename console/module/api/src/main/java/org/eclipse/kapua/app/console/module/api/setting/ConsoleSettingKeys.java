@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,9 +18,6 @@ public enum ConsoleSettingKeys implements SettingKey {
 
     LOGIN_BACKGROUND_CREDITS("console.login.background.credits"), //
     LOGIN_GENERIC_SNIPPET("console.login.generic.snippet"), //
-
-    PRODUCT_NAME("console.product.name"), //
-    PRODUCT_COPYRIGHT("console.product.copyright"),
 
     PRODUCT_NAME("console.product.name"), //
     PRODUCT_COPYRIGHT("console.product.copyright"),

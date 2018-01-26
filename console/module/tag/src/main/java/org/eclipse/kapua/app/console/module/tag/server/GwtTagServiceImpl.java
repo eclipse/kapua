@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,7 +21,6 @@ import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
-import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
@@ -64,13 +63,6 @@ public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtT
             KapuaId scopeId = KapuaEid.parseCompactId(gwtTagCreator.getScopeId());
             TagCreator tagCreator = tagFactory.newCreator(scopeId, gwtTagCreator.getName());
             TagService tagService = locator.getService(TagService.class);
-            TagQuery query = tagFactory.newQuery(scopeId);
-            TagListResult list = tagService.query(query);
-            for (Tag tag : list.getItems()) {
-                if (tag.getName().equals(gwtTagCreator.getName())) {
-                    throw new KapuaDuplicateNameException(gwtTagCreator.getName());
-                }
-            }
             Tag tag = tagService.create(tagCreator);
             gwtTag = KapuaGwtTagModelConverter.convertTag(tag);
 

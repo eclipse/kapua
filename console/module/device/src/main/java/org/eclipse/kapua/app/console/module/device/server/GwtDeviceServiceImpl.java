@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -56,7 +56,6 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
-import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DevicePredicates;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
@@ -349,14 +348,6 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
 
         try {
             KapuaId scopeId = KapuaEid.parseCompactId(gwtDeviceCreator.getScopeId());
-
-            DeviceQuery query = deviceFactory.newQuery(scopeId);
-            DeviceListResult list = deviceRegistryService.query(query);
-            for (Device device : list.getItems()) {
-                if (device.getClientId().equals(gwtDeviceCreator.getClientId())) {
-                    throw new KapuaDuplicateNameException(gwtDeviceCreator.getClientId());
-                }
-            }
 
             DeviceCreator deviceCreator = deviceFactory.newCreator(scopeId, gwtDeviceCreator.getClientId());
             deviceCreator.setDisplayName(gwtDeviceCreator.getDisplayName());

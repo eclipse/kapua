@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -104,5 +104,15 @@ public interface TagService extends KapuaEntityService<Tag, TagCreator>,
      */
     public void delete(KapuaId scopeId, KapuaId tagId)
             throws KapuaException;
+
+    /**
+     * Finds the {@link Tag} name
+     * 
+     * @param name
+     * @return The {@link Tag} found or {@code null} if no entity was found.
+     * @throws KapuaException
+     * @since 1.0.0
+     */
+    Tag findByName(String name) throws KapuaException;
 
 }

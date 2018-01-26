@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,7 +21,6 @@ import com.extjs.gxt.ui.client.Style.SortDir;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
-import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
@@ -83,18 +82,9 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             // Convert from GWT Entity
             RoleCreator roleCreator = GwtKapuaAuthorizationModelConverter.convertRoleCreator(gwtRoleCreator);
 
-            KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtRoleCreator.getScopeId());
             // Create
             KapuaLocator locator = KapuaLocator.getInstance();
             RoleService roleService = locator.getService(RoleService.class);
-            RoleFactory roleFactory = locator.getFactory(RoleFactory.class);
-            RoleQuery query = roleFactory.newQuery(scopeId);
-            RoleListResult list = roleService.query(query);
-            for (Role role : list.getItems()) {
-                if (role.getName().equals(gwtRoleCreator.getName())) {
-                    throw new KapuaDuplicateNameException(gwtRoleCreator.getName());
-                }
-            }
             Role role = roleService.create(roleCreator);
 
             // Convert

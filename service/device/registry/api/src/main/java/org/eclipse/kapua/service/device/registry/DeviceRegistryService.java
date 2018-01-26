@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011 , 2017 , 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -50,4 +50,13 @@ public interface DeviceRegistryService extends KapuaEntityService<Device, Device
      */
     public Device findByClientId(KapuaId scopeId, String clientId)
             throws KapuaException;
+
+    /**
+     * Finds a device by name.
+     * 
+     * @param name
+     * @return
+     * @throws KapuaException
+     */
+    Device findByClientId(String name) throws KapuaException;
 }

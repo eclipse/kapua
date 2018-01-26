@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011 , 2016 , 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -69,6 +69,17 @@ public class RoleDAO extends ServiceDAO {
      */
     public static Role find(EntityManager em, KapuaId roleId) {
         return em.find(RoleImpl.class, roleId);
+    }
+
+    /**
+     * Finds the group by name
+     *
+     * @param em
+     * @param name
+     * @return
+     */
+    public static Role findByName(EntityManager em, String name) {
+        return ServiceDAO.findByField(em, RoleImpl.class, "name", name);
     }
 
     /**
