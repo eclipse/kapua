@@ -80,7 +80,6 @@ public class KapuaExceptionHandler {
             logger.warn("Entity already exist with the same name", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.DUPLICATE_NAME, t, t.getLocalizedMessage());
         } else if(t instanceof KapuaConfigurationException && ((KapuaConfigurationException) t).getCode().name().equals(KapuaConfigurationErrorCodes.SELF_LIMIT_EXCEEDED_IN_CONFIG.name())) {
-            // all others => log and throw internal error code
             logger.warn("Parent account limitation error", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.SELF_LIMIT_EXCEEDED_IN_CONFIG, t, t.getLocalizedMessage());
         } else {
