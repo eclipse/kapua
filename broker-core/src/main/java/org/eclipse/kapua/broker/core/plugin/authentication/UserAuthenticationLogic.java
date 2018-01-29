@@ -11,10 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin.authentication;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
+import com.codahale.metrics.Timer.Context;
 import org.apache.shiro.ShiroException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
@@ -28,14 +25,16 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCreator;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 
-import com.codahale.metrics.Timer.Context;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * User profile authentication logic implementation
- * 
+ *
  * @since 1.0
  */
-public class UserAuthentictionLogic extends AuthenticationLogic {
+public class UserAuthenticationLogic extends AuthenticationLogic {
 
     protected String aclCtrlAccReply;
     protected String aclCtrlAccCliMqttLifeCycle;
@@ -52,9 +51,10 @@ public class UserAuthentictionLogic extends AuthenticationLogic {
 
     /**
      * Default constructor
+     *
      * @param options
      */
-    public UserAuthentictionLogic(Map<String, Object> options) {
+    public UserAuthenticationLogic(Map<String, Object> options) {
         super((String) options.get(Authenticator.ADDRESS_PREFIX_KEY), (String) options.get(Authenticator.ADDRESS_CLASSIFIER_KEY), (String) options.get(Authenticator.ADDRESS_ADVISORY_PREFIX_KEY));
         String addressPrefix = (String) options.get(Authenticator.ADDRESS_PREFIX_KEY);
         String addressClassifier = (String) options.get(Authenticator.ADDRESS_CLASSIFIER_KEY);
@@ -176,6 +176,7 @@ public class UserAuthentictionLogic extends AuthenticationLogic {
         }
     }
 
+    @Override
     protected List<AuthorizationEntry> buildAuthorizationMap(KapuaConnectionContext kcc) {
         ArrayList<AuthorizationEntry> ael = new ArrayList<AuthorizationEntry>();
         ael.add(createAuthorizationEntry(kcc, Acl.WRITE_ADMIN, aclAdvisory));

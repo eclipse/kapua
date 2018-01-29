@@ -11,9 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin.authentication;
 
-import java.util.List;
-import java.util.Map;
-
+import com.codahale.metrics.Timer.Context;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.message.system.DefaultSystemMessageCreator;
 import org.eclipse.kapua.broker.core.message.system.SystemMessageCreator;
@@ -22,8 +20,8 @@ import org.eclipse.kapua.broker.core.plugin.KapuaConnectionContext;
 import org.eclipse.kapua.broker.core.plugin.metric.ClientMetric;
 import org.eclipse.kapua.broker.core.plugin.metric.LoginMetric;
 import org.eclipse.kapua.broker.core.pool.JmsAssistantProducerPool;
-import org.eclipse.kapua.broker.core.pool.JmsAssistantProducerWrapper;
 import org.eclipse.kapua.broker.core.pool.JmsAssistantProducerPool.DESTINATIONS;
+import org.eclipse.kapua.broker.core.pool.JmsAssistantProducerWrapper;
 import org.eclipse.kapua.broker.core.setting.BrokerSetting;
 import org.eclipse.kapua.broker.core.setting.BrokerSettingKey;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -32,7 +30,8 @@ import org.eclipse.kapua.commons.util.ClassUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.codahale.metrics.Timer.Context;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Default authenticator implementation
@@ -54,35 +53,35 @@ public class DefaultAuthenticator implements Authenticator {
     private LoginMetric loginMetric = LoginMetric.getInstance();
 
     protected AdminAuthenticationLogic adminAuthenticationLogic;
-    protected UserAuthentictionLogic userAuthentictionLogic;
+    protected UserAuthenticationLogic userAuthenticationLogic;
+
     protected SystemMessageCreator systemMessageCreator;
 
     /**
      * Default constructor
-     * 
-     * @param options
-     *            thread safe options used to customize the authenticator behavior (please don't change the signature since the class is instantiated by reflection)
+     *
+     * @param options thread safe options used to customize the authenticator behavior (please don't change the signature since the class is instantiated by reflection)
      * @throws KapuaException
      */
     public DefaultAuthenticator(Map<String, Object> options) throws KapuaException {
         this.options = options;
         adminAuthenticationLogic = new AdminAuthenticationLogic(options);
-        userAuthentictionLogic = new UserAuthentictionLogic(options);
+        userAuthenticationLogic = new UserAuthenticationLogic(options);
         logger.info(">>> Security broker filter: calling start... Initialize system message creator");
         systemMessageCreator = ClassUtil.newInstance(SYSTEM_MESSAGE_CREATOR_CLASS_NAME, DefaultSystemMessageCreator.class);
     }
 
     @Override
-    public List<org.eclipse.kapua.broker.core.plugin.authentication.AuthorizationEntry> connect(KapuaConnectionContext kcc)
+    public List<AuthorizationEntry> connect(KapuaConnectionContext kcc)
             throws KapuaException {
-        List<org.eclipse.kapua.broker.core.plugin.authentication.AuthorizationEntry> authorizationEntries = null;
+        List<AuthorizationEntry> authorizationEntries = null;
         if (isAdminUser(kcc)) {
             loginMetric.getKapuasysTokenAttempt().inc();
             authorizationEntries = adminAuthenticationLogic.connect(kcc);
             clientMetric.getConnectedKapuasys().inc();
         } else {
             loginMetric.getNormalUserAttempt().inc();
-            authorizationEntries = userAuthentictionLogic.connect(kcc);
+            authorizationEntries = userAuthenticationLogic.connect(kcc);
             clientMetric.getConnectedClient().inc();
             sendConnectMessage(kcc);
         }
@@ -93,7 +92,7 @@ public class DefaultAuthenticator implements Authenticator {
     public void disconnect(KapuaConnectionContext kcc, Throwable error) {
         if (!isAdminUser(kcc)) {
             clientMetric.getDisconnectionKapuasys().inc();
-            userAuthentictionLogic.disconnect(kcc, error);
+            userAuthenticationLogic.disconnect(kcc, error);
         } else {
             clientMetric.getDisconnectionClient().inc();
             adminAuthenticationLogic.disconnect(kcc, error);
