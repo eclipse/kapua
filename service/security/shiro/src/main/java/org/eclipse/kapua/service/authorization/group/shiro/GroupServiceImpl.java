@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,10 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.group.shiro;
 
+import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -59,9 +61,17 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
         ArgumentValidator.notNull(groupCreator.getScopeId(), "roleCreator.scopeId");
         ArgumentValidator.notEmptyOrNull(groupCreator.getName(), "groupCreator.name");
 
+        GroupQuery query = new GroupQueryImpl(groupCreator.getScopeId());
+        query.setPredicate(new AttributePredicate<String>(GroupPredicates.NAME, groupCreator.getName()));
+        KapuaLocator locator = KapuaLocator.getInstance();
+        GroupService groupService = locator.getService(GroupService.class);
+        GroupListResult groupListResult = groupService.query(query);
+        if (!groupListResult.isEmpty()) {
+             throw new KapuaDuplicateNameException(groupCreator.getName());
+        }
+
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(GROUP_DOMAIN, Actions.write, groupCreator.getScopeId()));

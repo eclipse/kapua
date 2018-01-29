@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,6 +12,7 @@
 package org.eclipse.kapua.service.device.registry.internal;
 
 import com.google.common.collect.Lists;
+import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
@@ -72,6 +73,15 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
         if (allowedChildEntities(deviceCreator.getScopeId()) <= 0) {
             // TODO Check exception type to be catched by the broker
             throw new KapuaIllegalArgumentException("scopeId", "max devices reached");
+        }
+
+        DeviceQuery query = new DeviceQueryImpl(deviceCreator.getScopeId());
+        query.setPredicate(new AttributePredicate<String>(DevicePredicates.CLIENT_ID, deviceCreator.getClientId()));
+        KapuaLocator locator = KapuaLocator.getInstance();
+        DeviceRegistryService deviceService = locator.getService(DeviceRegistryService.class);
+        DeviceListResult deviceListResult = deviceService.query(query);
+        if (!deviceListResult.isEmpty()) {
+             throw new KapuaDuplicateNameException(deviceCreator.getClientId());
         }
         return entityManagerSession.onTransactedInsert(entityManager -> DeviceDAO.create(entityManager, deviceCreator));
     }

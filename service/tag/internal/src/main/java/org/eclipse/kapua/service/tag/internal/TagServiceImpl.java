@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,10 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.tag.internal;
 
+import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -24,6 +26,7 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+
 import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.tag.TagCreator;
 import org.eclipse.kapua.service.tag.TagFactory;
@@ -51,10 +54,17 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         ArgumentValidator.notNull(tagCreator, "tagCreator");
         ArgumentValidator.notNull(tagCreator.getScopeId(), "roleCreator.scopeId");
         ArgumentValidator.notEmptyOrNull(tagCreator.getName(), "tagCreator.name");
+        TagQuery query = new TagQueryImpl(tagCreator.getScopeId());
+        query.setPredicate(new AttributePredicate<String>(TagPredicates.NAME, tagCreator.getName()));
+        KapuaLocator locator = KapuaLocator.getInstance();
+        TagService tagService = locator.getService(TagService.class);
+        TagListResult tagListResult = tagService.query(query);
+        if (!tagListResult.isEmpty()) {
+             throw new KapuaDuplicateNameException(tagCreator.getName());
+        }
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(TAG_DOMAIN, Actions.write, tagCreator.getScopeId()));
