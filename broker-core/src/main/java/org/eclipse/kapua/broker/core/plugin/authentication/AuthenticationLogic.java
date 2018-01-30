@@ -11,10 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin.authentication;
 
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.Map;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.BrokerDomain;
 import org.eclipse.kapua.broker.core.plugin.Acl;
@@ -44,11 +40,14 @@ import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnect
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Authentication logic definition
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public abstract class AuthenticationLogic {
 
@@ -77,13 +76,10 @@ public abstract class AuthenticationLogic {
 
     /**
      * Default constructor
-     * 
-     * @param addressPrefix
-     *            prefix address to prepend to all the addressed when building the ACL list
-     * @param addressClassifier
-     *            address classifier used by the platform messages (not telemetry messages) (if defined by the platform)
-     * @param advisoryPrefix
-     *            address prefix for the advisory messages (if defined by the platform)
+     *
+     * @param addressPrefix     prefix address to prepend to all the addressed when building the ACL list
+     * @param addressClassifier address classifier used by the platform messages (not telemetry messages) (if defined by the platform)
+     * @param advisoryPrefix    address prefix for the advisory messages (if defined by the platform)
      */
     protected AuthenticationLogic(String addressPrefix, String addressClassifier, String advisoryPrefix) {
         aclHash = addressPrefix + ">";
@@ -92,7 +88,7 @@ public abstract class AuthenticationLogic {
 
     /**
      * Execute the connect logic returning the authorization list (ACL)
-     * 
+     *
      * @param kcc
      * @return
      * @throws KapuaException
@@ -102,14 +98,13 @@ public abstract class AuthenticationLogic {
 
     /**
      * Execute the disconnection logic
-     * 
+     *
      * @param kcc
      * @param error
      */
     public abstract void disconnect(KapuaConnectionContext kcc, Throwable error);
 
     /**
-     * 
      * @param kcc
      * @return
      */
@@ -117,7 +112,7 @@ public abstract class AuthenticationLogic {
 
     /**
      * Format the ACL resource based on the pattern and the account name looking into the connection context property
-     * 
+     *
      * @param pattern
      * @param kcc
      * @return
@@ -128,7 +123,7 @@ public abstract class AuthenticationLogic {
 
     /**
      * Format the ACL resource based on the pattern and the account name and client id looking into the connection context property
-     * 
+     *
      * @param pattern
      * @param kcc
      * @return
@@ -139,7 +134,7 @@ public abstract class AuthenticationLogic {
 
     /**
      * Create the authorization entry base on the ACL and the resource address
-     * 
+     *
      * @param kcc
      * @param acl
      * @param address
@@ -158,7 +153,7 @@ public abstract class AuthenticationLogic {
     /**
      * Enforce the device connection/user bound (if enabled)<br>
      * <b>Utility method used by the connection logic</b>
-     * 
+     *
      * @param options
      * @param deviceConnection
      * @param scopeId
@@ -181,7 +176,7 @@ public abstract class AuthenticationLogic {
     /**
      * Enforce the device connection/user bound (if enabled)<br>
      * <b>Utility method used by the connection logic</b>
-     * 
+     *
      * @param connectionUserCouplingMode
      * @param deviceConnection
      * @param scopeId
@@ -220,7 +215,7 @@ public abstract class AuthenticationLogic {
     /**
      * Check the connection count for a specific reserved user id<br>
      * <b>Utility method used by the connection logic</b>
-     * 
+     *
      * @param scopeId
      * @param userId
      * @param count
@@ -245,7 +240,7 @@ public abstract class AuthenticationLogic {
     /**
      * Load the device connection/user coupling mode<br>
      * <b>Utility method used by the connection logic</b>
-     * 
+     *
      * @param scopeId
      * @param options
      * @return
