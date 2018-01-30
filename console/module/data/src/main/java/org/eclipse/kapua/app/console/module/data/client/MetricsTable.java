@@ -185,6 +185,9 @@ public class MetricsTable extends LayoutContainer {
 
     public void refresh(GwtDatastoreDevice selectedDevice) {
         if (selectedDevice != null) {
+            tableContainer.getHeader().setStyleAttribute("white-space", "nowrap");
+            tableContainer.getHeader().setStyleAttribute("text-overflow", "ellipsis");
+            tableContainer.getHeader().setStyleAttribute("overflow", "hidden");
             tableContainer.setHeading(MSGS.metricsTableHeaderDevice(selectedDevice.getDevice()));
             if (selectedAsset != null) {
                 tableContainer.setHeading(MSGS.metricsTableHeaderAssets());
