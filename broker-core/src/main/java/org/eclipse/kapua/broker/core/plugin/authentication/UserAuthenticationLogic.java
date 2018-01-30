@@ -58,6 +58,7 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
         super((String) options.get(Authenticator.ADDRESS_PREFIX_KEY), (String) options.get(Authenticator.ADDRESS_CLASSIFIER_KEY), (String) options.get(Authenticator.ADDRESS_ADVISORY_PREFIX_KEY));
         String addressPrefix = (String) options.get(Authenticator.ADDRESS_PREFIX_KEY);
         String addressClassifier = (String) options.get(Authenticator.ADDRESS_CLASSIFIER_KEY);
+
         aclCtrlAccReply = addressPrefix + addressClassifier + ".{0}.*.*.REPLY.>";
         aclCtrlAccCliMqttLifeCycle = addressPrefix + addressClassifier + ".{0}.{1}.MQTT.>";
         aclCtrlAcc = addressPrefix + addressClassifier + ".{0}.>";
@@ -68,69 +69,32 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
     }
 
     @Override
-    public List<org.eclipse.kapua.broker.core.plugin.authentication.AuthorizationEntry> connect(KapuaConnectionContext kcc) throws KapuaException {
+    public List<AuthorizationEntry> connect(KapuaConnectionContext kcc) throws KapuaException {
         Context loginNormalUserTimeContext = loginMetric.getNormalUserTime().time();
+
         Context loginCheckAccessTimeContext = loginMetric.getCheckAccessTime().time();
-        boolean[] hasPermissions = new boolean[] {
-                // TODO check the permissions... move them to a constants class?
-                authorizationService.isPermitted(permissionFactory.newPermission(BROKER_DOMAIN, Actions.connect, kcc.getScopeId())),
-                authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.write, kcc.getScopeId())),
-                authorizationService.isPermitted(permissionFactory.newPermission(DATASTORE_DOMAIN, Actions.read, kcc.getScopeId())),
-                authorizationService.isPermitted(permissionFactory.newPermission(DATASTORE_DOMAIN, Actions.write, kcc.getScopeId()))
-        };
-        if (!hasPermissions[BROKER_CONNECT_IDX]) {
-            throw new KapuaIllegalAccessException(permissionFactory.newPermission(BROKER_DOMAIN, Actions.connect, kcc.getScopeId()).toString());
-        }
+        boolean[] hasPermissions = checkPermissions(kcc);
         loginCheckAccessTimeContext.stop();
 
         kcc.updatePermissions(hasPermissions);
-        List<org.eclipse.kapua.broker.core.plugin.authentication.AuthorizationEntry> authorizationEntries = buildAuthorizationMap(kcc);
 
         Context loginFindClientIdTimeContext = loginMetric.getFindClientIdTime().time();
         DeviceConnection deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.findByClientId(kcc.getScopeId(), kcc.getClientId()));
         loginFindClientIdTimeContext.stop();
+
         // enforce the user-device bound
         enforceDeviceConnectionUserBound(KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.getConfigValues(kcc.getScopeId())), deviceConnection, kcc.getScopeId(), kcc.getUserId());
 
         Context loginFindDevTimeContext = loginMetric.getFindDevTime().time();
-
-        String previousConnectionId = kcc.getOldConnectionId();
-        boolean stealingLinkDetected = (previousConnectionId != null);
-        if (deviceConnection == null) {
-            DeviceConnectionCreator deviceConnectionCreator = deviceConnectionFactory.newCreator(kcc.getScopeId());
-            deviceConnectionCreator.setClientId(kcc.getClientId());
-            deviceConnectionCreator.setClientIp(kcc.getClientIp());
-            deviceConnectionCreator.setProtocol(kcc.getConnectorDescriptor().getTransportProtocol());
-            deviceConnectionCreator.setServerIp(kcc.getBrokerIpOrHostName());
-            deviceConnectionCreator.setUserId(kcc.getUserId());
-            deviceConnectionCreator.setUserCouplingMode(ConnectionUserCouplingMode.INHERITED);
-            deviceConnectionCreator.setAllowUserChange(false);
-            deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.create(deviceConnectionCreator));
-        } else {
-            deviceConnection.setClientIp(kcc.getClientIp());
-            deviceConnection.setProtocol(kcc.getConnectorDescriptor().getTransportProtocol());
-            deviceConnection.setServerIp(kcc.getBrokerIpOrHostName());
-            deviceConnection.setUserId(kcc.getUserId());
-            deviceConnection.setStatus(DeviceConnectionStatus.CONNECTED);
-            deviceConnection.setAllowUserChange(false);
-            final DeviceConnection deviceConnectionToUpdate = deviceConnection;
-            KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.update(deviceConnectionToUpdate));
-            // TODO implement the banned status
-            // if (DeviceStatus.DISABLED.equals(device.getStatus())) {
-            // throw new KapuaIllegalAccessException("clientId - This client ID is disabled and cannot connect");
-            // }
-            // TODO manage the stealing link event (may be a good idea to use different connect status (connect -stealing)?
-            if (stealingLinkDetected) {
-                loginMetric.getStealingLinkConnect().inc();
-
-                // stealing link detected, skip info
-                logger.warn("Detected Stealing link for cliend id {} - account - last connection id was {} - current connection id is {} - IP: {} - No connection status changes!",
-                        new Object[] { kcc.getClientId(), kcc.getAccountName(), previousConnectionId, kcc.getConnectionId(), kcc.getClientIp() });
-            }
+        {
+            deviceConnection = upsertDeviceConnection(kcc, deviceConnection);
+            kcc.updateKapuaConnectionId(deviceConnection);
         }
-        kcc.updateKapuaConnectionId(deviceConnection);
         loginFindDevTimeContext.stop();
+
+        List<AuthorizationEntry> authorizationEntries = buildAuthorizationMap(kcc);
         loginNormalUserTimeContext.stop();
+
         return authorizationEntries;
     }
 
@@ -141,33 +105,39 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
             stealingLinkDetected = !kcc.getOldConnectionId().equals(kcc.getConnectionId());
         } else {
             logger.error("Cannot find connection id for client id {} on connection map. Correct connection id is {} - IP: {}",
-                    new Object[] { kcc.getClientId(), kcc.getConnectionId(), kcc.getClientIp() });
+                    kcc.getClientId(),
+                    kcc.getConnectionId(),
+                    kcc.getClientIp());
         }
         if (stealingLinkDetected) {
             loginMetric.getStealingLinkDisconnect().inc();
             // stealing link detected, skip info
             logger.warn("Detected Stealing link for cliend id {} - account id {} - last connection id was {} - current connection id is {} - IP: {} - No disconnection info will be added!",
-                    new Object[] { kcc.getClientId(), kcc.getScopeId(), kcc.getOldConnectionId(), kcc.getConnectionId(), kcc.getClientIp() });
+                    kcc.getClientId(),
+                    kcc.getScopeId(),
+                    kcc.getOldConnectionId(),
+                    kcc.getConnectionId(),
+                    kcc.getClientIp());
         } else {
-            final DeviceConnection deviceConnection;
+
+            DeviceConnection deviceConnection;
             try {
                 deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.findByClientId(kcc.getScopeId(), kcc.getClientId()));
             } catch (Exception e) {
                 throw new ShiroException("Error while looking for device connection on updating the device!", e);
             }
+
             if (deviceConnection != null) {
                 // the device connection must be not null
                 // update device connection (if the disconnection wasn't caused by a stealing link)
                 if (error instanceof KapuaDuplicateClientIdException) {
                     logger.debug("Skip device connection status update since is coming from a stealing link condition. Client id: {} - Connection id: {}",
-                            new Object[] { kcc.getClientId(), kcc.getConnectionId() });
+                            kcc.getClientId(),
+                            kcc.getConnectionId());
                 } else {
                     deviceConnection.setStatus(error == null ? DeviceConnectionStatus.DISCONNECTED : DeviceConnectionStatus.MISSING);
                     try {
-                        KapuaSecurityUtils.doPrivileged(() -> {
-                            deviceConnectionService.update(deviceConnection);
-                            return null;
-                        });
+                        KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.update(deviceConnection));
                     } catch (Exception e) {
                         throw new ShiroException("Error while updating the device connection status!", e);
                     }
@@ -206,4 +176,71 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
 
         return ael;
     }
+
+    protected boolean[] checkPermissions(KapuaConnectionContext kcc) throws KapuaException {
+        boolean[] hasPermissions = new boolean[] {
+                authorizationService.isPermitted(permissionFactory.newPermission(BROKER_DOMAIN, Actions.connect, kcc.getScopeId())),
+                authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.write, kcc.getScopeId())),
+                authorizationService.isPermitted(permissionFactory.newPermission(DATASTORE_DOMAIN, Actions.read, kcc.getScopeId())),
+                authorizationService.isPermitted(permissionFactory.newPermission(DATASTORE_DOMAIN, Actions.write, kcc.getScopeId()))
+        };
+
+        if (!hasPermissions[BROKER_CONNECT_IDX]) {
+            throw new KapuaIllegalAccessException(permissionFactory.newPermission(BROKER_DOMAIN, Actions.connect, kcc.getScopeId()).toString());
+        }
+
+        return hasPermissions;
+    }
+
+    /**
+     * Create a new {@link DeviceConnection} or updates the existing one using the info provided in the {@link KapuaConnectionContext}.
+     *
+     * @param kcc              The {@link KapuaConnectionContext} of the currect connection
+     * @param deviceConnection The {@link DeviceConnection} to update, or null if it needs to be created
+     * @return The created/updated {@link DeviceConnection}
+     * @throws KapuaException
+     */
+    protected DeviceConnection upsertDeviceConnection(KapuaConnectionContext kcc, DeviceConnection deviceConnection) throws KapuaException {
+
+        if (deviceConnection == null) {
+            DeviceConnectionCreator deviceConnectionCreator = deviceConnectionFactory.newCreator(kcc.getScopeId());
+            deviceConnectionCreator.setClientId(kcc.getClientId());
+            deviceConnectionCreator.setClientIp(kcc.getClientIp());
+            deviceConnectionCreator.setProtocol(kcc.getConnectorDescriptor().getTransportProtocol());
+            deviceConnectionCreator.setServerIp(kcc.getBrokerIpOrHostName());
+            deviceConnectionCreator.setUserId(kcc.getUserId());
+            deviceConnectionCreator.setUserCouplingMode(ConnectionUserCouplingMode.INHERITED);
+            deviceConnectionCreator.setAllowUserChange(false);
+            deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.create(deviceConnectionCreator));
+        } else {
+            deviceConnection.setClientIp(kcc.getClientIp());
+            deviceConnection.setProtocol(kcc.getConnectorDescriptor().getTransportProtocol());
+            deviceConnection.setServerIp(kcc.getBrokerIpOrHostName());
+            deviceConnection.setUserId(kcc.getUserId());
+            deviceConnection.setStatus(DeviceConnectionStatus.CONNECTED);
+            deviceConnection.setAllowUserChange(false);
+            final DeviceConnection deviceConnectionToUpdate = deviceConnection;
+            KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.update(deviceConnectionToUpdate));
+            // TODO implement the banned status
+            // if (DeviceStatus.DISABLED.equals(device.getStatus())) {
+            // throw new KapuaIllegalAccessException("clientId - This client ID is disabled and cannot connect");
+            // }
+
+            // TODO manage the stealing link event (may be a good idea to use different connect status (connect -stealing)?
+            String previousConnectionId = kcc.getOldConnectionId();
+            if (previousConnectionId != null) {
+                loginMetric.getStealingLinkConnect().inc();
+
+                // stealing link detected, skip info
+                logger.warn("Detected Stealing link for cliend id {} - account - last connection id was {} - current connection id is {} - IP: {} - No connection status changes!",
+                        kcc.getClientId(),
+                        kcc.getAccountName(),
+                        previousConnectionId,
+                        kcc.getConnectionId(),
+                        kcc.getClientIp());
+            }
+        }
+        return deviceConnection;
+    }
+
 }
