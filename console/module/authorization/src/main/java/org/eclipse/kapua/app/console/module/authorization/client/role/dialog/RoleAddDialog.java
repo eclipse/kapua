@@ -64,6 +64,7 @@ public class RoleAddDialog extends EntityAddEditDialog {
                 unmask();
                 submitButton.enable();
                 cancelButton.enable();
+                hide();
             }
         });
 

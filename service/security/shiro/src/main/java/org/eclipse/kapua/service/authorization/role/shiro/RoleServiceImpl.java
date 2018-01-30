@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,10 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role.shiro;
 
+import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -68,6 +70,14 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(ROLE_DOMAIN, Actions.write, roleCreator.getScopeId()));
+
+        RoleQuery query = new RoleQueryImpl(roleCreator.getScopeId());
+        query.setPredicate(new AttributePredicate<String>(RolePredicates.NAME, roleCreator.getName()));
+        RoleService roleService = locator.getService(RoleService.class);
+        RoleListResult roleListResult = roleService.query(query);
+        if (!roleListResult.isEmpty()) {
+             throw new KapuaDuplicateNameException(roleCreator.getName());
+        }
 
         //
         // If permission are created out of the role scope, check that the current user has the permission on the external scopeId.
