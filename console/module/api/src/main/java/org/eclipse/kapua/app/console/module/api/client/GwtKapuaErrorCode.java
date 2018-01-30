@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -29,5 +29,6 @@ public enum GwtKapuaErrorCode {
     XSRF_INVALID_TOKEN,
     PARENT_LIMIT_EXCEEDED_IN_CONFIG,
     SUBJECT_UNAUTHORIZED,
-    ENTITY_ALREADY_EXIST_IN_ANOTHER_ACCOUNT;
+    ENTITY_ALREADY_EXIST_IN_ANOTHER_ACCOUNT,
+    SELF_LIMIT_EXCEEDED_IN_CONFIG;
 }
