@@ -88,19 +88,6 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
             ArgumentValidator.isEmptyOrNull(userCreator.getExternalId(), "externalId");
         }
 
-        UserQuery query = new UserQueryImpl(userCreator.getScopeId());
-        query.setPredicate(new AttributePredicate<String>(UserPredicates.NAME, userCreator.getName()));
-        KapuaLocator locator = KapuaLocator.getInstance();
-        UserService userService = locator.getService(UserService.class);
-        UserListResult userListResult = userService.query(query);
-        if (!userListResult.isEmpty()) {
-             throw new KapuaDuplicateNameException(userCreator.getName());
-        }
-
-        if(findByName(userCreator.getName()) != null) {
-            throw new KapuaDuplicateNameInAnotherAccountError(userCreator.getName());
-        }
-
         final int remainingChildEntities = allowedChildEntities(userCreator.getScopeId());
         if (remainingChildEntities <= 0) {
             LOGGER.info("Exceeded child limit - remaining: {}", remainingChildEntities);
@@ -110,6 +97,17 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         //
         // Check Access
         this.authorizationService.checkPermission(this.permissionFactory.newPermission(USER_DOMAIN, Actions.write, userCreator.getScopeId()));
+
+        UserQuery query = new UserQueryImpl(userCreator.getScopeId());
+        query.setPredicate(new AttributePredicate<String>(UserPredicates.NAME, userCreator.getName()));
+        UserListResult userListResult = query(query);
+        if (!userListResult.isEmpty()) {
+             throw new KapuaDuplicateNameException(userCreator.getName());
+        }
+
+        if(findByName(userCreator.getName()) != null) {
+            throw new KapuaDuplicateNameInAnotherAccountError(userCreator.getName());
+        }
 
         return entityManagerSession.onTransactedInsert(em -> UserDAO.create(em, userCreator));
     }

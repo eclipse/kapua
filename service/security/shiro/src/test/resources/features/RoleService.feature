@@ -39,7 +39,7 @@ Scenario: Duplicate role names
     It must not be possible to create role entries with duplicate names.
     Such an attempt must throw an exception.
 
-    Given I expect the exception "KapuaException" with the text "Error during Persistence Operation"
+    Given I expect the exception "KapuaDuplicateNameException" with the text "An entity with the same name test_role already exists."
     When I create the following role
     |scopeId |name      |actions                 |
     |1       |test_role |write, read, connect    |

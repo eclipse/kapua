@@ -61,14 +61,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
         ArgumentValidator.notNull(groupCreator.getScopeId(), "roleCreator.scopeId");
         ArgumentValidator.notEmptyOrNull(groupCreator.getName(), "groupCreator.name");
 
-        GroupQuery query = new GroupQueryImpl(groupCreator.getScopeId());
-        query.setPredicate(new AttributePredicate<String>(GroupPredicates.NAME, groupCreator.getName()));
         KapuaLocator locator = KapuaLocator.getInstance();
-        GroupService groupService = locator.getService(GroupService.class);
-        GroupListResult groupListResult = groupService.query(query);
-        if (!groupListResult.isEmpty()) {
-             throw new KapuaDuplicateNameException(groupCreator.getName());
-        }
 
         //
         // Check Access
@@ -78,6 +71,13 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
 
         if (allowedChildEntities(groupCreator.getScopeId()) <= 0) {
             throw new KapuaIllegalArgumentException("scopeId", "max groups reached");
+        }
+
+        GroupQuery query = new GroupQueryImpl(groupCreator.getScopeId());
+        query.setPredicate(new AttributePredicate<String>(GroupPredicates.NAME, groupCreator.getName()));
+        GroupListResult groupListResult = query(query);
+        if (!groupListResult.isEmpty()) {
+             throw new KapuaDuplicateNameException(groupCreator.getName());
         }
 
         return entityManagerSession.onTransactedInsert(em -> GroupDAO.create(em, groupCreator));
