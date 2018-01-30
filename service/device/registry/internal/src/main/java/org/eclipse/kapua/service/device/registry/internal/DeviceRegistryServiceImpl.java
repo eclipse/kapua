@@ -77,9 +77,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
 
         DeviceQuery query = new DeviceQueryImpl(deviceCreator.getScopeId());
         query.setPredicate(new AttributePredicate<String>(DevicePredicates.CLIENT_ID, deviceCreator.getClientId()));
-        KapuaLocator locator = KapuaLocator.getInstance();
-        DeviceRegistryService deviceService = locator.getService(DeviceRegistryService.class);
-        DeviceListResult deviceListResult = deviceService.query(query);
+        DeviceListResult deviceListResult = query(query);
         if (!deviceListResult.isEmpty()) {
              throw new KapuaDuplicateNameException(deviceCreator.getClientId());
         }

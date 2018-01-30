@@ -54,14 +54,8 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         ArgumentValidator.notNull(tagCreator, "tagCreator");
         ArgumentValidator.notNull(tagCreator.getScopeId(), "roleCreator.scopeId");
         ArgumentValidator.notEmptyOrNull(tagCreator.getName(), "tagCreator.name");
-        TagQuery query = new TagQueryImpl(tagCreator.getScopeId());
-        query.setPredicate(new AttributePredicate<String>(TagPredicates.NAME, tagCreator.getName()));
+
         KapuaLocator locator = KapuaLocator.getInstance();
-        TagService tagService = locator.getService(TagService.class);
-        TagListResult tagListResult = tagService.query(query);
-        if (!tagListResult.isEmpty()) {
-             throw new KapuaDuplicateNameException(tagCreator.getName());
-        }
 
         //
         // Check Access
@@ -71,6 +65,13 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         if (allowedChildEntities(tagCreator.getScopeId()) <= 0) {
             throw new KapuaIllegalArgumentException("scopeId", "max tags reached");
+        }
+
+        TagQuery query = new TagQueryImpl(tagCreator.getScopeId());
+        query.setPredicate(new AttributePredicate<String>(TagPredicates.NAME, tagCreator.getName()));
+        TagListResult tagListResult = query(query);
+        if (!tagListResult.isEmpty()) {
+             throw new KapuaDuplicateNameException(tagCreator.getName());
         }
 
         return entityManagerSession.onTransactedInsert(em -> TagDAO.create(em, tagCreator));

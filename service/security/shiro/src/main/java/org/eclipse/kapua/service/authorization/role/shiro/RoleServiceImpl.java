@@ -71,14 +71,6 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(ROLE_DOMAIN, Actions.write, roleCreator.getScopeId()));
 
-        RoleQuery query = new RoleQueryImpl(roleCreator.getScopeId());
-        query.setPredicate(new AttributePredicate<String>(RolePredicates.NAME, roleCreator.getName()));
-        RoleService roleService = locator.getService(RoleService.class);
-        RoleListResult roleListResult = roleService.query(query);
-        if (!roleListResult.isEmpty()) {
-             throw new KapuaDuplicateNameException(roleCreator.getName());
-        }
-
         //
         // If permission are created out of the role scope, check that the current user has the permission on the external scopeId.
         if (roleCreator.getPermissions() != null) {
@@ -96,6 +88,14 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         if (allowedChildEntities(roleCreator.getScopeId()) <= 0) {
             throw new KapuaIllegalArgumentException("scopeId", "max roles reached");
         }
+
+        RoleQuery query = new RoleQueryImpl(roleCreator.getScopeId());
+        query.setPredicate(new AttributePredicate<String>(RolePredicates.NAME, roleCreator.getName()));
+        RoleListResult roleListResult = query(query);
+        if (!roleListResult.isEmpty()) {
+             throw new KapuaDuplicateNameException(roleCreator.getName());
+        }
+
         return entityManagerSession.onTransactedInsert(em -> {
             Role role = RoleDAO.create(em, roleCreator);
 

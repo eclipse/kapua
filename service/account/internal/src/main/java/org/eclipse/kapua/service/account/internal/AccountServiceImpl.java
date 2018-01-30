@@ -31,7 +31,6 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -58,7 +57,6 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
     private static final Domain ACCOUNT_DOMAIN = new AccountDomain();
 
-//    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     @Inject
     private AuthorizationService authorizationService;
 
@@ -106,9 +104,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         AccountQuery query = new AccountQueryImpl(accountCreator.getScopeId());
         query.setPredicate(new AttributePredicate<String>(AccountPredicates.NAME, accountCreator.getName()));
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AccountService accountService = locator.getService(AccountService.class);
-        AccountListResult accountListResult = accountService.query(query);
+        AccountListResult accountListResult = query(query);
         if (!accountListResult.isEmpty()) {
              throw new KapuaDuplicateNameException(accountCreator.getName());
         }

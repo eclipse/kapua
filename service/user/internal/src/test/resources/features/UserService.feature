@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 Eurotech and/or its affiliates and others
+# Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -215,7 +215,7 @@ Scenario: Create user that already exist
         | integer | lockoutPolicy.lockDuration | 3     |
     Given User with name "kapua-user" in scope with id 42
     When I create user
-    And I expect the exception "KapuaException" with the text "Error during Persistence Operation"
+    And I expect the exception "KapuaDuplicateNameException" with the text "An entity with the same name kapua-user already exists."
     When I create same user
     Then I get Kapua exception
 
