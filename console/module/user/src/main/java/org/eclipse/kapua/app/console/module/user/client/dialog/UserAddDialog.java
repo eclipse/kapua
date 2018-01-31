@@ -20,6 +20,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAd
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.util.Constants;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.ConfirmPasswordFieldValidator;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.PasswordFieldValidator;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator;
@@ -204,16 +205,12 @@ public class UserAddDialog extends EntityAddEditDialog {
 
             @Override
             public void onFailure(Throwable cause) {
+                FailureHandler.handleFormException(formPanel, cause);
+                status.hide();
+                formPanel.getButtonBar().enable();
                 unmask();
-
                 submitButton.enable();
                 cancelButton.enable();
-                status.hide();
-
-                exitStatus = false;
-                exitMessage = MSGS.dialogAddError(cause.getLocalizedMessage());
-
-                hide();
             }
         });
     }
