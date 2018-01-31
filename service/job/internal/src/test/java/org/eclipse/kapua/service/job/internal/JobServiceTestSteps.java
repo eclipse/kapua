@@ -12,13 +12,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.internal;
 
-import cucumber.api.Scenario;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
-import cucumber.runtime.java.guice.ScenarioScoped;
+import static org.eclipse.kapua.commons.model.query.predicate.AttributePredicate.attributeIsEqualTo;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+
+import java.math.BigInteger;
+import java.security.acl.Permission;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
@@ -36,6 +41,7 @@ import org.eclipse.kapua.service.job.JobJAXBContextProvider;
 import org.eclipse.kapua.service.job.JobQuery;
 import org.eclipse.kapua.service.job.JobService;
 import org.eclipse.kapua.service.job.common.CommonData;
+import org.eclipse.kapua.service.job.common.TestConfig;
 import org.eclipse.kapua.service.job.step.JobStep;
 import org.eclipse.kapua.service.job.step.StepData;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
@@ -45,14 +51,13 @@ import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import java.math.BigInteger;
-import java.security.acl.Permission;
-import java.util.List;
-
-import static org.eclipse.kapua.commons.model.query.predicate.AttributePredicate.attributeIsEqualTo;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
+import cucumber.api.Scenario;
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+import cucumber.runtime.java.guice.ScenarioScoped;
 
 // ****************************************************************************************
 // * Implementation of Gherkin steps used in JobService.feature scenarios.                *
@@ -157,6 +162,22 @@ public class JobServiceTestSteps extends AbstractKapuaSteps {
     // ************************************************************************************
     // * Cucumber Test steps                                                              *
     // ************************************************************************************
+
+    @When("^I configure$")
+    public void setConfigurationValue(List<TestConfig> testConfigs) throws Exception {
+        Map<String, Object> valueMap = new HashMap<>();
+
+        for (TestConfig config : testConfigs) {
+            config.addConfigToMap(valueMap);
+        }
+        try {
+            commonData.primeException();
+            jobService.setConfigValues(commonData.currentScopeId,
+                    new KapuaEid(BigInteger.ONE), valueMap);
+        } catch (KapuaException ke) {
+            commonData.verifyException(ke);
+        }
+    }
 
     @Given("^A regular job creator with the name \"(.+)\"$")
     public void prepareARegularJobCreator(String name) {
