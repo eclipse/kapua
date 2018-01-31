@@ -341,7 +341,7 @@ public class NorthView extends LayoutContainer {
                         }
                         // Force the west view (which contains the navigation menu) to reload available components
                         parent.getWestView().addMenuItems(viewDescriptors);
-                        parent.getWestView().setDashboardSelected(false);
+                        parent.getWestView().setDashboardSelected(true);
                         parent.getWestView().layout(true);
 
                         // Unmask the whole page
