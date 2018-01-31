@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -241,8 +241,11 @@ public class WestNavigationView extends LayoutContainer {
         ModelData selectedAccountItem = null;
         ModelData selectedManageItem = null;
 
-        if (cloudResourcesTreeGrid != null && accountManagementTreeGrid != null) {
+        if (cloudResourcesTreeGrid != null) {
             selectedAccountItem = cloudResourcesTreeGrid.getSelectionModel().getSelectedItem();
+        }
+
+        if (accountManagementTreeGrid != null) {
             selectedManageItem = accountManagementTreeGrid.getSelectionModel().getSelectedItem();
         }
 

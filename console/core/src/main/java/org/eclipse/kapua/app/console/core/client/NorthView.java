@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -341,7 +341,7 @@ public class NorthView extends LayoutContainer {
                         }
                         // Force the west view (which contains the navigation menu) to reload available components
                         parent.getWestView().addMenuItems(viewDescriptors);
-                        parent.getWestView().setDashboardSelected(false);
+                        parent.getWestView().setDashboardSelected(true);
                         parent.getWestView().layout(true);
 
                         // Unmask the whole page
