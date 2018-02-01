@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,7 +17,6 @@ import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
@@ -26,6 +25,7 @@ import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
@@ -47,6 +47,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     private static final ConsoleDeviceMessages DEVICE_MSGS = GWT.create(ConsoleDeviceMessages.class);
     private static final int WIDTH = 200;
+    private static final int MAX_LEN = 255;
 
     private EntityGrid<GwtDevice> entityGrid;
 
@@ -54,15 +55,15 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
     private final GwtTagServiceAsync tagService = GWT.create(GwtTagService.class);
     private final GwtSession currentSession;
 
-    private final TextField<String> clientIdField;
-    private final TextField<String> serialNumberField;
-    private final TextField<String> displayNameField;
+    private final KapuaTextField<String> clientIdField;
+    private final KapuaTextField<String> serialNumberField;
+    private final KapuaTextField<String> displayNameField;
     private final SimpleComboBox<GwtDeviceQueryPredicates.GwtDeviceStatus> statusCombo;
     private final SimpleComboBox<GwtDeviceQueryPredicates.GwtDeviceConnectionStatus> connectionStatusCombo;
-    private final TextField<String> iotFrameworkVersionField;
-    private final TextField<String> applicationIdentifiersField;
-    private final TextField<String> customAttribute1Field;
-    private final TextField<String> customAttribute2Field;
+    private final KapuaTextField<String> iotFrameworkVersionField;
+    private final KapuaTextField<String> applicationIdentifiersField;
+    private final KapuaTextField<String> customAttribute1Field;
+    private final KapuaTextField<String> customAttribute2Field;
 
     private ComboBox<GwtGroup> groupsCombo;
     private GwtGroup allGroup;
@@ -88,9 +89,10 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
 
         fieldsPanel.add(clientIdLabel);
 
-        clientIdField = new TextField<String>();
+        clientIdField = new KapuaTextField<String>();
         clientIdField.setName("clientId");
         clientIdField.setWidth(WIDTH);
+        clientIdField.setMaxLength(MAX_LEN);
         clientIdField.setStyleAttribute("margin-top", "0px");
         clientIdField.setStyleAttribute("margin-left", "5px");
         clientIdField.setStyleAttribute("margin-right", "5px");
@@ -104,9 +106,10 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         displayNameLabel.setStyleAttribute("margin", "5px");
         fieldsPanel.add(displayNameLabel);
 
-        displayNameField = new TextField<String>();
+        displayNameField = new KapuaTextField<String>();
         displayNameField.setName("displayName");
         displayNameField.setWidth(WIDTH);
+        displayNameField.setMaxLength(MAX_LEN);
         displayNameField.setStyleAttribute("margin-top", "0px");
         displayNameField.setStyleAttribute("margin-left", "5px");
         displayNameField.setStyleAttribute("margin-right", "5px");
@@ -120,9 +123,10 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         serialNumberLabel.setStyleAttribute("margin", "5px");
         fieldsPanel.add(serialNumberLabel);
 
-        serialNumberField = new TextField<String>();
+        serialNumberField = new KapuaTextField<String>();
         serialNumberField.setName("serialNumber");
         serialNumberField.setWidth(WIDTH);
+        serialNumberField.setMaxLength(MAX_LEN);
         serialNumberField.setStyleAttribute("margin-top", "0px");
         serialNumberField.setStyleAttribute("margin-left", "5px");
         serialNumberField.setStyleAttribute("margin-right", "5px");
@@ -189,9 +193,10 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         iotFrameworkVersionLabel.setStyleAttribute("margin", "5px");
         fieldsPanel.add(iotFrameworkVersionLabel);
 
-        iotFrameworkVersionField = new TextField<String>();
+        iotFrameworkVersionField = new KapuaTextField<String>();
         iotFrameworkVersionField.setName("iotFrameworkVersion");
         iotFrameworkVersionField.setWidth(WIDTH);
+        iotFrameworkVersionField.setMaxLength(MAX_LEN);
         iotFrameworkVersionField.setStyleAttribute("margin-top", "0px");
         iotFrameworkVersionField.setStyleAttribute("margin-left", "5px");
         iotFrameworkVersionField.setStyleAttribute("margin-right", "5px");
@@ -205,9 +210,10 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         applicationIdentifiersLabel.setStyleAttribute("margin", "5px");
         fieldsPanel.add(applicationIdentifiersLabel);
 
-        applicationIdentifiersField = new TextField<String>();
+        applicationIdentifiersField = new KapuaTextField<String>();
         applicationIdentifiersField.setName("applicationIdentifiers");
         applicationIdentifiersField.setWidth(WIDTH);
+        applicationIdentifiersField.setMaxLength(MAX_LEN);
         applicationIdentifiersField.setStyleAttribute("margin-top", "0px");
         applicationIdentifiersField.setStyleAttribute("margin-left", "5px");
         applicationIdentifiersField.setStyleAttribute("margin-right", "5px");
@@ -221,9 +227,10 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         customAttribute1Label.setStyleAttribute("margin", "5px");
         fieldsPanel.add(customAttribute1Label);
 
-        customAttribute1Field = new TextField<String>();
+        customAttribute1Field = new KapuaTextField<String>();
         customAttribute1Field.setName("customAttribute1");
         customAttribute1Field.setWidth(WIDTH);
+        customAttribute1Field.setMaxLength(MAX_LEN);
         customAttribute1Field.setStyleAttribute("margin-top", "0px");
         customAttribute1Field.setStyleAttribute("margin-left", "5px");
         customAttribute1Field.setStyleAttribute("margin-right", "5px");
@@ -237,9 +244,10 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         customAttribute2Label.setStyleAttribute("margin", "5px");
         fieldsPanel.add(customAttribute2Label);
 
-        customAttribute2Field = new TextField<String>();
+        customAttribute2Field = new KapuaTextField<String>();
         customAttribute2Field.setName("customAttribute1");
         customAttribute2Field.setWidth(WIDTH);
+        customAttribute2Field.setMaxLength(MAX_LEN);
         customAttribute2Field.setStyleAttribute("margin-top", "0px");
         customAttribute2Field.setStyleAttribute("margin-left", "5px");
         customAttribute2Field.setStyleAttribute("margin-right", "5px");

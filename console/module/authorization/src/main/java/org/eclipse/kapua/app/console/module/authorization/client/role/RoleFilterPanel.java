@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,6 +16,7 @@ import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
@@ -23,18 +24,18 @@ import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRoleQu
 
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.core.client.GWT;
 
 public class RoleFilterPanel extends EntityFilterPanel<GwtRole> {
 
     private final static ConsoleRoleMessages ROLE_MSGS = GWT.create(ConsoleRoleMessages.class);
     private final static int WIDTH = 200;
+    private static final int MAX_LEN = 255;
 
     private final EntityGrid<GwtRole> entityGrid;
     private final GwtSession currentSession;
 
-    private final TextField<String> nameField;
+    private final KapuaTextField<String> nameField;
 
     public RoleFilterPanel(AbstractEntityView<GwtRole> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
@@ -53,9 +54,10 @@ public class RoleFilterPanel extends EntityFilterPanel<GwtRole> {
 
         fieldsPanel.add(roleNameLabel);
 
-        nameField = new TextField<String>();
+        nameField = new KapuaTextField<String>();
         nameField.setName("name");
         nameField.setWidth(WIDTH);
+        nameField.setMaxLength(MAX_LEN);
         nameField.setStyleAttribute("margin-top", "0px");
         nameField.setStyleAttribute("margin-left", "5px");
         nameField.setStyleAttribute("margin-right", "5px");
