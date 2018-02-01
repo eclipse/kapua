@@ -87,6 +87,9 @@
         <api>org.eclipse.kapua.service.datastore.DatastoreObjectFactory</api>
         <api>org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory</api>
 
+        <api>org.eclipse.kapua.service.endpoint.EndpointInfoFactory</api>
+        <api>org.eclipse.kapua.service.endpoint.EndpointInfoService</api>
+
         <api>org.eclipse.kapua.service.tag.TagFactory</api>
         <api>org.eclipse.kapua.service.tag.TagService</api>
 

@@ -157,6 +157,12 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventXmlRegistry;
+import org.eclipse.kapua.service.endpoint.EndpointInfo;
+import org.eclipse.kapua.service.endpoint.EndpointInfoCreator;
+import org.eclipse.kapua.service.endpoint.EndpointInfoListResult;
+import org.eclipse.kapua.service.endpoint.EndpointInfoQuery;
+import org.eclipse.kapua.service.endpoint.EndpointInfoXmlRegistry;
+import org.eclipse.kapua.service.endpoint.EndpointUsage;
 import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.tag.TagCreator;
 import org.eclipse.kapua.service.tag.TagListResult;
@@ -350,6 +356,14 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
 
                     // Permission
                     Permission.class,
+
+                    // Endpoint Info
+                    EndpointUsage.class,
+                    EndpointInfo.class,
+                    EndpointInfoListResult.class,
+                    EndpointInfoCreator.class,
+                    EndpointInfoQuery.class,
+                    EndpointInfoXmlRegistry.class,
 
                     // Roles
                     Role.class,
