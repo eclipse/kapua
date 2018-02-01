@@ -13,6 +13,8 @@ package org.eclipse.kapua.app.console.module.authorization.server;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.extjs.gxt.ui.client.Style.SortDir;
 import org.apache.commons.lang3.StringUtils;
@@ -43,8 +45,9 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet implements GwtAccessPermissionService {
+public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet implements GwtAccessPermissionService, IsSerializable {
 
     private static final long serialVersionUID = 3606053200278262228L;
 
@@ -144,5 +147,68 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
             }
         }
         return new BasePagingLoadResult<GwtAccessPermission>(gwtAccessPermissions, loadConfig.getOffset(), totalLength);
+    }
+
+    @Override
+    public GwtAccessPermission createCheck(GwtXSRFToken gwtXsrfToken, List<GwtAccessPermissionCreator> listOfCreatorsApp, String scopeShortId, String userShortId) throws GwtKapuaException {
+        checkXSRFToken(gwtXsrfToken);
+
+        GwtAccessPermission gwtAccessPermission = null;
+        try {
+            KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeShortId);
+            KapuaId userKapudId = GwtKapuaCommonsModelConverter.convertKapuaId(userShortId);
+            KapuaLocator locator = KapuaLocator.getInstance();
+            AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
+            AccessInfo accessInfo = accessInfoService.findByUserId(scopeId, userKapudId);
+            List<String> llistDBbyDomainName = new ArrayList<String>();
+            List<String> listAppbyDomainName = new ArrayList<String>();
+            List<String> allListActions = new ArrayList<String>();
+            Map<String, List<String>> applicationMap = new HashMap<String, List<String>>();
+            Map<String, List<String>> databaseMap = new HashMap<String, List<String>>();
+
+            AccessPermissionService accessPermissionService = locator.getService(AccessPermissionService.class);
+            AccessPermissionListResult listDB = accessPermissionService.findByAccessInfoId(scopeId, accessInfo.getId());
+            for (AccessPermission accessPermission : listDB.getItems()) {
+                GwtAccessPermission gwtAccessPermission2 = KapuaGwtAuthorizationModelConverter.convertAccessPermission(accessPermission);
+                List<String> listDBbyActionName = new ArrayList<String>();
+                llistDBbyDomainName.add(gwtAccessPermission2.getPermissionDomain().toString());
+                listDBbyActionName.add(gwtAccessPermission2.getPermissionAction().toString());
+                allListActions.addAll(listDBbyActionName);
+                if (databaseMap.get(gwtAccessPermission2.getPermissionDomain().toString()) != null) {
+                    databaseMap.get(gwtAccessPermission2.getPermissionDomain().toString()).add(gwtAccessPermission2.getPermissionAction().toString());
+                } else {
+                    databaseMap.put(gwtAccessPermission2.getPermissionDomain().toString(), listDBbyActionName);
+                }
+            }
+
+            for (GwtAccessPermissionCreator gwtAccessPermissionCreator : listOfCreatorsApp) {
+                List<String> listAppbyActionName = new ArrayList<String>();
+
+                listAppbyDomainName.add(gwtAccessPermissionCreator.getPermission().getDomain().toString());
+                listAppbyActionName.add(gwtAccessPermissionCreator.getPermission().getAction().toString());
+                if (applicationMap.get(gwtAccessPermissionCreator.getPermission().getDomain().toString()) != null) {
+                    applicationMap.get(gwtAccessPermissionCreator.getPermission().getDomain().toString()).add(gwtAccessPermissionCreator.getPermission().getAction().toString());
+                } else {
+                    applicationMap.put(gwtAccessPermissionCreator.getPermission().getDomain().toString(), listAppbyActionName);
+                }
+
+            }
+
+            for (GwtAccessPermissionCreator gwtAccessPermissionCreator : listOfCreatorsApp) {
+                AccessPermissionCreator accessInfoCreator = GwtKapuaAuthorizationModelConverter.convertAccessPermissionCreator(gwtAccessPermissionCreator);
+                AccessPermission accessPermission = accessPermissionService.create(accessInfoCreator);
+                gwtAccessPermission = KapuaGwtAuthorizationModelConverter.convertAccessPermission(accessPermission);
+
+            }
+
+            for (AccessPermission accessPermission : listDB.getItems()) {
+                accessPermissionService.delete(scopeId, accessPermission.getId());
+            }
+
+        } catch (Throwable t) {
+            KapuaExceptionHandler.handle(t);
+        }
+        // Return result
+        return gwtAccessPermission;
     }
 }
