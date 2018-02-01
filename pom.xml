@@ -490,6 +490,16 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-endpoint-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-endpoint-internal</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-datastore-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -1322,7 +1332,7 @@
                 <artifactId>jose4j</artifactId>
                 <version>0.5.2</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.apache.qpid</groupId>
                 <artifactId>qpid-jms-client</artifactId>
