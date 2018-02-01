@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,6 +16,8 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaUnauthenticatedException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurationErrorCodes;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurationException;
 import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationException;
 import org.slf4j.Logger;
@@ -62,69 +64,25 @@ public class KapuaExceptionHandler {
             // default
             throw new GwtKapuaException(GwtKapuaErrorCode.INVALID_USERNAME_PASSWORD, t);
         }
-        // else if (t instanceof KapuaInvalidUsernamePasswordException) {
-        //
-        // // bad username/password
-        // throw new GwtEdcException(GwtEdcErrorCode.INVALID_USERNAME_PASSWORD, t, ((EdcInvalidUsernamePasswordException) t).getRemainingLoginAttempts());
-        // }
-        // else if (t instanceof EdcLockedUserException) {
-        //
-        // throw new GwtEdcException(GwtEdcErrorCode.LOCKED_USER, t);
-        // }
-        // else if (t instanceof KapuaIllegalAccessException) {
-        //
-        // // not allowed
-        // throw new GwtEdcException(GwtEdcErrorCode.ILLEGAL_ACCESS, t);
-        // }
-        // else if (t instanceof KapuaDuplicateNameException) {
-        //
-        // // duplicate name
-        // throw new GwtEdcException(GwtEdcErrorCode.DUPLICATE_NAME,
-        // t,
-        // ((KapuaDuplicateNameException) t).getDuplicateFieldName());
-        // }
-        // else if (t instanceof KapuaIllegalNullArgumentException) {
-        //
-        // // illegal null field value
-        // throw new GwtEdcException(GwtEdcErrorCode.ILLEGAL_NULL_ARGUMENT,
-        // t,
-        // ((KapuaIllegalArgumentException) t).getIllegalArgumentName());
-        // }
-        // else if (t instanceof KapuaIllegalArgumentException) {
-        //
-        // // illegal field value
-        // throw new GwtEdcException(GwtEdcErrorCode.ILLEGAL_ARGUMENT,
-        // t,
-        // ((KapuaIllegalArgumentException) t).getIllegalArgumentName());
-        // }
-        // else if (t instanceof KapuaLastAdminException) {
-        //
-        // // attempt to remove last account administrator
-        // throw new GwtEdcException(GwtEdcErrorCode.CANNOT_REMOVE_LAST_ADMIN, t, "administrator");
-        // }
-        // else if (t instanceof KapuaInvalidRuleQueryException) {
-        //
-        // // attempt to remove last account administrator
-        // throw new GwtEdcException(GwtEdcErrorCode.INVALID_RULE_QUERY, t, t.getLocalizedMessage());
-        // }
-        // else if (t instanceof EdcSystemEventException) {
-        //
-        // // the operation was completed but a system event delivery failed.
-        // throw new GwtEdcException(GwtEdcErrorCode.WARNING, t, t.getLocalizedMessage());
-        // }
         else if (t instanceof KapuaException && ((KapuaException) t).getCode().equals(KapuaErrorCodes.INTERNAL_ERROR)) {
             logger.error("internal service error", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.INTERNAL_ERROR, t, t.getLocalizedMessage());
-        } else if(t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.PARENT_LIMIT_EXCEEDED_IN_CONFIG.name())) {
-            // all others => log and throw internal error code
+        } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.PARENT_LIMIT_EXCEEDED_IN_CONFIG.name())) {
             logger.warn("Child accounts limitation error", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.PARENT_LIMIT_EXCEEDED_IN_CONFIG, t, t.getLocalizedMessage());
-        } else if(t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.SUBJECT_UNAUTHORIZED.name())) {
-            // all others => log and throw internal error code
+        } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.SUBJECT_UNAUTHORIZED.name())) {
             logger.warn("User unauthorize", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.SUBJECT_UNAUTHORIZED, t, t.getLocalizedMessage());
+        } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.ENTITY_ALREADY_EXIST_IN_ANOTHER_ACCOUNT.name())) {
+            logger.warn("Entity already exist in another account", t);
+            throw new GwtKapuaException(GwtKapuaErrorCode.ENTITY_ALREADY_EXIST_IN_ANOTHER_ACCOUNT, t, t.getLocalizedMessage());
+        } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.DUPLICATE_NAME.name())) {
+            logger.warn("Entity already exist with the same name", t);
+            throw new GwtKapuaException(GwtKapuaErrorCode.DUPLICATE_NAME, t, t.getLocalizedMessage());
+        } else if(t instanceof KapuaConfigurationException && ((KapuaConfigurationException) t).getCode().name().equals(KapuaConfigurationErrorCodes.SELF_LIMIT_EXCEEDED_IN_CONFIG.name())) {
+            logger.warn("Parent account limitation error", t);
+            throw new GwtKapuaException(GwtKapuaErrorCode.SELF_LIMIT_EXCEEDED_IN_CONFIG, t, t.getLocalizedMessage());
         } else {
-
             // all others => log and throw internal error code
             logger.warn("RPC service non-application error", t);
             throw GwtKapuaException.internalError(t, t.getLocalizedMessage());

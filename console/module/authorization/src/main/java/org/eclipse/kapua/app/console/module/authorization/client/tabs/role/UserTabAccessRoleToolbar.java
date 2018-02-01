@@ -11,16 +11,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.client.tabs.role;
 
+import com.google.gwt.core.client.GWT;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 
 import com.google.gwt.user.client.Element;
+import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsolePermissionMessages;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessRole;
 
 public class UserTabAccessRoleToolbar extends EntityCRUDToolbar<GwtAccessRole> {
 
     private String userId;
+    private static final ConsolePermissionMessages PERMISSION_MSGS = GWT.create(ConsolePermissionMessages.class);
 
     public UserTabAccessRoleToolbar(GwtSession currentSession) {
         super(currentSession);
@@ -52,6 +55,8 @@ public class UserTabAccessRoleToolbar extends EntityCRUDToolbar<GwtAccessRole> {
     @Override
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
+        addEntityButton.setText(PERMISSION_MSGS.dialogAddRoleButton());
+        deleteEntityButton.setText(PERMISSION_MSGS.dialogDeleteRoleButton());
         addEntityButton.setEnabled(userId != null);
         deleteEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null);
         refreshEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null);

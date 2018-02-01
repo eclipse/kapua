@@ -14,21 +14,25 @@ package org.eclipse.kapua.app.console.module.authentication.server;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 
+import com.extjs.gxt.ui.client.data.BaseListLoadResult;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
-import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
+import org.eclipse.kapua.app.console.module.api.shared.util.KapuaGwtCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredential;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialCreator;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialQuery;
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialService;
-import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
-import org.eclipse.kapua.app.console.module.api.shared.util.KapuaGwtCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.authentication.shared.util.GwtKapuaAuthenticationModelConverter;
 import org.eclipse.kapua.app.console.module.authentication.shared.util.KapuaGwtAuthenticationModelConverter;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -49,31 +53,27 @@ import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationExcepti
 import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
 import org.eclipse.kapua.service.authentication.shiro.utils.CryptAlgorithm;
 import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserFactory;
+import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserService;
-
-import com.extjs.gxt.ui.client.data.BaseListLoadResult;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
 public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implements GwtCredentialService {
 
     private static final long serialVersionUID = 7323313459749361320L;
 
     @Override
-    public PagingLoadResult<GwtCredential> query(PagingLoadConfig loadConfig, GwtCredentialQuery gwtCredentialQuery) throws GwtKapuaException {
+    public PagingLoadResult<GwtCredential> query(PagingLoadConfig loadConfig, final GwtCredentialQuery gwtCredentialQuery) throws GwtKapuaException {
         //
         // Do query
         int totalLength = 0;
         List<GwtCredential> gwtCredentials = new ArrayList<GwtCredential>();
 
-        Map<KapuaId, User> usersCache = new HashMap<KapuaId, User>();
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             CredentialService credentialService = locator.getService(CredentialService.class);
-            UserService userService = locator.getService(UserService.class);
-
+            final UserService userService = locator.getService(UserService.class);
+            final UserFactory userFactory = locator.getFactory(UserFactory.class);
+            final HashMap<String, String> usernameMap = new HashMap<String, String>();
             // Convert from GWT entity
             CredentialQuery credentialQuery = GwtKapuaAuthenticationModelConverter.convertCredentialQuery(loadConfig, gwtCredentialQuery);
 
@@ -82,21 +82,26 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
 
             // If there are results
             if (!credentials.isEmpty()) {
+                UserListResult userListResult = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
+
+                    @Override
+                    public UserListResult call() throws Exception {
+                        return userService.query(userFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtCredentialQuery.getScopeId())));
+                    }
+                });
+                for (User user : userListResult.getItems()) {
+                    usernameMap.put(user.getId().toCompactId(), user.getName());
+                }
+
                 // count
                 totalLength = Long.valueOf(credentialService.count(credentialQuery)).intValue();
                 // Convert to GWT entity
                 for (Credential credential : credentials.getItems()) {
-                    User user;
-                    if (!usersCache.containsKey(credential.getUserId())) {
-                        user = userService.find(credential.getScopeId(), credential.getUserId());
-                        usersCache.put(credential.getUserId(), user);
-                    } else {
-                        user = usersCache.get(credential.getUserId());
-                    }
-                    gwtCredentials.add(KapuaGwtAuthenticationModelConverter.convertCredential(credential, user));
-                    for (GwtCredential gwtCredential : gwtCredentials) {
-                        gwtCredential.setUsername(user.getDisplayName());
-                    }
+                    GwtCredential gwtCredential = KapuaGwtAuthenticationModelConverter.convertCredential(credential);
+                    gwtCredential.setUsername(usernameMap.get(credential.getUserId().toCompactId()));
+                    gwtCredential.setCreatedByName(usernameMap.get(credential.getCreatedBy().toCompactId()));
+                    gwtCredential.setModifiedByName(usernameMap.get(credential.getModifiedBy().toCompactId()));
+                    gwtCredentials.add(gwtCredential);
                 }
             }
 
@@ -267,7 +272,8 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
                         }
                         if (oldCredential != null) {
                             credentialsService.delete(scopeId, oldCredential.getId());
-                            CredentialCreator newCredentialCreator = credentialFactory.newCreator(scopeId, userId, CredentialType.PASSWORD, newPassword, oldCredential.getStatus(), oldCredential.getExpirationDate());
+                            CredentialCreator newCredentialCreator = credentialFactory
+                                    .newCreator(scopeId, userId, CredentialType.PASSWORD, newPassword, oldCredential.getStatus(), oldCredential.getExpirationDate());
                             credentialsService.create(newCredentialCreator);
                         } else {
                         }

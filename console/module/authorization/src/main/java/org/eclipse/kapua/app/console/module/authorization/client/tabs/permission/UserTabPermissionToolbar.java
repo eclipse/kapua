@@ -23,7 +23,7 @@ import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccess
 public class UserTabPermissionToolbar extends EntityCRUDToolbar<GwtAccessPermission> {
 
     private String userId;
-    private static final ConsolePermissionMessages MSGS = GWT.create(ConsolePermissionMessages.class);
+    private static final ConsolePermissionMessages PERMISSION_MSGS = GWT.create(ConsolePermissionMessages.class);
 
     public UserTabPermissionToolbar(GwtSession currentSession) {
         super(currentSession);
@@ -55,8 +55,8 @@ public class UserTabPermissionToolbar extends EntityCRUDToolbar<GwtAccessPermiss
     @Override
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
-        addEntityButton.setText(MSGS.dialogAddTitle());
-        deleteEntityButton.setText(MSGS.dialogDeleteTitle());
+        addEntityButton.setText(PERMISSION_MSGS.dialogAddPermissionButton());
+        deleteEntityButton.setText(PERMISSION_MSGS.dialogDeletePermissionButton());
         addEntityButton.setEnabled(userId != null);
         deleteEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null);
         refreshEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null);

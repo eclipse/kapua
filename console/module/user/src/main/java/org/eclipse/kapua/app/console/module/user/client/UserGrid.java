@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.module.user.client;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
@@ -47,7 +48,8 @@ public class UserGrid extends EntityGrid<GwtUser> {
 
     private static final GwtUserServiceAsync GWT_USER_SERVICE = GWT.create(GwtUserService.class);
 
-    private final static ConsoleUserMessages MSGS = GWT.create(ConsoleUserMessages.class);
+    private final static ConsoleUserMessages USER_MSGS = GWT.create(ConsoleUserMessages.class);
+    private final static ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
     public UserGrid(AbstractEntityView<GwtUser> entityView, final GwtSession currentSession) {
         super(entityView, currentSession);
@@ -85,7 +87,7 @@ public class UserGrid extends EntityGrid<GwtUser> {
     protected List<ColumnConfig> getColumns() {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
-        ColumnConfig columnConfig = new ColumnConfig("status", MSGS.gridUserColumnHeaderStatus(), 50);
+        ColumnConfig columnConfig = new ColumnConfig("status", USER_MSGS.gridUserColumnHeaderStatus(), 50);
         GridCellRenderer<GwtUser> setStatusIcon = new GridCellRenderer<GwtUser>() {
 
             public String render(GwtUser gwtUser, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtUser> deviceList, Grid<GwtUser> grid) {
@@ -96,14 +98,17 @@ public class UserGrid extends EntityGrid<GwtUser> {
                     case DISABLED:
                         icon = new KapuaIcon(IconSet.USER);
                         icon.setColor(Color.RED);
+                        icon.setTitle(MSGS.disabled());
                         break;
                     case ENABLED:
                         icon = new KapuaIcon(IconSet.USER);
                         icon.setColor(Color.GREEN);
+                        icon.setTitle(MSGS.enabled());
                         break;
                     default:
                         icon = new KapuaIcon(IconSet.USER);
                         icon.setColor(Color.GREY);
+                        icon.setTitle(MSGS.unknown());
                         break;
                     }
                 } else {
@@ -119,26 +124,29 @@ public class UserGrid extends EntityGrid<GwtUser> {
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("id", MSGS.gridUserColumnHeaderId(), 100);
+        columnConfig = new ColumnConfig("id", USER_MSGS.gridUserColumnHeaderId(), 100);
         columnConfig.setHidden(true);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("username", MSGS.gridUserColumnHeaderUsername(), 400);
+        columnConfig = new ColumnConfig("username", USER_MSGS.gridUserColumnHeaderUsername(), 400);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("displayName", MSGS.gridUserColumnHeaderDisplayName(), 400);
+        columnConfig = new ColumnConfig("displayName", USER_MSGS.gridUserColumnHeaderDisplayName(), 400);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("phoneNumber", MSGS.gridUserColumnHeaderPhoneNumber(), 200);
+        columnConfig = new ColumnConfig("phoneNumber", USER_MSGS.gridUserColumnHeaderPhoneNumber(), 200);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("email", MSGS.gridUserColumnHeaderEmail(), 200);
+        columnConfig = new ColumnConfig("email", USER_MSGS.gridUserColumnHeaderEmail(), 200);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("createdOn", MSGS.gridUserColumnHeaderCreatedOn(), 200);
+        columnConfig = new ColumnConfig("expirationDateFormatted", USER_MSGS.gridUserColumnHeaderExpirationDate(), 400);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("expirationDate", MSGS.gridUserColumnHeaderExpirationDate(), 400);
+        columnConfig = new ColumnConfig("modifiedOn", USER_MSGS.gridUserColumnHeaderModifiedOn(), 200);
+        columnConfigs.add(columnConfig);
+
+        columnConfig = new ColumnConfig("modifiedByName", USER_MSGS.gridUserColumnHeaderModifiedBy(), 200);
         columnConfigs.add(columnConfig);
 
         return columnConfigs;

@@ -15,7 +15,6 @@ import java.security.Principal;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.activemq.command.ConnectionId;
 import org.apache.activemq.security.AuthorizationMap;
 import org.apache.activemq.security.SecurityContext;
 import org.eclipse.kapua.commons.security.KapuaSession;
@@ -34,7 +33,7 @@ public class KapuaSecurityContext extends SecurityContext {
     private KapuaId connectionId;
     private Set<Principal> principals;
     private ConnectorDescriptor connectorDescriptor;
-    private ConnectionId brokerConnectionId;
+    private String brokerConnectionId;
 
     private AuthorizationMap authMap;
     private boolean hasDataView;
@@ -42,22 +41,19 @@ public class KapuaSecurityContext extends SecurityContext {
     private boolean hasDeviceView;
     private boolean hasDeviceManage;
 
-    public KapuaSecurityContext(KapuaPrincipal principal,
-            AuthorizationMap authMap,
-            KapuaId connectionId,
-            ConnectionId brokerConnectionId,
-            ConnectorDescriptor connectorDescriptor) {
-        super(principal.getName());
+    public KapuaSecurityContext(KapuaConnectionContext kcc,
+            AuthorizationMap authMap) {
+        super(kcc.getPrincipal().getName());
 
-        this.principal = principal;
+        this.principal = kcc.getPrincipal();
         this.kapuaSession = KapuaSession.createFrom();
         principals = new HashSet<Principal>();
         principals.add(principal);
 
         this.authMap = authMap;
-        this.connectionId = connectionId;
-        this.connectorDescriptor = connectorDescriptor;
-        this.brokerConnectionId = brokerConnectionId;
+        this.connectionId = kcc.getKapuaConnectionId();
+        this.connectorDescriptor = kcc.getConnectorDescriptor();
+        this.brokerConnectionId = kcc.getConnectionId();
     }
 
     public Principal getMainPrincipal() {
@@ -76,7 +72,7 @@ public class KapuaSecurityContext extends SecurityContext {
         return connectionId;
     }
 
-    public ConnectionId getBrokerConnectionId() {
+    public String getBrokerConnectionId() {
         return brokerConnectionId;
     }
 

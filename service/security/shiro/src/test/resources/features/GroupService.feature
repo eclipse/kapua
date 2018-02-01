@@ -60,7 +60,7 @@ Scenario: Duplicate group name in root scope
     |0     |test_name_1 |
     Then A group was created
     And The group matches the creator
-    Given I expect the exception "KapuaException" with the text "Error during Persistence Operation"
+    Given I expect the exception "KapuaDuplicateNameException" with the text "An entity with the same name test_name_1 already exists."
     When I create the group
     |scope |name        |
     |0     |test_name_1 |

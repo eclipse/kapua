@@ -20,6 +20,7 @@ public class KapuaIcon extends Text {
     private IconSet icon;
     private Color color;
     private Integer emSize;
+    private String title;
     private boolean spin;
 
     private static Color defaultColor = Color.BLUE_KAPUA;
@@ -49,6 +50,11 @@ public class KapuaIcon extends Text {
 
     public void setSpin(boolean spin) {
         this.spin = spin;
+    }
+
+    @Override
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     @Override
@@ -106,6 +112,13 @@ public class KapuaIcon extends Text {
                     .append(")' ");
         }
 
+        //
+        // Tooltip
+        if (title != null) {
+            sb.append("title='")
+                    .append(title)
+                    .append("' ");
+        }
         sb.append("></i>");
 
         return sb.toString();

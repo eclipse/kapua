@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 Eurotech and/or its affiliates and others
+# Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -31,7 +31,7 @@ Scenario: Handle duplicate account names
     given, the account service should throw an exception.
 
     Given An existing account with the name "test_acc_1"
-    And I expect the exception "KapuaException" with the text "Error during Persistence Operation"
+    And I expect the exception "KapuaDuplicateNameException" with the text "An entity with the same name test_acc_1 already exists."
     When I create a duplicate account "test_acc_1"
     Then An exception is caught
 

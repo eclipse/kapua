@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,10 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role.shiro;
 
+import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -86,6 +88,14 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         if (allowedChildEntities(roleCreator.getScopeId()) <= 0) {
             throw new KapuaIllegalArgumentException("scopeId", "max roles reached");
         }
+
+        RoleQuery query = new RoleQueryImpl(roleCreator.getScopeId());
+        query.setPredicate(new AttributePredicate<String>(RolePredicates.NAME, roleCreator.getName()));
+        RoleListResult roleListResult = query(query);
+        if (!roleListResult.isEmpty()) {
+             throw new KapuaDuplicateNameException(roleCreator.getName());
+        }
+
         return entityManagerSession.onTransactedInsert(em -> {
             Role role = RoleDAO.create(em, roleCreator);
 
