@@ -275,18 +275,12 @@ public class DeviceAddDialog extends EntityAddEditDialog {
 
             @Override
             public void onFailure(Throwable caught) {
+                FailureHandler.handleFormException(formPanel, caught);
+                status.hide();
+                formPanel.getButtonBar().enable();
                 unmask();
-
                 submitButton.enable();
                 cancelButton.enable();
-                status.hide();
-
-                exitStatus = false;
-                exitMessage = DEVICE_MSGS.deviceFormAddError(caught.getLocalizedMessage());
-
-                hide();
-                //
-                // FailureHandler.handle(caught);
             }
 
             @Override
