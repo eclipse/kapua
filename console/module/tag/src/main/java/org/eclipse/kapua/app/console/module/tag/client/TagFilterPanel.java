@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,11 +14,11 @@ package org.eclipse.kapua.app.console.module.tag.client;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.core.client.GWT;
 import org.eclipse.kapua.app.console.module.tag.client.messages.ConsoleTagMessages;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
@@ -27,9 +27,10 @@ import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTagQuery;
 public class TagFilterPanel extends EntityFilterPanel<GwtTag> {
 
     private static final int WIDTH = 200;
+    private static final int MAX_LEN = 255;
     private final EntityGrid<GwtTag> entityGrid;
     private final GwtSession currentSession;
-    private final TextField<String> nameField;
+    private final KapuaTextField<String> nameField;
     private static final ConsoleTagMessages MSGS = GWT.create(ConsoleTagMessages.class);
 
     public TagFilterPanel(AbstractEntityView<GwtTag> entityView, GwtSession currentSession) {
@@ -44,9 +45,10 @@ public class TagFilterPanel extends EntityFilterPanel<GwtTag> {
         nameLabel.setWidth(WIDTH);
         nameLabel.setStyleAttribute("margin", "5px");
         verticalPanel.add(nameLabel);
-        nameField = new TextField<String>();
+        nameField = new KapuaTextField<String>();
         nameField.setName("name");
         nameField.setWidth(WIDTH);
+        nameField.setMaxLength(MAX_LEN);
         nameField.setStyleAttribute("margin-top", "0px");
         nameField.setStyleAttribute("margin-left", "5px");
         nameField.setStyleAttribute("margin-right", "5px");

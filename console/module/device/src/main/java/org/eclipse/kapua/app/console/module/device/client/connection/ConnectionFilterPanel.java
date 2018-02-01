@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,6 +16,7 @@ import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleConnectionMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPredicates;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
@@ -26,19 +27,19 @@ import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.core.client.GWT;
 
 public class ConnectionFilterPanel extends EntityFilterPanel<GwtDeviceConnection> {
 
     private static final int WIDTH = 200;
+    private static final int MAX_LEN = 255;
     private static final ConsoleConnectionMessages MSGS = GWT.create(ConsoleConnectionMessages.class);
 
     private EntityGrid<GwtDeviceConnection> entityGrid;
     private final GwtSession currentSession;
 
-    private final TextField<String> clientIdField;
-    private final TextField<String> clientIPFilter;
+    private final KapuaTextField<String> clientIdField;
+    private final KapuaTextField<String> clientIPFilter;
     private final SimpleComboBox<GwtDeviceQueryPredicates.GwtDeviceConnectionStatus> connectionStatusCombo;
 
     public ConnectionFilterPanel(AbstractEntityView<GwtDeviceConnection> entityView, GwtSession currentSession) {
@@ -54,9 +55,10 @@ public class ConnectionFilterPanel extends EntityFilterPanel<GwtDeviceConnection
         clientIdLabel.setStyleAttribute("margin", "5px");
         fieldsPanel.add(clientIdLabel);
 
-        clientIdField = new TextField<String>();
+        clientIdField = new KapuaTextField<String>();
         clientIdField.setName("name");
         clientIdField.setWidth(WIDTH);
+        clientIdField.setMaxLength(MAX_LEN);
         clientIdField.setStyleAttribute("margin-top", "0px");
         clientIdField.setStyleAttribute("margin-left", "5px");
         clientIdField.setStyleAttribute("margin-right", "5px");
@@ -92,9 +94,10 @@ public class ConnectionFilterPanel extends EntityFilterPanel<GwtDeviceConnection
         clientIPFilterLabel.setStyleAttribute("margin", "5px");
         fieldsPanel.add(clientIPFilterLabel);
 
-        clientIPFilter = new TextField<String>();
+        clientIPFilter = new KapuaTextField<String>();
         clientIPFilter.setName("Client IP");
         clientIPFilter.setWidth(WIDTH);
+        clientIPFilter.setMaxLength(MAX_LEN);
         clientIPFilter.setStyleAttribute("margin-top", "0px");
         clientIPFilter.setStyleAttribute("margin-left", "5px");
         clientIPFilter.setStyleAttribute("margin-right", "5px");
