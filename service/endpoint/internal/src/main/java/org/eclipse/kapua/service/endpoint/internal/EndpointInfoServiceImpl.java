@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.endpoint.internal;
 import com.google.common.collect.Lists;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.SystemUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -35,7 +36,6 @@ import org.eclipse.kapua.service.endpoint.EndpointInfoQuery;
 import org.eclipse.kapua.service.endpoint.EndpointInfoService;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
 /**
  * {@link EndpointInfoService} implementation.
@@ -56,6 +56,23 @@ public class EndpointInfoServiceImpl
 
     private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
+
+    private static final EndpointInfo DEFAULT_ENDPOINT_INFO;
+
+    static {
+        try {
+            URI nodeURI = SystemUtils.getNodeURI();
+
+            DEFAULT_ENDPOINT_INFO = new EndpointInfoImpl();
+            DEFAULT_ENDPOINT_INFO.setSchema(nodeURI.getScheme());
+            DEFAULT_ENDPOINT_INFO.setDns(nodeURI.getHost());
+            DEFAULT_ENDPOINT_INFO.setPort(nodeURI.getPort());
+            DEFAULT_ENDPOINT_INFO.setSecure(false);
+
+        } catch (Exception e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
 
     public EndpointInfoServiceImpl() {
         super(EndpointInfoService.class.getName(), ENDPOINT_DOMAIN, EndpointEntityManagerFactory.getInstance(), EndpointInfoService.class, EndpointInfoFactory.class);
@@ -141,33 +158,16 @@ public class EndpointInfoServiceImpl
 
             if (endpointInfoListResult.isEmpty() && query.getScopeId() != null) {
 
-                KapuaId scopeId = query.getScopeId();
                 do {
-                    Account account = ACCOUNT_SERVICE.find(scopeId);
-
+                    Account account = KapuaSecurityUtils.doPrivileged(() -> ACCOUNT_SERVICE.find(query.getScopeId()));
                     query.setScopeId(account.getScopeId());
                     endpointInfoListResult = EndpointInfoDAO.query(em, query);
-
-                    scopeId = query.getScopeId();
                 }
-                while (scopeId != null && endpointInfoListResult.isEmpty());
+                while (query.getScopeId() != null && endpointInfoListResult.isEmpty());
             }
 
             if (endpointInfoListResult.isEmpty()) {
-                URI endpointInfoURI = null;
-                try {
-                    endpointInfoURI = SystemUtils.getNodeURI();
-                } catch (URISyntaxException e) {
-                    e.printStackTrace();
-                }
-
-                EndpointInfo endpointInfo = new EndpointInfoImpl();
-                endpointInfo.setSchema(endpointInfoURI.getScheme());
-                endpointInfo.setDns(endpointInfoURI.getHost());
-                endpointInfo.setPort(endpointInfoURI.getPort());
-                endpointInfo.setSecure(false);
-
-                endpointInfoListResult.addItems(Lists.newArrayList(endpointInfo));
+                endpointInfoListResult.addItems(Lists.newArrayList(DEFAULT_ENDPOINT_INFO));
             }
 
             return endpointInfoListResult;
@@ -190,24 +190,16 @@ public class EndpointInfoServiceImpl
 
             if (endpointInfoCount == 0 && query.getScopeId() != null) {
 
-                KapuaId scopeId = query.getScopeId();
                 do {
-                    Account account = ACCOUNT_SERVICE.find(scopeId);
-
+                    Account account = KapuaSecurityUtils.doPrivileged(() -> ACCOUNT_SERVICE.find(query.getScopeId()));
                     query.setScopeId(account.getScopeId());
                     endpointInfoCount = EndpointInfoDAO.count(em, query);
-
-                    scopeId = query.getScopeId();
                 }
-                while (scopeId != null && endpointInfoCount == 0);
+                while (query.getScopeId() != null && endpointInfoCount == 0);
             }
 
-            try {
-                if (endpointInfoCount == 0 && SystemUtils.getNodeURI() != null) {
-                    endpointInfoCount = 1;
-                }
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
+            if (endpointInfoCount == 0) {
+                endpointInfoCount = 1;
             }
 
             return endpointInfoCount;
