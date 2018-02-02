@@ -45,7 +45,6 @@ public class TopicsTabItem extends TabItem {
     private GwtSession currentSession;
 
     private Button queryButton;
-    private Button refreshButton;
 
     private TopicsTable topicTable;
 
@@ -77,23 +76,6 @@ public class TopicsTabItem extends TabItem {
         tablesLayout.setMinSize(250);
         add(tables, tablesLayout);
 
-        BorderLayoutData refreshButtonLayout = new BorderLayoutData(LayoutRegion.NORTH, 0.08f);
-        refreshButtonLayout.setMargins(new Margins(5));
-        refreshButton = new Button(MSGS.refresh(), new KapuaIcon(IconSet.REFRESH), new SelectionListener<ButtonEvent>() {
-
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                topicTable.refresh();
-                metricsTable.clearTable();
-                resultsTable.refresh();
-            }
-        });
-        TableLayout refreshButtonTL = new TableLayout();
-        refreshButtonTL.setCellPadding(0);
-        LayoutContainer refreshButtonContainer = new LayoutContainer(refreshButtonTL);
-        refreshButtonContainer.add(refreshButton, new TableData());
-        tables.add(refreshButtonContainer, refreshButtonLayout);
-
         BorderLayoutData topicLayout = new BorderLayoutData(LayoutRegion.WEST, 0.5f);
         topicTable = new TopicsTable(currentSession);
         topicTable.setBorders(false);
@@ -103,7 +85,6 @@ public class TopicsTabItem extends TabItem {
 
             @Override
             public void selectionChanged(SelectionChangedEvent<GwtTopic> selectedTopic) {
-                refreshButton.enable();
                 metricsTable.refresh(selectedTopic.getSelectedItem());
             }
         });

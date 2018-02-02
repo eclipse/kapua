@@ -14,10 +14,11 @@ package org.eclipse.kapua.app.console.module.data.client;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
 import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.KapuaBaseTreeModel;
 
-public class GwtTopic extends KapuaBaseTreeModel implements Serializable {
+public class GwtTopic extends KapuaBaseTreeModel implements Serializable, IsSerializable {
 
     private static final long serialVersionUID = 7519496938895060911L;
 

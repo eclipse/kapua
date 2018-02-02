@@ -123,7 +123,6 @@ public class ResultsTable extends LayoutContainer {
         columnConfigs = new ArrayList<ColumnConfig>();
 
         timestampColumn = new ColumnConfig("timestampFormatted", MSGS.resultsTableTimestampHeader(), 140);
-        columnConfigs.add(timestampColumn);
         deviceColumn = new ColumnConfig("clientId", MSGS.resultsTableDeviceHeader(), 90);
         topicColumn = new ColumnConfig("channel", MSGS.resultsTableTopicHeader(), 140);
 

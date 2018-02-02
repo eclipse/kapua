@@ -32,6 +32,7 @@ import org.eclipse.kapua.app.console.module.data.shared.model.GwtHeader;
 import org.eclipse.kapua.app.console.module.data.shared.service.GwtDataService;
 import org.eclipse.kapua.app.console.module.data.shared.util.GwtKapuaDataModelConverter;
 import org.eclipse.kapua.app.console.module.data.shared.util.KapuaGwtDataModelConverter;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
@@ -66,6 +67,12 @@ import org.eclipse.kapua.service.datastore.model.query.SortField;
 import org.eclipse.kapua.service.datastore.model.query.StorablePredicate;
 import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
 import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
+import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceFactory;
+import org.eclipse.kapua.service.device.registry.DeviceListResult;
+import org.eclipse.kapua.service.device.registry.DevicePredicates;
+import org.eclipse.kapua.service.device.registry.DeviceQuery;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -177,6 +184,8 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     @Override
     public ListLoadResult<GwtDatastoreDevice> findDevices(LoadConfig config, String scopeId) throws GwtKapuaException {
         ClientInfoRegistryService clientInfoService = LOCATOR.getService(ClientInfoRegistryService.class);
+        DeviceRegistryService deviceRegistryService = LOCATOR.getService(DeviceRegistryService.class);
+        DeviceFactory deviceFactory = LOCATOR.getFactory(DeviceFactory.class);
         List<GwtDatastoreDevice> devices = new ArrayList<GwtDatastoreDevice>();
         KapuaId convertedScopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeId);
         ClientInfoQuery query = new ClientInfoQueryImpl(convertedScopeId);
@@ -184,8 +193,27 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         try {
             ClientInfoListResult result = clientInfoService.query(query);
             if (result != null && !result.isEmpty()) {
+                List<String> clientIds = new ArrayList<String>();
                 for (ClientInfo client : result.getItems()) {
-                    devices.add(KapuaGwtDataModelConverter.convertToDatastoreDevice(client));
+                    clientIds.add(client.getClientId());
+                }
+                DeviceQuery deviceQuery = deviceFactory.newQuery(convertedScopeId);
+                deviceQuery.setPredicate(new AttributePredicate<List<String>>(DevicePredicates.CLIENT_ID, clientIds));
+                DeviceListResult deviceListResult = deviceRegistryService.query(deviceQuery);
+                Map<String, String> clientIdsMap = new HashMap<String, String>();
+                for (Device device : deviceListResult.getItems()) {
+                    clientIdsMap.put(device.getClientId(), device.getDisplayName());
+                }
+                for (ClientInfo client : result.getItems()) {
+                    GwtDatastoreDevice gwtDatastoreDevice = KapuaGwtDataModelConverter.convertToDatastoreDevice(client);
+                    String clientId = client.getClientId();
+                    String displayName = clientIdsMap.get(clientId);
+                    if (StringUtils.isNotEmpty(displayName)) {
+                        gwtDatastoreDevice.setFriendlyDevice(displayName + " (" + clientId + ")");
+                    } else {
+                        gwtDatastoreDevice.setFriendlyDevice(clientId);
+                    }
+                    devices.add(gwtDatastoreDevice);
                 }
             }
         } catch (KapuaException e) {

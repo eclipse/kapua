@@ -48,7 +48,6 @@ public class DeviceTabItem extends TabItem {
     private DeviceTable deviceTable;
 
     private Button queryButton;
-    private Button refreshButton;
 
     private MetricsTable metricsTable;
     private ResultsTable resultsTable;
@@ -78,23 +77,6 @@ public class DeviceTabItem extends TabItem {
         tablesLayout.setMinSize(250);
         add(tables, tablesLayout);
 
-        BorderLayoutData refreshButtonLayout = new BorderLayoutData(LayoutRegion.NORTH, 0.08f);
-        refreshButtonLayout.setMargins(new Margins(5));
-        refreshButton = new Button(MSGS.refresh(), new KapuaIcon(IconSet.REFRESH), new SelectionListener<ButtonEvent>() {
-
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                deviceTable.refresh();
-                metricsTable.clearTable();
-                resultsTable.refresh();
-            }
-        });
-        TableLayout refreshButtonTL = new TableLayout();
-        refreshButtonTL.setCellPadding(0);
-        LayoutContainer refreshButtonContainer = new LayoutContainer(refreshButtonTL);
-        refreshButtonContainer.add(refreshButton, new TableData());
-        tables.add(refreshButtonContainer, refreshButtonLayout);
-
         BorderLayoutData deviceLayout = new BorderLayoutData(LayoutRegion.WEST, 0.5f);
         deviceTable = new DeviceTable(currentSession);
         deviceTable.setBorders(false);
@@ -104,7 +86,6 @@ public class DeviceTabItem extends TabItem {
 
             @Override
             public void selectionChanged(SelectionChangedEvent<GwtDatastoreDevice> selectedDevice) {
-                refreshButton.enable();
                 metricsTable.refresh(selectedDevice.getSelectedItem());
             }
         });
