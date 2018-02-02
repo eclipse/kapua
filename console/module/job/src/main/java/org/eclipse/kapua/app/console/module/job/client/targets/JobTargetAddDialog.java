@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -33,7 +33,9 @@ import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobTargetServi
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobTargetServiceAsync;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class JobTargetAddDialog extends EntityAddEditDialog {
 
@@ -98,7 +100,7 @@ public class JobTargetAddDialog extends EntityAddEditDialog {
     @Override
     public void submit() {
         if (targetRadioGroup.getValue().getValueAttribute().equals(RadioGroupStatus.SELECTED.name())) {
-            doSubmit(targetGrid.getSelectionModel().getSelectedItems());
+            doSubmitWithExistenceCheck(targetGrid.getSelectionModel().getSelectedItems());
         } else {
             GWT_DEVICE_SERVICE.query(new GwtDeviceQuery(currentSession.getSelectedAccountId()), new AsyncCallback<List<GwtDevice>>() {
 
@@ -118,14 +120,55 @@ public class JobTargetAddDialog extends EntityAddEditDialog {
 
                 @Override
                 public void onSuccess(List<GwtDevice> result) {
-                    doSubmit(result);
+                    doSubmitWithExistenceCheck(result);
                 }
             });
         }
     }
 
-    private void doSubmit(List<GwtDevice> targets) {
+    /**
+     * Before doing real submit of targets, check if target are already added.
+     * 
+     * @param targets those that are being added
+     */
+    private void doSubmitWithExistenceCheck(final List<GwtDevice> targets) {
+
+        GWT_JOB_TARGET_SERVICE.findByJobId(currentSession.getSelectedAccountId(), jobId, true, new AsyncCallback<List<GwtJobTarget>>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+
+                exitStatus = false;
+                exitMessage = JOB_MSGS.dialogGetTargetError(caught.getLocalizedMessage());
+                hide();
+            }
+
+            @Override
+            public void onSuccess(List<GwtJobTarget> result) {
+                doSubmit(targets, result);
+            }
+        });
+
+    }
+
+    /**
+     * Check if targets being added are new targets, empty targets, union of targets and
+     * only add them if needed otherwise report info message.
+     * 
+     * @param targets those that are being added
+     * @param existing targets targets that are already on job
+     */
+    private void doSubmit(List<GwtDevice> targets, List<GwtJobTarget> existing) {
         List<GwtJobTargetCreator> creatorList = new ArrayList<GwtJobTargetCreator>();
+
+        if (!isTargetsToAdd(targets, existing)) {
+            exitStatus = false;
+            exitMessage = JOB_MSGS.dialogAddTargetEmpty();
+            hide();
+
+            return;
+        }
+
         for (GwtDevice target : targets) {
             GwtJobTargetCreator creator = new GwtJobTargetCreator();
             creator.setScopeId(currentSession.getSelectedAccountId());
@@ -156,6 +199,7 @@ public class JobTargetAddDialog extends EntityAddEditDialog {
                 hide();
             }
         });
+
     }
 
     @Override
@@ -167,4 +211,37 @@ public class JobTargetAddDialog extends EntityAddEditDialog {
     public String getInfoMessage() {
         return JOB_MSGS.dialogAddTargetInfo();
     }
+
+    /**
+     * Check if devices need to be added to existing targets.
+     *
+     * @param targets devices to be added
+     * @param existing existing devices
+     * @return true if devices need to be added, false if not
+     */
+    private boolean isTargetsToAdd(List<GwtDevice> targets, List<GwtJobTarget> existing) {
+
+        boolean addTargets = false;
+
+        Set<String> targetsSet = new HashSet<String>();
+        for (GwtDevice device : targets) {
+            targetsSet.add(device.getId());
+        }
+        Set<String> existsSet = new HashSet<String>();
+        for (GwtJobTarget exist : existing) {
+            existsSet.add(exist.getJobTargetId());
+        }
+        if (targetsSet.size() == 0) {
+            addTargets = false;
+        } else if (targetsSet.size() > existsSet.size()) {
+            addTargets = true;
+        } else if (existsSet.containsAll(targetsSet)) {
+            addTargets = false;
+        } else {
+            addTargets = true;
+        }
+
+        return addTargets;
+    }
+
 }
