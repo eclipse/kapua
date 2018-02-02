@@ -11,13 +11,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.endpoint.internal;
 
+import com.google.common.collect.Lists;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
+import org.eclipse.kapua.commons.util.SystemUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.account.AccountFactory;
+import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
@@ -28,6 +33,9 @@ import org.eclipse.kapua.service.endpoint.EndpointInfoFactory;
 import org.eclipse.kapua.service.endpoint.EndpointInfoListResult;
 import org.eclipse.kapua.service.endpoint.EndpointInfoQuery;
 import org.eclipse.kapua.service.endpoint.EndpointInfoService;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * {@link EndpointInfoService} implementation.
@@ -42,6 +50,9 @@ public class EndpointInfoServiceImpl
     private static final Domain ENDPOINT_DOMAIN = new EndpointInfoDomain();
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final AccountService ACCOUNT_SERVICE = LOCATOR.getService(AccountService.class);
+    private static final AccountFactory ACCOUNT_FACTORY = LOCATOR.getFactory(AccountFactory.class);
 
     private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
@@ -125,7 +136,42 @@ public class EndpointInfoServiceImpl
 
         //
         // Do Query
-        return entityManagerSession.onResult(em -> EndpointInfoDAO.query(em, query));
+        return entityManagerSession.onResult(em -> {
+            EndpointInfoListResult endpointInfoListResult = EndpointInfoDAO.query(em, query);
+
+            if (endpointInfoListResult.isEmpty() && query.getScopeId() != null) {
+
+                KapuaId scopeId = query.getScopeId();
+                do {
+                    Account account = ACCOUNT_SERVICE.find(scopeId);
+
+                    query.setScopeId(account.getScopeId());
+                    endpointInfoListResult = EndpointInfoDAO.query(em, query);
+
+                    scopeId = query.getScopeId();
+                }
+                while (scopeId != null && endpointInfoListResult.isEmpty());
+            }
+
+            if (endpointInfoListResult.isEmpty()) {
+                URI endpointInfoURI = null;
+                try {
+                    endpointInfoURI = SystemUtils.getNodeURI();
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+
+                EndpointInfo endpointInfo = new EndpointInfoImpl();
+                endpointInfo.setSchema(endpointInfoURI.getScheme());
+                endpointInfo.setDns(endpointInfoURI.getHost());
+                endpointInfo.setPort(endpointInfoURI.getPort());
+                endpointInfo.setSecure(false);
+
+                endpointInfoListResult.addItems(Lists.newArrayList(endpointInfo));
+            }
+
+            return endpointInfoListResult;
+        });
     }
 
     @Override
@@ -139,6 +185,32 @@ public class EndpointInfoServiceImpl
 
         //
         // Do count
-        return entityManagerSession.onResult(em -> EndpointInfoDAO.count(em, query));
+        return entityManagerSession.onResult(em -> {
+            long endpointInfoCount = EndpointInfoDAO.count(em, query);
+
+            if (endpointInfoCount == 0 && query.getScopeId() != null) {
+
+                KapuaId scopeId = query.getScopeId();
+                do {
+                    Account account = ACCOUNT_SERVICE.find(scopeId);
+
+                    query.setScopeId(account.getScopeId());
+                    endpointInfoCount = EndpointInfoDAO.count(em, query);
+
+                    scopeId = query.getScopeId();
+                }
+                while (scopeId != null && endpointInfoCount == 0);
+            }
+
+            try {
+                if (endpointInfoCount == 0 && SystemUtils.getNodeURI() != null) {
+                    endpointInfoCount = 1;
+                }
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+
+            return endpointInfoCount;
+        });
     }
 }
