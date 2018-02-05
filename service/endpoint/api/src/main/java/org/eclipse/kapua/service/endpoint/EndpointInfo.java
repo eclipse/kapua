@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.endpoint;
 
+import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -18,6 +19,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Set;
 
 /**
@@ -62,4 +65,19 @@ public interface EndpointInfo extends KapuaUpdatableEntity {
 
     public void setUsages(Set<EndpointUsage> endpointUsages);
 
+    public default String toStringURI() {
+        try {
+            return new URI(
+                    getSchema(),
+                    null,
+                    getDns(),
+                    getPort(),
+                    null,
+                    null,
+                    null
+            ).toString();
+        } catch (URISyntaxException e) {
+            throw KapuaRuntimeException.internalError(e, "Unable to build URI for EndpointInfo: " + getId().toCompactId());
+        }
+    }
 }

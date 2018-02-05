@@ -82,7 +82,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.MessageDigest;
@@ -233,8 +232,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             EndpointInfoListResult endpointInfos = ENDPOINT_INFO_SERVICE.query(ENDPOINT_INFO_FACTORY.newQuery(account.getId()));
 
             for (EndpointInfo ei : endpointInfos.getItems()) {
-                URI nodeUri = new URI(ei.getSchema(), null, ei.getDns(), ei.getPort(), null, null, null);
-                accountPropertiesPairs.add(new GwtGroupedNVPair("deploymentInfo", ei.getSecure() ? "deploymentNodeUriSecure" : "deploymentNodeUri", nodeUri.toString()));
+                accountPropertiesPairs.add(new GwtGroupedNVPair("deploymentInfo", ei.getSecure() ? "deploymentNodeUriSecure" : "deploymentNodeUri", ei.toStringURI()));
             }
 
             accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationName", account.getOrganization().getName()));
