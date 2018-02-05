@@ -44,7 +44,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
     protected final FieldSet fieldSet = new FieldSet();
 
     // Account
-    final LabelField parentAccountName = new LabelField();
+    final LabelField parentAccountNameLabel = new LabelField();
     protected final LabelField accountNameLabel = new LabelField();
     protected final TextField<String> accountNameField = new TextField<String>();
     protected final TextField<String> accountPassword = new TextField<String>();
@@ -57,7 +57,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
     // organization
     protected final TextField<String> organizationName = new TextField<String>();
     protected final TextField<String> organizationEmail = new TextField<String>();
-    protected final TextField<String> organizationPersonName = new TextField<String>();
+    protected final TextField<String> organizationContactName = new TextField<String>();
     protected final TextField<String> organizationPhoneNumber = new TextField<String>();
     protected final TextField<String> organizationAddressLine1 = new TextField<String>();
     protected final TextField<String> organizationAddressLine2 = new TextField<String>();
@@ -68,7 +68,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
 
     public AccountAddDialog(GwtSession currentSession) {
         super(currentSession);
-        DialogUtils.resizeDialog(this, 600, 700);
+        DialogUtils.resizeDialog(this, 600, 560);
     }
 
     @Override
@@ -83,18 +83,20 @@ public class AccountAddDialog extends EntityAddEditDialog {
         layoutAccount.setLabelWidth(LABEL_WIDTH_FORM);
         fieldSet.setLayout(layoutAccount);
 
+        FormData accountFieldsetFormData = new FormData("-11");
+
         //
         // Show parent account name
         //
-        parentAccountName.setName("parentAccountName");
-        parentAccountName.setFieldLabel(MSGS.accountFormParentAccount());
-        parentAccountName.setLabelSeparator(":");
-        fieldSet.add(parentAccountName);
+        parentAccountNameLabel.setName("parentAccount");
+        parentAccountNameLabel.setFieldLabel(MSGS.accountFormParentAccount());
+        parentAccountNameLabel.setLabelSeparator(":");
+        parentAccountNameLabel.setValue(currentSession.getSelectedAccountName());
+        fieldSet.add(parentAccountNameLabel, accountFieldsetFormData);
 
         //
         // Account name field
         //
-        accountNameLabel.setName("accountNameLabel");
         accountNameLabel.setFieldLabel(MSGS.accountFormName());
         accountNameLabel.setLabelSeparator(":");
         accountNameLabel.setVisible(false);
@@ -104,7 +106,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
         accountNameField.setName("accountName");
         accountNameField.setFieldLabel("* " + MSGS.accountFormName());
         accountNameField.setValidator(new TextFieldValidator(accountNameField, FieldType.SIMPLE_NAME));
-        fieldSet.add(accountNameField);
+        fieldSet.add(accountNameField, accountFieldsetFormData);
 
         accountFormPanel.add(fieldSet);
 
@@ -116,15 +118,6 @@ public class AccountAddDialog extends EntityAddEditDialog {
         FormLayout layoutDeployment = new FormLayout();
         layoutDeployment.setLabelWidth(LABEL_WIDTH_FORM);
         fieldSetDeployment.setLayout(layoutDeployment);
-
-        //
-        // broker cluster
-        //
-        accountClusterLabel.setName("accountBrokerLabel");
-        accountClusterLabel.setFieldLabel(MSGS.accountFormBrokerCluster());
-        accountClusterLabel.setLabelSeparator(":");
-        accountClusterLabel.setVisible(false);
-        fieldSetDeployment.add(accountClusterLabel);
 
         optlock.setName("optlock");
         optlock.setEditable(false);
@@ -149,7 +142,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
         organizationName.setAllowBlank(false);
         organizationName.setName("organizationName");
         organizationName.setFieldLabel("* " + MSGS.accountFormOrgName());
-        fieldSetOrg.add(organizationName);
+        fieldSetOrg.add(organizationName, accountFieldsetFormData);
 
         //
         // Organization email
@@ -158,13 +151,13 @@ public class AccountAddDialog extends EntityAddEditDialog {
         organizationEmail.setName("organizationEmail");
         organizationEmail.setFieldLabel("* " + MSGS.accountFormOrgEmail());
         organizationEmail.setValidator(new TextFieldValidator(organizationEmail, FieldType.EMAIL));
-        fieldSetOrg.add(organizationEmail);
+        fieldSetOrg.add(organizationEmail, accountFieldsetFormData);
 
         // //////////////////////////////////////////
         // Organization Information sub field set
         // //////////////////////////////////////////
         FieldSet organizationSubFieldSet = new FieldSet();
-        organizationSubFieldSet.setHeading(MSGS.accountFormOrgMoreInformation());
+        organizationSubFieldSet.setHeading(MSGS.accountFormOrgPrimaryContact());
         organizationSubFieldSet.setBorders(false);
         organizationSubFieldSet.setCollapsible(true);
         organizationSubFieldSet.setWidth(515);
@@ -177,11 +170,11 @@ public class AccountAddDialog extends EntityAddEditDialog {
         // Other organization data
         //
 
-        FormData subFieldsetFormData = new FormData("-7");
+        FormData subFieldsetFormData = new FormData("12");
 
-        organizationPersonName.setName("organizationPersonName");
-        organizationPersonName.setFieldLabel(MSGS.accountFormOrgPersonName());
-        organizationSubFieldSet.add(organizationPersonName, subFieldsetFormData);
+        organizationContactName.setName("organizationContactName");
+        organizationContactName.setFieldLabel(MSGS.accountFormOrgContactName());
+        organizationSubFieldSet.add(organizationContactName, subFieldsetFormData);
 
         organizationPhoneNumber.setName("organizationPhoneNumber");
         organizationPhoneNumber.setFieldLabel(MSGS.accountFormOrgPhoneNumber());
@@ -227,7 +220,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
 
         // Organization data
         gwtAccountCreator.setOrganizationName(organizationName.getValue());
-        gwtAccountCreator.setOrganizationPersonName(organizationPersonName.getValue());
+        gwtAccountCreator.setOrganizationPersonName(organizationContactName.getValue());
         gwtAccountCreator.setOrganizationEmail(organizationEmail.getValue());
         gwtAccountCreator.setOrganizationPhoneNumber(organizationPhoneNumber.getValue());
         gwtAccountCreator.setOrganizationAddressLine1(organizationAddressLine1.getValue());

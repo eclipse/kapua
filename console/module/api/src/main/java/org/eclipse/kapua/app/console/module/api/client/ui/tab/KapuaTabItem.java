@@ -69,5 +69,13 @@ public abstract class KapuaTabItem<M extends GwtEntityModel> extends TabItem {
         }
     }
 
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
+    }
+
     protected abstract void doRefresh();
 }

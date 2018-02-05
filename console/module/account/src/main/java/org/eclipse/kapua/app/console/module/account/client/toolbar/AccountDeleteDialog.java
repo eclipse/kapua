@@ -59,12 +59,12 @@ public class AccountDeleteDialog extends EntityDeleteDialog {
 
     @Override
     public String getHeaderMessage() {
-        return MSGS.accountDeleteDialogHeader();
+        return MSGS.accountDeleteDialogHeader(selectedAccount.getUnescapedName());
     }
 
     @Override
     public String getInfoMessage() {
-        return MSGS.accountDeleteInfoMessage(selectedAccount.getUnescapedName());
+        return MSGS.accountDeleteInfoMessage();
     }
 
 }

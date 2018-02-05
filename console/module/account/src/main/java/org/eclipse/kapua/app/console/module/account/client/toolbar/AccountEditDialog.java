@@ -28,7 +28,7 @@ public class AccountEditDialog extends AccountAddDialog {
     public AccountEditDialog(GwtSession currentSession, GwtAccount selectedAccount) {
         super(currentSession);
         this.selectedAccount = selectedAccount;
-        DialogUtils.resizeDialog(this, 600, 800);
+        DialogUtils.resizeDialog(this, 600, 560);
     }
 
     @Override
@@ -38,7 +38,6 @@ public class AccountEditDialog extends AccountAddDialog {
 //        fieldSet.remove(confirmPassword);
         fieldSet.remove(accountNameField);
         accountNameLabel.setVisible(true);
-        parentAccountName.setValue(currentSession.getSelectedAccountName());
 
         accountNameLabel.setValue(selectedAccount.getName());
         accountNameField.setValue(selectedAccount.getName());
@@ -46,8 +45,8 @@ public class AccountEditDialog extends AccountAddDialog {
         organizationName.setValue(selectedAccount.getGwtOrganization().getName());
         organizationName.setOriginalValue(selectedAccount.getGwtOrganization().getName());
 
-        organizationPersonName.setValue(selectedAccount.getGwtOrganization().getPersonName());
-        organizationPersonName.setOriginalValue(selectedAccount.getGwtOrganization().getPersonName());
+        organizationContactName.setValue(selectedAccount.getGwtOrganization().getPersonName());
+        organizationContactName.setOriginalValue(selectedAccount.getGwtOrganization().getPersonName());
 
         organizationEmail.setValue(selectedAccount.getGwtOrganization().getEmailAddress());
         organizationEmail.setOriginalValue(selectedAccount.getGwtOrganization().getEmailAddress());
@@ -82,7 +81,7 @@ public class AccountEditDialog extends AccountAddDialog {
         // Organization data
         GwtOrganization gwtOrganization = new GwtOrganization();
         gwtOrganization.setName(organizationName.getValue());
-        gwtOrganization.setPersonName(organizationPersonName.getValue());
+        gwtOrganization.setPersonName(organizationContactName.getValue());
         gwtOrganization.setEmailAddress(organizationEmail.getValue());
         gwtOrganization.setPhoneNumber(organizationPhoneNumber.getValue());
         gwtOrganization.setAddressLine1(organizationAddressLine1.getValue());
@@ -117,6 +116,6 @@ public class AccountEditDialog extends AccountAddDialog {
 
     @Override
     public String getInfoMessage() {
-        return MSGS.accountEditInfoMessage(selectedAccount.getName());
+        return MSGS.accountEditInfoMessage();
     }
 }

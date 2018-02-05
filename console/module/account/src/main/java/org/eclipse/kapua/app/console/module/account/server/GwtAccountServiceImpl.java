@@ -87,6 +87,9 @@ import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserFactory;
+import org.eclipse.kapua.service.user.UserListResult;
+import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -258,7 +261,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             accountPropertiesPairs.add(new GwtGroupedNVPair("deploymentInfo", "deploymentNodeURI", nodeUri));
 
             accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationName", account.getOrganization().getName()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationPersonName", account.getOrganization().getPersonName()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationContactName", account.getOrganization().getPersonName()));
             accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationEmail", account.getOrganization().getEmail()));
             accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationPhoneNumber", account.getOrganization().getPhoneNumber()));
             accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationAddress1", account.getOrganization().getAddressLine1()));
@@ -707,10 +710,28 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         try {
             accounts = accountService.query(query);
             if (!accounts.isEmpty()) {
+                final UserService userService = locator.getService(UserService.class);
+                UserFactory userFactory = locator.getFactory(UserFactory.class);
+                final UserQuery userQuery = userFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtAccountQuery.getScopeId()));
+                Map<String, String> usernameMap = new HashMap<String, String>();
+                UserListResult usernames = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
+
+                    @Override
+                    public UserListResult call() throws Exception {
+                        return userService.query(userQuery);
+                    }
+                });
+
+                for (User user : usernames.getItems()) {
+                    usernameMap.put(user.getId().toCompactId(), user.getName());
+                }
+
                 totalLength = Long.valueOf(accountService.count(query)).intValue();
 
                 for (Account a : accounts.getItems()) {
-                    gwtAccounts.add(KapuaGwtAccountModelConverter.convertAccount(a));
+                    GwtAccount gwtAccount = KapuaGwtAccountModelConverter.convertAccount(a);
+                    gwtAccount.setModifiedByName(usernameMap.get(gwtAccount.getCreatedBy()));
+                    gwtAccounts.add(gwtAccount);
                 }
             }
         } catch (Throwable t) {

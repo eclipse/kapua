@@ -93,7 +93,6 @@ public class AccountConfigComponents extends LayoutContainer {
     private ContentPanel configPanel;
     private AccountConfigPanel devConfPanel;
     private BorderLayoutData centerData;
-    private AccountDetailsView accountDetailsView;
     private AccountDetailsTabDescription accountDetailsTabDescription;
 
     @SuppressWarnings("rawtypes")
@@ -285,7 +284,7 @@ public class AccountConfigComponents extends LayoutContainer {
                 final GwtConfigComponent componentToSwitchTo = (GwtConfigComponent) se.getModel();
                 if (devConfPanel != null && devConfPanel.isDirty()) {
                     if (accountDetailsTabDescription != null) {
-                        accountDetailsTabDescription.updateAccountInfo();
+                        accountDetailsTabDescription.refresh();
                     }
                     // cancel the event first
                     be.setCancelled(true);
@@ -317,7 +316,7 @@ public class AccountConfigComponents extends LayoutContainer {
 
                     refreshConfigPanel(componentToSwitchTo);
                     if (accountDetailsTabDescription != null) {
-                        accountDetailsTabDescription.updateAccountInfo();
+                        accountDetailsTabDescription.refresh();
                     }
 
                     // this is needed to select the item in the Tree
