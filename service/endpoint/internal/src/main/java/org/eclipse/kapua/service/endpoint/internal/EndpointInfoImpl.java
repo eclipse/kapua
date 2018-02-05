@@ -36,7 +36,7 @@ import java.util.Set;
 public class EndpointInfoImpl extends AbstractKapuaUpdatableEntity implements EndpointInfo {
 
     @Basic
-    @Column(name = "schema", updatable = true, nullable = false)
+    @Column(name = "scheme", updatable = true, nullable = false)
     private String schema;
 
     @Basic

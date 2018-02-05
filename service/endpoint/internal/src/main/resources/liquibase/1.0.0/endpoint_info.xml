@@ -36,7 +36,7 @@
             <column name="modified_on" type="timestamp(3)" defaultValueComputed="${now}"/>
             <column name="modified_by" type="bigint(21) unsigned"/>
 
-            <column name="schema" type="varchar(64)">
+            <column name="scheme" type="varchar(64)">
                 <constraints nullable="false"/>
             </column>
             <column name="dns" type="varchar(1024)">
