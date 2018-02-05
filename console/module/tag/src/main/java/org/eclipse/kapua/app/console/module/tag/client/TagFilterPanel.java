@@ -16,8 +16,6 @@ import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPane
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
@@ -39,7 +37,6 @@ public class TagFilterPanel extends EntityFilterPanel<GwtTag> {
         super(entityView, currentSession);
         entityGrid = entityView.getEntityGrid(entityView, currentSession);
         this.currentSession = currentSession;
-        setIcon(new KapuaIcon(IconSet.FILTER));
         setHeading(MSGS.filterHeader());
 
         VerticalPanel verticalPanel = getFieldsPanel();
