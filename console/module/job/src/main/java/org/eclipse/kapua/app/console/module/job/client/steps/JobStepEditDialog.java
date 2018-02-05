@@ -133,4 +133,8 @@ public class JobStepEditDialog extends JobStepAddDialog {
         }
     }
 
+    public String getHeaderMessage() {
+        return JOB_MSGS.dialogEditStepHeader();
+    }
+
 }
