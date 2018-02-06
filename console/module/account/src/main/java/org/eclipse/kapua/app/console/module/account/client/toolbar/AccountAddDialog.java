@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.account.client.toolbar;
 
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
@@ -235,14 +237,19 @@ public class AccountAddDialog extends EntityAddEditDialog {
                 gwtAccountCreator,
                 new AsyncCallback<GwtAccount>() {
 
-                    public void onFailure(Throwable caught) {
-                        FailureHandler.handleFormException(formPanel, caught);
+                    public void onFailure(Throwable cause) {
+                        FailureHandler.handleFormException(formPanel, cause);
                         status.hide();
                         formPanel.getButtonBar().enable();
                         unmask();
-                        hide();
                         submitButton.enable();
                         cancelButton.enable();
+                        if (cause instanceof GwtKapuaException) {
+                            GwtKapuaException gwtCause = (GwtKapuaException)cause;
+                            if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
+                                accountNameField.markInvalid(gwtCause.getMessage());
+                            }
+                        }
                     }
 
                     public void onSuccess(GwtAccount account) {

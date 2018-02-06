@@ -53,7 +53,6 @@ public class DeviceEditDialog extends DeviceAddDialog {
                 exitStatus = false;
                 exitMessage = DEVICE_MSGS.dialogFormEditLoadFailed(cause.getLocalizedMessage());
                 unmaskDialog();
-                hide();
             }
         });
 

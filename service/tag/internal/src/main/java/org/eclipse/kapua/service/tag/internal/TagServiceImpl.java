@@ -68,7 +68,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         }
 
         TagQuery query = new TagQueryImpl(tagCreator.getScopeId());
-        query.setPredicate(new AttributePredicate<String>(TagPredicates.NAME, tagCreator.getName()));
+        query.setPredicate(new AttributePredicate<>(TagPredicates.NAME, tagCreator.getName()));
         TagListResult tagListResult = query(query);
         if (!tagListResult.isEmpty()) {
              throw new KapuaDuplicateNameException(tagCreator.getName());
@@ -89,6 +89,14 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(TAG_DOMAIN, Actions.write, tag.getScopeId()));
+
+        TagQuery query = new TagQueryImpl(tag.getScopeId());
+        query.setPredicate(new AttributePredicate<>(TagPredicates.NAME, tag.getName()));
+        TagListResult tagListResult = query(query);
+        if (!tagListResult.isEmpty()) {
+            throw new KapuaDuplicateNameException(tag.getName());
+        }
+
         return entityManagerSession.onTransactedInsert(em -> {
 
             Tag currentTag = TagDAO.find(em, tag.getId());

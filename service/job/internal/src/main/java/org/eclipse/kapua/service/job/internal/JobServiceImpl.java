@@ -11,10 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.internal;
 
+import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -28,6 +30,7 @@ import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.JobCreator;
 import org.eclipse.kapua.service.job.JobFactory;
 import org.eclipse.kapua.service.job.JobListResult;
+import org.eclipse.kapua.service.job.JobPredicates;
 import org.eclipse.kapua.service.job.JobQuery;
 import org.eclipse.kapua.service.job.JobService;
 
@@ -60,6 +63,13 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         // Check access
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.write, creator.getScopeId()));
 
+        JobQuery query = new JobQueryImpl(creator.getScopeId());
+        query.setPredicate(new AttributePredicate<>(JobPredicates.NAME, creator.getName()));
+        JobListResult jobListResult = query(query);
+        if (!jobListResult.isEmpty()) {
+            throw new KapuaDuplicateNameException(creator.getName());
+        }
+
         if (allowedChildEntities(creator.getScopeId()) <= 0) {
             throw new KapuaIllegalArgumentException("scopeId", "max jobs reached");
         }
@@ -76,6 +86,13 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         ArgumentValidator.notNull(job, "job");
         ArgumentValidator.notNull(job.getScopeId(), "job.scopeId");
         ArgumentValidator.notNull(job.getName(), "job.name");
+
+        JobQuery query = new JobQueryImpl(job.getScopeId());
+        query.setPredicate(new AttributePredicate<>(JobPredicates.NAME, job.getName()));
+        JobListResult jobListResult = query(query);
+        if (!jobListResult.isEmpty()) {
+            throw new KapuaDuplicateNameException(job.getName());
+        }
 
         //
         // Check access

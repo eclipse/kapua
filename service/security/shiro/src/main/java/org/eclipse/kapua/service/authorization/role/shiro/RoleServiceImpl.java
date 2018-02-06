@@ -90,7 +90,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         }
 
         RoleQuery query = new RoleQueryImpl(roleCreator.getScopeId());
-        query.setPredicate(new AttributePredicate<String>(RolePredicates.NAME, roleCreator.getName()));
+        query.setPredicate(new AttributePredicate<>(RolePredicates.NAME, roleCreator.getName()));
         RoleListResult roleListResult = query(query);
         if (!roleListResult.isEmpty()) {
              throw new KapuaDuplicateNameException(roleCreator.getName());
@@ -127,6 +127,14 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(ROLE_DOMAIN, Actions.write, role.getScopeId()));
+
+        RoleQuery query = new RoleQueryImpl(role.getScopeId());
+        query.setPredicate(new AttributePredicate<>(RolePredicates.NAME, role.getName()));
+        RoleListResult roleListResult = query(query);
+        if (!roleListResult.isEmpty()) {
+            throw new KapuaDuplicateNameException(role.getName());
+        }
+
         return entityManagerSession.onTransactedInsert(em -> {
 
             Role currentRole = RoleDAO.find(em, role.getId());

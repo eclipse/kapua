@@ -277,29 +277,20 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         gwtDeviceService.createDevice(xsrfToken, gwtDeviceCreator, new AsyncCallback<GwtDevice>() {
 
             @Override
-            public void onFailure(Throwable caught) {
-                exitStatus=false;
-                FailureHandler.handleFormException(formPanel, caught);
+            public void onFailure(Throwable cause) {
+                exitStatus = false;
+                FailureHandler.handleFormException(formPanel, cause);
                 status.hide();
                 formPanel.getButtonBar().enable();
                 unmask();
                 submitButton.enable();
                 cancelButton.enable();
-                status.hide();
-
-                exitStatus = false;
-                exitMessage = DEVICE_MSGS.deviceFormAddError(caught.getLocalizedMessage());
-
-                 FailureHandler.handle(caught);
-
-                 if (caught instanceof GwtKapuaException) {
-                     GwtKapuaException gke = (GwtKapuaException)caught;
-                     if (gke.getCode() == GwtKapuaErrorCode.ENTITY_ALREADY_EXISTS) {
-                         ValidationMessages valMsgs = GWT.create(ValidationMessages.class);
-                         String msg = valMsgs.getString(GwtKapuaErrorCode.ENTITY_ALREADY_EXISTS.name());
-                         clientIdField.markInvalid(msg);
-                     }
-                 }
+                if (cause instanceof GwtKapuaException) {
+                    GwtKapuaException gwtCause = (GwtKapuaException)cause;
+                    if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
+                        clientIdField.markInvalid(gwtCause.getMessage());
+                    }
+                }
             }
 
             @Override

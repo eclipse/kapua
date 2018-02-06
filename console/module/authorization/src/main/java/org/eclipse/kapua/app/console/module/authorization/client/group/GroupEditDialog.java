@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.client.group;
 
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsoleGroupMessages;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
@@ -44,10 +47,19 @@ public class GroupEditDialog extends GroupAddDialog {
         GWT_GROUP_SERVICE.update(selectedGroup, new AsyncCallback<GwtGroup>() {
 
             @Override
-            public void onFailure(Throwable arg0) {
-                exitStatus = false;
-                exitMessage = MSGS.dialogEditError(arg0.getLocalizedMessage());
-                hide();
+            public void onFailure(Throwable cause) {
+                FailureHandler.handleFormException(formPanel, cause);
+                status.hide();
+                formPanel.getButtonBar().enable();
+                unmask();
+                submitButton.enable();
+                cancelButton.enable();
+                if (cause instanceof GwtKapuaException) {
+                    GwtKapuaException gwtCause = (GwtKapuaException)cause;
+                    if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
+                        groupNameField.markInvalid(gwtCause.getMessage());
+                    }
+                }
             }
 
             @Override

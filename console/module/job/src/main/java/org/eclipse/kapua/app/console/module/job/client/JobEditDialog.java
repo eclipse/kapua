@@ -13,6 +13,9 @@ package org.eclipse.kapua.app.console.module.job.client;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJob;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobService;
@@ -52,8 +55,18 @@ public class JobEditDialog extends JobAddDialog {
             @Override
             public void onFailure(Throwable cause) {
                 exitStatus = false;
-                exitMessage = JOB_MSGS.dialogEditError(cause.getLocalizedMessage());
-                hide();
+                FailureHandler.handleFormException(formPanel, cause);
+                status.hide();
+                formPanel.getButtonBar().enable();
+                unmask();
+                submitButton.enable();
+                cancelButton.enable();
+                if (cause instanceof GwtKapuaException) {
+                    GwtKapuaException gwtCause = (GwtKapuaException)cause;
+                    if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
+                        name.markInvalid(gwtCause.getMessage());
+                    }
+                }
             }
         });
 

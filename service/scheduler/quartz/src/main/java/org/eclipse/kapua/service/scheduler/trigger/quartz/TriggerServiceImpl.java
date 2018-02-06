@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
-import java.util.List;
 import java.util.TimeZone;
 
 import javax.inject.Inject;
@@ -21,7 +20,6 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -94,40 +92,17 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(SCHEDULER_DOMAIN, Actions.write, triggerCreator.getScopeId()));
 
+        KapuaLocator locator = KapuaLocator.getInstance();
+        TriggerFactory triggerFactory = locator.getFactory(TriggerFactory.class);
+        TriggerQuery query = triggerFactory.newQuery(triggerCreator.getScopeId());
+        AttributePredicate<String> kapuaTriggerNamePredicate = new AttributePredicate<>(TriggerPredicates.NAME, triggerCreator.getName());
+        query.setPredicate(kapuaTriggerNamePredicate);
+        TriggerListResult result = query(query);
+        if (!result.isEmpty()) {
+            throw new KapuaDuplicateNameException(triggerCreator.getName());
+        }
+
         return entityManagerSession.onTransactedInsert(em -> {
-
-            // KapuaQuery<Trigger> triggerQuery = queryByJobId;
-            List<TriggerProperty> propertiesList = triggerCreator.getTriggerProperties();
-            String jobId = null;
-            if (!propertiesList.isEmpty()) {
-                for (TriggerProperty triggerProperty : propertiesList) {
-                    if ("jobId".equals(triggerProperty.getName())) {
-                        jobId = triggerProperty.getPropertyValue();
-
-                    }
-                }
-            }
-            KapuaLocator locator = KapuaLocator.getInstance();
-            TriggerFactory triggerFactory = locator.getFactory(TriggerFactory.class);
-            TriggerQuery query = triggerFactory.newQuery(triggerCreator.getScopeId());
-            AttributePredicate<String> kapuaPropertyNameAttributePredicate = new AttributePredicate<>(
-                    TriggerPredicates.TRIGGER_PROPERTIES_NAME, "jobId");
-            AttributePredicate<String> kapuaPropertyValueAttributePredicate = new AttributePredicate<>(
-                    TriggerPredicates.TRIGGER_PROPERTIES_VALUE, jobId);
-            AttributePredicate<String> kapuaPropertyTypeAttributePredicate = new AttributePredicate<>(
-                    TriggerPredicates.TRIGGER_PROPERTIES_TYPE, KapuaId.class.getName());
-            AttributePredicate<String> kapuaTriggerNamePredicate = new AttributePredicate<>(
-                    TriggerPredicates.NAME, triggerCreator.getName());
-            AndPredicate andPredicate = new AndPredicate().and(kapuaPropertyNameAttributePredicate)
-                    .and(kapuaPropertyValueAttributePredicate)
-                    .and(kapuaPropertyTypeAttributePredicate)
-                    .and(kapuaTriggerNamePredicate);
-            query.setPredicate(andPredicate);
-            TriggerListResult result = TriggerDAO.query(em, query);
-            List<Trigger> items = result.getItems();
-            if (!items.isEmpty()) {
-                throw new KapuaDuplicateNameException(triggerCreator.getName());
-            }
 
             Trigger trigger = TriggerDAO.create(em, triggerCreator);
 
@@ -201,15 +176,23 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         ArgumentValidator.notNull(trigger.getId(), "trigger.id");
         ArgumentValidator.notEmptyOrNull(trigger.getName(), "trigger.name");
 
+        KapuaLocator locator = KapuaLocator.getInstance();
+        TriggerFactory triggerFactory = locator.getFactory(TriggerFactory.class);
+        TriggerQuery query = triggerFactory.newQuery(trigger.getScopeId());
+        AttributePredicate<String> kapuaTriggerNamePredicate = new AttributePredicate<>(TriggerPredicates.NAME, trigger.getName());
+        query.setPredicate(kapuaTriggerNamePredicate);
+        TriggerListResult result = query(query);
+        if (!result.isEmpty()) {
+            throw new KapuaDuplicateNameException(trigger.getName());
+        }
+
         //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(SCHEDULER_DOMAIN, Actions.write, trigger.getScopeId()));
 
         //
         // Do update
-        return entityManagerSession.onTransactedResult(em -> {
-            return TriggerDAO.update(em, trigger);
-        });
+        return entityManagerSession.onTransactedResult(em -> TriggerDAO.update(em, trigger));
     }
 
     @Override

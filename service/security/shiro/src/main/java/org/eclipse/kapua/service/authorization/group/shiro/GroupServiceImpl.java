@@ -74,7 +74,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
         }
 
         GroupQuery query = new GroupQueryImpl(groupCreator.getScopeId());
-        query.setPredicate(new AttributePredicate<String>(GroupPredicates.NAME, groupCreator.getName()));
+        query.setPredicate(new AttributePredicate<>(GroupPredicates.NAME, groupCreator.getName()));
         GroupListResult groupListResult = query(query);
         if (!groupListResult.isEmpty()) {
              throw new KapuaDuplicateNameException(groupCreator.getName());
@@ -95,6 +95,14 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(GROUP_DOMAIN, Actions.write, group.getScopeId()));
+
+        GroupQuery query = new GroupQueryImpl(group.getScopeId());
+        query.setPredicate(new AttributePredicate<>(GroupPredicates.NAME, group.getName()));
+        GroupListResult groupListResult = query(query);
+        if (!groupListResult.isEmpty()) {
+            throw new KapuaDuplicateNameException(group.getName());
+        }
+
         return entityManagerSession.onTransactedInsert(em -> {
 
             Group currentGroup = GroupDAO.find(em, group.getId());

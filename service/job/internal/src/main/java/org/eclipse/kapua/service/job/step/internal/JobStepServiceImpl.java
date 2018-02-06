@@ -11,9 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.step.internal;
 
+import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -29,6 +31,7 @@ import org.eclipse.kapua.service.job.step.JobStep;
 import org.eclipse.kapua.service.job.step.JobStepCreator;
 import org.eclipse.kapua.service.job.step.JobStepFactory;
 import org.eclipse.kapua.service.job.step.JobStepListResult;
+import org.eclipse.kapua.service.job.step.JobStepPredicates;
 import org.eclipse.kapua.service.job.step.JobStepQuery;
 import org.eclipse.kapua.service.job.step.JobStepService;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
@@ -82,6 +85,15 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
             }
         }
 
+        JobStepFactory jobStepFactory = LOCATOR.getFactory(JobStepFactory.class);
+        JobStepQuery query = jobStepFactory.newQuery(creator.getScopeId());
+        AttributePredicate<String> jobStepNamePredicate = new AttributePredicate<>(JobStepPredicates.NAME, creator.getName());
+        query.setPredicate(jobStepNamePredicate);
+        JobStepListResult result = query(query);
+        if (!result.isEmpty()) {
+            throw new KapuaDuplicateNameException(creator.getName());
+        }
+
         //
         // Check access
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.write, creator.getScopeId()));
@@ -109,6 +121,15 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
                     ArgumentValidator.areEqual(jsp.getPropertyType(), jsdp.getPropertyType(), "jobStepCreator.stepProperties{}." + jsp.getName());
                 }
             }
+        }
+
+        JobStepFactory jobStepFactory = LOCATOR.getFactory(JobStepFactory.class);
+        JobStepQuery query = jobStepFactory.newQuery(jobStep.getScopeId());
+        AttributePredicate<String> jobStepNamePredicate = new AttributePredicate<>(JobStepPredicates.NAME, jobStep.getName());
+        query.setPredicate(jobStepNamePredicate);
+        JobStepListResult result = query(query);
+        if (!result.isEmpty()) {
+            throw new KapuaDuplicateNameException(jobStep.getName());
         }
 
         //
