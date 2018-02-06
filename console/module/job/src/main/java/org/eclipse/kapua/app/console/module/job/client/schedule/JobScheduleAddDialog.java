@@ -63,7 +63,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         retryInterval = new NumberField();
         cronExpression = new TextField<String>();
 
-        DialogUtils.resizeDialog(this, 600, 500);
+        DialogUtils.resizeDialog(this, 400, 300);
     }
 
     @Override
