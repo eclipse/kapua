@@ -15,6 +15,8 @@ import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAd
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator;
+import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator.FieldType;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
@@ -89,7 +91,7 @@ public class RoleAddDialog extends EntityAddEditDialog {
         roleNameField = new TextField<String>();
         roleNameField.setAllowBlank(false);
         roleNameField.setFieldLabel("* " + MSGS.dialogAddFieldName());
-        roleNameField.setToolTip(MSGS.dialogAddFieldNameTooltip());
+        roleNameField.setValidator(new TextFieldValidator(roleNameField, FieldType.NAME));
         roleFormPanel.add(roleNameField);
 
         bodyPanel.add(roleFormPanel);
