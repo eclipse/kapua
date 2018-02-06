@@ -16,6 +16,9 @@ import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -211,6 +214,14 @@ public class WestNavigationView extends LayoutContainer {
                     }
                 });
 
+                cloudResourcesTreeGrid.addListener(Events.ViewReady, new Listener<ComponentEvent>() {
+
+                    @Override
+                    public void handleEvent(ComponentEvent be) {
+                        cloudResourcesTreeGrid.getSelectionModel().select(0, false);
+                    }
+                });
+
                 if (additionalViewDescriptors.size() > 0) {
                     centerPanel.removeAll();
 
@@ -224,9 +235,6 @@ public class WestNavigationView extends LayoutContainer {
                     centerPanel.add(panel);
                     centerPanel.layout();
                 }
-
-                ColumnConfig name1 = new ColumnConfig("name", "Name", 200);
-                name1.setRenderer(treeCellRenderer);
 
                 cloudResourcesPanel.add(cloudResourcesTreeGrid);
                 accordionPanel.add(cloudResourcesPanel);
