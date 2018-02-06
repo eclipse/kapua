@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,18 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.job.client.schedule;
 
-import com.extjs.gxt.ui.client.widget.form.DateField;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.form.TimeField;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import org.eclipse.kapua.app.console.module.api.client.messages.ValidationMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
+import org.eclipse.kapua.app.console.module.api.client.util.validator.TimeFieldValidator;
+import org.eclipse.kapua.app.console.module.api.client.util.validator.TimeFieldValidator.FieldType;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
 import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtTrigger;
@@ -31,9 +30,13 @@ import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtTriggerPrope
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtTriggerService;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtTriggerServiceAsync;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import com.extjs.gxt.ui.client.widget.form.DateField;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
+import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.form.TimeField;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class JobScheduleAddDialog extends EntityAddEditDialog {
 
@@ -57,9 +60,13 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
 
         triggerName = new TextField<String>();
         startsOn = new DateField();
+        startsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         startsOnTime = new TimeField();
+        startsOnTime.setValidator(new TimeFieldValidator(startsOnTime,FieldType.TIME));
         endsOn = new DateField();
+        endsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         endsOnTime = new TimeField();
+        endsOnTime.setValidator(new TimeFieldValidator(endsOnTime, FieldType.TIME));
         retryInterval = new NumberField();
         cronExpression = new TextField<String>();
 
@@ -87,9 +94,11 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
 
         endsOn.setFieldLabel(JOB_MSGS.dialogAddScheduleEndsOnLabel());
         endsOn.setFormatValue(true);
+        endsOn.setAllowBlank(false);
         endsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         mainPanel.add(endsOn);
 
+        endsOnTime.setAllowBlank(false);
         endsOnTime.setFieldLabel(JOB_MSGS.dialogAddScheduleEndsOnTimeLabel());
         endsOnTime.setFormat(DateTimeFormat.getFormat("HH:mm"));
         mainPanel.add(endsOnTime);
@@ -114,6 +123,23 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
 
         if (endsOn.getValue() == null && endsOnTime.getValue() != null) {
             endsOn.markInvalid(VAL_MSGS.endTimeWithoutEndDate());
+        }
+        if (startsOn.getValue() == null && startsOnTime.getValue() != null) {
+            startsOn.markInvalid(VAL_MSGS.startTimeWithoutStartDate());
+        }
+        if (startsOn.getValue() != null) {
+            if (startsOnTime.getValue() == null) {
+                startsOnTime.markInvalid(VAL_MSGS.startDateWithoutStartTime());
+                return;
+            } else {
+                if (startsOn.getValue().after(endsOn.getValue())) {
+                    startsOn.markInvalid(VAL_MSGS.startsOnDateLaterThanEndsOn());
+                    return;
+                } else if (startsOn.getValue().equals(endsOn.getValue()) && startsOnTime.getValue().getDate().after(endsOnTime.getValue().getDate())) {
+                    startsOnTime.markInvalid(VAL_MSGS.startsOnTimeLaterThanEndsOn());
+                    return;
+                }
+            }
         }
 
         if (endsOn.getValue() != null) {
