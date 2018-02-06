@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,53 +16,45 @@ import java.util.MissingResourceException;
 import org.eclipse.kapua.app.console.module.api.client.messages.ValidationMessages;
 
 import com.extjs.gxt.ui.client.widget.form.Field;
-import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.form.TimeField;
 import com.extjs.gxt.ui.client.widget.form.Validator;
 import com.google.gwt.core.client.GWT;
 
-public class TextFieldValidator implements Validator {
-
+public class TimeFieldValidator implements Validator{
     private static final ValidationMessages MSGS = GWT.create(ValidationMessages.class);
 
-    protected FieldType textFieldType;
-    protected TextField<String> textField;
+    protected TimeField timeField;
+    protected FieldType timeFieldType;
 
-    public TextFieldValidator(TextField<String> textField, FieldType textFieldType) {
-
-        this.textField = textField;
-        this.textFieldType = textFieldType;
-
+    public TimeFieldValidator(TimeField timeField, FieldType timeFieldType) {
+        this.timeField=timeField;
+        this.timeFieldType=timeFieldType;
         // initialize the field for its validation
-        if (this.textFieldType.getRegex() != null) {
-            this.textField.setRegex(this.textFieldType.getRegex());
+        if (this.timeFieldType.getRegex() != null) {
+            this.timeField.setRegex(this.timeFieldType.getRegex());
         }
-        if (this.textFieldType.getToolTipMessage() != null) {
-            this.textField.setToolTip(this.textFieldType.getToolTipMessage());
+        if (this.timeFieldType.getToolTipMessage() != null) {
+            this.timeField.setToolTip(this.timeFieldType.getToolTipMessage());
         }
-        if (this.textFieldType.getRequiredMessage() != null) {
-            this.textField.getMessages().setBlankText(this.textFieldType.getRequiredMessage());
+        if (this.timeFieldType.getRequiredMessage() != null) {
+            this.timeField.getMessages().setBlankText(this.timeFieldType.getRequiredMessage());
         }
-        if (this.textFieldType.getRegexMessage() != null) {
-            this.textField.getMessages().setRegexText(this.textFieldType.getRegexMessage());
+        if (this.timeFieldType.getRegexMessage() != null) {
+            this.timeField.getMessages().setRegexText(this.timeFieldType.getRegexMessage());
         }
-    }
+}
 
     public String validate(Field<?> field, String value) {
 
         String result = null;
-        if (!value.matches(textFieldType.getRegex())) {
-            result = textFieldType.getRegexMessage();
+        if (!value.matches(timeFieldType.getRegex())) {
+            result = timeFieldType.getRegexMessage();
         }
         return result;
     }
 
-    public enum FieldType {
-
-        SIMPLE_NAME("simple_name", "^[a-zA-Z0-9\\-]{3,}$"), DEVICE_CLIENT_ID("device_client_id", "^[a-zA-Z0-9\\:\\_\\-]{3,}$"), NAME("name", "^[a-zA-Z0-9\\_\\-]{3,}$"), NAME_SPACE("name_space",
-                "^[a-zA-Z0-9\\ \\_\\-]{3,}$"), PASSWORD("password", "^.*(?=.{12,})(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!\\~\\|]).*$"), EMAIL("email",
-                        "^(\\w+)([-+.][\\w]+)*@(\\w[-\\w]*\\.){1,5}([A-Za-z]){2,4}$"), PHONE("phone",
-                                "([\\+(]?(\\d){2,}[)]?[- \\.]?(\\d){2,}[- \\.]?(\\d){2,}[- \\.]?(\\d){2,}[- \\.]?(\\d){2,})|([\\+(]?(\\d){2,}[)]?[- \\.]?(\\d){2,}[- \\.]?(\\d){2,}[- \\.]?(\\d){2,})|([\\+(]?(\\d){2,}[)]?[- \\.]?(\\d){2,}[- \\.]?(\\d){2,})"), ALPHABET(
-                                        "alphabet", "^[a-zA-Z_]+$"), ALPHANUMERIC("alphanumeric", "^[a-zA-Z0-9_]+$"), NUMERIC("numeric", "^[+0-9.]+$");
+    public enum FieldType{
+        TIME("time","^((2[0-3]|[01][0-9]|10):([0-5][0-9]))$");
 
         private String name;
         private String regex;
@@ -91,7 +83,7 @@ public class TextFieldValidator implements Validator {
             try {
                 return MSGS.getString(regexMsg);
             } catch (MissingResourceException mre) {
-                return null;
+                return "The time should be in format HH:mm.";
             }
         }
 
