@@ -28,14 +28,6 @@ public abstract class KapuaTabItem<M extends GwtEntityModel> extends TabItem {
 
     private boolean dirty;
 
-    public boolean isDirty() {
-        return dirty;
-    }
-
-    public void setDirty(boolean dirty) {
-        this.dirty = dirty;
-    }
-
     public KapuaTabItem(GwtSession currentSession, String title, KapuaIcon tabIcon) {
         super(title, tabIcon);
 
