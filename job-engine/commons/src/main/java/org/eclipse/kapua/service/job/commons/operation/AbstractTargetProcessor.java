@@ -44,12 +44,14 @@ public abstract class AbstractTargetProcessor implements TargetOperation {
             processTarget(jobTarget);
 
             jobTarget.setStatus(JobTargetStatus.PROCESS_OK);
+
+            LOG.info("Processing item: {} - Done!", jobTarget.getId());
         } catch (Exception e) {
+            LOG.info("Processing item: {} - Error!", jobTarget.getId(), e);
             jobTarget.setStatus(JobTargetStatus.PROCESS_FAILED);
             jobTarget.setException(e);
         }
 
-        LOG.info("Processing item: {} - Done!", jobTarget.getId());
         return jobTarget;
     }
 
