@@ -60,7 +60,7 @@ public interface EndpointInfo extends KapuaUpdatableEntity {
 
     public void setSecure(boolean secure);
 
-    @XmlElement(name = "usage")
+    @XmlElement(name = "usages")
     public <E extends EndpointUsage> Set<E> getUsages();
 
     public void setUsages(Set<EndpointUsage> endpointUsages);
