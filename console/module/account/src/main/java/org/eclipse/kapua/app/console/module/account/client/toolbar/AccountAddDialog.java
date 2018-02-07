@@ -178,6 +178,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
 
         organizationPhoneNumber.setName("organizationPhoneNumber");
         organizationPhoneNumber.setFieldLabel(MSGS.accountFormOrgPhoneNumber());
+        organizationPhoneNumber.setValidator(new TextFieldValidator(organizationPhoneNumber, FieldType.PHONE));
         organizationSubFieldSet.add(organizationPhoneNumber, subFieldsetFormData);
 
         organizationAddressLine1.setName("organizationAddressLine1");
