@@ -12,7 +12,6 @@
 package org.eclipse.kapua.service.tag.internal;
 
 import org.eclipse.kapua.KapuaDuplicateNameException;
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
@@ -23,6 +22,7 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
@@ -44,139 +44,139 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
     private static final Domain TAG_DOMAIN = new TagDomain();
 
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
+    private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
+
     public TagServiceImpl() {
         super(TagService.class.getName(), TAG_DOMAIN, TagEntityManagerFactory.getInstance(), TagService.class, TagFactory.class);
     }
 
     @Override
-    public Tag create(TagCreator tagCreator)
-            throws KapuaException {
+    public Tag create(TagCreator tagCreator) throws KapuaException {
+        //
+        // Argument validation
         ArgumentValidator.notNull(tagCreator, "tagCreator");
-        ArgumentValidator.notNull(tagCreator.getScopeId(), "roleCreator.scopeId");
+        ArgumentValidator.notNull(tagCreator.getScopeId(), "tagCreator.scopeId");
         ArgumentValidator.notEmptyOrNull(tagCreator.getName(), "tagCreator.name");
-
-        KapuaLocator locator = KapuaLocator.getInstance();
 
         //
         // Check Access
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(TAG_DOMAIN, Actions.write, tagCreator.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(TAG_DOMAIN, Actions.write, tagCreator.getScopeId()));
 
+        //
+        // Check limit
         if (allowedChildEntities(tagCreator.getScopeId()) <= 0) {
             throw new KapuaIllegalArgumentException("scopeId", "max tags reached");
         }
 
+        //
+        // Check duplicate name
         TagQuery query = new TagQueryImpl(tagCreator.getScopeId());
         query.setPredicate(new AttributePredicate<>(TagPredicates.NAME, tagCreator.getName()));
-        TagListResult tagListResult = query(query);
-        if (!tagListResult.isEmpty()) {
+
+        if (count(query) > 0) {
             throw new KapuaDuplicateNameException(tagCreator.getName());
         }
 
+        //
+        // Do create
         return entityManagerSession.onTransactedInsert(em -> TagDAO.create(em, tagCreator));
     }
 
     @Override
     public Tag update(Tag tag) throws KapuaException {
+        //
+        // Argument validation
         ArgumentValidator.notNull(tag, "tag");
         ArgumentValidator.notNull(tag.getScopeId(), "tag.scopeId");
+        ArgumentValidator.notNull(tag.getId(), "tag.id");
         ArgumentValidator.notEmptyOrNull(tag.getName(), "tag.name");
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(TAG_DOMAIN, Actions.write, tag.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(TAG_DOMAIN, Actions.write, tag.getScopeId()));
 
+        //
         // Check duplicate name
-        AndPredicate andPredicate = new AndPredicate();
-
         TagQuery query = new TagQueryImpl(tag.getScopeId());
-        query.setPredicate(new AttributePredicate<>(TagPredicates.NAME, tag.getName()));
-        TagListResult tagListResult = query(query);
-        if (!tagListResult.isEmpty()) {
+        query.setPredicate(
+                new AndPredicate(
+                        new AttributePredicate<>(TagPredicates.NAME, tag.getName()),
+                        new AttributePredicate<>(TagPredicates.ENTITY_ID, tag.getId(), KapuaAttributePredicate.Operator.NOT_EQUAL)
+                ));
+
+        if (count(query) > 0) {
             throw new KapuaDuplicateNameException(tag.getName());
         }
 
-        return entityManagerSession.onTransactedInsert(em -> {
-
-            Tag currentTag = TagDAO.find(em, tag.getId());
-            if (currentTag == null) {
-                throw new KapuaEntityNotFoundException(Tag.TYPE, tag.getId());
-            }
-
-            return TagDAO.update(em, tag);
-        });
+        //
+        // Do Update
+        return entityManagerSession.onTransactedInsert(em -> TagDAO.update(em, tag));
     }
 
     @Override
     public void delete(KapuaId scopeId, KapuaId tagId) throws KapuaException {
+        //
+        // Argument validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(tagId, "tagId");
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(TAG_DOMAIN, Actions.delete, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(TAG_DOMAIN, Actions.delete, scopeId));
 
-        entityManagerSession.onTransactedAction(em -> {
-            if (TagDAO.find(em, tagId) == null) {
-                throw new KapuaEntityNotFoundException(Tag.TYPE, tagId);
-            }
-
-            TagDAO.delete(em, tagId);
-        });
+        //
+        //
+        entityManagerSession.onTransactedAction(em -> TagDAO.delete(em, tagId));
     }
 
     @Override
-    public Tag find(KapuaId scopeId, KapuaId tagId)
-            throws KapuaException {
+    public Tag find(KapuaId scopeId, KapuaId tagId) throws KapuaException {
+        //
+        // Argument validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(tagId, "tagId");
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(TAG_DOMAIN, Actions.read, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(TAG_DOMAIN, Actions.read, scopeId));
 
+        //
+        // Do find
         return entityManagerSession.onResult(em -> TagDAO.find(em, tagId));
     }
 
     @Override
-    public TagListResult query(KapuaQuery<Tag> query)
-            throws KapuaException {
+    public TagListResult query(KapuaQuery<Tag> query) throws KapuaException {
+        //
+        // Argument validation
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(TAG_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(TAG_DOMAIN, Actions.read, query.getScopeId()));
 
+        //
+        // Do query
         return entityManagerSession.onResult(em -> TagDAO.query(em, query));
     }
 
     @Override
-    public long count(KapuaQuery<Tag> query)
-            throws KapuaException {
+    public long count(KapuaQuery<Tag> query) throws KapuaException {
+        //
+        // Argument validation
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(TAG_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(TAG_DOMAIN, Actions.read, query.getScopeId()));
 
+        //
+        // Do count
         return entityManagerSession.onResult(em -> TagDAO.count(em, query));
     }
 }
