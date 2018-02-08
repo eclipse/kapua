@@ -16,6 +16,7 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -26,7 +27,6 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-
 import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.tag.TagCreator;
 import org.eclipse.kapua.service.tag.TagFactory;
@@ -36,7 +36,7 @@ import org.eclipse.kapua.service.tag.TagService;
 
 /**
  * {@link TagService} implementation.
- * 
+ *
  * @since 1.0.0
  */
 @KapuaProvider
@@ -71,7 +71,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         query.setPredicate(new AttributePredicate<>(TagPredicates.NAME, tagCreator.getName()));
         TagListResult tagListResult = query(query);
         if (!tagListResult.isEmpty()) {
-             throw new KapuaDuplicateNameException(tagCreator.getName());
+            throw new KapuaDuplicateNameException(tagCreator.getName());
         }
 
         return entityManagerSession.onTransactedInsert(em -> TagDAO.create(em, tagCreator));
@@ -89,6 +89,9 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(TAG_DOMAIN, Actions.write, tag.getScopeId()));
+
+        // Check duplicate name
+        AndPredicate andPredicate = new AndPredicate();
 
         TagQuery query = new TagQueryImpl(tag.getScopeId());
         query.setPredicate(new AttributePredicate<>(TagPredicates.NAME, tag.getName()));

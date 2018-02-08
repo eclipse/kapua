@@ -12,12 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user.internal;
 
-import static org.eclipse.kapua.commons.util.ArgumentValidator.notEmptyOrNull;
-
-import java.util.Objects;
-
-import javax.inject.Inject;
-
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaDuplicateNameInAnotherAccountError;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
@@ -45,6 +39,11 @@ import org.eclipse.kapua.service.user.UserType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+import java.util.Objects;
+
+import static org.eclipse.kapua.commons.util.ArgumentValidator.notEmptyOrNull;
+
 /**
  * User service implementation.
  */
@@ -69,16 +68,12 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     }
 
     @Override
-    //@RaiseServiceEvent
-    public User create(UserCreator userCreator)
-            throws KapuaException {
+    public User create(UserCreator userCreator) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(userCreator.getScopeId().getId(), "scopeId");
         ArgumentValidator.notEmptyOrNull(userCreator.getName(), "name");
-        // ArgumentValidator.notEmptyOrNull(userCreator.getRawPassword(), "rawPassword");
         ArgumentValidator.match(userCreator.getName(), ArgumentValidator.NAME_REGEXP, "name");
-        // ArgumentValidator.match(userCreator.getRawPassword(), ArgumentValidator.PASSWORD_REGEXP, "rawPassword");
         ArgumentValidator.match(userCreator.getEmail(), ArgumentValidator.EMAIL_REGEXP, "email");
         ArgumentValidator.notNull(userCreator.getUserType(), "userType");
         ArgumentValidator.notNull(userCreator.getUserStatus(), "userStatus");
@@ -102,10 +97,10 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         query.setPredicate(new AttributePredicate<String>(UserPredicates.NAME, userCreator.getName()));
         UserListResult userListResult = query(query);
         if (!userListResult.isEmpty()) {
-             throw new KapuaDuplicateNameException(userCreator.getName());
+            throw new KapuaDuplicateNameException(userCreator.getName());
         }
 
-        if(findByName(userCreator.getName()) != null) {
+        if (findByName(userCreator.getName()) != null) {
             throw new KapuaDuplicateNameInAnotherAccountError(userCreator.getName());
         }
 
@@ -114,19 +109,19 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
     @Override
     //@RaiseServiceEvent
-    public User update(User user)
-            throws KapuaException {
+    public User update(User user) throws KapuaException {
+        //
         // Validation of the fields
-        ArgumentValidator.notNull(user.getId().getId(), "id");
-        ArgumentValidator.notNull(user.getScopeId().getId(), "accountId");
-        ArgumentValidator.notEmptyOrNull(user.getName(), "name");
-        ArgumentValidator.match(user.getName(), ArgumentValidator.NAME_REGEXP, "name");
-        // ArgumentValidator.match(user.getRawPassword(), ArgumentValidator.PASSWORD_REGEXP, "rawPassword");
-        ArgumentValidator.match(user.getEmail(), ArgumentValidator.EMAIL_REGEXP, "email");
+        ArgumentValidator.notNull(user.getId().getId(), "user.id");
+        ArgumentValidator.notNull(user.getScopeId(), "user.scopeId");
+        ArgumentValidator.notEmptyOrNull(user.getName(), "user.name");
+        ArgumentValidator.match(user.getName(), ArgumentValidator.NAME_REGEXP, "user.name");
+        ArgumentValidator.match(user.getEmail(), ArgumentValidator.EMAIL_REGEXP, "user.email");
+
         if (user.getUserType() != UserType.INTERNAL) {
-            ArgumentValidator.notEmptyOrNull(user.getExternalId(), "externalId");
+            ArgumentValidator.notEmptyOrNull(user.getExternalId(), "user.externalId");
         } else {
-            ArgumentValidator.isEmptyOrNull(user.getExternalId(), "externalId");
+            ArgumentValidator.isEmptyOrNull(user.getExternalId(), "user.externalId");
         }
         validateSystemUser(user.getName());
 
@@ -155,8 +150,8 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     //@RaiseServiceEvent
     public void delete(KapuaId scopeId, KapuaId userId) throws KapuaException {
         // Validation of the fields
-        ArgumentValidator.notNull(userId.getId(), "id");
-        ArgumentValidator.notNull(scopeId.getId(), "accountId");
+        ArgumentValidator.notNull(userId.getId(), "user.id");
+        ArgumentValidator.notNull(scopeId.getId(), "user.scopeId");
 
         //
         // Check Access
@@ -177,19 +172,20 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     @Override
     public void delete(User user) throws KapuaException {
         ArgumentValidator.notNull(user, "user");
+
         delete(user.getScopeId(), user.getId());
     }
 
     @Override
-    public User find(KapuaId accountId, KapuaId userId)
+    public User find(KapuaId scopeId, KapuaId userId)
             throws KapuaException {
         // Validation of the fields
-        ArgumentValidator.notNull(accountId.getId(), "accountId");
-        ArgumentValidator.notNull(userId.getId(), "id");
+        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(userId, "userId");
 
         //
         // Check Access
-        this.authorizationService.checkPermission(this.permissionFactory.newPermission(USER_DOMAIN, Actions.read, accountId));
+        this.authorizationService.checkPermission(this.permissionFactory.newPermission(USER_DOMAIN, Actions.read, scopeId));
 
         // Do the find
         return entityManagerSession.onResult(em -> UserDAO.find(em, userId));
@@ -197,25 +193,23 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
     @Override
     public User findByName(final String name) throws KapuaException {
-
+        //
         // Validation of the fields
-
         ArgumentValidator.notEmptyOrNull(name, "name");
 
+        //
         // Do the find
-
         return entityManagerSession.onResult(em -> checkReadAccess(UserDAO.findByName(em, name)));
     }
 
     @Override
     public User findByExternalId(final String externalId) throws KapuaException {
-
+        //
         // Validation of the fields
-
         notEmptyOrNull(externalId, "externalId");
 
+        //
         // Do the find
-
         return entityManagerSession.onResult(em -> checkReadAccess(UserDAO.findByExternalId(em, externalId)));
     }
 
@@ -231,12 +225,16 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         // Check Access
         this.authorizationService.checkPermission(this.permissionFactory.newPermission(USER_DOMAIN, Actions.read, query.getScopeId()));
 
+        //
+        // Do query
         return entityManagerSession.onResult(em -> UserDAO.query(em, query));
     }
 
     @Override
     public long count(KapuaQuery<User> query)
             throws KapuaException {
+        //
+        // Argument Validator
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
@@ -244,6 +242,8 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         // Check Access
         this.authorizationService.checkPermission(this.permissionFactory.newPermission(USER_DOMAIN, Actions.read, query.getScopeId()));
 
+        //
+        // Do count
         return entityManagerSession.onResult(em -> UserDAO.count(em, query));
     }
 
