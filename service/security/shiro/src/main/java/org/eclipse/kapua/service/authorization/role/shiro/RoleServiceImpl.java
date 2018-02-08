@@ -144,7 +144,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         //
         // Check existence
         if (find(role.getScopeId(), role.getId()) == null) {
-            throw new KapuaEntityNotFoundException(role.getType(), role.getId());
+            throw new KapuaEntityNotFoundException(Role.TYPE, role.getId());
         }
 
         //

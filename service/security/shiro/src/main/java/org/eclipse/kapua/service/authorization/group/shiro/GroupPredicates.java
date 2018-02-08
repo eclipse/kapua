@@ -11,20 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.group.shiro;
 
+import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
 import org.eclipse.kapua.service.authorization.group.Group;
 
 /**
  * {@link KapuaQuery} {@link KapuaPredicate} name for {@link Group} entity.
- * 
+ *
  * @since 1.0
- * 
  */
-public class GroupPredicates {
-
-    private GroupPredicates() {
-    }
+public interface GroupPredicates extends KapuaUpdatableEntityPredicates {
 
     /**
      * {@link Group} name
