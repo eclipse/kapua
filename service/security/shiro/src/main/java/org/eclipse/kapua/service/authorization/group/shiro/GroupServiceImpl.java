@@ -12,10 +12,10 @@
 package org.eclipse.kapua.service.authorization.group.shiro;
 
 import org.eclipse.kapua.KapuaDuplicateNameException;
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
@@ -23,6 +23,7 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.group.Group;
@@ -40,146 +41,149 @@ import org.slf4j.LoggerFactory;
 /**
  * {@link GroupService} implementation.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 @KapuaProvider
 public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<Group, GroupCreator, GroupService, GroupListResult, GroupQuery, GroupFactory> implements GroupService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GroupServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GroupServiceImpl.class);
 
     private static final Domain GROUP_DOMAIN = new GroupDomain();
+
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
+    private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
 
     public GroupServiceImpl() {
         super(GroupService.class.getName(), GROUP_DOMAIN, AuthorizationEntityManagerFactory.getInstance(), GroupService.class, GroupFactory.class);
     }
 
     @Override
-    public Group create(GroupCreator groupCreator)
-            throws KapuaException {
+    public Group create(GroupCreator groupCreator) throws KapuaException {
+        //
+        // Argument validation
         ArgumentValidator.notNull(groupCreator, "groupCreator");
         ArgumentValidator.notNull(groupCreator.getScopeId(), "roleCreator.scopeId");
         ArgumentValidator.notEmptyOrNull(groupCreator.getName(), "groupCreator.name");
 
-        KapuaLocator locator = KapuaLocator.getInstance();
-
         //
         // Check Access
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(GROUP_DOMAIN, Actions.write, groupCreator.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(GROUP_DOMAIN, Actions.write, groupCreator.getScopeId()));
 
+        //
+        // Check limits
         if (allowedChildEntities(groupCreator.getScopeId()) <= 0) {
             throw new KapuaIllegalArgumentException("scopeId", "max groups reached");
         }
 
+        //
+        // Check duplicate name
         GroupQuery query = new GroupQueryImpl(groupCreator.getScopeId());
         query.setPredicate(new AttributePredicate<>(GroupPredicates.NAME, groupCreator.getName()));
-        GroupListResult groupListResult = query(query);
-        if (!groupListResult.isEmpty()) {
-             throw new KapuaDuplicateNameException(groupCreator.getName());
+
+        if (count(query) > 0) {
+            throw new KapuaDuplicateNameException(groupCreator.getName());
         }
 
+        //
+        // Do create
         return entityManagerSession.onTransactedInsert(em -> GroupDAO.create(em, groupCreator));
     }
 
     @Override
     public Group update(Group group) throws KapuaException {
+        //
+        // Argument validator
         ArgumentValidator.notNull(group, "group");
         ArgumentValidator.notNull(group.getScopeId(), "group.scopeId");
+        ArgumentValidator.notNull(group.getId(), "group.idd");
         ArgumentValidator.notEmptyOrNull(group.getName(), "group.name");
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(GROUP_DOMAIN, Actions.write, group.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(GROUP_DOMAIN, Actions.write, group.getScopeId()));
 
+        //
+        // Check duplicate name
         GroupQuery query = new GroupQueryImpl(group.getScopeId());
-        query.setPredicate(new AttributePredicate<>(GroupPredicates.NAME, group.getName()));
-        GroupListResult groupListResult = query(query);
-        if (!groupListResult.isEmpty()) {
+        query.setPredicate(
+                new AndPredicate(
+                        new AttributePredicate<>(GroupPredicates.NAME, group.getName()),
+                        new AttributePredicate<>(GroupPredicates.ENTITY_ID, group.getId(), Operator.NOT_EQUAL)
+                )
+        );
+
+        if (count(query) > 0) {
             throw new KapuaDuplicateNameException(group.getName());
         }
 
-        return entityManagerSession.onTransactedInsert(em -> {
-
-            Group currentGroup = GroupDAO.find(em, group.getId());
-            if (currentGroup == null) {
-                throw new KapuaEntityNotFoundException(Group.TYPE, group.getId());
-            }
-
-            return GroupDAO.update(em, group);
-        });
+        //
+        // Do update
+        return entityManagerSession.onTransactedInsert(em -> GroupDAO.update(em, group));
     }
 
     @Override
     public void delete(KapuaId scopeId, KapuaId groupId) throws KapuaException {
+        //
+        // Argument validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(groupId, "groupId");
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(GROUP_DOMAIN, Actions.delete, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(GROUP_DOMAIN, Actions.delete, scopeId));
 
-        entityManagerSession.onTransactedAction(em -> {
-            if (GroupDAO.find(em, groupId) == null) {
-                throw new KapuaEntityNotFoundException(Group.TYPE, groupId);
-            }
-
-            GroupDAO.delete(em, groupId);
-        });
+        //
+        // Do delete
+        entityManagerSession.onTransactedAction(em -> GroupDAO.delete(em, groupId));
     }
 
     @Override
-    public Group find(KapuaId scopeId, KapuaId groupId)
-            throws KapuaException {
+    public Group find(KapuaId scopeId, KapuaId groupId) throws KapuaException {
+        //
+        // Argument validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(groupId, "groupId");
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(GROUP_DOMAIN, Actions.read, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(GROUP_DOMAIN, Actions.read, scopeId));
 
+        //
+        // Do find
         return entityManagerSession.onResult(em -> GroupDAO.find(em, groupId));
     }
 
     @Override
-    public GroupListResult query(KapuaQuery<Group> query)
-            throws KapuaException {
+    public GroupListResult query(KapuaQuery<Group> query) throws KapuaException {
+        //
+        // Argument validation
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(GROUP_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(GROUP_DOMAIN, Actions.read, query.getScopeId()));
 
+        //
+        // Do query
         return entityManagerSession.onResult(em -> GroupDAO.query(em, query));
     }
 
     @Override
-    public long count(KapuaQuery<Group> query)
-            throws KapuaException {
+    public long count(KapuaQuery<Group> query) throws KapuaException {
+        //
+        // Argument validation
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(GROUP_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(GROUP_DOMAIN, Actions.read, query.getScopeId()));
 
+        //
+        // Do count
         return entityManagerSession.onResult(em -> GroupDAO.count(em, query));
     }
 
@@ -188,17 +192,15 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
         if (kapuaEvent == null) {
             //service bus error. Throw some exception?
         }
-        LOGGER.info("GroupService: received kapua event from {}, operation {}", kapuaEvent.getService(), kapuaEvent.getOperation());
+
+        LOG.info("GroupService: received kapua event from {}, operation {}", kapuaEvent.getService(), kapuaEvent.getOperation());
         if ("account".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {
             deleteGroupByAccountId(kapuaEvent.getScopeId(), kapuaEvent.getEntityId());
         }
     }
 
     private void deleteGroupByAccountId(KapuaId scopeId, KapuaId accountId) throws KapuaException {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        GroupFactory groupFactory = locator.getFactory(GroupFactory.class);
-
-        GroupQuery query = groupFactory.newQuery(accountId);
+        GroupQuery query = new GroupQueryImpl(accountId);
 
         GroupListResult groupsToDelete = query(query);
 
