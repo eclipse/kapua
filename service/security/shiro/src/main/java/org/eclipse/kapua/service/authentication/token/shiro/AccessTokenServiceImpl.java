@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.token.shiro;
 
-import java.util.Date;
-
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
@@ -23,10 +21,8 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authentication.token.AccessTokenCreator;
-import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
 import org.eclipse.kapua.service.authentication.token.AccessTokenListResult;
 import org.eclipse.kapua.service.authentication.token.AccessTokenPredicates;
 import org.eclipse.kapua.service.authentication.token.AccessTokenQuery;
@@ -38,11 +34,12 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Date;
+
 /**
- * Access token service implementation.
- * 
- * @since 1.0
+ * {@link AccessTokenService} implementation.
  *
+ * @since 1.0.0
  */
 @KapuaProvider
 public class AccessTokenServiceImpl extends AbstractKapuaService implements AccessTokenService {
@@ -50,6 +47,11 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
     private static final Logger LOGGER = LoggerFactory.getLogger(AccessTokenServiceImpl.class);
 
     private static final Domain ACCESS_TOKEN_DOMAIN = new AccessTokenDomain();
+
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
+    private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
 
     /**
      * Constructor
@@ -59,8 +61,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
     }
 
     @Override
-    public AccessToken create(AccessTokenCreator accessTokenCreator)
-            throws KapuaException {
+    public AccessToken create(AccessTokenCreator accessTokenCreator) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(accessTokenCreator, "accessTokenCreator");
@@ -71,10 +72,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Check access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(ACCESS_TOKEN_DOMAIN, Actions.write, accessTokenCreator.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(ACCESS_TOKEN_DOMAIN, Actions.write, accessTokenCreator.getScopeId()));
 
         //
         // Do create
@@ -82,8 +80,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
     }
 
     @Override
-    public AccessToken update(AccessToken accessToken)
-            throws KapuaException {
+    public AccessToken update(AccessToken accessToken) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(accessToken, "accessToken");
@@ -94,36 +91,29 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Check access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(ACCESS_TOKEN_DOMAIN, Actions.write, accessToken.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(ACCESS_TOKEN_DOMAIN, Actions.write, accessToken.getScopeId()));
+
+        //
+        // Check existence
+        if (find(accessToken.getScopeId(), accessToken.getId()) == null) {
+            throw new KapuaEntityNotFoundException(AccessToken.TYPE, accessToken.getId());
+        }
 
         //
         // Do update
-        return entityManagerSession.onTransactedResult(em -> {
-            AccessToken currentAccessToken = AccessTokenDAO.find(em, accessToken.getId());
-            if (currentAccessToken == null) {
-                throw new KapuaEntityNotFoundException(AccessToken.TYPE, accessToken.getId());
-            }
-
-            return AccessTokenDAO.update(em, accessToken);
-        });
+        return entityManagerSession.onTransactedResult(em -> AccessTokenDAO.update(em, accessToken));
     }
 
     @Override
-    public AccessToken find(KapuaId scopeId, KapuaId accessTokenId)
-            throws KapuaException {
+    public AccessToken find(KapuaId scopeId, KapuaId accessTokenId) throws KapuaException {
+        //
         // Validation of the fields
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(accessTokenId, "accessTokenId");
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(ACCESS_TOKEN_DOMAIN, Actions.read, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(ACCESS_TOKEN_DOMAIN, Actions.read, scopeId));
 
         //
         // Do find
@@ -131,8 +121,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
     }
 
     @Override
-    public AccessTokenListResult query(KapuaQuery<AccessToken> query)
-            throws KapuaException {
+    public AccessTokenListResult query(KapuaQuery<AccessToken> query) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
@@ -140,10 +129,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(ACCESS_TOKEN_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(ACCESS_TOKEN_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -151,8 +137,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
     }
 
     @Override
-    public long count(KapuaQuery<AccessToken> query)
-            throws KapuaException {
+    public long count(KapuaQuery<AccessToken> query) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
@@ -160,10 +145,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(ACCESS_TOKEN_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(ACCESS_TOKEN_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do count
@@ -171,8 +153,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
     }
 
     @Override
-    public void delete(KapuaId scopeId, KapuaId accessTokenId)
-            throws KapuaException {
+    public void delete(KapuaId scopeId, KapuaId accessTokenId) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
@@ -180,25 +161,21 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(ACCESS_TOKEN_DOMAIN, Actions.delete, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(ACCESS_TOKEN_DOMAIN, Actions.delete, scopeId));
+
+        //
+        // Check existence
+        if (find(scopeId, accessTokenId) == null) {
+            throw new KapuaEntityNotFoundException(AccessToken.TYPE, accessTokenId);
+        }
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> {
-            if (AccessTokenDAO.find(em, accessTokenId) == null) {
-                throw new KapuaEntityNotFoundException(AccessToken.TYPE, accessTokenId);
-            }
-
-            AccessTokenDAO.delete(em, accessTokenId);
-        });
+        entityManagerSession.onTransactedAction(em -> AccessTokenDAO.delete(em, accessTokenId));
     }
 
     @Override
-    public AccessTokenListResult findByUserId(KapuaId scopeId, KapuaId userId)
-            throws KapuaException {
+    public AccessTokenListResult findByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
@@ -206,40 +183,32 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(ACCESS_TOKEN_DOMAIN, Actions.read, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(ACCESS_TOKEN_DOMAIN, Actions.read, scopeId));
 
         //
         // Build query
         AccessTokenQuery query = new AccessTokenQueryImpl(scopeId);
-        KapuaPredicate predicate = new AttributePredicate<KapuaId>(AccessTokenPredicates.USER_ID, userId);
-        query.setPredicate(predicate);
+        query.setPredicate(new AttributePredicate<>(AccessTokenPredicates.USER_ID, userId));
 
         //
-        // Query and return result
+        // Do query
         return query(query);
     }
 
     @Override
-    public AccessToken findByTokenId(String tokenId)
-            throws KapuaException {
+    public AccessToken findByTokenId(String tokenId) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(tokenId, "tokenId");
 
         //
-        // Do the find
+        // Do find
         AccessToken accessToken = entityManagerSession.onResult(em -> AccessTokenDAO.findByTokenId(em, tokenId));
 
         //
         // Check Access
         if (accessToken != null) {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-            PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-            authorizationService.checkPermission(permissionFactory.newPermission(ACCESS_TOKEN_DOMAIN, Actions.read, accessToken.getScopeId()));
+            AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(ACCESS_TOKEN_DOMAIN, Actions.read, accessToken.getScopeId()));
         }
 
         return accessToken;
@@ -254,17 +223,14 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(ACCESS_TOKEN_DOMAIN, Actions.read, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(ACCESS_TOKEN_DOMAIN, Actions.read, scopeId));
 
         //
         // Do find
         entityManagerSession.onTransactedResult(em -> {
-            Date now = new Date();
             AccessToken accessToken = AccessTokenDAO.find(em, accessTokenId);
-            accessToken.setInvalidatedOn(now);
+            accessToken.setInvalidatedOn(new Date());
+
             return AccessTokenDAO.update(em, accessToken);
         });
     }
@@ -275,20 +241,18 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
         if (kapuaEvent == null) {
             //service bus error. Throw some exception?
         }
+
         LOGGER.info("AccessTokenService: received kapua event from {}, operation {}", kapuaEvent.getService(), kapuaEvent.getOperation());
         if ("user".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {
             deleteAccessTokenByUserId(kapuaEvent.getScopeId(), kapuaEvent.getEntityId());
-        }
-        else if ("account".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {
+        } else if ("account".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {
             deleteAccessTokenByAccountId(kapuaEvent.getScopeId(), kapuaEvent.getEntityId());
         }
     }
 
     private void deleteAccessTokenByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AccessTokenFactory accessTokenFactory = locator.getFactory(AccessTokenFactory.class);
 
-        AccessTokenQuery query = accessTokenFactory.newQuery(scopeId);
+        AccessTokenQuery query = new AccessTokenQueryImpl(scopeId);
         query.setPredicate(new AttributePredicate<>(AccessTokenPredicates.USER_ID, userId));
 
         AccessTokenListResult accessTokensToDelete = query(query);
@@ -299,10 +263,8 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
     }
 
     private void deleteAccessTokenByAccountId(KapuaId scopeId, KapuaId accountId) throws KapuaException {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AccessTokenFactory accessTokenFactory = locator.getFactory(AccessTokenFactory.class);
 
-        AccessTokenQuery query = accessTokenFactory.newQuery(accountId);
+        AccessTokenQuery query = new AccessTokenQueryImpl(accountId);
 
         AccessTokenListResult accessTokensToDelete = query(query);
 
