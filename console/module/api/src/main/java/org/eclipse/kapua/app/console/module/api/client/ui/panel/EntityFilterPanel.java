@@ -12,6 +12,8 @@
 package org.eclipse.kapua.app.console.module.api.client.ui.panel;
 
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
@@ -90,7 +92,7 @@ public abstract class EntityFilterPanel<M extends GwtEntityModel> extends Conten
 
         buttonPanel.add(searchButton);
         buttonPanel.add(resetButton);
-
+        setIcon(new KapuaIcon(IconSet.FILTER));
         add(buttonPanel);
     }
 

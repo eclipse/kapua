@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -378,7 +378,6 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userCreatedBy", createdUser.getName()));
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userModifiedOn", user.getModifiedOn()));
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userModifiedBy", modifiedUser.getName()));
-                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userExpirationDate", user.getExpirationDate()));
             }
         } catch (Exception e) {
             KapuaExceptionHandler.handle(e);

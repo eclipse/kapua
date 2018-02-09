@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.user.client;
 
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
@@ -45,7 +43,6 @@ public class UserFilterPanel extends EntityFilterPanel<GwtUser> {
 
         entityGrid = entityView.getEntityGrid(entityView, currentSession);
         this.currentSession = currentSession;
-        setIcon(new KapuaIcon(IconSet.FILTER));
 
         setHeading(USER_MSGS.filterHeader());
 

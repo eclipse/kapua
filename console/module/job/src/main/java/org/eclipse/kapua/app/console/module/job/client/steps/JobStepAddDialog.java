@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -91,7 +91,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
     public void createBody() {
         FormPanel jobStepFormPanel = new FormPanel(FORM_LABEL_WIDTH);
 
-        jobStepName.setFieldLabel(JOB_MSGS.dialogAddStepJobNameLabel());
+        jobStepName.setFieldLabel("* " + JOB_MSGS.dialogAddStepJobNameLabel());
         jobStepName.setAllowBlank(false);
 
         jobStepDescription.setFieldLabel(JOB_MSGS.dialogAddStepJobDescriptionLabel());
@@ -111,7 +111,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
         ListStore<GwtJobStepDefinition> jobStepDefinitionStore = new ListStore<GwtJobStepDefinition>(jobStepDefinitionLoader);
         jobStepDefinitionCombo.setStore(jobStepDefinitionStore);
         jobStepDefinitionCombo.setDisplayField("jobStepDefinitionName");
-        jobStepDefinitionCombo.setFieldLabel(JOB_MSGS.dialogAddStepDefinitionCombo());
+        jobStepDefinitionCombo.setFieldLabel("* " + JOB_MSGS.dialogAddStepDefinitionCombo());
         jobStepDefinitionCombo.setEmptyText(JOB_MSGS.dialogAddStepDefinitionComboEmpty());
         jobStepDefinitionCombo.setEditable(false);
         jobStepDefinitionCombo.setAllowBlank(false);

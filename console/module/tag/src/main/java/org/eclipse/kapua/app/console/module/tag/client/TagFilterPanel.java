@@ -37,7 +37,6 @@ public class TagFilterPanel extends EntityFilterPanel<GwtTag> {
         super(entityView, currentSession);
         entityGrid = entityView.getEntityGrid(entityView, currentSession);
         this.currentSession = currentSession;
-
         setHeading(MSGS.filterHeader());
 
         VerticalPanel verticalPanel = getFieldsPanel();

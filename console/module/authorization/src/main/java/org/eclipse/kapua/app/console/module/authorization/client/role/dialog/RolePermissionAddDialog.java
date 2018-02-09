@@ -151,6 +151,7 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
         // Action
         actionsCombo = new SimpleComboBox<GwtAction>();
         actionsCombo.disable();
+        actionsCombo.setEditable(false);
         actionsCombo.setTypeAhead(false);
         actionsCombo.setAllowBlank(false);
         actionsCombo.setFieldLabel(MSGS.permissionAddDialogAction());

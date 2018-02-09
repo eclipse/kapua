@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -33,6 +33,7 @@ import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
+
 import org.eclipse.kapua.app.console.module.data.client.messages.ConsoleDataMessages;
 import org.eclipse.kapua.app.console.module.data.shared.model.GwtDatastoreAsset;
 import org.eclipse.kapua.app.console.module.data.shared.model.GwtDatastoreDevice;
@@ -67,7 +68,7 @@ public class AssetTabItem extends TabItem {
 
         setWidth("100%");
 
-        BorderLayoutData messageLayout = new BorderLayoutData(LayoutRegion.NORTH, 0.02f);
+        final BorderLayoutData messageLayout = new BorderLayoutData(LayoutRegion.NORTH, 0.02f);
         messageLayout.setMargins(new Margins(5));
         Text welcomeMessage = new Text();
         welcomeMessage.setText(MSGS.assetTabItemMessage());
@@ -158,6 +159,9 @@ public class AssetTabItem extends TabItem {
         resultsTableTabItem.setLayout(new FitLayout());
         resultsTableTabItem.add(resultsTable);
         resultsTabPanel.add(resultsTableTabItem);
+
+        ConsoleResizeHandler consoleResizeHandler = new ConsoleResizeHandler();
+        consoleResizeHandler.addResizeHandler(messageLayout, 1400);
 
         add(resultsTabPanel, resultsLayout);
     }

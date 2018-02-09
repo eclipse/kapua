@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -74,35 +74,35 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         FormPanel mainPanel = new FormPanel(150);
 
         triggerName.setAllowBlank(false);
-        triggerName.setFieldLabel(JOB_MSGS.dialogAddScheduleScheduleNameLabel());
+        triggerName.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleScheduleNameLabel());
         mainPanel.add(triggerName);
 
-        startsOn.setFieldLabel(JOB_MSGS.dialogAddScheduleStartsOnLabel());
+        startsOn.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleStartsOnLabel());
         startsOn.setFormatValue(true);
         startsOn.setAllowBlank(false);
         startsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         mainPanel.add(startsOn);
 
         startsOnTime.setAllowBlank(false);
-        startsOnTime.setFieldLabel(JOB_MSGS.dialogAddScheduleStartsOnTimeLabel());
+        startsOnTime.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleStartsOnTimeLabel());
         startsOnTime.setFormat(DateTimeFormat.getFormat("HH:mm"));
         mainPanel.add(startsOnTime);
 
-        endsOn.setFieldLabel(JOB_MSGS.dialogAddScheduleEndsOnLabel());
+        endsOn.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleEndsOnLabel());
         endsOn.setFormatValue(true);
         endsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         mainPanel.add(endsOn);
 
-        endsOnTime.setFieldLabel(JOB_MSGS.dialogAddScheduleEndsOnTimeLabel());
+        endsOnTime.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleEndsOnTimeLabel());
         endsOnTime.setFormat(DateTimeFormat.getFormat("HH:mm"));
         mainPanel.add(endsOnTime);
 
-        retryInterval.setFieldLabel(JOB_MSGS.dialogAddScheduleRetryIntervalLabel());
+        retryInterval.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleRetryIntervalLabel());
         retryInterval.setAllowDecimals(false);
         retryInterval.setAllowNegative(false);
         mainPanel.add(retryInterval);
 
-        cronExpression.setFieldLabel(JOB_MSGS.dialogAddScheduleCronScheduleLabel());
+        cronExpression.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleCronScheduleLabel());
         mainPanel.add(cronExpression);
 
         bodyPanel.add(mainPanel);

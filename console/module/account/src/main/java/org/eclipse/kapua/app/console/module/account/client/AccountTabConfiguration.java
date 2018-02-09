@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,8 +15,10 @@ import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
@@ -24,12 +26,13 @@ import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 
 public class AccountTabConfiguration extends KapuaTabItem<GwtAccount> {
 
+    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     private AccountConfigComponents configComponents;
     private AccountDetailsView accountDetailsView;
     private AccountDetailsTabDescription accountDetailsTabDescription;
 
     public AccountTabConfiguration(GwtSession currentSession, AccountDetailsView accountDetailsView) {
-        super(currentSession, "Settings", new KapuaIcon(IconSet.COG));
+        super(currentSession, MSGS.settingsTabTitle(), new KapuaIcon(IconSet.COG));
         this.accountDetailsView = accountDetailsView;
         configComponents = new AccountConfigComponents(currentSession, this);
 
