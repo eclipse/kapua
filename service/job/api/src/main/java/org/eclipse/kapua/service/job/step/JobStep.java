@@ -30,7 +30,7 @@ import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
  */
 @XmlRootElement(name = "jobStep")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = JobStepXmlRegistry.class, factoryMethod = "newJob")
+@XmlType(factoryClass = JobStepXmlRegistry.class, factoryMethod = "newJobStep")
 public interface JobStep extends KapuaNamedEntity {
 
     public static final String TYPE = "jobStep";

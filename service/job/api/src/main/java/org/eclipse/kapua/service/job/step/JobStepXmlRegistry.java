@@ -32,7 +32,7 @@ public class JobStepXmlRegistry {
      * 
      * @return
      */
-    public JobStep newJob() {
+    public JobStep newJobStep() {
         return factory.newEntity(null);
     }
 
@@ -41,7 +41,7 @@ public class JobStepXmlRegistry {
      * 
      * @return
      */
-    public JobStepCreator newJobCreator() {
+    public JobStepCreator newJobStepCreator() {
         return factory.newCreator(null);
     }
 
@@ -50,7 +50,7 @@ public class JobStepXmlRegistry {
      * 
      * @return
      */
-    public JobStepListResult newJobListResult() {
+    public JobStepListResult newJobStepListResult() {
         return factory.newListResult();
     }
 

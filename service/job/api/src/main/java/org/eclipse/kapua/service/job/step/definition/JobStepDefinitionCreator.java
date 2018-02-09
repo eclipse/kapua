@@ -27,9 +27,9 @@ import org.eclipse.kapua.model.KapuaNamedEntityCreator;
  * @since 1.0.0
  *
  */
-@XmlRootElement(name = "jobCreator")
+@XmlRootElement(name = "jobStepDefinitionCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = JobStepDefinitionXmlRegistry.class, factoryMethod = "newJobCreator")
+@XmlType(factoryClass = JobStepDefinitionXmlRegistry.class, factoryMethod = "newJobStepDefinitionCreator")
 public interface JobStepDefinitionCreator extends KapuaNamedEntityCreator<JobStepDefinition> {
 
     public String getDescription();

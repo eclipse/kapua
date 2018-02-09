@@ -26,9 +26,9 @@ import org.eclipse.kapua.model.KapuaNamedEntity;
  * @since 1.0
  *
  */
-@XmlRootElement(name = "stepDefinition")
+@XmlRootElement(name = "jobStepDefinition")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = JobStepDefinitionXmlRegistry.class, factoryMethod = "newJob")
+@XmlType(factoryClass = JobStepDefinitionXmlRegistry.class, factoryMethod = "newJobStepDefinition")
 public interface JobStepDefinition extends KapuaNamedEntity {
 
     public static final String TYPE = "stepDefinition";
