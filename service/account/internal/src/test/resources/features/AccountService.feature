@@ -104,7 +104,7 @@ Scenario: Delete an existing account
 Scenario: Delete the Kapua system account
     It must not be possible to delete the system account.
 
-    Given I expect the exception "KapuaIllegalAccessException" with the text "The current subject is not authorized for write"
+    Given I expect the exception "KapuaIllegalAccessException" with the text "The current subject is not authorized for delete"
     When I try to delete the system account
     Then An exception is caught
     And The System account exists
