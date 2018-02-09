@@ -407,7 +407,7 @@ public class NorthView extends LayoutContainer {
             }
             multiRowStr.append(source.substring(start, end));
             if (end < source.length()) {
-                multiRowStr.append("\n");
+                multiRowStr.append("<br>");
             }
         }
 
