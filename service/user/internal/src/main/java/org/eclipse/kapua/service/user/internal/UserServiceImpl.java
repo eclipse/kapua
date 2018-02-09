@@ -19,6 +19,8 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -44,7 +46,7 @@ import java.util.Objects;
 import static org.eclipse.kapua.commons.util.ArgumentValidator.notEmptyOrNull;
 
 /**
- * User service implementation.
+ * {@link UserService} implementation.
  */
 @KapuaProvider
 public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<User, UserCreator, UserService, UserListResult, UserQuery, UserFactory> implements UserService {
@@ -270,11 +272,11 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         return user;
     }
 
-    private void validateSystemUser(String name)
-            throws KapuaException {
-        // FIXME-KAPUA: AuthenticationService get system user name via config
-        if ("kapua-sys".equals(name)) {
-            throw new KapuaIllegalArgumentException("name", "kapua-sys");
+    private void validateSystemUser(String name) throws KapuaException {
+        String adminUsername = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
+
+        if (adminUsername.equals(name)) {
+            throw new KapuaIllegalArgumentException("name", adminUsername);
         }
     }
 
@@ -292,7 +294,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     private void deleteUserByAccountId(KapuaId scopeId, KapuaId accountId) throws KapuaException {
         UserQuery query = new UserQueryImpl(accountId);
         UserListResult usersToDelete = query(query);
-        
+
         for (User u : usersToDelete.getItems()) {
             delete(u.getScopeId(), u.getId());
         }
