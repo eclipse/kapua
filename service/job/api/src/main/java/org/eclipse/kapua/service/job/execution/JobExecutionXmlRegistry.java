@@ -32,7 +32,7 @@ public class JobExecutionXmlRegistry {
      * 
      * @return
      */
-    public JobExecution newJobTarget() {
+    public JobExecution newJobExecution() {
         return factory.newEntity(null);
     }
 
@@ -41,7 +41,7 @@ public class JobExecutionXmlRegistry {
      * 
      * @return
      */
-    public JobExecutionCreator newJobTargetCreator() {
+    public JobExecutionCreator newJobExecutionCreator() {
         return factory.newCreator(null);
     }
 
@@ -50,7 +50,7 @@ public class JobExecutionXmlRegistry {
      * 
      * @return
      */
-    public JobExecutionListResult newJobTargetListResult() {
+    public JobExecutionListResult newJobExecutionListResult() {
         return factory.newListResult();
     }
 

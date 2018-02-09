@@ -26,9 +26,9 @@ import org.eclipse.kapua.model.id.KapuaId;
  * @since 1.0.0
  *
  */
-@XmlRootElement(name = "jobCreator")
+@XmlRootElement(name = "jobTargetCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = JobTargetXmlRegistry.class, factoryMethod = "newJobCreator")
+@XmlType(factoryClass = JobTargetXmlRegistry.class, factoryMethod = "newJobTargetCreator")
 public interface JobTargetCreator extends KapuaUpdatableEntityCreator<JobTarget> {
 
     public KapuaId getJobId();
