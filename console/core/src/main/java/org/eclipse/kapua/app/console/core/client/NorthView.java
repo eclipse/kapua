@@ -47,6 +47,7 @@ import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
+import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -55,6 +56,9 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class NorthView extends LayoutContainer {
 
+    private static final int USER_WIDTH = 200;
+    private static final int MAX_USER_TOOLTIP_WIDTH = 300;
+    private static final int USER_TOOLTIP_LINE_LEN = 50;
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     private final GwtAuthorizationServiceAsync gwtAuthorizationService = GWT.create(GwtAuthorizationService.class);
     private final GwtAccountServiceAsync gwtAccountService = GWT.create(GwtAccountService.class);
@@ -202,6 +206,7 @@ public class NorthView extends LayoutContainer {
         });
         userActionButton.setId("header-button");
         userActionButton.addStyleName("x-btn-arrow-custom");
+        userActionButton.setWidth(USER_WIDTH);
 
         updateUserActionButtonLabel();
 
@@ -360,6 +365,8 @@ public class NorthView extends LayoutContainer {
      * {displayName} @ {selectedAccountName}<br/>
      * else:<br/>
      * {username} @ {selectedAccountName}<br/>
+     * If username and displayname are too long, this string is truncated
+     * and padded with ellipsis which is defined in console.css for header-button.
      */
     private void updateUserActionButtonLabel() {
         // Current selected scope
@@ -371,5 +378,39 @@ public class NorthView extends LayoutContainer {
             userDisplayName = username;
         }
         userActionButton.setText(MSGS.consoleHeaderUserActionButtonLabel(userDisplayName, accountName));
+        ToolTipConfig toolTipConfig = new ToolTipConfig();
+        toolTipConfig.setMaxWidth(MAX_USER_TOOLTIP_WIDTH);
+        String toolTipText = splitLongString(MSGS.consoleHeaderUserActionButtonLabel(userDisplayName, accountName),
+                USER_TOOLTIP_LINE_LEN);
+        toolTipConfig.setText(toolTipText);
+        userActionButton.setToolTip(toolTipConfig);
+    }
+
+    /**
+     * Split long string into multiple rows.
+     * Used for correct display of tooltip with user and account name.
+     *
+     * @param source long input string
+     * @param lineLen length of single line
+     * @return single string with line separators
+     */
+    private String splitLongString(String source, int lineLen) {
+        StringBuilder multiRowStr = new StringBuilder();
+
+        for (int start = 0; start <= source.length(); start += lineLen) {
+            int end = start;
+
+            if ((end + lineLen) <= source.length()) {
+                end += lineLen;
+            } else {
+                end = source.length();
+            }
+            multiRowStr.append(source.substring(start, end));
+            if (end < source.length()) {
+                multiRowStr.append("\n");
+            }
+        }
+
+        return multiRowStr.toString();
     }
 }

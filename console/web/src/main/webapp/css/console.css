@@ -203,6 +203,9 @@ table#header-button td, table#header-button button{
 	background-color: rgb(6,39,68) !important;
 	color: #FFFFFF !important;
 	font-weight: bold !important;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
 .x-menu-item-icon.fa {
