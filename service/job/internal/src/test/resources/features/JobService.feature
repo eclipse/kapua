@@ -10,33 +10,33 @@
 #     Eurotech - initial API and implementation
 ###############################################################################
 Feature: Job service CRUD tests
-    The Job service is responsible for executing scheduled actions on various targets.
+  The Job service is responsible for executing scheduled actions on various targets.
 
-Scenario: Regular job creation
+  Scenario: Regular job creation
 
-    Given A regular job creator with the name "TestJob"
+    Given A regular job creator with the name "TestJob_1"
     When I create a new job entity from the existing creator
     Then No exception was thrown
     When I search for the job in the database
     Then No exception was thrown
     And The job entity matches the creator
 
-Scenario: Job with a null scope ID
+  Scenario: Job with a null scope ID
 
     Given A null scope
-    And A regular job creator with the name "TestJob"
+    And A regular job creator with the name "TestJob_1"
     Given I expect the exception "KapuaIllegalNullArgumentException" with the text "scopeId"
     When I create a new job entity from the existing creator
     Then An exception was thrown
 
-Scenario: Job with a null name
+  Scenario: Job with a null name
 
     And A job creator with a null name
     Given I expect the exception "KapuaIllegalNullArgumentException" with the text "name"
     When I create a new job entity from the existing creator
     Then An exception was thrown
 
-Scenario: Job with an empty name
+  Scenario: Job with an empty name
 
     Given A job creator with an empty name
     When I create a new job entity from the existing creator
@@ -44,16 +44,17 @@ Scenario: Job with an empty name
     When I search for the job in the database
     Then The job entity matches the creator
 
-Scenario: Job with a duplicate name
+  Scenario: Job with a duplicate name
 
-    Given A regular job creator with the name "TestJob"
+    Given A regular job creator with the name "TestJob_2"
     Then I create a new job entity from the existing creator
+    Given I expect the exception "KapuaDuplicateNameException" with the text "An entity with the same name TestJob_2 already exists."
     When I create a new job entity from the existing creator
-    Then No exception was thrown
+    Then An exception was thrown
 
-Scenario: Delete a job
+  Scenario: Delete a job
 
-    Given A regular job creator with the name "TestJob"
+    Given A regular job creator with the name "TestJob_3"
     When I create a new job entity from the existing creator
     When I search for the job in the database
     And The job entity matches the creator
@@ -61,36 +62,36 @@ Scenario: Delete a job
     And I search for the job in the database
     Then There is no such job item in the database
 
-Scenario: Delete a job twice
+  Scenario: Delete a job twice
 
-    Given A regular job creator with the name "TestJob"
+    Given A regular job creator with the name "TestJob_4"
     And I create a new job entity from the existing creator
     And I delete the job
     Given I expect the exception "KapuaEntityNotFoundException" with the text "type job"
     And I delete the job
     Then An exception was thrown
 
-Scenario: Update a job name
+  Scenario: Update a job name
 
-    Given A regular job creator with the name "TestJob"
+    Given A regular job creator with the name "TestJob_5"
     Then I create a new job entity from the existing creator
     When I change the job name to "SomeRandomNewName"
     Then No exception was thrown
     When I search for the job in the database
     Then The job name is "SomeRandomNewName"
 
-Scenario: Update a job description
+  Scenario: Update a job description
 
-    Given A regular job creator with the name "TestJob"
+    Given A regular job creator with the name "TestJob_6"
     Then I create a new job entity from the existing creator
     When I change the job description to "SomeRandomNewDescription"
     Then No exception was thrown
     When I search for the job in the database
     Then The job description is "SomeRandomNewDescription"
 
-Scenario: Update a job XML definition
+  Scenario: Update a job XML definition
 
-    Given A regular job creator with the name "TestJob"
+    Given A regular job creator with the name "TestJob_7"
     Then I create a new job entity from the existing creator
     When I change the job XML definition to "SomeRandomNewDefinition"
     Then No exception was thrown
@@ -120,22 +121,22 @@ Scenario: Update a job XML definition
 #    # This should be 2!!! For some reason the update method does not update the job entity steps.
 #    Then The job has 0 steps
 
-Scenario: Update a nonexistent job
+  Scenario: Update a nonexistent job
 
-    Given A regular job creator with the name "TestJob"
+    Given A regular job creator with the name "TestJob_8"
     Then I create a new job entity from the existing creator
     And I delete the job
-    Given I expect the exception "KapuaEntityNotFoundException" with the text "JobImpl"
+    Given I expect the exception "KapuaEntityNotFoundException" with the text "The entity of type job"
     When I change the job name to "SomeRandomNewName"
     Then An exception was thrown
 
-Scenario: Count job items
+  Scenario: Count job items
 
     Given I create 10 job items
     When I count the jobs in the database
     Then There are exactly 10 items
 
-Scenario: Count job items in wrong (empty) scope
+  Scenario: Count job items in wrong (empty) scope
 
     Given I create 10 job items
     Given Scope with ID 20
@@ -151,15 +152,15 @@ Scenario: Count job items in wrong (empty) scope
 #    When I query for jobs in scope 10
 #    Then There are exactly 10 items
 
-Scenario: Query for jobs with specified name
+  Scenario: Query for jobs with specified name
 
-    Given I create 10 job items with the name "TestJob1"
-    And I create 15 job items with the name "TestJob2"
-    And I create 20 job items with the name "TestJob3"
-    When I count the jobs with the name "TestJob2"
+    Given I create 10 job items with the name "TestJobA"
+    And I create 15 job items with the name "TestJobB"
+    And I create 20 job items with the name "TestJobC"
+    When I count the jobs with the name starting with "TestJobB"
     Then There are exactly 15 items
 
-Scenario: Job factory sanity checks
+  Scenario: Job factory sanity checks
 
     When I test the sanity of the job factory
     Then No exception was thrown
