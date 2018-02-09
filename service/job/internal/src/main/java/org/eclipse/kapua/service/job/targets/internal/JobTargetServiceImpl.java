@@ -34,7 +34,7 @@ import org.eclipse.kapua.service.job.targets.JobTargetService;
 
 /**
  * {@link JobTargetService} implementation
- * 
+ *
  * @since 1.0.0
  */
 @KapuaProvider
@@ -42,6 +42,7 @@ public class JobTargetServiceImpl extends AbstractKapuaConfigurableResourceLimit
         implements JobTargetService {
 
     private static final Domain JOB_DOMAIN = new JobDomain();
+
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
@@ -53,7 +54,7 @@ public class JobTargetServiceImpl extends AbstractKapuaConfigurableResourceLimit
     @Override
     public JobTarget create(JobTargetCreator creator) throws KapuaException {
         //
-        // Argument Validation
+        // Argument validation
         ArgumentValidator.notNull(creator, "jobTargetCreator");
         ArgumentValidator.notNull(creator.getScopeId(), "jobTargetCreator.scopeId");
 
@@ -72,12 +73,43 @@ public class JobTargetServiceImpl extends AbstractKapuaConfigurableResourceLimit
         // Argument Validation
         ArgumentValidator.notNull(jobTarget, "jobTarget");
         ArgumentValidator.notNull(jobTarget.getScopeId(), "jobTarget.scopeId");
+        ArgumentValidator.notNull(jobTarget.getId(), "jobTarget.id");
 
         //
         // Check access
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.write, jobTarget.getScopeId()));
 
+        //
+        // Check existence
+        if (find(jobTarget.getScopeId(), jobTarget.getId()) == null) {
+            throw new KapuaEntityNotFoundException(jobTarget.getType(), jobTarget.getId());
+        }
+
+        //
+        // Do update
         return entityManagerSession.onTransactedResult(em -> JobTargetDAO.update(em, jobTarget));
+    }
+
+    @Override
+    public void delete(KapuaId scopeId, KapuaId jobTargetId) throws KapuaException {
+        //
+        // Argument validation
+        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(jobTargetId, "jobTargetId");
+
+        //
+        // Check Access
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.delete, scopeId));
+
+        //
+        // Check existence
+        if (find(scopeId, jobTargetId) == null) {
+            throw new KapuaEntityNotFoundException(JobTarget.TYPE, jobTargetId);
+        }
+
+        //
+        // Do delete
+        entityManagerSession.onTransactedAction(em -> JobTargetDAO.delete(em, jobTargetId));
     }
 
     @Override
@@ -126,28 +158,5 @@ public class JobTargetServiceImpl extends AbstractKapuaConfigurableResourceLimit
         //
         // Do query
         return entityManagerSession.onResult(em -> JobTargetDAO.count(em, query));
-    }
-
-    @Override
-    public void delete(KapuaId scopeId, KapuaId jobTargetId) throws KapuaException {
-        //
-        // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(jobTargetId, "jobTargetId");
-
-        //
-        // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.delete, scopeId));
-
-        //
-        // Do delete
-        entityManagerSession.onTransactedAction(em -> {
-            if (JobTargetDAO.find(em, jobTargetId) == null) {
-                throw new KapuaEntityNotFoundException(JobTarget.TYPE, jobTargetId);
-            }
-
-            JobTargetDAO.delete(em, jobTargetId);
-        });
-
     }
 }
