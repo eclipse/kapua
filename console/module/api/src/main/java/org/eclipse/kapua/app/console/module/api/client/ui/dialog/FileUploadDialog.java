@@ -24,11 +24,13 @@ import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Status;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FileUploadField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.Encoding;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.Method;
 import com.extjs.gxt.ui.client.widget.form.HiddenField;
+import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.google.gwt.core.client.GWT;
@@ -39,6 +41,7 @@ import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenService;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenServiceAsync;
+import org.eclipse.kapua.app.console.module.api.client.util.Constants;
 
 public class FileUploadDialog extends Dialog {
 
@@ -75,6 +78,7 @@ public class FileUploadDialog extends Dialog {
         setButtons("");
         setAutoWidth(true);
         setScrollMode(Scroll.AUTO);
+        setResizable(false);
         setHideOnButtonClick(false);
 
         formPanel = new FormPanel();
@@ -85,6 +89,7 @@ public class FileUploadDialog extends Dialog {
         formPanel.setEncoding(Encoding.MULTIPART);
         formPanel.setMethod(Method.POST);
         formPanel.setButtonAlign(HorizontalAlignment.CENTER);
+        formPanel.setWidth(Constants.FORM_PANEL_WIDTH_UPLOAD_AND_APPLY);
 
         formPanel.addListener(Events.Submit, new Listener<FormEvent>() {
 
@@ -105,13 +110,21 @@ public class FileUploadDialog extends Dialog {
                 hide();
             }
         });
+        FormLayout layout = new FormLayout();
+        layout.setLabelWidth(Constants.LABEL_WIDTH_UPLOAD_AND_APPLY);
+        FieldSet fieldSet = new FieldSet();
+        fieldSet.setBorders(false);
+        fieldSet.setLayout(layout);
 
         fileUploadField = new FileUploadField();
-        fileUploadField.setAllowBlank(false);
+        fileUploadField.setAllowBlank(true);
         fileUploadField.setName("uploadedFile");
         fileUploadField.setFieldLabel("File");
+        fileUploadField.setInputStyleAttribute("style", "width:300");
+        FormData formData = new FormData("-20");
+        fieldSet.add(fileUploadField, formData);
 
-        formPanel.add(fileUploadField);
+        formPanel.add(fieldSet);
         if (hiddenFields != null) {
             for (HiddenField<?> hf : hiddenFields) {
                 formPanel.add(hf);
