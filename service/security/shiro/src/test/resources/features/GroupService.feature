@@ -109,7 +109,7 @@ Scenario: Update a group entry with a false ID
     |0     |test_name_1 |
     Then A group was created
     And The group matches the creator
-    Given I expect the exception "KapuaEntityNotFoundException" with the text "The entity of type group"
+    Given I expect the exception "KapuaDuplicateNameException" with the text "An entity with the same name"
     When I update the group with an incorrect ID
     Then An exception was thrown
 
