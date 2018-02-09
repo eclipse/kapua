@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -148,21 +148,16 @@ public class DeviceConfigComponents extends LayoutContainer {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 if (!refreshProcess) {
-                    refreshProcess = true;
                     refreshButton.setEnabled(false);
+                    refreshProcess = true;
 
                     dirty = true;
                     refresh();
-
-                    refreshButton.setEnabled(true);
                     refreshProcess = false;
+                    refreshButton.setEnabled(true);
                 }
             }
         });
-
-        refreshButton.setEnabled(true);
-        toolBar.add(refreshButton);
-        toolBar.add(new SeparatorToolItem());
 
         apply = new SaveButton(new SelectionListener<ButtonEvent>() {
 
@@ -198,7 +193,13 @@ public class DeviceConfigComponents extends LayoutContainer {
 
         apply.setEnabled(false);
         reset.setEnabled(false);
-
+        if (selectedDevice == null) {
+            refreshButton.setEnabled(false);
+        } else {
+            refreshButton.setEnabled(true);
+        }
+        toolBar.add(refreshButton);
+        toolBar.add(new SeparatorToolItem());
         toolBar.add(apply);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(reset);
@@ -386,13 +387,14 @@ public class DeviceConfigComponents extends LayoutContainer {
 
     public void refresh() {
         if (dirty && initialized) {
-
+            if (selectedDevice != null) {
             // clear the tree and disable the toolbar
             apply.setEnabled(false);
             reset.setEnabled(false);
-            refreshButton.setEnabled(false);
+            refreshButton.setEnabled(true);
 
-            treeStore.removeAll();
+            treeStore.removeAll(); 
+            }
 
             // clear the panel
             if (devConfPanel != null) {
@@ -596,7 +598,6 @@ public class DeviceConfigComponents extends LayoutContainer {
                 FailureHandler.handle(le.exception);
             }
             tree.unmask();
-            refreshButton.setEnabled(true);
         }
 
         public void loaderLoadException(LoadEvent le) {
