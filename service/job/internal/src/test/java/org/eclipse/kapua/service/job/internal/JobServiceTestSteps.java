@@ -12,32 +12,30 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.internal;
 
-import static org.eclipse.kapua.commons.model.query.predicate.AttributePredicate.attributeIsEqualTo;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-
-import java.math.BigInteger;
-import java.security.acl.Permission;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-
+import cucumber.api.Scenario;
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.JobCreator;
 import org.eclipse.kapua.service.job.JobFactory;
 import org.eclipse.kapua.service.job.JobJAXBContextProvider;
+import org.eclipse.kapua.service.job.JobPredicates;
 import org.eclipse.kapua.service.job.JobQuery;
 import org.eclipse.kapua.service.job.JobService;
 import org.eclipse.kapua.service.job.common.CommonData;
@@ -51,13 +49,16 @@ import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cucumber.api.Scenario;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
-import cucumber.runtime.java.guice.ScenarioScoped;
+import javax.inject.Inject;
+import java.math.BigInteger;
+import java.security.acl.Permission;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.eclipse.kapua.commons.model.query.predicate.AttributePredicate.attributeIsEqualTo;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
 
 // ****************************************************************************************
 // * Implementation of Gherkin steps used in JobService.feature scenarios.                *
@@ -238,12 +239,12 @@ public class JobServiceTestSteps extends AbstractKapuaSteps {
             throws Exception {
 
         JobCreator tmpCreator = jobFactory.newCreator(commonData.currentScopeId);
-        tmpCreator.setName(name);
         tmpCreator.setDescription("TestJobDescription");
 
         try {
             commonData.primeException();
             for (int i = 0; i < num; i++) {
+                tmpCreator.setName(name + "_" + i);
                 jobService.create(tmpCreator);
             }
         } catch (KapuaException ex) {
@@ -374,12 +375,12 @@ public class JobServiceTestSteps extends AbstractKapuaSteps {
         }
     }
 
-    @When("^I count the jobs with the name \"(.+)\"$")
+    @When("^I count the jobs with the name starting with \"(.+)\"$")
     public void countJobsWithName(String name)
             throws Exception {
 
         JobQuery tmpQuery = jobFactory.newQuery(commonData.currentScopeId);
-        tmpQuery.setPredicate(attributeIsEqualTo("name", name));
+        tmpQuery.setPredicate(new AttributePredicate<>(JobPredicates.NAME, name, Operator.STARTS_WITH));
 
         try {
             commonData.primeException();
@@ -394,7 +395,7 @@ public class JobServiceTestSteps extends AbstractKapuaSteps {
             throws Exception {
 
         JobQuery tmpQuery = jobFactory.newQuery(commonData.currentScopeId);
-        tmpQuery.setPredicate(attributeIsEqualTo("name", name));
+        tmpQuery.setPredicate(attributeIsEqualTo(JobPredicates.NAME, name));
 
         try {
             commonData.primeException();
@@ -409,7 +410,7 @@ public class JobServiceTestSteps extends AbstractKapuaSteps {
 
         assertEquals("The job scope does not match the creator.", jobData.jobCreator.getScopeId(), jobData.job.getScopeId());
         assertEquals("The job name does not match the creator.", jobData.jobCreator.getName(), jobData.job.getName());
-        assertEquals("The job description does not match the creator.",jobData. jobCreator.getDescription(), jobData.job.getDescription());
+        assertEquals("The job description does not match the creator.", jobData.jobCreator.getDescription(), jobData.job.getDescription());
     }
 
     @Then("^The job has (\\d+) steps$")

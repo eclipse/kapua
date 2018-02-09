@@ -16,12 +16,14 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
@@ -43,7 +45,9 @@ import org.eclipse.kapua.service.job.JobService;
 public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<Job, JobCreator, JobService, JobListResult, JobQuery, JobFactory> implements JobService {
 
     private static final Domain JOB_DOMAIN = new JobDomain();
+
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
     private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
 
@@ -54,7 +58,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
     @Override
     public Job create(JobCreator creator) throws KapuaException {
         //
-        // Argument Validation
+        // Argument validation
         ArgumentValidator.notNull(creator, "jobCreator");
         ArgumentValidator.notNull(creator.getScopeId(), "jobCreator.scopeId");
         ArgumentValidator.notNull(creator.getName(), "jobCreator.name");
@@ -63,15 +67,18 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         // Check access
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.write, creator.getScopeId()));
 
-        JobQuery query = new JobQueryImpl(creator.getScopeId());
-        query.setPredicate(new AttributePredicate<>(JobPredicates.NAME, creator.getName()));
-        JobListResult jobListResult = query(query);
-        if (!jobListResult.isEmpty()) {
-            throw new KapuaDuplicateNameException(creator.getName());
-        }
-
+        //
+        // Check limits
         if (allowedChildEntities(creator.getScopeId()) <= 0) {
             throw new KapuaIllegalArgumentException("scopeId", "max jobs reached");
+        }
+
+        //
+        // Check duplicate name
+        JobQuery query = new JobQueryImpl(creator.getScopeId());
+        query.setPredicate(new AttributePredicate<>(JobPredicates.NAME, creator.getName()));
+        if (count(query) > 0) {
+            throw new KapuaDuplicateNameException(creator.getName());
         }
 
         //
@@ -87,17 +94,32 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         ArgumentValidator.notNull(job.getScopeId(), "job.scopeId");
         ArgumentValidator.notNull(job.getName(), "job.name");
 
-        JobQuery query = new JobQueryImpl(job.getScopeId());
-        query.setPredicate(new AttributePredicate<>(JobPredicates.NAME, job.getName()));
-        JobListResult jobListResult = query(query);
-        if (!jobListResult.isEmpty()) {
-            throw new KapuaDuplicateNameException(job.getName());
-        }
-
         //
         // Check access
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.write, job.getScopeId()));
 
+        //
+        // Check existence
+        if (find(job.getScopeId(), job.getId()) == null) {
+            throw new KapuaEntityNotFoundException(Job.TYPE, job.getId());
+        }
+
+        //
+        // Check duplicate name
+        JobQuery query = new JobQueryImpl(job.getScopeId());
+        query.setPredicate(
+                new AndPredicate(
+                        new AttributePredicate<>(JobPredicates.NAME, job.getName()),
+                        new AttributePredicate<>(JobPredicates.ENTITY_ID, job.getId(), Operator.NOT_EQUAL)
+                )
+        );
+
+        if (count(query) > 0) {
+            throw new KapuaDuplicateNameException(job.getName());
+        }
+
+        //
+        // Do update
         return entityManagerSession.onTransactedResult(em -> JobDAO.update(em, job));
     }
 
@@ -161,16 +183,14 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.delete, scopeId));
 
         //
+        // Check existence
+        if (find(scopeId, jobId) == null) {
+            throw new KapuaEntityNotFoundException(Job.TYPE, jobId);
+        }
+
+        //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> {
-            if (JobDAO.find(em, jobId) == null) {
-                throw new KapuaEntityNotFoundException(Job.TYPE, jobId);
-            }
-
-            JobDAO.delete(em, jobId);
-
-        });
-
+        entityManagerSession.onTransactedAction(em -> JobDAO.delete(em, jobId));
     }
 
 }
