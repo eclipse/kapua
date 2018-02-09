@@ -34,6 +34,7 @@ public class AccountEditDialog extends AccountAddDialog {
     @Override
     protected void onRender(Element parent, int pos) {
         super.onRender(parent, pos);
+        setClosable(false);
 //        fieldSet.remove(accountPassword);
 //        fieldSet.remove(confirmPassword);
         fieldSet.remove(accountNameField);
