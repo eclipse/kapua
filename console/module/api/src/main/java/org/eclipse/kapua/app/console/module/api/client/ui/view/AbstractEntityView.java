@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.api.client.ui.view;
 
-import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -44,7 +43,7 @@ public abstract class AbstractEntityView<M extends GwtEntityModel> extends Abstr
         }
     }
 
-    private EntityFilterPanel<M> filterPanel;
+
     private EntityGrid<M> entityGrid;
     private KapuaTabPanel<M> tabsPanel;
 
@@ -75,15 +74,9 @@ public abstract class AbstractEntityView<M extends GwtEntityModel> extends Abstr
         mf.setBorders(false);
         mf.setLayout(new BorderLayout());
 
-        BorderLayoutData eastData = new BorderLayoutData(Style.LayoutRegion.EAST, 220);
-        eastData.setMargins(new Margins(0, 0, 0, 0));
-        eastData.setCollapsible(false);
-        eastData.setSplit(false);
-        filterPanel = getEntityFilterPanel(this, currentSession);
-
         // Center Main panel:
         BorderLayoutData centerMainPanel = new BorderLayoutData(LayoutRegion.CENTER);
-        centerMainPanel.setMargins(new Margins(0, 5, 0, 0));
+        centerMainPanel.setMargins(new Margins(0, 0, 0, 0));
         centerMainPanel.setSplit(false);
 
         final LayoutContainer resultContainer = new LayoutContainer(new BorderLayout());
@@ -94,12 +87,6 @@ public abstract class AbstractEntityView<M extends GwtEntityModel> extends Abstr
         //
         // North sub panel: Entity grid
         entityGrid = getEntityGrid(this, currentSession);
-
-        if (filterPanel != null) {
-            filterPanel.setEntityGrid(entityGrid);
-            entityGrid.setFilterPanel(filterPanel);
-            mf.add(filterPanel, eastData);
-        }
 
         BorderLayoutData northData = new KapuaBorderLayoutData(LayoutRegion.NORTH, .45F);
         resultContainer.add(entityGrid, northData);
