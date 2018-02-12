@@ -56,9 +56,10 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class NorthView extends LayoutContainer {
 
+    private static final int SUB_ACCT_WIDTH = 700;
     private static final int USER_WIDTH = 200;
     private static final int MAX_USER_TOOLTIP_WIDTH = 300;
-    private static final int USER_TOOLTIP_LINE_LEN = 50;
+    private static final int USER_TOOLTIP_LINE_LEN = 45;
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     private final GwtAuthorizationServiceAsync gwtAuthorizationService = GWT.create(GwtAuthorizationService.class);
     private final GwtAccountServiceAsync gwtAccountService = GWT.create(GwtAccountService.class);
@@ -228,7 +229,7 @@ public class NorthView extends LayoutContainer {
         rootAccountMenuItem.addSelectionListener(switchToAccountListener);
 
         subAccountMenu = new Menu();
-        subAccountMenu.setAutoWidth(true);
+        subAccountMenu.setWidth(SUB_ACCT_WIDTH);
         subAccountMenu.add(rootAccountMenuItem);
         subAccountMenu.add(new SeparatorMenuItem());
 
@@ -278,6 +279,9 @@ public class NorthView extends LayoutContainer {
                                 childAccountMenuItem.setText(item.getValue());
                                 childAccountMenuItem.setTitle(item.getValue());
                                 childAccountMenuItem.setId(String.valueOf(item.getId()));
+                                childAccountMenuItem.setStyleAttribute("white-space", "nowrap");
+                                childAccountMenuItem.setStyleAttribute("text-overflow", "ellipsis");
+                                childAccountMenuItem.setStyleAttribute("overflow", "hidden");
                                 menu.add(childAccountMenuItem);
 
                                 // Add selection listener to make the switch happen when selected
@@ -286,7 +290,7 @@ public class NorthView extends LayoutContainer {
                                 // Search for its children
                                 if (item.hasChildAccount()) {
                                     Menu childMenu = new Menu();
-                                    childMenu.setAutoWidth(true);
+                                    childMenu.setWidth(SUB_ACCT_WIDTH);
                                     childAccountMenuItem.setSubMenu(childMenu);
 
                                     populateNavigatorMenu(childMenu, item.getId());
@@ -407,7 +411,7 @@ public class NorthView extends LayoutContainer {
             }
             multiRowStr.append(source.substring(start, end));
             if (end < source.length()) {
-                multiRowStr.append("<br>");
+                multiRowStr.append("</br>");
             }
         }
 
