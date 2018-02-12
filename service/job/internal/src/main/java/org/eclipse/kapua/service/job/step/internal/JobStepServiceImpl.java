@@ -100,7 +100,7 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
         query.setPredicate(
                 new AndPredicate(
                         new AttributePredicate<>(JobStepPredicates.JOB_ID, jobStepCreator.getJobId()),
-                        new AttributePredicate<>(JobStepPredicates.NAME, jobStepCreator.getName(), Operator.NOT_EQUAL)
+                        new AttributePredicate<>(JobStepPredicates.NAME, jobStepCreator.getName())
                 )
         );
 
@@ -151,10 +151,9 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
         JobStepQuery query = new JobStepQueryImpl(jobStep.getScopeId());
         query.setPredicate(
                 new AndPredicate(
-                        new AttributePredicate<>(JobStepPredicates.NAME, jobStep.getId(), Operator.NOT_EQUAL),
                         new AttributePredicate<>(JobStepPredicates.JOB_ID, jobStep.getJobId()),
-                        new AttributePredicate<>(JobStepPredicates.NAME, jobStep.getName())
-
+                        new AttributePredicate<>(JobStepPredicates.NAME, jobStep.getName()),
+                        new AttributePredicate<>(JobStepPredicates.ENTITY_ID, jobStep.getId(), Operator.NOT_EQUAL)
                 )
         );
 
