@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -147,21 +147,16 @@ public class DeviceAssetsValues extends LayoutContainer {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 if (!refreshProcess) {
-                    refreshProcess = true;
                     refreshButton.setEnabled(false);
+                    refreshProcess = true;
 
                     dirty = true;
                     refresh();
-
-                    refreshButton.setEnabled(true);
                     refreshProcess = false;
+                    refreshButton.setEnabled(true);
                 }
             }
         });
-
-        refreshButton.setEnabled(true);
-        toolBar.add(refreshButton);
-        toolBar.add(new SeparatorToolItem());
 
         apply = new SaveButton(new SelectionListener<ButtonEvent>() {
 
@@ -194,10 +189,15 @@ public class DeviceAssetsValues extends LayoutContainer {
                 }
             }
         });
-
+        if (selectedDevice != null) {
+            refreshButton.setEnabled(true);
+        } else {
+            refreshButton.setEnabled(false);
+        }
         apply.setEnabled(false);
         reset.setEnabled(false);
-
+        toolBar.add(refreshButton);
+        toolBar.add(new SeparatorToolItem());
         toolBar.add(apply);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(reset);
@@ -331,10 +331,14 @@ public class DeviceAssetsValues extends LayoutContainer {
 
     public void refresh() {
         if (dirty && initialized) {
+            if (selectedDevice != null) {
+                refreshButton.setEnabled(true);
+            } else {
+                refreshButton.setEnabled(false);
+            }
             // clear the tree and disable the toolbar
             apply.setEnabled(false);
             reset.setEnabled(false);
-            refreshButton.setEnabled(false);
 
             treeStore.removeAll();
 
@@ -486,7 +490,6 @@ public class DeviceAssetsValues extends LayoutContainer {
                 FailureHandler.handle(le.exception);
             }
             tree.unmask();
-            refreshButton.setEnabled(true);
         }
 
         public void loaderLoadException(LoadEvent le) {
