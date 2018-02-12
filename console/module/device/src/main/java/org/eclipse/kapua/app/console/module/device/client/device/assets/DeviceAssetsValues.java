@@ -334,13 +334,13 @@ public class DeviceAssetsValues extends LayoutContainer {
             if (selectedDevice != null) {
                 refreshButton.setEnabled(true);
             } else {
-            // clear the tree and disable the toolbar
-            apply.setEnabled(false);
-            reset.setEnabled(false);
-            refreshButton.setEnabled(false);
-
-            treeStore.removeAll();
+                refreshButton.setEnabled(false);
             }
+            // clear the tree and disable the toolbar
+                apply.setEnabled(false);
+                reset.setEnabled(false);
+
+                treeStore.removeAll();
 
             // clear the panel
             if (assetValuesPanel != null) {
