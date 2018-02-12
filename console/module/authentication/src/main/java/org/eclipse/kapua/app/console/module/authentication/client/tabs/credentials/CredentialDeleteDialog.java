@@ -35,13 +35,24 @@ public class CredentialDeleteDialog extends EntityDeleteDialog {
 
     @Override
     public String getHeaderMessage() {
-        // TODO will be credential name
-        return MSGS.dialogDeleteHeader(selectedCredential.getId());
+        if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.API_KEY) {
+            return MSGS.dialogDeleteHeaderAPI(selectedCredential.getId());
+        } else if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.PASSWORD) {
+            return MSGS.dialogDeleteHeaderPassword(selectedCredential.getId());
+        } else {
+            return "";
+        }
     }
 
     @Override
     public String getInfoMessage() {
-        return MSGS.dialogDeleteInfo();
+        if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.API_KEY) {
+            return MSGS.dialogDeleteInfoAPI();
+        } else if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.PASSWORD) {
+            return MSGS.dialogDeleteInfoPassword();
+        } else {
+            return "";
+        }
     }
 
     @Override
@@ -64,7 +75,13 @@ public class CredentialDeleteDialog extends EntityDeleteDialog {
             @Override
             public void onFailure(Throwable cause) {
                 exitStatus = false;
-                exitMessage = MSGS.dialogDeleteError(cause.getLocalizedMessage());
+
+                if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.API_KEY) {
+                    exitMessage = MSGS.dialogDeleteErrorAPI(cause.getLocalizedMessage());
+                } else if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.PASSWORD) {
+                    exitMessage = MSGS.dialogDeleteErrorPassword(cause.getLocalizedMessage());
+                }
+
                 hide();
             }
         });
