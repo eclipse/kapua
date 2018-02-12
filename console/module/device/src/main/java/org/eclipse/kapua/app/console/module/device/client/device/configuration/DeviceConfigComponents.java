@@ -389,12 +389,14 @@ public class DeviceConfigComponents extends LayoutContainer {
         if (dirty && initialized) {
             if (selectedDevice != null) {
                 refreshButton.setEnabled(true);
+            } else {
+                refreshButton.setEnabled(false);
             }
             // clear the tree and disable the toolbar
-                apply.setEnabled(false);
-                reset.setEnabled(false);
+            apply.setEnabled(false);
+            reset.setEnabled(false);
 
-                treeStore.removeAll(); 
+            treeStore.removeAll(); 
 
             // clear the panel
             if (devConfPanel != null) {
