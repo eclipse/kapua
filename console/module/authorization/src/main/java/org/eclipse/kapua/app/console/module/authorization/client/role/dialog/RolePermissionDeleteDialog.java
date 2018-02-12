@@ -60,7 +60,7 @@ public class RolePermissionDeleteDialog extends EntityDeleteDialog {
                 }
             });
         }
-        hide();
+
     }
 
     private void getSelectedRolePermission() {
