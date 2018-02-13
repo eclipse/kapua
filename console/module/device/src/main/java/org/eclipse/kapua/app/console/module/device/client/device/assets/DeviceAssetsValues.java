@@ -20,6 +20,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.button.DiscardButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.SaveButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.label.Label;
+import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
@@ -495,7 +496,7 @@ public class DeviceAssetsValues extends LayoutContainer {
         public void loaderLoadException(LoadEvent le) {
 
             if (le.exception != null) {
-                FailureHandler.handle(le.exception);
+                ConsoleInfo.display(MSGS.popupError(), DEVICE_MSGS.deviceConnectionError());
             }
 
             List<ModelData> assets = new ArrayList<ModelData>();

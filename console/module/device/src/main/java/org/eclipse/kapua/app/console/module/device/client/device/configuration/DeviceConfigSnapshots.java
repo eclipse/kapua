@@ -18,6 +18,7 @@ import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.FileUploadDialog;
+import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
@@ -502,7 +503,7 @@ public class DeviceConfigSnapshots extends LayoutContainer {
         public void loaderLoadException(LoadEvent le) {
 
             if (le.exception != null) {
-                FailureHandler.handle(le.exception);
+                ConsoleInfo.display(MSGS.popupError(), DEVICE_MSGS.deviceConnectionError());
             }
             store.removeAll();
             grid.unmask();
