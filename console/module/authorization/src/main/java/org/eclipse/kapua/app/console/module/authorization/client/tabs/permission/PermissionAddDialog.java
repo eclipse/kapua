@@ -223,6 +223,7 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         actionsCombo.disable();
         actionsCombo.setTypeAhead(false);
         actionsCombo.setAllowBlank(false);
+        actionsCombo.setEditable(false);
         actionsCombo.setFieldLabel(MSGS.dialogAddPermissionAction());
         actionsCombo.setTriggerAction(TriggerAction.ALL);
         actionsCombo.setEmptyText(MSGS.dialogAddPermissionLoading());
