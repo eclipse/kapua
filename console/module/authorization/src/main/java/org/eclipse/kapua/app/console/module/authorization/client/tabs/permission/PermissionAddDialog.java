@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -221,6 +221,7 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         actionsCombo.disable();
         actionsCombo.setTypeAhead(false);
         actionsCombo.setAllowBlank(false);
+        actionsCombo.setEditable(false);
         actionsCombo.setFieldLabel(MSGS.dialogAddPermissionAction());
         actionsCombo.setTriggerAction(TriggerAction.ALL);
         actionsCombo.setEmptyText(MSGS.dialogAddPermissionLoading());
