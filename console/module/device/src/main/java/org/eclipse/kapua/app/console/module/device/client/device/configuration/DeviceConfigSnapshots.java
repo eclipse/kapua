@@ -360,7 +360,7 @@ public class DeviceConfigSnapshots extends LayoutContainer {
 
     public void refresh() {
         if (dirty && initialized) {
-            if (selectedDevice == null) {
+            if (selectedDevice == null || !selectedDevice.isOnline()) {
 
                 toolBar.disable();
                 refreshButton.disable();
