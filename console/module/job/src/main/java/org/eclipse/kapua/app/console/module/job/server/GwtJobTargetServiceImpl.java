@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,6 +14,8 @@ package org.eclipse.kapua.app.console.module.job.server;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
+
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
@@ -28,6 +30,8 @@ import org.eclipse.kapua.app.console.module.job.shared.util.KapuaGwtJobModelConv
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 import org.eclipse.kapua.service.job.targets.JobTargetCreator;
 import org.eclipse.kapua.service.job.targets.JobTargetFactory;
@@ -39,6 +43,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GwtJobTargetServiceImpl extends KapuaRemoteServiceServlet implements GwtJobTargetService {
+
+    private static final String NOT_AVAILABLE = "Not available";
 
     @Override
     public PagingLoadResult<GwtJobTarget> query(PagingLoadConfig loadConfig, GwtJobTargetQuery gwtJobTargetQuery) throws GwtKapuaException {
@@ -64,6 +70,7 @@ public class GwtJobTargetServiceImpl extends KapuaRemoteServiceServlet implement
                 for (JobTarget jt : jobTargetList.getItems()) {
                     gwtJobTargetList.add(KapuaGwtJobModelConverter.convertJobTarget(jt));
                 }
+                insertClientId(gwtJobTargetList);
             }
 
         } catch (Throwable t) {
@@ -151,6 +158,32 @@ public class GwtJobTargetServiceImpl extends KapuaRemoteServiceServlet implement
             jobTargetService.delete(scopeId, jobTargetId);
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
+        }
+    }
+
+    /**
+     * For each item query clientId by its foreign key and insert it into existing list.
+     * 
+     * @param gwtJobTargetList
+     *            existing list of targets that is updated
+     * @throws KapuaException
+     */
+    private void insertClientId(List<GwtJobTarget> gwtJobTargetList) throws KapuaException {
+        KapuaLocator locator = KapuaLocator.getInstance();
+        DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
+
+        for (GwtJobTarget gwtJobTarget : gwtJobTargetList) {
+            Device device = deviceRegistryService.find(KapuaEid.parseCompactId(gwtJobTarget.getScopeId()),
+                    KapuaEid.parseCompactId(gwtJobTarget.getJobTargetId()));
+            String clientId = null;
+            if (device != null) {
+                clientId = device.getClientId();
+            }
+            if (clientId != null) {
+                gwtJobTarget.setClientId(clientId);
+            } else {
+                gwtJobTarget.setClientId(NOT_AVAILABLE);
+            }
         }
     }
 }
