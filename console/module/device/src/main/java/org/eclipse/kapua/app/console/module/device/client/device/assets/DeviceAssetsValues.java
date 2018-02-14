@@ -449,7 +449,7 @@ public class DeviceAssetsValues extends LayoutContainer {
 
     public void reset() {
         final GwtDeviceAsset asset = (GwtDeviceAsset) tree.getSelectionModel().getSelectedItem();
-        if (assetValuesPanel != null && asset != null && assetValuesPanel.isDirty()) {
+        if (assetValuesPanel != null && asset != null) {
             MessageBox.confirm(MSGS.confirm(),
                     DEVICE_MSGS.deviceConfigDirty(),
                     new Listener<MessageBoxEvent>() {
