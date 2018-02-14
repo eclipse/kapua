@@ -132,14 +132,14 @@ public class UserAddDialog extends EntityAddEditDialog {
         displayName = new TextField<String>();
         displayName.setName("displayName");
         displayName.setFieldLabel(MSGS.dialogAddFieldDisplayName());
-        displayName.setMaxLength(256);
+        displayName.setMaxLength(255);
         infoFieldSet.add(displayName, subFieldsetFormData);
 
         email = new TextField<String>();
         email.setName("userEmail");
         email.setFieldLabel(MSGS.dialogAddFieldEmail());
         email.setValidator(new TextFieldValidator(email, FieldType.EMAIL));
-        email.setMaxLength(256);
+        email.setMaxLength(255);
         infoFieldSet.add(email, subFieldsetFormData);
 
         phoneNumber = new TextField<String>();
