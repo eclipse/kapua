@@ -11,17 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authentication.server;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.Callable;
-
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
@@ -56,6 +52,11 @@ import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserService;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implements GwtCredentialService {
 
@@ -255,9 +256,9 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
             final String username = user.getName();
             LoginCredentials loginCredentials = credentialsFactory.newUsernamePasswordCredentials(username, oldPassword);
 
-            boolean validPassword = authenticationService.verifyCredentials(loginCredentials);
+            try {
+                authenticationService.verifyCredentials(loginCredentials);
 
-            if (validPassword) {
                 KapuaSecurityUtils.doPrivileged(new Callable<Void>() {
 
                     @Override
@@ -280,8 +281,8 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
                         return null;
                     }
                 });
-            } else {
-                throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS, null, String.format("Wrong existing password for user %s", username));
+            } catch (KapuaException ke) {
+                throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS, ke, String.format("Wrong existing password for user %s", username));
             }
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
