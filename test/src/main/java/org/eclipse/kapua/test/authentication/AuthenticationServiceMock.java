@@ -33,8 +33,7 @@ public class AuthenticationServiceMock implements AuthenticationService {
     }
 
     @Override
-    public AccessToken login(LoginCredentials authenticationToken)
-            throws KapuaException {
+    public AccessToken login(LoginCredentials authenticationToken) throws KapuaException {
         if (!(authenticationToken instanceof UsernamePasswordCredentialsMock)) {
             throw KapuaException.internalError("Unmanaged credentials type");
         }
@@ -58,28 +57,20 @@ public class AuthenticationServiceMock implements AuthenticationService {
     }
 
     @Override
-    public AccessToken findAccessToken(String tokenId)
-            throws KapuaException {
-        // TODO Auto-generated method stub
+    public AccessToken findAccessToken(String tokenId) throws KapuaException {
         return null;
     }
 
     @Override
     public void authenticate(SessionCredentials sessionCredentials) throws KapuaException {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public AccessToken refreshAccessToken(String tokenId, String refreshToken) throws KapuaException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public boolean verifyCredentials(LoginCredentials loginCredentials) throws KapuaException {
-        // TODO Auto-generated method stub
-        return false;
+    public void verifyCredentials(LoginCredentials loginCredentials) throws KapuaException {
     }
-
 }
