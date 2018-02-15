@@ -290,10 +290,9 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         checkXSRFToken(xsrfToken);
 
         GwtAccount gwtAccountUpdated = null;
-        KapuaId scopeId = gwtAccount.getScopeId() != null ? KapuaEid.parseCompactId(gwtAccount.getScopeId()) : null;
         KapuaId accountId = KapuaEid.parseCompactId(gwtAccount.getId());
         try {
-            Account account = scopeId != null ? ACCOUNT_SERVICE.find(scopeId, accountId) : ACCOUNT_SERVICE.find(accountId);
+            Account account = ACCOUNT_SERVICE.find(accountId);
 
             account.getOrganization().setName(gwtAccount.getGwtOrganization().getName());
             account.getOrganization().setPersonName(gwtAccount.getGwtOrganization().getPersonName());
