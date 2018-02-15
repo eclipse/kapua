@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -125,15 +125,12 @@ public class JobTabTargetsGrid extends EntityGrid<GwtJobTarget> {
                 if (result.getJobXmlDefinition() == null) {
                     JobTabTargetsGrid.this.toolbar.getAddEntityButton().enable();
                     if (selectedItem == null) {
-                        JobTabTargetsGrid.this.toolbar.getEditEntityButton().disable();
                         JobTabTargetsGrid.this.toolbar.getDeleteEntityButton().disable();
                     } else {
-                        JobTabTargetsGrid.this.toolbar.getEditEntityButton().enable();
                         JobTabTargetsGrid.this.toolbar.getDeleteEntityButton().enable();
                     }
                 } else {
                     JobTabTargetsGrid.this.toolbar.getAddEntityButton().disable();
-                    JobTabTargetsGrid.this.toolbar.getEditEntityButton().disable();
                     JobTabTargetsGrid.this.toolbar.getDeleteEntityButton().disable();
                 }
             }
