@@ -220,6 +220,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
                 Boolean exitStatus = packageInstallDialog.getExitStatus();
                 if (exitStatus == null) { // Operation Aborted
+                    uninstallButton.setEnabled(false);
                     return;
                 } else {
 
