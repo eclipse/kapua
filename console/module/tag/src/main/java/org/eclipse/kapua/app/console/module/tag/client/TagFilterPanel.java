@@ -11,15 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.tag.client;
 
+import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.VerticalPanel;
+import com.google.gwt.core.client.GWT;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-
-import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
-import com.google.gwt.core.client.GWT;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.tag.client.messages.ConsoleTagMessages;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTagQuery;
@@ -40,7 +39,7 @@ public class TagFilterPanel extends EntityFilterPanel<GwtTag> {
         setHeading(MSGS.filterHeader());
 
         VerticalPanel verticalPanel = getFieldsPanel();
-        final Label nameLabel = new Label(MSGS.filterFieldTagNameLabel());
+        Label nameLabel = new Label(MSGS.filterFieldTagNameLabel());
         nameLabel.setWidth(WIDTH);
         nameLabel.setStyleAttribute("margin", "5px");
         verticalPanel.add(nameLabel);

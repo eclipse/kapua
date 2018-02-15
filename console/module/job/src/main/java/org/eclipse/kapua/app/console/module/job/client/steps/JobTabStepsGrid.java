@@ -19,8 +19,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
 import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJob;
 import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobStep;
@@ -55,11 +55,11 @@ public class JobTabStepsGrid extends EntityGrid<GwtJobStep> {
 
             @Override
             protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtJobStep>> callback) {
-                    JOB_STEP_SERVICE.findByJobId((PagingLoadConfig) loadConfig,
-                            currentSession.getSelectedAccountId(),
-                            jobId,
-                            callback);
-                }
+                JOB_STEP_SERVICE.findByJobId((PagingLoadConfig) loadConfig,
+                        currentSession.getSelectedAccountId(),
+                        jobId,
+                        callback);
+            }
 
         };
     }

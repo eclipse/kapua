@@ -22,7 +22,7 @@ import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon
 import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
 import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJob;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobEngineService;
@@ -35,7 +35,7 @@ public class JobGridToolbar extends EntityCRUDToolbar<GwtJob> {
     private static final GwtJobEngineServiceAsync JOB_ENGINE_SERVICE = GWT.create(GwtJobEngineService.class);
     private Button startJobButton;
 
-    public JobGridToolbar(final GwtSession currentSession) {
+    public JobGridToolbar(GwtSession currentSession) {
         super(currentSession);
     }
 

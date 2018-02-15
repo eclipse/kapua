@@ -32,7 +32,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.button.EditButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.EntityDescriptionTabItem;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 
 public class AccountDetailsTabDescription extends EntityDescriptionTabItem<GwtAccount> {
 
@@ -67,7 +67,7 @@ public class AccountDetailsTabDescription extends EntityDescriptionTabItem<GwtAc
                 @Override
                 public void componentSelected(ButtonEvent ce) {
                     if (getSelectedEntity() != null) {
-                        final AccountEditDialog accountForm = new AccountEditDialog(currentSession, getSelectedEntity());
+                        AccountEditDialog accountForm = new AccountEditDialog(currentSession, getSelectedEntity());
                         accountForm.addListener(Events.Hide, new Listener<ComponentEvent>() {
 
                             @Override

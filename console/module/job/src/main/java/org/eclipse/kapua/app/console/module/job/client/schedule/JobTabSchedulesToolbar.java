@@ -14,7 +14,7 @@ package org.eclipse.kapua.app.console.module.job.client.schedule;
 import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtTrigger;
 
 public class JobTabSchedulesToolbar extends EntityCRUDToolbar<GwtTrigger> {

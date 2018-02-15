@@ -11,14 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.api.client.ui.widget;
 
-import java.util.List;
-
-import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.module.api.client.ui.grid.KapuaEditableGrid;
-import org.eclipse.kapua.app.console.module.api.client.ui.panel.ContentPanel;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
@@ -31,6 +23,13 @@ import com.extjs.gxt.ui.client.widget.grid.GridView;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.ui.grid.KapuaEditableGrid;
+import org.eclipse.kapua.app.console.module.api.client.ui.panel.ContentPanel;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+
+import java.util.List;
 
 public abstract class EntityGridField<M extends GwtEntityModel> extends ContentPanel {
 
@@ -142,6 +141,7 @@ public abstract class EntityGridField<M extends GwtEntityModel> extends ContentP
         label.setText(text);
     }
 
+    @Override
     public void setToolTip(String text) {
         label.setToolTip(text);
     }

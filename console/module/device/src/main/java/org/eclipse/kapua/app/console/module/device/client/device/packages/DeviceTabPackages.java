@@ -33,7 +33,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog.InfoDialogType;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.device.client.device.DeviceView;
 import org.eclipse.kapua.app.console.module.device.client.device.packages.button.PackageInstallButton;
 import org.eclipse.kapua.app.console.module.device.client.device.packages.button.PackageUninstallButton;
@@ -56,7 +56,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
     private TabPanel tabsPanel;
     private DeviceTabPackagesInstalled installedPackageTab;
-//    private DeviceTabPackagesInProgress inProgressPackageTab;
+    //    private DeviceTabPackagesInProgress inProgressPackageTab;
 
     public DeviceTabPackages(GwtSession currentSession,
             DeviceView deviceTabs) {
@@ -188,18 +188,18 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
         //
         // In progress packages install tab
-//        inProgressPackageTab = new DeviceTabPackagesInProgress(this);
-//        inProgressPackageTab.setBorders(false);
-//        inProgressPackageTab.setLayout(new FitLayout());
-//
-//        inProgressPackageTab.addListener(Events.Select, new Listener<ComponentEvent>() {
-//
-//            @Override
-//            public void handleEvent(ComponentEvent be) {
-//                refresh();
-//            }
-//        });
-//        tabsPanel.add(inProgressPackageTab);
+        //        inProgressPackageTab = new DeviceTabPackagesInProgress(this);
+        //        inProgressPackageTab.setBorders(false);
+        //        inProgressPackageTab.setLayout(new FitLayout());
+        //
+        //        inProgressPackageTab.addListener(Events.Select, new Listener<ComponentEvent>() {
+        //
+        //            @Override
+        //            public void handleEvent(ComponentEvent be) {
+        //                refresh();
+        //            }
+        //        });
+        //        tabsPanel.add(inProgressPackageTab);
 
         add(tabsPanel);
     }
@@ -338,7 +338,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
         if (initialized) {
             setDirty(true);
             installedPackageTab.setDirty(true);
-//            inProgressPackageTab.setDirty(true);
+            //            inProgressPackageTab.setDirty(true);
         }
     }
 

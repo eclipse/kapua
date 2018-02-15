@@ -12,12 +12,12 @@
 package org.eclipse.kapua.app.console.module.account.client;
 
 import com.google.gwt.core.client.GWT;
+import org.eclipse.kapua.app.console.module.account.client.messages.ConsoleAccountMessages;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.module.account.client.messages.ConsoleAccountMessages;
-import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 
 public class AccountView extends AbstractEntityView<GwtAccount> {
 
@@ -36,7 +36,7 @@ public class AccountView extends AbstractEntityView<GwtAccount> {
 
     @Override
     public EntityGrid<GwtAccount> getEntityGrid(AbstractEntityView<GwtAccount> entityView, GwtSession currentSession) {
-        if(accountGrid == null){
+        if (accountGrid == null) {
             accountGrid = new AccountGrid(this, currentSession);
         }
         return accountGrid;
@@ -44,7 +44,7 @@ public class AccountView extends AbstractEntityView<GwtAccount> {
 
     @Override
     public EntityFilterPanel<GwtAccount> getEntityFilterPanel(AbstractEntityView<GwtAccount> entityView, GwtSession currentSession) {
-        if(filterPanel == null){
+        if (filterPanel == null) {
             filterPanel = new AccountFilterPanel(entityView, currentSession);
         }
         return filterPanel;

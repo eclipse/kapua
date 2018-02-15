@@ -11,17 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.client;
 
-import org.eclipse.kapua.app.console.core.client.messages.ConsoleCoreMessages;
-import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationService;
-import org.eclipse.kapua.app.console.core.shared.service.GwtSettingsService;
-import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
-import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtLoginCredential;
-import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationServiceAsync;
-import org.eclipse.kapua.app.console.core.shared.service.GwtSettingsServiceAsync;
-
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -40,13 +29,21 @@ import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.core.client.messages.ConsoleCoreMessages;
+import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtLoginCredential;
+import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationService;
+import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationServiceAsync;
+import org.eclipse.kapua.app.console.core.shared.service.GwtSettingsService;
+import org.eclipse.kapua.app.console.core.shared.service.GwtSettingsServiceAsync;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 
 /**
- *
  * Login Dialog
- *
+ * <p>
  * Two-step verification - First step: username and password / cookies verification
- *
  */
 public class LoginDialog extends Dialog {
 
@@ -94,6 +91,7 @@ public class LoginDialog extends Dialog {
 
         KeyListener keyListener = new KeyListener() {
 
+            @Override
             public void componentKeyUp(ComponentEvent event) {
                 validate();
                 if (event.getKeyCode() == 13) {
@@ -164,6 +162,7 @@ public class LoginDialog extends Dialog {
         reset = new Button(CORE_MSGS.loginReset());
         reset.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
+            @Override
             public void componentSelected(ButtonEvent ce) {
                 username.reset();
                 password.reset();
@@ -176,6 +175,7 @@ public class LoginDialog extends Dialog {
         login.disable();
         login.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
+            @Override
             public void componentSelected(ButtonEvent ce) {
                 onSubmit();
             }
@@ -213,9 +213,7 @@ public class LoginDialog extends Dialog {
     }
 
     /**
-     *
      * Login submit
-     *
      */
     protected void onSubmit() {
         status.show();
@@ -227,7 +225,7 @@ public class LoginDialog extends Dialog {
     // Login
     public void performLogin() {
 
-        final GwtLoginCredential credentials = new GwtLoginCredential(username.getValue(), password.getValue());
+        GwtLoginCredential credentials = new GwtLoginCredential(username.getValue(), password.getValue());
 
         // FIXME: use some Credentials object instead of using GwtUser!
         gwtAuthorizationService.login(credentials, new AsyncCallback<GwtSession>() {
@@ -239,7 +237,7 @@ public class LoginDialog extends Dialog {
             }
 
             @Override
-            public void onSuccess(final GwtSession gwtSession) {
+            public void onSuccess(GwtSession gwtSession) {
                 currentSession = gwtSession;
                 callMainScreen();
             }

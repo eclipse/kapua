@@ -11,13 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.data.client;
 
-import com.google.gwt.core.client.GWT;
-import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractView;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractView;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.data.client.messages.ConsoleDataMessages;
 
 public class DataView extends AbstractView {
@@ -73,6 +72,7 @@ public class DataView extends AbstractView {
     // Unload of the GXT Component
     //
     // --------------------------------------------------------------------------------------
+    @Override
     public void onUnload() {
         super.onUnload();
     }

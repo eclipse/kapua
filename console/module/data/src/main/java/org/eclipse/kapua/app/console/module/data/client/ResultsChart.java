@@ -11,10 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.data.client;
 
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.Element;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 
 public class ResultsChart extends LayoutContainer {
 

@@ -11,18 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.client.role;
 
+import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.VerticalPanel;
+import com.google.gwt.core.client.GWT;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRoleQuery;
-
-import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
-import com.google.gwt.core.client.GWT;
 
 public class RoleFilterPanel extends EntityFilterPanel<GwtRole> {
 
@@ -45,7 +44,7 @@ public class RoleFilterPanel extends EntityFilterPanel<GwtRole> {
 
         VerticalPanel fieldsPanel = getFieldsPanel();
 
-        final Label roleNameLabel = new Label(ROLE_MSGS.filterFieldRoleNameLabel());
+        Label roleNameLabel = new Label(ROLE_MSGS.filterFieldRoleNameLabel());
         roleNameLabel.setWidth(WIDTH);
         roleNameLabel.setStyleAttribute("margin", "5px");
 

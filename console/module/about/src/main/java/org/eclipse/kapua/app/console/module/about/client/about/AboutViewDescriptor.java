@@ -12,9 +12,9 @@
 package org.eclipse.kapua.app.console.module.about.client.about;
 
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractMainViewDescriptor;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.View;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractMainViewDescriptor;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 
 public class AboutViewDescriptor extends AbstractMainViewDescriptor {
 

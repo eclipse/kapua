@@ -13,7 +13,7 @@ package org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity;
 
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.SimpleDialog;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 
 public abstract class EntityAddEditDialog extends SimpleDialog {
 

@@ -11,26 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.client.device.assets;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.DiscardButton;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.SaveButton;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
-import org.eclipse.kapua.app.console.module.api.client.ui.label.Label;
-import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
-import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.module.api.client.util.KapuaLoadListener;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
-import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAsset;
-import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssets;
-import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenService;
-import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenServiceAsync;
-
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
@@ -63,8 +43,27 @@ import com.extjs.gxt.ui.client.widget.treepanel.TreePanelSelectionModel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.DiscardButton;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.SaveButton;
+import org.eclipse.kapua.app.console.module.api.client.ui.label.Label;
+import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.module.api.client.util.KapuaLoadListener;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenService;
+import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenServiceAsync;
+import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
+import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAsset;
+import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssets;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceAssetService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceAssetServiceAsync;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DeviceAssetsValues extends LayoutContainer {
 
@@ -115,6 +114,7 @@ public class DeviceAssetsValues extends LayoutContainer {
         this.selectedDevice = selectedDevice;
     }
 
+    @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
         setLayout(new FitLayout());
@@ -281,7 +281,7 @@ public class DeviceAssetsValues extends LayoutContainer {
             @Override
             public void handleEvent(BaseEvent be) {
 
-                final BaseEvent theEvent = be;
+                BaseEvent theEvent = be;
                 SelectionEvent<ModelData> se = (SelectionEvent<ModelData>) be;
 
                 final GwtDeviceAsset assetToSwitchTo = (GwtDeviceAsset) se.getModel();
@@ -303,6 +303,7 @@ public class DeviceAssetsValues extends LayoutContainer {
                             DEVICE_MSGS.deviceConfigDirty(),
                             new Listener<MessageBoxEvent>() {
 
+                                @Override
                                 public void handleEvent(MessageBoxEvent ce) {
                                     // if confirmed, delete
                                     Dialog dialog = ce.getDialog();
@@ -395,6 +396,7 @@ public class DeviceAssetsValues extends LayoutContainer {
                 message,
                 new Listener<MessageBoxEvent>() {
 
+                    @Override
                     public void handleEvent(MessageBoxEvent ce) {
 
                         // if confirmed, push the update
@@ -419,7 +421,7 @@ public class DeviceAssetsValues extends LayoutContainer {
 
                                 @Override
                                 public void onSuccess(GwtXSRFToken token) {
-                                    final GwtDeviceAsset updatedDeviceAsset = assetValuesPanel.getUpdatedAsset();
+                                    GwtDeviceAsset updatedDeviceAsset = assetValuesPanel.getUpdatedAsset();
 
                                     gwtDeviceAssetService.write(
                                             token,
@@ -428,11 +430,13 @@ public class DeviceAssetsValues extends LayoutContainer {
                                             updatedDeviceAsset,
                                             new AsyncCallback<Void>() {
 
+                                                @Override
                                                 public void onFailure(Throwable caught) {
                                                     FailureHandler.handle(caught);
                                                     dirty = true;
                                                 }
 
+                                                @Override
                                                 public void onSuccess(Void arg0) {
                                                     dirty = true;
                                                     refresh();
@@ -454,6 +458,7 @@ public class DeviceAssetsValues extends LayoutContainer {
                     DEVICE_MSGS.deviceConfigDirty(),
                     new Listener<MessageBoxEvent>() {
 
+                        @Override
                         public void handleEvent(MessageBoxEvent ce) {
                             // if confirmed, delete
                             Dialog dialog = ce.getDialog();
@@ -486,6 +491,7 @@ public class DeviceAssetsValues extends LayoutContainer {
         public DataLoadListener() {
         }
 
+        @Override
         public void loaderLoad(LoadEvent le) {
             if (le.exception != null) {
                 FailureHandler.handle(le.exception);
@@ -493,6 +499,7 @@ public class DeviceAssetsValues extends LayoutContainer {
             tree.unmask();
         }
 
+        @Override
         public void loaderLoadException(LoadEvent le) {
 
             if (le.exception != null) {

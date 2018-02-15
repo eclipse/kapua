@@ -11,12 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.data.client;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.kapua.app.console.module.api.client.util.SwappableListStore;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.BaseListLoader;
@@ -34,12 +28,17 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.util.SwappableListStore;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.data.client.messages.ConsoleDataMessages;
 import org.eclipse.kapua.app.console.module.data.shared.model.GwtDatastoreAsset;
 import org.eclipse.kapua.app.console.module.data.shared.model.GwtDatastoreDevice;
 import org.eclipse.kapua.app.console.module.data.shared.model.GwtHeader;
 import org.eclipse.kapua.app.console.module.data.shared.service.GwtDataService;
 import org.eclipse.kapua.app.console.module.data.shared.service.GwtDataServiceAsync;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MetricsTable extends LayoutContainer {
 
@@ -220,6 +219,7 @@ public class MetricsTable extends LayoutContainer {
     // Unload of the GXT Component
     //
     // --------------------------------------------------------------------------------------
+    @Override
     public void onUnload() {
         super.onUnload();
     }

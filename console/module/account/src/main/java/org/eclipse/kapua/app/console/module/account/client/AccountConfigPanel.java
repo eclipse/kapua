@@ -11,11 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.account.client;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
@@ -65,7 +60,12 @@ import org.eclipse.kapua.app.console.module.api.client.util.MessageUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.UserAgentUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigParameter;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("Duplicates")
 public class AccountConfigPanel extends LayoutContainer {
@@ -95,9 +95,11 @@ public class AccountConfigPanel extends LayoutContainer {
         this.configComponent = configComponent;
         infoPlugin = new ComponentPlugin() {
 
+            @Override
             public void init(Component component) {
                 component.addListener(Events.Render, new Listener<ComponentEvent>() {
 
+                    @Override
                     public void handleEvent(ComponentEvent be) {
                         El elem = be.getComponent().el().findParent(".x-form-element", 3);
                         if (elem != null) {
@@ -112,9 +114,11 @@ public class AccountConfigPanel extends LayoutContainer {
         final AccountConfigPanel thePanel = this;
         dirtyPlugin = new ComponentPlugin() {
 
+            @Override
             public void init(Component component) {
                 component.addListener(Events.Change, new Listener<ComponentEvent>() {
 
+                    @Override
                     public void handleEvent(ComponentEvent be) {
                         El elem = be.getComponent().el().findParent(".x-form-element", 7);
                         if (elem != null) {
@@ -293,6 +297,7 @@ public class AccountConfigPanel extends LayoutContainer {
             actionFormPanel.setLayout(new FlowLayout());
             actionFormPanel.addListener(Events.Render, new Listener<BaseEvent>() {
 
+                @Override
                 public void handleEvent(BaseEvent be) {
                     NodeList<Element> nl = actionFormPanel.getElement().getElementsByTagName("form");
                     if (nl.getLength() > 0) {
@@ -726,7 +731,7 @@ public class AccountConfigPanel extends LayoutContainer {
 
     /**
      * Apply the description of a parameter to a field
-     * 
+     *
      * @param param the parameter to take the description from
      * @param field the field to apply the description to
      */
@@ -747,18 +752,18 @@ public class AccountConfigPanel extends LayoutContainer {
      * available the second type will contain the field type. If
      * the description only consists of a field type, then the first
      * field will be an empty string.
-     * 
+     *
      * @param param the parameter to take the description from
      * @return {@code null} when the parameter or description of
-     *         the parameter is {@code null}, otherwise an array containing
-     *         description and field type
+     * the parameter is {@code null}, otherwise an array containing
+     * description and field type
      */
     private static String[] splitDescription(GwtConfigParameter param) {
         if (param == null || param.getDescription() == null) {
             return null;
         }
         String description = param.getDescription();
-        final int idx = description.lastIndexOf('|');
+        int idx = description.lastIndexOf('|');
         if (idx < 0) {
             return new String[] { description };
         }
@@ -773,7 +778,7 @@ public class AccountConfigPanel extends LayoutContainer {
      * <br>
      * This cuts of any field type definition at the end of the
      * description
-     * 
+     *
      * @param param the parameter to take the description from
      * @return only the description information to two to the user
      */
@@ -791,7 +796,7 @@ public class AccountConfigPanel extends LayoutContainer {
      * This method will inspect the field type inside the description
      * and create the correct text field for this configuration
      * parameter.
-     * 
+     *
      * @param param the parameter to create a field for
      * @return a new field, never returns {@code null}
      */
@@ -827,6 +832,7 @@ public class AccountConfigPanel extends LayoutContainer {
             }
         }
 
+        @Override
         public String validate(Field<?> field, String value) {
             Integer intValue = null;
             try {
@@ -874,6 +880,7 @@ public class AccountConfigPanel extends LayoutContainer {
             }
         }
 
+        @Override
         public String validate(Field<?> field, String value) {
             Long longValue = null;
             try {
@@ -921,6 +928,7 @@ public class AccountConfigPanel extends LayoutContainer {
             }
         }
 
+        @Override
         public String validate(Field<?> field, String value) {
             Double doubleValue = null;
             try {
@@ -968,6 +976,7 @@ public class AccountConfigPanel extends LayoutContainer {
             }
         }
 
+        @Override
         public String validate(Field<?> field, String value) {
             Float floatValue = null;
             try {
@@ -1015,6 +1024,7 @@ public class AccountConfigPanel extends LayoutContainer {
             }
         }
 
+        @Override
         public String validate(Field<?> field, String value) {
             Short shortValue = null;
             try {
@@ -1062,6 +1072,7 @@ public class AccountConfigPanel extends LayoutContainer {
             }
         }
 
+        @Override
         public String validate(Field<?> field, String value) {
             Byte byteValue = null;
             try {
@@ -1109,6 +1120,7 @@ public class AccountConfigPanel extends LayoutContainer {
             }
         }
 
+        @Override
         public String validate(Field<?> field, String value) {
             Character charValue = null;
             try {
@@ -1154,6 +1166,7 @@ public class AccountConfigPanel extends LayoutContainer {
             }
         }
 
+        @Override
         public String validate(Field<?> field, String value) {
             if (value.length() > maxValue) {
                 return MessageUtils.get("configMaxValue", (maxValue + 1));

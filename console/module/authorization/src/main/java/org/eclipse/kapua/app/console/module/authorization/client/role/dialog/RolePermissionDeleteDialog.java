@@ -11,16 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.client.role.dialog;
 
-import org.eclipse.kapua.app.console.module.authorization.client.role.RolePermissionGrid;
-import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityDeleteDialog;
-import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsoleRoleMessages;
-import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRolePermission;
-import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRoleService;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityDeleteDialog;
+import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsoleRoleMessages;
+import org.eclipse.kapua.app.console.module.authorization.client.role.RolePermissionGrid;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRolePermission;
+import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRoleService;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRoleServiceAsync;
 
 public class RolePermissionDeleteDialog extends EntityDeleteDialog {

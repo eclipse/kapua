@@ -11,9 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.client.device.configuration;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
@@ -57,8 +54,8 @@ import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigComponent;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenService;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenServiceAsync;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
@@ -67,6 +64,9 @@ import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManag
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementServiceAsync;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceServiceAsync;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("Duplicates")
 public class DeviceConfigComponents extends LayoutContainer {
@@ -116,6 +116,7 @@ public class DeviceConfigComponents extends LayoutContainer {
         this.selectedDevice = selectedDevice;
     }
 
+    @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
         setLayout(new FitLayout());
@@ -283,7 +284,7 @@ public class DeviceConfigComponents extends LayoutContainer {
             @Override
             public void handleEvent(BaseEvent be) {
 
-                final BaseEvent theEvent = be;
+                BaseEvent theEvent = be;
                 SelectionEvent<ModelData> se = (SelectionEvent<ModelData>) be;
 
                 final GwtConfigComponent componentToSwitchTo = (GwtConfigComponent) se.getModel();
@@ -305,6 +306,7 @@ public class DeviceConfigComponents extends LayoutContainer {
                             DEVICE_MSGS.deviceConfigDirty(),
                             new Listener<MessageBoxEvent>() {
 
+                                @Override
                                 public void handleEvent(MessageBoxEvent ce) {
                                     // if confirmed, delete
                                     Dialog dialog = ce.getDialog();
@@ -347,6 +349,7 @@ public class DeviceConfigComponents extends LayoutContainer {
             private static final int TIMEOUT_MILLIS = 30000;
             private int countdownMillis = TIMEOUT_MILLIS;
 
+            @Override
             public void run() {
                 if (selectedDevice != null) {
                     countdownMillis -= PERIOD_MILLIS;
@@ -397,7 +400,7 @@ public class DeviceConfigComponents extends LayoutContainer {
             apply.setEnabled(false);
             reset.setEnabled(false);
 
-            treeStore.removeAll(); 
+            treeStore.removeAll();
 
             // clear the panel
             if (devConfPanel != null) {
@@ -457,6 +460,7 @@ public class DeviceConfigComponents extends LayoutContainer {
                 message,
                 new Listener<MessageBoxEvent>() {
 
+                    @Override
                     public void handleEvent(MessageBoxEvent ce) {
 
                         // if confirmed, push the update
@@ -486,18 +490,20 @@ public class DeviceConfigComponents extends LayoutContainer {
 
                                 @Override
                                 public void onSuccess(GwtXSRFToken token) {
-                                    final GwtConfigComponent configComponent = finalDevConfPanel.getUpdatedConfiguration();
+                                    GwtConfigComponent configComponent = finalDevConfPanel.getUpdatedConfiguration();
                                     gwtDeviceManagementService.updateComponentConfiguration(token,
                                             selectedDevice,
                                             configComponent,
                                             new AsyncCallback<Void>() {
 
+                                                @Override
                                                 public void onFailure(Throwable caught) {
                                                     ConsoleInfo.display(MSGS.popupError(), DEVICE_MSGS.deviceConnectionError());
                                                     dirty = true;
                                                     refresh();
                                                 }
 
+                                                @Override
                                                 public void onSuccess(Void arg0) {
                                                     dirty = true;
                                                     if (isCloudUpdate) {
@@ -523,6 +529,7 @@ public class DeviceConfigComponents extends LayoutContainer {
                     DEVICE_MSGS.deviceConfigDirty(),
                     new Listener<MessageBoxEvent>() {
 
+                        @Override
                         public void handleEvent(MessageBoxEvent ce) {
                             // if confirmed, delete
                             Dialog dialog = ce.getDialog();
@@ -597,6 +604,7 @@ public class DeviceConfigComponents extends LayoutContainer {
         public DataLoadListener() {
         }
 
+        @Override
         public void loaderLoad(LoadEvent le) {
             if (le.exception != null) {
                 FailureHandler.handle(le.exception);
@@ -604,6 +612,7 @@ public class DeviceConfigComponents extends LayoutContainer {
             tree.unmask();
         }
 
+        @Override
         public void loaderLoadException(LoadEvent le) {
 
             if (le.exception != null) {

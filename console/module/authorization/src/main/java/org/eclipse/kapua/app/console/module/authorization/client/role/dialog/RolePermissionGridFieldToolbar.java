@@ -11,11 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.client.role.dialog;
 
-import java.util.Date;
-
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityGridFieldToolbar;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRolePermission;
+
+import java.util.Date;
 
 public class RolePermissionGridFieldToolbar extends EntityGridFieldToolbar<GwtRolePermission> {
 

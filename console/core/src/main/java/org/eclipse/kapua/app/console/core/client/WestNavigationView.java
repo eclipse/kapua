@@ -44,17 +44,19 @@ import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityVie
 import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.MainViewDescriptor;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleServiceAsync;
 import org.eclipse.kapua.app.console.module.account.client.AccountDetailsView;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
+import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
+import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.ContentPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractView;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.MainViewDescriptor;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
-import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
-import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleService;
+import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleServiceAsync;
 
 import java.util.Arrays;
 import java.util.List;
@@ -91,7 +93,7 @@ public class WestNavigationView extends LayoutContainer {
     }
 
     @Override
-    protected void onRender(final Element parent, int index) {
+    protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
 
         CONSOLE_SERVICE.getCustomEntityViews(new AsyncCallback<List<MainViewDescriptor>>() {
@@ -248,7 +250,7 @@ public class WestNavigationView extends LayoutContainer {
                 if (additionalViewDescriptors.size() > 0) {
                     centerPanel.removeAll();
 
-                    final ContentPanel panel = new ContentPanel(new FitLayout());
+                    ContentPanel panel = new ContentPanel(new FitLayout());
 
                     MainViewDescriptor firstView = additionalViewDescriptors.get(0);
                     panel.setIcon(new KapuaIcon(firstView.getIcon()));

@@ -13,7 +13,7 @@ package org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor;
 
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.TabItem;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractView;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 
 public interface TabDescriptor<T extends TabItem, V extends AbstractView> extends ViewDescriptor {
 

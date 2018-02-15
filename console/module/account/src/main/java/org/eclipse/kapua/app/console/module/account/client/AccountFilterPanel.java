@@ -11,18 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.account.client;
 
+import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.VerticalPanel;
+import com.google.gwt.core.client.GWT;
+import org.eclipse.kapua.app.console.module.account.client.messages.ConsoleAccountMessages;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountQuery;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.module.account.client.messages.ConsoleAccountMessages;
-import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
-import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountQuery;
-
-import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
-import com.google.gwt.core.client.GWT;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 
 public class AccountFilterPanel extends EntityFilterPanel<GwtAccount> {
 
@@ -46,7 +45,7 @@ public class AccountFilterPanel extends EntityFilterPanel<GwtAccount> {
 
         VerticalPanel fieldsPanel = getFieldsPanel();
 
-        final Label accountNameLabel = new Label(MSGS.accountFilterNameLabel());
+        Label accountNameLabel = new Label(MSGS.accountFilterNameLabel());
         accountNameLabel.setWidth(WIDTH);
         accountNameLabel.setStyleAttribute("margin", "5px");
         fieldsPanel.add(accountNameLabel);
@@ -61,7 +60,7 @@ public class AccountFilterPanel extends EntityFilterPanel<GwtAccount> {
         accountNameField.setStyleAttribute("margin-bottom", "10px");
         fieldsPanel.add(accountNameField);
 
-        final Label accountOrgNameLabel = new Label(MSGS.accountFilterOrgNameLabel());
+        Label accountOrgNameLabel = new Label(MSGS.accountFilterOrgNameLabel());
         accountOrgNameLabel.setWidth(WIDTH);
         accountOrgNameLabel.setStyleAttribute("margin", "5px");
         fieldsPanel.add(accountOrgNameLabel);
@@ -76,7 +75,7 @@ public class AccountFilterPanel extends EntityFilterPanel<GwtAccount> {
         accountOrgNameField.setStyleAttribute("margin-bottom", "10px");
         fieldsPanel.add(accountOrgNameField);
 
-        final Label accountOrgEmailLabel = new Label(MSGS.accountFilterOrgEmailLabel());
+        Label accountOrgEmailLabel = new Label(MSGS.accountFilterOrgEmailLabel());
         accountOrgEmailLabel.setWidth(WIDTH);
         accountOrgEmailLabel.setStyleAttribute("margin", "5px");
         fieldsPanel.add(accountOrgEmailLabel);

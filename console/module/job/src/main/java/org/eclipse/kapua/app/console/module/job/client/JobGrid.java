@@ -20,8 +20,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
 import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJob;
 import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobQuery;
@@ -69,11 +69,11 @@ public class JobGrid extends EntityGrid<GwtJob> {
             if (currentSession.hasJobDeletePermission()) {
                 getToolbar().getDeleteEntityButton().setEnabled(true);
             }
-            ((JobGridToolbar)getToolbar()).getStartJobButton().setEnabled(true);
+            ((JobGridToolbar) getToolbar()).getStartJobButton().setEnabled(true);
         } else {
             getToolbar().getEditEntityButton().setEnabled(false);
             getToolbar().getDeleteEntityButton().setEnabled(false);
-            ((JobGridToolbar)getToolbar()).getStartJobButton().setEnabled(false);
+            ((JobGridToolbar) getToolbar()).getStartJobButton().setEnabled(false);
         }
     }
 
@@ -81,8 +81,8 @@ public class JobGrid extends EntityGrid<GwtJob> {
     protected List<ColumnConfig> getColumns() {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
-//        ColumnConfig columnConfig = new ColumnConfig("status", MSGS.gridJobColumnHeaderStatus(), 50);
-//        columnConfigs.add(columnConfig);
+        //        ColumnConfig columnConfig = new ColumnConfig("status", MSGS.gridJobColumnHeaderStatus(), 50);
+        //        columnConfigs.add(columnConfig);
 
         ColumnConfig columnConfig = new ColumnConfig("id", MSGS.gridJobColumnHeaderId(), 100);
         columnConfig.setHidden(true);
@@ -111,7 +111,7 @@ public class JobGrid extends EntityGrid<GwtJob> {
 
     @Override
     public void setFilterQuery(GwtQuery filterQuery) {
-        query = (GwtJobQuery)filterQuery;
+        query = (GwtJobQuery) filterQuery;
     }
 
     @Override

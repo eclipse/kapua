@@ -13,7 +13,7 @@ package org.eclipse.kapua.app.console.module.device.client.device;
 
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.Element;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPredicates;
 
 public class DeviceMap extends LayoutContainer {
@@ -22,13 +22,13 @@ public class DeviceMap extends LayoutContainer {
             GwtSession currentSession) {
     }
 
-    protected void onRender(final Element parent, int index) {
+    @Override
+    protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
     }
 
     public void refresh(GwtDeviceQueryPredicates predicates) {
     }
-
 
     // --------------------------------------------------------------------------------------
     //
@@ -36,6 +36,7 @@ public class DeviceMap extends LayoutContainer {
     //
     // --------------------------------------------------------------------------------------
 
+    @Override
     public void onUnload() {
         // clean-up the Marker list
         // for (Marker marker : m_markers) {
@@ -44,6 +45,7 @@ public class DeviceMap extends LayoutContainer {
         super.onUnload();
     }
 
+    @Override
     public void onResize(int width, int height) {
         // m_mapWidget.setSize(String.valueOf(width), String.valueOf(height));
         super.onResize(width, height);

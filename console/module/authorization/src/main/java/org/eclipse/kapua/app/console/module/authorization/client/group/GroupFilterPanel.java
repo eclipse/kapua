@@ -11,17 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.client.group;
 
+import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.VerticalPanel;
+import com.google.gwt.core.client.GWT;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsoleGroupMessages;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroup;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-
-import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
-import com.google.gwt.core.client.GWT;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroupQuery;
 
 public class GroupFilterPanel extends EntityFilterPanel<GwtGroup> {
@@ -40,7 +39,7 @@ public class GroupFilterPanel extends EntityFilterPanel<GwtGroup> {
         setHeading(MSGS.filterHeader());
 
         VerticalPanel verticalPanel = getFieldsPanel();
-        final Label nameLabel = new Label(MSGS.filterFieldGroupNameLabel());
+        Label nameLabel = new Label(MSGS.filterFieldGroupNameLabel());
         nameLabel.setWidth(WIDTH);
         nameLabel.setStyleAttribute("margin", "5px");
         verticalPanel.add(nameLabel);

@@ -11,20 +11,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authentication.client.tabs.credentials;
 
-import java.util.Date;
-
-import com.extjs.gxt.ui.client.widget.Label;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.eclipse.kapua.app.console.module.api.client.util.validator.ConfirmPasswordUpdateFieldValidator;
-import org.eclipse.kapua.app.console.module.api.client.util.validator.PasswordUpdateFieldValidator;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.util.validator.ConfirmPasswordUpdateFieldValidator;
+import org.eclipse.kapua.app.console.module.api.client.util.validator.PasswordUpdateFieldValidator;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredential;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialType;
+
+import java.util.Date;
 
 public class CredentialEditDialog extends CredentialAddDialog {
 
@@ -105,7 +104,7 @@ public class CredentialEditDialog extends CredentialAddDialog {
         confirmPassword.setValidator(new ConfirmPasswordUpdateFieldValidator(confirmPassword, password));
         confirmPassword.setFieldLabel(MSGS.dialogEditFieldConfirmNewPassword());
         confirmPassword.setAllowBlank(true);
-        if(selectedCredential.getLockoutReset() != null && selectedCredential.getLockoutReset().after(new Date())) {
+        if (selectedCredential.getLockoutReset() != null && selectedCredential.getLockoutReset().after(new Date())) {
             lockedUntil.setText(MSGS.dialogEditLockedUntil(selectedCredential.getLockoutResetFormatted()));
             credentialFormPanel.add(lockedUntil);
         }

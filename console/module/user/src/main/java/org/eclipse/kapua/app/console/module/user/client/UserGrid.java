@@ -11,22 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.user.client;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
-import org.eclipse.kapua.app.console.module.api.client.ui.color.Color;
-import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
-import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
-import org.eclipse.kapua.app.console.module.user.client.messages.ConsoleUserMessages;
-import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
-import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUserQuery;
-
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
@@ -38,8 +22,23 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.module.api.client.ui.color.Color;
+import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
+import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.user.client.messages.ConsoleUserMessages;
+import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUserQuery;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserService;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserServiceAsync;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserGrid extends EntityGrid<GwtUser> {
 
@@ -51,7 +50,7 @@ public class UserGrid extends EntityGrid<GwtUser> {
     private final static ConsoleUserMessages USER_MSGS = GWT.create(ConsoleUserMessages.class);
     private final static ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    public UserGrid(AbstractEntityView<GwtUser> entityView, final GwtSession currentSession) {
+    public UserGrid(AbstractEntityView<GwtUser> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
         query = new GwtUserQuery();
         query.setScopeId(currentSession.getSelectedAccountId());
@@ -90,6 +89,7 @@ public class UserGrid extends EntityGrid<GwtUser> {
         ColumnConfig columnConfig = new ColumnConfig("status", USER_MSGS.gridUserColumnHeaderStatus(), 50);
         GridCellRenderer<GwtUser> setStatusIcon = new GridCellRenderer<GwtUser>() {
 
+            @Override
             public String render(GwtUser gwtUser, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtUser> deviceList, Grid<GwtUser> grid) {
 
                 KapuaIcon icon;

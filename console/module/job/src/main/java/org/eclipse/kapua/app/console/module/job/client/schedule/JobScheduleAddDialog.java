@@ -26,7 +26,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
 import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtTrigger;
 import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtTriggerCreator;
@@ -129,21 +129,21 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
             startsOn.markInvalid(VAL_MSGS.startTimeWithoutStartDate());
             return;
         }
-        if(startsOn.getValue() != null && startsOnTime.getValue() == null){
+        if (startsOn.getValue() != null && startsOnTime.getValue() == null) {
             startsOnTime.markInvalid(VAL_MSGS.startDateWithoutStartTime());
             return;
         }
-        if(startsOn.getValue() != null && endsOn.getValue() != null){
-            if(startsOn.getValue().after(endsOn.getValue())){
+        if (startsOn.getValue() != null && endsOn.getValue() != null) {
+            if (startsOn.getValue().after(endsOn.getValue())) {
                 startsOn.markInvalid(VAL_MSGS.startsOnDateLaterThanEndsOn());
                 return;
-           }
+            }
         }
-        if(startsOn.getValue() != null && endsOn.getValue() != null && startsOnTime!=null && endsOnTime != null){
-            if(startsOn.getValue().equals(endsOn.getValue()) && startsOnTime.getValue().getDate().after(endsOnTime.getValue().getDate())){
+        if (startsOn.getValue() != null && endsOn.getValue() != null && startsOnTime != null && endsOnTime != null) {
+            if (startsOn.getValue().equals(endsOn.getValue()) && startsOnTime.getValue().getDate().after(endsOnTime.getValue().getDate())) {
                 startsOnTime.markInvalid(VAL_MSGS.startsOnTimeLaterThanEndsOn());
                 return;
-          }
+            }
         }
 
         if (endsOn.getValue() != null) {
@@ -196,7 +196,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         gwtTriggerCreator.setScopeId(currentSession.getSelectedAccountId());
 
         gwtTriggerCreator.setTriggerName(triggerName.getValue());
-        if(startsOn.getValue() != null){
+        if (startsOn.getValue() != null) {
             Date startsOnDate = startsOn.getValue();
             startsOnDate.setTime(startsOnDate.getTime() + (3600 * 1000 * startsOnTime.getValue().getHour()) + 60 * 1000 * startsOnTime.getValue().getMinutes());
             gwtTriggerCreator.setStartsOn(startsOnDate);
@@ -233,7 +233,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
                 submitButton.enable();
                 cancelButton.enable();
                 if (cause instanceof GwtKapuaException) {
-                    GwtKapuaException gwtCause = (GwtKapuaException)cause;
+                    GwtKapuaException gwtCause = (GwtKapuaException) cause;
                     if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
                         triggerName.markInvalid(gwtCause.getMessage());
                     }

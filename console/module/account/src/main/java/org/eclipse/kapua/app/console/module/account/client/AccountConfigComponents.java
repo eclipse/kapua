@@ -42,6 +42,9 @@ import com.extjs.gxt.ui.client.widget.treepanel.TreePanelSelectionModel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
+import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
+import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
@@ -52,15 +55,12 @@ import org.eclipse.kapua.app.console.module.api.client.ui.label.Label;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigComponent;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleService;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleServiceAsync;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenService;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenServiceAsync;
-import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
-import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
-import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 
 import java.util.ArrayList;
@@ -106,12 +106,14 @@ public class AccountConfigComponents extends LayoutContainer {
 
     private final AsyncCallback<Void> applyConfigCallback = new AsyncCallback<Void>() {
 
+        @Override
         public void onFailure(Throwable caught) {
             FailureHandler.handle(caught);
             dirty = true;
             refresh();
         }
 
+        @Override
         public void onSuccess(Void arg0) {
             dirty = true;
             refresh();
@@ -131,6 +133,7 @@ public class AccountConfigComponents extends LayoutContainer {
         this.selectedAccount = selectedAccount;
     }
 
+    @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
         setLayout(new FitLayout());
@@ -302,6 +305,7 @@ public class AccountConfigComponents extends LayoutContainer {
                             DEVICES_MSGS.deviceConfigDirty(),
                             new Listener<MessageBoxEvent>() {
 
+                                @Override
                                 public void handleEvent(MessageBoxEvent ce) {
                                     // if confirmed, delete
                                     Dialog dialog = ce.getDialog();
@@ -395,6 +399,7 @@ public class AccountConfigComponents extends LayoutContainer {
                 message,
                 new Listener<MessageBoxEvent>() {
 
+                    @Override
                     public void handleEvent(MessageBoxEvent ce) {
 
                         // if confirmed, push the update
@@ -422,7 +427,7 @@ public class AccountConfigComponents extends LayoutContainer {
 
                                 @Override
                                 public void onSuccess(GwtXSRFToken token) {
-                                    final GwtConfigComponent configComponent = devConfPanel.getUpdatedConfiguration();
+                                    GwtConfigComponent configComponent = devConfPanel.getUpdatedConfiguration();
                                     GWT_CONSOLE_SERVICE.updateComponentConfiguration(token, selectedAccount.getId(), selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
                                 }
                             });
@@ -438,6 +443,7 @@ public class AccountConfigComponents extends LayoutContainer {
                     DEVICES_MSGS.deviceConfigDirty(),
                     new Listener<MessageBoxEvent>() {
 
+                        @Override
                         public void handleEvent(MessageBoxEvent ce) {
                             // if confirmed, delete
                             Dialog dialog = ce.getDialog();
@@ -516,6 +522,7 @@ public class AccountConfigComponents extends LayoutContainer {
         DataLoadListener() {
         }
 
+        @Override
         public void loaderLoad(LoadEvent le) {
             if (le.exception != null) {
                 FailureHandler.handle(le.exception);
@@ -524,6 +531,7 @@ public class AccountConfigComponents extends LayoutContainer {
             refreshButton.setEnabled(true);
         }
 
+        @Override
         public void loaderLoadException(LoadEvent le) {
 
             if (le.exception != null) {
