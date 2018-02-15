@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,16 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources.model;
 
-import java.math.BigInteger;
-import java.util.Base64;
-
-import javax.ws.rs.PathParam;
-
 import org.eclipse.kapua.app.api.core.settings.KapuaApiSetting;
 import org.eclipse.kapua.app.api.core.settings.KapuaApiSettingKeys;
+import org.eclipse.kapua.app.api.resources.v1.resources.exception.SessionNotPopulatedException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.model.id.KapuaId;
+
+import javax.ws.rs.PathParam;
+import java.math.BigInteger;
+import java.util.Base64;
 
 /**
  * {@link KapuaId} implementation to be used on REST API to parse the {@link PathParam} scopeId.
@@ -49,6 +49,11 @@ public class ScopeId implements KapuaId {
 
         if (SCOPE_ID_WILDCARD.equals(compactScopeId)) {
             KapuaSession session = KapuaSecurityUtils.getSession();
+
+            if (session == null) {
+                throw new SessionNotPopulatedException();
+            }
+
             setId(session.getScopeId().getId());
         } else {
             byte[] bytes = Base64.getUrlDecoder().decode(compactScopeId);
