@@ -69,6 +69,7 @@ public class JobTabTargetsGrid extends EntityGrid<GwtJobTarget> {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
         ColumnConfig columnConfig = new ColumnConfig("clientId", MSGS.gridJobTargetColumnHeaderJobClientId(), 200);
+        columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("stepIndex", MSGS.gridJobTargetColumnHeaderJobStepIndex(), 300);
@@ -78,6 +79,7 @@ public class JobTabTargetsGrid extends EntityGrid<GwtJobTarget> {
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("errorMessage", MSGS.gridJobTargetColumnHeaderErrorMessage(), 200);
+        columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
         return columnConfigs;
