@@ -171,5 +171,6 @@ public class TopicsTable extends LayoutContainer {
 
     public void clearTable() {
         topicInfoGrid.getStore().removeAll();
+        topicInfoGrid.getTreeStore().removeAll();
     }
 }
