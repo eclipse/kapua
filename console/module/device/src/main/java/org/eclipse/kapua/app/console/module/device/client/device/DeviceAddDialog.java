@@ -308,7 +308,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
 
     @Override
     public String getInfoMessage() {
-        return null;
+        return DEVICE_MSGS.dialogDeviceAddInfoMessage();
     }
 
 }
