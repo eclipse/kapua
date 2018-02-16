@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.job.client.targets;
 
+import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
@@ -21,6 +22,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
+import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGridCheckBoxSelectionModel;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolBar;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
@@ -39,7 +41,7 @@ public class JobTargetAddGrid extends EntityGrid<GwtDevice> {
     private static final GwtDeviceServiceAsync GWT_DEVICE_SERVICE = GWT.create(GwtDeviceService.class);
     private static final ConsoleDeviceMessages DVC_MSGS = GWT.create(ConsoleDeviceMessages.class);
 
-    private final CheckBoxSelectionModel<GwtDevice> selectionModel = new CheckBoxSelectionModel<GwtDevice>();
+    private final EntityGridCheckBoxSelectionModel<GwtDevice> selectionModel = new EntityGridCheckBoxSelectionModel<GwtDevice>();
 
     private static final int ENTITY_PAGE_SIZE = 10;
 
@@ -91,9 +93,10 @@ public class JobTargetAddGrid extends EntityGrid<GwtDevice> {
     protected List<ColumnConfig> getColumns() {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
-        columnConfigs.add(selectionModel.getColumn());
+        ColumnConfig column = selectionModel.getColumn();
+        columnConfigs.add(column);
 
-        ColumnConfig column = new ColumnConfig("clientId", DVC_MSGS.deviceTableClientID(), 175);
+        column = new ColumnConfig("clientId", DVC_MSGS.deviceTableClientID(), 175);
         column.setSortable(true);
         columnConfigs.add(column);
 
@@ -106,10 +109,11 @@ public class JobTargetAddGrid extends EntityGrid<GwtDevice> {
 
     @Override
     protected void onRender(Element target, int index) {
-        super.onRender(target, index);
-
+        configureEntityGrid(SelectionMode.SIMPLE);
         entityGrid.addPlugin(selectionModel);
         entityGrid.setSelectionModel(selectionModel);
+
+        super.onRender(target, index);
     }
 
     @Override

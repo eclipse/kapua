@@ -16,10 +16,15 @@ import java.util.logging.Logger;
 import org.eclipse.kapua.app.console.core.client.messages.ConsoleCoreMessages;
 import org.eclipse.kapua.app.console.core.shared.model.GwtProductInformation;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
+import org.eclipse.kapua.app.console.module.api.client.ui.panel.ContentPanel;
+import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.core.client.util.Logout;
 import org.eclipse.kapua.app.console.module.api.client.util.UserAgentUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.Years;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtJwtCredential;
 import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationService;
@@ -80,12 +85,14 @@ public class KapuaCloudConsole implements EntryPoint {
 
     private NorthView northView;
     private WestNavigationView westView;
+    private ContentPanel filterPanel;
     private LayoutContainer centerView;
     private HorizontalPanel southView;
 
     private Label creditLabel;
 
     private GwtProductInformation productInformation;
+    private BorderLayoutData filterPanelData;
 
     /**
      * Note, we defer all application initialization code to {@link #onModuleLoad2()} so that the
@@ -184,11 +191,26 @@ public class KapuaCloudConsole implements EntryPoint {
         // West View
         BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 200);
         westData.setSplit(false);
-        westData.setMargins(new Margins(0, 5, 0, 5));
+        westData.setMargins(new Margins(0, 5, 0, 0));
 
-        westView = new WestNavigationView(currentSession, centerView);
+        westView = new WestNavigationView(currentSession, centerView, this);
 
         viewport.add(westView, westData);
+
+        //
+        // East View
+
+        filterPanel = new ContentPanel();
+        filterPanel.setLayout(new FitLayout());
+        filterPanel.setBorders(false);
+        filterPanel.hide();
+
+        filterPanelData = new BorderLayoutData(Style.LayoutRegion.EAST, 220);
+        filterPanelData.setMargins(new Margins(0, 5, 0, 0));
+        filterPanelData.setCollapsible(false);
+        filterPanelData.setSplit(false);
+
+        viewport.add(filterPanel, filterPanelData);
 
         //
         // South view
@@ -411,6 +433,20 @@ public class KapuaCloudConsole implements EntryPoint {
 
     public HorizontalPanel getSouthView() {
         return southView;
+    }
+
+    public ContentPanel getFilterPanel() {
+        return filterPanel;
+    }
+
+    public void setFilterPanel(EntityFilterPanel<? extends GwtEntityModel> filterPanel, AbstractEntityView abstractEntityView) {
+        EntityGrid entityGrid = abstractEntityView.getEntityGrid(abstractEntityView, currentSession);
+        filterPanel.setEntityGrid(entityGrid);
+        getViewport().remove(this.filterPanel);
+        this.filterPanel = filterPanel;
+        entityGrid.setFilterPanel(filterPanel);
+        getViewport().add(filterPanel, filterPanelData);
+        getViewport().layout();
     }
 
     private void renderMainScreen(final Viewport viewport, GwtSession session) {

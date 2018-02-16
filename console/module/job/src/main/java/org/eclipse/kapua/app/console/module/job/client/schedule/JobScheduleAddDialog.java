@@ -60,9 +60,13 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
 
         triggerName = new TextField<String>();
         startsOn = new DateField();
+        startsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         startsOnTime = new TimeField();
+        startsOnTime.setEditable(false);
         endsOn = new DateField();
+        endsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         endsOnTime = new TimeField();
+        endsOnTime.setEditable(false);
         retryInterval = new NumberField();
         cronExpression = new TextField<String>();
 
@@ -86,6 +90,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         startsOnTime.setAllowBlank(false);
         startsOnTime.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleStartsOnTimeLabel());
         startsOnTime.setFormat(DateTimeFormat.getFormat("HH:mm"));
+        startsOnTime.setEditable(false);
         mainPanel.add(startsOnTime);
 
         endsOn.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleEndsOnLabel());
@@ -95,6 +100,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
 
         endsOnTime.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleEndsOnTimeLabel());
         endsOnTime.setFormat(DateTimeFormat.getFormat("HH:mm"));
+        endsOnTime.setEditable(false);
         mainPanel.add(endsOnTime);
 
         retryInterval.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleRetryIntervalLabel());
@@ -117,6 +123,27 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
 
         if (endsOn.getValue() == null && endsOnTime.getValue() != null) {
             endsOn.markInvalid(VAL_MSGS.endTimeWithoutEndDate());
+            return;
+        }
+        if (startsOn.getValue() == null && startsOnTime.getValue() != null) {
+            startsOn.markInvalid(VAL_MSGS.startTimeWithoutStartDate());
+            return;
+        }
+        if(startsOn.getValue() != null && startsOnTime.getValue() == null){
+            startsOnTime.markInvalid(VAL_MSGS.startDateWithoutStartTime());
+            return;
+        }
+        if(startsOn.getValue() != null && endsOn.getValue() != null){
+            if(startsOn.getValue().after(endsOn.getValue())){
+                startsOn.markInvalid(VAL_MSGS.startsOnDateLaterThanEndsOn());
+                return;
+           }
+        }
+        if(startsOn.getValue() != null && endsOn.getValue() != null && startsOnTime!=null && endsOnTime != null){
+            if(startsOn.getValue().equals(endsOn.getValue()) && startsOnTime.getValue().getDate().after(endsOnTime.getValue().getDate())){
+                startsOnTime.markInvalid(VAL_MSGS.startsOnTimeLaterThanEndsOn());
+                return;
+          }
         }
 
         if (endsOn.getValue() != null) {
@@ -169,14 +196,16 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         gwtTriggerCreator.setScopeId(currentSession.getSelectedAccountId());
 
         gwtTriggerCreator.setTriggerName(triggerName.getValue());
-        Date startsOnDate = startsOn.getValue();
-        startsOnDate.setTime(startsOnDate.getTime() + (3600 * 1000 * startsOnTime.getValue().getHour()) + 60 * 1000 * startsOnTime.getValue().getMinutes());
-        gwtTriggerCreator.setStartsOn(startsOnDate);
-        if (endsOn.getValue() != null && endsOnTime.getValue() != null) {
-            // According to validation, endsOn and endsOnTime should be both either null or having a value
-            Date endsOnDate = endsOn.getValue();
-            endsOnDate.setTime(endsOnDate.getTime() + (3600 * 1000 * endsOnTime.getValue().getHour()) + 60 * 1000 * endsOnTime.getValue().getMinutes());
-            gwtTriggerCreator.setEndsOn(endsOnDate);
+        if(startsOn.getValue() != null){
+            Date startsOnDate = startsOn.getValue();
+            startsOnDate.setTime(startsOnDate.getTime() + (3600 * 1000 * startsOnTime.getValue().getHour()) + 60 * 1000 * startsOnTime.getValue().getMinutes());
+            gwtTriggerCreator.setStartsOn(startsOnDate);
+            if (endsOn.getValue() != null && endsOnTime.getValue() != null) {
+                // According to validation, endsOn and endsOnTime should be both either null or having a value
+                Date endsOnDate = endsOn.getValue();
+                endsOnDate.setTime(endsOnDate.getTime() + (3600 * 1000 * endsOnTime.getValue().getHour()) + 60 * 1000 * endsOnTime.getValue().getMinutes());
+                gwtTriggerCreator.setEndsOn(endsOnDate);
+            }
         }
         gwtTriggerCreator.setRetryInterval(retryInterval.getValue() != null ? retryInterval.getValue().longValue() : null);
         gwtTriggerCreator.setCronScheduling(cronExpression.getValue());

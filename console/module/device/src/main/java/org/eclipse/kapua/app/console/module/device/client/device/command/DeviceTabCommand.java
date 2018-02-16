@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -56,6 +56,7 @@ import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 
 public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
 
+    private static final String UNDEFINED_ERROR = "Error: ";
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     private static final ConsoleDeviceMessages DEVICE_MSGS = GWT.create(ConsoleDeviceMessages.class);
 
@@ -198,6 +199,9 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
 
                     String errorMessage = htmlResult.substring(errorMessageStartIndex, errorMessageEndIndex);
 
+                    if (UNDEFINED_ERROR.equals(errorMessage)) {
+                        errorMessage = DEVICE_MSGS.deviceConnectionError();
+                    }
                     MessageBox.alert(MSGS.error(), MSGS.fileUploadFailure() + ":<br/>" + errorMessage, null);
                     commandInput.unmask();
                 } else {

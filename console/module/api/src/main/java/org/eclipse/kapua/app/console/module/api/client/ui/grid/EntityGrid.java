@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -48,6 +48,8 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
     private AbstractEntityView<M> parentEntityView;
 
     private EntityCRUDToolbar<M> entityCRUDToolbar;
+    private boolean entityGridConfigured;
+    private SelectionMode selectionMode = SelectionMode.SINGLE;
     protected KapuaGrid<M> entityGrid;
     protected BasePagingLoader<PagingLoadResult<M>> entityLoader;
     protected ListStore<M> entityStore;
@@ -89,33 +91,9 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
         //
         // Configure Entity Grid
 
-        // Data Proxy
-        RpcProxy<PagingLoadResult<M>> dataProxy = getDataProxy();
-
-        // Data Loader
-        entityLoader = new BasePagingLoader<PagingLoadResult<M>>(dataProxy);
-
-        // Data Store
-        entityStore = new ListStore<M>(entityLoader);
-
-        //
-        // Grid Data Load Listener
-        entityLoader.addLoadListener(new EntityGridLoadListener<M>(this, entityStore));
-
-        //
-        // Bind Entity Paging Toolbar
-        if (entityPagingToolbar != null) {
-            entityPagingToolbar.bind(entityLoader);
+        if (!entityGridConfigured) {
+            configureEntityGrid(SelectionMode.SINGLE);
         }
-
-        //
-        // Configure columns
-        ColumnModel columnModel = new ColumnModel(getColumns());
-
-        //
-        // Set grid
-        entityGrid = new KapuaGrid<M>(entityStore, columnModel);
-        add(entityGrid);
 
         // Force layout so the entityGrid gets rendered and its listeners initialized
         layout();
@@ -127,7 +105,7 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
         //
         // Grid selection mode
         GridSelectionModel<M> selectionModel = entityGrid.getSelectionModel();
-        selectionModel.setSelectionMode(SelectionMode.SINGLE);
+        selectionModel.setSelectionMode(selectionMode);
         selectionModel.addSelectionChangedListener(new SelectionChangedListener<M>() {
 
             @Override
@@ -156,6 +134,45 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
 
     protected PagingToolBar getPagingToolbar() {
         return new KapuaPagingToolBar(ENTITY_PAGE_SIZE);
+    }
+
+    /**
+     * Configuring entity grid, because it needs to be configured before
+     * onRender method is called.
+     * 
+     * @param selectionMode selection mode on grid, default is SINGLE.
+     */
+    protected void configureEntityGrid(SelectionMode selectionMode) {
+        // Data Proxy
+        RpcProxy<PagingLoadResult<M>> dataProxy = getDataProxy();
+
+        // Data Loader
+        entityLoader = new BasePagingLoader<PagingLoadResult<M>>(dataProxy);
+
+        // Data Store
+        entityStore = new ListStore<M>(entityLoader);
+
+        //
+        // Grid Data Load Listener
+        entityLoader.addLoadListener(new EntityGridLoadListener<M>(this, entityStore));
+
+        //
+        // Bind Entity Paging Toolbar
+        if (entityPagingToolbar != null) {
+            entityPagingToolbar.bind(entityLoader);
+        }
+
+        //
+        // Configure columns
+        ColumnModel columnModel = new ColumnModel(getColumns());
+
+        //
+        // Set grid
+        entityGrid = new KapuaGrid<M>(entityStore, columnModel);
+        add(entityGrid);
+
+        entityGridConfigured = true;
+        this.selectionMode = selectionMode;
     }
 
     protected abstract List<ColumnConfig> getColumns();

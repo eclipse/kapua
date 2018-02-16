@@ -39,6 +39,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
+import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.MainViewDescriptor;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleServiceAsync;
 import org.eclipse.kapua.app.console.module.account.client.AccountDetailsView;
@@ -62,6 +64,7 @@ public class WestNavigationView extends LayoutContainer {
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
     private final LayoutContainer centerPanel;
+    private final KapuaCloudConsole kapuaCloudConsole;
     private ContentPanel cloudResourcesPanel;
     private ContentPanel accordionPanel;
     private ContentPanel accountManagementPanel;
@@ -80,8 +83,9 @@ public class WestNavigationView extends LayoutContainer {
 
     private static final GwtConsoleServiceAsync CONSOLE_SERVICE = GWT.create(GwtConsoleService.class);
 
-    public WestNavigationView(GwtSession currentSession, LayoutContainer center) {
+    public WestNavigationView(GwtSession currentSession, LayoutContainer center, KapuaCloudConsole kapuaCloudConsole) {
         this.currentSession = currentSession;
+        this.kapuaCloudConsole = kapuaCloudConsole;
         centerPanel = center;
         dashboardSelected = true;
     }
@@ -157,10 +161,12 @@ public class WestNavigationView extends LayoutContainer {
                     public void selectionChanged(SelectionChangedEvent<ModelData> se) {
                         ModelData selected = se.getSelectedItem();
                         if (selected == null) {
+                            kapuaCloudConsole.getFilterPanel().hide();
                             return;
                         }
 
                         if (dashboardSelected && (selected.get("id")).equals("welcome")) {
+                            kapuaCloudConsole.getFilterPanel().hide();
                             return;
                         }
 
@@ -173,6 +179,8 @@ public class WestNavigationView extends LayoutContainer {
 
                         String selectedId = selected.get("id");
                         if ("mysettings".equals(selectedId)) {
+                            kapuaCloudConsole.getFilterPanel().hide();
+
                             // TODO generalize!
                             GWT_ACCOUNT_SERVICE.find(currentSession.getSelectedAccountId(), new AsyncCallback<GwtAccount>() {
 
@@ -202,10 +210,25 @@ public class WestNavigationView extends LayoutContainer {
                                 if (viewDescriptor.getViewId().equals(selectedId)) {
                                     panel.setIcon(new KapuaIcon(viewDescriptor.getIcon()));
                                     panel.setHeading(viewDescriptor.getName());
-                                    panel.add((AbstractView) viewDescriptor.getViewInstance(currentSession));
 
+                                    AbstractView view = (AbstractView) viewDescriptor.getViewInstance(currentSession);
+                                    panel.add(view);
+
+                                    if (view instanceof AbstractEntityView) {
+                                        AbstractEntityView abstractEntityView = (AbstractEntityView) view;
+                                        EntityFilterPanel filterPanel = abstractEntityView.getEntityFilterPanel(abstractEntityView, currentSession);
+                                        if (filterPanel != null) {
+                                            kapuaCloudConsole.setFilterPanel(filterPanel, abstractEntityView);
+                                            kapuaCloudConsole.getFilterPanel().show();
+                                        } else {
+                                            kapuaCloudConsole.getFilterPanel().hide();
+                                        }
+                                    } else {
+                                        kapuaCloudConsole.getFilterPanel().hide();
+                                    }
                                     centerPanel.add(panel);
                                     centerPanel.layout();
+                                    break;
                                 }
                             }
                         }

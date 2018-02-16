@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,7 +19,7 @@ import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDevice
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.TabItem;
-import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtBundleInfo;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeploymentPackage;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
@@ -156,7 +156,7 @@ public class DeviceTabPackagesInstalled extends TabItem {
 
                     @Override
                     public void onFailure(Throwable caught) {
-                        FailureHandler.handle(caught);
+                        ConsoleInfo.display(MSGS.popupError(), DEVICE_MSGS.deviceConnectionError());
                         treeGrid.unmask();
                     }
                 });

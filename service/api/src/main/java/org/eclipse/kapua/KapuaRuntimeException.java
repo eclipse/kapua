@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,20 +11,19 @@
  *******************************************************************************/
 package org.eclipse.kapua;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.StringJoiner;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Kapua runtime exception.
  *
  * @since 1.0
- *
  */
 public class KapuaRuntimeException extends RuntimeException {
 
@@ -41,7 +40,6 @@ public class KapuaRuntimeException extends RuntimeException {
     /**
      * Constructor
      */
-    @SuppressWarnings("unused")
     private KapuaRuntimeException() {
         super();
     }
@@ -51,8 +49,7 @@ public class KapuaRuntimeException extends RuntimeException {
      *
      * @param message
      */
-    @SuppressWarnings("unused")
-    private KapuaRuntimeException(String message) {
+    protected KapuaRuntimeException(String message) {
         this(message, null);
     }
 
@@ -61,8 +58,7 @@ public class KapuaRuntimeException extends RuntimeException {
      *
      * @param throwable
      */
-    @SuppressWarnings("unused")
-    private KapuaRuntimeException(Throwable throwable) {
+    protected KapuaRuntimeException(Throwable throwable) {
         this(null, throwable);
     }
 
@@ -72,7 +68,7 @@ public class KapuaRuntimeException extends RuntimeException {
      * @param message
      * @param throwable
      */
-    private KapuaRuntimeException(String message, Throwable throwable) {
+    protected KapuaRuntimeException(String message, Throwable throwable) {
         super(message, throwable);
     }
 
