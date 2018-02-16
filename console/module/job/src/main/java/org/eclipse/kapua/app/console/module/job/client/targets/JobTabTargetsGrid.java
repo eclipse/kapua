@@ -68,16 +68,18 @@ public class JobTabTargetsGrid extends EntityGrid<GwtJobTarget> {
     protected List<ColumnConfig> getColumns() {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
-        ColumnConfig columnConfig = new ColumnConfig("jobTargetId", MSGS.gridJobTargetColumnHeaderJobTargetId(), 100);
+        ColumnConfig columnConfig = new ColumnConfig("clientId", MSGS.gridJobTargetColumnHeaderJobClientId(), 200);
+        columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("stepIndex", MSGS.gridJobTargetColumnHeaderJobStepIndex(), 400);
+        columnConfig = new ColumnConfig("stepIndex", MSGS.gridJobTargetColumnHeaderJobStepIndex(), 300);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("status", MSGS.gridJobTargetColumnHeaderStatus(), 200);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("errorMessage", MSGS.gridJobTargetColumnHeaderErrorMessage(), 200);
+        columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
         return columnConfigs;
