@@ -13,6 +13,7 @@ package org.eclipse.kapua.app.console.module.job.client.targets;
 
 import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractEntityTabDescriptor;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionAction;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 import org.eclipse.kapua.app.console.module.job.client.JobView;
 import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJob;
@@ -36,6 +37,6 @@ public class JobTabTargetsDescriptor extends AbstractEntityTabDescriptor<GwtJob,
 
     @Override
     public Boolean isEnabled(GwtSession currentSession) {
-        return currentSession.hasPermission("job", "read", GwtSessionPermissionScope.SELF);
+        return currentSession.hasPermission("job", GwtSessionPermissionAction.read, GwtSessionPermissionScope.SELF);
     }
 }

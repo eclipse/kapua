@@ -27,6 +27,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionAction;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupService;
@@ -254,7 +255,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
 
         //
         // Groups
-        if (currentSession.hasPermission("group", "read", GwtSessionPermissionScope.SELF)) {
+        if (currentSession.hasPermission("group", GwtSessionPermissionAction.read, GwtSessionPermissionScope.SELF)) {
             Label groupLabel = new Label(DEVICE_MSGS.deviceFilteringPanelGroup());
             groupLabel.setWidth(WIDTH);
             groupLabel.setStyleAttribute("margin", "5px");
@@ -303,7 +304,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
 
         //
         // Tags
-        if (currentSession.hasPermission("tag", "read", GwtSessionPermissionScope.SELF)) {
+        if (currentSession.hasPermission("tag", GwtSessionPermissionAction.read, GwtSessionPermissionScope.SELF)) {
             Label tagLabel = new Label(DEVICE_MSGS.deviceFilteringPanelTag());
             tagLabel.setWidth(WIDTH);
             tagLabel.setStyleAttribute("margin", "5px");
@@ -367,10 +368,10 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         customAttribute1Field.setValue("");
         customAttribute2Field.setValue("");
 
-        if (currentSession.hasPermission("group", "read", GwtSessionPermissionScope.SELF)) {
+        if (currentSession.hasPermission("group", GwtSessionPermissionAction.read, GwtSessionPermissionScope.SELF)) {
             groupsCombo.setValue(allGroup);
         }
-        if (currentSession.hasPermission("tag", "read", GwtSessionPermissionScope.SELF)) {
+        if (currentSession.hasPermission("tag", GwtSessionPermissionAction.read, GwtSessionPermissionScope.SELF)) {
             tagsCombo.setValue(allTag);
         }
 

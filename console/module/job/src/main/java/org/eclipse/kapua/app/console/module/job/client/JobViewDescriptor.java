@@ -15,6 +15,7 @@ import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.EntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractEntityViewDescriptor;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionAction;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 
 public class JobViewDescriptor extends AbstractEntityViewDescriptor {
@@ -46,6 +47,6 @@ public class JobViewDescriptor extends AbstractEntityViewDescriptor {
 
     @Override
     public Boolean isEnabled(GwtSession currentSession) {
-        return currentSession.hasPermission("job", "read", GwtSessionPermissionScope.SELF);
+        return currentSession.hasPermission("job", GwtSessionPermissionAction.read, GwtSessionPermissionScope.SELF);
     }
 }

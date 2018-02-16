@@ -13,6 +13,7 @@ package org.eclipse.kapua.app.console.module.device.client.device.packages;
 
 import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractEntityTabDescriptor;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionAction;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 import org.eclipse.kapua.app.console.module.device.client.device.DeviceView;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
@@ -36,6 +37,6 @@ public class DeviceTabPackagesDescriptor extends AbstractEntityTabDescriptor<Gwt
 
     @Override
     public Boolean isEnabled(GwtSession currentSession) {
-        return currentSession.hasPermission("device_management", "read", GwtSessionPermissionScope.SELF);
+        return currentSession.hasPermission("device_management", GwtSessionPermissionAction.read, GwtSessionPermissionScope.SELF);
     }
 }

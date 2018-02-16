@@ -150,7 +150,7 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
         getSessionPermissions().add(permission);
     }
 
-    public boolean hasPermission(String domain, String action, GwtSessionPermissionScope gwtSessionPermissionScope) {
+    public boolean hasPermission(String domain, GwtSessionPermissionAction action, GwtSessionPermissionScope gwtSessionPermissionScope) {
         GwtSessionPermission permissionToCheck = new GwtSessionPermission(domain, action, gwtSessionPermissionScope);
 
         // Check cache

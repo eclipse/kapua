@@ -31,6 +31,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityVie
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionAction;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 import org.eclipse.kapua.app.console.module.user.client.messages.ConsoleUserMessages;
 import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
@@ -62,8 +63,9 @@ public class UserGrid extends EntityGrid<GwtUser> {
         super.selectionChangedEvent(selectedItem);
         if (selectedItem != null) {
             // Prevent editing kapua-sys user
-            getToolbar().getEditEntityButton().setEnabled(currentSession.hasPermission("user", "write", GwtSessionPermissionScope.SELF) && !selectedItem.getId().equals("AQ"));
-            getToolbar().getDeleteEntityButton().setEnabled(currentSession.hasPermission("user", "delete", GwtSessionPermissionScope.SELF) && !selectedItem.getId().equals("AQ"));
+            getToolbar().getEditEntityButton().setEnabled(currentSession.hasPermission("user", GwtSessionPermissionAction.write, GwtSessionPermissionScope.SELF) && !selectedItem.getId().equals("AQ"));
+            getToolbar().getDeleteEntityButton()
+                    .setEnabled(currentSession.hasPermission("user", GwtSessionPermissionAction.delete, GwtSessionPermissionScope.SELF) && !selectedItem.getId().equals("AQ"));
         } else {
             getToolbar().getEditEntityButton().setEnabled(false);
             getToolbar().getDeleteEntityButton().setEnabled(false);

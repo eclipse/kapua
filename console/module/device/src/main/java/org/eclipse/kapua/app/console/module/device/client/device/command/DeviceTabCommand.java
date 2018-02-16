@@ -49,6 +49,7 @@ import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionAction;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenService;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenServiceAsync;
@@ -100,7 +101,7 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
         super.setEntity(gwtDevice);
 
         setEnabled(gwtDevice != null &&
-                currentSession.hasPermission("device_management", "execute", GwtSessionPermissionScope.SELF) &&
+                currentSession.hasPermission("device_management", GwtSessionPermissionAction.execute, GwtSessionPermissionScope.SELF) &&
                 gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_COMMAND));
 
         doRefresh();

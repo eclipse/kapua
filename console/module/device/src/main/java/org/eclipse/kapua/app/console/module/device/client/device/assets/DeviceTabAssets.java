@@ -24,6 +24,7 @@ import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.TabItem;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionAction;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
@@ -47,7 +48,7 @@ public class DeviceTabAssets extends KapuaTabItem<GwtDevice> {
         super.setEntity(gwtDevice);
 
         setEnabled(gwtDevice != null &&
-                currentSession.hasPermission("device_management", "read", GwtSessionPermissionScope.SELF) &&
+                currentSession.hasPermission("device_management", GwtSessionPermissionAction.read, GwtSessionPermissionScope.SELF) &&
                 gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_ASSET_V1));
 
         assetsValues.setDevice(gwtDevice);

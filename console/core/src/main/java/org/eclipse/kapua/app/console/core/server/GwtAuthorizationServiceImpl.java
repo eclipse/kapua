@@ -25,6 +25,7 @@ import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermission;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionAction;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
 import org.eclipse.kapua.app.console.module.user.shared.util.KapuaGwtUserModelConverter;
@@ -51,6 +52,7 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
 import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
 import org.eclipse.kapua.service.authorization.access.AccessRoleService;
+import org.eclipse.kapua.service.authorization.permission.Action;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
@@ -280,26 +282,28 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
 
             @Override
             public void run() throws Exception {
-                // Permission info
                 AccessInfo userAccessInfo = ACCESS_INFO_SERVICE.findByUserId(user.getScopeId(), user.getId());
 
-                AccessPermissionListResult accessPermissions = ACCESS_PERMISSION_SERVICE.findByAccessInfoId(userAccessInfo.getScopeId(), userAccessInfo.getId());
-                for (AccessPermission ap : accessPermissions.getItems()) {
-                    gwtSession.addSessionPermission(convert(ap.getPermission()));
-                }
+                if (userAccessInfo != null) {
 
-                // Role info
-                AccessRoleListResult accessRoles = ACCESS_ROLE_SERVICE.findByAccessInfoId(user.getScopeId(), user.getId());
+                    // Permission info
+                    AccessPermissionListResult accessPermissions = ACCESS_PERMISSION_SERVICE.findByAccessInfoId(userAccessInfo.getScopeId(), userAccessInfo.getId());
+                    for (AccessPermission ap : accessPermissions.getItems()) {
+                        gwtSession.addSessionPermission(convert(ap.getPermission()));
+                    }
 
-                for (AccessRole ar : accessRoles.getItems()) {
-                    Role role = ROLE_SERVICE.find(ar.getScopeId(), ar.getRoleId());
+                    // Role info
+                    AccessRoleListResult accessRoles = ACCESS_ROLE_SERVICE.findByAccessInfoId(user.getScopeId(), user.getId());
 
-                    RolePermissionListResult rolePermissions = ROLE_PERMISSION_SERVICE.findByRoleId(role.getScopeId(), role.getId());
-                    for (RolePermission rp : rolePermissions.getItems()) {
-                        gwtSession.addSessionPermission(convert(rp.getPermission()));
+                    for (AccessRole ar : accessRoles.getItems()) {
+                        Role role = ROLE_SERVICE.find(ar.getScopeId(), ar.getRoleId());
+
+                        RolePermissionListResult rolePermissions = ROLE_PERMISSION_SERVICE.findByRoleId(role.getScopeId(), role.getId());
+                        for (RolePermission rp : rolePermissions.getItems()) {
+                            gwtSession.addSessionPermission(convert(rp.getPermission()));
+                        }
                     }
                 }
-
             }
         });
 
@@ -331,7 +335,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         String domain = permission.getDomain();
 
         // Action parsing
-        String action = permission.getAction() != null ? permission.getAction().name() : null;
+        GwtSessionPermissionAction action = convert(permission.getAction());
 
         // Target scope parsing
         GwtSessionPermissionScope gwtSessionPermissionScope;
@@ -345,6 +349,10 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
 
         // Create converted object
         return new GwtSessionPermission(domain, action, gwtSessionPermissionScope);
+    }
+
+    private GwtSessionPermissionAction convert(Action action) {
+        return action != null ? GwtSessionPermissionAction.valueOf(action.name()) : null;
     }
 
 }

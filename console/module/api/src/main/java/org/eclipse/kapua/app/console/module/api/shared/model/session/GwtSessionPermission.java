@@ -16,14 +16,14 @@ import org.eclipse.kapua.app.console.module.api.shared.model.KapuaBaseModel;
 public class GwtSessionPermission extends KapuaBaseModel {
 
     private String domain;
-    private String action;
+    private GwtSessionPermissionAction action;
     private GwtSessionPermissionScope permissionScope;
 
     public GwtSessionPermission() {
         super();
     }
 
-    public GwtSessionPermission(String domain, String action, GwtSessionPermissionScope permissionScope) {
+    public GwtSessionPermission(String domain, GwtSessionPermissionAction action, GwtSessionPermissionScope permissionScope) {
         this();
 
         this.domain = domain;
@@ -39,11 +39,11 @@ public class GwtSessionPermission extends KapuaBaseModel {
         this.domain = domain;
     }
 
-    public String getAction() {
+    public GwtSessionPermissionAction getAction() {
         return action;
     }
 
-    public void setAction(String action) {
+    public void setAction(GwtSessionPermissionAction action) {
         this.action = action;
     }
 
@@ -69,9 +69,10 @@ public class GwtSessionPermission extends KapuaBaseModel {
         if (domain != null ? !domain.equals(that.domain) : that.domain != null) {
             return false;
         }
-        if (action != null ? !action.equals(that.action) : that.action != null) {
+        if (action != that.action) {
             return false;
         }
+
         return permissionScope == that.permissionScope;
     }
 
@@ -89,7 +90,7 @@ public class GwtSessionPermission extends KapuaBaseModel {
 
         sb.append(domain != null ? domain : "*") //
                 .append(":") //
-                .append(action != null ? action : "*") //
+                .append(action != null ? action.name() : "*") //
                 .append(":") //
                 .append(permissionScope != null ? permissionScope.name() : "null");
 

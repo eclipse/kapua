@@ -27,6 +27,7 @@ import org.eclipse.kapua.app.console.module.api.client.util.Constants;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionAction;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleConnectionMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection;
@@ -108,7 +109,7 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
         reservedUserCombo.setDisplayField("username");
         reservedUserCombo.setValueField("id");
 
-        if (currentSession.hasPermission("user", "read", GwtSessionPermissionScope.SELF)) {
+        if (currentSession.hasPermission("user", GwtSessionPermissionAction.read, GwtSessionPermissionScope.SELF)) {
             // Device User
             GWT_USER_SERVICE.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<ListLoadResult<GwtUser>>() {
 
@@ -186,7 +187,7 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
     }
 
     private void populateEditDialog(GwtDeviceConnection gwtDeviceConnection) {
-        if (currentSession.hasPermission("user", "read", GwtSessionPermissionScope.SELF) && gwtDeviceConnection.getUserId() != null) {
+        if (currentSession.hasPermission("user", GwtSessionPermissionAction.read, GwtSessionPermissionScope.SELF) && gwtDeviceConnection.getUserId() != null) {
             GWT_USER_SERVICE.find(currentSession.getSelectedAccountId(), gwtDeviceConnection.getUserId(), new AsyncCallback<GwtUser>() {
 
                 @Override
