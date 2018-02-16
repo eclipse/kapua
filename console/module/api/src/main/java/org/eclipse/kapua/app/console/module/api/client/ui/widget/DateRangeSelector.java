@@ -48,7 +48,6 @@ public class DateRangeSelector extends LayoutContainer {
     protected void onRender(Element parent, int index) {
 
         super.onRender(parent, index);
-
         dateRange = new SplitButton();
         dateRange.setMinWidth(120);
         dateRange.setStyleAttribute("border", "1px solid thistle");
@@ -225,7 +224,7 @@ public class DateRangeSelector extends LayoutContainer {
         dialog.setHideOnButtonClick(true);
         dialog.setButtons(Dialog.OKCANCEL);
         dialog.setHideOnButtonClick(false);
-
+        dialog.setResizable(false);
         FormData formData = new FormData("-20");
         final FormPanel form = new FormPanel();
         form.setHeaderVisible(false);
