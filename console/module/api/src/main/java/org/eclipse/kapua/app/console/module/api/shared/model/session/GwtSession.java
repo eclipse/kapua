@@ -14,7 +14,10 @@ package org.eclipse.kapua.app.console.module.api.shared.model.session;
 import org.eclipse.kapua.app.console.module.api.shared.model.KapuaBaseModel;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GwtSession extends KapuaBaseModel implements Serializable {
 
@@ -26,86 +29,45 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     private String buildNumber;
 
     // User info
-    private String userId;
     private String accountId;
     private String rootAccountId;
-    private String selectedAccountId;
-    private Set<String> permissions;
-
-    private String userName;
-    private String userDisplayName;
     private String rootAccountName;
+
+    private String selectedAccountId;
     private String selectedAccountName;
 
-    // Static loaded permission
-    private boolean hasAccountCreatePermission;
-    private boolean hasAccountReadPermission;
-    private boolean hasAccountUpdatePermission;
-    private boolean hasAccountDeletePermission;
-    private boolean hasAccountAllPermission;
+    private String userId;
+    private String userName;
+    private String userDisplayName;
 
-    private boolean hasDeviceCreatePermission;
-    private boolean hasDeviceReadPermission;
-    private boolean hasDeviceUpdatePermission;
-    private boolean hasDeviceDeletePermission;
-
-    private boolean hasDeviceEventCreatePermission;
-    private boolean hasDeviceEventReadPermission;
-    private boolean hasDeviceEventUpdatePermission;
-    private boolean hasDeviceEventDeletePermission;
-
-    private boolean hasDeviceManageReadPermission;
-    private boolean hasDeviceManageWritePermission;
-    private boolean hasDeviceManageExecutePermission;
-
-    private boolean hasDataReadPermission;
-
-    private boolean hasTagCreatePermission;
-    private boolean hasTagReadPermission;
-    private boolean hasTagUpdatePermission;
-    private boolean hasTagDeletePermission;
-
-    private boolean hasUserCreatePermission;
-    private boolean hasUserReadPermission;
-    private boolean hasUserUpdatePermission;
-    private boolean hasUserDeletePermission;
-
-    private boolean hasRoleCreatePermission;
-    private boolean hasRoleReadPermission;
-    private boolean hasRoleUpdatePermission;
-    private boolean hasRoleDeletePermission;
-
-    private boolean hasGroupCreatePermission;
-    private boolean hasGroupReadPermission;
-    private boolean hasGroupUpdatePermission;
-    private boolean hasGroupDeletePermission;
-
-    private boolean hasCredentialCreatePermission;
-    private boolean hasCredentialReadPermission;
-    private boolean hasCredentialUpdatePermission;
-    private boolean hasCredentialDeletePermission;
-
-    private boolean hasConnectionCreatePermission;
-    private boolean hasConnectionReadPermission;
-    private boolean hasConnectionUpdatePermission;
-    private boolean hasConnectionDeletePermission;
-
-    private boolean hasJobCreatePermission;
-    private boolean hasJobReadPermission;
-    private boolean hasJobUpdatePermission;
-    private boolean hasJobDeletePermission;
-
-    private boolean hasAccessInfoCreatePermission;
-    private boolean hasAccessInfoReadPermission;
-    private boolean hasAccessInfoUpdatePermission;
-    private boolean hasAccessInfoDeletePermission;
-
-    private boolean hasDomainCreatePermission;
-    private boolean hasDomainReadPermission;
-    private boolean hasDomainUpdatePermission;
-    private boolean hasDomainDeletePermission;
+    private List<GwtSessionPermission> sessionPermissions = new ArrayList<GwtSessionPermission>();
+    private Map<GwtSessionPermission, Boolean> checkedPermissionsCache = new HashMap<GwtSessionPermission, Boolean>();
 
     public GwtSession() {
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getBuildVersion() {
+        return buildVersion;
+    }
+
+    public void setBuildVersion(String buildVersion) {
+        this.buildVersion = buildVersion;
+    }
+
+    public String getBuildNumber() {
+        return buildNumber;
+    }
+
+    public void setBuildNumber(String buildNumber) {
+        this.buildNumber = buildNumber;
     }
 
     public String getUserId() {
@@ -172,460 +134,70 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
         this.selectedAccountName = selectedAccountName;
     }
 
-    public Set<String> getPermissions() {
-        return permissions;
-    }
-
-    public void setPermissions(Set<String> permissions) {
-        this.permissions = permissions;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    public String getBuildVersion() {
-        return buildVersion;
-    }
-
-    public void setBuildVersion(String buildVersion) {
-        this.buildVersion = buildVersion;
-    }
-
-    public String getBuildNumber() {
-        return buildNumber;
-    }
-
-    public void setBuildNumber(String buildNumber) {
-        this.buildNumber = buildNumber;
-    }
-
-    public boolean hasAccountCreatePermission() {
-        return hasAccountCreatePermission;
-    }
-
-    public void setAccountCreatePermission(boolean value) {
-        this.hasAccountCreatePermission = value;
-    }
-
-    public boolean hasAccountReadPermission() {
-        return hasAccountReadPermission;
-    }
-
-    public void setAccountReadPermission(boolean value) {
-        this.hasAccountReadPermission = value;
-    }
-
-    public boolean hasAccountUpdatePermission() {
-        return hasAccountUpdatePermission;
-    }
-
-    public void setAccountUpdatePermission(boolean value) {
-        this.hasAccountUpdatePermission = value;
-    }
-
-    public boolean hasAccountDeletePermission() {
-        return hasAccountDeletePermission;
-    }
-
-    public void setAccountDeletePermission(boolean value) {
-        this.hasAccountDeletePermission = value;
-    }
-
-    public boolean hasAccountAllPermission() {
-        return hasAccountAllPermission;
-    }
-
-    public void setAccountAllPermission(boolean hasAccountAll) {
-        this.hasAccountAllPermission = hasAccountAll;
-    }
-
-    public boolean hasDataReadPermission() {
-        return hasDataReadPermission;
-    }
-
-    public void setDataReadPermission(boolean value) {
-        this.hasDataReadPermission = value;
-    }
-
-    public boolean hasTagReadPermission() {
-        return hasTagReadPermission;
-    }
-
-    public void setTagReadPermission(boolean value) {
-        this.hasTagReadPermission = value;
-    }
-
-    public boolean hasTagCreatePermission() {
-        return hasTagCreatePermission;
-    }
-
-    public void setTagCreatePermission(boolean hasTagCreatePermission) {
-        this.hasTagCreatePermission = hasTagCreatePermission;
-    }
-
-    public boolean hasTagUpdatePermission() {
-        return hasTagUpdatePermission;
-    }
-
-    public void setTagUpdatePermission(boolean hasTagUpdatePermission) {
-        this.hasTagUpdatePermission = hasTagUpdatePermission;
-    }
-
-    public boolean hasTagDeletePermission() {
-        return hasTagDeletePermission;
-    }
-
-    public void setTagDeletePermission(boolean hasTagDeletePermission) {
-        this.hasTagDeletePermission = hasTagDeletePermission;
-    }
-
-    public boolean hasUserReadPermission() {
-        return hasUserReadPermission;
-    }
-
-    public void setUserReadPermission(boolean value) {
-        this.hasUserReadPermission = value;
-    }
-
-    public boolean hasUserCreatePermission() {
-        return hasUserCreatePermission;
-    }
-
-    public void setUserCreatePermission(boolean hasUserCreatePermission) {
-        this.hasUserCreatePermission = hasUserCreatePermission;
-    }
-
-    public boolean hasUserUpdatePermission() {
-        return hasUserUpdatePermission;
-    }
-
-    public void setUserUpdatePermission(boolean hasUserUpdatePermission) {
-        this.hasUserUpdatePermission = hasUserUpdatePermission;
-    }
-
-    public boolean hasUserDeletePermission() {
-        return hasUserDeletePermission;
-    }
-
-    public void setUserDeletePermission(boolean hasUserDeletePermission) {
-        this.hasUserDeletePermission = hasUserDeletePermission;
-    }
-
-    public boolean hasRoleReadPermission() {
-        return hasRoleReadPermission;
-    }
-
-    public void setRoleReadPermission(boolean value) {
-        this.hasRoleReadPermission = value;
-    }
-
-    public boolean hasRoleCreatePermission() {
-        return hasRoleCreatePermission;
-    }
-
-    public void setRoleCreatePermission(boolean hasRoleCreatePermission) {
-        this.hasRoleCreatePermission = hasRoleCreatePermission;
-    }
-
-    public boolean hasRoleUpdatePermission() {
-        return hasRoleUpdatePermission;
-    }
-
-    public void setRoleUpdatePermission(boolean hasRoleUpdatePermission) {
-        this.hasRoleUpdatePermission = hasRoleUpdatePermission;
-    }
-
-    public boolean hasRoleDeletePermission() {
-        return hasRoleDeletePermission;
-    }
-
-    public void setRoleDeletePermission(boolean hasRoleDeletePermission) {
-        this.hasRoleDeletePermission = hasRoleDeletePermission;
-    }
-
-    public boolean hasGroupReadPermission() {
-        return hasGroupReadPermission;
-    }
-
-    public void setGroupReadPermission(boolean value) {
-        this.hasGroupReadPermission = value;
-    }
-
-    public boolean hasGroupCreatePermission() {
-        return hasGroupCreatePermission;
-    }
-
-    public void setGroupCreatePermission(boolean hasGroupCreatePermission) {
-        this.hasGroupCreatePermission = hasGroupCreatePermission;
-    }
-
-    public boolean hasGroupUpdatePermission() {
-        return hasGroupUpdatePermission;
-    }
-
-    public void setGroupUpdatePermission(boolean hasGroupUpdatePermission) {
-        this.hasGroupUpdatePermission = hasGroupUpdatePermission;
-    }
-
-    public boolean hasGroupDeletePermission() {
-        return hasGroupDeletePermission;
-    }
-
-    public void setGroupDeletePermission(boolean hasGroupDeletePermission) {
-        this.hasGroupDeletePermission = hasGroupDeletePermission;
-    }
-
-    public boolean hasDeviceCreatePermission() {
-        return hasDeviceCreatePermission;
-    }
-
-    public void setDeviceCreatePermission(boolean hasDeviceCreatePermission) {
-        this.hasDeviceCreatePermission = hasDeviceCreatePermission;
-    }
-
-    public boolean hasDeviceReadPermission() {
-        return hasDeviceReadPermission;
-    }
-
-    public void setDeviceReadPermission(boolean hasDeviceReadPermission) {
-        this.hasDeviceReadPermission = hasDeviceReadPermission;
-    }
-
-    public boolean hasDeviceUpdatePermission() {
-        return hasDeviceUpdatePermission;
-    }
-
-    public void setDeviceUpdatePermission(boolean hasDeviceUpdatePermission) {
-        this.hasDeviceUpdatePermission = hasDeviceUpdatePermission;
-    }
-
-    public boolean hasDeviceDeletePermission() {
-        return hasDeviceDeletePermission;
-    }
-
-    public void setDeviceDeletePermission(boolean hasDeviceDeletePermission) {
-        this.hasDeviceDeletePermission = hasDeviceDeletePermission;
-    }
-
-    public boolean hasDeviceEventCreatePermission() {
-        return hasDeviceEventCreatePermission;
-    }
-
-    public void setDeviceEventCreatePermission(boolean hasDeviceEventCreatePermission) {
-        this.hasDeviceEventCreatePermission = hasDeviceEventCreatePermission;
-    }
-
-    public boolean hasDeviceEventReadPermission() {
-        return hasDeviceEventReadPermission;
-    }
-
-    public void setDeviceEventReadPermission(boolean hasDeviceEventReadPermission) {
-        this.hasDeviceEventReadPermission = hasDeviceEventReadPermission;
-    }
-
-    public boolean hasDeviceEventUpdatePermission() {
-        return hasDeviceEventUpdatePermission;
-    }
-
-    public void setDeviceEventUpdatePermission(boolean hasDeviceEventUpdatePermission) {
-        this.hasDeviceEventUpdatePermission = hasDeviceEventUpdatePermission;
-    }
-
-    public boolean hasDeviceEventDeletePermission() {
-        return hasDeviceEventDeletePermission;
-    }
-
-    public void setDeviceEventDeletePermission(boolean hasDeviceEventDeletePermission) {
-        this.hasDeviceEventDeletePermission = hasDeviceEventDeletePermission;
-    }
-
-    public boolean hasDeviceManageReadPermission() {
-        return hasDeviceManageReadPermission;
-    }
-
-    public void setDeviceManageReadPermission(boolean hasDeviceManageReadPermission) {
-        this.hasDeviceManageReadPermission = hasDeviceManageReadPermission;
-    }
-
-    public boolean hasDeviceManageWritePermission() {
-        return hasDeviceManageWritePermission;
-    }
-
-    public void setDeviceManageWritePermission(boolean hasDeviceManageWritePermission) {
-        this.hasDeviceManageWritePermission = hasDeviceManageWritePermission;
-    }
-
-    public boolean hasDeviceManageExecutePermission() {
-        return hasDeviceManageExecutePermission;
-    }
-
-    public void setDeviceManageExecutePermission(boolean hasDeviceManageExecutePermission) {
-        this.hasDeviceManageExecutePermission = hasDeviceManageExecutePermission;
-    }
-
-    public boolean hasCredentialCreatePermission() {
-        return hasCredentialCreatePermission;
-    }
-
-    public void setCredentialCreatePermission(boolean hasCredentialCreatePermission) {
-        this.hasCredentialCreatePermission = hasCredentialCreatePermission;
-    }
-
-    public boolean hasCredentialReadPermission() {
-        return hasCredentialReadPermission;
-    }
-
-    public void setCredentialReadPermission(boolean hasCredentialReadPermission) {
-        this.hasCredentialReadPermission = hasCredentialReadPermission;
-    }
-
-    public boolean hasCredentialUpdatePermission() {
-        return hasCredentialUpdatePermission;
-    }
-
-    public void setCredentialUpdatePermission(boolean hasCredentialUpdatePermission) {
-        this.hasCredentialUpdatePermission = hasCredentialUpdatePermission;
-    }
-
-    public boolean hasCredentialDeletePermission() {
-        return hasCredentialDeletePermission;
-    }
-
-    public void setCredentialDeletePermission(boolean hasCredentialDeletePermission) {
-        this.hasCredentialDeletePermission = hasCredentialDeletePermission;
-    }
-
-    public boolean hasConnectionCreatePermission() {
-        return hasConnectionCreatePermission;
-    }
-
-    public void setConnectionCreatePermission(boolean hasConnectionCreatePermission) {
-        this.hasConnectionCreatePermission = hasConnectionCreatePermission;
-    }
-
-    public boolean hasConnectionReadPermission() {
-        return hasConnectionReadPermission;
-    }
-
-    public void setConnectionReadPermission(boolean hasConnectionReadPermission) {
-        this.hasConnectionReadPermission = hasConnectionReadPermission;
-    }
-
-    public boolean hasConnectionUpdatePermission() {
-        return hasConnectionUpdatePermission;
-    }
-
-    public void setConnectionUpdatePermission(boolean hasConnectionUpdatePermission) {
-        this.hasConnectionUpdatePermission = hasConnectionUpdatePermission;
-    }
-
-    public boolean hasConnectionDeletePermission() {
-        return hasConnectionDeletePermission;
-    }
-
-    public void setConnectionDeletePermission(boolean hasConnectionDeletePermission) {
-        this.hasConnectionDeletePermission = hasConnectionDeletePermission;
-    }
-
-    public boolean hasJobCreatePermission() {
-        return hasJobCreatePermission;
-    }
-
-    public void setJobCreatePermission(boolean hasJobCreatePermission) {
-        this.hasJobCreatePermission = hasJobCreatePermission;
-    }
-
-    public boolean hasJobReadPermission() {
-        return hasJobReadPermission;
-    }
-
-    public void setJobReadPermission(boolean hasJobReadPermission) {
-        this.hasJobReadPermission = hasJobReadPermission;
-    }
-
-    public boolean hasJobUpdatePermission() {
-        return hasJobUpdatePermission;
-    }
-
-    public void setJobUpdatePermission(boolean hasJobUpdatePermission) {
-        this.hasJobUpdatePermission = hasJobUpdatePermission;
-    }
-
-    public boolean hasJobDeletePermission() {
-        return hasJobDeletePermission;
-    }
-
-    public void setJobDeletePermission(boolean hasJobDeletePermission) {
-        this.hasJobDeletePermission = hasJobDeletePermission;
-    }
+    public List<GwtSessionPermission> getSessionPermissions() {
+        if (sessionPermissions == null) {
+            sessionPermissions = new ArrayList<GwtSessionPermission>();
+        }
 
-    public boolean hasAccessInfoCreatePermission() {
-        return hasAccessInfoCreatePermission;
+        return sessionPermissions;
     }
 
-    public void setAccessInfoCreatePermission(boolean hasAccessInfoCreatePermission) {
-        this.hasAccessInfoCreatePermission = hasAccessInfoCreatePermission;
+    public void setSessionPermissions(List<GwtSessionPermission> sessionPermissions) {
+        this.sessionPermissions = sessionPermissions;
     }
 
-    public boolean hasAccessInfoReadPermission() {
-        return hasAccessInfoReadPermission;
+    public void addSessionPermission(GwtSessionPermission permission) {
+        getSessionPermissions().add(permission);
     }
 
-    public void setAccessInfoReadPermission(boolean hasAccessInfoReadPermission) {
-        this.hasAccessInfoReadPermission = hasAccessInfoReadPermission;
-    }
-
-    public boolean hasAccessInfoUpdatePermission() {
-        return hasAccessInfoUpdatePermission;
-    }
+    public boolean hasPermission(String domain, String action, GwtSessionPermissionScope gwtSessionPermissionScope) {
+        GwtSessionPermission permissionToCheck = new GwtSessionPermission(domain, action, gwtSessionPermissionScope);
 
-    public void setAccessInfoUpdatePermission(boolean hasAccessInfoUpdatePermission) {
-        this.hasAccessInfoUpdatePermission = hasAccessInfoUpdatePermission;
-    }
-
-    public boolean hasAccessInfoDeletePermission() {
-        return hasAccessInfoDeletePermission;
-    }
+        // Check cache
+        Boolean cachedResult = checkedPermissionsCache.get(permissionToCheck);
+        if (cachedResult != null) {
+            return cachedResult.booleanValue();
+        }
 
-    public void setAccessInfoDeletePermission(boolean hasAccessInfoDeletePermission) {
-        this.hasAccessInfoDeletePermission = hasAccessInfoDeletePermission;
-    }
+        // Check permission
+        boolean permitted = isPermitted(permissionToCheck);
 
-    public boolean hasDomainCreatePermission() {
-        return hasDomainCreatePermission;
-    }
+        // Set cached value
+        checkedPermissionsCache.put(permissionToCheck, permitted);
 
-    public void setDomainCreatePermission(boolean hasDomainCreatePermission) {
-        this.hasDomainCreatePermission = hasDomainCreatePermission;
+        // Return it
+        return permitted;
     }
 
-    public boolean hasDomainReadPermission() {
-        return hasDomainReadPermission;
-    }
+    private boolean isPermitted(GwtSessionPermission permissionToCheck) {
 
-    public void setDomainReadPermission(boolean hasDomainReadPermission) {
-        this.hasDomainReadPermission = hasDomainReadPermission;
-    }
+        for (GwtSessionPermission gsp : getSessionPermissions()) {
+            if (gsp.getDomain() == null || gsp.getDomain().equals(permissionToCheck.getDomain())) {
+                if (gsp.getAction() == null || gsp.getAction().equals(permissionToCheck.getAction())) {
 
-    public boolean hasDomainUpdatePermission() {
-        return hasDomainUpdatePermission;
-    }
+                    GwtSessionPermissionScope permissionToCheckScope = permissionToCheck.getPermissionScope();
 
-    public void setDomainUpdatePermission(boolean hasDomainUpdatePermission) {
-        this.hasDomainUpdatePermission = hasDomainUpdatePermission;
-    }
+                    boolean check = false;
+                    switch (gsp.getPermissionScope()) {
+                    case ALL:
+                        check = true;
+                        break;
+                    case CHILDREN:
+                        check = (GwtSessionPermissionScope.CHILDREN.equals(permissionToCheckScope) ||
+                                GwtSessionPermissionScope.SELF.equals(permissionToCheckScope));
+                        break;
+                    case SELF:
+                        check = GwtSessionPermissionScope.SELF.equals(permissionToCheckScope);
+                        break;
+                    }
 
-    public boolean hasDomainDeletePermission() {
-        return hasDomainDeletePermission;
-    }
+                    if (check) {
+                        return check;
+                    }
+                }
+            }
+        }
 
-    public void setDomainDeletePermission(boolean hasDomainDeletePermission) {
-        this.hasDomainDeletePermission = hasDomainDeletePermission;
+        return false;
     }
-
 }

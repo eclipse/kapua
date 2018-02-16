@@ -48,6 +48,7 @@ import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.UserAgentUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleService;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleServiceAsync;
 
@@ -153,7 +154,7 @@ public class NorthView extends LayoutContainer {
             public void handleEvent(BaseEvent be) {
                 Menu userActionMenu = new Menu();
                 MenuItem switchToAccountMenuItem = null;
-                if (currentSession.hasAccountReadPermission()) {
+                if (currentSession.hasPermission("account", "read", GwtSessionPermissionScope.SELF)) {
                     switchToAccountMenuItem = createAccountNavigationMenuItem();
                 }
 

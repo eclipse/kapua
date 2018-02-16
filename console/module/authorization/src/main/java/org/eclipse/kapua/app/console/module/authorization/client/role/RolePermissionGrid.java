@@ -28,6 +28,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityVie
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRolePermission;
@@ -128,7 +129,7 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
     @Override
     protected void selectionChangedEvent(GwtRolePermission selectedItem) {
         super.selectionChangedEvent(selectedItem);
-        rolePermissionToolBar.getAddEntityButton().setEnabled(currentSession.hasDomainReadPermission());
+        rolePermissionToolBar.getAddEntityButton().setEnabled(currentSession.hasPermission("domain", "read", GwtSessionPermissionScope.SELF));
         if (selectedItem == null) {
             rolePermissionToolBar.getDeleteEntityButton().disable();
         } else {

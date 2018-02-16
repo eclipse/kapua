@@ -15,6 +15,7 @@ import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 import org.eclipse.kapua.app.console.module.user.client.dialog.UserAddDialog;
 import org.eclipse.kapua.app.console.module.user.client.dialog.UserDeleteDialog;
 import org.eclipse.kapua.app.console.module.user.client.dialog.UserEditDialog;
@@ -42,14 +43,14 @@ public class AccountChildUserToolbar extends EntityCRUDToolbar<GwtUser> {
                 getEditEntityButton().disable();
                 getDeleteEntityButton().disable();
             } else {
-                if (currentSession.hasUserCreatePermission()) {
+                if (currentSession.hasPermission("user", "write", GwtSessionPermissionScope.SELF)) {
                     getAddEntityButton().enable();
                 }
                 if (gridSelectionModel.getSelectedItem() != null) {
-                    if (currentSession.hasUserUpdatePermission()) {
+                    if (currentSession.hasPermission("user", "write", GwtSessionPermissionScope.SELF)) {
                         getEditEntityButton().enable();
                     }
-                    if (currentSession.hasUserDeletePermission()) {
+                    if (currentSession.hasPermission("user", "delete", GwtSessionPermissionScope.SELF)) {
                         getDeleteEntityButton().enable();
                     }
                 } else {
@@ -89,7 +90,7 @@ public class AccountChildUserToolbar extends EntityCRUDToolbar<GwtUser> {
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
         setBorders(false);
-        if (selectedAccountSession.getSelectedAccountId() != null && currentSession != null && currentSession.hasUserCreatePermission()) {
+        if (selectedAccountSession.getSelectedAccountId() != null && currentSession != null && currentSession.hasPermission("user", "write", GwtSessionPermissionScope.SELF)) {
             getAddEntityButton().enable();
         } else {
             getAddEntityButton().disable();

@@ -24,6 +24,7 @@ import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.TabItem;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 
@@ -35,7 +36,6 @@ public class DeviceTabAssets extends KapuaTabItem<GwtDevice> {
     private TabItem tabValues;
 
     private DeviceAssetsValues assetsValues;
-    // private DeviceConfigSnapshots assetsConfiguration;
 
     public DeviceTabAssets(GwtSession currentSession) {
         super(currentSession, MSGS.assets(), new KapuaIcon(IconSet.RETWEET));
@@ -46,7 +46,9 @@ public class DeviceTabAssets extends KapuaTabItem<GwtDevice> {
     public void setEntity(GwtDevice gwtDevice) {
         super.setEntity(gwtDevice);
 
-        setEnabled(gwtDevice != null && currentSession.hasDeviceManageReadPermission() && gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_ASSET_V1));
+        setEnabled(gwtDevice != null &&
+                currentSession.hasPermission("device_management", "read", GwtSessionPermissionScope.SELF) &&
+                gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_ASSET_V1));
 
         assetsValues.setDevice(gwtDevice);
         doRefresh();

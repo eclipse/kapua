@@ -34,6 +34,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog.InfoDialogType;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 import org.eclipse.kapua.app.console.module.device.client.device.DeviceView;
 import org.eclipse.kapua.app.console.module.device.client.device.packages.button.PackageInstallButton;
 import org.eclipse.kapua.app.console.module.device.client.device.packages.button.PackageUninstallButton;
@@ -69,7 +70,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
         super.setEntity(gwtDevice);
         setDirty();
 
-        setEnabled(gwtDevice != null && currentSession.hasDeviceManageReadPermission() &&
+        setEnabled(gwtDevice != null && currentSession.hasPermission("device_management", "read", GwtSessionPermissionScope.SELF) &&
                 (gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_DEPLOY_V1) ||
                         (gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_DEPLOY_V2))));
 

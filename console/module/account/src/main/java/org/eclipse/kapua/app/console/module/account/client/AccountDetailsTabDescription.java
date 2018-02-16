@@ -33,6 +33,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.tab.EntityDescriptionT
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 
 public class AccountDetailsTabDescription extends EntityDescriptionTabItem<GwtAccount> {
 
@@ -59,7 +60,7 @@ public class AccountDetailsTabDescription extends EntityDescriptionTabItem<GwtAc
 
         ToolBar accountsToolBar = new ToolBar();
         accountsToolBar.setHeight("27px");
-        if (currentSession.hasAccountUpdatePermission()) {
+        if (currentSession.hasPermission("account", "write", GwtSessionPermissionScope.SELF)) {
             //
             // Edit Account Button
             Button editButton = new EditButton(new SelectionListener<ButtonEvent>() {

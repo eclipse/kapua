@@ -15,6 +15,7 @@ import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.EntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractEntityViewDescriptor;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
 
 public class TagViewDescriptor extends AbstractEntityViewDescriptor<GwtTag> {
@@ -46,6 +47,6 @@ public class TagViewDescriptor extends AbstractEntityViewDescriptor<GwtTag> {
 
     @Override
     public Boolean isEnabled(GwtSession currentSession) {
-        return currentSession.hasTagReadPermission();
+        return currentSession.hasPermission("tag", "read", GwtSessionPermissionScope.SELF);
     }
 }

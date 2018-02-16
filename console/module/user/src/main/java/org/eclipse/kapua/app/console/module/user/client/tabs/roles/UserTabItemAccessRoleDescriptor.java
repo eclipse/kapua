@@ -13,6 +13,7 @@ package org.eclipse.kapua.app.console.module.user.client.tabs.roles;
 
 import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractEntityTabDescriptor;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 import org.eclipse.kapua.app.console.module.user.client.UserView;
 import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
 
@@ -35,6 +36,6 @@ public class UserTabItemAccessRoleDescriptor extends AbstractEntityTabDescriptor
 
     @Override
     public Boolean isEnabled(GwtSession currentSession) {
-        return currentSession.hasAccessInfoReadPermission();
+        return currentSession.hasPermission("access_info", "read", GwtSessionPermissionScope.SELF);
     }
 }

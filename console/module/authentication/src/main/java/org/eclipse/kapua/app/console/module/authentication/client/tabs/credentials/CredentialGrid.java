@@ -32,6 +32,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityVie
 import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 import org.eclipse.kapua.app.console.module.authentication.client.messages.ConsoleCredentialMessages;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredential;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialQuery;
@@ -215,9 +216,10 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
 
     private void updateToolbarButtons() {
         getToolbar().getAddEntityButton().setEnabled(selectedUserId != null);
-        getToolbar().getEditEntityButton().setEnabled(getSelectionModel().getSelectedItem() != null && currentSession.hasCredentialUpdatePermission());
-        getToolbar().getDeleteEntityButton().setEnabled(getSelectionModel().getSelectedItem() != null && currentSession.hasCredentialDeletePermission());
-        getToolbar().getUnlockButton()
-                .setEnabled(getSelectionModel().getSelectedItem() != null && getSelectionModel().getSelectedItem().getLockoutReset() != null && currentSession.hasCredentialUpdatePermission());
+        getToolbar().getEditEntityButton().setEnabled(getSelectionModel().getSelectedItem() != null && currentSession.hasPermission("credential", "write", GwtSessionPermissionScope.SELF));
+        getToolbar().getDeleteEntityButton().setEnabled(getSelectionModel().getSelectedItem() != null && currentSession.hasPermission("credential", "delete", GwtSessionPermissionScope.SELF));
+        getToolbar().getUnlockButton().setEnabled(getSelectionModel().getSelectedItem() != null &&
+                getSelectionModel().getSelectedItem().getLockoutReset() != null &&
+                currentSession.hasPermission("credential", "write", GwtSessionPermissionScope.SELF));
     }
 }

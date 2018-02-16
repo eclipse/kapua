@@ -16,6 +16,7 @@ import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.EntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractEntityViewDescriptor;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 
 public class AccountViewDescriptor extends AbstractEntityViewDescriptor<GwtAccount> {
 
@@ -46,6 +47,6 @@ public class AccountViewDescriptor extends AbstractEntityViewDescriptor<GwtAccou
 
     @Override
     public Boolean isEnabled(GwtSession currentSession) {
-        return currentSession.hasAccountReadPermission();
+        return currentSession.hasPermission("account", "read", GwtSessionPermissionScope.SELF);
     }
 }

@@ -36,6 +36,7 @@ import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator.FieldType;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupService;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupServiceAsync;
@@ -171,7 +172,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
 
         fieldSet.add(statusCombo, formData);
 
-        if (currentSession.hasGroupReadPermission()) {
+        if (currentSession.hasPermission("group", "read", GwtSessionPermissionScope.SELF)) {
             groupCombo = new ComboBox<GwtGroup>();
             groupCombo.setStore(new ListStore<GwtGroup>());
             groupCombo.setFieldLabel("* " + DEVICE_MSGS.deviceFormGroup());
@@ -266,7 +267,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         gwtDeviceCreator.setScopeId(currentSession.getSelectedAccountId());
 
         gwtDeviceCreator.setClientId(clientIdField.getValue());
-        if (currentSession.hasGroupReadPermission()) {
+        if (currentSession.hasPermission("group", "read", GwtSessionPermissionScope.SELF)) {
             gwtDeviceCreator.setGroupId(groupCombo.getValue().getId());
         }
         gwtDeviceCreator.setDisplayName(displayNameField.getValue());
