@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,7 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.test;
 
+import static org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers.resolveJdbcUrl;
 import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER;
+import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_PASSWORD;
+import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_USERNAME;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -25,6 +28,7 @@ import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.commons.jpa.SimpleSqlScriptExecutor;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
@@ -52,9 +56,15 @@ public class KapuaTest extends Assert {
     public void setUp() throws SQLException {
         logger.debug("Setting up test...");
         try {
-            connection = DriverManager.getConnection("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua");
+            System.setProperty(DB_JDBC_CONNECTION_URL_RESOLVER.key(), "H2");
+            SystemSetting config = SystemSetting.getInstance();
+            String dbUsername = config.getString(DB_USERNAME);
+            String dbPassword = config.getString(DB_PASSWORD);
+            String jdbcUrl = resolveJdbcUrl();
 
-            new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
+            connection = DriverManager.getConnection(jdbcUrl, dbUsername, dbPassword);
+
+            new KapuaLiquibaseClient(jdbcUrl, dbUsername, dbPassword).update();
 
             //
             // Login
