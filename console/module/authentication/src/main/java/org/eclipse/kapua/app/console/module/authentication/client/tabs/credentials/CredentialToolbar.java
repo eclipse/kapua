@@ -23,10 +23,9 @@ import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionAction;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 import org.eclipse.kapua.app.console.module.authentication.client.messages.ConsoleCredentialMessages;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredential;
+import org.eclipse.kapua.app.console.module.authentication.shared.model.permission.CredentialSessionPermission;
 
 public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
 
@@ -56,7 +55,7 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
         super.onRender(target, index);
         add(new SeparatorToolItem());
 
-        if (currentSession.hasPermission("credential", GwtSessionPermissionAction.write, GwtSessionPermissionScope.SELF)) {
+        if (currentSession.hasPermission(CredentialSessionPermission.write())) {
             add(unlockButton);
         }
 
