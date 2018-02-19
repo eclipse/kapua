@@ -19,7 +19,6 @@ import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
@@ -29,6 +28,7 @@ import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.api.client.util.Constants;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
@@ -60,9 +60,9 @@ public class DeviceAddDialog extends EntityAddEditDialog {
 
     // General info fields
     protected LabelField clientIdLabel;
-    protected TextField<String> clientIdField;
+    protected KapuaTextField<String> clientIdField;
     protected ComboBox<GwtGroup> groupCombo;
-    protected TextField<String> displayNameField;
+    protected KapuaTextField<String> displayNameField;
     protected SimpleComboBox<GwtDeviceStatus> statusCombo;
 
     // Security Options fields
@@ -71,11 +71,11 @@ public class DeviceAddDialog extends EntityAddEditDialog {
     // protected CheckBox allowCredentialsChangeCheckbox;
 
     // Custom attributes
-    protected TextField<String> customAttribute1Field;
-    protected TextField<String> customAttribute2Field;
-    protected TextField<String> customAttribute3Field;
-    protected TextField<String> customAttribute4Field;
-    protected TextField<String> customAttribute5Field;
+    protected KapuaTextField<String> customAttribute1Field;
+    protected KapuaTextField<String> customAttribute2Field;
+    protected KapuaTextField<String> customAttribute3Field;
+    protected KapuaTextField<String> customAttribute4Field;
+    protected KapuaTextField<String> customAttribute5Field;
 
     protected NumberField optlock;
 
@@ -139,21 +139,23 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         clientIdLabel.setWidth(225);
         fieldSet.add(clientIdLabel, formData);
 
-        clientIdField = new TextField<String>();
+        clientIdField = new KapuaTextField<String>();
         clientIdField.setAllowBlank(false);
         clientIdField.setName("clientID");
         clientIdField.setFieldLabel("* " + DEVICE_MSGS.deviceFormClientID());
         clientIdField.setValidator(new TextFieldValidator(clientIdField, FieldType.DEVICE_CLIENT_ID));
         clientIdField.setWidth(225);
+        clientIdField.setMaxLength(255);
 
         fieldSet.add(clientIdField, formData);
 
         // Display name
-        displayNameField = new TextField<String>();
+        displayNameField = new KapuaTextField<String>();
         displayNameField.setAllowBlank(true);
         displayNameField.setName("displayName");
         displayNameField.setFieldLabel(DEVICE_MSGS.deviceFormDisplayName());
         displayNameField.setWidth(225);
+        displayNameField.setMaxLength(255);
         fieldSet.add(displayNameField, formData);
 
         // Device Status
@@ -206,38 +208,43 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         fieldSetCustomAttributes.setHeading(DEVICE_MSGS.deviceFormFieldsetCustomAttributes());
 
         // Custom Attribute #1
-        customAttribute1Field = new TextField<String>();
+        customAttribute1Field = new KapuaTextField<String>();
         customAttribute1Field.setName("customAttribute1");
         customAttribute1Field.setFieldLabel(DEVICE_MSGS.deviceFormCustomAttribute1());
         customAttribute1Field.setWidth(225);
+        customAttribute1Field.setMaxLength(255);
         fieldSetCustomAttributes.add(customAttribute1Field, formData);
 
         // Custom Attribute #2
-        customAttribute2Field = new TextField<String>();
+        customAttribute2Field = new KapuaTextField<String>();
         customAttribute2Field.setName("customAttribute2");
         customAttribute2Field.setFieldLabel(DEVICE_MSGS.deviceFormCustomAttribute2());
         customAttribute2Field.setWidth(225);
+        customAttribute2Field.setMaxLength(255);
         fieldSetCustomAttributes.add(customAttribute2Field, formData);
 
         // Custom Attribute #3
-        customAttribute3Field = new TextField<String>();
+        customAttribute3Field = new KapuaTextField<String>();
         customAttribute3Field.setName("customAttribute3");
         customAttribute3Field.setFieldLabel(DEVICE_MSGS.deviceFormCustomAttribute3());
         customAttribute3Field.setWidth(225);
+        customAttribute3Field.setMaxLength(255);
         fieldSetCustomAttributes.add(customAttribute3Field, formData);
 
         // Custom Attribute #4
-        customAttribute4Field = new TextField<String>();
+        customAttribute4Field = new KapuaTextField<String>();
         customAttribute4Field.setName("customAttribute4");
         customAttribute4Field.setFieldLabel(DEVICE_MSGS.deviceFormCustomAttribute4());
         customAttribute4Field.setWidth(225);
+        customAttribute4Field.setMaxLength(255);
         fieldSetCustomAttributes.add(customAttribute4Field, formData);
 
         // Custom Attribute #5
-        customAttribute5Field = new TextField<String>();
+        customAttribute5Field = new KapuaTextField<String>();
         customAttribute5Field.setName("customAttribute5");
         customAttribute5Field.setFieldLabel(DEVICE_MSGS.deviceFormCustomAttribute5());
         customAttribute5Field.setWidth(225);
+        customAttribute5Field.setMaxLength(255);
         fieldSetCustomAttributes.add(customAttribute5Field, formData);
 
         // Optlock
