@@ -12,12 +12,11 @@
 package org.eclipse.kapua.app.console.module.account.client;
 
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
+import org.eclipse.kapua.app.console.module.account.shared.model.permission.AccountSessionPermission;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.EntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractEntityViewDescriptor;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionAction;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 
 public class AccountViewDescriptor extends AbstractEntityViewDescriptor<GwtAccount> {
 
@@ -48,6 +47,6 @@ public class AccountViewDescriptor extends AbstractEntityViewDescriptor<GwtAccou
 
     @Override
     public Boolean isEnabled(GwtSession currentSession) {
-        return currentSession.hasPermission("account", GwtSessionPermissionAction.read, GwtSessionPermissionScope.SELF);
+        return currentSession.hasPermission(AccountSessionPermission.read());
     }
 }

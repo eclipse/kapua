@@ -24,6 +24,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.account.client.toolbar.AccountEditDialog;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
+import org.eclipse.kapua.app.console.module.account.shared.model.permission.AccountSessionPermission;
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
@@ -33,8 +34,6 @@ import org.eclipse.kapua.app.console.module.api.client.ui.tab.EntityDescriptionT
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionAction;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 
 public class AccountDetailsTabDescription extends EntityDescriptionTabItem<GwtAccount> {
 
@@ -61,7 +60,7 @@ public class AccountDetailsTabDescription extends EntityDescriptionTabItem<GwtAc
 
         ToolBar accountsToolBar = new ToolBar();
         accountsToolBar.setHeight("27px");
-        if (currentSession.hasPermission("account", GwtSessionPermissionAction.write, GwtSessionPermissionScope.SELF)) {
+        if (currentSession.hasPermission(AccountSessionPermission.write())) {
             //
             // Edit Account Button
             Button editButton = new EditButton(new SelectionListener<ButtonEvent>() {

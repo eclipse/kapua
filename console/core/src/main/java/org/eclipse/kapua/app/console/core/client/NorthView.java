@@ -37,6 +37,7 @@ import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationService
 import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationServiceAsync;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountStringListItem;
+import org.eclipse.kapua.app.console.module.account.shared.model.permission.AccountSessionPermission;
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
@@ -48,8 +49,6 @@ import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.UserAgentUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionAction;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleService;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleServiceAsync;
 
@@ -155,7 +154,7 @@ public class NorthView extends LayoutContainer {
             public void handleEvent(BaseEvent be) {
                 Menu userActionMenu = new Menu();
                 MenuItem switchToAccountMenuItem = null;
-                if (currentSession.hasPermission("account", GwtSessionPermissionAction.read, GwtSessionPermissionScope.SELF)) {
+                if (currentSession.hasPermission(AccountSessionPermission.read())) {
                     switchToAccountMenuItem = createAccountNavigationMenuItem();
                 }
 
