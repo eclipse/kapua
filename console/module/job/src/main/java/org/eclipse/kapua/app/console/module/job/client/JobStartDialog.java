@@ -35,10 +35,12 @@ public class JobStartDialog extends SimpleDialog {
     }
 
     @Override
-    public void createBody() { }
+    public void createBody() {
+    }
 
     @Override
-    protected void addListeners() { }
+    protected void addListeners() {
+    }
 
     @Override
     public void submit() {

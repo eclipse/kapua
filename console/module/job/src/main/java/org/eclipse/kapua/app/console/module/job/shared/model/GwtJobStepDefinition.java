@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.job.shared.model;
 
-
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
 
 import java.util.List;

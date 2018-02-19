@@ -17,11 +17,11 @@ import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 public class GwtJobStepQuery extends GwtQuery {
 
     public enum GwtSortOrder implements IsSerializable {
-        ASCENDING, DESCENDING;
+        ASCENDING, DESCENDING
     }
 
     public enum GwtSortAttribute implements IsSerializable {
-        STEP_INDEX;
+        STEP_INDEX
     }
 
     private String jobId;

@@ -14,7 +14,6 @@ package org.eclipse.kapua.app.console.module.job.server;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
@@ -163,9 +162,8 @@ public class GwtJobTargetServiceImpl extends KapuaRemoteServiceServlet implement
 
     /**
      * For each item query clientId by its foreign key and insert it into existing list.
-     * 
-     * @param gwtJobTargetList
-     *            existing list of targets that is updated
+     *
+     * @param gwtJobTargetList existing list of targets that is updated
      * @throws KapuaException
      */
     private void insertClientId(List<GwtJobTarget> gwtJobTargetList) throws KapuaException {

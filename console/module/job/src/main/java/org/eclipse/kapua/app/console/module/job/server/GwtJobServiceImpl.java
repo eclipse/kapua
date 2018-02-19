@@ -14,7 +14,6 @@ package org.eclipse.kapua.app.console.module.job.server;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
-
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
@@ -22,7 +21,6 @@ import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
-
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJob;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobCreator;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobQuery;

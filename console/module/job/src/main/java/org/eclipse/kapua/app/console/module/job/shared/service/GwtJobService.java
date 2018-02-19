@@ -43,9 +43,8 @@ public interface GwtJobService extends RemoteService {
      * @param jobId
      * @return
      * @throws GwtKapuaException
-     *
      */
-     GwtJob find(String accountId, String jobId)
+    GwtJob find(String accountId, String jobId)
             throws GwtKapuaException;
 
     /**
@@ -55,7 +54,7 @@ public interface GwtJobService extends RemoteService {
      * @return
      * @throws GwtKapuaException
      */
-     GwtJob update(GwtXSRFToken xsrfToken, GwtJob gwtJob)
+    GwtJob update(GwtXSRFToken xsrfToken, GwtJob gwtJob)
             throws GwtKapuaException;
 
     /**
@@ -64,6 +63,6 @@ public interface GwtJobService extends RemoteService {
      * @param gwtJobId
      * @throws GwtKapuaException
      */
-     void delete(GwtXSRFToken xsfrToken, String accountId, String gwtJobId)
+    void delete(GwtXSRFToken xsfrToken, String accountId, String gwtJobId)
             throws GwtKapuaException;
 }

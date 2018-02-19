@@ -44,7 +44,7 @@ public interface GwtJobTargetService extends RemoteService {
      * @return
      * @throws GwtKapuaException
      */
-     List<GwtJobTarget> create(GwtXSRFToken xsrfToken, String scopeId, String jobId, List<GwtJobTargetCreator> gwtJobTargetCreatorList)
+    List<GwtJobTarget> create(GwtXSRFToken xsrfToken, String scopeId, String jobId, List<GwtJobTargetCreator> gwtJobTargetCreatorList)
             throws GwtKapuaException;
 
     /**
