@@ -57,11 +57,10 @@ import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingTool
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionAction;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceEvent;
+import org.eclipse.kapua.app.console.module.device.shared.model.permission.DeviceEventSessionPermission;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceServiceAsync;
 
@@ -103,7 +102,7 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
     public void setEntity(GwtDevice gwtDevice) {
         super.setEntity(gwtDevice);
 
-        setEnabled(gwtDevice != null && currentSession.hasPermission("device_event", GwtSessionPermissionAction.read, GwtSessionPermissionScope.SELF));
+        setEnabled(gwtDevice != null && currentSession.hasPermission(DeviceEventSessionPermission.read()));
     }
 
     @Override

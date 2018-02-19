@@ -34,14 +34,13 @@ import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog.InfoDialogType;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionAction;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 import org.eclipse.kapua.app.console.module.device.client.device.DeviceView;
 import org.eclipse.kapua.app.console.module.device.client.device.packages.button.PackageInstallButton;
 import org.eclipse.kapua.app.console.module.device.client.device.packages.button.PackageUninstallButton;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeploymentPackage;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
+import org.eclipse.kapua.app.console.module.device.shared.model.permission.DeviceManagementSessionPermission;
 
 public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
@@ -71,9 +70,9 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
         super.setEntity(gwtDevice);
         setDirty();
 
-        setEnabled(gwtDevice != null && currentSession.hasPermission("device_management", GwtSessionPermissionAction.read, GwtSessionPermissionScope.SELF) &&
-                (gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_DEPLOY_V1) ||
-                        (gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_DEPLOY_V2))));
+        setEnabled(gwtDevice != null &&
+                currentSession.hasPermission(DeviceManagementSessionPermission.read()) &&
+                (gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_DEPLOY_V1) || (gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_DEPLOY_V2))));
 
         if (initialized) {
             tabsPanel.setSelection(installedPackageTab);

@@ -13,10 +13,9 @@ package org.eclipse.kapua.app.console.module.device.client.device.history;
 
 import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractEntityTabDescriptor;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionAction;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 import org.eclipse.kapua.app.console.module.device.client.device.DeviceView;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
+import org.eclipse.kapua.app.console.module.device.shared.model.permission.DeviceEventSessionPermission;
 
 public class DeviceTabHistoryDescriptor extends AbstractEntityTabDescriptor<GwtDevice, DeviceTabHistory, DeviceView> {
 
@@ -37,6 +36,6 @@ public class DeviceTabHistoryDescriptor extends AbstractEntityTabDescriptor<GwtD
 
     @Override
     public Boolean isEnabled(GwtSession currentSession) {
-        return currentSession.hasPermission("device_event", GwtSessionPermissionAction.read, GwtSessionPermissionScope.SELF);
+        return currentSession.hasPermission(DeviceEventSessionPermission.read());
     }
 }
