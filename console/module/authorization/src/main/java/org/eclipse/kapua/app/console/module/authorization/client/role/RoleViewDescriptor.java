@@ -15,9 +15,8 @@ import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.EntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractEntityViewDescriptor;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionAction;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.RoleSessionPermission;
 
 public class RoleViewDescriptor extends AbstractEntityViewDescriptor<GwtRole> {
 
@@ -48,6 +47,6 @@ public class RoleViewDescriptor extends AbstractEntityViewDescriptor<GwtRole> {
 
     @Override
     public Boolean isEnabled(GwtSession currentSession) {
-        return currentSession.hasPermission("role", GwtSessionPermissionAction.read, GwtSessionPermissionScope.SELF);
+        return currentSession.hasPermission(RoleSessionPermission.read());
     }
 }

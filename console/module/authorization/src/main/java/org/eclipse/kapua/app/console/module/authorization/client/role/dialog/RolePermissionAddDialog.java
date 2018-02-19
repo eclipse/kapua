@@ -25,8 +25,6 @@ import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAd
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionAction;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsolePermissionMessages;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtDomain;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroup;
@@ -35,6 +33,7 @@ import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtPermis
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRolePermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRolePermissionCreator;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.GroupSessionPermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtDomainService;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtDomainServiceAsync;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupService;
@@ -174,7 +173,7 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
         groupsCombo.setTriggerAction(TriggerAction.ALL);
         groupsCombo.setEmptyText(MSGS.permissionAddDialogLoading());
         groupsCombo.disable();
-        if (currentSession.hasPermission("group", GwtSessionPermissionAction.read, GwtSessionPermissionScope.SELF)) {
+        if (currentSession.hasPermission(GroupSessionPermission.read())) {
             GWT_GROUP_SERVICE.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<List<GwtGroup>>() {
 
                 @Override

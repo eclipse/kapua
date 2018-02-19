@@ -15,12 +15,11 @@ import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionAction;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 import org.eclipse.kapua.app.console.module.authorization.client.role.dialog.RolePermissionAddDialog;
 import org.eclipse.kapua.app.console.module.authorization.client.role.dialog.RolePermissionDeleteDialog;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRolePermission;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.DomainSessionPermission;
 
 public class RolePermissionToolbar extends EntityCRUDToolbar<GwtRolePermission> {
 
@@ -55,7 +54,7 @@ public class RolePermissionToolbar extends EntityCRUDToolbar<GwtRolePermission> 
 
     private void checkAddButton() {
         if (getAddEntityButton() != null) {
-            getAddEntityButton().setEnabled(selectedRole != null && currentSession.hasPermission("domain", GwtSessionPermissionAction.read, GwtSessionPermissionScope.SELF));
+            getAddEntityButton().setEnabled(selectedRole != null && currentSession.hasPermission(DomainSessionPermission.read()));
         }
     }
 

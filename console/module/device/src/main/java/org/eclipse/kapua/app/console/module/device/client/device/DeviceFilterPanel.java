@@ -30,6 +30,7 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionAction;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroup;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.GroupSessionPermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupService;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupServiceAsync;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
@@ -255,7 +256,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
 
         //
         // Groups
-        if (currentSession.hasPermission("group", GwtSessionPermissionAction.read, GwtSessionPermissionScope.SELF)) {
+        if (currentSession.hasPermission(GroupSessionPermission.read())) {
             Label groupLabel = new Label(DEVICE_MSGS.deviceFilteringPanelGroup());
             groupLabel.setWidth(WIDTH);
             groupLabel.setStyleAttribute("margin", "5px");
@@ -368,7 +369,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         customAttribute1Field.setValue("");
         customAttribute2Field.setValue("");
 
-        if (currentSession.hasPermission("group", GwtSessionPermissionAction.read, GwtSessionPermissionScope.SELF)) {
+        if (currentSession.hasPermission(GroupSessionPermission.read())) {
             groupsCombo.setValue(allGroup);
         }
         if (currentSession.hasPermission("tag", GwtSessionPermissionAction.read, GwtSessionPermissionScope.SELF)) {

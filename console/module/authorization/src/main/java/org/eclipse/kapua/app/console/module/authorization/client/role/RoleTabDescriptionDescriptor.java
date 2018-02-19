@@ -13,9 +13,8 @@ package org.eclipse.kapua.app.console.module.authorization.client.role;
 
 import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractEntityTabDescriptor;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionAction;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.RoleSessionPermission;
 
 public class RoleTabDescriptionDescriptor extends AbstractEntityTabDescriptor<GwtRole, RoleTabDescription, RoleView> {
 
@@ -36,6 +35,6 @@ public class RoleTabDescriptionDescriptor extends AbstractEntityTabDescriptor<Gw
 
     @Override
     public Boolean isEnabled(GwtSession currentSession) {
-        return currentSession.hasPermission("role", GwtSessionPermissionAction.read, GwtSessionPermissionScope.SELF);
+        return currentSession.hasPermission(RoleSessionPermission.read());
     }
 }
