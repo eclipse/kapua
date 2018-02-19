@@ -28,9 +28,9 @@ import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtTrigger;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtTriggerCreator;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtTriggerProperty;
+import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.GwtTrigger;
+import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.GwtTriggerCreator;
+import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.GwtTriggerProperty;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtTriggerService;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtTriggerServiceAsync;
 

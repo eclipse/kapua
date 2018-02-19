@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.module.job.shared.model.job;
+package org.eclipse.kapua.app.console.module.job.shared.model;
 
 import org.eclipse.kapua.app.console.module.api.shared.model.KapuaBaseModel;
 

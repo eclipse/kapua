@@ -20,10 +20,10 @@ import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobStep;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobStepCreator;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobStepProperty;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobStepQuery;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStep;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStepCreator;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStepProperty;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStepQuery;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobStepService;
 import org.eclipse.kapua.app.console.module.job.shared.util.GwtKapuaJobModelConverter;
 import org.eclipse.kapua.app.console.module.job.shared.util.KapuaGwtJobModelConverter;

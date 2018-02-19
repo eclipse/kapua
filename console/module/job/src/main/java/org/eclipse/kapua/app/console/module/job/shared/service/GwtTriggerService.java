@@ -17,9 +17,9 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtTrigger;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtTriggerCreator;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtTriggerProperty;
+import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.GwtTrigger;
+import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.GwtTriggerCreator;
+import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.GwtTriggerProperty;
 
 @RemoteServiceRelativePath("trigger")
 public interface GwtTriggerService extends RemoteService {
@@ -31,12 +31,11 @@ public interface GwtTriggerService extends RemoteService {
      * @param gwtJobId
      * @return
      * @throws GwtKapuaException
-     *
      */
-     PagingLoadResult<GwtTrigger> findByJobId(PagingLoadConfig loadConfig, String gwtScopeId, String gwtJobId)
+    PagingLoadResult<GwtTrigger> findByJobId(PagingLoadConfig loadConfig, String gwtScopeId, String gwtJobId)
             throws GwtKapuaException;
 
-     GwtTrigger create(GwtXSRFToken xsfrToken, GwtTriggerCreator gwtTriggerCreator)
+    GwtTrigger create(GwtXSRFToken xsfrToken, GwtTriggerCreator gwtTriggerCreator)
             throws GwtKapuaException;
 
     /**

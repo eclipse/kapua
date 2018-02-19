@@ -17,10 +17,10 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobStep;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobStepCreator;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobStepProperty;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobStepQuery;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStep;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStepCreator;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStepProperty;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStepQuery;
 
 @RemoteServiceRelativePath("jobStep")
 public interface GwtJobStepService extends RemoteService {

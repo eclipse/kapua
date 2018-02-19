@@ -9,29 +9,29 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.module.job.shared.model.job;
+package org.eclipse.kapua.app.console.module.job.shared.model;
 
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityCreator;
 
-public class GwtJobCreator extends GwtEntityCreator {
+public class GwtJobTargetCreator extends GwtEntityCreator {
 
-    private String name;
-    private String description;
+    private String jobId;
+    private String jobTargetId;
 
-    public String getName() {
-        return name;
+    public String getJobId() {
+        return jobId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setJobId(String jobId) {
+        this.jobId = jobId;
     }
 
-    public String getDescription() {
-        return description;
+    public String getJobTargetId() {
+        return jobTargetId;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setJobTargetId(String jobTargetId) {
+        this.jobTargetId = jobTargetId;
     }
 
 }

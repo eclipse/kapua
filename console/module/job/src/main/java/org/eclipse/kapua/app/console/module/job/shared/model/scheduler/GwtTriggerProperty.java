@@ -9,13 +9,14 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.module.job.shared.model.job;
+package org.eclipse.kapua.app.console.module.job.shared.model.scheduler;
 
 import org.eclipse.kapua.app.console.module.api.shared.model.KapuaBaseModel;
 
 public class GwtTriggerProperty extends KapuaBaseModel {
 
-    public GwtTriggerProperty() { }
+    public GwtTriggerProperty() {
+    }
 
     public GwtTriggerProperty(String name, String type, String value) {
         setPropertyName(name);

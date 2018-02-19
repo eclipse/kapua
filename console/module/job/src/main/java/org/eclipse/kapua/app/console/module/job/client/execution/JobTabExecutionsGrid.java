@@ -30,8 +30,8 @@ import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityVie
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtExecution;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtExecutionQuery;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtExecution;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtExecutionQuery;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtExecutionService;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtExecutionServiceAsync;
 

@@ -22,11 +22,10 @@ import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityVie
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionAction;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJob;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobQuery;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJob;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobQuery;
+import org.eclipse.kapua.app.console.module.job.shared.model.permission.JobSessionPermission;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobService;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobServiceAsync;
 
@@ -65,10 +64,10 @@ public class JobGrid extends EntityGrid<GwtJob> {
     protected void selectionChangedEvent(GwtJob selectedItem) {
         super.selectionChangedEvent(selectedItem);
         if (selectedItem != null) {
-            if (currentSession.hasPermission("job", GwtSessionPermissionAction.write, GwtSessionPermissionScope.SELF)) {
+            if (currentSession.hasPermission(JobSessionPermission.write())) {
                 getToolbar().getEditEntityButton().setEnabled(true);
             }
-            if (currentSession.hasPermission("job", GwtSessionPermissionAction.delete, GwtSessionPermissionScope.SELF)) {
+            if (currentSession.hasPermission(JobSessionPermission.delete())) {
                 getToolbar().getDeleteEntityButton().setEnabled(true);
             }
             ((JobGridToolbar) getToolbar()).getStartJobButton().setEnabled(true);

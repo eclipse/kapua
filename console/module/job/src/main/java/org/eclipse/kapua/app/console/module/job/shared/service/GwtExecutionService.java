@@ -16,7 +16,7 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtExecution;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtExecution;
 
 @RemoteServiceRelativePath("execution")
 public interface GwtExecutionService extends RemoteService {

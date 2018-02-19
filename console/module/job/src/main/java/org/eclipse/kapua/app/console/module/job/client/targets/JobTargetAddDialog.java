@@ -27,8 +27,8 @@ import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQuery;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceServiceAsync;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobTarget;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobTargetCreator;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobTarget;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobTargetCreator;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobTargetService;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobTargetServiceAsync;
 
