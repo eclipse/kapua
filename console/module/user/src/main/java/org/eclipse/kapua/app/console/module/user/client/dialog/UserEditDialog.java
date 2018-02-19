@@ -16,7 +16,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.user.client.messages.ConsoleUserMessages;
-import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserService;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserServiceAsync;
 

@@ -22,8 +22,8 @@ import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityVie
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.user.client.messages.ConsoleUserMessages;
-import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
-import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUserQuery;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUserQuery;
 
 public class UserFilterPanel extends EntityFilterPanel<GwtUser> {
 

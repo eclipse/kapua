@@ -36,9 +36,9 @@ import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldV
 import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator.FieldType;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.user.client.messages.ConsoleUserMessages;
-import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
-import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser.GwtUserStatus;
-import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUserCreator;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser.GwtUserStatus;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUserCreator;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserService;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserServiceAsync;
 

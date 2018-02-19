@@ -20,7 +20,7 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsolePermissionMessages;
 import org.eclipse.kapua.app.console.module.authorization.client.tabs.permission.UserTabPermissionGrid;
 import org.eclipse.kapua.app.console.module.authorization.client.tabs.permission.UserTabPermissionToolbar;
-import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 
 public class UserTabItemPermission extends KapuaTabItem<GwtUser> {
 

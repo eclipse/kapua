@@ -16,7 +16,7 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionAction;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 import org.eclipse.kapua.app.console.module.user.client.UserView;
-import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 
 public class UserTabItemCredentialsDescriptor extends AbstractEntityTabDescriptor<GwtUser, UserTabItemCredentials, UserView> {
 

@@ -16,9 +16,9 @@ import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessRoleQuery;
-import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
-import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUserCreator;
-import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUserQuery;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUserCreator;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUserQuery;
 
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;

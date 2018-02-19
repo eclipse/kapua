@@ -27,7 +27,7 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermission;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionAction;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
-import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 import org.eclipse.kapua.app.console.module.user.shared.util.KapuaGwtUserModelConverter;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;

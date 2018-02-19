@@ -9,9 +9,9 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.module.user.shared.model.user;
+package org.eclipse.kapua.app.console.module.user.shared.model;
 
-import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser.GwtUserStatus;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser.GwtUserStatus;
 
 import java.io.Serializable;
 import java.util.Date;

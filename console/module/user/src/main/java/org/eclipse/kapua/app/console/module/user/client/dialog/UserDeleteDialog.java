@@ -14,7 +14,7 @@ package org.eclipse.kapua.app.console.module.user.client.dialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityDeleteDialog;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.user.client.messages.ConsoleUserMessages;
-import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;

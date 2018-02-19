@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.module.user.shared.model.user;
+package org.eclipse.kapua.app.console.module.user.shared.model;
 
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 

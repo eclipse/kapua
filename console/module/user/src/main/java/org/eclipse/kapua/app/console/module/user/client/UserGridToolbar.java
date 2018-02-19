@@ -18,7 +18,7 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.user.client.dialog.UserAddDialog;
 import org.eclipse.kapua.app.console.module.user.client.dialog.UserDeleteDialog;
 import org.eclipse.kapua.app.console.module.user.client.dialog.UserEditDialog;
-import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 
 public class UserGridToolbar extends EntityCRUDToolbar<GwtUser> {
 
