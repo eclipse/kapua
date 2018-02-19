@@ -120,12 +120,12 @@ public interface GwtAccountService extends RemoteService {
      *
      * @param accountId
      *            The account id for which to find children
-     * @param recoursive
-     *            If true it list all child accounts. If false it list only the direct children
+     * @param includeSelf
+     *            If true the given account is also included in the list, otherwise it's not
      * @return
      * @throws GwtKapuaException
      */
-    ListLoadResult<GwtAccount> findChildren(String accountId, boolean recoursive)
+    ListLoadResult<GwtAccount> findChildren(String accountId, boolean includeSelf)
             throws GwtKapuaException;
 
     /**

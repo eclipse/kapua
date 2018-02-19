@@ -357,12 +357,15 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
     }
 
     @Override
-    public ListLoadResult<GwtAccount> findChildren(String parentAccountId, boolean recoursive)
+    public ListLoadResult<GwtAccount> findChildren(String parentAccountId, boolean includeSelf)
             throws GwtKapuaException {
         KapuaId scopeId = KapuaEid.parseCompactId(parentAccountId);
 
         List<GwtAccount> gwtAccountList = new ArrayList<GwtAccount>();
         try {
+            if (includeSelf) {
+                gwtAccountList.add(find(parentAccountId));
+            }
             AccountQuery query = ACCOUNT_FACTORY.newQuery(scopeId);
 
             KapuaListResult<Account> list = ACCOUNT_SERVICE.query(query);
