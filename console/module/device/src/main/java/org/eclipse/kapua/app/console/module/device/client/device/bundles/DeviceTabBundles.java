@@ -107,6 +107,7 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
         setLayout(new FitLayout());
+        setBorders(false);
 
         // init components
         initToolBar();
@@ -114,7 +115,7 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
 
         ContentPanel devicesBundlesPanel = new ContentPanel();
         devicesBundlesPanel.setBorders(false);
-        devicesBundlesPanel.setBodyBorder(false);
+        devicesBundlesPanel.setBodyBorder(true);
         devicesBundlesPanel.setHeaderVisible(false);
         devicesBundlesPanel.setLayout(new FitLayout());
         devicesBundlesPanel.setScrollMode(Scroll.AUTO);
@@ -127,6 +128,7 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
 
     private void initToolBar() {
         toolBar = new ToolBar();
+        toolBar.setBorders(true);
 
         //
         // Refresh Button

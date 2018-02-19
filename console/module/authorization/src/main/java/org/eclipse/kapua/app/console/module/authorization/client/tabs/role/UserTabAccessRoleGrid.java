@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -118,21 +118,15 @@ public class UserTabAccessRoleGrid extends EntityGrid<GwtAccessRole> {
         if (toolbar == null) {
             toolbar = new UserTabAccessRoleToolbar(currentSession);
             toolbar.setEditButtonVisible(false);
-            toolbar.setBorders(false);
+            toolbar.setBorders(true);
         }
         return toolbar;
     }
 
     @Override
     protected void onRender(Element target, int index) {
+        // TODO Auto-generated method stub
         super.onRender(target, index);
-        /* Despite this grid, being a "slave" grid (i.e. a grid that depends on the value
-         * selected in another grid) and so not refreshed on render (see comment in
-         * EntityGrid class), it should be refreshed anyway on render if no item is
-         * selected on the master grid, otherwise the paging toolbar will still be enabled
-         * even if no results are actually available in this grid */
-        if (userId == null) {
-            refresh();
-        }
+        setBorders(false);
     }
 }

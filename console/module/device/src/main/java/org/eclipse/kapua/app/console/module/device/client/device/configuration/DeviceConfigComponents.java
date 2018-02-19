@@ -268,7 +268,7 @@ public class DeviceConfigComponents extends LayoutContainer {
         tree = new TreePanel<ModelData>(treeStore);
         tree.setWidth(200);
         tree.setDisplayProperty("componentName");
-        tree.setBorders(true);
+        tree.setBorders(false);
         tree.setLabelProvider(modelStringProvider);
         tree.setAutoSelect(true);
         tree.setStyleAttribute("background-color", "white");
