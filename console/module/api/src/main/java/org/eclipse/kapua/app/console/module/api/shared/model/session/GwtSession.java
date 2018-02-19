@@ -12,6 +12,7 @@
 package org.eclipse.kapua.app.console.module.api.shared.model.session;
 
 import org.eclipse.kapua.app.console.module.api.shared.model.KapuaBaseModel;
+import org.eclipse.kapua.service.authorization.permission.Permission;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -150,9 +151,34 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
         getSessionPermissions().add(permission);
     }
 
-    public boolean hasPermission(String domain, GwtSessionPermissionAction action, GwtSessionPermissionScope gwtSessionPermissionScope) {
-        GwtSessionPermission permissionToCheck = new GwtSessionPermission(domain, action, gwtSessionPermissionScope);
+    /**
+     * Checks that the current {@link GwtSession} has the given session.
+     * This methods uses {@link #hasPermission(GwtSessionPermission)} instantiating the actual {@link GwtSessionPermission}.
+     *
+     * @param domain      The domain to check
+     * @param action      The {@link GwtSessionPermissionAction} to check
+     * @param targetScope The {@link GwtSessionPermissionScope} to check
+     * @return {@code true} if the current {@link GwtSession} has the permission, {@false} otherwise
+     * @since 1.0.0
+     */
+    public boolean hasPermission(String domain, GwtSessionPermissionAction action, GwtSessionPermissionScope targetScope) {
+        return hasPermission(new GwtSessionPermission(domain, action, targetScope));
+    }
 
+    /**
+     * Checks that the current {@link GwtSession} has the given {@link GwtSessionPermission}.
+     * <p>
+     * This check is done simulating the permission check performed by the {@link org.eclipse.kapua.service.authorization.AuthorizationService#isPermitted(Permission)}.
+     * This does not introduces any security risk, since it will only allow to see/have access to certain elements of the UI while service access check is still performed on each call.
+     * <p>
+     * After the check, the result is cached to allow faster check for subsequent check for the same permission.
+     * </p>
+     *
+     * @param permissionToCheck The {@link GwtSessionPermission} to check
+     * @return {@code true} if the current {@link GwtSession} has the permission, {@false} otherwise
+     * @since 1.0.0
+     */
+    public boolean hasPermission(GwtSessionPermission permissionToCheck) {
         // Check cache
         Boolean cachedResult = checkedPermissionsCache.get(permissionToCheck);
         if (cachedResult != null) {
@@ -169,6 +195,14 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
         return permitted;
     }
 
+    /**
+     * This methods simulates the check that is performed by the {@link org.eclipse.kapua.service.authorization.AuthorizationService#isPermitted(Permission)}.
+     * {@link Permission#getForwardable()} property is supported in a different way, but produces the same results.
+     *
+     * @param permissionToCheck The {@link GwtSessionPermission} to check
+     * @return {@code true} if the current {@link GwtSession} has the permission, {@false} otherwise
+     * @since 1.0.0
+     */
     private boolean isPermitted(GwtSessionPermission permissionToCheck) {
 
         for (GwtSessionPermission gsp : getSessionPermissions()) {
