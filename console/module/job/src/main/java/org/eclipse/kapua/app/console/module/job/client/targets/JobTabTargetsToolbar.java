@@ -28,7 +28,7 @@ public class JobTabTargetsToolbar extends EntityCRUDToolbar<GwtJobTarget> {
     private static final GwtJobServiceAsync JOB_SERVICE = GWT.create(GwtJobService.class);
 
     public JobTabTargetsToolbar(GwtSession currentSession) {
-        super(currentSession);
+        super(currentSession, true);
     }
 
     public void setJobId(String jobId) {

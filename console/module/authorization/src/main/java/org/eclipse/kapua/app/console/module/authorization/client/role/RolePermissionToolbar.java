@@ -31,7 +31,7 @@ public class RolePermissionToolbar extends EntityCRUDToolbar<GwtRolePermission> 
     private RolePermissionGrid rolePermissionGrid;
 
     public RolePermissionToolbar(GwtSession currentSession, RolePermissionGrid rolePermissionGrid) {
-        super(currentSession);
+        super(currentSession, true);
         super.setEditButtonVisible(false);
         this.rolePermissionGrid = rolePermissionGrid;
     }

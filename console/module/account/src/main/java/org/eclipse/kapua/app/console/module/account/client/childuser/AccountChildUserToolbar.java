@@ -26,7 +26,7 @@ public class AccountChildUserToolbar extends EntityCRUDToolbar<GwtUser> {
     private GwtSession selectedAccountSession;
 
     public AccountChildUserToolbar(GwtSession currentSession) {
-        super(currentSession);
+        super(currentSession, true);
         selectedAccountSession = new GwtSession();
         selectedAccountSession.setSelectedAccountId(null);
     }

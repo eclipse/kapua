@@ -37,7 +37,7 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
     private static final ConsoleCredentialMessages MSGS = GWT.create(ConsoleCredentialMessages.class);
 
     public CredentialToolbar(GwtSession currentSession) {
-        super(currentSession);
+        super(currentSession, true);
         unlockButton = new Button(MSGS.unlockButton(), new KapuaIcon(IconSet.UNLOCK), new SelectionListener<ButtonEvent>() {
 
             @Override

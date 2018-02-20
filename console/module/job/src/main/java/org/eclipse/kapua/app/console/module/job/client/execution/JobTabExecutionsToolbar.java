@@ -21,7 +21,7 @@ public class JobTabExecutionsToolbar extends EntityCRUDToolbar<GwtExecution> {
     private String jobId;
 
     public JobTabExecutionsToolbar(GwtSession currentSession) {
-        super(currentSession);
+        super(currentSession, true);
     }
 
     public String getJobId() {

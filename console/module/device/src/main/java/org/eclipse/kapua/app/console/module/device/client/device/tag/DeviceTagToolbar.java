@@ -25,7 +25,7 @@ public class DeviceTagToolbar extends TagToolbarGrid {
     private static final ConsoleDeviceMessages DEVICE_MSGS = GWT.create(ConsoleDeviceMessages.class);
 
     public DeviceTagToolbar(GwtSession currentSession) {
-        super(currentSession);
+        super(currentSession, true);
 
         setEditButtonVisible(false);
     }

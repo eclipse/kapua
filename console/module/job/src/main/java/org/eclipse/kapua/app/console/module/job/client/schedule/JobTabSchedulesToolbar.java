@@ -22,7 +22,7 @@ public class JobTabSchedulesToolbar extends EntityCRUDToolbar<GwtTrigger> {
     private String jobId;
 
     public JobTabSchedulesToolbar(GwtSession currentSession) {
-        super(currentSession);
+        super(currentSession, true);
     }
 
     public String getJobId() {

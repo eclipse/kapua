@@ -26,7 +26,7 @@ public class UserTabPermissionToolbar extends EntityCRUDToolbar<GwtAccessPermiss
     private static final ConsolePermissionMessages PERMISSION_MSGS = GWT.create(ConsolePermissionMessages.class);
 
     public UserTabPermissionToolbar(GwtSession currentSession) {
-        super(currentSession);
+        super(currentSession, true);
     }
 
     public void setUserId(String userId) {
