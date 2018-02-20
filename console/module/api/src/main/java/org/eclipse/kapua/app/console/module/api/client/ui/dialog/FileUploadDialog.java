@@ -117,7 +117,7 @@ public class FileUploadDialog extends Dialog {
         fieldSet.setLayout(layout);
 
         fileUploadField = new FileUploadField();
-        fileUploadField.setAllowBlank(true);
+        fileUploadField.setAllowBlank(false);
         fileUploadField.setName("uploadedFile");
         fileUploadField.setFieldLabel("File");
         fileUploadField.setInputStyleAttribute("style", "width:300");
