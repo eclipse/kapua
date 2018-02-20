@@ -12,10 +12,11 @@
 package org.eclipse.kapua.app.console.module.device.client.connection;
 
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractEntityViewDescriptor;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.EntityView;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractEntityViewDescriptor;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection;
+import org.eclipse.kapua.app.console.module.device.shared.model.permission.DeviceConnectionSessionPermission;
 
 public class ConnectionViewDescriptor extends AbstractEntityViewDescriptor<GwtDeviceConnection> {
 
@@ -46,6 +47,6 @@ public class ConnectionViewDescriptor extends AbstractEntityViewDescriptor<GwtDe
 
     @Override
     public Boolean isEnabled(GwtSession currentSession) {
-        return currentSession.hasConnectionReadPermission();
+        return currentSession.hasPermission(DeviceConnectionSessionPermission.read());
     }
 }

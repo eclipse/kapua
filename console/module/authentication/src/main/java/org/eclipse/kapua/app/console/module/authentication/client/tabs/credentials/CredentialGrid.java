@@ -11,10 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authentication.client.tabs.credentials;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
@@ -34,13 +30,18 @@ import org.eclipse.kapua.app.console.module.api.client.ui.color.Color;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authentication.client.messages.ConsoleCredentialMessages;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredential;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialQuery;
+import org.eclipse.kapua.app.console.module.authentication.shared.model.permission.CredentialSessionPermission;
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialService;
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialServiceAsync;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class CredentialGrid extends EntityGrid<GwtCredential> {
 
@@ -89,6 +90,7 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
         ColumnConfig columnConfig = new ColumnConfig("status", CREDENTIAL_MSGS.gridCredentialColumnHeaderStatus(), 50);
         GridCellRenderer<GwtCredential> setStatusIcon = new GridCellRenderer<GwtCredential>() {
 
+            @Override
             public String render(GwtCredential gwtUser, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtCredential> deviceList, Grid<GwtCredential> grid) {
 
                 KapuaIcon icon;
@@ -128,6 +130,7 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
         columnConfig = new ColumnConfig("lockoutReset", CREDENTIAL_MSGS.gridCredentialColumnHeaderLockStatus(), 50);
         GridCellRenderer<GwtCredential> setLockoutIcon = new GridCellRenderer<GwtCredential>() {
 
+            @Override
             public String render(GwtCredential gwtCredential, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtCredential> deviceList, Grid<GwtCredential> grid) {
                 KapuaIcon icon;
                 if (gwtCredential.getLockoutReset() != null && gwtCredential.getLockoutReset().after(new Date())) {
@@ -211,9 +214,11 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
 
     private void updateToolbarButtons() {
         getToolbar().getAddEntityButton().setEnabled(selectedUserId != null);
-        getToolbar().getEditEntityButton().setEnabled(getSelectionModel().getSelectedItem() != null && currentSession.hasCredentialUpdatePermission());
-        getToolbar().getDeleteEntityButton().setEnabled(getSelectionModel().getSelectedItem() != null && currentSession.hasCredentialDeletePermission());
-        getToolbar().getUnlockButton()
-                .setEnabled(getSelectionModel().getSelectedItem() != null && getSelectionModel().getSelectedItem().getLockoutReset() != null && currentSession.hasCredentialUpdatePermission());
+        getToolbar().getEditEntityButton().setEnabled(getSelectionModel().getSelectedItem() != null && currentSession.hasPermission(CredentialSessionPermission.write()));
+        getToolbar().getDeleteEntityButton().setEnabled(getSelectionModel().getSelectedItem() != null && currentSession.hasPermission(CredentialSessionPermission.delete()));
+        getToolbar().getUnlockButton().setEnabled(
+                getSelectionModel().getSelectedItem() != null &&
+                        getSelectionModel().getSelectedItem().getLockoutReset() != null &&
+                        currentSession.hasPermission(CredentialSessionPermission.write()));
     }
 }

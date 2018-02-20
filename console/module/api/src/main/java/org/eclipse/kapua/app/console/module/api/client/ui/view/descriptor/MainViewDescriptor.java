@@ -13,7 +13,7 @@ package org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor;
 
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.View;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 
 public interface MainViewDescriptor extends ViewDescriptor {
 

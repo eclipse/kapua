@@ -17,9 +17,9 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobTarget;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobTargetCreator;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobTargetQuery;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobTarget;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobTargetCreator;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobTargetQuery;
 
 import java.util.List;
 
@@ -44,7 +44,7 @@ public interface GwtJobTargetService extends RemoteService {
      * @return
      * @throws GwtKapuaException
      */
-     List<GwtJobTarget> create(GwtXSRFToken xsrfToken, String scopeId, String jobId, List<GwtJobTargetCreator> gwtJobTargetCreatorList)
+    List<GwtJobTarget> create(GwtXSRFToken xsrfToken, String scopeId, String jobId, List<GwtJobTargetCreator> gwtJobTargetCreatorList)
             throws GwtKapuaException;
 
     /**

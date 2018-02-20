@@ -11,6 +11,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.account.client.toolbar;
 
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
+import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.layout.FormData;
+import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.account.client.messages.ConsoleAccountMessages;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountCreator;
+import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
+import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
@@ -20,21 +33,7 @@ import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator.FieldType;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.module.account.client.messages.ConsoleAccountMessages;
-import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
-import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountCreator;
-
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.form.LabelField;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.layout.FormData;
-import com.extjs.gxt.ui.client.widget.layout.FormLayout;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
-import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 
 public class AccountAddDialog extends EntityAddEditDialog {
 
@@ -237,6 +236,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
                 gwtAccountCreator,
                 new AsyncCallback<GwtAccount>() {
 
+                    @Override
                     public void onFailure(Throwable cause) {
                         FailureHandler.handleFormException(formPanel, cause);
                         status.hide();
@@ -245,13 +245,14 @@ public class AccountAddDialog extends EntityAddEditDialog {
                         submitButton.enable();
                         cancelButton.enable();
                         if (cause instanceof GwtKapuaException) {
-                            GwtKapuaException gwtCause = (GwtKapuaException)cause;
+                            GwtKapuaException gwtCause = (GwtKapuaException) cause;
                             if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
                                 accountNameField.markInvalid(gwtCause.getMessage());
                             }
                         }
                     }
 
+                    @Override
                     public void onSuccess(GwtAccount account) {
                         ConsoleInfo.display(MSGS.info(), MSGS.accountCreatedConfirmation());
                         hide();

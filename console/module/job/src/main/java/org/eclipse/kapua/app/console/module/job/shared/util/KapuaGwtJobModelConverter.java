@@ -12,14 +12,14 @@
 package org.eclipse.kapua.app.console.module.job.shared.util;
 
 import org.eclipse.kapua.app.console.module.api.shared.util.KapuaGwtCommonsModelConverter;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtExecution;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJob;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobStep;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobStepDefinition;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobStepProperty;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobTarget;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtTrigger;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtTriggerProperty;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtExecution;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJob;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStep;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStepDefinition;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStepProperty;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobTarget;
+import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.GwtTrigger;
+import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.GwtTriggerProperty;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.execution.JobExecution;
 import org.eclipse.kapua.service.job.step.JobStep;
@@ -34,7 +34,8 @@ import java.util.List;
 
 public class KapuaGwtJobModelConverter {
 
-    private KapuaGwtJobModelConverter() { }
+    private KapuaGwtJobModelConverter() {
+    }
 
     public static GwtJob convertJob(Job job) {
         GwtJob gwtJob = new GwtJob();

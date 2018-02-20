@@ -26,8 +26,9 @@ import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityVie
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroup;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.GroupSessionPermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupService;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupServiceAsync;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
@@ -35,6 +36,7 @@ import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQuery;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPredicates;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
+import org.eclipse.kapua.app.console.module.tag.shared.model.permission.TagSessionPermission;
 import org.eclipse.kapua.app.console.module.tag.shared.service.GwtTagService;
 import org.eclipse.kapua.app.console.module.tag.shared.service.GwtTagServiceAsync;
 
@@ -253,7 +255,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
 
         //
         // Groups
-        if (currentSession.hasGroupReadPermission()) {
+        if (currentSession.hasPermission(GroupSessionPermission.read())) {
             Label groupLabel = new Label(DEVICE_MSGS.deviceFilteringPanelGroup());
             groupLabel.setWidth(WIDTH);
             groupLabel.setStyleAttribute("margin", "5px");
@@ -302,7 +304,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
 
         //
         // Tags
-        if (currentSession.hasTagReadPermission()) {
+        if (currentSession.hasPermission(TagSessionPermission.read())) {
             Label tagLabel = new Label(DEVICE_MSGS.deviceFilteringPanelTag());
             tagLabel.setWidth(WIDTH);
             tagLabel.setStyleAttribute("margin", "5px");
@@ -366,10 +368,10 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         customAttribute1Field.setValue("");
         customAttribute2Field.setValue("");
 
-        if (currentSession.hasGroupReadPermission()) {
+        if (currentSession.hasPermission(GroupSessionPermission.read())) {
             groupsCombo.setValue(allGroup);
         }
-        if (currentSession.hasTagReadPermission()) {
+        if (currentSession.hasPermission(TagSessionPermission.read())) {
             tagsCombo.setValue(allTag);
         }
 

@@ -22,10 +22,10 @@ import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator.FieldType;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJob;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobCreator;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJob;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobCreator;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobService;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobServiceAsync;
 
@@ -91,7 +91,7 @@ public class JobAddDialog extends EntityAddEditDialog {
                 submitButton.enable();
                 cancelButton.enable();
                 if (cause instanceof GwtKapuaException) {
-                    GwtKapuaException gwtCause = (GwtKapuaException)cause;
+                    GwtKapuaException gwtCause = (GwtKapuaException) cause;
                     if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
                         name.markInvalid(gwtCause.getMessage());
                     }

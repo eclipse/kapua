@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.tag.client;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
@@ -20,10 +22,7 @@ import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator.FieldType;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.tag.client.messages.ConsoleTagMessages;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTagCreator;
@@ -77,7 +76,7 @@ public class TagAddDialog extends EntityAddEditDialog {
                 submitButton.enable();
                 cancelButton.enable();
                 if (cause instanceof GwtKapuaException) {
-                    GwtKapuaException gwtCause = (GwtKapuaException)cause;
+                    GwtKapuaException gwtCause = (GwtKapuaException) cause;
                     if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
                         tagNameField.markInvalid(gwtCause.getMessage());
                     }

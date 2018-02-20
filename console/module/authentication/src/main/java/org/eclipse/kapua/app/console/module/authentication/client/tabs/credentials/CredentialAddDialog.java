@@ -28,7 +28,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.ConfirmPasswordFieldValidator;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.PasswordFieldValidator;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authentication.client.messages.ConsoleCredentialMessages;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredential;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialCreator;

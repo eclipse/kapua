@@ -15,8 +15,8 @@ import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobStepDefinition;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobStepProperty;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStepDefinition;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStepProperty;
 
 @RemoteServiceRelativePath("jobStepDefinition")
 public interface GwtJobStepDefinitionService extends RemoteService {

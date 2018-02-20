@@ -11,14 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.client.device.assets;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.ExportButton;
-import org.eclipse.kapua.app.console.module.api.client.util.SwappableListStore;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseListLoader;
@@ -39,7 +31,14 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.ExportButton;
+import org.eclipse.kapua.app.console.module.api.client.util.SwappableListStore;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtChannel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AssetDetailsTable extends LayoutContainer {
 

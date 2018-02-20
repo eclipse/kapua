@@ -12,10 +12,11 @@
 package org.eclipse.kapua.app.console.module.authorization.client.group;
 
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractEntityViewDescriptor;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.EntityView;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractEntityViewDescriptor;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroup;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.GroupSessionPermission;
 
 public class GroupViewDescriptor extends AbstractEntityViewDescriptor<GwtGroup> {
 
@@ -46,6 +47,6 @@ public class GroupViewDescriptor extends AbstractEntityViewDescriptor<GwtGroup> 
 
     @Override
     public Boolean isEnabled(GwtSession currentSession) {
-        return currentSession.hasGroupReadPermission();
+        return currentSession.hasPermission(GroupSessionPermission.read());
     }
 }

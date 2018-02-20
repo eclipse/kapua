@@ -11,15 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.account.client.toolbar;
 
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtOrganization;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.module.account.shared.model.GwtOrganization;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
-
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 
 public class AccountEditDialog extends AccountAddDialog {
 
@@ -35,8 +34,7 @@ public class AccountEditDialog extends AccountAddDialog {
     protected void onRender(Element parent, int pos) {
         super.onRender(parent, pos);
         setClosable(false);
-//        fieldSet.remove(accountPassword);
-//        fieldSet.remove(confirmPassword);
+
         fieldSet.remove(accountNameField);
         accountNameLabel.setVisible(true);
 
@@ -97,12 +95,14 @@ public class AccountEditDialog extends AccountAddDialog {
                 selectedAccount,
                 new AsyncCallback<GwtAccount>() {
 
+                    @Override
                     public void onFailure(Throwable caught) {
                         FailureHandler.handleFormException(formPanel, caught);
                         status.hide();
                         formPanel.getButtonBar().enable();
                     }
 
+                    @Override
                     public void onSuccess(GwtAccount account) {
                         ConsoleInfo.display(MSGS.info(), MSGS.accountUpdatedConfirmation());
                         hide();

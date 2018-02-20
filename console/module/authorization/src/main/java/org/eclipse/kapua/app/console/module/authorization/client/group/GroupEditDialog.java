@@ -11,16 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.client.group;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsoleGroupMessages;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroup;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupService;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupServiceAsync;
 
 public class GroupEditDialog extends GroupAddDialog {
@@ -55,7 +54,7 @@ public class GroupEditDialog extends GroupAddDialog {
                 submitButton.enable();
                 cancelButton.enable();
                 if (cause instanceof GwtKapuaException) {
-                    GwtKapuaException gwtCause = (GwtKapuaException)cause;
+                    GwtKapuaException gwtCause = (GwtKapuaException) cause;
                     if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
                         groupNameField.markInvalid(gwtCause.getMessage());
                     }

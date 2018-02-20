@@ -16,7 +16,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityDeleteDialog;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobStep;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStep;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobStepService;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobStepServiceAsync;
 

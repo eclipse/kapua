@@ -11,15 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.account.client.childuser;
 
+import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-
-import com.google.gwt.user.client.Element;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.user.client.dialog.UserAddDialog;
 import org.eclipse.kapua.app.console.module.user.client.dialog.UserDeleteDialog;
 import org.eclipse.kapua.app.console.module.user.client.dialog.UserEditDialog;
-import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.permission.UserSessionPermission;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 
 public class AccountChildUserToolbar extends EntityCRUDToolbar<GwtUser> {
 
@@ -43,14 +43,14 @@ public class AccountChildUserToolbar extends EntityCRUDToolbar<GwtUser> {
                 getEditEntityButton().disable();
                 getDeleteEntityButton().disable();
             } else {
-                if (currentSession.hasUserCreatePermission()) {
+                if (currentSession.hasPermission(UserSessionPermission.write())) {
                     getAddEntityButton().enable();
                 }
                 if (gridSelectionModel.getSelectedItem() != null) {
-                    if (currentSession.hasUserUpdatePermission()) {
+                    if (currentSession.hasPermission(UserSessionPermission.write())) {
                         getEditEntityButton().enable();
                     }
-                    if (currentSession.hasUserDeletePermission()) {
+                    if (currentSession.hasPermission(UserSessionPermission.delete())) {
                         getDeleteEntityButton().enable();
                     }
                 } else {
@@ -90,11 +90,8 @@ public class AccountChildUserToolbar extends EntityCRUDToolbar<GwtUser> {
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
         setBorders(false);
-        if (selectedAccountSession.getSelectedAccountId() != null && currentSession != null && currentSession.hasUserCreatePermission()) {
-            getAddEntityButton().enable();
-        } else {
-            getAddEntityButton().disable();
-        }
+
+        getAddEntityButton().setEnabled(selectedAccountSession.getSelectedAccountId() != null && currentSession != null && currentSession.hasPermission(UserSessionPermission.write()));
         getEditEntityButton().disable();
         getDeleteEntityButton().disable();
     }

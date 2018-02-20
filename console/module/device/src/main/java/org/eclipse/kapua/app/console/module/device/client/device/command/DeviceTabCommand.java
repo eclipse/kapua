@@ -47,12 +47,13 @@ import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.module.api.client.util.Constants;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenService;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenServiceAsync;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
+import org.eclipse.kapua.app.console.module.device.shared.model.permission.DeviceManagementSessionPermission;
 
 public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
 
@@ -98,7 +99,9 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
     public void setEntity(GwtDevice gwtDevice) {
         super.setEntity(gwtDevice);
 
-        setEnabled(gwtDevice != null && currentSession.hasDeviceManageExecutePermission() && gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_COMMAND));
+        setEnabled(gwtDevice != null &&
+                currentSession.hasPermission(DeviceManagementSessionPermission.execute()) &&
+                gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_COMMAND));
 
         doRefresh();
     }

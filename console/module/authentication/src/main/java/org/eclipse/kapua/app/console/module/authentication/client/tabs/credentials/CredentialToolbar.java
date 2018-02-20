@@ -16,16 +16,16 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-
-import com.google.gwt.user.client.Element;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authentication.client.messages.ConsoleCredentialMessages;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredential;
+import org.eclipse.kapua.app.console.module.authentication.shared.model.permission.CredentialSessionPermission;
 
 public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
 
@@ -54,9 +54,11 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
         add(new SeparatorToolItem());
-        if (currentSession.hasCredentialUpdatePermission()) {
+
+        if (currentSession.hasPermission(CredentialSessionPermission.write())) {
             add(unlockButton);
         }
+
         updateButtonsEnabled();
         getEditEntityButton().disable();
         getDeleteEntityButton().disable();

@@ -12,9 +12,10 @@
 package org.eclipse.kapua.app.console.module.data.client;
 
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractMainViewDescriptor;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.View;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractMainViewDescriptor;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.data.shared.model.permission.DatastoreSessionPermission;
 
 public class DataViewDescriptor extends AbstractMainViewDescriptor {
 
@@ -45,6 +46,6 @@ public class DataViewDescriptor extends AbstractMainViewDescriptor {
 
     @Override
     public Boolean isEnabled(GwtSession currentSession) {
-        return currentSession.hasDataReadPermission();
+        return currentSession.hasPermission(DatastoreSessionPermission.read());
     }
 }

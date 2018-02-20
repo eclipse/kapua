@@ -24,6 +24,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.account.client.toolbar.AccountEditDialog;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
+import org.eclipse.kapua.app.console.module.account.shared.model.permission.AccountSessionPermission;
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
@@ -32,7 +33,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.button.EditButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.EntityDescriptionTabItem;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 
 public class AccountDetailsTabDescription extends EntityDescriptionTabItem<GwtAccount> {
 
@@ -59,7 +60,7 @@ public class AccountDetailsTabDescription extends EntityDescriptionTabItem<GwtAc
 
         ToolBar accountsToolBar = new ToolBar();
         accountsToolBar.setHeight("27px");
-        if (currentSession.hasAccountUpdatePermission()) {
+        if (currentSession.hasPermission(AccountSessionPermission.write())) {
             //
             // Edit Account Button
             Button editButton = new EditButton(new SelectionListener<ButtonEvent>() {
@@ -67,7 +68,7 @@ public class AccountDetailsTabDescription extends EntityDescriptionTabItem<GwtAc
                 @Override
                 public void componentSelected(ButtonEvent ce) {
                     if (getSelectedEntity() != null) {
-                        final AccountEditDialog accountForm = new AccountEditDialog(currentSession, getSelectedEntity());
+                        AccountEditDialog accountForm = new AccountEditDialog(currentSession, getSelectedEntity());
                         accountForm.addListener(Events.Hide, new Listener<ComponentEvent>() {
 
                             @Override

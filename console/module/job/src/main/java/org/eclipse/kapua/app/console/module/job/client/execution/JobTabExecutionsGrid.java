@@ -27,11 +27,11 @@ import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtExecution;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtExecutionQuery;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtExecution;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtExecutionQuery;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtExecutionService;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtExecutionServiceAsync;
 

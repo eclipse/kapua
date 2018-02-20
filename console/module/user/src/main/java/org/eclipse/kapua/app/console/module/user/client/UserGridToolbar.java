@@ -11,16 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.user.client;
 
+import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.user.client.dialog.UserAddDialog;
 import org.eclipse.kapua.app.console.module.user.client.dialog.UserDeleteDialog;
 import org.eclipse.kapua.app.console.module.user.client.dialog.UserEditDialog;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
-
-import com.google.gwt.user.client.Element;
-
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 
 public class UserGridToolbar extends EntityCRUDToolbar<GwtUser> {
 
@@ -37,7 +35,7 @@ public class UserGridToolbar extends EntityCRUDToolbar<GwtUser> {
     protected KapuaDialog getEditDialog() {
         GwtUser selectedUser = gridSelectionModel.getSelectedItem();
         UserEditDialog dialog = null;
-        if (selectedUser!= null) {
+        if (selectedUser != null) {
             dialog = new UserEditDialog(currentSession, selectedUser);
         }
         return dialog;
@@ -47,7 +45,7 @@ public class UserGridToolbar extends EntityCRUDToolbar<GwtUser> {
     protected KapuaDialog getDeleteDialog() {
         GwtUser selectedUser = gridSelectionModel.getSelectedItem();
         UserDeleteDialog dialog = null;
-        if (selectedUser!= null) {
+        if (selectedUser != null) {
             dialog = new UserDeleteDialog(selectedUser);
         }
         return dialog;

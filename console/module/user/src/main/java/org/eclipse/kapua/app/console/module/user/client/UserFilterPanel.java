@@ -11,20 +11,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.user.client;
 
+import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.VerticalPanel;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.google.gwt.core.client.GWT;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.user.client.messages.ConsoleUserMessages;
-import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
-
-import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
-import com.google.gwt.core.client.GWT;
-import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
-import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUserQuery;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUserQuery;
 
 public class UserFilterPanel extends EntityFilterPanel<GwtUser> {
 
@@ -48,7 +47,7 @@ public class UserFilterPanel extends EntityFilterPanel<GwtUser> {
 
         VerticalPanel fieldsPanel = getFieldsPanel();
 
-        final Label clientIdLabel = new Label(USER_MSGS.filterFieldUsernameLabel());
+        Label clientIdLabel = new Label(USER_MSGS.filterFieldUsernameLabel());
         clientIdLabel.setWidth(WIDTH);
         clientIdLabel.setStyleAttribute("margin", "5px");
 
@@ -64,7 +63,7 @@ public class UserFilterPanel extends EntityFilterPanel<GwtUser> {
         nameField.setStyleAttribute("margin-bottom", "10px");
         fieldsPanel.add(nameField);
 
-        final Label userStatusLabel = new Label(USER_MSGS.filterFieldStatusLabel());
+        Label userStatusLabel = new Label(USER_MSGS.filterFieldStatusLabel());
         userStatusLabel.setWidth(WIDTH);
         userStatusLabel.setStyleAttribute("margin", "5px");
 

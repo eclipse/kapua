@@ -14,8 +14,9 @@ package org.eclipse.kapua.app.console.module.device.client.device;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroup;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.GroupSessionPermission;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPredicates;
 
@@ -64,7 +65,7 @@ public class DeviceEditDialog extends DeviceAddDialog {
         selectedDevice.setDisplayName(KapuaSafeHtmlUtils.htmlUnescape(displayNameField.getValue()));
         selectedDevice.setGwtDeviceStatus(statusCombo.getSimpleValue().name());
 
-        if (currentSession.hasGroupReadPermission()) {
+        if (currentSession.hasPermission(GroupSessionPermission.read())) {
             selectedDevice.setGroupId(groupCombo.getValue().getId());
         }
 
@@ -118,7 +119,7 @@ public class DeviceEditDialog extends DeviceAddDialog {
             displayNameField.setValue(device.getUnescapedDisplayName());
             statusCombo.setSimpleValue(GwtDeviceQueryPredicates.GwtDeviceStatus.valueOf(device.getGwtDeviceStatus()));
 
-            if (currentSession.hasGroupReadPermission()) {
+            if (currentSession.hasPermission(GroupSessionPermission.read())) {
                 if (device.getGroupId() != null) {
                     gwtGroupService.find(currentSession.getSelectedAccountId(), device.getGroupId(), new AsyncCallback<GwtGroup>() {
 

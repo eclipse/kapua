@@ -11,12 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.api.client.ui.widget;
 
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 
 public abstract class EntityGridFieldToolbar<M extends GwtEntityModel> extends EntityCRUDToolbar<M> {
 

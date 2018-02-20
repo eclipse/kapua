@@ -14,7 +14,7 @@ package org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.EntityView;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 
 public interface EntityViewDescriptor<M extends GwtEntityModel> extends ViewDescriptor, IsSerializable {
 

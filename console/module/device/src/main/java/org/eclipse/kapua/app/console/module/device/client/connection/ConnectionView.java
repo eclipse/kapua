@@ -15,7 +15,7 @@ import com.google.gwt.core.client.GWT;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleConnectionMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection;
 
@@ -32,7 +32,7 @@ public class ConnectionView extends AbstractEntityView<GwtDeviceConnection> {
 
     @Override
     public EntityGrid<GwtDeviceConnection> getEntityGrid(AbstractEntityView<GwtDeviceConnection> entityView, GwtSession currentSession) {
-        if(connectionGrid == null){
+        if (connectionGrid == null) {
             connectionGrid = new ConnectionGrid(this, currentSession);
         }
         return connectionGrid;
@@ -40,7 +40,7 @@ public class ConnectionView extends AbstractEntityView<GwtDeviceConnection> {
 
     @Override
     public EntityFilterPanel<GwtDeviceConnection> getEntityFilterPanel(AbstractEntityView<GwtDeviceConnection> entityView, GwtSession currentSession) {
-        if(filterPanel == null){
+        if (filterPanel == null) {
             filterPanel = new ConnectionFilterPanel(entityView, currentSession);
         }
         return filterPanel;

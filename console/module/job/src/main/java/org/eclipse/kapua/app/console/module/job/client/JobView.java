@@ -15,9 +15,9 @@ import com.google.gwt.core.client.GWT;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJob;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJob;
 
 public class JobView extends AbstractEntityView<GwtJob> {
 

@@ -12,9 +12,10 @@
 package org.eclipse.kapua.app.console.module.device.client.device.tag;
 
 import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractEntityTabDescriptor;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.device.client.device.DeviceView;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
+import org.eclipse.kapua.app.console.module.tag.shared.model.permission.TagSessionPermission;
 
 public class DeviceTabTagsDescriptor extends AbstractEntityTabDescriptor<GwtDevice, DeviceTabTags, DeviceView> {
 
@@ -35,6 +36,6 @@ public class DeviceTabTagsDescriptor extends AbstractEntityTabDescriptor<GwtDevi
 
     @Override
     public Boolean isEnabled(GwtSession currentSession) {
-        return currentSession.hasTagReadPermission();
+        return currentSession.hasPermission(TagSessionPermission.read());
     }
 }

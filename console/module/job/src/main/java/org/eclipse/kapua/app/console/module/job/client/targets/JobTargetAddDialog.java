@@ -21,14 +21,14 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQuery;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceServiceAsync;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobTarget;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobTargetCreator;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobTarget;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobTargetCreator;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobTargetService;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobTargetServiceAsync;
 
@@ -128,7 +128,7 @@ public class JobTargetAddDialog extends EntityAddEditDialog {
 
     /**
      * Before doing real submit of targets, check if target are already added.
-     * 
+     *
      * @param targets those that are being added
      */
     private void doSubmitWithExistenceCheck(final List<GwtDevice> targets) {
@@ -154,8 +154,8 @@ public class JobTargetAddDialog extends EntityAddEditDialog {
     /**
      * Check if targets being added are new targets, empty targets, union of targets and
      * only add them if needed otherwise report info message.
-     * 
-     * @param targets those that are being added
+     *
+     * @param targets  those that are being added
      * @param existing targets targets that are already on job
      */
     private void doSubmit(List<GwtDevice> targets, List<GwtJobTarget> existing) {
@@ -215,7 +215,7 @@ public class JobTargetAddDialog extends EntityAddEditDialog {
     /**
      * Check if devices need to be added to existing targets.
      *
-     * @param targets devices to be added
+     * @param targets  devices to be added
      * @param existing existing devices
      * @return true if devices need to be added, false if not
      */

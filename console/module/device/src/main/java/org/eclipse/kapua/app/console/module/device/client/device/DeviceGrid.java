@@ -28,8 +28,8 @@ import org.eclipse.kapua.app.console.module.api.client.ui.color.Color;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleConnectionMessages;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
@@ -51,7 +51,7 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
     private static final ConsoleDeviceMessages DEVICE_MSGS = GWT.create(ConsoleDeviceMessages.class);
     private static final ConsoleConnectionMessages CONNECTION_MSGS = GWT.create(ConsoleConnectionMessages.class);
 
-    public DeviceGrid(AbstractEntityView<GwtDevice> entityView, final GwtSession currentSession) {
+    public DeviceGrid(AbstractEntityView<GwtDevice> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
         query = new GwtDeviceQuery();
         query.setScopeId(currentSession.getSelectedAccountId());

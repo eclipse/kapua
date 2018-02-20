@@ -11,20 +11,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.job.server;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtTrigger;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtTriggerCreator;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtTriggerProperty;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtTriggerQuery;
+import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.GwtTrigger;
+import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.GwtTriggerCreator;
+import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.GwtTriggerProperty;
+import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.GwtTriggerQuery;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtTriggerService;
 import org.eclipse.kapua.app.console.module.job.shared.util.GwtKapuaJobModelConverter;
 import org.eclipse.kapua.app.console.module.job.shared.util.KapuaGwtJobModelConverter;
@@ -39,9 +38,9 @@ import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
 import org.quartz.CronExpression;
 
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GwtTriggerServiceImpl extends KapuaRemoteServiceServlet implements GwtTriggerService {
 

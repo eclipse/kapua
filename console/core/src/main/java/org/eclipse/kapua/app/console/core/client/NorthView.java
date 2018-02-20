@@ -11,27 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.client;
 
-import java.util.List;
-
-import org.eclipse.kapua.app.console.core.client.util.Logout;
-import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationService;
-import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationServiceAsync;
-import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
-import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountStringListItem;
-import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
-import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
-import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractView;
-import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.MainViewDescriptor;
-import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaMenuItem;
-import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
-import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.module.api.client.util.UserAgentUtils;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleService;
-import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleServiceAsync;
-
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -53,6 +32,27 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.eclipse.kapua.app.console.core.client.util.Logout;
+import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationService;
+import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationServiceAsync;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountStringListItem;
+import org.eclipse.kapua.app.console.module.account.shared.model.permission.AccountSessionPermission;
+import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
+import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractView;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.MainViewDescriptor;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaMenuItem;
+import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.module.api.client.util.UserAgentUtils;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleService;
+import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleServiceAsync;
+
+import java.util.List;
 
 public class NorthView extends LayoutContainer {
 
@@ -102,6 +102,7 @@ public class NorthView extends LayoutContainer {
         this.selectedAccountName = currentSession.getSelectedAccountName();
     }
 
+    @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
 
@@ -151,9 +152,9 @@ public class NorthView extends LayoutContainer {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                final Menu userActionMenu = new Menu();
+                Menu userActionMenu = new Menu();
                 MenuItem switchToAccountMenuItem = null;
-                if (currentSession.hasAccountReadPermission()) {
+                if (currentSession.hasPermission(AccountSessionPermission.read())) {
                     switchToAccountMenuItem = createAccountNavigationMenuItem();
                 }
 
@@ -168,10 +169,12 @@ public class NorthView extends LayoutContainer {
                     public void componentSelected(MenuEvent ce) {
                         gwtAuthorizationService.logout(new AsyncCallback<Void>() {
 
+                            @Override
                             public void onFailure(Throwable caught) {
                                 FailureHandler.handle(caught);
                             }
 
+                            @Override
                             public void onSuccess(Void arg0) {
                                 ConsoleInfo.display("Info", "Logged out!");
                                 Logout.logout();
@@ -217,7 +220,7 @@ public class NorthView extends LayoutContainer {
     /**
      * Creates an MenuItem with the list of all child accounts of the account of the current logged user,
      * and also add as first sub-MenuItem the name of the root account.
-     * 
+     *
      * @return the MenuItem
      */
     public MenuItem createAccountNavigationMenuItem() {
@@ -246,13 +249,11 @@ public class NorthView extends LayoutContainer {
     /**
      * Populates a Menu objects with a entry for each child account for the given account.
      * It does this recursively for each child.
-     * 
-     * @param menu
-     *            the menu to fill
-     * @param accountId
-     *            the account of the current menu item.
+     *
+     * @param menu      the menu to fill
+     * @param accountId the account of the current menu item.
      */
-    private void populateNavigatorMenu(final Menu menu, final String accountId) {
+    private void populateNavigatorMenu(final Menu menu, String accountId) {
         gwtAccountService.findChildrenAsStrings(accountId,
                 false,
                 new AsyncCallback<ListLoadResult<GwtAccountStringListItem>>() {
@@ -304,9 +305,8 @@ public class NorthView extends LayoutContainer {
     /**
      * Make the switch between accounts when an account is selected from
      * the account navigator.
-     * 
-     * @param ce
-     *            The MenuEvent that has been fired with the selection of a menu entry.
+     *
+     * @param ce The MenuEvent that has been fired with the selection of a menu entry.
      */
     private void switchToAccount(MenuEvent ce) {
         String accountName = ce.getItem().getTitle();
@@ -364,7 +364,7 @@ public class NorthView extends LayoutContainer {
     /**
      * Updates the UserActionButton label with the current selected informations for username and target account.<br/>
      * The label format is:<br/>
-     * 
+     * <p>
      * If the display name of the user is defined:<br/>
      * {displayName} @ {selectedAccountName}<br/>
      * else:<br/>
@@ -394,7 +394,7 @@ public class NorthView extends LayoutContainer {
      * Split long string into multiple rows.
      * Used for correct display of tooltip with user and account name.
      *
-     * @param source long input string
+     * @param source  long input string
      * @param lineLen length of single line
      * @return single string with line separators
      */

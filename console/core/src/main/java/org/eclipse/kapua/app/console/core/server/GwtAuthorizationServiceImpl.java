@@ -23,44 +23,44 @@ import org.eclipse.kapua.app.console.module.account.shared.util.KapuaGwtAccountM
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.module.user.shared.model.user.GwtUser;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermission;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionAction;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 import org.eclipse.kapua.app.console.module.user.shared.util.KapuaGwtUserModelConverter;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+import org.eclipse.kapua.commons.util.ThrowingRunnable;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
-import org.eclipse.kapua.service.account.internal.AccountDomain;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
-import org.eclipse.kapua.service.authentication.credential.shiro.CredentialDomain;
 import org.eclipse.kapua.service.authentication.registration.RegistrationService;
 import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationException;
-import org.eclipse.kapua.service.authorization.AuthorizationService;
-import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoDomain;
-import org.eclipse.kapua.service.authorization.domain.Domain;
-import org.eclipse.kapua.service.authorization.domain.shiro.DomainDomain;
-import org.eclipse.kapua.service.authorization.group.Group;
-import org.eclipse.kapua.service.authorization.group.shiro.GroupDomain;
-import org.eclipse.kapua.service.authorization.permission.Actions;
-import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.authorization.role.shiro.RoleDomain;
-import org.eclipse.kapua.service.datastore.DatastoreDomain;
-import org.eclipse.kapua.service.device.management.commons.DeviceManagementDomain;
-import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionDomain;
-import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventDomain;
-import org.eclipse.kapua.service.device.registry.internal.DeviceDomain;
-import org.eclipse.kapua.service.job.internal.JobDomain;
-import org.eclipse.kapua.service.tag.internal.TagDomain;
+import org.eclipse.kapua.service.authorization.access.AccessInfo;
+import org.eclipse.kapua.service.authorization.access.AccessInfoService;
+import org.eclipse.kapua.service.authorization.access.AccessPermission;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
+import org.eclipse.kapua.service.authorization.access.AccessRole;
+import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
+import org.eclipse.kapua.service.authorization.access.AccessRoleService;
+import org.eclipse.kapua.service.authorization.permission.Action;
+import org.eclipse.kapua.service.authorization.permission.Permission;
+import org.eclipse.kapua.service.authorization.role.Role;
+import org.eclipse.kapua.service.authorization.role.RolePermission;
+import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
+import org.eclipse.kapua.service.authorization.role.RolePermissionService;
+import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
-import org.eclipse.kapua.service.user.internal.UserDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,23 +73,17 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
 
     private static final Logger logger = LoggerFactory.getLogger(GwtAuthorizationServiceImpl.class);
 
-    private static final Domain ACCOUNT_DOMAIN = new AccountDomain();
-    private static final Domain DEVICE_DOMAIN = new DeviceDomain();
-    private static final Domain DEVICE_EVENT_DOMAIN = new DeviceEventDomain();
-    private static final Domain DEVICE_MANAGEMENT_DOMAIN = new DeviceManagementDomain();
-    private static final Domain DATASTORE_DOMAIN = new DatastoreDomain();
-    private static final Domain TAG_DOMAIN = new TagDomain();
-    private static final Domain USER_DOMAIN = new UserDomain();
-    private static final Domain ROLE_DOMAIN = new RoleDomain();
-    private static final Domain GROUP_DOMAIN = new GroupDomain();
-    private static final Domain CREDENTIAL_DOMAIN = new CredentialDomain();
-    private static final Domain CONNECTION_DOMAIN = new DeviceConnectionDomain();
-    private static final Domain JOB_DOMAIN = new JobDomain();
-    private static final Domain ACCESS_INFO_DOMAIN = new AccessInfoDomain();
-    private static final Domain DOMAIN_DOMAIN = new DomainDomain();
-
     public static final String SESSION_CURRENT = "console.current.session";
     public static final String SESSION_CURRENT_USER = "console.current.user";
+
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final AccessInfoService ACCESS_INFO_SERVICE = LOCATOR.getService(AccessInfoService.class);
+    private static final AccessPermissionService ACCESS_PERMISSION_SERVICE = LOCATOR.getService(AccessPermissionService.class);
+
+    private static final AccessRoleService ACCESS_ROLE_SERVICE = LOCATOR.getService(AccessRoleService.class);
+    private static final RoleService ROLE_SERVICE = LOCATOR.getService(RoleService.class);
+    private static final RolePermissionService ROLE_PERMISSION_SERVICE = LOCATOR.getService(RolePermissionService.class);
 
     /**
      * Login call in response to the login dialog.
@@ -237,85 +231,13 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         // Get user info
         final UserService userService = locator.getService(UserService.class);
         logger.debug("Looking up - scopeId: {}, userId: {}", kapuaSession.getScopeId(), kapuaSession.getUserId());
-        User user = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
+        final User user = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
 
             @Override
             public User call() throws Exception {
                 return userService.find(kapuaSession.getScopeId(), kapuaSession.getUserId());
             }
         });
-
-        //
-        // Get permission info
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-
-        boolean hasAccountCreate = authorizationService.isPermitted(permissionFactory.newPermission(ACCOUNT_DOMAIN, Actions.write, kapuaSession.getScopeId()));
-        boolean hasAccountRead = authorizationService.isPermitted(permissionFactory.newPermission(ACCOUNT_DOMAIN, Actions.read, kapuaSession.getScopeId()));
-        boolean hasAccountUpdate = authorizationService.isPermitted(permissionFactory.newPermission(ACCOUNT_DOMAIN, Actions.write, kapuaSession.getScopeId()));
-        boolean hasAccountDelete = authorizationService.isPermitted(permissionFactory.newPermission(ACCOUNT_DOMAIN, Actions.delete, kapuaSession.getScopeId()));
-        boolean hasAccountAll = authorizationService.isPermitted(permissionFactory.newPermission(ACCOUNT_DOMAIN, null, null));
-
-        boolean hasDeviceCreate = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_DOMAIN, Actions.write, kapuaSession.getScopeId(), Group.ANY));
-        boolean hasDeviceRead = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_DOMAIN, Actions.read, kapuaSession.getScopeId(), Group.ANY));
-        boolean hasDeviceUpdate = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_DOMAIN, Actions.write, kapuaSession.getScopeId(), Group.ANY));
-        boolean hasDeviceDelete = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_DOMAIN, Actions.delete, kapuaSession.getScopeId(), Group.ANY));
-
-        boolean hasDeviceEventCreate = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_EVENT_DOMAIN, Actions.write, kapuaSession.getScopeId()));
-        boolean hasDeviceEventRead = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_EVENT_DOMAIN, Actions.read, kapuaSession.getScopeId()));
-        boolean hasDeviceEventUpdate = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_EVENT_DOMAIN, Actions.write, kapuaSession.getScopeId()));
-        boolean hasDeviceEventDelete = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_EVENT_DOMAIN, Actions.delete, kapuaSession.getScopeId()));
-
-        boolean hasDeviceManageRead = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.read, kapuaSession.getScopeId()));
-        boolean hasDeviceManageWrite = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.write, kapuaSession.getScopeId()));
-        boolean hasDeviceManageExecute = authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.execute, kapuaSession.getScopeId()));
-
-        boolean hasDataRead = authorizationService.isPermitted(permissionFactory.newPermission(DATASTORE_DOMAIN, Actions.read, kapuaSession.getScopeId()));
-
-        boolean hasTagCreate = authorizationService.isPermitted(permissionFactory.newPermission(TAG_DOMAIN, Actions.write, kapuaSession.getScopeId()));
-        boolean hasTagRead = authorizationService.isPermitted(permissionFactory.newPermission(TAG_DOMAIN, Actions.read, kapuaSession.getScopeId()));
-        boolean hasTagUpdate = authorizationService.isPermitted(permissionFactory.newPermission(TAG_DOMAIN, Actions.write, kapuaSession.getScopeId()));
-        boolean hasTagDelete = authorizationService.isPermitted(permissionFactory.newPermission(TAG_DOMAIN, Actions.delete, kapuaSession.getScopeId()));
-
-        boolean hasUserCreate = authorizationService.isPermitted(permissionFactory.newPermission(USER_DOMAIN, Actions.write, kapuaSession.getScopeId()));
-        boolean hasUserRead = authorizationService.isPermitted(permissionFactory.newPermission(USER_DOMAIN, Actions.read, kapuaSession.getScopeId()));
-        boolean hasUserUpdate = authorizationService.isPermitted(permissionFactory.newPermission(USER_DOMAIN, Actions.write, kapuaSession.getScopeId()));
-        boolean hasUserDelete = authorizationService.isPermitted(permissionFactory.newPermission(USER_DOMAIN, Actions.delete, kapuaSession.getScopeId()));
-
-        boolean hasRoleCreate = authorizationService.isPermitted(permissionFactory.newPermission(ROLE_DOMAIN, Actions.write, kapuaSession.getScopeId()));
-        boolean hasRoleRead = authorizationService.isPermitted(permissionFactory.newPermission(ROLE_DOMAIN, Actions.read, kapuaSession.getScopeId()));
-        boolean hasRoleUpdate = authorizationService.isPermitted(permissionFactory.newPermission(ROLE_DOMAIN, Actions.write, kapuaSession.getScopeId()));
-        boolean hasRoleDelete = authorizationService.isPermitted(permissionFactory.newPermission(ROLE_DOMAIN, Actions.delete, kapuaSession.getScopeId()));
-
-        boolean hasGroupCreate = authorizationService.isPermitted(permissionFactory.newPermission(GROUP_DOMAIN, Actions.write, kapuaSession.getScopeId()));
-        boolean hasGroupRead = authorizationService.isPermitted(permissionFactory.newPermission(GROUP_DOMAIN, Actions.read, kapuaSession.getScopeId()));
-        boolean hasGroupUpdate = authorizationService.isPermitted(permissionFactory.newPermission(GROUP_DOMAIN, Actions.write, kapuaSession.getScopeId()));
-        boolean hasGroupDelete = authorizationService.isPermitted(permissionFactory.newPermission(GROUP_DOMAIN, Actions.delete, kapuaSession.getScopeId()));
-
-        boolean hasCredentialCreate = authorizationService.isPermitted(permissionFactory.newPermission(CREDENTIAL_DOMAIN, Actions.write, kapuaSession.getScopeId()));
-        boolean hasCredentialRead = authorizationService.isPermitted(permissionFactory.newPermission(CREDENTIAL_DOMAIN, Actions.read, kapuaSession.getScopeId()));
-        boolean hasCredentialUpdate = authorizationService.isPermitted(permissionFactory.newPermission(CREDENTIAL_DOMAIN, Actions.write, kapuaSession.getScopeId()));
-        boolean hasCredentialDelete = authorizationService.isPermitted(permissionFactory.newPermission(CREDENTIAL_DOMAIN, Actions.delete, kapuaSession.getScopeId()));
-
-        boolean hasConnectionCreate = authorizationService.isPermitted(permissionFactory.newPermission(CONNECTION_DOMAIN, Actions.write, kapuaSession.getScopeId()));
-        boolean hasConnectionRead = authorizationService.isPermitted(permissionFactory.newPermission(CONNECTION_DOMAIN, Actions.read, kapuaSession.getScopeId()));
-        boolean hasConnectionUpdate = authorizationService.isPermitted(permissionFactory.newPermission(CONNECTION_DOMAIN, Actions.write, kapuaSession.getScopeId()));
-        boolean hasConnectionDelete = authorizationService.isPermitted(permissionFactory.newPermission(CONNECTION_DOMAIN, Actions.delete, kapuaSession.getScopeId()));
-
-        boolean hasJobCreate = authorizationService.isPermitted(permissionFactory.newPermission(JOB_DOMAIN, Actions.write, kapuaSession.getScopeId()));
-        boolean hasJobRead = authorizationService.isPermitted(permissionFactory.newPermission(JOB_DOMAIN, Actions.read, kapuaSession.getScopeId()));
-        boolean hasJobUpdate = authorizationService.isPermitted(permissionFactory.newPermission(JOB_DOMAIN, Actions.write, kapuaSession.getScopeId()));
-        boolean hasJobDelete = authorizationService.isPermitted(permissionFactory.newPermission(JOB_DOMAIN, Actions.delete, kapuaSession.getScopeId()));
-
-        boolean hasAccessInfoCreate = authorizationService.isPermitted(permissionFactory.newPermission(ACCESS_INFO_DOMAIN, Actions.write, kapuaSession.getScopeId()));
-        boolean hasAccessInfoRead = authorizationService.isPermitted(permissionFactory.newPermission(ACCESS_INFO_DOMAIN, Actions.read, kapuaSession.getScopeId()));
-        boolean hasAccessInfoUpdate = authorizationService.isPermitted(permissionFactory.newPermission(ACCESS_INFO_DOMAIN, Actions.write, kapuaSession.getScopeId()));
-        boolean hasAccessInfoDelete = authorizationService.isPermitted(permissionFactory.newPermission(ACCESS_INFO_DOMAIN, Actions.delete, kapuaSession.getScopeId()));
-
-        boolean hasDomainCreate = authorizationService.isPermitted(permissionFactory.newPermission(DOMAIN_DOMAIN, Actions.write, kapuaSession.getScopeId()));
-        boolean hasDomainRead = authorizationService.isPermitted(permissionFactory.newPermission(DOMAIN_DOMAIN, Actions.read, kapuaSession.getScopeId()));
-        boolean hasDomainUpdate = authorizationService.isPermitted(permissionFactory.newPermission(DOMAIN_DOMAIN, Actions.write, kapuaSession.getScopeId()));
-        boolean hasDomainDelete = authorizationService.isPermitted(permissionFactory.newPermission(DOMAIN_DOMAIN, Actions.delete, kapuaSession.getScopeId()));
 
         //
         // Get account info
@@ -335,7 +257,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
 
         //
         // Build the session
-        GwtSession gwtSession = new GwtSession();
+        final GwtSession gwtSession = new GwtSession();
 
         // Console info
         SystemSetting commonsConfig = SystemSetting.getInstance();
@@ -354,79 +276,36 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         gwtSession.setRootAccountName(gwtAccount.getName());
         gwtSession.setSelectedAccountName(gwtAccount.getName());
 
-        // Permission info
-        gwtSession.setAccountCreatePermission(hasAccountCreate);
-        gwtSession.setAccountReadPermission(hasAccountRead);
-        gwtSession.setAccountUpdatePermission(hasAccountUpdate);
-        gwtSession.setAccountDeletePermission(hasAccountDelete);
-        gwtSession.setAccountAllPermission(hasAccountAll);
-
-        gwtSession.setDeviceCreatePermission(hasDeviceCreate);
-        gwtSession.setDeviceReadPermission(hasDeviceRead);
-        gwtSession.setDeviceUpdatePermission(hasDeviceUpdate);
-        gwtSession.setDeviceDeletePermission(hasDeviceDelete);
-
-        gwtSession.setDeviceManageReadPermission(hasDeviceManageRead);
-        gwtSession.setDeviceManageWritePermission(hasDeviceManageWrite);
-        gwtSession.setDeviceManageExecutePermission(hasDeviceManageExecute);
-
-        gwtSession.setDeviceEventCreatePermission(hasDeviceEventCreate);
-        gwtSession.setDeviceEventReadPermission(hasDeviceEventRead);
-        gwtSession.setDeviceEventUpdatePermission(hasDeviceEventUpdate);
-        gwtSession.setDeviceEventDeletePermission(hasDeviceEventDelete);
-
-        gwtSession.setDataReadPermission(hasDataRead);
-
-        gwtSession.setTagCreatePermission(hasTagCreate);
-        gwtSession.setTagReadPermission(hasTagRead);
-        gwtSession.setTagUpdatePermission(hasTagUpdate);
-        gwtSession.setTagDeletePermission(hasTagDelete);
-
-        gwtSession.setUserCreatePermission(hasUserCreate);
-        gwtSession.setUserReadPermission(hasUserRead);
-        gwtSession.setUserUpdatePermission(hasUserUpdate);
-        gwtSession.setUserDeletePermission(hasUserDelete);
-
-        gwtSession.setRoleCreatePermission(hasRoleCreate);
-        gwtSession.setRoleReadPermission(hasRoleRead);
-        gwtSession.setRoleUpdatePermission(hasRoleUpdate);
-        gwtSession.setRoleDeletePermission(hasRoleDelete);
-
-        gwtSession.setGroupCreatePermission(hasGroupCreate);
-        gwtSession.setGroupReadPermission(hasGroupRead);
-        gwtSession.setGroupUpdatePermission(hasGroupUpdate);
-        gwtSession.setGroupDeletePermission(hasGroupDelete);
-
-        gwtSession.setCredentialCreatePermission(hasCredentialCreate);
-        gwtSession.setCredentialReadPermission(hasCredentialRead);
-        gwtSession.setCredentialUpdatePermission(hasCredentialUpdate);
-        gwtSession.setCredentialDeletePermission(hasCredentialDelete);
-
-        gwtSession.setConnectionCreatePermission(hasConnectionCreate);
-        gwtSession.setConnectionReadPermission(hasConnectionRead);
-        gwtSession.setConnectionUpdatePermission(hasConnectionUpdate);
-        gwtSession.setConnectionDeletePermission(hasConnectionDelete);
-
-        gwtSession.setJobCreatePermission(hasJobCreate);
-        gwtSession.setJobReadPermission(hasJobRead);
-        gwtSession.setJobUpdatePermission(hasJobUpdate);
-        gwtSession.setJobDeletePermission(hasJobDelete);
-
-        gwtSession.setAccessInfoCreatePermission(hasAccessInfoCreate);
-        gwtSession.setAccessInfoReadPermission(hasAccessInfoRead);
-        gwtSession.setAccessInfoUpdatePermission(hasAccessInfoUpdate);
-        gwtSession.setAccessInfoDeletePermission(hasAccessInfoDelete);
-
-        gwtSession.setDomainCreatePermission(hasDomainCreate);
-        gwtSession.setDomainReadPermission(hasDomainRead);
-        gwtSession.setDomainUpdatePermission(hasDomainUpdate);
-        gwtSession.setDomainDeletePermission(hasDomainDelete);
-
         //
-        // Saving session data in session
-        // Session session = currentUser.getSession();
-        // session.setAttribute(SESSION_CURRENT, gwtSession);
-        // session.setAttribute(SESSION_CURRENT_USER, user);
+        // Load permissions
+        KapuaSecurityUtils.doPrivileged(new ThrowingRunnable() {
+
+            @Override
+            public void run() throws Exception {
+                AccessInfo userAccessInfo = ACCESS_INFO_SERVICE.findByUserId(user.getScopeId(), user.getId());
+
+                if (userAccessInfo != null) {
+
+                    // Permission info
+                    AccessPermissionListResult accessPermissions = ACCESS_PERMISSION_SERVICE.findByAccessInfoId(userAccessInfo.getScopeId(), userAccessInfo.getId());
+                    for (AccessPermission ap : accessPermissions.getItems()) {
+                        gwtSession.addSessionPermission(convert(ap.getPermission()));
+                    }
+
+                    // Role info
+                    AccessRoleListResult accessRoles = ACCESS_ROLE_SERVICE.findByAccessInfoId(user.getScopeId(), user.getId());
+
+                    for (AccessRole ar : accessRoles.getItems()) {
+                        Role role = ROLE_SERVICE.find(ar.getScopeId(), ar.getRoleId());
+
+                        RolePermissionListResult rolePermissions = ROLE_PERMISSION_SERVICE.findByRoleId(role.getScopeId(), role.getId());
+                        for (RolePermission rp : rolePermissions.getItems()) {
+                            gwtSession.addSessionPermission(convert(rp.getPermission()));
+                        }
+                    }
+                }
+            }
+        });
 
         return gwtSession;
     }
@@ -449,6 +328,31 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
+    }
+
+    private GwtSessionPermission convert(Permission permission) {
+        // Domain parsing
+        String domain = permission.getDomain();
+
+        // Action parsing
+        GwtSessionPermissionAction action = convert(permission.getAction());
+
+        // Target scope parsing
+        GwtSessionPermissionScope gwtSessionPermissionScope;
+        if (permission.getTargetScopeId() == null) {
+            gwtSessionPermissionScope = GwtSessionPermissionScope.ALL;
+        } else if (permission.getForwardable()) {
+            gwtSessionPermissionScope = GwtSessionPermissionScope.CHILDREN;
+        } else {
+            gwtSessionPermissionScope = GwtSessionPermissionScope.SELF;
+        }
+
+        // Create converted object
+        return new GwtSessionPermission(domain, action, gwtSessionPermissionScope);
+    }
+
+    private GwtSessionPermissionAction convert(Action action) {
+        return action != null ? GwtSessionPermissionAction.valueOf(action.name()) : null;
     }
 
 }

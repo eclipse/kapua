@@ -11,14 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.api.client.ui.panel;
 
-import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
-import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
@@ -31,6 +23,13 @@ import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.core.client.GWT;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 
 public abstract class EntityFilterPanel<M extends GwtEntityModel> extends ContentPanel {
 
@@ -51,7 +50,7 @@ public abstract class EntityFilterPanel<M extends GwtEntityModel> extends Conten
 
         //
         // Top explanation
-        final Text infoLabel = new Text(MSGS.filteringPanelInfo());
+        Text infoLabel = new Text(MSGS.filteringPanelInfo());
         infoLabel.setWidth(WIDTH + 5);
         infoLabel.setStyleAttribute("margin", "5px");
 

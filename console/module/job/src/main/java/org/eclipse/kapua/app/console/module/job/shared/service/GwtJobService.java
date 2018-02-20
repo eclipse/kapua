@@ -17,9 +17,9 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJob;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobCreator;
-import org.eclipse.kapua.app.console.module.job.shared.model.job.GwtJobQuery;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJob;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobCreator;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobQuery;
 
 @RemoteServiceRelativePath("job")
 public interface GwtJobService extends RemoteService {
@@ -43,9 +43,8 @@ public interface GwtJobService extends RemoteService {
      * @param jobId
      * @return
      * @throws GwtKapuaException
-     *
      */
-     GwtJob find(String accountId, String jobId)
+    GwtJob find(String accountId, String jobId)
             throws GwtKapuaException;
 
     /**
@@ -55,7 +54,7 @@ public interface GwtJobService extends RemoteService {
      * @return
      * @throws GwtKapuaException
      */
-     GwtJob update(GwtXSRFToken xsrfToken, GwtJob gwtJob)
+    GwtJob update(GwtXSRFToken xsrfToken, GwtJob gwtJob)
             throws GwtKapuaException;
 
     /**
@@ -64,6 +63,6 @@ public interface GwtJobService extends RemoteService {
      * @param gwtJobId
      * @throws GwtKapuaException
      */
-     void delete(GwtXSRFToken xsfrToken, String accountId, String gwtJobId)
+    void delete(GwtXSRFToken xsfrToken, String accountId, String gwtJobId)
             throws GwtKapuaException;
 }

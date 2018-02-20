@@ -11,10 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.account.client.childuser;
 
-import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractEntityTabDescriptor;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.module.account.client.AccountView;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractEntityTabDescriptor;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.user.shared.model.permission.UserSessionPermission;
 
 public class AccountChildUserTabDescriptor extends AbstractEntityTabDescriptor<GwtAccount, AccountChildUserTab, AccountView> {
 
@@ -35,6 +36,6 @@ public class AccountChildUserTabDescriptor extends AbstractEntityTabDescriptor<G
 
     @Override
     public Boolean isEnabled(GwtSession currentSession) {
-        return currentSession.hasUserReadPermission();
+        return currentSession.hasPermission(UserSessionPermission.read());
     }
 }

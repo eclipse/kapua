@@ -11,21 +11,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.client.connection;
 
-import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
-import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
-import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
-import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
-import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleConnectionMessages;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPredicates;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionQuery;
-
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.google.gwt.core.client.GWT;
+import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
+import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleConnectionMessages;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionQuery;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPredicates;
 
 public class ConnectionFilterPanel extends EntityFilterPanel<GwtDeviceConnection> {
 
@@ -47,7 +46,7 @@ public class ConnectionFilterPanel extends EntityFilterPanel<GwtDeviceConnection
 
         VerticalPanel fieldsPanel = getFieldsPanel();
         setHeading(MSGS.connectionFilterHeader());
-        final Label clientIdLabel = new Label(MSGS.connectionFilterClientIdLabel());
+        Label clientIdLabel = new Label(MSGS.connectionFilterClientIdLabel());
         clientIdLabel.setWidth(WIDTH);
         clientIdLabel.setStyleAttribute("margin", "5px");
         fieldsPanel.add(clientIdLabel);
@@ -62,7 +61,7 @@ public class ConnectionFilterPanel extends EntityFilterPanel<GwtDeviceConnection
         clientIdField.setStyleAttribute("margin-bottom", "10px");
         fieldsPanel.add(clientIdField);
 
-        final Label connectionStatusLabel = new Label(MSGS.connectionFilterConnectionStatus());
+        Label connectionStatusLabel = new Label(MSGS.connectionFilterConnectionStatus());
         connectionStatusLabel.setWidth(WIDTH);
         connectionStatusLabel.setStyleAttribute("margin", "5px");
         fieldsPanel.add(connectionStatusLabel);
@@ -86,7 +85,7 @@ public class ConnectionFilterPanel extends EntityFilterPanel<GwtDeviceConnection
 
         fieldsPanel.add(connectionStatusCombo);
 
-        final Label clientIPFilterLabel = new Label(MSGS.connectionFilterCLientIPLabel());
+        Label clientIPFilterLabel = new Label(MSGS.connectionFilterCLientIPLabel());
         clientIPFilterLabel.setWidth(WIDTH);
         clientIPFilterLabel.setStyleAttribute("margin", "5px");
         fieldsPanel.add(clientIPFilterLabel);

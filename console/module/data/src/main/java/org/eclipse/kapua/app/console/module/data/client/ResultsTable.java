@@ -12,19 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.data.client;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.ExportButton;
-import org.eclipse.kapua.app.console.module.api.client.ui.widget.DateRangeSelector;
-import org.eclipse.kapua.app.console.module.api.client.ui.widget.DateRangeSelectorListener;
-import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaMenuItem;
-import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolBar;
-import org.eclipse.kapua.app.console.module.api.client.util.SwappableListStore;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
-
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
@@ -54,6 +41,14 @@ import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.ExportButton;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.DateRangeSelector;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.DateRangeSelectorListener;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaMenuItem;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolBar;
+import org.eclipse.kapua.app.console.module.api.client.util.SwappableListStore;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.data.client.messages.ConsoleDataMessages;
 import org.eclipse.kapua.app.console.module.data.client.util.GwtMessage;
 import org.eclipse.kapua.app.console.module.data.shared.model.GwtDatastoreAsset;
@@ -62,6 +57,10 @@ import org.eclipse.kapua.app.console.module.data.shared.model.GwtDatastoreDevice
 import org.eclipse.kapua.app.console.module.data.shared.model.GwtHeader;
 import org.eclipse.kapua.app.console.module.data.shared.service.GwtDataService;
 import org.eclipse.kapua.app.console.module.data.shared.service.GwtDataServiceAsync;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class ResultsTable extends LayoutContainer {
 
@@ -329,6 +328,7 @@ public class ResultsTable extends LayoutContainer {
     // Unload of the GXT Component
     //
     // --------------------------------------------------------------------------------------
+    @Override
     public void onUnload() {
         super.onUnload();
     }

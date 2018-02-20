@@ -12,7 +12,7 @@
 package org.eclipse.kapua.app.console.module.api.client.ui.view;
 
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 
 public abstract class AbstractView extends LayoutContainer implements View {
 

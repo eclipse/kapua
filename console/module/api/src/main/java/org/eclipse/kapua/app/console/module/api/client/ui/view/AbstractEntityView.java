@@ -27,7 +27,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.panel.KapuaTabPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.TabDescriptor;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleService;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleServiceAsync;
 
@@ -63,7 +63,7 @@ public abstract class AbstractEntityView<M extends GwtEntityModel> extends Abstr
     }
 
     @Override
-    protected void onRender(final Element parent, int index) {
+    protected void onRender(Element parent, int index) {
 
         super.onRender(parent, index);
 
