@@ -12,7 +12,6 @@
 package org.eclipse.kapua.app.console.module.user.client.dialog;
 
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
@@ -27,6 +26,7 @@ import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaDateField;
 import org.eclipse.kapua.app.console.module.api.client.util.Constants;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
@@ -53,7 +53,7 @@ public class UserAddDialog extends EntityAddEditDialog {
     protected TextField<String> email;
     protected TextField<String> phoneNumber;
     protected SimpleComboBox<GwtUser.GwtUserStatus> userStatus;
-    protected DateField expirationDate;
+    protected KapuaDateField expirationDate;
     protected NumberField optlock;
 
     private GwtUserServiceAsync gwtUserService = GWT.create(GwtUserService.class);
@@ -167,7 +167,7 @@ public class UserAddDialog extends EntityAddEditDialog {
         userStatus.setSimpleValue(GwtUser.GwtUserStatus.ENABLED);
         statusFieldSet.add(userStatus, subFieldsetFormData);
 
-        expirationDate = new DateField();
+        expirationDate = new KapuaDateField();
         expirationDate.setName("expirationDate");
         expirationDate.setFormatValue(true);
         expirationDate.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
@@ -176,6 +176,7 @@ public class UserAddDialog extends EntityAddEditDialog {
         expirationDate.setAllowBlank(true);
         expirationDate.setEmptyText(MSGS.dialogAddNoExpiration());
         expirationDate.setValue(null);
+        expirationDate.setMaxLength(10);
         statusFieldSet.add(expirationDate, subFieldsetFormData);
 
         userFormPanel.add(infoFieldSet, subFormData);

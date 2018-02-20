@@ -113,5 +113,6 @@ public class UserEditDialog extends UserAddDialog {
         phoneNumber.setValue(gwtUser.getPhoneNumber());
         userStatus.setSimpleValue(gwtUser.getStatusEnum());
         expirationDate.setValue(gwtUser.getExpirationDate());
+        expirationDate.setMaxLength(10);
     }
 }
