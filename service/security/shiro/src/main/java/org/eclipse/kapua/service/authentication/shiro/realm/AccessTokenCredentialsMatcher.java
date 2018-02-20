@@ -15,10 +15,13 @@ import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
+import org.eclipse.kapua.service.authentication.shiro.exceptions.JwtCertificateNotFoundException;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
@@ -27,6 +30,7 @@ import org.eclipse.kapua.service.certificate.CertificateFactory;
 import org.eclipse.kapua.service.certificate.CertificatePredicates;
 import org.eclipse.kapua.service.certificate.CertificateQuery;
 import org.eclipse.kapua.service.certificate.CertificateService;
+import org.eclipse.kapua.service.certificate.CertificateStatus;
 import org.eclipse.kapua.service.certificate.util.CertificateUtils;
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumer;
@@ -35,13 +39,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * {@link AccessTokenCredentials} credential matcher implementation
+ * {@link AccessTokenCredentials} {@link CredentialsMatcher} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class AccessTokenCredentialsMatcher implements CredentialsMatcher {
 
-    private static Logger logger = LoggerFactory.getLogger(AccessTokenCredentialsMatcher.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AccessTokenCredentialsMatcher.class);
+
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final CertificateService CERTIFICATE_SERVICE = LOCATOR.getService(CertificateService.class);
+    private static final CertificateFactory CERTIFICATE_FACTORY = LOCATOR.getFactory(CertificateFactory.class);
 
     @Override
     public boolean doCredentialsMatch(AuthenticationToken authenticationToken, AuthenticationInfo authenticationInfo) {
@@ -61,15 +70,22 @@ public class AccessTokenCredentialsMatcher implements CredentialsMatcher {
             KapuaAuthenticationSetting settings = KapuaAuthenticationSetting.getInstance();
             try {
                 String issuer = settings.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_SESSION_JWT_ISSUER);
-                KapuaLocator locator = KapuaLocator.getInstance();
 
-                CertificateService certificateService = locator.getService(CertificateService.class);
-                CertificateFactory certificateFactory = locator.getFactory(CertificateFactory.class);
-                CertificateQuery certificateQuery = certificateFactory.newQuery(null);
-                certificateQuery.setPredicate(new AttributePredicate<>(CertificatePredicates.USAGE_NAME, "JWT"));
+                CertificateQuery certificateQuery = CERTIFICATE_FACTORY.newQuery(null);
+                certificateQuery.setPredicate(
+                        new AndPredicate(
+                                new AttributePredicate<>(CertificatePredicates.USAGE_NAME, "JWT"),
+                                new AttributePredicate<>(CertificatePredicates.STATUS, CertificateStatus.VALID)
+                        )
+                );
+                certificateQuery.setSortCriteria(new FieldSortCriteria(CertificatePredicates.CREATED_BY, FieldSortCriteria.SortOrder.DESCENDING));
                 certificateQuery.setLimit(1);
 
-                Certificate certificate = KapuaSecurityUtils.doPrivileged(() -> certificateService.query(certificateQuery)).getItem(0);
+                Certificate certificate = KapuaSecurityUtils.doPrivileged(() -> CERTIFICATE_SERVICE.query(certificateQuery)).getFirstItem();
+
+                if (certificate == null) {
+                    throw new JwtCertificateNotFoundException();
+                }
 
                 //
                 // Set validator
@@ -89,7 +105,7 @@ public class AccessTokenCredentialsMatcher implements CredentialsMatcher {
 
                 // FIXME: if true cache token password for authentication performance improvement
             } catch (InvalidJwtException | KapuaException e) {
-                logger.error("Error while validating JWT access token", e);
+                LOG.error("Error while validating JWT access token", e);
             }
         }
 
