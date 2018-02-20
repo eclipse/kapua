@@ -107,8 +107,8 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
                         break;
 
                     default:
-                         icon = new KapuaIcon(IconSet.KEY);
-                            icon.setColor(Color.GREY);
+                        icon = new KapuaIcon(IconSet.KEY);
+                        icon.setColor(Color.GREY);
                         icon.setTitle(MSGS.unknown());
                         break;
                     }
@@ -188,9 +188,7 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
 
     public void setSelectedUserId(String selectedUserId) {
         this.selectedUserId = selectedUserId;
-        if (selectedUserId != null) {
-            query.setUserId(selectedUserId);
-        }
+        query.setUserId(selectedUserId);
         getToolbar().setSelectedUserId(selectedUserId);
     }
 

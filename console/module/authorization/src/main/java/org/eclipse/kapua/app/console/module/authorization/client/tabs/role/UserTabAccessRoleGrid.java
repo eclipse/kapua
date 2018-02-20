@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.client.tabs.role;
 
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
@@ -50,10 +51,14 @@ public class UserTabAccessRoleGrid extends EntityGrid<GwtAccessRole> {
 
             @Override
             protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtAccessRole>> callback) {
-                GWT_ACCESS_ROLE_SERVICE.findByUserId((PagingLoadConfig) loadConfig,
-                        currentSession.getSelectedAccountId(),
-                        userId,
-                        callback);
+                if (userId == null) {
+                    callback.onSuccess(new BasePagingLoadResult<GwtAccessRole>(new ArrayList<GwtAccessRole>()));
+                } else {
+                    GWT_ACCESS_ROLE_SERVICE.findByUserId((PagingLoadConfig) loadConfig,
+                            currentSession.getSelectedAccountId(),
+                            userId,
+                            callback);
+                }
             }
         };
     }
