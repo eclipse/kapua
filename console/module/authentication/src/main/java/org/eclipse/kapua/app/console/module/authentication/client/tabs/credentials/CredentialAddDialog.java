@@ -14,7 +14,6 @@ package org.eclipse.kapua.app.console.module.authentication.client.tabs.credenti
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
@@ -36,6 +35,7 @@ import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCrede
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialType;
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialService;
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialServiceAsync;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaDateField;
 
 public class CredentialAddDialog extends EntityAddEditDialog {
 
@@ -48,7 +48,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
     private LabelField subject;
     protected TextField<String> password;
     protected TextField<String> confirmPassword;
-    protected DateField expirationDate;
+    protected KapuaDateField expirationDate;
     SimpleComboBox<GwtCredentialStatus> credentialStatus;
     NumberField optlock;
 
@@ -111,11 +111,12 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         confirmPassword.setVisible(false);
         credentialFormPanel.add(confirmPassword);
 
-        expirationDate = new DateField();
+        expirationDate = new KapuaDateField();
         expirationDate.setEmptyText(MSGS.dialogAddNoExpiration());
         expirationDate.setFieldLabel(MSGS.dialogAddFieldExpirationDate());
         expirationDate.setFormatValue(true);
         expirationDate.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
+        expirationDate.setMaxLength(10);
         credentialFormPanel.add(expirationDate);
 
         credentialStatus = new SimpleComboBox<GwtCredentialStatus>();
