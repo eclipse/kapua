@@ -529,8 +529,8 @@ public class ServiceDAO {
             KapuaAndPredicate andPredicate = (KapuaAndPredicate) qp;
             expr = handleAndPredicate(andPredicate, binds, cb, userPermissionRoot, entityType);
         } else if (qp instanceof KapuaOrPredicate) {
-            KapuaOrPredicate andPredicate = (KapuaOrPredicate) qp;
-            expr = handleOrPredicate(andPredicate, binds, cb, userPermissionRoot, entityType);
+            KapuaOrPredicate orPredicate = (KapuaOrPredicate) qp;
+            expr = handleOrPredicate(orPredicate, binds, cb, userPermissionRoot, entityType);
         }
         return expr;
     }
@@ -551,14 +551,14 @@ public class ServiceDAO {
     }
 
     @SuppressWarnings("rawtypes")
-    private static <E> Expression<Boolean> handleOrPredicate(KapuaOrPredicate andPredicate,
+    private static <E> Expression<Boolean> handleOrPredicate(KapuaOrPredicate orPredicate,
             Map<ParameterExpression, Object> binds,
             CriteriaBuilder cb,
             Root<E> entityRoot,
             EntityType<E> entityType)
             throws KapuaException {
         List<Expression<Boolean>> exprs = new ArrayList<>();
-        for (KapuaPredicate pred : andPredicate.getPredicates()) {
+        for (KapuaPredicate pred : orPredicate.getPredicates()) {
             Expression<Boolean> expr = handleKapuaQueryPredicates(pred, binds, cb, entityRoot, entityType);
             exprs.add(expr);
         }
