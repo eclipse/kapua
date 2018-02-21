@@ -11,22 +11,22 @@
         Eurotech - initial API and implementation
  -->
 <databaseChangeLog
-  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
-  logicalFilePath="KapuaDB/changelog-housekeeper-1.0.0.xml">
+        logicalFilePath="KapuaDB/changelog-housekeeper-1.0.0.xml">
 
-    <include relativeToChangelogFile="true" file="../common-properties.xml" />
+    <include relativeToChangelogFile="true" file="../common-properties.xml"/>
 
     <changeSet id="changelog-housekeeper-run-1.0.0-createTable" author="eurotech">
         <createTable tableName="sys_housekeeper_run">
-            <column name="service" type="varchar(256)">
-                <constraints nullable="false" primaryKey="true" />
+            <column name="service" type="varchar(128)">
+                <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="last_run_on" type="timestamp(3)" />
-            <column name="last_run_by" type="varchar(256)" />
-            <column name="version" type="bigint(21) unsigned" />
+            <column name="last_run_on" type="timestamp(3)"/>
+            <column name="last_run_by" type="varchar(256)"/>
+            <column name="version" type="bigint(21) unsigned"/>
         </createTable>
 
         <rollback>
