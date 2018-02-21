@@ -67,7 +67,7 @@ public class JobTabExecutionsGrid extends EntityGrid<GwtExecution> {
     protected List<ColumnConfig> getColumns() {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
-        ColumnConfig columnConfig = new ColumnConfig("status", null, 30);
+        ColumnConfig columnConfig = new ColumnConfig("status", JOB_MSGS.gridJobExecutionColumnHeaderStatus(), 30);
         columnConfig.setSortable(false);
         columnConfig.setRenderer(new GridCellRenderer<GwtExecution>() {
 
