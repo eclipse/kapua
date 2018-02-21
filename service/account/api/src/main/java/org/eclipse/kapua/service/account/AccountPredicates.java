@@ -19,4 +19,6 @@ public interface AccountPredicates extends KapuaUpdatableEntityPredicates {
      * The {@link Account} name.
      */
     public static final String NAME = "name";
+
+    String PARENT_ACCOUNT_PATH = "parentAccountPath";
 }
