@@ -55,6 +55,10 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
     protected ListStore<M> entityStore;
     protected PagingToolBar entityPagingToolbar;
     protected EntityFilterPanel<M> filterPanel;
+
+    /* Some grids (most notably "slave" grids, i.e. the ones that depends from the entity *
+     * selected in another grid) should not be refreshed on render, otherwise they would be *
+     * refreshed twice and the paging toolbar may be disabled because of this */
     protected boolean refreshOnRender = true;
 
     protected EntityGrid(AbstractEntityView<M> entityView, GwtSession currentSession) {

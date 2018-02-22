@@ -23,6 +23,7 @@ import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandle
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
+import org.eclipse.kapua.app.console.module.api.shared.util.KapuaGwtCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTagCreator;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTagQuery;
@@ -39,6 +40,8 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.tag.TagCreator;
 import org.eclipse.kapua.service.tag.TagFactory;
@@ -224,4 +227,28 @@ public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtT
         return tagList;
     }
 
+    @Override
+    public PagingLoadResult<GwtTag> findByDeviceId(PagingLoadConfig loadConfig, String gwtScopeId, String gwtDeviceId) throws GwtKapuaException {
+        KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtScopeId);
+        KapuaId deviceId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtDeviceId);
+        KapuaLocator locator = KapuaLocator.getInstance();
+        DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
+        try {
+            Device device = deviceRegistryService.find(scopeId, deviceId);
+            if (device.getTagIds().size() == 0) {
+                return new BasePagingLoadResult<GwtTag>(new ArrayList<GwtTag>(), 0, 0);
+            }
+            List<String> gwtTagIds = new ArrayList<String>();
+            GwtTagQuery gwtTagQuery = new GwtTagQuery();
+            gwtTagQuery.setScopeId(gwtScopeId);
+            for (KapuaId tagId : device.getTagIds()) {
+                gwtTagIds.add(KapuaGwtCommonsModelConverter.convertKapuaId(tagId));
+            }
+            gwtTagQuery.setIds(gwtTagIds);
+            return query(loadConfig, gwtTagQuery);
+        } catch (Throwable t) {
+            KapuaExceptionHandler.handle(t);
+            return new BasePagingLoadResult<GwtTag>(new ArrayList<GwtTag>(), 0, 0);
+        }
+    }
 }

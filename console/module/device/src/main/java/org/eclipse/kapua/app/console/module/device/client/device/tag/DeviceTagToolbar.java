@@ -32,7 +32,6 @@ public class DeviceTagToolbar extends TagToolbarGrid {
 
     public void setSelectedDevice(GwtDevice selectedDevice) {
         this.selectedDevice = selectedDevice;
-
         updateButtonEnablement();
     }
 

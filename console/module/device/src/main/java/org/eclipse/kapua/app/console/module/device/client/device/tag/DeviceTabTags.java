@@ -29,7 +29,6 @@ public class DeviceTabTags extends KapuaTabItem<GwtDevice> {
     public DeviceTabTags(GwtSession currentSession) {
         super(currentSession, DEVICES_MSGS.tabTagsTitle(), new KapuaIcon(IconSet.TAGS));
         deviceTagGrid = new DeviceTagGrid(null, currentSession, selectedEntity);
-        deviceTagGrid.setRefreshOnRender(false);
     }
 
     @Override
@@ -41,7 +40,6 @@ public class DeviceTabTags extends KapuaTabItem<GwtDevice> {
     @Override
     public void setEntity(GwtDevice selectedDevice) {
         super.setEntity(selectedDevice);
-
         deviceTagGrid.setSelectedDevice(selectedDevice);
     }
 

@@ -44,4 +44,8 @@ public interface GwtTagService extends RemoteService {
 
     public List<GwtTag> findAll(String scopeId);
 
+    public PagingLoadResult<GwtTag> findByDeviceId(PagingLoadConfig loadConfig, String gwtScopeId, String gwtDeviceId)
+            throws GwtKapuaException;
+
+
 }

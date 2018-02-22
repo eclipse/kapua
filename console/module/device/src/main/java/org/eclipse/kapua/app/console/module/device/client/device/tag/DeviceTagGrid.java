@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.client.device.tag;
 
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
@@ -19,24 +20,19 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
-import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
-import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceService;
-import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceServiceAsync;
 import org.eclipse.kapua.app.console.module.tag.client.TagGrid;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
-import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTagQuery;
 import org.eclipse.kapua.app.console.module.tag.shared.service.GwtTagService;
 import org.eclipse.kapua.app.console.module.tag.shared.service.GwtTagServiceAsync;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class DeviceTagGrid extends TagGrid {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    private static final GwtDeviceServiceAsync GWT_DEVICE_SERVICE = GWT.create(GwtDeviceService.class);
     private static final GwtTagServiceAsync GWT_TAG_SERVICE = GWT.create(GwtTagService.class);
 
     private DeviceTagToolbar deviceTagToolbar;
@@ -44,13 +40,21 @@ public class DeviceTagGrid extends TagGrid {
 
     protected DeviceTagGrid(AbstractEntityView<GwtTag> entityView, GwtSession currentSession, GwtDevice selectedDevice) {
         super(entityView, currentSession);
-
+        refreshOnRender = false;
         this.selectedDevice = selectedDevice;
     }
 
     @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
+        /* Despite this grid, being a "slave" grid (i.e. a grid that depends on the value
+         * selected in another grid) and so not refreshed on render (see comment in
+         * EntityGrid class), it should be refreshed anyway on render if no item is
+         * selected on the master grid, otherwise the paging toolbar will still be enabled
+         * even if no results are actually available in this grid */
+        if (selectedDevice == null) {
+            refresh();
+        }
     }
 
     @Override
@@ -59,57 +63,24 @@ public class DeviceTagGrid extends TagGrid {
 
             @Override
             protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtTag>> callback) {
-                GWT_TAG_SERVICE.query((PagingLoadConfig) loadConfig, query, callback);
-
+                if (selectedDevice != null) {
+                    GWT_TAG_SERVICE.findByDeviceId((PagingLoadConfig) loadConfig, currentSession.getSelectedAccountId(), selectedDevice.getId(), callback);
+                } else {
+                    callback.onSuccess(new BasePagingLoadResult<GwtTag>(new ArrayList<GwtTag>()));
+                }
             }
         };
+
     }
 
     @Override
     protected DeviceTagToolbar getToolbar() {
         deviceTagToolbar = new DeviceTagToolbar(currentSession);
-
         return deviceTagToolbar;
     }
 
-    @Override
-    public void refresh() {
-        if (selectedDevice != null) {
-            mask(MSGS.loading());
-
-            GWT_DEVICE_SERVICE.findDevice(selectedDevice.getScopeId(), selectedDevice.getId(), new AsyncCallback<GwtDevice>() {
-
-                @Override
-                public void onFailure(Throwable caught) {
-                    FailureHandler.handle(caught);
-                    unmask();
-                }
-
-                @Override
-                public void onSuccess(GwtDevice gwtDevice) {
-                    List<String> tagIds = gwtDevice.getTagIds();
-
-                    if (!tagIds.isEmpty()) {
-                        GwtTagQuery query = new GwtTagQuery();
-                        query.setScopeId(gwtDevice.getScopeId());
-                        query.setIds(tagIds);
-
-                        refresh(query);
-                    }
-                    {
-                        clearGridElement();
-                    }
-
-                    unmask();
-                }
-            });
-        }
-    }
-
     public void setSelectedDevice(GwtDevice selectedDevice) {
-
         this.selectedDevice = selectedDevice;
-
         deviceTagToolbar.setSelectedDevice(selectedDevice);
     }
 
