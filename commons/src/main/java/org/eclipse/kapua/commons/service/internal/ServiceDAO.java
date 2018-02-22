@@ -47,6 +47,8 @@ import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaEntityPredicates;
@@ -103,7 +105,11 @@ public class ServiceDAO {
 
     private static final String SQL_ERROR_CODE_CONSTRAINT_VIOLATION = "23505";
 
-    private static final String LIKE = "%";
+    private static final SystemSetting SYSTEM_SETTING = SystemSetting.getInstance();
+
+    private static final String ESCAPE = SYSTEM_SETTING.getString(SystemSettingKey.DB_CHARACTER_ESCAPE);
+    private static final String LIKE = SYSTEM_SETTING.getString(SystemSettingKey.DB_CHARACTER_WILDCARD_ANY);
+    private static final String ANY = SYSTEM_SETTING.getString(SystemSettingKey.DB_CHARACTER_WILDCARD_SINGLE);
 
     private static final String ATTRIBUTE_SEPARATOR = ".";
     private static final String ATTRIBUTE_SEPARATOR_ESCAPED = "\\.";
@@ -606,16 +612,17 @@ public class ServiceDAO {
 
             expr = cb.and(cb.or(orPredicates));
         } else {
+            String strAttrValue = attrValue.toString().replace(LIKE, ESCAPE + LIKE).replace(ANY, ESCAPE + ANY);
             switch (attrPred.getOperator()) {
             case LIKE:
                 ParameterExpression<String> pl = cb.parameter(String.class);
-                binds.put(pl, LIKE + attrValue + LIKE);
+                binds.put(pl, LIKE + strAttrValue + LIKE);
                 expr = cb.like((Expression<String>) extractAttribute(entityRoot, attrName), pl);
                 break;
 
             case STARTS_WITH:
                 ParameterExpression<String> psw = cb.parameter(String.class);
-                binds.put(psw, attrValue + LIKE);
+                binds.put(psw, strAttrValue + LIKE);
                 expr = cb.like((Expression<String>) extractAttribute(entityRoot, attrName), psw);
                 break;
 

@@ -151,6 +151,18 @@ public enum SystemSettingKey implements SettingKey {
      * Database pool connection borrow timeout
      */
     DB_POOL_BORROW_TIMEOUT("commons.db.pool.borrow.timeout"),
+    /**
+     * Character used in DB query to escape other special characters
+     */
+    DB_CHARACTER_ESCAPE("commons.db.character.escape"),
+    /**
+     * Character used in DB query to use as wildcard
+     */
+    DB_CHARACTER_WILDCARD_ANY("commons.db.character.wildcard.any"),
+    /**
+     * Character used in DB query to use as single character wildcard
+     */
+    DB_CHARACTER_WILDCARD_SINGLE("commons.db.character.wildcard.single"),
 
     /**
      * Broker schema (e.g. mqtt, mqtts, ..)
