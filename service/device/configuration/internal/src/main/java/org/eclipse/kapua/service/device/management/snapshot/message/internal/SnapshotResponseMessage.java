@@ -10,28 +10,28 @@
  *     Eurotech - initial API and implementation
  *     Red Hat Inc
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.configuration.snapshot.internal;
+package org.eclipse.kapua.service.device.management.snapshot.message.internal;
 
 import org.eclipse.kapua.message.internal.KapuaMessageImpl;
-import org.eclipse.kapua.service.device.management.request.KapuaRequestMessage;
+import org.eclipse.kapua.service.device.management.response.KapuaResponseCode;
+import org.eclipse.kapua.service.device.management.response.KapuaResponseMessage;
 
 /**
- * Device snapshot request message.
+ * Device snapshot response message.
  */
-public class SnapshotRequestMessage extends KapuaMessageImpl<SnapshotRequestChannel, SnapshotRequestPayload> implements KapuaRequestMessage<SnapshotRequestChannel, SnapshotRequestPayload> {
+public class SnapshotResponseMessage extends KapuaMessageImpl<SnapshotResponseChannel, SnapshotResponsePayload> implements KapuaResponseMessage<SnapshotResponseChannel, SnapshotResponsePayload> {
 
     private static final long serialVersionUID = 1L;
 
-    @SuppressWarnings("unchecked")
+    private KapuaResponseCode responseCode;
+
     @Override
-    public Class<SnapshotRequestMessage> getRequestClass() {
-        return SnapshotRequestMessage.class;
+    public KapuaResponseCode getResponseCode() {
+        return responseCode;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public Class<SnapshotResponseMessage> getResponseClass() {
-        return SnapshotResponseMessage.class;
+    public void setResponseCode(KapuaResponseCode responseCode) {
+        this.responseCode = responseCode;
     }
-
 }

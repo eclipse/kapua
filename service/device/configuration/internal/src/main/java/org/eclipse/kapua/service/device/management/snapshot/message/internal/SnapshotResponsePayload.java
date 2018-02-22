@@ -9,17 +9,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.configuration.snapshot.internal;
+package org.eclipse.kapua.service.device.management.snapshot.message.internal;
 
-import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
-import org.eclipse.kapua.service.device.management.request.KapuaRequestPayload;
+import org.eclipse.kapua.message.KapuaPayload;
+import org.eclipse.kapua.service.device.management.commons.message.response.KapuaResponsePayloadImpl;
 
 /**
- * Device snapshot request payload.
- * 
+ * Device snapshot response payload.
+ *
  * @since 1.0
- * 
  */
-public class SnapshotRequestPayload extends KapuaPayloadImpl implements KapuaRequestPayload {
+public class SnapshotResponsePayload extends KapuaResponsePayloadImpl implements KapuaPayload {
 
 }

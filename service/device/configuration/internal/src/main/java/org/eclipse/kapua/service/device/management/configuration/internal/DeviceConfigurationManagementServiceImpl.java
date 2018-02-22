@@ -11,16 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.configuration.internal;
 
-import java.io.StringWriter;
-import java.util.Date;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLStreamException;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -31,6 +23,7 @@ import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.KapuaMethod;
+import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.DeviceManagementDomain;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
 import org.eclipse.kapua.service.device.management.commons.exception.DeviceManagementErrorCodes;
@@ -41,27 +34,32 @@ import org.eclipse.kapua.service.device.management.configuration.DeviceComponent
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationFactory;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationManagementService;
+import org.eclipse.kapua.service.device.management.configuration.internal.exception.ConfigurationGetManagementException;
+import org.eclipse.kapua.service.device.management.configuration.internal.exception.ConfigurationPutManagementException;
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationRequestChannel;
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationRequestMessage;
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationRequestPayload;
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationResponseMessage;
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationResponsePayload;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
+import org.eclipse.kapua.service.device.management.response.KapuaResponsePayload;
 import org.xml.sax.SAXException;
 
+import javax.xml.bind.JAXBException;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLStreamException;
+import java.io.StringWriter;
+import java.util.Date;
+
 /**
- * Device configuration service implementation.
+ * {@link DeviceConfigurationManagementService }implementation.
  *
  * @since 1.0
  */
 @KapuaProvider
-public class DeviceConfigurationManagementServiceImpl implements DeviceConfigurationManagementService {
+public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceConfigurationManagementService {
 
     private static final Domain DEVICE_MANAGEMENT_DOMAIN = new DeviceManagementDomain();
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public DeviceConfiguration get(KapuaId scopeId, KapuaId deviceId, String configurationId, String configurationComponentPid, Long timeout)
             throws KapuaException {
@@ -101,48 +99,43 @@ public class DeviceConfigurationManagementServiceImpl implements DeviceConfigura
         ConfigurationResponseMessage responseMessage = (ConfigurationResponseMessage) deviceApplicationCall.send();
 
         //
-        // Parse the response
-        ConfigurationResponsePayload responsePayload = responseMessage.getPayload();
-
-        DeviceManagementSetting config = DeviceManagementSetting.getInstance();
-        String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
-
-        DeviceConfiguration deviceConfiguration = null;
-        if (responsePayload.getBody() != null) {
-            String body = null;
-            try {
-                body = new String(responsePayload.getBody(), charEncoding);
-            } catch (Exception e) {
-                throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, responsePayload.getBody());
-
-            }
-
-            try {
-                deviceConfiguration = XmlUtil.unmarshal(body, DeviceConfigurationImpl.class);
-            } catch (Exception e) {
-                throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, body);
-
-            }
-        }
+        // Create event
+        createDeviceEvent(scopeId, deviceId, configurationRequestMessage, responseMessage);
 
         //
-        // Create event
-        DeviceEventService deviceEventService = locator.getService(DeviceEventService.class);
-        DeviceEventFactory deviceEventFactory = locator.getFactory(DeviceEventFactory.class);
+        // Check response
+        if (responseMessage.getResponseCode().isAccepted()) {
+            ConfigurationResponsePayload responsePayload = responseMessage.getPayload();
 
-        DeviceEventCreator deviceEventCreator = deviceEventFactory.newCreator(scopeId, deviceId, responseMessage.getReceivedOn(), DeviceConfigurationAppProperties.APP_NAME.getValue());
-        deviceEventCreator.setPosition(responseMessage.getPosition());
-        deviceEventCreator.setSentOn(responseMessage.getSentOn());
-        deviceEventCreator.setAction(KapuaMethod.READ);
-        deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
-        deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
+            DeviceManagementSetting config = DeviceManagementSetting.getInstance();
+            String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
-        KapuaSecurityUtils.doPrivileged(() -> deviceEventService.create(deviceEventCreator));
+            DeviceConfiguration deviceConfiguration = null;
+            if (responsePayload.getBody() != null) {
+                String body = null;
+                try {
+                    body = new String(responsePayload.getBody(), charEncoding);
+                } catch (Exception e) {
+                    throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, responsePayload.getBody());
 
-        return deviceConfiguration;
+                }
+
+                try {
+                    deviceConfiguration = XmlUtil.unmarshal(body, DeviceConfigurationImpl.class);
+                } catch (Exception e) {
+                    throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, body);
+
+                }
+            }
+
+            return deviceConfiguration;
+        } else {
+            KapuaResponsePayload responsePayload = responseMessage.getPayload();
+
+            throw new ConfigurationGetManagementException(responseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionStack());
+        }
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public void put(KapuaId scopeId, KapuaId deviceId, DeviceComponentConfiguration deviceComponentConfiguration, Long timeout)
             throws KapuaException {
@@ -201,17 +194,15 @@ public class DeviceConfigurationManagementServiceImpl implements DeviceConfigura
 
         //
         // Create event
-        DeviceEventService deviceEventService = locator.getService(DeviceEventService.class);
-        DeviceEventFactory deviceEventFactory = locator.getFactory(DeviceEventFactory.class);
+        createDeviceEvent(scopeId, deviceId, configurationRequestMessage, responseMessage);
 
-        DeviceEventCreator deviceEventCreator = deviceEventFactory.newCreator(scopeId, deviceId, responseMessage.getReceivedOn(), DeviceConfigurationAppProperties.APP_NAME.getValue());
-        deviceEventCreator.setPosition(responseMessage.getPosition());
-        deviceEventCreator.setSentOn(responseMessage.getSentOn());
-        deviceEventCreator.setAction(KapuaMethod.WRITE);
-        deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
-        deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
+        //
+        // Check response
+        if (!responseMessage.getResponseCode().isAccepted()) {
+            KapuaResponsePayload responsePayload = responseMessage.getPayload();
 
-        KapuaSecurityUtils.doPrivileged(() -> deviceEventService.create(deviceEventCreator));
+            throw new ConfigurationPutManagementException(responseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionStack());
+        }
 
     }
 
@@ -229,7 +220,6 @@ public class DeviceConfigurationManagementServiceImpl implements DeviceConfigura
         }
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public void put(KapuaId scopeId, KapuaId deviceId, DeviceConfiguration deviceConfiguration, Long timeout)
             throws KapuaException {
@@ -282,16 +272,14 @@ public class DeviceConfigurationManagementServiceImpl implements DeviceConfigura
 
         //
         // Create event
-        DeviceEventService deviceEventService = locator.getService(DeviceEventService.class);
-        DeviceEventFactory deviceEventFactory = locator.getFactory(DeviceEventFactory.class);
+        createDeviceEvent(scopeId, deviceId, configurationRequestMessage, responseMessage);
 
-        DeviceEventCreator deviceEventCreator = deviceEventFactory.newCreator(scopeId, deviceId, responseMessage.getReceivedOn(), DeviceConfigurationAppProperties.APP_NAME.getValue());
-        deviceEventCreator.setPosition(responseMessage.getPosition());
-        deviceEventCreator.setSentOn(responseMessage.getSentOn());
-        deviceEventCreator.setAction(KapuaMethod.WRITE);
-        deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
-        deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
+        //
+        // Check response
+        if (!responseMessage.getResponseCode().isAccepted()) {
+            KapuaResponsePayload responsePayload = responseMessage.getPayload();
 
-        KapuaSecurityUtils.doPrivileged(() -> deviceEventService.create(deviceEventCreator));
+            throw new ConfigurationPutManagementException(responseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionStack());
+        }
     }
 }

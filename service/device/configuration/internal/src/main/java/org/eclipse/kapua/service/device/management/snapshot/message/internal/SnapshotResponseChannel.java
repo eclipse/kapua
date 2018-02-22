@@ -9,16 +9,15 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.configuration.snapshot.internal;
+package org.eclipse.kapua.service.device.management.snapshot.message.internal;
 
 import org.eclipse.kapua.service.device.management.commons.message.KapuaAppChannelImpl;
 import org.eclipse.kapua.service.device.management.response.KapuaResponseChannel;
 
 /**
  * Device snapshot response channel.
- * 
+ *
  * @since 1.0
- * 
  */
 public class SnapshotResponseChannel extends KapuaAppChannelImpl implements KapuaResponseChannel {
 

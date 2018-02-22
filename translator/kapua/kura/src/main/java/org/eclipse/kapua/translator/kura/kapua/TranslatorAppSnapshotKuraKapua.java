@@ -12,11 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
 
-import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
@@ -30,21 +25,25 @@ import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraRespo
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
 import org.eclipse.kapua.service.device.management.configuration.internal.DeviceConfigurationAppProperties;
-import org.eclipse.kapua.service.device.management.configuration.snapshot.internal.SnapshotResponseChannel;
-import org.eclipse.kapua.service.device.management.configuration.snapshot.internal.SnapshotResponseMessage;
-import org.eclipse.kapua.service.device.management.configuration.snapshot.internal.SnapshotResponsePayload;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshot;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotFactory;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
 import org.eclipse.kapua.service.device.management.snapshot.internal.DeviceSnapshotAppProperties;
+import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotResponseChannel;
+import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotResponseMessage;
+import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotResponsePayload;
 import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
 import org.eclipse.kapua.translator.exception.TranslatorException;
+
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Messages translator implementation from {@link KuraResponseMessage} to {@link SnapshotResponseMessage}
  *
  * @since 1.0
- *
  */
 public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<SnapshotResponseChannel, SnapshotResponsePayload, SnapshotResponseMessage> {
 
@@ -65,6 +64,7 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
         super(SnapshotResponseMessage.class);
     }
 
+    @Override
     protected SnapshotResponseChannel translateChannel(KuraResponseChannel kuraChannel) throws KapuaException {
 
         if (!CONTROL_MESSAGE_CLASSIFIER.equals(kuraChannel.getMessageClassification())) {
@@ -97,6 +97,7 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
         return snapshotResponseChannel;
     }
 
+    @Override
     protected SnapshotResponsePayload translatePayload(KuraResponsePayload kuraPayload) throws KapuaException {
         SnapshotResponsePayload snapshotResponsePayload = new SnapshotResponsePayload();
 
