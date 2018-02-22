@@ -20,6 +20,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
@@ -143,4 +144,16 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
         return toolbar;
     }
 
+    @Override
+    protected void onRender(Element target, int index) {
+        super.onRender(target, index);
+        /* Despite this grid, being a "slave" grid (i.e. a grid that depends on the value
+         * selected in another grid) and so not refreshed on render (see comment in
+         * EntityGrid class), it should be refreshed anyway on render if no item is
+         * selected on the master grid, otherwise the paging toolbar will still be enabled
+         * even if no results are actually available in this grid */
+        if (userId == null) {
+            refresh();
+        }
+    }
 }

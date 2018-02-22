@@ -16,6 +16,7 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
@@ -47,6 +48,19 @@ public class JobTabStepsGrid extends EntityGrid<GwtJobStep> {
 
     protected JobTabStepsGrid(AbstractEntityView<GwtJobStep> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
+    }
+
+    @Override
+    protected void onRender(Element target, int index) {
+        super.onRender(target, index);
+        /* Despite this grid, being a "slave" grid (i.e. a grid that depends on the value
+         * selected in another grid) and so not refreshed on render (see comment in
+         * EntityGrid class), it should be refreshed anyway on render if no item is
+         * selected on the master grid, otherwise the paging toolbar will still be enabled
+         * even if no results are actually available in this grid */
+        if (jobId == null) {
+            refresh();
+        }
     }
 
     @Override

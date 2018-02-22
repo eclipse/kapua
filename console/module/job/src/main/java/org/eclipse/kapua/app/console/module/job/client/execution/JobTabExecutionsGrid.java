@@ -138,5 +138,14 @@ public class JobTabExecutionsGrid extends EntityGrid<GwtExecution> {
         entityLoader.setRemoteSort(true);
         entityLoader.setSortField("startedOn");
         entityLoader.setSortDir(SortDir.DESC);
+
+        /* Despite this grid, being a "slave" grid (i.e. a grid that depends on the value
+         * selected in another grid) and so not refreshed on render (see comment in
+         * EntityGrid class), it should be refreshed anyway on render if no item is
+         * selected on the master grid, otherwise the paging toolbar will still be enabled
+         * even if no results are actually available in this grid */
+        if (jobId == null) {
+            refresh();
+        }
     }
 }

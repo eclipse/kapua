@@ -16,6 +16,7 @@ import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
 import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
@@ -128,6 +129,8 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
 
         add(devicesHistoryPanel);
         initialized = true;
+
+        loader.load();
     }
 
     private void initToolBar() {
@@ -251,6 +254,8 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
                             dateRangeSelector.getStartDate(),
                             dateRangeSelector.getEndDate(),
                             callback);
+                } else {
+                    callback.onSuccess(new BasePagingLoadResult<GwtDeviceEvent>(new ArrayList<GwtDeviceEvent>()));
                 }
             }
         };

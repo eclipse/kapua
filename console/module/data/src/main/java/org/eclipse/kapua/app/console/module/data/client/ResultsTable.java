@@ -102,6 +102,8 @@ public class ResultsTable extends LayoutContainer {
 
         initResultsTable();
         add(tableContainer);
+
+        loader.load();
     }
 
     private void initResultsTable() {
