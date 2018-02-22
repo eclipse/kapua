@@ -13,16 +13,14 @@ package org.eclipse.kapua.service.device.management.response;
 
 /**
  * Request/reply message response code.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public enum KapuaResponseCode {
     /**
      * Accepted
      */
-    ACCEPTED, // 200
-              // 204
+    ACCEPTED, // 200, 204
     /**
      * Bad request
      */
@@ -35,4 +33,20 @@ public enum KapuaResponseCode {
      * Internal error
      */
     INTERNAL_ERROR; // 500
+
+    public boolean isAccepted() {
+        return ACCEPTED.equals(this);
+    }
+
+    public boolean isBadRequest() {
+        return BAD_REQUEST.equals(this);
+    }
+
+    public boolean isNotFound() {
+        return NOT_FOUND.equals(this);
+    }
+
+    public boolean isInternalError() {
+        return INTERNAL_ERROR.equals(this);
+    }
 }
