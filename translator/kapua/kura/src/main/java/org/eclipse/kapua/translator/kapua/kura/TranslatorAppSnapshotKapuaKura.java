@@ -12,27 +12,26 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kapua.kura;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.service.device.call.kura.app.SnapshotMetrics;
 import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestChannel;
 import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestMessage;
 import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestPayload;
-import org.eclipse.kapua.service.device.management.configuration.snapshot.internal.SnapshotRequestChannel;
-import org.eclipse.kapua.service.device.management.configuration.snapshot.internal.SnapshotRequestMessage;
-import org.eclipse.kapua.service.device.management.configuration.snapshot.internal.SnapshotRequestPayload;
 import org.eclipse.kapua.service.device.management.snapshot.internal.DeviceSnapshotAppProperties;
+import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotRequestChannel;
+import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotRequestMessage;
+import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotRequestPayload;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Messages translator implementation from {@link SnapshotRequestMessage} to {@link KuraRequestMessage}
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class TranslatorAppSnapshotKapuaKura extends AbstractTranslatorKapuaKura<SnapshotRequestChannel, SnapshotRequestPayload, SnapshotRequestMessage> {
 
@@ -44,6 +43,7 @@ public class TranslatorAppSnapshotKapuaKura extends AbstractTranslatorKapuaKura<
         PROPERTIES_DICTIONARY.put(DeviceSnapshotAppProperties.APP_VERSION, SnapshotMetrics.APP_VERSION);
     }
 
+    @Override
     protected KuraRequestChannel translateChannel(SnapshotRequestChannel kapuaChannel) throws KapuaException {
         KuraRequestChannel kuraRequestChannel = new KuraRequestChannel();
         kuraRequestChannel.setMessageClassification(CONTROL_MESSAGE_CLASSIFIER);
@@ -87,6 +87,7 @@ public class TranslatorAppSnapshotKapuaKura extends AbstractTranslatorKapuaKura<
         return kuraRequestChannel;
     }
 
+    @Override
     protected KuraRequestPayload translatePayload(SnapshotRequestPayload kapuaPayload) throws KapuaException {
         KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
 

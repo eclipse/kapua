@@ -9,15 +9,14 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.configuration.snapshot.internal;
+package org.eclipse.kapua.service.device.management.snapshot.message.internal;
 
 import org.eclipse.kapua.service.device.management.commons.message.request.KapuaRequestChannelImpl;
 
 /**
  * Device snapshot request channel.
- * 
+ *
  * @since 1.0
- * 
  */
 public class SnapshotRequestChannel extends KapuaRequestChannelImpl {
 
@@ -25,7 +24,7 @@ public class SnapshotRequestChannel extends KapuaRequestChannelImpl {
 
     /**
      * Get the snapshot identifier
-     * 
+     *
      * @return
      */
     public String getSnapshotId() {
@@ -34,7 +33,7 @@ public class SnapshotRequestChannel extends KapuaRequestChannelImpl {
 
     /**
      * Set the snapshot identifier
-     * 
+     *
      * @param snapshotId
      */
     public void setSnapshotId(String snapshotId) {
