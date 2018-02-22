@@ -79,7 +79,7 @@ public class DeviceTabAssets extends KapuaTabItem<GwtDevice> {
         tabsPanel.setBorders(false);
         tabsPanel.setTabPosition(TabPosition.BOTTOM);
 
-        tabValues = new TabItem(MSGS.assetValuesTab(), new KapuaIcon(IconSet.PUZZLE_PIECE));
+        tabValues = new TabItem(MSGS.assetValuesTab(), new KapuaIcon(IconSet.SIGNAL));
         tabValues.setBorders(false);
         tabValues.setLayout(new FitLayout());
         tabValues.add(assetsValues);
