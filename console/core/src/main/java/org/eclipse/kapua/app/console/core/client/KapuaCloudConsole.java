@@ -233,9 +233,17 @@ public class KapuaCloudConsole implements EntryPoint {
         Label copyright = new Label(productInformation.getCopyright().replace("{0}", Integer.toString(Years.getCurrentYear())));
         copyright.setStyleName("x-form-label");
 
-        Label version = new Label(currentSession.getVersion() + "-" + currentSession.getBuildNumber());
+        StringBuilder buildVersionBuilder = new StringBuilder(currentSession.getVersion());
+        if (currentSession.getBuildNumber() != null && !currentSession.getBuildNumber().isEmpty()) {
+            buildVersionBuilder
+                    .append("-")
+                    .append(currentSession.getBuildNumber());
+        }
+        Label version = new Label(buildVersionBuilder.toString());
         version.setStyleName("x-form-label");
-        version.setToolTip(currentSession.getBuildVersion());
+        if (currentSession.getBuildVersion() != null && !currentSession.getBuildVersion().isEmpty()) {
+            version.setToolTip(currentSession.getBuildVersion());
+        }
 
         southView.add(copyright, td);
         southView.add(version, tdVersion);
