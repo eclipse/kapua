@@ -32,7 +32,7 @@ public class ConnectionViewDescriptor extends AbstractEntityViewDescriptor<GwtDe
 
     @Override
     public Integer getOrder() {
-        return 300;
+        return 200;
     }
 
     @Override

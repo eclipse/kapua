@@ -41,7 +41,7 @@ public class JobViewDescriptor extends AbstractEntityViewDescriptor {
 
     @Override
     public Integer getOrder() {
-        return 500;
+        return 400;
     }
 
     @Override

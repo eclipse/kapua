@@ -31,7 +31,7 @@ public class DataViewDescriptor extends AbstractMainViewDescriptor {
 
     @Override
     public Integer getOrder() {
-        return 400;
+        return 500;
     }
 
     @Override

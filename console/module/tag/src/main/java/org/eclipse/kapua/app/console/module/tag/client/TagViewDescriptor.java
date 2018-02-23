@@ -32,7 +32,7 @@ public class TagViewDescriptor extends AbstractEntityViewDescriptor<GwtTag> {
 
     @Override
     public Integer getOrder() {
-        return 700;
+        return 600;
     }
 
     @Override
