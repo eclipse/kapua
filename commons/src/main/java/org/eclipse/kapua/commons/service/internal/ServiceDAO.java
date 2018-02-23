@@ -107,9 +107,9 @@ public class ServiceDAO {
 
     private static final SystemSetting SYSTEM_SETTING = SystemSetting.getInstance();
 
-    private static final String ESCAPE = SYSTEM_SETTING.getString(SystemSettingKey.DB_CHARACTER_ESCAPE);
-    private static final String LIKE = SYSTEM_SETTING.getString(SystemSettingKey.DB_CHARACTER_WILDCARD_ANY);
-    private static final String ANY = SYSTEM_SETTING.getString(SystemSettingKey.DB_CHARACTER_WILDCARD_SINGLE);
+    private static final String ESCAPE = SYSTEM_SETTING.getString(SystemSettingKey.DB_CHARACTER_ESCAPE, "\\");
+    private static final String LIKE = SYSTEM_SETTING.getString(SystemSettingKey.DB_CHARACTER_WILDCARD_ANY, "%");
+    private static final String ANY = SYSTEM_SETTING.getString(SystemSettingKey.DB_CHARACTER_WILDCARD_SINGLE, "_");
 
     private static final String ATTRIBUTE_SEPARATOR = ".";
     private static final String ATTRIBUTE_SEPARATOR_ESCAPED = "\\.";
