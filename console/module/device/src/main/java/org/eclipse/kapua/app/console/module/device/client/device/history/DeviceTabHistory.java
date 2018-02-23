@@ -45,6 +45,7 @@ import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
@@ -281,6 +282,9 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
 
         pagingToolBar = new KapuaPagingToolBar(DEVICE_PAGE_SIZE);
         pagingToolBar.bind(loader);
+        if (selectedEntity == null) {
+            pagingToolBar.disable();
+        }
 
         GridSelectionModel<GwtDeviceEvent> selectionModel = new GridSelectionModel<GwtDeviceEvent>();
         selectionModel.setSelectionMode(SelectionMode.SINGLE);
@@ -299,8 +303,10 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
             if (selectedEntity == null) {
                 // clear the table
                 grid.getStore().removeAll();
+                pagingToolBar.disable();
             } else {
                 loader.load();
+                pagingToolBar.enable();
             }
         }
     }
