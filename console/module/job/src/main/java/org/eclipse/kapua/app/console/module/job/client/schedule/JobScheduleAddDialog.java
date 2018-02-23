@@ -23,6 +23,7 @@ import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.messages.ValidationMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
@@ -46,7 +47,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
     private static final String KAPUA_ID_CLASS_NAME = "org.eclipse.kapua.model.id.KapuaId";
 
     private final String jobId;
-    protected final TextField<String> triggerName;
+    protected final KapuaTextField<String> triggerName;
     protected final DateField startsOn;
     protected final TimeField startsOnTime;
     protected final DateField endsOn;
@@ -58,7 +59,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         super(currentSession);
         this.jobId = jobId;
 
-        triggerName = new TextField<String>();
+        triggerName = new KapuaTextField<String>();
         startsOn = new DateField();
         startsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         startsOnTime = new TimeField();
@@ -78,6 +79,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         FormPanel mainPanel = new FormPanel(150);
 
         triggerName.setAllowBlank(false);
+        triggerName.setMaxLength(255);
         triggerName.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleScheduleNameLabel());
         mainPanel.add(triggerName);
 
