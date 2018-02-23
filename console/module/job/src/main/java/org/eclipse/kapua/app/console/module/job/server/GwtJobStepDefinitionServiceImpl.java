@@ -40,7 +40,7 @@ public class GwtJobStepDefinitionServiceImpl extends KapuaRemoteServiceServlet i
             KapuaLocator locator = KapuaLocator.getInstance();
             JobStepDefinitionService jobStepDefinitionService = locator.getService(JobStepDefinitionService.class);
             JobStepDefinitionFactory jobStepDefinitionFactory = locator.getFactory(JobStepDefinitionFactory.class);
-            JobStepDefinitionListResult result = jobStepDefinitionService.query(jobStepDefinitionFactory.newQuery(null));
+            JobStepDefinitionListResult result = jobStepDefinitionService.query(jobStepDefinitionFactory.newQuery(KapuaId.ONE));
             for (JobStepDefinition jsd : result.getItems()) {
                 gwtJobStepDefinitionList.add(KapuaGwtJobModelConverter.convertJobStepDefinition(jsd));
             }
