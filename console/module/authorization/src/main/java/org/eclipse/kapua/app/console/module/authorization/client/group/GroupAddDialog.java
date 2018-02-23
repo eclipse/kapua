@@ -11,13 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.client.group;
 
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator;
@@ -34,7 +34,7 @@ public class GroupAddDialog extends EntityAddEditDialog {
     private final static GwtGroupServiceAsync GWT_GROUP_SERVICE = GWT.create(GwtGroupService.class);
     private final static ConsoleGroupMessages MSGS = GWT.create(ConsoleGroupMessages.class);
 
-    protected TextField<String> groupNameField;
+    protected KapuaTextField<String> groupNameField;
 
     public GroupAddDialog(GwtSession currentSession) {
         super(currentSession);
@@ -44,8 +44,9 @@ public class GroupAddDialog extends EntityAddEditDialog {
     @Override
     public void createBody() {
         FormPanel groupFormPanel = new FormPanel(FORM_LABEL_WIDTH);
-        groupNameField = new TextField<String>();
+        groupNameField = new KapuaTextField<String>();
         groupNameField.setAllowBlank(false);
+        groupNameField.setMaxLength(255);
         groupNameField.setFieldLabel("* " + MSGS.dialogAddFieldName());
         groupNameField.setValidator(new TextFieldValidator(groupNameField, FieldType.NAME));
         groupFormPanel.add(groupNameField);

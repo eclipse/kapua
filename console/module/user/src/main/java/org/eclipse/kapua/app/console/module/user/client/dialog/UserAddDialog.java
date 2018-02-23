@@ -27,6 +27,7 @@ import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaDateField;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.api.client.util.Constants;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
@@ -46,7 +47,7 @@ public class UserAddDialog extends EntityAddEditDialog {
 
     protected static final ConsoleUserMessages MSGS = GWT.create(ConsoleUserMessages.class);
 
-    protected TextField<String> username;
+    protected KapuaTextField<String> username;
     protected TextField<String> password;
     protected TextField<String> confirmPassword;
     protected TextField<String> displayName;
@@ -98,8 +99,9 @@ public class UserAddDialog extends EntityAddEditDialog {
         statusFieldSet.setLayout(statusLayout);
         statusFieldSet.setStyleAttribute("background-color", "E8E8E8");
 
-        username = new TextField<String>();
+        username = new KapuaTextField<String>();
         username.setAllowBlank(false);
+        username.setMaxLength(255);
         username.setName("userName");
         username.setFieldLabel("* " + MSGS.dialogAddFieldUsername());
         username.setValidator(new TextFieldValidator(username, FieldType.NAME));
