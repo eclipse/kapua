@@ -14,7 +14,6 @@ package org.eclipse.kapua.app.console.module.account.client.toolbar;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
@@ -49,24 +48,24 @@ public class AccountAddDialog extends EntityAddEditDialog {
     final LabelField parentAccountNameLabel = new LabelField();
     protected final LabelField accountNameLabel = new LabelField();
     protected final KapuaTextField<String> accountNameField = new KapuaTextField<String>();
-    protected final TextField<String> accountPassword = new TextField<String>();
-    protected final TextField<String> confirmPassword = new TextField<String>();
+    protected final KapuaTextField<String> accountPassword = new KapuaTextField<String>();
+    protected final KapuaTextField<String> confirmPassword = new KapuaTextField<String>();
 
     // broker cluster
     protected final NumberField optlock = new NumberField();
     protected final LabelField accountClusterLabel = new LabelField();
 
     // organization
-    protected final TextField<String> organizationName = new TextField<String>();
-    protected final TextField<String> organizationEmail = new TextField<String>();
-    protected final TextField<String> organizationContactName = new TextField<String>();
-    protected final TextField<String> organizationPhoneNumber = new TextField<String>();
-    protected final TextField<String> organizationAddressLine1 = new TextField<String>();
-    protected final TextField<String> organizationAddressLine2 = new TextField<String>();
-    protected final TextField<String> organizationZipPostCode = new TextField<String>();
-    protected final TextField<String> organizationCity = new TextField<String>();
-    protected final TextField<String> organizationStateProvinceCounty = new TextField<String>();
-    protected final TextField<String> organizationCountry = new TextField<String>();
+    protected final KapuaTextField<String> organizationName = new KapuaTextField<String>();
+    protected final KapuaTextField<String> organizationEmail = new KapuaTextField<String>();
+    protected final KapuaTextField<String> organizationContactName = new KapuaTextField<String>();
+    protected final KapuaTextField<String> organizationPhoneNumber = new KapuaTextField<String>();
+    protected final KapuaTextField<String> organizationAddressLine1 = new KapuaTextField<String>();
+    protected final KapuaTextField<String> organizationAddressLine2 = new KapuaTextField<String>();
+    protected final KapuaTextField<String> organizationZipPostCode = new KapuaTextField<String>();
+    protected final KapuaTextField<String> organizationCity = new KapuaTextField<String>();
+    protected final KapuaTextField<String> organizationStateProvinceCounty = new KapuaTextField<String>();
+    protected final KapuaTextField<String> organizationCountry = new KapuaTextField<String>();
 
     public AccountAddDialog(GwtSession currentSession) {
         super(currentSession);
@@ -143,6 +142,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
         // Organization name
         //
         organizationName.setAllowBlank(false);
+        organizationName.setMaxLength(255);
         organizationName.setName("organizationName");
         organizationName.setFieldLabel("* " + MSGS.accountFormOrgName());
         fieldSetOrg.add(organizationName, accountFieldsetFormData);
@@ -151,6 +151,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
         // Organization email
         //
         organizationEmail.setAllowBlank(false);
+        organizationEmail.setMaxLength(255);
         organizationEmail.setName("organizationEmail");
         organizationEmail.setFieldLabel("* " + MSGS.accountFormOrgEmail());
         organizationEmail.setValidator(new TextFieldValidator(organizationEmail, FieldType.EMAIL));
@@ -176,35 +177,43 @@ public class AccountAddDialog extends EntityAddEditDialog {
         FormData subFieldsetFormData = new FormData("12");
 
         organizationContactName.setName("organizationContactName");
+        organizationContactName.setMaxLength(255);
         organizationContactName.setFieldLabel(MSGS.accountFormOrgContactName());
         organizationSubFieldSet.add(organizationContactName, subFieldsetFormData);
 
         organizationPhoneNumber.setName("organizationPhoneNumber");
+        organizationPhoneNumber.setMaxLength(64);
         organizationPhoneNumber.setFieldLabel(MSGS.accountFormOrgPhoneNumber());
         organizationPhoneNumber.setValidator(new TextFieldValidator(organizationPhoneNumber, FieldType.PHONE));
         organizationSubFieldSet.add(organizationPhoneNumber, subFieldsetFormData);
 
         organizationAddressLine1.setName("organizationAddressLine1");
+        organizationAddressLine1.setMaxLength(255);
         organizationAddressLine1.setFieldLabel(MSGS.accountFormOrgAddress1());
         organizationSubFieldSet.add(organizationAddressLine1, subFieldsetFormData);
 
-        organizationAddressLine2.setName("organizationAddressLine2");
+        organizationAddressLine1.setName("organizationAddressLine2");
+        organizationAddressLine1.setMaxLength(255);
         organizationAddressLine2.setFieldLabel(MSGS.accountFormOrgAddress2());
         organizationSubFieldSet.add(organizationAddressLine2, subFieldsetFormData);
 
         organizationZipPostCode.setName("organizationZipPostCode");
+        organizationZipPostCode.setMaxLength(255);
         organizationZipPostCode.setFieldLabel(MSGS.accountFormOrgZipPostCode());
         organizationSubFieldSet.add(organizationZipPostCode, subFieldsetFormData);
 
         organizationCity.setName("organizationCity");
+        organizationCity.setMaxLength(255);
         organizationCity.setFieldLabel(MSGS.accountFormOrgCity());
         organizationSubFieldSet.add(organizationCity, subFieldsetFormData);
 
         organizationStateProvinceCounty.setName("organizationStateProvinceCounty");
+        organizationStateProvinceCounty.setMaxLength(255);
         organizationStateProvinceCounty.setFieldLabel(MSGS.accountFormOrgState());
         organizationSubFieldSet.add(organizationStateProvinceCounty, subFieldsetFormData);
 
         organizationCountry.setName("organizationCountry");
+        organizationCountry.setMaxLength(255);
         organizationCountry.setFieldLabel(MSGS.accountFormOrgCountry());
         organizationSubFieldSet.add(organizationCountry, subFieldsetFormData);
 
