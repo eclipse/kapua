@@ -195,6 +195,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
         organizationAddressLine1.setName("organizationAddressLine2");
         organizationAddressLine1.setMaxLength(255);
         organizationAddressLine2.setFieldLabel(MSGS.accountFormOrgAddress2());
+        organizationAddressLine2.setMaxLength(255);
         organizationSubFieldSet.add(organizationAddressLine2, subFieldsetFormData);
 
         organizationZipPostCode.setName("organizationZipPostCode");
