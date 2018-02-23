@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.job.client.steps;
 
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
@@ -69,12 +70,15 @@ public class JobTabStepsGrid extends EntityGrid<GwtJobStep> {
 
             @Override
             protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtJobStep>> callback) {
-                JOB_STEP_SERVICE.findByJobId((PagingLoadConfig) loadConfig,
-                        currentSession.getSelectedAccountId(),
-                        jobId,
-                        callback);
+                if (jobId != null) {
+                    JOB_STEP_SERVICE.findByJobId((PagingLoadConfig) loadConfig,
+                            currentSession.getSelectedAccountId(),
+                            jobId,
+                            callback);
+                } else {
+                    callback.onSuccess(new BasePagingLoadResult<GwtJobStep>(new ArrayList<GwtJobStep>()));
+                }
             }
-
         };
     }
 

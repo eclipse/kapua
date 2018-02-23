@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.job.client.schedule;
 
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
@@ -64,7 +65,11 @@ public class JobTabSchedulesGrid extends EntityGrid<GwtTrigger> {
 
             @Override
             protected void load(Object o, AsyncCallback<PagingLoadResult<GwtTrigger>> asyncCallback) {
-                TRIGGER_SERVICE.findByJobId((PagingLoadConfig) o, currentSession.getSelectedAccountId(), jobId, asyncCallback);
+                if (jobId != null) {
+                    TRIGGER_SERVICE.findByJobId((PagingLoadConfig) o, currentSession.getSelectedAccountId(), jobId, asyncCallback);
+                } else {
+                    asyncCallback.onSuccess(new BasePagingLoadResult<GwtTrigger>(new ArrayList<GwtTrigger>()));
+                }
             }
         };
     }

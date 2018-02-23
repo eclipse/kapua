@@ -12,6 +12,7 @@
 package org.eclipse.kapua.app.console.module.job.client.execution;
 
 import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
@@ -58,7 +59,11 @@ public class JobTabExecutionsGrid extends EntityGrid<GwtExecution> {
 
             @Override
             protected void load(Object o, AsyncCallback<PagingLoadResult<GwtExecution>> asyncCallback) {
-                EXECUTION_SERVICE.findByJobId((PagingLoadConfig) o, currentSession.getSelectedAccountId(), jobId, asyncCallback);
+                if (jobId != null) {
+                    EXECUTION_SERVICE.findByJobId((PagingLoadConfig) o, currentSession.getSelectedAccountId(), jobId, asyncCallback);
+                } else {
+                    asyncCallback.onSuccess(new BasePagingLoadResult<GwtExecution>(new ArrayList<GwtExecution>()));
+                }
             }
         };
     }

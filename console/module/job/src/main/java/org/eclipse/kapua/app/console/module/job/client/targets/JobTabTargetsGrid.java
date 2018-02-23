@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.job.client.targets;
 
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
@@ -69,12 +70,15 @@ public class JobTabTargetsGrid extends EntityGrid<GwtJobTarget> {
 
             @Override
             protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtJobTarget>> callback) {
-                GWT_JOB_TARGET_SERVICE.findByJobId((PagingLoadConfig) loadConfig,
-                        currentSession.getSelectedAccountId(),
-                        jobId,
-                        callback);
+                if (jobId != null) {
+                    GWT_JOB_TARGET_SERVICE.findByJobId((PagingLoadConfig) loadConfig,
+                            currentSession.getSelectedAccountId(),
+                            jobId,
+                            callback);
+                } else {
+                    callback.onSuccess(new BasePagingLoadResult<GwtJobTarget>(new ArrayList<GwtJobTarget>()));
+                }
             }
-
         };
     }
 
