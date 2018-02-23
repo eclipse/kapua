@@ -293,7 +293,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
                     }
 
                     // Role info
-                    AccessRoleListResult accessRoles = ACCESS_ROLE_SERVICE.findByAccessInfoId(user.getScopeId(), user.getId());
+                    AccessRoleListResult accessRoles = ACCESS_ROLE_SERVICE.findByAccessInfoId(userAccessInfo.getScopeId(), userAccessInfo.getId());
 
                     for (AccessRole ar : accessRoles.getItems()) {
                         Role role = ROLE_SERVICE.find(ar.getScopeId(), ar.getRoleId());
