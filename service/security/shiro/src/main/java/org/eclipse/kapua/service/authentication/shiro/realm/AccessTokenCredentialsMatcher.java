@@ -81,7 +81,7 @@ public class AccessTokenCredentialsMatcher implements CredentialsMatcher {
                 certificateQuery.setSortCriteria(new FieldSortCriteria(CertificatePredicates.CREATED_BY, FieldSortCriteria.SortOrder.DESCENDING));
                 certificateQuery.setLimit(1);
 
-                Certificate certificate = KapuaSecurityUtils.doPrivileged(() -> CERTIFICATE_SERVICE.query(certificateQuery)).getFirstItem();
+                Certificate certificate = KapuaSecurityUtils.doPrivileged(() -> CERTIFICATE_SERVICE.query(certificateQuery, true)).getFirstItem();
 
                 if (certificate == null) {
                     throw new JwtCertificateNotFoundException();

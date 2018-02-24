@@ -30,7 +30,11 @@ public interface CertificateService extends KapuaEntityService<Certificate, Cert
 
     Certificate findByName(String var1) throws KapuaException;
 
-    CertificateListResult query(KapuaQuery<Certificate> var1) throws KapuaException;
+    CertificateListResult query(KapuaQuery<Certificate> query) throws KapuaException;
+
+    CertificateListResult query(KapuaQuery<Certificate> query, boolean includeAncestorAccounts) throws KapuaException;
+
+    long count(KapuaQuery<Certificate> query, boolean includeAncestorAccounts) throws KapuaException;
 
     Certificate generate(CertificateGenerator generator) throws KapuaException;
 
