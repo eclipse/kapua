@@ -11,13 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.job.client;
 
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator;
@@ -31,8 +31,8 @@ import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobServiceAsyn
 
 public class JobAddDialog extends EntityAddEditDialog {
 
-    protected TextField<String> name;
-    protected TextField<String> description;
+    protected KapuaTextField<String> name;
+    protected KapuaTextField<String> description;
 
     private static final GwtJobServiceAsync GWT_JOB_SERVICE = GWT.create(GwtJobService.class);
 
@@ -47,15 +47,17 @@ public class JobAddDialog extends EntityAddEditDialog {
     public void createBody() {
         FormPanel jobFormPanel = new FormPanel(FORM_LABEL_WIDTH);
 
-        name = new TextField<String>();
+        name = new KapuaTextField<String>();
         name.setAllowBlank(false);
+        name.setMaxLength(255);
         name.setName("name");
         name.setFieldLabel("* " + JOB_MSGS.dialogAddFieldName());
         name.setValidator(new TextFieldValidator(name, FieldType.NAME));
         jobFormPanel.add(name);
 
-        description = new TextField<String>();
+        description = new KapuaTextField<String>();
         description.setAllowBlank(true);
+        description.setMaxLength(255);
         description.setName("description");
         description.setFieldLabel(JOB_MSGS.dialogAddFieldDescription());
         jobFormPanel.add(description);
