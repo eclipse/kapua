@@ -36,6 +36,7 @@ import org.eclipse.kapua.app.console.module.api.client.util.validator.PasswordFi
 import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator.FieldType;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.authentication.shared.model.permission.CredentialSessionPermission;
 import org.eclipse.kapua.app.console.module.user.client.messages.ConsoleUserMessages;
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser.GwtUserStatus;
@@ -107,29 +108,30 @@ public class UserAddDialog extends EntityAddEditDialog {
         username.setValidator(new TextFieldValidator(username, FieldType.NAME));
         infoFieldSet.add(username, subFieldsetFormData);
 
-        password = new TextField<String>();
-        password.setAllowBlank(false);
-        password.setName("password");
-        password.setFieldLabel("* " + MSGS.dialogAddFieldPassword());
-        password.setValidator(new PasswordFieldValidator(password));
-        password.setPassword(true);
-        infoFieldSet.add(password, subFieldsetFormData);
+        if (currentSession.hasPermission(CredentialSessionPermission.write())) {
+            password = new TextField<String>();
+            password.setAllowBlank(false);
+            password.setName("password");
+            password.setFieldLabel("* " + MSGS.dialogAddFieldPassword());
+            password.setValidator(new PasswordFieldValidator(password));
+            password.setPassword(true);
+            infoFieldSet.add(password, subFieldsetFormData);
 
-        confirmPassword = new TextField<String>();
-        confirmPassword.setAllowBlank(false);
-        confirmPassword.setName("confirmPassword");
-        confirmPassword.setFieldLabel("* " + MSGS.dialogAddFieldConfirmPassword());
-        confirmPassword.setValidator(new ConfirmPasswordFieldValidator(confirmPassword, password));
-        confirmPassword.setPassword(true);
-        infoFieldSet.add(confirmPassword, subFieldsetFormData);
+            confirmPassword = new TextField<String>();
+            confirmPassword.setAllowBlank(false);
+            confirmPassword.setName("confirmPassword");
+            confirmPassword.setFieldLabel("* " + MSGS.dialogAddFieldConfirmPassword());
+            confirmPassword.setValidator(new ConfirmPasswordFieldValidator(confirmPassword, password));
+            confirmPassword.setPassword(true);
+            infoFieldSet.add(confirmPassword, subFieldsetFormData);
 
-        LabelField tooltip = new LabelField();
-        tooltip.setValue(MSGS.dialogAddTooltipPassword());
-        tooltip.setStyleAttribute("margin-top", "-5px");
-        tooltip.setStyleAttribute("color", "gray");
-        tooltip.setStyleAttribute("font-size", "10px");
-        infoFieldSet.add(tooltip);
-
+            LabelField tooltip = new LabelField();
+            tooltip.setValue(MSGS.dialogAddTooltipPassword());
+            tooltip.setStyleAttribute("margin-top", "-5px");
+            tooltip.setStyleAttribute("color", "gray");
+            tooltip.setStyleAttribute("font-size", "10px");
+            infoFieldSet.add(tooltip);
+        }
         displayName = new TextField<String>();
         displayName.setName("displayName");
         displayName.setFieldLabel(MSGS.dialogAddFieldDisplayName());
@@ -194,7 +196,9 @@ public class UserAddDialog extends EntityAddEditDialog {
         gwtUserCreator.setScopeId(currentSession.getSelectedAccountId());
 
         gwtUserCreator.setUsername(username.getValue());
-        gwtUserCreator.setPassword(password.getValue());
+        if (password != null) {
+            gwtUserCreator.setPassword(password.getValue());
+        }
         gwtUserCreator.setDisplayName(displayName.getValue());
         gwtUserCreator.setEmail(email.getValue());
         gwtUserCreator.setPhoneNumber(phoneNumber.getValue());

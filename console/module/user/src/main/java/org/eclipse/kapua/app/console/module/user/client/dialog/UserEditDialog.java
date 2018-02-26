@@ -102,12 +102,17 @@ public class UserEditDialog extends UserAddDialog {
     private void populateEditDialog(GwtUser gwtUser) {
         username.setValue(gwtUser.getUsername());
         username.disable();
-        password.setVisible(false);
-        password.setAllowBlank(true);
-        password.setValidator(null);
-        confirmPassword.setVisible(false);
-        confirmPassword.setAllowBlank(true);
-        confirmPassword.setValidator(null);
+        if (password != null) {
+            password.setVisible(false);
+            password.setAllowBlank(true);
+            password.setValidator(null);
+        }
+        if (confirmPassword != null) {
+            confirmPassword.setVisible(false);
+            confirmPassword.setAllowBlank(true);
+            confirmPassword.setValidator(null);
+        }
+        toolTip.hide();
         displayName.setValue(gwtUser.getDisplayName());
         email.setValue(gwtUser.getEmail());
         phoneNumber.setValue(gwtUser.getPhoneNumber());

@@ -107,17 +107,18 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
             //
             // Create credentials
-            CredentialService credentialService = locator.getService(CredentialService.class);
-            CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
+            if (gwtUserCreator.getPassword() != null) {
+                CredentialService credentialService = locator.getService(CredentialService.class);
+                CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
 
-            CredentialCreator credentialCreator = credentialFactory.newCreator(scopeId,
-                    user.getId(),
-                    CredentialType.PASSWORD,
-                    gwtUserCreator.getPassword(),
-                    CredentialStatus.ENABLED,
-                    null);
-            credentialService.create(credentialCreator);
-
+                CredentialCreator credentialCreator = credentialFactory.newCreator(scopeId,
+                        user.getId(),
+                        CredentialType.PASSWORD,
+                        gwtUserCreator.getPassword(),
+                        CredentialStatus.ENABLED,
+                        null);
+                credentialService.create(credentialCreator);
+            }
             // convertKapuaId to GwtAccount and return
             // reload the user as we want to load all its permissions
             gwtUser = KapuaGwtUserModelConverter.convertUser(userService.find(user.getScopeId(), user.getId()));
