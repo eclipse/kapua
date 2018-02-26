@@ -438,7 +438,7 @@ public class AccountConfigComponents extends LayoutContainer {
 
     public void reset() {
         final GwtConfigComponent comp = (GwtConfigComponent) tree.getSelectionModel().getSelectedItem();
-        if (devConfPanel != null && comp != null && devConfPanel.isDirty()) {
+        if (devConfPanel != null && comp != null) {
             MessageBox.confirm(MSGS.confirm(),
                     DEVICES_MSGS.deviceConfigDirty(),
                     new Listener<MessageBoxEvent>() {
