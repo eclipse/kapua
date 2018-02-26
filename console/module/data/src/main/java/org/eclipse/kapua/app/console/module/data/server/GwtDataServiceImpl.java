@@ -138,7 +138,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                     previous.add(t);
                 }
             } else {
-                if (channel.getLastMessageOn() != null && t.getTimestamp().before(channel.getLastMessageOn())) {
+                if (channel.getLastMessageOn() != null && t.getTimestamp() != null && t.getTimestamp().before(channel.getLastMessageOn())) {
                     t.setTimestamp(channel.getLastMessageOn());
                 }
             }
