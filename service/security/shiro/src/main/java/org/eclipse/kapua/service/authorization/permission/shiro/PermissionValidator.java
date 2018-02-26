@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.permission.shiro;
 
+import javax.validation.constraints.NotNull;
+
 import com.google.common.collect.Sets;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
@@ -32,13 +34,13 @@ public class PermissionValidator {
     private PermissionValidator() {
     }
 
-    public static void validatePermission(Permission permission) throws KapuaException {
+    public static void validatePermission(@NotNull Permission permission) throws KapuaException {
         validatePermissions(Sets.newHashSet(permission));
     }
 
-    public static void validatePermissions(Set<Permission> permissions) throws KapuaException {
+    public static void validatePermissions(@NotNull Set<Permission> permissions) throws KapuaException {
 
-        if (permissions != null) {
+        if (!permissions.isEmpty()) {
             DomainListResult domains = DOMAIN_SERVICE.query(DOMAIN_FACTORY.newQuery(null));
 
             for (Permission p : permissions) {

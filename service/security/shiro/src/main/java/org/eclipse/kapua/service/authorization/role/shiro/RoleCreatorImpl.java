@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role.shiro;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.kapua.commons.model.AbstractKapuaEntityCreator;
@@ -58,6 +59,9 @@ public class RoleCreatorImpl extends AbstractKapuaEntityCreator<Role> implements
 
     @Override
     public Set<Permission> getPermissions() {
+        if (permissions == null) {
+            permissions = new HashSet<>();
+        }
         return permissions;
     }
 
