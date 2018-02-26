@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -55,6 +55,9 @@ import org.junit.Assert;
 
 import java.math.BigInteger;
 import java.util.List;
+
+import static java.nio.file.Files.readAllBytes;
+import static java.nio.file.Paths.get;
 
 /**
  * Steps used in integration scenarios with running MQTT broker and process of
@@ -322,10 +325,12 @@ public class BrokerSteps extends Assert {
     @When("^topic \"(.*)\" content \"(.*)\" is published by client named \"(.*)\"$")
     public void publishMessageByClient(String topic, String content, String clientName) throws Exception {
         MqttClient mqttClient = (MqttClient) stepData.get(clientName);
+        byte[] payload = readAllBytes(get(content));
+
         if (mqttClient == null) {
             throw new Exception("Mqtt test client not found");
         }
-        mqttClient.publish(topic, content.getBytes(), 0, false);
+        mqttClient.publish(topic, payload, 0, false);
     }
 
     @Then("^Client named \"(.*)\" is connected$")
