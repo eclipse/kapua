@@ -83,11 +83,6 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public CertificateListResult query(KapuaQuery<Certificate> query) throws KapuaException {
-        return query(query, false);
-    }
-
-    @Override
-    public CertificateListResult query(KapuaQuery<Certificate> query, boolean includeAncestorAccounts) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
@@ -120,11 +115,6 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public long count(KapuaQuery<Certificate> query) throws KapuaException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public long count(KapuaQuery<Certificate> query, boolean includeAncestorAccounts) throws KapuaException {
         throw new UnsupportedOperationException();
     }
 

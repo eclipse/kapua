@@ -18,6 +18,8 @@ import org.eclipse.kapua.service.certificate.CertificateQuery;
 
 public class CertificateQueryImpl extends AbstractKapuaQuery<Certificate> implements CertificateQuery {
 
+    private Boolean includeInherited = Boolean.FALSE;
+
     /**
      * Constructor
      */
@@ -35,4 +37,13 @@ public class CertificateQueryImpl extends AbstractKapuaQuery<Certificate> implem
         setScopeId(scopeId);
     }
 
+    @Override
+    public Boolean getIncludeInherited() {
+        return includeInherited;
+    }
+
+    @Override
+    public void setIncludeInherited(Boolean includeInherited) {
+        this.includeInherited = includeInherited;
+    }
 }
