@@ -109,7 +109,6 @@ public class AccountDetailsTabDescription extends EntityDescriptionTabItem<GwtAc
 
     @Override
     protected void onRender(Element parent, int index) {
-        // TODO Auto-generated method stub
         super.onRender(parent, index);
         setBorders(false);
     }

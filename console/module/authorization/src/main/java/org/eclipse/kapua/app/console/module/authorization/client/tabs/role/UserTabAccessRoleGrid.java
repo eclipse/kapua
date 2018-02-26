@@ -125,7 +125,6 @@ public class UserTabAccessRoleGrid extends EntityGrid<GwtAccessRole> {
 
     @Override
     protected void onRender(Element target, int index) {
-        // TODO Auto-generated method stub
         super.onRender(target, index);
         setBorders(false);
     }
