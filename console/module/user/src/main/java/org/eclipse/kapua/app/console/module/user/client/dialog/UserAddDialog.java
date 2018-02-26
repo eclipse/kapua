@@ -58,11 +58,18 @@ public class UserAddDialog extends EntityAddEditDialog {
     protected KapuaDateField expirationDate;
     protected NumberField optlock;
 
+    private String specificAccountId;
+
     private GwtUserServiceAsync gwtUserService = GWT.create(GwtUserService.class);
 
     public UserAddDialog(GwtSession currentSession) {
         super(currentSession);
         DialogUtils.resizeDialog(this, 400, 440);
+    }
+
+    public UserAddDialog(GwtSession currentSession, String specificAccountId) {
+        this(currentSession);
+        this.specificAccountId = specificAccountId;
     }
 
     @Override
@@ -193,7 +200,7 @@ public class UserAddDialog extends EntityAddEditDialog {
     public void submit() {
         GwtUserCreator gwtUserCreator = new GwtUserCreator();
 
-        gwtUserCreator.setScopeId(currentSession.getSelectedAccountId());
+        gwtUserCreator.setScopeId(specificAccountId != null ? specificAccountId : currentSession.getSelectedAccountId());
 
         gwtUserCreator.setUsername(username.getValue());
         if (password != null) {

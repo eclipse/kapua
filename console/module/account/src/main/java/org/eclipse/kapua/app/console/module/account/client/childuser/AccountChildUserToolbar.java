@@ -23,22 +23,20 @@ import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 
 public class AccountChildUserToolbar extends EntityCRUDToolbar<GwtUser> {
 
-    private GwtSession selectedAccountSession;
+    private String accountId;
 
     public AccountChildUserToolbar(GwtSession currentSession) {
         super(currentSession, true);
-        selectedAccountSession = new GwtSession();
-        selectedAccountSession.setSelectedAccountId(null);
     }
 
     public void setSelectedAccountId(String accountId) {
-        selectedAccountSession.setSelectedAccountId(accountId);
+        this.accountId = accountId;
         updateToolBarButtons();
     }
 
     public void updateToolBarButtons() {
         if (isRendered()) {
-            if (selectedAccountSession.getSelectedAccountId() == null) {
+            if (accountId == null) {
                 getAddEntityButton().disable();
                 getEditEntityButton().disable();
                 getDeleteEntityButton().disable();
@@ -63,7 +61,7 @@ public class AccountChildUserToolbar extends EntityCRUDToolbar<GwtUser> {
 
     @Override
     protected KapuaDialog getAddDialog() {
-        return new UserAddDialog(selectedAccountSession);
+        return new UserAddDialog(currentSession, accountId);
     }
 
     @Override
@@ -71,7 +69,7 @@ public class AccountChildUserToolbar extends EntityCRUDToolbar<GwtUser> {
         GwtUser selectedUser = gridSelectionModel.getSelectedItem();
         UserEditDialog dialog = null;
         if (selectedUser != null) {
-            dialog = new UserEditDialog(selectedAccountSession, selectedUser);
+            dialog = new UserEditDialog(currentSession, selectedUser);
         }
         return dialog;
     }
@@ -91,7 +89,7 @@ public class AccountChildUserToolbar extends EntityCRUDToolbar<GwtUser> {
         super.onRender(target, index);
         setBorders(false);
 
-        getAddEntityButton().setEnabled(selectedAccountSession.getSelectedAccountId() != null && currentSession != null && currentSession.hasPermission(UserSessionPermission.write()));
+        getAddEntityButton().setEnabled(accountId != null && currentSession != null && currentSession.hasPermission(UserSessionPermission.write()));
         getEditEntityButton().disable();
         getDeleteEntityButton().disable();
     }
