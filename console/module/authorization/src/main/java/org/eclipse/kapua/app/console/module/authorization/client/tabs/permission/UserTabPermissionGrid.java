@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -139,7 +139,7 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
         if (toolbar == null) {
             toolbar = new UserTabPermissionToolbar(currentSession);
             toolbar.setEditButtonVisible(false);
-            toolbar.setBorders(false);
+            toolbar.setBorders(true);
         }
         return toolbar;
     }

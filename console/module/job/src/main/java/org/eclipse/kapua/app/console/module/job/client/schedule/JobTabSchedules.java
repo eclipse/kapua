@@ -35,6 +35,7 @@ public class JobTabSchedules extends KapuaTabItem<GwtJob> {
     @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
+        setBorders(false);
         add(schedulesGrid);
     }
 

@@ -115,6 +115,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
     private void initToolBar() {
         toolBar = new ToolBar();
+        toolBar.setBorders(true);
 
         refreshButton = new RefreshButton(new SelectionListener<ButtonEvent>() {
 

@@ -41,7 +41,7 @@ public class RoleTabPermissionGrid extends KapuaTabItem<GwtRole> {
     @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
-
+        setBorders(false);
         add(rolePermissionGrid);
     }
 

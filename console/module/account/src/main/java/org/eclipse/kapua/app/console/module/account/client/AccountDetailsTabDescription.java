@@ -21,6 +21,7 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.account.client.toolbar.AccountEditDialog;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
@@ -104,5 +105,11 @@ public class AccountDetailsTabDescription extends EntityDescriptionTabItem<GwtAc
                 setEntity(result);
             }
         });
+    }
+
+    @Override
+    protected void onRender(Element parent, int index) {
+        super.onRender(parent, index);
+        setBorders(false);
     }
 }

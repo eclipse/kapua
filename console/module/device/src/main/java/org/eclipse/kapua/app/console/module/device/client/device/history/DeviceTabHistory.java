@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -119,7 +119,7 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
 
         ContentPanel devicesHistoryPanel = new ContentPanel();
         devicesHistoryPanel.setBorders(false);
-        devicesHistoryPanel.setBodyBorder(false);
+        devicesHistoryPanel.setBodyBorder(true);
         devicesHistoryPanel.setHeaderVisible(false);
         devicesHistoryPanel.setLayout(new FitLayout());
         devicesHistoryPanel.setScrollMode(Scroll.AUTO);
@@ -135,6 +135,7 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
 
     private void initToolBar() {
         toolBar = new ToolBar();
+        toolBar.setBorders(true);
 
         //
         // Refresh Button
