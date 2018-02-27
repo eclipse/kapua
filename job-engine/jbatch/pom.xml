@@ -15,7 +15,7 @@
     <parent>
         <groupId>org.eclipse.kapua</groupId>
         <artifactId>kapua-job-engine</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0-M2</version>
     </parent>
 
     <artifactId>kapua-job-engine-jbatch</artifactId>
