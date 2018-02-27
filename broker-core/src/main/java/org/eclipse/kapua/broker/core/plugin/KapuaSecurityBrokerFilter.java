@@ -435,6 +435,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             loginShiroLoginTimeContext.stop();
 
             List<org.eclipse.kapua.broker.core.plugin.authentication.AuthorizationEntry> authorizationEntries = authenticator.connect(kcc);
+            CONNECTION_MAP.put(kcc.getFullClientId(), info.getConnectionId().getValue());
             DefaultAuthorizationMap authMap = buildAuthorization(kcc, authorizationEntries);
             context.setSecurityContext(new KapuaSecurityContext(kcc, authMap));
 
