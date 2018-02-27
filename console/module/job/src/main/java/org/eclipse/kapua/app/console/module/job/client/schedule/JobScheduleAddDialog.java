@@ -95,12 +95,12 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         startsOnTime.setEditable(false);
         mainPanel.add(startsOnTime);
 
-        endsOn.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleEndsOnLabel());
+        endsOn.setFieldLabel(JOB_MSGS.dialogAddScheduleEndsOnLabel());
         endsOn.setFormatValue(true);
         endsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         mainPanel.add(endsOn);
 
-        endsOnTime.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleEndsOnTimeLabel());
+        endsOnTime.setFieldLabel(JOB_MSGS.dialogAddScheduleEndsOnTimeLabel());
         endsOnTime.setFormat(DateTimeFormat.getFormat("HH:mm"));
         endsOnTime.setEditable(false);
         mainPanel.add(endsOnTime);

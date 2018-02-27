@@ -76,7 +76,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         credentialType.setEditable(false);
         credentialType.setTypeAhead(false);
         credentialType.setAllowBlank(false);
-        credentialType.setFieldLabel(MSGS.dialogAddFieldCredentialType());
+        credentialType.setFieldLabel("* " + MSGS.dialogAddFieldCredentialType());
         credentialType.setTriggerAction(ComboBox.TriggerAction.ALL);
         credentialType.add(GwtCredentialType.PASSWORD);
         credentialType.add(GwtCredentialType.API_KEY);
