@@ -100,7 +100,7 @@ public class CertificateServiceImpl implements CertificateService {
 
         KapuaCertificateSetting setting = KapuaCertificateSetting.getInstance();
 
-        Certificate kapuaCertificate = new CertificateImpl(query.getScopeId());
+        Certificate kapuaCertificate = new CertificateImpl(KapuaId.ONE);
         kapuaCertificate.setPrivateKey(privateKey);
         kapuaCertificate.setCertificate(certificate);
         kapuaCertificate.getKeyUsageSettings().add(keyUsageSetting);

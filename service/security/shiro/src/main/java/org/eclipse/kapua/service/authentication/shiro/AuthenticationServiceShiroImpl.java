@@ -35,7 +35,6 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
-import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.SessionCredentials;
@@ -454,13 +453,14 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             KapuaLocator locator = KapuaLocator.getInstance();
             CertificateService certificateService = locator.getService(CertificateService.class);
             CertificateFactory certificateFactory = locator.getFactory(CertificateFactory.class);
-            CertificateQuery certificateQuery = certificateFactory.newQuery(KapuaId.ONE);
+            CertificateQuery certificateQuery = certificateFactory.newQuery(scopeId);
             certificateQuery.setPredicate(new AndPredicate()
                     .and(new AttributePredicate<>(CertificatePredicates.USAGE_NAME, "JWT"))
                     .and(new AttributePredicate<>(CertificatePredicates.STATUS, CertificateStatus.VALID)));
+            certificateQuery.setIncludeInherited(true);
             certificateQuery.setLimit(1);
 
-            Certificate certificate = KapuaSecurityUtils.doPrivileged(() -> certificateService.query(certificateQuery)).getItem(0);
+            Certificate certificate = KapuaSecurityUtils.doPrivileged(() -> certificateService.query(certificateQuery)).getFirstItem();
 
             JsonWebSignature jws = new JsonWebSignature();
             jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);

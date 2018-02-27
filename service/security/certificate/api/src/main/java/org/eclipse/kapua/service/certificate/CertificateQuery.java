@@ -16,6 +16,7 @@ import org.eclipse.kapua.service.certificate.xml.CertificateXmlRegistry;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -24,4 +25,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(factoryClass = CertificateXmlRegistry.class, factoryMethod = "newQuery")
 public interface CertificateQuery extends KapuaQuery<Certificate> {
 
+    @XmlElement(name = "includeInherited")
+    public Boolean getIncludeInherited();
+
+    public void setIncludeInherited(Boolean includeInherited);
 }
