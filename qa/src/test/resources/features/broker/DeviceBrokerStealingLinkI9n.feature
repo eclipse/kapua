@@ -10,6 +10,7 @@
 #     Eurotech - initial API and implementation
 ###############################################################################
 @broker
+@stealingLink
 Feature: Device Broker Cluster tests
     Test functionality for distributed Stealing link scenarios. This is case for
     cluster of brokers where CONNECT messages get forwarded form one broker to
@@ -50,7 +51,7 @@ Feature: Device Broker Cluster tests
         all clients locally. This emulates that those clients were connected on another broker.
 
     Given Client with name "client-1" with client id "client-1" user "kapua-broker" password "kapua-password" is connected
-        And Client with name "client-sys" with client id "client-sys" user "kapua-broker" password "kapua-password" is connected
+        And Client with name "client-sys" with client id "client-sys" user "kapua-sys" password "kapua-password" is connected
         And topic "$EDC/kapua-sys/client-1/MQTT/BIRTH" content "src/test/resources/mqtt/rpione3_MQTT_BIRTH.mqtt" is published by client named "client-1"
         And I wait 2 seconds for system to receive and process that message
         And Client with name "client-2" with client id "client-2" user "kapua-broker" password "kapua-password" is connected
