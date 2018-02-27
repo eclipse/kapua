@@ -470,7 +470,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             jws.setKey(CertificateUtils.stringToPrivateKey(certificate.getPrivateKey(), certificate.getPassword()));
             jwt = jws.getCompactSerialization();
         } catch (JoseException | KapuaException e) {
-            KapuaRuntimeException.internalError(e);
+            throw KapuaRuntimeException.internalError(e);
         }
         return jwt;
     }
