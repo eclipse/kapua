@@ -102,5 +102,9 @@ public enum KapuaAuthenticationErrorCodes implements KapuaErrorCode {
     /**
      * JWK generation error
      */
-    JWK_GENERATION_ERROR
+    JWK_GENERATION_ERROR,
+    /**
+     * JWT Certificate not found
+     */
+    JWT_CERTIFICATE_NOT_FOUND
 }
