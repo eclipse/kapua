@@ -61,4 +61,9 @@ public class UserTabPermissionToolbar extends EntityCRUDToolbar<GwtAccessPermiss
         refreshEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null);
     }
 
+    @Override
+    protected void updateButtonEnablement() {
+        super.updateButtonEnablement();
+        addEntityButton.setEnabled(userId != null);
+    }
 }

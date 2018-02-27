@@ -60,4 +60,10 @@ public class UserTabAccessRoleToolbar extends EntityCRUDToolbar<GwtAccessRole> {
         deleteEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null);
         refreshEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null);
     }
+
+    @Override
+    protected void updateButtonEnablement() {
+        super.updateButtonEnablement();
+        addEntityButton.setEnabled(userId != null);
+    }
 }

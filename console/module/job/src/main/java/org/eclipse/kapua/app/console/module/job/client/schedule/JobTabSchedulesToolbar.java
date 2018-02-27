@@ -59,4 +59,10 @@ public class JobTabSchedulesToolbar extends EntityCRUDToolbar<GwtTrigger> {
         }
         return dialog;
     }
+
+    @Override
+    protected void updateButtonEnablement() {
+        super.updateButtonEnablement();
+        addEntityButton.setEnabled(jobId != null);
+    }
 }
