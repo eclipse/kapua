@@ -61,9 +61,8 @@ public class UserGrid extends EntityGrid<GwtUser> {
     protected void selectionChangedEvent(GwtUser selectedItem) {
         super.selectionChangedEvent(selectedItem);
         if (selectedItem != null) {
-            // Prevent editing kapua-sys user
-            getToolbar().getEditEntityButton().setEnabled(currentSession.hasPermission(UserSessionPermission.write()) && !selectedItem.getId().equals("AQ"));
-            getToolbar().getDeleteEntityButton().setEnabled(currentSession.hasPermission(UserSessionPermission.delete()) && !selectedItem.getId().equals("AQ"));
+            getToolbar().getEditEntityButton().setEnabled(currentSession.hasPermission(UserSessionPermission.write()));
+            getToolbar().getDeleteEntityButton().setEnabled(currentSession.hasPermission(UserSessionPermission.delete()));
         } else {
             getToolbar().getEditEntityButton().setEnabled(false);
             getToolbar().getDeleteEntityButton().setEnabled(false);

@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.user.client.dialog;
 
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
@@ -46,11 +46,12 @@ import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserServiceAs
 
 public class UserAddDialog extends EntityAddEditDialog {
 
-    protected static final ConsoleUserMessages MSGS = GWT.create(ConsoleUserMessages.class);
+    protected static final ConsoleUserMessages USER_MSGS = GWT.create(ConsoleUserMessages.class);
 
     protected KapuaTextField<String> username;
     protected TextField<String> password;
     protected TextField<String> confirmPassword;
+    protected LabelField passwordTooltip;
     protected TextField<String> displayName;
     protected TextField<String> email;
     protected TextField<String> phoneNumber;
@@ -89,14 +90,14 @@ public class UserAddDialog extends EntityAddEditDialog {
         // User info tab
         //
         FieldSet infoFieldSet = new FieldSet();
-        infoFieldSet.setHeading(MSGS.dialogAddFieldSet());
+        infoFieldSet.setHeading(USER_MSGS.dialogAddFieldSet());
         infoFieldSet.setBorders(true);
         infoFieldSet.setStyleAttribute("margin", "0px 10px 0px 10px");
 
         FieldSet statusFieldSet = new FieldSet();
         statusFieldSet.setBorders(true);
         statusFieldSet.setStyleAttribute("margin", "5px 10px 0px 10px");
-        statusFieldSet.setHeading(MSGS.dialogAddStatus());
+        statusFieldSet.setHeading(USER_MSGS.dialogAddStatus());
 
         FormLayout userLayout = new FormLayout();
         FormLayout statusLayout = new FormLayout();
@@ -111,7 +112,7 @@ public class UserAddDialog extends EntityAddEditDialog {
         username.setAllowBlank(false);
         username.setMaxLength(255);
         username.setName("userName");
-        username.setFieldLabel("* " + MSGS.dialogAddFieldUsername());
+        username.setFieldLabel("* " + USER_MSGS.dialogAddFieldUsername());
         username.setValidator(new TextFieldValidator(username, FieldType.NAME));
         infoFieldSet.add(username, subFieldsetFormData);
 
@@ -119,7 +120,7 @@ public class UserAddDialog extends EntityAddEditDialog {
             password = new TextField<String>();
             password.setAllowBlank(false);
             password.setName("password");
-            password.setFieldLabel("* " + MSGS.dialogAddFieldPassword());
+            password.setFieldLabel("* " + USER_MSGS.dialogAddFieldPassword());
             password.setValidator(new PasswordFieldValidator(password));
             password.setPassword(true);
             infoFieldSet.add(password, subFieldsetFormData);
@@ -127,34 +128,34 @@ public class UserAddDialog extends EntityAddEditDialog {
             confirmPassword = new TextField<String>();
             confirmPassword.setAllowBlank(false);
             confirmPassword.setName("confirmPassword");
-            confirmPassword.setFieldLabel("* " + MSGS.dialogAddFieldConfirmPassword());
+            confirmPassword.setFieldLabel("* " + USER_MSGS.dialogAddFieldConfirmPassword());
             confirmPassword.setValidator(new ConfirmPasswordFieldValidator(confirmPassword, password));
             confirmPassword.setPassword(true);
             infoFieldSet.add(confirmPassword, subFieldsetFormData);
 
-            LabelField tooltip = new LabelField();
-            tooltip.setValue(MSGS.dialogAddTooltipPassword());
-            tooltip.setStyleAttribute("margin-top", "-5px");
-            tooltip.setStyleAttribute("color", "gray");
-            tooltip.setStyleAttribute("font-size", "10px");
-            infoFieldSet.add(tooltip);
+            passwordTooltip = new LabelField();
+            passwordTooltip.setValue(USER_MSGS.dialogAddTooltipPassword());
+            passwordTooltip.setStyleAttribute("margin-top", "-5px");
+            passwordTooltip.setStyleAttribute("color", "gray");
+            passwordTooltip.setStyleAttribute("font-size", "10px");
+            infoFieldSet.add(passwordTooltip);
         }
         displayName = new TextField<String>();
         displayName.setName("displayName");
-        displayName.setFieldLabel(MSGS.dialogAddFieldDisplayName());
+        displayName.setFieldLabel(USER_MSGS.dialogAddFieldDisplayName());
         displayName.setMaxLength(255);
         infoFieldSet.add(displayName, subFieldsetFormData);
 
         email = new TextField<String>();
         email.setName("userEmail");
-        email.setFieldLabel(MSGS.dialogAddFieldEmail());
+        email.setFieldLabel(USER_MSGS.dialogAddFieldEmail());
         email.setValidator(new TextFieldValidator(email, FieldType.EMAIL));
         email.setMaxLength(255);
         infoFieldSet.add(email, subFieldsetFormData);
 
         phoneNumber = new TextField<String>();
         phoneNumber.setName("phoneNumber");
-        phoneNumber.setFieldLabel(MSGS.dialogAddFieldPhoneNumber());
+        phoneNumber.setFieldLabel(USER_MSGS.dialogAddFieldPhoneNumber());
         phoneNumber.setValidator(new TextFieldValidator(phoneNumber, FieldType.PHONE));
         phoneNumber.setMaxLength(64);
         infoFieldSet.add(phoneNumber, subFieldsetFormData);
@@ -165,27 +166,27 @@ public class UserAddDialog extends EntityAddEditDialog {
         optlock.setVisible(false);
         infoFieldSet.add(optlock);
 
-        userStatus = new SimpleComboBox<GwtUser.GwtUserStatus>();
+        userStatus = new SimpleComboBox<GwtUserStatus>();
         userStatus.setName("comboStatus");
-        userStatus.setFieldLabel(MSGS.dialogAddStatus());
+        userStatus.setFieldLabel(USER_MSGS.dialogAddStatus());
         userStatus.setLabelSeparator(":");
         userStatus.setEditable(false);
         userStatus.setTypeAhead(true);
-        userStatus.setTriggerAction(ComboBox.TriggerAction.ALL);
+        userStatus.setTriggerAction(TriggerAction.ALL);
         // show account status combo box
         userStatus.add(GwtUserStatus.ENABLED);
         userStatus.add(GwtUserStatus.DISABLED);
-        userStatus.setSimpleValue(GwtUser.GwtUserStatus.ENABLED);
+        userStatus.setSimpleValue(GwtUserStatus.ENABLED);
         statusFieldSet.add(userStatus, subFieldsetFormData);
 
         expirationDate = new KapuaDateField();
         expirationDate.setName("expirationDate");
         expirationDate.setFormatValue(true);
         expirationDate.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
-        expirationDate.setFieldLabel(MSGS.dialogAddExpirationDate());
+        expirationDate.setFieldLabel(USER_MSGS.dialogAddExpirationDate());
         expirationDate.setLabelSeparator(":");
         expirationDate.setAllowBlank(true);
-        expirationDate.setEmptyText(MSGS.dialogAddNoExpiration());
+        expirationDate.setEmptyText(USER_MSGS.dialogAddNoExpiration());
         expirationDate.setValue(null);
         expirationDate.setMaxLength(10);
         statusFieldSet.add(expirationDate, subFieldsetFormData);
@@ -217,7 +218,7 @@ public class UserAddDialog extends EntityAddEditDialog {
             @Override
             public void onSuccess(GwtUser arg0) {
                 exitStatus = true;
-                exitMessage = MSGS.dialogAddConfirmation();
+                exitMessage = USER_MSGS.dialogAddConfirmation();
                 hide();
             }
 
@@ -242,12 +243,12 @@ public class UserAddDialog extends EntityAddEditDialog {
 
     @Override
     public String getHeaderMessage() {
-        return MSGS.dialogAddHeader();
+        return USER_MSGS.dialogAddHeader();
     }
 
     @Override
     public String getInfoMessage() {
-        return MSGS.dialogAddInfo();
+        return USER_MSGS.dialogAddInfo();
     }
 
 }

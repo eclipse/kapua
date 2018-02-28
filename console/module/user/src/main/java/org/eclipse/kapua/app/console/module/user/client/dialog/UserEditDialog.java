@@ -13,9 +13,11 @@ package org.eclipse.kapua.app.console.module.user.client.dialog;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
-import org.eclipse.kapua.app.console.module.user.client.messages.ConsoleUserMessages;
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserService;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserServiceAsync;
@@ -25,8 +27,6 @@ public class UserEditDialog extends UserAddDialog {
     private GwtUser selectedUser;
 
     private GwtUserServiceAsync gwtUserService = GWT.create(GwtUserService.class);
-
-    private final static ConsoleUserMessages MSGS = GWT.create(ConsoleUserMessages.class);
 
     public UserEditDialog(GwtSession currentSession, GwtUser selectedUser) {
         super(currentSession);
@@ -54,7 +54,7 @@ public class UserEditDialog extends UserAddDialog {
             @Override
             public void onFailure(Throwable cause) {
                 exitStatus = false;
-                exitMessage = MSGS.dialogEditLoadFailed(cause.getLocalizedMessage());
+                exitMessage = USER_MSGS.dialogEditLoadFailed(cause.getLocalizedMessage());
                 unmaskDialog();
                 hide();
             }
@@ -76,14 +76,26 @@ public class UserEditDialog extends UserAddDialog {
             @Override
             public void onSuccess(GwtUser arg0) {
                 exitStatus = true;
-                exitMessage = MSGS.dialogEditConfirmation();
+                exitMessage = USER_MSGS.dialogEditConfirmation();
                 hide();
             }
 
             @Override
             public void onFailure(Throwable cause) {
                 exitStatus = false;
-                exitMessage = MSGS.dialogEditError(cause.getLocalizedMessage());
+                exitMessage = USER_MSGS.dialogEditError(cause.getLocalizedMessage());
+                FailureHandler.handleFormException(formPanel, cause);
+                status.hide();
+                formPanel.getButtonBar().enable();
+                unmask();
+                submitButton.enable();
+                cancelButton.enable();
+                if (cause instanceof GwtKapuaException) {
+                    GwtKapuaException gwtCause = (GwtKapuaException) cause;
+                    if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
+                        username.markInvalid(gwtCause.getMessage());
+                    }
+                }
             }
         });
 
@@ -91,12 +103,12 @@ public class UserEditDialog extends UserAddDialog {
 
     @Override
     public String getHeaderMessage() {
-        return MSGS.dialogEditHeader(selectedUser.getUsername());
+        return USER_MSGS.dialogEditHeader(selectedUser.getUsername());
     }
 
     @Override
     public String getInfoMessage() {
-        return MSGS.dialogEditInfo();
+        return USER_MSGS.dialogEditInfo();
     }
 
     private void populateEditDialog(GwtUser gwtUser) {
@@ -112,7 +124,9 @@ public class UserEditDialog extends UserAddDialog {
             confirmPassword.setAllowBlank(true);
             confirmPassword.setValidator(null);
         }
-        toolTip.hide();
+        if (passwordTooltip != null) {
+            passwordTooltip.hide();
+        }
         displayName.setValue(gwtUser.getDisplayName());
         email.setValue(gwtUser.getEmail());
         phoneNumber.setValue(gwtUser.getPhoneNumber());
