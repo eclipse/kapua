@@ -11,6 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.user.server;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Callable;
+
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
@@ -31,24 +39,17 @@ import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserService;
 import org.eclipse.kapua.app.console.module.user.shared.util.GwtKapuaUserModelConverter;
 import org.eclipse.kapua.app.console.module.user.shared.util.KapuaGwtUserModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
-import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
-import org.eclipse.kapua.service.authorization.access.AccessPermission;
-import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
-import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
-import org.eclipse.kapua.service.authorization.access.AccessRoleFactory;
 import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
 import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 import org.eclipse.kapua.service.authorization.access.AccessRoleService;
@@ -58,14 +59,6 @@ import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Callable;
 
 /**
  * The server side implementation of the RPC service.
@@ -214,38 +207,10 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             UserService userService = locator.getService(UserService.class);
-            CredentialService credentialService = locator.getService(CredentialService.class);
             User user = userService.find(scopeId, userId);
 
             if (user != null) {
                 userService.delete(user);
-                CredentialListResult credentialListResult = credentialService.findByUserId(scopeId, userId);
-                for (Credential credential : credentialListResult.getItems()) {
-                    credentialService.delete(scopeId, credential.getId());
-                }
-
-                AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
-                AccessInfo accessInfo = accessInfoService.findByUserId(scopeId, userId);
-                if (accessInfo != null) {
-                    KapuaId accessInfoId = accessInfo.getId();
-                    accessInfoService.delete(scopeId, accessInfoId);
-
-                    AccessRoleService accessRoleService = locator.getService(AccessRoleService.class);
-                    AccessRoleFactory accessRoleFactory = locator.getFactory(AccessRoleFactory.class);
-                    AccessRoleQuery accessRoleQuery = accessRoleFactory.newQuery(scopeId);
-                    accessRoleQuery.setPredicate(new AttributePredicate<KapuaId>("accessInfoId", accessInfo.getId()));
-
-                    AccessRoleListResult accessRoles = accessRoleService.query(accessRoleQuery);
-                    for (AccessRole accessRole : accessRoles.getItems()) {
-                        accessRoleService.delete(scopeId, accessRole.getId());
-                    }
-
-                    AccessPermissionService accessPermissionService = locator.getService(AccessPermissionService.class);
-                    AccessPermissionListResult accessPermissions = accessPermissionService.findByAccessInfoId(scopeId, accessInfoId);
-                    for (AccessPermission accessPermission : accessPermissions.getItems()) {
-                        accessPermissionService.delete(scopeId, accessPermission.getId());
-                    }
-                }
             }
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
