@@ -16,6 +16,7 @@ import java.util.Map;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaEntityCreator;
@@ -98,35 +99,34 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
         AccountFactory accountFactory = locator.getFactory(AccountFactory.class);
         AccountService accountService = locator.getService(AccountService.class);
 
-        if (configuration == null) {
-            configuration = getConfigValues(scopeId);
-        }
-        boolean allowInfiniteChildEntities = (boolean) configuration.get("infiniteChildEntities");
+        final Map<String, Object> finalConfig = configuration == null ? getConfigValues(scopeId) : configuration;
+        boolean allowInfiniteChildEntities = (boolean) finalConfig.get("infiniteChildEntities");
         if (!allowInfiniteChildEntities) {
-            Q countQuery = factory.newQuery(scopeId);
+            return KapuaSecurityUtils.doPrivileged(() -> {
+                Q countQuery = factory.newQuery(scopeId);
 
-            // Current used entities
-            long currentUsedEntities = service.count(countQuery);
+                // Current used entities
+                long currentUsedEntities = service.count(countQuery);
 
-            AccountQuery childAccountsQuery = accountFactory.newQuery(scopeId);
-            // Exclude the scope that is under config update
-            if (targetScopeId != null) {
-                childAccountsQuery.setPredicate(new AttributePredicate<>(KapuaEntityPredicates.ENTITY_ID, targetScopeId, Operator.NOT_EQUAL));
-            }
+                AccountQuery childAccountsQuery = accountFactory.newQuery(scopeId);
+                // Exclude the scope that is under config update
+                if (targetScopeId != null) {
+                    childAccountsQuery.setPredicate(new AttributePredicate<>(KapuaEntityPredicates.ENTITY_ID, targetScopeId, Operator.NOT_EQUAL));
+                }
 
-            // FIXME Has to ALWAYS query on accountService!
-            AccountListResult childAccounts = accountService.query(childAccountsQuery);
-            // Resources assigned to children
-            long childCount = 0;
-            for (Account childAccount : childAccounts.getItems()) {
-                Map<String, Object> childConfigValues = getConfigValues(childAccount);
-                int maxChildChildAccounts = (int) childConfigValues.get("maxNumberChildEntities");
-                childCount += maxChildChildAccounts;
-            }
+                AccountListResult childAccounts = accountService.query(childAccountsQuery);
+                // Resources assigned to children
+                long childCount = 0;
+                for (Account childAccount : childAccounts.getItems()) {
+                    Map<String, Object> childConfigValues = getConfigValues(childAccount);
+                    int maxChildChildAccounts = (int) childConfigValues.get("maxNumberChildEntities");
+                    childCount += maxChildChildAccounts;
+                }
 
-            // Max allowed for this account
-            int maxChildAccounts = (int) configuration.get("maxNumberChildEntities");
-            return (int) (maxChildAccounts - currentUsedEntities - childCount);
+                // Max allowed for this account
+                int maxChildAccounts = (int) finalConfig.get("maxNumberChildEntities");
+                return (int) (maxChildAccounts - currentUsedEntities - childCount);
+            });
         }
         return Integer.MAX_VALUE;
     }
