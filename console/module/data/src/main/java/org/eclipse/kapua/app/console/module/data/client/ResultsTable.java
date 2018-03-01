@@ -74,6 +74,7 @@ public class ResultsTable extends LayoutContainer {
     private Grid<GwtMessage> resultsGrid;
     private KapuaPagingToolBar pagingToolBar;
     private ToolBar resultsToolBar;
+    private Label warningLabel;
     private ArrayList<ColumnConfig> columnConfigs;
     private ColumnConfig timestampColumn;
     private ColumnConfig deviceColumn;
@@ -158,6 +159,12 @@ public class ResultsTable extends LayoutContainer {
                 } else {
                     exportButton.enable();
                 }
+
+                if (loader.getTotalCount() >= 10000) {
+                    warningLabel.show();
+                } else {
+                    warningLabel.hide();
+                }
             }
         });
         loader.setSortField("timestamp");
@@ -201,6 +208,12 @@ public class ResultsTable extends LayoutContainer {
         resultsToolBar.add(exportButton);
         resultsToolBar.add(new SeparatorToolItem());
 
+        warningLabel = new Label();
+        warningLabel.setText(MSGS.warningLimitReached());
+        warningLabel.setStyleAttribute("margin-left", "10px");
+        warningLabel.setStyleAttribute("font-weight", "bold");
+        warningLabel.setStyleAttribute("color", "grey");
+        resultsToolBar.add(warningLabel);
         resultsToolBar.add(new FillToolItem());
 
         Label label = new Label(MSGS.dateRange());

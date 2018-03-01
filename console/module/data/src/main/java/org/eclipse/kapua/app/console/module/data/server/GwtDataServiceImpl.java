@@ -346,6 +346,9 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         messages = getMessagesList(query, headers);
         try {
             totalLength = Long.valueOf(messageService.count(query)).intValue();
+            if (totalLength > 10000) {
+                totalLength = 10000;
+            }
         } catch (KapuaException e) {
             KapuaExceptionHandler.handle(e);
         }
