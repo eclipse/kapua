@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,6 +13,7 @@ package org.eclipse.kapua.app.console.module.device.client.device.packages;
 
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.TabbedDialog;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.packages.GwtPackageInstallRequest;
@@ -25,7 +26,6 @@ import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
@@ -46,9 +46,9 @@ public class PackageInstallDialog extends TabbedDialog {
 
     private FormPanel packageInfoForm;
     private Text dpInfoText;
-    private TextField<String> dpURIField;
-    private TextField<String> dpNameField;
-    private TextField<String> dpVersionField;
+    private KapuaTextField<String> dpURIField;
+    private KapuaTextField<String> dpNameField;
+    private KapuaTextField<String> dpVersionField;
 
     private FormPanel operationOptionsForm;
     private Text operationInfoText;
@@ -90,19 +90,22 @@ public class PackageInstallDialog extends TabbedDialog {
             dpInfoText.setStyleAttribute("margin-bottom", "10px");
             packageInfoForm.add(dpInfoText);
 
-            dpURIField = new TextField<String>();
+            dpURIField = new KapuaTextField<String>();
+            dpURIField.setMaxLength(255);
             dpURIField.setName("dpUri");
             dpURIField.setAllowBlank(false);
             dpURIField.setFieldLabel("* " + DEVICE_MSGS.packageInstallDpTabUri());
             packageInfoForm.add(dpURIField, formData);
 
-            dpNameField = new TextField<String>();
+            dpNameField = new KapuaTextField<String>();
+            dpNameField.setMaxLength(255);
             dpNameField.setName("dpName");
             dpNameField.setAllowBlank(false);
             dpNameField.setFieldLabel("* " + DEVICE_MSGS.packageInstallDpTabName());
             packageInfoForm.add(dpNameField, formData);
 
-            dpVersionField = new TextField<String>();
+            dpVersionField = new KapuaTextField<String>();
+            dpVersionField.setMaxLength(255);
             dpVersionField.setName("dpVersion");
             dpVersionField.setAllowBlank(false);
             dpVersionField.setFieldLabel("* " + DEVICE_MSGS.packageInstallDpTabVersion());
