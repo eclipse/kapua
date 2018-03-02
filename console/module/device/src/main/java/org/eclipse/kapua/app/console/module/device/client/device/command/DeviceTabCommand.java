@@ -93,6 +93,7 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
     public DeviceTabCommand(GwtSession currentSession) {
         super(currentSession, DEVICE_MSGS.tabCommand(), new KapuaIcon(IconSet.TERMINAL));
         initialized = false;
+        setEnabled(false);
     }
 
     @Override

@@ -90,6 +90,7 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
         super(currentSession, DEVICE_MSGS.tabBundles(), new KapuaIcon(IconSet.CUBES));
         this.devicesView = devicesView;
         initialized = false;
+        setEnabled(false);
     }
 
     @Override
