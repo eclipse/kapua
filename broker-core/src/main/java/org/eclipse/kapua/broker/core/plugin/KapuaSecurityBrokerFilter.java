@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin;
 
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -32,9 +33,9 @@ import javax.security.auth.login.CredentialException;
 import org.apache.activemq.broker.Broker;
 import org.apache.activemq.broker.BrokerFilter;
 import org.apache.activemq.broker.BrokerService;
+import org.apache.activemq.broker.Connection;
 import org.apache.activemq.broker.ConnectionContext;
 import org.apache.activemq.broker.ProducerBrokerExchange;
-import org.apache.activemq.broker.TransportConnection;
 import org.apache.activemq.broker.TransportConnector;
 import org.apache.activemq.broker.region.Subscription;
 import org.apache.activemq.command.ActiveMQDestination;
@@ -265,26 +266,22 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                                 }
                                 if (CONNECTION_MAP.get(kcc.getFullClientId()) != null) {
                                     logger.debug("Stealing link detected - broker id: '{}' topic: '{}' - message id: '{}'", new Object[] { messageBrokerId, destination, messageId });
-                                    // stealing link detected!
-                                    List<TransportConnector> transportConnectors = getBrokerService().getTransportConnectors();
-                                    // iterate over all the transport connectors
-                                    for (TransportConnector transportConnector : transportConnectors) {
-                                        // assume that only one client with this client id is connected to the broker by one of the connection
-                                        for (TransportConnection conn : transportConnector.getConnections()) {
-                                            if (kcc.getFullClientId().equals(conn.getConnectionId())) {
-                                                logger.info("New connection detected for {} on another broker.  Stopping the current connection on transport connector: {}.", kcc.getFullClientId(),
-                                                        transportConnector.getName());
-                                                loginMetric.getRemoteStealingLinkDisconnect().inc();
-                                                // Include KapuaDuplicateClientIdException to notify the security broker filter
-                                                conn.stopAsync(new KapuaDuplicateClientIdException(kcc.getFullClientId()));
-                                                // assume only one connection since this broker should have already handled any duplicates
-                                                return;
-                                            }
+                                    // iterate over all connected clients
+                                    for(Connection conn : getClients()) {
+                                        logger.debug("Checking if {} equals {}", kcc.getFullClientId(), conn.getConnectionId());
+                                        if (kcc.getFullClientId().equals(conn.getConnectionId())) {
+                                            // Include Exception to notify the security broker filter
+                                            logger.info("New connection detected for {} on another broker.  Stopping the current connection...", kcc.getFullClientId());
+                                            loginMetric.getRemoteStealingLinkDisconnect().inc();
+                                            conn.serviceExceptionAsync(new IOException(new KapuaDuplicateClientIdException(kcc.getFullClientId())));
+
+                                            // assume only one connection since this broker should have already handled any duplicates
+                                            return;
                                         }
                                     }
                                 }
                             }
-                        } catch (JMSException | KapuaException e) {
+                        } catch (Exception e) {
                             logger.error("Cannot enforce stealing link check in the received message on topic '{}'", destination, e);
                         }
                     }
