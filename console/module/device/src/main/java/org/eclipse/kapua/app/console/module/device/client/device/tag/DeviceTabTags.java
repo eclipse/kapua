@@ -42,7 +42,7 @@ public class DeviceTabTags extends KapuaTabItem<GwtDevice> {
     @Override
     public void setEntity(GwtDevice selectedDevice) {
         super.setEntity(selectedDevice);
-        setEnabled(true);
+        setEnabled(selectedDevice != null);
         deviceTagGrid.setSelectedDevice(selectedDevice);
     }
 
