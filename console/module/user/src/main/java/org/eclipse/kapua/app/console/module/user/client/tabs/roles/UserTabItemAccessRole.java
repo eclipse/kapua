@@ -32,6 +32,7 @@ public class UserTabItemAccessRole extends KapuaTabItem<GwtUser> {
         super(currentSession, MSGS.gridUserTabRolesLabel(), new KapuaIcon(IconSet.STREET_VIEW));
         accessRoleGrid = new UserTabAccessRoleGrid(currentSession, null);
         accessRoleGrid.setRefreshOnRender(false);
+        setEnabled(false);
     }
 
     public UserTabAccessRoleGrid getAccessRoleGrid() {
@@ -49,6 +50,7 @@ public class UserTabItemAccessRole extends KapuaTabItem<GwtUser> {
     public void setEntity(GwtUser gwtUser) {
         super.setEntity(gwtUser);
         if (gwtUser != null) {
+            setEnabled(true);
             accessRoleGrid.setUserId(gwtUser.getId());
             ((UserTabAccessRoleToolbar) accessRoleGrid.getToolbar()).setUserId(gwtUser.getId());
         } else {

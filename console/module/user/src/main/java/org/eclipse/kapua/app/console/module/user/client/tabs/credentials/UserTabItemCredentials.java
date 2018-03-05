@@ -32,6 +32,7 @@ public class UserTabItemCredentials extends KapuaTabItem<GwtUser> {
 
         credentialsGrid = new CredentialGrid(null, currentSession);
         credentialsGrid.setRefreshOnRender(false);
+        setEnabled(false);
     }
 
     @Override
@@ -48,6 +49,9 @@ public class UserTabItemCredentials extends KapuaTabItem<GwtUser> {
     @Override
     public void setEntity(GwtUser gwtUser) {
         super.setEntity(gwtUser);
+        if (gwtUser != null) {
+            setEnabled(true);
+        }
         credentialsGrid.setSelectedUserId(gwtUser != null ? gwtUser.getId() : null);
         credentialsGrid.setSelectedUserName(gwtUser != null ? gwtUser.getUsername() : null);
     }

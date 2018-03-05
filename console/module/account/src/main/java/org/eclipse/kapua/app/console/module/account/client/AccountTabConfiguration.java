@@ -35,6 +35,7 @@ public class AccountTabConfiguration extends KapuaTabItem<GwtAccount> {
         super(currentSession, MSGS.settingsTabTitle(), new KapuaIcon(IconSet.COG));
         this.accountDetailsView = accountDetailsView;
         configComponents = new AccountConfigComponents(currentSession, this);
+        setEnabled(false);
 
         setBorders(false);
         setLayout(new FitLayout());
@@ -50,6 +51,9 @@ public class AccountTabConfiguration extends KapuaTabItem<GwtAccount> {
     @Override
     public void setEntity(GwtAccount selectedAccount) {
         super.setEntity(selectedAccount);
+        if (selectedAccount != null) {
+            setEnabled(true);
+        }
         configComponents.setAccount(selectedAccount);
     }
 

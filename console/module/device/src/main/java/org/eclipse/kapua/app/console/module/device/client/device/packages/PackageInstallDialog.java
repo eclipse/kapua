@@ -91,21 +91,21 @@ public class PackageInstallDialog extends TabbedDialog {
             packageInfoForm.add(dpInfoText);
 
             dpURIField = new KapuaTextField<String>();
-            dpURIField.setMaxLength(255);
+            dpURIField.setMaxLength(125);
             dpURIField.setName("dpUri");
             dpURIField.setAllowBlank(false);
             dpURIField.setFieldLabel("* " + DEVICE_MSGS.packageInstallDpTabUri());
             packageInfoForm.add(dpURIField, formData);
 
             dpNameField = new KapuaTextField<String>();
-            dpNameField.setMaxLength(255);
+            dpNameField.setMaxLength(125);
             dpNameField.setName("dpName");
             dpNameField.setAllowBlank(false);
             dpNameField.setFieldLabel("* " + DEVICE_MSGS.packageInstallDpTabName());
             packageInfoForm.add(dpNameField, formData);
 
             dpVersionField = new KapuaTextField<String>();
-            dpVersionField.setMaxLength(255);
+            dpVersionField.setMaxLength(125);
             dpVersionField.setName("dpVersion");
             dpVersionField.setAllowBlank(false);
             dpVersionField.setFieldLabel("* " + DEVICE_MSGS.packageInstallDpTabVersion());

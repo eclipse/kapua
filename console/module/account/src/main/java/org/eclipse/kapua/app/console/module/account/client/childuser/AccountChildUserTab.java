@@ -26,6 +26,7 @@ public class AccountChildUserTab extends KapuaTabItem<GwtAccount> {
     public AccountChildUserTab(GwtSession currentSession) {
         super(currentSession, "Users", new KapuaIcon(IconSet.USERS));
         this.currentSession = currentSession;
+        setEnabled(false);
         userGrid = new AccountChildUserGrid(currentSession);
         userGrid.setRefreshOnRender(false);
     }
@@ -33,6 +34,9 @@ public class AccountChildUserTab extends KapuaTabItem<GwtAccount> {
     @Override
     public void setEntity(GwtAccount t) {
         super.setEntity(t);
+        if (t != null) {
+            setEnabled(true);
+        }
         userGrid.setSelectedAccount(t);
     }
 

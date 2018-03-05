@@ -33,6 +33,7 @@ public class UserTabItemPermission extends KapuaTabItem<GwtUser> {
 
         permissionGrid = new UserTabPermissionGrid(null, currentSession);
         permissionGrid.setRefreshOnRender(false);
+        setEnabled(false);
     }
 
     public UserTabPermissionGrid getPermissionGrid() {
@@ -50,6 +51,7 @@ public class UserTabItemPermission extends KapuaTabItem<GwtUser> {
     public void setEntity(GwtUser gwtUser) {
         super.setEntity(gwtUser);
         if (gwtUser != null) {
+            setEnabled(true);
             permissionGrid.setUserId(gwtUser.getId());
             ((UserTabPermissionToolbar) permissionGrid.getToolbar()).setUserId(gwtUser.getId());
         } else {

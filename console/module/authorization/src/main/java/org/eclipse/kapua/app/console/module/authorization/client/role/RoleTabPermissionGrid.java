@@ -36,6 +36,7 @@ public class RoleTabPermissionGrid extends KapuaTabItem<GwtRole> {
 
         rolePermissionGrid = new RolePermissionGrid(entityView, currentSession);
         rolePermissionGrid.setRefreshOnRender(false);
+        setEnabled(false);
     }
 
     @Override
@@ -48,6 +49,9 @@ public class RoleTabPermissionGrid extends KapuaTabItem<GwtRole> {
     @Override
     public void setEntity(GwtRole gwtRole) {
         super.setEntity(gwtRole);
+        if (gwtRole != null) {
+            setEnabled(true);
+        }
         rolePermissionGrid.setSelectedRole(gwtRole);
     }
 
