@@ -167,21 +167,23 @@ public class UserServiceSteps extends AbstractKapuaSteps {
                 } catch (KapuaException e) {
                     // skip
                 }
-                bind(AuthorizationService.class).toInstance(mockedAuthorization);
+
+                MockedLocator mockedLocator = (MockedLocator)locator;
+
+                mockedLocator.setMockedService(AuthorizationService.class, mockedAuthorization);
                 // Inject mocked Permission Factory
                 PermissionFactory mockedPermissionFactory = mock(PermissionFactory.class);
-                bind(PermissionFactory.class).toInstance(mockedPermissionFactory);
+                mockedLocator.setMockedFactory(PermissionFactory.class, mockedPermissionFactory);
                 // Set KapuaMetatypeFactory for Metatype configuration
                 KapuaMetatypeFactory metaFactory = new KapuaMetatypeFactoryImpl();
-                bind(KapuaMetatypeFactory.class).toInstance(metaFactory);
-
+                mockedLocator.setMockedFactory(KapuaMetatypeFactory.class, metaFactory);
                 // Inject actual implementation of UserService
                 UserEntityManagerFactory userEntityManagerFactory = (UserEntityManagerFactory) UserEntityManagerFactory.getInstance();
                 bind(UserEntityManagerFactory.class).toInstance(userEntityManagerFactory);
                 UserService userService = new UserServiceImpl();
-                bind(UserService.class).toInstance(userService);
+                mockedLocator.setMockedService(UserService.class, userService);
                 UserFactory userFactory = new UserFactoryImpl();
-                bind(UserFactory.class).toInstance(userFactory);
+                mockedLocator.setMockedFactory(UserFactory.class, userFactory);
             }
         };
 
