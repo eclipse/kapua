@@ -17,9 +17,15 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -61,6 +67,10 @@ public class AccountImpl extends AbstractKapuaNamedEntity implements Account {
     @Basic
     @Column(name = "parent_account_path", nullable = false)
     private String parentAccountPath;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "scope_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private Set<AccountImpl> childAccounts;
 
     /**
      * Constructor
@@ -109,4 +119,10 @@ public class AccountImpl extends AbstractKapuaNamedEntity implements Account {
     public void setParentAccountPath(String parentAccountPath) {
         this.parentAccountPath = parentAccountPath;
     }
+
+    @Override
+    public Set<Account> getChildAccounts() {
+        return new HashSet<>(childAccounts);
+    }
+
 }

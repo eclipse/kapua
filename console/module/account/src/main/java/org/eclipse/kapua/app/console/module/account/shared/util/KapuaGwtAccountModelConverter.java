@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.account.shared.util;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.eclipse.kapua.app.console.module.api.shared.util.KapuaGwtCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtOrganization;
@@ -44,10 +47,18 @@ public class KapuaGwtAccountModelConverter {
         gwtAccount.setOptlock(account.getOptlock());
         gwtAccount.set("orgName", account.getOrganization().getName());
         gwtAccount.set("orgEmail", account.getOrganization().getEmail());
-
+        gwtAccount.setChildAccounts(convertChildAccounts(account.getChildAccounts()));
         //
         // Return converted entity
         return gwtAccount;
+    }
+
+    private static Set<GwtAccount> convertChildAccounts(Set<Account> childAccounts) {
+        Set<GwtAccount> accountSet = new HashSet<GwtAccount>();
+        for (Account account : childAccounts) {
+            accountSet.add(KapuaGwtAccountModelConverter.convertAccount(account));
+        }
+        return accountSet;
     }
 
     /**

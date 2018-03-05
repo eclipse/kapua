@@ -11,8 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.client;
 
+import java.util.List;
+
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -36,7 +37,6 @@ import org.eclipse.kapua.app.console.core.client.util.Logout;
 import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationService;
 import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationServiceAsync;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
-import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountStringListItem;
 import org.eclipse.kapua.app.console.module.account.shared.model.permission.AccountSessionPermission;
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
@@ -52,11 +52,8 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleService;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleServiceAsync;
 
-import java.util.List;
-
 public class NorthView extends LayoutContainer {
 
-    private static final int SUB_ACCT_WIDTH = 700;
     private static final int USER_WIDTH = 200;
     private static final int MAX_USER_TOOLTIP_WIDTH = 300;
     private static final int USER_TOOLTIP_LINE_LEN = 45;
@@ -148,7 +145,7 @@ public class NorthView extends LayoutContainer {
 
         userActionButton = new Button();
 
-        userActionButton.addListener(Events.OnMouseOver, new Listener<BaseEvent>() {
+        userActionButton.addListener(Events.Render, new Listener<BaseEvent>() {
 
             @Override
             public void handleEvent(BaseEvent be) {
@@ -211,7 +208,7 @@ public class NorthView extends LayoutContainer {
         userActionButton.setId("header-button");
         userActionButton.addStyleName("x-btn-arrow-custom");
         userActionButton.setWidth(USER_WIDTH);
-
+        userActionButton.setAutoWidth(true);
         updateUserActionButtonLabel();
 
         return userActionButton;
@@ -232,7 +229,7 @@ public class NorthView extends LayoutContainer {
         rootAccountMenuItem.addSelectionListener(switchToAccountListener);
 
         subAccountMenu = new Menu();
-        subAccountMenu.setWidth(SUB_ACCT_WIDTH);
+        subAccountMenu.setAutoWidth(true);
         subAccountMenu.add(rootAccountMenuItem);
         subAccountMenu.add(new SeparatorMenuItem());
 
@@ -254,9 +251,8 @@ public class NorthView extends LayoutContainer {
      * @param accountId the account of the current menu item.
      */
     private void populateNavigatorMenu(final Menu menu, String accountId) {
-        gwtAccountService.findChildrenAsStrings(accountId,
-                false,
-                new AsyncCallback<ListLoadResult<GwtAccountStringListItem>>() {
+        gwtAccountService.find(accountId,
+                new AsyncCallback<GwtAccount>() {
 
                     @Override
                     public void onFailure(Throwable caught) {
@@ -264,22 +260,22 @@ public class NorthView extends LayoutContainer {
                     }
 
                     @Override
-                    public void onSuccess(ListLoadResult<GwtAccountStringListItem> result) {
+                    public void onSuccess(GwtAccount result) {
                         // If no children are found, add "No Child" label
-                        if (result.getData() != null &&
-                                result.getData().size() == 0) {
+                        if (result.getChildAccounts() != null &&
+                                result.getChildAccounts().size() == 0) {
                             MenuItem noChildMenuItem = new MenuItem(MSGS.accountSelectorItemNoChild());
                             noChildMenuItem.disable();
                             menu.add(noChildMenuItem);
                         } else {
                             // For each child found create a item menu and search for its children
-                            for (GwtAccountStringListItem item : result.getData()) {
+                            for (GwtAccount childAccount : result.getChildAccounts()) {
                                 // Add item menu entry
                                 KapuaMenuItem childAccountMenuItem = new KapuaMenuItem();
                                 childAccountMenuItem.setIcon(IconSet.USER);
-                                childAccountMenuItem.setText(item.getValue());
-                                childAccountMenuItem.setTitle(item.getValue());
-                                childAccountMenuItem.setId(String.valueOf(item.getId()));
+                                childAccountMenuItem.setText(childAccount.getName());
+                                childAccountMenuItem.setTitle(childAccount.getName());
+                                childAccountMenuItem.setId(String.valueOf(childAccount.getId()));
                                 childAccountMenuItem.setStyleAttribute("white-space", "nowrap");
                                 childAccountMenuItem.setStyleAttribute("text-overflow", "ellipsis");
                                 childAccountMenuItem.setStyleAttribute("overflow", "hidden");
@@ -289,12 +285,11 @@ public class NorthView extends LayoutContainer {
                                 childAccountMenuItem.addSelectionListener(switchToAccountListener);
 
                                 // Search for its children
-                                if (item.hasChildAccount()) {
+                                if (childAccount.getChildAccounts().size() > 0) {
                                     Menu childMenu = new Menu();
-                                    childMenu.setWidth(SUB_ACCT_WIDTH);
+                                    childMenu.setAutoWidth(true);
                                     childAccountMenuItem.setSubMenu(childMenu);
-
-                                    populateNavigatorMenu(childMenu, item.getId());
+                                    populateNavigatorMenu(childMenu, childAccount.getId());
                                 }
                             }
                         }
