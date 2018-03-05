@@ -31,7 +31,7 @@ public class JobTabTargetsDescriptor extends AbstractEntityTabDescriptor<GwtJob,
 
     @Override
     public Integer getOrder() {
-        return 100;
+        return 200;
     }
 
     @Override

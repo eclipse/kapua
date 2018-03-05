@@ -31,7 +31,7 @@ public class JobTabSchedulesDescriptor extends AbstractEntityTabDescriptor<GwtJo
 
     @Override
     public Integer getOrder() {
-        return 300;
+        return 400;
     }
 
     @Override

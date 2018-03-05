@@ -11,7 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.job.server;
 
+import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.eclipse.kapua.KapuaDuplicateNameException;
@@ -19,6 +21,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJob;
@@ -220,5 +223,46 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
             e.printStackTrace();
         }
         return jobList;
+    }
+
+    @Override
+    public ListLoadResult<GwtGroupedNVPair> findJobDescription(String gwtScopeId,
+            String gwtJobId) throws GwtKapuaException {
+        List<GwtGroupedNVPair> gwtJobDescription = new ArrayList<GwtGroupedNVPair>();
+        try {
+            KapuaLocator locator = KapuaLocator.getInstance();
+            final UserService userService = locator.getService(UserService.class);
+            final JobService jobService = locator.getService(JobService.class);
+            final KapuaId scopeId = KapuaEid.parseCompactId(gwtScopeId);
+            final KapuaId jobId = KapuaEid.parseCompactId(gwtJobId);
+            final Job job = jobService.find(scopeId, jobId);
+            final User createdUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
+
+                @Override
+                public User call() throws Exception {
+                    return userService.find(scopeId, job.getCreatedBy());
+                }
+            });
+            final User modifiedUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
+
+                @Override
+                public User call() throws Exception {
+                    return userService.find(scopeId, job.getModifiedBy());
+                }
+            });
+
+            if (job != null) {
+                gwtJobDescription.add(new GwtGroupedNVPair("jobInfo", "jobName", job.getName()));
+                gwtJobDescription.add(new GwtGroupedNVPair("jobInfo", "jobDescription", job.getDescription()));
+                gwtJobDescription.add(new GwtGroupedNVPair("jobInfo", "jobCreatedOn", job.getCreatedOn()));
+                gwtJobDescription.add(new GwtGroupedNVPair("jobInfo", "jobCreatedBy", createdUser.getName()));
+                gwtJobDescription.add(new GwtGroupedNVPair("jobInfo", "jobModifiedOn", job.getModifiedOn()));
+                gwtJobDescription.add(new GwtGroupedNVPair("jobInfo", "jobModifiedBy", modifiedUser.getName()));
+            }
+        } catch (Exception e) {
+            KapuaExceptionHandler.handle(e);
+        }
+
+        return new BaseListLoadResult<GwtGroupedNVPair>(gwtJobDescription);
     }
 }
