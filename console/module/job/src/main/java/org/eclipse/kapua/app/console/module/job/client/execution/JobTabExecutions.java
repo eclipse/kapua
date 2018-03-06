@@ -30,6 +30,7 @@ public class JobTabExecutions extends KapuaTabItem<GwtJob> {
         super(currentSession, JOB_MSGS.gridJobTabExecutionsLabel(), new KapuaIcon(IconSet.CLIPBOARD));
         executionsGrid = new JobTabExecutionsGrid(null, currentSession);
         executionsGrid.setRefreshOnRender(false);
+        setEnabled(false);
     }
 
     @Override
@@ -49,6 +50,7 @@ public class JobTabExecutions extends KapuaTabItem<GwtJob> {
     public void setEntity(GwtJob gwtJob) {
         super.setEntity(gwtJob);
         if (gwtJob != null) {
+            setEnabled(true);
             executionsGrid.setJobId(gwtJob.getId());
             executionsGrid.getToolbar().setJobId(gwtJob.getId());
         } else {

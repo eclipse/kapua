@@ -31,6 +31,7 @@ public class JobTabTargets extends KapuaTabItem<GwtJob> {
 
         targetsGrid = new JobTabTargetsGrid(null, currentSession);
         targetsGrid.setRefreshOnRender(false);
+        setEnabled(false);
     }
 
     @Override
@@ -44,6 +45,7 @@ public class JobTabTargets extends KapuaTabItem<GwtJob> {
     public void setEntity(GwtJob gwtJob) {
         super.setEntity(gwtJob);
         if (gwtJob != null) {
+            setEnabled(true);
             targetsGrid.setJobId(gwtJob.getId());
             targetsGrid.getToolbar().setJobId(gwtJob.getId());
         } else {
