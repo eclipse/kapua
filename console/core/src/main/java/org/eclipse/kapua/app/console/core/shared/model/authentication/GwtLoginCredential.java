@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.shared.model.authentication;
 
+import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.KapuaBaseModel;
 
 public class GwtLoginCredential extends KapuaBaseModel {
@@ -36,7 +37,7 @@ public class GwtLoginCredential extends KapuaBaseModel {
     }
 
     public String getPassword() {
-        return get("password");
+        return KapuaSafeHtmlUtils.htmlUnescape(get("password").toString());
     }
 
     public void setPassword(String password) {
