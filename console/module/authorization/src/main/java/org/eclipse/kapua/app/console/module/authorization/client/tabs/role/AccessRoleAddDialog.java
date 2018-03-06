@@ -20,6 +20,7 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
@@ -95,7 +96,13 @@ public class AccessRoleAddDialog extends EntityAddEditDialog {
                 status.hide();
 
                 exitStatus = false;
-                exitMessage = MSGS.dialogAddError(MSGS.dialogAddRoleError(cause.getLocalizedMessage()));
+                switch (((GwtKapuaException) cause).getCode()) {
+                case DUPLICATE_NAME:
+                    exitMessage = MSGS.dialogAddRoleDuplicateError();
+                    break;
+                default:
+                    exitMessage = MSGS.dialogAddError(MSGS.dialogAddRoleError(cause.getLocalizedMessage()));
+                }
 
                 hide();
             }
