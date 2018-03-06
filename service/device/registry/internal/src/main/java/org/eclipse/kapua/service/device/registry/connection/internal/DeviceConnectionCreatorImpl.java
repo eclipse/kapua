@@ -16,6 +16,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCreator;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 
 /**
  * Device connection creator service implementation.
@@ -26,6 +27,7 @@ public class DeviceConnectionCreatorImpl extends AbstractKapuaUpdatableEntityCre
 
     private static final long serialVersionUID = 2740394157765904615L;
 
+    private DeviceConnectionStatus status;
     private String clientId;
     private KapuaId userId;
     private ConnectionUserCouplingMode userCouplingMode;
@@ -42,6 +44,16 @@ public class DeviceConnectionCreatorImpl extends AbstractKapuaUpdatableEntityCre
      */
     public DeviceConnectionCreatorImpl(KapuaId scopeId) {
         super(scopeId);
+    }
+
+    @Override
+    public DeviceConnectionStatus getStatus() {
+        return status;
+    }
+
+    @Override
+    public void setStatus(DeviceConnectionStatus status) {
+        this.status = status;
     }
 
     @Override
@@ -64,26 +76,32 @@ public class DeviceConnectionCreatorImpl extends AbstractKapuaUpdatableEntityCre
         this.userId = userId;
     }
 
+    @Override
     public ConnectionUserCouplingMode getUserCouplingMode() {
         return userCouplingMode;
     }
 
+    @Override
     public void setUserCouplingMode(ConnectionUserCouplingMode userCouplingMode) {
         this.userCouplingMode = userCouplingMode;
     }
 
+    @Override
     public KapuaId getReservedUserId() {
         return reservedUserId;
     }
 
+    @Override
     public void setReservedUserId(KapuaId reservedUserId) {
         this.reservedUserId = reservedUserId;
     }
 
+    @Override
     public boolean getAllowUserChange() {
         return allowUserChange;
     }
 
+    @Override
     public void setAllowUserChange(boolean allowUserChange) {
         this.allowUserChange = allowUserChange;
     }
@@ -98,6 +116,7 @@ public class DeviceConnectionCreatorImpl extends AbstractKapuaUpdatableEntityCre
         this.protocol = protocol;
     }
 
+    @Override
     public String getClientIp() {
         return clientIp;
     }

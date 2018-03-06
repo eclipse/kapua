@@ -11,15 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection.internal;
 
-import static org.eclipse.kapua.commons.model.query.predicate.AttributePredicate.attributeIsEqualTo;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-
-import java.math.BigInteger;
-import java.security.acl.Permission;
-import java.util.HashSet;
-import java.util.List;
-
+import com.google.common.collect.Lists;
+import cucumber.api.Scenario;
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
@@ -47,15 +46,14 @@ import org.eclipse.kapua.test.MockedLocator;
 import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 import org.mockito.Mockito;
 
-import com.google.common.collect.Lists;
+import java.math.BigInteger;
+import java.security.acl.Permission;
+import java.util.HashSet;
+import java.util.List;
 
-import cucumber.api.Scenario;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
-import cucumber.runtime.java.guice.ScenarioScoped;
+import static org.eclipse.kapua.commons.model.query.predicate.AttributePredicate.attributeIsEqualTo;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
 
 /**
  * Implementation of Gherkin steps used in DeviceRegistryConnection.features scenarios.
@@ -207,6 +205,7 @@ public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
             sharedTests.primeException();
             for (DeviceConnection connItem : connections) {
                 connectionCreator = new DeviceConnectionCreatorImpl(scopeId);
+                connectionCreator.setStatus(DeviceConnectionStatus.CONNECTED);
                 connectionCreator.setUserId(userId);
                 connectionCreator.setUserCouplingMode(ConnectionUserCouplingMode.LOOSE);
                 connectionCreator.setClientId(connItem.getClientId());

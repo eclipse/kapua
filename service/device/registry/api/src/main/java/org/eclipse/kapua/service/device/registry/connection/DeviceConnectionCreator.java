@@ -11,11 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection;
 
-import javax.xml.bind.annotation.XmlElement;
-
 import org.eclipse.kapua.model.KapuaUpdatableEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
+
+import javax.xml.bind.annotation.XmlElement;
 
 /**
  * Device connection creator service definition.
@@ -23,6 +23,21 @@ import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
  * @since 1.0
  */
 public interface DeviceConnectionCreator extends KapuaUpdatableEntityCreator<DeviceConnection> {
+
+    /**
+     * Get the device connection status
+     *
+     * @return
+     */
+    @XmlElement(name = "status")
+    public DeviceConnectionStatus getStatus();
+
+    /**
+     * Set the device connection status
+     *
+     * @param status
+     */
+    public void setStatus(DeviceConnectionStatus status);
 
     /**
      * Get the client identifier
@@ -82,7 +97,7 @@ public interface DeviceConnectionCreator extends KapuaUpdatableEntityCreator<Dev
 
     /**
      * Gets whether or not the {@link DeviceConnection} can change user on the next login.
-     * 
+     *
      * @return <code>true</code> if device can changhe user to connect, <code>false</code> if not.
      */
     @XmlElement(name = "allowUserChange")
@@ -90,7 +105,7 @@ public interface DeviceConnectionCreator extends KapuaUpdatableEntityCreator<Dev
 
     /**
      * Sets whether or not the {@link DeviceConnection} can change user on the next login.
-     * 
+     *
      * @param allowUserChange
      */
     public void setAllowUserChange(boolean allowUserChange);
