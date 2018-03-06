@@ -70,6 +70,9 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
                     JobStepDefinition jobStepDefinition = jobStepDefinitionService
                             .find(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobStep.getScopeId()), GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobStep.getJobStepDefinitionId()));
                     gwtJobStep.setJobStepDefinitionName(jobStepDefinition.getName());
+
+                    setEnumOnJobStepProperty(gwtJobStep.getStepProperties());
+
                     gwtJobStepList.add(gwtJobStep);
                 }
             }
@@ -114,6 +117,7 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
             // Convert
             gwtJobStep = KapuaGwtJobModelConverter.convertJobStep(jobStep);
 
+            setEnumOnJobStepProperty(gwtJobStep.getStepProperties());
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
@@ -151,6 +155,8 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
             JobStep jobStep = gwtJobStepService.find(scopeId, jobStepId);
             if (jobStep != null) {
                 gwtJobStep = KapuaGwtJobModelConverter.convertJobStep(jobStep);
+
+                setEnumOnJobStepProperty(gwtJobStep.getStepProperties());
             }
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
@@ -208,11 +214,26 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
                 // convert to GwtAccount and return
                 // reload the user as we want to load all its permissions
                 gwtJobStepUpdated = KapuaGwtJobModelConverter.convertJobStep(jobStepUpdated);
+
+                setEnumOnJobStepProperty(gwtJobStep.getStepProperties());
             }
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
         return gwtJobStepUpdated;
+    }
+
+    /**
+     * Set the {@link GwtJobStepProperty#isEnum()} property.
+     * This cannot be performed in *.shared.* packages (entity converters are in that package), since `Class.forName` is not present in the JRE Emulation library.
+     *
+     * @param jobStepProperties
+     * @throws ClassNotFoundException
+     */
+    private void setEnumOnJobStepProperty(List<GwtJobStepProperty> jobStepProperties) throws ClassNotFoundException {
+        for (GwtJobStepProperty gjsp : jobStepProperties) {
+            gjsp.setEnum(Class.forName(gjsp.getPropertyType()).isEnum());
+        }
     }
 
     @Override

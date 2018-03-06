@@ -12,7 +12,9 @@
 package org.eclipse.kapua.service.job.context.internal;
 
 import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.context.KapuaStepContext;
 import org.eclipse.kapua.service.job.context.StepContextPropertyNames;
 import org.xml.sax.SAXException;
@@ -70,6 +72,16 @@ public class KapuaStepContextImpl implements KapuaStepContext {
                 stepProperty = (T) Boolean.valueOf(stepPropertyString);
             } else if (type == byte[].class || type == Byte[].class) {
                 stepProperty = (T) DatatypeConverter.parseBase64Binary(stepPropertyString);
+            } else if (type == KapuaId.class) {
+                stepProperty = (T) KapuaEid.parseCompactId(stepPropertyString);
+            } else if (type.isEnum()) {
+                Class<? extends Enum> enumType = (Class<? extends Enum>) type;
+
+                try {
+                    stepProperty = (T) Enum.valueOf(enumType, stepPropertyString);
+                } catch (IllegalArgumentException iae) {
+                    throw new KapuaIllegalArgumentException(stepPropertyName, stepPropertyString);
+                }
             } else {
                 try {
                     stepProperty = XmlUtil.unmarshal(stepPropertyString, type);

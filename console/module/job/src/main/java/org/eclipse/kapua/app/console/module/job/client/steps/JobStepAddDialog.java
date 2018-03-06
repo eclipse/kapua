@@ -55,7 +55,13 @@ import java.util.List;
 
 public class JobStepAddDialog extends EntityAddEditDialog {
 
+    /**
+     * This identifies the KapuaId fully qualified name since it is treated as a primitive type, and therefore its input is rendered as a {@link TextField}
+     */
+    protected static final String KAPUA_ID_CLASS_NAME = "org.eclipse.kapua.model.id.KapuaId";
+
     private final String jobId;
+
     protected int jobStepIndex;
 
     protected final TextField<String> jobStepName;
@@ -200,7 +206,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
 
         for (GwtJobStepProperty property : gwtJobStepDefinition.getStepProperties()) {
             String propertyType = property.getPropertyType();
-            if (propertyType.equals(String.class.getName())) {
+            if (propertyType.equals(String.class.getName()) || property.isEnum() || KAPUA_ID_CLASS_NAME.equals(propertyType)) {
                 TextField<String> textField = new TextField<String>();
                 textField.setFieldLabel(property.getPropertyName());
                 textField.setEmptyText(KapuaSafeHtmlUtils.htmlUnescape(property.getPropertyValue()));

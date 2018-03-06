@@ -42,8 +42,13 @@ public class GwtJobStepDefinitionServiceImpl extends KapuaRemoteServiceServlet i
             JobStepDefinitionFactory jobStepDefinitionFactory = locator.getFactory(JobStepDefinitionFactory.class);
             JobStepDefinitionListResult result = jobStepDefinitionService.query(jobStepDefinitionFactory.newQuery(KapuaId.ONE));
             for (JobStepDefinition jsd : result.getItems()) {
-                gwtJobStepDefinitionList.add(KapuaGwtJobModelConverter.convertJobStepDefinition(jsd));
+                GwtJobStepDefinition gwtJobStepDefinition = KapuaGwtJobModelConverter.convertJobStepDefinition(jsd);
+
+                setEnumOnJobStepProperty(gwtJobStepDefinition.getStepProperties());
+
+                gwtJobStepDefinitionList.add(gwtJobStepDefinition);
             }
+
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
@@ -61,6 +66,8 @@ public class GwtJobStepDefinitionServiceImpl extends KapuaRemoteServiceServlet i
             JobStepDefinition jobStepDefinition = jobStepDefinitionService.find(null, jobStepDefinitionId);
             if (jobStepDefinition != null) {
                 gwtJobStepDefinition = KapuaGwtJobModelConverter.convertJobStepDefinition(jobStepDefinition);
+
+                setEnumOnJobStepProperty(gwtJobStepDefinition.getStepProperties());
             }
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
@@ -72,6 +79,19 @@ public class GwtJobStepDefinitionServiceImpl extends KapuaRemoteServiceServlet i
     @Override
     public GwtJobStepProperty trickGwt() {
         return null;
+    }
+
+    /**
+     * Set the {@link GwtJobStepProperty#isEnum()} property.
+     * This cannot be performed in *.shared.* packages (entity converters are in that package), since `Class.forName` is not present in the JRE Emulation library.
+     *
+     * @param jobStepProperties
+     * @throws ClassNotFoundException
+     */
+    private void setEnumOnJobStepProperty(List<GwtJobStepProperty> jobStepProperties) throws ClassNotFoundException {
+        for (GwtJobStepProperty gjsp : jobStepProperties) {
+            gjsp.setEnum(Class.forName(gjsp.getPropertyType()).isEnum());
+        }
     }
 
 }
