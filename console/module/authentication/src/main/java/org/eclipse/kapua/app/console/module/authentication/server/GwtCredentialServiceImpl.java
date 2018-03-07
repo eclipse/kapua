@@ -11,9 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authentication.server;
 
-import com.extjs.gxt.ui.client.data.BaseListLoadResult;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.Callable;
+
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.apache.commons.lang3.StringUtils;
@@ -21,10 +24,8 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
-import org.eclipse.kapua.app.console.module.api.shared.util.KapuaGwtCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredential;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialCreator;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialQuery;
@@ -52,11 +53,6 @@ import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserService;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.Callable;
 
 public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implements GwtCredentialService {
 
@@ -196,41 +192,6 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
         //
         // Return result
         return gwtCredentialUpdated;
-    }
-
-    @Override
-    public ListLoadResult<GwtGroupedNVPair> getCredentialDescription(String scopeShortId, String credentialShortId) throws GwtKapuaException {
-        //
-        // Do get
-        List<GwtGroupedNVPair> gwtCredentialDescription = new ArrayList<GwtGroupedNVPair>();
-        try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            CredentialService credentialService = locator.getService(CredentialService.class);
-
-            // Convert from GWT Entity
-            KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeShortId);
-            KapuaId credentialId = GwtKapuaCommonsModelConverter.convertKapuaId(credentialShortId);
-
-            // Find
-            Credential credential = credentialService.find(scopeId, credentialId);
-
-            // If there are results
-            if (credential != null) {
-                gwtCredentialDescription.add(new GwtGroupedNVPair("Entity", "Scope Id", KapuaGwtCommonsModelConverter.convertKapuaId(credential.getScopeId())));
-                gwtCredentialDescription.add(new GwtGroupedNVPair("Entity", "Id", KapuaGwtCommonsModelConverter.convertKapuaId(credential.getId())));
-                gwtCredentialDescription.add(new GwtGroupedNVPair("Entity", "Created On", credential.getCreatedOn()));
-                gwtCredentialDescription.add(new GwtGroupedNVPair("Entity", "Created By", KapuaGwtCommonsModelConverter.convertKapuaId(credential.getCreatedBy())));
-                gwtCredentialDescription.add(new GwtGroupedNVPair("Entity", "Modified On", credential.getModifiedOn()));
-                gwtCredentialDescription.add(new GwtGroupedNVPair("Entity", "Modified By", KapuaGwtCommonsModelConverter.convertKapuaId(credential.getModifiedBy())));
-                gwtCredentialDescription.add(new GwtGroupedNVPair("Credential", "Credential Type", credential.getCredentialType().toString()));
-                gwtCredentialDescription.add(new GwtGroupedNVPair("Credential", "User ID", KapuaGwtCommonsModelConverter.convertKapuaId(credential.getUserId())));
-            }
-
-        } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
-        }
-
-        return new BaseListLoadResult<GwtGroupedNVPair>(gwtCredentialDescription);
     }
 
     @Override
