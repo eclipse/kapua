@@ -198,9 +198,9 @@ public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtT
                 // Id", KapuaGwtCommonsModelConverter.convertKapuaId(tag.getScopeId())));
                 gwtTagDescription.add(new GwtGroupedNVPair("tagInfo", "tagName", tag.getName()));
                 gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagModifiedOn", tag.getModifiedOn().toString()));
-                gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagModifiedBy", modifiedUser != null ? modifiedUser.getName() : "N/A"));
+                gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagModifiedBy", modifiedUser != null ? modifiedUser.getName() : null));
                 gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagCreatedOn", tag.getCreatedOn().toString()));
-                gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagCreatedBy", createdUser != null ? createdUser.getName() : "N/A"));
+                gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagCreatedBy", createdUser != null ? createdUser.getName() : null));
 
             }
         } catch (Exception e) {
