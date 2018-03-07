@@ -20,7 +20,6 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCreator;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionListResult;
-import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 
 /**
  * Device connection DAO
@@ -38,7 +37,7 @@ public class DeviceConnectionDAO extends ServiceDAO {
      */
     public static DeviceConnection create(EntityManager em, DeviceConnectionCreator deviceConnectionCreator) {
         DeviceConnection deviceConnection = new DeviceConnectionImpl(deviceConnectionCreator.getScopeId());
-        deviceConnection.setStatus(DeviceConnectionStatus.CONNECTED);
+        deviceConnection.setStatus(deviceConnectionCreator.getStatus());
         deviceConnection.setClientId(deviceConnectionCreator.getClientId());
         deviceConnection.setUserId(deviceConnectionCreator.getUserId());
         deviceConnection.setUserCouplingMode(deviceConnectionCreator.getUserCouplingMode());
@@ -57,8 +56,7 @@ public class DeviceConnectionDAO extends ServiceDAO {
      * @param em
      * @param deviceConnection
      * @return
-     * @throws KapuaEntityNotFoundException
-     *             If the {@link DeviceConnection} is not found.
+     * @throws KapuaEntityNotFoundException If the {@link DeviceConnection} is not found.
      */
     public static DeviceConnection update(EntityManager em, DeviceConnection deviceConnection)
             throws KapuaException {
@@ -108,8 +106,7 @@ public class DeviceConnectionDAO extends ServiceDAO {
      *
      * @param em
      * @param deviceConnectionId
-     * @throws KapuaEntityNotFoundException
-     *             If the {@link DeviceConnection} is not found.
+     * @throws KapuaEntityNotFoundException If the {@link DeviceConnection} is not found.
      */
     public static void delete(EntityManager em, KapuaId deviceConnectionId) throws KapuaEntityNotFoundException {
         ServiceDAO.delete(em, DeviceConnectionImpl.class, deviceConnectionId);

@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.connection.steps;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
@@ -54,8 +57,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
 @ScenarioScoped
@@ -200,6 +201,7 @@ public class ConnectionSteps extends BaseQATests {
         KapuaSecurityUtils.doPrivileged(() -> {
             for (CucConnection tmpConn : connections) {
                 DeviceConnectionCreator tmpCreator = deviceConnectionFactory.newCreator(tmpConn.getScopeId());
+                tmpCreator.setStatus(DeviceConnectionStatus.CONNECTED);
                 tmpCreator.setClientId(tmpConn.getClientId());
                 tmpCreator.setUserId(tmpConn.getUserId());
                 tmpCreator.setReservedUserId(tmpConn.getReservedUserId());

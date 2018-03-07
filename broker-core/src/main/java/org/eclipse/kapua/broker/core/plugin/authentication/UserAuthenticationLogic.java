@@ -204,6 +204,7 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
 
         if (deviceConnection == null) {
             DeviceConnectionCreator deviceConnectionCreator = deviceConnectionFactory.newCreator(kcc.getScopeId());
+            deviceConnectionCreator.setStatus(DeviceConnectionStatus.CONNECTED);
             deviceConnectionCreator.setClientId(kcc.getClientId());
             deviceConnectionCreator.setClientIp(kcc.getClientIp());
             deviceConnectionCreator.setProtocol(kcc.getConnectorDescriptor().getTransportProtocol());
@@ -213,11 +214,11 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
             deviceConnectionCreator.setAllowUserChange(false);
             deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.create(deviceConnectionCreator));
         } else {
+            deviceConnection.setStatus(DeviceConnectionStatus.CONNECTED);
             deviceConnection.setClientIp(kcc.getClientIp());
             deviceConnection.setProtocol(kcc.getConnectorDescriptor().getTransportProtocol());
             deviceConnection.setServerIp(kcc.getBrokerIpOrHostName());
             deviceConnection.setUserId(kcc.getUserId());
-            deviceConnection.setStatus(DeviceConnectionStatus.CONNECTED);
             deviceConnection.setAllowUserChange(false);
             final DeviceConnection deviceConnectionToUpdate = deviceConnection;
             KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.update(deviceConnectionToUpdate));
