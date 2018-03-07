@@ -503,8 +503,16 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                 loginRemoveConnectionTimeContext.stop();
                 authenticationService.logout();
                 if (kcc != null && kcc.getFullClientId() != null) {
-                    // cleanup stealing link detection map
-                    CONNECTION_MAP.remove(kcc.getFullClientId());
+                    if (info.getConnectionId().getValue().equals(CONNECTION_MAP.get(kcc.getFullClientId()))) {
+                        // cleanup stealing link detection map
+                        CONNECTION_MAP.remove(kcc.getFullClientId());
+                    }
+                    else {
+                        logger.info("Cannot find client id in the connection map. May be it's due to a stealing link. ({})", kcc.getFullClientId());
+                    }
+                }
+                else {
+                    logger.warn("Cannot find Kapua connection context or client id is null");
                 }
             }
         }
