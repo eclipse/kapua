@@ -47,6 +47,7 @@ public class JobTabSteps extends KapuaTabItem<GwtJob> {
             stepsGrid.setJobId(gwtJob.getId());
             stepsGrid.getToolbar().setJobId(gwtJob.getId());
         } else {
+            setEnabled(false);
             stepsGrid.setJobId(null);
             stepsGrid.getToolbar().setJobId(null);
         }

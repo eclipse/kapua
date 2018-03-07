@@ -54,6 +54,7 @@ public class JobTabExecutions extends KapuaTabItem<GwtJob> {
             executionsGrid.setJobId(gwtJob.getId());
             executionsGrid.getToolbar().setJobId(gwtJob.getId());
         } else {
+            setEnabled(false);
             executionsGrid.setJobId(null);
             executionsGrid.getToolbar().setJobId(null);
         }

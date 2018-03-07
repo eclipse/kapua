@@ -55,6 +55,7 @@ public class JobTabSchedules extends KapuaTabItem<GwtJob> {
             schedulesGrid.setJobId(gwtJob.getId());
             schedulesGrid.getToolbar().setJobId(gwtJob.getId());
         } else {
+            setEnabled(false);
             schedulesGrid.setJobId(null);
             schedulesGrid.getToolbar().setJobId(null);
         }
