@@ -326,14 +326,14 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                     return userService.find(scopeId, user.getCreatedBy());
                 }
             });
-
-            User modifiedUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
+            final User modifiedUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
 
                 @Override
                 public User call() throws Exception {
                     return userService.find(scopeId, user.getModifiedBy());
                 }
             });
+
             if (user != null) {
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userStatus", user.getStatus().toString()));
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userName", user.getName()));
@@ -341,9 +341,9 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userEmail", user.getEmail()));
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userPhoneNumber", user.getPhoneNumber()));
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userCreatedOn", user.getCreatedOn()));
-                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userCreatedBy", createdUser.getName()));
+                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userCreatedBy", createdUser != null ? createdUser.getName() : "N/A"));
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userModifiedOn", user.getModifiedOn()));
-                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userModifiedBy", modifiedUser.getName()));
+                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userModifiedBy", modifiedUser != null ? modifiedUser.getName() : "N/A"));
             }
         } catch (Exception e) {
             KapuaExceptionHandler.handle(e);

@@ -214,7 +214,6 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                     return USER_SERVICE.find(scopeId, account.getCreatedBy());
                 }
             });
-
             User userModifiedBy = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
 
                 @Override
@@ -225,9 +224,9 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
 
             accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountName", account.getName()));
             accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountCreatedOn", account.getCreatedOn().toString()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountCreatedBy", userCreatedBy.getName()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountCreatedBy", userCreatedBy != null ? userCreatedBy.getName() : "N/A"));
             accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountModifiedOn", account.getModifiedOn().toString()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountModifiedBy", userModifiedBy.getName()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountModifiedBy", userModifiedBy != null ? userModifiedBy.getName() : "N/A"));
 
             EndpointInfoListResult endpointInfos = KapuaSecurityUtils.doPrivileged(new Callable<EndpointInfoListResult>() {
 

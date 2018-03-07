@@ -176,27 +176,29 @@ public class GwtGroupServiceImpl extends KapuaRemoteServiceServlet implements Gw
             final KapuaId scopeId = KapuaEid.parseCompactId(scopeShortId);
             KapuaId groupId = KapuaEid.parseCompactId(groupShortId);
             final Group group = groupService.find(scopeId, groupId);
-            User user = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
+            User createdUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
 
                 @Override
                 public User call() throws Exception {
                     return userService.find(scopeId, group.getCreatedBy());
                 }
             });
+            User modifiedUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
+
+                @Override
+                public User call() throws Exception {
+                    return userService.find(scopeId, group.getModifiedBy());
+                }
+            });
 
             if (group != null) {
                 // gwtGroupDescription.add(new GwtGroupedNVPair("Entity", "Scope
                 // Id", KapuaGwtAuthenticationModelConverter.convertKapuaId(group.getScopeId())));
-                gwtGroupDescription
-                        .add(new GwtGroupedNVPair("accessGroupInfo", "accessGroupName", group.getName()));
-                gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupModifiedOn",
-                        group.getModifiedOn().toString()));
-                gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupModifiedBy",
-                        user.getName()));
-                gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupCreatedOn",
-                        group.getCreatedOn().toString()));
-                gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupCreatedBy",
-                        user.getName()));
+                gwtGroupDescription.add(new GwtGroupedNVPair("accessGroupInfo", "accessGroupName", group.getName()));
+                gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupModifiedOn", group.getModifiedOn().toString()));
+                gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupModifiedBy", modifiedUser != null ? modifiedUser.getName() : "N/A"));
+                gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupCreatedOn", group.getCreatedOn().toString()));
+                gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupCreatedBy", createdUser != null ? createdUser.getName() : "N/A"));
 
             }
         } catch (Exception e) {

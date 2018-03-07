@@ -13,10 +13,8 @@ package org.eclipse.kapua.app.console.module.authentication.shared.service;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 
-import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -50,9 +48,6 @@ public interface GwtCredentialService extends RemoteService {
             throws GwtKapuaException;
 
     public GwtCredential update(GwtXSRFToken gwtXsrfToken, GwtCredential gwtCredential)
-            throws GwtKapuaException;
-
-    public ListLoadResult<GwtGroupedNVPair> getCredentialDescription(String scopeShortId, String roleShortId)
             throws GwtKapuaException;
 
     public void changePassword(GwtXSRFToken gwtXsrfToken, String oldPassword, String newPassword, String stringUserId, String stringScopeId)
