@@ -101,6 +101,7 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
         super.setEntity(gwtDevice);
 
         setEnabled(gwtDevice != null &&
+                gwtDevice.isOnline() &&
                 currentSession.hasPermission(DeviceManagementSessionPermission.execute()) &&
                 gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_COMMAND));
 

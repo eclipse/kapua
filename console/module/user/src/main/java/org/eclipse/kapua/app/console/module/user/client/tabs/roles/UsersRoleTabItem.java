@@ -45,6 +45,8 @@ public class UsersRoleTabItem extends KapuaTabItem<GwtRole> {
         super.setEntity(t);
         if (t != null) {
             setEnabled(true);
+        } else {
+            setEnabled(false);
         }
         rolePermissionGrid.setEntity(t);
 

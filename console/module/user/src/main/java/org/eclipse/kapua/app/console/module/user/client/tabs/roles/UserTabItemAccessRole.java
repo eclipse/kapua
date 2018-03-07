@@ -54,6 +54,7 @@ public class UserTabItemAccessRole extends KapuaTabItem<GwtUser> {
             accessRoleGrid.setUserId(gwtUser.getId());
             ((UserTabAccessRoleToolbar) accessRoleGrid.getToolbar()).setUserId(gwtUser.getId());
         } else {
+            setEnabled(false);
             accessRoleGrid.setUserId(null);
             ((UserTabAccessRoleToolbar) accessRoleGrid.getToolbar()).setUserId(null);
         }

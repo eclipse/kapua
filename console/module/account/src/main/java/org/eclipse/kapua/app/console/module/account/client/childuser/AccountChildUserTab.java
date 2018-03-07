@@ -36,6 +36,8 @@ public class AccountChildUserTab extends KapuaTabItem<GwtAccount> {
         super.setEntity(t);
         if (t != null) {
             setEnabled(true);
+        } else {
+            setEnabled(false);
         }
         userGrid.setSelectedAccount(t);
     }

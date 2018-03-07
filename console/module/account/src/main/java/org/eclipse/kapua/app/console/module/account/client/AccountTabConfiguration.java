@@ -53,6 +53,8 @@ public class AccountTabConfiguration extends KapuaTabItem<GwtAccount> {
         super.setEntity(selectedAccount);
         if (selectedAccount != null) {
             setEnabled(true);
+        } else {
+            setEnabled(false);
         }
         configComponents.setAccount(selectedAccount);
     }

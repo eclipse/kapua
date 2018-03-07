@@ -55,6 +55,7 @@ public class UserTabItemPermission extends KapuaTabItem<GwtUser> {
             permissionGrid.setUserId(gwtUser.getId());
             ((UserTabPermissionToolbar) permissionGrid.getToolbar()).setUserId(gwtUser.getId());
         } else {
+            setEnabled(false);
             permissionGrid.setUserId(null);
             ((UserTabPermissionToolbar) permissionGrid.getToolbar()).setUserId(null);
         }
