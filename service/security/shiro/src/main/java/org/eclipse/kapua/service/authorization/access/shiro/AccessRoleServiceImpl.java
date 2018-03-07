@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,8 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access.shiro;
 
+import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -32,6 +34,7 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleDAO;
+import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionPredicates;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
 import org.eclipse.kapua.service.authorization.shiro.exception.KapuaAuthorizationErrorCodes;
 import org.eclipse.kapua.service.authorization.shiro.exception.KapuaAuthorizationException;
@@ -82,6 +85,19 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
 
             if (role == null) {
                 throw new KapuaEntityNotFoundException(Role.TYPE, accessRoleCreator.getRoleId());
+            }
+
+            AccessRoleQuery query = new AccessRoleQueryImpl(accessRoleCreator.getScopeId());
+            query.setPredicate(
+                    new AndPredicate(
+                            new AttributePredicate<>(AccessRolePredicates.ACCESS_INFO_ID, accessRoleCreator.getAccessInfoId()),
+                            new AttributePredicate<>(RolePermissionPredicates.ROLE_ID, accessRoleCreator.getRoleId())
+                    )
+            );
+
+            long existingCnt = count(query);
+            if (existingCnt > 0) {
+                throw new KapuaDuplicateNameException(role.getName());
             }
 
             if (!role.getScopeId().equals(accessRoleCreator.getScopeId())) {
