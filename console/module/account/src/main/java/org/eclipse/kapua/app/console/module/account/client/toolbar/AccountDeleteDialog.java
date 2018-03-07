@@ -12,7 +12,6 @@
 package org.eclipse.kapua.app.console.module.account.client.toolbar;
 
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityDeleteDialog;
-import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.account.client.messages.ConsoleAccountMessages;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
@@ -42,8 +41,7 @@ public class AccountDeleteDialog extends EntityDeleteDialog {
             @Override
             public void onSuccess(Void v) {
                 exitStatus = true;
-                ConsoleInfo.display(MSGS.info(),
-                        MSGS.accountDeletedConfirmation());
+                exitMessage = MSGS.accountDeletedConfirmation();
                 hide();
             }
 
