@@ -150,10 +150,28 @@ public class NorthView extends LayoutContainer {
             @Override
             public void handleEvent(BaseEvent be) {
                 Menu userActionMenu = new Menu();
-                MenuItem switchToAccountMenuItem = null;
+
+                // Child Accounts menu item
                 if (currentSession.hasPermission(AccountSessionPermission.read())) {
-                    switchToAccountMenuItem = createAccountNavigationMenuItem();
+                    userActionMenu.add(createAccountNavigationMenuItem());
+                    userActionMenu.add(new SeparatorMenuItem());
                 }
+
+                // Change Password menu item
+                KapuaMenuItem changePassword = new KapuaMenuItem();
+                changePassword.setText(MSGS.changePassword());
+                changePassword.setIcon(IconSet.KEY);
+                changePassword.addSelectionListener(new SelectionListener<MenuEvent>() {
+
+                    @Override
+                    public void componentSelected(MenuEvent ce) {
+                        ChangePasswordDialog changePasswordDialog = new ChangePasswordDialog(currentSession);
+                        changePasswordDialog.show();
+                    }
+
+                });
+                userActionMenu.add(changePassword);
+                userActionMenu.add(new SeparatorMenuItem());
 
                 //
                 // Logout menu item
@@ -181,25 +199,6 @@ public class NorthView extends LayoutContainer {
                     }
 
                 });
-                if (switchToAccountMenuItem != null) {
-                    userActionMenu.add(switchToAccountMenuItem);
-                    userActionMenu.add(new SeparatorMenuItem());
-                }
-
-                KapuaMenuItem changePassword = new KapuaMenuItem();
-                changePassword.setText(MSGS.changePassword());
-                changePassword.setIcon(IconSet.KEY);
-                changePassword.addSelectionListener(new SelectionListener<MenuEvent>() {
-
-                    @Override
-                    public void componentSelected(MenuEvent ce) {
-                        ChangePasswordDialog changePasswordDialog = new ChangePasswordDialog(currentSession);
-                        changePasswordDialog.show();
-                    }
-
-                });
-                userActionMenu.add(changePassword);
-                userActionMenu.add(new SeparatorMenuItem());
                 userActionMenu.add(userLogoutMenuItem);
                 userActionButton.setMenu(userActionMenu);
 

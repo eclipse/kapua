@@ -276,7 +276,6 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
                             CredentialCreator newCredentialCreator = credentialFactory
                                     .newCreator(scopeId, userId, CredentialType.PASSWORD, newPassword, oldCredential.getStatus(), oldCredential.getExpirationDate());
                             credentialsService.create(newCredentialCreator);
-                        } else {
                         }
                         return null;
                     }
