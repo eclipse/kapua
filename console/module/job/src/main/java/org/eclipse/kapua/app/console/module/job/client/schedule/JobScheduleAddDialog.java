@@ -12,7 +12,6 @@
 package org.eclipse.kapua.app.console.module.job.client.schedule;
 
 import com.extjs.gxt.ui.client.widget.form.DateField;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.TimeField;
 import com.google.gwt.core.client.GWT;
@@ -23,6 +22,7 @@ import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.messages.ValidationMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaNumberField;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
@@ -52,7 +52,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
     protected final TimeField startsOnTime;
     protected final DateField endsOn;
     protected final TimeField endsOnTime;
-    protected final NumberField retryInterval;
+    protected final KapuaNumberField retryInterval;
     protected final TextField<String> cronExpression;
 
     public JobScheduleAddDialog(GwtSession currentSession, String jobId) {
@@ -68,7 +68,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         endsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         endsOnTime = new TimeField();
         endsOnTime.setEditable(false);
-        retryInterval = new NumberField();
+        retryInterval = new KapuaNumberField();
         cronExpression = new TextField<String>();
 
         DialogUtils.resizeDialog(this, 400, 300);
@@ -108,6 +108,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         retryInterval.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleRetryIntervalLabel());
         retryInterval.setAllowDecimals(false);
         retryInterval.setAllowNegative(false);
+        retryInterval.setMaxLength(9);
         mainPanel.add(retryInterval);
 
         cronExpression.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleCronScheduleLabel());
