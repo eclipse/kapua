@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -43,6 +43,7 @@ public class DeviceTabConfiguration extends KapuaTabItem<GwtDevice> {
         super(currentSession, MSGS.tabConfiguration(), new KapuaIcon(IconSet.WRENCH));
         configComponents = new DeviceConfigComponents(currentSession, this);
         configSnapshots = new DeviceConfigSnapshots(currentSession, this);
+        setEnabled(false);
     }
 
     @Override
@@ -50,6 +51,7 @@ public class DeviceTabConfiguration extends KapuaTabItem<GwtDevice> {
         super.setEntity(gwtDevice);
 
         setEnabled(gwtDevice != null &&
+                gwtDevice.isOnline() &&
                 currentSession.hasPermission(DeviceManagementSessionPermission.read()) &&
                 gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_CONFIGURATION));
 

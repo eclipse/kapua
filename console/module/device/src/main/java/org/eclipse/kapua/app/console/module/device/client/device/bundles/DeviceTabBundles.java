@@ -90,6 +90,7 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
         super(currentSession, DEVICE_MSGS.tabBundles(), new KapuaIcon(IconSet.CUBES));
         this.devicesView = devicesView;
         initialized = false;
+        setEnabled(false);
     }
 
     @Override
@@ -97,6 +98,7 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
         super.setEntity(gwtDevice);
 
         setEnabled(gwtDevice != null &&
+                gwtDevice.isOnline() &&
                 currentSession.hasPermission(DeviceManagementSessionPermission.read()) &&
                 (gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_DEPLOY_V1) || (gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_DEPLOY_V2))));
 

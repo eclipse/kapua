@@ -30,6 +30,7 @@ public class JobTabSchedules extends KapuaTabItem<GwtJob> {
         super(currentSession, JOB_MSGS.gridJobTabSchedulesLabel(), new KapuaIcon(IconSet.CLOCK_O));
         schedulesGrid = new JobTabSchedulesGrid(null, currentSession);
         schedulesGrid.setRefreshOnRender(false);
+        setEnabled(false);
     }
 
     @Override
@@ -50,9 +51,11 @@ public class JobTabSchedules extends KapuaTabItem<GwtJob> {
     public void setEntity(GwtJob gwtJob) {
         super.setEntity(gwtJob);
         if (gwtJob != null) {
+            setEnabled(true);
             schedulesGrid.setJobId(gwtJob.getId());
             schedulesGrid.getToolbar().setJobId(gwtJob.getId());
         } else {
+            setEnabled(false);
             schedulesGrid.setJobId(null);
             schedulesGrid.getToolbar().setJobId(null);
         }

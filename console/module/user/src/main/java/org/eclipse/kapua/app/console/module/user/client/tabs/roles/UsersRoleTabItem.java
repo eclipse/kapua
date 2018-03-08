@@ -29,6 +29,7 @@ public class UsersRoleTabItem extends KapuaTabItem<GwtRole> {
         super(currentSession, MSGS.roleTabSubjectGridTitle(), new KapuaIcon(IconSet.SUPPORT));
         rolePermissionGrid = new RoleSubjectGrid(null, currentSession);
         rolePermissionGrid.setRefreshOnRender(false);
+        setEnabled(false);
     }
 
     @Override
@@ -42,6 +43,11 @@ public class UsersRoleTabItem extends KapuaTabItem<GwtRole> {
     @Override
     public void setEntity(GwtRole t) {
         super.setEntity(t);
+        if (t != null) {
+            setEnabled(true);
+        } else {
+            setEnabled(false);
+        }
         rolePermissionGrid.setEntity(t);
 
     }

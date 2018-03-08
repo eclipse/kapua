@@ -63,6 +63,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
             DeviceView deviceTabs) {
         super(currentSession, MSGS.tabPackages(), new KapuaIcon(IconSet.INBOX));
         this.deviceTabs = deviceTabs;
+        setEnabled(false);
     }
 
     @Override
@@ -71,6 +72,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
         setDirty();
 
         setEnabled(gwtDevice != null &&
+                gwtDevice.isOnline() &&
                 currentSession.hasPermission(DeviceManagementSessionPermission.read()) &&
                 (gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_DEPLOY_V1) || (gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_DEPLOY_V2))));
 

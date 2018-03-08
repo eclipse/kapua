@@ -29,6 +29,7 @@ public class JobTabSteps extends KapuaTabItem<GwtJob> {
         super(currentSession, MSGS.gridJobTabStepsLabel(), new KapuaIcon(IconSet.TACHOMETER));
         stepsGrid = new JobTabStepsGrid(null, currentSession);
         stepsGrid.setRefreshOnRender(false);
+        setEnabled(false);
     }
 
     @Override
@@ -42,9 +43,11 @@ public class JobTabSteps extends KapuaTabItem<GwtJob> {
     public void setEntity(GwtJob gwtJob) {
         super.setEntity(gwtJob);
         if (gwtJob != null) {
+            setEnabled(true);
             stepsGrid.setJobId(gwtJob.getId());
             stepsGrid.getToolbar().setJobId(gwtJob.getId());
         } else {
+            setEnabled(false);
             stepsGrid.setJobId(null);
             stepsGrid.getToolbar().setJobId(null);
         }

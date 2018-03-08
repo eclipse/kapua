@@ -93,6 +93,7 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
     public DeviceTabCommand(GwtSession currentSession) {
         super(currentSession, DEVICE_MSGS.tabCommand(), new KapuaIcon(IconSet.TERMINAL));
         initialized = false;
+        setEnabled(false);
     }
 
     @Override
@@ -100,6 +101,7 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
         super.setEntity(gwtDevice);
 
         setEnabled(gwtDevice != null &&
+                gwtDevice.isOnline() &&
                 currentSession.hasPermission(DeviceManagementSessionPermission.execute()) &&
                 gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_COMMAND));
 

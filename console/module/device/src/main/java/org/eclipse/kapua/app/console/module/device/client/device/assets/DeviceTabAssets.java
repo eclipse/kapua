@@ -40,6 +40,7 @@ public class DeviceTabAssets extends KapuaTabItem<GwtDevice> {
     public DeviceTabAssets(GwtSession currentSession) {
         super(currentSession, MSGS.assets(), new KapuaIcon(IconSet.RETWEET));
         assetsValues = new DeviceAssetsValues(currentSession, this);
+        setEnabled(false);
     }
 
     @Override
@@ -47,6 +48,7 @@ public class DeviceTabAssets extends KapuaTabItem<GwtDevice> {
         super.setEntity(gwtDevice);
 
         setEnabled(gwtDevice != null &&
+                gwtDevice.isOnline() &&
                 currentSession.hasPermission(DeviceManagementSessionPermission.read()) &&
                 gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_ASSET_V1));
 
