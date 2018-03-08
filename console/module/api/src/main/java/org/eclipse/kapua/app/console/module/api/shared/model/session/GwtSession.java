@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -43,6 +43,11 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
 
     private List<GwtSessionPermission> sessionPermissions = new ArrayList<GwtSessionPermission>();
     private Map<GwtSessionPermission, Boolean> checkedPermissionsCache = new HashMap<GwtSessionPermission, Boolean>();
+
+    /**
+     * Is UI form dirty and needs save.
+     */
+    private boolean formDirty;
 
     public GwtSession() {
     }
@@ -193,6 +198,24 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
 
         // Return it
         return permitted;
+    }
+
+    /**
+     * Is UI form dirty and needs confirmation to switch menu.
+     *
+     * @return true if user needs to confirm menu change.
+     */
+    public boolean isFormDirty() {
+        return formDirty;
+    }
+
+    /**
+     * Set user interface into dirty state.
+     *
+     * @param formDirty true if user will need to confirm menu change.
+     */
+    public void setFormDirty(boolean formDirty) {
+        this.formDirty = formDirty;
     }
 
     /**

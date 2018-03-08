@@ -104,11 +104,14 @@ public class DeviceConfigComponents extends LayoutContainer {
 
     protected boolean applyProcess;
 
+    private GwtSession gwtSession;
+
     public DeviceConfigComponents(GwtSession currentSession,
             DeviceTabConfiguration tabConfig) {
         this.tabConfig = tabConfig;
         dirty = false;
         initialized = false;
+        gwtSession = currentSession;
     }
 
     public void setDevice(GwtDevice selectedDevice) {
@@ -157,6 +160,7 @@ public class DeviceConfigComponents extends LayoutContainer {
                     refresh();
                     refreshProcess = false;
                     refreshButton.setEnabled(true);
+                    gwtSession.setFormDirty(false);
                 }
             }
         });
@@ -173,6 +177,7 @@ public class DeviceConfigComponents extends LayoutContainer {
 
                     apply.setEnabled(true);
                     applyProcess = false;
+                    gwtSession.setFormDirty(false);
                 }
             }
         });
@@ -189,12 +194,14 @@ public class DeviceConfigComponents extends LayoutContainer {
 
                     reset.setEnabled(true);
                     resetProcess = false;
+                    gwtSession.setFormDirty(false);
                 }
             }
         });
 
         apply.setEnabled(false);
         reset.setEnabled(false);
+        gwtSession.setFormDirty(false);
         if (selectedDevice == null) {
             refreshButton.setEnabled(false);
         } else {
@@ -399,6 +406,7 @@ public class DeviceConfigComponents extends LayoutContainer {
             // clear the tree and disable the toolbar
             apply.setEnabled(false);
             reset.setEnabled(false);
+            gwtSession.setFormDirty(false);
 
             treeStore.removeAll();
 
@@ -417,6 +425,7 @@ public class DeviceConfigComponents extends LayoutContainer {
     public void refreshConfigPanel(GwtConfigComponent configComponent) {
         apply.setEnabled(false);
         reset.setEnabled(false);
+        gwtSession.setFormDirty(false);
 
         if (devConfPanel != null) {
             devConfPanel.removeFromParent();
@@ -430,6 +439,7 @@ public class DeviceConfigComponents extends LayoutContainer {
                 public void handleEvent(BaseEvent be) {
                     apply.setEnabled(true);
                     reset.setEnabled(true);
+                    gwtSession.setFormDirty(true);
                 }
             });
             configPanel.add(devConfPanel, centerData);
@@ -478,6 +488,7 @@ public class DeviceConfigComponents extends LayoutContainer {
                             apply.setEnabled(false);
                             reset.setEnabled(false);
                             refreshButton.setEnabled(false);
+                            gwtSession.setFormDirty(false);
 
                             //
                             // Getting XSRF token
