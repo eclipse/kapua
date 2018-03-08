@@ -25,7 +25,7 @@ import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroupQ
 
 public class GroupFilterPanel extends EntityFilterPanel<GwtGroup> {
 
-    private static final int WIDTH = 200;
+    private static final int WIDTH = 193;
     private static final int MAX_LEN = 255;
     private final EntityGrid<GwtGroup> entityGrid;
     private final GwtSession currentSession;
