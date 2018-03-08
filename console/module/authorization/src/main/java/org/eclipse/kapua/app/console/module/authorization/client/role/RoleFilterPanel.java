@@ -26,7 +26,7 @@ import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRoleQu
 public class RoleFilterPanel extends EntityFilterPanel<GwtRole> {
 
     private final static ConsoleRoleMessages ROLE_MSGS = GWT.create(ConsoleRoleMessages.class);
-    private final static int WIDTH = 200;
+    private final static int WIDTH = 193;
     private static final int MAX_LEN = 255;
 
     private final EntityGrid<GwtRole> entityGrid;

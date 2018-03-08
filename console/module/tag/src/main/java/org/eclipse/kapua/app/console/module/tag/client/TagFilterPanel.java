@@ -25,7 +25,7 @@ import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTagQuery;
 
 public class TagFilterPanel extends EntityFilterPanel<GwtTag> {
 
-    private static final int WIDTH = 200;
+    private static final int WIDTH = 193;
     private static final int MAX_LEN = 255;
     private final EntityGrid<GwtTag> entityGrid;
     private final GwtSession currentSession;

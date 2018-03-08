@@ -28,7 +28,7 @@ import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPr
 
 public class ConnectionFilterPanel extends EntityFilterPanel<GwtDeviceConnection> {
 
-    private static final int WIDTH = 200;
+    private static final int WIDTH = 193;
     private static final int MAX_LEN = 255;
     private static final ConsoleConnectionMessages MSGS = GWT.create(ConsoleConnectionMessages.class);
 

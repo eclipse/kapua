@@ -46,7 +46,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     private static final ConsoleDeviceMessages DEVICE_MSGS = GWT.create(ConsoleDeviceMessages.class);
-    private static final int WIDTH = 200;
+    private static final int WIDTH = 193;
     private static final int MAX_LEN = 255;
 
     private EntityGrid<GwtDevice> entityGrid;

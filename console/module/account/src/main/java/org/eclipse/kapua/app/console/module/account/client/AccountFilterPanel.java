@@ -25,7 +25,7 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 
 public class AccountFilterPanel extends EntityFilterPanel<GwtAccount> {
 
-    private static final int WIDTH = 200;
+    private static final int WIDTH = 193;
     private static final int MAX_LEN = 255;
     private static final ConsoleAccountMessages MSGS = GWT.create(ConsoleAccountMessages.class);
 
