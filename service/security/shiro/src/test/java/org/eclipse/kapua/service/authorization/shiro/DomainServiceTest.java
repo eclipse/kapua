@@ -165,7 +165,7 @@ public class DomainServiceTest extends KapuaTest {
             assertNotNull(result);
             assertEquals(1, count);
             assertEquals(count, result.getSize());
-            assertEquals(domain1, result.getItem(0));
+            assertEquals(domain1, result.getFirstItem());
 
             //
             // Test name filtered query
@@ -178,7 +178,7 @@ public class DomainServiceTest extends KapuaTest {
             assertNotNull(result);
             assertEquals(1, count);
             assertEquals(count, result.getSize());
-            assertEquals(domain2, result.getItem(0));
+            assertEquals(domain2, result.getFirstItem());
 
             return null;
         });

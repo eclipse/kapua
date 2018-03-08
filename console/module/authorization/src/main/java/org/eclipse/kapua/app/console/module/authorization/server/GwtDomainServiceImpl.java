@@ -91,9 +91,9 @@ public class GwtDomainServiceImpl extends KapuaRemoteServiceServlet implements G
         domainQuery.setScopeId(scopeId);
         domainQuery.setPredicate(new AttributePredicate<String>(DomainPredicates.NAME, domainName));
         try {
-            DomainListResult result = domainService.query(domainQuery);
-            if (!result.isEmpty()) {
-                serviceName = result.getItem(0).getServiceName();
+            Domain domain = domainService.query(domainQuery).getFirstItem();
+            if (domain != null) {
+                serviceName = domain.getServiceName();
             }
         } catch (KapuaException e) {
             KapuaExceptionHandler.handle(e);

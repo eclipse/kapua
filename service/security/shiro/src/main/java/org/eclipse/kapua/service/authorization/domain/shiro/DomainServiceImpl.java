@@ -122,11 +122,7 @@ public class DomainServiceImpl extends AbstractKapuaService implements DomainSer
 
             DomainListResult results = DomainDAO.query(em, query);
 
-            Domain domain = null;
-            if (!results.isEmpty()) {
-                domain = results.getItem(0);
-            }
-            return domain;
+            return results.getFirstItem();
         });
     }
 

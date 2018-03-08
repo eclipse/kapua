@@ -246,7 +246,7 @@ public class GroupServiceTestSteps extends AbstractAuthorizationServiceTest {
         assertNotNull(groupData.groupList);
         commonData.count = groupData.groupList.getSize();
         if (groupData.groupList.getSize() > 0) {
-            groupData.group = groupData.groupList.getItem(0);
+            groupData.group = groupData.groupList.getFirstItem();
         }
     }
 

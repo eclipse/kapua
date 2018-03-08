@@ -339,9 +339,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
 
             //
             // Parse the result
-            if (credentialListResult != null && credentialListResult.getSize() == 1) {
-                credential = credentialListResult.getItem(0);
-            }
+            credential = credentialListResult.getFirstItem();
 
         } catch (Exception e) {
             throw KapuaExceptionUtils.convertPersistenceException(e);
@@ -404,8 +402,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         LOGGER.info("CredentialService: received kapua event from {}, operation {}", kapuaEvent.getService(), kapuaEvent.getOperation());
         if ("user".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {
             deleteCredentialByUserId(kapuaEvent.getScopeId(), kapuaEvent.getEntityId());
-        }
-        else if ("account".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {
+        } else if ("account".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {
             deleteCredentialByAccountId(kapuaEvent.getScopeId(), kapuaEvent.getEntityId());
         }
     }
