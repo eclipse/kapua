@@ -145,7 +145,7 @@ public class NorthView extends LayoutContainer {
 
         userActionButton = new Button();
 
-        userActionButton.addListener(Events.Render, new Listener<BaseEvent>() {
+        userActionButton.addListener(Events.OnMouseOver, new Listener<BaseEvent>() {
 
             @Override
             public void handleEvent(BaseEvent be) {
