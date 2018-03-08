@@ -39,7 +39,6 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionList
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
-import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionSummary;
 import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
 import org.eclipse.kapua.service.device.registry.shared.SharedTestSteps;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
@@ -423,15 +422,12 @@ public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
     public void exerciseAllConnectionFactoryFunctions() {
         DeviceConnectionCreator tmpCreator = null;
         DeviceConnectionQuery tmpQuery = null;
-        DeviceConnectionSummary tmpSummary = null;
 
         tmpCreator = deviceConnectionFactory.newCreator(rootScopeId);
         tmpQuery = deviceConnectionFactory.newQuery(rootScopeId);
-        tmpSummary = deviceConnectionFactory.newConnectionSummary();
 
         assertNotNull(tmpCreator);
         assertNotNull(tmpQuery);
-        assertNotNull(tmpSummary);
     }
 
     @Then("^The device connection domain defaults are correctly initialized$")
