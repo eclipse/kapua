@@ -106,9 +106,7 @@ public class DeviceEditDialog extends DeviceAddDialog {
 
     @Override
     public String getInfoMessage() {
-        // FIXME
-        return "";
-        // return MSGS.dialogEditInfo();
+         return DEVICE_MSGS.dialogEditInfo();
     }
 
     private void populateDialog(GwtDevice device) {
