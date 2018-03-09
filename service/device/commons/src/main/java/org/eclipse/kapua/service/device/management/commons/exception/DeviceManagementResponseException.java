@@ -12,7 +12,7 @@
 package org.eclipse.kapua.service.device.management.commons.exception;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.service.device.management.response.KapuaResponseCode;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponseCode;
 
 public class DeviceManagementResponseException extends KapuaException {
 

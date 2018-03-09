@@ -11,17 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.permission.shiro;
 
-import java.io.Serializable;
-
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.permission.WildcardPermission;
 import org.apache.shiro.subject.Subject;
@@ -32,6 +21,7 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaEntityCreator;
+import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
@@ -39,8 +29,17 @@ import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.group.Group;
-import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
+
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import java.io.Serializable;
 
 /**
  * {@link Permission} implementation.
@@ -89,8 +88,7 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
     /**
      * Constructor.
      *
-     * @param permission
-     *            The {@link Permission} to parse.
+     * @param permission The {@link Permission} to parse.
      * @since 1.0.0
      */
     public PermissionImpl(Permission permission) {
@@ -109,7 +107,6 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
      * @param action
      * @param targetScopeId
      * @param groupId
-     *
      * @since 1.0.0
      */
     public PermissionImpl(String domain, Actions action, KapuaId targetScopeId, KapuaId groupId) {
@@ -123,7 +120,6 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
      * @param action
      * @param targetScopeId
      * @param groupId
-     *
      * @since 1.0.0
      */
     public PermissionImpl(String domain, Actions action, KapuaId targetScopeId, KapuaId groupId, boolean forwardable) {
@@ -189,28 +185,28 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
 
     /**
      * This methods needs to be overridden to support Access {@link Group} feature.<br>
-     * 
+     * <p>
      * <p>
      * {@link KapuaEntityService}s that access a specific {@link KapuaEntity} (i.e. {@link KapuaEntityService#create(KapuaEntityCreator)}, {@link KapuaEntityService#delete(KapuaId, KapuaId)})
      * can make the control taking in consideration of the {@link Group#getId()} parameter as it is known.<br>
-     * 
+     * <p>
      * Instead, methods that access multiple {@link KapuaEntity}s (i.e. {@link KapuaEntityService#query(KapuaQuery)}, {@link KapuaEntityService#count(KapuaQuery)})
      * cannot make a direct control of the {@link Group#getId()} parameter as it is not known and they can be a lot.<br>
      * The access control then, is performed by hiding the data that a {@link Subject} cannot see instead of throwing {@link UnauthorizedException}.
      * </p>
-     * 
+     * <p>
      * <p>
      * The access control for {@link KapuaEntityService#query(KapuaQuery)}, {@link KapuaEntityService#count(KapuaQuery)}) must specify that {@link Group#ANY} group assigned to the permission is
      * enough to pass the {@link AuthorizationService#checkPermission(Permission)}.
      * </p>
-     * 
+     * <p>
      * <p>
      * In case of the {@link Permission#getForwardable()} equals to {@code true}, more lookup is required.<br>
      * If a parent account access the resources of one of its child accounts it won't have the direct permission to access it.
      * A lookup of {@link Account#getParentAccountPath()} will be required to search if the current user scope id is
      * one of the parent of the given {@link Permission#getTargetScopeId()}
      * </p>
-     * 
+     *
      * @since 1.0.0
      */
     @Override
@@ -239,14 +235,14 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
 
     /**
      * Checks {@code this} Permission against the given {@link Permission} parameter.<br>
-     * 
+     * <p>
      * <p>
      * It tries to forward {@code this} Permission to the {@link #getTargetScopeId()} of the given {@link org.apache.shiro.authz.Permission} parameter.<br>
      * This means that if the required permission has scope id 'B' and {@code this} {@link Permission} has scope id 'A',
      * this methods search the {@link Account#getParentAccountPath()} of the scope id 'B' and checks the {@link Permission} forwarding {@code this} Permission
      * to the same level of the given {@link org.apache.shiro.authz.Permission}.
      * </p>
-     * 
+     * <p>
      * <p>
      * <b>Example:</b>
      * User 'A' in account 'A' has scopeId 'A' and this permission (A) "*:*:A:*".<br>
@@ -256,11 +252,9 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
      * So this method searches the parent account path of account 'B', found that 'A' is a parent of 'B'
      * so then {@code this} {@link Permission} is checked again with 'B' as scopeId.
      * </p>
-     * 
-     * @param p
-     *            The permission to check against.
+     *
+     * @param p The permission to check against.
      * @return {@code true} if this permission is forward-able and is valid when forwarded, {@code false otherwise}
-     * 
      * @since 1.0.0
      */
     private boolean forwardPermission(org.apache.shiro.authz.Permission p) {
@@ -304,7 +298,7 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
 
     @Override
     public int hashCode() {
-        final int prime = 31;
+        int prime = 31;
         int result = 1;
         result = prime * result + (action == null ? 0 : action.hashCode());
         result = prime * result + (domain == null ? 0 : domain.hashCode());

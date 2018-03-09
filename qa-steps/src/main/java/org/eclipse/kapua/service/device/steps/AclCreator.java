@@ -13,9 +13,11 @@
 package org.eclipse.kapua.service.device.steps;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.broker.core.BrokerDomain;
+import org.eclipse.kapua.broker.BrokerService;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.model.domain.Actions;
+import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
@@ -29,15 +31,13 @@ import org.eclipse.kapua.service.authentication.credential.shiro.CredentialFacto
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoFactoryImpl;
-import org.eclipse.kapua.service.authorization.domain.Domain;
-import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionFactoryImpl;
-import org.eclipse.kapua.service.datastore.DatastoreDomain;
-import org.eclipse.kapua.service.device.management.commons.DeviceManagementDomain;
-import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionDomain;
-import org.eclipse.kapua.service.device.registry.internal.DeviceDomain;
+import org.eclipse.kapua.service.datastore.DatastoreService;
+import org.eclipse.kapua.service.device.management.DeviceManagementService;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserService;
@@ -196,8 +196,7 @@ public class AclCreator {
                 targetScopeId = (KapuaEid) account.getId();
             }
             Domain domain = permissionData.getDomain();
-            Permission permission = permissionFactory.newPermission(domain,
-                    action, targetScopeId);
+            Permission permission = permissionFactory.newPermission(domain, action, targetScopeId);
             permissions.add(permission);
         }
         accessInfoCreator.setPermissions(permissions);
@@ -244,55 +243,56 @@ public class AclCreator {
         AccountCreator accountCreator = accountFactory.newCreator(ROOT_SCOPE_ID, name);
         accountCreator.setOrganizationName(orgName);
         accountCreator.setOrganizationEmail(orgEmail);
+
         return accountService.create(accountCreator);
     }
 
     void attachBrokerPermissions(Account account, User user) throws Exception {
         List<PermissionData> permissionList = new ArrayList<>();
-        permissionList.add(new PermissionData(new BrokerDomain(), Actions.connect, (KapuaEid) user.getScopeId()));
-        permissionList.add(new PermissionData(new BrokerDomain(), Actions.write, (KapuaEid) user.getScopeId()));
-        permissionList.add(new PermissionData(new BrokerDomain(), Actions.read, (KapuaEid) user.getScopeId()));
-        permissionList.add(new PermissionData(new BrokerDomain(), Actions.delete, (KapuaEid) user.getScopeId()));
+        permissionList.add(new PermissionData(BrokerService.BROKER_DOMAIN, Actions.connect, (KapuaEid) user.getScopeId()));
+        permissionList.add(new PermissionData(BrokerService.BROKER_DOMAIN, Actions.write, (KapuaEid) user.getScopeId()));
+        permissionList.add(new PermissionData(BrokerService.BROKER_DOMAIN, Actions.read, (KapuaEid) user.getScopeId()));
+        permissionList.add(new PermissionData(BrokerService.BROKER_DOMAIN, Actions.delete, (KapuaEid) user.getScopeId()));
         createPermissions(permissionList, user, account);
     }
 
     void attachDevicePermissions(Account account, User user) throws Exception {
         List<PermissionData> permissionList = new ArrayList<>();
-        permissionList.add(new PermissionData(new DeviceManagementDomain(), Actions.write, (KapuaEid) user.getScopeId()));
-        permissionList.add(new PermissionData(new BrokerDomain(), Actions.connect, (KapuaEid) user.getScopeId()));
+        permissionList.add(new PermissionData(DeviceManagementService.DEVICE_MANAGEMENT_DOMAIN, Actions.write, (KapuaEid) user.getScopeId()));
+        permissionList.add(new PermissionData(BrokerService.BROKER_DOMAIN, Actions.connect, (KapuaEid) user.getScopeId()));
         createPermissions(permissionList, user, account);
     }
 
     void attachDataViewPermissions(Account account, User user) throws Exception {
         List<PermissionData> permissionList = new ArrayList<>();
-        permissionList.add(new PermissionData(new DatastoreDomain(), Actions.read, (KapuaEid) user.getScopeId()));
-        permissionList.add(new PermissionData(new BrokerDomain(), Actions.connect, (KapuaEid) user.getScopeId()));
+        permissionList.add(new PermissionData(DatastoreService.DATASTORE_DOMAIN, Actions.read, (KapuaEid) user.getScopeId()));
+        permissionList.add(new PermissionData(BrokerService.BROKER_DOMAIN, Actions.connect, (KapuaEid) user.getScopeId()));
         createPermissions(permissionList, user, account);
     }
 
     void attachDataManagePermissions(Account account, User user) throws Exception {
         List<PermissionData> permissionList = new ArrayList<>();
-        permissionList.add(new PermissionData(new DatastoreDomain(), Actions.write, (KapuaEid) user.getScopeId()));
-        permissionList.add(new PermissionData(new BrokerDomain(), Actions.connect, (KapuaEid) user.getScopeId()));
+        permissionList.add(new PermissionData(DatastoreService.DATASTORE_DOMAIN, Actions.write, (KapuaEid) user.getScopeId()));
+        permissionList.add(new PermissionData(BrokerService.BROKER_DOMAIN, Actions.connect, (KapuaEid) user.getScopeId()));
         createPermissions(permissionList, user, account);
     }
 
     public void attachFullPermissions(Account account, User user) throws Exception {
         List<PermissionData> permissionList = new ArrayList<>();
-        permissionList.add(new PermissionData(new BrokerDomain(), Actions.connect, (KapuaEid) user.getScopeId()));
-        permissionList.add(new PermissionData(new BrokerDomain(), Actions.write, (KapuaEid) user.getScopeId()));
-        permissionList.add(new PermissionData(new BrokerDomain(), Actions.read, (KapuaEid) user.getScopeId()));
-        permissionList.add(new PermissionData(new BrokerDomain(), Actions.delete, (KapuaEid) user.getScopeId()));
+        permissionList.add(new PermissionData(BrokerService.BROKER_DOMAIN, Actions.connect, (KapuaEid) user.getScopeId()));
+        permissionList.add(new PermissionData(BrokerService.BROKER_DOMAIN, Actions.write, (KapuaEid) user.getScopeId()));
+        permissionList.add(new PermissionData(BrokerService.BROKER_DOMAIN, Actions.read, (KapuaEid) user.getScopeId()));
+        permissionList.add(new PermissionData(BrokerService.BROKER_DOMAIN, Actions.delete, (KapuaEid) user.getScopeId()));
 
-        permissionList.add(new PermissionData(new DeviceConnectionDomain(), Actions.read, (KapuaEid) user.getScopeId()));
-        permissionList.add(new PermissionData(new DeviceConnectionDomain(), Actions.write, (KapuaEid) user.getScopeId()));
-        permissionList.add(new PermissionData(new DeviceConnectionDomain(), Actions.delete, (KapuaEid) user.getScopeId()));
-        permissionList.add(new PermissionData(new DeviceConnectionDomain(), Actions.connect, (KapuaEid) user.getScopeId()));
+        permissionList.add(new PermissionData(DeviceConnectionService.DEVICE_CONNECTION_DOMAIN, Actions.read, (KapuaEid) user.getScopeId()));
+        permissionList.add(new PermissionData(DeviceConnectionService.DEVICE_CONNECTION_DOMAIN, Actions.write, (KapuaEid) user.getScopeId()));
+        permissionList.add(new PermissionData(DeviceConnectionService.DEVICE_CONNECTION_DOMAIN, Actions.delete, (KapuaEid) user.getScopeId()));
+        permissionList.add(new PermissionData(DeviceConnectionService.DEVICE_CONNECTION_DOMAIN, Actions.connect, (KapuaEid) user.getScopeId()));
 
-        permissionList.add(new PermissionData(new DeviceDomain(), Actions.read, (KapuaEid) user.getScopeId()));
-        permissionList.add(new PermissionData(new DeviceDomain(), Actions.write, (KapuaEid) user.getScopeId()));
-        permissionList.add(new PermissionData(new DeviceDomain(), Actions.delete, (KapuaEid) user.getScopeId()));
-        permissionList.add(new PermissionData(new DeviceDomain(), Actions.connect, (KapuaEid) user.getScopeId()));
+        permissionList.add(new PermissionData(DeviceRegistryService.DEVICE_DOMAIN, Actions.read, (KapuaEid) user.getScopeId()));
+        permissionList.add(new PermissionData(DeviceRegistryService.DEVICE_DOMAIN, Actions.write, (KapuaEid) user.getScopeId()));
+        permissionList.add(new PermissionData(DeviceRegistryService.DEVICE_DOMAIN, Actions.delete, (KapuaEid) user.getScopeId()));
+        permissionList.add(new PermissionData(DeviceRegistryService.DEVICE_DOMAIN, Actions.connect, (KapuaEid) user.getScopeId()));
 
         createPermissions(permissionList, user, account);
     }

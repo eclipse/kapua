@@ -48,6 +48,10 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-broker-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-broker-core</artifactId>
         </dependency>
         <dependency>
@@ -692,7 +696,7 @@
                                     find /maven -type d -exec chmod a+x {} +
                                     ]]></run>
                                             <runCmd>
-                                               chmod og+rwx /home/kapua
+                                                chmod og+rwx /home/kapua
                                             </runCmd>
                                         </runCmds>
                                         <volumes>

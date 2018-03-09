@@ -21,27 +21,21 @@ import org.eclipse.kapua.service.device.management.commons.exception.DeviceManag
 import org.eclipse.kapua.service.device.management.commons.exception.DeviceManagementException;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
-import org.eclipse.kapua.service.device.management.request.KapuaRequestChannel;
-import org.eclipse.kapua.service.device.management.request.KapuaRequestMessage;
-import org.eclipse.kapua.service.device.management.request.KapuaRequestPayload;
-import org.eclipse.kapua.service.device.management.response.KapuaResponseMessage;
+import org.eclipse.kapua.service.device.management.message.request.KapuaRequestChannel;
+import org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessage;
+import org.eclipse.kapua.service.device.management.message.request.KapuaRequestPayload;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
 import org.eclipse.kapua.translator.Translator;
 
 /**
  * Device call executor definition.<br>
  * This object executes call, collecting the response from the device.
  *
- * @param <C>
- *            request channel type
- * @param <P>
- *            request payload type
- * @param <RQ>
- *            request message type
- * @param <RS>
- *            response message type
- *
+ * @param <C>  request channel type
+ * @param <P>  request payload type
+ * @param <RQ> request message type
+ * @param <RS> response message type
  * @since 1.0
- *
  */
 @SuppressWarnings("rawtypes")
 public class DeviceCallExecutor<C extends KapuaRequestChannel, P extends KapuaRequestPayload, RQ extends KapuaRequestMessage<C, P>, RS extends KapuaResponseMessage> {
@@ -94,27 +88,27 @@ public class DeviceCallExecutor<C extends KapuaRequestChannel, P extends KapuaRe
         case CREATE: {
             responseMessage = deviceCall.create(deviceRequestMessage, timeout);
         }
-            break;
+        break;
         case READ: {
             responseMessage = deviceCall.read(deviceRequestMessage, timeout);
         }
-            break;
+        break;
         case OPTIONS: {
             responseMessage = deviceCall.options(deviceRequestMessage, timeout);
         }
-            break;
+        break;
         case DELETE: {
             responseMessage = deviceCall.delete(deviceRequestMessage, timeout);
         }
-            break;
+        break;
         case EXECUTE: {
             responseMessage = deviceCall.execute(deviceRequestMessage, timeout);
         }
-            break;
+        break;
         case WRITE: {
             responseMessage = deviceCall.write(deviceRequestMessage, timeout);
         }
-            break;
+        break;
         default:
             throw new DeviceManagementException(DeviceManagementErrorCodes.REQUEST_BAD_METHOD,
                     null,

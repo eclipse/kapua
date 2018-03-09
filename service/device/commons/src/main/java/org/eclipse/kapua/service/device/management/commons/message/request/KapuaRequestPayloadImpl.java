@@ -12,7 +12,7 @@
 package org.eclipse.kapua.service.device.management.commons.message.request;
 
 import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
-import org.eclipse.kapua.service.device.management.request.KapuaRequestPayload;
+import org.eclipse.kapua.service.device.management.message.request.KapuaRequestPayload;
 
 public class KapuaRequestPayloadImpl extends KapuaPayloadImpl implements KapuaRequestPayload {
 

@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.shiro;
 
-import java.security.SecureRandom;
-
 import org.apache.shiro.codec.Base64;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
@@ -26,6 +24,7 @@ import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
@@ -43,14 +42,14 @@ import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManage
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
-import org.eclipse.kapua.service.authorization.domain.Domain;
-import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.security.SecureRandom;
+
 /**
- * Credential service implementation.
+ * {@link CredentialService} implementation.
  *
  * @since 1.0
  */
@@ -58,8 +57,6 @@ import org.slf4j.LoggerFactory;
 public class CredentialServiceImpl extends AbstractKapuaConfigurableService implements CredentialService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CredentialServiceImpl.class);
-
-    private static final Domain CREDENTIAL_DOMAIN = new CredentialDomain();
 
     public CredentialServiceImpl() {
         super(CredentialService.class.getName(), CREDENTIAL_DOMAIN, AuthenticationEntityManagerFactory.getInstance());
@@ -294,7 +291,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         //
         // Build query
         CredentialQuery query = new CredentialQueryImpl(scopeId);
-        KapuaPredicate predicate = new AttributePredicate<KapuaId>(CredentialPredicates.USER_ID, userId);
+        KapuaPredicate predicate = new AttributePredicate<>(CredentialPredicates.USER_ID, userId);
         query.setPredicate(predicate);
 
         //

@@ -24,20 +24,18 @@ import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
  * Metric information registry service definition.<br>
  * Service dedicated for storing and reading named device metrics. Metric is an arbitrary named value. We usually
  * keep only the most recent value of the metric.
- * 
+ *
  * @since 1.0.0
  */
-public interface MetricInfoRegistryService extends KapuaService,
-        KapuaConfigurableService {
+public interface MetricInfoRegistryService extends KapuaService, DatastoreService, KapuaConfigurableService {
 
     /**
      * Find metric information by identifier
-     * 
+     *
      * @param scopeId
      * @param id
      * @return
      * @throws KapuaException
-     * 
      * @since 1.0.0
      */
     public MetricInfo find(KapuaId scopeId, StorableId id)
@@ -45,11 +43,10 @@ public interface MetricInfoRegistryService extends KapuaService,
 
     /**
      * Query for metrics informations objects matching the given query
-     * 
+     *
      * @param query
      * @return
      * @throws KapuaException
-     * 
      * @since 1.0.0
      */
     public MetricInfoListResult query(MetricInfoQuery query)
@@ -57,11 +54,10 @@ public interface MetricInfoRegistryService extends KapuaService,
 
     /**
      * Get the metrics informations count matching the given query
-     * 
+     *
      * @param query
      * @return
      * @throws KapuaException
-     * 
      * @since 1.0.0
      */
     public long count(MetricInfoQuery query)

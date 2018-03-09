@@ -18,10 +18,13 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.message.Message;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
+import org.eclipse.kapua.model.domain.Actions;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.call.kura.exception.KuraMqttDeviceCallErrorCodes;
 import org.eclipse.kapua.service.device.call.kura.exception.KuraMqttDeviceCallException;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataMessage;
-import org.eclipse.kapua.service.device.management.response.KapuaResponseMessage;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.stream.StreamService;
@@ -37,17 +40,31 @@ import java.util.Map;
 @KapuaProvider
 public class StreamServiceImpl implements StreamService {
 
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
+    private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
+
+    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
+
     @Override
     public KapuaResponseMessage<?, ?> publish(KapuaDataMessage requestMessage, Long timeout)
             throws KapuaException {
-        TransportFacade<?, ?, TransportMessage<?, ?>, ?> transportFacade = null;
-        KapuaLocator locator = KapuaLocator.getInstance();
-        DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
-        try {
-            ArgumentValidator.notNull(requestMessage.getClientId(), "clientId");
-            ArgumentValidator.notNull(requestMessage.getScopeId(), "scopeId");
+        //
+        // Argument validation
+        ArgumentValidator.notNull(requestMessage.getClientId(), "clientId");
+        ArgumentValidator.notNull(requestMessage.getScopeId(), "scopeId");
 
-            Device device = deviceRegistryService.find(requestMessage.getScopeId(), requestMessage.getDeviceId());
+        //
+        // Check Access
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(STREAM_DOMAIN, Actions.write, requestMessage.getScopeId()));
+
+        //
+        // Do publish
+        TransportFacade<?, ?, TransportMessage<?, ?>, ?> transportFacade = null;
+        try {
+
+            Device device = DEVICE_REGISTRY_SERVICE.find(requestMessage.getScopeId(), requestMessage.getDeviceId());
             String nodeUri = device.getConnection().getServerIp();
 
             //

@@ -11,23 +11,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.packages.message.internal;
 
-import java.net.URI;
-
 import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.device.management.request.KapuaRequestPayload;
+import org.eclipse.kapua.service.device.management.message.request.KapuaRequestPayload;
+
+import java.net.URI;
 
 /**
  * Package request message payload.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequestPayload {
 
     /**
      * Get the operation identifier
-     * 
+     *
      * @return
      */
     public KapuaId getOperationId() {
@@ -36,7 +35,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Set the operation identifier
-     * 
+     *
      * @param operationId
      */
     public void setOperationId(KapuaId operationId) {
@@ -47,7 +46,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Get the device reboot flag
-     * 
+     *
      * @return
      */
     public Boolean isReboot() {
@@ -56,7 +55,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Set the device reboot flag
-     * 
+     *
      * @param reboot
      */
     public void setReboot(Boolean reboot) {
@@ -67,7 +66,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Get the device reboot flag
-     * 
+     *
      * @return
      */
     public Integer getRebootDelay() {
@@ -76,7 +75,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Set the device reboot flag
-     * 
+     *
      * @param rebootDelay
      */
     public void setRebootDelay(Integer rebootDelay) {
@@ -88,9 +87,10 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
     //
     // Download
     //
+
     /**
      * Get the package download URI
-     * 
+     *
      * @return
      */
     public URI getPackageDownloadURI() {
@@ -99,7 +99,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Set the package download URI
-     * 
+     *
      * @param uri
      */
     public void setPackageDownloadURI(URI uri) {
@@ -110,7 +110,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Get the package name
-     * 
+     *
      * @return
      */
     public String getPackageDownloadName() {
@@ -119,7 +119,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Set the package name
-     * 
+     *
      * @param packageName
      */
     public void setPackageDownloadName(String packageName) {
@@ -130,7 +130,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Get the package version
-     * 
+     *
      * @return
      */
     public String getPackageDownloadVersion() {
@@ -139,7 +139,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Set the package version
-     * 
+     *
      * @param packageVersion
      */
     public void setPackageDownloadVersion(String packageVersion) {
@@ -150,7 +150,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Get the is a download package and install flag
-     * 
+     *
      * @return
      */
     public Boolean isPackageDownloadnstall() {
@@ -159,7 +159,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Set the is a download package and install flag
-     * 
+     *
      * @param packageDownloadnstall
      */
     public void setPackageDownloadnstall(Boolean packageDownloadnstall) {
@@ -171,9 +171,10 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
     //
     // Install
     //
+
     /**
      * Get the package install name
-     * 
+     *
      * @return
      */
     public String getPackageInstallName() {
@@ -182,7 +183,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Set the package install name
-     * 
+     *
      * @param packageName
      */
     public void setPackageInstallName(String packageName) {
@@ -193,7 +194,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Get the package install version
-     * 
+     *
      * @return
      */
     public String getPackageInstallVersion() {
@@ -202,7 +203,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Set the package install version
-     * 
+     *
      * @param packageVersion
      */
     public void setPackageInstallVersion(String packageVersion) {
@@ -214,9 +215,10 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
     //
     // Uninstall
     //
+
     /**
      * Get the package uninstall name
-     * 
+     *
      * @return
      */
     public String getPackageUninstallName() {
@@ -225,7 +227,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Set the package uninstall name
-     * 
+     *
      * @param packageName
      */
     public void setPackageUninstallName(String packageName) {
@@ -236,7 +238,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Get the package uninstall version
-     * 
+     *
      * @return
      */
     public String getPackageUninstallVersion() {
@@ -245,7 +247,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Set the package uninstall version
-     * 
+     *
      * @param packageVersion
      */
     public void setPackageUninstallVersion(String packageVersion) {
@@ -257,9 +259,10 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
     //
     // Utility methods
     //
+
     /**
      * Get the is a download request flag
-     * 
+     *
      * @return
      */
     public boolean isDownloadRequest() {
@@ -268,7 +271,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Get the is an install request flag
-     * 
+     *
      * @return
      */
     public boolean isInstallRequest() {
@@ -277,7 +280,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Get the is an uninstall request flag
-     * 
+     *
      * @return
      */
     public boolean isUninstallRequest() {

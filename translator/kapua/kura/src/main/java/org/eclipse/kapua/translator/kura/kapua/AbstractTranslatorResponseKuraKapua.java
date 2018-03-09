@@ -18,9 +18,9 @@ import org.eclipse.kapua.service.device.call.kura.app.ResponseMetrics;
 import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponseChannel;
 import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponseMessage;
 import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponsePayload;
-import org.eclipse.kapua.service.device.management.response.KapuaResponseChannel;
-import org.eclipse.kapua.service.device.management.response.KapuaResponseMessage;
-import org.eclipse.kapua.service.device.management.response.KapuaResponsePayload;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponseChannel;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 
 public abstract class AbstractTranslatorResponseKuraKapua<TO_C extends KapuaResponseChannel, TO_P extends KapuaResponsePayload, TO_M extends KapuaResponseMessage<TO_C, TO_P>>
         extends AbstractTranslatorKuraKapua<TO_C, TO_P, TO_M> {
@@ -53,8 +53,10 @@ public abstract class AbstractTranslatorResponseKuraKapua<TO_C extends KapuaResp
 
     protected abstract TO_M createMessage() throws KapuaException;
 
+    @Override
     protected abstract TO_C translateChannel(KuraResponseChannel kuraChannel) throws KapuaException;
 
+    @Override
     protected abstract TO_P translatePayload(KuraResponsePayload kuraPayload) throws KapuaException;
 
 }

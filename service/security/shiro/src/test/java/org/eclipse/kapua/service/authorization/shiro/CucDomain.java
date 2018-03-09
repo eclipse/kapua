@@ -11,10 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.shiro;
 
+import org.eclipse.kapua.model.domain.Actions;
+
 import java.util.HashSet;
 import java.util.Set;
-
-import org.eclipse.kapua.service.authorization.permission.Actions;
 
 public class CucDomain {
 

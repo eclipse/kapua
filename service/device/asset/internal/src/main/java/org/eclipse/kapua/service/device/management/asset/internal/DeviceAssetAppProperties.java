@@ -11,13 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.asset.internal;
 
-import org.eclipse.kapua.service.device.management.KapuaAppProperties;
+import org.eclipse.kapua.service.device.management.message.KapuaAppProperties;
 
 /**
  * Device asset properties definition.
  *
  * @since 1.0
- *
  */
 public enum DeviceAssetAppProperties implements KapuaAppProperties {
     /**
@@ -27,8 +26,7 @@ public enum DeviceAssetAppProperties implements KapuaAppProperties {
     /**
      * Version
      */
-    APP_VERSION("1.0.0"),
-    ;
+    APP_VERSION("1.0.0"),;
 
     private String value;
 

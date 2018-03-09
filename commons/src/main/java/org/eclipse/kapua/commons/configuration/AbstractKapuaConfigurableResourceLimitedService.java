@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration;
 
-import java.util.Map;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
@@ -23,6 +21,7 @@ import org.eclipse.kapua.model.KapuaEntityCreator;
 import org.eclipse.kapua.model.KapuaEntityFactory;
 import org.eclipse.kapua.model.KapuaEntityPredicates;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
+import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -33,7 +32,8 @@ import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.AccountService;
-import org.eclipse.kapua.service.authorization.domain.Domain;
+
+import java.util.Map;
 
 public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends KapuaEntity, C extends KapuaEntityCreator<E>, S extends KapuaEntityService<E, C>, L extends KapuaListResult<E>, Q extends KapuaQuery<E>, F extends KapuaEntityFactory<E, C, Q, L>>
         extends AbstractKapuaConfigurableService {
@@ -80,15 +80,11 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
     }
 
     /**
-     * 
-     * @param scopeId
-     *            The {@link KapuaId} of the account to be tested
-     * @param targetScopeId
-     *            Optional scopeId of the child account to be excluded when validating the new configuration for that scopeId.
-     * @param configuration
-     *            The configuration to be tested. If null will be read
-     *            from the current service configuration; otherwise the passed configuration
-     *            will be used in the test
+     * @param scopeId       The {@link KapuaId} of the account to be tested
+     * @param targetScopeId Optional scopeId of the child account to be excluded when validating the new configuration for that scopeId.
+     * @param configuration The configuration to be tested. If null will be read
+     *                      from the current service configuration; otherwise the passed configuration
+     *                      will be used in the test
      * @return the number of child accounts spots still available
      * @throws KapuaException
      */
@@ -99,7 +95,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
         AccountFactory accountFactory = locator.getFactory(AccountFactory.class);
         AccountService accountService = locator.getService(AccountService.class);
 
-        final Map<String, Object> finalConfig = configuration == null ? getConfigValues(scopeId) : configuration;
+        Map<String, Object> finalConfig = configuration == null ? getConfigValues(scopeId) : configuration;
         boolean allowInfiniteChildEntities = (boolean) finalConfig.get("infiniteChildEntities");
         if (!allowInfiniteChildEntities) {
             return KapuaSecurityUtils.doPrivileged(() -> {
@@ -134,12 +130,10 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
     /**
      * Gets the scoped configuration values from the given {@link Account}.
      * This method defaults to {@link Account#getId()}, but implementations can change it to use other attributes.
-     * 
-     * @param account
-     *            The account from which get the id.
+     *
+     * @param account The account from which get the id.
      * @return The scoped configurations for the given {@link Account}.
      * @throws KapuaException
-     * 
      * @since 1.0.0
      */
     protected Map<String, Object> getConfigValues(Account account) throws KapuaException {

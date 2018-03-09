@@ -35,6 +35,7 @@ import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
+import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
@@ -52,8 +53,6 @@ import org.eclipse.kapua.service.authorization.domain.DomainService;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupQuery;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupPredicates;
-import org.eclipse.kapua.service.authorization.permission.Action;
-import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.Role;
@@ -72,7 +71,7 @@ import java.util.Set;
  */
 public class GwtKapuaAuthorizationModelConverter {
 
-    private GwtKapuaAuthorizationModelConverter(){
+    private GwtKapuaAuthorizationModelConverter() {
     }
 
     public static GroupQuery convertGroupQuery(PagingLoadConfig loadConfig,
@@ -100,10 +99,8 @@ public class GwtKapuaAuthorizationModelConverter {
     /**
      * Converts a {@link GwtRoleQuery} into a {@link Role} object for backend usage
      *
-     * @param loadConfig
-     *            the load configuration
-     * @param gwtRoleQuery
-     *            the {@link GwtRoleQuery} to convertKapuaId
+     * @param loadConfig   the load configuration
+     * @param gwtRoleQuery the {@link GwtRoleQuery} to convertKapuaId
      * @return the converted {@link RoleQuery}
      */
     public static RoleQuery convertRoleQuery(PagingLoadConfig loadConfig, GwtRoleQuery gwtRoleQuery) {
@@ -151,8 +148,7 @@ public class GwtKapuaAuthorizationModelConverter {
     /**
      * Converts a {@link GwtRole} into a {@link Role} object for backend usage
      *
-     * @param gwtRole
-     *            the {@link GwtRole} to convertKapuaId
+     * @param gwtRole the {@link GwtRole} to convertKapuaId
      * @return the converted {@link Role}
      */
     public static Role convertRole(GwtRole gwtRole) {
@@ -199,8 +195,7 @@ public class GwtKapuaAuthorizationModelConverter {
     /**
      * Converts a {@link GwtRoleCreator} into a {@link RoleCreator} object for backend usage
      *
-     * @param gwtRoleCreator
-     *            the {@link GwtRoleCreator} to convertKapuaId
+     * @param gwtRoleCreator the {@link GwtRoleCreator} to convertKapuaId
      * @return the converted {@link RoleCreator}
      */
     public static RoleCreator convertRoleCreator(GwtRoleCreator gwtRoleCreator) {
@@ -234,8 +229,7 @@ public class GwtKapuaAuthorizationModelConverter {
     /**
      * Converts a {@link GwtAccessRoleCreator} into a {@link AccessRoleCreator} object for backend usage
      *
-     * @param gwtAccessRoleCreator
-     *            the {@link GwtAccessRoleCreator} to convertKapuaId
+     * @param gwtAccessRoleCreator the {@link GwtAccessRoleCreator} to convertKapuaId
      * @return the converted {@link AccessRoleCreator}
      * @since 1.0.0
      */
@@ -263,8 +257,7 @@ public class GwtKapuaAuthorizationModelConverter {
     /**
      * Converts a {@link GwtAccessPermissionCreator} into a {@link AccessPermissionCreator} object for backend usage
      *
-     * @param gwtAccessPermissionCreator
-     *            the {@link GwtAccessPermissionCreator} to convertKapuaId
+     * @param gwtAccessPermissionCreator the {@link GwtAccessPermissionCreator} to convertKapuaId
      * @return the converted {@link AccessPermissionCreator}
      * @since 1.0.0
      */
@@ -309,8 +302,7 @@ public class GwtKapuaAuthorizationModelConverter {
     /**
      * Converts a {@link GwtPermission} into a {@link Permission} object for backend usage.
      *
-     * @param gwtPermission
-     *            The {@link GwtPermission} to convertKapuaId.
+     * @param gwtPermission The {@link GwtPermission} to convertKapuaId.
      * @return The converted {@link Permission}.
      * @since 1.0.0
      */
@@ -329,12 +321,10 @@ public class GwtKapuaAuthorizationModelConverter {
     }
 
     /**
-     * Converts a {@link GwtAction} into the related {@link Action}
+     * Converts a {@link GwtAction} into the related {@link Actions}
      *
-     * @param gwtAction
-     *            the {@link GwtAction} to convertKapuaId
-     * @return the converted {@link Action}
-     * 
+     * @param gwtAction the {@link GwtAction} to convertKapuaId
+     * @return the converted {@link Actions}
      * @since 1.0.0
      */
     public static Actions convertAction(GwtAction gwtAction) {
@@ -368,10 +358,8 @@ public class GwtKapuaAuthorizationModelConverter {
     /**
      * Converts a {@link GwtDomain} into the related equivalent domain string
      *
-     * @param gwtDomain
-     *            the {@link GwtDomain} to convertKapuaId
+     * @param gwtDomain the {@link GwtDomain} to convertKapuaId
      * @return the converted domain {@link String}
-     * 
      * @since 1.0.0
      */
     public static Domain convertDomain(GwtDomain gwtDomain) {
@@ -388,7 +376,8 @@ public class GwtKapuaAuthorizationModelConverter {
                     return domain;
                 }
             }
-        } catch (KapuaException ex) { }
+        } catch (KapuaException ex) {
+        }
 
         return null;
     }

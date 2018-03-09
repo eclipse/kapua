@@ -13,31 +13,40 @@ package org.eclipse.kapua.service.job.targets;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.service.KapuaDomainService;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
+import org.eclipse.kapua.service.job.JobDomain;
 
 /**
  * {@link JobTargetService} exposes APIs to manage JobTarget objects.<br>
  * It includes APIs to create, update, find, list and delete Jobs.<br>
  * Instances of the JobTargetService can be acquired through the ServiceLocator object.
- * 
+ *
  * @since 1.0
- * 
  */
 public interface JobTargetService extends KapuaEntityService<JobTarget, JobTargetCreator>,
         KapuaUpdatableEntityService<JobTarget>,
+        KapuaDomainService<JobDomain>,
         KapuaConfigurableService {
+
+    public static final JobDomain JOB_DOMAIN = new JobDomain();
+
+    @Override
+    public default JobDomain getServiceDomain() {
+        return JOB_DOMAIN;
+    }
 
     /**
      * Returns the {@link JobTargetListResult} with elements matching the provided query.
-     * 
-     * @param query
-     *            The {@link JobTargetQuery} used to filter results.
+     *
+     * @param query The {@link JobTargetQuery} used to filter results.
      * @return The {@link JobTargetListResult} with elements matching the query parameter.
      * @throws KapuaException
      * @since 1.0.0
      */
+    @Override
     public JobTargetListResult query(KapuaQuery<JobTarget> query)
             throws KapuaException;
 }

@@ -19,7 +19,7 @@ import org.eclipse.kapua.broker.core.plugin.Acl;
 import org.eclipse.kapua.broker.core.plugin.KapuaConnectionContext;
 import org.eclipse.kapua.broker.core.plugin.KapuaDuplicateClientIdException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.service.authorization.permission.Actions;
+import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCreator;
@@ -148,7 +148,7 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
 
     @Override
     protected List<AuthorizationEntry> buildAuthorizationMap(KapuaConnectionContext kcc) {
-        ArrayList<AuthorizationEntry> ael = new ArrayList<AuthorizationEntry>();
+        ArrayList<AuthorizationEntry> ael = new ArrayList<>();
         ael.add(createAuthorizationEntry(kcc, Acl.WRITE_ADMIN, aclAdvisory));
 
         // addConnection checks BROKER_CONNECT_IDX permission before call this method
@@ -220,7 +220,7 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
             deviceConnection.setServerIp(kcc.getBrokerIpOrHostName());
             deviceConnection.setUserId(kcc.getUserId());
             deviceConnection.setAllowUserChange(false);
-            final DeviceConnection deviceConnectionToUpdate = deviceConnection;
+            DeviceConnection deviceConnectionToUpdate = deviceConnection;
             KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.update(deviceConnectionToUpdate));
             // TODO implement the banned status
             // if (DeviceStatus.DISABLED.equals(device.getStatus())) {

@@ -14,24 +14,23 @@ package org.eclipse.kapua.service.device.management.configuration;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.device.management.DeviceManagementService;
 
 /**
  * Device configuration service definition.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-public interface DeviceConfigurationManagementService extends KapuaService {
+public interface DeviceConfigurationManagementService extends KapuaService, DeviceManagementService {
 
     /**
      * Get the device configuration for the given device identifier and configuration identifier
-     * 
+     *
      * @param scopeId
      * @param deviceId
      * @param configurationId
      * @param configurationComponentPid
-     * @param timeout
-     *            timeout waiting for the device response
+     * @param timeout                   timeout waiting for the device response
      * @return
      * @throws KapuaException
      */
@@ -44,13 +43,11 @@ public interface DeviceConfigurationManagementService extends KapuaService {
 
     /**
      * Put the provided configuration to the device identified by the provided device identifier
-     * 
+     *
      * @param scopeId
      * @param deviceId
-     * @param xmlDeviceConfig
-     *            xml marshalled device configuration
-     * @param timeout
-     *            timeout waiting for the device response
+     * @param xmlDeviceConfig xml marshalled device configuration
+     * @param timeout         timeout waiting for the device response
      * @throws KapuaException
      */
     public void put(KapuaId scopeId, KapuaId deviceId, String xmlDeviceConfig, Long timeout)
@@ -58,12 +55,11 @@ public interface DeviceConfigurationManagementService extends KapuaService {
 
     /**
      * Put the provided configuration to the device identified by the provided device identifier
-     * 
+     *
      * @param scopeId
      * @param deviceId
      * @param deviceConfig
-     * @param timeout
-     *            timeout waiting for the device response
+     * @param timeout      timeout waiting for the device response
      * @throws KapuaException
      */
     public void put(KapuaId scopeId, KapuaId deviceId, DeviceConfiguration deviceConfig, Long timeout)
@@ -71,12 +67,11 @@ public interface DeviceConfigurationManagementService extends KapuaService {
 
     /**
      * Put the provided configuration to the device identified by the provided device identifier
-     * 
+     *
      * @param scopeId
      * @param deviceId
      * @param deviceComponentConfig
-     * @param timeout
-     *            timeout waiting for the device response
+     * @param timeout               timeout waiting for the device response
      * @throws KapuaException
      */
     public void put(KapuaId scopeId, KapuaId deviceId, DeviceComponentConfiguration deviceComponentConfig, Long timeout)

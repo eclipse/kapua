@@ -12,7 +12,7 @@
 package org.eclipse.kapua.broker.core.plugin.authentication;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.broker.core.BrokerDomain;
+import org.eclipse.kapua.broker.BrokerService;
 import org.eclipse.kapua.broker.core.plugin.Acl;
 import org.eclipse.kapua.broker.core.plugin.KapuaConnectionContext;
 import org.eclipse.kapua.broker.core.plugin.metric.ClientMetric;
@@ -23,12 +23,12 @@ import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
-import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.datastore.DatastoreDomain;
-import org.eclipse.kapua.service.device.management.commons.DeviceManagementDomain;
+import org.eclipse.kapua.service.device.management.DeviceManagementDomain;
 import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
@@ -63,7 +63,7 @@ public abstract class AuthenticationLogic {
     protected PublishMetric publishMetric = PublishMetric.getInstance();
     protected SubscribeMetric subscribeMetric = SubscribeMetric.getInstance();
 
-    protected static final Domain BROKER_DOMAIN = new BrokerDomain();
+    protected static final Domain BROKER_DOMAIN = BrokerService.BROKER_DOMAIN;
     protected static final Domain DATASTORE_DOMAIN = new DatastoreDomain();
     protected static final Domain DEVICE_MANAGEMENT_DOMAIN = new DeviceManagementDomain();
 

@@ -13,21 +13,20 @@ package org.eclipse.kapua.service.device.management.request;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.device.management.DeviceManagementService;
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestMessage;
 import org.eclipse.kapua.service.device.management.request.message.response.GenericResponseMessage;
 
-public interface DeviceRequestManagementService extends KapuaService {
+public interface DeviceRequestManagementService extends KapuaService, DeviceManagementService {
+
     /**
      * Execute the given device request with the provided options
      *
-     * @param requestInput
-     *            request input
-     * @param timeout
-     *            request timeout
-     * @return    response output
-     *
+     * @param requestInput request input
+     * @param timeout      request timeout
+     * @return response output
      * @throws KapuaException
      */
-     GenericResponseMessage exec(GenericRequestMessage requestInput, Long timeout)
+    GenericResponseMessage exec(GenericRequestMessage requestInput, Long timeout)
             throws KapuaException;
 }

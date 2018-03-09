@@ -11,30 +11,29 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.command.message.internal;
 
+import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
+import org.eclipse.kapua.service.device.management.command.internal.CommandAppProperties;
+import org.eclipse.kapua.service.device.management.message.request.KapuaRequestPayload;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
-import org.eclipse.kapua.service.device.management.command.internal.CommandAppProperties;
-import org.eclipse.kapua.service.device.management.request.KapuaRequestPayload;
-
 /**
  * Device command request payload.
- * 
+ *
  * @since 1.0
- * 
  */
 public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequestPayload {
 
     /**
      * Get the command argument list
-     * 
+     *
      * @return
      */
     public String[] getArguments() {
         List<String> argumentsList = new ArrayList<>();
 
-        for (int i = 0;; i++) {
+        for (int i = 0; ; i++) {
             String value = (String) getMetrics().get(CommandAppProperties.APP_PROPERTY_ARG.getValue() + i);
             if (value != null) {
                 argumentsList.add(value);
@@ -52,7 +51,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Set the command argument list
-     * 
+     *
      * @param arguments
      */
     public void setArguments(String[] arguments) {
@@ -65,13 +64,13 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Get the environment pairs
-     * 
+     *
      * @return
      */
     public String[] getEnvironmentPairs() {
         List<String> v = new ArrayList<>();
 
-        for (int i = 0;; i++) {
+        for (int i = 0; ; i++) {
             String value = (String) getMetrics().get(CommandAppProperties.APP_PROPERTY_ENVP.getValue() + i);
             if (value != null) {
                 v.add(value);
@@ -89,7 +88,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Set the environment pairs
-     * 
+     *
      * @param environmentPairs
      */
     public void setEnvironmentPairs(String[] environmentPairs) {
@@ -102,7 +101,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Get the working directory
-     * 
+     *
      * @return
      */
     public String getWorkingDir() {
@@ -111,7 +110,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Set the working directory
-     * 
+     *
      * @param workingDir
      */
     public void setWorkingDir(String workingDir) {
@@ -122,7 +121,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Get the standard input
-     * 
+     *
      * @return
      */
     public String getStdin() {
@@ -131,7 +130,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Set the standard input
-     * 
+     *
      * @param stdin
      */
     public void setStdin(String stdin) {
@@ -142,7 +141,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Get the command timeout
-     * 
+     *
      * @return
      */
     public Integer getTimeout() {
@@ -151,7 +150,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Set the command timeout
-     * 
+     *
      * @param timeout
      */
     public void setTimeout(int timeout) {
@@ -160,7 +159,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Get the run asynchronously flag
-     * 
+     *
      * @return
      */
     public Boolean isRunAsync() {
@@ -169,7 +168,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Set the run asynchronously flag
-     * 
+     *
      * @param runAsync
      */
     public void setRunAsync(boolean runAsync) {
@@ -178,7 +177,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Set the command
-     * 
+     *
      * @param cmd
      */
     public void setCommand(String cmd) {
@@ -187,7 +186,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Get the command
-     * 
+     *
      * @return
      */
     public String getCommand() {
@@ -196,7 +195,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Set the password
-     * 
+     *
      * @param password
      */
     public void setPassword(String password) {
@@ -205,7 +204,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
 
     /**
      * Get the password
-     * 
+     *
      * @return
      */
     public String getPassword() {

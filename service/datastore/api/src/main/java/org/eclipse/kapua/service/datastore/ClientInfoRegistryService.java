@@ -23,19 +23,20 @@ import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 /**
  * Client information registry service definition.<br>
  * The client information keeps information about the clients that published messages on the platform.
- * 
+ *
  * @since 1.0.0
  */
-public interface ClientInfoRegistryService extends KapuaService, KapuaConfigurableService {
+public interface ClientInfoRegistryService extends KapuaService,
+        DatastoreService,
+        KapuaConfigurableService {
 
     /**
      * Find client information by identifier
-     * 
+     *
      * @param scopeId
      * @param id
      * @return
      * @throws KapuaException
-     * 
      * @since 1.0.0
      */
     public ClientInfo find(KapuaId scopeId, StorableId id)
@@ -43,11 +44,10 @@ public interface ClientInfoRegistryService extends KapuaService, KapuaConfigurab
 
     /**
      * Query for clients informations objects matching the given query
-     * 
+     *
      * @param query
      * @return
      * @throws KapuaException
-     * 
      * @since 1.0.0
      */
     public ClientInfoListResult query(ClientInfoQuery query)
@@ -55,11 +55,10 @@ public interface ClientInfoRegistryService extends KapuaService, KapuaConfigurab
 
     /**
      * Get the clients informations count matching the given query
-     * 
+     *
      * @param query
      * @return
      * @throws KapuaException
-     * 
      * @since 1.0.0
      */
     public long count(ClientInfoQuery query)

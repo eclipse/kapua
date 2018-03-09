@@ -11,16 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.commons.message;
 
-import java.util.List;
+import org.eclipse.kapua.service.device.management.message.KapuaAppChannel;
+import org.eclipse.kapua.service.device.management.message.KapuaAppProperties;
 
-import org.eclipse.kapua.service.device.management.KapuaAppChannel;
-import org.eclipse.kapua.service.device.management.KapuaAppProperties;
+import java.util.List;
 
 /**
  * Kapua application message channel implementation.<br>
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public abstract class KapuaAppChannelImpl implements KapuaAppChannel {
 

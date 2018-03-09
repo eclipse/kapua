@@ -21,13 +21,12 @@ import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtPermis
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtPermission.GwtAction;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRolePermission;
+import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.group.Group;
-import org.eclipse.kapua.service.authorization.permission.Action;
-import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
@@ -236,9 +235,9 @@ public class KapuaGwtAuthorizationModelConverter {
     }
 
     /**
-     * Converts a {@link Action} into a {@link GwtAction}
+     * Converts a {@link Actions} into a {@link GwtAction}
      *
-     * @param action The {@link Action} to convertKapuaId
+     * @param action The {@link Actions} to convertKapuaId
      * @return The converted {@link GwtAction}
      * @since 1.0.0
      */
@@ -291,17 +290,6 @@ public class KapuaGwtAuthorizationModelConverter {
      */
     public static GwtAction convertAction(String action) {
         return GwtAction.valueOf(action);
-    }
-
-    /**
-     * Converts a {@link Action} action into a {@link GwtAction}
-     *
-     * @param action The {@link Action} action to convertKapuaId
-     * @return The converted {@link GwtAction}
-     * @since 1.0.0
-     */
-    public static GwtAction convertAction(Action action) {
-        return GwtAction.valueOf(action.toString());
     }
 
 }

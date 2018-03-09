@@ -12,14 +12,13 @@
 package org.eclipse.kapua.service.device.management.commons.message.response;
 
 import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
-import org.eclipse.kapua.service.device.management.ResponseProperties;
-import org.eclipse.kapua.service.device.management.response.KapuaResponsePayload;
+import org.eclipse.kapua.service.device.management.message.ResponseProperties;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 
 /**
  * Kapua response message payload implementation.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class KapuaResponsePayloadImpl extends KapuaPayloadImpl implements KapuaResponsePayload {
 

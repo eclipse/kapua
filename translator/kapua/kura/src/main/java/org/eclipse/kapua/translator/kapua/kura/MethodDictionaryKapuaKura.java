@@ -12,18 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kapua.kura;
 
+import org.eclipse.kapua.service.device.call.kura.KuraMethod;
+import org.eclipse.kapua.service.device.management.message.KapuaMethod;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import org.eclipse.kapua.service.device.call.kura.KuraMethod;
-import org.eclipse.kapua.service.device.management.KapuaMethod;
 
 /**
  * Dictionary class to define actions translations between Kapua domain to Kura domain.<br>
  * For detail about action please refer to {@link KapuaMethod} and {@link KuraMethod}
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class MethodDictionaryKapuaKura {
 
@@ -47,7 +46,7 @@ public class MethodDictionaryKapuaKura {
 
     /**
      * Returns the action translation from Kapua domain to Kura domain
-     * 
+     *
      * @param kapuaMethod
      * @return
      */

@@ -12,15 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration;
 
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Properties;
-
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
@@ -35,13 +26,22 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTmetadata;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
+import org.eclipse.kapua.model.domain.Actions;
+import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
-import org.eclipse.kapua.service.authorization.domain.Domain;
-import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
+
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Properties;
 
 /**
  * Configurable service definition abstract reference implementation.
@@ -67,14 +67,12 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     /**
      * Reads metadata for the service pid
      *
-     * @param pid
-     *            the persistent ID of the service
+     * @param pid the persistent ID of the service
      * @return the metadata
-     * @throws Exception
-     *             In case of an error
+     * @throws Exception In case of an error
      */
-    private static KapuaTmetadata readMetadata(final String pid) throws Exception {
-        final URL url = ResourceUtils.getResource(String.format("META-INF/metatypes/%s.xml", pid));
+    private static KapuaTmetadata readMetadata(String pid) throws Exception {
+        URL url = ResourceUtils.getResource(String.format("META-INF/metatypes/%s.xml", pid));
 
         if (url == null) {
             return null;
@@ -90,7 +88,6 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @param updatedProps
      * @param scopeId
      * @param parentId
-     *
      * @throws KapuaException
      */
     private void validateConfigurations(String pid, KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId, KapuaId parentId)
@@ -293,17 +290,17 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         KapuaTocd ocd = getConfigMetadata();
         validateConfigurations(pid, ocd, values, scopeId, parentId);
 
-        Properties props = toProperties(values);
-
-        AndPredicate predicate = new AndPredicate()
-                .and(new AttributePredicate<>("pid", pid, Operator.EQUAL))
-                .and(new AttributePredicate<>("scopeId", scopeId, Operator.EQUAL));
-
         ServiceConfigQueryImpl query = new ServiceConfigQueryImpl(scopeId);
-        query.setPredicate(predicate);
+        query.setPredicate(
+                new AndPredicate(
+                        new AttributePredicate<>("pid", pid, Operator.EQUAL),
+                        new AttributePredicate<>("scopeId", scopeId, Operator.EQUAL)
+                )
+        );
 
         ServiceConfigListResult result = entityManagerSession.onResult(em -> ServiceDAO.query(em, ServiceConfig.class, ServiceConfigImpl.class, new ServiceConfigListResultImpl(), query));
 
+        Properties props = toProperties(values);
         if (result == null || result.isEmpty()) {
             // In not exists create then return
             ServiceConfig serviceConfigNew = new ServiceConfigImpl(scopeId);

@@ -12,25 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import static org.eclipse.kapua.service.datastore.model.query.SortField.descending;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
-import org.eclipse.kapua.service.authorization.domain.Domain;
-import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.datastore.DatastoreDomain;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
 import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
@@ -59,17 +51,21 @@ import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.eclipse.kapua.service.datastore.model.query.SortField.descending;
+
 /**
  * Metric information registry implementation.
- * 
+ *
  * @since 1.0.0
  */
 @KapuaProvider
 public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableService implements MetricInfoRegistryService {
 
-    private static final Domain DATASTORE_DOMAIN = new DatastoreDomain();
-
-    private static final Logger logger = LoggerFactory.getLogger(MetricInfoRegistryServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MetricInfoRegistryServiceImpl.class);
 
     private final AccountService accountService;
     private final AuthorizationService authorizationService;
@@ -80,7 +76,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
 
     /**
      * Default constructor
-     * 
+     *
      * @throws ClientUnavailableException
      */
     public MetricInfoRegistryServiceImpl() throws ClientUnavailableException {
@@ -189,7 +185,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
     /**
      * Update the last published date and last published message identifier for the specified metric info, so it gets the timestamp and the message identifier of the last published message for the
      * account/clientId in the metric info
-     * 
+     *
      * @throws KapuaException
      */
     private void updateLastPublishedFields(MetricInfo metricInfo) throws KapuaException {
@@ -222,11 +218,11 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
             lastPublishedMessageTimestamp = messageList.getFirstItem().getTimestamp();
         } else if (messageList.isEmpty()) {
             // this condition could happens due to the ttl of the messages (so if it happens, it does not necessarily mean there has been an error!)
-            logger.warn("Cannot find last timestamp for the specified client id '{}' - account '{}'", new Object[] { metricInfo.getClientId(), metricInfo.getScopeId() });
+            LOG.warn("Cannot find last timestamp for the specified client id '{}' - account '{}'", new Object[] { metricInfo.getClientId(), metricInfo.getScopeId() });
         } else {
             // this condition shouldn't never happens since the query has a limit 1
             // if happens it means than an elasticsearch internal error happens and/or our driver didn't set it correctly!
-            logger.error("Cannot find last timestamp for the specified client id '{}' - account '{}'. More than one result returned by the query!",
+            LOG.error("Cannot find last timestamp for the specified client id '{}' - account '{}'. More than one result returned by the query!",
                     new Object[] { metricInfo.getClientId(), metricInfo.getScopeId() });
         }
         metricInfo.setLastMessageId(lastPublishedMessageId);

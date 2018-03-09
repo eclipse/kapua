@@ -10,7 +10,7 @@
     Contributors:
         Eurotech - initial API and implementation
  -->
- <!DOCTYPE xml>
+<!DOCTYPE xml>
 <locator-config>
     <provided>
         <api>org.eclipse.kapua.service.account.AccountFactory</api>
@@ -68,7 +68,7 @@
         <api>org.eclipse.kapua.service.device.call.DeviceCallFactory</api>
         <api>org.eclipse.kapua.service.device.call.DeviceMessageFactory</api>
 
-        <api>org.eclipse.kapua.service.device.management.KapuaRequestMessageFactory</api>
+        <api>org.eclipse.kapua.service.device.management.message.KapuaRequestMessageFactory</api>
         <api>org.eclipse.kapua.service.device.management.request.GenericRequestFactory</api>
 
         <api>org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService</api>
@@ -85,7 +85,7 @@
 
         <api>org.eclipse.kapua.service.tag.TagFactory</api>
         <api>org.eclipse.kapua.service.tag.TagService</api>
-        
+
         <api>org.eclipse.kapua.service.user.UserFactory</api>
         <api>org.eclipse.kapua.service.user.UserService</api>
 

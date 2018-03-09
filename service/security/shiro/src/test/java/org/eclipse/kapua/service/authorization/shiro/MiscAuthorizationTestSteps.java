@@ -11,20 +11,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.shiro;
 
-import javax.inject.Inject;
-
+import cucumber.api.Scenario;
+import cucumber.api.java.Before;
+import cucumber.api.java.en.Then;
+import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.service.authorization.domain.Domain;
-import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionFactoryImpl;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionImpl;
 
-import cucumber.api.Scenario;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.Then;
-import cucumber.runtime.java.guice.ScenarioScoped;
+import javax.inject.Inject;
 
 // Implementation of Gherkin steps used to test miscellaneous Shiro 
 // authorization functionality.
@@ -33,15 +32,15 @@ import cucumber.runtime.java.guice.ScenarioScoped;
 public class MiscAuthorizationTestSteps extends AbstractAuthorizationServiceTest {
 
     // Test data scratchpads
-    private CommonTestData commonData ;
-    private MiscAuthorizationTestData miscData ;
+    private CommonTestData commonData;
+    private MiscAuthorizationTestData miscData;
 
     // Currently executing scenario.
     @SuppressWarnings("unused")
     private Scenario scenario;
 
     // Various Shiro Authorization related service references
-    private PermissionFactory permissionFactory ;
+    private PermissionFactory permissionFactory;
 
     @Inject
     public MiscAuthorizationTestSteps(MiscAuthorizationTestData miscData, CommonTestData commonData) {

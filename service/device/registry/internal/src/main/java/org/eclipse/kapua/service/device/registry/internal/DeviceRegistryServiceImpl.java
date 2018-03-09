@@ -24,7 +24,6 @@ import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
-import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
@@ -46,9 +45,6 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
         implements DeviceRegistryService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DeviceRegistryServiceImpl.class);
-
-    private static final Domain DEVICE_DOMAIN = new DeviceDomain();
-    // Constructors
 
     /**
      * Constructor
@@ -76,10 +72,10 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
         }
 
         DeviceQuery query = new DeviceQueryImpl(deviceCreator.getScopeId());
-        query.setPredicate(new AttributePredicate<String>(DevicePredicates.CLIENT_ID, deviceCreator.getClientId()));
+        query.setPredicate(new AttributePredicate<>(DevicePredicates.CLIENT_ID, deviceCreator.getClientId()));
         DeviceListResult deviceListResult = query(query);
         if (!deviceListResult.isEmpty()) {
-             throw new KapuaDuplicateNameException(deviceCreator.getClientId());
+            throw new KapuaDuplicateNameException(deviceCreator.getClientId());
         }
         return entityManagerSession.onTransactedInsert(entityManager -> DeviceDAO.create(entityManager, deviceCreator));
     }
@@ -178,8 +174,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
         LOGGER.info("DeviceRegistryService: received kapua event from {}, operation {}", kapuaEvent.getService(), kapuaEvent.getOperation());
         if ("group".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {
             deleteDeviceByGroupId(kapuaEvent.getScopeId(), kapuaEvent.getEntityId());
-        }
-        else if ("account".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {
+        } else if ("account".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {
             deleteDeviceByAccountId(kapuaEvent.getScopeId(), kapuaEvent.getEntityId());
         }
     }

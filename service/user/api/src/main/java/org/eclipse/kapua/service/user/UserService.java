@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.user;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.service.KapuaDomainService;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaNamedEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
@@ -29,7 +30,15 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
 public interface UserService extends KapuaEntityService<User, UserCreator>,
         KapuaUpdatableEntityService<User>,
         KapuaNamedEntityService<User>,
+        KapuaDomainService<UserDomain>,
         KapuaConfigurableService {
+
+    public static final UserDomain USER_DOMAIN = new UserDomain();
+
+    @Override
+    default UserDomain getServiceDomain() {
+        return USER_DOMAIN;
+    }
 
     /**
      * Creates a new user under the account specified in the UserCreator.<br>
@@ -49,8 +58,7 @@ public interface UserService extends KapuaEntityService<User, UserCreator>,
      * The returned User object does not have its access information, roles
      * and permissions, loaded.
      *
-     * @param user
-     *            to be update
+     * @param user to be update
      * @return
      * @throws KapuaException
      */
@@ -92,11 +100,9 @@ public interface UserService extends KapuaEntityService<User, UserCreator>,
     /**
      * Find user by external id
      *
-     * @param externalId
-     *            the external ID to look for
+     * @param externalId the external ID to look for
      * @return the user or {@code null} if the user could not be found
-     * @throws KapuaException
-     *             in case anything goes wrong
+     * @throws KapuaException in case anything goes wrong
      */
     public User findByExternalId(String externalId) throws KapuaException;
 

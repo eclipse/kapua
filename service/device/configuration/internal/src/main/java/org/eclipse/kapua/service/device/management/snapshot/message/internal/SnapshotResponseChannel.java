@@ -12,7 +12,7 @@
 package org.eclipse.kapua.service.device.management.snapshot.message.internal;
 
 import org.eclipse.kapua.service.device.management.commons.message.KapuaAppChannelImpl;
-import org.eclipse.kapua.service.device.management.response.KapuaResponseChannel;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponseChannel;
 
 /**
  * Device snapshot response channel.

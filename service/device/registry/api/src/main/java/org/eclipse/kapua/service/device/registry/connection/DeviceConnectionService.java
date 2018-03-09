@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.device.registry.connection;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.service.KapuaDomainService;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
@@ -21,16 +22,24 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
 /**
  * DeviceConnectionService exposes APIs to retrieve Device connections under a scope.
  * It includes APIs to find, list, and update devices connections associated with a scope.
- * 
+ *
  * @since 1.0
  */
 public interface DeviceConnectionService extends KapuaEntityService<DeviceConnection, DeviceConnectionCreator>,
-        KapuaUpdatableEntityService<DeviceConnection>, 
+        KapuaUpdatableEntityService<DeviceConnection>,
+        KapuaDomainService<DeviceConnectionDomain>,
         KapuaConfigurableService {
+
+    public static final DeviceConnectionDomain DEVICE_CONNECTION_DOMAIN = new DeviceConnectionDomain();
+
+    @Override
+    public default DeviceConnectionDomain getServiceDomain() {
+        return DEVICE_CONNECTION_DOMAIN;
+    }
 
     /**
      * Find the connection by client identifier
-     * 
+     *
      * @param scopeId
      * @param clientId
      * @return
@@ -41,13 +50,13 @@ public interface DeviceConnectionService extends KapuaEntityService<DeviceConnec
 
     /**
      * Returns the {@link DeviceConnectionListResult} with elements matching the provided query.
-     * 
-     * @param query
-     *            The {@link DeviceConnectionQuery} used to filter results.
+     *
+     * @param query The {@link DeviceConnectionQuery} used to filter results.
      * @return The {@link DeviceConnectionListResult} with elements matching the query parameter.
      * @throws KapuaException
      * @since 1.0.0
      */
+    @Override
     public DeviceConnectionListResult query(KapuaQuery<DeviceConnection> query)
             throws KapuaException;
 
@@ -55,7 +64,7 @@ public interface DeviceConnectionService extends KapuaEntityService<DeviceConnec
      * Updated the status of provided device connection to connected;
      * if a device connection for the provided clientId is not found,
      * a new device connection is created and updated.
-     * 
+     *
      * @param creator
      * @throws KapuaException
      */
@@ -64,7 +73,7 @@ public interface DeviceConnectionService extends KapuaEntityService<DeviceConnec
 
     /**
      * Register a device message when a client disconnects from the broker
-     * 
+     *
      * @param scopeId
      * @param clientId
      * @throws KapuaException

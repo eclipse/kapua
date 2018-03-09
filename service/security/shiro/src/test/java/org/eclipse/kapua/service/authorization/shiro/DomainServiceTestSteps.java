@@ -11,14 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.shiro;
 
-import java.util.HashSet;
-import java.util.List;
-
-import javax.inject.Inject;
-
+import cucumber.api.Scenario;
+import cucumber.api.java.Before;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.domain.DomainCreator;
 import org.eclipse.kapua.service.authorization.domain.DomainFactory;
@@ -31,38 +33,33 @@ import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupFactoryImpl;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupServiceImpl;
-import org.eclipse.kapua.service.authorization.permission.Actions;
 
-import cucumber.api.Scenario;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
-import cucumber.runtime.java.guice.ScenarioScoped;
+import javax.inject.Inject;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * Implementation of Gherkin steps used in DomainService.feature scenarios.
- *
+ * <p>
  * MockedLocator is used for Location Service. Mockito is used to mock other
  * services that the Domain Service dependens on.
- *
  */
 
 @ScenarioScoped
 public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
 
     // Various domain related service references
-    DomainService domainService ;
-    DomainFactory domainFactory ;
-    GroupService groupService ;
-    GroupFactory groupFactory ;
+    DomainService domainService;
+    DomainFactory domainFactory;
+    GroupService groupService;
+    GroupFactory groupFactory;
 
     // Currently executing scenario.
     Scenario scenario;
 
     // Test data scratchpads
-    CommonTestData commonData ;
-    DomainServiceTestData domainData ;
+    CommonTestData commonData;
+    DomainServiceTestData domainData;
 
     @Inject
     public DomainServiceTestSteps(DomainServiceTestData domainData, CommonTestData commonData) {

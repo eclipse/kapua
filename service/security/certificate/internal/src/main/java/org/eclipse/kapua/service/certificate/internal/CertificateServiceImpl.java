@@ -11,20 +11,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate.internal;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.KapuaFileUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.certificate.Certificate;
 import org.eclipse.kapua.service.certificate.CertificateCreator;
 import org.eclipse.kapua.service.certificate.CertificateFactory;
@@ -42,14 +42,23 @@ import org.eclipse.kapua.service.certificate.util.CertificateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+import java.util.Set;
+
 @KapuaProvider
 public class CertificateServiceImpl implements CertificateService {
 
+    public static final Logger LOG = LoggerFactory.getLogger(CertificateServiceImpl.class);
+
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
+    private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
+
+    private static final CertificateFactory CERTIFICATE_FACTORY = LOCATOR.getFactory(CertificateFactory.class);
+
     private String certificate;
     private String privateKey;
-    public static final Logger LOGGER = LoggerFactory.getLogger(CertificateServiceImpl.class);
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final CertificateFactory CERTIFICATE_FACTORY = LOCATOR.getFactory(CertificateFactory.class);
 
     /**
      * Constructor
@@ -62,7 +71,7 @@ public class CertificateServiceImpl implements CertificateService {
             String certificatePath = setting.getString(KapuaCertificateSettingKeys.CERTIFICATE_JWT_CERTIFICATE);
 
             if (Strings.isNullOrEmpty(privateKeyPath) && Strings.isNullOrEmpty(certificatePath)) {
-                LOGGER.error("No private key and certificate path specified.\nPlease set authentication.session.jwt.private.key and authentication.session.jwt.certificate system properties.");
+                LOG.error("No private key and certificate path specified.\nPlease set authentication.session.jwt.private.key and authentication.session.jwt.certificate system properties.");
                 throw new KapuaCertificateException(KapuaCertificateErrorCodes.CERTIFICATE_ERROR);
             } else {
                 certificate = CertificateUtils.readCertificateAsString(KapuaFileUtils.getAsFile(certificatePath));
@@ -88,10 +97,13 @@ public class CertificateServiceImpl implements CertificateService {
         ArgumentValidator.notNull(query, "query");
 
         //
+        // Check Access
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(CERTIFICATE_DOMAIN, Actions.write, query.getScopeId()));
+
+        //
         // Create the default certificate
         CertificateUsage jwtCertificateUsage = new CertificateUsageImpl("JWT");
-        Set<CertificateUsage> certificateUsages = new HashSet<>();
-        certificateUsages.add(jwtCertificateUsage);
+        Set<CertificateUsage> certificateUsages = Sets.newHashSet(jwtCertificateUsage);
 
         KeyUsageSetting keyUsageSetting = new KeyUsageSettingImpl();
         keyUsageSetting.setKeyUsage(KeyUsage.DIGITAL_SIGNATURE);
