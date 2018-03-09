@@ -20,11 +20,4 @@ import org.eclipse.kapua.model.KapuaEntityFactory;
  */
 public interface DeviceConnectionFactory extends KapuaEntityFactory<DeviceConnection, DeviceConnectionCreator, DeviceConnectionQuery, DeviceConnectionListResult> {
 
-    /**
-     * Creates a new device connection summary
-     *
-     * @return
-     */
-    public DeviceConnectionSummary newConnectionSummary();
-
 }

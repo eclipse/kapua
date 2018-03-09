@@ -27,15 +27,6 @@ public class DeviceConnectionXmlRegistry {
     private final DeviceConnectionFactory factory = locator.getFactory(DeviceConnectionFactory.class);
 
     /**
-     * Creates a new connection summary
-     *
-     * @return
-     */
-    public DeviceConnectionSummary newConnectionSummary() {
-        return factory.newConnectionSummary();
-    }
-
-    /**
      * Creates a new {@link DeviceConnection}
      * 
      * @return

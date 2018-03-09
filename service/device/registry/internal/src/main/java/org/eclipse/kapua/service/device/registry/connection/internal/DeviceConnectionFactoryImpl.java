@@ -18,7 +18,6 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCrea
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionListResult;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
-import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionSummary;
 
 /**
  * Device connection service factory implementation.
@@ -36,11 +35,6 @@ public class DeviceConnectionFactoryImpl implements DeviceConnectionFactory {
     @Override
     public DeviceConnectionQuery newQuery(KapuaId scopeId) {
         return new DeviceConnectionQueryImpl(scopeId);
-    }
-
-    @Override
-    public DeviceConnectionSummary newConnectionSummary() {
-        return new DeviceConnectionSummaryImpl();
     }
 
     @Override
