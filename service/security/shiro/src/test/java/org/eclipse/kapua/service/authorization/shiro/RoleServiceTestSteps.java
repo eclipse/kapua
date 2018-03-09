@@ -54,7 +54,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Implementation of Gherkin steps used in DomainService.feature scenarios.
+ * Implementation of Gherkin steps used in DomainRegistryService.feature scenarios.
  */
 @ScenarioScoped
 public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {

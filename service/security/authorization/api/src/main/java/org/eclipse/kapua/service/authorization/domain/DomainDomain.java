@@ -21,14 +21,14 @@ import java.util.Set;
 
 /**
  * {@link Domain} domain.<br>
- * Used to describe the {@link Domain} {@link Domain} in the {@link DomainService}.
+ * Used to describe the {@link Domain} {@link Domain} in the {@link DomainRegistryService}.
  *
  * @since 1.0.0
  */
 public class DomainDomain extends AbstractDomain implements Domain {
 
     private String name = "domain";
-    private String serviceName = DomainService.class.getSimpleName();
+    private String serviceName = DomainRegistryService.class.getSimpleName();
     private Set<Actions> actions = new HashSet<>(Arrays.asList(Actions.read, Actions.delete, Actions.write));
 
     @Override

@@ -34,7 +34,7 @@
         <api>org.eclipse.kapua.service.authorization.access.AccessRoleFactory</api>
         <api>org.eclipse.kapua.service.authorization.access.AccessRoleService</api>
         <api>org.eclipse.kapua.service.authorization.domain.DomainFactory</api>
-        <api>org.eclipse.kapua.service.authorization.domain.DomainService</api>
+        <api>org.eclipse.kapua.service.authorization.domain.DomainRegistryService</api>
         <api>org.eclipse.kapua.service.authorization.group.GroupFactory</api>
         <api>org.eclipse.kapua.service.authorization.group.GroupService</api>
         <api>org.eclipse.kapua.service.authorization.role.RoleService</api>

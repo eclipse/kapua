@@ -22,7 +22,7 @@ import org.eclipse.kapua.service.KapuaEntityService;
  *
  * @since 1.0.0
  */
-public interface DomainService extends KapuaEntityService<Domain, DomainCreator>, KapuaDomainService<DomainDomain> {
+public interface DomainRegistryService extends KapuaEntityService<Domain, DomainCreator>, KapuaDomainService<DomainDomain> {
 
     public static final DomainDomain DOMAIN_DOMAIN = new DomainDomain();
 

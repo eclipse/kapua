@@ -25,10 +25,10 @@ import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.domain.DomainCreator;
 import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainQuery;
-import org.eclipse.kapua.service.authorization.domain.DomainService;
+import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainFactoryImpl;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainPredicates;
-import org.eclipse.kapua.service.authorization.domain.shiro.DomainServiceImpl;
+import org.eclipse.kapua.service.authorization.domain.shiro.DomainRegistryServiceImpl;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupFactoryImpl;
@@ -39,7 +39,7 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
- * Implementation of Gherkin steps used in DomainService.feature scenarios.
+ * Implementation of Gherkin steps used in DomainRegistryService.feature scenarios.
  * <p>
  * MockedLocator is used for Location Service. Mockito is used to mock other
  * services that the Domain Service dependens on.
@@ -49,7 +49,7 @@ import java.util.List;
 public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
 
     // Various domain related service references
-    DomainService domainService;
+    DomainRegistryService domainRegistryService;
     DomainFactory domainFactory;
     GroupService groupService;
     GroupFactory groupFactory;
@@ -74,7 +74,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
         this.scenario = scenario;
 
         // Instantiate all the services and factories that are required by the tests
-        domainService = new DomainServiceImpl();
+        domainRegistryService = new DomainRegistryServiceImpl();
         domainFactory = new DomainFactoryImpl();
         groupService = new GroupServiceImpl();
         groupFactory = new GroupFactoryImpl();
@@ -106,7 +106,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
             }
             KapuaSecurityUtils.doPrivileged(() -> {
                 try {
-                    domainData.domain = domainService.create(domainData.domainCreator);
+                    domainData.domain = domainRegistryService.create(domainData.domainCreator);
                 } catch (KapuaException ex) {
                     commonData.verifyException(ex);
                     return null;
@@ -126,7 +126,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
     public void findDomainByRememberedId()
             throws KapuaException {
         KapuaSecurityUtils.doPrivileged(() -> {
-            domainData.domain = domainService.find(null, domainData.domainId);
+            domainData.domain = domainRegistryService.find(null, domainData.domainId);
             return null;
         });
     }
@@ -135,7 +135,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
     public void deleteLastCreatedDomain()
             throws KapuaException {
         KapuaSecurityUtils.doPrivileged(() -> {
-            domainService.delete(null, domainData.domainId);
+            domainRegistryService.delete(null, domainData.domainId);
             return null;
         });
     }
@@ -146,7 +146,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
         KapuaSecurityUtils.doPrivileged(() -> {
             try {
                 commonData.primeException();
-                domainService.delete(null, generateId());
+                domainRegistryService.delete(null, generateId());
             } catch (KapuaException ex) {
                 commonData.verifyException(ex);
             }
@@ -158,7 +158,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
     public void countDomainEntries()
             throws KapuaException {
         KapuaSecurityUtils.doPrivileged(() -> {
-            commonData.count = domainService.count(domainFactory.newQuery(null));
+            commonData.count = domainRegistryService.count(domainFactory.newQuery(null));
             return null;
         });
     }
@@ -169,7 +169,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
         DomainQuery query = domainFactory.newQuery(null);
         query.setPredicate(new AttributePredicate<>(DomainPredicates.NAME, name));
         KapuaSecurityUtils.doPrivileged(() -> {
-            domainData.domainList = domainService.query(query);
+            domainData.domainList = domainRegistryService.query(query);
             return null;
         });
         assertNotNull(domainData.domainList);
@@ -182,7 +182,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
         DomainQuery query = domainFactory.newQuery(null);
         query.setPredicate(new AttributePredicate<>(DomainPredicates.SERVICE_NAME, serviceName));
         KapuaSecurityUtils.doPrivileged(() -> {
-            domainData.domainList = domainService.query(query);
+            domainData.domainList = domainRegistryService.query(query);
             return null;
         });
         assertNotNull(domainData.domainList);
@@ -193,7 +193,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
     public void findDomainsByServiceName(String serviceName)
             throws KapuaException {
         KapuaSecurityUtils.doPrivileged(() -> {
-            domainData.domain = domainService.findByServiceName(serviceName);
+            domainData.domain = domainRegistryService.findByServiceName(serviceName);
             return null;
         });
     }
@@ -232,7 +232,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
             tmpAct.add(Actions.read);
             tmpAct.add(Actions.write);
             tmpCreator.setActions(tmpAct);
-            Domain tmpDom1 = domainService.create(tmpCreator);
+            Domain tmpDom1 = domainRegistryService.create(tmpCreator);
             assertNotNull(tmpDom1);
 
             assertTrue(tmpDom1.equals(tmpDom1));
@@ -240,18 +240,18 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
             assertFalse(tmpDom1.equals(String.valueOf("")));
 
             Domain tmpDom2 = null;
-            tmpDom2 = domainService.find(null, tmpDom1.getId());
+            tmpDom2 = domainRegistryService.find(null, tmpDom1.getId());
             assertNotNull(tmpDom2);
 
             tmpCreator.setName("name_2");
             tmpCreator.setServiceName("svc_2");
-            Domain tmpDom3 = domainService.create(tmpCreator);
+            Domain tmpDom3 = domainRegistryService.create(tmpCreator);
             assertNotNull(tmpDom3);
 
             tmpCreator.setName("name_3");
             tmpAct.remove(Actions.write);
             tmpCreator.setActions(tmpAct);
-            Domain tmpDom4 = domainService.create(tmpCreator);
+            Domain tmpDom4 = domainRegistryService.create(tmpCreator);
             assertNotNull(tmpDom4);
 
             assertTrue(tmpDom1.equals(tmpDom2));
