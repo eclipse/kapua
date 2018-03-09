@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.permission.shiro;
 
-import javax.validation.constraints.NotNull;
-
 import com.google.common.collect.Sets;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
@@ -20,15 +18,16 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainListResult;
-import org.eclipse.kapua.service.authorization.domain.DomainService;
+import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 public class PermissionValidator {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final DomainService DOMAIN_SERVICE = LOCATOR.getService(DomainService.class);
+    private static final DomainRegistryService DOMAIN_SERVICE = LOCATOR.getService(DomainRegistryService.class);
     private static final DomainFactory DOMAIN_FACTORY = LOCATOR.getFactory(DomainFactory.class);
 
     private PermissionValidator() {

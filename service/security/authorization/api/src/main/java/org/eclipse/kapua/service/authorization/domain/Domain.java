@@ -71,7 +71,7 @@ public interface Domain extends KapuaEntity, org.eclipse.kapua.model.domain.Doma
      * The value must represent the {@code interface} fully qualified name of the implemented {@link KapuaService}<br>
      * Examples:
      * <ul>
-     * <li>org.eclipse.kapua.service.authorization.DomainService</li>
+     * <li>org.eclipse.kapua.service.authorization.DomainRegistryService</li>
      * <li>org.eclipse.kapua.service.authorization.RoleService</li>
      * </ul>
      *

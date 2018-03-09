@@ -252,7 +252,7 @@
 
     <servlet>
         <servlet-name>domainServlet</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.module.authorization.server.GwtDomainServiceImpl</servlet-class>
+        <servlet-class>org.eclipse.kapua.app.console.module.authorization.server.GwtDomainRegistryServiceImpl</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>domainServlet</servlet-name>

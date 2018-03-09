@@ -38,8 +38,8 @@ import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAcce
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessInfoServiceAsync;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessPermissionService;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessPermissionServiceAsync;
-import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtDomainService;
-import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtDomainServiceAsync;
+import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtDomainRegistryService;
+import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtDomainRegistryServiceAsync;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupService;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupServiceAsync;
 
@@ -49,7 +49,7 @@ public class PermissionAddDialog extends EntityAddEditDialog {
 
     private final static ConsolePermissionMessages MSGS = GWT.create(ConsolePermissionMessages.class);
 
-    private final static GwtDomainServiceAsync GWT_DOMAIN_SERVICE = GWT.create(GwtDomainService.class);
+    private final static GwtDomainRegistryServiceAsync GWT_DOMAIN_SERVICE = GWT.create(GwtDomainRegistryService.class);
     private final static GwtAccessPermissionServiceAsync GWT_ACCESS_PERMISSION_SERVICE = GWT.create(GwtAccessPermissionService.class);
     private final static GwtAccessInfoServiceAsync GWT_ACCESS_INFO_SERVICE = GWT.create(GwtAccessInfoService.class);
     private final static GwtGroupServiceAsync GWT_GROUP_SERVICE = GWT.create(GwtGroupService.class);

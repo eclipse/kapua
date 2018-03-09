@@ -17,7 +17,7 @@ import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtDomain;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtPermission.GwtAction;
-import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtDomainService;
+import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtDomainRegistryService;
 import org.eclipse.kapua.app.console.module.authorization.shared.util.KapuaGwtAuthorizationModelConverter;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -27,14 +27,14 @@ import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainListResult;
 import org.eclipse.kapua.service.authorization.domain.DomainQuery;
-import org.eclipse.kapua.service.authorization.domain.DomainService;
+import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainPredicates;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class GwtDomainServiceImpl extends KapuaRemoteServiceServlet implements GwtDomainService {
+public class GwtDomainRegistryServiceImpl extends KapuaRemoteServiceServlet implements GwtDomainRegistryService {
 
     private static final long serialVersionUID = -699492835893299489L;
 
@@ -43,10 +43,10 @@ public class GwtDomainServiceImpl extends KapuaRemoteServiceServlet implements G
         List<GwtDomain> gwtDomainList = new ArrayList<GwtDomain>();
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
-            DomainService domainService = locator.getService(DomainService.class);
+            DomainRegistryService domainRegistryService = locator.getService(DomainRegistryService.class);
             DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
             DomainQuery query = domainFactory.newQuery(null);
-            DomainListResult list = domainService.query(query);
+            DomainListResult list = domainRegistryService.query(query);
 
             for (Domain domain : list.getItems()) {
                 gwtDomainList.add(KapuaGwtAuthorizationModelConverter.convertDomain(domain));
@@ -63,11 +63,11 @@ public class GwtDomainServiceImpl extends KapuaRemoteServiceServlet implements G
         List<GwtAction> gwtActionList = new ArrayList<GwtAction>();
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
-            DomainService domainService = locator.getService(DomainService.class);
+            DomainRegistryService domainRegistryService = locator.getService(DomainRegistryService.class);
             DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
             DomainQuery query = domainFactory.newQuery(null);
             query.setPredicate(new AttributePredicate<String>(DomainPredicates.NAME, domainName));
-            DomainListResult queryResult = domainService.query(query);
+            DomainListResult queryResult = domainRegistryService.query(query);
             if (!queryResult.isEmpty()) {
                 for (Actions action : queryResult.getFirstItem().getActions()) {
                     gwtActionList.add(KapuaGwtAuthorizationModelConverter.convertAction(action));
@@ -85,15 +85,15 @@ public class GwtDomainServiceImpl extends KapuaRemoteServiceServlet implements G
     private String getServiceName(KapuaId scopeId, String domainName) throws GwtKapuaException {
         String serviceName = null;
         KapuaLocator locator = KapuaLocator.getInstance();
-        DomainService domainService = locator.getService(DomainService.class);
+        DomainRegistryService domainRegistryService = locator.getService(DomainRegistryService.class);
         DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
         DomainQuery domainQuery = domainFactory.newQuery(null);
         domainQuery.setScopeId(scopeId);
         domainQuery.setPredicate(new AttributePredicate<String>(DomainPredicates.NAME, domainName));
         try {
-            Domain domain = domainService.query(domainQuery).getFirstItem();
-            if (domain != null) {
-                serviceName = domain.getServiceName();
+            DomainListResult result = domainRegistryService.query(domainQuery);
+            if (!result.isEmpty()) {
+                serviceName = result.getFirstItem().getServiceName();
             }
         } catch (KapuaException e) {
             KapuaExceptionHandler.handle(e);

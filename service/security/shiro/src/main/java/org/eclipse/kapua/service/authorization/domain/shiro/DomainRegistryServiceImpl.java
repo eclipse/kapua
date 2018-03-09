@@ -28,23 +28,23 @@ import org.eclipse.kapua.service.authorization.domain.DomainCreator;
 import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainListResult;
 import org.eclipse.kapua.service.authorization.domain.DomainQuery;
-import org.eclipse.kapua.service.authorization.domain.DomainService;
+import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * {@link DomainService} implementation.
+ * {@link DomainRegistryService} implementation.
  *
  * @since 1.0
  */
 @KapuaProvider
-public class DomainServiceImpl extends AbstractKapuaService implements DomainService {
+public class DomainRegistryServiceImpl extends AbstractKapuaService implements DomainRegistryService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DomainServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DomainRegistryServiceImpl.class);
 
-    public DomainServiceImpl() {
+    public DomainRegistryServiceImpl() {
         super(AuthorizationEntityManagerFactory.getInstance());
     }
 
@@ -159,7 +159,7 @@ public class DomainServiceImpl extends AbstractKapuaService implements DomainSer
         if (kapuaEvent == null) {
             //service bus error. Throw some exception?
         }
-        LOGGER.info("DomainService: received kapua event from {}, operation {}", kapuaEvent.getService(), kapuaEvent.getOperation());
+        LOGGER.info("DomainRegistryService: received kapua event from {}, operation {}", kapuaEvent.getService(), kapuaEvent.getOperation());
         if ("account".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {
             deleteDomainByAccountId(kapuaEvent.getScopeId(), kapuaEvent.getEntityId());
         }

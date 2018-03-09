@@ -18,7 +18,7 @@
 
         <api>org.eclipse.kapua.service.authorization.AuthorizationService</api>
         <api>org.eclipse.kapua.service.authorization.domain.DomainFactory</api>
-        <api>org.eclipse.kapua.service.authorization.domain.DomainService</api>
+        <api>org.eclipse.kapua.service.authorization.domain.DomainRegistryService</api>
         <api>org.eclipse.kapua.service.authorization.permission.PermissionFactory</api>
 
         <api>org.eclipse.kapua.service.account.AccountFactory</api>

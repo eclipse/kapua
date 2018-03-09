@@ -49,7 +49,7 @@ import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainListResult;
 import org.eclipse.kapua.service.authorization.domain.DomainQuery;
-import org.eclipse.kapua.service.authorization.domain.DomainService;
+import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupQuery;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupPredicates;
@@ -366,10 +366,10 @@ public class GwtKapuaAuthorizationModelConverter {
 
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
-            DomainService domainService = locator.getService(DomainService.class);
+            DomainRegistryService domainRegistryService = locator.getService(DomainRegistryService.class);
             DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
             DomainQuery query = domainFactory.newQuery(null);
-            DomainListResult list = domainService.query(query);
+            DomainListResult list = domainRegistryService.query(query);
 
             for (Domain domain : list.getItems()) {
                 if (domain.getName().equals(gwtDomain.getDomainName())) {
