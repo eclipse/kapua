@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.internal;
 
-import java.util.List;
-
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
@@ -23,6 +21,9 @@ import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DevicePredicates;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+
+import java.util.List;
 
 /**
  * {@link Device} DAO
@@ -78,8 +79,7 @@ public class DeviceDAO extends ServiceDAO {
      * @param em
      * @param device
      * @return
-     * @throws KapuaEntityNotFoundException
-     *             If {@link Device} is not found.
+     * @throws KapuaEntityNotFoundException If {@link Device} is not found.
      */
     public static Device update(EntityManager em, Device device) throws KapuaEntityNotFoundException {
         DeviceImpl deviceImpl = (DeviceImpl) device;
@@ -108,7 +108,7 @@ public class DeviceDAO extends ServiceDAO {
     public static DeviceListResult query(EntityManager em, KapuaQuery<Device> query)
             throws KapuaException {
 
-        handleKapuaQueryGroupPredicate(query, DeviceDomain.INSTANCE, DevicePredicates.GROUP_ID);
+        handleKapuaQueryGroupPredicate(query, DeviceRegistryService.DEVICE_DOMAIN, DevicePredicates.GROUP_ID);
 
         // This is fix up for a the Eclipse Link limitation on OneToOne that ignores Lazy Fetch on Java SE environment.
         // Link: https://www.eclipse.org/eclipselink/documentation/2.6/concepts/mappingintro002.htm#CEGCJEHD
@@ -156,7 +156,7 @@ public class DeviceDAO extends ServiceDAO {
      */
     public static long count(EntityManager em, KapuaQuery<Device> query)
             throws KapuaException {
-        handleKapuaQueryGroupPredicate(query, DeviceDomain.INSTANCE, DevicePredicates.GROUP_ID);
+        handleKapuaQueryGroupPredicate(query, DeviceRegistryService.DEVICE_DOMAIN, DevicePredicates.GROUP_ID);
 
         return ServiceDAO.count(em, Device.class, DeviceImpl.class, query);
     }
@@ -166,8 +166,7 @@ public class DeviceDAO extends ServiceDAO {
      *
      * @param em
      * @param deviceId
-     * @throws KapuaEntityNotFoundException
-     *             If {@link Device} is not found.
+     * @throws KapuaEntityNotFoundException If {@link Device} is not found.
      */
     public static void delete(EntityManager em, KapuaId deviceId) throws KapuaEntityNotFoundException {
         ServiceDAO.delete(em, DeviceImpl.class, deviceId);

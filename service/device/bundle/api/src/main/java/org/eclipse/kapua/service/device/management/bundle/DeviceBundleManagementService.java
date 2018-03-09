@@ -14,22 +14,21 @@ package org.eclipse.kapua.service.device.management.bundle;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.device.management.DeviceManagementService;
 
 /**
  * Device bundle service definition.
  *
  * @since 1.0
- *
  */
-public interface DeviceBundleManagementService extends KapuaService {
+public interface DeviceBundleManagementService extends KapuaService, DeviceManagementService {
 
     /**
      * Get the device bundles list for the given device identifier
      *
      * @param scopeId
      * @param deviceId
-     * @param timeout
-     *            timeout waiting for the device response
+     * @param timeout  timeout waiting for the device response
      * @return
      * @throws KapuaException
      */
@@ -42,8 +41,7 @@ public interface DeviceBundleManagementService extends KapuaService {
      * @param scopeId
      * @param deviceId
      * @param bundleId
-     * @param timeout
-     *            timeout waiting for the device response
+     * @param timeout  timeout waiting for the device response
      * @throws KapuaException
      */
     public void start(KapuaId scopeId, KapuaId deviceId, String bundleId, Long timeout)
@@ -55,8 +53,7 @@ public interface DeviceBundleManagementService extends KapuaService {
      * @param scopeId
      * @param deviceId
      * @param bundleId
-     * @param timeout
-     *            timeout waiting for the device response
+     * @param timeout  timeout waiting for the device response
      * @throws KapuaException
      */
     public void stop(KapuaId scopeId, KapuaId deviceId, String bundleId, Long timeout)

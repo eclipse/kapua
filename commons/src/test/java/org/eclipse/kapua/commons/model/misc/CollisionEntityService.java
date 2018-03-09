@@ -11,12 +11,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.model.misc;
 
+import org.eclipse.kapua.service.KapuaDomainService;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaNamedEntityService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
 public interface CollisionEntityService extends KapuaEntityService<CollisionEntity, CollisionEntityCreator>,
         KapuaNamedEntityService<CollisionEntity>,
+        KapuaDomainService<CollisionEntityDomain>,
         KapuaConfigurableService {
+
+    public static final CollisionEntityDomain COLLISION_ENTITY_DOMAIN = new CollisionEntityDomain();
+
+    @Override
+    public default CollisionEntityDomain getServiceDomain() {
+        return COLLISION_ENTITY_DOMAIN;
+    }
 
 }

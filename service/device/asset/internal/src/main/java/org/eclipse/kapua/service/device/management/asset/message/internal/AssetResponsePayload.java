@@ -11,12 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.asset.message.internal;
 
-import java.io.UnsupportedEncodingException;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLStreamException;
-
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaPayload;
@@ -25,12 +19,17 @@ import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 import org.eclipse.kapua.service.device.management.commons.message.response.KapuaResponsePayloadImpl;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
-import org.eclipse.kapua.service.device.management.response.KapuaResponsePayload;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 import org.xml.sax.SAXException;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLStreamException;
+import java.io.UnsupportedEncodingException;
 
 /**
  * {@link DeviceAssets} information {@link KapuaResponsePayload}.
- * 
+ *
  * @since 1.0.0
  */
 public class AssetResponsePayload extends KapuaResponsePayloadImpl implements KapuaPayload {

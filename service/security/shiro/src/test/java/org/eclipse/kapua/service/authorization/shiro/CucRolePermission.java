@@ -11,11 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.shiro;
 
-import java.math.BigInteger;
-
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authorization.permission.Actions;
+
+import java.math.BigInteger;
 
 public class CucRolePermission {
 

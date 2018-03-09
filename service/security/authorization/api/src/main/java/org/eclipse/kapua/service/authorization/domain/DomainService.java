@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.authorization.domain;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.service.KapuaDomainService;
 import org.eclipse.kapua.service.KapuaEntityService;
 
 /**
@@ -21,7 +22,14 @@ import org.eclipse.kapua.service.KapuaEntityService;
  *
  * @since 1.0.0
  */
-public interface DomainService extends KapuaEntityService<Domain, DomainCreator> {
+public interface DomainService extends KapuaEntityService<Domain, DomainCreator>, KapuaDomainService<DomainDomain> {
+
+    public static final DomainDomain DOMAIN_DOMAIN = new DomainDomain();
+
+    @Override
+    public default DomainDomain getServiceDomain() {
+        return DOMAIN_DOMAIN;
+    }
 
     /**
      * Creates a new {@link Domain} based on the parameters provided in the {@link DomainCreator}.<br>

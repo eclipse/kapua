@@ -13,8 +13,8 @@ package org.eclipse.kapua.service.authorization.shiro;
 
 import com.google.common.collect.Lists;
 import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
+import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.service.authorization.domain.Domain;
-import org.eclipse.kapua.service.authorization.permission.Actions;
 
 import java.util.HashSet;
 import java.util.Set;

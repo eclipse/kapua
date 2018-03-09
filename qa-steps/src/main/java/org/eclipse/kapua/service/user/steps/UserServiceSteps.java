@@ -12,24 +12,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user.steps;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.inject.Inject;
-
+import cucumber.api.Scenario;
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
+import cucumber.api.java.en.And;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+import cucumber.runtime.java.guice.ScenarioScoped;
 import org.apache.shiro.SecurityUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.domain.Actions;
+import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.qa.steps.BaseQATests;
 import org.eclipse.kapua.qa.steps.DBHelper;
@@ -50,28 +48,28 @@ import org.eclipse.kapua.service.authentication.shiro.UsernamePasswordCredential
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoFactoryImpl;
-import org.eclipse.kapua.service.authorization.domain.Domain;
-import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionFactoryImpl;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
+import org.eclipse.kapua.service.user.UserDomain;
 import org.eclipse.kapua.service.user.UserService;
-import org.eclipse.kapua.service.user.internal.UserDomain;
 import org.eclipse.kapua.service.user.internal.UserFactoryImpl;
 import org.eclipse.kapua.service.user.internal.UsersJAXBContextProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cucumber.api.Scenario;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.And;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
-import cucumber.runtime.java.guice.ScenarioScoped;
+import javax.inject.Inject;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -226,7 +224,7 @@ public class UserServiceSteps extends BaseQATests {
     }
 
     @When("^I select account \"(.*)\"$")
-    public void selectAccount(String accountName) throws KapuaException{
+    public void selectAccount(String accountName) throws KapuaException {
         Account tmpAccount;
         tmpAccount = accountService.findByName(accountName);
         if (tmpAccount != null) {
@@ -237,7 +235,7 @@ public class UserServiceSteps extends BaseQATests {
     }
 
     @When("^I try to delete account \"(.*)\"$")
-    public void deleteAccount(String accountName) throws KapuaException{
+    public void deleteAccount(String accountName) throws KapuaException {
         Account accountToDelete;
         accountToDelete = accountService.findByName(accountName);
         if (accountToDelete != null) {
@@ -381,10 +379,8 @@ public class UserServiceSteps extends BaseQATests {
      * kapua.
      * Operation is performed in privileged mode, without access and authorization checks.
      *
-     * @param userList
-     *            list of users in step
-     * @param account
-     *            account in which users are created
+     * @param userList list of users in step
+     * @param account  account in which users are created
      * @return Set of created users as ComparableUser Set
      * @throws Exception
      */
@@ -421,8 +417,7 @@ public class UserServiceSteps extends BaseQATests {
      * This is not accountId, but account under which it is created. AccountId itself
      * is created automatically.
      *
-     * @param testAccount
-     *            basic data about account
+     * @param testAccount basic data about account
      * @return Kapua Account object
      */
     private Account createAccount(TestAccount testAccount) throws Exception {
@@ -447,8 +442,7 @@ public class UserServiceSteps extends BaseQATests {
      * Create credentials for specific user, set users password.
      * It finds user by name and sets its password.
      *
-     * @param testCredentials
-     *            username and open password
+     * @param testCredentials username and open password
      * @return created credential
      */
     private Credential createCredentials(TestCredentials testCredentials) throws Exception {
@@ -476,13 +470,10 @@ public class UserServiceSteps extends BaseQATests {
     /**
      * Creates permissions for user with specified account. Permissions are created in priveledged mode.
      *
-     * @param permissionList
-     *            list of permissions for user, if targetScopeId is not set user scope that is
-     *            specifed as account
-     * @param user
-     *            user for whom permissions are set
-     * @param account
-     *            account in which user is defined
+     * @param permissionList list of permissions for user, if targetScopeId is not set user scope that is
+     *                       specifed as account
+     * @param user           user for whom permissions are set
+     * @param account        account in which user is defined
      * @throws Exception
      */
     private void createPermissions(List<TestPermission> permissionList, ComparableUser user, Account account)
@@ -505,10 +496,8 @@ public class UserServiceSteps extends BaseQATests {
     /**
      * Create account creator.
      *
-     * @param name
-     *            account name
-     * @param scopeId
-     *            acount scope id
+     * @param name    account name
+     * @param scopeId acount scope id
      * @return
      */
     private AccountCreator accountCreatorCreator(String name, BigInteger scopeId) {
@@ -524,13 +513,10 @@ public class UserServiceSteps extends BaseQATests {
     /**
      * Create credential creator for user with password.
      *
-     * @param scopeId
-     *            scopeId in which user is
-     * @param userId
-     *            userId for which credetntials are set
-     * @param password
-     *            open password as credetntials
-     * @param status status of credentials enabled or disabled
+     * @param scopeId        scopeId in which user is
+     * @param userId         userId for which credetntials are set
+     * @param password       open password as credetntials
+     * @param status         status of credentials enabled or disabled
      * @param expirationDate credential expiration date
      * @return credential creator used for creating credentials
      */
@@ -563,12 +549,9 @@ public class UserServiceSteps extends BaseQATests {
      * Create accessInfoCreator instance with data about user permissions.
      * If target scope is not defined in permission list use account scope.
      *
-     * @param permissionList
-     *            list of all permissions
-     * @param user
-     *            user for which permissions are set
-     * @param account
-     *            that user belongs to
+     * @param permissionList list of all permissions
+     * @param user           user for which permissions are set
+     * @param account        that user belongs to
      * @return AccessInfoCreator instance for creating user permissions
      */
     private AccessInfoCreator accessInfoCreatorCreator(List<TestPermission> permissionList,

@@ -11,6 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.permission;
 
+import io.swagger.annotations.ApiModelProperty;
+import org.eclipse.kapua.model.domain.Actions;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.service.authorization.access.AccessInfo;
+import org.eclipse.kapua.service.authorization.domain.Domain;
+import org.eclipse.kapua.service.authorization.group.Group;
+
 import javax.security.auth.Subject;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -19,18 +27,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import io.swagger.annotations.ApiModelProperty;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.id.KapuaIdAdapter;
-import org.eclipse.kapua.service.authorization.access.AccessInfo;
-import org.eclipse.kapua.service.authorization.domain.Domain;
-import org.eclipse.kapua.service.authorization.group.Group;
-
 /**
  * {@link Permission} definition.<br>
  * A permission can be associated to a {@link Subject} (using {@link AccessInfo} entity) or a {@link Domain}.<br>
  * {@link Permission}s enable the assignee to do {@link Actions} under specified {@link Domain} and in specified scopes.
- * 
+ *
  * @since 1.0.0
  */
 @XmlRootElement(name = "permission")
@@ -51,16 +52,15 @@ public interface Permission {
 
     /**
      * Sets the domain on which the {@link Permission} gives access.
-     * 
-     * @param domain
-     *            The domain of the {@link Permission}.
+     *
+     * @param domain The domain of the {@link Permission}.
      * @since 1.0.0
      */
     public void setDomain(String domain);
 
     /**
      * Gets the domain on which the {@link Permission} gives access.
-     * 
+     *
      * @return The domain on which the {@link Permission} gives access.
      * @since 1.0.0
      */
@@ -68,17 +68,16 @@ public interface Permission {
     public String getDomain();
 
     /**
-     * Sets the {@link Actions} that this {@link Permission} allows to do on the domain.
-     * 
-     * @param action
-     *            The {@link Action} that this {@link Permission} allows
+     * Sets the {@link org.eclipse.kapua.model.domain.Actions} that this {@link Permission} allows to do on the domain.
+     *
+     * @param action The {@link javax.swing.Action} that this {@link Permission} allows
      * @since 1.0.0
      */
     public void setAction(Actions action);
 
     /**
      * Gets the {@link Actions} that this {@link Permission} allows to do on the domain.
-     * 
+     *
      * @return The {@link Actions} that this {@link Permission} allows.
      * @since 1.0.0
      */
@@ -87,16 +86,15 @@ public interface Permission {
 
     /**
      * Sets the target scope id that this {@link Permission} gives access.
-     * 
-     * @param targetScopeId
-     *            The target scope id that this {@link Permission} gives access.
+     *
+     * @param targetScopeId The target scope id that this {@link Permission} gives access.
      * @since 1.0.0
      */
     public void setTargetScopeId(KapuaId targetScopeId);
 
     /**
      * Gets the target scope id that this {@link Permission} gives access.
-     * 
+     *
      * @return The target scope id that this {@link Permission} gives access.
      * @since 1.0.0
      */
@@ -107,16 +105,15 @@ public interface Permission {
 
     /**
      * Sets the {@link Group} id that this {@link Permission} gives access.
-     * 
-     * @param groupId
-     *            The {@link Group} id that this {@link Permission} gives access.
+     *
+     * @param groupId The {@link Group} id that this {@link Permission} gives access.
      * @since 1.0.0
      */
     public void setGroupId(KapuaId groupId);
 
     /**
      * Gets the {@link Group} id that this {@link Permission} gives access.
-     * 
+     *
      * @return The {@link Group} id that this {@link Permission} gives access.
      * @since 1.0.0
      */
@@ -127,10 +124,8 @@ public interface Permission {
 
     /**
      * Sets whether or not this {@link Permission} is valid also for children scopeId.
-     * 
-     * @param forwardable
-     *            {@code true} if this {@link Permission} is forward-able to children scopeIds.
-     * 
+     *
+     * @param forwardable {@code true} if this {@link Permission} is forward-able to children scopeIds.
      * @since 1.0.0
      */
     public void setForwardable(boolean forwardable);
@@ -139,9 +134,8 @@ public interface Permission {
      * Gets whether or not this {@link Permission} is valid also for children scopeIds.
      * If a {@link Permission} is forward-able to children, the {@link Permission} will be valid
      * for all scopeIds of the {@link #getTargetScopeId()} scopeId.
-     * 
+     *
      * @return {@code true} if this {@link Permission} is forward-able to children scopeIds.
-     * 
      * @since 1.0.0
      */
     @XmlElement(name = "forwardable")

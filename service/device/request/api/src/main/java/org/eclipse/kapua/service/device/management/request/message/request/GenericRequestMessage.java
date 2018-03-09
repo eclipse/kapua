@@ -11,8 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.request.message.request;
 
+import org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessage;
 import org.eclipse.kapua.service.device.management.request.GenericRequestXmlRegistry;
-import org.eclipse.kapua.service.device.management.request.KapuaRequestMessage;
 
 import javax.xml.bind.annotation.XmlType;
 

@@ -16,28 +16,29 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
+import org.eclipse.kapua.service.scheduler.SchedulerService;
 
 /**
- * TriggerService exposes APIs to manage Trigger objects.<br>
+ * {@link TriggerService} exposes APIs to manage Trigger objects.<br>
  * It includes APIs to create, update, find, list and delete Triggers.<br>
  * Instances of the TriggerService can be acquired through the ServiceLocator object.
- * 
+ *
  * @since 1.0
- * 
  */
 public interface TriggerService extends KapuaEntityService<Trigger, TriggerCreator>,
         KapuaUpdatableEntityService<Trigger>,
-        KapuaConfigurableService {
+        KapuaConfigurableService,
+        SchedulerService {
 
     /**
      * Returns the {@link TriggerListResult} with elements matching the provided query.
-     * 
-     * @param query
-     *            The {@link TriggerQuery} used to filter results.
+     *
+     * @param query The {@link TriggerQuery} used to filter results.
      * @return The {@link TriggerListResult} with elements matching the query parameter.
      * @throws KapuaException
      * @since 1.0.0
      */
+    @Override
     public TriggerListResult query(KapuaQuery<Trigger> query)
             throws KapuaException;
 

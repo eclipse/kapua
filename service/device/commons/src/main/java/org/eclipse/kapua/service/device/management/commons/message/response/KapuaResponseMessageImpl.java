@@ -13,10 +13,10 @@
 package org.eclipse.kapua.service.device.management.commons.message.response;
 
 import org.eclipse.kapua.message.internal.KapuaMessageImpl;
-import org.eclipse.kapua.service.device.management.response.KapuaResponseChannel;
-import org.eclipse.kapua.service.device.management.response.KapuaResponseCode;
-import org.eclipse.kapua.service.device.management.response.KapuaResponseMessage;
-import org.eclipse.kapua.service.device.management.response.KapuaResponsePayload;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponseChannel;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponseCode;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 
 public class KapuaResponseMessageImpl extends KapuaMessageImpl<KapuaResponseChannel, KapuaResponsePayload> implements KapuaResponseMessage<KapuaResponseChannel, KapuaResponsePayload> {
 

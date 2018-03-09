@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.snapshot.internal.exception;
 
-import org.eclipse.kapua.service.device.management.response.KapuaResponseCode;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponseCode;
 
 public class SnapshotGetManagementException extends SnapshotManagementResponseException {
 

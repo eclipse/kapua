@@ -11,7 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.event.internal;
 
-import java.util.Date;
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.message.KapuaPosition;
+import org.eclipse.kapua.message.internal.KapuaPositionImpl;
+import org.eclipse.kapua.model.KapuaEntity;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.device.management.message.KapuaMethod;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponseCode;
+import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -25,23 +34,12 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.message.KapuaPosition;
-import org.eclipse.kapua.message.internal.KapuaPositionImpl;
-import org.eclipse.kapua.model.KapuaEntity;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.device.management.KapuaMethod;
-import org.eclipse.kapua.service.device.management.response.KapuaResponseCode;
-import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
+import java.util.Date;
 
 /**
  * {@link DeviceEvent} implementation.
- * 
- * @since 1.0.0
  *
+ * @since 1.0.0
  */
 @Entity(name = "DeviceEvent")
 @Table(name = "dvc_device_event")
@@ -102,7 +100,7 @@ public class DeviceEventImpl extends AbstractKapuaEntity implements DeviceEvent 
 
     /**
      * Constructor
-     * 
+     *
      * @param scopeId
      */
     public DeviceEventImpl(KapuaId scopeId) {
@@ -111,7 +109,7 @@ public class DeviceEventImpl extends AbstractKapuaEntity implements DeviceEvent 
 
     /**
      * Constructor
-     * 
+     *
      * @param deviceEvent
      */
     public DeviceEventImpl(DeviceEvent deviceEvent) throws KapuaException {

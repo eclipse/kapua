@@ -13,13 +13,12 @@
 package org.eclipse.kapua.service.device.management.asset.message.internal;
 
 import org.eclipse.kapua.message.internal.KapuaMessageImpl;
-import org.eclipse.kapua.service.device.management.request.KapuaRequestMessage;
+import org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessage;
 
 /**
  * Device bundle information request message.
- * 
+ *
  * @since 1.0
- * 
  */
 public class AssetRequestMessage extends KapuaMessageImpl<AssetRequestChannel, AssetRequestPayload>
         implements KapuaRequestMessage<AssetRequestChannel, AssetRequestPayload> {

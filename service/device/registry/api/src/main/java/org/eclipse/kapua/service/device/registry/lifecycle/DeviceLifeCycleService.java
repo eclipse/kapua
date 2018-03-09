@@ -17,20 +17,27 @@ import org.eclipse.kapua.message.device.lifecycle.KapuaBirthMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaMissingMessage;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.KapuaDomainService;
 import org.eclipse.kapua.service.KapuaService;
 
 /**
  * Device life cycle service definition.<br>
  * This service handles the life cycle messages coming from the device.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-public interface DeviceLifeCycleService extends KapuaService {
+public interface DeviceLifeCycleService extends KapuaService, KapuaDomainService<DeviceLifecycleDomain> {
+
+    public static final DeviceLifecycleDomain DEVICE_LIFECYCLE_DOMAIN = new DeviceLifecycleDomain();
+
+    @Override
+    public default DeviceLifecycleDomain getServiceDomain() {
+        return DEVICE_LIFECYCLE_DOMAIN;
+    }
 
     /**
      * Processes a birth certificate for a device, creating or updating the device footprint with the information supplied.
-     * 
+     *
      * @param connectionId
      * @param message
      * @throws KapuaException
@@ -40,7 +47,7 @@ public interface DeviceLifeCycleService extends KapuaService {
 
     /**
      * Processes a death certificate for a device, updating the device footprint with the information supplied.
-     * 
+     *
      * @param connectionId
      * @param message
      * @throws KapuaException
@@ -50,7 +57,7 @@ public interface DeviceLifeCycleService extends KapuaService {
 
     /**
      * Processes a last-will testament for a device, updating the device footprint with the information supplied.
-     * 
+     *
      * @param connectionId
      * @param message
      * @throws KapuaException
@@ -60,7 +67,7 @@ public interface DeviceLifeCycleService extends KapuaService {
 
     /**
      * Processes a birth certificate for a device, creating or updating the device footprint with the information supplied.
-     * 
+     *
      * @param connectionId
      * @param message
      * @throws KapuaException

@@ -11,10 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user.steps;
 
-import java.math.BigInteger;
-
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.service.authorization.permission.Actions;
+import org.eclipse.kapua.model.domain.Actions;
+
+import java.math.BigInteger;
 
 /**
  * Data object used in Gherkin to transfer Permission data.

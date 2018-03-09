@@ -12,8 +12,8 @@
 package org.eclipse.kapua.service.authorization.domain;
 
 import org.eclipse.kapua.model.KapuaEntity;
+import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -38,7 +38,7 @@ import java.util.Set;
         "serviceName",
         "actions",
         "groupable" })
-public interface Domain extends KapuaEntity {
+public interface Domain extends KapuaEntity, org.eclipse.kapua.model.domain.Domain {
 
     public static final String TYPE = "domain";
 
@@ -62,6 +62,7 @@ public interface Domain extends KapuaEntity {
      * @return The {@link Domain} name.
      * @since 1.0.0
      */
+    @Override
     @XmlElement(name = "name")
     public String getName();
 
@@ -86,6 +87,7 @@ public interface Domain extends KapuaEntity {
      * @return The {@link KapuaService} that use this {@link Domain}.<br>
      * @since 1.0.0
      */
+    @Override
     @XmlElement(name = "serviceName")
     public String getServiceName();
 
@@ -105,6 +107,7 @@ public interface Domain extends KapuaEntity {
      * @return The set of {@link Actions}.
      * @since 1.0.0
      */
+    @Override
     @XmlElementWrapper(name = "actions")
     @XmlElement(name = "action")
     public Set<Actions> getActions();
@@ -125,6 +128,7 @@ public interface Domain extends KapuaEntity {
      * @return {@code true} if the {@link Permission#getGroupId()} can be set, {@code false} otherwise.
      * @since 0.3.1
      */
+    @Override
     @XmlElement(name = "groupable")
     public boolean getGroupable();
 

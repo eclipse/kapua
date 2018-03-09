@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.device.management.packages;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.device.management.DeviceManagementService;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadOperation;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
@@ -24,15 +25,14 @@ import org.eclipse.kapua.service.device.management.packages.model.uninstall.Devi
 
 /**
  * Device package service definition.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-public interface DevicePackageManagementService extends KapuaService {
+public interface DevicePackageManagementService extends KapuaService, DeviceManagementService {
 
     /**
      * Get the installed packages list
-     * 
+     *
      * @param scopeId
      * @param deviceId
      * @param timeout
@@ -44,7 +44,7 @@ public interface DevicePackageManagementService extends KapuaService {
 
     /**
      * Starts a download package operation
-     * 
+     *
      * @param scopeId
      * @param deviceId
      * @param packageDownloadRequest
@@ -56,7 +56,7 @@ public interface DevicePackageManagementService extends KapuaService {
 
     /**
      * Interrupt a download package operation
-     * 
+     *
      * @param scopeId
      * @param deviceId
      * @param timeout
@@ -67,7 +67,7 @@ public interface DevicePackageManagementService extends KapuaService {
 
     /**
      * Gets the download package status
-     * 
+     *
      * @param scopeId
      * @param deviceId
      * @param timeout
@@ -79,7 +79,7 @@ public interface DevicePackageManagementService extends KapuaService {
 
     /**
      * Installs a package
-     * 
+     *
      * @param scopeId
      * @param deviceId
      * @param packageInstallRequest
@@ -91,7 +91,7 @@ public interface DevicePackageManagementService extends KapuaService {
 
     /**
      * Gets the package installation status
-     * 
+     *
      * @param scopeId
      * @param deviceId
      * @param timeout
@@ -103,7 +103,7 @@ public interface DevicePackageManagementService extends KapuaService {
 
     /**
      * Uninstalls a package
-     * 
+     *
      * @param scopeId
      * @param deviceId
      * @param packageUninstallRequest
@@ -115,7 +115,7 @@ public interface DevicePackageManagementService extends KapuaService {
 
     /**
      * Gets the package uninstallation status
-     * 
+     *
      * @param scopeId
      * @param deviceId
      * @param timeout

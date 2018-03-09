@@ -26,11 +26,10 @@ import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
-import org.eclipse.kapua.service.authorization.domain.Domain;
-import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
@@ -54,11 +53,11 @@ import static org.eclipse.kapua.commons.util.ArgumentValidator.notEmptyOrNull;
 public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<User, UserCreator, UserService, UserListResult, UserQuery, UserFactory> implements UserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
-    private static final Domain USER_DOMAIN = new UserDomain();
+
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
     private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
-    private static final SystemSetting SYSTEM_SETTING = SystemSetting.getInstance();
 
     /**
      * Constructor
@@ -77,13 +76,14 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         ArgumentValidator.match(userCreator.getEmail(), ArgumentValidator.EMAIL_REGEXP, "userCreator.email");
         ArgumentValidator.notNull(userCreator.getUserType(), "userCreator.userType");
         ArgumentValidator.notNull(userCreator.getUserStatus(), "userCreator.userStatus");
+
         if (userCreator.getUserType() != UserType.INTERNAL) {
             ArgumentValidator.notEmptyOrNull(userCreator.getExternalId(), "userCreator.externalId");
         } else {
             ArgumentValidator.isEmptyOrNull(userCreator.getExternalId(), "userCreator.externalId");
         }
 
-        final int remainingChildEntities = allowedChildEntities(userCreator.getScopeId());
+        int remainingChildEntities = allowedChildEntities(userCreator.getScopeId());
         if (remainingChildEntities <= 0) {
             LOGGER.info("Exceeded child limit - remaining: {}", remainingChildEntities);
             throw new KapuaIllegalArgumentException("scopeId", "max users reached");
@@ -96,7 +96,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         //
         // Check duplicate name
         UserQuery query = new UserQueryImpl(userCreator.getScopeId());
-        query.setPredicate(new AttributePredicate<String>(UserPredicates.NAME, userCreator.getName()));
+        query.setPredicate(new AttributePredicate<>(UserPredicates.NAME, userCreator.getName()));
         if (count(query) > 0) {
             throw new KapuaDuplicateNameException(userCreator.getName());
         }
@@ -211,7 +211,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     }
 
     @Override
-    public User findByName(final String name) throws KapuaException {
+    public User findByName(String name) throws KapuaException {
         //
         // Validation of the fields
         ArgumentValidator.notEmptyOrNull(name, "name");
@@ -222,7 +222,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     }
 
     @Override
-    public User findByExternalId(final String externalId) throws KapuaException {
+    public User findByExternalId(String externalId) throws KapuaException {
         //
         // Validation of the fields
         notEmptyOrNull(externalId, "externalId");
@@ -272,7 +272,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     //
     // -----------------------------------------------------------------------------------------
 
-    private User checkReadAccess(final User user) throws KapuaException {
+    private User checkReadAccess(User user) throws KapuaException {
         if (user != null) {
             AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(USER_DOMAIN, Actions.read, user.getScopeId()));
         }

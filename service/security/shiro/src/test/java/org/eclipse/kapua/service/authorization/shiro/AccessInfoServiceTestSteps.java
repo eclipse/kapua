@@ -11,16 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.shiro;
 
-import java.math.BigInteger;
-import java.util.HashSet;
-import java.util.List;
-
-import javax.inject.Inject;
-
+import cucumber.api.Scenario;
+import cucumber.api.java.Before;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
@@ -51,7 +52,6 @@ import org.eclipse.kapua.service.authorization.access.shiro.AccessRoleFactoryImp
 import org.eclipse.kapua.service.authorization.access.shiro.AccessRoleImpl;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessRoleServiceImpl;
 import org.eclipse.kapua.service.authorization.domain.Domain;
-import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionImpl;
@@ -62,16 +62,13 @@ import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.internal.UserImpl;
 
-import cucumber.api.Scenario;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
-import cucumber.runtime.java.guice.ScenarioScoped;
+import javax.inject.Inject;
+import java.math.BigInteger;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * Implementation of Gherkin steps used in AccessInfoService.feature scenarios.
- *
  */
 @ScenarioScoped
 public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest {

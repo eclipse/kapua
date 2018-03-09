@@ -11,7 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.event;
 
-import java.util.Date;
+import io.swagger.annotations.ApiModelProperty;
+import org.eclipse.kapua.message.KapuaPosition;
+import org.eclipse.kapua.model.KapuaEntity;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.model.xml.DateXmlAdapter;
+import org.eclipse.kapua.service.device.management.message.KapuaMethod;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponseCode;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -19,19 +26,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import io.swagger.annotations.ApiModelProperty;
-import org.eclipse.kapua.message.KapuaPosition;
-import org.eclipse.kapua.model.KapuaEntity;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.id.KapuaIdAdapter;
-import org.eclipse.kapua.model.xml.DateXmlAdapter;
-import org.eclipse.kapua.service.device.management.KapuaMethod;
-import org.eclipse.kapua.service.device.management.response.KapuaResponseCode;
+import java.util.Date;
 
 /**
  * {@link DeviceEvent} entity definition.
- * 
+ *
  * @since 1.0.0
  */
 @XmlRootElement(name = "deviceEvent")
@@ -52,13 +51,14 @@ public interface DeviceEvent extends KapuaEntity {
 
     public static final String TYPE = "deviceEvent";
 
+    @Override
     public default String getType() {
         return TYPE;
     }
 
     /**
      * Get the device identifier
-     * 
+     *
      * @return The device identifier.
      * @since 1.0.0
      */
@@ -69,7 +69,7 @@ public interface DeviceEvent extends KapuaEntity {
 
     /**
      * Set the device identifier
-     * 
+     *
      * @param deviceId
      * @since 1.0.0
      */
@@ -77,7 +77,7 @@ public interface DeviceEvent extends KapuaEntity {
 
     /**
      * Get the sent on date
-     * 
+     *
      * @return
      * @since 1.0.0
      */
@@ -87,7 +87,7 @@ public interface DeviceEvent extends KapuaEntity {
 
     /**
      * Set the sent on date
-     * 
+     *
      * @param sentOn
      * @since 1.0.0
      */
@@ -95,7 +95,7 @@ public interface DeviceEvent extends KapuaEntity {
 
     /**
      * Get the received on date
-     * 
+     *
      * @return
      * @since 1.0.0
      */
@@ -105,7 +105,7 @@ public interface DeviceEvent extends KapuaEntity {
 
     /**
      * Set the received on date
-     * 
+     *
      * @param receivedOn
      * @since 1.0.0
      */
@@ -113,7 +113,7 @@ public interface DeviceEvent extends KapuaEntity {
 
     /**
      * Get the device position
-     * 
+     *
      * @return
      * @since 1.0.0
      */
@@ -122,7 +122,7 @@ public interface DeviceEvent extends KapuaEntity {
 
     /**
      * Set the device position
-     * 
+     *
      * @param position
      * @since 1.0.0
      */
@@ -130,7 +130,7 @@ public interface DeviceEvent extends KapuaEntity {
 
     /**
      * Get resource
-     * 
+     *
      * @return
      * @since 1.0.0
      */
@@ -139,14 +139,14 @@ public interface DeviceEvent extends KapuaEntity {
 
     /**
      * Set resource
-     * 
+     *
      * @param resource
      */
     public void setResource(String resource);
 
     /**
      * Get action
-     * 
+     *
      * @return
      * @since 1.0.0
      */
@@ -155,7 +155,7 @@ public interface DeviceEvent extends KapuaEntity {
 
     /**
      * Set action
-     * 
+     *
      * @param action
      * @since 1.0.0
      */
@@ -163,7 +163,7 @@ public interface DeviceEvent extends KapuaEntity {
 
     /**
      * Get response code
-     * 
+     *
      * @return
      * @since 1.0.0
      */
@@ -172,7 +172,7 @@ public interface DeviceEvent extends KapuaEntity {
 
     /**
      * Set the response code
-     * 
+     *
      * @param responseCode
      * @since 1.0.0
      */
@@ -180,7 +180,7 @@ public interface DeviceEvent extends KapuaEntity {
 
     /**
      * Get event message
-     * 
+     *
      * @return
      * @since 1.0.0
      */
@@ -189,7 +189,7 @@ public interface DeviceEvent extends KapuaEntity {
 
     /**
      * Set the event message
-     * 
+     *
      * @param eventMessage
      * @since 1.0.0
      */

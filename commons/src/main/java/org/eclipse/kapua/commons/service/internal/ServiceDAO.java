@@ -11,28 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.service.internal;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.Embedded;
-import javax.persistence.EntityExistsException;
-import javax.persistence.PersistenceException;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Order;
-import javax.persistence.criteria.ParameterExpression;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.Attribute;
-import javax.persistence.metamodel.EntityType;
-
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.kapua.KapuaEntityExistsException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
@@ -53,6 +31,8 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaEntityPredicates;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
+import org.eclipse.kapua.model.domain.Actions;
+import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -72,10 +52,8 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
 import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
 import org.eclipse.kapua.service.authorization.access.AccessRoleService;
-import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.group.Groupable;
-import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
@@ -85,9 +63,30 @@ import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.Embedded;
+import javax.persistence.EntityExistsException;
+import javax.persistence.PersistenceException;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Order;
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.Attribute;
+import javax.persistence.metamodel.EntityType;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * {@link ServiceDAO} utility methods.
- * 
+ *
  * @since 1.0.0
  */
 public class ServiceDAO {
@@ -150,13 +149,10 @@ public class ServiceDAO {
     /**
      * Create {@link KapuaEntity} utility method.<br>
      * This method checks for the constraint violation and, in this case, it throws a specific exception ({@link KapuaEntityExistsException}).
-     * 
-     * @param em
-     *            The {@link EntityManager} that holds the transaction.
-     * @param entity
-     *            The {@link KapuaEntity} to be created.
+     *
+     * @param em     The {@link EntityManager} that holds the transaction.
+     * @param entity The {@link KapuaEntity} to be created.
      * @return The persisted {@link KapuaEntity}.
-     * 
      * @since 1.0.0
      */
     public static <E extends KapuaEntity> E create(EntityManager em, E entity) {
@@ -200,17 +196,12 @@ public class ServiceDAO {
 
     /**
      * Update {@link KapuaUpdatableEntity} utility method.
-     * 
-     * @param em
-     *            The {@link EntityManager} that holds the transaction.
-     * @param clazz
-     *            The {@link KapuaUpdatableEntity} class. This must be the implementing {@code class}.
-     * @param entity
-     *            The {@link KapuaUpdatableEntity} to be updated
+     *
+     * @param em     The {@link EntityManager} that holds the transaction.
+     * @param clazz  The {@link KapuaUpdatableEntity} class. This must be the implementing {@code class}.
+     * @param entity The {@link KapuaUpdatableEntity} to be updated
      * @return The updated {@link KapuaUpdatableEntity}.
-     * @throws KapuaEntityNotFoundException
-     *             If the {@link KapuaEntity} does not exists.
-     * 
+     * @throws KapuaEntityNotFoundException If the {@link KapuaEntity} does not exists.
      * @since 1.0.0
      */
     public static <E extends KapuaUpdatableEntity> E update(EntityManager em, Class<E> clazz, E entity) throws KapuaEntityNotFoundException {
@@ -238,16 +229,11 @@ public class ServiceDAO {
 
     /**
      * Delete {@link KapuaEntity} utility method
-     * 
-     * @param em
-     *            The {@link EntityManager} that holds the transaction.
-     * @param clazz
-     *            The {@link KapuaEntity} class. This must be the implementing {@code class}.
-     * @param entityId
-     *            The {@link KapuaEntity} {@link KapuaId} of the entity to be deleted.
-     * 
-     * @throws KapuaEntityNotFoundException
-     *             If the {@link KapuaEntity} does not exists.
+     *
+     * @param em       The {@link EntityManager} that holds the transaction.
+     * @param clazz    The {@link KapuaEntity} class. This must be the implementing {@code class}.
+     * @param entityId The {@link KapuaEntity} {@link KapuaId} of the entity to be deleted.
+     * @throws KapuaEntityNotFoundException If the {@link KapuaEntity} does not exists.
      * @since 1.0.0
      */
     public static <E extends KapuaEntity> void delete(EntityManager em, Class<E> clazz, KapuaId entityId)
@@ -268,15 +254,11 @@ public class ServiceDAO {
 
     /**
      * Find by fields {@link KapuaEntity} utility method
-     * 
-     * @param em
-     *            The {@link EntityManager} that holds the transaction.
-     * @param clazz
-     *            The {@link KapuaEntity} class. This must be the implementing {@code class}.
-     * @param name
-     *            The {@link KapuaEntity} name of the field from which to search.
-     * @param value
-     *            The value of the field from which to search.
+     *
+     * @param em    The {@link EntityManager} that holds the transaction.
+     * @param clazz The {@link KapuaEntity} class. This must be the implementing {@code class}.
+     * @param name  The {@link KapuaEntity} name of the field from which to search.
+     * @param value The value of the field from which to search.
      * @return The {@link KapuaEntity} found, or {@code null} if not found.
      * @since 1.0.0
      */
@@ -312,20 +294,14 @@ public class ServiceDAO {
 
     /**
      * Query {@link KapuaEntity} utility method.
-     * 
-     * @param em
-     *            The {@link EntityManager} that holds the transaction.
-     * @param interfaceClass
-     *            {@link KapuaQuery} result entity interface class
-     * @param implementingClass
-     *            {@link KapuaQuery} result entity implementation class
-     * @param resultContainer
-     *            The {@link KapuaListResult} in which load the result. It must be empty.
-     * @param kapuaQuery
-     *            The {@link KapuaQuery} to perform.
+     *
+     * @param em                The {@link EntityManager} that holds the transaction.
+     * @param interfaceClass    {@link KapuaQuery} result entity interface class
+     * @param implementingClass {@link KapuaQuery} result entity implementation class
+     * @param resultContainer   The {@link KapuaListResult} in which load the result. It must be empty.
+     * @param kapuaQuery        The {@link KapuaQuery} to perform.
      * @return The reference of the {@code resultContainer} parameter. Results are added to the given {@code resultContainer} parameter.
-     * @throws KapuaException
-     *             If filter predicates in the {@link KapuaQuery} are incorrect. See {@link #handleKapuaQueryPredicates(KapuaPredicate, Map, CriteriaBuilder, Root, EntityType)}.
+     * @throws KapuaException If filter predicates in the {@link KapuaQuery} are incorrect. See {@link #handleKapuaQueryPredicates(KapuaPredicate, Map, CriteriaBuilder, Root, EntityType)}.
      * @since 1.0.0
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -438,18 +414,13 @@ public class ServiceDAO {
 
     /**
      * Count {@link KapuaEntity} utility method.
-     * 
-     * @param em
-     *            The {@link EntityManager} that holds the transaction.
-     * @param interfaceClass
-     *            {@link KapuaQuery} result entity interface class
-     * @param implementingClass
-     *            {@link KapuaQuery} result entity implementation class
-     * @param kapuaQuery
-     *            The {@link KapuaQuery} to perform.
+     *
+     * @param em                The {@link EntityManager} that holds the transaction.
+     * @param interfaceClass    {@link KapuaQuery} result entity interface class
+     * @param implementingClass {@link KapuaQuery} result entity implementation class
+     * @param kapuaQuery        The {@link KapuaQuery} to perform.
      * @return The number of {@link KapuaEntity}es that matched the filter predicates.
-     * @throws KapuaException
-     *             If filter predicates in the {@link KapuaQuery} are incorrect. See {@link #handleKapuaQueryPredicates(KapuaPredicate, Map, CriteriaBuilder, Root, EntityType)}.
+     * @throws KapuaException If filter predicates in the {@link KapuaQuery} are incorrect. See {@link #handleKapuaQueryPredicates(KapuaPredicate, Map, CriteriaBuilder, Root, EntityType)}.
      * @since 1.0.0
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -511,7 +482,7 @@ public class ServiceDAO {
 
     /**
      * Criteria for query entity utility method
-     * 
+     *
      * @param qp
      * @param binds
      * @param cb
@@ -690,15 +661,12 @@ public class ServiceDAO {
     /**
      * Utility method that selects the correct {@link Root} attribute.<br>
      * This method handles {@link Embedded} attributes and nested {@link KapuaEntity}es up to one level of nesting<br>
-     * 
+     * <p>
      * Filter predicates takes advantage of the dot notation to access {@link Embedded} attributes and nested {@link KapuaEntity}es.
-     * 
-     * @param entityRoot
-     *            The {@link Root} entity from which extract the attribute.
-     * @param attributeName
-     *            The full attribute name. It can contain at maximum one '.' separator.
+     *
+     * @param entityRoot    The {@link Root} entity from which extract the attribute.
+     * @param attributeName The full attribute name. It can contain at maximum one '.' separator.
      * @return The {@link Path} expression that matches the given {@code attributeName} parameter.
-     * 
      * @since 1.0.0
      */
     @SuppressWarnings("rawtypes")
@@ -715,13 +683,10 @@ public class ServiceDAO {
 
     /**
      * Handles the {@link Groupable} property of the {@link KapuaEntity}.
-     * 
-     * @param query
-     *            The {@link KapuaQuery} to manage.
-     * @param domain
-     *            The {@link Domain} inside which the {@link KapuaQuery} param targets.
-     * @param groupPredicateName
-     *            The name of the {@link Group} id field.
+     *
+     * @param query              The {@link KapuaQuery} to manage.
+     * @param domain             The {@link Domain} inside which the {@link KapuaQuery} param targets.
+     * @param groupPredicateName The name of the {@link Group} id field.
      * @since 1.0.0
      */
     @SuppressWarnings("rawtypes")

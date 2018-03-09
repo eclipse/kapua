@@ -28,14 +28,12 @@ import org.eclipse.kapua.job.engine.jbatch.exception.KapuaJobEngineException;
 import org.eclipse.kapua.job.engine.jbatch.utils.JobDefinitionBuildUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
-import org.eclipse.kapua.service.authorization.domain.Domain;
-import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.JobService;
-import org.eclipse.kapua.service.job.internal.JobDomain;
 import org.eclipse.kapua.service.job.step.JobStep;
 import org.eclipse.kapua.service.job.step.JobStepFactory;
 import org.eclipse.kapua.service.job.step.JobStepListResult;
@@ -66,10 +64,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
-//import javax.batch.runtime.BatchStatus;
-//import javax.batch.runtime.JobExecution;
-//import javax.batch.runtime.JobInstance;
-
 @KapuaProvider
 public class JobEngineServiceJbatch implements JobEngineService {
 
@@ -77,8 +71,6 @@ public class JobEngineServiceJbatch implements JobEngineService {
 
     private final static long ON_STOP_MAX_WAIT = 60;
     private final static long ON_STOP_WAIT_STEP = 1000;
-
-    private static final Domain JOB_DOMAIN = new JobDomain();
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 

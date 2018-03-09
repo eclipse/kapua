@@ -13,14 +13,13 @@
 package org.eclipse.kapua.service.device.management.asset.message.internal;
 
 import org.eclipse.kapua.message.internal.KapuaMessageImpl;
-import org.eclipse.kapua.service.device.management.response.KapuaResponseCode;
-import org.eclipse.kapua.service.device.management.response.KapuaResponseMessage;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponseCode;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
 
 /**
  * Device bundle information response message.
- * 
+ *
  * @since 1.0
- * 
  */
 public class AssetResponseMessage extends KapuaMessageImpl<AssetResponseChannel, AssetResponsePayload>
         implements KapuaResponseMessage<AssetResponseChannel, AssetResponsePayload> {

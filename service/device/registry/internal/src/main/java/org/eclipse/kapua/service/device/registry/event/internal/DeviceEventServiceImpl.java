@@ -17,11 +17,10 @@ import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
-import org.eclipse.kapua.service.authorization.domain.Domain;
-import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
@@ -33,9 +32,8 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFac
 
 /**
  * {@link DeviceEventService} implementation.
- * 
- * @since 1.0.0
  *
+ * @since 1.0.0
  */
 @KapuaProvider
 public class DeviceEventServiceImpl extends AbstractKapuaService implements DeviceEventService {
@@ -43,8 +41,6 @@ public class DeviceEventServiceImpl extends AbstractKapuaService implements Devi
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
     private final DeviceRegistryService deviceRegistryService;
-
-    private static final Domain DEVICE_EVENT_DOMAIN = new DeviceEventDomain();
 
     /**
      * Constructor

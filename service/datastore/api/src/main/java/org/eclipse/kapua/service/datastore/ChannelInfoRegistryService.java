@@ -23,19 +23,20 @@ import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 /**
  * Channel information registry service definition.<br>
  * The channel information binds information about the channels and the devices that published on these channels.
- * 
+ *
  * @since 1.0.0
  */
-public interface ChannelInfoRegistryService extends KapuaService, KapuaConfigurableService {
+public interface ChannelInfoRegistryService extends KapuaService,
+        DatastoreService,
+        KapuaConfigurableService {
 
     /**
      * Find channel information by identifier
-     * 
+     *
      * @param scopeId
      * @param id
      * @return
      * @throws KapuaException
-     * 
      * @since 1.0.0
      */
     public ChannelInfo find(KapuaId scopeId, StorableId id)
@@ -43,11 +44,10 @@ public interface ChannelInfoRegistryService extends KapuaService, KapuaConfigura
 
     /**
      * Query for channels informations objects matching the given query
-     * 
+     *
      * @param query
      * @return
      * @throws KapuaException
-     * 
      * @since 1.0.0
      */
     public ChannelInfoListResult query(ChannelInfoQuery query)
@@ -55,11 +55,10 @@ public interface ChannelInfoRegistryService extends KapuaService, KapuaConfigura
 
     /**
      * Get the channels informations count matching the given query
-     * 
+     *
      * @param query
      * @return
      * @throws KapuaException
-     * 
      * @since 1.0.0
      */
     public long count(ChannelInfoQuery query)

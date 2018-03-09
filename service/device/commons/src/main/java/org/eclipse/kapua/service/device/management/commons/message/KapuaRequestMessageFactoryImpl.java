@@ -13,15 +13,15 @@
 package org.eclipse.kapua.service.device.management.commons.message;
 
 import org.eclipse.kapua.locator.KapuaProvider;
-import org.eclipse.kapua.service.device.management.KapuaAppProperties;
-import org.eclipse.kapua.service.device.management.KapuaRequestMessageFactory;
 import org.eclipse.kapua.service.device.management.commons.KapuaAppPropertiesImpl;
 import org.eclipse.kapua.service.device.management.commons.message.request.KapuaRequestChannelImpl;
 import org.eclipse.kapua.service.device.management.commons.message.request.KapuaRequestMessageImpl;
 import org.eclipse.kapua.service.device.management.commons.message.request.KapuaRequestPayloadImpl;
-import org.eclipse.kapua.service.device.management.request.KapuaRequestChannel;
-import org.eclipse.kapua.service.device.management.request.KapuaRequestMessage;
-import org.eclipse.kapua.service.device.management.request.KapuaRequestPayload;
+import org.eclipse.kapua.service.device.management.message.KapuaAppProperties;
+import org.eclipse.kapua.service.device.management.message.KapuaRequestMessageFactory;
+import org.eclipse.kapua.service.device.management.message.request.KapuaRequestChannel;
+import org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessage;
+import org.eclipse.kapua.service.device.management.message.request.KapuaRequestPayload;
 
 @KapuaProvider
 public class KapuaRequestMessageFactoryImpl implements KapuaRequestMessageFactory {
@@ -32,7 +32,7 @@ public class KapuaRequestMessageFactoryImpl implements KapuaRequestMessageFactor
     }
 
     @Override
-    public KapuaRequestMessage<?,?> newRequestMessage() {
+    public KapuaRequestMessage<?, ?> newRequestMessage() {
         return new KapuaRequestMessageImpl<>();
     }
 

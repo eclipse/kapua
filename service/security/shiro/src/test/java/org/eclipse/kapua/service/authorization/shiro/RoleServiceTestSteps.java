@@ -11,22 +11,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.shiro;
 
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.inject.Inject;
-
+import cucumber.api.Scenario;
+import cucumber.api.java.Before;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.domain.Domain;
-import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionFactoryImpl;
@@ -48,12 +45,13 @@ import org.eclipse.kapua.service.authorization.role.shiro.RolePredicates;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleServiceImpl;
 import org.eclipse.kapua.test.steps.DatabaseInstance;
 
-import cucumber.api.Scenario;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
-import cucumber.runtime.java.guice.ScenarioScoped;
+import javax.inject.Inject;
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Implementation of Gherkin steps used in DomainService.feature scenarios.
@@ -296,7 +294,7 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
         KapuaId tmpId = new KapuaEid(BigInteger.valueOf(scope));
         assertNotNull(tmpId);
 
-        final RoleQuery tmpQuery = roleFactory.newQuery(tmpId);
+        RoleQuery tmpQuery = roleFactory.newQuery(tmpId);
         KapuaSecurityUtils.doPrivileged(() -> {
             commonData.count = roleService.count(tmpQuery);
             return null;
@@ -310,7 +308,7 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
         KapuaId tmpId = new KapuaEid(BigInteger.valueOf(scope));
         assertNotNull(tmpId);
 
-        final RolePermissionQuery tmpQuery = rolePermissionFactory.newQuery(tmpId);
+        RolePermissionQuery tmpQuery = rolePermissionFactory.newQuery(tmpId);
         KapuaSecurityUtils.doPrivileged(() -> {
             commonData.count = rolePermissionService.count(tmpQuery);
             return null;
@@ -326,8 +324,8 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
         assertNotNull(name);
         assertNotEquals(0, name.length());
 
-        final RoleQuery tmpQuery = roleFactory.newQuery(tmpId);
-        tmpQuery.setPredicate(new AttributePredicate<String>(RolePredicates.NAME, name));
+        RoleQuery tmpQuery = roleFactory.newQuery(tmpId);
+        tmpQuery.setPredicate(new AttributePredicate<>(RolePredicates.NAME, name));
         KapuaSecurityUtils.doPrivileged(() -> {
             roleData.roleList = roleService.query(tmpQuery);
             return null;

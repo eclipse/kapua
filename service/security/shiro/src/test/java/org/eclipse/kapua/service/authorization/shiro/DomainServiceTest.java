@@ -11,14 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.shiro;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.domain.DomainCreator;
 import org.eclipse.kapua.service.authorization.domain.DomainFactory;
@@ -26,9 +24,11 @@ import org.eclipse.kapua.service.authorization.domain.DomainListResult;
 import org.eclipse.kapua.service.authorization.domain.DomainQuery;
 import org.eclipse.kapua.service.authorization.domain.DomainService;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainPredicates;
-import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.test.KapuaTest;
 import org.junit.Test;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class DomainServiceTest extends KapuaTest {
 
@@ -158,7 +158,7 @@ public class DomainServiceTest extends KapuaTest {
             // Test name filtered query
             query = domainFactory.newQuery(null);
 
-            query.setPredicate(new AttributePredicate<String>(DomainPredicates.NAME, domain1.getName()));
+            query.setPredicate(new AttributePredicate<>(DomainPredicates.NAME, domain1.getName()));
             result = domainService.query(query);
             count = domainService.count(query);
 
@@ -171,7 +171,7 @@ public class DomainServiceTest extends KapuaTest {
             // Test name filtered query
             query = domainFactory.newQuery(null);
 
-            query.setPredicate(new AttributePredicate<String>(DomainPredicates.SERVICE_NAME, domain2.getServiceName()));
+            query.setPredicate(new AttributePredicate<>(DomainPredicates.SERVICE_NAME, domain2.getServiceName()));
             result = domainService.query(query);
             count = domainService.count(query);
 

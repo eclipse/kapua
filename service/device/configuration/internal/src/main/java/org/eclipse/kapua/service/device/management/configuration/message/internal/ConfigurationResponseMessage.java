@@ -13,8 +13,8 @@
 package org.eclipse.kapua.service.device.management.configuration.message.internal;
 
 import org.eclipse.kapua.message.internal.KapuaMessageImpl;
-import org.eclipse.kapua.service.device.management.response.KapuaResponseCode;
-import org.eclipse.kapua.service.device.management.response.KapuaResponseMessage;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponseCode;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
 
 /**
  * Device configuration response message.

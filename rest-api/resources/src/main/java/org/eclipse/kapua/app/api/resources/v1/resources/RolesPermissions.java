@@ -11,6 +11,29 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
+import com.google.common.base.Strings;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.Authorization;
+import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
+import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
+import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.domain.Actions;
+import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.authorization.role.Role;
+import org.eclipse.kapua.service.authorization.role.RolePermission;
+import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
+import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
+import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
+import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
+import org.eclipse.kapua.service.authorization.role.RolePermissionService;
+import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionPredicates;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -23,31 +46,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import io.swagger.annotations.Authorization;
-import org.eclipse.kapua.KapuaEntityNotFoundException;
-import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
-import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
-import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
-import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.authorization.permission.Actions;
-import org.eclipse.kapua.service.authorization.role.Role;
-import org.eclipse.kapua.service.authorization.role.RolePermission;
-import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
-import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
-import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
-import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
-import org.eclipse.kapua.service.authorization.role.RolePermissionService;
-import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionPredicates;
-
-import com.google.common.base.Strings;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-
 @Api(value = "Roles", authorizations = { @Authorization(value = "kapuaAccessToken") })
 @Path("{scopeId}/roles/{roleId}/permissions")
 public class RolesPermissions extends AbstractKapuaResource {
@@ -59,21 +57,14 @@ public class RolesPermissions extends AbstractKapuaResource {
     /**
      * Gets the {@link RolePermission} list in the scope.
      *
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param roleId
-     *            The id of the {@link Role} in which to search results.
-     * @param domain
-     *            The domain name to filter results.
-     * @param action
-     *            The action to filter results.
-     * @param offset
-     *            The result set offset.
-     * @param limit
-     *            The result set limit.
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param roleId  The id of the {@link Role} in which to search results.
+     * @param domain  The domain name to filter results.
+     * @param action  The action to filter results.
+     * @param offset  The result set offset.
+     * @param limit   The result set limit.
      * @return The {@link RolePermissionListResult} of all the rolePermissions associated to the current selected scope.
-     * @throws Exception
-     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @ApiOperation(nickname = "rolePermissionSimpleQuery", value = "Gets the RolePermission list in the scope", notes = "Returns the list of all the rolePermissions associated to the current selected scope.", response = RolePermissionListResult.class)
@@ -107,15 +98,11 @@ public class RolesPermissions extends AbstractKapuaResource {
     /**
      * Queries the results with the given {@link RolePermissionQuery} parameter.
      *
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param roleId
-     *            The {@link Role} id in which to search results.
-     * @param query
-     *            The {@link RolePermissionQuery} to use to filter results.
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param roleId  The {@link Role} id in which to search results.
+     * @param query   The {@link RolePermissionQuery} to use to filter results.
      * @return The {@link RolePermissionListResult} of all the result matching the given {@link RolePermissionQuery} parameter.
-     * @throws Exception
-     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @ApiOperation(nickname = "rolePermissionQuery", value = "Queries the RolePermissions", notes = "Queries the RolePermissions with the given RolePermissionQuery parameter returning all matching RolePermissions", response = RolePermissionListResult.class)
@@ -141,15 +128,11 @@ public class RolesPermissions extends AbstractKapuaResource {
     /**
      * Counts the results with the given {@link RolePermissionQuery} parameter.
      *
-     * @param scopeId
-     *            The {@link ScopeId} in which to count results.
-     * @param roleId
-     *            The {@link Role} id in which to count results.
-     * @param query
-     *            The {@link RolePermissionQuery} to use to filter results.
+     * @param scopeId The {@link ScopeId} in which to count results.
+     * @param roleId  The {@link Role} id in which to count results.
+     * @param query   The {@link RolePermissionQuery} to use to filter results.
      * @return The count of all the result matching the given {@link RolePermissionQuery} parameter.
-     * @throws Exception
-     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @ApiOperation(nickname = "rolePermissionCount", value = "Counts the RolePermissions", notes = "Counts the RolePermissions with the given RolePermissionQuery parameter returning the number of matching RolePermissions", response = CountResult.class)
@@ -171,15 +154,11 @@ public class RolesPermissions extends AbstractKapuaResource {
      * Creates a new RolePermission based on the information provided in RolePermissionCreator
      * parameter.
      *
-     * @param scopeId
-     *            The {@link ScopeId} in which to create the {@link RolePermission}
-     * @param roleId
-     *            The {@link Role} id in which to create the RolePermission.
-     * @param rolePermissionCreator
-     *            Provides the information for the new RolePermission to be created.
+     * @param scopeId               The {@link ScopeId} in which to create the {@link RolePermission}
+     * @param roleId                The {@link Role} id in which to create the RolePermission.
+     * @param rolePermissionCreator Provides the information for the new RolePermission to be created.
      * @return The newly created RolePermission object.
-     * @throws Exception
-     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @ApiOperation(nickname = "rolePermissionCreate", value = "Create a RolePermission", notes = "Creates a new RolePermission based on the information provided in RolePermissionCreator parameter.", response = RolePermission.class)
@@ -199,15 +178,11 @@ public class RolesPermissions extends AbstractKapuaResource {
     /**
      * Returns the RolePermission specified by the "rolePermissionId" path parameter.
      *
-     * @param scopeId
-     *            The {@link ScopeId} of the requested {@link RolePermission}.
-     * @param roleId
-     *            The {@link Role} id of the requested {@link RolePermission}.
-     * @param rolePermissionId
-     *            The id of the requested RolePermission.
+     * @param scopeId          The {@link ScopeId} of the requested {@link RolePermission}.
+     * @param roleId           The {@link Role} id of the requested {@link RolePermission}.
+     * @param rolePermissionId The id of the requested RolePermission.
      * @return The requested RolePermission object.
-     * @throws Exception
-     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @ApiOperation(nickname = "rolePermissionFind", value = "Get a RolePermission", notes = "Returns the RolePermission specified by the \"rolePermissionId\" path parameter.", response = RolePermission.class)
@@ -240,15 +215,11 @@ public class RolesPermissions extends AbstractKapuaResource {
     /**
      * Deletes the RolePermission specified by the "rolePermissionId" path parameter.
      *
-     * @param scopeId
-     *            The {@link ScopeId} of the {@link RolePermission} to delete.
-     * @param roleId
-     *            The {@link Role} id of the {@link RolePermission} to delete.
-     * @param rolePermissionId
-     *            The id of the RolePermission to be deleted.
+     * @param scopeId          The {@link ScopeId} of the {@link RolePermission} to delete.
+     * @param roleId           The {@link Role} id of the {@link RolePermission} to delete.
+     * @param rolePermissionId The id of the RolePermission to be deleted.
      * @return HTTP 200 if operation has completed successfully.
-     * @throws Exception
-     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @ApiOperation(nickname = "rolePermissionDelete", value = "Delete an RolePermission", notes = "Deletes the RolePermission specified by the \"rolePermissionId\" path parameter.")

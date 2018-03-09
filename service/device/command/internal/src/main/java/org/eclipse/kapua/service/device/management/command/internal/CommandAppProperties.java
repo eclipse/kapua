@@ -11,13 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.command.internal;
 
-import org.eclipse.kapua.service.device.management.KapuaAppProperties;
+import org.eclipse.kapua.service.device.management.message.KapuaAppProperties;
 
 /**
  * Device command properties definition.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public enum CommandAppProperties implements KapuaAppProperties {
     /**
@@ -79,8 +78,7 @@ public enum CommandAppProperties implements KapuaAppProperties {
     /**
      * Command timed out flag
      */
-    APP_PROPERTY_TIMED_OUT("kapua.cmd.timed.out"),
-    ;
+    APP_PROPERTY_TIMED_OUT("kapua.cmd.timed.out"),;
 
     private String value;
 

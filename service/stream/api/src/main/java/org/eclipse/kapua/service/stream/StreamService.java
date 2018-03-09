@@ -14,10 +14,19 @@ package org.eclipse.kapua.service.stream;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
+import org.eclipse.kapua.service.KapuaDomainService;
 import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.device.management.response.KapuaResponseMessage;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
 
-public interface StreamService extends KapuaService {
-    KapuaResponseMessage<?,?> publish(KapuaDataMessage message, Long timeout)
+public interface StreamService extends KapuaService, KapuaDomainService<StreamDomain> {
+
+    public static final StreamDomain STREAM_DOMAIN = new StreamDomain();
+
+    @Override
+    public default StreamDomain getServiceDomain() {
+        return STREAM_DOMAIN;
+    }
+
+    KapuaResponseMessage<?, ?> publish(KapuaDataMessage message, Long timeout)
             throws KapuaException;
 }

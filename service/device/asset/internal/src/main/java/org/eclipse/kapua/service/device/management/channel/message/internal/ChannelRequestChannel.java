@@ -12,13 +12,12 @@
 package org.eclipse.kapua.service.device.management.channel.message.internal;
 
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetRequestChannel;
-import org.eclipse.kapua.service.device.management.request.KapuaRequestChannel;
+import org.eclipse.kapua.service.device.management.message.request.KapuaRequestChannel;
 
 /**
  * Device asset information request channel.
- * 
+ *
  * @since 1.0
- * 
  */
 public class ChannelRequestChannel extends AssetRequestChannel implements KapuaRequestChannel {
 
@@ -26,7 +25,7 @@ public class ChannelRequestChannel extends AssetRequestChannel implements KapuaR
 
     /**
      * Get the asset identifier
-     * 
+     *
      * @return
      */
     public String getAssetName() {
@@ -35,7 +34,7 @@ public class ChannelRequestChannel extends AssetRequestChannel implements KapuaR
 
     /**
      * Set the asset identifier
-     * 
+     *
      * @param assetName
      */
     public void setAssetName(String assetName) {

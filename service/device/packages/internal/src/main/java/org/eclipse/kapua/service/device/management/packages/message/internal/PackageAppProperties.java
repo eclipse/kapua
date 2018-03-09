@@ -11,13 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.packages.message.internal;
 
-import org.eclipse.kapua.service.device.management.KapuaAppProperties;
+import org.eclipse.kapua.service.device.management.message.KapuaAppProperties;
 
 /**
  * Device application properties definition.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public enum PackageAppProperties implements KapuaAppProperties {
 
@@ -94,9 +93,7 @@ public enum PackageAppProperties implements KapuaAppProperties {
     /**
      * Package uninstall version
      */
-    APP_PROPERTY_PACKAGE_UNINSTALL_PACKAGE_VERSION("kapua.package.uninstall.version"),
-
-    ;
+    APP_PROPERTY_PACKAGE_UNINSTALL_PACKAGE_VERSION("kapua.package.uninstall.version"),;
 
     private String value;
 

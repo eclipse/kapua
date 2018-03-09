@@ -13,7 +13,7 @@
 package org.eclipse.kapua.service.device.management.snapshot.message.internal;
 
 import org.eclipse.kapua.message.internal.KapuaMessageImpl;
-import org.eclipse.kapua.service.device.management.request.KapuaRequestMessage;
+import org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessage;
 
 /**
  * Device snapshot request message.

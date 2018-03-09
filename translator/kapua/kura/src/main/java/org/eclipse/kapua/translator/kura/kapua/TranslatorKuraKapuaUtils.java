@@ -16,14 +16,13 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaMessageFactory;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.service.device.call.message.DevicePosition;
-import org.eclipse.kapua.service.device.management.response.KapuaResponseCode;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponseCode;
 
 /**
  * Messages translator utilities.<br>
  * It provides helpful methods for translate position and response code.
  *
  * @since 1.0
- *
  */
 public final class TranslatorKuraKapuaUtils {
 

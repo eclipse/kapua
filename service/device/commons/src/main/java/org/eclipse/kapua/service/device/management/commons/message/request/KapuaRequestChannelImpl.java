@@ -11,9 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.commons.message.request;
 
-import org.eclipse.kapua.service.device.management.KapuaMethod;
 import org.eclipse.kapua.service.device.management.commons.message.KapuaAppChannelImpl;
-import org.eclipse.kapua.service.device.management.request.KapuaRequestChannel;
+import org.eclipse.kapua.service.device.management.message.KapuaMethod;
+import org.eclipse.kapua.service.device.management.message.request.KapuaRequestChannel;
 
 public class KapuaRequestChannelImpl extends KapuaAppChannelImpl implements KapuaRequestChannel {
 

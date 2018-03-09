@@ -14,18 +14,15 @@ package org.eclipse.kapua.service.device.management.commons;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authorization.domain.Domain;
-import org.eclipse.kapua.service.device.management.request.KapuaRequestChannel;
-import org.eclipse.kapua.service.device.management.request.KapuaRequestMessage;
-import org.eclipse.kapua.service.device.management.request.KapuaRequestPayload;
-import org.eclipse.kapua.service.device.management.response.KapuaResponseMessage;
+import org.eclipse.kapua.service.device.management.message.request.KapuaRequestChannel;
+import org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessage;
+import org.eclipse.kapua.service.device.management.message.request.KapuaRequestPayload;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 
 public abstract class AbstractDeviceManagementServiceImpl {
-
-    protected static final Domain DEVICE_MANAGEMENT_DOMAIN = new DeviceManagementDomain();
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 

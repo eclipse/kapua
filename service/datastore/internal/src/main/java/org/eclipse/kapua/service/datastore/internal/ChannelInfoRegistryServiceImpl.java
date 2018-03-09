@@ -12,28 +12,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import static org.eclipse.kapua.service.datastore.model.query.SortField.descending;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
-import org.eclipse.kapua.service.authorization.domain.Domain;
-import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
-import org.eclipse.kapua.service.datastore.DatastoreDomain;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
+import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl;
@@ -42,10 +34,10 @@ import org.eclipse.kapua.service.datastore.internal.model.query.RangePredicateIm
 import org.eclipse.kapua.service.datastore.internal.model.query.StorableFieldImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.ChannelInfoSchema;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
-import org.eclipse.kapua.service.datastore.model.StorableId;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
+import org.eclipse.kapua.service.datastore.model.StorableId;
 import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
@@ -57,17 +49,21 @@ import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.eclipse.kapua.service.datastore.model.query.SortField.descending;
+
 /**
  * Channel info registry implementation
- * 
+ *
  * @since 1.0.0
  */
 @KapuaProvider
 public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableService implements ChannelInfoRegistryService {
 
-    private static final Domain DATASTORE_DOMAIN = new DatastoreDomain();
-
-    private static final Logger logger = LoggerFactory.getLogger(ChannelInfoRegistryServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ChannelInfoRegistryServiceImpl.class);
 
     private final AccountService accountService;
     private final AuthorizationService authorizationService;
@@ -78,7 +74,7 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
 
     /**
      * Default constructor
-     * 
+     *
      * @throws ClientUnavailableException
      */
     public ChannelInfoRegistryServiceImpl() throws ClientUnavailableException {
@@ -187,11 +183,9 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
      * Update the last published date and last published message identifier for the specified channel info, so it gets the timestamp and the message id of the last published message for the
      * account/clientId in the
      * channel info
-     * 
+     *
      * @param channelInfo
-     * 
      * @throws KapuaException
-     * 
      * @since 1.0.0
      */
     private void updateLastPublishedFields(ChannelInfo channelInfo) throws KapuaException {
@@ -224,11 +218,11 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
             lastPublishedMessageTimestamp = messageList.getFirstItem().getTimestamp();
         } else if (messageList.isEmpty()) {
             // this condition could happens due to the ttl of the messages (so if it happens, it does not necessarily mean there has been an error!)
-            logger.warn("Cannot find last timestamp for the specified client id '{}' - account '{}'", new Object[] { channelInfo.getScopeId(), channelInfo.getClientId() });
+            LOG.warn("Cannot find last timestamp for the specified client id '{}' - account '{}'", new Object[] { channelInfo.getScopeId(), channelInfo.getClientId() });
         } else {
             // this condition shouldn't never happens since the query has a limit 1
             // if happens it means than an elasticsearch internal error happens and/or our driver didn't set it correctly!
-            logger.error("Cannot find last timestamp for the specified client id '{}' - account '{}'. More than one result returned by the query!",
+            LOG.error("Cannot find last timestamp for the specified client id '{}' - account '{}'. More than one result returned by the query!",
                     new Object[] { channelInfo.getScopeId(), channelInfo.getClientId() });
         }
 
