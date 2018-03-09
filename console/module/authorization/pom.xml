@@ -21,12 +21,18 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>kapua-console-module-authorization</artifactId>
-    
+
     <dependencies>
         <!-- Console modules -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-api</artifactId>
+        </dependency>
+
+        <!-- Internal dependencies -->
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-security-authentication-api</artifactId>
         </dependency>
     </dependencies>
 

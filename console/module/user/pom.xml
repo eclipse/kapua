@@ -36,6 +36,12 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-authorization</artifactId>
         </dependency>
+
+        <!-- Internal dependencies -->
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-user-api</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

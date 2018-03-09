@@ -28,17 +28,22 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-api</artifactId>
         </dependency>
-        
+
         <!-- Internal dependencies -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-datastore-api</artifactId>
         </dependency>
         <dependency>
+            <!-- Required for datastore query predicates -->
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-datastore-internal</artifactId>
         </dependency>
-        
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-registry-api</artifactId>
+        </dependency>
+
         <!-- External Dependencies -->
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -47,10 +52,6 @@
         <dependency>
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-registry-api</artifactId>
         </dependency>
     </dependencies>
 

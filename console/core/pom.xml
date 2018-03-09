@@ -23,6 +23,51 @@
 
     <artifactId>kapua-console-core</artifactId>
 
+    <build>
+        <finalName>adminCore</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <!-- GWT Maven Plugin -->
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generateAsync</goal> <!-- Generate Async RPC interfaces -->
+                            <goal>i18n</goal>
+                            <goal>compile</goal> <!-- Compile permutations -->
+                        </goals>
+                    </execution>
+                </executions>
+
+                <configuration>
+                    <module>org.eclipse.kapua.app.console.core.adminCore</module>
+                    <i18nMessagesBundles>
+                        <i18nMessagesBundle>org.eclipse.kapua.app.console.core.client.messages.ConsoleCoreMessages</i18nMessagesBundle>
+                    </i18nMessagesBundles>
+                    <webappDirectory>${project.build.directory}</webappDirectory>
+                    <hostedWebapp>${site.basedir}</hostedWebapp>
+
+                    <runTarget>console.jsp</runTarget>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
         <!-- Console modules -->
         <dependency>
@@ -34,6 +79,7 @@
             <artifactId>kapua-console-module-api</artifactId>
             <classifier>sources</classifier>
         </dependency>
+
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-about</artifactId>
@@ -43,6 +89,7 @@
             <artifactId>kapua-console-module-about</artifactId>
             <classifier>sources</classifier>
         </dependency>
+
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-account</artifactId>
@@ -52,6 +99,7 @@
             <artifactId>kapua-console-module-account</artifactId>
             <classifier>sources</classifier>
         </dependency>
+
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-authentication</artifactId>
@@ -61,6 +109,7 @@
             <artifactId>kapua-console-module-authentication</artifactId>
             <classifier>sources</classifier>
         </dependency>
+
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-authorization</artifactId>
@@ -70,6 +119,7 @@
             <artifactId>kapua-console-module-authorization</artifactId>
             <classifier>sources</classifier>
         </dependency>
+
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-data</artifactId>
@@ -79,6 +129,7 @@
             <artifactId>kapua-console-module-data</artifactId>
             <classifier>sources</classifier>
         </dependency>
+
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-device</artifactId>
@@ -88,6 +139,7 @@
             <artifactId>kapua-console-module-device</artifactId>
             <classifier>sources</classifier>
         </dependency>
+
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-job</artifactId>
@@ -97,6 +149,7 @@
             <artifactId>kapua-console-module-job</artifactId>
             <classifier>sources</classifier>
         </dependency>
+
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-tag</artifactId>
@@ -106,6 +159,7 @@
             <artifactId>kapua-console-module-tag</artifactId>
             <classifier>sources</classifier>
         </dependency>
+
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-user</artifactId>
@@ -115,6 +169,7 @@
             <artifactId>kapua-console-module-user</artifactId>
             <classifier>sources</classifier>
         </dependency>
+
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-welcome</artifactId>
@@ -125,88 +180,7 @@
             <classifier>sources</classifier>
         </dependency>
 
-        <!-- Internal dependencies -->
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-commons</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-account-internal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-datastore-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-datastore-internal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-commons</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-asset-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-asset-internal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-bundle-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-bundle-internal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-command-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-command-internal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-configuration-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-configuration-internal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-packages-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-packages-internal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-registry-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-registry-internal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-user-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-user-internal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-security-shiro</artifactId>
-        </dependency>
-        
+        <!-- Internal dependencies-->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-sso-api</artifactId>
@@ -224,30 +198,6 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-sso-provider-keycloak</artifactId>
             <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-tag-internal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-datastore-client-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-datastore-client-rest</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-datastore-client-transport</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-job-internal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-security-certificate-internal</artifactId>
         </dependency>
 
         <!-- External dependencies -->
@@ -308,94 +258,7 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Elasticsearch Dependencies -->
-        <dependency>
-            <groupId>org.elasticsearch</groupId>
-            <artifactId>elasticsearch</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.elasticsearch.client</groupId>
-            <artifactId>transport</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.elasticsearch.plugin</groupId>
-            <artifactId>transport-netty3-client</artifactId>
-            <version>${elasticsearch-client-transport.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.elasticsearch.plugin</groupId>
-            <artifactId>transport-netty4-client</artifactId>
-            <version>${elasticsearch-client-transport.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.elasticsearch.plugin</groupId>
-            <artifactId>reindex-client</artifactId>
-            <version>${elasticsearch-client-transport.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.elasticsearch.plugin</groupId>
-            <artifactId>lang-mustache-client</artifactId>
-            <version>${elasticsearch-client-transport.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.elasticsearch.plugin</groupId>
-            <artifactId>percolator-client</artifactId>
-            <version>${elasticsearch-client-transport.version}</version>
-        </dependency>
-        <!-- log4j2 for ES -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-to-slf4j</artifactId>
-        </dependency>
+
     </dependencies>
-
-    <build>
-        <finalName>adminCore</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>2.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <!-- GWT Maven Plugin -->
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>gwt-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generateAsync</goal> <!-- Generate Async RPC interfaces -->
-                            <goal>i18n</goal>
-                            <goal>compile</goal> <!-- Compile permutations -->
-                        </goals>
-                    </execution>
-                </executions>
-
-                <configuration>
-                    <module>org.eclipse.kapua.app.console.core.adminCore</module>
-                    <i18nMessagesBundles>
-                        <i18nMessagesBundle>org.eclipse.kapua.app.console.core.client.messages.ConsoleCoreMessages</i18nMessagesBundle>
-                    </i18nMessagesBundles>
-                    <webappDirectory>${project.build.directory}</webappDirectory>
-                    <hostedWebapp>${site.basedir}</hostedWebapp>
-
-                    <runTarget>console.jsp</runTarget>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>
