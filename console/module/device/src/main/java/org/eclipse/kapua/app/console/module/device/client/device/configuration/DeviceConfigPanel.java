@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextArea;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.api.client.util.Constants;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
@@ -51,7 +53,6 @@ import com.extjs.gxt.ui.client.widget.form.Radio;
 import com.extjs.gxt.ui.client.widget.form.RadioGroup;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
-import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.Validator;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
@@ -727,9 +728,9 @@ public class DeviceConfigPanel extends LayoutContainer {
     private static TextField<String> createTextFieldOrArea(GwtConfigParameter param) {
         String[] desc = splitDescription(param);
         if (desc != null && desc.length > 1 && desc[1].equals("TextArea")) {
-            return new TextArea();
+            return new KapuaTextArea();
         }
-        return new TextField<String>();
+        return new KapuaTextField<String>();
     }
 
     private static class IntegerValidator implements Validator {

@@ -14,12 +14,12 @@ package org.eclipse.kapua.app.console.module.api.client.ui.widget;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.PreviewEvent;
 import com.extjs.gxt.ui.client.util.BaseEventPreview;
-import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Element;
 
-public class KapuaTextField<T> extends TextField<T> {
+public class KapuaTextArea extends TextArea {
     protected BaseEventPreview focusEventPreview;
     protected boolean mimicing;
 
@@ -45,7 +45,7 @@ public class KapuaTextField<T> extends TextField<T> {
         this.focusEventPreview = new BaseEventPreview() {
             protected boolean onAutoHide(PreviewEvent ce) {
                 if (ce.getEventTypeInt() == 4) {
-                    KapuaTextField.this.mimicBlur(ce, ce.getTarget());
+                    KapuaTextArea.this.mimicBlur(ce, ce.getTarget());
                 }
 
                 return false;
@@ -65,12 +65,11 @@ public class KapuaTextField<T> extends TextField<T> {
     protected void triggerBlur(ComponentEvent ce) {
         DeferredCommand.addCommand(new Command() {
             public void execute() {
-                KapuaTextField.this.getFocusEl().blur();
+                KapuaTextArea.this.getFocusEl().blur();
             }
         });
         this.mimicing = false;
         this.focusEventPreview.remove();
         super.onBlur(ce);
     }
-
 }
