@@ -28,6 +28,12 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-api</artifactId>
         </dependency>
+
+        <!-- Internal dependencies -->
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-security-authentication-api</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

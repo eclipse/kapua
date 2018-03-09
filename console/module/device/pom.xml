@@ -47,11 +47,6 @@
             <artifactId>kapua-device-registry-api</artifactId>
         </dependency>
         <dependency>
-            <!-- This dependency is required to being able to import DeviceEventDomain class-->
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-registry-internal</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-asset-api</artifactId>
         </dependency>

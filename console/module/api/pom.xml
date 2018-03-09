@@ -19,13 +19,13 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    
+
     <artifactId>kapua-console-module-api</artifactId>
 
-    
     <dependencies>
         <!-- Internal dependencies -->
         <dependency>
+            <!-- Required for exception management on login -->
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-security-shiro</artifactId>
         </dependency>
