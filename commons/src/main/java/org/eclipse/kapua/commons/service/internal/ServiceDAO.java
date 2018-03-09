@@ -612,15 +612,17 @@ public class ServiceDAO {
 
             expr = cb.and(cb.or(orPredicates));
         } else {
-            String strAttrValue = attrValue.toString().replace(LIKE, ESCAPE + LIKE).replace(ANY, ESCAPE + ANY);
+            String strAttrValue;
             switch (attrPred.getOperator()) {
             case LIKE:
+                strAttrValue = attrValue.toString().replace(LIKE, ESCAPE + LIKE).replace(ANY, ESCAPE + ANY);
                 ParameterExpression<String> pl = cb.parameter(String.class);
                 binds.put(pl, LIKE + strAttrValue + LIKE);
                 expr = cb.like((Expression<String>) extractAttribute(entityRoot, attrName), pl);
                 break;
 
             case STARTS_WITH:
+                strAttrValue = attrValue.toString().replace(LIKE, ESCAPE + LIKE).replace(ANY, ESCAPE + ANY);
                 ParameterExpression<String> psw = cb.parameter(String.class);
                 binds.put(psw, strAttrValue + LIKE);
                 expr = cb.like((Expression<String>) extractAttribute(entityRoot, attrName), psw);
