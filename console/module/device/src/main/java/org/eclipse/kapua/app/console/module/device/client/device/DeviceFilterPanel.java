@@ -178,6 +178,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         connectionStatusCombo.add(GwtDeviceQueryPredicates.GwtDeviceConnectionStatus.CONNECTED);
         connectionStatusCombo.add(GwtDeviceQueryPredicates.GwtDeviceConnectionStatus.MISSING);
         connectionStatusCombo.add(GwtDeviceQueryPredicates.GwtDeviceConnectionStatus.DISCONNECTED);
+        connectionStatusCombo.add(GwtDeviceQueryPredicates.GwtDeviceConnectionStatus.UNKNOWN);
 
         connectionStatusCombo.setEditable(false);
         connectionStatusCombo.setTriggerAction(TriggerAction.ALL);

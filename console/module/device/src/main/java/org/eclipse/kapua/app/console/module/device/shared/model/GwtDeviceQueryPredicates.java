@@ -35,7 +35,7 @@ public class GwtDeviceQueryPredicates extends KapuaBaseModel implements Serializ
     }
 
     public enum GwtDeviceConnectionStatus implements IsSerializable {
-        CONNECTED, DISCONNECTED, MISSING, ANY;
+        CONNECTED, DISCONNECTED, MISSING, ANY, UNKNOWN;
 
         GwtDeviceConnectionStatus() {
         }

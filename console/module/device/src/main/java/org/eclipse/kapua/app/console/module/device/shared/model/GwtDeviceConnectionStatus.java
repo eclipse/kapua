@@ -14,6 +14,6 @@ package org.eclipse.kapua.app.console.module.device.shared.model;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public enum GwtDeviceConnectionStatus implements IsSerializable {
-    CONNECTED, DISCONNECTED, MISSING, ANY;
+    CONNECTED, DISCONNECTED, MISSING, ANY, UNKNOWN;
 
 }

@@ -102,6 +102,11 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
                         icon.setColor(Color.RED);
                         icon.setTitle(CONNECTION_MSGS.missing());
                         break;
+                    case UNKNOWN:
+                        icon = new KapuaIcon(IconSet.PLUG);
+                        icon.setColor(Color.GREY);
+                        icon.setTitle("unknown");
+                        break;
                     case ANY:
                     default:
                         icon = new KapuaIcon(IconSet.PLUG);

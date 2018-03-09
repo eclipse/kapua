@@ -28,5 +28,7 @@ public enum DeviceConnectionStatus {
     /**
      * Missing
      */
-    MISSING
+    MISSING,
+
+    NULL
 }

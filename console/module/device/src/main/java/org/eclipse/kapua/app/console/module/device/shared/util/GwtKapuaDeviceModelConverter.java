@@ -180,6 +180,8 @@ public class GwtKapuaDeviceModelConverter {
         }
         if (predicates.getDeviceConnectionStatus() != null) {
             andPred = andPred.and(new AttributePredicate<DeviceConnectionStatus>(DevicePredicates.CONNECTION_STATUS, DeviceConnectionStatus.valueOf(predicates.getDeviceConnectionStatus())));
+        } else {
+            andPred = andPred.and(new AttributePredicate<DeviceConnectionStatus>(DevicePredicates.CONNECTION_STATUS, null, Operator.IS_NULL));
         }
         if (predicates.getGroupId() != null) {
             andPred = andPred.and(new AttributePredicate<KapuaId>(DevicePredicates.GROUP_ID, KapuaEid.parseCompactId(predicates.getGroupId())));

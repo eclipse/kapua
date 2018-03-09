@@ -306,7 +306,10 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                 GwtDevice gwtDevice = KapuaGwtDeviceModelConverter.convertDevice(d);
 
                 // Connection info
-                gwtDevice.setGwtDeviceConnectionStatus(GwtDeviceConnectionStatus.DISCONNECTED.name());
+            //   gwtDevice.setGwtDeviceConnectionStatus(GwtDeviceConnectionStatus.DISCONNECTED.name());
+//                if (d.getConnectionId() == null) {
+//                    gwtDevice.setGwtDeviceStatus(GwtDeviceConnectionStatus.UNKNOWN.name());
+//                }
                 gwtDevice.setConnectionIp(d.getConnectionIp());
                 gwtDevice.setConnectionInterface(d.getConnectionInterface());
 
@@ -316,6 +319,8 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                     gwtDevice.setGwtDeviceConnectionStatus(deviceConnection.getStatus().name());
                     gwtDevice.setLastEventOn(deviceConnection.getModifiedOn());
                     gwtDevice.setLastEventType(deviceConnection.getStatus().name());
+                } else {
+                    gwtDevice.setGwtDeviceConnectionStatus(GwtDeviceConnectionStatus.UNKNOWN.name());
                 }
 
                 if (d.getLastEvent() != null) {
