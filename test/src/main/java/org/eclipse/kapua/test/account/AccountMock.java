@@ -14,6 +14,7 @@ package org.eclipse.kapua.test.account;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.Properties;
+import java.util.Set;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -148,6 +149,11 @@ public class AccountMock implements Account {
     public void setParentAccountPath(String parentAccountPath) {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public Set<Account> getChildAccounts() {
+        return null;
     }
 
     @Override

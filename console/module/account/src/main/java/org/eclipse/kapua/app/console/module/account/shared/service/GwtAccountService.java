@@ -21,7 +21,6 @@ import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountCreator;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountQuery;
-import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountStringListItem;
 
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
@@ -126,19 +125,6 @@ public interface GwtAccountService extends RemoteService {
      * @throws GwtKapuaException
      */
     ListLoadResult<GwtAccount> findChildren(String accountId, boolean includeSelf)
-            throws GwtKapuaException;
-
-    /**
-     * Lists all child of the given account id as a list of strings
-     *
-     * @param scopeId
-     *            The account id for which to find children
-     * @param recoursive
-     *            If true it list all child accounts. If false it list only the direct children
-     * @return
-     * @throws GwtKapuaException
-     */
-    ListLoadResult<GwtAccountStringListItem> findChildrenAsStrings(String scopeId, boolean recoursive)
             throws GwtKapuaException;
 
     /**

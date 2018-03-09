@@ -11,6 +11,23 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.account.server;
 
+import javax.xml.namespace.QName;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.concurrent.Callable;
+
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
@@ -23,7 +40,6 @@ import org.apache.sanselan.Sanselan;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountCreator;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountQuery;
-import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountStringListItem;
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.module.account.shared.util.GwtKapuaAccountModelConverter;
 import org.eclipse.kapua.app.console.module.account.shared.util.KapuaGwtAccountModelConverter;
@@ -54,7 +70,6 @@ import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountFactory;
-import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.permission.Actions;
@@ -75,23 +90,6 @@ import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.xml.namespace.QName;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
-import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.concurrent.Callable;
 
 /**
  * The server side implementation of the RPC service.
@@ -382,31 +380,6 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         }
 
         return new BaseListLoadResult<GwtAccount>(gwtAccountList);
-    }
-
-    @Override
-    public ListLoadResult<GwtAccountStringListItem> findChildrenAsStrings(String parentAccountId, boolean recoursive)
-            throws GwtKapuaException {
-        KapuaId scopeId = KapuaEid.parseCompactId(parentAccountId);
-
-        List<GwtAccountStringListItem> gwtAccountStrings = new ArrayList<GwtAccountStringListItem>();
-
-        AccountListResult list;
-        try {
-            list = ACCOUNT_SERVICE.findChildsRecursively(scopeId);
-            for (Account account : list.getItems()) {
-                GwtAccountStringListItem item = new GwtAccountStringListItem();
-                item.setId(account.getId().toCompactId());
-                item.setValue(account.getName());
-                item.setHasChildAccount(false); // FIXME: add check to see if account has or noe childs
-
-                gwtAccountStrings.add(item);
-            }
-        } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
-        }
-
-        return new BaseListLoadResult<GwtAccountStringListItem>(gwtAccountStrings);
     }
 
     @Override

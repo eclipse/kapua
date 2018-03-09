@@ -17,6 +17,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import java.util.Set;
+
 import org.eclipse.kapua.model.KapuaNamedEntity;
 
 /**
@@ -68,4 +70,6 @@ public interface Account extends KapuaNamedEntity {
      * @param parentAccountPath
      */
     public void setParentAccountPath(String parentAccountPath);
+
+    public Set<Account> getChildAccounts();
 }
