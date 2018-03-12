@@ -332,7 +332,7 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
     public void getFirstDeviceFromList() {
         // A device should have been found
         assertNotEquals(0, deviceList.getSize());
-        device = deviceList.getItem(0);
+        device = deviceList.getFirstItem();
         assertNotNull(device);
     }
 

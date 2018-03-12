@@ -262,10 +262,9 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                     eventQuery.setPredicate(andPredicate);
 
                     KapuaListResult<DeviceEvent> events = deviceEventService.query(eventQuery);
-                    if (!events.isEmpty()) {
-                        DeviceEvent lastEvent = events.getItem(0);
+                    DeviceEvent lastEvent = events.getFirstItem();
+                    if (lastEvent != null) {
                         KapuaPosition eventPosition = lastEvent.getPosition();
-
                         if (eventPosition != null) {
                             pairs.add(new GwtGroupedNVPair("gpsInfo", "gpsLat", String.valueOf(eventPosition.getLatitude())));
                             pairs.add(new GwtGroupedNVPair("gpsInfo", "gpsLong", String.valueOf(eventPosition.getLongitude())));

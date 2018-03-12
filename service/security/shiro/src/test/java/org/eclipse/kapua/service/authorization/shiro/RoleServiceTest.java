@@ -278,7 +278,7 @@ public class RoleServiceTest extends KapuaTest {
             assertEquals(1, rolesCount);
             assertEquals(1, rolesFound.getSize());
 
-            Role roleFound = rolesFound.getItem(0);
+            Role roleFound = rolesFound.getFirstItem();
             assertNotNull(roleFound);
             assertEquals(role.getScopeId(), roleFound.getScopeId());
             assertEquals(role.getScopeId(), roleFound.getScopeId());

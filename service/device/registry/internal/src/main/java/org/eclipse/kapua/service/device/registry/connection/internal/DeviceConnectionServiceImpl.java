@@ -140,13 +140,8 @@ public class DeviceConnectionServiceImpl extends
 
         //
         // Query and parse result
-        DeviceConnection device = null;
         DeviceConnectionListResult result = query(query);
-        if (result.getSize() == 1) {
-            device = result.getItem(0);
-        }
-
-        return device;
+        return result.getFirstItem();
     }
 
     @Override

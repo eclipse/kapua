@@ -209,7 +209,7 @@ public class GroupServiceTest extends KapuaTest {
             assertEquals(1, groupsCount);
             assertEquals(1, groupsFound.getSize());
 
-            Group groupFound = groupsFound.getItem(0);
+            Group groupFound = groupsFound.getFirstItem();
             assertNotNull(groupFound);
             assertEquals(group.getScopeId(), groupFound.getScopeId());
             assertEquals(group.getScopeId(), groupFound.getScopeId());

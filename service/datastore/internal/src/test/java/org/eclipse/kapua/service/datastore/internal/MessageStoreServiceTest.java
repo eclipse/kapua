@@ -2351,7 +2351,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
             assertNotNull("No result found!", result);
             assertNotNull("No result found!", result.getTotalCount());
             assertEquals("Result client id list has a wrong size!", clientInfoCount, result.getTotalCount().intValue());
-            clientInfoQueried = result.getItem(0);
+            clientInfoQueried = result.getFirstItem();
             assertNotNull("Result client id list is null!", clientInfoQueried);
         } else {
             assertTrue("No result should be found!", result == null || result.getTotalCount() == null || result.getTotalCount() <= 0);
@@ -2787,7 +2787,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         assertNotNull(clientInfos);
         assertEquals("Wrong client info registry size", 1, clientInfos.getSize());
 
-        ClientInfo clientInfo = clientInfos.getItem(0);
+        ClientInfo clientInfo = clientInfos.getFirstItem();
 
         assertNotNull(clientInfo);
         assertTrue(messageId.equals(clientInfo.getFirstMessageId()));
@@ -2807,7 +2807,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         assertNotNull(channelInfos);
         assertEquals("Wrong client info registry size", 1, channelInfos.getSize());
 
-        ChannelInfo channelInfo = channelInfos.getItem(0);
+        ChannelInfo channelInfo = channelInfos.getFirstItem();
 
         assertNotNull(channelInfo);
         assertTrue(messageId.equals(channelInfo.getFirstMessageId()));
@@ -2827,7 +2827,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         assertNotNull(metricInfos);
         assertEquals("Wrong client info registry size", 2, metricInfos.getSize());
 
-        MetricInfo metricInfo = metricInfos.getItem(0);
+        MetricInfo metricInfo = metricInfos.getFirstItem();
 
         assertNotNull(metricInfo);
         assertTrue(messageId.equals(metricInfo.getFirstMessageId()));
