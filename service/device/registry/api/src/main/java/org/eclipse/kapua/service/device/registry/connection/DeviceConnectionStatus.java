@@ -30,7 +30,7 @@ public enum DeviceConnectionStatus {
      */
     MISSING,
     /**
-     * Null
+     * Value when andPredicate is null
      */
     NULL
 }
