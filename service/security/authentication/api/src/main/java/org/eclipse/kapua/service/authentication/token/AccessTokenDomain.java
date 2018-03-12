@@ -28,7 +28,7 @@ import java.util.Set;
 public class AccessTokenDomain extends AbstractDomain implements Domain {
 
     private String name = "access_token";
-    private String serviceName = AccessTokenService.class.getSimpleName();
+    private String serviceName = AccessTokenService.class.getName();
     private Set<Actions> actions = new HashSet<>(Arrays.asList(Actions.read, Actions.delete, Actions.write));
 
     @Override

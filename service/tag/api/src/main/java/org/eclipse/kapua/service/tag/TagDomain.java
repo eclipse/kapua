@@ -28,7 +28,7 @@ import java.util.Set;
 public class TagDomain extends AbstractDomain implements Domain {
 
     private String name = "tag";
-    private String serviceName = TagService.class.getSimpleName();
+    private String serviceName = TagService.class.getName();
     private Set<Actions> actions = new HashSet<>(Arrays.asList(Actions.read, Actions.delete, Actions.write));
 
     @Override

@@ -35,7 +35,7 @@
             <column name="created_on" valueComputed="${now}"/>
             <column name="created_by" value="1"/>
             <column name="name" value="endpointInfo"/>
-            <column name="serviceName" value="endpointInfoService"/>
+            <column name="serviceName" value="org.eclipse.kapua.service.endpoint.EndpointInfoService"/>
         </insert>
 
         <insert tableName="athz_domain_actions">

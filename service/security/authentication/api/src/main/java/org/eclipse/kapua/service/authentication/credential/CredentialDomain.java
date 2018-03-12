@@ -28,7 +28,7 @@ import java.util.Set;
 public class CredentialDomain extends AbstractDomain implements Domain {
 
     private String name = "credential";
-    private String serviceName = CredentialService.class.getSimpleName();
+    private String serviceName = CredentialService.class.getName();
     private Set<Actions> actions = new HashSet<>(Arrays.asList(Actions.read, Actions.delete, Actions.write));
 
     @Override

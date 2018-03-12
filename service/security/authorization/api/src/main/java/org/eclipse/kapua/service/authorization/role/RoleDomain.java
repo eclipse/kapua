@@ -28,7 +28,7 @@ import java.util.Set;
 public class RoleDomain extends AbstractDomain implements Domain {
 
     private String name = "role";
-    private String serviceName = RoleService.class.getSimpleName();
+    private String serviceName = RoleService.class.getName();
     private Set<Actions> actions = new HashSet<>(Arrays.asList(Actions.read, Actions.delete, Actions.write));
 
     @Override

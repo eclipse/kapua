@@ -33,6 +33,12 @@
             <column name="domain_id" valueComputed="${selectJobDomainQuery}"/>
             <column name="action" value="execute"/>
         </insert>
+
+        <update tableName="athz_domain">
+            <column name="serviceName" value="org.eclipse.kapua.service.job.JobService"/>
+            <where>serviceName = 'jobService'</where>
+        </update>
+
     </changeSet>
 
 </databaseChangeLog>

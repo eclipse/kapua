@@ -28,7 +28,7 @@ import java.util.Set;
 public class JobDomain extends AbstractDomain implements Domain {
 
     private String name = "job";
-    private String serviceName = JobService.class.getSimpleName();
+    private String serviceName = JobService.class.getName();
     private Set<Actions> actions = new HashSet<>(Arrays.asList(Actions.read, Actions.delete, Actions.write, Actions.execute));
 
     @Override
