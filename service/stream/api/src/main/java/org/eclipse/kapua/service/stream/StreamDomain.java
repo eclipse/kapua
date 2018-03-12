@@ -28,7 +28,7 @@ import java.util.Set;
 public class StreamDomain extends AbstractDomain implements Domain {
 
     private String name = "stream";
-    private String serviceName = StreamService.class.getSimpleName();
+    private String serviceName = StreamService.class.getName();
     private Set<Actions> actions = new HashSet<>(Arrays.asList(Actions.write));
 
     @Override

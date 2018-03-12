@@ -28,7 +28,7 @@ import java.util.Set;
 public class DeviceLifecycleDomain extends AbstractDomain implements Domain {
 
     private String name = "device_lifecycle";
-    private String serviceName = DeviceLifeCycleService.class.getSimpleName();
+    private String serviceName = DeviceLifeCycleService.class.getName();
     private Set<Actions> actions = new HashSet<>(Arrays.asList(Actions.read, Actions.delete, Actions.write));
 
     @Override

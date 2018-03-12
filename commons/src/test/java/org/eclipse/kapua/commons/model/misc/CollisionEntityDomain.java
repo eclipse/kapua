@@ -28,7 +28,7 @@ import java.util.Set;
 public class CollisionEntityDomain extends AbstractDomain implements Domain {
 
     private String name = "collisionEntity";
-    private String serviceName = CollisionEntityService.class.getSimpleName();
+    private String serviceName = CollisionEntityService.class.getName();
     private Set<Actions> actions = new HashSet<>(Arrays.asList(Actions.read, Actions.delete, Actions.write));
 
     @Override

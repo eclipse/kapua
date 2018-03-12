@@ -437,7 +437,7 @@ public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
         DeviceConnectionDomain tmpDomain = new DeviceConnectionDomain();
 
         assertEquals("device_connection", tmpDomain.getName());
-        assertEquals("DeviceConnectionService", tmpDomain.getServiceName());
+        assertEquals("org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService", tmpDomain.getServiceName());
         assertEquals(3, tmpDomain.getActions().size());
         assertTrue(tmpDomain.getActions().contains(Actions.read));
         assertTrue(tmpDomain.getActions().contains(Actions.write));

@@ -11,12 +11,17 @@
         Eurotech - initial API and implementation
 -->
 <databaseChangeLog
-  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"  
-  logicalFilePath="KapuaDB/changelog-authorization-1.0.0.xml">
-                      
-    <include relativeToChangelogFile="true" file="./athz-sys-housekeeper-run-seed.xml" />
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="KapuaDB/changelog-authorization-1.0.0.xml">
+
+    <include relativeToChangelogFile="true" file="./athz-sys-housekeeper-run-seed.xml"/>
+
+    <include relativeToChangelogFile="true" file="./athz-access_info-domain.xml"/>
+    <include relativeToChangelogFile="true" file="./athz-domain-domain.xml"/>
+    <include relativeToChangelogFile="true" file="./athz-group-domain.xml"/>
+    <include relativeToChangelogFile="true" file="./athz-role-domain.xml"/>
 
 </databaseChangeLog>

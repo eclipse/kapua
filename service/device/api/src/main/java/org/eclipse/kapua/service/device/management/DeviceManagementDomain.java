@@ -28,7 +28,7 @@ import java.util.Set;
 public class DeviceManagementDomain extends AbstractDomain implements Domain {
 
     private String name = "device_management";
-    private String serviceName = DeviceManagementService.class.getSimpleName();
+    private String serviceName = DeviceManagementService.class.getName();
     private Set<Actions> actions = new HashSet<>(Arrays.asList(Actions.execute, Actions.read, Actions.write));
 
     @Override

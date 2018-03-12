@@ -28,7 +28,7 @@ import java.util.Set;
 public class DatastoreDomain extends AbstractDomain implements Domain {
 
     private String name = "datastore";
-    private String serviceName = DatastoreService.class.getSimpleName();
+    private String serviceName = DatastoreService.class.getName();
     private Set<Actions> actions = new HashSet<>(Arrays.asList(Actions.read, Actions.delete, Actions.write));
 
     @Override

@@ -28,7 +28,7 @@ import java.util.Set;
 public class DomainDomain extends AbstractDomain implements Domain {
 
     private String name = "domain";
-    private String serviceName = DomainRegistryService.class.getSimpleName();
+    private String serviceName = DomainRegistryService.class.getName();
     private Set<Actions> actions = new HashSet<>(Arrays.asList(Actions.read, Actions.delete, Actions.write));
 
     @Override

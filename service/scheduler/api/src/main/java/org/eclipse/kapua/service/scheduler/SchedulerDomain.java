@@ -28,7 +28,7 @@ import java.util.Set;
 public class SchedulerDomain extends AbstractDomain implements Domain {
 
     private String name = "scheduler";
-    private String serviceName = SchedulerService.class.getSimpleName();
+    private String serviceName = SchedulerService.class.getName();
     private Set<Actions> actions = new HashSet<>(Arrays.asList(Actions.read, Actions.delete, Actions.write, Actions.execute));
 
     @Override

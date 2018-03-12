@@ -35,7 +35,7 @@
             <column name="created_on" valueComputed="${now}"/>
             <column name="created_by" value="1"/>
             <column name="name" value="domain"/>
-            <column name="serviceName" value="domainRegistryService"/>
+            <column name="serviceName" value="domainService"/>
         </insert>
 
         <insert tableName="athz_domain_actions">

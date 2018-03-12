@@ -28,7 +28,7 @@ import java.util.Set;
 public class EndpointInfoDomain extends AbstractDomain implements Domain {
 
     private String name = "endpoint_info";
-    private String serviceName = EndpointInfoService.class.getSimpleName();
+    private String serviceName = EndpointInfoService.class.getName();
     private Set<Actions> actions = new HashSet<>(Arrays.asList(Actions.read, Actions.delete, Actions.write));
 
     @Override

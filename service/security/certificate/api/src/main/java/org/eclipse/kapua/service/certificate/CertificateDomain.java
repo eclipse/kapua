@@ -28,7 +28,7 @@ import java.util.Set;
 public class CertificateDomain extends AbstractDomain implements Domain {
 
     private String name = "certificate";
-    private String serviceName = CertificateService.class.getSimpleName();
+    private String serviceName = CertificateService.class.getName();
     private Set<Actions> actions = new HashSet<>(Arrays.asList(Actions.read, Actions.delete, Actions.write));
 
     @Override

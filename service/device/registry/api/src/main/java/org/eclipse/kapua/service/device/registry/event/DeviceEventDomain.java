@@ -28,7 +28,7 @@ import java.util.Set;
 public class DeviceEventDomain extends AbstractDomain implements Domain {
 
     private String name = "device_event";
-    private String serviceName = DeviceEventService.class.getSimpleName();
+    private String serviceName = DeviceEventService.class.getName();
     private Set<Actions> actions = new HashSet<>(Arrays.asList(Actions.read, Actions.delete, Actions.write));
 
     @Override
