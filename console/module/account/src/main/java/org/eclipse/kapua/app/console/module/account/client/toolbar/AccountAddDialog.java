@@ -164,7 +164,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
         organizationSubFieldSet.setHeading(MSGS.accountFormOrgPrimaryContact());
         organizationSubFieldSet.setBorders(false);
         organizationSubFieldSet.setCollapsible(true);
-        organizationSubFieldSet.setWidth(515);
+        organizationSubFieldSet.setWidth(540);
 
         FormLayout organizationSubLayout = new FormLayout();
         organizationSubLayout.setLabelWidth(LABEL_WIDTH_FORM - 11);
@@ -174,7 +174,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
         // Other organization data
         //
 
-        FormData subFieldsetFormData = new FormData("12");
+        FormData subFieldsetFormData = new FormData("-11");
 
         organizationContactName.setName("organizationContactName");
         organizationContactName.setMaxLength(255);
