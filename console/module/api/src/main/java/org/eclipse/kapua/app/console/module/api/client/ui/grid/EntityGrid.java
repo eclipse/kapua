@@ -186,6 +186,7 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
     }
 
     public void refresh() {
+        entityCRUDToolbar.getRefreshEntityButton().setEnabled(false);
         entityLoader.load();
     }
 
@@ -228,4 +229,11 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
     public abstract GwtQuery getFilterQuery();
 
     public abstract void setFilterQuery(GwtQuery filterQuery);
+
+    /**
+     * Method is called when grid is loaded.
+     */
+    public void loaded() {
+        entityCRUDToolbar.getRefreshEntityButton().setEnabled(true);
+    }
 }
