@@ -19,6 +19,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
+import org.eclipse.kapua.app.console.module.device.shared.model.permission.DeviceManagementSessionPermission;
 
 public class DeviceTabTags extends KapuaTabItem<GwtDevice> {
 
@@ -29,6 +30,7 @@ public class DeviceTabTags extends KapuaTabItem<GwtDevice> {
     public DeviceTabTags(GwtSession currentSession) {
         super(currentSession, DEVICES_MSGS.tabTagsTitle(), new KapuaIcon(IconSet.TAGS));
         deviceTagGrid = new DeviceTagGrid(null, currentSession, selectedEntity);
+        setEnabled(false);
     }
 
     @Override
@@ -42,6 +44,10 @@ public class DeviceTabTags extends KapuaTabItem<GwtDevice> {
     public void setEntity(GwtDevice selectedDevice) {
         super.setEntity(selectedDevice);
         deviceTagGrid.setSelectedDevice(selectedDevice);
+        setEnabled(selectedDevice != null &&
+                selectedDevice.isOnline() &&
+                currentSession.hasPermission(DeviceManagementSessionPermission.read()) &&
+                (selectedDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_DEPLOY_V1) || (selectedDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_DEPLOY_V2))));
     }
 
     @Override

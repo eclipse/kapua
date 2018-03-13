@@ -61,6 +61,7 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceEvent;
+import org.eclipse.kapua.app.console.module.device.shared.model.permission.DeviceManagementSessionPermission;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceServiceAsync;
 
@@ -96,11 +97,16 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
         super(currentSession, DEVICES_MSGS.tabHistory(), new KapuaIcon(IconSet.HISTORY));
         this.currentSession = currentSession;
         initialized = false;
+        setEnabled(false);
     }
 
     @Override
     public void setEntity(GwtDevice gwtDevice) {
         super.setEntity(gwtDevice);
+        setEnabled(gwtDevice != null &&
+                gwtDevice.isOnline() &&
+                currentSession.hasPermission(DeviceManagementSessionPermission.read()) &&
+                (gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_DEPLOY_V1) || (gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_DEPLOY_V2))));
 
     }
 
