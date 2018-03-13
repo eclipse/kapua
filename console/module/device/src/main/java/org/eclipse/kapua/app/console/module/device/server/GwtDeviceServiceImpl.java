@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -305,7 +305,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                 GwtDevice gwtDevice = KapuaGwtDeviceModelConverter.convertDevice(d);
 
                 // Connection info
-                gwtDevice.setGwtDeviceConnectionStatus(GwtDeviceConnectionStatus.DISCONNECTED.name());
+
                 gwtDevice.setConnectionIp(d.getConnectionIp());
                 gwtDevice.setConnectionInterface(d.getConnectionInterface());
 
@@ -315,6 +315,8 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                     gwtDevice.setGwtDeviceConnectionStatus(deviceConnection.getStatus().name());
                     gwtDevice.setLastEventOn(deviceConnection.getModifiedOn());
                     gwtDevice.setLastEventType(deviceConnection.getStatus().name());
+                } else {
+                    gwtDevice.setGwtDeviceConnectionStatus(GwtDeviceConnectionStatus.UNKNOWN.name());
                 }
 
                 if (d.getLastEvent() != null) {

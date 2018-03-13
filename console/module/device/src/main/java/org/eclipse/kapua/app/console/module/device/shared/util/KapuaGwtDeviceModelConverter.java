@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,6 +18,7 @@ import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection.GwtConnectionUserCouplingMode;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionOption;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionStatus;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceEvent;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAsset;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssetChannel;
@@ -95,6 +96,8 @@ public class KapuaGwtDeviceModelConverter {
             gwtDevice.setClientIp(connection.getClientIp());
             gwtDevice.setGwtDeviceConnectionStatus(connection.getStatus().toString());
             gwtDevice.setDeviceUserId(connection.getUserId().toCompactId());
+        } else {
+            gwtDevice.setGwtDeviceConnectionStatus(GwtDeviceConnectionStatus.UNKNOWN.name());
         }
         return gwtDevice;
     }
@@ -129,7 +132,9 @@ public class KapuaGwtDeviceModelConverter {
         gwtDeviceConnection.setProtocol(deviceConnection.getProtocol());
         gwtDeviceConnection.setConnectionStatus(convertDeviceConnectionStatus(deviceConnection.getStatus()));
         gwtDeviceConnection.setOptlock(deviceConnection.getOptlock());
-
+        if (deviceConnection.getId() == null) {
+            gwtDeviceConnection.setConnectionStatus(GwtDeviceConnectionStatus.UNKNOWN.name());
+        }
         // convertDeviceAssetChannel user coupling attributes
         gwtDeviceConnection.setReservedUserId(KapuaGwtCommonsModelConverter.convertKapuaId(deviceConnection.getReservedUserId()));
         if (deviceConnection.getUserCouplingMode() != null) {
