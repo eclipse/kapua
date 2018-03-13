@@ -51,7 +51,6 @@ import org.eclipse.kapua.service.authorization.access.shiro.AccessRoleCreatorImp
 import org.eclipse.kapua.service.authorization.access.shiro.AccessRoleFactoryImpl;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessRoleImpl;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessRoleServiceImpl;
-import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionImpl;
@@ -73,7 +72,7 @@ import java.util.List;
 @ScenarioScoped
 public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest {
 
-    private static final Domain TEST_DOMAIN = new TestDomain();
+    private static final TestDomain TEST_DOMAIN = new TestDomain();
 
     // Test data scratchpads
     private CommonTestData commonData;

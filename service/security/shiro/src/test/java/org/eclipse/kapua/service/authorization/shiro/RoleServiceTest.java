@@ -19,7 +19,6 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
-import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.Role;
@@ -49,7 +48,7 @@ public class RoleServiceTest extends KapuaTest {
 
     public static final String DROP_FILTER = "athz_*_drop.sql";
 
-    private static final Domain TEST_DOMAIN = new TestDomain();
+    private static final TestDomain TEST_DOMAIN = new TestDomain();
 
     KapuaEid scope = new KapuaEid(IdGenerator.generate());
 

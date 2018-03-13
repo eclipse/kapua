@@ -24,7 +24,7 @@ import java.util.Set;
  *
  * @since 1.0
  */
-public class TestDomain extends AbstractKapuaEntity implements Domain {
+public class TestDomain extends AbstractKapuaEntity implements Domain, org.eclipse.kapua.model.domain.Domain {
 
     private static final long serialVersionUID = 3782336558657796495L;
 

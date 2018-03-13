@@ -17,7 +17,6 @@ import cucumber.api.java.en.Then;
 import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.domain.Actions;
-import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionFactoryImpl;
@@ -76,7 +75,7 @@ public class MiscAuthorizationTestSteps extends AbstractAuthorizationServiceTest
             throws KapuaException {
 
         Permission tmpPerm = null;
-        Domain tmpDomain = new TestDomain();
+        TestDomain tmpDomain = new TestDomain();
 
         tmpPerm = permissionFactory.newPermission(tmpDomain, Actions.read, ROOT_SCOPE_ID);
         assertNotNull(tmpPerm);

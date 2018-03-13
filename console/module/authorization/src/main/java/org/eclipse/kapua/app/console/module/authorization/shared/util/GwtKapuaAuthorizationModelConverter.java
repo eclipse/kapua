@@ -15,7 +15,6 @@ import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessInfoCreator;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessPermissionCreator;
@@ -36,8 +35,11 @@ import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.domain.Actions;
+import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
+import org.eclipse.kapua.service.KapuaDomainService;
+import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionCreator;
@@ -45,11 +47,6 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionFactory;
 import org.eclipse.kapua.service.authorization.access.AccessRoleCreator;
 import org.eclipse.kapua.service.authorization.access.AccessRoleFactory;
 import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
-import org.eclipse.kapua.service.authorization.domain.Domain;
-import org.eclipse.kapua.service.authorization.domain.DomainFactory;
-import org.eclipse.kapua.service.authorization.domain.DomainListResult;
-import org.eclipse.kapua.service.authorization.domain.DomainQuery;
-import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupQuery;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupPredicates;
@@ -64,6 +61,7 @@ import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePredicates;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -364,19 +362,15 @@ public class GwtKapuaAuthorizationModelConverter {
      */
     public static Domain convertDomain(GwtDomain gwtDomain) {
 
-        try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            DomainRegistryService domainRegistryService = locator.getService(DomainRegistryService.class);
-            DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
-            DomainQuery query = domainFactory.newQuery(null);
-            DomainListResult list = domainRegistryService.query(query);
+        KapuaLocator locator = KapuaLocator.getInstance();
 
-            for (Domain domain : list.getItems()) {
-                if (domain.getName().equals(gwtDomain.getDomainName())) {
-                    return domain;
-                }
+        List<KapuaService> kapuaServices = locator.getServices();
+
+        for (KapuaService kapuaService : kapuaServices) {
+            if (kapuaService instanceof KapuaDomainService &&
+                    ((KapuaDomainService) kapuaService).getServiceDomain().getName().equals(gwtDomain.getDomainName())) {
+                return ((KapuaDomainService) kapuaService).getServiceDomain();
             }
-        } catch (KapuaException ex) {
         }
 
         return null;

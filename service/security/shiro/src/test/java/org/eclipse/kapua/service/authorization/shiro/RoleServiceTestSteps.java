@@ -23,7 +23,6 @@ import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionFactoryImpl;
@@ -59,7 +58,7 @@ import java.util.Set;
 @ScenarioScoped
 public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
 
-    private static final Domain TEST_DOMAIN = new TestDomain();
+    private static final TestDomain TEST_DOMAIN = new TestDomain();
 
     // Various Role related service references
     RoleCreator roleCreator;
