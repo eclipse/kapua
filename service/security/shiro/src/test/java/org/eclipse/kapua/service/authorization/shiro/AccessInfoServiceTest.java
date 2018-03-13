@@ -26,7 +26,6 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult
 import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
 import org.eclipse.kapua.service.authorization.access.AccessRoleService;
-import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.Role;
@@ -48,7 +47,7 @@ import java.util.Set;
 
 public class AccessInfoServiceTest extends KapuaTest {
 
-    private static final Domain TEST_DOMAIN = new TestDomain();
+    private static final TestDomain TEST_DOMAIN = new TestDomain();
 
     KapuaEid scope = new KapuaEid(IdGenerator.generate());
 
