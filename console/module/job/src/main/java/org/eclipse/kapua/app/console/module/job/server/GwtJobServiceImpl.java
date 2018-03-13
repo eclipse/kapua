@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -64,10 +64,10 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
             JobService jobService = locator.getService(JobService.class);
 
             // Convert from GWT entity
-            JobQuery userQuery = GwtKapuaJobModelConverter.convertJobQuery(gwtJobQuery, loadConfig);
+            JobQuery jobQuery = GwtKapuaJobModelConverter.convertJobQuery(gwtJobQuery, loadConfig);
 
             // query
-            JobListResult jobs = jobService.query(userQuery);
+            JobListResult jobs = jobService.query(jobQuery);
 
             // If there are results
             if (!jobs.isEmpty()) {
@@ -85,7 +85,7 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
                     usernameMap.put(user.getId().toCompactId(), user.getName());
                 }
                 // count
-                totalLength = Long.valueOf(jobService.count(userQuery)).intValue();
+                totalLength = Long.valueOf(jobService.count(jobQuery)).intValue();
 
                 // Converto to GWT entity
                 for (Job j : jobs.getItems()) {

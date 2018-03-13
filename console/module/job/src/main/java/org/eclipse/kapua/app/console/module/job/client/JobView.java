@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,6 +21,8 @@ import org.eclipse.kapua.app.console.module.job.shared.model.GwtJob;
 
 public class JobView extends AbstractEntityView<GwtJob> {
 
+    private JobGrid jobGrid;
+
     public JobView(GwtSession currentSession) {
         super(currentSession);
     }
@@ -33,12 +35,16 @@ public class JobView extends AbstractEntityView<GwtJob> {
 
     @Override
     public EntityGrid<GwtJob> getEntityGrid(AbstractEntityView<GwtJob> entityView, GwtSession currentSession) {
-        return new JobGrid(entityView, currentSession);
+        if (jobGrid == null ) {
+            jobGrid = new JobGrid(entityView, currentSession);
+        }
+
+        return jobGrid;
     }
 
     @Override
-    public EntityFilterPanel<GwtJob> getEntityFilterPanel(AbstractEntityView<GwtJob> entityView, GwtSession currentSession2) {
-        return null;
+    public EntityFilterPanel<GwtJob> getEntityFilterPanel(AbstractEntityView<GwtJob> entityView, GwtSession currentSession) {
+        return new JobFilterPanel(this, currentSession);
     }
 
 }

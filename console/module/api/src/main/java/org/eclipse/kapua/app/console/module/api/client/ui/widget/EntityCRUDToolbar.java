@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,6 +17,7 @@ import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
@@ -36,6 +37,8 @@ import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPane
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+
+import java.util.List;
 
 public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
 
@@ -67,6 +70,8 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
     protected EntityFilterPanel<M> filterPanel;
 
     protected M selectedEntity;
+
+    private List<Component> extraButtons;
 
     public EntityCRUDToolbar(GwtSession currentSession) {
         this (currentSession, false);
@@ -104,8 +109,13 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
             add(refreshEntityButton);
         }
 
+        if ((extraButtons != null) && (extraButtons.size() > 0)) {
+            for (Component button : extraButtons) {
+                add(button);
+            }
+        }
+
         if (filterButtonShow && filterPanel != null) {
-            //FIXME when providing additional buttons and also the filter button it will probably display weird
             add(new FillToolItem());
             filterButton = new ToggleButton(MSGS.deviceTableToolbarCloseFilter(), new SelectionListener<ButtonEvent>() {
 
@@ -126,6 +136,10 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
         }
 
         updateButtonEnablement();
+    }
+
+    protected void addExtraButtons(List<Component> buttons) {
+        extraButtons = buttons;
     }
 
     //

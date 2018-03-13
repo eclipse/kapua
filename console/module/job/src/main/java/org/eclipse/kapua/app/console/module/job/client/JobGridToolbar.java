@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,6 +13,7 @@ package org.eclipse.kapua.app.console.module.job.client;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
@@ -27,6 +28,9 @@ import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessag
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJob;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobEngineService;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobEngineServiceAsync;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class JobGridToolbar extends EntityCRUDToolbar<GwtJob> {
 
@@ -45,11 +49,8 @@ public class JobGridToolbar extends EntityCRUDToolbar<GwtJob> {
 
     @Override
     protected void onRender(Element target, int index) {
-        super.onRender(target, index);
-        getEditEntityButton().disable();
-        getDeleteEntityButton().disable();
-
-        add(new SeparatorMenuItem());
+        List<Component> extraButtons = new ArrayList<Component>();
+        extraButtons.add(new SeparatorMenuItem());
         startJobButton = new Button(JOB_MSGS.startJobButton(), new KapuaIcon(IconSet.PLAY), new SelectionListener<ButtonEvent>() {
 
             @Override
@@ -59,7 +60,11 @@ public class JobGridToolbar extends EntityCRUDToolbar<GwtJob> {
             }
         });
         startJobButton.disable();
-        add(startJobButton);
+        extraButtons.add(startJobButton);
+        addExtraButtons(extraButtons);
+        super.onRender(target, index);
+        getEditEntityButton().disable();
+        getDeleteEntityButton().disable();
     }
 
     @Override
