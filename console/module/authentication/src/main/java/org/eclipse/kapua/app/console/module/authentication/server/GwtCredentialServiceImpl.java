@@ -20,6 +20,7 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
@@ -237,12 +238,19 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
                             CredentialCreator newCredentialCreator = credentialFactory
                                     .newCreator(scopeId, userId, CredentialType.PASSWORD, newPassword, oldCredential.getStatus(), oldCredential.getExpirationDate());
                             credentialsService.create(newCredentialCreator);
+                        } else {
+                            throw new KapuaEntityNotFoundException("credential", username);
                         }
                         return null;
                     }
                 });
             } catch (KapuaException ke) {
-                throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS, ke, String.format("Wrong existing password for user %s", username));
+                if (ke instanceof KapuaEntityNotFoundException) {
+                    throw new KapuaEntityNotFoundException("credential", username);
+                }
+                else {
+                    throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS, ke, String.format("Wrong existing password for user %s", username));
+                }
             }
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
