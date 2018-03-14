@@ -77,7 +77,7 @@ public class ChangePasswordDialog extends SimpleDialog {
 
     @Override
     public void submit() {
-        credentialService.changePassword(xsrfToken, oldPassword.getValue(), newPassword.getValue(), currentSession.getUserId(), currentSession.getSelectedAccountId(), new AsyncCallback<Void>() {
+        credentialService.changePassword(xsrfToken, oldPassword.getValue(), newPassword.getValue(), currentSession.getUserId(), currentSession.getAccountId(), new AsyncCallback<Void>() {
 
             @Override
             public void onFailure(Throwable caught) {

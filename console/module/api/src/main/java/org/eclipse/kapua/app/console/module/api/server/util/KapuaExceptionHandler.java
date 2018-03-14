@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.api.server.util;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
@@ -90,6 +91,10 @@ public class KapuaExceptionHandler {
         } else if(t instanceof KapuaConfigurationException && ((KapuaConfigurationException) t).getCode().name().equals(KapuaConfigurationErrorCodes.SELF_LIMIT_EXCEEDED_IN_CONFIG.name())) {
             logger.warn("Parent account limitation error", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.SELF_LIMIT_EXCEEDED_IN_CONFIG, t, t.getLocalizedMessage());
+        } else if(t instanceof KapuaEntityNotFoundException) {
+            logger.warn("Entity not found", t);
+            KapuaEntityNotFoundException kapuaEntityNotFoundException = (KapuaEntityNotFoundException)t;
+            throw new GwtKapuaException(GwtKapuaErrorCode.ENTITY_NOT_FOUND, t, kapuaEntityNotFoundException.getEntityType(), kapuaEntityNotFoundException.getEntityName());
         } else {
             // all others => log and throw internal error code
             logger.warn("RPC service non-application error", t);
