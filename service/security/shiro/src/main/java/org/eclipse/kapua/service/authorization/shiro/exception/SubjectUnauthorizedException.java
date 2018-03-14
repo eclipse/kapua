@@ -20,7 +20,7 @@ import org.eclipse.kapua.service.authorization.permission.Permission;
  */
 public class SubjectUnauthorizedException extends KapuaAuthorizationException {
 
-    private static final String KAPUA_ERROR_MESSAGES = "kapua-authorization-service-error-messages";
+    private static final String KAPUA_ERROR_MESSAGES = "kapua-service-error-messages";
 
     private Permission permission;
 

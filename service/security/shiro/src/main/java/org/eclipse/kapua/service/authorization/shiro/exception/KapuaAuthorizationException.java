@@ -22,7 +22,7 @@ public class KapuaAuthorizationException extends KapuaException {
 
     private static final long serialVersionUID = -6207605695086240243L;
 
-    private static final String KAPUA_ERROR_MESSAGES = "kapua-authorization-service-error-messages";
+    private static final String KAPUA_ERROR_MESSAGES = "kapua-service-error-messages";
 
     /**
      * Constructs the exception by error code

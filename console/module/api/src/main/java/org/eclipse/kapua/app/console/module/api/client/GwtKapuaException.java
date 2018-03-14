@@ -107,7 +107,7 @@ public class GwtKapuaException extends Exception {
             ValidationMessages msgs = GWT.create(ValidationMessages.class);
             String msgPattern = msgs.getString(errorCode.name());
             if (msgPattern != null) {
-                msg = format(msgPattern, (Object[]) arguments);
+                msg = format(msgPattern, arguments);
             }
 
             if (remainingLoginAttempts != null) {
