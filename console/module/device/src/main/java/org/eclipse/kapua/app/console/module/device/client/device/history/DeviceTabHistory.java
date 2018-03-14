@@ -96,12 +96,13 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
         super(currentSession, DEVICES_MSGS.tabHistory(), new KapuaIcon(IconSet.HISTORY));
         this.currentSession = currentSession;
         initialized = false;
+        setEnabled(false);
     }
 
     @Override
     public void setEntity(GwtDevice gwtDevice) {
         super.setEntity(gwtDevice);
-
+        setEnabled(gwtDevice != null);
     }
 
     @Override
