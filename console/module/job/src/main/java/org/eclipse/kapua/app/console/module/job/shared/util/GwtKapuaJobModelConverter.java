@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -32,6 +32,7 @@ import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.JobFactory;
 import org.eclipse.kapua.service.job.JobPredicates;
@@ -118,18 +119,23 @@ public class GwtKapuaJobModelConverter {
     }
 
     public static JobQuery convertJobQuery(GwtJobQuery gwtJobQuery, PagingLoadConfig loadConfig) {
+
+        AndPredicate predicate = new AndPredicate();
+        // Convert query
         JobQuery jobQuery = JOB_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobQuery.getScopeId()));
+        if (gwtJobQuery.getName() != null && !gwtJobQuery.getName().isEmpty()) {
+            predicate.and(new AttributePredicate<String>(JobPredicates.NAME, gwtJobQuery.getName(), Operator.LIKE));
+        }
         jobQuery.setLimit(loadConfig.getLimit());
         jobQuery.setOffset(loadConfig.getOffset());
-
         String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? JobPredicates.NAME : loadConfig.getSortField();
         if (sortField.equals("jobName")) {
             sortField = JobPredicates.NAME;
         }
-
         SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
         FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
         jobQuery.setSortCriteria(sortCriteria);
+        jobQuery.setPredicate(predicate);
 
         return jobQuery;
     }
