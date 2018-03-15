@@ -57,7 +57,7 @@ public class DeviceEventExporterExcel extends DeviceEventExporter {
 
     @Override
     public void init(final String scopeId)
-            throws ServletException, IOException {
+            throws ServletException, IOException, KapuaException {
         this.scopeId = scopeId;
 
         final AccountService accountService = KapuaLocator.getInstance().getService(AccountService.class);
@@ -72,7 +72,7 @@ public class DeviceEventExporterExcel extends DeviceEventExporter {
             });
             accountName = account.getName();
         } catch (KapuaException e) {
-            KapuaException.internalError(e);
+            throw KapuaException.internalError(e);
         }
 
         // workbook

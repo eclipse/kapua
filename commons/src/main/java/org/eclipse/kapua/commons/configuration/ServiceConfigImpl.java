@@ -90,7 +90,7 @@ public class ServiceConfigImpl extends AbstractKapuaUpdatableEntity implements S
             try {
                 props.load(new StringReader(configurations));
             } catch (IOException e) {
-                KapuaException.internalError(e);
+                throw KapuaException.internalError(e);
             }
         }
         return props;
@@ -105,7 +105,7 @@ public class ServiceConfigImpl extends AbstractKapuaUpdatableEntity implements S
                 props.store(writer, null);
                 configurations = writer.toString();
             } catch (IOException e) {
-                KapuaException.internalError(e);
+                throw KapuaException.internalError(e);
             }
         }
     }

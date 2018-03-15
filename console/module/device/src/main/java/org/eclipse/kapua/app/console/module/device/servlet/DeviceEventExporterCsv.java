@@ -49,7 +49,7 @@ public class DeviceEventExporterCsv extends DeviceEventExporter {
 
     @Override
     public void init(final String scopeId)
-            throws ServletException, IOException {
+            throws ServletException, IOException, KapuaException {
         this.scopeId = scopeId;
 
         final AccountService accountService = KapuaLocator.getInstance().getService(AccountService.class);
@@ -64,7 +64,7 @@ public class DeviceEventExporterCsv extends DeviceEventExporter {
             });
             accountName = account.getName();
         } catch (KapuaException e) {
-            KapuaException.internalError(e);
+            throw KapuaException.internalError(e);
         }
 
         dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");

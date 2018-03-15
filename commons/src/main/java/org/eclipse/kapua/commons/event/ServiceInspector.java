@@ -92,7 +92,7 @@ public class ServiceInspector {
                                     try {
                                         listenerMethod.invoke(aService, new Object[] { serviceEvent });
                                     } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                                        KapuaException.internalError(e, String.format("Error invoking method %s", method.getName()));
+                                        throw KapuaException.internalError(e, String.format("Error invoking method %s", method.getName()));
                                     }
                                 }));
                 }
