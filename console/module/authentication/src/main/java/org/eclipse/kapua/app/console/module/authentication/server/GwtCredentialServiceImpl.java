@@ -239,14 +239,14 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
                                     .newCreator(scopeId, userId, CredentialType.PASSWORD, newPassword, oldCredential.getStatus(), oldCredential.getExpirationDate());
                             credentialsService.create(newCredentialCreator);
                         } else {
-                            throw new KapuaEntityNotFoundException("credential", username);
+                            throw new KapuaEntityNotFoundException(Credential.TYPE, username);
                         }
                         return null;
                     }
                 });
             } catch (KapuaException ke) {
                 if (ke instanceof KapuaEntityNotFoundException) {
-                    throw new KapuaEntityNotFoundException("credential", username);
+                    throw new KapuaEntityNotFoundException(Credential.TYPE, username);
                 }
                 else {
                     throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS, ke, String.format("Wrong existing password for user %s", username));
