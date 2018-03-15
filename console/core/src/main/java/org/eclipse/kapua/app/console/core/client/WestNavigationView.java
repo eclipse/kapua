@@ -52,11 +52,9 @@ import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.ContentPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractView;
-import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.MainViewDescriptor;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleService;
-import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleServiceAsync;
 
 import java.util.Arrays;
 import java.util.List;
@@ -77,7 +75,6 @@ public class WestNavigationView extends LayoutContainer {
     private TreeGrid<ModelData> accountManagementTreeGrid;
 
     private boolean dashboardSelected;
-    private KapuaIcon imgRefreshLabel;
 
     private final GwtSession currentSession;
 
@@ -85,11 +82,17 @@ public class WestNavigationView extends LayoutContainer {
 
     private static final GwtConsoleServiceAsync CONSOLE_SERVICE = GWT.create(GwtConsoleService.class);
 
+    /**
+     * Last menu item that was selected before refresh.
+     */
+    private String lastSelectedId;
+
     public WestNavigationView(GwtSession currentSession, LayoutContainer center, KapuaCloudConsole kapuaCloudConsole) {
         this.currentSession = currentSession;
         this.kapuaCloudConsole = kapuaCloudConsole;
         centerPanel = center;
         dashboardSelected = true;
+        lastSelectedId = "none";
     }
 
     @Override
@@ -179,7 +182,10 @@ public class WestNavigationView extends LayoutContainer {
                         panel.setBorders(false);
                         panel.setBodyBorder(false);
 
-                        String selectedId = selected.get("id");
+                        final String selectedId = selected.get("id");
+                        synchronized (lastSelectedId) {
+                            lastSelectedId = selectedId;
+                        }
                         if ("mysettings".equals(selectedId)) {
                             kapuaCloudConsole.getFilterPanel().hide();
 
@@ -193,6 +199,11 @@ public class WestNavigationView extends LayoutContainer {
 
                                 @Override
                                 public void onSuccess(GwtAccount result) {
+                                    synchronized (lastSelectedId) {
+                                        if (!selectedId.equals(lastSelectedId)) {
+                                            return;
+                                        }
+                                    }
                                     AccountDetailsView settingView = new AccountDetailsView(currentSession);
                                     settingView.setAccount(result);
 
