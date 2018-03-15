@@ -104,6 +104,8 @@ public class AccountConfigComponents extends LayoutContainer {
 
     private boolean applyProcess;
 
+    private GwtSession gwtSession;
+
     private final AsyncCallback<Void> applyConfigCallback = new AsyncCallback<Void>() {
 
         @Override
@@ -126,6 +128,7 @@ public class AccountConfigComponents extends LayoutContainer {
         this.tabConfig = tabConfig;
         dirty = false;
         initialized = false;
+        gwtSession = currentSession;
     }
 
     public void setAccount(GwtAccount selectedAccount) {
@@ -175,6 +178,7 @@ public class AccountConfigComponents extends LayoutContainer {
 
                     refreshButton.setEnabled(true);
                     refreshProcess = false;
+                    gwtSession.setFormDirty(false);
                 }
             }
         });
@@ -195,6 +199,7 @@ public class AccountConfigComponents extends LayoutContainer {
 
                     apply.setEnabled(true);
                     applyProcess = false;
+                    gwtSession.setFormDirty(false);
                 }
             }
         });
@@ -211,12 +216,14 @@ public class AccountConfigComponents extends LayoutContainer {
 
                     reset.setEnabled(true);
                     resetProcess = false;
+                    gwtSession.setFormDirty(false);
                 }
             }
         });
 
         apply.setEnabled(false);
         reset.setEnabled(false);
+        gwtSession.setFormDirty(false);
 
         toolBar.add(apply);
         toolBar.add(new SeparatorToolItem());
@@ -344,6 +351,7 @@ public class AccountConfigComponents extends LayoutContainer {
             apply.setEnabled(false);
             reset.setEnabled(false);
             refreshButton.setEnabled(false);
+            gwtSession.setFormDirty(false);
 
             treeStore.removeAll();
 
@@ -362,6 +370,7 @@ public class AccountConfigComponents extends LayoutContainer {
     private void refreshConfigPanel(GwtConfigComponent configComponent) {
         apply.setEnabled(false);
         reset.setEnabled(false);
+        gwtSession.setFormDirty(false);
 
         if (devConfPanel != null) {
             devConfPanel.removeFromParent();
@@ -375,6 +384,7 @@ public class AccountConfigComponents extends LayoutContainer {
                 public void handleEvent(BaseEvent be) {
                     apply.setEnabled(true);
                     reset.setEnabled(true);
+                    gwtSession.setFormDirty(true);
                 }
             });
             configPanel.add(devConfPanel, centerData);
@@ -415,6 +425,7 @@ public class AccountConfigComponents extends LayoutContainer {
                             apply.setEnabled(false);
                             reset.setEnabled(false);
                             refreshButton.setEnabled(false);
+                            gwtSession.setFormDirty(false);
 
                             //
                             // Getting XSRF token

@@ -19,12 +19,15 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -78,14 +81,25 @@ public class WestNavigationView extends LayoutContainer {
 
     private final GwtSession currentSession;
 
-    private static final GwtAccountServiceAsync GWT_ACCOUNT_SERVICE = GWT.create(GwtAccountService.class);
+    /**
+     * Next selection change shall be skipped. Helps undo menu selection.
+     */
+    private boolean skipNextSelChange;
 
-    private static final GwtConsoleServiceAsync CONSOLE_SERVICE = GWT.create(GwtConsoleService.class);
+    /**
+     * Last menu item that was selected before selection changed.
+     */
+    private int lastSelection;
 
     /**
      * Last menu item that was selected before refresh.
      */
     private String lastSelectedId;
+
+    private static final GwtAccountServiceAsync GWT_ACCOUNT_SERVICE = GWT.create(GwtAccountService.class);
+
+    private static final GwtConsoleServiceAsync CONSOLE_SERVICE = GWT.create(GwtConsoleService.class);
+
 
     public WestNavigationView(GwtSession currentSession, LayoutContainer center, KapuaCloudConsole kapuaCloudConsole) {
         this.currentSession = currentSession;
@@ -163,90 +177,37 @@ public class WestNavigationView extends LayoutContainer {
                 cloudResourcesTreeGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<ModelData>() {
 
                     @Override
-                    public void selectionChanged(SelectionChangedEvent<ModelData> se) {
-                        ModelData selected = se.getSelectedItem();
-                        if (selected == null) {
-                            kapuaCloudConsole.getFilterPanel().hide();
-                            return;
-                        }
+                    public void selectionChanged(final SelectionChangedEvent<ModelData> se) {
 
-                        if (dashboardSelected && (selected.get("id")).equals("welcome")) {
-                            kapuaCloudConsole.getFilterPanel().hide();
-                            return;
-                        }
+                        if ((currentSession.isFormDirty()) && (!skipNextSelChange)) {
+                            // ask for confirmation before switching
+                            MessageBox.confirm(MSGS.confirm(),
+                                    MSGS.unsavedChanges(),
+                                    new Listener<MessageBoxEvent>() {
 
-                        centerPanel.removeAll();
-
-                        final ContentPanel panel = new ContentPanel(new FitLayout());
-
-                        panel.setBorders(false);
-                        panel.setBodyBorder(false);
-
-                        final String selectedId = selected.get("id");
-                        synchronized (lastSelectedId) {
-                            lastSelectedId = selectedId;
-                        }
-                        if ("mysettings".equals(selectedId)) {
-                            kapuaCloudConsole.getFilterPanel().hide();
-
-                            // TODO generalize!
-                            GWT_ACCOUNT_SERVICE.find(currentSession.getSelectedAccountId(), new AsyncCallback<GwtAccount>() {
-
-                                @Override
-                                public void onFailure(Throwable caught) {
-                                    FailureHandler.handle(caught);
-                                }
-
-                                @Override
-                                public void onSuccess(GwtAccount result) {
-                                    synchronized (lastSelectedId) {
-                                        if (!selectedId.equals(lastSelectedId)) {
-                                            return;
+                                        @Override
+                                        public void handleEvent(MessageBoxEvent ce) {
+                                            // if confirmed
+                                            Dialog dialog = ce.getDialog();
+                                            if (dialog.yesText.equals(ce.getButtonClicked().getText())) {
+                                                currentSession.setFormDirty(false);
+                                                menuChange(se, additionalViewDescriptors);
+                                                lastSelection = getLastSelection(se);
+                                            } else {
+                                                // forget changes
+                                                skipNextSelChange = true;
+                                                cloudResourcesTreeGrid.getSelectionModel().select(lastSelection, false);
+                                            }
                                         }
-                                    }
-                                    AccountDetailsView settingView = new AccountDetailsView(currentSession);
-                                    settingView.setAccount(result);
-
-                                    panel.setIcon(new KapuaIcon(IconSet.COG));
-                                    panel.setHeading(MSGS.settings());
-                                    panel.add(settingView);
-
-                                    centerPanel.add(panel);
-                                    centerPanel.layout();
-
-                                    settingView.refresh();
-                                }
-                            });
-
+                                    });
+                        } else if ((currentSession.isFormDirty()) && (skipNextSelChange)) {
+                            // Selecton change is skipped because it is result of secection undo from
+                            // previous condition.
                         } else {
-                            for (MainViewDescriptor viewDescriptor : additionalViewDescriptors) {
-                                if (viewDescriptor.getViewId().equals(selectedId)) {
-                                    panel.setIcon(new KapuaIcon(viewDescriptor.getIcon()));
-                                    panel.setHeading(viewDescriptor.getName());
-
-                                    AbstractView view = (AbstractView) viewDescriptor.getViewInstance(currentSession);
-                                    panel.add(view);
-
-                                    if (view instanceof AbstractEntityView) {
-                                        AbstractEntityView abstractEntityView = (AbstractEntityView) view;
-                                        EntityFilterPanel filterPanel = abstractEntityView.getEntityFilterPanel(abstractEntityView, currentSession);
-                                        if (filterPanel != null) {
-                                            kapuaCloudConsole.setFilterPanel(filterPanel, abstractEntityView);
-                                            kapuaCloudConsole.getFilterPanel().show();
-                                        } else {
-                                            kapuaCloudConsole.getFilterPanel().hide();
-                                        }
-                                    } else {
-                                        kapuaCloudConsole.getFilterPanel().hide();
-                                    }
-                                    centerPanel.add(panel);
-                                    centerPanel.layout();
-                                    break;
-                                }
-                            }
+                            menuChange(se, additionalViewDescriptors);
+                            lastSelection = getLastSelection(se);
                         }
-
-                        setDashboardSelected(false);
+                        skipNextSelChange = false;
                     }
                 });
 
@@ -278,6 +239,111 @@ public class WestNavigationView extends LayoutContainer {
             }
         });
 
+    }
+
+    /**
+     * Extract last selection form selection change event.
+     *
+     * @param se event that was triggered by selection change
+     * @return index of selected item in selection model, default is 0 if nothing is
+     * selected.
+     */
+    private int getLastSelection(SelectionChangedEvent<ModelData> se) {
+        List<ModelData> selections = se.getSelection();
+        int selected = 0;
+
+        if ((selections != null) && (selections.size() > 0)) {
+            selected = cloudResourcesTreeStore.getAllItems().indexOf(selections.get(0));
+        }
+
+        return selected;
+    }
+
+    private void menuChange(SelectionChangedEvent<ModelData> se, List<MainViewDescriptor> additionalViewDescriptors) {
+        ModelData selected = se.getSelectedItem();
+
+        if (selected == null) {
+            kapuaCloudConsole.getFilterPanel().hide();
+            return;
+        }
+
+        if (dashboardSelected && (selected.get("id")).equals("welcome")) {
+            kapuaCloudConsole.getFilterPanel().hide();
+            return;
+        }
+
+        centerPanel.removeAll();
+
+        final ContentPanel panel = new ContentPanel(new FitLayout());
+
+        panel.setBorders(false);
+        panel.setBodyBorder(false);
+
+        final String selectedId = selected.get("id");
+        synchronized (lastSelectedId) {
+            lastSelectedId = selectedId;
+        }
+        if ("mysettings".equals(selectedId)) {
+            kapuaCloudConsole.getFilterPanel().hide();
+
+            // TODO generalize!
+            GWT_ACCOUNT_SERVICE.find(currentSession.getSelectedAccountId(), new AsyncCallback<GwtAccount>() {
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    FailureHandler.handle(caught);
+                }
+
+                @Override
+                public void onSuccess(GwtAccount result) {
+                    synchronized (lastSelectedId) {
+                        if (!selectedId.equals(lastSelectedId)) {
+                            return;
+                        }
+                    }
+                    AccountDetailsView settingView = new AccountDetailsView(currentSession);
+                    settingView.setAccount(result);
+
+                    panel.setIcon(new KapuaIcon(IconSet.COG));
+                    panel.setHeading(MSGS.settings());
+                    panel.add(settingView);
+
+                    centerPanel.add(panel);
+                    centerPanel.layout();
+
+                    settingView.refresh();
+                }
+            });
+
+        } else {
+            for (MainViewDescriptor viewDescriptor : additionalViewDescriptors) {
+                if (viewDescriptor.getViewId().equals(selectedId)) {
+                    panel.setIcon(new KapuaIcon(viewDescriptor.getIcon()));
+                    panel.setHeading(viewDescriptor.getName());
+
+                    AbstractView view = (AbstractView) viewDescriptor.getViewInstance(currentSession);
+                    panel.add(view);
+
+                    if (view instanceof AbstractEntityView) {
+                        AbstractEntityView abstractEntityView = (AbstractEntityView) view;
+                        EntityFilterPanel filterPanel = abstractEntityView.getEntityFilterPanel(abstractEntityView, currentSession);
+                        if (filterPanel != null) {
+                            kapuaCloudConsole.setFilterPanel(filterPanel, abstractEntityView);
+                            kapuaCloudConsole.getFilterPanel().show();
+                        } else {
+                            kapuaCloudConsole.getFilterPanel().hide();
+                        }
+                    } else {
+                        kapuaCloudConsole.getFilterPanel().hide();
+                    }
+                    centerPanel.add(panel);
+                    centerPanel.layout();
+                    break;
+                }
+            }
+        }
+
+        setDashboardSelected(false);
     }
 
     public void addMenuItems(List<MainViewDescriptor> additionalViewDescriptors) {
