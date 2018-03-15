@@ -176,7 +176,8 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
                 }));
         export = new ExportButton();
         export.setMenu(menu);
-
+        export.disableEvents(true);
+        export.setStyleAttribute("opacity", "0.6");
         toolBar.add(export);
         toolBar.add(new SeparatorToolItem());
 
@@ -247,6 +248,8 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
             @Override
             public void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtDeviceEvent>> callback) {
                 if (selectedEntity != null) {
+                    export.disableEvents(false);
+                    export.setStyleAttribute("opacity", "1");
                     PagingLoadConfig pagingConfig = (BasePagingLoadConfig) loadConfig;
                     ((BasePagingLoadConfig) pagingConfig).setLimit(DEVICE_PAGE_SIZE);
                     gwtDeviceService.findDeviceEvents(pagingConfig,
