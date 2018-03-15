@@ -16,6 +16,7 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.service.device.registry.Device;
 
@@ -70,7 +71,7 @@ public abstract class DeviceExporter {
             throws ServletException, IOException;
 
     public abstract void append(KapuaListResult<Device> messages)
-            throws ServletException, IOException;
+            throws ServletException, IOException, KapuaException;
 
     public abstract void close()
             throws ServletException, IOException;

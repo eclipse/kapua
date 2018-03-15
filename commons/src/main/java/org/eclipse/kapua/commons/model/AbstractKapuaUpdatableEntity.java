@@ -161,7 +161,7 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
             try {
                 props.load(new StringReader(attributes));
             } catch (IOException e) {
-                KapuaException.internalError(e);
+                throw KapuaException.internalError(e);
             }
         }
         return props;
@@ -176,7 +176,7 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
                 props.store(writer, null);
                 attributes = writer.toString();
             } catch (IOException e) {
-                KapuaException.internalError(e);
+                throw KapuaException.internalError(e);
             }
         }
     }
@@ -195,7 +195,7 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
             try {
                 props.load(new StringReader(properties));
             } catch (IOException e) {
-                KapuaException.internalError(e);
+                throw KapuaException.internalError(e);
             }
         }
         return props;
@@ -210,7 +210,7 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
                 props.store(writer, null);
                 properties = writer.toString();
             } catch (IOException e) {
-                KapuaException.internalError(e);
+                throw KapuaException.internalError(e);
             }
         }
     }

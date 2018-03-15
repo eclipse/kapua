@@ -725,7 +725,7 @@ public class ServiceDAO {
      * @since 1.0.0
      */
     @SuppressWarnings("rawtypes")
-    protected static void handleKapuaQueryGroupPredicate(KapuaQuery query, Domain domain, String groupPredicateName) {
+    protected static void handleKapuaQueryGroupPredicate(KapuaQuery query, Domain domain, String groupPredicateName) throws KapuaException {
 
         if (ACCESS_INFO_FACTORY != null) {
             KapuaSession kapuaSession = KapuaSecurityUtils.getSession();
@@ -799,7 +799,7 @@ public class ServiceDAO {
 
                     query.setPredicate(andPredicate);
                 } catch (Exception e) {
-                    KapuaException.internalError(e, "Error while grouping!");
+                    throw KapuaException.internalError(e, "Error while grouping!");
                 }
             }
         } else {

@@ -76,14 +76,14 @@ public class DeviceExporterExcel extends DeviceExporter {
 
     @Override
     public void append(KapuaListResult<Device> devices)
-            throws ServletException, IOException {
+            throws ServletException, IOException, KapuaException {
 
         AccountService accountService = KapuaLocator.getInstance().getService(AccountService.class);
         Account account = null;
         try {
             account = accountService.find(KapuaEid.parseCompactId(this.account));
         } catch (KapuaException e) {
-            KapuaException.internalError(e);
+            throw KapuaException.internalError(e);
         }
 
         Row row;
