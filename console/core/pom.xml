@@ -142,6 +142,18 @@
 
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-console-module-endpoint</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-console-module-endpoint</artifactId>
+            <classifier>sources</classifier>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-job</artifactId>
         </dependency>
         <dependency>
@@ -169,7 +181,7 @@
             <artifactId>kapua-console-module-user</artifactId>
             <classifier>sources</classifier>
         </dependency>
-
+        
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-welcome</artifactId>
@@ -180,7 +192,7 @@
             <classifier>sources</classifier>
         </dependency>
 
-        <!-- Internal dependencies-->
+        <!-- Internal dependencies -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-sso-api</artifactId>

@@ -33,6 +33,9 @@
     <inherits name="org.eclipse.kapua.app.console.module.device.adminModuleDevice"/>
     <inherits name="org.eclipse.kapua.app.console.module.job.adminModuleJob"/>
     <inherits name="org.eclipse.kapua.app.console.module.data.adminModuleData"/>
+    <inherits name="org.eclipse.kapua.app.console.module.device.adminModuleDevice"/>
+    <inherits name="org.eclipse.kapua.app.console.module.endpoint.adminModuleEndpoint"/>
+    <inherits name="org.eclipse.kapua.app.console.module.job.adminModuleJob"/>
     <inherits name="org.eclipse.kapua.app.console.module.tag.adminModuleTag"/>
     <inherits name="org.eclipse.kapua.app.console.module.user.adminModuleUser"/>
     <inherits name="org.eclipse.kapua.app.console.module.welcome.adminModuleWelcome"/>
