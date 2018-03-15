@@ -32,6 +32,13 @@
     ]
   },
   {
+    "descriptor": "org.eclipse.kapua.app.console.module.endpoint.client.EndpointViewDescriptor",
+    "view": "org.eclipse.kapua.app.console.module.endpoint.client.EndpointView",
+    "tabs": [
+      "org.eclipse.kapua.app.console.module.endpoint.client.EndpointTabDescriptionDescriptor"
+    ]
+  },
+  {
     "descriptor": "org.eclipse.kapua.app.console.module.device.client.device.DeviceViewDescriptor",
     "view": "org.eclipse.kapua.app.console.module.device.client.device.DeviceView",
     "tabs": [

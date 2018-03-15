@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.endpoint.internal;
 
-import com.google.common.collect.Lists;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -153,16 +152,16 @@ public class EndpointInfoServiceImpl
 
             if (endpointInfoListResult.isEmpty() && query.getScopeId() != null) {
 
+                KapuaId originalScopeId = query.getScopeId();
+
                 do {
                     Account account = KapuaSecurityUtils.doPrivileged(() -> ACCOUNT_SERVICE.find(query.getScopeId()));
                     query.setScopeId(account.getScopeId());
                     endpointInfoListResult = EndpointInfoDAO.query(em, query);
                 }
                 while (query.getScopeId() != null && endpointInfoListResult.isEmpty());
-            }
 
-            if (endpointInfoListResult.isEmpty()) {
-                endpointInfoListResult.addItems(Lists.newArrayList(DEFAULT_ENDPOINT_INFO));
+                query.setScopeId(originalScopeId);
             }
 
             return endpointInfoListResult;
@@ -185,16 +184,16 @@ public class EndpointInfoServiceImpl
 
             if (endpointInfoCount == 0 && query.getScopeId() != null) {
 
+                KapuaId originalScopeId = query.getScopeId();
+
                 do {
                     Account account = KapuaSecurityUtils.doPrivileged(() -> ACCOUNT_SERVICE.find(query.getScopeId()));
                     query.setScopeId(account.getScopeId());
                     endpointInfoCount = EndpointInfoDAO.count(em, query);
                 }
                 while (query.getScopeId() != null && endpointInfoCount == 0);
-            }
 
-            if (endpointInfoCount == 0) {
-                endpointInfoCount = 1;
+                query.setScopeId(originalScopeId);
             }
 
             return endpointInfoCount;

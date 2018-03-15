@@ -49,6 +49,7 @@
         <url-pattern>/deviceConnection/*</url-pattern>
         <url-pattern>/deviceConnectionOption/*</url-pattern>
         <url-pattern>/device_snapshots/*</url-pattern>
+        <url-pattern>/endpoint/*</url-pattern>
         <url-pattern>/user/*</url-pattern>
         <url-pattern>/data/*</url-pattern>
         <url-pattern>/exporter_data/*</url-pattern>
@@ -212,6 +213,15 @@
     <servlet-mapping>
         <servlet-name>deviceConnectionOptionServlet</servlet-name>
         <url-pattern>/deviceConnectionOption</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>endpointServlet</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.module.endpoint.server.GwtEndpointServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>endpointServlet</servlet-name>
+        <url-pattern>/endpoint</url-pattern>
     </servlet-mapping>
 
     <servlet>

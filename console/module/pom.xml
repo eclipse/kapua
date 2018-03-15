@@ -11,7 +11,7 @@
         Eurotech - initial API and implementation
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>kapua-console</artifactId>
         <groupId>org.eclipse.kapua</groupId>
@@ -21,7 +21,7 @@
 
     <artifactId>kapua-console-module</artifactId>
     <packaging>pom</packaging>
-    
+
     <modules>
         <module>api</module>
         <module>about</module>
@@ -30,10 +30,11 @@
         <module>authorization</module>
         <module>data</module>
         <module>device</module>
+        <module>endpoint</module>
+        <module>job</module>
         <module>tag</module>
         <module>user</module>
         <module>welcome</module>
-        <module>job</module>
     </modules>
 
     <build>
