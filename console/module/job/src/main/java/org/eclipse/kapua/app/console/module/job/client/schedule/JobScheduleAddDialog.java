@@ -12,6 +12,7 @@
 package org.eclipse.kapua.app.console.module.job.client.schedule;
 
 import com.extjs.gxt.ui.client.widget.form.DateField;
+import com.extjs.gxt.ui.client.widget.form.MultiField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.TimeField;
 import com.google.gwt.core.client.GWT;
@@ -71,39 +72,51 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         retryInterval = new KapuaNumberField();
         cronExpression = new TextField<String>();
 
-        DialogUtils.resizeDialog(this, 400, 300);
+        DialogUtils.resizeDialog(this, 400, 250);
     }
 
     @Override
     public void createBody() {
         FormPanel mainPanel = new FormPanel(150);
+        MultiField<?> multiFieldStartsOn=new MultiField<Object>();
+        MultiField<?> multiFieldEndsOn=new MultiField<Object>();
+        multiFieldStartsOn.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleStartsOnLabel());
+        multiFieldStartsOn.setSpacing(20);
+        multiFieldEndsOn.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleEndsOnLabel());
+        multiFieldEndsOn.setSpacing(20);
 
         triggerName.setAllowBlank(false);
         triggerName.setMaxLength(255);
         triggerName.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleScheduleNameLabel());
         mainPanel.add(triggerName);
 
-        startsOn.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleStartsOnLabel());
         startsOn.setFormatValue(true);
         startsOn.setAllowBlank(false);
+        startsOn.setWidth(90);
+        startsOn.setEmptyText(JOB_MSGS.dialogAddScheduleDatePlaceholder());
         startsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
-        mainPanel.add(startsOn);
+        multiFieldStartsOn.add(startsOn);
 
         startsOnTime.setAllowBlank(false);
-        startsOnTime.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleStartsOnTimeLabel());
         startsOnTime.setFormat(DateTimeFormat.getFormat("HH:mm"));
         startsOnTime.setEditable(false);
-        mainPanel.add(startsOnTime);
+        startsOnTime.setWidth(85);
+        startsOnTime.setEmptyText(JOB_MSGS.dialogAddScheduleTimePlaceholder());
+        multiFieldStartsOn.add(startsOnTime);
+        mainPanel.add(multiFieldStartsOn);
 
-        endsOn.setFieldLabel(JOB_MSGS.dialogAddScheduleEndsOnLabel());
         endsOn.setFormatValue(true);
+        endsOn.setWidth(90);
+        endsOn.setEmptyText(JOB_MSGS.dialogAddScheduleDatePlaceholder());
         endsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
-        mainPanel.add(endsOn);
+        multiFieldEndsOn.add(endsOn);
 
-        endsOnTime.setFieldLabel(JOB_MSGS.dialogAddScheduleEndsOnTimeLabel());
         endsOnTime.setFormat(DateTimeFormat.getFormat("HH:mm"));
         endsOnTime.setEditable(false);
-        mainPanel.add(endsOnTime);
+        endsOnTime.setWidth(85);
+        endsOnTime.setEmptyText(JOB_MSGS.dialogAddScheduleTimePlaceholder());
+        multiFieldEndsOn.add(endsOnTime);
+        mainPanel.add(multiFieldEndsOn);
 
         retryInterval.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleRetryIntervalLabel());
         retryInterval.setAllowDecimals(false);
