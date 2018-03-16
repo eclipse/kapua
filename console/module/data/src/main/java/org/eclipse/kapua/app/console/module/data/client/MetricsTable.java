@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.data.client;
 
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.BaseListLoader;
@@ -28,6 +29,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGridCheckBoxSelectionModel;
 import org.eclipse.kapua.app.console.module.api.client.util.SwappableListStore;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.data.client.messages.ConsoleDataMessages;
@@ -70,12 +72,13 @@ public class MetricsTable extends LayoutContainer {
 
     @Override
     protected void onRender(Element parent, int index) {
+        initMetricsTable();
+
         super.onRender(parent, index);
 
         setLayout(new FitLayout());
         setBorders(false);
 
-        initMetricsTable();
         add(tableContainer);
     }
 
@@ -107,7 +110,7 @@ public class MetricsTable extends LayoutContainer {
     private void initChannelInfoGrid() {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
-        CheckBoxSelectionModel<GwtHeader> selectionModel = new CheckBoxSelectionModel<GwtHeader>();
+        CheckBoxSelectionModel<GwtHeader> selectionModel = new EntityGridCheckBoxSelectionModel<GwtHeader>();
         configs.add(selectionModel.getColumn());
         ColumnConfig column;
         if (type == Type.ASSET) {
@@ -155,6 +158,7 @@ public class MetricsTable extends LayoutContainer {
         for (SelectionChangedListener<GwtHeader> listener : listeners) {
             selectionModel.addSelectionChangedListener(listener);
         }
+        selectionModel.setSelectionMode(Style.SelectionMode.SIMPLE);
         metricsInfoGrid.addPlugin(selectionModel);
         metricsInfoGrid.setSelectionModel(selectionModel);
     }
