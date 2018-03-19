@@ -11,15 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.util;
 
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Random;
-
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.KapuaIllegalNullArgumentException;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Random;
 
 public class ArgumentValidatorTest extends Assert {
 
@@ -32,10 +32,9 @@ public class ArgumentValidatorTest extends Assert {
 
     @Test
     public void testMatchNotNull() throws KapuaIllegalArgumentException {
-        String argRegExp = "^[a-zA-Z0-9\\-]{3,}$";
         String argVal = null;
         try {
-            ArgumentValidator.match(argVal, argRegExp, "Null_test_case");
+            ArgumentValidator.match(argVal, CommonsValidationRegex.SIMPLE_NAME_REGEXP, "Null_test_case");
         } catch (Exception ex) {
             fail("No exception expected for: " + argVal);
         }
@@ -43,7 +42,6 @@ public class ArgumentValidatorTest extends Assert {
 
     @Test
     public void testIllegalCharacterSimpleName() throws Exception {
-        String argRegExprSimpleName = "^[a-zA-Z0-9\\-]{3,}$";
         String permittedSymbols = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890-";
         String[] listOfFalseStringsSimpleName = new String[] { "abc!", "abc\\", "abc#", "abc$", "abc%", "abc&", "abc'", "abc(",
                 "abc)", "abc=", "abc?", "abc*", "abc_", "abc:", "abc;", "abc>", "abc<", "abc.", "abc,", "abc¡", "abc™", "abc£",
@@ -59,7 +57,7 @@ public class ArgumentValidatorTest extends Assert {
         // Negative tests
         for (int i = 0; i < sizeOfFalseStrings; i++) {
             try {
-                ArgumentValidator.match(listOfFalseStringsSimpleName[i], argRegExprSimpleName, "SIMPLE_NAME_test_case");
+                ArgumentValidator.match(listOfFalseStringsSimpleName[i], CommonsValidationRegex.SIMPLE_NAME_REGEXP, "SIMPLE_NAME_test_case");
                 fail("Exception expected for: " + listOfFalseStringsSimpleName[i]);
             } catch (KapuaIllegalArgumentException e) {
                 // Expected
@@ -68,7 +66,7 @@ public class ArgumentValidatorTest extends Assert {
         // Positive tests
         for (int i = 0; i < sizeOfPermittedStrings; i++) {
             try {
-                ArgumentValidator.match(listOfPermittedStringsSimpleName[i], argRegExprSimpleName, "SIMPLE_NAME_test_case");
+                ArgumentValidator.match(listOfPermittedStringsSimpleName[i], CommonsValidationRegex.SIMPLE_NAME_REGEXP, "SIMPLE_NAME_test_case");
             } catch (Exception ex) {
                 fail("No exception expected for: " + listOfPermittedStringsSimpleName[i]);
             }
@@ -93,7 +91,7 @@ public class ArgumentValidatorTest extends Assert {
         // Negative tests
         for (int i = 0; i < sizeOfFalseStrings; i++) {
             try {
-                ArgumentValidator.match(listOfFalseStringsName[i], argRegExprName, "NAME_REGEXP_test_case");
+                ArgumentValidator.match(listOfFalseStringsName[i], CommonsValidationRegex.NAME_REGEXP, "NAME_REGEXP_test_case");
                 fail("Exception expected for: " + listOfFalseStringsName[i]);
             } catch (KapuaIllegalArgumentException e) {
                 // Expected
@@ -102,7 +100,7 @@ public class ArgumentValidatorTest extends Assert {
         // Positive tests
         for (int i = 0; i < sizeOfPermittedStrings; i++) {
             try {
-                ArgumentValidator.match(listOfPermittedStringsName[i], argRegExprName, "NAME_REGEXP_test_case");
+                ArgumentValidator.match(listOfPermittedStringsName[i], CommonsValidationRegex.NAME_REGEXP, "NAME_REGEXP_test_case");
             } catch (Exception ex) {
                 fail("No exception expected for: " + listOfPermittedStringsName[i]);
             }
@@ -127,7 +125,7 @@ public class ArgumentValidatorTest extends Assert {
         int sizeOfPermittedStrings = listOfPermittedStringsNameSpace.length;
         for (int i = 0; i < sizeOfFalseStrings; i++) {
             try {
-                ArgumentValidator.match(listOfFalseStringsNameSpace[i], argRegExprNameSpace, "NAME_SPACE_REGEXP_test_case");
+                ArgumentValidator.match(listOfFalseStringsNameSpace[i], CommonsValidationRegex.NAME_SPACE_REGEXP, "NAME_SPACE_REGEXP_test_case");
                 fail("Exception expected for: " + listOfFalseStringsNameSpace[i]);
             } catch (KapuaIllegalArgumentException e) {
                 // Expected
@@ -135,59 +133,9 @@ public class ArgumentValidatorTest extends Assert {
         }
         for (int i = 0; i < sizeOfPermittedStrings; i++) {
             try {
-                ArgumentValidator.match(listOfPermittedStringsNameSpace[i], argRegExprNameSpace, "NAME_SPACE_REGEXP_test_case");
+                ArgumentValidator.match(listOfPermittedStringsNameSpace[i], CommonsValidationRegex.NAME_SPACE_REGEXP, "NAME_SPACE_REGEXP_test_case");
             } catch (Exception ex) {
                 fail("No exception expected for: " + listOfPermittedStringsNameSpace[i]);
-            }
-        }
-    }
-
-    @Test
-    public void testIllegalCharacterTagNameRegExp() throws Exception {
-        String argRegExprTagNameRegExp = "[A-Za-z0-9-_@#!$%^&*+=?<>]{3,255}";
-        StringBuilder tagName = new StringBuilder();
-        StringBuilder tagTooLong = new StringBuilder();
-        Random random = new Random();
-        String permittedSymbols = "abcdefghijklmnopqrstuvxwyzABCDEFGHIJKLMNOPQRSTUVXYZ1234567890-_@#!$%^&*+=?<>";
-        for (int i = 0; i < 254; i++) {
-            tagName.append(permittedSymbols.charAt(random.nextInt(permittedSymbols.length())));
-        }
-        for (int i = 0; i < 256; i++) {
-            tagTooLong.append(permittedSymbols.charAt(random.nextInt(permittedSymbols.length())));
-        }
-        String tagNameOk = tagName.toString();
-        String tagNameTooLong = tagTooLong.toString();
-        String[] listOfFalseStringsTagNameRegExp = new String[] { "abc_ABC123'", "abc_ABC123(", "abc_ABC123)",
-                "abc_ABC123;", "abc_ABC123:", "abc_ABC123,", "abc_ABC123.", "abc_ABC123¡", "abc_ABC123™", "abc_ABC123£", "abc_ABC123¢",
-                "abc_ABC123∞", "abc_ABC123§", "abc_ABC123¶", "abc_ABC123•", "abc_ABC123º", "abc_ABC123≠", "abc_ABC123œ", "abc_ABC123∑",
-                "abc_ABC123´", "abc_ABC123®", "abc_ABC123†", "abc_ABC123¨", "abc_ABC123ø", "abc_ABC123π", "abc_ABC123[", "abc_ABC123]",
-                "abc_ABC123å", "abc_ABC123ß", "abc_ABC123∂", "abc_ABC123ƒ", "abc_ABC123©", "abc_ABC123 ̏", "abc_ABC123∆", "abc_ABC123¬",
-                "abc_ABC123…", "abc_ABC123\"", "abc_ABC123`", "abc_ABC123Ω", "abc_ABC123≈", "abc_ABC123¿", "abc_ABC123ç", "abc_ABC123√",
-                "abc_ABC123∫", "abc_ABC123~", "abc_ABC123µ", "abc_ABC123≤", "abc_ABC123≥", "abc_ABC123÷", "abc_ABC123⁄", "abc_ABC123‹",
-                "abc_ABC123›", "abc_ABC123€", "abc_ABC123ı", "abc_ABC123–", "abc_ABC123°", "abc_ABC123±", "abc_ABC123Œ", "abc_ABC123„",
-                "abc_ABC123‰", "abc_ABC123“", "abc_ABC123‘", "abc_ABC123 ", "abc_ABC123”", "abc_ABC123’", "abc_ABC123É", "abc_ABC123Ø",
-                "abc_ABC123∏", "abc_ABC123{", "abc_ABC123}", "abc_ABC123Å", "abc_ABC123Í", "abc_ABC123Î", "abc_ABC123Ï", "abc_ABC123Ì",
-                "abc_ABC123Ó", "abc_ABC123Ô", "abc_ABC123", "abc_ABC123Ò", "abc_ABC123æ", "abc_ABC123Æ", "abc_ABC123|", "abc_ABC123~",
-                "abc_ABC123«", "abc_ABC123»", "abc_ABC123Ç", "abc_ABC123◊", "abc_ABC123Ñ", "abc_ABC123ˆ", "abc_ABC123¯", "abc_ABC123È",
-                "abc_ABC123ˇ", tagNameTooLong };
-        int sizeOfFalseStrings = listOfFalseStringsTagNameRegExp.length;
-        String[] listOfPermittedStringTagNameRegExp = new String[] { tagNameOk, "abc_ABC123-", "abc_ABC123_", "abc_ABC123@", "abc_ABC123#",
-                "abc_ABC123!", "abc_ABC123$", "abc_ABC123%", "abc_ABC123^", "abc_ABC123&", "abc_ABC123*", "abc_ABC123+", "abc_ABC123=", "abc_ABC123?",
-                "abc_ABC123<", "abc_ABC123>", "abc", "ABC", "123", "abc_ABC123", "%&$&!", "&av231j", "123" };
-        int sizeOfPermittedStrings = listOfPermittedStringTagNameRegExp.length;
-        for (int i = 0; i < sizeOfFalseStrings; i++) {
-            try {
-                ArgumentValidator.match(listOfFalseStringsTagNameRegExp[i], argRegExprTagNameRegExp, "TAGE_NAME_test_case");
-                fail("Exception expected for: " + listOfFalseStringsTagNameRegExp[i]);
-            } catch (KapuaIllegalArgumentException ex) {
-                // Expected
-            }
-        }
-        for (int i = 0; i < sizeOfPermittedStrings; i++) {
-            try {
-                ArgumentValidator.match(listOfPermittedStringTagNameRegExp[i], argRegExprTagNameRegExp, "TAGE_NAME_test_case");
-            } catch (Exception ex) {
-                fail("No exception expected for: " + listOfPermittedStringTagNameRegExp[i]);
             }
         }
     }
@@ -210,7 +158,7 @@ public class ArgumentValidatorTest extends Assert {
         int sizeOfPermittedStringsMACaddress = listOfPermittedStringsMACaddressRegExp.length;
         for (int i = 0; i < sizeOfFalseStringsMACaddress; i++) {
             try {
-                ArgumentValidator.match(listOfFalseStringsMACaddressRegExp[i], argRegExprMACaddress, "MAC_ADDRESS_test_case");
+                ArgumentValidator.match(listOfFalseStringsMACaddressRegExp[i], CommonsValidationRegex.MAC_ADDRESS_REGEXP, "MAC_ADDRESS_test_case");
                 fail("Exception expected for: " + listOfFalseStringsMACaddressRegExp[i]);
             } catch (KapuaIllegalArgumentException ex) {
                 // Expected
@@ -218,7 +166,7 @@ public class ArgumentValidatorTest extends Assert {
         }
         for (int i = 0; i < sizeOfPermittedStringsMACaddress; i++) {
             try {
-                ArgumentValidator.match(listOfPermittedStringsMACaddressRegExp[i], argRegExprMACaddress, "MAC_ADDRESS_test_case");
+                ArgumentValidator.match(listOfPermittedStringsMACaddressRegExp[i], CommonsValidationRegex.MAC_ADDRESS_REGEXP, "MAC_ADDRESS_test_case");
             } catch (Exception ex) {
                 fail("No exception expected for: " + listOfPermittedStringsMACaddressRegExp[i]);
             }
@@ -252,7 +200,7 @@ public class ArgumentValidatorTest extends Assert {
         int sizeOfPermittedStrings = listOfPermittedStringsPasswordRegExp.length;
         for (int i = 0; i < sizeOfFalseStrings; i++) {
             try {
-                ArgumentValidator.match(listOfFalseStringsPasswordRegExp[i], argRegExprPasswordRegExp, "PASSWORD_REGEXP_test_case");
+                ArgumentValidator.match(listOfFalseStringsPasswordRegExp[i], CommonsValidationRegex.PASSWORD_REGEXP, "PASSWORD_REGEXP_test_case");
                 fail("Exception expected for: " + listOfFalseStringsPasswordRegExp[i]);
             } catch (KapuaIllegalArgumentException ex) {
                 // Expected
@@ -260,7 +208,7 @@ public class ArgumentValidatorTest extends Assert {
         }
         for (int i = 0; i < sizeOfPermittedStrings; i++) {
             try {
-                ArgumentValidator.match(listOfPermittedStringsPasswordRegExp[i], argRegExprPasswordRegExp, "PASSWORD_REGEXP_test_case");
+                ArgumentValidator.match(listOfPermittedStringsPasswordRegExp[i], CommonsValidationRegex.PASSWORD_REGEXP, "PASSWORD_REGEXP_test_case");
             } catch (Exception ex) {
                 fail("No exception expected for: " + listOfPermittedStringsPasswordRegExp[i]);
             }
@@ -302,7 +250,7 @@ public class ArgumentValidatorTest extends Assert {
         int sizeOPermittedStrings = listOfPermittedStringsEmailRegExp.length;
         for (int i = 0; i < sizeOfFalseStrings; i++) {
             try {
-                ArgumentValidator.match(listOfFalseStringsEmailRegExp[i], argRegExprEmailRegExp, "EMAIL_test_case");
+                ArgumentValidator.match(listOfFalseStringsEmailRegExp[i], CommonsValidationRegex.EMAIL_REGEXP, "EMAIL_test_case");
                 fail("Exception expected for: " + listOfFalseStringsEmailRegExp[i]);
             } catch (KapuaIllegalArgumentException ex) {
                 // Expected
@@ -310,7 +258,7 @@ public class ArgumentValidatorTest extends Assert {
         }
         for (int i = 0; i < sizeOPermittedStrings; i++) {
             try {
-                ArgumentValidator.match(listOfPermittedStringsEmailRegExp[i], argRegExprEmailRegExp, "EMAIL_test_case");
+                ArgumentValidator.match(listOfPermittedStringsEmailRegExp[i], CommonsValidationRegex.EMAIL_REGEXP, "EMAIL_test_case");
             } catch (Exception ex) {
                 fail("No exception expected for: " + listOfPermittedStringsEmailRegExp[i]);
             }
@@ -320,29 +268,29 @@ public class ArgumentValidatorTest extends Assert {
     @Test
     public void testLocalIPAddressRegExp() throws Exception {
         String argRegLocalIPRegExp = "(^(http://)|(https://))(((127\\.0\\.0\\.1))|((10\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])))|((172\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])))|((192\\.168\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])))$)";
-        String[] notValidLocalIp = new String[] { "10.0.0.0","10.0.1.2","10.255.255.255","htt://10.0.0.0","htttp://10.0.0.1","htpp://10.19.20.20",
-            "htps://10.1.2.3","127.0.0.1","192.168.0.1","192.168.255.255","172.0.0.1","172.255.255.255","ttp://127.0.0.1","htttp://192.168.0.1",
-            "http:172.0.0.2","https:192.168.0.1","http://10.10.1888880.199", "https://10.10.10.19999999", "http://10.10.10.256", "http://127.0.0.2",
-            "https://127.0.0.2","http://10.256.256.256","https://10.1111.1111.1111","http://192.168.256.256","https://172.256.256.256",
-            "http://127.0.0.0.1","https://127.0.0.0.1","http://192.168.1.1.1","https://192.168.1.1.1","http://172.0.0.0.1","https://172.0.0.0.1",
-            "http://10.10.10.10.10","https://10.10.10.10.10","http://randomString","https://randomString","http://root@127.0.0.1","https://root@127.0.0.1",
-            "http://172.0.0.1:8080","https://172.0.0.1:8080","http://192.168.0.1:8080","https://192.168.0.1:8080","http://10.10.10.10:8080",
-            "https://10.10.10.10:8080","http:/127.0.0.1","https:/127.0.0.1","http:/10.10.10.10","https:/10.10.10.10","http:/172.0.1.2","https:/172.0.1.2",
-            "http:/192.168.0.1","https:/192.168.0.1"};
-        for (int i = 0; i <notValidLocalIp.length; i++) {
+        String[] notValidLocalIp = new String[] { "10.0.0.0", "10.0.1.2", "10.255.255.255", "htt://10.0.0.0", "htttp://10.0.0.1", "htpp://10.19.20.20",
+                "htps://10.1.2.3", "127.0.0.1", "192.168.0.1", "192.168.255.255", "172.0.0.1", "172.255.255.255", "ttp://127.0.0.1", "htttp://192.168.0.1",
+                "http:172.0.0.2", "https:192.168.0.1", "http://10.10.1888880.199", "https://10.10.10.19999999", "http://10.10.10.256", "http://127.0.0.2",
+                "https://127.0.0.2", "http://10.256.256.256", "https://10.1111.1111.1111", "http://192.168.256.256", "https://172.256.256.256",
+                "http://127.0.0.0.1", "https://127.0.0.0.1", "http://192.168.1.1.1", "https://192.168.1.1.1", "http://172.0.0.0.1", "https://172.0.0.0.1",
+                "http://10.10.10.10.10", "https://10.10.10.10.10", "http://randomString", "https://randomString", "http://root@127.0.0.1", "https://root@127.0.0.1",
+                "http://172.0.0.1:8080", "https://172.0.0.1:8080", "http://192.168.0.1:8080", "https://192.168.0.1:8080", "http://10.10.10.10:8080",
+                "https://10.10.10.10:8080", "http:/127.0.0.1", "https:/127.0.0.1", "http:/10.10.10.10", "https:/10.10.10.10", "http:/172.0.1.2", "https:/172.0.1.2",
+                "http:/192.168.0.1", "https:/192.168.0.1" };
+        for (int i = 0; i < notValidLocalIp.length; i++) {
             try {
-                ArgumentValidator.match(notValidLocalIp[i], argRegLocalIPRegExp, "LocalIP_test_case");
+                ArgumentValidator.match(notValidLocalIp[i], CommonsValidationRegex.LOCAL_IP_ADDRESS_REGEXP, "LocalIP_test_case");
                 fail("Exception expected for: " + notValidLocalIp[i]);
             } catch (Exception ex) {
                 // Expected
             }
         }
-        String[] validLocalIp = new String[] {"http://127.0.0.1", "http://10.0.0.1", "http://10.9.9.9","http://10.255.255.255","https://10.255.255.255",
-             "http://172.0.0.0","https://172.0.0.0","http://172.255.255.255","http://192.168.0.0","https://192.168.0.0","http://192.168.255.255",
-             "https://192.168.255.255"};
-        for (int i = 0; i <validLocalIp.length; i++) {
+        String[] validLocalIp = new String[] { "http://127.0.0.1", "http://10.0.0.1", "http://10.9.9.9", "http://10.255.255.255", "https://10.255.255.255",
+                "http://172.0.0.0", "https://172.0.0.0", "http://172.255.255.255", "http://192.168.0.0", "https://192.168.0.0", "http://192.168.255.255",
+                "https://192.168.255.255" };
+        for (int i = 0; i < validLocalIp.length; i++) {
             try {
-                ArgumentValidator.match(validLocalIp[i], argRegLocalIPRegExp, "LocalIP_test_case");
+                ArgumentValidator.match(validLocalIp[i], CommonsValidationRegex.LOCAL_IP_ADDRESS_REGEXP, "LocalIP_test_case");
             } catch (Exception ex) {
                 fail("No exception expected for: " + validLocalIp[i]);
             }
@@ -352,26 +300,26 @@ public class ArgumentValidatorTest extends Assert {
     @Test
     public void testIPAddressRegExp() throws Exception {
         String argRegIPRegExp = "(^(http://)|(https://)|())([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])($)";
-        String[] notValidIp = new String[] {"http://1.2.3.4.5","https://1.2.3.4.5","1.2.3.4.5","http://10.12.13.999","https://10.12.13.256",
-             "http://256.10.11.12","https://999.10.11.12","http://10.256.12.13","https://10.256.12.13","http://10.11.256.13","https://10.11.256.13",
-             "256.11.12.13","10.256.12.13","10.11.256.13","10.11.12.256","http:/10.11.12.13","https:/10.11.12.13","http:10.11.12.13","https:10.11.12.13",
-             "htp://10.11.12.13","htps://10.11.12.13","htpp://10.11.12.13","htpps://10.11.12.13","htttp://10.11.12.13","htttps://10.11.12.13",
-             "http://string","https://string","http://10.11.12.13:8080","https://10.11.12.13:8080","http://root@10.11.12.13","https://root@10.11.12.13"};
-        for (int i = 0; i <notValidIp.length; i++) {
+        String[] notValidIp = new String[] { "http://1.2.3.4.5", "https://1.2.3.4.5", "1.2.3.4.5", "http://10.12.13.999", "https://10.12.13.256",
+                "http://256.10.11.12", "https://999.10.11.12", "http://10.256.12.13", "https://10.256.12.13", "http://10.11.256.13", "https://10.11.256.13",
+                "256.11.12.13", "10.256.12.13", "10.11.256.13", "10.11.12.256", "http:/10.11.12.13", "https:/10.11.12.13", "http:10.11.12.13", "https:10.11.12.13",
+                "htp://10.11.12.13", "htps://10.11.12.13", "htpp://10.11.12.13", "htpps://10.11.12.13", "htttp://10.11.12.13", "htttps://10.11.12.13",
+                "http://string", "https://string", "http://10.11.12.13:8080", "https://10.11.12.13:8080", "http://root@10.11.12.13", "https://root@10.11.12.13" };
+        for (int i = 0; i < notValidIp.length; i++) {
             try {
-                ArgumentValidator.match(notValidIp[i], argRegIPRegExp, "IP_test_case");
+                ArgumentValidator.match(notValidIp[i], CommonsValidationRegex.IP_ADDRESS_REGEXP, "IP_test_case");
                 fail("Exception expected for: " + notValidIp[i]);
             } catch (Exception ex) {
                 // Expected
             }
         }
-        String[] validIp = new String[] { "http://0.0.0.0", "https://0.0.0.0", "0.0.0.0","http://255.255.255.255","https://255.255.255.255",
-             "255.255.255.255","http://10.11.12.13","https://10.11.12.13","10.11.12.13","http://192.168.0.1","https://192.168.0.1","192.168.0.1",
-             "http://172.0.0.1","https://172.0.0.1","172.0.0.1","http://127.0.0.1","https://127.0.0.1","127.0.0.1","http://1.2.3.4","https://1.2.3.4",
-             "1.2.3.4"};
-        for (int i = 0; i <validIp.length; i++) {
+        String[] validIp = new String[] { "http://0.0.0.0", "https://0.0.0.0", "0.0.0.0", "http://255.255.255.255", "https://255.255.255.255",
+                "255.255.255.255", "http://10.11.12.13", "https://10.11.12.13", "10.11.12.13", "http://192.168.0.1", "https://192.168.0.1", "192.168.0.1",
+                "http://172.0.0.1", "https://172.0.0.1", "172.0.0.1", "http://127.0.0.1", "https://127.0.0.1", "127.0.0.1", "http://1.2.3.4", "https://1.2.3.4",
+                "1.2.3.4" };
+        for (int i = 0; i < validIp.length; i++) {
             try {
-                ArgumentValidator.match(validIp[i], argRegIPRegExp, "IP_test_case");
+                ArgumentValidator.match(validIp[i], CommonsValidationRegex.IP_ADDRESS_REGEXP, "IP_test_case");
             } catch (Exception ex) {
                 fail("No exception expected for: " + validIp[i]);
             }
@@ -390,8 +338,8 @@ public class ArgumentValidatorTest extends Assert {
         float floatVariable = (float) 123.123457;
         Object[] listOfFalseStringsNullTest = new Object[] { null };
         int sizeOfFalseStringsNullTest = listOfFalseStringsNullTest.length;
-        Object[] listOfPermittedStringNullTest = new Object[]{byteVariable, shortVariable, intVariable, charVariable,
-                stringVariable, longVariable, doubleVariable, floatVariable};
+        Object[] listOfPermittedStringNullTest = new Object[] { byteVariable, shortVariable, intVariable, charVariable,
+                stringVariable, longVariable, doubleVariable, floatVariable };
         int sizeOfPermittedStrings = listOfPermittedStringNullTest.length;
         for (int i = 0; i < sizeOfFalseStringsNullTest; i++) {
             try {
@@ -420,10 +368,10 @@ public class ArgumentValidatorTest extends Assert {
         long longVariable = 1234567890;
         double doubleVariable = 1234567.1234567;
         float floatVariable = (float) 123.123457;
-        Object[] listOfFalseStringsNullTest = new Object[] {byteVariable, shortVariable, intVariable, charVariable,
-                stringVariable, longVariable, doubleVariable, floatVariable};
+        Object[] listOfFalseStringsNullTest = new Object[] { byteVariable, shortVariable, intVariable, charVariable,
+                stringVariable, longVariable, doubleVariable, floatVariable };
         int sizeOfFalseStringsNullTest = listOfFalseStringsNullTest.length;
-        Object[] listOfPermittedStringNullTest = new Object[] {null};
+        Object[] listOfPermittedStringNullTest = new Object[] { null };
         int sizeOfPermittedStrings = listOfPermittedStringNullTest.length;
         for (int i = 0; i < sizeOfFalseStringsNullTest; i++) {
             try {
@@ -451,9 +399,9 @@ public class ArgumentValidatorTest extends Assert {
             longStr.append(permittedSymbols.charAt(random.nextInt(permittedSymbols.length())));
         }
         String longString = longStr.toString();
-        String[] listOfFalseStringsEmptyOrNull = new String[]{longString,"s","str","string","string"};
+        String[] listOfFalseStringsEmptyOrNull = new String[] { longString, "s", "str", "string", "string" };
         int sizeOfFalseStringsEmptyOrNull = listOfFalseStringsEmptyOrNull.length;
-        String[] listOfPermittedStringsEmptyOrNull = new String[] {null,""};
+        String[] listOfPermittedStringsEmptyOrNull = new String[] { null, "" };
         int sizeOfPermittedStringsEmptyOrNull = listOfPermittedStringsEmptyOrNull.length;
         for (int i = 0; i < sizeOfFalseStringsEmptyOrNull; i++) {
             try {
@@ -476,7 +424,7 @@ public class ArgumentValidatorTest extends Assert {
     public void testNotEmptyOrNullString() throws Exception {
         String[] listOfFalseStrings = new String[] { "", null };
         int sizeOfFalseStrings = listOfFalseStrings.length;
-        String[] listOfPermittedStrings = new String[]{"a","ab","abc","string"};
+        String[] listOfPermittedStrings = new String[] { "a", "ab", "abc", "string" };
         int sizeOfPermittedStrings = listOfPermittedStrings.length;
         for (int i = 0; i < sizeOfFalseStrings; i++) {
             try {
@@ -496,13 +444,12 @@ public class ArgumentValidatorTest extends Assert {
         }
     }
 
-
     @Test
     public void testNotEmptyOrNullObject() throws Exception {
         Object[] object1 = null;
-        Object[] object2 = new Object[]{};
-        Object[] object3 = new Object[]{object1,object2};
-        Object[] listOfChoicesPermitted = new Object[] {"","string",1};
+        Object[] object2 = new Object[] {};
+        Object[] object3 = new Object[] { object1, object2 };
+        Object[] listOfChoicesPermitted = new Object[] { "", "string", 1 };
         int sizeOfPermitted = listOfChoicesPermitted.length;
         try {
             ArgumentValidator.notEmptyOrNull(object1, "notEmptyOrNullTest");
@@ -510,16 +457,16 @@ public class ArgumentValidatorTest extends Assert {
         } catch (Exception ex) {
             // Expected
         }
-        try{
+        try {
             ArgumentValidator.notEmptyOrNull(object2, "notEmptyOrNullTest");
             fail("Exception expected!");
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             // Expected
         }
-        for(int i=0;i<sizeOfPermitted;i++){
-            try{
+        for (int i = 0; i < sizeOfPermitted; i++) {
+            try {
                 ArgumentValidator.notEmptyOrNull(listOfChoicesPermitted, "notEmptyOrNullTest");
-            }catch(Exception ex){
+            } catch (Exception ex) {
                 fail("No exception expected!");
             }
         }
@@ -537,46 +484,46 @@ public class ArgumentValidatorTest extends Assert {
         booleanList.add(true);
         ArrayList<Long> longList = new ArrayList<>();
         longList.add((long) 1.1234);
-        try{
+        try {
             ArgumentValidator.notEmptyOrNull(stringList1, "notEmptyOrNullTest");
             fail("Exception expected.");
-        }catch(Exception ex){
+        } catch (Exception ex) {
             // Expected
         }
-        try{
+        try {
             ArgumentValidator.notEmptyOrNull(stringList2, "notEmptyOrNullTest");
             fail("Exception expected.");
-        }catch(Exception ex){
+        } catch (Exception ex) {
             // Expected
         }
-        try{
+        try {
             ArgumentValidator.notEmptyOrNull(stringList3, "notEmptyOrNullTest");
-        }catch(Exception ex){
+        } catch (Exception ex) {
             fail("No exception expected.");
         }
-        try{
+        try {
             ArgumentValidator.notEmptyOrNull(integerList, "notEmptyOrNullTest");
-        }catch(Exception ex){
+        } catch (Exception ex) {
             fail("No exception expected.");
         }
-        try{
+        try {
             ArgumentValidator.notEmptyOrNull(booleanList, "notEmptyOrNullTest");
-        }catch(Exception ex){
+        } catch (Exception ex) {
             fail("No exception expected.");
         }
-        try{
+        try {
             ArgumentValidator.notEmptyOrNull(longList, "notEmptyOrNullTest");
-        }catch(Exception ex){
+        } catch (Exception ex) {
             fail("No exception expected.");
         }
     }
 
     @Test
     public void testNotNegative() throws KapuaIllegalNullArgumentException {
-        long[] listOfNegative = new long[] {-1,-12,-123,-1234,-12345,-123456,-1234567,
-                -12345678};
+        long[] listOfNegative = new long[] { -1, -12, -123, -1234, -12345, -123456, -1234567,
+                -12345678 };
         int sizeOfNegative = listOfNegative.length;
-        long[] listOfPositive = new long[]{0,1,12,123,1234,123456,1234567,12345678};
+        long[] listOfPositive = new long[] { 0, 1, 12, 123, 1234, 123456, 1234567, 12345678 };
         int sizeOfPositive = listOfPositive.length;
         for (int i = 0; i < sizeOfNegative; i++) {
             try {
@@ -595,7 +542,6 @@ public class ArgumentValidatorTest extends Assert {
         }
     }
 
-    @SuppressWarnings("deprecation")
     @Test
     public void testDateRange() throws Exception {
 
@@ -611,7 +557,6 @@ public class ArgumentValidatorTest extends Assert {
         Date startTimeOK1 = new Date(-2017, -10, -10);
         Date endTimeOK1 = new Date(2018, 1, 1);
 
-        @SuppressWarnings("unused")
         Date startTimeOK2 = new Date(2017, 1, 1);
         Date endTimeOK2 = new Date(2018, -1, -1);
 
@@ -653,16 +598,16 @@ public class ArgumentValidatorTest extends Assert {
         long startTimeOK4 = -1L;
         long endTimeOK4 = 12341231411L;
 
-        long[] startTimeOK = new long[] { startTimeOK0, startTimeOK1,startTimeOK2,
-                startTimeOK3,startTimeOK4};
-        long[] endTimeOK = new long[] { endTimeOK0, endTimeOK1,endTimeOK2,
-                endTimeOK3,endTimeOK4};
+        long[] startTimeOK = new long[] { startTimeOK0, startTimeOK1, startTimeOK2,
+                startTimeOK3, startTimeOK4 };
+        long[] endTimeOK = new long[] { endTimeOK0, endTimeOK1, endTimeOK2,
+                endTimeOK3, endTimeOK4 };
 
         long startTimeNOK0 = 1234567890123456789L;
         long endTimeNOK0 = 123456789012345L;
 
-        long[] startTimeNOK = new long[] {startTimeNOK0};
-        long[] endTimeNOK = new long[] {endTimeNOK0};
+        long[] startTimeNOK = new long[] { startTimeNOK0 };
+        long[] endTimeNOK = new long[] { endTimeNOK0 };
 
         for (int i = 0; i < startTimeNOK.length; i++) {
             try {

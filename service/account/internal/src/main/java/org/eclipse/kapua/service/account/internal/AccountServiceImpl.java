@@ -25,6 +25,7 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
+import org.eclipse.kapua.commons.util.CommonsValidationRegex;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -78,7 +79,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         ArgumentValidator.notEmptyOrNull(accountCreator.getName(), "accountCreator.name");
         ArgumentValidator.notEmptyOrNull(accountCreator.getOrganizationName(), "accountCreator.organizationName");
         ArgumentValidator.notEmptyOrNull(accountCreator.getOrganizationEmail(), "accountCreator.organizationEmail");
-        ArgumentValidator.match(accountCreator.getOrganizationEmail(), ArgumentValidator.EMAIL_REGEXP, "accountCreator.organizationEmail");
+        ArgumentValidator.match(accountCreator.getOrganizationEmail(), CommonsValidationRegex.EMAIL_REGEXP, "accountCreator.organizationEmail");
 
         //
         // Check Access
@@ -136,7 +137,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         ArgumentValidator.notNull(account.getId(), "account.id");
         ArgumentValidator.notEmptyOrNull(account.getName(), "account.name");
         ArgumentValidator.notNull(account.getOrganization(), "account.organization");
-        ArgumentValidator.match(account.getOrganization().getEmail(), ArgumentValidator.EMAIL_REGEXP, "account.organization.email");
+        ArgumentValidator.match(account.getOrganization().getEmail(), CommonsValidationRegex.EMAIL_REGEXP, "account.organization.email");
 
         //
         // Check Access

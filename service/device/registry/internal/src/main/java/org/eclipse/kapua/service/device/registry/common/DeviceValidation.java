@@ -171,12 +171,13 @@ public final class DeviceValidation {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
         List<String> fetchAttributes = query.getFetchAttributes();
-        String regex = "(" + DevicePredicates.CONNECTION + "|" + DevicePredicates.LAST_EVENT + ")";
+
         if (fetchAttributes != null) {
             for (String fetchAttribute : fetchAttributes) {
-                ArgumentValidator.match(fetchAttribute, regex, "fetchAttributes");
+                ArgumentValidator.match(fetchAttribute, DeviceValidationRegex.QUERY_FETCH_ATTRIBUTES, "fetchAttributes");
             }
         }
+
         authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_DOMAIN, Actions.read, query.getScopeId(), Group.ANY));
     }
 
