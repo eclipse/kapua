@@ -23,6 +23,7 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
+import org.eclipse.kapua.commons.util.CommonsValidationRegex;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -73,8 +74,8 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         // Argument Validation
         ArgumentValidator.notNull(userCreator.getScopeId().getId(), "userCreator.scopeId");
         ArgumentValidator.notEmptyOrNull(userCreator.getName(), "userCreator.name");
-        ArgumentValidator.match(userCreator.getName(), ArgumentValidator.NAME_REGEXP, "userCreator.name");
-        ArgumentValidator.match(userCreator.getEmail(), ArgumentValidator.EMAIL_REGEXP, "userCreator.email");
+        ArgumentValidator.match(userCreator.getName(), CommonsValidationRegex.NAME_REGEXP, "userCreator.name");
+        ArgumentValidator.match(userCreator.getEmail(), CommonsValidationRegex.EMAIL_REGEXP, "userCreator.email");
         ArgumentValidator.notNull(userCreator.getUserType(), "userCreator.userType");
         ArgumentValidator.notNull(userCreator.getUserStatus(), "userCreator.userStatus");
 
@@ -119,8 +120,8 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         ArgumentValidator.notNull(user.getId().getId(), "user.id");
         ArgumentValidator.notNull(user.getScopeId(), "user.scopeId");
         ArgumentValidator.notEmptyOrNull(user.getName(), "user.name");
-        ArgumentValidator.match(user.getName(), ArgumentValidator.NAME_REGEXP, "user.name");
-        ArgumentValidator.match(user.getEmail(), ArgumentValidator.EMAIL_REGEXP, "user.email");
+        ArgumentValidator.match(user.getName(), CommonsValidationRegex.NAME_REGEXP, "user.name");
+        ArgumentValidator.match(user.getEmail(), CommonsValidationRegex.EMAIL_REGEXP, "user.email");
 
         if (user.getUserType() != UserType.INTERNAL) {
             ArgumentValidator.notEmptyOrNull(user.getExternalId(), "user.externalId");

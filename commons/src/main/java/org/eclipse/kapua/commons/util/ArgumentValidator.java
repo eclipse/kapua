@@ -14,6 +14,8 @@ package org.eclipse.kapua.commons.util;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.KapuaIllegalNullArgumentException;
 
+import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Objects;
@@ -25,18 +27,6 @@ import java.util.Objects;
  */
 public class ArgumentValidator {
 
-    public static final String SIMPLE_NAME_REGEXP = "^[a-zA-Z0-9\\-]{3,}$";
-    public static final String NAME_REGEXP = "^[a-zA-Z0-9\\_\\-]{3,}$";
-    public static final String NAME_SPACE_REGEXP = "^[a-zA-Z0-9\\ \\_\\-]{3,}$";
-    public static final String PASSWORD_REGEXP = "^.*(?=.{12,})(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!\\~\\|]).*$";
-    public static final String EMAIL_REGEXP = "^(\\w+)([-+.][\\w]+)*@(\\w[-\\w]*\\.){1,5}([A-Za-z]){2,4}$";
-    public static final String TAG_NAME_REGEXP = "[A-Za-z0-9-_@#!$%^&*+=?<>]{3,255}";
-    public static final String IP_ADDRESS_REGEXP = "(^(http://)|(https://)|())([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])($)";
-    public static final String LOCAL_IP_ADDRESS_REGEXP = "(^(http://)|(https://))(((127\\.0\\.0\\.1))|((10\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])))|((172\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])))|((192\\.168\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])))$)";
-
-    // The standard (IEEE 802) format for printing MAC-48 addresses in human-friendly
-    public static final String MAC_ADDRESS_REGEXP = "^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$";
-
     private ArgumentValidator() {
     }
 
@@ -44,13 +34,12 @@ public class ArgumentValidator {
      * Throws KapuaIllegalArgumentException if the supplied argValue does not matches specified validation expression.
      *
      * @param argValue
-     * @param argRegExp
+     * @param validationRegex
      * @param argName
      * @throws KapuaIllegalArgumentException
      */
-    public static void match(String argValue, String argRegExp, String argName)
-            throws KapuaIllegalArgumentException {
-        if (argValue != null && !argValue.matches(argRegExp)) {
+    public static void match(String argValue, ValidationRegex validationRegex, String argName) throws KapuaIllegalArgumentException {
+        if (argValue != null && !validationRegex.getPattern().matcher(argValue).matches()) {
             throw new KapuaIllegalArgumentException(argName, argValue);
         }
     }
@@ -216,4 +205,23 @@ public class ArgumentValidator {
         }
     }
 
+    /**
+     * Throws a {@link KapuaIllegalArgumentException} if the {@link String} given has {@link String#length()} less than the #minLength given or greater than the #maxLength given.
+     *
+     * @param value        The {@link String} to check
+     * @param minLength    The minimun valid value. If {@code null} it means unbounded.
+     * @param maxLength    The maximum valid value. If {@code null} it means unbounded.
+     * @param argumentName The argument name with will be used in the exception
+     * @throws KapuaIllegalArgumentException If the given {@link String} excedees the given length limits.
+     */
+    public static void lengthRange(@NotNull String value, @Nullable Long minLength, @Nullable Long maxLength, @NotNull String argumentName) throws KapuaIllegalArgumentException {
+
+        if (minLength != null && value.length() < minLength) {
+            throw new KapuaIllegalArgumentException(argumentName, "Value less than allowed min length. Min length is " + minLength);
+        }
+
+        if (maxLength != null && value.length() > maxLength) {
+            throw new KapuaIllegalArgumentException(argumentName, "Value over than allowed max length. Max length is " + maxLength);
+        }
+    }
 }
