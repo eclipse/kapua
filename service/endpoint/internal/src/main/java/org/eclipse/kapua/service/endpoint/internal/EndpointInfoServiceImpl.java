@@ -15,6 +15,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
+import org.eclipse.kapua.commons.util.CommonsValidationRegex;
 import org.eclipse.kapua.commons.util.SystemUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -77,9 +78,14 @@ public class EndpointInfoServiceImpl
             throws KapuaException {
         ArgumentValidator.notNull(endpointInfoCreator, "endpointInfoCreator");
         ArgumentValidator.notNull(endpointInfoCreator.getScopeId(), "endpointInfoCreator.scopeId");
-        ArgumentValidator.notEmptyOrNull(endpointInfoCreator.getSchema(), "endpointCreator.schema");
-        ArgumentValidator.notEmptyOrNull(endpointInfoCreator.getDns(), "endpointCreator.dns");
-        ArgumentValidator.notNegative(endpointInfoCreator.getPort(), "endpointCreator.port");
+        ArgumentValidator.notEmptyOrNull(endpointInfoCreator.getSchema(), "endpointInfoCreator.schema");
+        ArgumentValidator.match(endpointInfoCreator.getSchema(), CommonsValidationRegex.URI_SCHEME, "endpointInfoCreator.schema");
+        ArgumentValidator.lengthRange(endpointInfoCreator.getDns(), 3L, 64L, "endpointInfoCreator.dns");
+        ArgumentValidator.notEmptyOrNull(endpointInfoCreator.getDns(), "endpointInfoCreator.dns");
+        ArgumentValidator.match(endpointInfoCreator.getDns(), CommonsValidationRegex.URI_DNS, "endpointInfoCreator.dns");
+        ArgumentValidator.lengthRange(endpointInfoCreator.getDns(), 3L, 1024L, "endpointInfoCreator.dns");
+        ArgumentValidator.notNegative(endpointInfoCreator.getPort(), "endpointInfoCreator.port");
+        ArgumentValidator.numRange(endpointInfoCreator.getPort(), 1, 65535, "endpointInfoCreator.port");
 
         //
         // Check Access
@@ -95,8 +101,11 @@ public class EndpointInfoServiceImpl
         ArgumentValidator.notNull(endpointInfo, "endpointInfo");
         ArgumentValidator.notNull(endpointInfo.getScopeId(), "endpointInfo.scopeId");
         ArgumentValidator.notEmptyOrNull(endpointInfo.getSchema(), "endpointInfo.schema");
+        ArgumentValidator.match(endpointInfo.getSchema(), CommonsValidationRegex.URI_SCHEME, "endpointInfo.schema");
         ArgumentValidator.notEmptyOrNull(endpointInfo.getDns(), "endpointInfo.dns");
+        ArgumentValidator.match(endpointInfo.getDns(), CommonsValidationRegex.URI_DNS, "endpointInfo.dns");
         ArgumentValidator.notNegative(endpointInfo.getPort(), "endpointInfo.port");
+        ArgumentValidator.numRange(endpointInfo.getPort(), 0, 65535, "endpointInfo.port");
 
         //
         // Check Access

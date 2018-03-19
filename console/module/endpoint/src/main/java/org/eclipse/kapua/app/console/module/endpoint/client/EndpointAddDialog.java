@@ -46,7 +46,7 @@ public class EndpointAddDialog extends EntityAddEditDialog {
 
         endpointSchemaField = new KapuaTextField<String>();
         endpointSchemaField.setAllowBlank(false);
-        endpointSchemaField.setFieldLabel("* " + MSGS.dialogAddFieldDns());
+        endpointSchemaField.setFieldLabel("* " + MSGS.dialogAddFieldSchema());
         endpointSchemaField.setToolTip("* " + MSGS.dialogAddFieldDnsTooltip());
         endpointSchemaField.setMaxLength(64);
         endpointFormPanel.add(endpointSchemaField);
@@ -55,14 +55,16 @@ public class EndpointAddDialog extends EntityAddEditDialog {
         endpointDnsField.setAllowBlank(false);
         endpointDnsField.setFieldLabel("* " + MSGS.dialogAddFieldDns());
         endpointDnsField.setToolTip("* " + MSGS.dialogAddFieldDnsTooltip());
-        endpointDnsField.setMaxLength(255);
+        endpointDnsField.setMaxLength(1024);
         endpointFormPanel.add(endpointDnsField);
 
         endpointPortField = new KapuaNumberField();
         endpointPortField.setAllowBlank(false);
         endpointPortField.setFieldLabel("* " + MSGS.dialogAddFieldPort());
         endpointPortField.setToolTip("* " + MSGS.dialogAddFieldPortTooltip());
-        endpointPortField.setMaxLength(6);
+        endpointPortField.setAllowNegative(false);
+        endpointPortField.setAllowDecimals(false);
+        endpointPortField.setMaxLength(5);
         endpointPortField.setMinValue(0);
         endpointPortField.setMaxValue(65536);
         endpointFormPanel.add(endpointPortField);
