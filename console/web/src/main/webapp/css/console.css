@@ -1,55 +1,54 @@
 /** Add css rules here for your application. */
 
-
 /** Example rules used by the template application (remove for your app) */
 h1 {
-  font-size: 2em;
-  font-weight: bold;
-  color: #777777;
-  margin: 40px 0px 70px;
-  text-align: center;
+    font-size: 2em;
+    font-weight: bold;
+    color: #777777;
+    margin: 40px 0px 70px;
+    text-align: center;
 }
 
 .sendButton {
-  display: block;
-  font-size: 16pt;
-  font-family: tahoma, arial, helvetica, sans-serif;
+    display: block;
+    font-size: 16pt;
+    font-family: tahoma, arial, helvetica, sans-serif;
 }
 
 .kapua-info-text {
-    font-family: tahoma,arial,helvetica,sans-serif;
+    font-family: tahoma, arial, helvetica, sans-serif;
     font-size: 11px;
 }
 
 .leftAlignButton button {
-  text-align:left;
+    text-align: left;
 }
 
 /** Most GWT widgets already have a style name defined */
 .gwt-DialogBox {
-  width: 400px;
+    width: 400px;
 }
 
 .dialogVPanel {
-  margin: 5px;
+    margin: 5px;
 }
 
 .serverResponseLabelError {
-  color: red;
+    color: red;
 }
 
 /** Set ids using widget.getElement().setId("idOfElement") */
 #closeButton {
-  margin: 15px 6px 6px;
+    margin: 15px 6px 6px;
 }
 
-.x-form-field, .x-form-item, .x-form-label, .x-form-group-label, .x-form-cb-label, .x-panel-body, .x-tree3-node-text, div.kapua-paging-text, input.kapua-paging-text{
-	font-size: 11px; 
+.x-form-field, .x-form-item, .x-form-label, .x-form-group-label, .x-form-cb-label, .x-panel-body, .x-tree3-node-text, div.kapua-paging-text, input.kapua-paging-text {
+    font-size: 11px;
     font-family: tahoma, arial, helvetica, sans-serif;
 }
 
 .x-tab-strip-wrap {
-    background-color: #F0F0F0;	
+    background-color: #F0F0F0;
 }
 
 div#ruleForm div.x-tab-panel-body {
@@ -57,15 +56,18 @@ div#ruleForm div.x-tab-panel-body {
 }
 
 .x-btn-arrow-custom em {
-	background-image: url("../img/button/arrow_down.png") !important;
+    background-image: url("../img/button/arrow_down.png") !important;
+    background-position: right;
+    background-repeat: no-repeat;
+    padding-right: 10px;
 }
 
 .x-tree3-node-icon {
-    margin-top: 3px;	
+    margin-top: 3px;
 }
 
 .x-hsplitbar {
-	background: url("../img/misc/horizontal_splitter.png") no-repeat scroll center rgba(0, 0, 0, 0);
+    background: url("../img/misc/horizontal_splitter.png") no-repeat scroll center rgba(0, 0, 0, 0);
     cursor: row-resize;
     font-size: 1px;
     line-height: 1px;
@@ -75,7 +77,7 @@ div#ruleForm div.x-tab-panel-body {
 }
 
 .x-vsplitbar {
-	background: url("../img/misc/vertical_splitter.png") no-repeat scroll center rgba(0, 0, 0, 0);
+    background: url("../img/misc/vertical_splitter.png") no-repeat scroll center rgba(0, 0, 0, 0);
     cursor: col-resize;
     position: absolute;
     z-index: 3;
@@ -83,133 +85,128 @@ div#ruleForm div.x-tab-panel-body {
 }
 
 iframe.gwt-Frame {
-	border: none;
+    border: none;
 }
 
 body, table, td, select, label {
-	font-size: 11px;
-	font-family: tahoma, arial, helvetica, sans-serif;
+    font-size: 11px;
+    font-family: tahoma, arial, helvetica, sans-serif;
 }
 
 table#execute-button > tbody > tr > td > em > button {
-	width: 32px;
-	margin-left: 4px;
-	left: 4px;
+    width: 32px;
+    margin-left: 4px;
+    left: 4px;
 }
 
 div#execute-output {
-	width: 98%;
-	margin-left: 5px;
+    width: 98%;
+    margin-left: 5px;
 }
 
 fieldset#configuration-form > div.x-form-label-left > div.x-component {
-    padding-bottom: 10px;	
-    padding-right: 25px;   
+    padding-bottom: 10px;
+    padding-right: 25px;
 }
 
 div#DeviceTabsContainer div.x-tab-panel-body {
-	border-width: 0;
+    border-width: 0;
 }
 
 div.x-tab-panel-footer-plain div.x-tab-strip-spacer {
-	background-color: #F0F0F0; /* #DEECFD; */
-    border-color:     #D0D0D0; /* #8DB2E3; */
+    background-color: #F0F0F0; /* #DEECFD; */
+    border-color: #D0D0D0; /* #8DB2E3; */
 }
 
-
 div.login {
-    background-color:  white;
-	background-image:  url(../img/login-background.jpeg);
-    background-size:   cover;
+    background-color: white;
+    background-image: url(../img/login-background.jpeg);
+    background-size: cover;
     background-repeat: no-repeat;
 }
 
 div.login-ie8 {
-	background-color:  white;
+    background-color: white;
     background-repeat: no-repeat;
-    filter:            progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/login-background.jpeg',sizingMethod='scale');   /* IE8 Hack */
-    -ms-filter:        "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/login-background.jpeg',sizingMethod='scale')"; /* IE8 Hack */
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/login-background.jpeg', sizingMethod='scale'); /* IE8 Hack */
+    -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/login-background.jpeg',sizingMethod='scale')"; /* IE8 Hack */
 }
 
 div.loginHeader {
-    background-color:  rgba(255,255,255,0.5);
+    background-color: rgba(255, 255, 255, 0.5);
 }
 
 div.loginHeader-ie8 {
-	filter:            progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr='#EEFFFFFF', EndColorStr='#EEFFFFFF');
-	-ms-filter:        "progid:DXImageTransform.Microsoft.gradient(startColorstr=#EEFFFFFF, endColorstr=#EEFFFFFF)";
+    filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr='#EEFFFFFF', EndColorStr='#EEFFFFFF');
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#EEFFFFFF, endColorstr=#EEFFFFFF)";
 }
 
 div.loginFooter {
-    background-color:  rgba(255,255,255,0.5);
+    background-color: rgba(255, 255, 255, 0.5);
 }
 
 div.loginFooter-ie8 {
-	filter:            progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr='#EEFFFFFF', EndColorStr='#EEFFFFFF');
-	-ms-filter:        "progid:DXImageTransform.Microsoft.gradient(startColorstr=#EEFFFFFF, endColorstr=#EEFFFFFF)";
+    filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr='#EEFFFFFF', EndColorStr='#EEFFFFFF');
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#EEFFFFFF, endColorstr=#EEFFFFFF)";
 }
 
 div.kapuaLogo {
-	width:             248px;
-	height:            48px;
-    margin-left:       15px; 
-    margin-top:        10px; 
-    margin-bottom:     20px; 
-    vertical-align:    baseline;   	
-    background-image:  url(../img/logo-color.svg);
+    width: 248px;
+    height: 48px;
+    margin-left: 15px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    vertical-align: baseline;
+    background-image: url(../img/logo-color.svg);
     background-repeat: no-repeat;
-    background-size:   contain;
+    background-size: contain;
 }
 
 div.kapuaLogo-ie8 {
-    width:             248px;
-    height:            48px;
-    margin-left:       15px; 
-    margin-top:        10px; 
-    margin-bottom:     20px; 
-    vertical-align:    baseline;    
+    width: 248px;
+    height: 48px;
+    margin-left: 15px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    vertical-align: baseline;
     background-repeat: no-repeat;
-    background-size:   contain;
-    filter:            progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/logo-color.svg',sizingMethod='scale'); /* IE8 Hack */
-    -ms-filter:        "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/logo-color.svg',sizingMethod='scale')"; /* IE8 Hack */
+    background-size: contain;
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/logo-color.svg', sizingMethod='scale'); /* IE8 Hack */
+    -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/logo-color.svg',sizingMethod='scale')"; /* IE8 Hack */
 }
 
 div.headerLogo {
-    width:             500px;
-	height:            30px;
-    vertical-align:    baseline;
-    background-image:  url(../img/logo-white.svg);
+    width: 500px;
+    height: 30px;
+    vertical-align: baseline;
+    background-image: url(../img/logo-white.svg);
     background-repeat: no-repeat;
-    background-size:   contain;
+    background-size: contain;
 }
 
 div.headerLogo-ie8 {
-    width:             500px;
-    height:            30px;
-    vertical-align:    baseline;
+    width: 500px;
+    height: 30px;
+    vertical-align: baseline;
     background-repeat: no-repeat;
-    background-size:   contain;
-    filter:            progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/logo-white.svg',sizingMethod='scale'); /* IE8 Hack */
-    -ms-filter:        "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/logo-white.svg',sizingMethod='scale')"; /* IE8 Hack */
+    background-size: contain;
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/logo-white.svg', sizingMethod='scale'); /* IE8 Hack */
+    -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/logo-white.svg',sizingMethod='scale')"; /* IE8 Hack */
 }
 
 div#header-panel {
-	background-color: rgb(6,39,68);
-	padding: 3px 5px 3px 5px;
+    background-color: rgb(6, 39, 68);
+    padding: 3px 5px 3px 5px;
 }
 
-table#header-button td, table#header-button button{
-	background-image:none !important;
-	background-color: rgb(6,39,68) !important;
-	color: #FFFFFF !important;
-	font-weight: bold !important;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	overflow: hidden;
+table#header-button td, table#header-button button {
+    background-image: none !important;
+    color: #FFFFFF !important;
+    font-weight: bold !important;
 }
 
 .x-menu-item-icon.fa {
-	font-size: 14px;
-	left: 1px;
-	top: 4px;
+    font-size: 14px;
+    left: 1px;
+    top: 4px;
 }
