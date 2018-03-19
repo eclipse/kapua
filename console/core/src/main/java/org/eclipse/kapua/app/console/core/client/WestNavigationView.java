@@ -140,6 +140,7 @@ public class WestNavigationView extends LayoutContainer {
                 //
                 // Top managing panel
                 cloudResourcesPanel = new ContentPanel();
+                cloudResourcesPanel.setLayout(new FitLayout());
                 cloudResourcesPanel.setAnimCollapse(false);
                 cloudResourcesPanel.setBorders(false);
                 cloudResourcesPanel.setBodyBorder(true);
@@ -178,6 +179,7 @@ public class WestNavigationView extends LayoutContainer {
 
                     @Override
                     public void selectionChanged(final SelectionChangedEvent<ModelData> se) {
+                        cloudResourcesTreeGrid.getView().ensureVisible(getLastSelection(se),0, false);
 
                         if ((currentSession.isFormDirty()) && (!skipNextSelChange)) {
                             // ask for confirmation before switching
