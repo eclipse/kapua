@@ -11,12 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.server;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
-
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
@@ -63,6 +57,12 @@ import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserService;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
 
 public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements GwtRoleService {
 
@@ -240,7 +240,7 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             if (role != null) {
                 gwtRoleDescription.add(new GwtGroupedNVPair("roleInfo", "roleName", role.getName()));
                 gwtRoleDescription.add(new GwtGroupedNVPair("roleInfo", "roleModifiedOn", role.getModifiedOn()));
-                gwtRoleDescription.add(new GwtGroupedNVPair("roleInfo", "roleModifiedBy", modifiedUser != null ? modifiedUser.getName(): null));
+                gwtRoleDescription.add(new GwtGroupedNVPair("roleInfo", "roleModifiedBy", modifiedUser != null ? modifiedUser.getName() : null));
                 gwtRoleDescription.add(new GwtGroupedNVPair("roleInfo", "roleCreatedOn", role.getCreatedOn()));
                 gwtRoleDescription.add(new GwtGroupedNVPair("roleInfo", "roleCreatedBy", createdUser != null ? createdUser.getName() : null));
             }
@@ -339,17 +339,18 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         KapuaLocator locator = KapuaLocator.getInstance();
         RolePermissionFactory rolePermissionFactory = locator.getFactory(RolePermissionFactory.class);
 
-        KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtRolePermissionCreator.getScopeId());
-
-        RolePermissionCreator rolePermissionCreator = rolePermissionFactory.newCreator(scopeId);
-        rolePermissionCreator.setRoleId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtRolePermissionCreator.getRoleId()));
-        rolePermissionCreator.setScopeId(scopeId);
-        rolePermissionCreator.setPermission(GwtKapuaAuthorizationModelConverter.convertPermission(gwtPermission));
-
-        RolePermissionService rolePermissionService = locator.getService(RolePermissionService.class);
         GwtRolePermission newGwtRolePermission = null;
-        RolePermission newRolePermission = null;
         try {
+            KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtRolePermissionCreator.getScopeId());
+
+            RolePermissionCreator rolePermissionCreator = rolePermissionFactory.newCreator(scopeId);
+            rolePermissionCreator.setRoleId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtRolePermissionCreator.getRoleId()));
+            rolePermissionCreator.setScopeId(scopeId);
+            rolePermissionCreator.setPermission(GwtKapuaAuthorizationModelConverter.convertPermission(gwtPermission));
+
+            RolePermissionService rolePermissionService = locator.getService(RolePermissionService.class);
+            RolePermission newRolePermission = null;
+
             newRolePermission = rolePermissionService.create(rolePermissionCreator);
             newGwtRolePermission = KapuaGwtAuthorizationModelConverter.convertRolePermission(newRolePermission);
         } catch (Throwable t) {

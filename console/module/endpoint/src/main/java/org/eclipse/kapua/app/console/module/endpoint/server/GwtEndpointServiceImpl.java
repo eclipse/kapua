@@ -72,6 +72,7 @@ public class GwtEndpointServiceImpl extends KapuaRemoteServiceServlet implements
             endpointCreator.setSchema(gwtEndpointCreator.getSchema());
             endpointCreator.setDns(gwtEndpointCreator.getDns());
             endpointCreator.setPort(gwtEndpointCreator.getPort().intValue());
+            endpointCreator.setSecure(gwtEndpointCreator.getSecure());
 
             EndpointInfo endpointInfo = ENDPOINT_INFO_SERVICE.create(endpointCreator);
 
@@ -97,6 +98,7 @@ public class GwtEndpointServiceImpl extends KapuaRemoteServiceServlet implements
                 endpointInfo.setSchema(gwtEndpoint.getSchema());
                 endpointInfo.setDns(gwtEndpoint.getDns());
                 endpointInfo.setPort(gwtEndpoint.getPort().intValue());
+                endpointInfo.setSecure(gwtEndpoint.getSecure());
 
                 ENDPOINT_INFO_SERVICE.update(endpointInfo);
 
@@ -207,6 +209,7 @@ public class GwtEndpointServiceImpl extends KapuaRemoteServiceServlet implements
                 gwtEndpointDescription.add(new GwtGroupedNVPair("endpointInfo", "endpointSchema", endpointInfo.getSchema()));
                 gwtEndpointDescription.add(new GwtGroupedNVPair("endpointInfo", "endpointDns", endpointInfo.getDns()));
                 gwtEndpointDescription.add(new GwtGroupedNVPair("endpointInfo", "endpointPort", endpointInfo.getPort()));
+                gwtEndpointDescription.add(new GwtGroupedNVPair("endpointInfo", "endpointSecure", endpointInfo.getSecure()));
 
                 List<String> usages = new ArrayList<String>();
                 for (EndpointUsage eu : endpointInfo.getUsages()) {

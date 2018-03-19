@@ -79,6 +79,9 @@ public class EndpointGrid extends EntityGrid<GwtEndpoint> {
         columnConfig = new ColumnConfig("port", MSGS.gridEndpointColumnHeaderEndpointPort(), 200);
         columnConfigs.add(columnConfig);
 
+        columnConfig = new ColumnConfig("secure", MSGS.gridEndpointColumnHeaderEndpointSecure(), 150);
+        columnConfigs.add(columnConfig);
+
         columnConfig = new ColumnConfig("createdOn", MSGS.gridEndpointColumnHeaderCreatedOn(), 200);
         columnConfigs.add(columnConfig);
 

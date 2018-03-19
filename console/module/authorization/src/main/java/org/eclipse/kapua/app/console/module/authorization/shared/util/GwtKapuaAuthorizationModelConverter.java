@@ -15,6 +15,7 @@ import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessInfoCreator;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessPermissionCreator;
@@ -150,7 +151,7 @@ public class GwtKapuaAuthorizationModelConverter {
      * @param gwtRole the {@link GwtRole} to convertKapuaId
      * @return the converted {@link Role}
      */
-    public static Role convertRole(GwtRole gwtRole) {
+    public static Role convertRole(GwtRole gwtRole) throws KapuaIllegalArgumentException {
 
         // Get Services
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -197,7 +198,7 @@ public class GwtKapuaAuthorizationModelConverter {
      * @param gwtRoleCreator the {@link GwtRoleCreator} to convertKapuaId
      * @return the converted {@link RoleCreator}
      */
-    public static RoleCreator convertRoleCreator(GwtRoleCreator gwtRoleCreator) {
+    public static RoleCreator convertRoleCreator(GwtRoleCreator gwtRoleCreator) throws KapuaIllegalArgumentException {
 
         // Get Services
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -260,7 +261,7 @@ public class GwtKapuaAuthorizationModelConverter {
      * @return the converted {@link AccessPermissionCreator}
      * @since 1.0.0
      */
-    public static AccessPermissionCreator convertAccessPermissionCreator(GwtAccessPermissionCreator gwtAccessPermissionCreator) {
+    public static AccessPermissionCreator convertAccessPermissionCreator(GwtAccessPermissionCreator gwtAccessPermissionCreator) throws KapuaIllegalArgumentException {
 
         // Get Services
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -305,7 +306,7 @@ public class GwtKapuaAuthorizationModelConverter {
      * @return The converted {@link Permission}.
      * @since 1.0.0
      */
-    public static Permission convertPermission(GwtPermission gwtPermission) {
+    public static Permission convertPermission(GwtPermission gwtPermission) throws KapuaIllegalArgumentException {
         // Get Services
         KapuaLocator locator = KapuaLocator.getInstance();
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
@@ -361,48 +362,24 @@ public class GwtKapuaAuthorizationModelConverter {
      * @return the converted domain {@link String}
      * @since 1.0.0
      */
-    public static Domain convertDomain(final GwtDomain gwtDomain) {
+    public static Domain convertDomain(GwtDomain gwtDomain) throws KapuaIllegalArgumentException {
+
+        String gwtDomainName = gwtDomain.getDomainName();
+
+        if (gwtDomainName == null || gwtDomainName.isEmpty()) {
+            return null;
+        }
 
         KapuaLocator locator = KapuaLocator.getInstance();
-
         List<KapuaService> kapuaServices = locator.getServices();
-
         for (KapuaService kapuaService : kapuaServices) {
             if (kapuaService instanceof KapuaDomainService &&
-                    ((KapuaDomainService) kapuaService).getServiceDomain().getName().equals(gwtDomain.getDomainName())) {
+                    ((KapuaDomainService) kapuaService).getServiceDomain().getName().equals(gwtDomainName)) {
                 return ((KapuaDomainService) kapuaService).getServiceDomain();
             }
         }
 
-        // Not to return null in case of non-existent service in console context.
-        Domain domain = new Domain() {
-
-            @Override
-            public String getName() {
-                if ("ALL".equals(gwtDomain.getDomainName())) {
-                    return null;
-                } else {
-                    return gwtDomain.getDomainName();
-                }
-            }
-
-            @Override
-            public String getServiceName() {
-                return null;
-            }
-
-            @Override
-            public Set<Actions> getActions() {
-                return null;
-            }
-
-            @Override
-            public boolean getGroupable() {
-                return false;
-            }
-        };
-
-        return domain;
+        throw new KapuaIllegalArgumentException("gwtDomain.name", gwtDomainName);
     }
 
 }

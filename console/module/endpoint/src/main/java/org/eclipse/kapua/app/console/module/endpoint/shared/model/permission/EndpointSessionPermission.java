@@ -22,7 +22,11 @@ public class EndpointSessionPermission extends GwtSessionPermission {
     }
 
     private EndpointSessionPermission(GwtSessionPermissionAction action) {
-        super("endpoint_info", action, GwtSessionPermissionScope.SELF);
+        this(action, GwtSessionPermissionScope.SELF);
+    }
+
+    private EndpointSessionPermission(GwtSessionPermissionAction action, GwtSessionPermissionScope permissionScope) {
+        super("endpoint_info", action, permissionScope);
     }
 
     public static EndpointSessionPermission read() {
@@ -31,6 +35,10 @@ public class EndpointSessionPermission extends GwtSessionPermission {
 
     public static EndpointSessionPermission write() {
         return new EndpointSessionPermission(GwtSessionPermissionAction.write);
+    }
+
+    public static EndpointSessionPermission writeAll() {
+        return new EndpointSessionPermission(GwtSessionPermissionAction.write, GwtSessionPermissionScope.ALL);
     }
 
     public static EndpointSessionPermission delete() {
