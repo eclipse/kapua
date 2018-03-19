@@ -18,6 +18,7 @@ public class GwtEndpointCreator extends GwtEntityCreator {
     private String schema;
     private String dns;
     private Number port;
+    private boolean secure;
 
     public GwtEndpointCreator() {
         super();
@@ -45,5 +46,13 @@ public class GwtEndpointCreator extends GwtEntityCreator {
 
     public void setPort(Number port) {
         this.port = port;
+    }
+
+    public boolean getSecure() {
+        return secure;
+    }
+
+    public void setSecure(boolean secure) {
+        this.secure = secure;
     }
 }

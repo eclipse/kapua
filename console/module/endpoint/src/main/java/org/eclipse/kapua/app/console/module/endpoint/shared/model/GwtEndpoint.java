@@ -39,6 +39,14 @@ public class GwtEndpoint extends GwtUpdatableEntityModel {
         set("port", port);
     }
 
+    public boolean getSecure() {
+        return get("secure");
+    }
+
+    public void setSecure(boolean secure) {
+        set("secure", secure);
+    }
+
     @Override
     public String toString() {
         return getSchema() + "://" + getDns() + ":" + getPort();
