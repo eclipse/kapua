@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,6 +18,9 @@ import org.eclipse.kapua.app.console.module.authorization.client.role.dialog.Rol
 import org.eclipse.kapua.app.console.module.authorization.client.role.dialog.RoleDeleteDialog;
 import org.eclipse.kapua.app.console.module.authorization.client.role.dialog.RoleEditDialog;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.RoleSessionPermission;
+
+import com.google.gwt.user.client.Element;
 
 public class RoleToolbarGrid extends EntityCRUDToolbar<GwtRole> {
 
@@ -38,6 +41,12 @@ public class RoleToolbarGrid extends EntityCRUDToolbar<GwtRole> {
             dialog = new RoleEditDialog(currentSession, selectedRole);
         }
         return dialog;
+    }
+
+    @Override
+    protected void onRender(Element target, int index) {
+        super.onRender(target, index);
+        getAddEntityButton().setEnabled(currentSession.hasPermission(RoleSessionPermission.write()));
     }
 
     @Override

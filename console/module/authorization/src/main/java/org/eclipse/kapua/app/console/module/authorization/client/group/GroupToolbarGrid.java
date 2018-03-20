@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,6 +15,9 @@ import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroup;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.GroupSessionPermission;
+
+import com.google.gwt.user.client.Element;
 
 public class GroupToolbarGrid extends EntityCRUDToolbar<GwtGroup> {
 
@@ -27,6 +30,12 @@ public class GroupToolbarGrid extends EntityCRUDToolbar<GwtGroup> {
     protected KapuaDialog getAddDialog() {
 
         return new GroupAddDialog(currentSession);
+    }
+
+    @Override
+    protected void onRender(Element target, int index) {
+        super.onRender(target, index);
+        getAddEntityButton().setEnabled(currentSession.hasPermission(GroupSessionPermission.write()));
     }
 
     @Override

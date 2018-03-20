@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,6 +22,7 @@ import org.eclipse.kapua.app.console.module.account.client.messages.ConsoleAccou
 import org.eclipse.kapua.app.console.module.account.client.toolbar.AccountGridToolbar;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountQuery;
+import org.eclipse.kapua.app.console.module.account.shared.model.permission.AccountSessionPermission;
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
@@ -46,7 +47,6 @@ public class AccountGrid extends EntityGrid<GwtAccount> {
         super(entityView, currentSession);
         filterQuery = new GwtAccountQuery();
         filterQuery.setScopeId(currentSession.getSelectedAccountId());
-
     }
 
     @Override
@@ -54,6 +54,7 @@ public class AccountGrid extends EntityGrid<GwtAccount> {
         super.refresh(query);
         GwtAccount selectedAccount = getSelectionModel().getSelectedItem();
         updateToolBarButtons(selectedAccount);
+
     }
 
     @Override
@@ -79,6 +80,9 @@ public class AccountGrid extends EntityGrid<GwtAccount> {
     protected void selectionChangedEvent(GwtAccount selectedItem) {
         super.selectionChangedEvent(selectedItem);
         updateToolBarButtons(selectedItem);
+        getToolbar().getEditEntityButton().setEnabled(currentSession.hasPermission(AccountSessionPermission.write()));
+        getToolbar().getAddEntityButton().setEnabled(currentSession.hasPermission(AccountSessionPermission.write()));
+        getToolbar().getDeleteEntityButton().setEnabled(currentSession.hasPermission(AccountSessionPermission.delete()));
     }
 
     @Override

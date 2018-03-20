@@ -26,6 +26,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolb
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJob;
+import org.eclipse.kapua.app.console.module.job.shared.model.permission.JobSessionPermission;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobEngineService;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobEngineServiceAsync;
 
@@ -65,6 +66,7 @@ public class JobGridToolbar extends EntityCRUDToolbar<GwtJob> {
         super.onRender(target, index);
         getEditEntityButton().disable();
         getDeleteEntityButton().disable();
+        getAddEntityButton().setEnabled(currentSession.hasPermission(JobSessionPermission.write()));
     }
 
     @Override

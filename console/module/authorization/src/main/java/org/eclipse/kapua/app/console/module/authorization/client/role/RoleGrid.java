@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,6 +24,7 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRoleQuery;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.RoleSessionPermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRoleService;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRoleServiceAsync;
 
@@ -37,6 +38,7 @@ public class RoleGrid extends EntityGrid<GwtRole> {
     private static final GwtRoleServiceAsync GWT_ROLE_SERVICE = GWT.create(GwtRoleService.class);
 
     private GwtRoleQuery query;
+    private RoleToolbarGrid toolbar;
 
     public RoleGrid(AbstractEntityView<GwtRole> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
@@ -45,8 +47,19 @@ public class RoleGrid extends EntityGrid<GwtRole> {
     }
 
     @Override
+    protected void selectionChangedEvent(GwtRole selectedItem) {
+        super.selectionChangedEvent(selectedItem);
+        getToolbar().getEditEntityButton().setEnabled(currentSession.hasPermission(RoleSessionPermission.write()));
+        getToolbar().getAddEntityButton().setEnabled(currentSession.hasPermission(RoleSessionPermission.write()));
+        getToolbar().getDeleteEntityButton().setEnabled(currentSession.hasPermission(RoleSessionPermission.delete()));
+    }
+
+    @Override
     protected RoleToolbarGrid getToolbar() {
-        return new RoleToolbarGrid(currentSession);
+        if (toolbar == null) {
+            toolbar = new RoleToolbarGrid(currentSession);
+        }
+        return toolbar;
     }
 
     @Override

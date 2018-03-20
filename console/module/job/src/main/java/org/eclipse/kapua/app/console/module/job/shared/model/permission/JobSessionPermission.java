@@ -36,4 +36,8 @@ public class JobSessionPermission extends GwtSessionPermission {
     public static JobSessionPermission delete() {
         return new JobSessionPermission(GwtSessionPermissionAction.delete);
     }
+
+    public static JobSessionPermission execute() {
+        return new JobSessionPermission(GwtSessionPermissionAction.execute);
+    }
 }

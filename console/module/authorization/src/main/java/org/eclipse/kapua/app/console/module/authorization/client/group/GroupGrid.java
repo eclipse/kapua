@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,6 +24,7 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsoleGroupMessages;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroupQuery;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.GroupSessionPermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupService;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupServiceAsync;
 
@@ -35,11 +36,20 @@ public class GroupGrid extends EntityGrid<GwtGroup> {
     private static final GwtGroupServiceAsync GWT_GROUP_SERVICE = GWT.create(GwtGroupService.class);
     private static final ConsoleGroupMessages MSGS = GWT.create(ConsoleGroupMessages.class);
     private GwtGroupQuery query;
+    private GroupToolbarGrid toolbar;
 
     protected GroupGrid(AbstractEntityView<GwtGroup> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
         query = new GwtGroupQuery();
         query.setScopeId(currentSession.getSelectedAccountId());
+    }
+
+    @Override
+    protected void selectionChangedEvent(GwtGroup selectedItem) {
+        super.selectionChangedEvent(selectedItem);
+        getToolbar().getEditEntityButton().setEnabled(currentSession.hasPermission(GroupSessionPermission.write()));
+        getToolbar().getAddEntityButton().setEnabled(currentSession.hasPermission(GroupSessionPermission.write()));
+        getToolbar().getDeleteEntityButton().setEnabled(currentSession.hasPermission(GroupSessionPermission.delete()));
     }
 
     @Override
@@ -89,7 +99,10 @@ public class GroupGrid extends EntityGrid<GwtGroup> {
 
     @Override
     protected GroupToolbarGrid getToolbar() {
-        return new GroupToolbarGrid(currentSession);
+        if (toolbar == null) {
+            toolbar = new GroupToolbarGrid(currentSession);
+        }
+        return toolbar;
     }
 
 }
