@@ -80,9 +80,14 @@ public class AccountGrid extends EntityGrid<GwtAccount> {
     protected void selectionChangedEvent(GwtAccount selectedItem) {
         super.selectionChangedEvent(selectedItem);
         updateToolBarButtons(selectedItem);
-        getToolbar().getEditEntityButton().setEnabled(currentSession.hasPermission(AccountSessionPermission.write()));
-        getToolbar().getAddEntityButton().setEnabled(currentSession.hasPermission(AccountSessionPermission.write()));
-        getToolbar().getDeleteEntityButton().setEnabled(currentSession.hasPermission(AccountSessionPermission.delete()));
+        if (selectedItem != null) {
+            getToolbar().getEditEntityButton().setEnabled(currentSession.hasPermission(AccountSessionPermission.write()));
+            getToolbar().getAddEntityButton().setEnabled(currentSession.hasPermission(AccountSessionPermission.write()));
+            getToolbar().getDeleteEntityButton().setEnabled(currentSession.hasPermission(AccountSessionPermission.delete()));
+        } else {
+            getToolbar().getEditEntityButton().setEnabled(false);
+            getToolbar().getDeleteEntityButton().setEnabled(false);
+        }
     }
 
     @Override

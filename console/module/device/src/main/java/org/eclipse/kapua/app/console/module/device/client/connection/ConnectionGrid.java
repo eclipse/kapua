@@ -78,7 +78,11 @@ public class ConnectionGrid extends EntityGrid<GwtDeviceConnection> {
     @Override
     protected void selectionChangedEvent(GwtDeviceConnection selectedItem) {
         super.selectionChangedEvent(selectedItem);
-        getToolbar().getEditEntityButton().setEnabled(currentSession.hasPermission(DeviceConnectionSessionPermission.write()));
+        if (selectedItem != null) {
+            getToolbar().getEditEntityButton().setEnabled(currentSession.hasPermission(DeviceConnectionSessionPermission.write()));
+        } else {
+            getToolbar().getEditEntityButton().setEnabled(false);
+        }
     }
 
     @Override

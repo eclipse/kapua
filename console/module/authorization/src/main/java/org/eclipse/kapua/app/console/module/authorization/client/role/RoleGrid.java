@@ -49,9 +49,14 @@ public class RoleGrid extends EntityGrid<GwtRole> {
     @Override
     protected void selectionChangedEvent(GwtRole selectedItem) {
         super.selectionChangedEvent(selectedItem);
-        getToolbar().getEditEntityButton().setEnabled(currentSession.hasPermission(RoleSessionPermission.write()));
-        getToolbar().getAddEntityButton().setEnabled(currentSession.hasPermission(RoleSessionPermission.write()));
-        getToolbar().getDeleteEntityButton().setEnabled(currentSession.hasPermission(RoleSessionPermission.delete()));
+        if (selectedItem != null) {
+            getToolbar().getEditEntityButton().setEnabled(currentSession.hasPermission(RoleSessionPermission.write()));
+            getToolbar().getAddEntityButton().setEnabled(currentSession.hasPermission(RoleSessionPermission.write()));
+            getToolbar().getDeleteEntityButton().setEnabled(currentSession.hasPermission(RoleSessionPermission.delete()));
+        } else {
+            getToolbar().getEditEntityButton().setEnabled(false);
+            getToolbar().getDeleteEntityButton().setEnabled(false);
+        }
     }
 
     @Override
