@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,8 +19,17 @@ public class KapuaPagingToolBar extends PagingToolBar {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
+    /**
+     * Max length of user input field for page number.
+     */
+    public static final String MAX_TEXT_LEN = "4";
+
     public KapuaPagingToolBar(int pageSize) {
         super(pageSize);
+        this.pageText.setMaxLength(Integer.parseInt(MAX_TEXT_LEN));
+        if (rendered) {
+            this.pageText.getElement().setAttribute("maxLength", MAX_TEXT_LEN);
+        }
 
         PagingToolBarMessages pagingToolbarMessages = getMessages();
         pagingToolbarMessages.setBeforePageText(MSGS.pagingToolbarPage());
