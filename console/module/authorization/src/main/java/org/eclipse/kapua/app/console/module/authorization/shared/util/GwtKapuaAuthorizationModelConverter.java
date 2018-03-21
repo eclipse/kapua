@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -360,7 +360,7 @@ public class GwtKapuaAuthorizationModelConverter {
      * @return the converted domain {@link String}
      * @since 1.0.0
      */
-    public static Domain convertDomain(GwtDomain gwtDomain) {
+    public static Domain convertDomain(final GwtDomain gwtDomain) {
 
         KapuaLocator locator = KapuaLocator.getInstance();
 
@@ -373,7 +373,35 @@ public class GwtKapuaAuthorizationModelConverter {
             }
         }
 
-        return null;
+        // Not to return null in case of non-existent service in console context.
+        Domain domain = new Domain() {
+
+            @Override
+            public String getName() {
+                if ("ALL".equals(gwtDomain.getDomainName())) {
+                    return null;
+                } else {
+                    return gwtDomain.getDomainName();
+                }
+            }
+
+            @Override
+            public String getServiceName() {
+                return null;
+            }
+
+            @Override
+            public Set<Actions> getActions() {
+                return null;
+            }
+
+            @Override
+            public boolean getGroupable() {
+                return false;
+            }
+        };
+
+        return domain;
     }
 
 }
