@@ -22,13 +22,13 @@ public class KapuaPagingToolBar extends PagingToolBar {
     /**
      * Max length of user input field for page number.
      */
-    public static final String MAX_TEXT_LEN = "4";
+    public static final int MAX_TEXT_LEN = 4;
 
     public KapuaPagingToolBar(int pageSize) {
         super(pageSize);
-        this.pageText.setMaxLength(Integer.parseInt(MAX_TEXT_LEN));
+        this.pageText.setMaxLength(MAX_TEXT_LEN);
         if (rendered) {
-            this.pageText.getElement().setAttribute("maxLength", MAX_TEXT_LEN);
+            this.pageText.getElement().setAttribute("maxLength", String.valueOf(MAX_TEXT_LEN));
         }
 
         PagingToolBarMessages pagingToolbarMessages = getMessages();
