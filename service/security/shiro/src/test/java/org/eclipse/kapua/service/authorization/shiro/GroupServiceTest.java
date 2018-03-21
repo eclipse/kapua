@@ -16,7 +16,7 @@ import java.math.BigInteger;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -199,7 +199,7 @@ public class GroupServiceTest extends KapuaTest {
             //
             // Query
             GroupQuery query = new GroupQueryImpl(scope);
-            query.setPredicate(new AttributePredicate<String>(GroupPredicates.NAME, group.getName()));
+            query.setPredicate(new AttributePredicateImpl<String>(GroupPredicates.NAME, group.getName()));
             GroupListResult groupsFound = groupService.query(query);
             long groupsCount = groupService.count(query);
 

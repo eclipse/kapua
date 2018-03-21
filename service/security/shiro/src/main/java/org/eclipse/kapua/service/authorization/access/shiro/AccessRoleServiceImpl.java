@@ -14,8 +14,8 @@ package org.eclipse.kapua.service.authorization.access.shiro;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -87,9 +87,9 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
 
             AccessRoleQuery query = new AccessRoleQueryImpl(accessRoleCreator.getScopeId());
             query.setPredicate(
-                    new AndPredicate(
-                            new AttributePredicate<>(AccessRolePredicates.ACCESS_INFO_ID, accessRoleCreator.getAccessInfoId()),
-                            new AttributePredicate<>(RolePermissionPredicates.ROLE_ID, accessRoleCreator.getRoleId())
+                    new AndPredicateImpl(
+                            new AttributePredicateImpl<>(AccessRolePredicates.ACCESS_INFO_ID, accessRoleCreator.getAccessInfoId()),
+                            new AttributePredicateImpl<>(RolePermissionPredicates.ROLE_ID, accessRoleCreator.getRoleId())
                     )
             );
 
@@ -151,7 +151,7 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
         //
         // Build query
         AccessRoleQuery query = new AccessRoleQueryImpl(scopeId);
-        query.setPredicate(new AttributePredicate<>(AccessRolePredicates.ACCESS_INFO_ID, accessInfoId));
+        query.setPredicate(new AttributePredicateImpl<>(AccessRolePredicates.ACCESS_INFO_ID, accessInfoId));
 
         return query(query);
     }

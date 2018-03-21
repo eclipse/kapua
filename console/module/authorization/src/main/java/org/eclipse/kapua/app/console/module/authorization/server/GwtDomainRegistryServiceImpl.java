@@ -19,7 +19,7 @@ import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtDomain
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtPermission.GwtAction;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtDomainRegistryService;
 import org.eclipse.kapua.app.console.module.authorization.shared.util.KapuaGwtAuthorizationModelConverter;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -66,7 +66,7 @@ public class GwtDomainRegistryServiceImpl extends KapuaRemoteServiceServlet impl
             DomainRegistryService domainRegistryService = locator.getService(DomainRegistryService.class);
             DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
             DomainQuery query = domainFactory.newQuery(null);
-            query.setPredicate(new AttributePredicate<String>(DomainPredicates.NAME, domainName));
+            query.setPredicate(new AttributePredicateImpl<String>(DomainPredicates.NAME, domainName));
             DomainListResult queryResult = domainRegistryService.query(query);
             if (!queryResult.isEmpty()) {
                 for (Actions action : queryResult.getFirstItem().getActions()) {
@@ -89,7 +89,7 @@ public class GwtDomainRegistryServiceImpl extends KapuaRemoteServiceServlet impl
         DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
         DomainQuery domainQuery = domainFactory.newQuery(null);
         domainQuery.setScopeId(scopeId);
-        domainQuery.setPredicate(new AttributePredicate<String>(DomainPredicates.NAME, domainName));
+        domainQuery.setPredicate(new AttributePredicateImpl<String>(DomainPredicates.NAME, domainName));
         try {
             DomainListResult result = domainRegistryService.query(domainQuery);
             if (!result.isEmpty()) {

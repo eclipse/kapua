@@ -13,7 +13,7 @@ package org.eclipse.kapua.job.jbatch;
 
 import com.google.common.collect.Lists;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.job.engine.JobEngineService;
@@ -145,11 +145,11 @@ public class Main {
         Device device140 = KapuaSecurityUtils.doPrivileged(() -> deviceRegistryService.findByClientId(KapuaId.ONE, "Kura_1-4-0"));
 
         JobStepDefinitionQuery jspQuery = jobStepDefinitionFactory.newQuery(null);
-        jspQuery.setPredicate(new AttributePredicate<>(JobStepDefinitionPredicates.NAME, "Device Command Management Execution"));
+        jspQuery.setPredicate(new AttributePredicateImpl<>(JobStepDefinitionPredicates.NAME, "Device Command Management Execution"));
 
         JobStepDefinition commandJobStepDefinition = jobStepDefinitionService.query(jspQuery).getFirstItem();
 
-        jspQuery.setPredicate(new AttributePredicate<>(JobStepDefinitionPredicates.NAME, "Log step"));
+        jspQuery.setPredicate(new AttributePredicateImpl<>(JobStepDefinitionPredicates.NAME, "Log step"));
         JobStepDefinition logJobStepDefinition = jobStepDefinitionService.query(jspQuery).getFirstItem();
 
         JobCreator jobCreator = jobFactory.newCreator(KapuaId.ONE);

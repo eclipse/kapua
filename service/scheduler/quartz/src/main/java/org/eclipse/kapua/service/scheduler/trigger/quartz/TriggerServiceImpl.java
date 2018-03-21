@@ -16,14 +16,14 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
@@ -90,7 +90,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         //
         // Check duplicate name
         TriggerQuery query = new TriggerQueryImpl(triggerCreator.getScopeId());
-        query.setPredicate(new AttributePredicate<>(TriggerPredicates.NAME, triggerCreator.getName()));
+        query.setPredicate(new AttributePredicateImpl<>(TriggerPredicates.NAME, triggerCreator.getName()));
 
         if (count(query) > 0) {
             throw new KapuaDuplicateNameException(triggerCreator.getName());
@@ -186,9 +186,9 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         // Check duplicate name
         TriggerQuery query = new TriggerQueryImpl(trigger.getScopeId());
         query.setPredicate(
-                new AndPredicate(
-                        new AttributePredicate<>(TriggerPredicates.NAME, trigger.getName()),
-                        new AttributePredicate<>(TriggerPredicates.ENTITY_ID, trigger.getId(), Operator.NOT_EQUAL)
+                new AndPredicateImpl(
+                        new AttributePredicateImpl<>(TriggerPredicates.NAME, trigger.getName()),
+                        new AttributePredicateImpl<>(TriggerPredicates.ENTITY_ID, trigger.getId(), Operator.NOT_EQUAL)
                 )
         );
 

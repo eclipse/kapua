@@ -21,8 +21,8 @@ import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -36,10 +36,10 @@ import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.model.query.predicate.KapuaAndPredicate;
-import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate;
-import org.eclipse.kapua.model.query.predicate.KapuaOrPredicate;
-import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
+import org.eclipse.kapua.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.model.query.predicate.OrPredicate;
+import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
@@ -301,7 +301,7 @@ public class ServiceDAO {
      * @param resultContainer   The {@link KapuaListResult} in which load the result. It must be empty.
      * @param kapuaQuery        The {@link KapuaQuery} to perform.
      * @return The reference of the {@code resultContainer} parameter. Results are added to the given {@code resultContainer} parameter.
-     * @throws KapuaException If filter predicates in the {@link KapuaQuery} are incorrect. See {@link #handleKapuaQueryPredicates(KapuaPredicate, Map, CriteriaBuilder, Root, EntityType)}.
+     * @throws KapuaException If filter predicates in the {@link KapuaQuery} are incorrect. See {@link #handleKapuaQueryPredicates(QueryPredicate, Map, CriteriaBuilder, Root, EntityType)}.
      * @since 1.0.0
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -332,12 +332,12 @@ public class ServiceDAO {
 
         //
         // WHERE
-        KapuaPredicate kapuaPredicates = kapuaQuery.getPredicate();
+        QueryPredicate kapuaPredicates = kapuaQuery.getPredicate();
         if (kapuaQuery.getScopeId() != null) {
 
-            AttributePredicate<KapuaId> scopeId = new AttributePredicate<>(KapuaEntityPredicates.SCOPE_ID, kapuaQuery.getScopeId());
+            AttributePredicateImpl<KapuaId> scopeId = new AttributePredicateImpl<>(KapuaEntityPredicates.SCOPE_ID, kapuaQuery.getScopeId());
 
-            AndPredicate scopedAndPredicate = new AndPredicate();
+            AndPredicateImpl scopedAndPredicate = new AndPredicateImpl();
             scopedAndPredicate.and(scopeId);
 
             // Add existing query predicates
@@ -420,7 +420,7 @@ public class ServiceDAO {
      * @param implementingClass {@link KapuaQuery} result entity implementation class
      * @param kapuaQuery        The {@link KapuaQuery} to perform.
      * @return The number of {@link KapuaEntity}es that matched the filter predicates.
-     * @throws KapuaException If filter predicates in the {@link KapuaQuery} are incorrect. See {@link #handleKapuaQueryPredicates(KapuaPredicate, Map, CriteriaBuilder, Root, EntityType)}.
+     * @throws KapuaException If filter predicates in the {@link KapuaQuery} are incorrect. See {@link #handleKapuaQueryPredicates(QueryPredicate, Map, CriteriaBuilder, Root, EntityType)}.
      * @since 1.0.0
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -442,12 +442,12 @@ public class ServiceDAO {
 
         //
         // WHERE
-        KapuaPredicate kapuaPredicates = kapuaQuery.getPredicate();
+        QueryPredicate kapuaPredicates = kapuaQuery.getPredicate();
         if (kapuaQuery.getScopeId() != null) {
 
-            AndPredicate scopedAndPredicate = new AndPredicate();
+            AndPredicateImpl scopedAndPredicate = new AndPredicateImpl();
 
-            AttributePredicate<KapuaId> scopeId = new AttributePredicate<>(KapuaEntityPredicates.SCOPE_ID, kapuaQuery.getScopeId());
+            AttributePredicateImpl<KapuaId> scopeId = new AttributePredicateImpl<>(KapuaEntityPredicates.SCOPE_ID, kapuaQuery.getScopeId());
             scopedAndPredicate.and(scopeId);
 
             if (kapuaQuery.getPredicate() != null) {
@@ -492,35 +492,35 @@ public class ServiceDAO {
      * @throws KapuaException
      */
     @SuppressWarnings("rawtypes")
-    protected static <E> Expression<Boolean> handleKapuaQueryPredicates(KapuaPredicate qp,
+    protected static <E> Expression<Boolean> handleKapuaQueryPredicates(QueryPredicate qp,
             Map<ParameterExpression, Object> binds,
             CriteriaBuilder cb,
             Root<E> userPermissionRoot,
             EntityType<E> entityType)
             throws KapuaException {
         Expression<Boolean> expr = null;
-        if (qp instanceof KapuaAttributePredicate) {
-            KapuaAttributePredicate attrPred = (KapuaAttributePredicate) qp;
+        if (qp instanceof AttributePredicate) {
+            AttributePredicate attrPred = (AttributePredicate) qp;
             expr = handleAttributePredicate(attrPred, binds, cb, userPermissionRoot, entityType);
-        } else if (qp instanceof KapuaAndPredicate) {
-            KapuaAndPredicate andPredicate = (KapuaAndPredicate) qp;
+        } else if (qp instanceof AndPredicate) {
+            AndPredicate andPredicate = (AndPredicate) qp;
             expr = handleAndPredicate(andPredicate, binds, cb, userPermissionRoot, entityType);
-        } else if (qp instanceof KapuaOrPredicate) {
-            KapuaOrPredicate orPredicate = (KapuaOrPredicate) qp;
+        } else if (qp instanceof OrPredicate) {
+            OrPredicate orPredicate = (OrPredicate) qp;
             expr = handleOrPredicate(orPredicate, binds, cb, userPermissionRoot, entityType);
         }
         return expr;
     }
 
     @SuppressWarnings("rawtypes")
-    private static <E> Expression<Boolean> handleAndPredicate(KapuaAndPredicate andPredicate,
+    private static <E> Expression<Boolean> handleAndPredicate(AndPredicate andPredicate,
             Map<ParameterExpression, Object> binds,
             CriteriaBuilder cb,
             Root<E> entityRoot,
             EntityType<E> entityType)
             throws KapuaException {
         List<Expression<Boolean>> exprs = new ArrayList<>();
-        for (KapuaPredicate pred : andPredicate.getPredicates()) {
+        for (QueryPredicate pred : andPredicate.getPredicates()) {
             Expression<Boolean> expr = handleKapuaQueryPredicates(pred, binds, cb, entityRoot, entityType);
             exprs.add(expr);
         }
@@ -528,14 +528,14 @@ public class ServiceDAO {
     }
 
     @SuppressWarnings("rawtypes")
-    private static <E> Expression<Boolean> handleOrPredicate(KapuaOrPredicate orPredicate,
+    private static <E> Expression<Boolean> handleOrPredicate(OrPredicate orPredicate,
             Map<ParameterExpression, Object> binds,
             CriteriaBuilder cb,
             Root<E> entityRoot,
             EntityType<E> entityType)
             throws KapuaException {
         List<Expression<Boolean>> exprs = new ArrayList<>();
-        for (KapuaPredicate pred : orPredicate.getPredicates()) {
+        for (QueryPredicate pred : orPredicate.getPredicates()) {
             Expression<Boolean> expr = handleKapuaQueryPredicates(pred, binds, cb, entityRoot, entityType);
             exprs.add(expr);
         }
@@ -543,7 +543,7 @@ public class ServiceDAO {
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private static <E> Expression<Boolean> handleAttributePredicate(KapuaAttributePredicate attrPred,
+    private static <E> Expression<Boolean> handleAttributePredicate(AttributePredicate attrPred,
             Map<ParameterExpression, Object> binds,
             CriteriaBuilder cb,
             Root<E> entityRoot,
@@ -699,7 +699,7 @@ public class ServiceDAO {
                     KapuaId userId = kapuaSession.getUserId();
 
                     AccessInfoQuery accessInfoQuery = ACCESS_INFO_FACTORY.newQuery(kapuaSession.getScopeId());
-                    accessInfoQuery.setPredicate(new AttributePredicate<>(AccessInfoPredicates.USER_ID, userId));
+                    accessInfoQuery.setPredicate(new AttributePredicateImpl<>(AccessInfoPredicates.USER_ID, userId));
                     AccessInfoListResult accessInfos = KapuaSecurityUtils.doPrivileged(() -> ACCESS_INFO_SERVICE.query(accessInfoQuery));
 
                     List<Permission> groupPermissions = new ArrayList<>();
@@ -748,14 +748,14 @@ public class ServiceDAO {
                         }
                     }
 
-                    AndPredicate andPredicate = new AndPredicate();
+                    AndPredicateImpl andPredicate = new AndPredicateImpl();
                     if (!groupPermissions.isEmpty()) {
                         int i = 0;
                         KapuaId[] groupsIds = new KapuaEid[groupPermissions.size()];
                         for (Permission p : groupPermissions) {
                             groupsIds[i++] = p.getGroupId();
                         }
-                        andPredicate.and(new AttributePredicate<>(groupPredicateName, groupsIds));
+                        andPredicate.and(new AttributePredicateImpl<>(groupPredicateName, groupsIds));
                     }
 
                     if (query.getPredicate() != null) {

@@ -19,7 +19,7 @@ import java.util.List;
  * @since 1.0
  * 
  */
-public interface KapuaOrPredicate extends KapuaPredicate {
+public interface OrPredicate extends QueryPredicate {
 
     /**
      * Creates an "or predicate" from a generic predicate
@@ -27,13 +27,13 @@ public interface KapuaOrPredicate extends KapuaPredicate {
      * @param predicate
      * @return
      */
-    public KapuaPredicate or(KapuaPredicate predicate);
+    public QueryPredicate or(QueryPredicate predicate);
 
     /**
      * Returns a list of predicates
      * 
      * @return
      */
-    public List<KapuaPredicate> getPredicates();
+    public List<QueryPredicate> getPredicates();
 
 }

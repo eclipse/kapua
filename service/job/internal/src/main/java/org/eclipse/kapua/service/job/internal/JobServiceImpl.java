@@ -16,15 +16,15 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.Job;
@@ -73,7 +73,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         //
         // Check duplicate name
         JobQuery query = new JobQueryImpl(creator.getScopeId());
-        query.setPredicate(new AttributePredicate<>(JobPredicates.NAME, creator.getName()));
+        query.setPredicate(new AttributePredicateImpl<>(JobPredicates.NAME, creator.getName()));
         if (count(query) > 0) {
             throw new KapuaDuplicateNameException(creator.getName());
         }
@@ -105,9 +105,9 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         // Check duplicate name
         JobQuery query = new JobQueryImpl(job.getScopeId());
         query.setPredicate(
-                new AndPredicate(
-                        new AttributePredicate<>(JobPredicates.NAME, job.getName()),
-                        new AttributePredicate<>(JobPredicates.ENTITY_ID, job.getId(), Operator.NOT_EQUAL)
+                new AndPredicateImpl(
+                        new AttributePredicateImpl<>(JobPredicates.NAME, job.getName()),
+                        new AttributePredicateImpl<>(JobPredicates.ENTITY_ID, job.getId(), Operator.NOT_EQUAL)
                 )
         );
 

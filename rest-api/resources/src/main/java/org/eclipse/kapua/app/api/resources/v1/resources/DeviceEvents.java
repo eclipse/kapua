@@ -31,8 +31,8 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.registry.Device;
@@ -86,10 +86,10 @@ public class DeviceEvents extends AbstractKapuaResource {
             @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
         DeviceEventQuery query = deviceEventFactory.newQuery(scopeId);
 
-        AndPredicate andPredicate = new AndPredicate();
-        andPredicate.and(new AttributePredicate<>(DEVICE_ID, deviceId));
+        AndPredicateImpl andPredicate = new AndPredicateImpl();
+        andPredicate.and(new AttributePredicateImpl<>(DEVICE_ID, deviceId));
         if (!Strings.isNullOrEmpty(resource)) {
-            andPredicate.and(new AttributePredicate<>(DeviceEventPredicates.RESOURCE, resource));
+            andPredicate.and(new AttributePredicateImpl<>(DeviceEventPredicates.RESOURCE, resource));
         }
         query.setPredicate(andPredicate);
 
@@ -124,8 +124,8 @@ public class DeviceEvents extends AbstractKapuaResource {
             @ApiParam(value = "The DeviceEventQuery to use to filter results.", required = true) DeviceEventQuery query) throws Exception {
         query.setScopeId(scopeId);
 
-        AndPredicate andPredicate = new AndPredicate();
-        andPredicate.and(new AttributePredicate<>(DEVICE_ID, deviceId));
+        AndPredicateImpl andPredicate = new AndPredicateImpl();
+        andPredicate.and(new AttributePredicateImpl<>(DEVICE_ID, deviceId));
         andPredicate.and(query.getPredicate());
         query.setPredicate(andPredicate);
 
@@ -156,7 +156,7 @@ public class DeviceEvents extends AbstractKapuaResource {
             @ApiParam(value = "The id of the Device in which to count results") @PathParam("deviceId") EntityId deviceId,
             @ApiParam(value = "The DeviceEventQuery to use to filter count results", required = true) DeviceEventQuery query) throws Exception {
         query.setScopeId(scopeId);
-        query.setPredicate(new AttributePredicate<>(DEVICE_ID, deviceId));
+        query.setPredicate(new AttributePredicateImpl<>(DEVICE_ID, deviceId));
 
         return new CountResult(deviceEventService.count(query));
     }
@@ -185,9 +185,9 @@ public class DeviceEvents extends AbstractKapuaResource {
             @ApiParam(value = "The id of the requested DeviceEvent", required = true) @PathParam("deviceEventId") EntityId deviceEventId) throws Exception {
         DeviceEventQuery query = deviceEventFactory.newQuery(scopeId);
 
-        AndPredicate andPredicate = new AndPredicate();
-        andPredicate.and(new AttributePredicate<>(DEVICE_ID, deviceId));
-        andPredicate.and(new AttributePredicate<>(ENTITY_ID, deviceEventId));
+        AndPredicateImpl andPredicate = new AndPredicateImpl();
+        andPredicate.and(new AttributePredicateImpl<>(DEVICE_ID, deviceId));
+        andPredicate.and(new AttributePredicateImpl<>(ENTITY_ID, deviceEventId));
 
         query.setPredicate(andPredicate);
         query.setOffset(0);

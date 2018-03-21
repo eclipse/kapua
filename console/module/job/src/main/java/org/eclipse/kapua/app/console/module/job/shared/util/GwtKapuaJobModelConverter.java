@@ -28,11 +28,11 @@ import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.GwtTrigge
 import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.GwtTriggerQuery;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.JobFactory;
 import org.eclipse.kapua.service.job.JobPredicates;
@@ -120,11 +120,11 @@ public class GwtKapuaJobModelConverter {
 
     public static JobQuery convertJobQuery(GwtJobQuery gwtJobQuery, PagingLoadConfig loadConfig) {
 
-        AndPredicate predicate = new AndPredicate();
+        AndPredicateImpl predicate = new AndPredicateImpl();
         // Convert query
         JobQuery jobQuery = JOB_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobQuery.getScopeId()));
         if (gwtJobQuery.getName() != null && !gwtJobQuery.getName().isEmpty()) {
-            predicate.and(new AttributePredicate<String>(JobPredicates.NAME, gwtJobQuery.getName(), Operator.LIKE));
+            predicate.and(new AttributePredicateImpl<String>(JobPredicates.NAME, gwtJobQuery.getName(), Operator.LIKE));
         }
         jobQuery.setLimit(loadConfig.getLimit());
         jobQuery.setOffset(loadConfig.getOffset());
@@ -143,9 +143,9 @@ public class GwtKapuaJobModelConverter {
     public static JobTargetQuery convertJobTargetQuery(GwtJobTargetQuery gwtJobTargetQuery, PagingLoadConfig loadConfig) {
         JobTargetQuery jobTargetQuery = JOB_TARGET_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobTargetQuery.getScopeId()));
 
-        AndPredicate andPredicate = new AndPredicate();
+        AndPredicateImpl andPredicate = new AndPredicateImpl();
         if (gwtJobTargetQuery.getJobId() != null && !gwtJobTargetQuery.getJobId().trim().isEmpty()) {
-            andPredicate.and(new AttributePredicate<KapuaId>(JobTargetPredicates.JOB_ID, GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobTargetQuery.getJobId())));
+            andPredicate.and(new AttributePredicateImpl<KapuaId>(JobTargetPredicates.JOB_ID, GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobTargetQuery.getJobId())));
         }
         jobTargetQuery.setPredicate(andPredicate);
 
@@ -165,9 +165,9 @@ public class GwtKapuaJobModelConverter {
     public static JobStepQuery convertJobStepQuery(GwtJobStepQuery gwtJobStepQuery, PagingLoadConfig loadConfig) {
         JobStepQuery jobStepQuery = JOB_STEP_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobStepQuery.getScopeId()));
 
-        AndPredicate andPredicate = new AndPredicate();
+        AndPredicateImpl andPredicate = new AndPredicateImpl();
         if (gwtJobStepQuery.getJobId() != null && !gwtJobStepQuery.getJobId().trim().isEmpty()) {
-            andPredicate.and(new AttributePredicate<KapuaId>(JobStepPredicates.JOB_ID, GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobStepQuery.getJobId())));
+            andPredicate.and(new AttributePredicateImpl<KapuaId>(JobStepPredicates.JOB_ID, GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobStepQuery.getJobId())));
         }
         jobStepQuery.setPredicate(andPredicate);
 
@@ -200,7 +200,7 @@ public class GwtKapuaJobModelConverter {
     public static JobStepDefinitionQuery convertJobStepDefinitionQuery(PagingLoadConfig loadConfig, GwtJobStepDefinitionQuery gwtJobStepDefinitionQuery) {
         JobStepDefinitionQuery jobStepDefinitionQuery = JOB_STEP_DEFINITION_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobStepDefinitionQuery.getScopeId()));
 
-        AndPredicate andPredicate = new AndPredicate();
+        AndPredicateImpl andPredicate = new AndPredicateImpl();
         jobStepDefinitionQuery.setPredicate(andPredicate);
 
         if (loadConfig != null) {
@@ -232,11 +232,11 @@ public class GwtKapuaJobModelConverter {
 
         TriggerQuery triggerQuery = TRIGGER_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtTriggerQuery.getScopeId()));
 
-        AttributePredicate<String> kapuaPropertyNameAttributePredicate = new AttributePredicate<String>(TriggerPredicates.TRIGGER_PROPERTIES_NAME, "jobId");
-        AttributePredicate<String> kapuaPropertyValueAttributePredicate = new AttributePredicate<String>(TriggerPredicates.TRIGGER_PROPERTIES_VALUE, gwtTriggerQuery.getJobId());
-        AttributePredicate<String> kapuaPropertyTypeAttributePredicate = new AttributePredicate<String>(TriggerPredicates.TRIGGER_PROPERTIES_TYPE, KapuaId.class.getName());
+        AttributePredicateImpl<String> kapuaPropertyNameAttributePredicate = new AttributePredicateImpl<String>(TriggerPredicates.TRIGGER_PROPERTIES_NAME, "jobId");
+        AttributePredicateImpl<String> kapuaPropertyValueAttributePredicate = new AttributePredicateImpl<String>(TriggerPredicates.TRIGGER_PROPERTIES_VALUE, gwtTriggerQuery.getJobId());
+        AttributePredicateImpl<String> kapuaPropertyTypeAttributePredicate = new AttributePredicateImpl<String>(TriggerPredicates.TRIGGER_PROPERTIES_TYPE, KapuaId.class.getName());
 
-        AndPredicate andPredicate = new AndPredicate()
+        AndPredicateImpl andPredicate = new AndPredicateImpl()
                 .and(kapuaPropertyNameAttributePredicate)
                 .and(kapuaPropertyValueAttributePredicate)
                 .and(kapuaPropertyTypeAttributePredicate);
@@ -264,7 +264,7 @@ public class GwtKapuaJobModelConverter {
 
     public static JobExecutionQuery convertJobExecutionQuery(PagingLoadConfig pagingLoadConfig, GwtExecutionQuery gwtExecutionQuery) {
         JobExecutionQuery query = JOB_EXECUTION_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtExecutionQuery.getScopeId()));
-        query.setPredicate(new AttributePredicate<KapuaId>(JobExecutionPredicates.JOB_ID, GwtKapuaCommonsModelConverter.convertKapuaId(gwtExecutionQuery.getJobId())));
+        query.setPredicate(new AttributePredicateImpl<KapuaId>(JobExecutionPredicates.JOB_ID, GwtKapuaCommonsModelConverter.convertKapuaId(gwtExecutionQuery.getJobId())));
 
         if (pagingLoadConfig.getSortField() != null) {
             query.setSortCriteria(new FieldSortCriteria(pagingLoadConfig.getSortField(), pagingLoadConfig.getSortDir() == SortDir.ASC ? SortOrder.ASCENDING : SortOrder.DESCENDING));

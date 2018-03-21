@@ -26,11 +26,11 @@ import org.eclipse.kapua.app.console.module.device.shared.model.device.managemen
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.model.type.ObjectTypeConverter;
 import org.eclipse.kapua.model.type.ObjectValueConverter;
 import org.eclipse.kapua.service.device.management.asset.DeviceAsset;
@@ -59,16 +59,16 @@ public class GwtKapuaDeviceModelConverter {
         KapuaLocator locator = KapuaLocator.getInstance();
         DeviceConnectionFactory factory = locator.getFactory(DeviceConnectionFactory.class);
         DeviceConnectionQuery query = factory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtDeviceConnectionQuery.getScopeId()));
-        AndPredicate predicate = new AndPredicate();
+        AndPredicateImpl predicate = new AndPredicateImpl();
 
         if (gwtDeviceConnectionQuery.getClientId() != null && !gwtDeviceConnectionQuery.getClientId().trim().isEmpty()) {
-            predicate.and(new AttributePredicate<String>("clientId", gwtDeviceConnectionQuery.getClientId(), Operator.LIKE));
+            predicate.and(new AttributePredicateImpl<String>("clientId", gwtDeviceConnectionQuery.getClientId(), Operator.LIKE));
         }
         if (gwtDeviceConnectionQuery.getConnectionStatus() != null && !gwtDeviceConnectionQuery.getConnectionStatus().equals(GwtDeviceConnectionStatus.ANY.toString())) {
-            predicate.and(new AttributePredicate<DeviceConnectionStatus>("status", convertConnectionStatus(gwtDeviceConnectionQuery.getConnectionStatus()), Operator.EQUAL));
+            predicate.and(new AttributePredicateImpl<DeviceConnectionStatus>("status", convertConnectionStatus(gwtDeviceConnectionQuery.getConnectionStatus()), Operator.EQUAL));
         }
         if (gwtDeviceConnectionQuery.getClientIP() != null && !gwtDeviceConnectionQuery.getClientIP().trim().isEmpty()) {
-            predicate.and(new AttributePredicate<String>("clientIp", gwtDeviceConnectionQuery.getClientIP(), Operator.LIKE));
+            predicate.and(new AttributePredicateImpl<String>("clientIp", gwtDeviceConnectionQuery.getClientIP(), Operator.LIKE));
         }
 
         String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? "clientId" : loadConfig.getSortField();
@@ -152,56 +152,54 @@ public class GwtKapuaDeviceModelConverter {
         }
 
         GwtDeviceQueryPredicates predicates = gwtDeviceQuery.getPredicates();
-        AndPredicate andPred = new AndPredicate();
+        AndPredicateImpl andPred = new AndPredicateImpl();
 
         if (predicates.getClientId() != null) {
-            andPred = andPred.and(new AttributePredicate<String>(DevicePredicates.CLIENT_ID, predicates.getUnescapedClientId(), Operator.STARTS_WITH));
+            andPred = andPred.and(new AttributePredicateImpl<String>(DevicePredicates.CLIENT_ID, predicates.getUnescapedClientId(), Operator.STARTS_WITH));
         }
         if (predicates.getDisplayName() != null) {
-            andPred = andPred.and(new AttributePredicate<String>(DevicePredicates.DISPLAY_NAME, predicates.getUnescapedDisplayName(), Operator.STARTS_WITH));
+            andPred = andPred.and(new AttributePredicateImpl<String>(DevicePredicates.DISPLAY_NAME, predicates.getUnescapedDisplayName(), Operator.STARTS_WITH));
         }
         if (predicates.getSerialNumber() != null) {
-            andPred = andPred.and(new AttributePredicate<String>(DevicePredicates.SERIAL_NUMBER, predicates.getUnescapedSerialNumber()));
+            andPred = andPred.and(new AttributePredicateImpl<String>(DevicePredicates.SERIAL_NUMBER, predicates.getUnescapedSerialNumber()));
         }
         if (predicates.getDeviceStatus() != null) {
-            andPred = andPred.and(new AttributePredicate<DeviceStatus>(DevicePredicates.STATUS, DeviceStatus.valueOf(predicates.getDeviceStatus())));
+            andPred = andPred.and(new AttributePredicateImpl<DeviceStatus>(DevicePredicates.STATUS, DeviceStatus.valueOf(predicates.getDeviceStatus())));
         }
         if (predicates.getIotFrameworkVersion() != null) {
-            andPred = andPred.and(new AttributePredicate<String>(DevicePredicates.APPLICATION_FRAMEWORK_VERSION, predicates.getIotFrameworkVersion()));
+            andPred = andPred.and(new AttributePredicateImpl<String>(DevicePredicates.APPLICATION_FRAMEWORK_VERSION, predicates.getIotFrameworkVersion()));
         }
         if (predicates.getApplicationIdentifiers() != null) {
-            andPred = andPred.and(new AttributePredicate<String>(DevicePredicates.APPLICATION_IDENTIFIERS, predicates.getApplicationIdentifiers(), Operator.LIKE));
+            andPred = andPred.and(new AttributePredicateImpl<String>(DevicePredicates.APPLICATION_IDENTIFIERS, predicates.getApplicationIdentifiers(), Operator.LIKE));
         }
         if (predicates.getCustomAttribute1() != null) {
-            andPred = andPred.and(new AttributePredicate<String>(DevicePredicates.CUSTOM_ATTRIBUTE_1, predicates.getCustomAttribute1()));
+            andPred = andPred.and(new AttributePredicateImpl<String>(DevicePredicates.CUSTOM_ATTRIBUTE_1, predicates.getCustomAttribute1()));
         }
         if (predicates.getCustomAttribute2() != null) {
-            andPred = andPred.and(new AttributePredicate<String>(DevicePredicates.CUSTOM_ATTRIBUTE_2, predicates.getCustomAttribute2()));
+            andPred = andPred.and(new AttributePredicateImpl<String>(DevicePredicates.CUSTOM_ATTRIBUTE_2, predicates.getCustomAttribute2()));
         }
         if (predicates.getDeviceConnectionStatus() != null) {
             switch (predicates.getDeviceConnectionStatusEnum()) {
             case UNKNOWN:
-                andPred = andPred.and(new AttributePredicate<DeviceConnectionStatus>(DevicePredicates.CONNECTION_ID, DeviceConnectionStatus.NULL, Operator.IS_NULL));
+                andPred = andPred.and(new AttributePredicateImpl<DeviceConnectionStatus>(DevicePredicates.CONNECTION_ID, DeviceConnectionStatus.NULL, Operator.IS_NULL));
                 break;
             default:
-                andPred = andPred.and(new AttributePredicate<DeviceConnectionStatus>(DevicePredicates.CONNECTION_STATUS, DeviceConnectionStatus.valueOf(predicates.getDeviceConnectionStatus())));
+                andPred = andPred.and(new AttributePredicateImpl<DeviceConnectionStatus>(DevicePredicates.CONNECTION_STATUS, DeviceConnectionStatus.valueOf(predicates.getDeviceConnectionStatus())));
             }
         }
         if (predicates.getGroupDevice() != null) {
             switch (predicates.getGroupDeviceEnum()) {
             case NO_GROUP:
-                andPred = andPred.and(new AttributePredicate<KapuaId>(DevicePredicates.GROUP_ID,
-                        null, Operator.IS_NULL));
+                andPred = andPred.and(new AttributePredicateImpl<KapuaId>(DevicePredicates.GROUP_ID, null, Operator.IS_NULL));
                 break;
             default:
                 if (predicates.getGroupId() != null) {
-                    andPred = andPred.and(new AttributePredicate<KapuaId>(DevicePredicates.GROUP_ID,
-                            KapuaEid.parseCompactId(predicates.getGroupId())));
+                    andPred = andPred.and(new AttributePredicateImpl<KapuaId>(DevicePredicates.GROUP_ID, KapuaEid.parseCompactId(predicates.getGroupId())));
                 }
             }
         }
         if(predicates.getTagId() != null) {
-            andPred = andPred.and(new AttributePredicate<KapuaId[]>(DevicePredicates.TAG_IDS, new KapuaId[] { GwtKapuaCommonsModelConverter.convertKapuaId(predicates.getTagId()) }));
+            andPred = andPred.and(new AttributePredicateImpl<KapuaId[]>(DevicePredicates.TAG_IDS, new KapuaId[] { GwtKapuaCommonsModelConverter.convertKapuaId(predicates.getTagId()) }));
         }
 
         if (predicates.getSortAttribute() != null) {

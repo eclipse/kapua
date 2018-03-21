@@ -15,15 +15,15 @@ import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.internal.JobEntityManagerFactory;
@@ -94,9 +94,9 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
         // Check duplicate name
         JobStepQuery query = new JobStepQueryImpl(jobStepCreator.getScopeId());
         query.setPredicate(
-                new AndPredicate(
-                        new AttributePredicate<>(JobStepPredicates.JOB_ID, jobStepCreator.getJobId()),
-                        new AttributePredicate<>(JobStepPredicates.NAME, jobStepCreator.getName())
+                new AndPredicateImpl(
+                        new AttributePredicateImpl<>(JobStepPredicates.JOB_ID, jobStepCreator.getJobId()),
+                        new AttributePredicateImpl<>(JobStepPredicates.NAME, jobStepCreator.getName())
                 )
         );
 
@@ -146,10 +146,10 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         JobStepQuery query = new JobStepQueryImpl(jobStep.getScopeId());
         query.setPredicate(
-                new AndPredicate(
-                        new AttributePredicate<>(JobStepPredicates.JOB_ID, jobStep.getJobId()),
-                        new AttributePredicate<>(JobStepPredicates.NAME, jobStep.getName()),
-                        new AttributePredicate<>(JobStepPredicates.ENTITY_ID, jobStep.getId(), Operator.NOT_EQUAL)
+                new AndPredicateImpl(
+                        new AttributePredicateImpl<>(JobStepPredicates.JOB_ID, jobStep.getJobId()),
+                        new AttributePredicateImpl<>(JobStepPredicates.NAME, jobStep.getName()),
+                        new AttributePredicateImpl<>(JobStepPredicates.ENTITY_ID, jobStep.getId(), Operator.NOT_EQUAL)
                 )
         );
 

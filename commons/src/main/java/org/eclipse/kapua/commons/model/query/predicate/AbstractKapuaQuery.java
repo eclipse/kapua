@@ -22,7 +22,7 @@ import org.eclipse.kapua.model.KapuaEntityPredicates;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.KapuaSortCriteria;
-import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
+import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 
 /**
  * {@link KapuaQuery} reference abstract implementation.
@@ -37,7 +37,7 @@ public abstract class AbstractKapuaQuery<E extends KapuaEntity> implements Kapua
 
     private KapuaId scopeId;
 
-    private KapuaPredicate predicate;
+    private QueryPredicate predicate;
     private KapuaSortCriteria sortCriteria;
     private List<String> fetchAttributes;
 
@@ -98,12 +98,12 @@ public abstract class AbstractKapuaQuery<E extends KapuaEntity> implements Kapua
     }
 
     @Override
-    public void setPredicate(KapuaPredicate queryPredicate) {
+    public void setPredicate(QueryPredicate queryPredicate) {
         this.predicate = queryPredicate;
     }
 
     @Override
-    public KapuaPredicate getPredicate() {
+    public QueryPredicate getPredicate() {
         return this.predicate;
     }
 

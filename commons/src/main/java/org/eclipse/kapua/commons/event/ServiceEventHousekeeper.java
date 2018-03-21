@@ -19,8 +19,8 @@ import java.util.List;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecord;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordListResult;
@@ -36,7 +36,7 @@ import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.event.ServiceEvent.EventStatus;
-import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -165,19 +165,19 @@ public class ServiceEventHousekeeper implements Runnable {
 
     private EventStoreRecordListResult getUnsentEvents(String serviceName, EventsProcessType eventsProcessType) throws KapuaException {
         EventStoreRecordQuery query = new EventStoreFactoryImpl().newQuery(null);
-        AndPredicate andPredicate = new AndPredicate();
-        andPredicate.and(new AttributePredicate<>(EventStoreRecordPredicates.SERVICE_NAME, serviceName));
+        AndPredicateImpl andPredicate = new AndPredicateImpl();
+        andPredicate.and(new AttributePredicateImpl<>(EventStoreRecordPredicates.SERVICE_NAME, serviceName));
         if (EventsProcessType.SEND_ERROR.equals(eventsProcessType)) {
             LOGGER.trace("Looking for SENT_ERROR events. Add EventStatus=SENT_ERROR query predicate.");
-            andPredicate.and(new AttributePredicate<>(EventStoreRecordPredicates.EVENT_STATUS, EventStatus.SEND_ERROR));
+            andPredicate.and(new AttributePredicateImpl<>(EventStoreRecordPredicates.EVENT_STATUS, EventStatus.SEND_ERROR));
         }
         else {
             LOGGER.trace("Looking for OLD events. Add EventStatus=RAISED query predicate.");
-            andPredicate.and(new AttributePredicate<>(EventStoreRecordPredicates.EVENT_STATUS, EventStatus.TRIGGERED));
+            andPredicate.and(new AttributePredicateImpl<>(EventStoreRecordPredicates.EVENT_STATUS, EventStatus.TRIGGERED));
             //add timestamp predicate
             Date eventDateBound = Date.from(KapuaDateUtils.getKapuaSysDate().minusMillis(OLD_MESSAGES_TIME_WINDOW));
             LOGGER.trace("Looking for OLD events. Add timestamp condition query predicate. Date before {}", eventDateBound);
-            andPredicate.and(new AttributePredicate<>(EventStoreRecordPredicates.MODIFIED_ON, eventDateBound, Operator.LESS_THAN_OR_EQUAL));
+            andPredicate.and(new AttributePredicateImpl<>(EventStoreRecordPredicates.MODIFIED_ON, eventDateBound, Operator.LESS_THAN_OR_EQUAL));
         }
         query.setPredicate(andPredicate);
         query.setLimit(EVENT_SCAN_WINDOW);

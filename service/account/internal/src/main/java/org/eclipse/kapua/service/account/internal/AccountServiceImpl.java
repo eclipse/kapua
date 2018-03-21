@@ -20,7 +20,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
@@ -108,7 +108,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         //
         // Check duplicate name
         AccountQuery query = new AccountQueryImpl(accountCreator.getScopeId());
-        query.setPredicate(new AttributePredicate<>(AccountPredicates.NAME, accountCreator.getName()));
+        query.setPredicate(new AttributePredicateImpl<>(AccountPredicates.NAME, accountCreator.getName()));
         if (count(query) > 0) {
             throw new KapuaDuplicateNameException(accountCreator.getName());
         }

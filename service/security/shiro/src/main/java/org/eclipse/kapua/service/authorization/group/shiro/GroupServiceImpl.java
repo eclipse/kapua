@@ -16,8 +16,8 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -25,7 +25,7 @@ import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.group.GroupCreator;
@@ -79,7 +79,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
         //
         // Check duplicate name
         GroupQuery query = new GroupQueryImpl(groupCreator.getScopeId());
-        query.setPredicate(new AttributePredicate<>(GroupPredicates.NAME, groupCreator.getName()));
+        query.setPredicate(new AttributePredicateImpl<>(GroupPredicates.NAME, groupCreator.getName()));
 
         if (count(query) > 0) {
             throw new KapuaDuplicateNameException(groupCreator.getName());
@@ -113,9 +113,9 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
         // Check duplicate name
         GroupQuery query = new GroupQueryImpl(group.getScopeId());
         query.setPredicate(
-                new AndPredicate(
-                        new AttributePredicate<>(GroupPredicates.NAME, group.getName()),
-                        new AttributePredicate<>(GroupPredicates.ENTITY_ID, group.getId(), Operator.NOT_EQUAL)
+                new AndPredicateImpl(
+                        new AttributePredicateImpl<>(GroupPredicates.NAME, group.getName()),
+                        new AttributePredicateImpl<>(GroupPredicates.ENTITY_ID, group.getId(), Operator.NOT_EQUAL)
                 )
         );
 

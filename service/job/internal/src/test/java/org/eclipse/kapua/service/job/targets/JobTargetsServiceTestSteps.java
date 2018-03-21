@@ -46,7 +46,7 @@ import javax.inject.Inject;
 import java.math.BigInteger;
 import java.security.acl.Permission;
 
-import static org.eclipse.kapua.commons.model.query.predicate.AttributePredicate.attributeIsEqualTo;
+import static org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl.attributeIsEqualTo;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 

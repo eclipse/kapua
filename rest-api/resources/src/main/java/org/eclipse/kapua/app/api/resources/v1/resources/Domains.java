@@ -20,8 +20,8 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
@@ -70,9 +70,9 @@ public class Domains extends AbstractKapuaResource {
             @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
         DomainQuery query = domainFactory.newQuery(null);
 
-        AndPredicate andPredicate = new AndPredicate();
+        AndPredicateImpl andPredicate = new AndPredicateImpl();
         if (!Strings.isNullOrEmpty(name)) {
-            andPredicate.and(new AttributePredicate<>(DomainPredicates.NAME, name));
+            andPredicate.and(new AttributePredicateImpl<>(DomainPredicates.NAME, name));
         }
         query.setPredicate(andPredicate);
 

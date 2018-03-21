@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.authorization.shiro;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -267,7 +267,7 @@ public class RoleServiceTest extends KapuaTest {
             //
             // Query
             RoleQuery query = new RoleQueryImpl(scope);
-            query.setPredicate(new AttributePredicate<>(RolePredicates.NAME, role.getName()));
+            query.setPredicate(new AttributePredicateImpl<>(RolePredicates.NAME, role.getName()));
             RoleListResult rolesFound = roleService.query(query);
             long rolesCount = roleService.count(query);
 

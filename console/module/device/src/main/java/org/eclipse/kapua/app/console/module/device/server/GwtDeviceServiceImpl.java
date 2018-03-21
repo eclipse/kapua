@@ -38,16 +38,16 @@ import org.eclipse.kapua.app.console.module.device.shared.util.KapuaGwtDeviceMod
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
-import org.eclipse.kapua.model.query.predicate.KapuaAndPredicate;
-import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
+import org.eclipse.kapua.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.group.GroupDomain;
@@ -254,9 +254,9 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                     eventQuery.setLimit(1);
                     eventQuery.setSortCriteria(new FieldSortCriteria(DeviceEventPredicates.RECEIVED_ON, SortOrder.DESCENDING));
 
-                    AndPredicate andPredicate = new AndPredicate();
-                    andPredicate.and(new AttributePredicate<KapuaId>(DeviceEventPredicates.DEVICE_ID, device.getId()));
-                    andPredicate.and(new AttributePredicate<String>(DeviceEventPredicates.RESOURCE, "BIRTH"));
+                    AndPredicateImpl andPredicate = new AndPredicateImpl();
+                    andPredicate.and(new AttributePredicateImpl<KapuaId>(DeviceEventPredicates.DEVICE_ID, device.getId()));
+                    andPredicate.and(new AttributePredicateImpl<String>(DeviceEventPredicates.RESOURCE, "BIRTH"));
 
                     eventQuery.setPredicate(andPredicate);
 
@@ -532,11 +532,11 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
             BasePagingLoadConfig bplc = (BasePagingLoadConfig) loadConfig;
             DeviceEventQuery query = deviceEventFactory.newQuery(KapuaEid.parseCompactId(gwtDevice.getScopeId()));
 
-            KapuaAndPredicate andPredicate = new AndPredicate();
+            AndPredicate andPredicate = new AndPredicateImpl();
 
-            andPredicate.and(new AttributePredicate<KapuaId>(DeviceEventPredicates.DEVICE_ID, KapuaEid.parseCompactId(gwtDevice.getId())));
-            andPredicate.and(new AttributePredicate<Date>(DeviceEventPredicates.RECEIVED_ON, startDate, Operator.GREATER_THAN));
-            andPredicate.and(new AttributePredicate<Date>(DeviceEventPredicates.RECEIVED_ON, endDate, Operator.LESS_THAN));
+            andPredicate.and(new AttributePredicateImpl<KapuaId>(DeviceEventPredicates.DEVICE_ID, KapuaEid.parseCompactId(gwtDevice.getId())));
+            andPredicate.and(new AttributePredicateImpl<Date>(DeviceEventPredicates.RECEIVED_ON, startDate, Operator.GREATER_THAN));
+            andPredicate.and(new AttributePredicateImpl<Date>(DeviceEventPredicates.RECEIVED_ON, endDate, Operator.LESS_THAN));
 
             query.setPredicate(andPredicate);
             query.setSortCriteria(new FieldSortCriteria(DeviceEventPredicates.RECEIVED_ON, SortOrder.DESCENDING));

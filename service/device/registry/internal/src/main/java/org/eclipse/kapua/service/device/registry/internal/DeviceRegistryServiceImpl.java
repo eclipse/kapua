@@ -17,13 +17,13 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
+import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
@@ -72,7 +72,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
         }
 
         DeviceQuery query = new DeviceQueryImpl(deviceCreator.getScopeId());
-        query.setPredicate(new AttributePredicate<>(DevicePredicates.CLIENT_ID, deviceCreator.getClientId()));
+        query.setPredicate(new AttributePredicateImpl<>(DevicePredicates.CLIENT_ID, deviceCreator.getClientId()));
         DeviceListResult deviceListResult = query(query);
         if (!deviceListResult.isEmpty()) {
             throw new KapuaDuplicateNameException(deviceCreator.getClientId());
@@ -150,7 +150,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
         DeviceValidation.validateFindByClientIdPreconditions(scopeId, clientId);
 
         DeviceQueryImpl query = new DeviceQueryImpl(scopeId);
-        KapuaPredicate predicate = new AttributePredicate<>(DevicePredicates.CLIENT_ID, clientId);
+        QueryPredicate predicate = new AttributePredicateImpl<>(DevicePredicates.CLIENT_ID, clientId);
         query.setFetchAttributes(Lists.newArrayList(DevicePredicates.CONNECTION, DevicePredicates.LAST_EVENT));
         query.setPredicate(predicate);
 
@@ -184,7 +184,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
         DeviceFactory deviceFactory = locator.getFactory(DeviceFactory.class);
 
         DeviceQuery query = deviceFactory.newQuery(scopeId);
-        query.setPredicate(new AttributePredicate<>(DevicePredicates.GROUP_ID, groupId));
+        query.setPredicate(new AttributePredicateImpl<>(DevicePredicates.GROUP_ID, groupId));
 
         DeviceListResult devicesToDelete = query(query);
 

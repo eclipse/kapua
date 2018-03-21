@@ -52,8 +52,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.eclipse.kapua.commons.model.query.predicate.AttributePredicate.attributeIsEqualTo;
-import static org.eclipse.kapua.commons.model.query.predicate.AttributePredicate.attributeIsNotEqualTo;
+import static org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl.attributeIsEqualTo;
+import static org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl.attributeIsNotEqualTo;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 

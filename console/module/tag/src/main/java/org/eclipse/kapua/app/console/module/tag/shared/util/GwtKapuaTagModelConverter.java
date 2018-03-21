@@ -18,11 +18,11 @@ import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModel
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTagQuery;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.tag.TagFactory;
 import org.eclipse.kapua.service.tag.TagQuery;
 import org.eclipse.kapua.service.tag.TagPredicates;
@@ -45,9 +45,9 @@ public class GwtKapuaTagModelConverter {
     public static TagQuery convertTagQuery(PagingLoadConfig loadConfig, GwtTagQuery gwtTagQuery) {
 
         // Predicates conversion
-        AndPredicate andPredicate = new AndPredicate();
+        AndPredicateImpl andPredicate = new AndPredicateImpl();
         if (gwtTagQuery.getName() != null && !gwtTagQuery.getName().isEmpty()) {
-            andPredicate.and(new AttributePredicate<String>(TagPredicates.NAME, gwtTagQuery.getName(), Operator.LIKE));
+            andPredicate.and(new AttributePredicateImpl<String>(TagPredicates.NAME, gwtTagQuery.getName(), Operator.LIKE));
         }
         if (!gwtTagQuery.getIds().isEmpty()) {
             int i = 0;
@@ -56,7 +56,7 @@ public class GwtKapuaTagModelConverter {
                 tagIds[i++] = GwtKapuaCommonsModelConverter.convertKapuaId(gwtTagId);
             }
 
-            andPredicate.and(new AttributePredicate<KapuaId[]>(TagPredicates.ENTITY_ID, tagIds));
+            andPredicate.and(new AttributePredicateImpl<KapuaId[]>(TagPredicates.ENTITY_ID, tagIds));
         }
 
         // Sort order conversion

@@ -13,7 +13,7 @@ package org.eclipse.kapua.service.authorization.role.shiro;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -128,7 +128,7 @@ public class RolePermissionServiceImpl extends AbstractKapuaService implements R
         //
         // Build query
         RolePermissionQuery query = new RolePermissionQueryImpl(scopeId);
-        query.setPredicate(new AttributePredicate<>(RolePermissionPredicates.ROLE_ID, roleId));
+        query.setPredicate(new AttributePredicateImpl<>(RolePermissionPredicates.ROLE_ID, roleId));
 
         return query(query);
     }

@@ -31,24 +31,26 @@ import org.eclipse.kapua.app.console.module.authorization.shared.util.GwtKapuaAu
 import org.eclipse.kapua.app.console.module.authorization.shared.util.KapuaGwtAuthorizationModelConverter;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionCreator;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionFactory;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionPredicates;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionQuery;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import org.eclipse.kapua.service.authorization.access.shiro.AccessPermissionPredicates;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 
@@ -76,12 +78,12 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
             AccessPermissionFactory accessPermissionFactory = locator.getFactory(AccessPermissionFactory.class);
             AccessPermissionQuery query = accessPermissionFactory.newQuery(accessInfoCreator.getScopeId());
 
-            AndPredicate andPredicate = new AndPredicate();
-            andPredicate.and(new AttributePredicate(AccessPermissionPredicates.ACCESS_INFO_ID, accessInfoCreator.getAccessInfoId()));
-            andPredicate.and(new AttributePredicate(AccessPermissionPredicates.SCOPE_ID, accessInfoCreator.getScopeId()));
-            andPredicate.and(new AttributePredicate("permission.domain", accessInfoCreator.getPermission().getDomain()));
-            andPredicate.and(new AttributePredicate("permission.action", accessInfoCreator.getPermission().getAction()));
-            andPredicate.and(new AttributePredicate("permission.groupId", accessInfoCreator.getPermission().getGroupId()));
+            AndPredicate andPredicate = new AndPredicateImpl();
+            andPredicate.and(new AttributePredicateImpl<KapuaId>(AccessPermissionPredicates.ACCESS_INFO_ID, accessInfoCreator.getAccessInfoId()));
+            andPredicate.and(new AttributePredicateImpl<KapuaId>(AccessPermissionPredicates.SCOPE_ID, accessInfoCreator.getScopeId()));
+            andPredicate.and(new AttributePredicateImpl<String>("permission.domain", accessInfoCreator.getPermission().getDomain()));
+            andPredicate.and(new AttributePredicateImpl<Actions>("permission.action", accessInfoCreator.getPermission().getAction()));
+            andPredicate.and(new AttributePredicateImpl<KapuaId>("permission.groupId", accessInfoCreator.getPermission().getGroupId()));
             query.setPredicate(andPredicate);
             long permissionCnt = accessPermissionService.count(query);
             if (permissionCnt > 0) {
@@ -148,7 +150,7 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
 
                 if (accessInfo != null) {
                     AccessPermissionQuery accessPermissionQuery = accessPermissionFactory.newQuery(scopeId);
-                    accessPermissionQuery.setPredicate(new AttributePredicate<KapuaId>("accessInfoId", accessInfo.getId()));
+                    accessPermissionQuery.setPredicate(new AttributePredicateImpl<KapuaId>("accessInfoId", accessInfo.getId()));
                     accessPermissionQuery.setLimit(loadConfig.getLimit());
                     accessPermissionQuery.setOffset(loadConfig.getOffset());
                     String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? "createdOn" : loadConfig.getSortField();

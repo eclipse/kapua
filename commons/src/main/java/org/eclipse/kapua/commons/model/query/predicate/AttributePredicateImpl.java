@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.model.query.predicate;
 
-import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 
 /**
  * Kapua attribute predicate reference implementation.
@@ -22,7 +22,7 @@ import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate;
  * @since 1.0
  * 
  */
-public class AttributePredicate<T> implements KapuaAttributePredicate<T> {
+public class AttributePredicateImpl<T> implements AttributePredicate<T> {
 
     /**
      * Predicate attribute name
@@ -45,7 +45,7 @@ public class AttributePredicate<T> implements KapuaAttributePredicate<T> {
      * @param attributeName
      * @param attributeValue
      */
-    public AttributePredicate(String attributeName, T attributeValue) {
+    public AttributePredicateImpl(String attributeName, T attributeValue) {
         this(attributeName, attributeValue, Operator.EQUAL);
     }
 
@@ -56,7 +56,7 @@ public class AttributePredicate<T> implements KapuaAttributePredicate<T> {
      * @param attributeValue
      * @param operator
      */
-    public AttributePredicate(String attributeName, T attributeValue, Operator operator) {
+    public AttributePredicateImpl(String attributeName, T attributeValue, Operator operator) {
         this.attributeName = attributeName;
         this.attributeValue = attributeValue;
         this.operator = operator;
@@ -69,8 +69,8 @@ public class AttributePredicate<T> implements KapuaAttributePredicate<T> {
      * @param attributeValue
      * @return
      */
-    public static <T> AttributePredicate<T> attributeIsEqualTo(String attributeName, T attributeValue) {
-        return new AttributePredicate<>(attributeName, attributeValue);
+    public static <T> AttributePredicateImpl<T> attributeIsEqualTo(String attributeName, T attributeValue) {
+        return new AttributePredicateImpl<>(attributeName, attributeValue);
     }
 
     /**
@@ -80,8 +80,8 @@ public class AttributePredicate<T> implements KapuaAttributePredicate<T> {
      * @param attributeValue
      * @return
      */
-    public static <T> AttributePredicate<T> attributeIsNotEqualTo(String attributeName, T attributeValue) {
-        return new AttributePredicate<>(attributeName, attributeValue, Operator.NOT_EQUAL);
+    public static <T> AttributePredicateImpl<T> attributeIsNotEqualTo(String attributeName, T attributeValue) {
+        return new AttributePredicateImpl<>(attributeName, attributeValue, Operator.NOT_EQUAL);
     }
 
     @Override

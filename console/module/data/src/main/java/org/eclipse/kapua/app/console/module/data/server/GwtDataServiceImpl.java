@@ -32,7 +32,7 @@ import org.eclipse.kapua.app.console.module.data.shared.model.GwtHeader;
 import org.eclipse.kapua.app.console.module.data.shared.service.GwtDataService;
 import org.eclipse.kapua.app.console.module.data.shared.util.GwtKapuaDataModelConverter;
 import org.eclipse.kapua.app.console.module.data.shared.util.KapuaGwtDataModelConverter;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
@@ -195,7 +195,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                     clientIds.add(client.getClientId());
                 }
                 DeviceQuery deviceQuery = deviceFactory.newQuery(convertedScopeId);
-                deviceQuery.setPredicate(new AttributePredicate<String[]>(DevicePredicates.CLIENT_ID, clientIds.toArray(new String[0])));
+                deviceQuery.setPredicate(new AttributePredicateImpl<String[]>(DevicePredicates.CLIENT_ID, clientIds.toArray(new String[0])));
                 DeviceListResult deviceListResult = deviceRegistryService.query(deviceQuery);
                 Map<String, String> clientIdsMap = new HashMap<String, String>();
                 for (Device device : deviceListResult.getItems()) {

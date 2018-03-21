@@ -20,8 +20,8 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.service.KapuaService;
@@ -79,13 +79,13 @@ public class RolesPermissions extends AbstractKapuaResource {
             @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
         RolePermissionQuery query = rolePermissionFactory.newQuery(scopeId);
 
-        AndPredicate andPredicate = new AndPredicate();
-        query.setPredicate(new AttributePredicate<>(RolePermissionPredicates.ROLE_ID, roleId));
+        AndPredicateImpl andPredicate = new AndPredicateImpl();
+        query.setPredicate(new AttributePredicateImpl<>(RolePermissionPredicates.ROLE_ID, roleId));
         if (!Strings.isNullOrEmpty(domain)) {
-            andPredicate.and(new AttributePredicate<>(RolePermissionPredicates.DOMAIN, domain));
+            andPredicate.and(new AttributePredicateImpl<>(RolePermissionPredicates.DOMAIN, domain));
         }
         if (action != null) {
-            andPredicate.and(new AttributePredicate<>(RolePermissionPredicates.ACTION, action));
+            andPredicate.and(new AttributePredicateImpl<>(RolePermissionPredicates.ACTION, action));
         }
         query.setPredicate(andPredicate);
 
@@ -116,8 +116,8 @@ public class RolesPermissions extends AbstractKapuaResource {
             @ApiParam(value = "The RolePermissionQuery to use to filter results.", required = true) RolePermissionQuery query) throws Exception {
         query.setScopeId(scopeId);
 
-        AndPredicate andPredicate = new AndPredicate();
-        andPredicate.and(new AttributePredicate<>(RolePermissionPredicates.ROLE_ID, roleId));
+        AndPredicateImpl andPredicate = new AndPredicateImpl();
+        andPredicate.and(new AttributePredicateImpl<>(RolePermissionPredicates.ROLE_ID, roleId));
         andPredicate.and(query.getPredicate());
 
         query.setPredicate(andPredicate);
@@ -145,7 +145,7 @@ public class RolesPermissions extends AbstractKapuaResource {
             @ApiParam(value = "The Role id in which to count results.") @PathParam("roleId") EntityId roleId,
             @ApiParam(value = "The RolePermissionQuery to use to filter results.", required = true) RolePermissionQuery query) throws Exception {
         query.setScopeId(scopeId);
-        query.setPredicate(new AttributePredicate<>(RolePermissionPredicates.ROLE_ID, roleId));
+        query.setPredicate(new AttributePredicateImpl<>(RolePermissionPredicates.ROLE_ID, roleId));
 
         return new CountResult(rolePermissionService.count(query));
     }
@@ -195,9 +195,9 @@ public class RolesPermissions extends AbstractKapuaResource {
             @ApiParam(value = "The id of the requested RolePermission", required = true) @PathParam("rolePermissionId") EntityId rolePermissionId) throws Exception {
         RolePermissionQuery query = rolePermissionFactory.newQuery(scopeId);
 
-        AndPredicate andPredicate = new AndPredicate();
-        andPredicate.and(new AttributePredicate<>(RolePermissionPredicates.ROLE_ID, roleId));
-        andPredicate.and(new AttributePredicate<>(RolePermissionPredicates.ENTITY_ID, rolePermissionId));
+        AndPredicateImpl andPredicate = new AndPredicateImpl();
+        andPredicate.and(new AttributePredicateImpl<>(RolePermissionPredicates.ROLE_ID, roleId));
+        andPredicate.and(new AttributePredicateImpl<>(RolePermissionPredicates.ENTITY_ID, rolePermissionId));
 
         query.setPredicate(andPredicate);
         query.setOffset(0);

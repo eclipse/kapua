@@ -13,7 +13,7 @@ package org.eclipse.kapua.service.authorization.shiro;
 
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
@@ -158,7 +158,7 @@ public class DomainRegistryServiceTest extends KapuaTest {
             // Test name filtered query
             query = domainFactory.newQuery(null);
 
-            query.setPredicate(new AttributePredicate<>(DomainPredicates.NAME, domain1.getName()));
+            query.setPredicate(new AttributePredicateImpl<>(DomainPredicates.NAME, domain1.getName()));
             result = domainRegistryService.query(query);
             count = domainRegistryService.count(query);
 
@@ -171,7 +171,7 @@ public class DomainRegistryServiceTest extends KapuaTest {
             // Test name filtered query
             query = domainFactory.newQuery(null);
 
-            query.setPredicate(new AttributePredicate<>(DomainPredicates.SERVICE_NAME, domain2.getServiceName()));
+            query.setPredicate(new AttributePredicateImpl<>(DomainPredicates.SERVICE_NAME, domain2.getServiceName()));
             result = domainRegistryService.query(query);
             count = domainRegistryService.count(query);
 

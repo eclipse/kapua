@@ -18,11 +18,11 @@ import javax.batch.runtime.context.JobContext;
 import javax.batch.runtime.context.StepContext;
 import javax.inject.Inject;
 
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.job.context.JobContextFactory;
 import org.eclipse.kapua.service.job.context.KapuaJobContext;
 import org.eclipse.kapua.service.job.context.KapuaStepContext;
@@ -62,10 +62,10 @@ public class DefaultTargetReader extends AbstractItemReader implements TargetRea
         KapuaStepContext kapuaStepContext = JOB_CONTEXT_FACTORY.newStepContext(stepContext);
         LOG.info("JOB {} - Opening cursor...", kapuaJobContext.getJobId());
 
-        AndPredicate andPredicate = new AndPredicate();
-        andPredicate.and(new AttributePredicate<>(JobTargetPredicates.JOB_ID, kapuaJobContext.getJobId()));
-        andPredicate.and(new AttributePredicate<>(JobTargetPredicates.STEP_INDEX, kapuaStepContext.getStepIndex()));
-        andPredicate.and(new AttributePredicate<>(JobTargetPredicates.STATUS, JobTargetStatus.PROCESS_OK, Operator.NOT_EQUAL));
+        AndPredicateImpl andPredicate = new AndPredicateImpl();
+        andPredicate.and(new AttributePredicateImpl<>(JobTargetPredicates.JOB_ID, kapuaJobContext.getJobId()));
+        andPredicate.and(new AttributePredicateImpl<>(JobTargetPredicates.STEP_INDEX, kapuaStepContext.getStepIndex()));
+        andPredicate.and(new AttributePredicateImpl<>(JobTargetPredicates.STATUS, JobTargetStatus.PROCESS_OK, Operator.NOT_EQUAL));
 
         JobTargetQuery query = jobTargetFactory.newQuery(kapuaJobContext.getScopeId());
         query.setPredicate(andPredicate);

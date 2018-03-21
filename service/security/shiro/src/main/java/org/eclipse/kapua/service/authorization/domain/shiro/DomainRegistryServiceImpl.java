@@ -13,7 +13,7 @@ package org.eclipse.kapua.service.authorization.domain.shiro;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
@@ -116,7 +116,7 @@ public class DomainRegistryServiceImpl extends AbstractKapuaService implements D
         return entityManagerSession.onResult(em -> {
             DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
             DomainQuery query = domainFactory.newQuery(null);
-            query.setPredicate(new AttributePredicate<>(DomainPredicates.SERVICE_NAME, serviceName));
+            query.setPredicate(new AttributePredicateImpl<>(DomainPredicates.SERVICE_NAME, serviceName));
 
             DomainListResult results = DomainDAO.query(em, query);
 

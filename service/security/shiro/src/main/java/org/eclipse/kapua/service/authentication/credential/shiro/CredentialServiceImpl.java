@@ -17,8 +17,8 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
 import org.eclipse.kapua.commons.jpa.EntityManager;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
 import org.eclipse.kapua.event.ServiceEvent;
@@ -27,8 +27,8 @@ import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
-import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
+import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
@@ -291,7 +291,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         //
         // Build query
         CredentialQuery query = new CredentialQueryImpl(scopeId);
-        KapuaPredicate predicate = new AttributePredicate<>(CredentialPredicates.USER_ID, userId);
+        QueryPredicate predicate = new AttributePredicateImpl<>(CredentialPredicates.USER_ID, userId);
         query.setPredicate(predicate);
 
         //
@@ -321,10 +321,10 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
             //
             // Build query
             KapuaQuery<Credential> query = new CredentialQueryImpl();
-            AttributePredicate<CredentialType> typePredicate = new AttributePredicate<>(CredentialPredicates.CREDENTIAL_TYPE, CredentialType.API_KEY);
-            AttributePredicate<String> keyPredicate = new AttributePredicate<>(CredentialPredicates.CREDENTIAL_KEY, apiKeyPreValue, Operator.STARTS_WITH);
+            AttributePredicateImpl<CredentialType> typePredicate = new AttributePredicateImpl<>(CredentialPredicates.CREDENTIAL_TYPE, CredentialType.API_KEY);
+            AttributePredicateImpl<String> keyPredicate = new AttributePredicateImpl<>(CredentialPredicates.CREDENTIAL_KEY, apiKeyPreValue, Operator.STARTS_WITH);
 
-            AndPredicate andPredicate = new AndPredicate();
+            AndPredicateImpl andPredicate = new AndPredicateImpl();
             andPredicate.and(typePredicate);
             andPredicate.and(keyPredicate);
 
@@ -383,9 +383,9 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
         KapuaQuery<Credential> credentialQuery = credentialFactory.newQuery(scopeId);
         CredentialType ct = credentialType;
-        KapuaPredicate credentialTypePredicate = new AttributePredicate<>(CredentialPredicates.CREDENTIAL_TYPE, ct);
-        KapuaPredicate userIdPredicate = new AttributePredicate<>(CredentialPredicates.USER_ID, userId);
-        KapuaPredicate andPredicate = new AndPredicate().and(credentialTypePredicate).and(userIdPredicate);
+        QueryPredicate credentialTypePredicate = new AttributePredicateImpl<>(CredentialPredicates.CREDENTIAL_TYPE, ct);
+        QueryPredicate userIdPredicate = new AttributePredicateImpl<>(CredentialPredicates.USER_ID, userId);
+        QueryPredicate andPredicate = new AndPredicateImpl().and(credentialTypePredicate).and(userIdPredicate);
         credentialQuery.setPredicate(andPredicate);
         return count(credentialQuery);
     }
@@ -409,7 +409,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
 
         CredentialQuery query = credentialFactory.newQuery(scopeId);
-        query.setPredicate(new AttributePredicate<>(CredentialPredicates.USER_ID, userId));
+        query.setPredicate(new AttributePredicateImpl<>(CredentialPredicates.USER_ID, userId));
 
         CredentialListResult credentialsToDelete = query(query);
 
