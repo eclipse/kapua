@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,6 +17,8 @@ import java.util.concurrent.Callable;
 
 import com.extjs.gxt.ui.client.Style.SortDir;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.kapua.KapuaErrorCodes;
+import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
@@ -29,6 +31,7 @@ import org.eclipse.kapua.app.console.module.authorization.shared.util.GwtKapuaAu
 import org.eclipse.kapua.app.console.module.authorization.shared.util.KapuaGwtAuthorizationModelConverter;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -45,6 +48,7 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import org.eclipse.kapua.service.authorization.access.shiro.AccessPermissionPredicates;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 
@@ -66,9 +70,25 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
             // Convert from GWT Entity
             AccessPermissionCreator accessInfoCreator = GwtKapuaAuthorizationModelConverter.convertAccessPermissionCreator(gwtAccessPermissionCreator);
 
-            // Create
+            // Check existence
             KapuaLocator locator = KapuaLocator.getInstance();
             AccessPermissionService accessPermissionService = locator.getService(AccessPermissionService.class);
+            AccessPermissionFactory accessPermissionFactory = locator.getFactory(AccessPermissionFactory.class);
+            AccessPermissionQuery query = accessPermissionFactory.newQuery(accessInfoCreator.getScopeId());
+
+            AndPredicate andPredicate = new AndPredicate();
+            andPredicate.and(new AttributePredicate(AccessPermissionPredicates.ACCESS_INFO_ID, accessInfoCreator.getAccessInfoId()));
+            andPredicate.and(new AttributePredicate(AccessPermissionPredicates.SCOPE_ID, accessInfoCreator.getScopeId()));
+            andPredicate.and(new AttributePredicate("permission.domain", accessInfoCreator.getPermission().getDomain()));
+            andPredicate.and(new AttributePredicate("permission.action", accessInfoCreator.getPermission().getAction()));
+            andPredicate.and(new AttributePredicate("permission.groupId", accessInfoCreator.getPermission().getGroupId()));
+            query.setPredicate(andPredicate);
+            long permissionCnt = accessPermissionService.count(query);
+            if (permissionCnt > 0) {
+                throw new KapuaRuntimeException(KapuaErrorCodes.ENTITY_ALREADY_EXISTS);
+            }
+
+            // Create
             AccessPermission accessPermission = accessPermissionService.create(accessInfoCreator);
 
             // Convert
