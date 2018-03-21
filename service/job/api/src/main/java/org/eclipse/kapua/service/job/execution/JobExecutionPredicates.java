@@ -15,7 +15,7 @@ import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
 
 public interface JobExecutionPredicates extends KapuaUpdatableEntityPredicates {
 
-    public String JOB_ID = "jobId";
-    public String STARTED_ON = "startedOn";
-    public String ENDED_ON = "endedOn";
+    String JOB_ID = "jobId";
+    String STARTED_ON = "startedOn";
+    String ENDED_ON = "endedOn";
 }

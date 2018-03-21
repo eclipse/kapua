@@ -15,10 +15,10 @@ import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
 
 public interface EndpointInfoPredicates extends KapuaUpdatableEntityPredicates {
 
-    public static final String SCHEMA = "schema";
-    public static final String DNS = "dns";
-    public static final String PORT = "port";
-    public static final String SECURE = "secure";
-    public static final String USAGES = "usages";
+    String SCHEMA = "schema";
+    String DNS = "dns";
+    String PORT = "port";
+    String SECURE = "secure";
+    String USAGES = "usages";
 
 }

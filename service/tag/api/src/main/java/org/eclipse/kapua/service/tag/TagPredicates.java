@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,23 +9,22 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.authorization.group.shiro;
+package org.eclipse.kapua.service.tag;
 
 import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
-import org.eclipse.kapua.service.authorization.group.Group;
 
 /**
- * {@link KapuaQuery} {@link KapuaPredicate} name for {@link Group} entity.
- *
- * @since 1.0
+ * {@link KapuaQuery} {@link KapuaPredicate} name for {@link Tag} entity.
+ * 
+ * @since 1.0.0
  */
-public interface GroupPredicates extends KapuaUpdatableEntityPredicates {
+public interface TagPredicates extends KapuaUpdatableEntityPredicates {
 
     /**
-     * {@link Group} name
+     * {@link Tag} name
      */
-    public static final String NAME = "name";
+    String NAME = "name";
 
 }

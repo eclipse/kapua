@@ -28,9 +28,9 @@ import org.eclipse.kapua.service.endpoint.EndpointInfo;
 import org.eclipse.kapua.service.endpoint.EndpointInfoCreator;
 import org.eclipse.kapua.service.endpoint.EndpointInfoFactory;
 import org.eclipse.kapua.service.endpoint.EndpointInfoListResult;
+import org.eclipse.kapua.service.endpoint.EndpointInfoPredicates;
 import org.eclipse.kapua.service.endpoint.EndpointInfoQuery;
 import org.eclipse.kapua.service.endpoint.EndpointInfoService;
-import org.eclipse.kapua.service.endpoint.internal.EndpointInfoPredicates;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;

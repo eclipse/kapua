@@ -18,16 +18,16 @@ public interface CertificatePredicates extends KapuaUpdatableEntityPredicates {
     /**
      * Certificate name
      */
-    public static final String NAME = "name";
+    String NAME = "name";
 
-    public static final String USAGE = "certificateUsages";
+    String USAGE = "certificateUsages";
 
-    public static final String USAGE_NAME = USAGE + ".name";
+    String USAGE_NAME = USAGE + ".name";
 
-    public static final String STATUS = "status";
+    String STATUS = "status";
 
-    public static final String FORWARDABLE = "forwardable";
+    String FORWARDABLE = "forwardable";
 
-    public static final String CA_ID = "caId";
+    String CA_ID = "caId";
 
 }

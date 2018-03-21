@@ -29,7 +29,7 @@ import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupQuery;
 import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupFactoryImpl;
-import org.eclipse.kapua.service.authorization.group.shiro.GroupPredicates;
+import org.eclipse.kapua.service.authorization.group.GroupPredicates;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupServiceImpl;
 
 import cucumber.api.Scenario;

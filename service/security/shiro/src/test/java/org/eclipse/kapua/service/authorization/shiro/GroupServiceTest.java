@@ -26,7 +26,7 @@ import org.eclipse.kapua.service.authorization.group.GroupListResult;
 import org.eclipse.kapua.service.authorization.group.GroupQuery;
 import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupCreatorImpl;
-import org.eclipse.kapua.service.authorization.group.shiro.GroupPredicates;
+import org.eclipse.kapua.service.authorization.group.GroupPredicates;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupQueryImpl;
 import org.eclipse.kapua.test.KapuaTest;
 import org.eclipse.kapua.test.ResourceLimitsConfig;

@@ -40,7 +40,7 @@ import org.eclipse.kapua.service.tag.TagListResult;
 import org.eclipse.kapua.service.tag.TagQuery;
 import org.eclipse.kapua.service.tag.TagService;
 import org.eclipse.kapua.service.tag.internal.TagImpl;
-import org.eclipse.kapua.service.tag.internal.TagPredicates;
+import org.eclipse.kapua.service.tag.TagPredicates;
 
 import com.google.common.base.Strings;
 

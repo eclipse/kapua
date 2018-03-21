@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,20 +9,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.authorization.role.shiro;
+package org.eclipse.kapua.service.user;
 
 import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
 
-/**
- * Query predicate attribute name for role entity.
- * 
- * @since 1.0
- * 
- */
-public interface RolePredicates extends KapuaUpdatableEntityPredicates {
+public interface UserPredicates extends KapuaUpdatableEntityPredicates {
 
     /**
-     * Role name
+     * User name
      */
-    public static final String NAME = "name";
+    String NAME = "name";
+
+    String STATUS = "status";
 }

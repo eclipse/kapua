@@ -32,7 +32,7 @@ import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
 import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
 import org.eclipse.kapua.service.authorization.role.RolePermissionService;
-import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionPredicates;
+import org.eclipse.kapua.service.authorization.role.RolePermissionPredicates;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;

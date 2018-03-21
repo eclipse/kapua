@@ -18,5 +18,5 @@ public interface JobPredicates extends KapuaUpdatableEntityPredicates {
     /**
      * The {@link Job} name.
      */
-    public static final String NAME = "name";
+    String NAME = "name";
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.authorization.access.shiro;
+package org.eclipse.kapua.service.authorization.access;
 
 import org.eclipse.kapua.model.KapuaEntityPredicates;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
@@ -20,10 +20,10 @@ import org.eclipse.kapua.service.authorization.access.AccessPermission;
  * @since 1.0.0
  * 
  */
-public interface AccessPermissionPredicates extends KapuaEntityPredicates {
+public interface AccessRolePredicates extends KapuaEntityPredicates {
 
     /**
      * {@link AccessPermission#setAccessInfoId(org.eclipse.kapua.model.id.KapuaId)} id
      */
-    public static final String ACCESS_INFO_ID = "accessInfoId";
+    String ACCESS_INFO_ID = "accessInfoId";
 }

@@ -23,153 +23,153 @@ public interface DevicePredicates extends KapuaUpdatableEntityPredicates {
     /**
      * Group id.
      */
-    public static final String GROUP_ID = "groupId";
+    String GROUP_ID = "groupId";
 
     /**
      * Tag id.
      */
-    public static final String TAG_IDS = "tagIds";
+    String TAG_IDS = "tagIds";
 
     /**
      * Client identifier
      */
-    public static final String CLIENT_ID = "clientId";
+    String CLIENT_ID = "clientId";
     /**
      * Display name
      */
-    public static final String DISPLAY_NAME = "displayName";
+    String DISPLAY_NAME = "displayName";
 
     /**
      * Connection id.
      */
-    public static final String CONNECTION_ID = "connectionId";
+    String CONNECTION_ID = "connectionId";
 
     /**
      * Connection
      */
-    public static final String CONNECTION = "connection";
+    String CONNECTION = "connection";
 
     /**
      * Connection status
      */
-    public static final String CONNECTION_STATUS = CONNECTION + ".status";
+    String CONNECTION_STATUS = CONNECTION + ".status";
 
     /**
      * Connection protocol
      */
-    public static final String CONNECTION_PROTOCOL = CONNECTION + ".protocol";
+    String CONNECTION_PROTOCOL = CONNECTION + ".protocol";
 
     /**
      * Connection clientId
      */
-    public static final String CONNECTION_CLIENT_ID = CONNECTION + ".clientId";
+    String CONNECTION_CLIENT_ID = CONNECTION + ".clientId";
 
     /**
      * Last event
      */
-    public static final String LAST_EVENT = "lastEvent";
+    String LAST_EVENT = "lastEvent";
 
     /**
      * Last event on
      */
-    public static final String LAST_EVENT_ON = LAST_EVENT + ".receivedOn";
+    String LAST_EVENT_ON = LAST_EVENT + ".receivedOn";
 
     /**
      * Last event resource
      */
-    public static final String LAST_EVENT_RESOURCE = LAST_EVENT + ".resource";
+    String LAST_EVENT_RESOURCE = LAST_EVENT + ".resource";
 
     /**
      * Serial number
      */
-    public static final String SERIAL_NUMBER = "serialNumber";
+    String SERIAL_NUMBER = "serialNumber";
     /**
      * Imei
      */
-    public static final String IMEI = "imei";
+    String IMEI = "imei";
     /**
      * Imsi
      */
-    public static final String IMSI = "imsi";
+    String IMSI = "imsi";
     /**
      * Iccd
      */
-    public static final String ICCID = "iccid";
+    String ICCID = "iccid";
     /**
      * Model identifier
      */
-    public static final String MODEL_ID = "modelId";
+    String MODEL_ID = "modelId";
     /**
      * Bios version
      */
-    public static final String BIOS_VERSION = "biosVersion";
+    String BIOS_VERSION = "biosVersion";
     /**
      * Firmware version
      */
-    public static final String FIRMWARE_VERSION = "firmwareVersion";
+    String FIRMWARE_VERSION = "firmwareVersion";
     /**
      * Operating system version
      */
-    public static final String OS_VERSION = "osVersion";
+    String OS_VERSION = "osVersion";
     /**
      * Jvm version
      */
-    public static final String JVM_VERSION = "jvmVersion";
+    String JVM_VERSION = "jvmVersion";
     /**
      * Osgi framework version
      */
-    public static final String OSGI_FRAMEWORK_VERSION = "osgiFrameworkVersion";
+    String OSGI_FRAMEWORK_VERSION = "osgiFrameworkVersion";
     /**
      * Application framework version
      */
-    public static final String APPLICATION_FRAMEWORK_VERSION = "applicationFrameworkVersion";
+    String APPLICATION_FRAMEWORK_VERSION = "applicationFrameworkVersion";
     /**
      * Application identifier
      */
-    public static final String APPLICATION_IDENTIFIERS = "applicationIdentifiers";
+    String APPLICATION_IDENTIFIERS = "applicationIdentifiers";
     /**
      * Custom attribute 1
      */
-    public static final String CUSTOM_ATTRIBUTE_1 = "customAttribute1";
+    String CUSTOM_ATTRIBUTE_1 = "customAttribute1";
     /**
      * Custom attribute 2
      */
-    public static final String CUSTOM_ATTRIBUTE_2 = "customAttribute2";
+    String CUSTOM_ATTRIBUTE_2 = "customAttribute2";
     /**
      * Custom attribute 3
      */
-    public static final String CUSTOM_ATTRIBUTE_3 = "customAttribute3";
+    String CUSTOM_ATTRIBUTE_3 = "customAttribute3";
     /**
      * Custom attribute 4
      */
-    public static final String CUSTOM_ATTRIBUTE_4 = "customAttribute4";
+    String CUSTOM_ATTRIBUTE_4 = "customAttribute4";
     /**
      * Custom attribute 5
      */
-    public static final String CUSTOM_ATTRIBUTE_5 = "customAttribute5";
+    String CUSTOM_ATTRIBUTE_5 = "customAttribute5";
     /**
      * Accept encoding
      */
-    public static final String ACCEPT_ENCODING = "acceptEncoding";
+    String ACCEPT_ENCODING = "acceptEncoding";
     /**
      * Gps longitude
      */
-    public static final String GPS_LONGITUDE = "gpsLongitude";
+    String GPS_LONGITUDE = "gpsLongitude";
     /**
      * Gps latitude
      */
-    public static final String GPS_LATITUDE = "gpsLatitude";
+    String GPS_LATITUDE = "gpsLatitude";
 
     /**
      * Device status
      */
-    public static final String STATUS = "status";
+    String STATUS = "status";
     /**
      * Credentials mode
      */
-    public static final String CREDENTIALS_MODE = "credentialsMode";
+    String CREDENTIALS_MODE = "credentialsMode";
     /**
      * Preferred user identifier
      */
-    public static final String PREFERRED_USER_ID = "preferredUserId";
+    String PREFERRED_USER_ID = "preferredUserId";
 }

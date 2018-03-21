@@ -23,15 +23,15 @@ public interface DeviceConnectionOptionPredicates extends KapuaUpdatableEntityPr
     /**
      * Credentials mode
      */
-    public static final String CREDENTIALS_MODE = "credentialsMode";
+    String CREDENTIALS_MODE = "credentialsMode";
 
     /**
      * Reserved user identifier
      */
-    public static final String RESERVED_USER_ID = "reservedUserId";
+    String RESERVED_USER_ID = "reservedUserId";
 
     /**
      * Last user identifier
      */
-    public static final String USER_ID = "userId";
+    String USER_ID = "userId";
 }

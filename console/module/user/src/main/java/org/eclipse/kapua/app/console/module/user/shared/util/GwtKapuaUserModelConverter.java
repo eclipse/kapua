@@ -29,7 +29,7 @@ import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserStatus;
 
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
-import org.eclipse.kapua.service.user.internal.UserPredicates;
+import org.eclipse.kapua.service.user.UserPredicates;
 
 /**
  * Utility class for convertKapuaId {@link BaseModel}s to {@link KapuaEntity}ies and other Kapua models
