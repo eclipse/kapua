@@ -13,10 +13,10 @@ package org.eclipse.kapua.service.authorization.group;
 
 import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
+import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 
 /**
- * {@link KapuaQuery} {@link KapuaPredicate} name for {@link Group} entity.
+ * {@link KapuaQuery} {@link QueryPredicate} name for {@link Group} entity.
  *
  * @since 1.0
  */

@@ -19,8 +19,8 @@ import org.eclipse.kapua.broker.core.plugin.metric.ClientMetric;
 import org.eclipse.kapua.broker.core.plugin.metric.LoginMetric;
 import org.eclipse.kapua.broker.core.plugin.metric.PublishMetric;
 import org.eclipse.kapua.broker.core.plugin.metric.SubscribeMetric;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Domain;
@@ -225,8 +225,8 @@ public abstract class AuthenticationLogic {
         // check that no devices have this user as strict user
         DeviceConnectionOptionQuery query = deviceConnectionOptionFactory.newQuery(scopeId);
 
-        AndPredicate andPredicate = new AndPredicate();
-        andPredicate.and(new AttributePredicate<>(DeviceConnectionOptionPredicates.RESERVED_USER_ID, userId));
+        AndPredicateImpl andPredicate = new AndPredicateImpl();
+        andPredicate.and(new AttributePredicateImpl<>(DeviceConnectionOptionPredicates.RESERVED_USER_ID, userId));
         query.setPredicate(andPredicate);
         query.setLimit(1);
 

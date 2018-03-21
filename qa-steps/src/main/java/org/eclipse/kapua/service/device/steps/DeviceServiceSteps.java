@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.steps;
 
-import static org.eclipse.kapua.commons.model.query.predicate.AttributePredicate.attributeIsEqualTo;
+import static org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl.attributeIsEqualTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -35,7 +35,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -67,7 +67,7 @@ import org.eclipse.kapua.message.internal.device.lifecycle.KapuaMissingMessageIm
 import org.eclipse.kapua.message.internal.device.lifecycle.KapuaMissingPayloadImpl;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.qa.steps.BaseQATests;
 import org.eclipse.kapua.qa.steps.DBHelper;
 import org.eclipse.kapua.service.StepData;
@@ -418,7 +418,7 @@ public class DeviceServiceSteps extends BaseQATests /*KapuaTest*/ {
         DeviceQueryImpl deviceQuery = new DeviceQueryImpl(lastAcc.getId());
 
         KapuaQuery<Tag> tagQuery = new TagFactoryImpl().newQuery(DEFAULT_SCOPE_ID);
-        tagQuery.setPredicate(new AttributePredicate<String>(TagPredicates.NAME, deviceTagName, KapuaAttributePredicate.Operator.EQUAL));
+        tagQuery.setPredicate(new AttributePredicateImpl<String>(TagPredicates.NAME, deviceTagName, AttributePredicate.Operator.EQUAL));
         TagListResult tagQueryResult = tagService.query(tagQuery);
         Tag tag = tagQueryResult.getFirstItem();
         deviceQuery.setPredicate(attributeIsEqualTo(DevicePredicates.TAG_IDS, tag.getId()));

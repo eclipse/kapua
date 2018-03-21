@@ -13,10 +13,10 @@ package org.eclipse.kapua.service.tag;
 
 import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
+import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 
 /**
- * {@link KapuaQuery} {@link KapuaPredicate} name for {@link Tag} entity.
+ * {@link KapuaQuery} {@link QueryPredicate} name for {@link Tag} entity.
  * 
  * @since 1.0.0
  */

@@ -22,9 +22,9 @@ import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
-import org.eclipse.kapua.model.query.predicate.KapuaAndPredicate;
-import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate;
-import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
+import org.eclipse.kapua.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 
 /**
  * {@link KapuaQuery} definition.
@@ -83,25 +83,25 @@ public interface KapuaQuery<E extends KapuaEntity> {
     public void setScopeId(KapuaId scopeId);
 
     /**
-     * Gets the {@link KapuaQuery} {@link KapuaPredicate}s.
+     * Gets the {@link KapuaQuery} {@link QueryPredicate}s.
      * 
-     * @return The {@link KapuaQuery} {@link KapuaPredicate}s.
+     * @return The {@link KapuaQuery} {@link QueryPredicate}s.
      * @since 1.0.0
      */
     @XmlTransient
     // @XmlElement(name = "predicate")
-    public KapuaPredicate getPredicate();
+    public QueryPredicate getPredicate();
 
     /**
-     * Sets the {@link KapuaQuery} {@link KapuaPredicate}s.<br>
-     * The {@link KapuaPredicate} can be a simple {@link KapuaAttributePredicate} or a combination
-     * of them by using the {@link KapuaAndPredicate}
+     * Sets the {@link KapuaQuery} {@link QueryPredicate}s.<br>
+     * The {@link QueryPredicate} can be a simple {@link AttributePredicate} or a combination
+     * of them by using the {@link AndPredicate}
      * 
      * @param queryPredicate
-     *            The {@link KapuaQuery} {@link KapuaPredicate}s.
+     *            The {@link KapuaQuery} {@link QueryPredicate}s.
      * @since 1.0.0
      */
-    public void setPredicate(KapuaPredicate queryPredicate);
+    public void setPredicate(QueryPredicate queryPredicate);
 
     /**
      * Gets the {@link KapuaQuery} {@link KapuaSortCriteria}

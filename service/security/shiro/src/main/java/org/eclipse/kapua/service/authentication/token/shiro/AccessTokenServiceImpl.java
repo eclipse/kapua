@@ -13,7 +13,7 @@ package org.eclipse.kapua.service.authentication.token.shiro;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
@@ -185,7 +185,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
         //
         // Build query
         AccessTokenQuery query = new AccessTokenQueryImpl(scopeId);
-        query.setPredicate(new AttributePredicate<>(AccessTokenPredicates.USER_ID, userId));
+        query.setPredicate(new AttributePredicateImpl<>(AccessTokenPredicates.USER_ID, userId));
 
         //
         // Do query
@@ -250,7 +250,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
     private void deleteAccessTokenByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException {
 
         AccessTokenQuery query = new AccessTokenQueryImpl(scopeId);
-        query.setPredicate(new AttributePredicate<>(AccessTokenPredicates.USER_ID, userId));
+        query.setPredicate(new AttributePredicateImpl<>(AccessTokenPredicates.USER_ID, userId));
 
         AccessTokenListResult accessTokensToDelete = query(query);
 

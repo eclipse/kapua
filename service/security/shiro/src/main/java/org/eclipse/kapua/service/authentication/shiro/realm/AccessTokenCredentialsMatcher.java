@@ -16,8 +16,8 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
@@ -73,9 +73,9 @@ public class AccessTokenCredentialsMatcher implements CredentialsMatcher {
 
                 CertificateQuery certificateQuery = CERTIFICATE_FACTORY.newQuery(null);
                 certificateQuery.setPredicate(
-                        new AndPredicate(
-                                new AttributePredicate<>(CertificatePredicates.USAGE_NAME, "JWT"),
-                                new AttributePredicate<>(CertificatePredicates.STATUS, CertificateStatus.VALID)
+                        new AndPredicateImpl(
+                                new AttributePredicateImpl<>(CertificatePredicates.USAGE_NAME, "JWT"),
+                                new AttributePredicateImpl<>(CertificatePredicates.STATUS, CertificateStatus.VALID)
                         )
                 );
                 certificateQuery.setSortCriteria(new FieldSortCriteria(CertificatePredicates.CREATED_BY, FieldSortCriteria.SortOrder.DESCENDING));

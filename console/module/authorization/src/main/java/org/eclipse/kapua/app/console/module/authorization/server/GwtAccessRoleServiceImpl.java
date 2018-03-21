@@ -29,7 +29,7 @@ import org.eclipse.kapua.app.console.module.authorization.shared.util.GwtKapuaAu
 import org.eclipse.kapua.app.console.module.authorization.shared.util.KapuaGwtAuthorizationModelConverter;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -132,7 +132,7 @@ public class GwtAccessRoleServiceImpl extends KapuaRemoteServiceServlet implemen
 
                 if (accessInfo != null) {
                     AccessRoleQuery query = accessRoleFactory.newQuery(scopeId);
-                    query.setPredicate(new AttributePredicate<KapuaId>("accessInfoId", accessInfo.getId()));
+                    query.setPredicate(new AttributePredicateImpl<KapuaId>("accessInfoId", accessInfo.getId()));
                     query.setLimit(loadConfig.getLimit());
                     query.setOffset(loadConfig.getOffset());
                     String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? "createdOn" : loadConfig.getSortField();

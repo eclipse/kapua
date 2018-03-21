@@ -13,7 +13,7 @@ package org.eclipse.kapua.service.authorization.access.shiro;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -127,7 +127,7 @@ public class AccessPermissionServiceImpl extends AbstractKapuaService implements
         //
         // Build query
         AccessPermissionQuery query = new AccessPermissionQueryImpl(scopeId);
-        query.setPredicate(new AttributePredicate<>(AccessPermissionPredicates.ACCESS_INFO_ID, accessInfoId));
+        query.setPredicate(new AttributePredicateImpl<>(AccessPermissionPredicates.ACCESS_INFO_ID, accessInfoId));
 
         return query(query);
     }

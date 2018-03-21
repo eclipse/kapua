@@ -11,28 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.query.predicate;
 
-import java.util.List;
-
 /**
- * Kapua sql and predicate definition.
+ * Dynamic query predicates definition used in the where clause.
  * 
  * @since 1.0
  * 
  */
-public interface KapuaAndPredicate extends KapuaPredicate {
+public interface QueryPredicate {
 
-    /**
-     * Creates an "and predicate" from a generic predicate
-     * 
-     * @param predicate
-     * @return
-     */
-    public KapuaAndPredicate and(KapuaPredicate predicate);
-
-    /**
-     * Returns a list of predicates
-     * 
-     * @return
-     */
-    public List<KapuaPredicate> getPredicates();
 }

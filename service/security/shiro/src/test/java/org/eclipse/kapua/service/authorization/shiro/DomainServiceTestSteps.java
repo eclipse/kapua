@@ -18,7 +18,7 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.service.authorization.domain.Domain;
@@ -167,7 +167,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
     public void queryForNamedDomain(String name)
             throws KapuaException {
         DomainQuery query = domainFactory.newQuery(null);
-        query.setPredicate(new AttributePredicate<>(DomainPredicates.NAME, name));
+        query.setPredicate(new AttributePredicateImpl<>(DomainPredicates.NAME, name));
         KapuaSecurityUtils.doPrivileged(() -> {
             domainData.domainList = domainRegistryService.query(query);
             return null;
@@ -180,7 +180,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
     public void queryForDomainsWithServiceName(String serviceName)
             throws KapuaException {
         DomainQuery query = domainFactory.newQuery(null);
-        query.setPredicate(new AttributePredicate<>(DomainPredicates.SERVICE_NAME, serviceName));
+        query.setPredicate(new AttributePredicateImpl<>(DomainPredicates.SERVICE_NAME, serviceName));
         KapuaSecurityUtils.doPrivileged(() -> {
             domainData.domainList = domainRegistryService.query(query);
             return null;

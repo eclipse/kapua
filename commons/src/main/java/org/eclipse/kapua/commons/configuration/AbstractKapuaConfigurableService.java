@@ -15,8 +15,8 @@ package org.eclipse.kapua.commons.configuration;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
@@ -29,7 +29,7 @@ import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
@@ -261,9 +261,9 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.read, scopeId));
 
-        AndPredicate predicate = new AndPredicate()
-                .and(new AttributePredicate<>("pid", pid, Operator.EQUAL))
-                .and(new AttributePredicate<>("scopeId", scopeId, Operator.EQUAL));
+        AndPredicateImpl predicate = new AndPredicateImpl()
+                .and(new AttributePredicateImpl<>("pid", pid, Operator.EQUAL))
+                .and(new AttributePredicateImpl<>("scopeId", scopeId, Operator.EQUAL));
 
         ServiceConfigQueryImpl query = new ServiceConfigQueryImpl(scopeId);
         query.setPredicate(predicate);
@@ -292,9 +292,9 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
 
         ServiceConfigQueryImpl query = new ServiceConfigQueryImpl(scopeId);
         query.setPredicate(
-                new AndPredicate(
-                        new AttributePredicate<>("pid", pid, Operator.EQUAL),
-                        new AttributePredicate<>("scopeId", scopeId, Operator.EQUAL)
+                new AndPredicateImpl(
+                        new AttributePredicateImpl<>("pid", pid, Operator.EQUAL),
+                        new AttributePredicateImpl<>("scopeId", scopeId, Operator.EQUAL)
                 )
         );
 

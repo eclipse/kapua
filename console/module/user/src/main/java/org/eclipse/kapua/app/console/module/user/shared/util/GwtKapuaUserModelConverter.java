@@ -19,11 +19,11 @@ import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser.GwtUserSta
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUserQuery;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
-import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserStatus;
@@ -52,14 +52,14 @@ public class GwtKapuaUserModelConverter {
         KapuaLocator locator = KapuaLocator.getInstance();
         UserFactory userFactory = locator.getFactory(UserFactory.class);
 
-        AndPredicate predicate = new AndPredicate();
+        AndPredicateImpl predicate = new AndPredicateImpl();
         // Convert query
         UserQuery userQuery = userFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtUserQuery.getScopeId()));
         if (gwtUserQuery.getName() != null && !gwtUserQuery.getName().isEmpty()) {
-            predicate.and(new AttributePredicate<String>(UserPredicates.NAME, gwtUserQuery.getName(), Operator.LIKE));
+            predicate.and(new AttributePredicateImpl<String>(UserPredicates.NAME, gwtUserQuery.getName(), Operator.LIKE));
         }
         if (gwtUserQuery.getUserStatus() != null && !gwtUserQuery.getUserStatus().equals(GwtUserStatus.ANY.toString())) {
-            predicate.and(new AttributePredicate<UserStatus>(UserPredicates.STATUS, convertUserStatus(gwtUserQuery.getUserStatus()), Operator.EQUAL));
+            predicate.and(new AttributePredicateImpl<UserStatus>(UserPredicates.STATUS, convertUserStatus(gwtUserQuery.getUserStatus()), Operator.EQUAL));
         }
         userQuery.setOffset(loadConfig.getOffset());
         userQuery.setLimit(loadConfig.getLimit());

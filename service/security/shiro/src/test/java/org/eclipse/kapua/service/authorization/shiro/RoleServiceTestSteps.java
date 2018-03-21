@@ -19,7 +19,7 @@ import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -324,7 +324,7 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
         assertNotEquals(0, name.length());
 
         RoleQuery tmpQuery = roleFactory.newQuery(tmpId);
-        tmpQuery.setPredicate(new AttributePredicate<>(RolePredicates.NAME, name));
+        tmpQuery.setPredicate(new AttributePredicateImpl<>(RolePredicates.NAME, name));
         KapuaSecurityUtils.doPrivileged(() -> {
             roleData.roleList = roleService.query(tmpQuery);
             return null;

@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.device.registry.common;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -238,7 +238,7 @@ public final class DeviceValidation {
         //
 
         DeviceQuery query = deviceFactory.newQuery(scopeId);
-        query.setPredicate(new AttributePredicate<>(DevicePredicates.ENTITY_ID, entityId));
+        query.setPredicate(new AttributePredicateImpl<>(DevicePredicates.ENTITY_ID, entityId));
 
         DeviceListResult results = null;
         try {

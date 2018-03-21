@@ -20,7 +20,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.job.engine.jbatch.driver.exception.CannotBuildJobDefDriverException;
 import org.eclipse.kapua.job.engine.jbatch.driver.exception.CannotCleanJobDefFileDriverException;
 import org.eclipse.kapua.job.engine.jbatch.driver.exception.CannotCreateTmpDirDriverException;
@@ -127,7 +127,7 @@ public class JbatchDriver {
         String jobName = JbatchDriver.getJbatchJobName(scopeId, jobId);
         try {
             JobStepQuery jobStepQuery = JOB_STEP_FACTORY.newQuery(scopeId);
-            jobStepQuery.setPredicate(new AttributePredicate<>(JobStepPredicates.JOB_ID, jobId));
+            jobStepQuery.setPredicate(new AttributePredicateImpl<>(JobStepPredicates.JOB_ID, jobId));
 
             JobStepListResult jobSteps = JOB_STEP_SERVICE.query(jobStepQuery);
             jobSteps.sort(Comparator.comparing(JobStep::getStepIndex));

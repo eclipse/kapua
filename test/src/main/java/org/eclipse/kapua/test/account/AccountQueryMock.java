@@ -15,7 +15,7 @@ import java.util.List;
 
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaSortCriteria;
-import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
+import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 import org.eclipse.kapua.service.account.AccountQuery;
 
 public class AccountQueryMock implements AccountQuery {
@@ -46,12 +46,12 @@ public class AccountQueryMock implements AccountQuery {
     }
 
     @Override
-    public void setPredicate(KapuaPredicate queryPredicate) {
+    public void setPredicate(QueryPredicate queryPredicate) {
 
     }
 
     @Override
-    public KapuaPredicate getPredicate() {
+    public QueryPredicate getPredicate() {
         return null;
     }
 

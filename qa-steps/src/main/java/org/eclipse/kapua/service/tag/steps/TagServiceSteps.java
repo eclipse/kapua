@@ -19,11 +19,11 @@ import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.qa.steps.BaseQATests;
 import org.eclipse.kapua.service.StepData;
 import org.eclipse.kapua.service.account.Account;
@@ -116,7 +116,7 @@ public class TagServiceSteps extends BaseQATests {
     public void tagWithNameIfSearched(String tagName) throws Throwable {
 
         KapuaQuery<Tag> query = new TagFactoryImpl().newQuery(DEFAULT_SCOPE_ID);
-        query.setPredicate(new AttributePredicate<String>(TagPredicates.NAME, tagName, KapuaAttributePredicate.Operator.EQUAL));
+        query.setPredicate(new AttributePredicateImpl<String>(TagPredicates.NAME, tagName, AttributePredicate.Operator.EQUAL));
         TagListResult queryResult = tagService.query(query);
         Tag foundTag = queryResult.getFirstItem();
         stepData.put("tag", foundTag);

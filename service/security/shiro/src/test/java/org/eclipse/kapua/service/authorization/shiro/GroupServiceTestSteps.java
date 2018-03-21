@@ -20,7 +20,7 @@ import javax.inject.Inject;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
@@ -236,7 +236,7 @@ public class GroupServiceTestSteps extends AbstractAuthorizationServiceTest {
             throws KapuaException {
         KapuaId tmpId = new KapuaEid(BigInteger.valueOf(scope));
         GroupQuery tmpQuery = groupFactory.newQuery(tmpId);
-        tmpQuery.setPredicate(new AttributePredicate<>(GroupPredicates.NAME, name));
+        tmpQuery.setPredicate(new AttributePredicateImpl<>(GroupPredicates.NAME, name));
 
         KapuaSecurityUtils.doPrivileged(() -> {
             groupData.groupList = groupService.query(tmpQuery);

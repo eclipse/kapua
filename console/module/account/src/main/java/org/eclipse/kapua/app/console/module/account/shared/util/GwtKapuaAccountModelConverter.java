@@ -18,10 +18,10 @@ import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModel
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountQuery;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountPredicates;
 import org.eclipse.kapua.service.account.AccountQuery;
@@ -34,18 +34,18 @@ public class GwtKapuaAccountModelConverter {
         KapuaLocator locator = KapuaLocator.getInstance();
         AccountFactory factory = locator.getFactory(AccountFactory.class);
         AccountQuery query = factory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtAccountQuery.getScopeId()));
-        AndPredicate predicate = new AndPredicate();
+        AndPredicateImpl predicate = new AndPredicateImpl();
 
         if (gwtAccountQuery.getName() != null && !gwtAccountQuery.getName().trim().isEmpty()) {
-            predicate.and(new AttributePredicate<String>("name", gwtAccountQuery.getName(), Operator.LIKE));
+            predicate.and(new AttributePredicateImpl<String>("name", gwtAccountQuery.getName(), Operator.LIKE));
         }
 
         if (gwtAccountQuery.getOrganizationName() != null && !gwtAccountQuery.getOrganizationName().isEmpty()) {
-            predicate.and(new AttributePredicate<String>("organization.name", gwtAccountQuery.getOrganizationName(), Operator.LIKE));
+            predicate.and(new AttributePredicateImpl<String>("organization.name", gwtAccountQuery.getOrganizationName(), Operator.LIKE));
         }
 
         if (gwtAccountQuery.getOrganizationEmail() != null && !gwtAccountQuery.getOrganizationEmail().isEmpty()) {
-            predicate.and(new AttributePredicate<String>("organization.email", gwtAccountQuery.getOrganizationEmail(), Operator.LIKE));
+            predicate.and(new AttributePredicateImpl<String>("organization.email", gwtAccountQuery.getOrganizationEmail(), Operator.LIKE));
         }
 
         String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? AccountPredicates.NAME : loadConfig.getSortField();

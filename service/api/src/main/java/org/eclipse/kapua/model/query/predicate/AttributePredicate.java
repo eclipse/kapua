@@ -20,12 +20,12 @@ package org.eclipse.kapua.model.query.predicate;
  * @since 1.0
  * 
  */
-public interface KapuaAttributePredicate<T> extends KapuaPredicate {
+public interface AttributePredicate<T> extends QueryPredicate {
 
     /**
      * Allowed predicate operator
      */
-    public enum Operator {
+    enum Operator {
         /**
          * equal
          */
@@ -76,19 +76,19 @@ public interface KapuaAttributePredicate<T> extends KapuaPredicate {
      * 
      * @return
      */
-    public String getAttributeName();
+    String getAttributeName();
 
     /**
      * Get the attribute value
      * 
      * @return
      */
-    public T getAttributeValue();
+    T getAttributeValue();
 
     /**
      * Get the operator
      * 
      * @return
      */
-    public Operator getOperator();
+    Operator getOperator();
 }

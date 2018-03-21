@@ -19,7 +19,7 @@ import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -472,7 +472,7 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
         assertNotNull(commonData.scopeId);
 
         AccessInfoQuery tmpQuery = accessInfoFactory.newQuery(commonData.scopeId);
-        tmpQuery.setPredicate(new AttributePredicate<>(AccessInfoPredicates.USER_ID, accessData.user.getId()));
+        tmpQuery.setPredicate(new AttributePredicateImpl<>(AccessInfoPredicates.USER_ID, accessData.user.getId()));
         accessData.accessList = accessInfoFactory.newListResult();
 
         KapuaSecurityUtils.doPrivileged(() -> {

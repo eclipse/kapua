@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.authorization.access.shiro;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
@@ -164,7 +164,7 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(ACCESS_INFO_DOMAIN, Actions.read, scopeId));
         AccessInfoQuery query = accessInfoFactory.newQuery(scopeId);
-        query.setPredicate(new AttributePredicate<>(AccessInfoPredicates.USER_ID, userId));
+        query.setPredicate(new AttributePredicateImpl<>(AccessInfoPredicates.USER_ID, userId));
         AccessInfoListResult result = entityManagerSession.onResult(em -> AccessInfoDAO.query(em, query));
         if (!result.isEmpty()) {
             return result.getFirstItem();
@@ -241,7 +241,7 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
         AccessInfoFactory accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
 
         AccessInfoQuery query = accessInfoFactory.newQuery(scopeId);
-        query.setPredicate(new AttributePredicate<>(AccessInfoPredicates.USER_ID, userId));
+        query.setPredicate(new AttributePredicateImpl<>(AccessInfoPredicates.USER_ID, userId));
 
         AccessInfoListResult accessInfosToDelete = query(query);
 
