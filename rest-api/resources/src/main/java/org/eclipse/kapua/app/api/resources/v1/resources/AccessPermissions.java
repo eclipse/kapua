@@ -39,7 +39,7 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionFactory;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionQuery;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
-import org.eclipse.kapua.service.authorization.access.shiro.AccessPermissionPredicates;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionPredicates;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

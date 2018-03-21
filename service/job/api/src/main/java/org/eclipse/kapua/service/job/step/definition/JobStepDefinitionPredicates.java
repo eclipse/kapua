@@ -18,5 +18,5 @@ public interface JobStepDefinitionPredicates extends KapuaUpdatableEntityPredica
     /**
      * The {@link JobStepDefinition} name.
      */
-    public static final String NAME = "name";
+    String NAME = "name";
 }

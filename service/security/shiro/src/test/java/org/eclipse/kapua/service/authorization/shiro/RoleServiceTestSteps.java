@@ -40,7 +40,7 @@ import org.eclipse.kapua.service.authorization.role.shiro.RoleFactoryImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionFactoryImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionServiceImpl;
-import org.eclipse.kapua.service.authorization.role.shiro.RolePredicates;
+import org.eclipse.kapua.service.authorization.role.RolePredicates;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleServiceImpl;
 import org.eclipse.kapua.test.steps.DatabaseInstance;
 

@@ -38,7 +38,7 @@ import org.eclipse.kapua.service.authorization.access.AccessRoleFactory;
 import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
 import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 import org.eclipse.kapua.service.authorization.access.AccessRoleService;
-import org.eclipse.kapua.service.authorization.access.shiro.AccessRolePredicates;
+import org.eclipse.kapua.service.authorization.access.AccessRolePredicates;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

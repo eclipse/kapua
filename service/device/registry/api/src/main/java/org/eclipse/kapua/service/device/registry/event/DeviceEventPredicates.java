@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.event;
 
-import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
+import org.eclipse.kapua.model.KapuaEntityPredicates;
 
 /**
  * Device event predicates.
@@ -19,22 +19,22 @@ import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
  * @since 1.0
  *
  */
-public interface DeviceEventPredicates extends KapuaUpdatableEntityPredicates {
+public interface DeviceEventPredicates extends KapuaEntityPredicates {
 
     /**
      * Device identifier
      */
-    public static final String DEVICE_ID = "deviceId";
+    String DEVICE_ID = "deviceId";
     /**
      * Received on
      */
-    public static final String RECEIVED_ON = "receivedOn";
+    String RECEIVED_ON = "receivedOn";
     /**
      * Sent on
      */
-    public static final String SENT_ON = "sentOn";
+    String SENT_ON = "sentOn";
     /**
      * Event type
      */
-    public static final String RESOURCE = "resource";
+    String RESOURCE = "resource";
 }

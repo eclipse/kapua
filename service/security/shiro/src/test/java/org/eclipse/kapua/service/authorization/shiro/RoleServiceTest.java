@@ -30,7 +30,7 @@ import org.eclipse.kapua.service.authorization.role.RolePermissionService;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleCreatorImpl;
-import org.eclipse.kapua.service.authorization.role.shiro.RolePredicates;
+import org.eclipse.kapua.service.authorization.role.RolePredicates;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleQueryImpl;
 import org.eclipse.kapua.test.KapuaTest;
 import org.eclipse.kapua.test.ResourceLimitsConfig;

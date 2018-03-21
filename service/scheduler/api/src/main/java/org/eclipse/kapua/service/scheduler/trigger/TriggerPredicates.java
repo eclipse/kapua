@@ -18,13 +18,13 @@ public interface TriggerPredicates extends KapuaUpdatableEntityPredicates {
     /**
      * The {@link Trigger} name.
      */
-    public static final String NAME = "name";
+    String NAME = "name";
 
-    public static final String TRIGGER_PROPERTIES = "triggerProperties";
+    String TRIGGER_PROPERTIES = "triggerProperties";
 
-    public static final String TRIGGER_PROPERTIES_NAME = TRIGGER_PROPERTIES + ".name";
+    String TRIGGER_PROPERTIES_NAME = TRIGGER_PROPERTIES + ".name";
 
-    public static final String TRIGGER_PROPERTIES_VALUE = TRIGGER_PROPERTIES + ".propertyValue";
+    String TRIGGER_PROPERTIES_VALUE = TRIGGER_PROPERTIES + ".propertyValue";
 
-    public static final String TRIGGER_PROPERTIES_TYPE = TRIGGER_PROPERTIES + ".propertyType";
+    String TRIGGER_PROPERTIES_TYPE = TRIGGER_PROPERTIES + ".propertyType";
 }

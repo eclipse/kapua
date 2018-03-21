@@ -25,7 +25,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
 import org.eclipse.kapua.service.tag.TagFactory;
 import org.eclipse.kapua.service.tag.TagQuery;
-import org.eclipse.kapua.service.tag.internal.TagPredicates;
+import org.eclipse.kapua.service.tag.TagPredicates;
 
 public class GwtKapuaTagModelConverter {
 

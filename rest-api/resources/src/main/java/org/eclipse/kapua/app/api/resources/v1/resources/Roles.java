@@ -39,7 +39,7 @@ import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RoleListResult;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleService;
-import org.eclipse.kapua.service.authorization.role.shiro.RolePredicates;
+import org.eclipse.kapua.service.authorization.role.RolePredicates;
 
 import com.google.common.base.Strings;
 
