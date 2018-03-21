@@ -17,7 +17,7 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
         logicalFilePath="KapuaDB/changelog-endpoint_info-domain-1.0.0.xml">
 
-    <property name="selectEndpointDomainQuery" value="(SELECT id FROM athz_domain WHERE name = 'endpointInfo')"/>
+    <property name="selectEndpointDomainQuery" value="(SELECT id FROM athz_domain WHERE name = 'endpoint_info')"/>
 
     <include relativeToChangelogFile="true" file="../common-properties.xml"/>
 
@@ -34,7 +34,7 @@
         <insert tableName="athz_domain">
             <column name="created_on" valueComputed="${now}"/>
             <column name="created_by" value="1"/>
-            <column name="name" value="endpointInfo"/>
+            <column name="name" value="endpoint_info"/>
             <column name="serviceName" value="org.eclipse.kapua.service.endpoint.EndpointInfoService"/>
         </insert>
 
