@@ -21,6 +21,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -478,6 +480,13 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
+        Collections.sort(gwtConfigs, new Comparator<GwtConfigComponent>() {
+
+            @Override
+            public int compare(GwtConfigComponent o1, GwtConfigComponent o2) {
+                return o1.getComponentName().compareTo(o2.getComponentName());
+            }
+        });
         return gwtConfigs;
     }
 
