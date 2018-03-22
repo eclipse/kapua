@@ -14,9 +14,8 @@ package org.eclipse.kapua;
 /**
  * KapuaErrorCodes holds the enumeration of common error codes for KapuaServices.<br>
  * For each defined enum value, a corresponding message should be defined in the properties bundle named: KapuaExceptionMessagesBundle.properties.
- * 
+ *
  * @since 1.0
- * 
  */
 public enum KapuaErrorCodes implements KapuaErrorCode {
     /**
@@ -31,6 +30,10 @@ public enum KapuaErrorCodes implements KapuaErrorCode {
      * Duplicate name
      */
     DUPLICATE_NAME,
+    /**
+     * Entity uniqueness in scope
+     */
+    ENTITY_UNIQUENESS,
     /**
      * Illegal access
      */

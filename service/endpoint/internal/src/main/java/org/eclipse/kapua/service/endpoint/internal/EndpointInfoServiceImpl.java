@@ -11,8 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.endpoint.internal;
 
+import org.eclipse.kapua.KapuaEntityUniquenessException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
@@ -30,10 +33,15 @@ import org.eclipse.kapua.service.endpoint.EndpointInfo;
 import org.eclipse.kapua.service.endpoint.EndpointInfoCreator;
 import org.eclipse.kapua.service.endpoint.EndpointInfoFactory;
 import org.eclipse.kapua.service.endpoint.EndpointInfoListResult;
+import org.eclipse.kapua.service.endpoint.EndpointInfoPredicates;
 import org.eclipse.kapua.service.endpoint.EndpointInfoQuery;
 import org.eclipse.kapua.service.endpoint.EndpointInfoService;
 
 import java.net.URI;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * {@link EndpointInfoService} implementation.
@@ -95,6 +103,26 @@ public class EndpointInfoServiceImpl
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(ENDPOINT_INFO_DOMAIN, Actions.write, null));
 
         //
+        // Check duplicate endpoint
+        EndpointInfoQuery query = new EndpointInfoQueryImpl(endpointInfoCreator.getScopeId());
+        query.setPredicate(
+                new AndPredicate(
+                        new AttributePredicate<>(EndpointInfoPredicates.SCHEMA, endpointInfoCreator.getSchema()),
+                        new AttributePredicate<>(EndpointInfoPredicates.DNS, endpointInfoCreator.getDns()),
+                        new AttributePredicate<>(EndpointInfoPredicates.PORT, endpointInfoCreator.getPort())
+                )
+        );
+
+        if (count(query) > 0) {
+            List<Map.Entry<String, Object>> uniquesFieldValues = new ArrayList<>();
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(EndpointInfoPredicates.SCHEMA, endpointInfoCreator.getSchema()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(EndpointInfoPredicates.DNS, endpointInfoCreator.getDns()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(EndpointInfoPredicates.PORT, endpointInfoCreator.getPort()));
+
+            throw new KapuaEntityUniquenessException(EndpointInfo.TYPE, uniquesFieldValues);
+        }
+
+        //
         // Do create
         return entityManagerSession.onTransactedInsert(em -> EndpointInfoDAO.create(em, endpointInfoCreator));
     }
@@ -113,6 +141,26 @@ public class EndpointInfoServiceImpl
         //
         // Check Access
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(ENDPOINT_INFO_DOMAIN, Actions.write, null));
+
+        //
+        // Check duplicate endpoint
+        EndpointInfoQuery query = new EndpointInfoQueryImpl(endpointInfo.getScopeId());
+        query.setPredicate(
+                new AndPredicate(
+                        new AttributePredicate<>(EndpointInfoPredicates.SCHEMA, endpointInfo.getSchema()),
+                        new AttributePredicate<>(EndpointInfoPredicates.DNS, endpointInfo.getDns()),
+                        new AttributePredicate<>(EndpointInfoPredicates.PORT, endpointInfo.getPort())
+                )
+        );
+
+        if (count(query) > 0) {
+            List<Map.Entry<String, Object>> uniquesFieldValues = new ArrayList<>();
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(EndpointInfoPredicates.SCHEMA, endpointInfo.getSchema()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(EndpointInfoPredicates.DNS, endpointInfo.getDns()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(EndpointInfoPredicates.PORT, endpointInfo.getPort()));
+
+            throw new KapuaEntityUniquenessException(EndpointInfo.TYPE, uniquesFieldValues);
+        }
 
         //
         // Do update
