@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Red Hat Inc and others
+ * Copyright (c) 2017, 2018 Red Hat Inc and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -104,11 +104,11 @@ public class AboutView extends AbstractView implements View {
         tableLayout.setHeight("100%");
         tableLayout.setCellPadding(40);
         tableLayout.setCellHorizontalAlign(HorizontalAlignment.CENTER);
-        tableLayout.setCellVerticalAlign(VerticalAlignment.MIDDLE);
+        tableLayout.setCellVerticalAlign(VerticalAlignment.TOP);
 
         final LayoutContainer blurb = new LayoutContainer(tableLayout);
         blurb.add(kapuaIcon);
-        blurb.add(blurbText, new TableData(HorizontalAlignment.LEFT, VerticalAlignment.MIDDLE));
+        blurb.add(blurbText, new TableData(HorizontalAlignment.LEFT, VerticalAlignment.TOP));
 
         // create dependencies table
 
@@ -141,10 +141,14 @@ public class AboutView extends AbstractView implements View {
 
         final BorderLayout borderLayout = new BorderLayout();
         borderLayout.setContainerStyle(null); // reset style and keep default background
+        BorderLayoutData northBorder = new BorderLayoutData(LayoutRegion.NORTH, 400);
+        BorderLayoutData centerBorder = new BorderLayoutData(LayoutRegion.CENTER);
+        northBorder.setSplit(true);
+        centerBorder.setSplit(true);
         final LayoutContainer mainPanel = new LayoutContainer(borderLayout);
         mainPanel.setHeight("100%");
-        mainPanel.add(blurb, new BorderLayoutData(LayoutRegion.NORTH, 280));
-        mainPanel.add(grid, new BorderLayoutData(LayoutRegion.CENTER));
+        mainPanel.add(blurb, northBorder);
+        mainPanel.add(grid, centerBorder);
 
         // add main content
 
