@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -25,6 +25,7 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.tag.client.messages.ConsoleTagMessages;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTagQuery;
+import org.eclipse.kapua.app.console.module.tag.shared.model.permission.TagSessionPermission;
 import org.eclipse.kapua.app.console.module.tag.shared.service.GwtTagService;
 import org.eclipse.kapua.app.console.module.tag.shared.service.GwtTagServiceAsync;
 
@@ -34,6 +35,7 @@ import java.util.List;
 public class TagGrid extends EntityGrid<GwtTag> {
 
     private static final ConsoleTagMessages MSGS = GWT.create(ConsoleTagMessages.class);
+    private TagToolbarGrid toolbar;
 
     protected static final GwtTagServiceAsync GWT_TAG_SERVICE = GWT.create(GwtTagService.class);
     protected GwtTagQuery query;
@@ -42,6 +44,19 @@ public class TagGrid extends EntityGrid<GwtTag> {
         super(entityView, currentSession);
         query = new GwtTagQuery();
         query.setScopeId(currentSession.getSelectedAccountId());
+    }
+
+    @Override
+    protected void selectionChangedEvent(GwtTag selectedItem) {
+        super.selectionChangedEvent(selectedItem);
+        if (selectedItem != null) {
+            getToolbar().getEditEntityButton().setEnabled(currentSession.hasPermission(TagSessionPermission.write()));
+            getToolbar().getAddEntityButton().setEnabled(currentSession.hasPermission(TagSessionPermission.write()));
+            getToolbar().getDeleteEntityButton().setEnabled(currentSession.hasPermission(TagSessionPermission.delete()));
+        } else {
+            getToolbar().getEditEntityButton().setEnabled(false);
+            getToolbar().getDeleteEntityButton().setEnabled(false);
+        }
     }
 
     @Override
@@ -95,7 +110,10 @@ public class TagGrid extends EntityGrid<GwtTag> {
 
     @Override
     protected TagToolbarGrid getToolbar() {
-        return new TagToolbarGrid(currentSession);
+        if (toolbar == null) {
+            toolbar = new TagToolbarGrid(currentSession);
+        }
+        return toolbar;
     }
 
 }

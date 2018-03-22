@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -64,13 +64,10 @@ public class JobGrid extends EntityGrid<GwtJob> {
     protected void selectionChangedEvent(GwtJob selectedItem) {
         super.selectionChangedEvent(selectedItem);
         if (selectedItem != null) {
-            if (currentSession.hasPermission(JobSessionPermission.write())) {
-                getToolbar().getEditEntityButton().setEnabled(true);
-            }
-            if (currentSession.hasPermission(JobSessionPermission.delete())) {
-                getToolbar().getDeleteEntityButton().setEnabled(true);
-            }
-            ((JobGridToolbar) getToolbar()).getStartJobButton().setEnabled(true);
+            getToolbar().getEditEntityButton().setEnabled(currentSession.hasPermission(JobSessionPermission.write()));
+            getToolbar().getAddEntityButton().setEnabled(currentSession.hasPermission(JobSessionPermission.write()));
+            getToolbar().getDeleteEntityButton().setEnabled(currentSession.hasPermission(JobSessionPermission.delete()));
+            ((JobGridToolbar) getToolbar()).getStartJobButton().setEnabled(currentSession.hasPermission(JobSessionPermission.execute()));
         } else {
             getToolbar().getEditEntityButton().setEnabled(false);
             getToolbar().getDeleteEntityButton().setEnabled(false);

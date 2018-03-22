@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -34,6 +34,7 @@ import org.eclipse.kapua.app.console.module.device.client.connection.toolbar.Con
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleConnectionMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionQuery;
+import org.eclipse.kapua.app.console.module.device.shared.model.permission.DeviceConnectionSessionPermission;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceConnectionService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceConnectionServiceAsync;
 
@@ -77,6 +78,11 @@ public class ConnectionGrid extends EntityGrid<GwtDeviceConnection> {
     @Override
     protected void selectionChangedEvent(GwtDeviceConnection selectedItem) {
         super.selectionChangedEvent(selectedItem);
+        if (selectedItem != null) {
+            getToolbar().getEditEntityButton().setEnabled(currentSession.hasPermission(DeviceConnectionSessionPermission.write()));
+        } else {
+            getToolbar().getEditEntityButton().setEnabled(false);
+        }
     }
 
     @Override

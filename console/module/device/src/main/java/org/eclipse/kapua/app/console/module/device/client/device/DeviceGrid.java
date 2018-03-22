@@ -35,6 +35,7 @@ import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDevice
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQuery;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPredicates;
+import org.eclipse.kapua.app.console.module.device.shared.model.permission.DeviceSessionPermission;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceServiceAsync;
 
@@ -225,6 +226,19 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
         columnConfigs.add(column);
 
         return columnConfigs;
+    }
+
+    @Override
+    protected void selectionChangedEvent(GwtDevice selectedItem) {
+        super.selectionChangedEvent(selectedItem);
+        if (selectedItem != null) {
+            getToolbar().getEditEntityButton().setEnabled(currentSession.hasPermission(DeviceSessionPermission.write()));
+            getToolbar().getAddEntityButton().setEnabled(currentSession.hasPermission(DeviceSessionPermission.write()));
+            getToolbar().getDeleteEntityButton().setEnabled(currentSession.hasPermission(DeviceSessionPermission.delete()));
+        } else {
+            getToolbar().getEditEntityButton().setEnabled(false);
+            getToolbar().getDeleteEntityButton().setEnabled(false);
+        }
     }
 
     @Override

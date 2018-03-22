@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,6 +19,7 @@ import org.eclipse.kapua.app.console.module.user.client.dialog.UserAddDialog;
 import org.eclipse.kapua.app.console.module.user.client.dialog.UserDeleteDialog;
 import org.eclipse.kapua.app.console.module.user.client.dialog.UserEditDialog;
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.permission.UserSessionPermission;
 
 public class UserGridToolbar extends EntityCRUDToolbar<GwtUser> {
 
@@ -56,6 +57,7 @@ public class UserGridToolbar extends EntityCRUDToolbar<GwtUser> {
         super.onRender(target, index);
         getEditEntityButton().disable();
         getDeleteEntityButton().disable();
+        getAddEntityButton().setEnabled(currentSession.hasPermission(UserSessionPermission.write()));
     }
 
 }
