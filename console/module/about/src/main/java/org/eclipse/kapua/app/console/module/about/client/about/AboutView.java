@@ -20,6 +20,7 @@ import com.extjs.gxt.ui.client.data.BeanModel;
 import com.extjs.gxt.ui.client.data.BeanModelFactory;
 import com.extjs.gxt.ui.client.data.BeanModelLookup;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -145,6 +146,7 @@ public class AboutView extends AbstractView implements View {
         BorderLayoutData centerBorder = new BorderLayoutData(LayoutRegion.CENTER);
         northBorder.setSplit(true);
         centerBorder.setSplit(true);
+        centerBorder.setMargins(new Margins(10, 0, 0, 0));
         final LayoutContainer mainPanel = new LayoutContainer(borderLayout);
         mainPanel.setHeight("100%");
         mainPanel.add(blurb, northBorder);
