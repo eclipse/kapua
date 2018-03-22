@@ -11,10 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.api.client.util;
 
-import java.util.List;
-
 import com.allen_sauer.gwt.log.client.Log;
-
 import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
@@ -27,6 +24,8 @@ import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.messages.ValidationMessages;
+
+import java.util.List;
 
 /**
  * Handles GwtExceptions from RCP calls.
@@ -69,7 +68,6 @@ public class FailureHandler {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public static boolean handleFormException(FormPanel form, Throwable caught) {
 
         boolean isWarning = false;
@@ -104,6 +102,11 @@ public class FailureHandler {
                 if (!fieldFound) {
                     ConsoleInfo.display(CMSGS.error(), caught.getLocalizedMessage());
                 }
+                break;
+
+            case ENTITY_UNIQUENESS:
+                String errorFields = gee.getArguments()[0];
+                ConsoleInfo.display(CMSGS.error(), caught.getLocalizedMessage() + errorFields);
                 break;
 
             case ILLEGAL_NULL_ARGUMENT:
