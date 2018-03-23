@@ -81,9 +81,9 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
             AndPredicate andPredicate = new AndPredicateImpl();
             andPredicate.and(new AttributePredicateImpl<KapuaId>(AccessPermissionPredicates.ACCESS_INFO_ID, accessInfoCreator.getAccessInfoId()));
             andPredicate.and(new AttributePredicateImpl<KapuaId>(AccessPermissionPredicates.SCOPE_ID, accessInfoCreator.getScopeId()));
-            andPredicate.and(new AttributePredicateImpl<String>("permission.domain", accessInfoCreator.getPermission().getDomain()));
-            andPredicate.and(new AttributePredicateImpl<Actions>("permission.action", accessInfoCreator.getPermission().getAction()));
-            andPredicate.and(new AttributePredicateImpl<KapuaId>("permission.groupId", accessInfoCreator.getPermission().getGroupId()));
+            andPredicate.and(new AttributePredicateImpl<String>(AccessPermissionPredicates.PERMISSION_DOMAIN, accessInfoCreator.getPermission().getDomain()));
+            andPredicate.and(new AttributePredicateImpl<Actions>(AccessPermissionPredicates.PERMISSION_ACTION, accessInfoCreator.getPermission().getAction()));
+            andPredicate.and(new AttributePredicateImpl<KapuaId>(AccessPermissionPredicates.PERMISSION_GROUP_ID, accessInfoCreator.getPermission().getGroupId()));
             query.setPredicate(andPredicate);
             long permissionCnt = accessPermissionService.count(query);
             if (permissionCnt > 0) {
@@ -150,7 +150,7 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
 
                 if (accessInfo != null) {
                     AccessPermissionQuery accessPermissionQuery = accessPermissionFactory.newQuery(scopeId);
-                    accessPermissionQuery.setPredicate(new AttributePredicateImpl<KapuaId>("accessInfoId", accessInfo.getId()));
+                    accessPermissionQuery.setPredicate(new AttributePredicateImpl<KapuaId>(AccessPermissionPredicates.ACCESS_INFO_ID, accessInfo.getId()));
                     accessPermissionQuery.setLimit(loadConfig.getLimit());
                     accessPermissionQuery.setOffset(loadConfig.getOffset());
                     String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? "createdOn" : loadConfig.getSortField();

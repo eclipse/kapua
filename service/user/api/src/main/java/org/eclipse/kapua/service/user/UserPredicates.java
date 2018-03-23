@@ -11,14 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user;
 
-import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
+import org.eclipse.kapua.model.KapuaNamedEntityPredicates;
 
-public interface UserPredicates extends KapuaUpdatableEntityPredicates {
-
-    /**
-     * User name
-     */
-    String NAME = "name";
+public interface UserPredicates extends KapuaNamedEntityPredicates {
 
     String STATUS = "status";
 }

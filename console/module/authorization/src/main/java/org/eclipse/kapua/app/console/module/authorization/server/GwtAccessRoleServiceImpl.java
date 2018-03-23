@@ -35,6 +35,7 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionPredicates;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
 import org.eclipse.kapua.service.authorization.access.AccessRoleCreator;
 import org.eclipse.kapua.service.authorization.access.AccessRoleFactory;
@@ -132,7 +133,7 @@ public class GwtAccessRoleServiceImpl extends KapuaRemoteServiceServlet implemen
 
                 if (accessInfo != null) {
                     AccessRoleQuery query = accessRoleFactory.newQuery(scopeId);
-                    query.setPredicate(new AttributePredicateImpl<KapuaId>("accessInfoId", accessInfo.getId()));
+                    query.setPredicate(new AttributePredicateImpl<KapuaId>(AccessPermissionPredicates.ACCESS_INFO_ID, accessInfo.getId()));
                     query.setLimit(loadConfig.getLimit());
                     query.setOffset(loadConfig.getOffset());
                     String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? "createdOn" : loadConfig.getSortField();

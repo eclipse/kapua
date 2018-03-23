@@ -37,15 +37,15 @@ public class GwtKapuaAccountModelConverter {
         AndPredicateImpl predicate = new AndPredicateImpl();
 
         if (gwtAccountQuery.getName() != null && !gwtAccountQuery.getName().trim().isEmpty()) {
-            predicate.and(new AttributePredicateImpl<String>("name", gwtAccountQuery.getName(), Operator.LIKE));
+            predicate.and(new AttributePredicateImpl<String>(AccountPredicates.NAME, gwtAccountQuery.getName(), Operator.LIKE));
         }
 
         if (gwtAccountQuery.getOrganizationName() != null && !gwtAccountQuery.getOrganizationName().isEmpty()) {
-            predicate.and(new AttributePredicateImpl<String>("organization.name", gwtAccountQuery.getOrganizationName(), Operator.LIKE));
+            predicate.and(new AttributePredicateImpl<String>(AccountPredicates.ORGANIZATION_NAME, gwtAccountQuery.getOrganizationName(), Operator.LIKE));
         }
 
         if (gwtAccountQuery.getOrganizationEmail() != null && !gwtAccountQuery.getOrganizationEmail().isEmpty()) {
-            predicate.and(new AttributePredicateImpl<String>("organization.email", gwtAccountQuery.getOrganizationEmail(), Operator.LIKE));
+            predicate.and(new AttributePredicateImpl<String>(AccountPredicates.ORGANIZATION_EMAIL, gwtAccountQuery.getOrganizationEmail(), Operator.LIKE));
         }
 
         String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? AccountPredicates.NAME : loadConfig.getSortField();

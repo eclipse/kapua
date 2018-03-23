@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role;
 
-import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
+import org.eclipse.kapua.model.KapuaNamedEntityPredicates;
 
 /**
  * Query predicate attribute name for role entity.
@@ -19,10 +19,6 @@ import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
  * @since 1.0
  * 
  */
-public interface RolePredicates extends KapuaUpdatableEntityPredicates {
+public interface RolePredicates extends KapuaNamedEntityPredicates {
 
-    /**
-     * Role name
-     */
-    String NAME = "name";
 }

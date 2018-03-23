@@ -11,12 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job;
 
-import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
+import org.eclipse.kapua.model.KapuaNamedEntityPredicates;
 
-public interface JobPredicates extends KapuaUpdatableEntityPredicates {
+public interface JobPredicates extends KapuaNamedEntityPredicates {
 
-    /**
-     * The {@link Job} name.
-     */
-    String NAME = "name";
 }

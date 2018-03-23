@@ -49,4 +49,9 @@ public interface DeviceConnectionPredicates extends KapuaUpdatableEntityPredicat
      * Connection user coupling mode
      */
     String USER_COUPLING_MODE = "userCouplingMode";
+
+    /**
+     * Client IP
+     */
+    String CLIENT_IP = "clientIp";
 }

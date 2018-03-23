@@ -23,7 +23,12 @@ import org.eclipse.kapua.service.authorization.access.AccessPermission;
 public interface AccessRolePredicates extends KapuaEntityPredicates {
 
     /**
-     * {@link AccessPermission#setAccessInfoId(org.eclipse.kapua.model.id.KapuaId)} id
+     * {@link AccessRole#setAccessInfoId(org.eclipse.kapua.model.id.KapuaId)} access info id
      */
     String ACCESS_INFO_ID = "accessInfoId";
+
+    /**
+     * {@link AccessRole#setRoleId(org.eclipse.kapua.model.id.KapuaId)} role id
+     */
+    String ROLE_ID = "roleId";
 }

@@ -11,11 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.step;
 
-import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
+import org.eclipse.kapua.model.KapuaNamedEntityPredicates;
 
-public interface JobStepPredicates extends KapuaUpdatableEntityPredicates {
+public interface JobStepPredicates extends KapuaNamedEntityPredicates {
 
-    String NAME = "name";
     String JOB_ID = "jobId";
     String STEP_INDEX = "stepIndex";
     String JOB_STEP_DEFINITION_ID = "jobStepDefinitionId";
