@@ -46,6 +46,7 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionCreator;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionFactory;
 import org.eclipse.kapua.service.authorization.access.AccessRoleCreator;
 import org.eclipse.kapua.service.authorization.access.AccessRoleFactory;
+import org.eclipse.kapua.service.authorization.access.AccessRolePredicates;
 import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupQuery;
@@ -79,7 +80,7 @@ public class GwtKapuaAuthorizationModelConverter {
         GroupQuery groupQuery = groupFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtGroupQuery.getScopeId()));
         if (gwtGroupQuery.getName() != null && !gwtGroupQuery.getName().isEmpty()) {
             groupQuery
-                    .setPredicate(new AttributePredicateImpl<String>("name", gwtGroupQuery.getName(), Operator.LIKE));
+                    .setPredicate(new AttributePredicateImpl<String>(GroupPredicates.NAME, gwtGroupQuery.getName(), Operator.LIKE));
         }
         String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? GroupPredicates.NAME : loadConfig.getSortField();
         if (sortField.equals("groupName")) {
@@ -134,7 +135,7 @@ public class GwtKapuaAuthorizationModelConverter {
         AccessRoleFactory accessRoleFactory = locator.getFactory(AccessRoleFactory.class);
         AccessRoleQuery accessRoleQuery = accessRoleFactory
                 .newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtRoleQuery.getScopeId()));
-        accessRoleQuery.setPredicate(new AttributePredicateImpl<KapuaId>("roleId",
+        accessRoleQuery.setPredicate(new AttributePredicateImpl<KapuaId>(AccessRolePredicates.ROLE_ID,
                 KapuaEid.parseCompactId(gwtRoleQuery.getRoleId())));
         accessRoleQuery.setOffset(pagingLoadConfig.getOffset());
         accessRoleQuery.setLimit(pagingLoadConfig.getLimit());

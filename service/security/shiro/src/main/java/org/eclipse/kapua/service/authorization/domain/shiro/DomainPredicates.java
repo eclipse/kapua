@@ -11,24 +11,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.domain.shiro;
 
+import org.eclipse.kapua.model.KapuaNamedEntityPredicates;
+
 /**
  * Query predicate attribute name for role entity.
  *
  * @since 1.0
  */
-public class DomainPredicates {
-
-    private DomainPredicates() {
-    }
-
-    /**
-     * Domain name
-     */
-    public static final String NAME = "name";
+public interface DomainPredicates extends KapuaNamedEntityPredicates {
 
     /**
      * Domain service name
      */
-    public static final String SERVICE_NAME = "serviceName";
+    String SERVICE_NAME = "serviceName";
 
 }

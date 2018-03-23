@@ -11,16 +11,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account;
 
-import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
+import org.eclipse.kapua.model.KapuaNamedEntityPredicates;
 
-public interface AccountPredicates extends KapuaUpdatableEntityPredicates {
+public interface AccountPredicates extends KapuaNamedEntityPredicates {
 
     /**
      * The {@link Account} name.
      */
-    String NAME = "name";
-
     String PARENT_ACCOUNT_PATH = "parentAccountPath";
 
     String CHILD_ACCOUNTS = "childAccounts";
+
+    String ORGANIZATION = "organization";
+
+    String ORGANIZATION_NAME = ORGANIZATION + ".name";
+
+    String ORGANIZATION_EMAIL = ORGANIZATION + ".email";
 }

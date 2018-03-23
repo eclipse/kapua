@@ -26,4 +26,12 @@ public interface AccessPermissionPredicates extends KapuaEntityPredicates {
      * {@link AccessPermission#setAccessInfoId(org.eclipse.kapua.model.id.KapuaId)} id
      */
     String ACCESS_INFO_ID = "accessInfoId";
+
+    String PERMISSION = "permission";
+
+    String PERMISSION_DOMAIN = PERMISSION + ".domain";
+
+    String PERMISSION_ACTION = PERMISSION + ".action";
+
+    String PERMISSION_GROUP_ID = PERMISSION + ".groupId";
 }

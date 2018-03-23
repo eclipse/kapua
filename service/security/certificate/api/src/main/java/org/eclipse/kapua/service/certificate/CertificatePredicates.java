@@ -11,14 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate;
 
-import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
+import org.eclipse.kapua.model.KapuaNamedEntityPredicates;
 
-public interface CertificatePredicates extends KapuaUpdatableEntityPredicates {
-
-    /**
-     * Certificate name
-     */
-    String NAME = "name";
+public interface CertificatePredicates extends KapuaNamedEntityPredicates {
 
     String USAGE = "certificateUsages";
 

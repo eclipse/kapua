@@ -11,14 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.scheduler.trigger;
 
-import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
+import org.eclipse.kapua.model.KapuaNamedEntityPredicates;
 
-public interface TriggerPredicates extends KapuaUpdatableEntityPredicates {
-
-    /**
-     * The {@link Trigger} name.
-     */
-    String NAME = "name";
+public interface TriggerPredicates extends KapuaNamedEntityPredicates {
 
     String TRIGGER_PROPERTIES = "triggerProperties";
 

@@ -62,16 +62,16 @@ public class GwtKapuaDeviceModelConverter {
         AndPredicateImpl predicate = new AndPredicateImpl();
 
         if (gwtDeviceConnectionQuery.getClientId() != null && !gwtDeviceConnectionQuery.getClientId().trim().isEmpty()) {
-            predicate.and(new AttributePredicateImpl<String>("clientId", gwtDeviceConnectionQuery.getClientId(), Operator.LIKE));
+            predicate.and(new AttributePredicateImpl<String>(DeviceConnectionPredicates.CLIENT_ID, gwtDeviceConnectionQuery.getClientId(), Operator.LIKE));
         }
         if (gwtDeviceConnectionQuery.getConnectionStatus() != null && !gwtDeviceConnectionQuery.getConnectionStatus().equals(GwtDeviceConnectionStatus.ANY.toString())) {
-            predicate.and(new AttributePredicateImpl<DeviceConnectionStatus>("status", convertConnectionStatus(gwtDeviceConnectionQuery.getConnectionStatus()), Operator.EQUAL));
+            predicate.and(new AttributePredicateImpl<DeviceConnectionStatus>(DeviceConnectionPredicates.STATUS, convertConnectionStatus(gwtDeviceConnectionQuery.getConnectionStatus()), Operator.EQUAL));
         }
         if (gwtDeviceConnectionQuery.getClientIP() != null && !gwtDeviceConnectionQuery.getClientIP().trim().isEmpty()) {
-            predicate.and(new AttributePredicateImpl<String>("clientIp", gwtDeviceConnectionQuery.getClientIP(), Operator.LIKE));
+            predicate.and(new AttributePredicateImpl<String>(DeviceConnectionPredicates.CLIENT_IP, gwtDeviceConnectionQuery.getClientIP(), Operator.LIKE));
         }
 
-        String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? "clientId" : loadConfig.getSortField();
+        String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? DeviceConnectionPredicates.CLIENT_ID : loadConfig.getSortField();
         if (sortField.equals("connectionUserCouplingMode")) {
             sortField = DeviceConnectionPredicates.USER_COUPLING_MODE;
         } else if (sortField.equals("modifiedOnFormatted")) {

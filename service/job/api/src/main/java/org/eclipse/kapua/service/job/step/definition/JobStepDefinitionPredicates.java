@@ -11,12 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.step.definition;
 
-import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
+import org.eclipse.kapua.model.KapuaNamedEntityPredicates;
 
-public interface JobStepDefinitionPredicates extends KapuaUpdatableEntityPredicates {
+public interface JobStepDefinitionPredicates extends KapuaNamedEntityPredicates {
 
-    /**
-     * The {@link JobStepDefinition} name.
-     */
-    String NAME = "name";
 }
