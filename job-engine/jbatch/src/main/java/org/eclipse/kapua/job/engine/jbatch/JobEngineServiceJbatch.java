@@ -50,11 +50,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.batch.operations.JobExecutionNotRunningException;
+import javax.batch.operations.JobOperator;
 import javax.batch.operations.JobSecurityException;
 import javax.batch.operations.NoSuchJobException;
 import javax.batch.operations.NoSuchJobExecutionException;
 import javax.batch.runtime.BatchRuntime;
 import javax.batch.runtime.BatchStatus;
+import javax.batch.runtime.JobExecution;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -67,7 +69,7 @@ import java.util.Properties;
 @KapuaProvider
 public class JobEngineServiceJbatch implements JobEngineService {
 
-    private final static Logger logger = LoggerFactory.getLogger(JobEngineServiceJbatch.class);
+    private final static Logger LOG = LoggerFactory.getLogger(JobEngineServiceJbatch.class);
 
     private final static long ON_STOP_MAX_WAIT = 60;
     private final static long ON_STOP_WAIT_STEP = 1000;
@@ -187,12 +189,76 @@ public class JobEngineServiceJbatch implements JobEngineService {
         } catch (IOException e) {
             throw KapuaException.internalError(e, "Cannot write job XML definition file");
         }
+
         try {
             BatchRuntime.getJobOperator().start(jobXmlDefinitionFile.getAbsolutePath().replaceAll("\\.xml$", ""), new Properties());
         } catch (NoSuchJobExecutionException | NoSuchJobException | JobSecurityException e) {
             throw new KapuaIllegalStateException(String.format("Cannot start job '[%s]': [%s]", jobId, e.getMessage()), e);
         }
 
+    }
+
+    @Override
+    public boolean isRunning(KapuaId scopeId, KapuaId jobId) throws KapuaException {
+        //
+        // Argument Validation
+        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(jobId, "jobId");
+
+        //
+        // Check Access
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.execute, scopeId));
+
+        //
+        // Check existence
+        Job job = JOB_SERVICE.find(scopeId, jobId);
+        if (job == null) {
+            throw new KapuaEntityNotFoundException(Job.TYPE, jobId);
+        }
+
+        //
+        // Do check running
+        boolean isRunning = false;
+        try {
+            String jobName = getJbatchJobName(job);
+
+            try {
+                JobOperator jobOperator = BatchRuntime.getJobOperator();
+
+                List<Long> runningExecutions = jobOperator.getRunningExecutions(jobName);
+
+                if (!runningExecutions.isEmpty()) {
+                    JobExecution jobExecution = jobOperator.getJobExecution(runningExecutions.get(0));
+
+                    switch (jobExecution.getBatchStatus()) {
+
+                    case STARTING:
+                    case STARTED:
+                    case STOPPING:
+                        isRunning = true;
+                        break;
+                    case FAILED:
+                    case COMPLETED:
+                    case STOPPED:
+                    case ABANDONED:
+                        break;
+                    }
+                }
+
+            } catch (NoSuchJobException e) {
+                LOG.debug("Error while getting Job: {} - {}", e, scopeId, jobId);
+                // This exception is thrown when there is no job, this means that the job never run before
+                // So we can ignore it and return `false`
+            } catch (NoSuchJobExecutionException e) {
+                LOG.debug("Error while getting execution status for Job: {} - {}", e, scopeId, jobId);
+                // This exception is thrown when there is no execution is running.
+                // So we can ignore it and return `false`
+            }
+        } catch (Exception e) {
+            throw KapuaException.internalError(e, "Cannot get job execution status");
+        }
+
+        return isRunning;
     }
 
     @Override
@@ -230,7 +296,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
             BatchRuntime.getJobOperator().stop(jbatchJobExecutionId);
         } catch (JobExecutionNotRunningException ei) {
             // ignore this exception. It means that the job is already stopped
-            logger.info(String.format("The job [%s] is already stopped. The procedure will continue!", jobName));
+            LOG.info(String.format("The job [%s] is already stopped. The procedure will continue!", jobName));
         }
     }
 
@@ -240,15 +306,15 @@ public class JobEngineServiceJbatch implements JobEngineService {
             BatchStatus status = BatchRuntime.getJobOperator().getJobExecution(jbatchJobExecutionId).getBatchStatus();
             // if the job already ended (so failed, completed or abandoned) then just return
             if (BatchStatus.ABANDONED.equals(status) || BatchStatus.FAILED.equals(status) || BatchStatus.COMPLETED.equals(status)) {
-                logger.info(String.format("The job [%s] is already stopped. The procedure will continue!", jobName));
+                LOG.info(String.format("The job [%s] is already stopped. The procedure will continue!", jobName));
                 return;
             }
             if (BatchStatus.STOPPED.equals(status)) {
                 BatchRuntime.getJobOperator().abandon(jbatchJobExecutionId);
-                logger.info(String.format("The job [%s] is correctly stopped.", jobName));
+                LOG.info(String.format("The job [%s] is correctly stopped.", jobName));
                 return;
             }
-            logger.info(String.format("The job [%s] is still not stopped. Wait for a while [%d]", jobName, (i * ON_STOP_WAIT_STEP)));
+            LOG.info(String.format("The job [%s] is still not stopped. Wait for a while [%d]", jobName, (i * ON_STOP_WAIT_STEP)));
             try {
                 Thread.sleep(ON_STOP_WAIT_STEP);
             } catch (InterruptedException e) {
