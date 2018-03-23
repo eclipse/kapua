@@ -35,6 +35,11 @@
             <artifactId>kapua-datastore-api</artifactId>
         </dependency>
         <dependency>
+            <!-- Required for datastore query predicates -->
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-datastore-internal</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-registry-api</artifactId>
         </dependency>

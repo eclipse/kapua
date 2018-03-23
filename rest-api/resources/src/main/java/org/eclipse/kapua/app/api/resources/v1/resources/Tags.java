@@ -39,7 +39,6 @@ import org.eclipse.kapua.service.tag.TagFactory;
 import org.eclipse.kapua.service.tag.TagListResult;
 import org.eclipse.kapua.service.tag.TagQuery;
 import org.eclipse.kapua.service.tag.TagService;
-import org.eclipse.kapua.service.tag.internal.TagImpl;
 import org.eclipse.kapua.service.tag.TagPredicates;
 
 import com.google.common.base.Strings;
@@ -238,7 +237,7 @@ public class Tags extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId of the requested Tag.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the requested Tag", required = true) @PathParam("tagId") EntityId tagId,
             @ApiParam(value = "The modified Tag whose attributed need to be updated", required = true) Tag tag) throws Exception {
-        ((TagImpl) tag).setScopeId(scopeId);
+        tag.setScopeId(scopeId);
         tag.setId(tagId);
 
         return tagService.update(tag);
