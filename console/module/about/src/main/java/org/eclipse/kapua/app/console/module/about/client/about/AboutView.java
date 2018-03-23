@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.module.about.client.about;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.VerticalAlignment;
 import com.extjs.gxt.ui.client.core.XTemplate;
 import com.extjs.gxt.ui.client.data.BeanModel;
@@ -110,6 +111,7 @@ public class AboutView extends AbstractView implements View {
         final LayoutContainer blurb = new LayoutContainer(tableLayout);
         blurb.add(kapuaIcon);
         blurb.add(blurbText, new TableData(HorizontalAlignment.LEFT, VerticalAlignment.TOP));
+        blurb.setScrollMode(Scroll.AUTO);
 
         // create dependencies table
 
