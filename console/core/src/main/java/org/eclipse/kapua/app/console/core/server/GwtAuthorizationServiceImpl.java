@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -202,12 +202,12 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
 
                 KapuaLocator locator = KapuaLocator.getInstance();
                 UserService userService = locator.getService(UserService.class);
-                User user = userService.findByName(username);
 
                 // get the session
                 if (gwtSession == null) {
                     gwtSession = establishSession();
                 } else {
+                    User user = userService.findByName(username);
                     gwtSession.setUserId(user.getId().toCompactId());
                 }
             }
