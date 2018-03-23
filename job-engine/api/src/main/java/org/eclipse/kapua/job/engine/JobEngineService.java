@@ -28,6 +28,10 @@ public interface JobEngineService extends KapuaService, KapuaDomainService<JobDo
 
     public void startJob(KapuaId scopeId, KapuaId jobId) throws KapuaException;
 
+    public boolean isRunning(KapuaId scopeId, KapuaId jobId) throws KapuaException;
+
+    //    public void pauseJob(KapuaId scopeId, KapuaId jobId) throws KapuaException;
+
     public void stopJob(KapuaId scopeId, KapuaId jobId) throws KapuaException;
 
 }
