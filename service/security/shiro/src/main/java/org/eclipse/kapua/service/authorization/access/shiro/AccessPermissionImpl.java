@@ -86,7 +86,11 @@ public class AccessPermissionImpl extends AbstractKapuaEntity implements AccessP
 
     @Override
     public void setPermission(Permission permission) {
-        this.permission = permission != null ? permission instanceof PermissionImpl ? (PermissionImpl) permission : new PermissionImpl(permission) : null;
+        PermissionImpl permissionImpl = null;
+        if (permission != null) {
+            permissionImpl = permission instanceof PermissionImpl ? (PermissionImpl) permission : new PermissionImpl(permission);
+        }
+        this.permission = permissionImpl;
     }
 
     @Override

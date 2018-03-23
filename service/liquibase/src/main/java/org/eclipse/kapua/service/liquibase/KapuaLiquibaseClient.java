@@ -16,7 +16,6 @@ import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
-import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.FileSystemResourceAccessor;
 import org.apache.commons.io.FileUtils;
@@ -121,7 +120,7 @@ public class KapuaLiquibaseClient {
 
     }
 
-    private static void executeMasters(Connection connection, Optional<String> schema, File changelogTempDirectory, String preMaster) throws DatabaseException, LiquibaseException {
+    private static void executeMasters(Connection connection, Optional<String> schema, File changelogTempDirectory, String preMaster) throws LiquibaseException {
         List<File> masterChangelogs = Arrays.asList(changelogTempDirectory.listFiles((FilenameFilter) (dir, name) -> name.endsWith(preMaster)));
 
         LOG.info("\tMaster Liquibase files found: {}", masterChangelogs.size());
