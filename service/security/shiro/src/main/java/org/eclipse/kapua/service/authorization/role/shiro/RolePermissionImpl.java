@@ -21,7 +21,6 @@ import javax.persistence.Entity;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -99,7 +98,11 @@ public class RolePermissionImpl extends AbstractKapuaEntity implements RolePermi
 
     @Override
     public void setPermission(Permission permission) {
-        this.permission = permission != null ? permission instanceof PermissionImpl ? (PermissionImpl) permission : new PermissionImpl(permission) : null;
+        PermissionImpl permissionImpl = null;
+        if (permission != null) {
+            permissionImpl = permission instanceof PermissionImpl ? (PermissionImpl) permission : new PermissionImpl(permission);
+        }
+        this.permission = permissionImpl;
     }
 
     @Override
@@ -114,8 +117,7 @@ public class RolePermissionImpl extends AbstractKapuaEntity implements RolePermi
     }
 
     @PreUpdate
-    protected void preUpdateAction()
-            throws KapuaException {
+    protected void preUpdateAction() {
         if (getCreatedBy() == null) {
             setCreatedBy(KapuaSecurityUtils.getSession().getUserId());
         }

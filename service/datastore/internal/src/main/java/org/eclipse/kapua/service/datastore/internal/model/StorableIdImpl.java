@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model;
 
+import java.util.Objects;
+
 import org.eclipse.kapua.service.datastore.model.StorableId;
 
 /**
@@ -59,4 +61,8 @@ public class StorableIdImpl implements StorableId {
         return true;
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(sid);
+    }
 }

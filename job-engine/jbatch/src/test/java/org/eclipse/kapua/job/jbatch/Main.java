@@ -19,7 +19,6 @@ import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.jbatch.JobEngineJAXBContextProvider;
 import org.eclipse.kapua.job.engine.jbatch.step.definition.LogPropertyKeys;
-import org.eclipse.kapua.job.engine.jbatch.step.definition.LogStepDefinition;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
@@ -81,8 +80,6 @@ public class Main {
 
     private static TriggerService triggerService = locator.getService(TriggerService.class);
     private static TriggerFactory triggerFactory = locator.getFactory(TriggerFactory.class);
-
-    private static List<JobStepDefinition> jobStepDefinitions = Lists.newArrayList(new LogStepDefinition()); //new DeviceCommandExecStepDefinition()
 
     private static Scheduler scheduler;
 
