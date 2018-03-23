@@ -29,7 +29,7 @@ public class AccountGridToolbar extends EntityCRUDToolbar<GwtAccount> {
         super.onRender(target, index);
         super.getEditEntityButton().disable();
         super.getDeleteEntityButton().disable();
-        getAddEntityButton().setEnabled(currentSession.hasPermission(AccountSessionPermission.delete()));
+        getAddEntityButton().setEnabled(currentSession.hasPermission(AccountSessionPermission.write()));
     }
 
     @Override
