@@ -267,7 +267,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
             allGroup.setId(null);
 
             noGroup = new GwtGroup();
-            noGroup.setGroupName("NO_GROUP");
+            noGroup.setGroupName("NO GROUP");
             noGroup.setId(null);
 
             groupsCombo = new ComboBox<GwtGroup>();
@@ -425,7 +425,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
             predicates.setGroupDevice("ANY");
         }
         if (groupsCombo != null && groupsCombo.getValue().equals(noGroup)) {
-            predicates.setGroupDevice(groupsCombo.getValue().getGroupName());
+            predicates.setGroupDevice("NO_GROUP");
         }
         if (tagsCombo != null && !tagsCombo.getValue().equals(allTag)) {
             predicates.setTagId(tagsCombo.getValue().getId());
