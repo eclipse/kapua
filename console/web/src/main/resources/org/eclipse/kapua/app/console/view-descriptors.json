@@ -49,7 +49,8 @@
     "descriptor": "org.eclipse.kapua.app.console.module.authorization.client.group.GroupViewDescriptor",
     "view": "org.eclipse.kapua.app.console.module.authorization.client.group.GroupView",
     "tabs": [
-      "org.eclipse.kapua.app.console.module.authorization.client.group.GroupTabDescriptionDescriptor"
+      "org.eclipse.kapua.app.console.module.authorization.client.group.GroupTabDescriptionDescriptor",
+      "org.eclipse.kapua.app.console.module.device.client.device.group.DevicesGroupTabItemDescriptor"
     ]
   },
   {
