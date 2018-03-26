@@ -20,6 +20,7 @@ import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnect
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionOption;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionStatus;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceEvent;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPredicates.GwtGroupDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAsset;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssetChannel;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssets;
@@ -53,7 +54,11 @@ public class KapuaGwtDeviceModelConverter {
         gwtDevice.setDisplayName(device.getDisplayName());
         gwtDevice.setModelId(device.getModelId());
         gwtDevice.setSerialNumber(device.getSerialNumber());
-        gwtDevice.setGroupId(KapuaGwtCommonsModelConverter.convertKapuaId(device.getGroupId()));
+        if (device.getGroupId() != null) {
+            gwtDevice.setGroupDevice(GwtGroupDevice.NO_GROUP.name());
+        } else {
+        gwtDevice.setGroupDevice(GwtGroupDevice.ANY.name());}
+        gwtDevice.setGroupId(KapuaGwtCommonsModelConverter.convertKapuaId(device.getGroupId())); 
         gwtDevice.setFirmwareVersion(device.getFirmwareVersion());
         gwtDevice.setBiosVersion(device.getBiosVersion());
         gwtDevice.setOsVersion(device.getOsVersion());

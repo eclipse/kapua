@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -55,6 +55,13 @@ public class GwtDeviceQueryPredicates extends KapuaBaseModel implements Serializ
         }
     }
 
+    public enum GwtGroupDevice implements IsSerializable {
+        NO_GROUP, ANY;
+
+        private GwtGroupDevice() {
+        }
+    }
+
     public GwtDeviceQueryPredicates() {
         setSortAttribute(GwtSortAttribute.CLIENT_ID.name());
         setSortOrder(GwtSortOrder.ASCENDING.name());
@@ -73,6 +80,8 @@ public class GwtDeviceQueryPredicates extends KapuaBaseModel implements Serializ
             return (X) (GwtSortOrder.valueOf(getSortOrder()));
         } else if ("sortAttributeEnum".equals(property)) {
             return (X) (GwtSortAttribute.valueOf(getSortAttribute()));
+        } else if ("groupDeviceEnum".equals(property)) {
+            return (X) (GwtGroupDevice.valueOf(getGroupDevice()));
         } else {
             return super.get(property);
         }
@@ -216,6 +225,18 @@ public class GwtDeviceQueryPredicates extends KapuaBaseModel implements Serializ
 
     public GwtDeviceCertificateStatus getDeviceCertificateStatusEnum() {
         return get("deviceCertificateStatusEnum");
+    }
+
+    public String getGroupDevice() {
+        return get("groupDevice");
+    }
+
+    public GwtGroupDevice getGroupDeviceStatusEnum() {
+        return get("groupDeviceEnum");
+    }
+
+    public void setGroupDevice(String groupDevice) {
+        set("groupDevice", groupDevice);
     }
 
     public void setDeviceCertificateStatus(String deviceCertificateStatus) {
