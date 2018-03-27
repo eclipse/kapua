@@ -151,4 +151,17 @@ export default class DevicesListCtrl {
         console.warn(result);
       });
   }
+
+  addDevice() {
+    let modal = this.$modal.open({
+      template: require("../views/add-device-modal.html"),
+      controller: "AddDeviceModalCtrl as vm"
+    });
+    modal.result.then((result: any) => {
+      console.info(result);
+    },
+      (result) => {
+        console.warn(result);
+      });
+  }
 }

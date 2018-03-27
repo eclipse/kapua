@@ -20,6 +20,8 @@ import DeviceDetailBundlesCtrl from "./controllers/DeviceDetailBundlesCtrl";
 import DeviceDetailConfigurationsCtrl from "./controllers/DeviceDetailConfigurationsCtrl";
 import DeviceDetailCommandsCtrl from "./controllers/DeviceDetailCommandsCtrl";
 import DeviceDetailGroupsCtrl from "./controllers/DeviceDetailGroupsCtrl";
+import AddDeviceModalCtrl from "./controllers/AddDeviceModalCtrl";
+import InstallPackagesModalCtrl from "./controllers/InstallPackagesModalCtrl";
 
 import DevicesService from "./services/DevicesService";
 import DeviceMapperService from "./services/DeviceMapperService";
@@ -28,10 +30,11 @@ import "./assets/styles/devices.scss";
 
 angular.module("app.devices", [])
     .config(["$stateProvider",
-        ($stateProvider: angular.ui.IStateProvider,
+        ($stateProvider: any,
             $authProvider) => {
             $stateProvider
                 .state("kapua.devices", {
+                    breadcrumb: "Devices",
                     url: "/devices",
                     views: {
                         "kapuaView@kapua": {
@@ -41,6 +44,7 @@ angular.module("app.devices", [])
                     }
                 })
                 .state("kapua.devices.detail", {
+                    breadcrumb: "Device Details",
                     url: "/:id",
                     views: {
                         "kapuaView@kapua": {
@@ -50,6 +54,7 @@ angular.module("app.devices", [])
                     }
                 })
                 .state("kapua.devices.detail.packages", {
+                    breadcrumb: "Packages",
                     url: "/packages",
                     views: {
                         "kapuaView@kapua": {
@@ -59,6 +64,7 @@ angular.module("app.devices", [])
                     }
                 })
                 .state("kapua.devices.detail.events", {
+                    breadcrumb: "Events",
                     url: "/events",
                     views: {
                         "kapuaView@kapua": {
@@ -68,6 +74,7 @@ angular.module("app.devices", [])
                     }
                 })
                 .state("kapua.devices.detail.bundles", {
+                    breadcrumb: "Bundles",
                     url: "/bundles",
                     views: {
                         "kapuaView@kapua": {
@@ -77,6 +84,7 @@ angular.module("app.devices", [])
                     }
                 })
                 .state("kapua.devices.detail.configurations", {
+                    breadcrumb: "Configurations",
                     url: "/configurations",
                     views: {
                         "kapuaView@kapua": {
@@ -86,6 +94,7 @@ angular.module("app.devices", [])
                     }
                 })
                 .state("kapua.devices.detail.commands", {
+                    breadcrumb: "Commands",
                     url: "/commands",
                     views: {
                         "kapuaView@kapua": {
@@ -95,6 +104,7 @@ angular.module("app.devices", [])
                     }
                 })
                 .state("kapua.devices.detail.groups", {
+                    breadcrumb: "Groups",
                     url: "/groups",
                     views: {
                         "kapuaView@kapua": {
@@ -111,11 +121,13 @@ angular.module("app.devices", [])
 
     //controllers
     .controller("DevicesListCtrl", ["$modal", "$state", "devicesService", DevicesListCtrl])
+    .controller("AddDeviceModalCtrl", ["$modalInstance", "$http", "devicesService", AddDeviceModalCtrl])
     .controller("DeleteDevicesModalCtrl", ["$modalInstance", "$http", "id", DeleteDevicesModalCtrl])
+    .controller("InstallPackagesModalCtrl", ["$modalInstance", "$http", InstallPackagesModalCtrl])
     .controller("DeviceDetailCtrl", ["$stateParams", "$http", "devicesService", "deviceMapperService", DeviceDetailCtrl])
-    .controller("DeviceDetailPackagesCtrl", ["$stateParams", "$scope", "$http", "$templateCache", "devicesService", DeviceDetailPackagesCtrl])
+    .controller("DeviceDetailPackagesCtrl", ["$modal", "$stateParams", "$scope", "$http", "$templateCache", "devicesService", DeviceDetailPackagesCtrl])
     .controller("DeviceDetailEventsCtrl", ["$stateParams", "$http", DeviceDetailEventsCtrl])
     .controller("DeviceDetailBundlesCtrl", ["$stateParams", "$http", "$scope", "devicesService", DeviceDetailBundlesCtrl])
     .controller("DeviceDetailConfigurationsCtrl", ["$scope", "$stateParams", "$http", "$templateCache", "devicesService", DeviceDetailConfigurationsCtrl])
-    .controller("DeviceDetailCommandsCtrl", ["$scope","$stateParams", "devicesService", DeviceDetailCommandsCtrl])
+    .controller("DeviceDetailCommandsCtrl", ["$scope", "$stateParams", "devicesService", DeviceDetailCommandsCtrl])
     .controller("DeviceDetailGroupsCtrl", ["$stateParams", "$http", DeviceDetailGroupsCtrl]);

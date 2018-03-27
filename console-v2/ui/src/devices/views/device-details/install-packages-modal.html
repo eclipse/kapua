@@ -1,0 +1,196 @@
+<!--
+/*******************************************************************************
+* Copyright (c) 2016, 2017 Eurotech and/or its affiliates                       
+*                                                                               
+* All rights reserved. This program and the accompanying materials              
+* are made available under the terms of the Eclipse Public License v1.0         
+* which accompanies this distribution, and is available at                      
+* http://www.eclipse.org/legal/epl-v10.html                                     
+*                                                                               
+* Contributors:                                                                 
+*     Eurotech - initial API and implementation                                 
+*                                                                               
+*******************************************************************************/
+-->
+<div ng-form="vm.editorForm">
+    <div class="modal-header">
+        <h3 class="modal-title">Install New Package</h3>
+    </div>
+    <div class="modal-body">
+        <div class="form-horizontal">
+            <h4 class="modal-title">Package Location</h4>
+            <hr style="margin-top: 0px;">
+            <div class="col-md-12 fieldDescription" style="padding-bottom: 20px;">
+                Specify the URL location of the package to be installed. The device will first download the package from the provided URL
+                and then install it. Make sure that the provided URL is accessible by the device. If the Package URL is protected
+                by HTTP authentication, provide the credentials to access such URL. Optionally, provide an MD5 hash for the
+                package for the device to verify that the download was successful.
+            </div>
+            <div class="form-group" ng-class="{'has-error' : (vm.editorForm.packageUrlInput.$error.required && vm.editorForm.packageUrlInput.$touched)}">
+                <label class="col-md-4 control-label" for="textInput-markup"><span style="color: #FF0000">*</span> Package URL:</label>
+                <div class="col-md-8">
+                    <input type="text" name="packageUrlInput" id="textInput-markup" class="form-control" ng-model="vm.packageUrl" ng-required="true">
+                    <span ng-if="vm.editorForm.packageUrlInput.$error.required && vm.editorForm.packageUrlInput.$touched" class="help-block">
+                  <span class="fa fa-exclamation-triangle"></span> This field is required</span>
+                </div>
+            </div>
+            <div class="form-group" ng-class="{'has-error' : (vm.editorForm.packageNameInput.$error.required && vm.editorForm.packageNameInput.$touched)}">
+                <label class="col-md-4 control-label" for="textInput-markup"><span style="color: #FF0000">*</span> Package Name:</label>
+                <div class="col-md-8">
+                    <input type="text" name="packageNameInput" id="textInput-markup" class="form-control" ng-model="vm.packageName" ng-required="true">
+                    <span ng-if="vm.editorForm.packageNameInput.$error.required && vm.editorForm.packageNameInput.$touched" class="help-block">
+                  <span class="fa fa-exclamation-triangle"></span> This field is required</span>
+                </div>
+            </div>
+            <div class="form-group" ng-class="{'has-error' : (vm.editorForm.packageVersionInput.$error.required && vm.editorForm.packageVersionInput.$touched)}">
+                <label class="col-md-4 control-label" for="textInput-markup"><span style="color: #FF0000">*</span> Package Version:</label>
+                <div class="col-md-8">
+                    <input type="text" name="packageVersionInput" id="textInput-markup" class="form-control" ng-model="vm.packageVersion" ng-required="true">
+                    <span ng-if="vm.editorForm.packageVersionInput.$error.required && vm.editorForm.packageVersionInput.$touched" class="help-block">
+                  <span class="fa fa-exclamation-triangle"></span> This field is required</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="textInput-markup">Username:</label>
+                <div class="col-md-8">
+                    <input type="text" id="textInput-markup" class="form-control" ng-model="vm.username">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="textInput-markup">Password:</label>
+                <div class="col-md-8">
+                    <input type="password" id="textInput-markup" class="form-control" ng-model="vm.password">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="textInput-markup">MD5 File hash:</label>
+                <div class="col-md-8">
+                    <input type="text" id="textInput-markup" class="form-control" ng-model="vm.md5FileHash">
+                </div>
+            </div>
+            <h4 class="modal-title">Download Options</h4>
+            <hr style="margin-top: 0px;">
+            <div class="col-md-12 fieldDescription" style="padding-bottom: 20px;">
+                Control the resume strategy of the package download process. It is possible to define the size of each block downloaded by
+                the device, delay the download of each block and define how frequently Everyware Cloud is notified about
+                the download progress status.
+            </div>
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="textInput-markup">Protocol:</label>
+                <div class="col-md-8">
+                    <label>{{vm.httpHttps}} HTTP/HTTPS</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="textInput-markup">Block size [Byte]:</label>
+                <div class="col-md-8">
+                    <input type="text" id="textInput-markup" class="form-control" ng-model="vm.blockSize" placeholder="According to file size">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="textInput-markup">Block delay [ms]:</label>
+                <div class="col-md-8">
+                    <input type="text" id="textInput-markup" class="form-control" ng-model="vm.blockDelay" placeholder="0">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="textInput-markup">Block size notify [Byte]:</label>
+                <div class="col-md-8">
+                    <input type="text" id="textInput-markup" class="form-control" ng-model="vm.blockSizeNotify" placeholder="According to file size">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="textInput-markup">Block Timeout [s]:</label>
+                <div class="col-md-8">
+                    <input type="text" id="textInput-markup" class="form-control" ng-model="vm.blockTimeout" placeholder="60">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="textInput-markup">Resume Download:</label>
+                <div class="col-md-8">
+                    <div class="checkbox">
+                        <label><input type="checkbox" ng-model="vm.resumeDownload"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="textInput-markup">Force Download:</label>
+                <div class="col-md-8">
+                    <div class="checkbox">
+                        <label><input type="checkbox" ng-model="vm.forceDownload"></label>
+                    </div>
+                </div>
+            </div>
+            <h4 class="modal-title">Install Options</h4>
+            <hr style="margin-top: 0px;">
+            <div class="col-md-12 fieldDescription" style="padding-bottom: 20px;">
+                Optionally, actions can be defined to be executed after the package installation. One option is to provide a custom shell
+                script to the executed after the package installation. Another option allows to force a system reboot after
+                the package installation.
+            </div>
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="textInput-markup">Download Only and Not Install:</label>
+                <div class="col-md-8">
+                    <div class="checkbox">
+                        <label><input type="checkbox" ng-model="vm.downloadOnly"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="textInput-markup">Is System Update:</label>
+                <div class="col-md-8">
+                    <div class="checkbox">
+                        <label><input type="checkbox" ng-model="vm.isSystemUpdate"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="textInput-markup">Post-Install Shell Script URL:</label>
+                <div class="col-md-8">
+                    <input type="text" id="textInput-markup" class="form-control" ng-model="vm.postInstallUrl" placeholder="No verification script">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="textInput-markup">Reboot After Install:</label>
+                <div class="col-md-8">
+                    <div class="checkbox">
+                        <label><input type="checkbox" ng-model="vm.rebootAfterInstall"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="textInput-markup">Reboot Delay [s]:</label>
+                <div class="col-md-8">
+                    <input type="text" id="textInput-markup" class="form-control" ng-model="vm.rebootDelay" placeholder="0">
+                </div>
+            </div>
+            <h4 class="modal-title">Timeout Options</h4>
+            <hr style="margin-top: 0px;">
+            <div class="col-md-12 fieldDescription" style="padding-bottom: 20px;">
+                Control the timeout values for the package install operation.
+            </div>
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="textInput-markup">Request Timeout [s]:</label>
+                <div class="col-md-8">
+                    <input type="text" id="textInput-markup" class="form-control" ng-model="vm.reqTimeout" placeholder="20">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="textInput-markup">Inactivity Timeout [s]:</label>
+                <div class="col-md-8">
+                    <input type="text" id="textInput-markup" class="form-control" ng-model="vm.inactivityTimeout" placeholder="60">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="textInput-markup">Total Operation Timeout [s]:</label>
+                <div class="col-md-8">
+                    <input type="text" id="textInput-markup" class="form-control" ng-model="vm.totalOperationTimeout" placeholder="300">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" ng-click="vm.ok()" ng-disabled="vm.editorForm.$invalid">Submit</button>
+        <button class="btn btn-default" ng-click="vm.cancel()">Cancel</button>
+    </div>
+</div>

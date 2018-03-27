@@ -47,6 +47,10 @@ export default class DevicesService implements IDevicesService {
         return this.$http.post("/api/_/devices/" + deviceID + "/bundles/" + bundleID + "/_stop", {});
     };
 
+    getGroups(): ng.IHttpPromise<ListResult<Group>> {
+        return this.$http.get("/api/_/groups");
+    };
+
     downloadPackage(deviceID: string, devicePackage: DevicePackage): any {
         let requestModel = {
             version: devicePackage.version,

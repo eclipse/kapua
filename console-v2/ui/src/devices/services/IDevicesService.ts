@@ -16,6 +16,7 @@ interface IDevicesService {
     getBundlesByDeviceId(deviceID: string): ng.IHttpPromise<DeviceBundles>;
     getPackagesByDeviceId(deviceID: string): ng.IHttpPromise<DevicePackages>;
     getConfigsByDeviceId(deviceID: string): ng.IHttpPromise<DeviceConfigurations>;
+    getGroups(): ng.IHttpPromise<ListResult<Group>>;
     startDeviceBundle(deviceID: string, bundleID: number): ng.IHttpPromise<DeviceBundles>;
     stopDeviceBundle(deviceID: string, bundleID: number): ng.IHttpPromise<DeviceBundles>;
     downloadPackage(deviceID: string, devicePackage: DevicePackage): any;
