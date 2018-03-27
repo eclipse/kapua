@@ -58,7 +58,7 @@ public class GwtDeviceQueryPredicates extends KapuaBaseModel implements Serializ
     public enum GwtGroupDevice implements IsSerializable {
         NO_GROUP, ANY;
 
-        private GwtGroupDevice() {
+        GwtGroupDevice() {
         }
     }
 

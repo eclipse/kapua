@@ -66,7 +66,8 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
     private final KapuaTextField<String> customAttribute2Field;
 
     private ComboBox<GwtGroup> groupsCombo;
-    private GwtGroup allGroup, noGroup;
+    private GwtGroup allGroup;
+    private GwtGroup noGroup;
 
     private ComboBox<GwtTag> tagsCombo;
     private GwtTag allTag;
