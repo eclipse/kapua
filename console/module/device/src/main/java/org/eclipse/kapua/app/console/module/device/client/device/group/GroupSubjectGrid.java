@@ -74,8 +74,12 @@ public class GroupSubjectGrid extends EntityGrid<GwtDevice> {
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("displayName", MSGS.gridGroupSubjectColumnHeaderName(), 100);
-        columnConfig.setSortable(false);
+        columnConfig = new ColumnConfig("clientId", MSGS.gridGroupSubjectColumnHeaderClientId(), 50);
+        columnConfig.setSortable(true);
+        columnConfigs.add(columnConfig);
+
+        columnConfig = new ColumnConfig("displayName", MSGS.gridGroupSubjectColumnHeaderDisplayName(), 50);
+        columnConfig.setSortable(true);
         columnConfigs.add(columnConfig);
 
         return columnConfigs;
