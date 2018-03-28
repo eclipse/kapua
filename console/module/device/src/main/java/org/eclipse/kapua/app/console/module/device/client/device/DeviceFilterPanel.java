@@ -67,6 +67,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
 
     private ComboBox<GwtGroup> groupsCombo;
     private GwtGroup allGroup;
+    private GwtGroup noGroup;
 
     private ComboBox<GwtTag> tagsCombo;
     private GwtTag allTag;
@@ -266,6 +267,10 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
             allGroup.setGroupName("ANY");
             allGroup.setId(null);
 
+            noGroup = new GwtGroup();
+            noGroup.setGroupName("NO GROUP");
+            noGroup.setId(null);
+
             groupsCombo = new ComboBox<GwtGroup>();
             groupsCombo.setStore(new ListStore<GwtGroup>());
             groupsCombo.disable();
@@ -295,6 +300,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
                     groupsCombo.getStore().removeAll();
                     groupsCombo.getStore().add(allGroup);
                     groupsCombo.getStore().add(result);
+                    groupsCombo.getStore().add(noGroup);
                     groupsCombo.setValue(allGroup);
                     groupsCombo.enable();
                 }
@@ -415,8 +421,12 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         if (customAttribute2Field.getValue() != null && !customAttribute2Field.getValue().trim().isEmpty()) {
             predicates.setCustomAttribute2(unescapeValue(customAttribute2Field.getValue()));
         }
-        if (groupsCombo != null && !groupsCombo.getValue().equals(allGroup)) {
+        if (groupsCombo != null && !groupsCombo.getValue().equals(allGroup) && !groupsCombo.getValue().equals(noGroup)) {
             predicates.setGroupId(groupsCombo.getValue().getId());
+            predicates.setGroupDevice("ANY");
+        }
+        if (groupsCombo != null && groupsCombo.getValue().equals(noGroup)) {
+            predicates.setGroupDevice("NO_GROUP");
         }
         if (tagsCombo != null && !tagsCombo.getValue().equals(allTag)) {
             predicates.setTagId(tagsCombo.getValue().getId());

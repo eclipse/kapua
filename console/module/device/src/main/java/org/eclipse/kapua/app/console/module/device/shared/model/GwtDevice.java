@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtUpdatableEntityModel;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPredicates.GwtGroupDevice;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -135,6 +136,18 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
 
     public void setGwtDeviceConnectionStatus(String deviceConnectionStatus) {
         set("deviceConnectionStatus", deviceConnectionStatus);
+    }
+
+    public GwtGroupDevice getGroupDeviceEnum() {
+        return get("groupDeviceEnum");
+    }
+
+    public String getGroupDevice() {
+        return get("groupDevice");
+    }
+
+    public void setGroupDevice(String groupDevice) {
+        set("groupDevice", groupDevice);
     }
 
     public String getDisplayName() {
