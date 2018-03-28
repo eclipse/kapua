@@ -53,35 +53,6 @@ tr {
     }
 }
 
-.fieldDescription {
-    color: #C0C0C0;
-}
-
-.breadcrumbsContent {
-    margin-left: 10px;
-}
-
-.activeBreadcrumb {
-    color: #000000 !important;
-    text-decoration: none !important;  
-}
-
-
-/* modal width */
-@media screen and (min-width: 768px) {
-    .modal-dialog {
-        width: 800px; /* New width for default modal */
-    }
-    .modal-sm {
-        width: 350px; /* New width for small modal */
-    }
-}
-@media screen and (min-width: 992px) {
-    .modal-lg {
-        width: 950px; /* New width for large modal */
-    }
-}
-
 bundles, packages, commands, configurations {
     .header {
         overflow: hidden;
@@ -110,6 +81,10 @@ configurations {
     .dirtyField {
         border-left-width: 4px;
         border-left-color: #3f9c35;
+    }
+
+    .fieldDescription {
+        color: #C0C0C0;
     }
 
     .radioButton {
