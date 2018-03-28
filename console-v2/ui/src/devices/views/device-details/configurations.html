@@ -12,23 +12,16 @@
 *                                                                               
 *******************************************************************************/
 -->
-<configurations>
-    <div class="col-md-12" style="padding: 0px;">
-        <div class="breadcrumbsContent">
-            <ol breadcrumbs class="breadcrumb">
-                <li ng-repeat="breadcrumb in breadcrumbs">
-                    <a ng-class="{'activeBreadcrumb':$last}" ui-sref="{{breadcrumb.stateName}}">{{breadcrumb.text}}</a>
-                    <li>
-            </ol>
-        </div>
-        <div class="displayDetailsContent">
+<configurations>    
+    <div class="col-md-12" style="padding: 0px;">        
+        <div class="displayDetailsContent">        
             <div class="card-pf card-pf-accented card-pf-utilization">
                 <div class="row example-container">
                     <div class="header">
-                        <div class="col-xs-6 headerTitle"><span class="fa fa-puzzle-piece" style="padding-right: 16px;"></span>Device Configuration Services</div>
-                        <div class="col-xs-6 headerActions">
-                            <button ng-click="vm.getConfigsByDeviceId(deviceId)" class="btn btn-primary" style="margin-top: 5px;"><span class="fa fa-refresh"></span> Refresh</button>
-                        </div>
+                      <div class="col-xs-6 headerTitle"><span class="fa fa-puzzle-piece" style="padding-right: 16px;"></span>Device Configuration Services</div>
+                      <div class="col-xs-6 headerActions">
+                        <button ng-click="vm.getConfigsByDeviceId(deviceId)" class="btn btn-primary" style="margin-top: 5px;"><span class="fa fa-refresh"></span> Refresh</button>
+                      </div>
                     </div>
                     <uib-accordion close-others="vm.oneAtATime">
                         <div uib-accordion-group class="panel-default" heading="{{config.definition.name}}" ng-repeat="config in vm.configs">
@@ -37,24 +30,14 @@
                                     <div ng-if="!AD.Option.length">
                                         <label class="col-lg-3 control-label" for="textInput-markup"><span ng-show="AD.required" style="color: #cc0000">*</span> {{AD.name}}:</label>
                                         <div class="col-lg-9">
-                                            <input ng-if="AD.type === 'String'" type="text" id="textInput-markup" name="{{config.definition.name}}{{vm.removeCharacters(AD.name)}}"
-                                                class="form-control" ng-model="config.properties.property[vm.findPropertyIndex(config, AD)].value[0]"
-                                                ng-required="AD.required" ng-class="{'dirtyField': vm.form{{config.definition.name}}.{{config.definition.name}}{{vm.removeCharacters(AD.name)}}.$dirty}">
-                                            <input ng-if="AD.type === 'Integer'" type="number" id="textInput-markup" name="{{config.definition.name}}{{vm.removeCharacters(AD.name)}}"
-                                                class="form-control" ng-model="config.properties.property[vm.findPropertyIndex(config, AD)].value[0]"
-                                                ng-required="AD.required" ng-class="{'dirtyField': vm.form{{config.definition.name}}.{{config.definition.name}}{{vm.removeCharacters(AD.name)}}.$dirty}">
-                                            <input ng-if="AD.type === 'Float'" type="number" step="0.1" id="textInput-markup" name="{{config.definition.name}}{{vm.removeCharacters(AD.name)}}"
-                                                class="form-control" ng-model="config.properties.property[vm.findPropertyIndex(config, AD)].value[0]"
-                                                ng-required="AD.required" ng-class="{'dirtyField': vm.form{{config.definition.name}}.{{config.definition.name}}{{vm.removeCharacters(AD.name)}}.$dirty}">
-                                            <input ng-if="AD.type === 'Double'" type="number" step="0.01" id="textInput-markup" name="{{config.definition.name}}{{vm.removeCharacters(AD.name)}}"
-                                                class="form-control" ng-model="config.properties.property[vm.findPropertyIndex(config, AD)].value[0]"
-                                                ng-required="AD.required" ng-class="{'dirtyField': vm.form{{config.definition.name}}.{{config.definition.name}}{{vm.removeCharacters(AD.name)}}.$dirty}">
-                                            <input ng-if="AD.type === 'Password'" type="password" id="textInput-markup" name="{{config.definition.name}}{{vm.removeCharacters(AD.name)}}"
-                                                class="form-control" ng-model="config.properties.property[vm.findPropertyIndex(config, AD)].value[0]"
-                                                ng-required="AD.required" ng-class="{'dirtyField': vm.form{{config.definition.name}}.{{config.definition.name}}{{vm.removeCharacters(AD.name)}}.$dirty}">
+                                            <input ng-if="AD.type === 'String'" type="text" id="textInput-markup" name="{{config.definition.name}}{{vm.removeCharacters(AD.name)}}" class="form-control" ng-model="config.properties.property[vm.findPropertyIndex(config, AD)].value[0]" ng-required="AD.required" ng-class="{'dirtyField': vm.form{{config.definition.name}}.{{config.definition.name}}{{vm.removeCharacters(AD.name)}}.$dirty}">
+                                            <input ng-if="AD.type === 'Integer'" type="number" id="textInput-markup" name="{{config.definition.name}}{{vm.removeCharacters(AD.name)}}" class="form-control" ng-model="config.properties.property[vm.findPropertyIndex(config, AD)].value[0]" ng-required="AD.required" ng-class="{'dirtyField': vm.form{{config.definition.name}}.{{config.definition.name}}{{vm.removeCharacters(AD.name)}}.$dirty}">
+                                            <input ng-if="AD.type === 'Float'" type="number" step="0.1" id="textInput-markup" name="{{config.definition.name}}{{vm.removeCharacters(AD.name)}}" class="form-control" ng-model="config.properties.property[vm.findPropertyIndex(config, AD)].value[0]" ng-required="AD.required" ng-class="{'dirtyField': vm.form{{config.definition.name}}.{{config.definition.name}}{{vm.removeCharacters(AD.name)}}.$dirty}">
+                                            <input ng-if="AD.type === 'Double'" type="number" step="0.01" id="textInput-markup" name="{{config.definition.name}}{{vm.removeCharacters(AD.name)}}" class="form-control" ng-model="config.properties.property[vm.findPropertyIndex(config, AD)].value[0]" ng-required="AD.required" ng-class="{'dirtyField': vm.form{{config.definition.name}}.{{config.definition.name}}{{vm.removeCharacters(AD.name)}}.$dirty}">
+                                            <input ng-if="AD.type === 'Password'" type="password" id="textInput-markup" name="{{config.definition.name}}{{vm.removeCharacters(AD.name)}}" class="form-control" ng-model="config.properties.property[vm.findPropertyIndex(config, AD)].value[0]" ng-required="AD.required" ng-class="{'dirtyField': vm.form{{config.definition.name}}.{{config.definition.name}}{{vm.removeCharacters(AD.name)}}.$dirty}">
                                             <div ng-if="AD.type === 'Boolean'">
                                                 <span ng-class="{ 'dirtyRadio' : vm.form{{config.definition.name}}.radioForm{{config.definition.name}}{{vm.removeCharacters(AD.name)}}.$dirty }"></span>
-                                                <div ng-form="radioForm{{config.definition.name}}{{vm.removeCharacters(AD.name)}}">
+                                                <div ng-form="radioForm{{config.definition.name}}{{vm.removeCharacters(AD.name)}}"> 
                                                     <label class="radio-inline" ng-class="{ 'radioButton' : vm.form{{config.definition.name}}.radioForm{{config.definition.name}}{{vm.removeCharacters(AD.name)}}.$dirty }">
                                                         <input type="radio" name="{{config.definition.name}}{{vm.removeCharacters(AD.name)}}" ng-model="config.properties.property[vm.findPropertyIndex(config, AD)].value[0]" ng-required="AD.required" value="true">True
                                                     </label>
@@ -63,9 +46,8 @@
                                                     </label>
                                                 </div>
                                             </div>
-                                            <span ng-show="vm.form{{config.definition.name}}.{{config.definition.name}}{{vm.removeCharacters(AD.name)}}.$error.required && vm.form{{config.definition.name}}.{{config.definition.name}}{{vm.removeCharacters(AD.name)}}.$touched"
-                                                class="help-block">
-                                                <span class="fa fa-exclamation-triangle"></span>                                            This field is required
+                                            <span ng-show="vm.form{{config.definition.name}}.{{config.definition.name}}{{vm.removeCharacters(AD.name)}}.$error.required && vm.form{{config.definition.name}}.{{config.definition.name}}{{vm.removeCharacters(AD.name)}}.$touched" class="help-block">
+                                                <span class="fa fa-exclamation-triangle"></span> This field is required
                                             </span>
                                             <div class="fieldDescription">{{AD.description}}</div>
                                         </div>
@@ -73,13 +55,11 @@
                                     <div ng-if="AD.Option.length">
                                         <label class="col-lg-3 control-label" for="textInput-markup"><span ng-show="AD.required" style="color: #cc0000">*</span> {{AD.name}}:</label>
                                         <div class="col-lg-9">
-                                            <select class="combobox form-control" ng-model="config.properties.property[vm.findPropertyIndex(config, AD)].value[0]" name="{{config.definition.name}}{{vm.removeCharacters(AD.name)}}"
-                                                ng-class="{'dirtyField': vm.form{{config.definition.name}}.{{config.definition.name}}{{vm.removeCharacters(AD.name)}}.$dirty}">
+                                            <select class="combobox form-control" ng-model="config.properties.property[vm.findPropertyIndex(config, AD)].value[0]" name="{{config.definition.name}}{{vm.removeCharacters(AD.name)}}" ng-class="{'dirtyField': vm.form{{config.definition.name}}.{{config.definition.name}}{{vm.removeCharacters(AD.name)}}.$dirty}">
                                                 <option ng-repeat="option in AD.Option" value="{{option.value}}">{{option.label}}</option>
                                             </select>
-                                            <span ng-show="vm.form{{config.definition.name}}.{{config.definition.name}}{{vm.removeCharacters(AD.name)}}.$error.required && vm.form{{config.definition.name}}.{{config.definition.name}}{{vm.removeCharacters(AD.name)}}.$touched"
-                                                class="help-block">
-                                                <span class="fa fa-exclamation-triangle"></span>                                            This field is required
+                                            <span ng-show="vm.form{{config.definition.name}}.{{config.definition.name}}{{vm.removeCharacters(AD.name)}}.$error.required && vm.form{{config.definition.name}}.{{config.definition.name}}{{vm.removeCharacters(AD.name)}}.$touched" class="help-block">
+                                                <span class="fa fa-exclamation-triangle"></span> This field is required
                                             </span>
                                             <div class="fieldDescription">{{AD.description}}</div>
                                         </div>
@@ -101,33 +81,33 @@
 </configurations>
 
 <configurations>
-    <div class="col-md-12" style="padding: 0px;">
-        <div class="displayDetailsContent">
-            <div class="card-pf card-pf-accented card-pf-utilization">
-                <div class="row example-container">
-                    <div class="header">
-                        <div class="col-xs-6 headerTitle"><span class="fa fa-file-image-o" style="padding-right: 16px;"></span>Device Configuration Snapshots</div>
-                        <div class="col-xs-6 headerActions">
-                            <button ng-click="vm.getSnapshots(deviceId)" class="btn btn-primary" style="margin-top: 5px;"><span class="fa fa-refresh"></span> Refresh</button>
-                            <button ng-click="vm.uploadAndApplySnapshot()" class="btn btn-success" style="margin-left: 8px; margin-top: 5px;"><span class="fa fa-upload"></span> Upload and Apply</button>
-                        </div>
-                    </div>
-                    <div class="list-view-container">
-                        <div pf-list-view class="example-list-view" id="exampleListView" config="vm.config" items="snapshots" action-buttons="actionButtons">
-                            <div class="list-view-pf-description">
-                                <div class="list-group-item-heading">
-                                    {{item.id}}
-                                </div>
-                            </div>
-                            <div class="list-view-pf-additional-info">
-                                <div class="list-view-pf-additional-info-item">
-                                    {{item.timestamp | date: 'medium'}}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  <div class="col-md-12" style="padding: 0px;">
+    <div class="displayDetailsContent">
+      <div class="card-pf card-pf-accented card-pf-utilization">
+        <div class="row example-container">
+          <div class="header">
+            <div class="col-xs-6 headerTitle"><span class="fa fa-file-image-o" style="padding-right: 16px;"></span>Device Configuration Snapshots</div>
+            <div class="col-xs-6 headerActions">
+              <button ng-click="vm.getSnapshots(deviceId)" class="btn btn-primary" style="margin-top: 5px;"><span class="fa fa-refresh"></span> Refresh</button>
+              <button ng-click="vm.uploadAndApplySnapshot()" class="btn btn-success" style="margin-left: 8px; margin-top: 5px;"><span class="fa fa-upload"></span> Upload and Apply</button>
             </div>
+          </div>
+          <div class="list-view-container">
+          <div pf-list-view class="example-list-view" id="exampleListView" config="vm.config" items="snapshots" action-buttons="actionButtons">
+            <div class="list-view-pf-description">
+              <div class="list-group-item-heading">
+                {{item.id}}
+              </div>
+            </div>
+            <div class="list-view-pf-additional-info">
+              <div class="list-view-pf-additional-info-item">
+                {{item.timestamp | date: 'medium'}}
+              </div>
+            </div>
+          </div>
         </div>
+        </div>
+      </div>
     </div>
+  </div>
 </configurations>

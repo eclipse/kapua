@@ -12,13 +12,6 @@
 *                                                                               
 *******************************************************************************/
 -->
-<div class="breadcrumbsContent">
-    <ol breadcrumbs class="breadcrumb">
-      <li ng-repeat="breadcrumb in breadcrumbs">
-        <a ng-class="{'activeBreadcrumb':$last}" ui-sref="{{breadcrumb.stateName}}">{{breadcrumb.text}}</a>
-        <li>
-    </ol>
-  </div>
 <div>
   Device events list. id: {{ vm.deviceId }}
 </div>

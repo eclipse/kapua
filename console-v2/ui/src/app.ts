@@ -18,7 +18,6 @@ import "angular-patternfly/node_modules/patternfly/node_modules/datatables/media
 import "angular-patternfly/node_modules/patternfly/dist/css/patternfly.css";
 import "angular-patternfly/node_modules/patternfly/dist/css/patternfly-additions.css";
 import "angular-patternfly/dist/styles/angular-patternfly.css";
-import "angular-ui-router-breadcrumbs/dist/angular-ui-router-breadcrumbs.js";
 
 import "./index.scss";
 
@@ -36,7 +35,6 @@ angular.module("app", [
     "ngAnimate",
     "ui.bootstrap",
     "ui.router",
-    "ui.router.breadcrumbs",
     "patternfly",
     "patternfly.charts",
     "LocalStorageModule",
