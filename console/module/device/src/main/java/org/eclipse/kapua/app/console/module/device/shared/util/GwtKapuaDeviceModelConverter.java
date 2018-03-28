@@ -188,15 +188,17 @@ public class GwtKapuaDeviceModelConverter {
             }
         }
         if (predicates.getGroupDevice() != null) {
-            switch (predicates.getGroupDeviceStatusEnum()) {
+            switch (predicates.getGroupDeviceEnum()) {
             case NO_GROUP:
-                andPred = andPred.and(new AttributePredicate<KapuaId>(DevicePredicates.GROUP_ID, null, Operator.IS_NULL));
+                andPred = andPred.and(new AttributePredicate<KapuaId>(DevicePredicates.GROUP_ID,
+                        null, Operator.IS_NULL));
                 break;
             default:
                 if (predicates.getGroupId() != null) {
-                andPred = andPred.and(new AttributePredicate<KapuaId>(DevicePredicates.GROUP_ID, KapuaEid.parseCompactId(predicates.getGroupId())));
+                    andPred = andPred.and(new AttributePredicate<KapuaId>(DevicePredicates.GROUP_ID,
+                            KapuaEid.parseCompactId(predicates.getGroupId())));
+                }
             }
-          }
         }
         if(predicates.getTagId() != null) {
             andPred = andPred.and(new AttributePredicate<KapuaId[]>(DevicePredicates.TAG_IDS, new KapuaId[] { GwtKapuaCommonsModelConverter.convertKapuaId(predicates.getTagId()) }));

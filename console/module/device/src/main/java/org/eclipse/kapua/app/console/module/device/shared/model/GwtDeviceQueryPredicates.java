@@ -227,20 +227,20 @@ public class GwtDeviceQueryPredicates extends KapuaBaseModel implements Serializ
         return get("deviceCertificateStatusEnum");
     }
 
+    public void setDeviceCertificateStatus(String deviceCertificateStatus) {
+        set("deviceCertificateStatus", deviceCertificateStatus);
+    }
+
     public String getGroupDevice() {
         return get("groupDevice");
     }
 
-    public GwtGroupDevice getGroupDeviceStatusEnum() {
+    public GwtGroupDevice getGroupDeviceEnum() {
         return get("groupDeviceEnum");
     }
 
     public void setGroupDevice(String groupDevice) {
         set("groupDevice", groupDevice);
-    }
-
-    public void setDeviceCertificateStatus(String deviceCertificateStatus) {
-        set("deviceCertificateStatus", deviceCertificateStatus);
     }
 
     public Long getSignedCertificateId() {

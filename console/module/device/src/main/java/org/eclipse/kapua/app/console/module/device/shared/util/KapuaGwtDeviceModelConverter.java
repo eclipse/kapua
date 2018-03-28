@@ -57,7 +57,8 @@ public class KapuaGwtDeviceModelConverter {
         if (device.getGroupId() != null) {
             gwtDevice.setGroupDevice(GwtGroupDevice.NO_GROUP.name());
         } else {
-        gwtDevice.setGroupDevice(GwtGroupDevice.ANY.name());}
+            gwtDevice.setGroupDevice(GwtGroupDevice.ANY.name());
+        }
         gwtDevice.setGroupId(KapuaGwtCommonsModelConverter.convertKapuaId(device.getGroupId())); 
         gwtDevice.setFirmwareVersion(device.getFirmwareVersion());
         gwtDevice.setBiosVersion(device.getBiosVersion());
