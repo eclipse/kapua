@@ -63,16 +63,13 @@ public class JobGrid extends EntityGrid<GwtJob> {
     @Override
     protected void selectionChangedEvent(GwtJob selectedItem) {
         super.selectionChangedEvent(selectedItem);
-        if (selectedItem != null) {
-            getToolbar().getEditEntityButton().setEnabled(currentSession.hasPermission(JobSessionPermission.write()));
-            getToolbar().getAddEntityButton().setEnabled(currentSession.hasPermission(JobSessionPermission.write()));
-            getToolbar().getDeleteEntityButton().setEnabled(currentSession.hasPermission(JobSessionPermission.delete()));
-            ((JobGridToolbar) getToolbar()).getStartJobButton().setEnabled(currentSession.hasPermission(JobSessionPermission.execute()));
-        } else {
-            getToolbar().getEditEntityButton().setEnabled(false);
-            getToolbar().getDeleteEntityButton().setEnabled(false);
-            ((JobGridToolbar) getToolbar()).getStartJobButton().setEnabled(false);
-        }
+
+        getToolbar().getAddEntityButton().setEnabled(currentSession.hasPermission(JobSessionPermission.write()));
+        getToolbar().getEditEntityButton().setEnabled(selectedItem != null && currentSession.hasPermission(JobSessionPermission.write()));
+        getToolbar().getDeleteEntityButton().setEnabled(selectedItem != null && currentSession.hasPermission(JobSessionPermission.delete()));
+
+        ((JobGridToolbar) getToolbar()).getStartJobButton().setEnabled(selectedItem != null && currentSession.hasPermission(JobSessionPermission.execute()));
+        ((JobGridToolbar) getToolbar()).getStopJobButton().setEnabled(selectedItem != null && currentSession.hasPermission(JobSessionPermission.execute()));
     }
 
     @Override

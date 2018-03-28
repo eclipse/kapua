@@ -11,11 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.transport.mqtt;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.transport.TransportFacade;
@@ -23,6 +18,11 @@ import org.eclipse.kapua.transport.message.mqtt.MqttMessage;
 import org.eclipse.kapua.transport.message.mqtt.MqttPayload;
 import org.eclipse.kapua.transport.message.mqtt.MqttTopic;
 import org.eclipse.kapua.transport.mqtt.pooling.MqttClientPool;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Implementation of {@link TransportFacade} API for MQTT transport facade.
@@ -33,14 +33,14 @@ public class MqttFacade implements TransportFacade<MqttTopic, MqttPayload, MqttM
 
     /**
      * The client to use to make requests.
-     * 
+     *
      * @since 1.0.0
      */
     private MqttClient borrowedClient;
 
     /**
      * The client callback for this set of requests.
-     * 
+     *
      * @since 1.0.0
      */
     private MqttClientCallback mqttClientCallback;
@@ -49,9 +49,8 @@ public class MqttFacade implements TransportFacade<MqttTopic, MqttPayload, MqttM
 
     /**
      * Initialize a transport facade to be used to send requests to devices.
-     * 
-     * @throws KapuaException
-     *             When MQTT client is not available.
+     *
+     * @throws KapuaException When MQTT client is not available.
      */
     public MqttFacade(String nodeUri) throws KapuaException {
         this.nodeUri = nodeUri;
@@ -69,8 +68,9 @@ public class MqttFacade implements TransportFacade<MqttTopic, MqttPayload, MqttM
     //
     // Message management
     //
+
     /**
-     * 
+     *
      */
     @Override
     public void sendAsync(MqttMessage mqttMessage)
@@ -106,17 +106,13 @@ public class MqttFacade implements TransportFacade<MqttTopic, MqttPayload, MqttM
      * <p>
      * According to the parameters given, it will make a sync or async request.
      * </p>
-     * 
-     * @param mqttMessage
-     *            The request to send.
-     * @param responses
-     *            The container in which load responses received from the device
-     * @param timeout
-     *            The timeout of waiting the response from the device.
-     *            If {@code null} request will be fired without waiting for the response.
-     *            If mqttMessage has no response message set, timeout will be ignore even if set.
-     * @throws KapuaException
-     *             FIXME [javadoc] document exception
+     *
+     * @param mqttMessage The request to send.
+     * @param responses   The container in which load responses received from the device
+     * @param timeout     The timeout of waiting the response from the device.
+     *                    If {@code null} request will be fired without waiting for the response.
+     *                    If mqttMessage has no response message set, timeout will be ignore even if set.
+     * @throws KapuaException FIXME [javadoc] document exception
      * @see MqttMessage#getResponseTopic()
      * @since 1.0.0.
      */
@@ -152,11 +148,12 @@ public class MqttFacade implements TransportFacade<MqttTopic, MqttPayload, MqttM
             // Wait if required
             if (mqttMessage.getResponseTopic() != null &&
                     timeout != null) {
-                Timer timeoutTimer = new Timer(new StringBuilder().append(MqttFacade.class.getSimpleName())
+                String timerName = new StringBuilder().append(MqttFacade.class.getSimpleName())
                         .append("-TimeoutTimer-")
                         .append(borrowedClient.getClientId())
-                        .toString(),
-                        true);
+                        .toString();
+
+                Timer timeoutTimer = new Timer(timerName, true);
 
                 timeoutTimer.schedule(new TimerTask() {
 

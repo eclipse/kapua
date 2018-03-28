@@ -39,6 +39,7 @@ public class JobGridToolbar extends EntityCRUDToolbar<GwtJob> {
     private static final ConsoleJobMessages JOB_MSGS = GWT.create(ConsoleJobMessages.class);
     private static final GwtJobEngineServiceAsync JOB_ENGINE_SERVICE = GWT.create(GwtJobEngineService.class);
     private Button startJobButton;
+    private Button stopJobButton;
 
     public JobGridToolbar(GwtSession currentSession) {
         super(currentSession);
@@ -48,10 +49,13 @@ public class JobGridToolbar extends EntityCRUDToolbar<GwtJob> {
         return startJobButton;
     }
 
+    public Button getStopJobButton() {
+        return stopJobButton;
+    }
+
     @Override
     protected void onRender(Element target, int index) {
-        List<Component> extraButtons = new ArrayList<Component>();
-        extraButtons.add(new SeparatorMenuItem());
+
         startJobButton = new Button(JOB_MSGS.startJobButton(), new KapuaIcon(IconSet.PLAY), new SelectionListener<ButtonEvent>() {
 
             @Override
@@ -61,9 +65,25 @@ public class JobGridToolbar extends EntityCRUDToolbar<GwtJob> {
             }
         });
         startJobButton.disable();
+
+        stopJobButton = new Button(JOB_MSGS.stopJobButton(), new KapuaIcon(IconSet.STOP), new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                JobStopDialog dialog = new JobStopDialog(gridSelectionModel.getSelectedItem());
+                dialog.show();
+            }
+        });
+        stopJobButton.disable();
+
+        List<Component> extraButtons = new ArrayList<Component>();
+        extraButtons.add(new SeparatorMenuItem());
         extraButtons.add(startJobButton);
+        extraButtons.add(stopJobButton);
         addExtraButtons(extraButtons);
+
         super.onRender(target, index);
+
         getEditEntityButton().disable();
         getDeleteEntityButton().disable();
         getAddEntityButton().setEnabled(currentSession.hasPermission(JobSessionPermission.write()));

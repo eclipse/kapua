@@ -21,7 +21,7 @@ import com.ibm.jbatch.jsl.model.Listener;
 import com.ibm.jbatch.jsl.model.Listeners;
 import com.ibm.jbatch.jsl.model.Property;
 import org.eclipse.kapua.job.engine.jbatch.listener.KapuaJobListener;
-import org.eclipse.kapua.service.job.Job;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.commons.operation.DefaultTargetReader;
 import org.eclipse.kapua.service.job.commons.operation.DefaultTargetWriter;
 import org.eclipse.kapua.service.job.context.JobContextPropertyNames;
@@ -48,15 +48,15 @@ public class JobDefinitionBuildUtils {
         return listeners;
     }
 
-    public static JSLProperties buildJobProperties(Job job) {
+    public static JSLProperties buildJobProperties(KapuaId scopeId, KapuaId jobId) {
 
         Property scopeIdProperty = new Property();
         scopeIdProperty.setName(JobContextPropertyNames.JOB_SCOPE_ID);
-        scopeIdProperty.setValue(job.getScopeId().toCompactId());
+        scopeIdProperty.setValue(scopeId.toCompactId());
 
         Property jobIdProperty = new Property();
         jobIdProperty.setName(JobContextPropertyNames.JOB_ID);
-        jobIdProperty.setValue(job.getId().toCompactId());
+        jobIdProperty.setValue(jobId.toCompactId());
 
         JSLProperties jslProperties = new JSLProperties();
         List<Property> jslPropertyList = jslProperties.getPropertyList();
