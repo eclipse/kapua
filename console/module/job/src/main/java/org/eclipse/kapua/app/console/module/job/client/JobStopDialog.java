@@ -23,13 +23,13 @@ import org.eclipse.kapua.app.console.module.job.shared.model.GwtJob;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobEngineService;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobEngineServiceAsync;
 
-public class JobStartDialog extends SimpleDialog {
+public class JobStopDialog extends SimpleDialog {
 
     private final GwtJob gwtJob;
     private static final ConsoleJobMessages JOB_MSGS = GWT.create(ConsoleJobMessages.class);
     private static final GwtJobEngineServiceAsync JOB_ENGINE_SERVICE = GWT.create(GwtJobEngineService.class);
 
-    public JobStartDialog(GwtJob gwtJob) {
+    public JobStopDialog(GwtJob gwtJob) {
         this.gwtJob = gwtJob;
         DialogUtils.resizeDialog(this, 300, 135);
     }
@@ -44,18 +44,18 @@ public class JobStartDialog extends SimpleDialog {
 
     @Override
     public void submit() {
-        JOB_ENGINE_SERVICE.start(gwtJob.getScopeId(), gwtJob.getId(), new AsyncCallback<Void>() {
+        JOB_ENGINE_SERVICE.stop(gwtJob.getScopeId(), gwtJob.getId(), new AsyncCallback<Void>() {
 
             @Override
             public void onFailure(Throwable caught) {
-                ConsoleInfo.display(MSGS.popupError(), JOB_MSGS.jobStartErrorMessage(caught.getLocalizedMessage()));
+                ConsoleInfo.display(MSGS.popupError(), JOB_MSGS.jobStopErrorMessage(caught.getLocalizedMessage()));
                 unmask();
                 hide();
             }
 
             @Override
             public void onSuccess(Void result) {
-                ConsoleInfo.display(MSGS.popupInfo(), JOB_MSGS.jobStartedMessage());
+                ConsoleInfo.display(MSGS.popupInfo(), JOB_MSGS.jobStoppedMessage());
                 unmask();
                 hide();
             }
@@ -64,7 +64,7 @@ public class JobStartDialog extends SimpleDialog {
 
     @Override
     public String getHeaderMessage() {
-        return JOB_MSGS.startJobDialogHeader(gwtJob.getJobName());
+        return JOB_MSGS.stopJobDialogHeader(gwtJob.getJobName());
     }
 
     @Override
@@ -74,6 +74,6 @@ public class JobStartDialog extends SimpleDialog {
 
     @Override
     public String getInfoMessage() {
-        return JOB_MSGS.startJobDialogInfo();
+        return JOB_MSGS.stopJobDialogInfo();
     }
 }
