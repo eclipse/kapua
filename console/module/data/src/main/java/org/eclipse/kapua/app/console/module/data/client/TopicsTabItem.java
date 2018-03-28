@@ -27,6 +27,7 @@ import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Window;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
@@ -106,7 +107,7 @@ public class TopicsTabItem extends TabItem {
         tables.add(metricsTable, metricLayout);
 
         BorderLayoutData queryButtonLayout = new BorderLayoutData(LayoutRegion.SOUTH, 0.1f);
-        queryButtonLayout.setMargins(new Margins(5));
+        queryButtonLayout.setMargins(new Margins(5, 5, 15, 5));
         queryButton = new Button(MSGS.topicTabItemQueryButtonText(), new KapuaIcon(IconSet.SEARCH), new SelectionListener<ButtonEvent>() {
 
             @Override
@@ -124,6 +125,7 @@ public class TopicsTabItem extends TabItem {
 
         BorderLayoutData resultsLayout = new BorderLayoutData(LayoutRegion.SOUTH, 0.5f);
         resultsLayout.setSplit(true);
+        resultsLayout.setMaxSize(Window.getClientHeight()/2);
 
         TabPanel resultsTabPanel = new TabPanel();
         resultsTabPanel.setPlain(true);
