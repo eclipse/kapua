@@ -13,13 +13,17 @@ package org.eclipse.kapua.job.engine.jbatch;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.KapuaIllegalStateException;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.jbatch.driver.JbatchDriver;
-import org.eclipse.kapua.job.engine.jbatch.exception.KapuaJobEngineErrorCodes;
-import org.eclipse.kapua.job.engine.jbatch.exception.KapuaJobEngineException;
+import org.eclipse.kapua.job.engine.jbatch.exception.JobAlreadyRunningException;
+import org.eclipse.kapua.job.engine.jbatch.exception.JobCheckRunningException;
+import org.eclipse.kapua.job.engine.jbatch.exception.JobMissingStepException;
+import org.eclipse.kapua.job.engine.jbatch.exception.JobMissingTargetException;
+import org.eclipse.kapua.job.engine.jbatch.exception.JobNotRunningException;
+import org.eclipse.kapua.job.engine.jbatch.exception.JobStaringException;
+import org.eclipse.kapua.job.engine.jbatch.exception.JobStopppingException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
@@ -65,34 +69,40 @@ public class JobEngineServiceJbatch implements JobEngineService {
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.execute, scopeId));
 
         //
-        // Check Job Configuration
+        // Check Job Existence
         Job job = JOB_SERVICE.find(scopeId, jobId);
         if (job == null) {
             throw new KapuaEntityNotFoundException(Job.TYPE, jobId);
         }
 
+        //
+        // Check job targets
         JobTargetQuery jobTargetQuery = JOB_TARGET_FACTORY.newQuery(scopeId);
         jobTargetQuery.setPredicate(new AttributePredicate<>(JobTargetPredicates.JOB_ID, jobId));
         if (JOB_TARGET_SERVICE.count(jobTargetQuery) <= 0) {
-            throw new KapuaJobEngineException(KapuaJobEngineErrorCodes.JOB_TARGET_MISSING);
+            throw new JobMissingTargetException(scopeId, jobId);
         }
 
+        //
+        // Check job steps
         JobStepQuery jobStepQuery = JOB_STEP_FACTORY.newQuery(scopeId);
         jobStepQuery.setPredicate(new AttributePredicate<>(JobStepPredicates.JOB_ID, jobId));
         if (JOB_STEP_SERVICE.count(jobStepQuery) <= 0) {
-            throw new KapuaJobEngineException(KapuaJobEngineErrorCodes.JOB_STEP_MISSING);
+            throw new JobMissingStepException(scopeId, jobId);
+        }
+
+        //
+        // Check job running
+        if (JbatchDriver.isRunningJob(scopeId, jobId)) {
+            throw new JobAlreadyRunningException(scopeId, jobId);
         }
 
         //
         // Start the job
         try {
-            if (JbatchDriver.isRunningJob(scopeId, jobId)) {
-                throw new KapuaIllegalStateException(String.format("Job is running: [%s]", jobId));
-            }
-
             JbatchDriver.startJob(scopeId, jobId);
         } catch (Exception e) {
-            throw KapuaException.internalError(e, "Cannot start job");
+            throw new JobStaringException(e, scopeId, jobId);
         }
     }
 
@@ -119,7 +129,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         try {
             return JbatchDriver.isRunningJob(scopeId, jobId);
         } catch (Exception e) {
-            throw KapuaException.internalError(e, "Cannot get job execution status");
+            throw new JobCheckRunningException(e, scopeId, jobId);
         }
     }
 
@@ -142,15 +152,17 @@ public class JobEngineServiceJbatch implements JobEngineService {
         }
 
         //
+        // Check job running
+        if (!JbatchDriver.isRunningJob(scopeId, jobId)) {
+            throw new JobNotRunningException(scopeId, jobId);
+        }
+
+        //
         // Stop the job
         try {
-            if (!JbatchDriver.isRunningJob(scopeId, jobId)) {
-                throw new KapuaIllegalStateException(String.format("Job not running: [%s]", jobId));
-            }
-
             JbatchDriver.stopJob(scopeId, jobId);
         } catch (Exception e) {
-            throw new KapuaIllegalStateException(String.format("Cannot stop job '[%s]': [%s]", jobId, e.getMessage()), e);
+            throw new JobStopppingException(e, scopeId, jobId);
         }
     }
 }

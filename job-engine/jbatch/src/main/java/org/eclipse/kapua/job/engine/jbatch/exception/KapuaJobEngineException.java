@@ -60,17 +60,6 @@ public class KapuaJobEngineException extends KapuaException {
         super(code, cause, arguments);
     }
 
-    /**
-     * Factory method to build an KapuaJobEngineException with the KapuaAccountErrorCode.INTERNAL_ERROR,
-     * and optional arguments for the associated exception message.
-     *
-     * @param message
-     * @return
-     */
-    public static KapuaJobEngineException internalError(String message) {
-        return new KapuaJobEngineException(KapuaJobEngineErrorCodes.INTERNAL_ERROR, null, message);
-    }
-
     @Override
     protected String getKapuaErrorMessagesBundle() {
         return KAPUA_ERROR_MESSAGES;

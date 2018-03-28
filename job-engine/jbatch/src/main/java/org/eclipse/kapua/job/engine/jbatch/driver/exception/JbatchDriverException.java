@@ -11,13 +11,26 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.jbatch.driver.exception;
 
-public class JbatchDriverException extends Exception {
+import org.eclipse.kapua.KapuaException;
 
-    public JbatchDriverException(String message) {
-        super(message);
+public class JbatchDriverException extends KapuaException {
+
+    private static final String KAPUA_ERROR_MESSAGES = "jbatch-driver-error-messages";
+
+    public JbatchDriverException(JbatchDriverErrorCodes code, String jobName) {
+        super(code, jobName);
     }
 
-    public JbatchDriverException(String message, Throwable cause) {
-        super(message, cause);
+    public JbatchDriverException(JbatchDriverErrorCodes code, String jobName, Object... arguments) {
+        super(code, jobName, arguments);
+    }
+
+    public JbatchDriverException(JbatchDriverErrorCodes code, Throwable cause, String jobName, Object... arguments) {
+        super(code, cause, jobName, arguments);
+    }
+
+    @Override
+    protected String getKapuaErrorMessagesBundle() {
+        return KAPUA_ERROR_MESSAGES;
     }
 }
