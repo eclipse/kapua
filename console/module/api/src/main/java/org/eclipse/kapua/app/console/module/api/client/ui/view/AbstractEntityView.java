@@ -90,6 +90,7 @@ public abstract class AbstractEntityView<M extends GwtEntityModel> extends Abstr
 
         BorderLayoutData northData = new KapuaBorderLayoutData(LayoutRegion.NORTH, .45F);
         resultContainer.add(entityGrid, northData);
+        northData.setMinSize(200);
 
         CONSOLE_SERVICE.getCustomTabsForView(getClass().getName(), new AsyncCallback<List<TabDescriptor>>() {
 
