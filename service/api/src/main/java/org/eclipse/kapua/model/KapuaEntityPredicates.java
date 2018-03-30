@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,30 +13,37 @@ package org.eclipse.kapua.model;
 
 /**
  * {@link KapuaEntity} query predicates.
- * 
- * @since 1.0.0
  *
+ * @since 1.0.0
  */
-public interface KapuaEntityPredicates {
+public interface KapuaEntityPredicates extends KapuaPredicates {
 
     /**
-     * {@link KapuaEntity} scopeId.
+     * Predicate for field {@link KapuaEntity#getScopeId()}
+     *
+     * @since 1.0.0
      */
-    public static final String SCOPE_ID = "scopeId";
+    String SCOPE_ID = "scopeId";
 
     /**
-     * {@link KapuaEntity} id.
+     * Predicate for field {@link KapuaEntity#getId()}
+     *
+     * @since 1.0.0
      */
-    public static final String ENTITY_ID = "id";
+    String ENTITY_ID = "id";
 
     /**
-     * {@link KapuaEntity} created on date.
+     * Predicate for field {@link KapuaEntity#getCreatedOn()}
+     *
+     * @since 1.0.0
      */
-    public static final String CREATED_ON = "createdOn";
+    String CREATED_ON = "createdOn";
 
     /**
-     * {@link KapuaEntity} created by id.
+     * Predicate for field {@link KapuaEntity#getCreatedBy()}
+     *
+     * @since 1.0.0
      */
-    public static final String CREATED_BY = "createdBy";
+    String CREATED_BY = "createdBy";
 
 }
