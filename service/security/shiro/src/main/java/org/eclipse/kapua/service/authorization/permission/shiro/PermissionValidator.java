@@ -20,6 +20,7 @@ import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainListResult;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
+import org.eclipse.kapua.service.authorization.permission.PermissionPredicates;
 
 import javax.validation.constraints.NotNull;
 import java.util.Set;
@@ -49,14 +50,14 @@ public class PermissionValidator {
                         if (domain.getName().equals(p.getDomain())) {
                             matched = true;
                             if (!domain.getGroupable() && p.getGroupId() != null) {
-                                throw new KapuaIllegalArgumentException("permission.groupId", p.getGroupId().toStringId());
+                                throw new KapuaIllegalArgumentException(PermissionPredicates.GROUP_ID, p.getGroupId().toStringId());
                             }
                             break;
                         }
                     }
 
                     if (!matched) {
-                        throw new KapuaIllegalArgumentException("permission.domain", p.getDomain());
+                        throw new KapuaIllegalArgumentException(PermissionPredicates.DOMAIN, p.getDomain());
                     }
                 }
             }

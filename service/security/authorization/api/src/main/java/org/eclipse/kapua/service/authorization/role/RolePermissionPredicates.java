@@ -12,29 +12,63 @@
 package org.eclipse.kapua.service.authorization.role;
 
 import org.eclipse.kapua.model.KapuaEntityPredicates;
-import org.eclipse.kapua.service.authorization.role.RolePermission;
+import org.eclipse.kapua.service.authorization.permission.Permission;
+import org.eclipse.kapua.service.authorization.permission.PermissionPredicates;
 
 /**
  * Query predicate attribute names for {@link RolePermission} entity.
- * 
+ *
  * @since 1.0.0
- * 
  */
 public interface RolePermissionPredicates extends KapuaEntityPredicates {
 
     /**
-     * Role id
+     * Predicate for field {@link RolePermission#getRoleId()}
+     *
+     * @since 1.0.0
      */
     String ROLE_ID = "roleId";
 
     /**
-     * The role permission domain
+     * Predicate for field {@link RolePermission#getPermission()}
+     *
+     * @since 1.0.0
      */
-    String DOMAIN = "permission.domain";
+    String PERMISSION = "permission";
 
     /**
-     * The role permission action
+     * Predicate for field {@link RolePermission#getPermission()}.{@link Permission#getDomain()}
+     *
+     * @since 1.0.0
      */
-    String ACTION = "permission.action";
+    String PERMISSION_DOMAIN = PERMISSION + "." + PermissionPredicates.DOMAIN;
+
+    /**
+     * Predicate for field {@link RolePermission#getPermission()}.{@link Permission#getAction()}
+     *
+     * @since 1.0.0
+     */
+    String PERMISSION_ACTION = PERMISSION + "." + PermissionPredicates.ACTION;
+
+    /**
+     * Predicate for field {@link RolePermission#getPermission()}.{@link Permission#getTargetScopeId()}
+     *
+     * @since 1.0.0
+     */
+    String PERMISSION_TARGET_SCOPE_ID = PERMISSION + "." + PermissionPredicates.TARGET_SCOPE_ID;
+
+    /**
+     * Predicate for field {@link RolePermission#getPermission()}.{@link Permission#getGroupId()}
+     *
+     * @since 1.0.0
+     */
+    String PERMISSION_GROUP_ID = PERMISSION + "." + PermissionPredicates.GROUP_ID;
+
+    /**
+     * Predicate for field {@link RolePermission#getPermission()}.{@link Permission#getForwardable()}
+     *
+     * @since 1.0.0
+     */
+    String PERMISSION_FORWARDABLE = PERMISSION + "." + PermissionPredicates.FORWARDABLE;
 
 }

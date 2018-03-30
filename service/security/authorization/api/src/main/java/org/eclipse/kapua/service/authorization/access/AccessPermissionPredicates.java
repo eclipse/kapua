@@ -12,26 +12,63 @@
 package org.eclipse.kapua.service.authorization.access;
 
 import org.eclipse.kapua.model.KapuaEntityPredicates;
-import org.eclipse.kapua.service.authorization.access.AccessPermission;
+import org.eclipse.kapua.service.authorization.permission.Permission;
+import org.eclipse.kapua.service.authorization.permission.PermissionPredicates;
 
 /**
  * Query predicate attribute name for {@link AccessPermission} entity.
- * 
+ *
  * @since 1.0.0
- * 
  */
 public interface AccessPermissionPredicates extends KapuaEntityPredicates {
 
     /**
-     * {@link AccessPermission#setAccessInfoId(org.eclipse.kapua.model.id.KapuaId)} id
+     * Predicate for field {@link AccessPermission#getAccessInfoId()}
+     *
+     * @since 1.0.0
      */
     String ACCESS_INFO_ID = "accessInfoId";
 
+    /**
+     * Predicate for field {@link AccessPermission#getPermission()}
+     *
+     * @since 1.0.0
+     */
     String PERMISSION = "permission";
 
-    String PERMISSION_DOMAIN = PERMISSION + ".domain";
+    /**
+     * Predicate for field {@link AccessPermission#getPermission()}.{@link Permission#getDomain()}
+     *
+     * @since 1.0.0
+     */
+    String PERMISSION_DOMAIN = PERMISSION + "." + PermissionPredicates.DOMAIN;
 
-    String PERMISSION_ACTION = PERMISSION + ".action";
+    /**
+     * Predicate for field {@link AccessPermission#getPermission()}.{@link Permission#getAction()}
+     *
+     * @since 1.0.0
+     */
+    String PERMISSION_ACTION = PERMISSION + "." + PermissionPredicates.ACTION;
 
-    String PERMISSION_GROUP_ID = PERMISSION + ".groupId";
+    /**
+     * Predicate for field {@link AccessPermission#getPermission()}.{@link Permission#getTargetScopeId()}
+     *
+     * @since 1.0.0
+     */
+    String PERMISSION_TARGET_SCOPE_ID = PERMISSION + "." + PermissionPredicates.TARGET_SCOPE_ID;
+
+    /**
+     * Predicate for field {@link AccessPermission#getPermission()}.{@link Permission#getGroupId()}
+     *
+     * @since 1.0.0
+     */
+    String PERMISSION_GROUP_ID = PERMISSION + "." + PermissionPredicates.GROUP_ID;
+
+    /**
+     * Predicate for field {@link AccessPermission#getPermission()}.{@link Permission#getForwardable()}
+     *
+     * @since 1.0.0
+     */
+    String PERMISSION_FORWARDABLE = PERMISSION + "." + PermissionPredicates.FORWARDABLE;
+
 }

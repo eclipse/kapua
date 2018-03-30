@@ -30,9 +30,9 @@ import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
 import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
+import org.eclipse.kapua.service.authorization.role.RolePermissionPredicates;
 import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
 import org.eclipse.kapua.service.authorization.role.RolePermissionService;
-import org.eclipse.kapua.service.authorization.role.RolePermissionPredicates;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -82,10 +82,10 @@ public class RolesPermissions extends AbstractKapuaResource {
         AndPredicateImpl andPredicate = new AndPredicateImpl();
         query.setPredicate(new AttributePredicateImpl<>(RolePermissionPredicates.ROLE_ID, roleId));
         if (!Strings.isNullOrEmpty(domain)) {
-            andPredicate.and(new AttributePredicateImpl<>(RolePermissionPredicates.DOMAIN, domain));
+            andPredicate.and(new AttributePredicateImpl<>(RolePermissionPredicates.PERMISSION_DOMAIN, domain));
         }
         if (action != null) {
-            andPredicate.and(new AttributePredicateImpl<>(RolePermissionPredicates.ACTION, action));
+            andPredicate.and(new AttributePredicateImpl<>(RolePermissionPredicates.PERMISSION_ACTION, action));
         }
         query.setPredicate(andPredicate);
 
