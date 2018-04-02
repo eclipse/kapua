@@ -62,7 +62,9 @@ public class PermissionAddDialog extends EntityAddEditDialog {
     private CheckBoxGroup forwardableChecboxGroup;
     private CheckBox forwardableChecbox;
 
+    private GwtPermission newPermission;
     private final GwtGroup allGroup;
+    private final GwtGroup noGroup;
     private final GwtDomain allDomain = new GwtDomain("ALL");
     private final GwtAction allAction = GwtAction.ALL;
 
@@ -74,6 +76,10 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         allGroup = new GwtGroup();
         allGroup.setId(null);
         allGroup.setGroupName("ALL");
+
+        noGroup = new GwtGroup();
+        noGroup.setId(null);
+        noGroup.setGroupName("NULL");
 
         GWT_ACCESS_INFO_SERVICE.findByUserIdOrCreate(currentSession.getSelectedAccountId(), userId, new AsyncCallback<GwtAccessInfo>() {
 
@@ -97,12 +103,21 @@ public class PermissionAddDialog extends EntityAddEditDialog {
     @Override
     public void submit() {
 
-        GwtPermission newPermission = new GwtPermission(//
-                domainsCombo.getValue().getDomainName(), //
-                actionsCombo.getValue().getValue(), //
-                currentSession.getSelectedAccountId(), //
-                groupsCombo.getValue().getId(), //
-                forwardableChecboxGroup.getValue() != null);
+        if (groupsCombo.getValue() != null) {
+            newPermission = new GwtPermission(//
+                    domainsCombo.getValue().getDomainName(), //
+                    actionsCombo.getValue().getValue(), //
+                    currentSession.getSelectedAccountId(), //
+                    groupsCombo.getValue().getId(), //
+                    forwardableChecboxGroup.getValue() != null);
+        } else {
+            newPermission = new GwtPermission(//
+                    domainsCombo.getValue().getDomainName(), //
+                    actionsCombo.getValue().getValue(), //
+                    currentSession.getSelectedAccountId(), //
+                    null, //
+                    forwardableChecboxGroup.getValue() != null);
+        }
 
         GwtAccessPermissionCreator gwtAccessPermissionCreator = new GwtAccessPermissionCreator();
         gwtAccessPermissionCreator.setScopeId(currentSession.getSelectedAccountId());
