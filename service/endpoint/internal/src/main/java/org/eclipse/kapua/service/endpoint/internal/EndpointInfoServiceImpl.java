@@ -14,8 +14,8 @@ package org.eclipse.kapua.service.endpoint.internal;
 import org.eclipse.kapua.KapuaEntityUniquenessException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
@@ -106,10 +106,10 @@ public class EndpointInfoServiceImpl
         // Check duplicate endpoint
         EndpointInfoQuery query = new EndpointInfoQueryImpl(endpointInfoCreator.getScopeId());
         query.setPredicate(
-                new AndPredicate(
-                        new AttributePredicate<>(EndpointInfoPredicates.SCHEMA, endpointInfoCreator.getSchema()),
-                        new AttributePredicate<>(EndpointInfoPredicates.DNS, endpointInfoCreator.getDns()),
-                        new AttributePredicate<>(EndpointInfoPredicates.PORT, endpointInfoCreator.getPort())
+                new AndPredicateImpl(
+                        new AttributePredicateImpl<>(EndpointInfoPredicates.SCHEMA, endpointInfoCreator.getSchema()),
+                        new AttributePredicateImpl<>(EndpointInfoPredicates.DNS, endpointInfoCreator.getDns()),
+                        new AttributePredicateImpl<>(EndpointInfoPredicates.PORT, endpointInfoCreator.getPort())
                 )
         );
 
@@ -146,10 +146,10 @@ public class EndpointInfoServiceImpl
         // Check duplicate endpoint
         EndpointInfoQuery query = new EndpointInfoQueryImpl(endpointInfo.getScopeId());
         query.setPredicate(
-                new AndPredicate(
-                        new AttributePredicate<>(EndpointInfoPredicates.SCHEMA, endpointInfo.getSchema()),
-                        new AttributePredicate<>(EndpointInfoPredicates.DNS, endpointInfo.getDns()),
-                        new AttributePredicate<>(EndpointInfoPredicates.PORT, endpointInfo.getPort())
+                new AndPredicateImpl(
+                        new AttributePredicateImpl<>(EndpointInfoPredicates.SCHEMA, endpointInfo.getSchema()),
+                        new AttributePredicateImpl<>(EndpointInfoPredicates.DNS, endpointInfo.getDns()),
+                        new AttributePredicateImpl<>(EndpointInfoPredicates.PORT, endpointInfo.getPort())
                 )
         );
 

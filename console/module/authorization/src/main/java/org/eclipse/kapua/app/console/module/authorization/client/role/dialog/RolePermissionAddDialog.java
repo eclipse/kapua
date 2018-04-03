@@ -59,7 +59,7 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
     private GwtRole selectedRole;
 
     private final GwtGroup allGroup;
-    private final GwtDomain allDomain = new GwtDomain("ALL");
+    private final GwtDomain allDomain = new GwtDomain(null, "ALL");
     private final GwtAction allAction = GwtAction.ALL;
 
     public RolePermissionAddDialog(GwtSession currentSession) {
@@ -217,10 +217,10 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
     @Override
     public void submit() {
         GwtPermission permission = new GwtPermission();
-        permission.setDomain(domainsCombo.getValue().getDomainName());
+        permission.setDomain(domainsCombo.getValue().getDomainId());
         permission.setAction(actionsCombo.getValue().getValue().toString());
-        permission.setGroupId(groupsCombo.getValue().getId());
         permission.setTargetScopeId(currentSession.getSelectedAccountId());
+        permission.setGroupId(groupsCombo.getValue().getId());
         permission.setForwardable(forwardableChecboxGroup.getValue() != null);
 
         GwtRolePermissionCreator rolePermission = new GwtRolePermissionCreator();

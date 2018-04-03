@@ -11,17 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.server;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Callable;
-
 import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
-import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessPermission;
@@ -47,12 +46,12 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult
 import org.eclipse.kapua.service.authorization.access.AccessPermissionPredicates;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionQuery;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
-
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet implements GwtAccessPermissionService {
 
@@ -84,6 +83,7 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
             andPredicate.and(new AttributePredicateImpl<String>(AccessPermissionPredicates.PERMISSION_DOMAIN, accessInfoCreator.getPermission().getDomain()));
             andPredicate.and(new AttributePredicateImpl<Actions>(AccessPermissionPredicates.PERMISSION_ACTION, accessInfoCreator.getPermission().getAction()));
             andPredicate.and(new AttributePredicateImpl<KapuaId>(AccessPermissionPredicates.PERMISSION_GROUP_ID, accessInfoCreator.getPermission().getGroupId()));
+
             query.setPredicate(andPredicate);
             long permissionCnt = accessPermissionService.count(query);
             if (permissionCnt > 0) {
@@ -145,7 +145,7 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
                 final KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeShortId);
                 KapuaId userId = GwtKapuaCommonsModelConverter.convertKapuaId(userShortId);
 
-                final AccessInfo accessInfo = accessInfoService.findByUserId(scopeId, userId);
+                AccessInfo accessInfo = accessInfoService.findByUserId(scopeId, userId);
                 final User user = userService.find(scopeId, userId);
 
                 if (accessInfo != null) {

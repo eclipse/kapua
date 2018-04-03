@@ -17,11 +17,28 @@ import org.eclipse.kapua.app.console.module.api.shared.model.KapuaBaseModel;
 
 public class GwtDomain extends KapuaBaseModel implements IsSerializable, Comparable<GwtDomain>, Enum {
 
-    public GwtDomain(String domainName) {
-        set("domainName", domainName);
+    public GwtDomain() {
     }
 
-    public GwtDomain() {
+    public GwtDomain(String domainName) {
+        this(domainName, domainName);
+    }
+
+    public GwtDomain(String domainId, String domainName) {
+        setDomainId(domainId);
+        setDomainName(domainName);
+    }
+
+    /**
+     * @return the name of this domain
+     * @since 1.0.0
+     */
+    public String getDomainId() {
+        return get("domainId");
+    }
+
+    public void setDomainId(String domainId) {
+        set("domainId", domainId);
     }
 
     /**
@@ -36,9 +53,12 @@ public class GwtDomain extends KapuaBaseModel implements IsSerializable, Compara
         set("domainName", domainName);
     }
 
-    @Override
-    public int compareTo(GwtDomain o) {
-        return getDomainName().compareToIgnoreCase(o.getDomainName());
+    public Boolean getGroupable() {
+        return get("groupable");
+    }
+
+    public void setGroupable(boolean groupable) {
+        set("groupable", groupable);
     }
 
     @Override
@@ -46,12 +66,9 @@ public class GwtDomain extends KapuaBaseModel implements IsSerializable, Compara
         return getDomainName();
     }
 
-    public Boolean getGroupable() {
-        return get("groupable");
-    }
-
-    public void setGroupable(boolean groupable) {
-        set("groupable", groupable);
+    @Override
+    public int compareTo(GwtDomain o) {
+        return getDomainName().compareToIgnoreCase(o.getDomainName());
     }
 
 }

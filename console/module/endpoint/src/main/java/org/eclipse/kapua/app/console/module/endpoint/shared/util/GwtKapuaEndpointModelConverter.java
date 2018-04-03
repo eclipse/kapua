@@ -19,10 +19,10 @@ import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModel
 import org.eclipse.kapua.app.console.module.endpoint.shared.model.GwtEndpointQuery;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.service.endpoint.EndpointInfoFactory;
 import org.eclipse.kapua.service.endpoint.EndpointInfoPredicates;
 import org.eclipse.kapua.service.endpoint.EndpointInfoQuery;
@@ -45,18 +45,18 @@ public class GwtKapuaEndpointModelConverter {
     public static EndpointInfoQuery convertEndpointQuery(PagingLoadConfig loadConfig, GwtEndpointQuery gwtEndpointQuery) {
 
         // Predicates conversion
-        AndPredicate andPredicate = new AndPredicate();
+        AndPredicateImpl andPredicate = new AndPredicateImpl();
 
         if (!Strings.isNullOrEmpty(gwtEndpointQuery.getSchema())) {
-            andPredicate.and(new AttributePredicate<String>(EndpointInfoPredicates.SCHEMA, gwtEndpointQuery.getSchema(), Operator.LIKE));
+            andPredicate.and(new AttributePredicateImpl<String>(EndpointInfoPredicates.SCHEMA, gwtEndpointQuery.getSchema(), AttributePredicate.Operator.LIKE));
         }
 
         if (!Strings.isNullOrEmpty(gwtEndpointQuery.getDns())) {
-            andPredicate.and(new AttributePredicate<String>(EndpointInfoPredicates.DNS, gwtEndpointQuery.getDns(), Operator.LIKE));
+            andPredicate.and(new AttributePredicateImpl<String>(EndpointInfoPredicates.DNS, gwtEndpointQuery.getDns(), AttributePredicate.Operator.LIKE));
         }
 
         if (gwtEndpointQuery.getPort() != null) {
-            andPredicate.and(new AttributePredicate<Integer>(EndpointInfoPredicates.SCHEMA, gwtEndpointQuery.getPort().intValue()));
+            andPredicate.and(new AttributePredicateImpl<Integer>(EndpointInfoPredicates.SCHEMA, gwtEndpointQuery.getPort().intValue()));
         }
 
         // Sort order conversion

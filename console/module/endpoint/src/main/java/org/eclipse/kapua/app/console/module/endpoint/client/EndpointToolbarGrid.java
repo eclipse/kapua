@@ -58,10 +58,9 @@ public class EndpointToolbarGrid extends EntityCRUDToolbar<GwtEndpoint> {
 
         //
         // Force disabled if entity is inherited from parent scopes
-        if (selectedEntity != null && !currentSession.hasPermission(EndpointSessionPermission.writeAll())) {
-            editEntityButton.disable();
-            deleteEntityButton.disable();
-        }
-    }
+        addEntityButton.setEnabled(currentSession.hasPermission(EndpointSessionPermission.writeAll()));
 
+        editEntityButton.setEnabled(selectedEntity != null && currentSession.hasPermission(EndpointSessionPermission.writeAll()));
+        deleteEntityButton.setEnabled(selectedEntity != null && currentSession.hasPermission(EndpointSessionPermission.deleteAll()));
+    }
 }

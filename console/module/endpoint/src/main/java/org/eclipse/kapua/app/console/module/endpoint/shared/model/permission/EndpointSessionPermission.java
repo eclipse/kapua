@@ -44,4 +44,8 @@ public class EndpointSessionPermission extends GwtSessionPermission {
     public static EndpointSessionPermission delete() {
         return new EndpointSessionPermission(GwtSessionPermissionAction.delete);
     }
+
+    public static EndpointSessionPermission deleteAll() {
+        return new EndpointSessionPermission(GwtSessionPermissionAction.delete, GwtSessionPermissionScope.ALL);
+    }
 }

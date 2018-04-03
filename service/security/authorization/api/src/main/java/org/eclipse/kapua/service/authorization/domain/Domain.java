@@ -12,6 +12,7 @@
 package org.eclipse.kapua.service.authorization.domain;
 
 import org.eclipse.kapua.model.KapuaEntity;
+import org.eclipse.kapua.model.domain.AbstractDomain;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
@@ -21,6 +22,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Set;
 
@@ -128,4 +130,35 @@ public interface Domain extends KapuaEntity {//, org.eclipse.kapua.model.domain.
     @XmlElement(name = "groupable")
     public boolean getGroupable();
 
+    /**
+     * Returns the {@link KapuaService} {@link org.eclipse.kapua.model.domain.Domain} represented from {@code this} {@link Domain} registry entry.
+     *
+     * @return The {@link KapuaService} {@link org.eclipse.kapua.model.domain.Domain} of {@code this} {@link Domain}
+     * @since 1.0.0
+     */
+    @XmlTransient
+    public default org.eclipse.kapua.model.domain.Domain getDomain() {
+        return new AbstractDomain() {
+
+            @Override
+            public String getName() {
+                return Domain.this.getName();
+            }
+
+            @Override
+            public String getServiceName() {
+                return Domain.this.getServiceName();
+            }
+
+            @Override
+            public Set<Actions> getActions() {
+                return Domain.this.getActions();
+            }
+
+            @Override
+            public boolean getGroupable() {
+                return Domain.this.getGroupable();
+            }
+        };
+    }
 }
