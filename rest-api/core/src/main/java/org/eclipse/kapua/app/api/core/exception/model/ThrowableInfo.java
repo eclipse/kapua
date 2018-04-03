@@ -19,27 +19,57 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
-import org.eclipse.kapua.KapuaErrorCodes;
+import org.eclipse.kapua.app.api.core.settings.KapuaApiSetting;
+import org.eclipse.kapua.app.api.core.settings.KapuaApiSettingKeys;
 
 @XmlRootElement(name = "throwableInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ThrowableInfo extends AbstractInfo {
+public class ThrowableInfo {
+
+    @XmlElement(name = "httpErrorCode")
+    private int httpErrorCode;
+
+    @XmlElement(name = "message")
+    private String message;
 
     @XmlElement(name = "stackTrace")
     private String stackTrace;
+
+    @XmlTransient
+    private final boolean showStacktrace = KapuaApiSetting.getInstance().getBoolean(KapuaApiSettingKeys.API_EXCEPTION_STACKTRACE_SHOW, false);
 
     protected ThrowableInfo() {
         super();
     }
 
     public ThrowableInfo(Status httpStatus, Throwable throwable) {
-        super(httpStatus, KapuaErrorCodes.SEVERE_INTERNAL_ERROR);
-
+        this.httpErrorCode = httpStatus.getStatusCode();
+        this.message = throwable.getMessage();
         // Print stack trace
-        StringWriter stringWriter = new StringWriter();
-        throwable.printStackTrace(new PrintWriter(stringWriter));
-        setStackTrace(stringWriter.toString());
+        if (showStacktrace) {
+            StringWriter stringWriter = new StringWriter();
+            throwable.printStackTrace(new PrintWriter(stringWriter));
+            setStackTrace(stringWriter.toString());
+        }
+
+    }
+
+    public int getHttpErrorCode() {
+        return httpErrorCode;
+    }
+
+    public void setHttpErrorCode(Status httpErrorCode) {
+        this.httpErrorCode = httpErrorCode.getStatusCode();
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public String getStackTrace() {

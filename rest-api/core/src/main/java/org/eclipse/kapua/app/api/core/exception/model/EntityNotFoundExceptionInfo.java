@@ -25,7 +25,7 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
 
 @XmlRootElement(name = "entityNotFoundExceptionInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class EntityNotFoundExceptionInfo extends AbstractInfo {
+public class EntityNotFoundExceptionInfo extends KapuaExceptionInfo {
 
     @XmlElement(name = "entityType")
     private String entityType;
@@ -40,7 +40,7 @@ public class EntityNotFoundExceptionInfo extends AbstractInfo {
     }
 
     public EntityNotFoundExceptionInfo(Status httpStatus, KapuaEntityNotFoundException kapuaException) {
-        super(httpStatus, kapuaException.getCode());
+        super(httpStatus, kapuaException.getCode(), kapuaException);
 
         setEntityType(kapuaException.getEntityType());
         setEntityId(kapuaException.getEntityId());

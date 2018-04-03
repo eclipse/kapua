@@ -21,7 +21,7 @@ import org.eclipse.kapua.KapuaIllegalNullArgumentException;
 
 @XmlRootElement(name = "illegalNullArgumentExceptionInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class IllegalNullArgumentExceptionInfo extends AbstractInfo {
+public class IllegalNullArgumentExceptionInfo extends KapuaExceptionInfo {
 
     @XmlElement(name = "argumentName")
     private String argumentName;
@@ -31,7 +31,7 @@ public class IllegalNullArgumentExceptionInfo extends AbstractInfo {
     }
 
     public IllegalNullArgumentExceptionInfo(Status httpStatus, KapuaIllegalNullArgumentException kapuaException) {
-        super(httpStatus, kapuaException.getCode());
+        super(httpStatus, kapuaException.getCode(), kapuaException);
 
         setArgumentName(kapuaException.getArgumentName());
     }
