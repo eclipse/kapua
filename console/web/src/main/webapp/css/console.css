@@ -33,6 +33,11 @@ h1 {
     margin: 5px;
 }
 
+.kapua-popupPanel {
+    border: 3px solid #F0F0F0;
+    padding: 3px;
+    background: #F0F0F0;
+}
 .serverResponseLabelError {
     color: red;
 }
