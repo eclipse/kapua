@@ -64,7 +64,6 @@ public class PermissionAddDialog extends EntityAddEditDialog {
 
     private GwtPermission newPermission;
     private final GwtGroup allGroup;
-    private final GwtGroup noGroup;
     private final GwtDomain allDomain = new GwtDomain("ALL");
     private final GwtAction allAction = GwtAction.ALL;
 
