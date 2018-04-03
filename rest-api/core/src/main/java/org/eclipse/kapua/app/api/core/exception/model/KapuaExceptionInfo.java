@@ -15,30 +15,21 @@ import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.annotation.XmlElement;
 
 import org.eclipse.kapua.KapuaErrorCode;
+import org.eclipse.kapua.KapuaException;
 
-public abstract class AbstractInfo {
+public class KapuaExceptionInfo extends ThrowableInfo {
 
-    private int httpErrorCode;
+    @XmlElement(name = "kapuaErrorCode")
     private String kapuaErrorCode;
 
-    public AbstractInfo() {
+    public KapuaExceptionInfo() {
     }
 
-    public AbstractInfo(Status httpStatus, KapuaErrorCode kapuaErrorCode) {
-        setHttpErrorCode(httpStatus);
+    public KapuaExceptionInfo(Status httpStatus, KapuaErrorCode kapuaErrorCode, KapuaException exception) {
+        super(httpStatus, exception);
         setKapuaErrorCode(kapuaErrorCode);
     }
 
-    @XmlElement(name = "httpErrorCode")
-    public int getHttpErrorCode() {
-        return httpErrorCode;
-    }
-
-    private void setHttpErrorCode(Status httpErrorCode) {
-        this.httpErrorCode = httpErrorCode.getStatusCode();
-    }
-
-    @XmlElement(name = "kapuaErrorCode")
     public String getKapuaErrorCode() {
         return kapuaErrorCode;
     }
@@ -46,5 +37,4 @@ public abstract class AbstractInfo {
     private void setKapuaErrorCode(KapuaErrorCode kapuaErrorCode) {
         this.kapuaErrorCode = kapuaErrorCode.name();
     }
-
 }

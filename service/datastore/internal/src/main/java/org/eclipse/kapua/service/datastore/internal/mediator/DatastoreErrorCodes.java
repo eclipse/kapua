@@ -35,5 +35,5 @@ public enum DatastoreErrorCodes implements KapuaErrorCode {
     /**
      * Generic internal error
      */
-    INTERNAL_ERROR;
+    INTERNAL_ERROR
 }

@@ -192,7 +192,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         try {
             return messageStoreFacade.query(query);
         } catch (Exception e) {
-            throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e);
+            throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e, e.getCause().getMessage());
         }
     }
 
