@@ -275,6 +275,7 @@ public class KapuaGwtAuthorizationModelConverter {
      */
     public static GwtDomain convertDomain(Domain domain) {
         GwtDomain gwtDomain = new GwtDomain();
+        gwtDomain.setDomainId(domain.getName());
         gwtDomain.setDomainName(domain.getName());
         gwtDomain.setGroupable(domain.getGroupable());
 

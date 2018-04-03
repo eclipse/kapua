@@ -63,7 +63,7 @@ public class PermissionAddDialog extends EntityAddEditDialog {
     private CheckBox forwardableChecbox;
 
     private final GwtGroup allGroup;
-    private final GwtDomain allDomain = new GwtDomain("ALL");
+    private final GwtDomain allDomain = new GwtDomain(null, "ALL");
     private final GwtAction allAction = GwtAction.ALL;
 
     private String accessInfoId;
@@ -95,62 +95,12 @@ public class PermissionAddDialog extends EntityAddEditDialog {
     }
 
     @Override
-    public void submit() {
-
-        GwtPermission newPermission = new GwtPermission(
-                domainsCombo.getValue().getDomainName(),
-                actionsCombo.getValue().getValue(),
-                currentSession.getSelectedAccountId(),
-                groupsCombo.getValue() != null ? groupsCombo.getValue().getId() : null,
-                forwardableChecboxGroup.getValue() != null);
-
-        GwtAccessPermissionCreator gwtAccessPermissionCreator = new GwtAccessPermissionCreator();
-        gwtAccessPermissionCreator.setScopeId(currentSession.getSelectedAccountId());
-        gwtAccessPermissionCreator.setAccessInfoId(accessInfoId);
-
-        gwtAccessPermissionCreator.setPermission(newPermission);
-
-        GWT_ACCESS_PERMISSION_SERVICE.create(xsrfToken, gwtAccessPermissionCreator, new AsyncCallback<GwtAccessPermission>() {
-
-            @Override
-            public void onSuccess(GwtAccessPermission gwtAccessPermission) {
-                exitStatus = true;
-                exitMessage = MSGS.dialogAddPermissionConfirmation();   // TODO Localize
-                hide();
+    protected void onRender(Element parent, int pos) {
+        super.onRender(parent, pos);
+        submitButton.disable();
             }
 
             @Override
-            public void onFailure(Throwable cause) {
-                unmask();
-
-                submitButton.enable();
-                cancelButton.enable();
-                status.hide();
-
-                exitStatus = false;
-                if ((cause instanceof GwtKapuaException) &&
-                    (GwtKapuaErrorCode.ENTITY_ALREADY_EXISTS.equals(((GwtKapuaException)cause).getCode()))) {
-                        exitMessage = MSGS.dialogAddPermissionAlreadyExists();
-                } else {
-                    exitMessage = MSGS.dialogAddError(MSGS.dialogAddPermissionError(cause.getLocalizedMessage()));
-                }
-
-                hide();
-            }
-        });
-    }
-
-    @Override
-    public String getHeaderMessage() {
-        return MSGS.dialogAddPermissionHeader();
-    }
-
-    @Override
-    public String getInfoMessage() {
-        return MSGS.dialogAddPermissionInfo();
-    }
-
-    @Override
     public void createBody() {
         FormPanel permissionFormPanel = new FormPanel(FORM_LABEL_WIDTH);
 
@@ -285,8 +235,57 @@ public class PermissionAddDialog extends EntityAddEditDialog {
     }
 
     @Override
-    protected void onRender(Element parent, int pos) {
-        super.onRender(parent, pos);
-        submitButton.disable();
+    public void submit() {
+
+        GwtPermission permission = new GwtPermission();
+        permission.setDomain(domainsCombo.getValue().getDomainId());
+        permission.setAction(actionsCombo.getValue().getValue().toString());
+        permission.setTargetScopeId(currentSession.getSelectedAccountId());
+        permission.setGroupId(groupsCombo.getValue() != null ? groupsCombo.getValue().getId() : null);
+        permission.setForwardable(forwardableChecboxGroup.getValue() != null);
+
+        GwtAccessPermissionCreator gwtAccessPermissionCreator = new GwtAccessPermissionCreator();
+        gwtAccessPermissionCreator.setScopeId(currentSession.getSelectedAccountId());
+        gwtAccessPermissionCreator.setAccessInfoId(accessInfoId);
+        gwtAccessPermissionCreator.setPermission(permission);
+
+        GWT_ACCESS_PERMISSION_SERVICE.create(xsrfToken, gwtAccessPermissionCreator, new AsyncCallback<GwtAccessPermission>() {
+
+            @Override
+            public void onSuccess(GwtAccessPermission gwtAccessPermission) {
+                exitStatus = true;
+                exitMessage = MSGS.dialogAddPermissionConfirmation();
+                hide();
+            }
+
+            @Override
+            public void onFailure(Throwable cause) {
+                unmask();
+
+                submitButton.enable();
+                cancelButton.enable();
+                status.hide();
+
+                exitStatus = false;
+                if ((cause instanceof GwtKapuaException) &&
+                        (GwtKapuaErrorCode.ENTITY_ALREADY_EXISTS.equals(((GwtKapuaException) cause).getCode()))) {
+                    exitMessage = MSGS.dialogAddPermissionAlreadyExists();
+                } else {
+                    exitMessage = MSGS.dialogAddError(MSGS.dialogAddPermissionError(cause.getLocalizedMessage()));
+                }
+
+                hide();
+            }
+        });
+    }
+
+    @Override
+    public String getHeaderMessage() {
+        return MSGS.dialogAddPermissionHeader();
+    }
+
+    @Override
+    public String getInfoMessage() {
+        return MSGS.dialogAddPermissionInfo();
     }
 }
