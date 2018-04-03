@@ -77,10 +77,6 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         allGroup.setId(null);
         allGroup.setGroupName("ALL");
 
-        noGroup = new GwtGroup();
-        noGroup.setId(null);
-        noGroup.setGroupName("NULL");
-
         GWT_ACCESS_INFO_SERVICE.findByUserIdOrCreate(currentSession.getSelectedAccountId(), userId, new AsyncCallback<GwtAccessInfo>() {
 
             @Override
