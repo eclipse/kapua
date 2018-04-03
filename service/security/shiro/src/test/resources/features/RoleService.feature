@@ -235,10 +235,10 @@ Scenario: Count role permissions in specific scopes
     |2       |test_role_2 |
 
     And I create the following role permissions
-    |scopeId  |actionName |
-    |2        |read       |
-    |2        |read       |
-    |2        |read       |
+    |scopeId  |actionName | targetScopeId |
+    |2        |read       | 1             |
+    |2        |read       | 2             |
+    |2        |read       | 3             |
 
     And I create the following role
     |scopeId |name        |

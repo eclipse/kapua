@@ -12,7 +12,9 @@
 package org.eclipse.kapua.service.authorization.access.shiro;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.KapuaEntityUniquenessException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -34,10 +36,15 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionValidator;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
 
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 /**
  * {@link AccessPermission} service implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @KapuaProvider
 public class AccessPermissionServiceImpl extends AbstractKapuaService implements AccessPermissionService {
@@ -49,6 +56,8 @@ public class AccessPermissionServiceImpl extends AbstractKapuaService implements
     @Override
     public AccessPermission create(AccessPermissionCreator accessPermissionCreator)
             throws KapuaException {
+        //
+        // Argument validation
         ArgumentValidator.notNull(accessPermissionCreator, "accessPermissionCreator");
         ArgumentValidator.notNull(accessPermissionCreator.getAccessInfoId(), "accessPermissionCreator.accessInfoId");
         ArgumentValidator.notNull(accessPermissionCreator.getPermission(), "accessPermissionCreator.permission");
@@ -69,6 +78,36 @@ public class AccessPermissionServiceImpl extends AbstractKapuaService implements
 
         PermissionValidator.validatePermission(permission);
 
+        //
+        // Check duplicates
+        AccessPermissionQuery query = new AccessPermissionQueryImpl(accessPermissionCreator.getScopeId());
+        query.setPredicate(
+                new AndPredicateImpl(
+                        new AttributePredicateImpl<>(AccessPermissionPredicates.SCOPE_ID, accessPermissionCreator.getScopeId()),
+                        new AttributePredicateImpl<>(AccessPermissionPredicates.ACCESS_INFO_ID, accessPermissionCreator.getAccessInfoId()),
+                        new AttributePredicateImpl<>(AccessPermissionPredicates.PERMISSION_DOMAIN, accessPermissionCreator.getPermission().getDomain()),
+                        new AttributePredicateImpl<>(AccessPermissionPredicates.PERMISSION_ACTION, accessPermissionCreator.getPermission().getAction()),
+                        new AttributePredicateImpl<>(AccessPermissionPredicates.PERMISSION_TARGET_SCOPE_ID, accessPermissionCreator.getPermission().getTargetScopeId()),
+                        new AttributePredicateImpl<>(AccessPermissionPredicates.PERMISSION_GROUP_ID, accessPermissionCreator.getPermission().getGroupId()),
+                        new AttributePredicateImpl<>(AccessPermissionPredicates.PERMISSION_FORWARDABLE, accessPermissionCreator.getPermission().getForwardable())
+                )
+        );
+        if (count(query) > 0) {
+            List<Map.Entry<String, Object>> uniquesFieldValues = new ArrayList<>();
+
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionPredicates.SCOPE_ID, accessPermissionCreator.getScopeId()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionPredicates.ACCESS_INFO_ID, accessPermissionCreator.getAccessInfoId()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionPredicates.PERMISSION_DOMAIN, accessPermissionCreator.getPermission().getDomain()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionPredicates.PERMISSION_ACTION, accessPermissionCreator.getPermission().getAction()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionPredicates.PERMISSION_TARGET_SCOPE_ID, accessPermissionCreator.getPermission().getTargetScopeId()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionPredicates.PERMISSION_GROUP_ID, accessPermissionCreator.getPermission().getGroupId()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionPredicates.PERMISSION_FORWARDABLE, accessPermissionCreator.getPermission().getForwardable()));
+
+            throw new KapuaEntityUniquenessException(AccessPermission.TYPE, uniquesFieldValues);
+        }
+
+        //
+        // Do create
         return entityManagerSession.onTransactedInsert(em -> {
             //
             // Check that accessInfo exists
