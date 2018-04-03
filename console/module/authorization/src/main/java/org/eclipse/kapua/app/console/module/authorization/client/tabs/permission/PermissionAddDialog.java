@@ -268,7 +268,7 @@ public class PermissionAddDialog extends EntityAddEditDialog {
 
                 exitStatus = false;
                 if ((cause instanceof GwtKapuaException) &&
-                        (GwtKapuaErrorCode.ENTITY_ALREADY_EXISTS.equals(((GwtKapuaException) cause).getCode()))) {
+                        (GwtKapuaErrorCode.ENTITY_UNIQUENESS.equals(((GwtKapuaException) cause).getCode()))) {
                     exitMessage = MSGS.dialogAddPermissionAlreadyExists();
                 } else {
                     exitMessage = MSGS.dialogAddError(MSGS.dialogAddPermissionError(cause.getLocalizedMessage()));

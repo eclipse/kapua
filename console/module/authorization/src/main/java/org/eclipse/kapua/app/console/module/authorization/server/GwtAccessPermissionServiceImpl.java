@@ -16,8 +16,6 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.kapua.KapuaErrorCodes;
-import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
@@ -30,13 +28,10 @@ import org.eclipse.kapua.app.console.module.authorization.shared.util.GwtKapuaAu
 import org.eclipse.kapua.app.console.module.authorization.shared.util.KapuaGwtAuthorizationModelConverter;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
@@ -69,29 +64,12 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
         GwtAccessPermission gwtAccessPermission = null;
         try {
             // Convert from GWT Entity
-            AccessPermissionCreator accessInfoCreator = GwtKapuaAuthorizationModelConverter.convertAccessPermissionCreator(gwtAccessPermissionCreator);
-
-            // Check existence
-            KapuaLocator locator = KapuaLocator.getInstance();
-            AccessPermissionService accessPermissionService = locator.getService(AccessPermissionService.class);
-            AccessPermissionFactory accessPermissionFactory = locator.getFactory(AccessPermissionFactory.class);
-            AccessPermissionQuery query = accessPermissionFactory.newQuery(accessInfoCreator.getScopeId());
-
-            AndPredicate andPredicate = new AndPredicateImpl();
-            andPredicate.and(new AttributePredicateImpl<KapuaId>(AccessPermissionPredicates.ACCESS_INFO_ID, accessInfoCreator.getAccessInfoId()));
-            andPredicate.and(new AttributePredicateImpl<KapuaId>(AccessPermissionPredicates.SCOPE_ID, accessInfoCreator.getScopeId()));
-            andPredicate.and(new AttributePredicateImpl<String>(AccessPermissionPredicates.PERMISSION_DOMAIN, accessInfoCreator.getPermission().getDomain()));
-            andPredicate.and(new AttributePredicateImpl<Actions>(AccessPermissionPredicates.PERMISSION_ACTION, accessInfoCreator.getPermission().getAction()));
-            andPredicate.and(new AttributePredicateImpl<KapuaId>(AccessPermissionPredicates.PERMISSION_GROUP_ID, accessInfoCreator.getPermission().getGroupId()));
-
-            query.setPredicate(andPredicate);
-            long permissionCnt = accessPermissionService.count(query);
-            if (permissionCnt > 0) {
-                throw new KapuaRuntimeException(KapuaErrorCodes.ENTITY_ALREADY_EXISTS);
-            }
+            AccessPermissionCreator accessPermissionCreator = GwtKapuaAuthorizationModelConverter.convertAccessPermissionCreator(gwtAccessPermissionCreator);
 
             // Create
-            AccessPermission accessPermission = accessPermissionService.create(accessInfoCreator);
+            KapuaLocator locator = KapuaLocator.getInstance();
+            AccessPermissionService accessPermissionService = locator.getService(AccessPermissionService.class);
+            AccessPermission accessPermission = accessPermissionService.create(accessPermissionCreator);
 
             // Convert
             gwtAccessPermission = KapuaGwtAuthorizationModelConverter.convertAccessPermission(accessPermission);

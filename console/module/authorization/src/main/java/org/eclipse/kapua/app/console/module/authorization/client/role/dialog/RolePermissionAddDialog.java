@@ -21,6 +21,8 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
@@ -239,8 +241,20 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
 
             @Override
             public void onFailure(Throwable cause) {
+                unmask();
+
+                submitButton.enable();
+                cancelButton.enable();
+                status.hide();
+
                 exitStatus = false;
-                exitMessage = MSGS.dialogAddError(cause.getLocalizedMessage());
+                if ((cause instanceof GwtKapuaException) && (GwtKapuaErrorCode.ENTITY_UNIQUENESS.equals(((GwtKapuaException) cause).getCode()))) {
+                    exitMessage = MSGS.dialogAddPermissionAlreadyExists();
+                } else {
+                    exitMessage = MSGS.dialogAddError(MSGS.dialogAddPermissionError(cause.getLocalizedMessage()));
+                }
+
+                hide();
             }
         });
 

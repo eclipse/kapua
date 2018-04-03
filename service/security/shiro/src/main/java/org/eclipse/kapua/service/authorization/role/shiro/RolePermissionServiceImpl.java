@@ -12,7 +12,9 @@
 package org.eclipse.kapua.service.authorization.role.shiro;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.KapuaEntityUniquenessException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -34,6 +36,11 @@ import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
 import org.eclipse.kapua.service.authorization.role.RolePermissionService;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
+
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * {@link RolePermission} service implementation.
@@ -78,6 +85,34 @@ public class RolePermissionServiceImpl extends AbstractKapuaService implements R
         Permission permission = rolePermissionCreator.getPermission();
         if (permission.getTargetScopeId() == null || !permission.getTargetScopeId().equals(rolePermissionCreator.getScopeId())) {
             authorizationService.checkPermission(permission);
+        }
+
+        //
+        // Check duplicates
+        RolePermissionQuery query = new RolePermissionQueryImpl(rolePermissionCreator.getScopeId());
+        query.setPredicate(
+                new AndPredicateImpl(
+                        new AttributePredicateImpl<>(RolePermissionPredicates.SCOPE_ID, rolePermissionCreator.getScopeId()),
+                        new AttributePredicateImpl<>(RolePermissionPredicates.ROLE_ID, rolePermissionCreator.getRoleId()),
+                        new AttributePredicateImpl<>(RolePermissionPredicates.PERMISSION_DOMAIN, rolePermissionCreator.getPermission().getDomain()),
+                        new AttributePredicateImpl<>(RolePermissionPredicates.PERMISSION_ACTION, rolePermissionCreator.getPermission().getAction()),
+                        new AttributePredicateImpl<>(RolePermissionPredicates.PERMISSION_TARGET_SCOPE_ID, rolePermissionCreator.getPermission().getTargetScopeId()),
+                        new AttributePredicateImpl<>(RolePermissionPredicates.PERMISSION_GROUP_ID, rolePermissionCreator.getPermission().getGroupId()),
+                        new AttributePredicateImpl<>(RolePermissionPredicates.PERMISSION_FORWARDABLE, rolePermissionCreator.getPermission().getForwardable())
+                )
+        );
+        if (count(query) > 0) {
+            List<Map.Entry<String, Object>> uniquesFieldValues = new ArrayList<>();
+
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionPredicates.SCOPE_ID, rolePermissionCreator.getScopeId()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionPredicates.ROLE_ID, rolePermissionCreator.getRoleId()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionPredicates.PERMISSION_DOMAIN, rolePermissionCreator.getPermission().getDomain()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionPredicates.PERMISSION_ACTION, rolePermissionCreator.getPermission().getAction()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionPredicates.PERMISSION_TARGET_SCOPE_ID, rolePermissionCreator.getPermission().getTargetScopeId()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionPredicates.PERMISSION_GROUP_ID, rolePermissionCreator.getPermission().getGroupId()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionPredicates.PERMISSION_FORWARDABLE, rolePermissionCreator.getPermission().getForwardable()));
+
+            throw new KapuaEntityUniquenessException(RolePermission.TYPE, uniquesFieldValues);
         }
 
         return entityManagerSession.onTransactedInsert(em -> RolePermissionDAO.create(em, rolePermissionCreator));
