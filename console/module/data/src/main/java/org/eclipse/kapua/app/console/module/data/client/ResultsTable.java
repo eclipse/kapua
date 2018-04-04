@@ -167,7 +167,7 @@ public class ResultsTable extends LayoutContainer {
                 }
             }
         });
-        loader.setSortField("timestamp");
+        loader.setSortField("timestampFormatted");
         loader.setSortDir(SortDir.DESC);
         loader.setRemoteSort(true);
 
