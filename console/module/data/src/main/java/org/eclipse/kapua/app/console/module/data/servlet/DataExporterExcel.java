@@ -38,7 +38,7 @@ public class DataExporterExcel extends DataExporter {
     private Workbook workbook;
     private Sheet sheet;
     private CellStyle dateStyle;
-    private short rowCount;
+    private int rowCount;
     private String topicOrDevice;
 
     private static final int MAX_ROWS = 65535;

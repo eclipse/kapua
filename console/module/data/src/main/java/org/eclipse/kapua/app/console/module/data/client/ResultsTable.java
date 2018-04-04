@@ -324,17 +324,6 @@ public class ResultsTable extends LayoutContainer {
             sbUrl.append("&endDate=").append(endDate.getTime());
         }
 
-        String sortField = resultsGrid.getStore().getSortField();
-        if (sortField != null && !sortField.trim().equals("")) {
-            sbUrl.append("&sortField=").append(resultsGrid.getStore().getSortField());
-
-            if (resultsGrid.getStore().getSortDir() == SortDir.ASC) {
-                sbUrl.append("&sortDir=").append(SortDir.ASC.toString());
-            } else {
-                sbUrl.append("&sortDir=").append(SortDir.DESC.toString());
-            }
-        }
-
         Window.open(sbUrl.toString(), "_blank", "location=no");
     }
 
