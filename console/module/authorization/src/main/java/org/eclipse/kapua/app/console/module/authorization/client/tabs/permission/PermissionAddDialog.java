@@ -62,7 +62,6 @@ public class PermissionAddDialog extends EntityAddEditDialog {
     private CheckBoxGroup forwardableChecboxGroup;
     private CheckBox forwardableChecbox;
 
-    private GwtPermission newPermission;
     private final GwtGroup allGroup;
     private final GwtDomain allDomain = new GwtDomain("ALL");
     private final GwtAction allAction = GwtAction.ALL;
@@ -98,21 +97,12 @@ public class PermissionAddDialog extends EntityAddEditDialog {
     @Override
     public void submit() {
 
-        if (groupsCombo.getValue() != null) {
-            newPermission = new GwtPermission(//
-                    domainsCombo.getValue().getDomainName(), //
-                    actionsCombo.getValue().getValue(), //
-                    currentSession.getSelectedAccountId(), //
-                    groupsCombo.getValue().getId(), //
-                    forwardableChecboxGroup.getValue() != null);
-        } else {
-            newPermission = new GwtPermission(//
-                    domainsCombo.getValue().getDomainName(), //
-                    actionsCombo.getValue().getValue(), //
-                    currentSession.getSelectedAccountId(), //
-                    null, //
-                    forwardableChecboxGroup.getValue() != null);
-        }
+        GwtPermission newPermission = new GwtPermission(
+                domainsCombo.getValue().getDomainName(),
+                actionsCombo.getValue().getValue(),
+                currentSession.getSelectedAccountId(),
+                groupsCombo.getValue() != null ? groupsCombo.getValue().getId() : null,
+                forwardableChecboxGroup.getValue() != null);
 
         GwtAccessPermissionCreator gwtAccessPermissionCreator = new GwtAccessPermissionCreator();
         gwtAccessPermissionCreator.setScopeId(currentSession.getSelectedAccountId());
