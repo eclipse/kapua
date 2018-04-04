@@ -336,7 +336,9 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         if (!StringUtils.isEmpty(loadConfig.getSortField())) {
             String sortField = loadConfig.getSortField();
             if (sortField.equals("timestampFormatted")) {
-                sortField = "timestamp";
+                sortField = MessageField.TIMESTAMP.field();
+            } else if (sortField.equals("clientId")) {
+                sortField = MessageField.CLIENT_ID.field();
             }
             query.setSortFields(Collections.singletonList(SortField.of(SortDirection.valueOf(loadConfig.getSortDir().name()), sortField)));
         }
