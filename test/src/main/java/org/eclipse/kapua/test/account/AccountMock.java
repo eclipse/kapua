@@ -13,8 +13,8 @@ package org.eclipse.kapua.test.account;
 
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -152,7 +152,7 @@ public class AccountMock implements Account {
     }
 
     @Override
-    public Set<Account> getChildAccounts() {
+    public List<Account> getChildAccounts() {
         return null;
     }
 

@@ -22,10 +22,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -70,7 +71,8 @@ public class AccountImpl extends AbstractKapuaNamedEntity implements Account {
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "scope_id", referencedColumnName = "id", insertable = false, updatable = false)
-    private Set<AccountImpl> childAccounts;
+    @OrderBy("name ASC")
+    private List<AccountImpl> childAccounts;
 
     /**
      * Constructor
@@ -121,8 +123,10 @@ public class AccountImpl extends AbstractKapuaNamedEntity implements Account {
     }
 
     @Override
-    public Set<Account> getChildAccounts() {
-        return new HashSet<>(childAccounts);
+    public List<Account> getChildAccounts() {
+        List<Account> list = new ArrayList<>();
+        list.addAll(childAccounts);
+        return list;
     }
 
 }
