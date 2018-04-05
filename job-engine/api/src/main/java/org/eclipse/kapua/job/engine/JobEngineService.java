@@ -39,13 +39,13 @@ public interface JobEngineService extends KapuaService, KapuaDomainService<JobDo
     /**
      * Starts the {@link org.eclipse.kapua.service.job.Job} with the given {@link JobStartOptions}.
      *
-     * @param scopeId       The scopeId of the {@link org.eclipse.kapua.service.job.Job}
-     * @param jobId         The id of the {@link org.eclipse.kapua.service.job.Job}
-     * @param targetSublist The subset of {@link org.eclipse.kapua.service.job.targets.JobTarget}s on to include in this {@link org.eclipse.kapua.service.job.execution.JobExecution}
+     * @param scopeId         The scopeId of the {@link org.eclipse.kapua.service.job.Job}
+     * @param jobId           The id of the {@link org.eclipse.kapua.service.job.Job}
+     * @param jobStartOptions The {@link JobStartOptions} for this start {@link org.eclipse.kapua.service.job.Job} request.
      * @throws KapuaException if something goes bad when starting the job
      * @since 1.0.0
      */
-    public void startJob(KapuaId scopeId, KapuaId jobId, List<KapuaId> targetSublist) throws KapuaException;
+    public void startJob(KapuaId scopeId, KapuaId jobId, JobStartOptions jobStartOptions) throws KapuaException;
 
     /**
      * Checks whether or not the {@link org.eclipse.kapua.service.job.Job} is running.

@@ -17,6 +17,7 @@ import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.job.engine.JobEngineService;
+import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.job.engine.jbatch.driver.JbatchDriver;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobAlreadyRunningException;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobCheckRunningException;
@@ -43,9 +44,6 @@ import org.eclipse.kapua.service.job.targets.JobTargetPredicates;
 import org.eclipse.kapua.service.job.targets.JobTargetQuery;
 import org.eclipse.kapua.service.job.targets.JobTargetService;
 
-import java.util.Collections;
-import java.util.List;
-
 @KapuaProvider
 public class JobEngineServiceJbatch implements JobEngineService {
 
@@ -64,16 +62,16 @@ public class JobEngineServiceJbatch implements JobEngineService {
 
     @Override
     public void startJob(KapuaId scopeId, KapuaId jobId) throws KapuaException {
-        startJob(scopeId, jobId, Collections.EMPTY_LIST);
+        startJob(scopeId, jobId, new JobStartOptionsImpl());
     }
 
     @Override
-    public void startJob(KapuaId scopeId, KapuaId jobId, List<KapuaId> targetSublist) throws KapuaException {
+    public void startJob(KapuaId scopeId, KapuaId jobId, JobStartOptions jobStartOptions) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(jobId, "jobId");
-        ArgumentValidator.notNull(targetSublist, "targetSublist");
+        ArgumentValidator.notNull(jobStartOptions, "jobStartOptions");
 
         //
         // Check Access
@@ -96,18 +94,19 @@ public class JobEngineServiceJbatch implements JobEngineService {
 
         //
         // Check job target sublist
-        if (!targetSublist.isEmpty()) {
+        if (!jobStartOptions.getTargetIdSublist().isEmpty()) {
             jobTargetQuery.setPredicate(
                     new AndPredicateImpl(
                             jobTargetQuery.getPredicate(),
-                            new AttributePredicateImpl<>(JobTargetPredicates.ENTITY_ID, targetSublist.toArray())
+                            new AttributePredicateImpl<>(JobTargetPredicates.ENTITY_ID, jobStartOptions.getTargetIdSublist().toArray())
                     )
             );
 
-            if (targetSublist.size() != JOB_TARGET_SERVICE.count(jobTargetQuery)) {
-                throw new JobInvalidTargetException(scopeId, jobId, targetSublist);
+            if (jobStartOptions.getTargetIdSublist().size() != JOB_TARGET_SERVICE.count(jobTargetQuery)) {
+                throw new JobInvalidTargetException(scopeId, jobId, jobStartOptions.getTargetIdSublist());
             }
         }
+
         //
         // Check job steps
         JobStepQuery jobStepQuery = JOB_STEP_FACTORY.newQuery(scopeId);
@@ -125,7 +124,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         //
         // Start the job
         try {
-            JbatchDriver.startJob(scopeId, jobId, targetSublist);
+            JbatchDriver.startJob(scopeId, jobId, jobStartOptions.getTargetIdSublist());
         } catch (Exception e) {
             throw new JobStaringException(e, scopeId, jobId);
         }
