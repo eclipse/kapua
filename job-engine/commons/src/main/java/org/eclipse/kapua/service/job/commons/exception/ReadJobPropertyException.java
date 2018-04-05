@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,13 +9,11 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.job.context;
+package org.eclipse.kapua.service.job.commons.exception;
 
-public class StepContextPropertyNames {
+public class ReadJobPropertyException extends JobCommonsRuntimeException {
 
-    public static final String STEP_INDEX = "step.stepIndex";
-    public static final String STEP_NEXT_INDEX = "step.nextStepIndex";
-
-    private StepContextPropertyNames() {
+    public ReadJobPropertyException(Throwable t, String parameterName, String parameterValue) {
+        super(JobCommonsErrorCodes.READ_JOB_PROPERTY, t, parameterName, parameterValue);
     }
 }

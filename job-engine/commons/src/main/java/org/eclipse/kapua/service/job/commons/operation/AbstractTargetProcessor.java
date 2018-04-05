@@ -13,9 +13,9 @@ package org.eclipse.kapua.service.job.commons.operation;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.service.job.context.JobContextFactory;
-import org.eclipse.kapua.service.job.context.KapuaJobContext;
-import org.eclipse.kapua.service.job.context.KapuaStepContext;
+import org.eclipse.kapua.service.job.commons.context.JobContextFactory;
+import org.eclipse.kapua.service.job.commons.context.KapuaJobContext;
+import org.eclipse.kapua.service.job.commons.context.KapuaStepContext;
 import org.eclipse.kapua.service.job.operation.TargetOperation;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 import org.eclipse.kapua.service.job.targets.JobTargetStatus;

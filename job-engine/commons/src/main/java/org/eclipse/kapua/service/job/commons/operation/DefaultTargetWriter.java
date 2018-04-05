@@ -11,24 +11,23 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.commons.operation;
 
-import java.util.List;
-
-import javax.batch.api.chunk.AbstractItemWriter;
-import javax.batch.runtime.context.JobContext;
-import javax.batch.runtime.context.StepContext;
-import javax.inject.Inject;
-
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.service.job.context.JobContextFactory;
-import org.eclipse.kapua.service.job.context.KapuaJobContext;
-import org.eclipse.kapua.service.job.context.KapuaStepContext;
+import org.eclipse.kapua.service.job.commons.context.JobContextFactory;
+import org.eclipse.kapua.service.job.commons.context.KapuaJobContext;
+import org.eclipse.kapua.service.job.commons.context.KapuaStepContext;
 import org.eclipse.kapua.service.job.operation.TargetWriter;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 import org.eclipse.kapua.service.job.targets.JobTargetService;
 import org.eclipse.kapua.service.job.targets.JobTargetStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.batch.api.chunk.AbstractItemWriter;
+import javax.batch.runtime.context.JobContext;
+import javax.batch.runtime.context.StepContext;
+import javax.inject.Inject;
+import java.util.List;
 
 public class DefaultTargetWriter extends AbstractItemWriter implements TargetWriter {
 

@@ -103,7 +103,7 @@
         <api>org.eclipse.kapua.service.scheduler.trigger.TriggerService</api>
         <api>org.eclipse.kapua.service.scheduler.trigger.TriggerFactory</api>
 
-        <api>org.eclipse.kapua.service.job.context.JobContextFactory</api>
+        <api>org.eclipse.kapua.service.job.commons.context.JobContextFactory</api>
         <api>org.eclipse.kapua.job.engine.JobEngineService</api>
 
         <api>org.eclipse.kapua.service.job.execution.JobExecutionService</api>

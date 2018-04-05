@@ -20,16 +20,19 @@ import com.ibm.jbatch.jsl.model.JSLProperties;
 import com.ibm.jbatch.jsl.model.Listener;
 import com.ibm.jbatch.jsl.model.Listeners;
 import com.ibm.jbatch.jsl.model.Property;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.job.engine.jbatch.listener.KapuaJobListener;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.job.commons.context.JobContextPropertyNames;
+import org.eclipse.kapua.service.job.commons.context.StepContextPropertyNames;
+import org.eclipse.kapua.service.job.commons.model.JobTargetSublist;
 import org.eclipse.kapua.service.job.commons.operation.DefaultTargetReader;
 import org.eclipse.kapua.service.job.commons.operation.DefaultTargetWriter;
-import org.eclipse.kapua.service.job.context.JobContextPropertyNames;
-import org.eclipse.kapua.service.job.context.StepContextPropertyNames;
 import org.eclipse.kapua.service.job.step.JobStep;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 
+import javax.xml.bind.JAXBException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -43,25 +46,35 @@ public class JobDefinitionBuildUtils {
     public static Listeners buildListener() {
         Listener jslListener = new Listener();
         jslListener.setRef(KapuaJobListener.class.getName());
+
         Listeners listeners = new Listeners();
         listeners.getListenerList().add(jslListener);
+
         return listeners;
     }
 
-    public static JSLProperties buildJobProperties(KapuaId scopeId, KapuaId jobId) {
+    public static JSLProperties buildJobProperties(KapuaId scopeId, KapuaId jobId, List<KapuaId> targetSublist) throws JAXBException {
 
+        // Scope id
         Property scopeIdProperty = new Property();
         scopeIdProperty.setName(JobContextPropertyNames.JOB_SCOPE_ID);
         scopeIdProperty.setValue(scopeId.toCompactId());
 
+        // Job id
         Property jobIdProperty = new Property();
         jobIdProperty.setName(JobContextPropertyNames.JOB_ID);
         jobIdProperty.setValue(jobId.toCompactId());
+
+        // Job target sublist
+        Property targetSublistProperty = new Property();
+        targetSublistProperty.setName(JobContextPropertyNames.JOB_TARGET_SUBLIST);
+        targetSublistProperty.setValue(XmlUtil.marshal(new JobTargetSublist(targetSublist)));
 
         JSLProperties jslProperties = new JSLProperties();
         List<Property> jslPropertyList = jslProperties.getPropertyList();
         jslPropertyList.add(scopeIdProperty);
         jslPropertyList.add(jobIdProperty);
+        jslPropertyList.add(targetSublistProperty);
 
         return jslProperties;
     }

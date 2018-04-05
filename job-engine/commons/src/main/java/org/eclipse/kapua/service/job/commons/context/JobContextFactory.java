@@ -9,20 +9,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.job.context;
+package org.eclipse.kapua.service.job.commons.context;
+
+import org.eclipse.kapua.model.KapuaObjectFactory;
 
 import javax.batch.runtime.context.JobContext;
+import javax.batch.runtime.context.StepContext;
 
-import org.eclipse.kapua.model.id.KapuaId;
+public interface JobContextFactory extends KapuaObjectFactory {
 
-public interface KapuaJobContext extends JobContext {
+    public KapuaJobContext newJobContext(JobContext jobContext);
 
-    public KapuaId getScopeId();
-
-    public KapuaId getJobId();
-
-    public void setKapuaExecutionId(KapuaId executionId);
-
-    public KapuaId getKapuaExecutionId();
-
+    public KapuaStepContext newStepContext(StepContext stepContext);
 }

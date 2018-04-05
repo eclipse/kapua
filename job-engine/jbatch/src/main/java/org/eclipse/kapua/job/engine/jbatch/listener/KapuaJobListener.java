@@ -11,27 +11,26 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.jbatch.listener;
 
-import java.util.Date;
-import java.util.List;
-
-import javax.batch.api.listener.AbstractJobListener;
-import javax.batch.api.listener.JobListener;
-import javax.batch.runtime.BatchRuntime;
-import javax.batch.runtime.context.JobContext;
-import javax.inject.Inject;
-
 import org.eclipse.kapua.KapuaIllegalStateException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.job.context.JobContextFactory;
-import org.eclipse.kapua.service.job.context.KapuaJobContext;
+import org.eclipse.kapua.service.job.commons.context.JobContextFactory;
+import org.eclipse.kapua.service.job.commons.context.KapuaJobContext;
 import org.eclipse.kapua.service.job.execution.JobExecution;
 import org.eclipse.kapua.service.job.execution.JobExecutionCreator;
 import org.eclipse.kapua.service.job.execution.JobExecutionFactory;
 import org.eclipse.kapua.service.job.execution.JobExecutionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.batch.api.listener.AbstractJobListener;
+import javax.batch.api.listener.JobListener;
+import javax.batch.runtime.BatchRuntime;
+import javax.batch.runtime.context.JobContext;
+import javax.inject.Inject;
+import java.util.Date;
+import java.util.List;
 
 public class KapuaJobListener extends AbstractJobListener implements JobListener {
 
