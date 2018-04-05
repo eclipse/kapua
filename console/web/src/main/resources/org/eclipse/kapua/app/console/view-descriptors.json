@@ -77,7 +77,8 @@
     "descriptor": "org.eclipse.kapua.app.console.module.tag.client.TagViewDescriptor",
     "view": "org.eclipse.kapua.app.console.module.tag.client.TagView",
     "tabs": [
-      "org.eclipse.kapua.app.console.module.tag.client.TagTabDescriptionDescriptor"
+      "org.eclipse.kapua.app.console.module.tag.client.TagTabDescriptionDescriptor",
+      "org.eclipse.kapua.app.console.module.device.client.device.tag.DevicesTagsTabItemDescriptor"
     ]
   },
   {
