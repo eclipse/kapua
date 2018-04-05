@@ -114,6 +114,7 @@ public class GroupSubjectGrid extends EntityGrid<GwtDevice> {
             selectedGroup = gwtGroup;
             GwtDeviceQueryPredicates predicates = new GwtDeviceQueryPredicates();
             predicates.setGroupId(selectedGroup.getId());
+            predicates.setGroupDevice("ANY");
             query.setPredicates(predicates);
         }
         refresh();
