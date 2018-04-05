@@ -35,7 +35,7 @@ public interface EndPoint {
 
     static String replacePlaceholder(String regex) {
         try {
-            return PlaceholderReplacer.replace(regex);
+            return PlaceholderReplacer.replacePlaceholder(regex);
         } catch (Exception e) {
             logger.error("Cannot replace placeholder '{}'", regex, e);
             return null;

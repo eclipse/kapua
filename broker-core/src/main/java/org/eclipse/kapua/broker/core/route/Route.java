@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,15 +9,21 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.broker.core.plugin;
+package org.eclipse.kapua.broker.core.route;
 
-import org.eclipse.kapua.broker.core.router.CamelKapuaDefaultRouter;
-import org.junit.Test;
+/**
+ * Route definition
+ *
+ */
+public interface Route extends Brick {
 
-public class CamelRoutesLoaderTest {
+    /**
+     * Get the route uri from
+     * 
+     * @return
+     * @throws UnsupportedOperationException
+     *             if the route is not a main route
+     */
+    String getFrom() throws UnsupportedOperationException;
 
-    @Test
-    public void testRouteLoad() {
-        new CamelKapuaDefaultRouter();
-    }
 }

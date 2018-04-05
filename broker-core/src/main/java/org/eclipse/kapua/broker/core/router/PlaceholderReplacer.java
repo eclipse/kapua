@@ -12,11 +12,16 @@
 package org.eclipse.kapua.broker.core.router;
 
 import java.util.HashMap;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PlaceholderReplacer {
+
+    static Logger logger = LoggerFactory.getLogger(PlaceholderReplacer.class);
 
     private final static String REGEX_REPLACEMENT_CHARS = "([\\\\\\.\\)\\]\\}\\(‌​\\[\\{\\*\\+\\?\\^\\$\\|])";
 
@@ -35,8 +40,21 @@ public class PlaceholderReplacer {
     private PlaceholderReplacer() {
     }
 
-    public static String replace(String str) {
-        return StrSubstitutor.replace(str, replacingMap);
+    public static String replacePlaceholder(String regex) {
+        try {
+            return StrSubstitutor.replace(regex, replacingMap);
+        } catch (Exception e) {
+            logger.error("Cannot replace placeholder '{}'", regex, e);
+            return null;
+        }
     }
 
+    static Pattern parseRegex(String regex) {
+        try {
+            return Pattern.compile(regex);
+        } catch (Exception e) {
+            logger.error("Cannot compile regex '{}'", regex, e);
+            return null;
+        }
+    }
 }

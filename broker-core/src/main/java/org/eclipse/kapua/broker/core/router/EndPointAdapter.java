@@ -37,7 +37,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 /**
- * {@link CamelKapuaDefaultRouter} {@link EndPoint} adapter
+ * {@link CamelDefaultRouter} {@link EndPoint} adapter
  * 
  * @since 1.0
  *
