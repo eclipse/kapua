@@ -36,7 +36,9 @@ public enum ConsoleSettingKeys implements SettingKey {
 
     SSO_REDIRECT_URI("console.sso.redirect.uri"), //
     SITE_HOME_URI("site.home.uri"), //
-    ;
+
+    EXPORT_MAX_PAGES("console.export.max.pages"),
+    EXPORT_MAX_PAGE_SIZE("console.export.max.pagesize");
 
     private String key;
 

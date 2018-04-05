@@ -14,6 +14,8 @@ package org.eclipse.kapua.app.console.module.data.servlet;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaUnauthenticatedException;
+import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
+import org.eclipse.kapua.app.console.module.api.setting.ConsoleSettingKeys;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
@@ -35,6 +37,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.Date;
 
@@ -52,6 +55,10 @@ public class DataExporterServlet extends HttpServlet {
     private static final MessageStoreService MESSAGE_STORE_SERVICE = LOCATOR.getService(MessageStoreService.class);
 
     private static final int QUERY_PAGE = 250;
+
+    private static final int MAX_PAGES = ConsoleSetting.getInstance().getInt(ConsoleSettingKeys.EXPORT_MAX_PAGES, 10);
+
+    private static final int MAX_PAGE_SIZE = ConsoleSetting.getInstance().getInt(ConsoleSettingKeys.EXPORT_MAX_PAGE_SIZE, 10000);
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -128,15 +135,17 @@ public class DataExporterServlet extends HttpServlet {
 
             long totalCount = MESSAGE_STORE_SERVICE.count(query);
             long totalOffset = 0;
+            query.setLimit(250);
+            int maxRows = MAX_PAGE_SIZE * MAX_PAGES;
+
             do {
                 int internalOffset = 0;
-                query.setLimit(250);
                 do {
                     query.setOffset(internalOffset);
                     result = MESSAGE_STORE_SERVICE.query(query);
                     dataExporter.append(result.getItems());
                     internalOffset += result.getSize();
-                } while (internalOffset < 10000 && !result.isEmpty());
+                } while (internalOffset < MAX_PAGE_SIZE && !result.isEmpty());
                 totalOffset += internalOffset;
                 if (!result.isEmpty()) {
                     DatastoreMessage lastMessage = result.getItems().get(result.getSize() - 1);
@@ -145,7 +154,10 @@ public class DataExporterServlet extends HttpServlet {
                     datePredicate = STORABLE_PREDICATE_FACTORY.newRangePredicate(MessageField.TIMESTAMP.field(), lastMessageDate, end);
                     predicate.getPredicates().add(datePredicate);
                 }
-            } while (totalOffset < totalCount);
+            } while (totalOffset < Long.min(totalCount, maxRows));
+            if (totalOffset >= maxRows) {
+                dataExporter.append(MessageFormat.format("Warning! The query returned more than {0} results. Please refine the time range.", maxRows));
+            }
             dataExporter.close();
         } catch (IllegalArgumentException iae) {
             response.sendError(400, "Illegal value for query parameter(s): " + iae.getMessage());

@@ -115,6 +115,13 @@ public class DataExporterExcel extends DataExporter {
     }
 
     @Override
+    public void append(String message) {
+        Row row = sheet.createRow(rowCount++);
+        Cell cell = row.createCell(0);
+        cell.setCellValue(message);
+    }
+
+    @Override
     public void close() throws ServletException, IOException {
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(topicOrDevice, "UTF-8") + "_data.xls");

@@ -83,6 +83,11 @@ public class DataExporterCsv extends DataExporter {
     }
 
     @Override
+    public void append(String message) {
+        writer.writeNext(new String[]{ message });
+    }
+
+    @Override
     public void close() throws ServletException, IOException {
         writer.flush();
         writer.close();
