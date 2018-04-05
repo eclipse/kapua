@@ -43,6 +43,8 @@ public abstract class DataExporter {
     public abstract void append(List<DatastoreMessage> messages)
             throws ServletException, IOException;
 
+    public abstract void append(String message);
+
     public abstract void close()
             throws ServletException, IOException;
 
