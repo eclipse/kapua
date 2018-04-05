@@ -27,6 +27,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.AddButton;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.DeleteButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.EditButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
@@ -38,6 +39,7 @@ import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
@@ -71,10 +73,10 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
 
     protected M selectedEntity;
 
-    private List<Component> extraButtons;
+    private List<Button> extraButtons;
 
     public EntityCRUDToolbar(GwtSession currentSession) {
-        this (currentSession, false);
+        this(currentSession, false);
     }
 
     public EntityCRUDToolbar(GwtSession currentSession, boolean slaveEntity) {
@@ -109,10 +111,10 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
             add(refreshEntityButton);
         }
 
-        if ((extraButtons != null) && (extraButtons.size() > 0)) {
-            for (Component button : extraButtons) {
-                add(button);
-            }
+        // Check on extra buttons defined in the implemented Toolbar
+        for (Component button : getExtraButtons()) {
+            add(new SeparatorToolItem());
+            add(button);
         }
 
         if (filterButtonShow && filterPanel != null) {
@@ -143,8 +145,20 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
         updateButtonEnablement();
     }
 
-    protected void addExtraButtons(List<Component> buttons) {
-        extraButtons = buttons;
+    protected void addExtraButton(Button buttons) {
+        getExtraButtons().add(buttons);
+    }
+
+    protected void addExtraButtons(List<Button> buttons) {
+        getExtraButtons().addAll(buttons);
+    }
+
+    protected List<Button> getExtraButtons() {
+        if (extraButtons == null) {
+            extraButtons = new ArrayList<Button>();
+        }
+
+        return extraButtons;
     }
 
     //

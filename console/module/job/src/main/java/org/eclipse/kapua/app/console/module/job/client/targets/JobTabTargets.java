@@ -47,11 +47,11 @@ public class JobTabTargets extends KapuaTabItem<GwtJob> {
         if (gwtJob != null) {
             setEnabled(true);
             targetsGrid.setJobId(gwtJob.getId());
-            targetsGrid.getToolbar().setJobId(gwtJob.getId());
+            targetsGrid.getToolbar().setJob(gwtJob);
         } else {
             setEnabled(false);
             targetsGrid.setJobId(null);
-            targetsGrid.getToolbar().setJobId(null);
+            targetsGrid.getToolbar().setJob(null);
         }
     }
 

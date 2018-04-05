@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.job.server;
 
+import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
@@ -21,6 +22,8 @@ import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 
+import java.util.Arrays;
+
 public class GwtJobEngineServiceImpl extends KapuaRemoteServiceServlet implements GwtJobEngineService {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
@@ -28,12 +31,23 @@ public class GwtJobEngineServiceImpl extends KapuaRemoteServiceServlet implement
 
     @Override
     public void start(String gwtScopeId, String gwtJobId) throws GwtKapuaException {
+        start(gwtScopeId, gwtJobId, null);
+    }
+
+    @Override
+    public void start(String gwtScopeId, String gwtJobId, String gwtJobTargetId) throws GwtKapuaException {
 
         KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtScopeId);
         KapuaId jobId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobId);
 
         try {
-            JOB_ENGINE_SERVICE.startJob(scopeId, jobId);
+            if (Strings.isNullOrEmpty(gwtJobTargetId)) {
+                JOB_ENGINE_SERVICE.startJob(scopeId, jobId);
+            } else {
+                KapuaId jobTargetId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobTargetId);
+
+                JOB_ENGINE_SERVICE.startJob(scopeId, jobId, Arrays.asList(jobTargetId));
+            }
         } catch (KapuaException kaex) {
             KapuaExceptionHandler.handle(kaex);
         }

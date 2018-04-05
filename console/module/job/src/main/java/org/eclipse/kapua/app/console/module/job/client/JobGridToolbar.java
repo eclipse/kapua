@@ -13,11 +13,8 @@ package org.eclipse.kapua.app.console.module.job.client;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
-import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
@@ -27,17 +24,11 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJob;
 import org.eclipse.kapua.app.console.module.job.shared.model.permission.JobSessionPermission;
-import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobEngineService;
-import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobEngineServiceAsync;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class JobGridToolbar extends EntityCRUDToolbar<GwtJob> {
 
-    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     private static final ConsoleJobMessages JOB_MSGS = GWT.create(ConsoleJobMessages.class);
-    private static final GwtJobEngineServiceAsync JOB_ENGINE_SERVICE = GWT.create(GwtJobEngineService.class);
+
     private Button startJobButton;
     private Button stopJobButton;
 
@@ -56,7 +47,7 @@ public class JobGridToolbar extends EntityCRUDToolbar<GwtJob> {
     @Override
     protected void onRender(Element target, int index) {
 
-        startJobButton = new Button(JOB_MSGS.startJobButton(), new KapuaIcon(IconSet.PLAY), new SelectionListener<ButtonEvent>() {
+        startJobButton = new Button(JOB_MSGS.jobStartButton(), new KapuaIcon(IconSet.PLAY), new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
@@ -65,8 +56,9 @@ public class JobGridToolbar extends EntityCRUDToolbar<GwtJob> {
             }
         });
         startJobButton.disable();
+        addExtraButton(startJobButton);
 
-        stopJobButton = new Button(JOB_MSGS.stopJobButton(), new KapuaIcon(IconSet.STOP), new SelectionListener<ButtonEvent>() {
+        stopJobButton = new Button(JOB_MSGS.jobStopButton(), new KapuaIcon(IconSet.STOP), new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
@@ -75,12 +67,7 @@ public class JobGridToolbar extends EntityCRUDToolbar<GwtJob> {
             }
         });
         stopJobButton.disable();
-
-        List<Component> extraButtons = new ArrayList<Component>();
-        extraButtons.add(new SeparatorMenuItem());
-        extraButtons.add(startJobButton);
-        extraButtons.add(stopJobButton);
-        addExtraButtons(extraButtons);
+        addExtraButton(stopJobButton);
 
         super.onRender(target, index);
 
