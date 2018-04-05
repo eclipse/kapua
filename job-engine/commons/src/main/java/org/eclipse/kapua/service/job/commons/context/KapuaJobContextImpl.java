@@ -9,17 +9,20 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.job.context.internal;
+package org.eclipse.kapua.service.job.commons.context;
 
-import java.util.Properties;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.job.commons.exception.ReadJobPropertyException;
+import org.eclipse.kapua.service.job.commons.model.JobTargetSublist;
+import org.xml.sax.SAXException;
 
 import javax.batch.runtime.BatchStatus;
 import javax.batch.runtime.context.JobContext;
-
-import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.job.context.JobContextPropertyNames;
-import org.eclipse.kapua.service.job.context.KapuaJobContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
+import java.util.Properties;
 
 public class KapuaJobContextImpl implements KapuaJobContext {
 
@@ -43,6 +46,18 @@ public class KapuaJobContextImpl implements KapuaJobContext {
         Properties jobContextProperties = jobContext.getProperties();
         String jobIdString = jobContextProperties.getProperty(JobContextPropertyNames.JOB_ID);
         return jobIdString != null ? KapuaEid.parseCompactId(jobIdString) : null;
+    }
+
+    @Override
+    public JobTargetSublist getTargetSublist() {
+        Properties jobContextProperties = jobContext.getProperties();
+        String jobTargetSublistString = jobContextProperties.getProperty(JobContextPropertyNames.JOB_TARGET_SUBLIST);
+
+        try {
+            return XmlUtil.unmarshal(jobTargetSublistString, JobTargetSublist.class);
+        } catch (JAXBException | XMLStreamException | SAXException e) {
+            throw new ReadJobPropertyException(e, JobContextPropertyNames.JOB_TARGET_SUBLIST, jobTargetSublistString);
+        }
     }
 
     @Override

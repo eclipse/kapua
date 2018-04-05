@@ -18,7 +18,6 @@ import com.ibm.jbatch.jsl.model.JSLJob;
 import com.ibm.jbatch.jsl.model.Step;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.job.engine.jbatch.driver.exception.CannotBuildJobDefDriverException;
@@ -120,7 +119,7 @@ public class JbatchDriver {
      * @throws JobExecutionIsRunningDriverException if the jBatch job has another {@link JobExecution} running
      * @throws JobStartingDriverException           if invoking {@link JobOperator#start(String, Properties)} throws an {@link Exception}
      */
-    public static void startJob(@NotNull KapuaId scopeId, @NotNull KapuaId jobId)
+    public static void startJob(@NotNull KapuaId scopeId, @NotNull KapuaId jobId, @NotNull List<KapuaId> targetSublist)
             throws JbatchDriverException {
 
         String jobXmlDefinition;
@@ -165,12 +164,12 @@ public class JbatchDriver {
             jslJob.setRestartable("true");
             jslJob.setId(jobName);
             jslJob.setVersion("1.0");
-            jslJob.setProperties(JobDefinitionBuildUtils.buildJobProperties(scopeId, jobId));
+            jslJob.setProperties(JobDefinitionBuildUtils.buildJobProperties(scopeId, jobId, targetSublist));
             jslJob.setListeners(JobDefinitionBuildUtils.buildListener());
             jslJob.getExecutionElements().addAll(jslExecutionElements);
 
             jobXmlDefinition = ModelSerializerFactory.createJobModelSerializer().serializeModel(jslJob);
-        } catch (KapuaException e) {
+        } catch (Exception e) {
             throw new CannotBuildJobDefDriverException(e, jobName);
         }
 
@@ -195,10 +194,14 @@ public class JbatchDriver {
             throw new CannotWriteJobDefFileDriverException(e, jobName, jobXmlDefinitionFile.getAbsolutePath());
         }
 
+        //
+        // Check job running
         if (isRunningJob(scopeId, jobId)) {
             throw new JobExecutionIsRunningDriverException(JbatchDriver.getJbatchJobName(scopeId, jobId));
         }
 
+        //
+        // Start job
         try {
             JOB_OPERATOR.start(jobXmlDefinitionFile.getAbsolutePath().replaceAll("\\.xml$", ""), new Properties());
         } catch (NoSuchJobExecutionException | NoSuchJobException | JobSecurityException e) {

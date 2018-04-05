@@ -24,11 +24,17 @@ public enum KapuaJobEngineErrorCodes implements KapuaErrorCode {
      * {@link org.eclipse.kapua.service.job.step.JobStep} missing
      */
     JOB_STEP_MISSING,
+
     /**
      * {@link org.eclipse.kapua.service.job.targets.JobTarget} missing
      */
     JOB_TARGET_MISSING,
 
+    /**
+     * The provided {@link java.util.List} of {@link org.eclipse.kapua.service.job.targets.JobTarget} ids contains one or more id that is not present in the list of available
+     * {@link org.eclipse.kapua.service.job.targets.JobTarget}s fot this {@link org.eclipse.kapua.service.job.Job}
+     */
+    JOB_TARGET_INVALID,
     /**
      * The {@link org.eclipse.kapua.service.job.Job} requested to start has another execution running
      */

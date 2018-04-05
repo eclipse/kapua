@@ -9,16 +9,18 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.job.context;
+package org.eclipse.kapua.service.job.commons.context;
 
-import javax.batch.runtime.context.JobContext;
+import org.eclipse.kapua.KapuaIllegalArgumentException;
+
 import javax.batch.runtime.context.StepContext;
 
-import org.eclipse.kapua.model.KapuaObjectFactory;
+public interface KapuaStepContext extends StepContext {
 
-public interface JobContextFactory extends KapuaObjectFactory {
+    public int getStepIndex();
 
-    public KapuaJobContext newJobContext(JobContext jobContext);
+    public Integer getNextStepIndex();
 
-    public KapuaStepContext newStepContext(StepContext stepContext);
+    public <T> T getStepProperty(String stepPropertyName, Class<T> type) throws KapuaIllegalArgumentException;
+
 }

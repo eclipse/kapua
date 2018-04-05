@@ -9,13 +9,22 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.job.context;
+package org.eclipse.kapua.service.job.commons.context;
 
-public class JobContextPropertyNames {
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.job.commons.model.JobTargetSublist;
 
-    public static final String JOB_SCOPE_ID = "job.scopeId";
-    public static final String JOB_ID = "job.id";
+import javax.batch.runtime.context.JobContext;
 
-    private JobContextPropertyNames() {
-    }
+public interface KapuaJobContext extends JobContext {
+
+    public KapuaId getScopeId();
+
+    public KapuaId getJobId();
+
+    public void setKapuaExecutionId(KapuaId executionId);
+
+    public KapuaId getKapuaExecutionId();
+
+    public JobTargetSublist getTargetSublist();
 }

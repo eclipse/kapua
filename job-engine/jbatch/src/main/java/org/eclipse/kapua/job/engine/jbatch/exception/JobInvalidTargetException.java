@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,18 +9,15 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.job.context;
+package org.eclipse.kapua.job.engine.jbatch.exception;
 
-import javax.batch.runtime.context.StepContext;
+import org.eclipse.kapua.model.id.KapuaId;
 
-import org.eclipse.kapua.KapuaIllegalArgumentException;
+import java.util.List;
 
-public interface KapuaStepContext extends StepContext {
+public class JobInvalidTargetException extends StartJobEngineException {
 
-    public int getStepIndex();
-
-    public Integer getNextStepIndex();
-
-    public <T> T getStepProperty(String stepPropertyName, Class<T> type) throws KapuaIllegalArgumentException;
-
+    public JobInvalidTargetException(KapuaId scopeId, KapuaId jobId, List<KapuaId> targetSublist) {
+        super(KapuaJobEngineErrorCodes.JOB_TARGET_INVALID, scopeId, jobId, targetSublist);
+    }
 }

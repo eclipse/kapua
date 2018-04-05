@@ -9,14 +9,12 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.job.context.internal;
+package org.eclipse.kapua.service.job.commons.context;
 
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.job.context.KapuaStepContext;
-import org.eclipse.kapua.service.job.context.StepContextPropertyNames;
 import org.xml.sax.SAXException;
 
 import javax.batch.runtime.BatchStatus;

@@ -9,15 +9,12 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.job.context.internal;
+package org.eclipse.kapua.service.job.commons.context;
+
+import org.eclipse.kapua.locator.KapuaProvider;
 
 import javax.batch.runtime.context.JobContext;
 import javax.batch.runtime.context.StepContext;
-
-import org.eclipse.kapua.locator.KapuaProvider;
-import org.eclipse.kapua.service.job.context.JobContextFactory;
-import org.eclipse.kapua.service.job.context.KapuaJobContext;
-import org.eclipse.kapua.service.job.context.KapuaStepContext;
 
 @KapuaProvider
 public class JobContextFactoryImpl implements JobContextFactory {
