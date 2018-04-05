@@ -34,8 +34,9 @@ import java.util.List;
 
 public class JobGrid extends EntityGrid<GwtJob> {
 
-    private static final GwtJobServiceAsync GWT_JOB_SERVICE = GWT.create(GwtJobService.class);
     private static final ConsoleJobMessages MSGS = GWT.create(ConsoleJobMessages.class);
+
+    private static final GwtJobServiceAsync GWT_JOB_SERVICE = GWT.create(GwtJobService.class);
 
     private GwtJobQuery query;
 

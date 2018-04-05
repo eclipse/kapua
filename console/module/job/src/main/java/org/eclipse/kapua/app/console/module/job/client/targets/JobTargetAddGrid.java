@@ -32,6 +32,7 @@ import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQuery;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceServiceAsync;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJob;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,12 +46,14 @@ public class JobTargetAddGrid extends EntityGrid<GwtDevice> {
 
     private static final int ENTITY_PAGE_SIZE = 10;
 
-    private final String jobId;
+    private final GwtJob gwtSelectedJob;
     private GwtDeviceQuery query;
 
-    public JobTargetAddGrid(GwtSession currentSession, String jobId) {
+    public JobTargetAddGrid(GwtSession currentSession, GwtJob gwtSelectedJob) {
         super(null, currentSession);
-        this.jobId = jobId;
+
+        this.gwtSelectedJob = gwtSelectedJob;
+
         query = new GwtDeviceQuery();
         query.setScopeId(currentSession.getSelectedAccountId());
     }

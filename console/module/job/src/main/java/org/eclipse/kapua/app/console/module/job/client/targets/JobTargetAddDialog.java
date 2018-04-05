@@ -27,6 +27,7 @@ import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQuery;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceServiceAsync;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJob;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobTarget;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobTargetCreator;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobTargetService;
@@ -39,11 +40,11 @@ import java.util.Set;
 
 public class JobTargetAddDialog extends EntityAddEditDialog {
 
-    private final String jobId;
-
     private static final GwtJobTargetServiceAsync GWT_JOB_TARGET_SERVICE = GWT.create(GwtJobTargetService.class);
     private static final GwtDeviceServiceAsync GWT_DEVICE_SERVICE = GWT.create(GwtDeviceService.class);
     private static final ConsoleJobMessages JOB_MSGS = GWT.create(ConsoleJobMessages.class);
+
+    private final GwtJob gwtSelectedJob;
 
     private final RadioGroup targetRadioGroup = new RadioGroup();
     private JobTargetAddGrid targetGrid;
@@ -52,9 +53,10 @@ public class JobTargetAddDialog extends EntityAddEditDialog {
         ALL, SELECTED
     }
 
-    public JobTargetAddDialog(GwtSession currentSession, String jobId) {
+    public JobTargetAddDialog(GwtSession currentSession, GwtJob gwtSelectedJob) {
         super(currentSession);
-        this.jobId = jobId;
+
+        this.gwtSelectedJob = gwtSelectedJob;
 
         DialogUtils.resizeDialog(this, 600, 400);
     }
@@ -89,7 +91,7 @@ public class JobTargetAddDialog extends EntityAddEditDialog {
         targetRadioGroup.add(allRadio);
         targetRadioGroup.add(selectedRadio);
 
-        targetGrid = new JobTargetAddGrid(currentSession, jobId);
+        targetGrid = new JobTargetAddGrid(currentSession, gwtSelectedJob);
         targetGrid.disable();
         targetGrid.setHeight(255);
 
@@ -133,7 +135,7 @@ public class JobTargetAddDialog extends EntityAddEditDialog {
      */
     private void doSubmitWithExistenceCheck(final List<GwtDevice> targets) {
 
-        GWT_JOB_TARGET_SERVICE.findByJobId(currentSession.getSelectedAccountId(), jobId, true, new AsyncCallback<List<GwtJobTarget>>() {
+        GWT_JOB_TARGET_SERVICE.findByJobId(currentSession.getSelectedAccountId(), gwtSelectedJob.getId(), true, new AsyncCallback<List<GwtJobTarget>>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -172,11 +174,11 @@ public class JobTargetAddDialog extends EntityAddEditDialog {
         for (GwtDevice target : targets) {
             GwtJobTargetCreator creator = new GwtJobTargetCreator();
             creator.setScopeId(currentSession.getSelectedAccountId());
-            creator.setJobId(jobId);
+            creator.setJobId(gwtSelectedJob.getId());
             creator.setJobTargetId(target.getId());
             creatorList.add(creator);
         }
-        GWT_JOB_TARGET_SERVICE.create(xsrfToken, currentSession.getSelectedAccountId(), jobId, creatorList, new AsyncCallback<List<GwtJobTarget>>() {
+        GWT_JOB_TARGET_SERVICE.create(xsrfToken, currentSession.getSelectedAccountId(), gwtSelectedJob.getId(), creatorList, new AsyncCallback<List<GwtJobTarget>>() {
 
             @Override
             public void onSuccess(List<GwtJobTarget> arg0) {
@@ -231,7 +233,7 @@ public class JobTargetAddDialog extends EntityAddEditDialog {
         for (GwtJobTarget exist : existing) {
             existsSet.add(exist.getJobTargetId());
         }
-        if (targetsSet.size() == 0) {
+        if (targetsSet.isEmpty()) {
             addTargets = false;
         } else if (targetsSet.size() > existsSet.size()) {
             addTargets = true;
