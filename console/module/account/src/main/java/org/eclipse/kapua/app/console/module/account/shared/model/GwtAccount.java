@@ -12,7 +12,7 @@
 package org.eclipse.kapua.app.console.module.account.shared.model;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtUpdatableEntityModel;
@@ -98,11 +98,11 @@ public class GwtAccount extends GwtUpdatableEntityModel implements Serializable 
         return (String) get("parentAccountId");
     }
 
-    public Set<GwtAccount> getChildAccounts() {
+    public List<GwtAccount> getChildAccounts() {
         return get("childAccounts");
     }
 
-    public void setChildAccounts(Set<GwtAccount> childAccounts) {
+    public void setChildAccounts(List<GwtAccount> childAccounts) {
         set("childAccounts", childAccounts);
     }
 }

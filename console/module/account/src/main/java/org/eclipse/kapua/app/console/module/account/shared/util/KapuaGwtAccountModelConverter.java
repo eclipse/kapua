@@ -11,8 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.account.shared.util;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.kapua.app.console.module.api.shared.util.KapuaGwtCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
@@ -53,12 +53,12 @@ public class KapuaGwtAccountModelConverter {
         return gwtAccount;
     }
 
-    private static Set<GwtAccount> convertChildAccounts(Set<Account> childAccounts) {
-        Set<GwtAccount> accountSet = new HashSet<GwtAccount>();
+    private static List<GwtAccount> convertChildAccounts(List<Account> childAccounts) {
+        List<GwtAccount> accountList = new ArrayList<GwtAccount>();
         for (Account account : childAccounts) {
-            accountSet.add(KapuaGwtAccountModelConverter.convertAccount(account));
+            accountList.add(KapuaGwtAccountModelConverter.convertAccount(account));
         }
-        return accountSet;
+        return accountList;
     }
 
     /**
