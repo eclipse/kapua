@@ -46,4 +46,5 @@ public class KapuaMessageFactoryImpl implements KapuaMessageFactory {
     public KapuaPosition newPosition() {
         return new KapuaPositionImpl();
     }
+
 }

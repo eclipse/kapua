@@ -1,0 +1,25 @@
+#!/bin/sh
+################################################################################
+#    Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+#
+#    All rights reserved. This program and the accompanying materials
+#    are made available under the terms of the Eclipse Public License v1.0
+#    which accompanies this distribution, and is available at
+#    http://www.eclipse.org/legal/epl-v10.html
+#
+#    Contributors:
+#        Eurotech
+################################################################################
+
+java -jar \
+-Dcommons.db.schema.update=true \
+-Dcommons.db.connection.host=db \
+-Dcommons.db.connection.port=3306 \
+-Dbroker.host=broker \
+-Dkapua.datastoreProcessor.messageSource.amqp.host=broker \
+-Dkapua.datastoreProcessor.errorTarget.amqp.host=broker \
+-Ddatastore.elasticsearch.nodes=es \
+-Ddatastore.elasticsearch.port=9200 \
+-Ddatastore.client.class=org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient \
+-Dcommons.eventbus.url="failover:(amqp://events-broker:5682)?jms.sendTimeout=1000" \
+kapua-processor-datastore-broker-1.1.0-SNAPSHOT-uber.jar

@@ -45,7 +45,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-broker-core</artifactId>
+            <artifactId>kapua-broker-plugin</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
@@ -137,6 +137,10 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-datastore-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-tag-api</artifactId>
         </dependency>
         <dependency>
@@ -161,47 +165,12 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-translator-kapua-kura</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-translator-kura-jms</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-translator-kura-mqtt</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-transport-api</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-transport-jms</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-transport-mqtt</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-foreignkeys</artifactId>
         </dependency>
 
         <dependency>
             <groupId>aopalliance</groupId>
             <artifactId>aopalliance</artifactId>
-        </dependency>
-        <dependency>
-            <!-- Google protobuf for message encoding -->
-            <groupId>com.google.protobuf</groupId>
-            <artifactId>protobuf-java</artifactId>
         </dependency>
 
         <dependency>
@@ -356,8 +325,10 @@
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-to-slf4j</artifactId>
         </dependency>
-
-        <!-- elasticsearch dependencies -->
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-core</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch</artifactId>
@@ -386,11 +357,6 @@
             <groupId>org.elasticsearch.plugin</groupId>
             <artifactId>lang-mustache-client</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.elasticsearch.plugin</groupId>
-            <artifactId>percolator-client</artifactId>
-        </dependency>
-
     </dependencies>
 
     <build>
@@ -561,13 +527,6 @@
                                     <outputDirectory>target/broker_dependency</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
-                                    <groupId>com.google.protobuf</groupId>
-                                    <artifactId>protobuf-java</artifactId>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>target/broker_dependency</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
                                     <groupId>org.apache.shiro</groupId>
                                     <artifactId>shiro-core</artifactId>
                                     <version>${shiro.version}</version>
@@ -611,14 +570,6 @@
                                     <groupId>org.bitbucket.b_c</groupId>
                                     <artifactId>jose4j</artifactId>
                                     <version>${jose4j.version}</version>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>target/broker_dependency</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.elasticsearch</groupId>
-                                    <artifactId>elasticsearch</artifactId>
-                                    <version>${elasticsearch.version}</version>
                                     <type>jar</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>target/broker_dependency</outputDirectory>
@@ -714,6 +665,5 @@
             </build>
         </profile>
     </profiles>
-
 
 </project>

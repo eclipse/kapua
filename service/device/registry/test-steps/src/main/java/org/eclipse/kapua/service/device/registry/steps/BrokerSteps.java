@@ -20,7 +20,7 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.broker.core.setting.BrokerSetting;
+import org.eclipse.kapua.broker.core.setting.BrokerPluginSetting;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
@@ -153,7 +153,7 @@ public class BrokerSteps extends TestBase {
 
         this.scenario = scenario;
 
-        BrokerSetting.resetInstance();
+        BrokerPluginSetting.resetInstance();
 
         KapuaLocator locator = KapuaLocator.getInstance();
         devicePackageManagementService = locator.getService(DevicePackageManagementService.class);

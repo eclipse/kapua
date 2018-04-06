@@ -171,4 +171,13 @@ public class MqttMessage implements PubSubTransportMessage<MqttTopic, MqttPayloa
     public boolean expectResponse() {
         return getResponseTopic() != null;
     }
+
+    public MqttTopic getChannel( ) {
+        return requestTopic;
+    }
+
+    public void setChannel(MqttTopic topic) {
+        this.requestTopic = topic;
+    }
+
 }

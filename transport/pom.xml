@@ -27,6 +27,7 @@
     <modules>
         <module>api</module>
 
+        <module>amqp-proton</module>
         <module>jms</module>
         <module>mqtt</module>
     </modules>

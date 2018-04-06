@@ -44,9 +44,7 @@ import java.util.UUID;
         "receivedOn", //
         "sentOn", //
         "capturedOn", //
-        "position", //
-        "channel", //
-        "payload", //
+        "position"
 }, factoryClass = MessageXmlRegistry.class, factoryMethod = "newKapuaMessage")
 @XmlSeeAlso(KapuaDataMessage.class)
 public interface KapuaMessage<C extends KapuaChannel, P extends KapuaPayload> extends Message<C, P> {

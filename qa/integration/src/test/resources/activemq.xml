@@ -182,6 +182,13 @@
                                 uri="tcp://0.0.0.0:61616?transport.maximumConnections=1000&amp;transport.socketBufferSize=131072&amp;ioBufferSize=16384&amp;transport.activeMQSubscriptionPrefetch=32766&amp;transport.publishDollarTopics=true&amp;transport.subscriptionStrategy=mqtt-virtual-topic-subscriptions"/>
             <!--transportConnector name="ws"
                                 uri="ws://0.0.0.0:61614?maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600&amp;transport.publishDollarTopics=true&amp;transport.subscriptionStrategy=mqtt-virtual-topic-subscriptions"/-->
+            <!-- don't enable the nio since with the nio (amqp+nio) during the qa tests a lot of
+            org.apache.activemq.broker.TransportConnection.Transport - Transport Connection to: null failed: java.io.IOException: Frame size of 1 GB larger than max allowed 1 MB
+            are shown-->
+            <!-- option: transport.transformer=jms
+            for details see http://activemq.apache.org/amqp.html#AMQP-MappingtoJMS -->
+            <transportConnector name="amqp"
+                                uri="amqp://0.0.0.0:5672?maximumConnections=1000&amp;wireFormat.maxFrameSize=1048576&amp;transport.transformer=jms" />
         </transportConnectors>
         <!-- NOTE:
         The following template shows how to configure a network of brokers (i.e. a broker cluster).
@@ -223,7 +230,7 @@
         -->
     </broker>
 
-    <import resource="camel.xml"/>
+    <!--<import resource="camel.xml"/>-->
     <!--<import resource="camel-experimental.xml"/>-->
 
 </beans>

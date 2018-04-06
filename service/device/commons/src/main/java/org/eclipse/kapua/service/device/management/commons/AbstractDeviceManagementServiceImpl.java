@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.device.management.commons;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.util.ThrowingRunnable;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.type.ObjectTypeConverter;
@@ -84,7 +83,7 @@ public abstract class AbstractDeviceManagementServiceImpl {
         deviceEventCreator.setSentOn(responseMessage.getSentOn());
         deviceEventCreator.setAction(requestMessage.getChannel().getMethod());
         deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
-        deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
+        deviceEventCreator.setEventMessage(responseMessage.getPayload().toString());
 
         KapuaSecurityUtils.doPrivileged(() -> DEVICE_EVENT_SERVICE.create(deviceEventCreator));
     }

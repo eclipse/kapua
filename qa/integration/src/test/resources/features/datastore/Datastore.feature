@@ -975,14 +975,17 @@ Feature: Datastore tests
     Then An assertion error was thrown
     And I logout
 
-  Scenario: Stop broker after all scenarios
+  Scenario: Stop broker after all scenarios 
 
     Given Stop Broker
 
-  Scenario: Stop event broker for all scenarios
+  Scenario: Stop event broker after all scenarios 
 
     Given Stop Event Broker
 
   Scenario: Stop datastore after all scenarios
 
     Given Stop Datastore
+
+  @StopExternalConsumers
+  Scenario: Stop external consumers for all scenario

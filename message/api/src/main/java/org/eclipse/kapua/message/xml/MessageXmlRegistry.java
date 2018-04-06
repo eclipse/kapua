@@ -45,4 +45,5 @@ public class MessageXmlRegistry {
     public KapuaPosition newPosition() {
         return KAPUA_MESSAGE_FACTORY.newPosition();
     }
+
 }
