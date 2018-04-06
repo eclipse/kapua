@@ -9,19 +9,25 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.message;
+package org.eclipse.kapua.connector;
+
+import org.eclipse.kapua.KapuaErrorCode;
 
 /**
- * Device position definition.
- *
+ * Connector error codes.
+ * 
  * @since 1.0
+ *
  */
+public enum ConnectorErrorCodes implements KapuaErrorCode {
+    /**
+     * Message Convertion Error
+     */
+    CONVERTION_ERROR,
 
-import org.eclipse.kapua.message.xml.MessageXmlRegistry;
-
-import javax.xml.bind.annotation.XmlType;
-
-@XmlType(factoryClass = MessageXmlRegistry.class, factoryMethod = "newPosition")
-public interface Position {
+    /**
+     * No topic
+     */
+    CONVERTION_NO_TOPIC
 
 }
