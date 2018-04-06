@@ -22,6 +22,7 @@ Feature: Device data scenarios
 
     Given Start Datastore
 
+  @StartBroker
   Scenario: Start event broker for all scenarios
 
     Given Start Event Broker
@@ -76,11 +77,14 @@ Scenario: Connect to the system and publish some data
   Then Device sim-1 for account kapua-sys is not registered after 5 seconds
   And I delete the messages for this device
 
-  Scenario: Stop broker after all scenarios
+  @StopExternalConsumers
+  Scenario: Stop external consumers for all scenario 
+
+  Scenario: Stop broker after all scenarios 
 
     Given Stop Broker
 
-  Scenario: Stop event broker for all scenarios
+  Scenario: Stop event broker after all scenarios 
 
     Given Stop Event Broker
 

@@ -21,6 +21,8 @@ Feature: Device Broker connection ip not set
 
   Scenario: Start datastore for all scenarios
 
+  @StartEventBroker
+  Scenario: Start broker for all scenarios
     Given Start Datastore
 
   Scenario: Start event broker for all scenarios
@@ -42,7 +44,13 @@ Feature: Device Broker connection ip not set
     And Device death message is sent
     And I wait 5 seconds for system to receive and process that message
 
-  Scenario: Stop broker after all scenarios
+  @StopExternalConsumers
+  Scenario: Stop external consumers for all scenario 
+
+  Scenario: Stop broker after all scenarios 
+
+  @StopEventBroker
+  Scenario: Stop event broker after all scenarios 
 
     Given Stop Broker
 

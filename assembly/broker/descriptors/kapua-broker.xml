@@ -51,7 +51,6 @@
                 <exclude>lib/slf4j*</exclude> <!-- pull in version 1.7.24 -->
 
                 <exclude>lib/optional/activeio-core-*</exclude>
-                <exclude>lib/optional/activemq-amqp-*</exclude>
                 <exclude>lib/optional/activemq-jdbc-store*</exclude>
                 <exclude>lib/optional/activemq-leveldb-store*</exclude>
                 <exclude>lib/optional/activemq-log4j-appender*</exclude>
@@ -159,9 +158,8 @@
                 <include>com.fasterxml.jackson.dataformat:*</include>
                 <include>com.google.code.findbugs:annotations</include>
                 <include>com.google.guava:guava</include>
-                <include>com.google.inject.extensions:guice-multibindings</include>
                 <include>com.google.inject:guice</include>
-                <include>com.google.protobuf:protobuf-java</include>
+                <include>com.google.inject.extensions:guice-multibindings</include>
                 <include>com.h2database:h2</include>
                 <include>com.tdunning:t-digest</include>
 
@@ -169,25 +167,26 @@
                 <include>commons-io:commons-io</include>
 
                 <include>io.dropwizard.metrics:metrics-core</include>
-                <include>io.netty:netty-all</include>
                 <include>io.netty:netty</include>
+                <include>io.netty:netty-all</include>
+
+                <include>io.vertx:vertx-core</include>
 
                 <include>javax.inject:javax.inject</include>
 
                 <include>joda-time:joda-time</include>
 
-                <include>org.apache.commons:commons-lang3</include>
                 <include>org.apache.commons:commons-pool2</include>
+                <include>org.apache.commons:commons-lang3</include>
                 <include>org.apache.geronimo.specs:geronimo-jms_2.0_spec</include>
-                <include>org.apache.httpcomponents:httpasyncclient</include>
                 <include>org.apache.httpcomponents:httpclient</include>
-                <include>org.apache.httpcomponents:httpcore-nio</include>
                 <include>org.apache.httpcomponents:httpcore</include>
+                <include>org.apache.httpcomponents:httpasyncclient</include>
+                <include>org.apache.httpcomponents:httpcore-nio</include>
                 <include>org.apache.logging.log4j:log4j-api</include>
                 <include>org.apache.logging.log4j:log4j-to-slf4j</include>
-                <include>org.apache.lucene:*</include>
-                <include>org.apache.qpid:proton-j</include>
                 <include>org.apache.qpid:qpid-jms-client</include>
+                <include>org.apache.qpid:proton-j</include>
                 <include>org.apache.shiro:shiro-core</include>
                 <include>org.bitbucket.b_c:jose4j</include>
                 <include>org.eclipse.paho:org.eclipse.paho.client.mqttv3</include>
@@ -197,28 +196,15 @@
                 <include>org.eclipse.persistence:org.eclipse.persistence.asm</include>
                 <include>org.eclipse.persistence:org.eclipse.persistence.moxy</include>
                 <include>org.eclipse.persistence:javax.persistence</include>
-                <include>org.elasticsearch.client:rest</include>
-                <include>org.elasticsearch.client:transport</include>
-                <include>org.elasticsearch.plugin:lang-mustache-client</include>
-                <include>org.elasticsearch.plugin:percolator-client</include>
-                <include>org.elasticsearch.plugin:reindex-client</include>
-                <include>org.elasticsearch.plugin:transport-netty3-client</include>
-                <include>org.elasticsearch.plugin:transport-netty4-client</include>
-                <include>org.elasticsearch:elasticsearch</include>
-                <include>org.elasticsearch:securesm</include>
+                <include>org.springframework.security:spring-security-core</include>
+                <include>org.slf4j:slf4j-api</include>
+                <include>org.slf4j:log4j-over-slf4j</include>
                 <include>org.hdrhistogram:HdrHistogram</include>
                 <include>org.javassist:javassist</include>
                 <include>org.liquibase:liquibase-core</include>
                 <include>org.reflections:reflections</include>
-                <include>org.slf4j:log4j-over-slf4j</include>
-                <include>org.slf4j:slf4j-api</include>
-                <include>org.springframework.security:spring-security-core</include>
                 <include>org.yaml:snakeyaml</include>
 
-                <include>${pom.groupId}:kapua-account-api</include>
-                <include>${pom.groupId}:kapua-account-internal</include>
-                <include>${pom.groupId}:kapua-broker-api</include>
-                <include>${pom.groupId}:kapua-broker-core</include>
                 <include>${pom.groupId}:kapua-commons</include>
                 <include>${pom.groupId}:kapua-datastore-api</include>
                 <include>${pom.groupId}:kapua-datastore-client-api</include>
@@ -247,8 +233,11 @@
                 <include>${pom.groupId}:kapua-device-registry-api</include>
                 <include>${pom.groupId}:kapua-device-registry-internal</include>
                 <include>${pom.groupId}:kapua-foreignkeys</include>
-                <include>${pom.groupId}:kapua-guice</include>
+                <include>${pom.groupId}:kapua-service-api</include>
                 <include>${pom.groupId}:kapua-liquibase</include>
+                <include>${pom.groupId}:kapua-guice</include>
+                <include>${pom.groupId}:kapua-broker-api</include>
+                <include>${pom.groupId}:kapua-broker-plugin</include>
                 <include>${pom.groupId}:kapua-message-api</include>
                 <include>${pom.groupId}:kapua-message-internal</include>
                 <include>${pom.groupId}:kapua-security-authentication-api</include>
@@ -256,22 +245,21 @@
                 <include>${pom.groupId}:kapua-security-certificate-api</include>
                 <include>${pom.groupId}:kapua-security-certificate-internal</include>
                 <include>${pom.groupId}:kapua-security-shiro</include>
-                <include>${pom.groupId}:kapua-service-api</include>
-                <include>${pom.groupId}:kapua-sso-jwt</include>
+                <include>${pom.groupId}:kapua-device-api</include>
+                <include>${pom.groupId}:kapua-device-commons</include>
                 <include>${pom.groupId}:kapua-tag-api</include>
                 <include>${pom.groupId}:kapua-tag-internal</include>
-                <include>${pom.groupId}:kapua-translator-api</include>
-                <include>${pom.groupId}:kapua-translator-kapua-kura</include>
-                <include>${pom.groupId}:kapua-translator-kura-jms</include>
-                <include>${pom.groupId}:kapua-translator-kura-mqtt</include>
-                <include>${pom.groupId}:kapua-transport-api</include>
-                <include>${pom.groupId}:kapua-transport-jms</include>
-                <include>${pom.groupId}:kapua-transport-mqtt</include>
+                <include>${pom.groupId}:kapua-datastore-api</include>
+                <include>${pom.groupId}:kapua-device-registry-api</include>
+                <include>${pom.groupId}:kapua-device-registry-internal</include>
+                <include>${pom.groupId}:kapua-device-management-api</include>
+                <include>${pom.groupId}:kapua-sso-jwt</include>
                 <include>${pom.groupId}:kapua-user-api</include>
                 <include>${pom.groupId}:kapua-user-internal</include>
+                <include>${pom.groupId}:kapua-account-api</include>
+                <include>${pom.groupId}:kapua-account-internal</include>
             </includes>
         </dependencySet>
-
         <dependencySet>
             <outputDirectory>opt/activemq/lib/web</outputDirectory>
             <unpack>false</unpack>
@@ -284,6 +272,5 @@
                 <include>org.apache.tomcat:tomcat-websocket-api</include>
             </includes>
         </dependencySet>
-
     </dependencySets>
 </assembly>

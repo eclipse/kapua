@@ -22,6 +22,7 @@ Feature: Device lifecycle scenarios
 
     Given Start Datastore
 
+  @StartBroker
   Scenario: Start event broker for all scenarios
 
     Given Start Event Broker
@@ -80,11 +81,14 @@ Scenario: Installing a package
   When I fetch the package states
   Then Package "foo.bar" with version 1.2.3 is installed and has 10 mock bundles
 
-  Scenario: Stop broker after all scenarios
+  @StopExternalConsumers
+  Scenario: Stop external consumers for all scenario 
+
+  Scenario: Stop broker after all scenarios 
 
     Given Stop Broker
 
-  Scenario: Stop event broker for all scenarios
+  Scenario: Stop event broker after all scenarios 
 
     Given Stop Event Broker
 

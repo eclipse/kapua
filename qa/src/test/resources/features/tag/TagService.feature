@@ -53,11 +53,14 @@ Feature: Tag Service
     Then Tag with name "tagName2" is found and deleted
       And I logout
 
-  Scenario: Stop broker after all scenarios
+  @StopExternalConsumers
+  Scenario: Stop external consumers for all scenario 
+
+  Scenario: Stop broker after all scenarios 
 
     Given Stop Broker
 
-  Scenario: Stop event broker for all scenarios
+  Scenario: Stop event broker after all scenarios 
 
     Given Stop Event Broker
 

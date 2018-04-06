@@ -45,9 +45,7 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
         "receivedOn", //
         "sentOn", //
         "capturedOn", //
-        "position", //
-        "channel", //
-        "payload", //
+        "position"
 }, factoryClass = MessageXmlRegistry.class, factoryMethod = "newKapuaMessage") //
 @XmlSeeAlso(KapuaDataMessage.class)
 public interface KapuaMessage<C extends KapuaChannel, P extends KapuaPayload> extends Message<C, P> {
@@ -175,35 +173,5 @@ public interface KapuaMessage<C extends KapuaChannel, P extends KapuaPayload> ex
      * @param position
      */
     public void setPosition(KapuaPosition position);
-
-    /**
-     * Get the message channel
-     *
-     * @return
-     */
-    @XmlElement(name = "channel")
-    public C getChannel();
-
-    /**
-     * Set the message channel
-     *
-     * @param semanticChannel
-     */
-    public void setChannel(C semanticChannel);
-
-    /**
-     * Get the message payload
-     *
-     * @return
-     */
-    @XmlElement(name = "payload")
-    public P getPayload();
-
-    /**
-     * Set the message payload
-     *
-     * @param payload
-     */
-    public void setPayload(P payload);
 
 }

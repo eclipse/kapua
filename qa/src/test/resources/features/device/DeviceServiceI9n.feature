@@ -315,11 +315,14 @@ Scenario: Creating new device, tagging it with specific Tag and then deleting th
     And I verify that tag "KuraDevice2" is deleted
     And I logout
 
-  Scenario: Stop broker after all scenarios
+  @StopExternalConsumers
+  Scenario: Stop external consumers for all scenario 
+
+  Scenario: Stop broker after all scenarios 
 
     Given Stop Broker
 
-  Scenario: Stop event broker for all scenarios
+  Scenario: Stop event broker after all scenarios 
 
     Given Stop Event Broker
 

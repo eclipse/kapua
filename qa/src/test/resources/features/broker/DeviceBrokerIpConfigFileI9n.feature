@@ -44,7 +44,13 @@ Feature: Device Broker connection ip with config file
     And I logout
     And Device death message is sent
 
-  Scenario: Stop broker after all scenarios
+  @StopExternalConsumers
+  Scenario: Stop external consumers for all scenario 
+
+  Scenario: Stop broker after all scenarios 
+
+  @StopEventBroker
+  Scenario: Stop event broker after all scenarios 
 
     Given Stop Broker
 

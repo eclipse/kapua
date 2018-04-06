@@ -19,9 +19,11 @@ import com.codahale.metrics.JmxReporter.Builder;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.SharedMetricRegistries;
 import com.codahale.metrics.Timer;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

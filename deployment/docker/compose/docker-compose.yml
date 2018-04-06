@@ -20,13 +20,14 @@ services:
   events-broker:
     image: kapua/kapua-events-broker:${IMAGE_VERSION}
     ports:
-      - 5672:5672
+      - 5682:5682
   broker:
     image: kapua/kapua-broker:${IMAGE_VERSION}
     ports:
       - 1883:1883
       - 8883:8883
       - 61614:61614
+      - 5672:5672
     depends_on:
       - db
       - es
@@ -75,3 +76,28 @@ services:
       - KAPUA_KEY_PASSWORD
       - KAPUA_KEYSTORE
       - KAPUA_KEYSTORE_PASSWORD
+  kapua-datastore-broker-processor:
+    image: kapua/kapua-datastore-broker:${IMAGE_VERSION}
+    ports:
+      - 8090:8090
+    depends_on:
+      - broker
+      - db
+      - es
+      - events-broker
+  kapua-error-broker-processor:
+    image: kapua/kapua-error-broker:${IMAGE_VERSION}
+    ports:
+      - 8092:8092
+    depends_on:
+      - broker
+      - db
+      - events-broker
+  kapua-lifecycle-broker-processor:
+    image: kapua/kapua-lifecycle-broker:${IMAGE_VERSION}
+    ports:
+      - 8091:8091
+    depends_on:
+      - broker
+      - db
+      - events-broker

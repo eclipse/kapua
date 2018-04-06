@@ -143,7 +143,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-transport-mqtt</artifactId>
+            <artifactId>kapua-transport-amqp-proton</artifactId>
         </dependency>
 
         <dependency>

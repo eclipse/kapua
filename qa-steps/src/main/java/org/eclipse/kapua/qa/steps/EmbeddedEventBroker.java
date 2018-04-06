@@ -31,8 +31,6 @@ import org.elasticsearch.common.UUIDs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.Inject;
-
 import cucumber.runtime.java.guice.ScenarioScoped;
 
 @ScenarioScoped
@@ -49,14 +47,7 @@ public class EmbeddedEventBroker {
 
     private static Map<String, List<AutoCloseable>> closables = new HashMap<>();
 
-    private DBHelper database;
-
     private static EmbeddedJMS jmsServer;
-
-    @Inject
-    public EmbeddedEventBroker(final DBHelper database) {
-        this.database = database;
-    }
 
     @Given("^Start Event Broker$")
     public void start() {
@@ -64,8 +55,7 @@ public class EmbeddedEventBroker {
         if (NO_EMBEDDED_SERVERS) {
             return;
         }
-        System.setProperty(SystemSettingKey.EVENT_BUS_URL.key(), "amqp://127.0.0.1:5672");
-        database.setup();
+        System.setProperty(SystemSettingKey.EVENT_BUS_URL.key(), "amqp://127.0.0.1:5682");
 
         logger.info("Starting new instance of Event Broker");
         try {
@@ -75,8 +65,8 @@ public class EmbeddedEventBroker {
             configuration.setJournalDirectory(DEFAULT_DATA_DIRECTORY);
             configuration.setSecurityEnabled(false);
             configuration.addAcceptorConfiguration("amqp", 
-                    "tcp://127.0.0.1:5672?protocols=AMQP");
-            configuration.addConnectorConfiguration("connector", "tcp://127.0.0.1:5672");
+                    "tcp://127.0.0.1:5682?protocols=AMQP");
+            configuration.addConnectorConfiguration("connector", "tcp://127.0.0.1:5682");
             JMSConfiguration jmsConfig = new JMSConfigurationImpl();
             ConnectionFactoryConfiguration cfConfig = new ConnectionFactoryConfigurationImpl().setName("cf").setConnectorNames(Arrays.asList("connector")).setBindings("cf");
             jmsConfig.getConnectionFactoryConfigurations().add(cfConfig);

@@ -1,0 +1,21 @@
+{
+    "kapua": {
+        "vertx-app": {
+            "startup-timeout": 12000000,
+            "shutdown-timeout": 12000000,
+            "metrics-enabled": true,
+            "metrics-root": "kapuaBase",
+            "warning-exception-time": 86400000,
+            "blocked-thread-check-interval": 86400000,
+            "http-server" : {
+                "host" : "localhost",
+                "port" : 8091,
+                "secure-port" : 8444
+            },
+            "event-bus-server": {
+                "health-address": "health",
+                "default-address": "kapua.requests"
+            }
+        }
+    }
+}

@@ -18,7 +18,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.broker.core.setting.BrokerSetting;
+import org.eclipse.kapua.broker.core.setting.BrokerPluginSetting;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
@@ -146,7 +146,7 @@ public class BrokerSteps extends Assert {
     @Before
     public void beforeScenario(Scenario scenario) throws Exception {
 
-        BrokerSetting.resetInstance();
+        BrokerPluginSetting.resetInstance();
 
         KapuaLocator locator = KapuaLocator.getInstance();
         devicePackageManagementService = locator.getService(DevicePackageManagementService.class);

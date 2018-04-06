@@ -38,6 +38,8 @@ import org.eclipse.kapua.service.datastore.client.QueryConverter;
 import org.eclipse.kapua.service.datastore.client.SchemaKeys;
 import org.eclipse.kapua.service.datastore.client.model.BulkUpdateRequest;
 import org.eclipse.kapua.service.datastore.client.model.BulkUpdateResponse;
+import org.eclipse.kapua.service.datastore.client.model.CheckResponse;
+import org.eclipse.kapua.service.datastore.client.model.CheckResponse.ESHealthStatus;
 import org.eclipse.kapua.service.datastore.client.model.IndexRequest;
 import org.eclipse.kapua.service.datastore.client.model.IndexResponse;
 import org.eclipse.kapua.service.datastore.client.model.InsertRequest;
@@ -82,6 +84,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
 
     private static final String KEY_DOC = "doc";
     private static final String KEY_DOC_AS_UPSERT = "doc_as_upsert";
+    private static final String KEY_ALL = "_all";
     private static final String KEY_DOC_ID = "_id";
     private static final String KEY_DOC_INDEX = "_index";
     private static final String KEY_DOC_TYPE = "_type";
@@ -610,6 +613,37 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
     }
 
     @Override
+    public CheckResponse healthCheck() throws ClientException {
+        logger.debug("healthCheck run...");
+        Response checkResponse = restCallTimeoutHandler(new Callable<Response>() {
+
+            @Override
+            public Response call() throws Exception {
+                return esClientProvider.getClient().performRequest(
+                        GET_ACTION,
+                        getClusterHealthPath(),
+                        Collections.singletonMap("pretty", "true"));
+            }
+        }, "*", "HEALTH CHECK");
+        if (checkResponse != null && checkResponse.getStatusLine() != null) {
+            if (checkResponse.getStatusLine().getStatusCode() < 400) {
+                JsonNode responseNode;
+                try {
+                    responseNode = MAPPER.readTree(EntityUtils.toString(checkResponse.getEntity()));
+                    String status = responseNode.get("status").asText();
+                    return new CheckResponse(ESHealthStatus.valueOf(status));
+                } catch (ParseException | IOException e) {
+                    logger.warn("Unparsable response: {}", e.getMessage(), e);
+                }
+            } else {
+                return new CheckResponse(ESHealthStatus.RED);
+            }
+        }
+        throw new ClientException(ClientErrorCodes.ACTION_ERROR,
+                (checkResponse != null && checkResponse.getStatusLine() != null) ? checkResponse.getStatusLine().getReasonPhrase() : "");
+    }
+
+    @Override
     public boolean isMappingExists(TypeDescriptor typeDescriptor) throws ClientException {
         logger.debug("Mapping exists - mapping name: '{} - {}'", typeDescriptor.getIndex(), typeDescriptor.getType());
         checkClient();
@@ -686,7 +720,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
             public Response call() throws Exception {
                 return esClientProvider.getClient().performRequest(
                         DELETE_ACTION,
-                        getIndexPath("_all"),
+                        getIndexPath(KEY_ALL),
                         Collections.<String, String>emptyMap());
             }
         }, INDEX_ALL, "DELETE INDEX");
@@ -800,6 +834,10 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
 
     private String getFindIndexPath(String index) {
         return String.format("/_cat/indices?h=index&index=%s", index);
+    }
+
+    private String getClusterHealthPath() {
+        return "/_cluster/health";
     }
 
     private String getBulkPath() {

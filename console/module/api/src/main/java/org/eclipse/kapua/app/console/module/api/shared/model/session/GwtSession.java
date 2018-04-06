@@ -181,7 +181,7 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
      * @param domain      The domain to check
      * @param action      The {@link GwtSessionPermissionAction} to check
      * @param targetScope The {@link GwtSessionPermissionScope} to check
-     * @return {@code true} if the current {@link GwtSession} has the permission, {@false} otherwise
+     * @return {@code true} if the current {@link GwtSession} has the permission, {@code false} otherwise
      * @since 1.0.0
      */
     public boolean hasPermission(String domain, GwtSessionPermissionAction action, GwtSessionPermissionScope targetScope) {
@@ -198,7 +198,7 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
      * </p>
      *
      * @param permissionToCheck The {@link GwtSessionPermission} to check
-     * @return {@code true} if the current {@link GwtSession} has the permission, {@false} otherwise
+     * @return {@code true} if the current {@link GwtSession} has the permission, {@code false} otherwise
      * @since 1.0.0
      */
     public boolean hasPermission(GwtSessionPermission permissionToCheck) {

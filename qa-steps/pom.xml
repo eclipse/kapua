@@ -108,6 +108,10 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-transport-amqp-proton</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-datastore-client-embedded</artifactId>
         </dependency>
         <dependency>
@@ -129,7 +133,19 @@
 
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-broker-core</artifactId>
+            <artifactId>kapua-broker-plugin</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-processor-datastore-broker</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-processor-lifecycle-broker</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-processor-error-broker</artifactId>
         </dependency>
 
         <!-- External dependencies -->

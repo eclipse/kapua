@@ -63,6 +63,7 @@ public class MqttAsyncTransport extends AbstractMqttTransport implements AutoClo
 
             @Override
             public void connectionLost(final Throwable cause) {
+                logger.warn("Client Disconnected: {}", cause.getMessage(), cause);
                 handleDisconnected();
             }
         });
@@ -127,7 +128,7 @@ public class MqttAsyncTransport extends AbstractMqttTransport implements AutoClo
 
                 @Override
                 public void messageArrived(final String topic, final MqttMessage mqttMessage) throws Exception {
-                    logger.debug("Received MQTT message from {}", topic);
+                    logger.info("Received MQTT message from {}", topic);
                     consumer.accept(new Message(Topic.fromString(topic), mqttMessage.getPayload(),
                             MqttAsyncTransport.this.topicContext));
                 }
