@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,16 +9,14 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.job.commons.context;
+package org.eclipse.kapua.job.engine.commons.exception;
 
-import org.eclipse.kapua.model.KapuaObjectFactory;
+import org.eclipse.kapua.KapuaErrorCode;
 
-import javax.batch.runtime.context.JobContext;
-import javax.batch.runtime.context.StepContext;
+public enum JobCommonsErrorCodes implements KapuaErrorCode {
 
-public interface JobContextFactory extends KapuaObjectFactory {
-
-    public KapuaJobContext newJobContext(JobContext jobContext);
-
-    public KapuaStepContext newStepContext(StepContext stepContext);
+    /**
+     * Error when reading jBatch Job properties from the XML definition
+     */
+    READ_JOB_PROPERTY
 }

@@ -9,19 +9,22 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.job.commons.step.definition;
-
-import java.util.List;
+package org.eclipse.kapua.job.engine.commons.step.definition;
 
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
+import org.eclipse.kapua.job.engine.commons.operation.DefaultTargetReader;
+import org.eclipse.kapua.job.engine.commons.operation.DefaultTargetWriter;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 import org.eclipse.kapua.service.job.step.definition.JobStepType;
 
-public abstract class AbstractGenericJobStepDefinition extends AbstractKapuaUpdatableEntity implements JobStepDefinition {
+import java.util.List;
+
+public abstract class AbstractTargetJobStepDefinition extends AbstractKapuaUpdatableEntity implements JobStepDefinition {
 
     private static final long serialVersionUID = 474195961081702478L;
 
+    @Override
     public void setName(String name) {
     }
 
@@ -31,7 +34,7 @@ public abstract class AbstractGenericJobStepDefinition extends AbstractKapuaUpda
 
     @Override
     public JobStepType getStepType() {
-        return JobStepType.GENERIC;
+        return JobStepType.TARGET;
     }
 
     @Override
@@ -40,7 +43,7 @@ public abstract class AbstractGenericJobStepDefinition extends AbstractKapuaUpda
 
     @Override
     public String getReaderName() {
-        return null;
+        return DefaultTargetReader.class.getName();
     }
 
     @Override
@@ -53,7 +56,7 @@ public abstract class AbstractGenericJobStepDefinition extends AbstractKapuaUpda
 
     @Override
     public String getWriterName() {
-        return null;
+        return DefaultTargetWriter.class.getName();
     }
 
     @Override

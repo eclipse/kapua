@@ -15,9 +15,7 @@
     <provided>
         <api>org.eclipse.kapua.service.job.JobFactory</api>
         <api>org.eclipse.kapua.service.job.JobService</api>
-
-        <api>org.eclipse.kapua.service.job.commons.context.JobContextFactory</api>
-
+        
         <api>org.eclipse.kapua.service.job.execution.JobExecutionService</api>
         <api>org.eclipse.kapua.service.job.execution.JobExecutionFactory</api>
 

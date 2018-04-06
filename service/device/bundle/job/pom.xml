@@ -30,7 +30,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-job-commons</artifactId>
+            <artifactId>kapua-job-engine-commons</artifactId>
         </dependency>
         
         <dependency>

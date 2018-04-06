@@ -106,8 +106,6 @@
         <api>org.eclipse.kapua.service.user.UserFactory</api>
         <api>org.eclipse.kapua.service.user.UserService</api>
 
-        <api>org.eclipse.kapua.service.job.commons.context.JobContextFactory</api>
-
         <api>org.eclipse.kapua.job.engine.JobEngineService</api>
         <api>org.eclipse.kapua.job.engine.JobEngineFactory</api>
 

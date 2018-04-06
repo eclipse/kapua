@@ -9,16 +9,15 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.job.commons.operation;
+package org.eclipse.kapua.job.engine.commons.operation;
 
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.job.engine.commons.context.JobContextWrapper;
+import org.eclipse.kapua.job.engine.commons.context.StepContextWrapper;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
-import org.eclipse.kapua.service.job.commons.context.JobContextFactory;
-import org.eclipse.kapua.service.job.commons.context.KapuaJobContext;
-import org.eclipse.kapua.service.job.commons.context.KapuaStepContext;
 import org.eclipse.kapua.service.job.operation.TargetReader;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 import org.eclipse.kapua.service.job.targets.JobTargetFactory;
@@ -41,7 +40,6 @@ public class DefaultTargetReader extends AbstractItemReader implements TargetRea
     private static final Logger LOG = LoggerFactory.getLogger(DefaultTargetReader.class);
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final JobContextFactory JOB_CONTEXT_FACTORY = LOCATOR.getFactory(JobContextFactory.class);
 
     private final JobTargetFactory jobTargetFactory = LOCATOR.getFactory(JobTargetFactory.class);
     private final JobTargetService jobTargetService = LOCATOR.getService(JobTargetService.class);
@@ -57,39 +55,39 @@ public class DefaultTargetReader extends AbstractItemReader implements TargetRea
 
     @Override
     public void open(Serializable arg0) throws Exception {
-        KapuaJobContext kapuaJobContext = JOB_CONTEXT_FACTORY.newJobContext(jobContext);
-        KapuaStepContext kapuaStepContext = JOB_CONTEXT_FACTORY.newStepContext(stepContext);
-        LOG.info("JOB {} - Opening cursor...", kapuaJobContext.getJobId());
+        JobContextWrapper jobContextWrapper = new JobContextWrapper(jobContext);
+        StepContextWrapper stepContextWrapper = new StepContextWrapper(stepContext);
+        LOG.info("JOB {} - Opening cursor...", jobContextWrapper.getJobId());
 
         AndPredicateImpl andPredicate = new AndPredicateImpl(
-                new AttributePredicateImpl<>(JobTargetPredicates.JOB_ID, kapuaJobContext.getJobId()),
-                new AttributePredicateImpl<>(JobTargetPredicates.STEP_INDEX, kapuaStepContext.getStepIndex()),
+                new AttributePredicateImpl<>(JobTargetPredicates.JOB_ID, jobContextWrapper.getJobId()),
+                new AttributePredicateImpl<>(JobTargetPredicates.STEP_INDEX, stepContextWrapper.getStepIndex()),
                 new AttributePredicateImpl<>(JobTargetPredicates.STATUS, JobTargetStatus.PROCESS_OK, Operator.NOT_EQUAL)
         );
 
-        if (!kapuaJobContext.getTargetSublist().isEmpty()) {
-            andPredicate.and(new AttributePredicateImpl<>(JobTargetPredicates.ENTITY_ID, kapuaJobContext.getTargetSublist().toArray()));
+        if (!jobContextWrapper.getTargetSublist().isEmpty()) {
+            andPredicate.and(new AttributePredicateImpl<>(JobTargetPredicates.ENTITY_ID, jobContextWrapper.getTargetSublist().toArray()));
         }
 
-        JobTargetQuery query = jobTargetFactory.newQuery(kapuaJobContext.getScopeId());
+        JobTargetQuery query = jobTargetFactory.newQuery(jobContextWrapper.getScopeId());
         query.setPredicate(andPredicate);
 
         jobTargets = KapuaSecurityUtils.doPrivileged(() -> jobTargetService.query(query));
 
-        LOG.info("JOB {} - Opening cursor... Done!", kapuaJobContext.getJobId());
+        LOG.info("JOB {} - Opening cursor... Done!", jobContextWrapper.getJobId());
     }
 
     @Override
     public Object readItem() throws Exception {
-        KapuaJobContext kapuaJobContext = JOB_CONTEXT_FACTORY.newJobContext(jobContext);
-        LOG.info("JOB {} - Reading item...", kapuaJobContext.getJobId());
+        JobContextWrapper jobContextWrapper = new JobContextWrapper(jobContext);
+        LOG.info("JOB {} - Reading item...", jobContextWrapper.getJobId());
 
         JobTarget currentJobTarget = null;
         if (jobTargetIndex < jobTargets.getSize()) {
             currentJobTarget = jobTargets.getItem(jobTargetIndex++);
         }
 
-        LOG.info("JOB {} - Reading item... Done!", kapuaJobContext.getJobId());
+        LOG.info("JOB {} - Reading item... Done!", jobContextWrapper.getJobId());
         return currentJobTarget;
     }
 }
