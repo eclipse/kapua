@@ -33,6 +33,10 @@ public class EndpointSessionPermission extends GwtSessionPermission {
         return new EndpointSessionPermission(GwtSessionPermissionAction.read);
     }
 
+    public static EndpointSessionPermission readAll() {
+        return new EndpointSessionPermission(GwtSessionPermissionAction.read, GwtSessionPermissionScope.ALL);
+    }
+
     public static EndpointSessionPermission write() {
         return new EndpointSessionPermission(GwtSessionPermissionAction.write);
     }
