@@ -691,7 +691,7 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-job-commons</artifactId>
+                <artifactId>kapua-job-engine-commons</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -885,7 +885,7 @@
                 <artifactId>kapua-foreignkeys</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            
+
             <!-- External dependencies -->
             <dependency>
                 <groupId>commons-beanutils</groupId>

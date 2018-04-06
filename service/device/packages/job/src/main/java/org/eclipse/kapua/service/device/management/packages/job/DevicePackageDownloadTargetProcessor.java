@@ -13,11 +13,11 @@ package org.eclipse.kapua.service.device.management.packages.job;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.job.engine.commons.operation.AbstractTargetProcessor;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageManagementService;
 import org.eclipse.kapua.service.device.management.packages.job.definition.DevicePackageDownloadPropertyKeys;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
-import org.eclipse.kapua.service.job.commons.operation.AbstractTargetProcessor;
 import org.eclipse.kapua.service.job.operation.TargetOperation;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 
@@ -40,8 +40,8 @@ public class DevicePackageDownloadTargetProcessor extends AbstractTargetProcesso
     public void processTarget(JobTarget jobTarget) throws KapuaException {
         setContext(jobContext, stepContext);
 
-        DevicePackageDownloadRequest packageDownloadRequest = kapuaStepContext.getStepProperty(DevicePackageDownloadPropertyKeys.PACKAGE_DOWNLOAD_REQUEST, DevicePackageDownloadRequest.class);
-        Long timeout = kapuaStepContext.getStepProperty(DevicePackageDownloadPropertyKeys.TIMEOUT, Long.class);
+        DevicePackageDownloadRequest packageDownloadRequest = stepContextWrapper.getStepProperty(DevicePackageDownloadPropertyKeys.PACKAGE_DOWNLOAD_REQUEST, DevicePackageDownloadRequest.class);
+        Long timeout = stepContextWrapper.getStepProperty(DevicePackageDownloadPropertyKeys.TIMEOUT, Long.class);
 
         KapuaSecurityUtils.doPrivileged(() -> PACKAGES_MANAGEMENT_SERVICE.downloadExec(jobTarget.getScopeId(), jobTarget.getJobTargetId(), packageDownloadRequest, timeout));
     }

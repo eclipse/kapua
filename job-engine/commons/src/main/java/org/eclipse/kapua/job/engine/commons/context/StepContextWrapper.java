@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.job.commons.context;
+package org.eclipse.kapua.job.engine.commons.context;
 
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -27,29 +27,26 @@ import javax.xml.stream.XMLStreamException;
 import java.io.Serializable;
 import java.util.Properties;
 
-public class KapuaStepContextImpl implements KapuaStepContext {
+public class StepContextWrapper {
 
     private StepContext stepContext;
 
-    public KapuaStepContextImpl(StepContext stepContext) {
+    public StepContextWrapper(StepContext stepContext) {
         this.stepContext = stepContext;
     }
 
-    @Override
     public int getStepIndex() {
         Properties jobContextProperties = stepContext.getProperties();
         String stepIndexString = jobContextProperties.getProperty(StepContextPropertyNames.STEP_INDEX);
         return stepIndexString != null ? Integer.parseInt(stepIndexString) : null;
     }
 
-    @Override
     public Integer getNextStepIndex() {
         Properties jobContextProperties = stepContext.getProperties();
         String stepNextIndexString = jobContextProperties.getProperty(StepContextPropertyNames.STEP_NEXT_INDEX);
         return stepNextIndexString != null ? Integer.parseInt(stepNextIndexString) : null;
     }
 
-    @Override
     public <T> T getStepProperty(String stepPropertyName, Class<T> type) throws KapuaIllegalArgumentException {
         Properties jobContextProperties = stepContext.getProperties();
         String stepPropertyString = jobContextProperties.getProperty(stepPropertyName);
@@ -94,62 +91,50 @@ public class KapuaStepContextImpl implements KapuaStepContext {
         return stepProperty;
     }
 
-    @Override
     public String getStepName() {
         return stepContext.getStepName();
     }
 
-    @Override
     public Object getTransientUserData() {
         return stepContext.getTransientUserData();
     }
 
-    @Override
     public void setTransientUserData(Object data) {
         stepContext.setTransientUserData(data);
     }
 
-    @Override
     public long getStepExecutionId() {
         return stepContext.getStepExecutionId();
     }
 
-    @Override
     public Properties getProperties() {
         return stepContext.getProperties();
     }
 
-    @Override
     public Serializable getPersistentUserData() {
         return stepContext.getPersistentUserData();
     }
 
-    @Override
     public void setPersistentUserData(Serializable data) {
         stepContext.setPersistentUserData(data);
     }
 
-    @Override
     public BatchStatus getBatchStatus() {
         return stepContext.getBatchStatus();
     }
 
-    @Override
     public String getExitStatus() {
         return stepContext.getExitStatus();
     }
 
-    @Override
     public void setExitStatus(String status) {
         stepContext.setExitStatus(status);
     }
 
-    @Override
     public Exception getException() {
         return stepContext.getException();
     }
 
-    @Override
     public Metric[] getMetrics() {
         return stepContext.getMetrics();
     }

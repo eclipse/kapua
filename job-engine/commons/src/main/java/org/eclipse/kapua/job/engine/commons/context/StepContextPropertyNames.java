@@ -9,22 +9,12 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.job.commons.context;
+package org.eclipse.kapua.job.engine.commons.context;
 
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.job.commons.model.JobTargetSublist;
+public interface StepContextPropertyNames {
 
-import javax.batch.runtime.context.JobContext;
+    String STEP_INDEX = "step.stepIndex";
 
-public interface KapuaJobContext extends JobContext {
+    String STEP_NEXT_INDEX = "step.nextStepIndex";
 
-    public KapuaId getScopeId();
-
-    public KapuaId getJobId();
-
-    public void setKapuaExecutionId(KapuaId executionId);
-
-    public KapuaId getKapuaExecutionId();
-
-    public JobTargetSublist getTargetSublist();
 }

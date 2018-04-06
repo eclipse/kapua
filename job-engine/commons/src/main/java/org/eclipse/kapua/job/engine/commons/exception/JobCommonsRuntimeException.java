@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,18 +9,13 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.job.commons.context;
+package org.eclipse.kapua.job.engine.commons.exception;
 
-import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.KapuaRuntimeException;
 
-import javax.batch.runtime.context.StepContext;
+public class JobCommonsRuntimeException extends KapuaRuntimeException {
 
-public interface KapuaStepContext extends StepContext {
-
-    public int getStepIndex();
-
-    public Integer getNextStepIndex();
-
-    public <T> T getStepProperty(String stepPropertyName, Class<T> type) throws KapuaIllegalArgumentException;
-
+    public JobCommonsRuntimeException(JobCommonsErrorCodes code, Throwable cause, Object... arguments) {
+        super(code, cause, arguments);
+    }
 }

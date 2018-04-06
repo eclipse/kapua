@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.job.commons.context;
+package org.eclipse.kapua.job.engine.commons.context;
 
 public interface JobContextPropertyNames {
 

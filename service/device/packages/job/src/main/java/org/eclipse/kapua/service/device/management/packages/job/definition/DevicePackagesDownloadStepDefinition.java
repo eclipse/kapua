@@ -11,10 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.packages.job.definition;
 
+import org.eclipse.kapua.job.engine.commons.step.definition.AbstractTargetJobStepDefinition;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.packages.job.DevicePackageDownloadTargetProcessor;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
-import org.eclipse.kapua.service.job.commons.step.definition.AbstractTargetJobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionFactory;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;

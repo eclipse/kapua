@@ -46,7 +46,7 @@ import org.eclipse.kapua.service.device.management.packages.model.download.Devic
 import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallRequest;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
-import org.eclipse.kapua.service.job.commons.model.JobTargetSublist;
+import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
 
 import javax.xml.bind.JAXBContext;

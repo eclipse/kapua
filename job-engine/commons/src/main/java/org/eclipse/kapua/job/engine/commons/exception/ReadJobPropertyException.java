@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.job.commons.exception;
+package org.eclipse.kapua.job.engine.commons.exception;
 
 public class ReadJobPropertyException extends JobCommonsRuntimeException {
 

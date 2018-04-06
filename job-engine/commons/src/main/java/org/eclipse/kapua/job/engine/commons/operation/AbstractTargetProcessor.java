@@ -9,13 +9,11 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.job.commons.operation;
+package org.eclipse.kapua.job.engine.commons.operation;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.service.job.commons.context.JobContextFactory;
-import org.eclipse.kapua.service.job.commons.context.KapuaJobContext;
-import org.eclipse.kapua.service.job.commons.context.KapuaStepContext;
+import org.eclipse.kapua.job.engine.commons.context.JobContextWrapper;
+import org.eclipse.kapua.job.engine.commons.context.StepContextWrapper;
 import org.eclipse.kapua.service.job.operation.TargetOperation;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 import org.eclipse.kapua.service.job.targets.JobTargetStatus;
@@ -29,11 +27,8 @@ public abstract class AbstractTargetProcessor implements TargetOperation {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractTargetProcessor.class);
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final JobContextFactory JOB_CONTEXT_FACTORY = LOCATOR.getFactory(JobContextFactory.class);
-
-    protected KapuaJobContext kapuaJobContext;
-    protected KapuaStepContext kapuaStepContext;
+    protected JobContextWrapper jobContextWrapper;
+    protected StepContextWrapper stepContextWrapper;
 
     @Override
     public final Object processItem(Object item) throws Exception {
@@ -58,7 +53,7 @@ public abstract class AbstractTargetProcessor implements TargetOperation {
     public abstract void processTarget(JobTarget jobTarget) throws KapuaException;
 
     public void setContext(JobContext jobContext, StepContext stepContext) {
-        kapuaJobContext = JOB_CONTEXT_FACTORY.newJobContext(jobContext);
-        kapuaStepContext = JOB_CONTEXT_FACTORY.newStepContext(stepContext);
+        jobContextWrapper = new JobContextWrapper(jobContext);
+        stepContextWrapper = new StepContextWrapper(stepContext);
     }
 }

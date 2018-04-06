@@ -13,10 +13,10 @@ package org.eclipse.kapua.service.device.management.bundle.job;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.job.engine.commons.operation.AbstractTargetProcessor;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService;
 import org.eclipse.kapua.service.device.management.command.job.definition.DeviceBundlePropertyKeys;
-import org.eclipse.kapua.service.job.commons.operation.AbstractTargetProcessor;
 import org.eclipse.kapua.service.job.operation.TargetOperation;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 
@@ -39,8 +39,8 @@ public class DeviceBundleStopTargetProcessor extends AbstractTargetProcessor imp
     public void processTarget(JobTarget jobTarget) throws KapuaException {
         setContext(jobContext, stepContext);
 
-        String bundleId = kapuaStepContext.getStepProperty(DeviceBundlePropertyKeys.BUNDLE_ID, String.class);
-        Long timeout = kapuaStepContext.getStepProperty(DeviceBundlePropertyKeys.TIMEOUT, Long.class);
+        String bundleId = stepContextWrapper.getStepProperty(DeviceBundlePropertyKeys.BUNDLE_ID, String.class);
+        Long timeout = stepContextWrapper.getStepProperty(DeviceBundlePropertyKeys.TIMEOUT, Long.class);
 
         KapuaSecurityUtils.doPrivileged(() -> BUNDLE_MANAGEMENT_SERVICE.stop(jobTarget.getScopeId(), jobTarget.getJobTargetId(), bundleId, timeout));
     }
