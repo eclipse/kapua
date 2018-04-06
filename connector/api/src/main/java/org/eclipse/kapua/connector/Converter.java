@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,19 +9,14 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.message;
+package org.eclipse.kapua.connector;
 
-/**
- * Device position definition.
- *
- * @since 1.0
- */
+import java.util.Map;
 
-import org.eclipse.kapua.message.xml.MessageXmlRegistry;
+public interface Converter<F,T> {
 
-import javax.xml.bind.annotation.XmlType;
+    public static final String MESSAGE_DESTINATION = new String("message-destination");
+    public static final String MESSAGE_QOS = new String("message-qos");
 
-@XmlType(factoryClass = MessageXmlRegistry.class, factoryMethod = "newPosition")
-public interface Position {
-
+    public T convert(Map<String,Object> properties, F message) throws KapuaConnectorException;
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,19 +9,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.message;
+package org.eclipse.kapua.connector.converter.kura.proto;
 
 /**
- * Device position definition.
- *
- * @since 1.0
+ * @noextend This class is not intended to be subclassed by clients.
  */
+public class KuraInvalidMessageException extends RuntimeException {
 
-import org.eclipse.kapua.message.xml.MessageXmlRegistry;
+    private static final long serialVersionUID = -3636897647706575102L;
 
-import javax.xml.bind.annotation.XmlType;
-
-@XmlType(factoryClass = MessageXmlRegistry.class, factoryMethod = "newPosition")
-public interface Position {
-
+    public KuraInvalidMessageException(Throwable cause) {
+        super(cause);
+    }
 }

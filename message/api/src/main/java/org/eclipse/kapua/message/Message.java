@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.message;
 
+import javax.xml.bind.annotation.XmlElement;
+
 import org.eclipse.kapua.KapuaSerializable;
 
 /**
@@ -21,5 +23,33 @@ import org.eclipse.kapua.KapuaSerializable;
  * @since 1.0
  */
 public interface Message<C extends Channel, P extends Payload> extends KapuaSerializable {
+    /**
+     * Get the message channel
+     *
+     * @return
+     */
+    @XmlElement(name = "channel")
+    public C getChannel();
 
+    /**
+     * Set the message channel
+     *
+     * @param semanticChannel
+     */
+    public void setChannel(C semanticChannel);
+
+    /**
+     * Get the message payload
+     *
+     * @return
+     */
+    @XmlElement(name = "payload")
+    public P getPayload();
+
+    /**
+     * Set the message payload
+     *
+     * @param payload
+     */
+    public void setPayload(P payload);
 }
