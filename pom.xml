@@ -10,6 +10,7 @@
     Contributors:
         Eurotech - initial API and implementation
  -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -57,6 +58,7 @@
         <mockito.version>1.10.19</mockito.version>
         <opencsv.version>3.7</opencsv.version>
         <paho.version>1.1.0</paho.version>
+        <poi.version>3.11</poi.version>
         <protobuf.version>2.6.1</protobuf.version>
         <reflections.version>0.9.10</reflections.version>
         <shiro.version>1.3.2</shiro.version>
@@ -75,15 +77,18 @@
         <log4j-api.version>2.8.2</log4j-api.version> <!-- same version used by elasticsearch -->
         <log4j-to-slf4j.version>2.8.2</log4j-to-slf4j.version> <!-- same version used by elasticsearch -->
         <log4j2-mock.version>0.0.1</log4j2-mock.version>
+        <tomcat.version>8.0.41</tomcat.version>
         <qpid-jms-client.version>0.24.0</qpid-jms-client.version>
         <qpid-proton.version>0.20.0</qpid-proton.version>
         <quartz-scheduler.version>2.2.3</quartz-scheduler.version>
         <jetty.version>9.4.12.v20180830</jetty.version>
 
         <!-- Plugins versions -->
-        <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
+        <checkstyle-maven-plugin.version>2.17</checkstyle-maven-plugin.version>
+        <checkstyle.version>7.6.1</checkstyle.version>
         <maven-assembly-plugin.version>3.0.0</maven-assembly-plugin.version>
-        <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
+        <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
+        <docker-maven-plugin.version>0.19.1</docker-maven-plugin.version>
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
         <maven-dependency-plugin.version>3.0.1</maven-dependency-plugin.version>
         <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
@@ -98,8 +103,9 @@
         <checkstyle.version>7.6.1</checkstyle.version>
         <docker-maven-plugin.version>0.24.0</docker-maven-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.5</nexus-staging-maven-plugin.version>
-        <jacoco.version>0.7.9</jacoco.version>
         <sql-maven-plugin.version>1.5</sql-maven-plugin.version>
+
+        <jacoco.version>0.7.9</jacoco.version>
         <surefire.version>2.20</surefire.version>
 
         <!-- Docker configuration -->
@@ -124,6 +130,16 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.karaf.tooling</groupId>
+                    <artifactId>karaf-maven-plugin</artifactId>
+                    <version>4.1.1</version>
+                </plugin>
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
                     <version>${maven-assembly-plugin.version}</version>
@@ -135,8 +151,46 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>${maven-release-plugin.version}</version>
+                    <configuration>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                        <releaseProfiles>javadoc,deploy,release,!console</releaseProfiles>
+                        <goals>deploy</goals>
+                        <preparationGoals>clean install</preparationGoals>
+                        <tagNameFormat>@{project.version}</tagNameFormat>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.os72</groupId>
+                    <artifactId>protoc-jar-maven-plugin</artifactId>
+                    <version>3.1.0.5</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>io.fabric8</groupId>
+                    <artifactId>docker-maven-plugin</artifactId>
+                    <version>${docker-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven-compiler-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>${maven-dependency-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${maven-resources-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${maven-javadoc-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -200,11 +254,13 @@
                     <artifactId>maven-shade-plugin</artifactId>
                     <version>3.0.0</version>
                 </plugin>
+
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${surefire.version}</version>
                 </plugin>
+
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
@@ -270,6 +326,10 @@
 
                                     <licenseMerge>Eclipse Distribution License Version 1.0|Eclipse Distribution License v. 1.0</licenseMerge>
                                     <licenseMerge>Eclipse Distribution License Version 1.0|Eclipse Distribution License (EDL), Version 1.0</licenseMerge>
+
+                                    <!-- <licenseMerge>EPL 1.0|Eclipse Public License Version 1.0</licenseMerge> <licenseMerge>EPL 1.0|Eclipse Public License - Version 1.0</licenseMerge> <licenseMerge>EPL
+                                        1.0|Eclipse Public License (EPL), Version 1.0</licenseMerge> <licenseMerge>EPL 1.0|Eclipse Public License v1.0</licenseMerge> <licenseMerge>CCDL 1.0|Common Development and Distribution License (CDDL) v1.0</licenseMerge>
+                                        <licenseMerge>CCDL 1.0|Common Development and Distribution License</licenseMerge> <licenseMerge>CCDL 1.1</licenseMerge> -->
                                 </licenseMerges>
                             </configuration>
                         </execution>
@@ -360,7 +420,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>${maven-checkstyle-plugin.version}</version>
+                    <version>${checkstyle-maven-plugin.version}</version>
                     <dependencies>
                         <dependency>
                             <groupId>org.eclipse.kapua.build</groupId>
@@ -558,7 +618,27 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-device-asset-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-device-asset-internal</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-device-call-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-device-bundle-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-device-bundle-internal</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -568,97 +648,77 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-device-command-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-device-command-internal</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-device-asset-job</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-device-bundle-job</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-device-command-job</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-device-configuration-job</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-device-packages-job</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-device-commons</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-device-management-all-api</artifactId>
+                <artifactId>kapua-device-configuration-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-device-management-all-internal</artifactId>
+                <artifactId>kapua-device-configuration-internal</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-device-management-api</artifactId>
+                <artifactId>kapua-device-packages-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-device-management-asset-api</artifactId>
+                <artifactId>kapua-device-packages-internal</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-device-management-asset-internal</artifactId>
+                <artifactId>kapua-device-registry-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-device-management-asset-job</artifactId>
+                <artifactId>kapua-device-registry-internal</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-device-management-bundle-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-device-management-bundle-internal</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-device-management-bundle-job</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-device-management-command-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-device-management-command-internal</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-device-management-command-job</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-device-management-configuration-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-device-management-configuration-internal</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-device-management-configuration-job</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-device-management-packages-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-device-management-packages-internal</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-device-management-packages-job</artifactId>
+                <artifactId>kapua-device-request-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -1042,6 +1102,11 @@
                 <version>${commons-pool.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>${poi.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.opencsv</groupId>
                 <artifactId>opencsv</artifactId>
                 <version>${opencsv.version}</version>
@@ -1407,6 +1472,19 @@
             <id>deploy</id>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>${maven-source-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>
