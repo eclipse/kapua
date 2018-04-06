@@ -17,10 +17,13 @@ Feature: Datastore tests
   Scenario: Start datastore for all scenarios
 
   @StartEventBroker
-  Scenario: Start event broker for all scenarios
+  Scenario: Start broker for all scenarios
 
   @StartBroker
-  Scenario: Start broker for all scenarios
+  Scenario: Start event broker for all scenarios
+
+  @StartExternalConsumers
+  Scenario: Start external consumers for all scenario
 
   Scenario: Delete items by the datastore ID
     Delete a previously stored message and verify that it is not in the store any more. Also delete and check the
@@ -654,11 +657,14 @@ Feature: Datastore tests
       |tba_2/1/1/3 |
     And All indices are deleted
 
+  @StopExternalConsumers
+  Scenario: Stop external consumers for all scenario 
+
   @StopBroker
-  Scenario: Stop broker after all scenarios
+  Scenario: Stop broker after all scenarios 
 
   @StopEventBroker
-  Scenario: Stop event broker for all scenarios
+  Scenario: Stop event broker after all scenarios 
 
   @StopDatastore
   Scenario: Stop datastore after all scenarios

@@ -12,7 +12,7 @@
 #*******************************************************************************
 
 BROKER_ASSEMBLY_DIR="/kapua/assembly/broker";
-BROKER_CORE_DEPENDENCY_DIR="/kapua/broker-core/target/dependency";
+BROKER_PLUGIN_DEPENDENCY_DIR="/kapua/broker/plugin/target/dependency";
 BROKER_INSTALLATION_DIR="/usr/local/activemq";
 
 echo "Cleanup the symbolic links to Kapua jars..."
@@ -26,15 +26,15 @@ echo "Cleanup the symbolic links to Kapua jars... DONE!"
 echo "Create the symbolic links to Kapua jars..."
 
 echo "    Copy dependencies for broker-core..."
-for name in $(ls  ${BROKER_CORE_DEPENDENCY_DIR} | grep -Ev 'qa|jaxb-|activemq-|kapua-');
+for name in $(ls  ${BROKER_PLUGIN_DEPENDENCY_DIR} | grep -Ev 'qa|jaxb-|activemq-|kapua-');
     do
-        echo "        Create symbolic link from ./lib/extra/${name}  ${BROKER_CORE_DEPENDENCY_DIR}/${name}";
-        ln -s  ${BROKER_CORE_DEPENDENCY_DIR}/${name} ./lib/extra/${name};
+        echo "        Create symbolic link from ./lib/extra/${name}  ${BROKER_PLUGIN_DEPENDENCY_DIR}/${name}";
+        ln -s  ${BROKER_PLUGIN_DEPENDENCY_DIR}/${name} ./lib/extra/${name};
     done;
 echo "    Copy dependencies for broker-core... DONE!"
 
 echo '    Copy Kapua modules...'
-for name in $(find /kapua -name 'kapua-*.jar' | grep target | grep -Ev 'qa|bin|test|console|WEB-INF|dependency|mysql|assembly|dev-tool|job|scheduler');
+for name in $(find /kapua -name 'kapua-*.jar' | grep target | grep -Ev 'qa|bin|test|console|WEB-INF|dependency|mysql|assembly|dev-tool|job|scheduler|broker-core|broker-client|datastore-int|datastore-client|transport|translator|simulator');
     do
         jar_name=$(echo - ${name} - ${name} | awk -F"/" '{print $NF}');
         echo "        Create symbolic link from ./lib/extra/${jar_name} ${name}";

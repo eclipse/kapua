@@ -54,10 +54,11 @@ Vagrant.configure("2") do |config|
   config.vm.network "forwarded_port", guest: 1883, host: 1883
   config.vm.network "forwarded_port", guest: 8883, host: 8883
   config.vm.network "forwarded_port", guest: 61614, host: 61614
+  config.vm.network "forwarded_port", guest: 5672, host: 5672
   config.vm.network "forwarded_port", guest: 5005, host: 5005
 
   # ActiveMQ Artemis
-  config.vm.network "forwarded_port", guest: 5672, host: 5672
+  config.vm.network "forwarded_port", guest: 5682, host: 5682
   config.vm.network "forwarded_port", guest: 8161, host: 8161
   config.vm.network "forwarded_port", guest: 61616, host: 61616
 
@@ -169,7 +170,7 @@ Vagrant.configure("2") do |config|
       cd /usr/local/artemis/kapua
       echo "Setting up Artemis..."
       sudo cp /kapua/assembly/events-broker/configurations/broker.xml etc/
-      sudo sed -i '/<acceptor.*5672.*<\\/acceptor>/! s|<acceptor.*</acceptor>||g' etc/broker.xml
+      sudo sed -i '/<acceptor.*5682.*<\\/acceptor>/! s|<acceptor.*</acceptor>||g' etc/broker.xml
       sudo sed -i "s|/usr/local/artemis|/usr/local/artemis|g" etc/artemis.profile
       sudo sed -i "s|localhost:8161|${BINDING_IP}:8161|g" etc/bootstrap.xml
       sudo chown -R vagrant:vagrant /usr/local/artemis/

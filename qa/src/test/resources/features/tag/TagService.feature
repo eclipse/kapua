@@ -26,10 +26,13 @@ Feature: Tag Service
   Scenario: Start datastore for all scenarios
 
   @StartEventBroker
-  Scenario: Start event broker for all scenarios
+  Scenario: Start broker for all scenarios
 
   @StartBroker
-  Scenario: Start broker for all scenarios
+  Scenario: Start event broker for all scenarios
+
+  @StartExternalConsumers
+  Scenario: Start external consumers for all scenario
 
   Scenario: Creating tag
     Create a tag entry, with specified name. Name is only tag specific attribute.
@@ -49,11 +52,14 @@ Feature: Tag Service
     Then Tag with name "tagName2" is found and deleted
       And I logout
 
+  @StopExternalConsumers
+  Scenario: Stop external consumers for all scenario 
+
   @StopBroker
-  Scenario: Stop broker after all scenarios
+  Scenario: Stop broker after all scenarios 
 
   @StopEventBroker
-  Scenario: Stop event broker for all scenarios
+  Scenario: Stop event broker after all scenarios 
 
   @StopDatastore
   Scenario: Stop datastore after all scenarios

@@ -27,6 +27,7 @@
     <modules>
         <module>api</module>
         <module>internal</module>
+        <module>connector</module>
     </modules>
 
 </project>

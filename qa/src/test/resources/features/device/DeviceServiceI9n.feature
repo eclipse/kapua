@@ -18,10 +18,13 @@ Feature: Device Registry Integration
   Scenario: Start datastore for all scenarios
 
   @StartEventBroker
-  Scenario: Start event broker for all scenarios
+  Scenario: Start broker for all scenarios
 
   @StartBroker
-  Scenario: Start broker for all scenarios
+  Scenario: Start event broker for all scenarios
+
+  @StartExternalConsumers
+  Scenario: Start external consumers for all scenario
 
 Scenario: Birth message handling from a new device
     A birth message is received. The referenced device does not yet exist and is created on-the-fly. After the
@@ -306,11 +309,14 @@ Scenario: Creating new device, tagging it with specific Tag and then deleting th
     And I verify that tag "KuraDevice2" is deleted
     And I logout
 
+  @StopExternalConsumers
+  Scenario: Stop external consumers for all scenario 
+
   @StopBroker
-  Scenario: Stop broker after all scenarios
+  Scenario: Stop broker after all scenarios 
 
   @StopEventBroker
-  Scenario: Stop event broker for all scenarios
+  Scenario: Stop event broker after all scenarios 
 
   @StopDatastore
   Scenario: Stop datastore after all scenarios

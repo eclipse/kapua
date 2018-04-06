@@ -22,11 +22,13 @@ ENV DATASTORE_CLIENT org.eclipse.kapua.service.datastore.client.rest.RestDatasto
 ENV SQL_DB_ADDR db
 ENV SQL_DB_PORT 3306
 
-ENV SERVICE_BROKER_ADDR failover:(amqp://events-broker:5672)?jms.sendTimeout=1000
+ENV SERVICE_BROKER_ADDR failover:(amqp://events-broker:5682)?jms.sendTimeout=1000
 
 USER 0
 
-RUN useradd -u 1002 -g 0 -d '/var/opt/activemq' -s '/sbin/nologin' activemq
+RUN useradd -u 1002 -g 0 -d '/var/opt/activemq' -s '/sbin/nologin' activemq && \
+    chown -R activemq:root /var/opt/activemq /opt/activemq && \
+    chmod -R g=u /var/opt/activemq /opt/activemq
 
 ENV ACTIVEMQ_OPTS "-Dcommons.db.schema.update=true \
                    -Dcommons.db.connection.host=\${SQL_DB_ADDR} \
@@ -42,5 +44,7 @@ ENV ACTIVEMQ_OPTS "-Dcommons.db.schema.update=true \
 EXPOSE 1883 8883 61614 61615 8161
 
 VOLUME /opt/activemq/data
+
+USER 1002
 
 ENTRYPOINT /var/opt/activemq/run-broker

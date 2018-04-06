@@ -46,7 +46,7 @@ objects:
     template:
       metadata:
         annotations:
-          openshift.io/container.kapua-broker.image.entrypoint: '["/maven/bin/activemq","console"]'
+          openshift.io/container.kapua-broker.image.entrypoint: '["/opt/activemq/bin/activemq","console"]'
         labels:
           app: kapua-broker
           deploymentconfig: kapua-broker
@@ -61,11 +61,11 @@ objects:
               -Dcommons.db.schema.update=true
               -Dmetrics.enable.jmx=true
               -Ddatastore.elasticsearch.nodes=$ELASTICSEARCH_PORT_9200_TCP_ADDR
-              -Dcertificate.jwt.private.key=file:///home/kapua/key.pk8
-              -Dcertificate.jwt.certificate=file:///home/kapua/cert.pem
-              -Dcommons.eventbus.url="failover:(amqp://${EVENTS_BROKER_PORT_5672_TCP_ADDR}:${EVENTS_BROKER_PORT_5672_TCP_PORT})"
+              -Dcertificate.jwt.private.key=file:///var/opt/activemq/key.pk8
+              -Dcertificate.jwt.certificate=file:///var/opt/activemq/cert.pem
+              -Dcommons.eventbus.url="failover:(amqp://${EVENTS_BROKER_PORT_5682_TCP_ADDR}:${EVENTS_BROKER_PORT_5682_TCP_PORT})"
               -Dbroker.ip=kapua-broker.eclipse-kapua.svc
-              -javaagent:/jolokia-jvm-agent.jar=port=8778,protocol=https,caCert=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt,clientPrincipal=cn=system:master-proxy,useSslClientAuthentication=true,extraClientCheck=true,host=0.0.0.0,discoveryEnabled=false,user=${JOLOKIA_USER},password=${JOLOKIA_PASSWORD}
+              -javaagent:/opt/jolokia/jolokia-jvm-agent.jar=port=8778,protocol=https,caCert=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt,clientPrincipal=cn=system:master-proxy,useSslClientAuthentication=true,extraClientCheck=true,host=0.0.0.0,discoveryEnabled=false,user=${JOLOKIA_USER},password=${JOLOKIA_PASSWORD}
               ${JAVA_OPTS_EXTRA}
           image: ${DOCKER_ACCOUNT}/kapua-broker:${IMAGE_VERSION}
           imagePullPolicy: IfNotPresent
@@ -75,6 +75,7 @@ objects:
             name: jolokia
           - containerPort: 1883
           - containerPort: 61614
+          - containerPort: 5672
           readinessProbe:
             failureThreshold: 3
             initialDelaySeconds: 15
@@ -84,7 +85,7 @@ objects:
               port: 1883
             timeoutSeconds: 1
           volumeMounts:
-          - mountPath: /maven/data
+          - mountPath: /opt/activemq/data
             name: kapua-broker-volume-1
         dnsPolicy: ClusterFirst
         restartPolicy: Always

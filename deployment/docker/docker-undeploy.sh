@@ -17,6 +17,10 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 echo "Undeploying Eclipse Kapua..."
 
-docker-compose -f ${SCRIPT_DIR}/compose/docker-compose.yml down
+if [ "$1" == 'HONO' ]; then
+    docker-compose -f ${SCRIPT_DIR}/compose/docker-compose-hono.yml down
+else
+    docker-compose -f ${SCRIPT_DIR}/compose/docker-compose.yml down
+fi
 
 echo "Undeploying Eclipse Kapua... DONE!"

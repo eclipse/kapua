@@ -1,0 +1,78 @@
+version: '3.1'
+
+services:
+  db:
+    image: kapua/kapua-sql:${IMAGE_VERSION}
+    ports:
+      - 8181:8181
+      - 3306:3306
+  es:
+    image: elasticsearch:5.4.0
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      - cluster.name=kapua-datastore
+      - discovery.type=single-node
+      - transport.host=_site_
+      - transport.ping_schedule=-1
+      - transport.tcp.connect_timeout=30s
+  events-broker:
+    image: kapua/kapua-events-broker:${IMAGE_VERSION}
+    ports:
+      - 5682:5682
+  kapua-console:
+    image: kapua/kapua-console:${IMAGE_VERSION}
+    ports:
+      - 8080:8080
+      - 8443:8443
+    depends_on:
+      - db
+      - es
+      - events-broker
+    environment:
+      - KAPUA_DISABLE_SSL
+      - KAPUA_CA
+      - KAPUA_CRT
+      - KAPUA_KEY
+      - KAPUA_KEY_PASSWORD
+      - KAPUA_KEYSTORE
+      - KAPUA_KEYSTORE_PASSWORD
+  kapua-api:
+    image: kapua/kapua-api:${IMAGE_VERSION}
+    ports:
+      - 8081:8080
+      - 8444:8443
+    depends_on:
+      - db
+      - es
+      - events-broker
+    environment:
+      - KAPUA_DISABLE_SSL
+      - KAPUA_CA
+      - KAPUA_CRT
+      - KAPUA_KEY
+      - KAPUA_KEY_PASSWORD
+      - KAPUA_KEYSTORE
+      - KAPUA_KEYSTORE_PASSWORD
+  kapua-datastore-hono-processor:
+    image: kapua/kapua-datastore-hono:${IMAGE_VERSION}
+    environment:
+      - HONO_ADDR
+      - HONO_TRUSTSTORE_FILE
+    ports:
+      - 8090:8080
+    depends_on:
+      - db
+      - es
+      - events-broker
+  kapua-lifecycle-hono-processor:
+    image: kapua/kapua-lifecycle-hono:${IMAGE_VERSION}
+    environment:
+      - HONO_ADDR
+      - HONO_TRUSTSTORE_FILE
+    ports:
+      - 8091:8081
+    depends_on:
+      - db
+      - events-broker

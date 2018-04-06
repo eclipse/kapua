@@ -90,6 +90,13 @@ Example:
 export JAVA_OPTS_EXTRA="-Drequest.timeout=60000"
 ``` 
 
+#### Setting Hono address
+To set the Hono instance address, just set the `HONO_ADDR` environment variable.<br>
+Example:
+```bash
+export HONO_ADDR=127.0.0.1
+``` 
+
 #### Building containers from scratch
 If you want to build containers from the code, you'll need to build the whole Kapua Project.
 

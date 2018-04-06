@@ -1,0 +1,45 @@
+{
+    "kapua": {
+        "vertxApp": {
+            "startupTimeout": 120000,
+            "shutdownTimeout": 120000,
+            "metricsEnabled": true,
+            "metricsRoot": "kapuaBase",
+            "warningExceptionTime": 86400000,
+            "blockedThreadCheckInterval": 86400000
+        },
+        "restService" : {
+            "httpServer": {
+                "host" : "0.0.0.0",
+                "port" : 8091
+            },
+            "eventBusHealthcheckAdapter": {
+                "name": "more-checks",
+                "address": "health"
+            }
+        },
+        "lifecycleProcessor": {
+            "eventBusServer": {
+                "healthAddress": "health",
+                "defaultAddress": "kapua.requests"
+            },
+            "messageSource": {
+                "hono": {
+                    "host": "127.0.0.1",
+                    "port": 15671,
+                    "username": "consumer@HONO",
+                    "password": "verysecret",
+                    "truststoreFile": "src/test/resources/trusted-certs.pem",
+                    "tenantId": "DEFAULT_TENANT",
+                    "name": "lifecycle-hono",
+                    "transportMessageType": "EVENTS",
+                    "waitBetweenReconnect": 1000,
+                    "connectTimeout": 1000,
+                    "idleTimeout": 30,
+                    "maximumReconnectionAttempt": 10,
+                    "exitCode": -1
+                }
+            }
+        }
+    }
+}

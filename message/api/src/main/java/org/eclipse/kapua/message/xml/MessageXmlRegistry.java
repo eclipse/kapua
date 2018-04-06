@@ -21,6 +21,9 @@ import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
+import org.eclipse.kapua.message.transport.TransportChannel;
+import org.eclipse.kapua.message.transport.TransportMessage;
+import org.eclipse.kapua.message.transport.TransportPayload;
 
 import javax.xml.bind.annotation.XmlRegistry;
 
@@ -61,4 +64,15 @@ public class MessageXmlRegistry {
         return KAPUA_MESSAGE_FACTORY.newKapuaDataPayload();
     }
 
+    public TransportMessage newTransportMessage() {
+        return KAPUA_MESSAGE_FACTORY.newTransportMessage();
+    }
+
+    public TransportChannel newTransportChannel() {
+        return KAPUA_MESSAGE_FACTORY.newTransportChannel();
+    }
+
+    public TransportPayload newTransportPayload() {
+        return KAPUA_MESSAGE_FACTORY.newTransportPayload();
+    }
 }

@@ -22,6 +22,6 @@ import org.eclipse.kapua.message.xml.MessageXmlRegistry;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType(factoryClass = MessageXmlRegistry.class, factoryMethod = "newPosition")
-        public interface Position {
+public interface Position {
 
 }

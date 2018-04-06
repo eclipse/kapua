@@ -26,5 +26,9 @@
 
     <modules>
         <module>api</module>
+        <module>core</module>
+        <module>plugin</module>
+        <module>client</module>
+        <module>connector-amqp</module>
     </modules>
 </project>

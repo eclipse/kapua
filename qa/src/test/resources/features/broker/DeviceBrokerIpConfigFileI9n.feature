@@ -16,8 +16,14 @@ Feature: Device Broker connection ip with config file
   @StartDatastore
   Scenario: Start datastore for all scenarios
 
-  @StartBroker
+  @StartEventBroker
   Scenario: Start broker for all scenarios
+
+  @StartBroker
+  Scenario: Start event broker for all scenarios
+
+  @StartExternalConsumers
+  Scenario: Start external consumers for all scenario
 
   Scenario: Send BIRTH message and then DC message while broker ip is set by config file
     Effectively this is connect and disconnect of Kura device.
@@ -32,8 +38,14 @@ Feature: Device Broker connection ip with config file
     And I logout
     And Device death message is sent
 
+  @StopExternalConsumers
+  Scenario: Stop external consumers for all scenario 
+
   @StopBroker
-  Scenario: Stop broker after all scenarios
+  Scenario: Stop broker after all scenarios 
+
+  @StopEventBroker
+  Scenario: Stop event broker after all scenarios 
 
   @StopDatastore
   Scenario: Stop datastore after all scenarios

@@ -13,7 +13,7 @@
 ################################################################################
 
 # Check for Keycloak integration
-if [ -n "$KEYCLOAK_URL" -a -n "$KAPUA_URL" ]; then
+if [ -n "$KEYCLOAK_URL" ] && [ -n "$KAPUA_URL" ]; then
    echo "Activating Keycloak integration..."
    echo "  Keycloak: $KEYCLOAK_URL"
    echo "  Kapua:    $KAPUA_URL"

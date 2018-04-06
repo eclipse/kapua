@@ -1,0 +1,44 @@
+{
+    "kapua": {
+        "vertxApp": {
+            "startupTimeout": 120000,
+            "shutdownTimeout": 120000,
+            "metricsEnabled": true,
+            "metricsRoot": "kapuaBase",
+            "warningExceptionTime": 86400000,
+            "blockedThreadCheckInterval": 86400000
+        },
+        "restService" : {
+            "httpServer": {
+                "host" : "0.0.0.0",
+                "port" : 8092
+            },
+            "eventBusHealthcheckAdapter": {
+                "name": "more-checks",
+                "address": "health"
+            }
+        },
+        "errorProcessor": {
+            "eventBusServer": {
+                "healthAddress": "health",
+                "defaultAddress": "kapua.requests"
+            },
+            "messageSource": {
+                "amqp": {
+                    "host": "127.0.0.1",
+                    "port": 5672,
+                    "username": "username",
+                    "password": "password",
+                    "waitBetweenReconnect": 1000,
+                    "connectTimeout": 5000,
+                    "idleTimeout": 300,
+                    "maximumReconnectionAttempt": 10,
+                    "exitCode": -1,
+                    "prefetchMessages": 10,
+                    "clientId": "datastore-error",
+                    "destination": "queue://datastore-error"
+                }
+            }
+        }
+    }
+}
