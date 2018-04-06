@@ -24,6 +24,12 @@ import org.eclipse.kapua.message.device.data.KapuaDataPayload;
 import org.eclipse.kapua.message.internal.device.data.KapuaDataChannelImpl;
 import org.eclipse.kapua.message.internal.device.data.KapuaDataMessageImpl;
 import org.eclipse.kapua.message.internal.device.data.KapuaDataPayloadImpl;
+import org.eclipse.kapua.message.internal.transport.TransportChannelImpl;
+import org.eclipse.kapua.message.internal.transport.TransportMessageImpl;
+import org.eclipse.kapua.message.internal.transport.TransportPayloadImpl;
+import org.eclipse.kapua.message.transport.TransportChannel;
+import org.eclipse.kapua.message.transport.TransportMessage;
+import org.eclipse.kapua.message.transport.TransportPayload;
 
 @KapuaProvider
 public class KapuaMessageFactoryImpl implements KapuaMessageFactory {
@@ -61,5 +67,20 @@ public class KapuaMessageFactoryImpl implements KapuaMessageFactory {
     @Override
     public KapuaDataPayload newKapuaDataPayload() {
         return new KapuaDataPayloadImpl();
+    }
+
+    @Override
+    public TransportMessage newTransportMessage() {
+        return new TransportMessageImpl();
+    }
+
+    @Override
+    public TransportChannel newTransportChannel() {
+        return new TransportChannelImpl();
+    }
+
+    @Override
+    public TransportPayload newTransportPayload() {
+        return new TransportPayloadImpl();
     }
 }
