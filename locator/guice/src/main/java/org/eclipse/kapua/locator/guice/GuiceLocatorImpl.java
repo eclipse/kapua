@@ -39,12 +39,16 @@ public class GuiceLocatorImpl extends KapuaLocator {
 
     public GuiceLocatorImpl() {
         injector = Guice.createInjector(new KapuaModule());
-        ServiceModuleConfiguration.setModuleProvider(injector.getInstance(ServiceModuleProvider.class));
+        ServiceModuleConfiguration.setConfigurationProvider(() -> {
+            return injector.getInstance(ServiceModuleProvider.class);
+        });
     }
 
     public GuiceLocatorImpl(String resourceName) {
         injector = Guice.createInjector(new KapuaModule(resourceName));
-        ServiceModuleConfiguration.setModuleProvider(injector.getInstance(ServiceModuleProvider.class));
+        ServiceModuleConfiguration.setConfigurationProvider(() -> {
+            return injector.getInstance(ServiceModuleProvider.class);
+        });
     }
 
     @Override
