@@ -28,6 +28,7 @@ import org.eclipse.kapua.service.device.management.message.request.KapuaRequestP
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 import org.eclipse.kapua.translator.Translator;
 
 /**
@@ -84,6 +85,18 @@ public class DeviceCallExecutor<C extends KapuaRequestChannel, P extends KapuaRe
         Device device = DEVICE_REGISTRY_SERVICE.find(requestMessage.getScopeId(), requestMessage.getDeviceId());
         if (device == null) {
             throw new KapuaEntityNotFoundException(Device.TYPE, requestMessage.getDeviceId());
+        }
+
+        //
+        // Check Device Connection
+        if (device.getConnection() == null) {
+            throw new DeviceManagementException(DeviceManagementErrorCodes.DEVICE_NEVER_CONNECTED, device.getScopeId(), device.getId());
+        }
+
+        //
+        // Check Device Connection status
+        if (!DeviceConnectionStatus.CONNECTED.equals(device.getConnection().getStatus())) {
+            throw new DeviceManagementException(DeviceManagementErrorCodes.DEVICE_NOT_CONNECTED, device.getScopeId(), device.getId(), device.getConnection().getStatus());
         }
 
         //
