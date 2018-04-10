@@ -21,6 +21,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
@@ -52,11 +53,46 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
     private static final ConsoleDeviceMessages DEVICE_MSGS = GWT.create(ConsoleDeviceMessages.class);
     private static final ConsoleConnectionMessages CONNECTION_MSGS = GWT.create(ConsoleConnectionMessages.class);
 
+    public static final int GRID_REFRESH_MILLIS = 15000;
+
     public DeviceGrid(AbstractEntityView<GwtDevice> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
         query = new GwtDeviceQuery();
         query.setScopeId(currentSession.getSelectedAccountId());
         query.setPredicates(new GwtDeviceQueryPredicates());
+
+        Timer refreshTimer = new Timer() {
+
+            @Override
+            public void run() {
+                GWT_DEVICE_SERVICE.query(query, new AsyncCallback<List<GwtDevice>>() {
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        // Skip failure for refresh.
+                    }
+
+                    @Override
+                    public void onSuccess(List<GwtDevice> results) {
+                        int optlockSum = 0;
+                        for (GwtDevice result : results) {
+                            optlockSum += result.getOptlock();
+                        }
+                        if (optlockSum != lastOptlockSum) {
+                            lastOptlockSum = optlockSum;
+                            refresh();
+                        }
+                    }
+                });
+            }
+        };
+        enableRefreshTimer(GRID_REFRESH_MILLIS, refreshTimer);
+    }
+
+    @Override
+    protected void onUnload() {
+        disableRefreshTimer();
+        super.onUnload();
     }
 
     @Override
