@@ -53,6 +53,7 @@ public class DefaultTargetWriter extends AbstractItemWriter implements TargetWri
 
             JobTarget jobTarget = KapuaSecurityUtils.doPrivileged(() -> JOB_TARGET_SERVICE.find(processedJobTarget.getScopeId(), processedJobTarget.getId()));
 
+            jobTarget.setStepIndex(stepContextWrapper.getStepIndex());
             jobTarget.setStatus(processedJobTarget.getStatus());
             jobTarget.setException(processedJobTarget.getException());
 

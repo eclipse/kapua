@@ -43,8 +43,7 @@ public interface JobStartOptions extends KapuaSerializable {
     @XmlTransient
     void addTargetIdToSublist(KapuaId targetId);
 
-    //    @XmlElement(name = "targetSelectorQuery")
-    //    JobTargetQuery getTargetSelectorQuery();
-    //
-    //    void setTargetSelectorQuery(JobTargetQuery query);
+    Integer getFromStepIndex();
+
+    void setFromStepIndex(Integer fromStepIndex);
 }
