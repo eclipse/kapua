@@ -17,8 +17,9 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.job.engine.commons.context.JobContextWrapper;
 import org.eclipse.kapua.job.engine.commons.context.StepContextWrapper;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.service.job.operation.TargetReader;
+import org.eclipse.kapua.service.job.step.JobStepIndex;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 import org.eclipse.kapua.service.job.targets.JobTargetFactory;
 import org.eclipse.kapua.service.job.targets.JobTargetListResult;
@@ -59,16 +60,22 @@ public class DefaultTargetReader extends AbstractItemReader implements TargetRea
         StepContextWrapper stepContextWrapper = new StepContextWrapper(stepContext);
         LOG.info("JOB {} - Opening cursor...", jobContextWrapper.getJobId());
 
+        //
+        // Job Id and JobTarget status filtering
         AndPredicateImpl andPredicate = new AndPredicateImpl(
-                new AttributePredicateImpl<>(JobTargetPredicates.JOB_ID, jobContextWrapper.getJobId()),
-                new AttributePredicateImpl<>(JobTargetPredicates.STEP_INDEX, stepContextWrapper.getStepIndex()),
-                new AttributePredicateImpl<>(JobTargetPredicates.STATUS, JobTargetStatus.PROCESS_OK, Operator.NOT_EQUAL)
+                new AttributePredicateImpl<>(JobTargetPredicates.JOB_ID, jobContextWrapper.getJobId())
         );
 
-        if (!jobContextWrapper.getTargetSublist().isEmpty()) {
-            andPredicate.and(new AttributePredicateImpl<>(JobTargetPredicates.ENTITY_ID, jobContextWrapper.getTargetSublist().toArray()));
-        }
+        //
+        // Step index filtering
+        stepIndexFiltering(jobContextWrapper, stepContextWrapper, andPredicate);
 
+        //
+        // Filter selected target
+        targetSublistFiltering(jobContextWrapper, andPredicate);
+
+        //
+        // Query the targets
         JobTargetQuery query = jobTargetFactory.newQuery(jobContextWrapper.getScopeId());
         query.setPredicate(andPredicate);
 
@@ -90,4 +97,51 @@ public class DefaultTargetReader extends AbstractItemReader implements TargetRea
         LOG.info("JOB {} - Reading item... Done!", jobContextWrapper.getJobId());
         return currentJobTarget;
     }
+
+    /**
+     * This method apply {@link AttributePredicate}s according to the parameters contained into the {@link JobContextWrapper} and {@link StepContextWrapper}.
+     * <p>
+     * It manages the options of resetting the status of the target to a certain {@link JobStepIndex}.
+     * <p>
+     * When no {@link JobStepIndex} is specified, the methods selects all targets that are set to the current {@link StepContextWrapper#getStepIndex()} and that don't have the
+     * {@link JobTargetStatus} set to {@link JobTargetStatus#PROCESS_OK}.
+     * <p>
+     * When a {@link JobStepIndex} is specified, the methods ignores all targets until the {@link StepContextWrapper#getStepIndex()} doesn't match the {@link JobContextWrapper#getFromStepIndex()}.
+     * When they match all the {@link JobTarget}s are seleted regardless of their {@link JobTargetStatus}. After passing the given {@link JobContextWrapper#getFromStepIndex()} {@link JobTarget}s
+     * will be selected as regularly.
+     * <p>
+     * Regardless of the status of the {@link org.eclipse.kapua.service.job.Job} of the {@link StepContextWrapper#getStepIndex()} and the {@link JobContextWrapper#getFromStepIndex()} values,
+     * {@link #targetSublistFiltering(JobContextWrapper, AndPredicateImpl)} can apply filter that will reduce the {@link JobTarget}s selected.
+     *
+     * @param jobContextWrapper  The {@link JobContextWrapper} from which extract data
+     * @param stepContextWrapper The {@link StepContextWrapper} from which extract data
+     * @param andPredicate       The {@link org.eclipse.kapua.model.query.predicate.AndPredicate} where to apply {@link org.eclipse.kapua.model.KapuaPredicates}
+     * @since 1.0.0
+     */
+    protected void stepIndexFiltering(JobContextWrapper jobContextWrapper, StepContextWrapper stepContextWrapper, AndPredicateImpl andPredicate) {
+        Integer fromStepIndex = jobContextWrapper.getFromStepIndex();
+        if (fromStepIndex == null || fromStepIndex < stepContextWrapper.getStepIndex()) {
+            andPredicate.and(new AttributePredicateImpl<>(JobTargetPredicates.STEP_INDEX, stepContextWrapper.getStepIndex()));
+            andPredicate.and(new AttributePredicateImpl<>(JobTargetPredicates.STATUS, JobTargetStatus.PROCESS_OK, AttributePredicate.Operator.NOT_EQUAL));
+        } else if (fromStepIndex > stepContextWrapper.getStepIndex()) {
+            andPredicate.and(new AttributePredicateImpl<>(JobTargetPredicates.STEP_INDEX, JobStepIndex.NONE));
+        }
+    }
+
+    /**
+     * This method apply {@link AttributePredicate}s according to the parameters contained into the {@link JobContextWrapper#getTargetSublist()}.
+     * <p>
+     * If the {@link JobContextWrapper#getTargetSublist()} has one or more {@link org.eclipse.kapua.model.id.KapuaId}s they will be added to the
+     * {@link org.eclipse.kapua.model.query.predicate.AndPredicate} to select only given {@link JobTarget}.
+     *
+     * @param jobContextWrapper The {@link JobContextWrapper} from which extract data
+     * @param andPredicate      The {@link org.eclipse.kapua.model.query.predicate.AndPredicate} where to apply {@link org.eclipse.kapua.model.KapuaPredicates}
+     * @since 1.0.0
+     */
+    protected void targetSublistFiltering(JobContextWrapper jobContextWrapper, AndPredicateImpl andPredicate) {
+        if (!jobContextWrapper.getTargetSublist().isEmpty()) {
+            andPredicate.and(new AttributePredicateImpl<>(JobTargetPredicates.ENTITY_ID, jobContextWrapper.getTargetSublist().toArray()));
+        }
+    }
+
 }

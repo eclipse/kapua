@@ -21,7 +21,7 @@ public class JobStartOptionsImpl implements JobStartOptions {
 
     private List<KapuaId> targetIdSublist;
 
-    //    private JobTargetQuery targetSelectorQuery;
+    private Integer fromStepIndex;
 
     public JobStartOptionsImpl() {
     }
@@ -50,13 +50,13 @@ public class JobStartOptionsImpl implements JobStartOptions {
         getTargetIdSublist().remove(targetId);
     }
 
-    //    @Override
-    //    public JobTargetQuery getTargetSelectorQuery() {
-    //        return targetSelectorQuery;
-    //    }
-    //
-    //    @Override
-    //    public void setTargetSelectorQuery(JobTargetQuery targetSelectorQuery) {
-    //        this.targetSelectorQuery = targetSelectorQuery;
-    //    }
+    @Override
+    public Integer getFromStepIndex() {
+        return fromStepIndex;
+    }
+
+    @Override
+    public void setFromStepIndex(Integer fromStepIndex) {
+        this.fromStepIndex = fromStepIndex;
+    }
 }

@@ -20,6 +20,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
+import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.job.engine.jbatch.driver.exception.CannotBuildJobDefDriverException;
 import org.eclipse.kapua.job.engine.jbatch.driver.exception.CannotCleanJobDefFileDriverException;
 import org.eclipse.kapua.job.engine.jbatch.driver.exception.CannotCreateTmpDirDriverException;
@@ -110,8 +111,9 @@ public class JbatchDriver {
      * It builds the XML jBatch job definition using the {@link JSLJob} model definition.
      * The generated XML is store in the {@link SystemUtils#getJavaIoTmpDir()} since the default configuration of jBatch requires a path name to start the jBatch job
      *
-     * @param scopeId The scopeId of the {@link Job}
-     * @param jobId   The id of the {@link Job}
+     * @param scopeId         The scopeId of the {@link Job}
+     * @param jobId           The id of the {@link Job}
+     * @param jobStartOptions The {@link JobStartOptions} for this start {@link org.eclipse.kapua.service.job.Job} request.
      * @throws CannotBuildJobDefDriverException     if the creation of the {@link JSLJob} fails
      * @throws CannotCreateTmpDirDriverException    if the temp directory for storing the XML job definition file cannot be created
      * @throws CannotCleanJobDefFileDriverException if the XML job definition file cannot be deleted, when existing
@@ -119,7 +121,7 @@ public class JbatchDriver {
      * @throws JobExecutionIsRunningDriverException if the jBatch job has another {@link JobExecution} running
      * @throws JobStartingDriverException           if invoking {@link JobOperator#start(String, Properties)} throws an {@link Exception}
      */
-    public static void startJob(@NotNull KapuaId scopeId, @NotNull KapuaId jobId, @NotNull List<KapuaId> targetSublist)
+    public static void startJob(@NotNull KapuaId scopeId, @NotNull KapuaId jobId, @NotNull JobStartOptions jobStartOptions)
             throws JbatchDriverException {
 
         String jobXmlDefinition;
@@ -164,7 +166,7 @@ public class JbatchDriver {
             jslJob.setRestartable("true");
             jslJob.setId(jobName);
             jslJob.setVersion("1.0");
-            jslJob.setProperties(JobDefinitionBuildUtils.buildJobProperties(scopeId, jobId, targetSublist));
+            jslJob.setProperties(JobDefinitionBuildUtils.buildJobProperties(scopeId, jobId, jobStartOptions));
             jslJob.setListeners(JobDefinitionBuildUtils.buildListener());
             jslJob.getExecutionElements().addAll(jslExecutionElements);
 

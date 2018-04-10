@@ -124,7 +124,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         //
         // Start the job
         try {
-            JbatchDriver.startJob(scopeId, jobId, jobStartOptions.getTargetIdSublist());
+            JbatchDriver.startJob(scopeId, jobId, jobStartOptions);
         } catch (Exception e) {
             throw new JobStaringException(e, scopeId, jobId);
         }

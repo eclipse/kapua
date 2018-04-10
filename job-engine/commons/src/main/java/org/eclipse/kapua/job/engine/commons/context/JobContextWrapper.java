@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.commons.context;
 
+import com.google.common.base.Strings;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.job.engine.commons.exception.ReadJobPropertyException;
@@ -55,6 +56,13 @@ public class JobContextWrapper {
         } catch (JAXBException | XMLStreamException | SAXException e) {
             throw new ReadJobPropertyException(e, JobContextPropertyNames.JOB_TARGET_SUBLIST, jobTargetSublistString);
         }
+    }
+
+    public Integer getFromStepIndex() {
+        Properties jobContextProperties = jobContext.getProperties();
+        String fromStepIndexString = jobContextProperties.getProperty(JobContextPropertyNames.JOB_STEP_FROM_INDEX);
+
+        return Strings.isNullOrEmpty(fromStepIndexString) ? null : Integer.valueOf(fromStepIndexString);
     }
 
     public String getJobName() {

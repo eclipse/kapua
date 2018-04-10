@@ -21,6 +21,7 @@ import com.ibm.jbatch.jsl.model.Listener;
 import com.ibm.jbatch.jsl.model.Listeners;
 import com.ibm.jbatch.jsl.model.Property;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.job.engine.commons.context.JobContextPropertyNames;
 import org.eclipse.kapua.job.engine.commons.context.StepContextPropertyNames;
 import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
@@ -33,6 +34,7 @@ import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 
 import javax.xml.bind.JAXBException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -53,29 +55,40 @@ public class JobDefinitionBuildUtils {
         return listeners;
     }
 
-    public static JSLProperties buildJobProperties(KapuaId scopeId, KapuaId jobId, List<KapuaId> targetSublist) throws JAXBException {
+    public static JSLProperties buildJobProperties(KapuaId scopeId, KapuaId jobId, JobStartOptions jobStartOptions) throws JAXBException {
+
+        List<Property> jslPropertyList = new ArrayList<>();
 
         // Scope id
         Property scopeIdProperty = new Property();
         scopeIdProperty.setName(JobContextPropertyNames.JOB_SCOPE_ID);
         scopeIdProperty.setValue(scopeId.toCompactId());
+        jslPropertyList.add(scopeIdProperty);
 
         // Job id
         Property jobIdProperty = new Property();
         jobIdProperty.setName(JobContextPropertyNames.JOB_ID);
         jobIdProperty.setValue(jobId.toCompactId());
+        jslPropertyList.add(jobIdProperty);
 
         // Job target sublist
         Property targetSublistProperty = new Property();
         targetSublistProperty.setName(JobContextPropertyNames.JOB_TARGET_SUBLIST);
-        targetSublistProperty.setValue(XmlUtil.marshal(new JobTargetSublist(targetSublist)));
-
-        JSLProperties jslProperties = new JSLProperties();
-        List<Property> jslPropertyList = jslProperties.getPropertyList();
-        jslPropertyList.add(scopeIdProperty);
-        jslPropertyList.add(jobIdProperty);
+        targetSublistProperty.setValue(XmlUtil.marshal(new JobTargetSublist(jobStartOptions.getTargetIdSublist())));
         jslPropertyList.add(targetSublistProperty);
 
+        // Job from step index
+        if (jobStartOptions.getFromStepIndex() != null) {
+            Property stepFromIndexProperty = new Property();
+            stepFromIndexProperty.setName(JobContextPropertyNames.JOB_STEP_FROM_INDEX);
+            stepFromIndexProperty.setValue(jobStartOptions.getFromStepIndex().toString());
+            jslPropertyList.add(stepFromIndexProperty);
+        }
+
+        //
+        // Add them to the JBatch properties
+        JSLProperties jslProperties = new JSLProperties();
+        jslProperties.getPropertyList().addAll(jslPropertyList);
         return jslProperties;
     }
 
