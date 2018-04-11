@@ -27,7 +27,7 @@ public interface OrPredicate extends QueryPredicate {
      * @param predicate
      * @return
      */
-    public QueryPredicate or(QueryPredicate predicate);
+    public OrPredicate or(QueryPredicate predicate);
 
     /**
      * Returns a list of predicates
