@@ -70,7 +70,7 @@ public class ParentEndPoint implements EndPoint {
 
     public void setRegex(String regex) {
         this.regex = regex;
-        regexPlaceholderReplaced = EndPoint.replacePlaceholder(regex);
+        regexPlaceholderReplaced = PlaceholderReplacer.replacePlaceholder(regex);
         pattern = EndPoint.parseRegex(regexPlaceholderReplaced);
     }
 

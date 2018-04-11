@@ -22,6 +22,7 @@ import javax.jms.Message;
 import org.apache.camel.Converter;
 import org.apache.camel.Exchange;
 import org.apache.camel.component.jms.JmsMessage;
+import org.apache.camel.impl.DefaultMessage;
 import org.apache.commons.lang3.SerializationUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.listener.CamelConstants;
@@ -77,21 +78,23 @@ public abstract class AbstractKapuaConverter {
      *             if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
      */
     protected CamelKapuaMessage<?> convertTo(Exchange exchange, Object value, MessageType messageType) throws KapuaException {
-        // assume that the message is a Camel Jms message
-        JmsMessage message = exchange.getIn(JmsMessage.class);
-        if (message.getJmsMessage() instanceof BytesMessage) {
-            try {
-                // FIX #164
-                Date queuedOn = new Date(message.getHeader(CamelConstants.JMS_HEADER_TIMESTAMP, Long.class));
-                KapuaId connectionId = (KapuaId) SerializationUtils.deserialize(Base64.getDecoder().decode(message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTION_ID, String.class)));
-                String clientId = message.getHeader(MessageConstants.HEADER_KAPUA_CLIENT_ID, String.class);
-                ConnectorDescriptor connectorDescriptor = (ConnectorDescriptor) SerializationUtils
-                        .deserialize(Base64.getDecoder().decode(message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL, String.class)));
-                return JmsUtil.convertToCamelKapuaMessage(connectorDescriptor, messageType, (byte[]) value, CamelUtil.getTopic(message), queuedOn, connectionId, clientId);
-            } catch (JMSException e) {
-                metricConverterErrorMessage.inc();
-                logger.error("Exception converting message {}", e.getMessage(), e);
-                throw KapuaException.internalError(e, "Cannot convert the message type " + exchange.getIn().getClass());
+        if (value instanceof byte[]) {
+            byte[] messageContent = (byte[]) value;
+            if (exchange.getIn() instanceof DefaultMessage) {
+                DefaultMessage message = (DefaultMessage) exchange.getIn();
+                try {
+                    // FIX #164
+                    Date queuedOn = new Date(message.getHeader(CamelConstants.JMS_HEADER_TIMESTAMP, Long.class));
+                    KapuaId connectionId = (KapuaId) SerializationUtils.deserialize(Base64.getDecoder().decode(message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTION_ID, String.class)));
+                    String clientId = message.getHeader(MessageConstants.HEADER_KAPUA_CLIENT_ID, String.class);
+                    ConnectorDescriptor connectorDescriptor = (ConnectorDescriptor) SerializationUtils
+                            .deserialize(Base64.getDecoder().decode(message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL, String.class)));
+                    return JmsUtil.convertToCamelKapuaMessage(connectorDescriptor, messageType, messageContent, CamelUtil.getTopic(message), queuedOn, connectionId, clientId);
+                } catch (JMSException e) {
+                    metricConverterErrorMessage.inc();
+                    logger.error("Exception converting message {}", e.getMessage(), e);
+                    throw KapuaException.internalError(e, "Cannot convert the message type " + exchange.getIn().getClass());
+                }
             }
         }
         metricConverterErrorMessage.inc();

@@ -12,6 +12,7 @@
 package org.eclipse.kapua.broker.core.setting;
 
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor;
+import org.eclipse.kapua.broker.core.routeloader.CamelRouteLoader;
 import org.eclipse.kapua.broker.core.router.CamelDefaultRouter;
 import org.eclipse.kapua.commons.setting.SettingKey;
 
@@ -84,7 +85,12 @@ public enum BrokerSettingKey implements SettingKey {
      * Camel route loader configuration file name. (please specify just the name. The file path will be discovered by the class loader)
      * Used by the {@link CamelRouteLoader} to load the defined routes.
      */
-    CAMEL_ROUTE_LOADER_CONFIGURATION_FILE_NAME("camel.route_loader.configuration_file_name");
+    CAMEL_ROUTE_LOADER_CONFIGURATION_FILE_NAME("camel.route_loader.configuration_file_name"),
+    /**
+     * Camel route loader application context file name. (please specify just the name. The file path will be discovered by the class loader)
+     * Used by the {@link CamelRouteLoader} to load the defined routes.
+     */
+    CAMEL_ROUTE_LOADER_CUSTOM_CONTEXT_FILE_NAME("camel.route_loader.application_context_file_name");
 
     private String key;
 

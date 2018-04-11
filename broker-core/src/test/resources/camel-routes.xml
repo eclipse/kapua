@@ -18,26 +18,26 @@
  <endPoints>
     <endPoints>
         <endPoint>
-            <regex>${CLASSIFIER}.*</regex>
+            <regex>${CLASSIFIER}\..*</regex>
             <endPoints>
                 <simpleEndPoint>
-                    <regex>${CLASSIFIER}(.*\.){2}MQTT\.BIRTH</regex>
+                    <regex>${CLASSIFIER}\.(.*\.){2}MQTT\.BIRTH</regex>
                     <endPoint>bean:kapuaLifeCycleConverter?method=convertToBirth,bean:deviceMessageListener?method=processBirthMessage</endPoint>
                 </simpleEndPoint>
                 <simpleEndPoint>
-                    <regex>${CLASSIFIER}(.*\.){2}MQTT\.DC</regex>
+                    <regex>${CLASSIFIER}\.(.*\.){2}MQTT\.DC</regex>
                     <endPoint>bean:kapuaLifeCycleConverter?method=convertToDisconnect,bean:deviceMessageListener?method=processDisconnectMessage</endPoint>
                 </simpleEndPoint>
                 <simpleEndPoint>
-                    <regex>${CLASSIFIER}(.*\.){2}MQTT\.APPS</regex>
+                    <regex>${CLASSIFIER}\.(.*\.){2}MQTT\.APPS</regex>
                     <endPoint>bean:kapuaLifeCycleConverter?method=convertToApps,bean:deviceMessageListener?method=processAppsMessage</endPoint>
                 </simpleEndPoint>
                 <simpleEndPoint>
-                    <regex>${CLASSIFIER}(.*\.){2}MQTT\.LWT</regex>
+                    <regex>${CLASSIFIER}\.(.*\.){2}MQTT\.LWT</regex>
                     <endPoint>bean:kapuaLifeCycleConverter?method=convertToMissing,bean:deviceMessageListener?method=processMissingMessage</endPoint>
                 </simpleEndPoint>
                 <simpleEndPoint>
-                    <regex>${CLASSIFIER}(.*\.){2}MQTT\.NOTIFY</regex>
+                    <regex>${CLASSIFIER}\.(.*\.){2}MQTT\.NOTIFY</regex>
                     <endPoint>bean:kapuaLifeCycleConverter?method=convertToNotify,bean:deviceMessageListener?method=processNotifyMessage</endPoint>
                 </simpleEndPoint>
                 <endChainEndPoint>

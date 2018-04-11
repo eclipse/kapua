@@ -9,12 +9,18 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.broker.core.route;
+package org.eclipse.kapua.broker.core.routeloader;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
@@ -22,10 +28,12 @@ import javax.xml.stream.XMLStreamException;
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.RouteDefinition;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.broker.core.BrokerJAXBContextProvider;
 import org.eclipse.kapua.broker.core.router.CamelDefaultRouter;
+import org.eclipse.kapua.broker.core.router.PlaceholderReplacer;
 import org.eclipse.kapua.broker.core.setting.BrokerSetting;
 import org.eclipse.kapua.broker.core.setting.BrokerSettingKey;
 import org.eclipse.kapua.commons.setting.KapuaSettingException;
@@ -35,6 +43,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
+/**
+ * Custom routes loader implementation. It loads the routes configuration from the configuration file, creates and insert them into the Camel context.
+ *
+ */
 public class CamelRouteLoader extends RouteBuilder {
 
     private final static Logger logger = LoggerFactory.getLogger(CamelDefaultRouter.class);
@@ -47,7 +59,6 @@ public class CamelRouteLoader extends RouteBuilder {
     }
 
     public CamelRouteLoader() throws Exception {
-
     }
 
     @Override
@@ -65,10 +76,11 @@ public class CamelRouteLoader extends RouteBuilder {
     private void initRoutes() {
         for (Route route : routeContainer.getRoute()) {
             logger.info("Configuring Camel Routes Loader... Initializing route {}...", route.getId());
+            Map<String, Object> ac = loadApplicationContext();
             try {
                 if (getContext().getRoute(route.getId()) == null) {
-                    RouteDefinition rd = from(route.getFrom());
-                    route.appendBrickDefinition(rd, getContext());// routeCollection.getRoutes().add(rd);
+                    RouteDefinition rd = from(PlaceholderReplacer.replacePlaceholder(route.getFrom(), ac));
+                    route.appendBrickDefinition(rd, getContext(), ac);// routeCollection.getRoutes().add(rd);
                     logger.info("Configuring Camel Routes Loader {}", rd);
                     logger.info("Configuring Camel Routes Loader... Initializing route {}... DONE", route.getId());
                 } else {
@@ -134,6 +146,30 @@ public class CamelRouteLoader extends RouteBuilder {
             }
         }
         return routeContainer;
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private Map<String, Object> loadApplicationContext() {
+        String propertyFile = BrokerSetting.getInstance().getString(BrokerSettingKey.CAMEL_ROUTE_LOADER_CUSTOM_CONTEXT_FILE_NAME);
+        if (!StringUtils.isEmpty(propertyFile)) {
+            URL url = null;
+            try {
+                url = KapuaFileUtils.getAsURL(propertyFile);
+            } catch (KapuaSettingException e) {
+                throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, e, "Cannot find configuration file!");
+            }
+            Properties properties = new Properties();
+            try (InputStream is = new FileInputStream(new File(url.toString()))){
+                properties.load(is);
+                return (Map) properties;
+            } catch (IOException e) {
+                logger.warn("Cannot load application properties: {}", e.getMessage(), e);
+                return new HashMap<>();
+            }
+        }
+        else {
+            return new HashMap<>();
+        }
     }
 
     private static void logLoadedRoute(RouteContainer routes) {

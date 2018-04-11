@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (c) 2018 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+ <!-- 
+ The condition can have placeholders. The replacement will be addressed by the ChoiceLeaf implementation while setting the condition.
+ For the available managed placeholders see the CAMEL_ROUTER_PLACEHOLDER enum.
+  -->
+<routeContainer>
+    <basicRoute id="telemetry_route" autoStartup="true" multicast="false" 
+        errorHandlerRef="mainRouteMessageErrorHandler"
+        from="activemq:queue:Consumer.eurotech:telemetryRoutelisteners:EXACTLY_ONCE.VirtualTopic.>?asyncConsumer=false&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=20&amp;maxConcurrentConsumers=50" >
+        <routeList>
+            <choiceRoot id="telemetry_choice">
+                <choiceList>
+                     <choiceLeaf id="telemetry_choice" condition="${ORIGINAL_DESTINATION} regex '^(?!${CLASSIFIER}\.).*'">
+                         <choiceList>
+                             <endpointBeanTo id="session_binding" beanName="kapuaCamelFilter" method="bindSession"/>
+                             <endpointBeanTo id="tel_es_conv" beanName="kapuaDataConverter" method="convertToData" />
+                             <endpointBeanTo id="tel_es_proc" beanName="dataStorageMessageProcessor" method="processMessage" />
+                             <endpointBeanTo id="session_unbinding" beanName="kapuaCamelFilter" method="unbindSession" />
+                         </choiceList>
+                     </choiceLeaf>
+                </choiceList>
+            </choiceRoot>
+        </routeList>
+        <onExceptionList>
+            <onException id="dsc_ex" exception="org.eclipse.kapua.service.datastore.internal.mediator.DatastoreCommunicationException" 
+                maximumRedeliveries="0" logRetryAttempted="true" retryAttemptedLogLevel="WARN">
+                <endpointList>
+                    <endpointBeanTo id="dsc_ex_filter" beanName="kapuaCamelFilter" method="bridgeError" />
+                    <endpointUriTo id="dsc_ex_endpoint" uri="activemq:queue:storeCommunicationException" />
+                </endpointList>
+            </onException>
+            <onException id="cfg_ex" exception="org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException" 
+                maximumRedeliveries="0" logRetryAttempted="true" retryAttemptedLogLevel="WARN">
+                <endpointList>
+                    <endpointBeanTo id="cfg_ex_filter" beanName="kapuaCamelFilter" method="bridgeError" />
+                    <endpointUriTo id="cfg_ex_endpoint" uri="activemq:queue:storeConfigurationException" />
+                </endpointList>
+            </onException>
+            <onException id="ds_ex" exception="org.eclipse.kapua.service.datastore.internal.mediator.DatastoreException" 
+                maximumRedeliveries="0" logRetryAttempted="true" retryAttemptedLogLevel="WARN">
+                <endpointList>
+                    <endpointBeanTo id="ds_ex_filter" beanName="kapuaCamelFilter" method="bridgeError" />
+                    <endpointUriTo id="ds_ex_endpoint" uri="activemq:queue:storeGenericException" />
+                </endpointList>
+            </onException>
+            <onException id="kapua_ex" exception="org.eclipse.kapua.KapuaException" 
+                maximumRedeliveries="0" logRetryAttempted="true" retryAttemptedLogLevel="WARN">
+                <endpointList>
+                    <endpointBeanTo id="kapua_ex_filter" beanName="kapuaCamelFilter" method="bridgeError" />
+                    <endpointUriTo id="kapua_ex_endpoint" uri="activemq:queue:notProcessableMessage" />
+                </endpointList>
+            </onException>
+        </onExceptionList>
+    </basicRoute>
+</routeContainer>

@@ -11,15 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin;
 
-import org.eclipse.kapua.broker.core.route.CamelRouteLoader;
-import org.eclipse.kapua.broker.core.route.RouteContainer;
+import org.eclipse.kapua.broker.core.routeloader.CamelRouteLoader;
+import org.eclipse.kapua.broker.core.routeloader.RouteContainer;
 import org.junit.Test;
 
 public class CamelRouteLoaderTest {
 
     @Test
     public void testRouteLoader() {
-        RouteContainer routeContainer = CamelRouteLoader.loadRoutes("camel-route-loader.xml");
+        RouteContainer routeContainer = CamelRouteLoader.loadRoutes("camel-dynamic-routes.xml");
         // TODO check the consistency of the loaded object with the expected model
     }
 

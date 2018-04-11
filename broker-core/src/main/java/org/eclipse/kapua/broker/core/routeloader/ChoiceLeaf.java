@@ -9,9 +9,10 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.broker.core.route;
+package org.eclipse.kapua.broker.core.routeloader;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -24,6 +25,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.camel.CamelContext;
 import org.apache.camel.model.ChoiceDefinition;
 import org.apache.camel.model.ProcessorDefinition;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.router.PlaceholderReplacer;
 import org.eclipse.persistence.oxm.annotations.XmlPath;
 import org.slf4j.Logger;
@@ -37,13 +39,29 @@ import org.slf4j.LoggerFactory;
         "choiceList",
         "otherwise"
 })
+/**
+ * Choice leaf brick implementation
+ *
+ */
 public class ChoiceLeaf implements Brick {
 
     private final static Logger logger = LoggerFactory.getLogger(ChoiceLeaf.class);
 
+    /**
+     * Id
+     */
     private String id;
+    /**
+     * Condition to check
+     */
     private String condition;
+    /**
+     * Steps list (to follow if the condition is satisfied)
+     */
     private List<Brick> choiceList;
+    /**
+     * Otherwise step (if the condition is not satisfied)
+     */
     private Brick otherwise;
 
     public ChoiceLeaf() {
@@ -64,7 +82,7 @@ public class ChoiceLeaf implements Brick {
     }
 
     public void setCondition(String condition) {
-        this.condition = PlaceholderReplacer.replacePlaceholder(condition);
+        this.condition = condition;
     }
 
     @XmlElementWrapper(name = "choiceList")
@@ -88,27 +106,29 @@ public class ChoiceLeaf implements Brick {
     }
 
     @Override
-    public void appendBrickDefinition(ProcessorDefinition<?> processorDefinition, CamelContext camelContext) throws UnsupportedOperationException {
+    public void appendBrickDefinition(ProcessorDefinition<?> processorDefinition, CamelContext camelContext, Map<String, Object> ac) throws UnsupportedOperationException, KapuaException {
         if (processorDefinition instanceof ChoiceDefinition) {
-            ProcessorDefinition<ChoiceDefinition> whenChoiceDefinition = ((ChoiceDefinition) processorDefinition).when().simple(condition);
+            ProcessorDefinition<ChoiceDefinition> whenChoiceDefinition = ((ChoiceDefinition) processorDefinition).when().simple(
+                    PlaceholderReplacer.replacePlaceholder(condition, ac));
+            whenChoiceDefinition.setId(PlaceholderReplacer.replacePlaceholder(id, ac));
             for (Brick choice : choiceList) {
                 if (choice instanceof Endpoint) {
                     try {
-                        org.apache.camel.Endpoint ep = ((Endpoint) choice).asEndpoint(camelContext);
+                        org.apache.camel.Endpoint ep = ((Endpoint) choice).asEndpoint(camelContext, ac);
                         whenChoiceDefinition.to(ep);
                     } catch (UnsupportedOperationException e) {
                         logger.info("Cannot get {} as Endpoint. Try to get it as Uri", ((Endpoint) choice));
-                        whenChoiceDefinition.to(((Endpoint) choice).asUriEndpoint(camelContext));
+                        whenChoiceDefinition.to(((Endpoint) choice).asUriEndpoint(camelContext, ac));
                     }
                 } else {
-                    choice.appendBrickDefinition(((ChoiceDefinition) processorDefinition), camelContext);
+                    choice.appendBrickDefinition(((ChoiceDefinition) processorDefinition), camelContext, ac);
                 }
             }
             ((ChoiceDefinition) processorDefinition).endChoice();
             whenChoiceDefinition.end();
             if (otherwise != null) {
                 ((ChoiceDefinition) processorDefinition).otherwise();
-                otherwise.appendBrickDefinition(((ChoiceDefinition) processorDefinition), camelContext);
+                otherwise.appendBrickDefinition(((ChoiceDefinition) processorDefinition), camelContext, ac);
             }
         }
         else {

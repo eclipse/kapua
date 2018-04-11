@@ -9,7 +9,9 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.broker.core.route;
+package org.eclipse.kapua.broker.core.routeloader;
+
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -20,6 +22,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.camel.CamelContext;
 import org.apache.camel.component.bean.BeanEndpoint;
 import org.apache.camel.model.ProcessorDefinition;
+import org.eclipse.kapua.broker.core.router.PlaceholderReplacer;
 
 @XmlRootElement(name = "endpointBeanTo")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -28,10 +31,23 @@ import org.apache.camel.model.ProcessorDefinition;
         "beanName",
         "method"
 })
+/**
+ * Endpoint bean implementation
+ *
+ */
 public class EndpointBeanTo implements Endpoint {
 
+    /**
+     * Id (it's the step Id not the spring bean id)
+     */
     private String id;
+    /**
+     * Bean name
+     */
     private String beanName;
+    /**
+     * Method to invoke
+     */
     private String method;
 
     @XmlAttribute
@@ -62,25 +78,25 @@ public class EndpointBeanTo implements Endpoint {
     }
 
     @Override
-    public void appendBrickDefinition(ProcessorDefinition<?> processorDefinition, CamelContext camelContext) throws UnsupportedOperationException {
-        processorDefinition.to(asBeanEndpoint(camelContext));
+    public void appendBrickDefinition(ProcessorDefinition<?> processorDefinition, CamelContext camelContext, Map<String, Object> ac) throws UnsupportedOperationException {
+        processorDefinition.to(asBeanEndpoint(camelContext, ac));
     }
 
     @Override
-    public org.apache.camel.Endpoint asEndpoint(CamelContext camelContext) {
-        return asBeanEndpoint(camelContext);
+    public org.apache.camel.Endpoint asEndpoint(CamelContext camelContext, Map<String, Object> ac) {
+        return asBeanEndpoint(camelContext, ac);
     }
 
     @Override
-    public String asUriEndpoint(CamelContext camelContext) throws UnsupportedOperationException {
-        return String.format("bean:%s?method=%s", beanName, method);
+    public String asUriEndpoint(CamelContext camelContext, Map<String, Object> ac) throws UnsupportedOperationException {
+        return PlaceholderReplacer.replacePlaceholder(String.format("bean:%s?method=%s", beanName, method), ac);
     }
 
-    private BeanEndpoint asBeanEndpoint(CamelContext camelContext) {
+    private BeanEndpoint asBeanEndpoint(CamelContext camelContext, Map<String, Object> ac) {
         BeanEndpoint beanEndpoint = new BeanEndpoint();
         beanEndpoint.setCamelContext(camelContext);
-        beanEndpoint.setBeanName(beanName);
-        beanEndpoint.setMethod(method);
+        beanEndpoint.setBeanName(PlaceholderReplacer.replacePlaceholder(beanName, ac));
+        beanEndpoint.setMethod(PlaceholderReplacer.replacePlaceholder(method, ac));
         return beanEndpoint;
     }
 

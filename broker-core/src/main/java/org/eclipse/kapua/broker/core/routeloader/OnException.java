@@ -9,15 +9,34 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.broker.core.route;
+package org.eclipse.kapua.broker.core.routeloader;
+
+import java.util.Map;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.model.RouteDefinition;
 
+/**
+ * On route exception definition
+ *
+ */
 public interface OnException {
 
-    void appendExceptionDefinition(RouteDefinition routeDefinition, CamelContext camelContext);
+    /**
+     * Append the specific component logic to the Camel processor definition
+     * 
+     * @param routeDefinition
+     * @param camelContext
+     * @param applicationContext
+     */
+    void appendExceptionDefinition(RouteDefinition routeDefinition, CamelContext camelContext, Map<String, Object> applicationContext);
 
+    /**
+     * Append the brick to the buffer in a human readable fashion
+     * 
+     * @param buffer
+     * @param prefix
+     */
     void toLog(StringBuffer buffer, String prefix);
 
 }

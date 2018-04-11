@@ -9,7 +9,9 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.broker.core.route;
+package org.eclipse.kapua.broker.core.routeloader;
+
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -19,6 +21,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.model.ProcessorDefinition;
+import org.eclipse.kapua.broker.core.router.PlaceholderReplacer;
 
 @XmlRootElement(name = "endpointUriTo")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -26,9 +29,19 @@ import org.apache.camel.model.ProcessorDefinition;
         "id",
         "uri"
 })
+/**
+ * Endpoint uri implementation
+ *
+ */
 public class EndpointUriTo implements Endpoint {
 
+    /**
+     * Id
+     */
     private String id;
+    /**
+     * Uri to invoke
+     */
     private String uri;
 
     @XmlAttribute
@@ -50,18 +63,18 @@ public class EndpointUriTo implements Endpoint {
     }
 
     @Override
-    public void appendBrickDefinition(ProcessorDefinition<?> processorDefinition, CamelContext camelContext) throws UnsupportedOperationException {
-        processorDefinition.to(uri);
+    public void appendBrickDefinition(ProcessorDefinition<?> processorDefinition, CamelContext camelContext, Map<String, Object> ac) throws UnsupportedOperationException {
+        processorDefinition.to(PlaceholderReplacer.replacePlaceholder(uri, ac));
     }
 
     @Override
-    public org.apache.camel.Endpoint asEndpoint(CamelContext camelContext) {
+    public org.apache.camel.Endpoint asEndpoint(CamelContext camelContext, Map<String, Object> ac) {
         throw new UnsupportedOperationException(String.format("Operation not allowed for the %s", this.getClass()));
     }
 
     @Override
-    public String asUriEndpoint(CamelContext camelContext) throws UnsupportedOperationException {
-        return uri;
+    public String asUriEndpoint(CamelContext camelContext, Map<String, Object> ac) throws UnsupportedOperationException {
+        return PlaceholderReplacer.replacePlaceholder(uri, ac);
     }
 
     @Override

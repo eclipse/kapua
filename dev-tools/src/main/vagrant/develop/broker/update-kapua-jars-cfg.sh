@@ -29,4 +29,4 @@ ln -s /kapua/assembly/broker/src/main/resources/conf/broker/camel.xml /usr/local
 ln -s /kapua/assembly/broker/src/main/resources/conf/broker/camel-routes.xml /usr/local/activemq/apache-activemq-ACTIVEMQ_VERSION/conf/camel-routes.xml
 ln -s /kapua/assembly/broker/src/main/resources/conf/broker/locator.xml /usr/local/activemq/apache-activemq-ACTIVEMQ_VERSION/conf/locator.xml
 ln -s /kapua/assembly/broker/src/main/resources/conf/broker/logback.xml /usr/local/activemq/apache-activemq-ACTIVEMQ_VERSION/conf/logback.xml
-ln -s /kapua/assembly/broker/src/main/resources/conf/broker/camel-route-loader.xml /usr/local/activemq/apache-activemq-ACTIVEMQ_VERSION/conf/camel-route-loader.xml
+ln -s /kapua/assembly/broker/src/main/resources/conf/broker/camel-dynamic-routes.xml /usr/local/activemq/apache-activemq-ACTIVEMQ_VERSION/conf/camel-dynamic-routes.xml

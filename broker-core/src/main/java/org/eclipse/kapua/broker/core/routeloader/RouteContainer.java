@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.broker.core.route;
+package org.eclipse.kapua.broker.core.routeloader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +24,9 @@ import javax.xml.bind.annotation.XmlAnyElement;
  */
 public class RouteContainer {
 
+    /**
+     * Route list
+     */
     private List<Route> route;
 
     public RouteContainer() {

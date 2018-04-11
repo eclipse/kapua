@@ -9,41 +9,36 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.broker.core.route;
+package org.eclipse.kapua.broker.core.routeloader;
+
+import java.util.Map;
 
 import org.apache.camel.CamelContext;
-import org.apache.camel.model.ProcessorDefinition;
 
 /**
- * Base Camel brick definition
+ * Brick Endpoint definition
  *
  */
-public interface Brick {
+public interface Endpoint extends Brick {
 
     /**
-     * Get the route id
+     * Return the brick as Camel endpoint
      * 
-     * @return
-     */
-    String getId();
-
-    /**
-     * Set the route id
-     * 
-     * @param id
-     */
-    void setId(String id);
-
-    /**
-     * Append the specific brick logic to the Camel processor definition
-     * 
-     * @param processorDefinition
      * @param camelContext
+     * @param applicationContext
+     * @return
      * @throws UnsupportedOperationException
-     *             if the specific ProcessorDefinition instance is not supported
      */
-    void appendBrickDefinition(ProcessorDefinition<?> processorDefinition, CamelContext camelContext) throws UnsupportedOperationException;
+    org.apache.camel.Endpoint asEndpoint(CamelContext camelContext, Map<String, Object> applicationContext) throws UnsupportedOperationException;
 
-    void toLog(StringBuffer buffer, String prefix);
+    /**
+     * Return the brick as uri endpoint
+     * 
+     * @param camelContext
+     * @param applicationContext
+     * @return
+     * @throws UnsupportedOperationException
+     */
+    String asUriEndpoint(CamelContext camelContext, Map<String, Object> applicationContext) throws UnsupportedOperationException;
 
 }

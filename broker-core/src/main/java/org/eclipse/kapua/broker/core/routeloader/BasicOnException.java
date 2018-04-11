@@ -9,9 +9,10 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.broker.core.route;
+package org.eclipse.kapua.broker.core.routeloader;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -39,15 +40,37 @@ import org.slf4j.LoggerFactory;
         "retryAttemptedLogLevel",
         "endpointList"
 })
+/**
+ * Basic on exception component implementation
+ * 
+ */
 public class BasicOnException implements OnException {
 
     private final static Logger logger = LoggerFactory.getLogger(BasicOnException.class);
 
+    /**
+     * Component id
+     */
     private String id;
+    /**
+     * Java exception class (fully qualified name)
+     */
     private String exception;
+    /**
+     * Maximun redeliveries before fallback to the error route
+     */
     private String maximumRedeliveries;
+    /**
+     * Log the retry attempt
+     */
     private String logRetryAttempted;
+    /**
+     * Retry attempt log level
+     */
     private String retryAttemptedLogLevel;
+    /**
+     * Endpoint to
+     */
     private List<Endpoint> endpointList;
 
     @XmlAttribute
@@ -106,7 +129,7 @@ public class BasicOnException implements OnException {
     }
 
     @Override
-    public void appendExceptionDefinition(RouteDefinition routeDefinition, CamelContext camelContext) {
+    public void appendExceptionDefinition(RouteDefinition routeDefinition, CamelContext camelContext, Map<String, Object> ac) {
         OnExceptionDefinition exceptionDefinition = routeDefinition.onException(convertException());
         RedeliveryPolicyDefinition rpd = new RedeliveryPolicyDefinition();
         rpd.setMaximumRedeliveries(maximumRedeliveries);
@@ -115,11 +138,11 @@ public class BasicOnException implements OnException {
         exceptionDefinition.setRedeliveryPolicy(rpd);
         for (Endpoint endpoint : endpointList) {
             try {
-                org.apache.camel.Endpoint ep = endpoint.asEndpoint(camelContext);
+                org.apache.camel.Endpoint ep = endpoint.asEndpoint(camelContext, ac);
                 exceptionDefinition.to(ep);
             } catch (UnsupportedOperationException e) {
                 logger.info("Cannot get {} as Endpoint. Try to get it as Uri", endpoint);
-                exceptionDefinition.to(endpoint.asUriEndpoint(camelContext));
+                exceptionDefinition.to(endpoint.asUriEndpoint(camelContext, ac));
             }
         }
     }
