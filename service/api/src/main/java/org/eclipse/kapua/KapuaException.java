@@ -11,14 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.StringJoiner;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The KapuaException class is the superclass of exceptions in Kapua project.<br>
@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
  * Exceptions messages are stored in the KapuaExceptionMessagesBundle Properties Bundle and they are keyed on the exception code.
  *
  * @since 1.0
- *
  */
 public class KapuaException extends Exception {
 
@@ -45,7 +44,6 @@ public class KapuaException extends Exception {
     /**
      * Constructor
      */
-    @SuppressWarnings("unused")
     private KapuaException() {
         super();
     }
@@ -55,7 +53,6 @@ public class KapuaException extends Exception {
      *
      * @param message
      */
-    @SuppressWarnings("unused")
     private KapuaException(String message) {
         super(message);
     }
@@ -66,7 +63,6 @@ public class KapuaException extends Exception {
      * @param message
      * @param cause
      */
-    @SuppressWarnings("unused")
     private KapuaException(String message, Throwable cause) {
         super(message, cause);
     }
@@ -76,7 +72,6 @@ public class KapuaException extends Exception {
      *
      * @param t
      */
-    @SuppressWarnings("unused")
     private KapuaException(Throwable t) {
         super(t);
     }
@@ -192,7 +187,7 @@ public class KapuaException extends Exception {
             StringJoiner joiner = new StringJoiner(",");
             if (args != null && args.length > 0) {
                 for (Object arg : args) {
-                    joiner.add(arg.toString());
+                    joiner.add(String.valueOf(arg));
                 }
             }
             return MessageFormat.format(KAPUA_GENERIC_MESSAGE, joiner.toString());
