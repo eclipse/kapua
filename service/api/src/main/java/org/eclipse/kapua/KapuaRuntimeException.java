@@ -182,7 +182,7 @@ public class KapuaRuntimeException extends RuntimeException {
             StringJoiner joiner = new StringJoiner(",");
             if (args != null && args.length > 0) {
                 for (Object arg : args) {
-                    joiner.add(arg.toString());
+                    joiner.add(String.valueOf(arg));
                 }
             }
             return MessageFormat.format(KAPUA_GENERIC_MESSAGE, joiner.toString());
