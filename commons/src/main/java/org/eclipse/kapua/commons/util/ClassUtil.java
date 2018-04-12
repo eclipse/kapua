@@ -71,7 +71,7 @@ public class ClassUtil {
             try {
                 clazzToInstantiate = (Class<T>) Class.forName(clazz);
             } catch (ClassNotFoundException e) {
-                throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, e, String.format(CANNOT_LOAD_INSTANCE_ERROR_MSG, clazz));
+                throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, e, String.format(CANNOT_LOAD_INSTANCE_ERROR_MSG, clazz, clazzToInstantiate));
             }
         }
         else {
@@ -81,7 +81,7 @@ public class ClassUtil {
             try {
                 instance = clazzToInstantiate.newInstance();
             } catch (InstantiationException | IllegalAccessException e) {
-                throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, e, String.format(CANNOT_LOAD_INSTANCE_ERROR_MSG, clazz));
+                throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, e, String.format(CANNOT_LOAD_INSTANCE_ERROR_MSG, clazz, clazzToInstantiate));
             }
         }
         else {
@@ -92,7 +92,7 @@ public class ClassUtil {
                 Constructor<T> constructor = clazzToInstantiate.getDeclaredConstructor(parameterTypes);
                 instance = constructor.newInstance(parameters);
             } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-                throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, e, String.format(CANNOT_LOAD_INSTANCE_ERROR_MSG, clazz));
+                throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, e, String.format(CANNOT_LOAD_INSTANCE_ERROR_MSG, clazz, clazzToInstantiate));
             }
         }
         logger.info("Initializing broker ip resolver... DONE");
