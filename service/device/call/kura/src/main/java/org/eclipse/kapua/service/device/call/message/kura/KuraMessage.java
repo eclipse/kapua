@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,16 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.message.kura;
 
-import java.util.Date;
-
 import org.eclipse.kapua.service.device.call.message.DeviceMessage;
 
+import java.util.Date;
+
 /**
- * Kura device message implementation.
+ * {@link DeviceMessage} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
  */
 public class KuraMessage<C extends KuraChannel, P extends KuraPayload> implements DeviceMessage<C, P> {
-
-    private static final long serialVersionUID = 1L;
 
     protected C channel;
     protected Date timestamp;
@@ -35,7 +33,7 @@ public class KuraMessage<C extends KuraChannel, P extends KuraPayload> implement
 
     /**
      * Constructor
-     * 
+     *
      * @param channel
      * @param timestamp
      * @param payload
@@ -62,11 +60,6 @@ public class KuraMessage<C extends KuraChannel, P extends KuraPayload> implement
         return timestamp;
     }
 
-    /**
-     * Set the message timestamp
-     * 
-     * @param timestamp
-     */
     @Override
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;

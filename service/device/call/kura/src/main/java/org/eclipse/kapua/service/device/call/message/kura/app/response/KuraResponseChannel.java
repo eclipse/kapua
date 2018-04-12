@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,16 +9,13 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.call.message.app.response.kura;
+package org.eclipse.kapua.service.device.call.message.kura.app.response;
 
-import org.eclipse.kapua.service.device.call.message.app.kura.KuraAppChannel;
 import org.eclipse.kapua.service.device.call.message.app.response.DeviceResponseChannel;
+import org.eclipse.kapua.service.device.call.message.kura.app.KuraAppChannel;
 
 /**
- * Kura command response message channel.
- * 
- * @since 1.0
- *
+ * {@link DeviceResponseChannel} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation
  */
 public class KuraResponseChannel extends KuraAppChannel implements DeviceResponseChannel {
 
@@ -27,7 +24,7 @@ public class KuraResponseChannel extends KuraAppChannel implements DeviceRespons
 
     /**
      * Constructor
-     * 
+     *
      * @param scopeNamespace
      * @param clientId
      */
@@ -37,7 +34,7 @@ public class KuraResponseChannel extends KuraAppChannel implements DeviceRespons
 
     /**
      * Constructor
-     * 
+     *
      * @param controlDestinationPrefix
      * @param scopeNamespace
      * @param clientId

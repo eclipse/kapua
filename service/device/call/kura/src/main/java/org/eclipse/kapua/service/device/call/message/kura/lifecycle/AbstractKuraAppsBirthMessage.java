@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,37 +8,31 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *     Red Hat Inc
  *******************************************************************************/
-package org.eclipse.kapua.service.device.call.message.app.request.kura;
+package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
+
+import org.eclipse.kapua.service.device.call.message.kura.KuraMessage;
+import org.eclipse.kapua.service.device.call.message.lifecycle.DeviceLifecycleMessage;
 
 import java.util.Date;
 
-import org.eclipse.kapua.service.device.call.message.app.request.DeviceRequestMessage;
-import org.eclipse.kapua.service.device.call.message.kura.KuraMessage;
-
-/**
- * Kura command request message.
- */
-public class KuraRequestMessage extends KuraMessage<KuraRequestChannel, KuraRequestPayload> implements DeviceRequestMessage<KuraRequestChannel, KuraRequestPayload> {
-
-    private static final long serialVersionUID = 1L;
+public class AbstractKuraAppsBirthMessage<C extends AbstractKuraAppsBirthChannel, P extends AbstractKuraAppsBirthPayload> extends KuraMessage<C, P> implements DeviceLifecycleMessage<C, P> {
 
     /**
      * Constructor
      */
-    public KuraRequestMessage() {
+    public AbstractKuraAppsBirthMessage() {
         super();
     }
 
     /**
      * Constructor
-     * 
+     *
      * @param channel
      * @param timestamp
      * @param payload
      */
-    public KuraRequestMessage(KuraRequestChannel channel, Date timestamp, KuraRequestPayload payload) {
+    public AbstractKuraAppsBirthMessage(C channel, Date timestamp, P payload) {
         super(channel, timestamp, payload);
     }
 

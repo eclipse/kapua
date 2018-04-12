@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Red Hat Inc and others
+ * Copyright (c) 2017, 2018 Red Hat Inc and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,22 +8,25 @@
  *
  * Contributors:
  *     Red Hat Inc - initial API and implementation
+ *     Eurotech
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin;
-
-import java.io.InputStream;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
 
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor.MessageType;
 import org.eclipse.kapua.broker.core.setting.BrokerSetting;
 import org.eclipse.kapua.broker.core.setting.BrokerSettingKey;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.service.device.call.message.DeviceMessage;
+import org.elasticsearch.common.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.InputStream;
+import java.net.URL;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * A default implementation of the {@link ConnectorDescriptorProvider} interface
@@ -44,7 +47,7 @@ import org.slf4j.LoggerFactory;
  * bar.device.APP=full.qualified.ClassName
  * bar.kapua.APP=full.qualified.ClassName
  * </pre></code>
- *
+ * <p>
  * The property {@code transports} holds a comma separated list of all transports by name. For each transport it will
  * look up all keys of {@code<transport>.[device|kapua].<MessageType>}, where {@code MessageType} are all values of
  * the {@link MessageType} enum. The value of each of this key must be a full qualified class name implementing
@@ -61,7 +64,7 @@ class DefaultConnectorDescriptionProvider implements ConnectorDescriptorProvider
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultConnectorDescriptionProvider.class);
 
-    public final static String DEFAULT_TRANSPORT_PROTOCOL = "MQTT";
+    public static final String DEFAULT_TRANSPORT_PROTOCOL = "MQTT";
 
     private final Map<String, ConnectorDescriptor> configuration = new HashMap<>();
     private final ConnectorDescriptor defaultDescriptor;
@@ -81,31 +84,28 @@ class DefaultConnectorDescriptionProvider implements ConnectorDescriptorProvider
     }
 
     @Override
-    public ConnectorDescriptor getDescriptor(final String connectorName) {
+    public ConnectorDescriptor getDescriptor(String connectorName) {
         return configuration.getOrDefault(connectorName, defaultDescriptor);
     }
 
-    private static void loadConfigurations(final Map<String, ConnectorDescriptor> configuration) throws Exception {
-        final String uri = BrokerSetting.getInstance().getString(BrokerSettingKey.CONFIGURATION_URI, null);
+    private static void loadConfigurations(Map<String, ConnectorDescriptor> configuration) throws Exception {
+        String uri = BrokerSetting.getInstance().getString(BrokerSettingKey.CONFIGURATION_URI, null);
 
-        if (uri == null || uri.isEmpty()) {
+        if (Strings.isNullOrEmpty(uri)) {
             return;
         }
 
-        final Properties p = new Properties();
+        Properties p = new Properties();
 
-        final URL url = new URL(uri);
-        try (final InputStream in = url.openStream()) {
+        URL url = new URL(uri);
+        try (InputStream in = url.openStream()) {
             p.load(in);
         }
 
-        final String transports = p.getProperty("transports", "");
+        String transports = p.getProperty("transports", "");
         for (String transport : transports.split("\\s*,\\s*")) {
-            if (transport.isEmpty()) {
-                continue;
-            }
-            ConnectorDescriptor desc = loadFromProperties(p, transport);
-            if (desc != null) {
+            if (!transport.isEmpty()) {
+                ConnectorDescriptor desc = loadFromProperties(p, transport);
                 configuration.put(transport, desc);
             }
         }
@@ -113,16 +113,16 @@ class DefaultConnectorDescriptionProvider implements ConnectorDescriptorProvider
 
     private static ConnectorDescriptor loadFromProperties(Properties p, String transport) throws ClassNotFoundException {
 
-        final Map<MessageType, Class<? extends DeviceMessage<?, ?>>> deviceClasses = new HashMap<>();
-        final Map<MessageType, Class<? extends KapuaMessage<?, ?>>> kapuaClasses = new HashMap<>();
+        Map<MessageType, Class<? extends DeviceMessage<?, ?>>> deviceClasses = new EnumMap<>(MessageType.class);
+        Map<MessageType, Class<? extends KapuaMessage<?, ?>>> kapuaClasses = new EnumMap<>(MessageType.class);
 
         String transportProtocol = p.getProperty(String.format("%s.transport_protocol", transport));
 
         for (MessageType mt : MessageType.values()) {
 
             {
-                final String key = String.format("%s.device.%s", transport, mt.name());
-                final String clazzName = p.getProperty(key);
+                String key = String.format("%s.device.%s", transport, mt.name());
+                String clazzName = p.getProperty(key);
                 if (clazzName != null && !clazzName.isEmpty()) {
                     @SuppressWarnings("unchecked")
                     Class<? extends DeviceMessage<?, ?>> clazz = (Class<? extends DeviceMessage<?, ?>>) Class.forName(clazzName).asSubclass(DeviceMessage.class);
@@ -133,8 +133,8 @@ class DefaultConnectorDescriptionProvider implements ConnectorDescriptorProvider
             }
 
             {
-                final String key = String.format("%s.kapua.%s", transport, mt.name());
-                final String clazzName = p.getProperty(key);
+                String key = String.format("%s.kapua.%s", transport, mt.name());
+                String clazzName = p.getProperty(key);
                 if (clazzName != null && !clazzName.isEmpty()) {
                     @SuppressWarnings("unchecked")
                     Class<? extends KapuaMessage<?, ?>> clazz = (Class<? extends KapuaMessage<?, ?>>) Class.forName(clazzName).asSubclass(KapuaMessage.class);
@@ -150,21 +150,21 @@ class DefaultConnectorDescriptionProvider implements ConnectorDescriptorProvider
     }
 
     /**
-     * Create the default Kura connector description
+     * Create the default {@link org.eclipse.kapua.service.device.call.kura.Kura} connector description
      *
      * @return the default instance, never returns {@code null}
      */
     private static ConnectorDescriptor createDefaultDescriptor() {
-        final Map<MessageType, Class<? extends DeviceMessage<?, ?>>> deviceClass = new HashMap<>();
+        Map<MessageType, Class<? extends DeviceMessage<?, ?>>> deviceClass = new EnumMap<>(MessageType.class);
         deviceClass.put(MessageType.APP, org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraAppsMessage.class);
         deviceClass.put(MessageType.BIRTH, org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraBirthMessage.class);
         deviceClass.put(MessageType.DISCONNECT, org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraDisconnectMessage.class);
         deviceClass.put(MessageType.MISSING, org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraMissingMessage.class);
         deviceClass.put(MessageType.NOTIFY, org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraNotifyMessage.class);
-        deviceClass.put(MessageType.UNMATCHED, org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraUnmatchedMessage.class);
+        deviceClass.put(MessageType.UNMATCHED, org.eclipse.kapua.service.device.call.message.kura.others.KuraUnmatchedMessage.class);
         deviceClass.put(MessageType.DATA, org.eclipse.kapua.service.device.call.message.kura.data.KuraDataMessage.class);
 
-        final Map<MessageType, Class<? extends KapuaMessage<?, ?>>> kapuaClass = new HashMap<>();
+        Map<MessageType, Class<? extends KapuaMessage<?, ?>>> kapuaClass = new EnumMap<>(MessageType.class);
         kapuaClass.put(MessageType.APP, org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage.class);
         kapuaClass.put(MessageType.BIRTH, org.eclipse.kapua.message.device.lifecycle.KapuaBirthMessage.class);
         kapuaClass.put(MessageType.DISCONNECT, org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectMessage.class);

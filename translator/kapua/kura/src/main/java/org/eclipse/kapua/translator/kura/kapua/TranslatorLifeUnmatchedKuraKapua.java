@@ -22,16 +22,15 @@ import org.eclipse.kapua.message.internal.device.lifecycle.KapuaUnmatchedMessage
 import org.eclipse.kapua.message.internal.device.lifecycle.KapuaUnmatchedPayloadImpl;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
-import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraUnmatchedChannel;
-import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraUnmatchedMessage;
-import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraUnmatchedPayload;
+import org.eclipse.kapua.service.device.call.message.kura.others.KuraUnmatchedChannel;
+import org.eclipse.kapua.service.device.call.message.kura.others.KuraUnmatchedMessage;
+import org.eclipse.kapua.service.device.call.message.kura.others.KuraUnmatchedPayload;
 import org.eclipse.kapua.translator.Translator;
 
 /**
  * Messages translator implementation from {@link KuraUnmatchedMessage} to {@link KapuaUnmatchedMessage}
  *
  * @since 1.0
- *
  */
 public class TranslatorLifeUnmatchedKuraKapua extends Translator<KuraUnmatchedMessage, KapuaUnmatchedMessage> {
 

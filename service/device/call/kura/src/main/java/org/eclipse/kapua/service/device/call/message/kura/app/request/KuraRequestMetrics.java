@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,15 +9,14 @@
  * Contributors:
  *      Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.call.kura.app;
+package org.eclipse.kapua.service.device.call.message.kura.app.request;
+
+import org.eclipse.kapua.service.device.call.message.app.request.DeviceRequestMetrics;
 
 /**
- * Request metrics properties definition.
- * 
- * @since 1.0
- *
+ * {@link DeviceRequestMetrics }{@link org.eclipse.kapua.service.device.call.kura.Kura} implementation
  */
-public enum RequestMetrics {
+public enum KuraRequestMetrics implements DeviceRequestMetrics {
 
     /**
      * Request identifier
@@ -26,20 +25,15 @@ public enum RequestMetrics {
     /**
      * Requester client identifier
      */
-    REQ_METRIC_REQUESTER_CLIENT_ID("requester.client.id"),
-    ;
+    REQ_METRIC_REQUESTER_CLIENT_ID("requester.client.id"),;
 
     private String value;
 
-    RequestMetrics(String value) {
+    KuraRequestMetrics(String value) {
         this.value = value;
     }
 
-    /**
-     * Get a value property associated to this specific enumeration key.
-     * 
-     * @return
-     */
+    @Override
     public String getValue() {
         return value;
     }

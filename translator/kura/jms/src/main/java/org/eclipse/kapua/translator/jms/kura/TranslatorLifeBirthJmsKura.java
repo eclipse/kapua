@@ -22,15 +22,13 @@ import org.eclipse.kapua.transport.message.jms.JmsTopic;
 
 /**
  * Messages translator implementation from {@link org.eclipse.kapua.transport.message.jms.JmsMessage} to {@link org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraBirthMessage}
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class TranslatorLifeBirthJmsKura extends Translator<JmsMessage, KuraBirthMessage> {
 
     @Override
-    public KuraBirthMessage translate(JmsMessage jmsMessage)
-            throws KapuaException {
+    public KuraBirthMessage translate(JmsMessage jmsMessage) throws KapuaException {
         return new KuraBirthMessage(translate(jmsMessage.getTopic()),
                 jmsMessage.getReceivedOn(),
                 translate(jmsMessage.getPayload().getBody()));
@@ -44,8 +42,7 @@ public class TranslatorLifeBirthJmsKura extends Translator<JmsMessage, KuraBirth
         if (topicTokens == null || topicTokens.length < 3) {
             throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR);
         }
-        return new KuraBirthChannel(topicTokens[1],
-                topicTokens[2]);
+        return new KuraBirthChannel(topicTokens[0], topicTokens[1], topicTokens[2]);
     }
 
     private KuraBirthPayload translate(byte[] jmsBody)

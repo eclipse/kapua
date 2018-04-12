@@ -14,9 +14,9 @@ package org.eclipse.kapua.translator.jms.kura;
 
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraUnmatchedChannel;
-import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraUnmatchedMessage;
-import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraUnmatchedPayload;
+import org.eclipse.kapua.service.device.call.message.kura.others.KuraUnmatchedChannel;
+import org.eclipse.kapua.service.device.call.message.kura.others.KuraUnmatchedMessage;
+import org.eclipse.kapua.service.device.call.message.kura.others.KuraUnmatchedPayload;
 import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.transport.message.jms.JmsMessage;
 import org.eclipse.kapua.transport.message.jms.JmsTopic;
@@ -24,10 +24,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Messages translator implementation from {@link org.eclipse.kapua.transport.message.jms.JmsMessage} to {@link org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraUnmatchedMessage}
- * 
+ * Messages translator implementation from {@link org.eclipse.kapua.transport.message.jms.JmsMessage} to {@link KuraUnmatchedMessage}
+ *
  * @since 1.0
- * 
  */
 public class TranslatorLifeUnmatchedJmsKura extends Translator<JmsMessage, KuraUnmatchedMessage> {
 

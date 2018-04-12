@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,37 +9,33 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.call.message.app.request.kura;
+package org.eclipse.kapua.service.device.call.message.kura.app.request;
 
-import org.eclipse.kapua.service.device.call.kura.app.RequestMetrics;
 import org.eclipse.kapua.service.device.call.message.app.request.DeviceRequestPayload;
-import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
+import org.eclipse.kapua.service.device.call.message.kura.app.KuraAppPayload;
 
 /**
- * Kura command request message payload.
- * 
- * @since 1.0
- *
+ * {@link DeviceRequestPayload} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation
  */
-public class KuraRequestPayload extends KuraPayload implements DeviceRequestPayload {
+public class KuraRequestPayload extends KuraAppPayload implements DeviceRequestPayload {
 
     @Override
     public void setRequestId(String requestId) {
-        getMetrics().put(RequestMetrics.REQ_METRIC_REQUEST_ID.getValue(), requestId);
+        getMetrics().put(KuraRequestMetrics.REQ_METRIC_REQUEST_ID.getValue(), requestId);
     }
 
     @Override
     public String getRequestId() {
-        return (String) getMetrics().get(RequestMetrics.REQ_METRIC_REQUEST_ID.getValue());
+        return (String) getMetrics().get(KuraRequestMetrics.REQ_METRIC_REQUEST_ID.getValue());
     }
 
     @Override
     public void setRequesterClientId(String requesterClientId) {
-        getMetrics().put(RequestMetrics.REQ_METRIC_REQUESTER_CLIENT_ID.getValue(), requesterClientId);
+        getMetrics().put(KuraRequestMetrics.REQ_METRIC_REQUESTER_CLIENT_ID.getValue(), requesterClientId);
     }
 
     @Override
     public String getRequesterClientId() {
-        return (String) getMetrics().get(RequestMetrics.REQ_METRIC_REQUESTER_CLIENT_ID.getValue());
+        return (String) getMetrics().get(KuraRequestMetrics.REQ_METRIC_REQUESTER_CLIENT_ID.getValue());
     }
 }

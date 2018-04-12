@@ -12,22 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
 
-import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.call.kura.app.BundleMetrics;
-import org.eclipse.kapua.service.device.call.kura.app.ResponseMetrics;
 import org.eclipse.kapua.service.device.call.kura.model.bundle.KuraBundle;
 import org.eclipse.kapua.service.device.call.kura.model.bundle.KuraBundles;
-import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponseChannel;
-import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponseMessage;
-import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponsePayload;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMetrics;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleFactory;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
@@ -40,11 +35,15 @@ import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagem
 import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
 import org.eclipse.kapua.translator.exception.TranslatorException;
 
+import java.io.StringWriter;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Messages translator implementation from {@link KuraResponseMessage} to {@link BundleResponseMessage}
  *
  * @since 1.0
- *
  */
 public class TranslatorAppBundleKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<BundleResponseChannel, BundleResponsePayload, BundleResponseMessage> {
 
@@ -52,7 +51,7 @@ public class TranslatorAppBundleKuraKapua extends AbstractSimpleTranslatorRespon
     private static final Map<BundleMetrics, DeviceBundleAppProperties> METRICS_DICTIONARY;
 
     static {
-        METRICS_DICTIONARY = new HashMap<>();
+        METRICS_DICTIONARY = new EnumMap<>(BundleMetrics.class);
 
         METRICS_DICTIONARY.put(BundleMetrics.APP_ID, DeviceBundleAppProperties.APP_NAME);
         METRICS_DICTIONARY.put(BundleMetrics.APP_VERSION, DeviceBundleAppProperties.APP_VERSION);
@@ -62,6 +61,7 @@ public class TranslatorAppBundleKuraKapua extends AbstractSimpleTranslatorRespon
         super(BundleResponseMessage.class);
     }
 
+    @Override
     protected BundleResponseChannel translateChannel(KuraResponseChannel kuraChannel) throws KapuaException {
 
         if (!CONTROL_MESSAGE_CLASSIFIER.equals(kuraChannel.getMessageClassification())) {
@@ -94,11 +94,12 @@ public class TranslatorAppBundleKuraKapua extends AbstractSimpleTranslatorRespon
         return bundleResponseChannel;
     }
 
+    @Override
     protected BundleResponsePayload translatePayload(KuraResponsePayload kuraPayload) throws KapuaException {
         BundleResponsePayload bundleResponsePayload = new BundleResponsePayload();
 
-        bundleResponsePayload.setExceptionMessage((String) kuraPayload.getMetrics().get(ResponseMetrics.RESP_METRIC_EXCEPTION_MESSAGE.getValue()));
-        bundleResponsePayload.setExceptionStack((String) kuraPayload.getMetrics().get(ResponseMetrics.RESP_METRIC_EXCEPTION_STACK.getValue()));
+        bundleResponsePayload.setExceptionMessage((String) kuraPayload.getMetrics().get(KuraResponseMetrics.RESP_METRIC_EXCEPTION_MESSAGE.getValue()));
+        bundleResponsePayload.setExceptionStack((String) kuraPayload.getMetrics().get(KuraResponseMetrics.RESP_METRIC_EXCEPTION_STACK.getValue()));
 
         if (kuraPayload.getBody() != null) {
             DeviceManagementSetting config = DeviceManagementSetting.getInstance();
@@ -110,7 +111,7 @@ public class TranslatorAppBundleKuraKapua extends AbstractSimpleTranslatorRespon
             } catch (Exception e) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD,
                         e,
-                        kuraPayload.getBody());
+                        (Object) kuraPayload.getBody());
             }
 
             KuraBundles kuraBundles = null;

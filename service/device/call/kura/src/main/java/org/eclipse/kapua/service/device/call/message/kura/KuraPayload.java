@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,11 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.message.kura;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.google.common.primitives.Booleans;
+import com.google.protobuf.ByteString;
+import com.google.protobuf.InvalidProtocolBufferException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.message.internal.MessageErrorCodes;
 import org.eclipse.kapua.message.internal.MessageException;
@@ -26,18 +24,17 @@ import org.eclipse.kapua.service.device.call.message.kura.utils.GZIPUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.protobuf.ByteString;
-import com.google.protobuf.InvalidProtocolBufferException;
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Kura device payload implementation.
- * 
- * @since 1.0
- *
+ * {@link DevicePayload} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
  */
 public class KuraPayload implements DevicePayload {
 
-    private static final Logger logger = LoggerFactory.getLogger(KuraPayload.class);
+    private static final Logger LOG = LoggerFactory.getLogger(KuraPayload.class);
 
     protected Date timestamp;
     protected DevicePosition position;
@@ -56,11 +53,7 @@ public class KuraPayload implements DevicePayload {
         return timestamp;
     }
 
-    /**
-     * Get the message timestamp
-     * 
-     * @param timestamp
-     */
+    @Override
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
@@ -70,11 +63,7 @@ public class KuraPayload implements DevicePayload {
         return position;
     }
 
-    /**
-     * Set the device position
-     * 
-     * @param position
-     */
+    @Override
     public void setPosition(DevicePosition position) {
         this.position = position;
     }
@@ -94,56 +83,49 @@ public class KuraPayload implements DevicePayload {
         return body;
     }
 
-    /**
-     * Set the message body
-     * 
-     * @param body
-     */
+    @Override
     public void setBody(byte[] body) {
         this.body = body;
     }
 
     @Override
     public byte[] toByteArray() {
-        // Build the message
         KuraPayloadProto.KuraPayload.Builder protoMsg = KuraPayloadProto.KuraPayload.newBuilder();
 
-        // set the timestamp
+        //
+        // Set the timestamp
         if (getTimestamp() != null) {
             protoMsg.setTimestamp(getTimestamp().getTime());
         }
 
-        // set the position
+        //
+        // Set the position
         if (getPosition() != null) {
             protoMsg.setPosition(buildPositionProtoBuf(getPosition()));
         }
 
-        // set the metrics
-        for (String name : getMetrics().keySet()) {
+        //
+        // Set the metrics
+        getMetrics().forEach((name, value) -> {
+            if (value != null) {
+                try {
+                    KuraPayloadProto.KuraPayload.KuraMetric.Builder metricBuilder = KuraPayloadProto.KuraPayload.KuraMetric.newBuilder();
+                    metricBuilder.setName(name);
 
-            // build a metric
-            Object value = getMetrics().get(name);
+                    setProtoKuraMetricValue(metricBuilder, value);
+                    metricBuilder.build();
 
-            if (value == null) {
-                continue;
+                    // add it to the message
+                    protoMsg.addMetric(metricBuilder);
+                } catch (MessageException eihte) {
+                    LOG.error("During serialization, ignoring metric named: {}. Unrecognized value type: {}.", name, value.getClass().getName());
+                    throw new RuntimeException(eihte);
+                }
             }
+        });
 
-            try {
-                KuraPayloadProto.KuraPayload.KuraMetric.Builder metricB = KuraPayloadProto.KuraPayload.KuraMetric.newBuilder();
-                metricB.setName(name);
-
-                setProtoKuraMetricValue(metricB, value);
-                metricB.build();
-
-                // add it to the message
-                protoMsg.addMetric(metricB);
-            } catch (MessageException eihte) {
-                logger.error("During serialization, ignoring metric named: {}. Unrecognized value type: {}.", name, value.getClass().getName());
-                throw new RuntimeException(eihte);
-            }
-        }
-
-        // set the body
+        //
+        // Set the body
         if (getBody() != null) {
             protoMsg.setBody(ByteString.copyFrom(getBody()));
         }
@@ -152,18 +134,19 @@ public class KuraPayload implements DevicePayload {
     }
 
     @Override
-    public void readFromByteArray(byte[] bytes)
-            throws KapuaException {
+    public void readFromByteArray(byte[] bytes) throws KapuaException {
+        //
+        // Decompress
         if (GZIPUtils.isCompressed(bytes)) {
             try {
                 bytes = GZIPUtils.decompress(bytes);
-            } catch (IOException e) {
-                // throw new KapuaDeviceCallException(KapuaDeviceCallErrorCodes.)
-                // FIXME: manage!
-                throw KapuaException.internalError(e);
+            } catch (IOException ioe) {
+                throw new MessageException(MessageErrorCodes.INVALID_MESSAGE, ioe, (Object[]) null);
             }
         }
 
+        //
+        // Convert protobuf
         KuraPayloadProto.KuraPayload protoMsg = null;
         try {
             protoMsg = KuraPayloadProto.KuraPayload.parseFrom(bytes);
@@ -185,18 +168,17 @@ public class KuraPayload implements DevicePayload {
 
         //
         // Add metrics
-        for (int i = 0; i < protoMsg.getMetricCount(); i++) {
-            String name = protoMsg.getMetric(i).getName();
+        protoMsg.getMetricList().forEach(kuraMetric -> {
             try {
-                Object value = getProtoKuraMetricValue(protoMsg.getMetric(i), protoMsg.getMetric(i).getType());
-                metrics.put(name, value);
+                Object value = getProtoKuraMetricValue(kuraMetric, kuraMetric.getType());
+                metrics.put(kuraMetric.getName(), value);
             } catch (MessageException ihte) {
-
-                logger.warn("During deserialization, ignoring metric named: " + name + ". Unrecognized value type: " + protoMsg.getMetric(i).getType(), ihte);
+                LOG.warn("During deserialization, ignoring metric named: " + kuraMetric.getName() + ". Unrecognized value type: " + kuraMetric.getType(), ihte);
             }
-        }
+        });
 
-        // set the body
+        //
+        // Set the body
         if (protoMsg.hasBody()) {
             body = (protoMsg.getBody().toByteArray());
         }
@@ -237,8 +219,7 @@ public class KuraPayload implements DevicePayload {
         }
     }
 
-    private static void setProtoKuraMetricValue(KuraPayloadProto.KuraPayload.KuraMetric.Builder metric, Object o)
-            throws MessageException {
+    private static void setProtoKuraMetricValue(KuraPayloadProto.KuraPayload.KuraMetric.Builder metric, Object o) throws MessageException {
 
         if (o instanceof String) {
             metric.setType(KuraPayloadProto.KuraPayload.KuraMetric.ValueType.STRING);
@@ -299,51 +280,59 @@ public class KuraPayload implements DevicePayload {
         if (position.getStatus() != null) {
             protoPos.setStatus(position.getStatus());
         }
+
         return protoPos.build();
     }
 
     private DevicePosition buildFromProtoBuf(KuraPayloadProto.KuraPayload.KuraPosition protoPosition) {
-        DevicePosition position = getPosition();
+        DevicePosition devicePosition = getPosition();
 
-        // for performance reason check the position before
-        if (position == null) {
-            if (protoPosition.hasLatitude() || protoPosition.hasLatitude() ||
-                    protoPosition.hasLongitude() || protoPosition.hasAltitude() ||
-                    protoPosition.hasPrecision() || protoPosition.hasHeading() ||
-                    protoPosition.hasHeading() || protoPosition.hasSpeed() ||
-                    protoPosition.hasSatellites() || protoPosition.hasStatus() ||
-                    protoPosition.hasTimestamp()) {
-                position = new KuraPosition();
+        // For performance reason check the position before
+        if (devicePosition == null &&
+                Booleans.countTrue(
+                        protoPosition.hasLatitude(),
+                        protoPosition.hasLatitude(),
+                        protoPosition.hasLongitude(),
+                        protoPosition.hasAltitude(),
+                        protoPosition.hasPrecision(),
+                        protoPosition.hasHeading(),
+                        protoPosition.hasHeading(),
+                        protoPosition.hasSpeed(),
+                        protoPosition.hasSatellites(),
+                        protoPosition.hasStatus(),
+                        protoPosition.hasTimestamp()) > 0) {
+            devicePosition = new KuraPosition();
+        }
+
+        if (devicePosition != null) {
+            if (protoPosition.hasLatitude()) {
+                devicePosition.setLatitude(protoPosition.getLatitude());
+            }
+            if (protoPosition.hasLongitude()) {
+                devicePosition.setLongitude(protoPosition.getLongitude());
+            }
+            if (protoPosition.hasAltitude()) {
+                devicePosition.setAltitude(protoPosition.getAltitude());
+            }
+            if (protoPosition.hasPrecision()) {
+                devicePosition.setPrecision(protoPosition.getPrecision());
+            }
+            if (protoPosition.hasHeading()) {
+                devicePosition.setHeading(protoPosition.getHeading());
+            }
+            if (protoPosition.hasSpeed()) {
+                devicePosition.setSpeed(protoPosition.getSpeed());
+            }
+            if (protoPosition.hasSatellites()) {
+                devicePosition.setSatellites(protoPosition.getSatellites());
+            }
+            if (protoPosition.hasStatus()) {
+                devicePosition.setStatus(protoPosition.getStatus());
+            }
+            if (protoPosition.hasTimestamp()) {
+                devicePosition.setTimestamp(new Date(protoPosition.getTimestamp()));
             }
         }
-
-        if (protoPosition.hasLatitude()) {
-            position.setLatitude(protoPosition.getLatitude());
-        }
-        if (protoPosition.hasLongitude()) {
-            position.setLongitude(protoPosition.getLongitude());
-        }
-        if (protoPosition.hasAltitude()) {
-            position.setAltitude(protoPosition.getAltitude());
-        }
-        if (protoPosition.hasPrecision()) {
-            position.setPrecision(protoPosition.getPrecision());
-        }
-        if (protoPosition.hasHeading()) {
-            position.setHeading(protoPosition.getHeading());
-        }
-        if (protoPosition.hasSpeed()) {
-            position.setSpeed(protoPosition.getSpeed());
-        }
-        if (protoPosition.hasSatellites()) {
-            position.setSatellites(protoPosition.getSatellites());
-        }
-        if (protoPosition.hasStatus()) {
-            position.setStatus(protoPosition.getStatus());
-        }
-        if (protoPosition.hasTimestamp()) {
-            position.setTimestamp(new Date(protoPosition.getTimestamp()));
-        }
-        return position;
+        return devicePosition;
     }
 }

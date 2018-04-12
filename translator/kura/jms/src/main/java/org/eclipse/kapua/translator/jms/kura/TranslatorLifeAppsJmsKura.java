@@ -22,7 +22,7 @@ import org.eclipse.kapua.transport.message.jms.JmsTopic;
 
 /**
  * Messages translator implementation from {@link org.eclipse.kapua.transport.message.jms.JmsMessage} to {@link org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraAppsMessage}
- * 
+ *
  * @since 1.0
  */
 public class TranslatorLifeAppsJmsKura extends Translator<JmsMessage, KuraAppsMessage> {
@@ -39,12 +39,11 @@ public class TranslatorLifeAppsJmsKura extends Translator<JmsMessage, KuraAppsMe
             throws KapuaException {
         String[] topicTokens = jmsTopic.getSplittedTopic();
         // we shouldn't never get a shorter topic here (because that means we have issues on camel routing)
-        // TODO check exception type
         if (topicTokens == null || topicTokens.length < 3) {
             throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR);
         }
-        return new KuraAppsChannel(topicTokens[1],
-                topicTokens[2]);
+
+        return new KuraAppsChannel(topicTokens[0], topicTokens[1], topicTokens[2]);
     }
 
     private KuraAppsPayload translate(byte[] jmsBody)

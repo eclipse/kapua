@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,9 +10,8 @@
  *     Eurotech - initial API and implementation
  *     Red Hat Inc
  *******************************************************************************/
-package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
+package org.eclipse.kapua.service.device.call.message.kura.others;
 
-import org.eclipse.kapua.commons.util.Payloads;
 import org.eclipse.kapua.service.device.call.message.DevicePayload;
 import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
 
@@ -21,12 +20,4 @@ import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
  */
 public class KuraUnmatchedPayload extends KuraPayload implements DevicePayload {
 
-    /**
-     * Returns a string for displaying
-     *
-     * @return A string used for displaying, never returns {@code null}
-     */
-    public String toDisplayString() {
-        return Payloads.toDisplayString(metrics);
-    }
 }

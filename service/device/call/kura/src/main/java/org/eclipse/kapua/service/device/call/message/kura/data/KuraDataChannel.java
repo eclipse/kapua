@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,16 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.message.kura.data;
 
-import java.util.List;
-
 import org.eclipse.kapua.service.device.call.message.data.DeviceDataChannel;
 import org.eclipse.kapua.service.device.call.message.kura.KuraChannel;
 
+import java.util.List;
+
 /**
- * Kura data message channel.
- * 
- * @since 1.0
- *
+ * {@link DeviceDataChannel} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
  */
 public class KuraDataChannel extends KuraChannel implements DeviceDataChannel {
 
@@ -41,7 +38,7 @@ public class KuraDataChannel extends KuraChannel implements DeviceDataChannel {
 
     /**
      * Set the semantic channel tokens. {@link KuraChannel#getSemanticChannelParts() getSemanticChannelParts} for more detail.
-     * 
+     *
      * @param semanticChannelParts
      */
     public void setSemanticChannelParts(List<String> semanticChannelParts) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,17 +18,16 @@ import org.eclipse.kapua.service.device.call.message.DevicePayload;
 import org.eclipse.kapua.service.device.call.message.app.request.DeviceRequestChannel;
 import org.eclipse.kapua.service.device.call.message.app.request.DeviceRequestMessage;
 import org.eclipse.kapua.service.device.call.message.app.request.DeviceRequestPayload;
-import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestChannel;
-import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestMessage;
-import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestPayload;
 import org.eclipse.kapua.service.device.call.message.kura.KuraMessage;
 import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
+import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestChannel;
+import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestMessage;
+import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestPayload;
 
 /**
- * Kura device message service factory implementation.
- * 
- * @since 1.0
+ * {@link DeviceMessageFactory} {@link Kura} implementation.
  *
+ * @since 1.0
  */
 @KapuaProvider
 @SuppressWarnings("rawtypes")

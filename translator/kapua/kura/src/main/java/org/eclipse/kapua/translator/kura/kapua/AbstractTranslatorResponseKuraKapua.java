@@ -14,10 +14,10 @@ package org.eclipse.kapua.translator.kura.kapua;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.service.account.Account;
-import org.eclipse.kapua.service.device.call.kura.app.ResponseMetrics;
-import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponseChannel;
-import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponseMessage;
-import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponsePayload;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMetrics;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseChannel;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
@@ -44,7 +44,7 @@ public abstract class AbstractTranslatorResponseKuraKapua<TO_C extends KapuaResp
         kapuaMessage.setCapturedOn(kuraMessage.getPayload().getTimestamp());
         kapuaMessage.setSentOn(kuraMessage.getPayload().getTimestamp());
         kapuaMessage.setReceivedOn(kuraMessage.getTimestamp());
-        kapuaMessage.setResponseCode(TranslatorKuraKapuaUtils.translate((Integer) kuraMessage.getPayload().getMetrics().get(ResponseMetrics.RESP_METRIC_EXIT_CODE.getValue())));
+        kapuaMessage.setResponseCode(TranslatorKuraKapuaUtils.translate((Integer) kuraMessage.getPayload().getMetrics().get(KuraResponseMetrics.RESP_METRIC_EXIT_CODE.getValue())));
 
         //
         // Return Kapua Message

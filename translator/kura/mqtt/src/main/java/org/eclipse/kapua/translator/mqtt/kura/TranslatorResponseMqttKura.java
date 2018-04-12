@@ -13,9 +13,9 @@ package org.eclipse.kapua.translator.mqtt.kura;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponseChannel;
-import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponseMessage;
-import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponsePayload;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
 import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
 import org.eclipse.kapua.translator.exception.TranslatorException;
@@ -24,7 +24,7 @@ import org.eclipse.kapua.transport.message.mqtt.MqttPayload;
 import org.eclipse.kapua.transport.message.mqtt.MqttTopic;
 
 /**
- * Messages translator implementation from {@link org.eclipse.kapua.transport.message.mqtt.MqttMessage} to {@link org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponseMessage}
+ * Messages translator implementation from {@link org.eclipse.kapua.transport.message.mqtt.MqttMessage} to {@link KuraResponseMessage}
  * 
  * @since 1.0
  *

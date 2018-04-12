@@ -20,9 +20,9 @@ import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
-import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestChannel;
-import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestMessage;
-import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestPayload;
+import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestChannel;
+import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestMessage;
+import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestPayload;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleRequestMessage;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
@@ -30,7 +30,7 @@ import org.eclipse.kapua.translator.Translator;
 
 /**
  * Messages translator implementation from {@link BundleRequestMessage} to {@link KuraRequestMessage}
- * 
+ *
  * @since 1.0.0
  */
 public abstract class AbstractTranslatorKapuaKura<FROM_C extends KapuaChannel, FROM_P extends KapuaPayload, FROM_M extends KapuaMessage<FROM_C, FROM_P>>

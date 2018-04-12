@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,16 +8,15 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *     Red Hat Inc
  *******************************************************************************/
-package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
+package org.eclipse.kapua.service.device.call.message.kura.app;
 
+import org.eclipse.kapua.service.device.call.message.app.DeviceAppPayload;
 import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
-import org.eclipse.kapua.service.device.call.message.lifecycle.DeviceLifecyclePayload;
 
 /**
- * {@link DeviceLifecyclePayload} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
+ * {@link DeviceAppPayload} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
  */
-public class KuraMissingPayload extends KuraPayload implements DeviceLifecyclePayload {
+public class KuraAppPayload extends KuraPayload implements DeviceAppPayload {
 
 }

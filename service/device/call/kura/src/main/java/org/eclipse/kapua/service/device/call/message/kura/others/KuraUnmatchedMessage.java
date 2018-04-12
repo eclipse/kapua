@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,22 +10,21 @@
  *     Eurotech - initial API and implementation
  *     Red Hat Inc
  *******************************************************************************/
-package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
+package org.eclipse.kapua.service.device.call.message.kura.others;
+
+import org.eclipse.kapua.service.device.call.message.DeviceMessage;
+import org.eclipse.kapua.service.device.call.message.kura.KuraMessage;
 
 import java.util.Date;
 
-import org.eclipse.kapua.service.device.call.message.kura.KuraMessage;
-
 /**
- * Kura device unmatched message implementation.
+ * {@link DeviceMessage} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
  * <p>
  * The unmatched messages aren't elaborated by the system.
  * In that category fall all the messages that aren't categorized in the others life cycle message groups.
  * </p>
  */
-public class KuraUnmatchedMessage extends KuraMessage<KuraUnmatchedChannel, KuraUnmatchedPayload> {
-
-    private static final long serialVersionUID = 1L;
+public class KuraUnmatchedMessage extends KuraMessage<KuraUnmatchedChannel, KuraUnmatchedPayload> implements DeviceMessage<KuraUnmatchedChannel, KuraUnmatchedPayload> {
 
     /**
      * Constructor
@@ -41,11 +40,8 @@ public class KuraUnmatchedMessage extends KuraMessage<KuraUnmatchedChannel, Kura
      * @param timestamp
      * @param payload
      */
-    public KuraUnmatchedMessage(KuraUnmatchedChannel channel,
-            Date timestamp, KuraUnmatchedPayload payload) {
-        this.channel = channel;
-        this.timestamp = timestamp;
-        this.payload = payload;
+    public KuraUnmatchedMessage(KuraUnmatchedChannel channel, Date timestamp, KuraUnmatchedPayload payload) {
+        super(channel, timestamp, payload);
     }
 
 }
