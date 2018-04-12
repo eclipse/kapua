@@ -134,12 +134,17 @@ public class DeviceAssetsValues extends LayoutContainer {
         devicesAssetPanel.add(assetValuesContainer);
 
         add(devicesAssetPanel);
+        layout(true);
+        toolBar.setStyleAttribute("border-left", "1px solid rgb(208, 208, 208)");
+        toolBar.setStyleAttribute("border-right", "1px solid rgb(208, 208, 208)");
+        toolBar.setStyleAttribute("border-top", "0px none");
+        toolBar.setStyleAttribute("border-bottom", "0px none");
         initialized = true;
     }
 
     private void initToolBar() {
         toolBar = new ToolBar();
-        toolBar.setBorders(false);
+        toolBar.setBorders(true);
 
         //
         // Refresh Button
@@ -329,6 +334,8 @@ public class DeviceAssetsValues extends LayoutContainer {
                 }
             }
         });
+
+        refreshAssetPanel(null);
     }
 
     public void refresh() {
@@ -349,6 +356,7 @@ public class DeviceAssetsValues extends LayoutContainer {
                 assetValuesPanel.removeAll();
                 assetValuesPanel.removeFromParent();
                 assetValuesPanel = null;
+                refreshAssetPanel(null);
                 assetValuesContainer.layout();
             }
 
@@ -374,9 +382,12 @@ public class DeviceAssetsValues extends LayoutContainer {
                     reset.setEnabled(true);
                 }
             });
-            assetValuesContainer.add(assetValuesPanel, centerData);
-            assetValuesContainer.layout();
+
+        } else {
+            assetValuesPanel = new DeviceAssetsPanel(null);
         }
+        assetValuesContainer.add(assetValuesPanel, centerData);
+        assetValuesContainer.layout();
     }
 
     public void apply() {

@@ -112,6 +112,10 @@ public class AboutView extends AbstractView implements View {
         blurb.add(kapuaIcon);
         blurb.add(blurbText, new TableData(HorizontalAlignment.LEFT, VerticalAlignment.TOP));
         blurb.setScrollMode(Scroll.AUTO);
+        blurb.setBorders(true);
+        blurb.setStyleAttribute("border-top", "0px none");
+        blurb.setStyleAttribute("border-left", "0px none");
+        blurb.setStyleAttribute("border-right", "0px none");
 
         // create dependencies table
 
@@ -136,6 +140,10 @@ public class AboutView extends AbstractView implements View {
         final Grid<BeanModel> grid = new Grid<BeanModel>(store, cm);
         grid.setId("about-grid");
         grid.setAutoExpandColumn("id");
+        grid.setBorders(true);
+        grid.setStyleAttribute("border-left", "0px none");
+        grid.setStyleAttribute("border-right", "0px none");
+        grid.setStyleAttribute("border-bottom", "0px none");
 
         // init grid plugins
         rowExpander.init(grid);
@@ -147,8 +155,9 @@ public class AboutView extends AbstractView implements View {
         BorderLayoutData northBorder = new BorderLayoutData(LayoutRegion.NORTH, 400);
         BorderLayoutData centerBorder = new BorderLayoutData(LayoutRegion.CENTER);
         northBorder.setSplit(true);
+        northBorder.setMargins(new Margins(0, -3, 0, 0));
         centerBorder.setSplit(true);
-        centerBorder.setMargins(new Margins(10, 0, 0, 0));
+        centerBorder.setMargins(new Margins(10, -3, 0, 1));
         final LayoutContainer mainPanel = new LayoutContainer(borderLayout);
         mainPanel.setHeight("100%");
         mainPanel.add(blurb, northBorder);

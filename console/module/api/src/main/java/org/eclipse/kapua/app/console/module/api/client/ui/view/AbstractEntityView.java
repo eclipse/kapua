@@ -18,6 +18,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
@@ -114,6 +115,11 @@ public abstract class AbstractEntityView<M extends GwtEntityModel> extends Abstr
 
                 resultContainer.add(tabsPanel, centerData);
                 resultContainer.layout(true);
+                Node node0 = tabsPanel.getElement().getChild(0);
+                Node node1 = node0.getChild(1);
+                if (node1.getNodeType() == Node.ELEMENT_NODE) {
+                    ((Element) node1).setAttribute("style", "border-top: 0px; border-bottom: 0px;");
+                }
             }
         });
         add(mf);
