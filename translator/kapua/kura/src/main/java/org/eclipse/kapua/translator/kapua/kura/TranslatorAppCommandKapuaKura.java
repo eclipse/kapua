@@ -12,25 +12,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kapua.kura;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.service.device.call.kura.app.CommandMetrics;
-import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestChannel;
-import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestMessage;
-import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestPayload;
+import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestChannel;
+import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestMessage;
+import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestPayload;
 import org.eclipse.kapua.service.device.management.command.internal.CommandAppProperties;
 import org.eclipse.kapua.service.device.management.command.message.internal.CommandRequestChannel;
 import org.eclipse.kapua.service.device.management.command.message.internal.CommandRequestMessage;
 import org.eclipse.kapua.service.device.management.command.message.internal.CommandRequestPayload;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Messages translator implementation from {@link CommandRequestMessage} to {@link KuraRequestMessage}
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class TranslatorAppCommandKapuaKura extends AbstractTranslatorKapuaKura<CommandRequestChannel, CommandRequestPayload, CommandRequestMessage> {
 
@@ -51,6 +50,7 @@ public class TranslatorAppCommandKapuaKura extends AbstractTranslatorKapuaKura<C
         PROPERTIES_DICTIONARY.put(CommandAppProperties.APP_PROPERTY_PASSWORD, CommandMetrics.APP_METRIC_PASSWORD);
     }
 
+    @Override
     protected KuraRequestChannel translateChannel(CommandRequestChannel kapuaChannel) throws KapuaException {
         KuraRequestChannel kuraRequestChannel = new KuraRequestChannel();
         kuraRequestChannel.setMessageClassification(CONTROL_MESSAGE_CLASSIFIER);
@@ -70,6 +70,7 @@ public class TranslatorAppCommandKapuaKura extends AbstractTranslatorKapuaKura<C
         return kuraRequestChannel;
     }
 
+    @Override
     protected KuraRequestPayload translatePayload(CommandRequestPayload kapuaPayload) throws KapuaException {
         KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
 

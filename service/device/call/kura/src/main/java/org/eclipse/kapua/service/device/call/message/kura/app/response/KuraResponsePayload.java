@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,21 +9,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.call.message.app.response.kura;
+package org.eclipse.kapua.service.device.call.message.kura.app.response;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.service.device.call.message.app.response.DeviceResponsePayload;
-import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
+import org.eclipse.kapua.service.device.call.message.kura.app.KuraAppPayload;
 
 /**
- * Kura command response message payload.
- * 
- * @since 1.0
- *
+ * {@link DeviceResponsePayload} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
  */
-public class KuraResponsePayload extends KuraPayload implements DeviceResponsePayload {
+public class KuraResponsePayload extends KuraAppPayload implements DeviceResponsePayload {
 
-    @SuppressWarnings("unchecked")
     @Override
     public KuraResponseCode getResponseCode() {
         return KuraResponseCode.valueOf((String) getMetrics().get("response.code"));
@@ -42,16 +37,5 @@ public class KuraResponsePayload extends KuraPayload implements DeviceResponsePa
     @Override
     public byte[] getResponseBody() {
         return getBody();
-    }
-
-    @Override
-    public byte[] toByteArray() {
-        return super.toByteArray();
-    }
-
-    @Override
-    public void readFromByteArray(byte[] rawPayload)
-            throws KapuaException {
-        super.readFromByteArray(rawPayload);
     }
 }

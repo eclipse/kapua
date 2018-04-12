@@ -12,14 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kapua.kura;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.xml.namespace.QName;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.Password;
 import org.eclipse.kapua.commons.configuration.metatype.TadImpl;
@@ -36,9 +28,9 @@ import org.eclipse.kapua.service.device.call.kura.app.ConfigurationMetrics;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceConfiguration;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraPassword;
-import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestChannel;
-import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestMessage;
-import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestPayload;
+import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestChannel;
+import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestMessage;
+import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestPayload;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.internal.DeviceConfigurationAppProperties;
@@ -49,11 +41,17 @@ import org.eclipse.kapua.service.device.management.configuration.message.interna
 import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
 import org.eclipse.kapua.translator.exception.TranslatorException;
 
+import javax.xml.namespace.QName;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 /**
  * Messages translator implementation from {@link ConfigurationRequestMessage} to {@link KuraRequestMessage}
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class TranslatorAppConfigurationKapuaKura extends AbstractTranslatorKapuaKura<ConfigurationRequestChannel, ConfigurationRequestPayload, ConfigurationRequestMessage> {
 
@@ -65,6 +63,7 @@ public class TranslatorAppConfigurationKapuaKura extends AbstractTranslatorKapua
         PROPERTIES_DICTIONARY.put(DeviceConfigurationAppProperties.APP_VERSION, ConfigurationMetrics.APP_VERSION);
     }
 
+    @Override
     protected KuraRequestChannel translateChannel(ConfigurationRequestChannel kapuaChannel) throws KapuaException {
         KuraRequestChannel kuraRequestChannel = new KuraRequestChannel();
         kuraRequestChannel.setMessageClassification(CONTROL_MESSAGE_CLASSIFIER);
@@ -101,6 +100,7 @@ public class TranslatorAppConfigurationKapuaKura extends AbstractTranslatorKapua
         return kuraRequestChannel;
     }
 
+    @Override
     protected KuraRequestPayload translatePayload(ConfigurationRequestPayload kapuaPayload) throws KapuaException {
         KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
 

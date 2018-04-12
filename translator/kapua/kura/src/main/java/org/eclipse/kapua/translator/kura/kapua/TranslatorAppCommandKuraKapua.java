@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,16 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.service.device.call.kura.app.CommandMetrics;
-import org.eclipse.kapua.service.device.call.kura.app.ResponseMetrics;
-import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponseChannel;
-import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponseMessage;
-import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponsePayload;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMetrics;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
 import org.eclipse.kapua.service.device.management.command.internal.CommandAppProperties;
 import org.eclipse.kapua.service.device.management.command.message.internal.CommandResponseChannel;
 import org.eclipse.kapua.service.device.management.command.message.internal.CommandResponseMessage;
@@ -29,11 +26,13 @@ import org.eclipse.kapua.service.device.management.command.message.internal.Comm
 import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
 import org.eclipse.kapua.translator.exception.TranslatorException;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 /**
  * Messages translator implementation from {@link KuraResponseMessage} to {@link CommandResponseMessage}
  *
  * @since 1.0
- *
  */
 public class TranslatorAppCommandKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<CommandResponseChannel, CommandResponsePayload, CommandResponseMessage> {
 
@@ -41,7 +40,7 @@ public class TranslatorAppCommandKuraKapua extends AbstractSimpleTranslatorRespo
     private static final Map<CommandMetrics, CommandAppProperties> METRICS_DICTIONARY;
 
     static {
-        METRICS_DICTIONARY = new HashMap<>();
+        METRICS_DICTIONARY = new EnumMap<>(CommandMetrics.class);
 
         METRICS_DICTIONARY.put(CommandMetrics.APP_ID, CommandAppProperties.APP_NAME);
         METRICS_DICTIONARY.put(CommandMetrics.APP_VERSION, CommandAppProperties.APP_VERSION);
@@ -59,6 +58,7 @@ public class TranslatorAppCommandKuraKapua extends AbstractSimpleTranslatorRespo
         super(CommandResponseMessage.class);
     }
 
+    @Override
     protected CommandResponseChannel translateChannel(KuraResponseChannel kuraChannel) throws KapuaException {
 
         if (!CONTROL_MESSAGE_CLASSIFIER.equals(kuraChannel.getMessageClassification())) {
@@ -91,6 +91,7 @@ public class TranslatorAppCommandKuraKapua extends AbstractSimpleTranslatorRespo
         return kapuaChannel;
     }
 
+    @Override
     protected CommandResponsePayload translatePayload(KuraResponsePayload kuraPayload) throws KapuaException {
         CommandResponsePayload commandResponsePayload = new CommandResponsePayload();
 
@@ -104,8 +105,8 @@ public class TranslatorAppCommandKuraKapua extends AbstractSimpleTranslatorRespo
             commandResponsePayload.setTimedout(timedout);
         }
 
-        commandResponsePayload.setExceptionMessage((String) metrics.get(ResponseMetrics.RESP_METRIC_EXCEPTION_MESSAGE.getValue()));
-        commandResponsePayload.setExceptionStack((String) metrics.get(ResponseMetrics.RESP_METRIC_EXCEPTION_STACK.getValue()));
+        commandResponsePayload.setExceptionMessage((String) metrics.get(KuraResponseMetrics.RESP_METRIC_EXCEPTION_MESSAGE.getValue()));
+        commandResponsePayload.setExceptionStack((String) metrics.get(KuraResponseMetrics.RESP_METRIC_EXCEPTION_STACK.getValue()));
 
         //
         // Return Kapua Payload

@@ -11,26 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kapua.kura;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLStreamException;
-
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.service.device.call.kura.app.AssetMetrics;
 import org.eclipse.kapua.service.device.call.kura.model.asset.KuraAsset;
 import org.eclipse.kapua.service.device.call.kura.model.asset.KuraAssetChannel;
 import org.eclipse.kapua.service.device.call.kura.model.asset.KuraAssets;
-import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestChannel;
-import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestMessage;
-import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestPayload;
+import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestChannel;
+import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestMessage;
+import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestPayload;
 import org.eclipse.kapua.service.device.management.asset.DeviceAsset;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
@@ -42,12 +33,19 @@ import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
 import org.eclipse.kapua.translator.exception.TranslatorException;
 import org.xml.sax.SAXException;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.xml.bind.JAXBException;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Messages translator implementation from {@link AssetRequestMessage} to {@link KuraRequestMessage}
- * 
+ *
  * @since 1.0.0
  */
 public class TranslatorAppAssetKapuaKura extends AbstractTranslatorKapuaKura<AssetRequestChannel, AssetRequestPayload, AssetRequestMessage> {
@@ -60,6 +58,7 @@ public class TranslatorAppAssetKapuaKura extends AbstractTranslatorKapuaKura<Ass
         PROPERTIES_DICTIONARY.put(DeviceAssetAppProperties.APP_VERSION, AssetMetrics.APP_VERSION);
     }
 
+    @Override
     protected KuraRequestChannel translateChannel(AssetRequestChannel kapuaChannel) throws KapuaException {
         KuraRequestChannel kuraRequestChannel = new KuraRequestChannel();
         kuraRequestChannel.setMessageClassification(CONTROL_MESSAGE_CLASSIFIER);
@@ -91,6 +90,7 @@ public class TranslatorAppAssetKapuaKura extends AbstractTranslatorKapuaKura<Ass
         return kuraRequestChannel;
     }
 
+    @Override
     protected KuraRequestPayload translatePayload(AssetRequestPayload kapuaPayload) throws KapuaException {
 
         DeviceAssets deviceAssets;

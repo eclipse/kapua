@@ -9,15 +9,14 @@
  * Contributors:
  *      Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.call.kura.app;
+package org.eclipse.kapua.service.device.call.message.kura.app.response;
+
+import org.eclipse.kapua.service.device.call.message.app.response.DeviceResponseMetrics;
 
 /**
- * Response metrics properties definition.
- * 
- * @since 1.0
- *
+ * {@link DeviceResponseMetrics} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
  */
-public enum ResponseMetrics {
+public enum KuraResponseMetrics implements DeviceResponseMetrics {
     /**
      * Response exit code
      */
@@ -29,20 +28,15 @@ public enum ResponseMetrics {
     /**
      * Response exception stack trace
      */
-    RESP_METRIC_EXCEPTION_STACK("response.exception.stack"),
-    ;
+    RESP_METRIC_EXCEPTION_STACK("response.exception.stack"),;
 
     private String value;
 
-    ResponseMetrics(String value) {
+    KuraResponseMetrics(String value) {
         this.value = value;
     }
 
-    /**
-     * Get a value property associated to this specific enumeration key.
-     * 
-     * @return
-     */
+    @Override
     public String getValue() {
         return value;
     }

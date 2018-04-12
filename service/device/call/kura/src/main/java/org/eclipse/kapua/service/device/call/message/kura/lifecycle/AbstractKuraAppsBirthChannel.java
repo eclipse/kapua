@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,12 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
 
+import org.eclipse.kapua.service.device.call.message.kura.KuraChannel;
 import org.eclipse.kapua.service.device.call.message.lifecycle.DeviceLifecycleChannel;
 
-/**
- * {@link DeviceLifecycleChannel} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
- */
-public class KuraBirthChannel extends AbstractKuraAppsBirthChannel implements DeviceLifecycleChannel {
+public class AbstractKuraAppsBirthChannel extends KuraChannel implements DeviceLifecycleChannel {
 
     /**
      * Constructor
@@ -25,7 +23,7 @@ public class KuraBirthChannel extends AbstractKuraAppsBirthChannel implements De
      * @param scopeNamespace
      * @param clientId
      */
-    public KuraBirthChannel(String messageClassification, String scopeNamespace, String clientId) {
+    public AbstractKuraAppsBirthChannel(String messageClassification, String scopeNamespace, String clientId) {
         super(messageClassification, scopeNamespace, clientId);
     }
 

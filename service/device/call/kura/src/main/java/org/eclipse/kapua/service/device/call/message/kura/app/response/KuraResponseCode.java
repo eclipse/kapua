@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,14 +9,12 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.call.message.app.response.kura;
+package org.eclipse.kapua.service.device.call.message.kura.app.response;
 
 import org.eclipse.kapua.service.device.call.message.app.response.DeviceResponseCode;
 
 /**
- * Kura device response code definition.
- *
- * @since 1.0
+ * {@link DeviceResponseCode} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation
  */
 public enum KuraResponseCode implements DeviceResponseCode {
     /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,16 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
 
-import org.eclipse.kapua.service.device.call.message.DevicePayload;
 import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
+import org.eclipse.kapua.service.device.call.message.lifecycle.DeviceLifecyclePayload;
 
 /**
- * Kura device unmatched message payload implementation.
- *
- * @since 1.0
- *
+ * {@link DeviceLifecyclePayload} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
  */
-public class KuraDisconnectPayload extends KuraPayload implements DevicePayload {
+public class KuraDisconnectPayload extends KuraPayload implements DeviceLifecyclePayload {
 
     /**
      * Uptime metric name

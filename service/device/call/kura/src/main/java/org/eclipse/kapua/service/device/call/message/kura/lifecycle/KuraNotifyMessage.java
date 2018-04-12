@@ -12,19 +12,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
 
+import org.eclipse.kapua.service.device.call.message.kura.KuraMessage;
+import org.eclipse.kapua.service.device.call.message.lifecycle.DeviceLifecycleMessage;
+
 import java.util.Date;
 
-import org.eclipse.kapua.service.device.call.message.kura.KuraMessage;
-
 /**
- * Kura device notify message implementation.
+ * {@link DeviceLifecycleMessage} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
  * <p>
- * The missing message is sent by the device to notify the platform about a task progress.
+ * The missing message is sent by the {@link org.eclipse.kapua.service.device.registry.Device} to notify the platform about a task progress.
  * </p>
  */
-public class KuraNotifyMessage extends KuraMessage<KuraNotifyChannel, KuraNotifyPayload> {
-
-    private static final long serialVersionUID = 1L;
+public class KuraNotifyMessage extends KuraMessage<KuraNotifyChannel, KuraNotifyPayload> implements DeviceLifecycleMessage<KuraNotifyChannel, KuraNotifyPayload> {
 
     /**
      * Constructor
@@ -40,11 +39,8 @@ public class KuraNotifyMessage extends KuraMessage<KuraNotifyChannel, KuraNotify
      * @param timestamp
      * @param payload
      */
-    public KuraNotifyMessage(KuraNotifyChannel channel,
-            Date timestamp, KuraNotifyPayload payload) {
-        this.channel = channel;
-        this.timestamp = timestamp;
-        this.payload = payload;
+    public KuraNotifyMessage(KuraNotifyChannel channel, Date timestamp, KuraNotifyPayload payload) {
+        super(channel, timestamp, payload);
     }
 
 }

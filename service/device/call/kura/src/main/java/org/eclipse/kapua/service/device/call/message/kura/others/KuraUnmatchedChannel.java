@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,17 +9,15 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
+package org.eclipse.kapua.service.device.call.message.kura.others;
 
+import org.eclipse.kapua.service.device.call.message.DeviceChannel;
 import org.eclipse.kapua.service.device.call.message.kura.KuraChannel;
 
 /**
- * Kura device unmatched message channel implementation.
- *
- * @since 1.0
- *
+ * {@link DeviceChannel} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
  */
-public class KuraUnmatchedChannel extends KuraChannel {
+public class KuraUnmatchedChannel extends KuraChannel implements DeviceChannel {
 
     /**
      * Constructor
@@ -45,9 +43,7 @@ public class KuraUnmatchedChannel extends KuraChannel {
      * @param clientId
      */
     public KuraUnmatchedChannel(String messageClassification, String scopeNamespace, String clientId) {
-        this.messageClassification = messageClassification;
-        this.scopeNamespace = scopeNamespace;
-        this.clientId = clientId;
+        super(messageClassification, scopeNamespace, clientId);
     }
 
 }

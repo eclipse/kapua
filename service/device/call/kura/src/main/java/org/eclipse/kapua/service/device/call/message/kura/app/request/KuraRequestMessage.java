@@ -10,22 +10,22 @@
  *     Eurotech - initial API and implementation
  *     Red Hat Inc
  *******************************************************************************/
-package org.eclipse.kapua.service.device.call.message.kura.data;
+package org.eclipse.kapua.service.device.call.message.kura.app.request;
 
-import org.eclipse.kapua.service.device.call.message.data.DeviceDataMessage;
-import org.eclipse.kapua.service.device.call.message.kura.KuraMessage;
+import org.eclipse.kapua.service.device.call.message.app.request.DeviceRequestMessage;
+import org.eclipse.kapua.service.device.call.message.kura.app.KuraAppMessage;
 
 import java.util.Date;
 
 /**
- * {@link DeviceDataMessage} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
+ * {@link DeviceRequestMessage} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
  */
-public class KuraDataMessage extends KuraMessage<KuraDataChannel, KuraDataPayload> implements DeviceDataMessage<KuraDataChannel, KuraDataPayload> {
+public class KuraRequestMessage extends KuraAppMessage<KuraRequestChannel, KuraRequestPayload> implements DeviceRequestMessage<KuraRequestChannel, KuraRequestPayload> {
 
     /**
      * Constructor
      */
-    public KuraDataMessage() {
+    public KuraRequestMessage() {
         super();
     }
 
@@ -36,11 +36,8 @@ public class KuraDataMessage extends KuraMessage<KuraDataChannel, KuraDataPayloa
      * @param timestamp
      * @param payload
      */
-    public KuraDataMessage(KuraDataChannel channel, Date timestamp, KuraDataPayload payload) {
-        this();
-        this.channel = channel;
-        this.timestamp = timestamp;
-        this.payload = payload;
+    public KuraRequestMessage(KuraRequestChannel channel, Date timestamp, KuraRequestPayload payload) {
+        super(channel, timestamp, payload);
     }
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,14 +9,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.call.message.kura.data;
-
-import org.eclipse.kapua.service.device.call.message.data.DeviceDataPayload;
-import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
+package org.eclipse.kapua.service.device.call.kura;
 
 /**
- * {@link DeviceDataPayload} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation
+ * Eclipse {@link Kura} Project
+ *
+ * <ul>
+ * <li>https://www.eclipse.org/kura/</li>
+ * <li>https://github.com/eclipse/kura/</li>
+ * </ul>
  */
-public class KuraDataPayload extends KuraPayload implements DeviceDataPayload {
+public interface Kura {
 
 }

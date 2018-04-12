@@ -12,24 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
 
-import java.io.StringWriter;
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.call.kura.app.PackageMetrics;
-import org.eclipse.kapua.service.device.call.kura.app.ResponseMetrics;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraBundleInfo;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackage;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackages;
-import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponseChannel;
-import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponseMessage;
-import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponsePayload;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMetrics;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageFactory;
@@ -45,11 +40,15 @@ import org.eclipse.kapua.service.device.management.packages.model.download.Devic
 import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
 import org.eclipse.kapua.translator.exception.TranslatorException;
 
+import java.io.StringWriter;
+import java.math.BigInteger;
+import java.util.EnumMap;
+import java.util.Map;
+
 /**
  * Messages translator implementation from {@link KuraResponseMessage} to {@link PackageResponseMessage}
  *
  * @since 1.0
- *
  */
 public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<PackageResponseChannel, PackageResponsePayload, PackageResponseMessage> {
 
@@ -57,7 +56,7 @@ public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorRespo
     private static final Map<PackageMetrics, PackageAppProperties> METRICS_DICTIONARY;
 
     static {
-        METRICS_DICTIONARY = new HashMap<>();
+        METRICS_DICTIONARY = new EnumMap<>(PackageMetrics.class);
 
         METRICS_DICTIONARY.put(PackageMetrics.APP_ID, PackageAppProperties.APP_NAME);
         METRICS_DICTIONARY.put(PackageMetrics.APP_VERSION, PackageAppProperties.APP_VERSION);
@@ -70,6 +69,7 @@ public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorRespo
         super(PackageResponseMessage.class);
     }
 
+    @Override
     protected PackageResponseChannel translateChannel(KuraResponseChannel kuraChannel) throws KapuaException {
 
         if (!CONTROL_MESSAGE_CLASSIFIER.equals(kuraChannel.getMessageClassification())) {
@@ -102,12 +102,13 @@ public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorRespo
         return responseChannel;
     }
 
+    @Override
     protected PackageResponsePayload translatePayload(KuraResponsePayload kuraResponsePayload) throws KapuaException {
         PackageResponsePayload responsePayload = new PackageResponsePayload();
 
         Map<String, Object> metrics = kuraResponsePayload.getMetrics();
-        responsePayload.setExceptionMessage((String) metrics.get(ResponseMetrics.RESP_METRIC_EXCEPTION_MESSAGE.getValue()));
-        responsePayload.setExceptionStack((String) metrics.get(ResponseMetrics.RESP_METRIC_EXCEPTION_STACK.getValue()));
+        responsePayload.setExceptionMessage((String) metrics.get(KuraResponseMetrics.RESP_METRIC_EXCEPTION_MESSAGE.getValue()));
+        responsePayload.setExceptionStack((String) metrics.get(KuraResponseMetrics.RESP_METRIC_EXCEPTION_STACK.getValue()));
 
         if (metrics.get(PackageMetrics.APP_METRIC_PACKAGE_OPERATION_ID.getValue()) != null) {
             responsePayload.setPackageDownloadOperationId(new KapuaEid(new BigInteger(metrics.get(PackageMetrics.APP_METRIC_PACKAGE_OPERATION_ID.getValue()).toString())));
@@ -127,9 +128,9 @@ public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorRespo
             try {
                 body = new String(kuraResponsePayload.getBody(), charEncoding);
             } catch (Exception e) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, //
-                        e,//
-                        kuraResponsePayload.getBody());//
+                throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD,
+                        e,
+                        (Object) kuraResponsePayload.getBody());
             }
 
             KuraDeploymentPackages kuraDeploymentPackages = null;

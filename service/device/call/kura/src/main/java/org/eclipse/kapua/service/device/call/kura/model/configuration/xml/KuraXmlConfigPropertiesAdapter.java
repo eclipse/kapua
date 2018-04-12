@@ -11,38 +11,30 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura.model.configuration.xml;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-
 import org.eclipse.kapua.commons.util.CryptoUtil;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraPassword;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.xml.XmlConfigPropertyAdapted.ConfigPropertyType;
 
+import javax.xml.bind.annotation.adapters.XmlAdapter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Xml Kura configuration properties adapter. It marshal and unmarshal configuration properties in a proper way.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class KuraXmlConfigPropertiesAdapter extends XmlAdapter<KuraXmlConfigPropertiesAdapted, Map<String, Object>> {
 
     @Override
-    public KuraXmlConfigPropertiesAdapted marshal(Map<String, Object> props)
-            throws Exception {
-        List<XmlConfigPropertyAdapted> adaptedValues = new ArrayList<XmlConfigPropertyAdapted>();
+    public KuraXmlConfigPropertiesAdapted marshal(Map<String, Object> props) throws Exception {
+        List<XmlConfigPropertyAdapted> adaptedValues = new ArrayList();
         if (props != null) {
-            Iterator<String> keys = props.keySet().iterator();
-            while (keys.hasNext()) {
+            for (String key : props.keySet()) {
 
                 XmlConfigPropertyAdapted adaptedValue = new XmlConfigPropertyAdapted();
-                adaptedValues.add(adaptedValue);
-
-                String key = keys.next();
                 adaptedValue.setName(key);
 
                 Object value = props.get(key);
@@ -192,6 +184,8 @@ public class KuraXmlConfigPropertiesAdapter extends XmlAdapter<KuraXmlConfigProp
                     }
                     adaptedValue.setValues(stringValues);
                 }
+
+                adaptedValues.add(adaptedValue);
             }
         }
 
@@ -203,7 +197,7 @@ public class KuraXmlConfigPropertiesAdapter extends XmlAdapter<KuraXmlConfigProp
     @Override
     public Map<String, Object> unmarshal(KuraXmlConfigPropertiesAdapted adaptedPropsAdapted)
             throws Exception {
-        Map<String, Object> properties = new HashMap<String, Object>();
+        Map<String, Object> properties = new HashMap<>();
         XmlConfigPropertyAdapted[] adaptedProps = adaptedPropsAdapted.getProperties();
         if (adaptedProps == null) {
             return properties;
@@ -212,50 +206,46 @@ public class KuraXmlConfigPropertiesAdapter extends XmlAdapter<KuraXmlConfigProp
             String propName = adaptedProp.getName();
             ConfigPropertyType type = adaptedProp.getType();
             if (type != null) {
-                Object propvalue = null;
-                if (adaptedProp.getArray() == false) {
+                Object propValue = null;
+                if (!adaptedProp.getArray()) {
                     switch (adaptedProp.getType()) {
                     case stringType:
-                        propvalue = (String) adaptedProp.getValues()[0];
+                        propValue = adaptedProp.getValues()[0];
                         break;
                     case longType:
-                        propvalue = Long.parseLong(adaptedProp.getValues()[0]);
+                        propValue = Long.parseLong(adaptedProp.getValues()[0]);
                         break;
                     case doubleType:
-                        propvalue = Double.parseDouble(adaptedProp.getValues()[0]);
+                        propValue = Double.parseDouble(adaptedProp.getValues()[0]);
                         break;
                     case floatType:
-                        propvalue = Float.parseFloat(adaptedProp.getValues()[0]);
+                        propValue = Float.parseFloat(adaptedProp.getValues()[0]);
                         break;
                     case integerType:
-                        propvalue = Integer.parseInt(adaptedProp.getValues()[0]);
+                        propValue = Integer.parseInt(adaptedProp.getValues()[0]);
                         break;
                     case byteType:
-                        propvalue = Byte.parseByte(adaptedProp.getValues()[0]);
+                        propValue = Byte.parseByte(adaptedProp.getValues()[0]);
                         break;
                     case charType:
                         String s = adaptedProp.getValues()[0];
-                        propvalue = new Character(s.charAt(0));
+                        propValue = s.charAt(0);
                         break;
                     case booleanType:
-                        propvalue = Boolean.parseBoolean(adaptedProp.getValues()[0]);
+                        propValue = Boolean.parseBoolean(adaptedProp.getValues()[0]);
                         break;
                     case shortType:
-                        propvalue = Short.parseShort(adaptedProp.getValues()[0]);
+                        propValue = Short.parseShort(adaptedProp.getValues()[0]);
                         break;
                     case passwordType:
-                        propvalue = (String) adaptedProp.getValues()[0];
-                        if (adaptedProp.isEncrypted()) {
-                            propvalue = new KuraPassword(CryptoUtil.decodeBase64((String) propvalue));
-                        } else {
-                            propvalue = new KuraPassword((String) propvalue);
-                        }
+                        propValue = adaptedProp.getValues()[0];
+                        propValue = adaptedProp.isEncrypted() ? new KuraPassword(CryptoUtil.decodeBase64((String) propValue)) : new KuraPassword((String) propValue);
                         break;
                     }
                 } else {
                     switch (adaptedProp.getType()) {
                     case stringType:
-                        propvalue = adaptedProp.getValues();
+                        propValue = adaptedProp.getValues();
                         break;
                     case longType:
                         Long[] longValues = new Long[adaptedProp.getValues().length];
@@ -264,7 +254,7 @@ public class KuraXmlConfigPropertiesAdapter extends XmlAdapter<KuraXmlConfigProp
                                 longValues[i] = Long.parseLong(adaptedProp.getValues()[i]);
                             }
                         }
-                        propvalue = longValues;
+                        propValue = longValues;
                         break;
                     case doubleType:
                         Double[] doubleValues = new Double[adaptedProp.getValues().length];
@@ -273,7 +263,7 @@ public class KuraXmlConfigPropertiesAdapter extends XmlAdapter<KuraXmlConfigProp
                                 doubleValues[i] = Double.parseDouble(adaptedProp.getValues()[i]);
                             }
                         }
-                        propvalue = doubleValues;
+                        propValue = doubleValues;
                         break;
                     case floatType:
                         Float[] floatValues = new Float[adaptedProp.getValues().length];
@@ -282,7 +272,7 @@ public class KuraXmlConfigPropertiesAdapter extends XmlAdapter<KuraXmlConfigProp
                                 floatValues[i] = Float.parseFloat(adaptedProp.getValues()[i]);
                             }
                         }
-                        propvalue = floatValues;
+                        propValue = floatValues;
                         break;
                     case integerType:
                         Integer[] intValues = new Integer[adaptedProp.getValues().length];
@@ -291,7 +281,7 @@ public class KuraXmlConfigPropertiesAdapter extends XmlAdapter<KuraXmlConfigProp
                                 intValues[i] = Integer.parseInt(adaptedProp.getValues()[i]);
                             }
                         }
-                        propvalue = intValues;
+                        propValue = intValues;
                         break;
                     case byteType:
                         Byte[] byteValues = new Byte[adaptedProp.getValues().length];
@@ -300,17 +290,17 @@ public class KuraXmlConfigPropertiesAdapter extends XmlAdapter<KuraXmlConfigProp
                                 byteValues[i] = Byte.parseByte(adaptedProp.getValues()[i]);
                             }
                         }
-                        propvalue = byteValues;
+                        propValue = byteValues;
                         break;
                     case charType:
                         Character[] charValues = new Character[adaptedProp.getValues().length];
                         for (int i = 0; i < adaptedProp.getValues().length; i++) {
                             if (adaptedProp.getValues()[i] != null) {
                                 String s = adaptedProp.getValues()[i];
-                                charValues[i] = new Character(s.charAt(0));
+                                charValues[i] = s.charAt(0);
                             }
                         }
-                        propvalue = charValues;
+                        propValue = charValues;
                         break;
                     case booleanType:
                         Boolean[] booleanValues = new Boolean[adaptedProp.getValues().length];
@@ -319,7 +309,7 @@ public class KuraXmlConfigPropertiesAdapter extends XmlAdapter<KuraXmlConfigProp
                                 booleanValues[i] = Boolean.parseBoolean(adaptedProp.getValues()[i]);
                             }
                         }
-                        propvalue = booleanValues;
+                        propValue = booleanValues;
                         break;
                     case shortType:
                         Short[] shortValues = new Short[adaptedProp.getValues().length];
@@ -328,24 +318,20 @@ public class KuraXmlConfigPropertiesAdapter extends XmlAdapter<KuraXmlConfigProp
                                 shortValues[i] = Short.parseShort(adaptedProp.getValues()[i]);
                             }
                         }
-                        propvalue = shortValues;
+                        propValue = shortValues;
                         break;
                     case passwordType:
                         KuraPassword[] pwdValues = new KuraPassword[adaptedProp.getValues().length];
                         for (int i = 0; i < adaptedProp.getValues().length; i++) {
                             if (adaptedProp.getValues()[i] != null) {
-                                if (adaptedProp.isEncrypted()) {
-                                    pwdValues[i] = new KuraPassword(CryptoUtil.decodeBase64(adaptedProp.getValues()[i]));
-                                } else {
-                                    pwdValues[i] = new KuraPassword(adaptedProp.getValues()[i]);
-                                }
+                                pwdValues[i] = adaptedProp.isEncrypted() ? new KuraPassword(CryptoUtil.decodeBase64(adaptedProp.getValues()[i])) : new KuraPassword(adaptedProp.getValues()[i]);
                             }
                         }
-                        propvalue = pwdValues;
+                        propValue = pwdValues;
                         break;
                     }
                 }
-                properties.put(propName, propvalue);
+                properties.put(propName, propValue);
             }
         }
         return properties;

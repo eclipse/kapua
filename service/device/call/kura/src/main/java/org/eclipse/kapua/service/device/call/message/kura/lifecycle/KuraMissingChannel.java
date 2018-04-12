@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,14 +12,12 @@
 package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
 
 import org.eclipse.kapua.service.device.call.message.kura.KuraChannel;
+import org.eclipse.kapua.service.device.call.message.lifecycle.DeviceLifecycleChannel;
 
 /**
- * Kura device missing message channel implementation.
- *
- * @since 1.0
- *
+ * {@link DeviceLifecycleChannel} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
  */
-public class KuraMissingChannel extends KuraChannel {
+public class KuraMissingChannel extends KuraChannel implements DeviceLifecycleChannel {
 
     /**
      * Constructor
@@ -45,9 +43,7 @@ public class KuraMissingChannel extends KuraChannel {
      * @param clientId
      */
     public KuraMissingChannel(String messageClassification, String scopeNamespace, String clientId) {
-        this.messageClassification = messageClassification;
-        this.scopeNamespace = scopeNamespace;
-        this.clientId = clientId;
+        super(messageClassification, scopeNamespace, clientId);
     }
 
 }

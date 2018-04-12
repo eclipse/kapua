@@ -14,9 +14,9 @@ package org.eclipse.kapua.translator.kapua.kura;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestChannel;
-import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestMessage;
-import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestPayload;
+import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestChannel;
+import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestMessage;
+import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestPayload;
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetRequestMessage;
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestChannel;
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestMessage;
@@ -24,13 +24,14 @@ import org.eclipse.kapua.service.device.management.request.message.request.Gener
 
 /**
  * Messages translator implementation from {@link AssetRequestMessage} to {@link KuraRequestMessage}
- * 
+ *
  * @since 1.0.0
  */
 public class TranslatorGenericRequestKapuaKura extends AbstractTranslatorKapuaKura<GenericRequestChannel, GenericRequestPayload, GenericRequestMessage> {
 
     private static final String CONTROL_MESSAGE_CLASSIFIER = SystemSetting.getInstance().getMessageClassifier();
 
+    @Override
     protected KuraRequestChannel translateChannel(GenericRequestChannel kapuaChannel) throws KapuaException {
         KuraRequestChannel kuraRequestChannel = new KuraRequestChannel();
         kuraRequestChannel.setMessageClassification(CONTROL_MESSAGE_CLASSIFIER);
@@ -50,6 +51,7 @@ public class TranslatorGenericRequestKapuaKura extends AbstractTranslatorKapuaKu
         return kuraRequestChannel;
     }
 
+    @Override
     protected KuraRequestPayload translatePayload(GenericRequestPayload kapuaPayload) throws KapuaException {
         KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
 

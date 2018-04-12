@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,21 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
 
-import org.eclipse.kapua.commons.util.Payloads;
-import org.eclipse.kapua.service.device.call.message.DevicePayload;
 import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
+import org.eclipse.kapua.service.device.call.message.lifecycle.DeviceLifecyclePayload;
 
 /**
- * Kura device notification message payload implementation.
+ * {@link DeviceLifecyclePayload} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
  */
-public class KuraNotifyPayload extends KuraPayload implements DevicePayload {
+public class KuraNotifyPayload extends KuraPayload implements DeviceLifecyclePayload {
 
-    /**
-     * Returns a string for displaying
-     *
-     * @return A string used for displaying, never returns {@code null}
-     */
-    public String toDisplayString() {
-        return Payloads.toDisplayString(metrics);
-    }
 }

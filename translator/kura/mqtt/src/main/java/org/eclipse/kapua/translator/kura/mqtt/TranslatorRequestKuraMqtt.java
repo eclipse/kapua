@@ -11,13 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.mqtt;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestChannel;
-import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestMessage;
 import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
+import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestChannel;
+import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestMessage;
 import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSetting;
 import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSettingKeys;
 import org.eclipse.kapua.translator.Translator;
@@ -25,11 +22,13 @@ import org.eclipse.kapua.transport.message.mqtt.MqttMessage;
 import org.eclipse.kapua.transport.message.mqtt.MqttPayload;
 import org.eclipse.kapua.transport.message.mqtt.MqttTopic;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Messages translator implementation from {@link org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestMessage} to {@link org.eclipse.kapua.transport.message.mqtt.MqttMessage}
- * 
- * @since 1.0
+ * Messages translator implementation from {@link KuraRequestMessage} to {@link org.eclipse.kapua.transport.message.mqtt.MqttMessage}
  *
+ * @since 1.0
  */
 public class TranslatorRequestKuraMqtt extends Translator<KuraRequestMessage, MqttMessage> {
 
