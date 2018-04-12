@@ -7,15 +7,19 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Eurotech - initial API and implementation
+ *      Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.call.message.data;
-
-import org.eclipse.kapua.service.device.call.message.DeviceChannel;
+package org.eclipse.kapua.service.device.call.message.app.response;
 
 /**
- * Data {@link DeviceChannel}
+ * Device response metrics
  */
-public interface DeviceDataChannel extends DeviceChannel {
+public interface DeviceResponseMetrics {
 
+    /**
+     * Get the value of this {@link DeviceResponseMetrics}.
+     *
+     * @return The value of this {@link DeviceResponseMetrics}.
+     */
+    String getValue();
 }

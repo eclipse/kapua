@@ -11,14 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.message.app.response;
 
-import org.eclipse.kapua.service.device.call.message.DeviceMessage;
+import org.eclipse.kapua.service.device.call.message.app.DeviceAppMessage;
 
 /**
  * Device response message definition.<br>
  * It is used to get a response (to a previous request) from a device.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-public interface DeviceResponseMessage<D extends DeviceResponseChannel, P extends DeviceResponsePayload> extends DeviceMessage<D, P> {
+public interface DeviceResponseMessage<D extends DeviceResponseChannel, P extends DeviceResponsePayload> extends DeviceAppMessage<D, P> {
+
 }

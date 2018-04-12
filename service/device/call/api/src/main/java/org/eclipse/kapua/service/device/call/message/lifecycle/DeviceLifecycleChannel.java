@@ -9,13 +9,15 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.call.message.data;
+package org.eclipse.kapua.service.device.call.message.lifecycle;
 
 import org.eclipse.kapua.service.device.call.message.DeviceChannel;
 
 /**
- * Data {@link DeviceChannel}
+ * Lifecycle {@link DeviceChannel}
+ *
+ * @since 1.0
  */
-public interface DeviceDataChannel extends DeviceChannel {
+public interface DeviceLifecycleChannel extends DeviceChannel {
 
 }

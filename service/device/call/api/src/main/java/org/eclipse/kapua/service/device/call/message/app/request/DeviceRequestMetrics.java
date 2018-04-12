@@ -9,13 +9,17 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.call.message.data;
-
-import org.eclipse.kapua.service.device.call.message.DeviceChannel;
+package org.eclipse.kapua.service.device.call.message.app.request;
 
 /**
- * Data {@link DeviceChannel}
+ * Device request metrics
  */
-public interface DeviceDataChannel extends DeviceChannel {
+public interface DeviceRequestMetrics {
 
+    /**
+     * Gets the value of this {@link DeviceRequestMetrics}.
+     *
+     * @return The value of this {@link DeviceRequestMetrics}.
+     */
+    String getValue();
 }

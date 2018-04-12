@@ -11,11 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.message.data;
 
-import org.eclipse.kapua.service.device.call.message.DeviceChannel;
+import org.eclipse.kapua.service.device.call.message.DeviceMessage;
 
 /**
- * Data {@link DeviceChannel}
+ * Data {@link DeviceMessage}
  */
-public interface DeviceDataChannel extends DeviceChannel {
+public interface DeviceDataMessage<C extends DeviceDataChannel, P extends DeviceDataPayload> extends DeviceMessage<C, P> {
 
 }
