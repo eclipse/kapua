@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.message;
 
+import org.eclipse.kapua.commons.util.Payloads;
 import org.eclipse.kapua.message.xml.MessageXmlRegistry;
 import org.eclipse.kapua.message.xml.MetricsXmlAdapter;
 import org.eclipse.kapua.model.xml.BinaryXmlAdapter;
@@ -19,20 +20,20 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Map;
 
 /**
- * Kapua message payload object definition.
+ * Kapua {@link Message} {@link Payload} definition.
  *
  * @since 1.0
  */
 @XmlRootElement(name = "payload")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { //
-        "metrics", //
-        "body" //
+@XmlType(propOrder = {
+        "metrics", "body"
 }, factoryClass = MessageXmlRegistry.class, factoryMethod = "newPayload")
 public interface KapuaPayload extends Payload {
 
@@ -69,9 +70,12 @@ public interface KapuaPayload extends Payload {
     public void setBody(byte[] body);
 
     /**
-     * Convert the message to a displayable String
+     * Returns a string for displaying the {@link KapuaPayload} content.
      *
-     * @return
+     * @return A {@link String} used for displaying the content of the {@link KapuaPayload}, never returns {@code null}
      */
-    public String toDisplayString();
+    @XmlTransient
+    default String toDisplayString() {
+        return Payloads.toDisplayString(getMetrics());
+    }
 }

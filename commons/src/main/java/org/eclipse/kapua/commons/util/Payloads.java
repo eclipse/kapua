@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Red Hat Inc and others.
+ * Copyright (c) 2017, 2018 Red Hat Inc and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,8 +8,11 @@
  *
  * Contributors:
  *     Red Hat Inc - initial API and implementation
+ *     Eurotech
  *******************************************************************************/
 package org.eclipse.kapua.commons.util;
+
+import com.google.common.io.BaseEncoding;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,8 +20,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import com.google.common.io.BaseEncoding;
 
 public final class Payloads {
 
@@ -28,23 +29,13 @@ public final class Payloads {
     private Payloads() {
     }
 
-    private static Object forDisplay(Object value) {
-        if (value instanceof byte[]) {
-            return HEX_ENCODER.encode((byte[]) value);
-        } else if (value instanceof Float || value instanceof Double || value instanceof Integer || value instanceof Long || value instanceof Boolean || value instanceof String) {
-            return value;
-        } else {
-            return "";
-        }
-    }
-
-    public static String toDisplayString(final Map<String, ?> properties) {
+    public static String toDisplayString(Map<String, ?> properties) {
         if (properties == null) {
             // we have nothing
             return "";
         }
 
-        final List<Map.Entry<String, ?>> entries = new ArrayList<>(properties.entrySet());
+        List<Map.Entry<String, ?>> entries = new ArrayList<>(properties.entrySet());
 
         // sort for a stable output
         Collections.sort(entries, ENTRY_COMPARATOR);
@@ -52,8 +43,8 @@ public final class Payloads {
         // assemble output
 
         boolean first = true;
-        final StringBuilder sb = new StringBuilder();
-        for (final Map.Entry<String, ?> entry : entries) {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, ?> entry : entries) {
 
             if (entry.getValue() == null) {
                 continue;
@@ -69,5 +60,15 @@ public final class Payloads {
         }
 
         return sb.toString();
+    }
+
+    private static Object forDisplay(Object value) {
+        if (value instanceof byte[]) {
+            return HEX_ENCODER.encode((byte[]) value);
+        } else if (value instanceof Float || value instanceof Double || value instanceof Integer || value instanceof Long || value instanceof Boolean || value instanceof String) {
+            return value;
+        } else {
+            return "";
+        }
     }
 }

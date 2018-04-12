@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,47 +11,47 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.message;
 
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.util.Payloads;
+import org.eclipse.kapua.message.Payload;
+
 import java.util.Date;
 import java.util.Map;
 
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.message.Payload;
-
 /**
- * Device payload definition.
- * 
- * @since 1.0
+ * Device {@link Payload} definition.
  *
+ * @since 1.0
  */
 public interface DevicePayload extends Payload {
 
     /**
      * Get the message timestamp
-     * 
+     *
      * @return
      */
-    public Date getTimestamp();
+    Date getTimestamp();
 
     /**
-     * Get the device position
-     * 
-     * @return
+     * Get the {@link DevicePosition}
+     *
+     * @return A {@link DevicePosition} if present, or {@code null} otherwise
      */
-    public DevicePosition getPosition();
+    DevicePosition getPosition();
 
     /**
-     * Get the metrics (if defined)
-     * 
+     * Get the metrics
+     *
      * @return
      */
-    public Map<String, Object> getMetrics();
+    Map<String, Object> getMetrics();
 
     /**
-     * Get the message body (if defined)
-     * 
+     * Get the message body
+     *
      * @return
      */
-    public byte[] getBody();
+    byte[] getBody();
 
     void setTimestamp(Date timestamp);
 
@@ -64,20 +64,33 @@ public interface DevicePayload extends Payload {
     //
     // Encode/Decode stuff
     //
-    /**
-     * Convert the message to a well formed byte array
-     * 
-     * @return
-     */
-    public byte[] toByteArray();
 
     /**
-     * Read and instantiate a message from well formed byte array
-     * 
-     * @param rawPayload
-     * @throws KapuaException
+     * Converts the {@link DevicePayload} to a protobuf encoded {@code byte[]}
+     *
+     * @return The protobuf encoding of {@code this} {@link DevicePayload}
      */
-    public void readFromByteArray(byte[] rawPayload)
+    byte[] toByteArray();
+
+    /**
+     * Converts the given {@code byte[]} to a {@link DevicePayload}
+     *
+     * @param rawPayload The {@code byte[]} to convert
+     * @throws KapuaException If the given {@code byte[]} is not properly formatted.
+     */
+    void readFromByteArray(byte[] rawPayload)
             throws KapuaException;
 
+    //
+    // Display methods
+    //
+
+    /**
+     * Returns a string for displaying the {@link DevicePayload} content.
+     *
+     * @return A {@link String} used for displaying the content of the {@link DevicePayload}, never returns {@code null}
+     */
+    default String toDisplayString() {
+        return Payloads.toDisplayString(getMetrics());
+    }
 }
