@@ -13,7 +13,6 @@ rem
 rem ******************************************************************************
 echo. 
 echo.
-echo.
 
 if "%1" == "develop" GOTO destroy_old_machines
 if "%1" == "demo" GOTO destroy_old_machines

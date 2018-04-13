@@ -41,7 +41,6 @@ vagrant box list | find %KAPUA_BOX_NAME%
 		rem don't delete the box and don't create anything 
 		GOTO found_one
 
-
 :remove
  echo Removing base kapua box named: '%KAPUA_BOX_NAME%'...
  
