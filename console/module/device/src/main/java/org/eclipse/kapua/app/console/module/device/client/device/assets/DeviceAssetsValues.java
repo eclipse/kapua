@@ -137,7 +137,7 @@ public class DeviceAssetsValues extends LayoutContainer {
         layout(true);
         toolBar.setStyleAttribute("border-left", "1px solid rgb(208, 208, 208)");
         toolBar.setStyleAttribute("border-right", "1px solid rgb(208, 208, 208)");
-        toolBar.setStyleAttribute("border-top", "0px none");
+        toolBar.setStyleAttribute("border-top", "1px solid rgb(208, 208, 208)");
         toolBar.setStyleAttribute("border-bottom", "0px none");
         initialized = true;
     }
