@@ -11,19 +11,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator.main.simulation;
 
-import static java.util.Collections.singletonMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 
 import org.eclipse.kapua.kura.simulator.simulation.Configuration;
 import org.eclipse.kapua.kura.simulator.simulation.Configuration.MetricsMapping;
 import org.eclipse.kapua.kura.simulator.simulation.Configuration.Topic;
 import org.eclipse.kapua.kura.simulator.simulation.JsonReader;
+
+import org.assertj.core.api.Assertions;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class JsonTest {
@@ -36,12 +35,12 @@ public class JsonTest {
             cfg = JsonReader.parse(in, StandardCharsets.UTF_8);
         }
 
-        assertNotNull(cfg);
-        assertNotNull(cfg.getApplications());
+        Assert.assertNotNull(cfg);
+        Assert.assertNotNull(cfg.getApplications());
 
         // applications
 
-        assertThat(cfg.getApplications()).isEmpty();
+        Assertions.assertThat(cfg.getApplications()).isEmpty();
     }
 
     @Test
@@ -52,61 +51,61 @@ public class JsonTest {
             cfg = JsonReader.parse(in, StandardCharsets.UTF_8);
         }
 
-        assertNotNull(cfg);
-        assertNotNull(cfg.getApplications());
+        Assert.assertNotNull(cfg);
+        Assert.assertNotNull(cfg.getApplications());
 
-        assertThat(cfg.getApplications()).containsOnlyKeys("app1");
+        Assertions.assertThat(cfg.getApplications()).containsOnlyKeys("app1");
 
         // application : app1
 
         final Configuration.Application app1 = cfg.getApplications().get("app1");
 
-        assertNotNull(app1.getScheduler());
-        assertNotNull(app1.getGenerators());
-        assertNotNull(app1.getTopics());
+        Assert.assertNotNull(app1.getScheduler());
+        Assert.assertNotNull(app1.getGenerators());
+        Assert.assertNotNull(app1.getTopics());
 
         // properties
 
-        assertEquals(app1.getScheduler().getPeriod(), 2000);
+        Assert.assertEquals(app1.getScheduler().getPeriod(), 2000);
 
         // metrics
 
-        assertThat(app1.getTopics())
+        Assertions.assertThat(app1.getTopics())
                 .isNotEmpty()
                 .containsOnlyKeys("t1/data", "t2/data");
 
         final Topic t1 = app1.getTopics().get("t1/data");
-        assertThat(t1.getMetrics())
+        Assertions.assertThat(t1.getMetrics())
                 .isNotEmpty()
                 .containsOnlyKeys("temp1", "temp2");
 
         final MetricsMapping temp1 = t1.getMetrics().get("temp1");
-        assertEquals(temp1.getGenerator(), "sine1");
-        assertEquals(temp1.getValue(), "value");
+        Assert.assertEquals(temp1.getGenerator(), "sine1");
+        Assert.assertEquals(temp1.getValue(), "value");
 
         final MetricsMapping temp2 = t1.getMetrics().get("temp2");
-        assertEquals(temp2.getGenerator(), "sine2");
-        assertEquals(temp2.getValue(), "value");
+        Assert.assertEquals(temp2.getGenerator(), "sine2");
+        Assert.assertEquals(temp2.getValue(), "value");
 
         // generators
 
-        assertThat(app1.getGenerators())
+        Assertions.assertThat(app1.getGenerators())
                 .isNotEmpty()
                 .containsOnlyKeys("body-gen", "position-gen", "sine1", "sine2", "foo");
 
-        assertThat(app1.getGenerators().get("sine1"))
+        Assertions.assertThat(app1.getGenerators().get("sine1"))
                 .containsEntry("type", "sine")
                 .containsEntry("period", 1000.0)
                 .containsEntry("offset", 50.0)
                 .containsEntry("amplitude", 100.0);
 
-        assertThat(app1.getGenerators().get("sine2"))
+        Assertions.assertThat(app1.getGenerators().get("sine2"))
                 .containsEntry("type", "sine")
                 .containsEntry("period", 2000.0)
                 .containsEntry("shift", 45.5)
                 .containsEntry("offset", 30.0);
 
-        assertThat(app1.getGenerators().get("foo"))
-                .containsEntry("mydata", singletonMap("foo", "bar"));
+        Assertions.assertThat(app1.getGenerators().get("foo"))
+                .containsEntry("mydata", Collections.singletonMap("foo", "bar"));
     }
 }

@@ -11,12 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator.birth;
 
-import static com.google.common.io.BaseEncoding.base16;
-import static java.time.Duration.between;
-import static java.time.Instant.now;
+import com.google.common.io.BaseEncoding;
+import org.eclipse.kapua.kura.simulator.GatewayConfiguration;
 
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -25,8 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
-
-import org.eclipse.kapua.kura.simulator.GatewayConfiguration;
 
 public class BirthCertificateBuilder {
 
@@ -69,7 +67,7 @@ public class BirthCertificateBuilder {
                     addresses.add(hostAddress);
 
                     final String name = ni.getName();
-                    final String hwAddr = base16().upperCase().withSeparator(":", 2).encode(ni.getHardwareAddress());
+                    final String hwAddr = BaseEncoding.base16().upperCase().withSeparator(":", 2).encode(ni.getHardwareAddress());
 
                     interfaces.add(String.format("%s (%s)", name, hwAddr));
 
@@ -92,7 +90,7 @@ public class BirthCertificateBuilder {
 
         final String id = configuration.getClientId();
 
-        result.put("uptime", Long.toString(between(started, now()).toMillis()));
+        result.put("uptime", Long.toString(Duration.between(started, Instant.now()).toMillis()));
 
         result.put("display_name", "Kura Simulator (Display Name)");
         result.put("model_name", "Kura Simulator (Model Name)");

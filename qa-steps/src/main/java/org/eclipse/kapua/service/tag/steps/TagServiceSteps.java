@@ -17,6 +17,8 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
+import org.junit.Assert;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
@@ -40,8 +42,6 @@ import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Implementation of Gherkin steps used in TagService.feature scenarios.
@@ -127,7 +127,7 @@ public class TagServiceSteps extends BaseQATests {
     public void tagWithNameIsFound(String tagName) throws Throwable {
 
         Tag foundTag = (Tag) stepData.get("tag");
-        assertEquals(tagName, foundTag.getName());
+        Assert.assertEquals(tagName, foundTag.getName());
     }
 
     @Then("^Tag with name \"([^\"]*)\" is found and deleted$")
@@ -138,7 +138,7 @@ public class TagServiceSteps extends BaseQATests {
         tagService.delete(foundTag.getScopeId(), foundTag.getId());
         queryResult.clearItems();
         foundTag = queryResult.getFirstItem();
-        assertEquals(null,foundTag);
+        Assert.assertEquals(null,foundTag);
     }
 
     /**

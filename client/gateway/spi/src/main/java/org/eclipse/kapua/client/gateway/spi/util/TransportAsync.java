@@ -11,8 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.gateway.spi.util;
 
-import static java.util.concurrent.CompletableFuture.completedFuture;
-
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -31,7 +30,7 @@ public class TransportAsync implements Transport {
 
     private Future<?> fireEvent(final boolean state) {
         if (listeners.isEmpty()) {
-            return completedFuture(null);
+            return CompletableFuture.completedFuture(null);
         }
 
         final CopyOnWriteArraySet<Listener> listeners = new CopyOnWriteArraySet<>(this.listeners);
@@ -44,7 +43,7 @@ public class TransportAsync implements Transport {
             return fireEvent(true);
         }
 
-        return completedFuture(null);
+        return CompletableFuture.completedFuture(null);
     }
 
     public synchronized Future<?> handleDisconnected() {
@@ -53,7 +52,7 @@ public class TransportAsync implements Transport {
             return fireEvent(false);
         }
 
-        return completedFuture(null);
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override

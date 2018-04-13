@@ -11,11 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.client.transport;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.net.UnknownHostException;
 
 import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
+
+import org.assertj.core.api.Assertions;
 import org.elasticsearch.client.transport.TransportClient;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -31,7 +31,7 @@ public class EsClientTest {
 
         // Then
         String host = client.listedNodes().get(0).getHostAddress();
-        assertThat(host).isEqualTo("127.0.0.1");
+        Assertions.assertThat(host).isEqualTo("127.0.0.1");
     }
 
 }

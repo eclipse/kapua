@@ -25,6 +25,7 @@ import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUti
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
@@ -44,6 +45,8 @@ import org.eclipse.kapua.service.device.registry.shared.SharedTestSteps;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.test.MockedLocator;
 import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
+
+import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 import java.math.BigInteger;
@@ -51,11 +54,6 @@ import java.security.acl.Permission;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl.attributeIsEqualTo;
-import static org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl.attributeIsNotEqualTo;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
 
 /**
  * Implementation of Gherkin steps used in DeviceRegistry.feature scenarios.
@@ -143,15 +141,15 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
         MockedLocator mockLocator = (MockedLocator) locator;
 
         // Inject mocked Authorization Service method checkPermission
-        AuthorizationService mockedAuthorization = mock(AuthorizationService.class);
+        AuthorizationService mockedAuthorization = Mockito.mock(AuthorizationService.class);
         // TODO: Check why does this line needs an explicit cast!
         Mockito.doNothing().when(mockedAuthorization).checkPermission(
-                (org.eclipse.kapua.service.authorization.permission.Permission) any(Permission.class));
+                (org.eclipse.kapua.service.authorization.permission.Permission) Matchers.any(Permission.class));
         mockLocator.setMockedService(org.eclipse.kapua.service.authorization.AuthorizationService.class,
                 mockedAuthorization);
 
         // Inject mocked Permission Factory
-        PermissionFactory mockedPermissionFactory = mock(PermissionFactory.class);
+        PermissionFactory mockedPermissionFactory = Mockito.mock(PermissionFactory.class);
         mockLocator.setMockedFactory(org.eclipse.kapua.service.authorization.permission.PermissionFactory.class,
                 mockedPermissionFactory);
 
@@ -301,7 +299,7 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
         DeviceQuery tmpQuery = new DeviceQueryImpl(rootScopeId);
 
         // Search for the known bios version string
-        tmpQuery.setPredicate(attributeIsEqualTo("biosVersion", version));
+        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo("biosVersion", version));
         deviceList = deviceRegistryService.query(tmpQuery);
         assertNotNull(deviceList);
     }
@@ -312,7 +310,7 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
         DeviceQuery tmpQuery = new DeviceQueryImpl(rootScopeId);
 
         // Search for the known bios version string
-        tmpQuery.setPredicate(attributeIsNotEqualTo("biosVersion", version));
+        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsNotEqualTo("biosVersion", version));
         deviceList = deviceRegistryService.query(tmpQuery);
         assertNotNull(deviceList);
     }
@@ -323,7 +321,7 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
         DeviceQuery tmpQuery = new DeviceQueryImpl(rootScopeId);
 
         // Search for the known bios version string
-        tmpQuery.setPredicate(attributeIsEqualTo("clientId", id));
+        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo("clientId", id));
         deviceList = deviceRegistryService.query(tmpQuery);
         assertNotNull(deviceList);
     }
@@ -350,7 +348,7 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
             throws KapuaException {
         DeviceQuery tmpQuery = new DeviceQueryImpl(rootScopeId);
         assertNotNull(tmpQuery);
-        tmpQuery.setPredicate(attributeIsEqualTo("biosVersion", version));
+        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo("biosVersion", version));
         count = 0;
         count = deviceRegistryService.count(tmpQuery);
     }

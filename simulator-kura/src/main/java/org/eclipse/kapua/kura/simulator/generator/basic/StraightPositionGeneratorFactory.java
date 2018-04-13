@@ -11,10 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator.generator.basic;
 
-import static java.time.Duration.ofDays;
-import static java.time.Duration.ofMinutes;
-import static java.util.Optional.of;
-
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
 import java.util.Optional;
@@ -41,12 +38,12 @@ import org.eclipse.kapua.kura.simulator.generator.Position;
  */
 public class StraightPositionGeneratorFactory extends AbstractGeneratorFactory {
 
-    private static final ToDoubleFunction<Instant> SATELLITES_FUNCTION = Generators.sineDoubleBetween(ofMinutes(10), 0, 10, null);
-    private static final ToDoubleFunction<Instant> PRECISION_FUNCTION = Generators.sineDoubleBetween(ofMinutes(10), 0.5, 25.0, null);
+    private static final ToDoubleFunction<Instant> SATELLITES_FUNCTION = Generators.sineDoubleBetween(Duration.ofMinutes(10), 0, 10, null);
+    private static final ToDoubleFunction<Instant> PRECISION_FUNCTION = Generators.sineDoubleBetween(Duration.ofMinutes(10), 0.5, 25.0, null);
 
-    private static final ToDoubleFunction<Instant> ALTITUDE_FUNCTION = Generators.sineDoubleBetween(ofMinutes(10), 0.0, 1_000.0, null);
-    private static final ToDoubleFunction<Instant> LONGITUDE_FUNCTION = Generators.sineDouble(ofDays(80), -90.0, 90.0, null);
-    private static final ToDoubleFunction<Instant> SPEED_FUNCTION = Generators.sineDouble(ofMinutes(2), 10.0, 100.0, null);
+    private static final ToDoubleFunction<Instant> ALTITUDE_FUNCTION = Generators.sineDoubleBetween(Duration.ofMinutes(10), 0.0, 1_000.0, null);
+    private static final ToDoubleFunction<Instant> LONGITUDE_FUNCTION = Generators.sineDouble(Duration.ofDays(80), -90.0, 90.0, null);
+    private static final ToDoubleFunction<Instant> SPEED_FUNCTION = Generators.sineDouble(Duration.ofMinutes(2), 10.0, 100.0, null);
 
     public StraightPositionGeneratorFactory() {
         super("spos");
@@ -54,7 +51,7 @@ public class StraightPositionGeneratorFactory extends AbstractGeneratorFactory {
 
     @Override
     protected Optional<Generator> createFrom(final Map<String, Object> configuration) {
-        return of(timestamp -> new Payload(null, createPosition(timestamp), null));
+        return Optional.of(timestamp -> new Payload(null, createPosition(timestamp), null));
     }
 
     protected static Position createPosition(final Instant timestamp) {

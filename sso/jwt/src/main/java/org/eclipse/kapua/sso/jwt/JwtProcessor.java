@@ -11,9 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.sso.jwt;
 
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -153,12 +150,12 @@ public class JwtProcessor implements AutoCloseable {
         // test result
 
         if (jwksUriJsonValue instanceof JsonString) {
-            return of(new URI(((JsonString) jwksUriJsonValue).getString()));
+            return Optional.of(new URI(((JsonString) jwksUriJsonValue).getString()));
         }
 
         // return
 
-        return empty();
+        return Optional.empty();
     }
 
     private Optional<Processor> lookupProcessor(final URI issuer) throws IOException, URISyntaxException {
@@ -186,7 +183,7 @@ public class JwtProcessor implements AutoCloseable {
 
         // return result
 
-        return of(processor);
+        return Optional.of(processor);
     }
 
 }

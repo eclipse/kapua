@@ -45,12 +45,11 @@ import org.eclipse.kapua.app.console.module.about.shared.service.GwtAboutService
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractView;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.View;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
+import org.eclipse.kapua.app.console.module.api.client.util.Years;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
-
-import static org.eclipse.kapua.app.console.module.api.client.util.Years.getCurrentYear;
 
 public class AboutView extends AbstractView implements View {
 
@@ -99,7 +98,7 @@ public class AboutView extends AbstractView implements View {
         // Kapua welcome
         final Text blurbText = new Text();
         blurbText.setId("about-blurb-text");
-        blurbText.setText(MSGS.aboutBlurb(Integer.toString(getCurrentYear())));
+        blurbText.setText(MSGS.aboutBlurb(Integer.toString(Years.getCurrentYear())));
 
         final TableLayout tableLayout = new TableLayout(2);
         tableLayout.setWidth("100%");

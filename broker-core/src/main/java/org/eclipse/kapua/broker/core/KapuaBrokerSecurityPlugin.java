@@ -12,27 +12,23 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core;
 
-import static com.google.common.base.MoreObjects.firstNonNull;
-import static org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers.resolveJdbcUrl;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_PASSWORD;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_SCHEMA;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_SCHEMA_ENV;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_SCHEMA_UPDATE;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_USERNAME;
-
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Optional;
 
+import org.eclipse.kapua.broker.core.plugin.KapuaSecurityBrokerFilter;
+import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
+
+import com.google.common.base.MoreObjects;
 import org.apache.activemq.broker.Broker;
 import org.apache.activemq.broker.BrokerPlugin;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.config.Ini;
 import org.apache.shiro.config.IniSecurityManagerFactory;
 import org.apache.shiro.mgt.SecurityManager;
-import org.eclipse.kapua.broker.core.plugin.KapuaSecurityBrokerFilter;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,12 +56,12 @@ public class KapuaBrokerSecurityPlugin implements BrokerPlugin {
         logger.info("Installing Kapua broker plugin.");
 
         SystemSetting config = SystemSetting.getInstance();
-        if(config.getBoolean(DB_SCHEMA_UPDATE, false)) {
+        if(config.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false)) {
             logger.debug("Starting Liquibase embedded client.");
-            String dbUsername = config.getString(DB_USERNAME);
-            String dbPassword = config.getString(DB_PASSWORD);
-            String schema = firstNonNull(config.getString(DB_SCHEMA_ENV), config.getString(DB_SCHEMA));
-            new KapuaLiquibaseClient(resolveJdbcUrl(), dbUsername, dbPassword, Optional.of(schema)).update();
+            String dbUsername = config.getString(SystemSettingKey.DB_USERNAME);
+            String dbPassword = config.getString(SystemSettingKey.DB_PASSWORD);
+            String schema = MoreObjects.firstNonNull(config.getString(SystemSettingKey.DB_SCHEMA_ENV), config.getString(SystemSettingKey.DB_SCHEMA));
+            new KapuaLiquibaseClient(JdbcConnectionUrlResolvers.resolveJdbcUrl(), dbUsername, dbPassword, Optional.of(schema)).update();
         }
 
         try {

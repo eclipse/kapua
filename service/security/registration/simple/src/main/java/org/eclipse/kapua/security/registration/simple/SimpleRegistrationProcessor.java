@@ -59,8 +59,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import static java.util.Optional.empty;
-
 /**
  * A processor which creates a simple account and user setup
  * <p>
@@ -122,7 +120,7 @@ public class SimpleRegistrationProcessor implements RegistrationProcessor {
                 if (accountName != null && !accountName.isEmpty()) {
                     return loadFrom(accountName).map(rootAccount -> applySimpleSettings(rootAccount, settings));
                 }
-                return empty();
+                return Optional.empty();
             } catch (KapuaException e) {
                 throw new RuntimeException("Failed to load root account ID", e);
             }
@@ -197,12 +195,12 @@ public class SimpleRegistrationProcessor implements RegistrationProcessor {
 
         String name = context.getJwtClaims().getClaimValue(claimName, String.class);
         if (name == null || name.isEmpty()) {
-            return empty();
+            return Optional.empty();
         }
 
         String email = context.getJwtClaims().getClaimValue("email", String.class);
         if (email == null || email.isEmpty()) {
-            return empty();
+            return Optional.empty();
         }
 
         String displayName = context.getJwtClaims().getClaimValue("name", String.class);

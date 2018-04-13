@@ -16,16 +16,7 @@ import org.eclipse.kapua.service.datastore.client.DatamodelMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_ALL;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_ENABLED;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_FORMAT;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_INDEX;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_TYPE;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_SOURCE;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_DATE;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_KEYWORD;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.VALUE_TRUE;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.FIELD_NAME_PROPERTIES;
+import org.eclipse.kapua.service.datastore.client.SchemaKeys;
 
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 
@@ -74,22 +65,22 @@ public class ClientInfoSchema {
         ObjectNode rootNode = SchemaUtil.getObjectNode();
 
         ObjectNode clientNodeName = SchemaUtil.getObjectNode();
-        ObjectNode sourceClient = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(KEY_ENABLED, sourceEnable)});
-        clientNodeName.set(KEY_SOURCE, sourceClient);
+        ObjectNode sourceClient = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_ENABLED, sourceEnable)});
+        clientNodeName.set(SchemaKeys.KEY_SOURCE, sourceClient);
 
-        ObjectNode allClient = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(KEY_ENABLED, allEnable)});
-        clientNodeName.set(KEY_ALL, allClient);
+        ObjectNode allClient = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_ENABLED, allEnable)});
+        clientNodeName.set(SchemaKeys.KEY_ALL, allClient);
 
         ObjectNode propertiesNode = SchemaUtil.getObjectNode();
-        ObjectNode clientId = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
+        ObjectNode clientId = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
         propertiesNode.set(CLIENT_ID, clientId);
-        ObjectNode clientTimestamp = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_DATE), new KeyValueEntry(KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN) });
+        ObjectNode clientTimestamp = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN) });
         propertiesNode.set(CLIENT_TIMESTAMP, clientTimestamp);
-        ObjectNode clientScopeId = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
+        ObjectNode clientScopeId = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
         propertiesNode.set(CLIENT_SCOPE_ID, clientScopeId);
-        ObjectNode clientMessageId = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
+        ObjectNode clientMessageId = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
         propertiesNode.set(CLIENT_MESSAGE_ID, clientMessageId);
-        clientNodeName.set(FIELD_NAME_PROPERTIES, propertiesNode);
+        clientNodeName.set(SchemaKeys.FIELD_NAME_PROPERTIES, propertiesNode);
         rootNode.set(CLIENT_TYPE_NAME, clientNodeName);
         return rootNode;
     }

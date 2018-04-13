@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.client.rest;
 
-import static java.util.stream.Collectors.toList;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.net.ssl.SSLContext;
@@ -345,7 +344,7 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
     }
 
     static List<InetSocketAddress> parseAndAdd(Stream<String> stream) {
-        return stream.map(EsRestClientProvider::parseAddress).filter(Objects::nonNull).collect(toList());
+        return stream.map(EsRestClientProvider::parseAddress).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     static InetSocketAddress parseAddress(String node) {

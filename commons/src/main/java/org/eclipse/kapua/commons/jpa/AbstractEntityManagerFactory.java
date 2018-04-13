@@ -11,20 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.jpa;
 
-import static org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers.resolveJdbcUrl;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Utility class for JPA operations.
@@ -57,7 +54,7 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
 
             configOverrides.put("eclipselink.cache.shared.default", "false"); // This has to be set to false in order to disable the local object cache of EclipseLink.
 
-            configOverrides.put("eclipselink.connection-pool.default.url", resolveJdbcUrl());
+            configOverrides.put("eclipselink.connection-pool.default.url", JdbcConnectionUrlResolvers.resolveJdbcUrl());
             configOverrides.put("eclipselink.connection-pool.default.user", config.getString(SystemSettingKey.DB_USERNAME));
             configOverrides.put("eclipselink.connection-pool.default.password", config.getString(SystemSettingKey.DB_PASSWORD));
 

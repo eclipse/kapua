@@ -12,10 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.steps;
 
-import static org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers.resolveJdbcUrl;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_PASSWORD;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_USERNAME;
+import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -23,6 +20,7 @@ import java.sql.SQLException;
 
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtilsWithResources;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,13 +59,13 @@ public class DBHelper {
 
         logger.info("Setting up mock database");
 
-        System.setProperty(DB_JDBC_CONNECTION_URL_RESOLVER.key(), "H2");
+        System.setProperty(SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER.key(), "H2");
         SystemSetting config = SystemSetting.getInstance();
-        String dbUsername = config.getString(DB_USERNAME);
-        String dbPassword = config.getString(DB_PASSWORD);
+        String dbUsername = config.getString(SystemSettingKey.DB_USERNAME);
+        String dbPassword = config.getString(SystemSettingKey.DB_PASSWORD);
         // String schema = firstNonNull(config.getString(DB_SCHEMA_ENV), config.getString(DB_SCHEMA));
 
-        String jdbcUrl = resolveJdbcUrl();
+        String jdbcUrl = JdbcConnectionUrlResolvers.resolveJdbcUrl();
 
         try {
             /*

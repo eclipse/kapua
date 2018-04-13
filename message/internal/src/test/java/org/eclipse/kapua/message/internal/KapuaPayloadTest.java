@@ -11,9 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal;
 
-import static org.eclipse.kapua.message.internal.KapuaMessageUtil.populatePayload;
-import static org.eclipse.kapua.message.internal.KapuaMessageUtil.populatePayloadWithAllTypesOfMetrics;
-
 import java.io.StringWriter;
 import java.util.Map;
 
@@ -43,7 +40,7 @@ public class KapuaPayloadTest extends Assert {
     @Test
     public void payloadGetterSetters() throws Exception {
         KapuaPayload kapuaPayload = new KapuaPayloadImpl();
-        populatePayload(kapuaPayload);
+        KapuaMessageUtil.populatePayload(kapuaPayload);
 
         Map<String, Object> properties = kapuaPayload.getMetrics();
         byte[] body = kapuaPayload.getBody();
@@ -62,7 +59,7 @@ public class KapuaPayloadTest extends Assert {
     public void displayString() throws Exception {
         final KapuaPayload kapuaPayload = new KapuaPayloadImpl();
 
-        populatePayloadWithAllTypesOfMetrics(kapuaPayload);
+        KapuaMessageUtil.populatePayloadWithAllTypesOfMetrics(kapuaPayload);
         kapuaPayload.getMetrics().put("null", null);
 
         String displayStr = kapuaPayload.toDisplayString();
@@ -73,7 +70,7 @@ public class KapuaPayloadTest extends Assert {
     @Ignore("KapuaPayload marshaling not working")
     public void marshallPayload() throws Exception {
         KapuaPayload kapuaPayload = new KapuaPayloadImpl();
-        populatePayload(kapuaPayload);
+        KapuaMessageUtil.populatePayload(kapuaPayload);
 
         StringWriter strWriter = new StringWriter();
         XmlUtil.marshal(kapuaPayload, strWriter);

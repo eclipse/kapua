@@ -11,8 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.gateway.spi;
 
-import static java.util.Objects.requireNonNull;
-
+import java.util.Objects;
 import java.util.concurrent.CompletionStage;
 
 import org.eclipse.kapua.client.gateway.Data;
@@ -42,8 +41,8 @@ public class DefaultData implements Data {
 
     @Override
     public CompletionStage<?> subscribe(final MessageHandler handler, final ErrorHandler<? extends Throwable> errorHandler) throws Exception {
-        requireNonNull(handler);
-        requireNonNull(errorHandler);
+        Objects.requireNonNull(handler);
+        Objects.requireNonNull(errorHandler);
 
         logger.debug("Setting subscription for: {}", topic);
 

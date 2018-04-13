@@ -11,18 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator.app;
 
-import static org.eclipse.kapua.kura.simulator.topic.Topic.Segment.wildcard;
+import org.eclipse.kapua.kura.simulator.Module;
+import org.eclipse.kapua.kura.simulator.Transport;
+import org.eclipse.kapua.kura.simulator.payload.Message;
+import org.eclipse.kapua.kura.simulator.topic.Topic;
+import org.eclipse.kapua.kura.simulator.topic.Topic.Segment;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import org.eclipse.kapua.kura.simulator.Module;
-import org.eclipse.kapua.kura.simulator.Transport;
-import org.eclipse.kapua.kura.simulator.payload.Message;
-import org.eclipse.kapua.kura.simulator.topic.Topic;
 
 public class ApplicationController implements Module {
 
@@ -87,11 +86,11 @@ public class ApplicationController implements Module {
             return;
         }
 
-        this.transport.unsubscribe(Topic.application(id).append(wildcard()));
+        this.transport.unsubscribe(Topic.application(id).append(Segment.wildcard()));
     }
 
     private void subscribeEntry(final Entry entry) {
-        this.transport.subscribe(Topic.application(entry.getId()).append(wildcard()), msg -> {
+        this.transport.subscribe(Topic.application(entry.getId()).append(Segment.wildcard()), msg -> {
             // try to cut off application id prefix
             final Message message = msg.localize(Topic.application(entry.getId()));
             if (message != null) {

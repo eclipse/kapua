@@ -11,13 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.utils;
 
-import static java.time.Duration.between;
-import static java.time.Duration.ofMillis;
-import static java.time.Instant.now;
-import static java.util.Objects.requireNonNull;
-
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.slf4j.Logger;
@@ -60,9 +56,9 @@ public final class Wait {
      * @return {@code true} if the state was reached in that period of time, {@code false} otherwise
      */
     public static boolean testFor(String action, final Duration duration, final Duration testPeriod, final Condition condition) {
-        requireNonNull(duration);
-        requireNonNull(testPeriod);
-        requireNonNull(condition);
+        Objects.requireNonNull(duration);
+        Objects.requireNonNull(testPeriod);
+        Objects.requireNonNull(condition);
 
         if (action != null) {
             action = action + ": ";
@@ -70,13 +66,13 @@ public final class Wait {
             action = "";
         }
 
-        final Instant start = now();
+        final Instant start = Instant.now();
         final Instant end = start.plus(duration.abs());
-        while (now().isBefore(end)) {
+        while (Instant.now().isBefore(end)) {
             try {
                 final boolean result = condition.test();
                 if (result) {
-                    logger.info("{}completed successfully after {} ms", action, between(start, now()).toMillis());
+                    logger.info("{}completed successfully after {} ms", action, Duration.between(start, Instant.now()).toMillis());
                     return true;
                 }
                 Thread.sleep(testPeriod.toMillis());
@@ -92,7 +88,7 @@ public final class Wait {
     }
 
     public static boolean testFor(final Duration duration, final Condition condition) {
-        return testFor(duration, ofMillis(100), condition);
+        return testFor(duration, Duration.ofMillis(100), condition);
     }
 
     /**

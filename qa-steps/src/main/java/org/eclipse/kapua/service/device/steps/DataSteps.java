@@ -11,9 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.steps;
 
-import static java.time.Instant.now;
-import static org.eclipse.kapua.locator.KapuaLocator.getInstance;
-import static org.eclipse.kapua.service.device.steps.With.withUserAccount;
+import java.time.Instant;
+import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.device.steps.With;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -97,7 +97,7 @@ public class DataSteps {
         final Map<String, Object> data = toData(metrics);
 
         final MockDataApplication app = getMockApplication(currentApplication);
-        app.publishData(topic, now(), data);
+        app.publishData(topic, Instant.now(), data);
     }
 
     private static Map<String, Object> toData(List<MetricEntry> metrics) {
@@ -142,9 +142,9 @@ public class DataSteps {
 
     @Then("I expect the number of messages for this device to be (\\d+)")
     public void expectNumberOfMessages(long numberOfMessages) throws Exception {
-        final MessageStoreService service = getInstance().getService(MessageStoreService.class);
+        final MessageStoreService service = KapuaLocator.getInstance().getService(MessageStoreService.class);
         session.withLogin(() -> {
-            withUserAccount(currentDevice.getAccountName(), account -> {
+            With.withUserAccount(currentDevice.getAccountName(), account -> {
 
                 // create new query
 
@@ -179,9 +179,9 @@ public class DataSteps {
 
     @Then("I expect the latest captured message on channel \"(.*)\" to have the metrics")
     public void testMessageData(final String topic, final List<MetricEntry> expectedMetrics) throws Exception {
-        final MessageStoreService service = getInstance().getService(MessageStoreService.class);
+        final MessageStoreService service = KapuaLocator.getInstance().getService(MessageStoreService.class);
         session.withLogin(() -> {
-            withUserAccount(currentDevice.getAccountName(), account -> {
+            With.withUserAccount(currentDevice.getAccountName(), account -> {
 
                 // start a new query
 

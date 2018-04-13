@@ -11,9 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.gateway;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -144,32 +141,32 @@ public class TopicTest {
     public void testEquals1() {
         final Topic t1 = Topic.split("foo/bar/baz");
         final Topic t2 = Topic.split("foo/bar/baz");
-        assertEquals(t1, t2);
+        Assert.assertEquals(t1, t2);
     }
 
     @Test
     public void testEquals2() {
         final Topic t1 = Topic.split("foo/bar/baz");
         final Topic t2 = Topic.of("foo", "bar", "baz");
-        assertEquals(t1, t2);
+        Assert.assertEquals(t1, t2);
     }
 
     @Test
     public void testNotEquals1() {
         final Topic t1 = Topic.split("foo/bar");
         final Topic t2 = Topic.split("foo/baz");
-        assertNotEquals(t1, t2);
+        Assert.assertNotEquals(t1, t2);
     }
 
     @Test
     public void testStream() {
         final String result = Topic.split("foo/bar").stream().collect(Collectors.joining());
-        assertEquals("foobar", result);
+        Assert.assertEquals("foobar", result);
     }
 
     @Test
     public void testToString() {
-        assertEquals("foo/bar", Topic.of("foo", "bar").toString());
+        Assert.assertEquals("foo/bar", Topic.of("foo", "bar").toString());
     }
 
     @Test
@@ -178,8 +175,8 @@ public class TopicTest {
         map.put(Topic.of("foo", "bar"), 1);
         map.put(Topic.of("foo", "baz"), 2);
 
-        assertEquals(1, map.get(Topic.split("foo/bar")));
-        assertEquals(2, map.get(Topic.split("foo/baz")));
+        Assert.assertEquals(1, map.get(Topic.split("foo/bar")));
+        Assert.assertEquals(2, map.get(Topic.split("foo/baz")));
     }
 
 }

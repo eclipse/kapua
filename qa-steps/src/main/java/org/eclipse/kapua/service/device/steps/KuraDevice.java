@@ -11,10 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.steps;
 
-import static java.nio.file.Files.readAllBytes;
-import static java.nio.file.Paths.get;
-
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.eclipse.kapua.qa.utils.Suppressed;
@@ -184,7 +183,7 @@ public class KuraDevice implements MqttCallback {
      * @throws IOException
      */
     public void sendMessageFromFile(String topic, int qos, boolean retained, String fileName) throws MqttException, IOException {
-        byte[] payload = readAllBytes(get(fileName));
+        byte[] payload = Files.readAllBytes(Paths.get(fileName));
 
         mqttClient.publish(topic, payload, qos, retained);
     }
@@ -259,7 +258,7 @@ public class KuraDevice implements MqttCallback {
             callbackParam = extractCallback(payload);
 
             responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/DEPLOY-V2/REPLY/" + callbackParam.getRequestId();
-            responsePayload = readAllBytes(get(("src/test/resources/mqtt/KapuaPool-client-id_DEPLOY-V2_REPLY_req-id_packages.mqtt")));
+            responsePayload = Files.readAllBytes(Paths.get(("src/test/resources/mqtt/KapuaPool-client-id_DEPLOY-V2_REPLY_req-id_packages.mqtt")));
 
             mqttClient.publish(responseTopic, responsePayload, 0, false);
             break;
@@ -267,7 +266,7 @@ public class KuraDevice implements MqttCallback {
             callbackParam = extractCallback(payload);
 
             responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/DEPLOY-V2/REPLY/" + callbackParam.getRequestId();
-            responsePayload = readAllBytes(get(("src/test/resources/mqtt/KapuaPool-client-id_DEPLOY-V2_REPLY_req-id_bundles.mqtt")));
+            responsePayload = Files.readAllBytes(Paths.get(("src/test/resources/mqtt/KapuaPool-client-id_DEPLOY-V2_REPLY_req-id_bundles.mqtt")));
 
             mqttClient.publish(responseTopic, responsePayload, 0, false);
             break;
@@ -275,7 +274,7 @@ public class KuraDevice implements MqttCallback {
             callbackParam = extractCallback(payload);
 
             responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/CONF-V1/REPLY/" + callbackParam.getRequestId();
-            responsePayload = readAllBytes(get(("src/test/resources/mqtt/KapuaPool-client-id_CONF-V1_REPLY_req-id_configurations.mqtt")));
+            responsePayload = Files.readAllBytes(Paths.get(("src/test/resources/mqtt/KapuaPool-client-id_CONF-V1_REPLY_req-id_configurations.mqtt")));
 
             mqttClient.publish(responseTopic, responsePayload, 0, false);
             break;
@@ -283,7 +282,7 @@ public class KuraDevice implements MqttCallback {
             callbackParam = extractCallback(payload);
 
             responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/CMD-V1/REPLY/" + callbackParam.getRequestId();
-            responsePayload = readAllBytes(get(("src/test/resources/mqtt/KapuaPool-client-id_CMD-V1_REPLY_req-id_command.mqtt")));
+            responsePayload = Files.readAllBytes(Paths.get(("src/test/resources/mqtt/KapuaPool-client-id_CMD-V1_REPLY_req-id_command.mqtt")));
 
             mqttClient.publish(responseTopic, responsePayload, 0, false);
             break;

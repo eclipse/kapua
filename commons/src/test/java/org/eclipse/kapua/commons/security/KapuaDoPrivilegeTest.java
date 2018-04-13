@@ -11,9 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.security;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -22,6 +19,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -122,9 +120,9 @@ public class KapuaDoPrivilegeTest {
                 }
             }
             Thread.sleep(200);
-            assertTrue("Timeout waiting for execution [" + timeOut + " msec]. The task is not yet completed!", attempt++ <= maxAttempt);
+            Assert.assertTrue("Timeout waiting for execution [" + timeOut + " msec]. The task is not yet completed!", attempt++ <= maxAttempt);
         } while (!done);
-        assertTrue("The task is not yet completed!", done);
+        Assert.assertTrue("The task is not yet completed!", done);
     }
 
     private String getKapuaSessionId() {
@@ -168,7 +166,7 @@ public class KapuaDoPrivilegeTest {
 
             logger.debug("Execution: {} - KapuaSession object ID before {} - and after {} the nested DoPriviledge call",
                     new Object[] { executionProgress.intValue(), originalKapuaSessionId, kapuaSessionId });
-            assertEquals("Wrong session ID!!! The do priledge method corrupted the KapuaSession", kapuaSessionId, originalKapuaSessionId);
+            Assert.assertEquals("Wrong session ID!!! The do priledge method corrupted the KapuaSession", kapuaSessionId, originalKapuaSessionId);
             return (Void) null;
         }
 

@@ -24,6 +24,7 @@ import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUti
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.model.domain.Actions;
@@ -46,16 +47,14 @@ import org.eclipse.kapua.service.device.registry.shared.SharedTestSteps;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.test.MockedLocator;
 import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
+
+import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 import java.math.BigInteger;
 import java.security.acl.Permission;
 import java.util.HashSet;
 import java.util.List;
-
-import static org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl.attributeIsEqualTo;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
 
 /**
  * Implementation of Gherkin steps used in DeviceRegistryConnection.features scenarios.
@@ -127,15 +126,15 @@ public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
         MockedLocator mockLocator = (MockedLocator) locator;
 
         // Inject mocked Authorization Service method checkPermission
-        AuthorizationService mockedAuthorization = mock(AuthorizationService.class);
+        AuthorizationService mockedAuthorization = Mockito.mock(AuthorizationService.class);
         // TODO: Check why does this line needs an explicit cast!
         Mockito.doNothing().when(mockedAuthorization).checkPermission(
-                (org.eclipse.kapua.service.authorization.permission.Permission) any(Permission.class));
+                (org.eclipse.kapua.service.authorization.permission.Permission) Matchers.any(Permission.class));
         mockLocator.setMockedService(org.eclipse.kapua.service.authorization.AuthorizationService.class,
                 mockedAuthorization);
 
         // Inject mocked Permission Factory
-        PermissionFactory mockedPermissionFactory = mock(PermissionFactory.class);
+        PermissionFactory mockedPermissionFactory = Mockito.mock(PermissionFactory.class);
         mockLocator.setMockedFactory(org.eclipse.kapua.service.authorization.permission.PermissionFactory.class,
                 mockedPermissionFactory);
 
@@ -376,7 +375,7 @@ public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
     public void cueryForConnections(String parameter, String value)
             throws KapuaException {
         DeviceConnectionQuery tmpQuery = new DeviceConnectionQueryImpl(scopeId);
-        tmpQuery.setPredicate(attributeIsEqualTo(parameter, value));
+        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo(parameter, value));
 
         connectionList = (DeviceConnectionListResult) deviceConnectionService.query(tmpQuery);
         assertNotNull(connectionList);

@@ -11,12 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.client.transport;
 
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.singletonMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.kapua.commons.setting.AbstractBaseKapuaSetting.fromMap;
-import static org.eclipse.kapua.service.datastore.client.transport.EsTransportClientProvider.parseAddress;
-import static org.eclipse.kapua.service.datastore.client.transport.EsTransportClientProvider.parseAddresses;
+import org.eclipse.kapua.commons.setting.AbstractBaseKapuaSetting;
+import org.eclipse.kapua.service.datastore.client.transport.EsTransportClientProvider;
+import org.eclipse.kapua.service.datastore.client.transport.EsTransportClientProvider;
 
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -52,98 +49,98 @@ public class EsTransportClientProviderTest {
     private final static Condition<InetSocketAddress> UNRESOLVED = new Condition<>(InetSocketAddress::isUnresolved, "Host unresolved");
 
     private void assertThatResolvedAs(InetSocketAddress result, Class<? extends InetAddress> addressClazz, String hostAddress, int port) {
-        assertThat(result).isNotNull();
-        assertThat(result.getAddress()).isNotNull();
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getAddress()).isNotNull();
 
-        assertThat(result).doesNotHave(UNRESOLVED);
-        assertThat(result.getHostString()).isEqualTo(hostAddress);
-        assertThat(result.getPort()).isEqualTo(port);
-        assertThat(result.getAddress()).isInstanceOf(addressClazz);
+        Assertions.assertThat(result).doesNotHave(UNRESOLVED);
+        Assertions.assertThat(result.getHostString()).isEqualTo(hostAddress);
+        Assertions.assertThat(result.getPort()).isEqualTo(port);
+        Assertions.assertThat(result.getAddress()).isInstanceOf(addressClazz);
     }
 
     @Test
     public void test1() {
-        InetSocketAddress result = parseAddress("127.0.0.1");
+        InetSocketAddress result = EsTransportClientProvider.parseAddress("127.0.0.1");
         assertThatResolvedAs(result, Inet4Address.class, "127.0.0.1", 9300);
     }
 
     @Test
     public void test2() {
-        InetSocketAddress result = parseAddress("127.0.0.1:");
+        InetSocketAddress result = EsTransportClientProvider.parseAddress("127.0.0.1:");
         assertThatResolvedAs(result, Inet4Address.class, "127.0.0.1", 9300);
     }
 
     @Test
     public void test3() {
-        InetSocketAddress result = parseAddress("[::1]:");
+        InetSocketAddress result = EsTransportClientProvider.parseAddress("[::1]:");
         assertThatResolvedAs(result, Inet6Address.class, "0:0:0:0:0:0:0:1", 9300);
     }
 
     @Test
     public void test4() {
-        InetSocketAddress result = parseAddress("[::1]:1234");
+        InetSocketAddress result = EsTransportClientProvider.parseAddress("[::1]:1234");
         assertThatResolvedAs(result, Inet6Address.class, "0:0:0:0:0:0:0:1", 1234);
     }
 
     @Test
     public void testEmpty1() {
-        InetSocketAddress result = parseAddress("");
-        assertThat(result).isNull();
+        InetSocketAddress result = EsTransportClientProvider.parseAddress("");
+        Assertions.assertThat(result).isNull();
     }
 
     @Test
     public void testEmpty2() {
-        InetSocketAddress result = parseAddress(null);
-        assertThat(result).isNull();
+        InetSocketAddress result = EsTransportClientProvider.parseAddress(null);
+        Assertions.assertThat(result).isNull();
     }
 
     @Test
     public void testHostNotFound1() {
-        InetSocketAddress result = parseAddress(UNKWNON_HOST);
-        assertThat(result).isNotNull();
-        assertThat(result).has(UNRESOLVED);
+        InetSocketAddress result = EsTransportClientProvider.parseAddress(UNKWNON_HOST);
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result).has(UNRESOLVED);
     }
 
     @Test
     public void testHostNotFound2() {
-        InetSocketAddress result = parseAddress(UNKWNON_HOST + ":123");
-        assertThat(result).isNotNull();
-        assertThat(result).has(UNRESOLVED);
+        InetSocketAddress result = EsTransportClientProvider.parseAddress(UNKWNON_HOST + ":123");
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result).has(UNRESOLVED);
     }
 
     @Test
     public void testHostsEmpty1() throws ClientUnavailableException {
-        AbstractBaseKapuaSetting<ClientSettingsKey> settings = fromMap(emptyMap());
-        List<InetSocketAddress> result = parseAddresses(settings);
-        assertThat(result).isEmpty();
+        AbstractBaseKapuaSetting<ClientSettingsKey> settings = AbstractBaseKapuaSetting.fromMap(Collections.emptyMap());
+        List<InetSocketAddress> result = EsTransportClientProvider.parseAddresses(settings);
+        Assertions.assertThat(result).isEmpty();
     }
 
     @Test
     public void testHostsEmpty2() throws ClientUnavailableException {
-        AbstractBaseKapuaSetting<ClientSettingsKey> settings = fromMap(singletonMap(ClientSettingsKey.ELASTICSEARCH_NODES.key(), ""));
-        List<InetSocketAddress> result = parseAddresses(settings);
-        assertThat(result).isEmpty();
+        AbstractBaseKapuaSetting<ClientSettingsKey> settings = AbstractBaseKapuaSetting.fromMap(Collections.singletonMap(ClientSettingsKey.ELASTICSEARCH_NODES.key(), ""));
+        List<InetSocketAddress> result = EsTransportClientProvider.parseAddresses(settings);
+        Assertions.assertThat(result).isEmpty();
     }
 
     @Test
     public void testHostsEmpty3() throws ClientUnavailableException {
-        AbstractBaseKapuaSetting<ClientSettingsKey> settings = fromMap(singletonMap(ClientSettingsKey.ELASTICSEARCH_NODE.key() + ".01", ""));
-        List<InetSocketAddress> result = parseAddresses(settings);
-        assertThat(result).isEmpty();
+        AbstractBaseKapuaSetting<ClientSettingsKey> settings = AbstractBaseKapuaSetting.fromMap(Collections.singletonMap(ClientSettingsKey.ELASTICSEARCH_NODE.key() + ".01", ""));
+        List<InetSocketAddress> result = EsTransportClientProvider.parseAddresses(settings);
+        Assertions.assertThat(result).isEmpty();
     }
 
     @Test
     public void testHostsEmpty4() throws ClientUnavailableException {
-        AbstractBaseKapuaSetting<ClientSettingsKey> settings = fromMap(singletonMap(ClientSettingsKey.ELASTICSEARCH_NODE.key(), ""));
-        List<InetSocketAddress> result = parseAddresses(settings);
-        assertThat(result).isEmpty();
+        AbstractBaseKapuaSetting<ClientSettingsKey> settings = AbstractBaseKapuaSetting.fromMap(Collections.singletonMap(ClientSettingsKey.ELASTICSEARCH_NODE.key(), ""));
+        List<InetSocketAddress> result = EsTransportClientProvider.parseAddresses(settings);
+        Assertions.assertThat(result).isEmpty();
     }
 
     @Test
     public void testHosts1() throws ClientUnavailableException {
-        AbstractBaseKapuaSetting<ClientSettingsKey> settings = fromMap(singletonMap(ClientSettingsKey.ELASTICSEARCH_NODES.key(), "127.0.0.1,127.0.0.2:1234,[::1]:5678"));
-        List<InetSocketAddress> result = parseAddresses(settings);
-        assertThat(result).hasSize(3);
+        AbstractBaseKapuaSetting<ClientSettingsKey> settings = AbstractBaseKapuaSetting.fromMap(Collections.singletonMap(ClientSettingsKey.ELASTICSEARCH_NODES.key(), "127.0.0.1,127.0.0.2:1234,[::1]:5678"));
+        List<InetSocketAddress> result = EsTransportClientProvider.parseAddresses(settings);
+        Assertions.assertThat(result).hasSize(3);
 
         assertThatResolvedAs(result.get(0), Inet4Address.class, "127.0.0.1", 9300);
         assertThatResolvedAs(result.get(1), Inet4Address.class, "127.0.0.2", 1234);
@@ -152,19 +149,19 @@ public class EsTransportClientProviderTest {
 
     @Test
     public void testHosts2() throws ClientUnavailableException {
-        AbstractBaseKapuaSetting<ClientSettingsKey> settings = fromMap(singletonMap(ClientSettingsKey.ELASTICSEARCH_NODE.key() + ".01", "127.0.0.1:1234"));
-        List<InetSocketAddress> result = parseAddresses(settings);
+        AbstractBaseKapuaSetting<ClientSettingsKey> settings = AbstractBaseKapuaSetting.fromMap(Collections.singletonMap(ClientSettingsKey.ELASTICSEARCH_NODE.key() + ".01", "127.0.0.1:1234"));
+        List<InetSocketAddress> result = EsTransportClientProvider.parseAddresses(settings);
 
-        assertThat(result).hasSize(1);
+        Assertions.assertThat(result).hasSize(1);
         assertThatResolvedAs(result.get(0), Inet4Address.class, "127.0.0.1", 1234);
     }
 
     @Test
     public void testHosts3() throws ClientUnavailableException {
-        AbstractBaseKapuaSetting<ClientSettingsKey> settings = fromMap(singletonMap(ClientSettingsKey.ELASTICSEARCH_NODE.key(), "127.0.0.1:1234"));
-        List<InetSocketAddress> result = parseAddresses(settings);
+        AbstractBaseKapuaSetting<ClientSettingsKey> settings = AbstractBaseKapuaSetting.fromMap(Collections.singletonMap(ClientSettingsKey.ELASTICSEARCH_NODE.key(), "127.0.0.1:1234"));
+        List<InetSocketAddress> result = EsTransportClientProvider.parseAddresses(settings);
 
-        assertThat(result).hasSize(1);
+        Assertions.assertThat(result).hasSize(1);
         assertThatResolvedAs(result.get(0), Inet4Address.class, "127.0.0.1", 1234);
     }
 
@@ -175,10 +172,10 @@ public class EsTransportClientProviderTest {
         map.put(ClientSettingsKey.ELASTICSEARCH_NODES.key(), "127.0.0.2:5678");
         map.put(ClientSettingsKey.ELASTICSEARCH_CLUSTER.key(), CLUSTER_NAME);
 
-        AbstractBaseKapuaSetting<ClientSettingsKey> settings = fromMap(map);
-        List<InetSocketAddress> result = parseAddresses(settings);
+        AbstractBaseKapuaSetting<ClientSettingsKey> settings = AbstractBaseKapuaSetting.fromMap(map);
+        List<InetSocketAddress> result = EsTransportClientProvider.parseAddresses(settings);
 
-        assertThat(result).hasSize(1);
+        Assertions.assertThat(result).hasSize(1);
 
         /*
          * There must be only one entry, as the "nodes" entry overrides the "node" entry
@@ -194,10 +191,10 @@ public class EsTransportClientProviderTest {
         map.put(ClientSettingsKey.ELASTICSEARCH_NODE.key() + ".01", "127.0.0.3:1234");
         map.put(ClientSettingsKey.ELASTICSEARCH_CLUSTER.key(), CLUSTER_NAME);
 
-        AbstractBaseKapuaSetting<ClientSettingsKey> settings = fromMap(map);
-        List<InetSocketAddress> result = parseAddresses(settings);
+        AbstractBaseKapuaSetting<ClientSettingsKey> settings = AbstractBaseKapuaSetting.fromMap(map);
+        List<InetSocketAddress> result = EsTransportClientProvider.parseAddresses(settings);
 
-        assertThat(result).hasSize(1);
+        Assertions.assertThat(result).hasSize(1);
 
         /*
          * There must be only one entry, as the "nodes" entry overrides the "node" entry
@@ -211,9 +208,9 @@ public class EsTransportClientProviderTest {
         Map<String, Object> map = new HashMap<>();
         map.put(ClientSettingsKey.ELASTICSEARCH_NODES.key(), "127.0.0.1,127.0.0.2:1234,[::1]:5678");
         map.put(ClientSettingsKey.ELASTICSEARCH_CLUSTER.key(), CLUSTER_NAME);
-        EsTransportClientProvider.init(fromMap(map));
+        EsTransportClientProvider.init(AbstractBaseKapuaSetting.fromMap(map));
         try (Client result = EsTransportClientProvider.getInstance().getClient()) {
-            assertThat(result).isNotNull();
+            Assertions.assertThat(result).isNotNull();
         }
     }
 
@@ -237,7 +234,7 @@ public class EsTransportClientProviderTest {
                     Map<String, Object> map = new HashMap<>();
                     map.put(ClientSettingsKey.ELASTICSEARCH_NODES.key(), UNKWNON_HOST);
                     map.put(ClientSettingsKey.ELASTICSEARCH_CLUSTER.key(), CLUSTER_NAME);
-                    EsTransportClientProvider.init(fromMap(map));
+                    EsTransportClientProvider.init(AbstractBaseKapuaSetting.fromMap(map));
                     try (Client result = EsTransportClientProvider.getInstance().getClient()) {
                     }
                 });

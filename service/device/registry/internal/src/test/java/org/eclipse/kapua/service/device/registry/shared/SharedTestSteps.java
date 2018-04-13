@@ -17,9 +17,7 @@ import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.runtime.java.guice.ScenarioScoped;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.Assert;
 
 @ScenarioScoped
 public class SharedTestSteps {
@@ -58,12 +56,12 @@ public class SharedTestSteps {
 
     @Then("^An exception was raised$")
     public void anExceptionWasRaised() {
-        assertTrue(exceptionCaught);
+        Assert.assertTrue(exceptionCaught);
     }
 
     @Then("^There was no exception$")
     public void noExceptionWasRaised() {
-        assertFalse(exceptionCaught);
+        Assert.assertFalse(exceptionCaught);
     }
 
     // Helper functions

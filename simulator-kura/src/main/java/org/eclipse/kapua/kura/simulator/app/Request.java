@@ -11,17 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator.app;
 
-import static java.util.Objects.requireNonNull;
-import static org.eclipse.kapua.kura.simulator.payload.Metrics.KEY_REQUESTER_CLIENT_ID;
-import static org.eclipse.kapua.kura.simulator.payload.Metrics.KEY_REQUEST_ID;
-import static org.eclipse.kapua.kura.simulator.payload.Metrics.KEY_RESPONSE_CODE;
-import static org.eclipse.kapua.kura.simulator.payload.Metrics.KEY_RESPONSE_EXCEPTION_MESSAGE;
-import static org.eclipse.kapua.kura.simulator.payload.Metrics.KEY_RESPONSE_EXCEPTION_STACKTRACE;
-import static org.eclipse.kapua.kura.simulator.payload.Metrics.getAsString;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.eclipse.kapua.kura.simulator.payload.Message;
@@ -45,11 +38,11 @@ public class Request {
     public Request(final ApplicationContext applicationContext, final Message message,
             final Map<String, Object> metrics, final String requestId, final String requesterClientId) {
 
-        requireNonNull(applicationContext);
-        requireNonNull(message);
-        requireNonNull(metrics);
-        requireNonNull(requestId);
-        requireNonNull(requesterClientId);
+        Objects.requireNonNull(applicationContext);
+        Objects.requireNonNull(message);
+        Objects.requireNonNull(metrics);
+        Objects.requireNonNull(requestId);
+        Objects.requireNonNull(requesterClientId);
 
         this.applicationContext = applicationContext;
         this.message = message;
@@ -92,15 +85,15 @@ public class Request {
 
         final Map<String, Object> metrics = Metrics.extractMetrics(payload);
 
-        final String requestId = getAsString(metrics, KEY_REQUEST_ID);
+        final String requestId = Metrics.getAsString(metrics, Metrics.KEY_REQUEST_ID);
         if (requestId == null) {
-            throw new IllegalArgumentException("Request ID (" + KEY_REQUEST_ID + ") missing in message");
+            throw new IllegalArgumentException("Request ID (" + Metrics.KEY_REQUEST_ID + ") missing in message");
         }
 
-        final String requesterClientId = getAsString(metrics, KEY_REQUESTER_CLIENT_ID);
+        final String requesterClientId = Metrics.getAsString(metrics, Metrics.KEY_REQUESTER_CLIENT_ID);
         if (requesterClientId == null) {
             throw new IllegalArgumentException(
-                    "Requester Client ID (" + KEY_REQUESTER_CLIENT_ID + ") missing in message");
+                    "Requester Client ID (" + Metrics.KEY_REQUESTER_CLIENT_ID + ") missing in message");
         }
 
         return new Request(context, message, metrics, requestId, requesterClientId);
@@ -150,15 +143,15 @@ public class Request {
                 // check for existing response code metric
 
                 for (final KuraMetricOrBuilder metric : payload.getMetricOrBuilderList()) {
-                    if (metric.getName().equals(KEY_RESPONSE_CODE)) {
+                    if (metric.getName().equals(Metrics.KEY_RESPONSE_CODE)) {
                         throw new IllegalArgumentException(
-                                String.format("Metrics must not already contain '%s'", KEY_RESPONSE_CODE));
+                                String.format("Metrics must not already contain '%s'", Metrics.KEY_RESPONSE_CODE));
                     }
                 }
 
                 // add response code
 
-                Metrics.addMetric(payload, KEY_RESPONSE_CODE, responseCode);
+                Metrics.addMetric(payload, Metrics.KEY_RESPONSE_CODE, responseCode);
 
                 Request.this.applicationContext
                         .sender(Topic.reply(Request.this.requesterClientId, Request.this.requestId))
@@ -194,8 +187,8 @@ public class Request {
     public void replyError(final Throwable error) {
         final Map<String, Object> metrics = new HashMap<>();
         if (error != null) {
-            metrics.put(KEY_RESPONSE_EXCEPTION_MESSAGE, ExceptionUtils.getRootCauseMessage(error));
-            metrics.put(KEY_RESPONSE_EXCEPTION_STACKTRACE, ExceptionUtils.getStackTrace(error));
+            metrics.put(Metrics.KEY_RESPONSE_EXCEPTION_MESSAGE, ExceptionUtils.getRootCauseMessage(error));
+            metrics.put(Metrics.KEY_RESPONSE_EXCEPTION_STACKTRACE, ExceptionUtils.getStackTrace(error));
         }
         reply(500).send(metrics);
     }

@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.util.xml;
 
-import static org.apache.commons.lang.SystemUtils.LINE_SEPARATOR;
-
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -35,6 +33,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.sax.SAXSource;
 
 import org.eclipse.kapua.KapuaException;
+
+import org.apache.commons.lang.SystemUtils;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.slf4j.Logger;
@@ -263,7 +263,7 @@ public class XmlUtil {
                     String msg = MessageFormat.format("Line {0}, Col: {1}.{2}\tError message: {3}\n\tLinked exception message:{4}",
                             valEvent.getLocator().getLineNumber(),
                             valEvent.getLocator().getColumnNumber(),
-                            LINE_SEPARATOR,
+                            SystemUtils.LINE_SEPARATOR,
                             valEvent.getMessage() != null ? valEvent.getMessage() : "",
                             valEvent.getLinkedException() != null ? valEvent.getLinkedException().getMessage() : "");
                     throw new UnmarshalException(msg, valEvent.getLinkedException());
@@ -323,7 +323,7 @@ public class XmlUtil {
                     String msg = MessageFormat.format("Line {0}, Col: {1}.{2}\tError message: {3}\n\tLinked exception message:{4}",
                             valEvent.getLocator().getLineNumber(),
                             valEvent.getLocator().getColumnNumber(),
-                            LINE_SEPARATOR,
+                            SystemUtils.LINE_SEPARATOR,
                             valEvent.getMessage() != null ? valEvent.getMessage() : "",
                             valEvent.getLinkedException() != null ? valEvent.getLinkedException().getMessage() : "");
                     throw new UnmarshalException(msg, valEvent.getLinkedException());
