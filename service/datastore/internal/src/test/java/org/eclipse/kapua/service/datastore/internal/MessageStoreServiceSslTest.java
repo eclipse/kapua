@@ -11,9 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import static java.util.Objects.requireNonNull;
-import static org.eclipse.kapua.service.datastore.model.query.SortField.descending;
-
 import java.text.ParseException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -22,6 +19,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.kapua.KapuaException;
@@ -237,7 +235,7 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
     // ===========================================================
 
     private List<StorableId> insertMessages(KapuaDataMessage... messages) throws InterruptedException, KapuaException {
-        requireNonNull(messages);
+        Objects.requireNonNull(messages);
 
         List<StorableId> storableIds = new ArrayList<>(messages.length);
         for (KapuaDataMessage message : messages) {
@@ -308,7 +306,7 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
         query.setLimit(limit);
         query.setOffset(0);
         List<SortField> order = new ArrayList<>();
-        order.add(descending(MessageSchema.MESSAGE_TIMESTAMP));
+        order.add(SortField.descending(MessageSchema.MESSAGE_TIMESTAMP));
         query.setSortFields(order);
         return query;
     }

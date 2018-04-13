@@ -11,9 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.steps;
 
-import static java.time.Duration.ofSeconds;
-import static org.eclipse.kapua.qa.utils.Ports.isPortOpen;
-import static org.eclipse.kapua.qa.utils.Suppressed.withRuntimeException;
+import java.time.Duration;
+import org.eclipse.kapua.qa.utils.Ports;
+import org.eclipse.kapua.qa.utils.Suppressed;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -64,7 +64,7 @@ public class EmbeddedBroker {
         try {
             // test if port is already open
 
-            if (isPortOpen(1883)) {
+            if (Ports.isPortOpen(1883)) {
                 throw new IllegalStateException("Broker port is already in use");
             }
 
@@ -82,7 +82,7 @@ public class EmbeddedBroker {
             }
 
             if (EXTRA_STARTUP_DELAY > 0) {
-                Thread.sleep(ofSeconds(EXTRA_STARTUP_DELAY).toMillis());
+                Thread.sleep(Duration.ofSeconds(EXTRA_STARTUP_DELAY).toMillis());
             }
 
             //TODO to remove once the application life cycle will be implemented
@@ -100,7 +100,7 @@ public class EmbeddedBroker {
     public void stop() {
         logger.info("Stopping instance ...");
 
-        try (final Suppressed<RuntimeException> s = withRuntimeException()) {
+        try (final Suppressed<RuntimeException> s = Suppressed.withRuntimeException()) {
 
             // close all resources
 

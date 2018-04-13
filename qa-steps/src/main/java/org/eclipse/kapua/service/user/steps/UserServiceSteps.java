@@ -57,6 +57,8 @@ import org.eclipse.kapua.service.user.UserDomain;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.internal.UserFactoryImpl;
 import org.eclipse.kapua.service.user.internal.UsersJAXBContextProvider;
+
+import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,9 +72,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 /**
  * Implementation of Gherkin steps used in UserServiceI9n.feature scenarios.
@@ -263,7 +262,7 @@ public class UserServiceSteps extends BaseQATests {
         primeException();
         try {
             User user = userService.findByName(userName);
-            assertNotNull("User doesn't exist.", user);
+            Assert.assertNotNull("User doesn't exist.", user);
         } catch (KapuaException e) {
             verifyException(e);
         }
@@ -275,7 +274,7 @@ public class UserServiceSteps extends BaseQATests {
         primeException();
         try {
             User user = userService.findByName(userName);
-            assertNull("User still exists.", user);
+            Assert.assertNull("User still exists.", user);
         } catch (KapuaException e) {
             verifyException(e);
         }

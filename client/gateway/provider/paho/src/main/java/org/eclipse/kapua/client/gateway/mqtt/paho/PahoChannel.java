@@ -11,17 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.gateway.mqtt.paho;
 
-import static java.util.Objects.requireNonNull;
-import static org.eclipse.kapua.client.gateway.mqtt.paho.internal.Listeners.toListener;
-import static org.eclipse.kapua.client.gateway.spi.util.Buffers.toByteArray;
-import static org.eclipse.kapua.client.gateway.spi.util.Strings.nonEmptyText;
-
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -36,6 +32,8 @@ import org.eclipse.kapua.client.gateway.mqtt.MqttMessageHandler;
 import org.eclipse.kapua.client.gateway.mqtt.MqttNamespace;
 import org.eclipse.kapua.client.gateway.mqtt.paho.internal.Listeners;
 import org.eclipse.kapua.client.gateway.spi.util.Buffers;
+import org.eclipse.kapua.client.gateway.spi.util.Strings;
+
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -78,12 +76,12 @@ public class PahoChannel extends AbstractMqttChannel {
         @Override
         public PahoChannel build() throws Exception {
 
-            final URI broker = requireNonNull(broker(), "Broker must be set");
-            final String clientId = nonEmptyText(clientId(), "clientId");
+            final URI broker = Objects.requireNonNull(broker(), "Broker must be set");
+            final String clientId = Strings.nonEmptyText(clientId(), "clientId");
 
-            final MqttClientPersistence persistence = requireNonNull(persistenceProvider.get(), "Persistence provider returned 'null' persistence");
-            final MqttNamespace namespace = requireNonNull(namespace(), "Namespace must be set");
-            final BinaryPayloadCodec codec = requireNonNull(codec(), "Codec must be set");
+            final MqttClientPersistence persistence = Objects.requireNonNull(persistenceProvider.get(), "Persistence provider returned 'null' persistence");
+            final MqttNamespace namespace = Objects.requireNonNull(namespace(), "Namespace must be set");
+            final BinaryPayloadCodec codec = Objects.requireNonNull(codec(), "Codec must be set");
 
             MqttAsyncClient client = new MqttAsyncClient(broker.toString(), clientId, persistence);
             try {
@@ -235,8 +233,8 @@ public class PahoChannel extends AbstractMqttChannel {
 
         final CompletableFuture<?> future = new CompletableFuture<>();
         try {
-            client.publish(topic, toByteArray(payload), 1, false, null,
-                    toListener(
+            client.publish(topic, Buffers.toByteArray(payload), 1, false, null,
+                    Listeners.toListener(
                             () -> future.complete(null),
                             error -> handlePublishError(future, error)));
         } catch (MqttException e) {

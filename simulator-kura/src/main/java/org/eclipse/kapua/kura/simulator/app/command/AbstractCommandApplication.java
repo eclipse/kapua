@@ -11,14 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator.app.command;
 
-import static java.util.Objects.requireNonNull;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.kapua.kura.simulator.app.AbstractDefaultApplication;
 import org.eclipse.kapua.kura.simulator.app.Request;
 import org.eclipse.kapua.kura.simulator.payload.Metrics;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public abstract class AbstractCommandApplication extends AbstractDefaultApplication {
 
@@ -31,8 +30,8 @@ public abstract class AbstractCommandApplication extends AbstractDefaultApplicat
 
         public Result(final String standardOutput, final String standardError, final int returnCode,
                 final boolean timeout) {
-            requireNonNull(standardOutput);
-            requireNonNull(standardError);
+            Objects.requireNonNull(standardOutput);
+            Objects.requireNonNull(standardError);
 
             this.standardOutput = standardOutput;
             this.standardError = standardError;

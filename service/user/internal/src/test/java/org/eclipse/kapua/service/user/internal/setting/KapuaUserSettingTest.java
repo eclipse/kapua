@@ -11,8 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user.internal.setting;
 
-import static org.junit.Assert.assertNotNull;
-
+import org.junit.Assert;
 import org.junit.Test;
 
 public class KapuaUserSettingTest {
@@ -21,7 +20,7 @@ public class KapuaUserSettingTest {
     public void getUserSettingInstance() throws Exception {
         KapuaUserSetting userSettings = KapuaUserSetting.getInstance();
 
-        assertNotNull("User settings not configured.", userSettings);
+        Assert.assertNotNull("User settings not configured.", userSettings);
     }
 
 }

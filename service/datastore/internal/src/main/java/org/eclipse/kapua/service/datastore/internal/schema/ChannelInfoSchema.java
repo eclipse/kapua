@@ -11,22 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.schema;
 
+import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.service.datastore.client.DatamodelMappingException;
+import org.eclipse.kapua.service.datastore.client.SchemaKeys;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_ALL;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_ENABLED;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_FORMAT;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_INDEX;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_TYPE;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_SOURCE;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_DATE;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_KEYWORD;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.VALUE_TRUE;
-
-import org.eclipse.kapua.commons.util.KapuaDateUtils;
 
 /**
  * Channel info schema definition
@@ -77,28 +67,28 @@ public class ChannelInfoSchema {
 
         ObjectNode channelNode = SchemaUtil.getObjectNode();
         ObjectNode sourceChannel = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_ENABLED, sourceEnable) });
-        channelNode.set(KEY_SOURCE, sourceChannel);
+                new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_ENABLED, sourceEnable) });
+        channelNode.set(SchemaKeys.KEY_SOURCE, sourceChannel);
 
         ObjectNode allChannel = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_ENABLED, allEnable) });
-        channelNode.set(KEY_ALL, allChannel);
+                new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_ENABLED, allEnable) });
+        channelNode.set(SchemaKeys.KEY_ALL, allChannel);
 
         ObjectNode propertiesNode = SchemaUtil.getObjectNode();
         ObjectNode channelScopeId = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
+                new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
         propertiesNode.set(CHANNEL_SCOPE_ID, channelScopeId);
         ObjectNode channelClientId = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
+                new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
         propertiesNode.set(CHANNEL_CLIENT_ID, channelClientId);
         ObjectNode channelName = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
+                new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX,SchemaKeys. VALUE_TRUE) });
         propertiesNode.set(CHANNEL_NAME, channelName);
         ObjectNode channelTimestamp = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_DATE), new KeyValueEntry(KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN) });
+                new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN) });
         propertiesNode.set(CHANNEL_TIMESTAMP, channelTimestamp);
         ObjectNode channelMessageId = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
+                new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
         propertiesNode.set(CHANNEL_MESSAGE_ID, channelMessageId);
         channelNode.set("properties", propertiesNode);
         rootNode.set(CHANNEL_TYPE_NAME, channelNode);

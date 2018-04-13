@@ -11,22 +11,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator.app.deploy;
 
-import static org.eclipse.kapua.kura.simulator.util.Documents.create;
+import org.eclipse.kapua.kura.simulator.app.Request;
+import org.eclipse.kapua.kura.simulator.app.annotated.Application;
+import org.eclipse.kapua.kura.simulator.app.annotated.Resource;
+import org.eclipse.kapua.kura.simulator.payload.Metrics;
+import org.eclipse.kapua.kura.simulator.util.Documents;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
-
-import org.eclipse.kapua.kura.simulator.app.Request;
-import org.eclipse.kapua.kura.simulator.app.annotated.Application;
-import org.eclipse.kapua.kura.simulator.app.annotated.Resource;
-import org.eclipse.kapua.kura.simulator.payload.Metrics;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 @Application("DEPLOY-V2")
 public abstract class AbstractDeployApplication {
@@ -157,7 +156,7 @@ public abstract class AbstractDeployApplication {
     }
 
     protected String packagesToXml(final List<DeploymentPackageInformation> packages) throws Exception {
-        return create(doc -> fillPackagesDocument(doc, packages));
+        return Documents.create(doc -> fillPackagesDocument(doc, packages));
     }
 
     protected void fillPackagesDocument(final Document doc, final List<DeploymentPackageInformation> packages) {
@@ -185,7 +184,7 @@ public abstract class AbstractDeployApplication {
     }
 
     protected String bundlesToXml(final List<BundleInformation> bundles) throws Exception {
-        return create(doc -> fillBundlesDocument(doc, bundles));
+        return Documents.create(doc -> fillBundlesDocument(doc, bundles));
     }
 
     protected void fillBundlesDocument(final Document doc, final List<BundleInformation> bundles) {

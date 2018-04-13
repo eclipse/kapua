@@ -12,9 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.locator.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import java.util.List;
 
 import org.eclipse.kapua.KapuaRuntimeException;
@@ -42,10 +39,10 @@ public class GuiceLocatorImplTest {
         try {
             locator.getService(MyService.class);
         } catch (KapuaRuntimeException e) {
-            assertEquals(KapuaLocatorErrorCodes.SERVICE_UNAVAILABLE.name(), e.getCode().name());
+            Assert.assertEquals(KapuaLocatorErrorCodes.SERVICE_UNAVAILABLE.name(), e.getCode().name());
             return;
         }
-        fail();
+        Assert.fail();
     }
 
     @Ignore

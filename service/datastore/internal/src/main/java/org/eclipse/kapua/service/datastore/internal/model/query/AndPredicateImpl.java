@@ -11,26 +11,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model.query;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.eclipse.kapua.service.datastore.client.DatamodelMappingException;
 import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
 import org.eclipse.kapua.service.datastore.model.query.StorablePredicate;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import static org.eclipse.kapua.service.datastore.internal.model.query.PredicateConstants.BOOL_KEY;
-import static org.eclipse.kapua.service.datastore.internal.model.query.PredicateConstants.MUST_KEY;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Implementation of query "and" aggregation
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class AndPredicateImpl implements AndPredicate {
 
@@ -44,7 +39,7 @@ public class AndPredicateImpl implements AndPredicate {
 
     /**
      * Creates an and predicate for the given predicates collection
-     * 
+     *
      * @param predicates
      */
     public AndPredicateImpl(Collection<StorablePredicate> predicates) {
@@ -58,7 +53,7 @@ public class AndPredicateImpl implements AndPredicate {
 
     /**
      * Add the storable predicate to the predicates collection
-     * 
+     *
      * @param predicate
      * @return
      */
@@ -70,7 +65,7 @@ public class AndPredicateImpl implements AndPredicate {
 
     /**
      * Clear the predicates collection
-     * 
+     *
      * @return
      */
     public AndPredicate clearPredicates() {
@@ -86,8 +81,8 @@ public class AndPredicateImpl implements AndPredicate {
         for (StorablePredicate predicate : predicates) {
             conditionsNode.add(predicate.toSerializedMap());
         }
-        termNode.set(MUST_KEY, conditionsNode);
-        rootNode.set(BOOL_KEY, termNode);
+        termNode.set(PredicateConstants.MUST_KEY, conditionsNode);
+        rootNode.set(PredicateConstants.BOOL_KEY, termNode);
         return rootNode;
     }
 

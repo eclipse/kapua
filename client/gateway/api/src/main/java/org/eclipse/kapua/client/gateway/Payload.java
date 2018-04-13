@@ -11,11 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.gateway;
 
-import static java.time.Instant.now;
-import static java.util.Collections.singletonMap;
-import static java.util.Collections.unmodifiableMap;
-
 import java.time.Instant;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -76,7 +73,7 @@ public class Payload {
 
     private Payload(final Instant timestamp, final Map<String, ?> values, final boolean cloneValues) {
         this.timestamp = timestamp;
-        this.values = unmodifiableMap(cloneValues ? new HashMap<>(values) : values);
+        this.values = Collections.unmodifiableMap(cloneValues ? new HashMap<>(values) : values);
     }
 
     public Instant getTimestamp() {
@@ -95,20 +92,20 @@ public class Payload {
     public static Payload of(final String key, final Object value) {
         Objects.requireNonNull(key);
 
-        return new Payload(now(), singletonMap(key, value), false);
+        return new Payload(Instant.now(), Collections.singletonMap(key, value), false);
     }
 
     public static Payload of(final Map<String, ?> values) {
         Objects.requireNonNull(values);
 
-        return new Payload(now(), values, true);
+        return new Payload(Instant.now(), values, true);
     }
 
     public static Payload of(final Instant timestamp, final String key, final Object value) {
         Objects.requireNonNull(timestamp);
         Objects.requireNonNull(key);
 
-        return new Payload(timestamp, singletonMap(key, value), false);
+        return new Payload(timestamp, Collections.singletonMap(key, value), false);
     }
 
     public static Payload of(final Instant timestamp, final Map<String, ?> values) {

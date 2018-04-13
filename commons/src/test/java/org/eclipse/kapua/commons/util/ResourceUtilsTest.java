@@ -11,15 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.util;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.google.common.io.CharStreams;
@@ -32,12 +29,12 @@ public class ResourceUtilsTest {
     @Test
     public void testRead1() throws IOException {
         final URL url = ResourceUtils.getResource("test.properties");
-        assertNotNull(url);
+        Assert.assertNotNull(url);
 
         try (final Reader reader = ResourceUtils.openAsReader(url, StandardCharsets.UTF_8)) {
             final String string = CharStreams.toString(reader);
-            assertNotNull(string);
-            assertFalse(string.isEmpty());
+            Assert.assertNotNull(string);
+            Assert.assertFalse(string.isEmpty());
         }
     }
 
@@ -47,7 +44,7 @@ public class ResourceUtilsTest {
     @Test
     public void testRead2() {
         final URL url = ResourceUtils.getResource("does-not-exist");
-        assertNull(url);
+        Assert.assertNull(url);
     }
 
     /**

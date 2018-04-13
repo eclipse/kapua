@@ -11,9 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.common;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-
 import java.math.BigInteger;
 
 import org.eclipse.kapua.KapuaException;
@@ -41,6 +38,8 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceI
 import org.eclipse.kapua.service.device.registry.shared.SharedTestSteps;
 import org.eclipse.kapua.test.MockedLocator;
 import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
+
+import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 import cucumber.api.Scenario;
@@ -93,12 +92,12 @@ public class DeviceRegistryValidationTestSteps extends AbstractKapuaSteps {
         MockedLocator mockLocator = (MockedLocator) locator;
 
         // Inject mocked Authorization Service method checkPermission
-        AuthorizationService mockedAuthorization = mock(AuthorizationService.class);
-        Mockito.doNothing().when(mockedAuthorization).checkPermission(any(Permission.class));
+        AuthorizationService mockedAuthorization = Mockito.mock(AuthorizationService.class);
+        Mockito.doNothing().when(mockedAuthorization).checkPermission(Matchers.any(Permission.class));
         mockLocator.setMockedService(AuthorizationService.class, mockedAuthorization);
 
         // Inject mocked Permission Factory
-        PermissionFactory mockedPermissionFactory = mock(PermissionFactory.class);
+        PermissionFactory mockedPermissionFactory = Mockito.mock(PermissionFactory.class);
         mockLocator.setMockedFactory(PermissionFactory.class, mockedPermissionFactory);
 
         // Inject commons objects

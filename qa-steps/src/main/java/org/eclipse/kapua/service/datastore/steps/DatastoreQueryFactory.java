@@ -30,8 +30,6 @@ import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.eclipse.kapua.service.datastore.model.query.SortField.descending;
-
 /**
  * Factory methods for creating base queries for Data store services.
  * It is used in steps of Datastore Gherkin scenarios.
@@ -59,7 +57,7 @@ public class DatastoreQueryFactory {
         query.setLimit(limit);
         query.setOffset(0);
         List<SortField> order = new ArrayList<>();
-        order.add(descending(MessageSchema.MESSAGE_TIMESTAMP));
+        order.add(SortField.descending(MessageSchema.MESSAGE_TIMESTAMP));
         query.setSortFields(order);
 
         return query;
@@ -102,7 +100,7 @@ public class DatastoreQueryFactory {
         query.setLimit(limit);
         query.setOffset(0);
         List<SortField> order = new ArrayList<>();
-        order.add(descending(ChannelInfoSchema.CHANNEL_TIMESTAMP));
+        order.add(SortField.descending(ChannelInfoSchema.CHANNEL_TIMESTAMP));
         query.setSortFields(order);
 
         return query;
@@ -125,7 +123,7 @@ public class DatastoreQueryFactory {
         query.setLimit(limit);
         query.setOffset(0);
         List<SortField> order = new ArrayList<>();
-        order.add(descending(MetricInfoSchema.METRIC_MTR_TIMESTAMP));
+        order.add(SortField.descending(MetricInfoSchema.METRIC_MTR_TIMESTAMP));
         query.setSortFields(order);
 
         return query;
@@ -148,7 +146,7 @@ public class DatastoreQueryFactory {
         query.setLimit(limit);
         query.setOffset(0);
         List<SortField> order = new ArrayList<>();
-        order.add(descending(ClientInfoSchema.CLIENT_TIMESTAMP));
+        order.add(SortField.descending(ClientInfoSchema.CLIENT_TIMESTAMP));
         query.setSortFields(order);
 
         return query;

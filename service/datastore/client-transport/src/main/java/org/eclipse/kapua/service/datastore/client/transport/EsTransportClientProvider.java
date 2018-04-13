@@ -12,13 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.client.transport;
 
-import static java.util.stream.Collectors.toList;
-
 import java.net.InetSocketAddress;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.eclipse.kapua.commons.setting.AbstractBaseKapuaSetting;
@@ -262,7 +261,7 @@ public class EsTransportClientProvider implements ClientProvider<Client> {
     }
 
     static List<InetSocketAddress> parseAndAdd(Stream<String> stream) {
-        return stream.map(EsTransportClientProvider::parseAddress).filter(Objects::nonNull).collect(toList());
+        return stream.map(EsTransportClientProvider::parseAddress).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     static InetSocketAddress parseAddress(String node) {

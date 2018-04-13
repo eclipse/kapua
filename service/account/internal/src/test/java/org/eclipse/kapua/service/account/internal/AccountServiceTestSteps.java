@@ -12,15 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import cucumber.api.Scenario;
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalNullArgumentException;
@@ -51,21 +52,16 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.test.MockedLocator;
 import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
+import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-
-import cucumber.api.Scenario;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
-import cucumber.runtime.java.guice.ScenarioScoped;
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * Implementation of Gherkin steps used in AccountService.feature scenarios.
@@ -132,15 +128,15 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
             protected void configure() {
 
                 // Inject mocked Authorization Service method checkPermission
-                AuthorizationService mockedAuthorization = mock(AuthorizationService.class);
+                AuthorizationService mockedAuthorization = Mockito.mock(AuthorizationService.class);
                 try {
-                    Mockito.doNothing().when(mockedAuthorization).checkPermission(any(org.eclipse.kapua.service.authorization.permission.Permission.class));
+                    Mockito.doNothing().when(mockedAuthorization).checkPermission(Matchers.any(org.eclipse.kapua.service.authorization.permission.Permission.class));
                 } catch (KapuaException e) {
                     // skip
                 }
                 bind(AuthorizationService.class).toInstance(mockedAuthorization);
                 // Inject mocked Permission Factory
-                PermissionFactory mockedPermissionFactory = mock(PermissionFactory.class);
+                PermissionFactory mockedPermissionFactory = Mockito.mock(PermissionFactory.class);
                 bind(PermissionFactory.class).toInstance(mockedPermissionFactory);
                 // Set KapuaMetatypeFactory for Metatype configuration
                 KapuaMetatypeFactory metaFactory = new KapuaMetatypeFactoryImpl();

@@ -11,15 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator.topic;
 
-import static java.util.Collections.emptyMap;
-import static org.eclipse.kapua.kura.simulator.topic.Topic.Segment.account;
-import static org.eclipse.kapua.kura.simulator.topic.Topic.Segment.applicationId;
-import static org.eclipse.kapua.kura.simulator.topic.Topic.Segment.clientId;
-import static org.eclipse.kapua.kura.simulator.topic.Topic.Segment.control;
-import static org.eclipse.kapua.kura.simulator.topic.Topic.Segment.plain;
-import static org.eclipse.kapua.kura.simulator.topic.Topic.Segment.raw;
-import static org.eclipse.kapua.kura.simulator.topic.Topic.Segment.replace;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -226,18 +217,18 @@ public final class Topic {
     }
 
     public static Topic reply(final String requesterClientId, final String requestId) {
-        return new Topic(control(), account(), plain(requesterClientId), replace("application-id"), plain("REPLY"),
-                plain(requestId));
+        return new Topic(Segment.control(), Segment.account(), Segment.plain(requesterClientId), Segment.replace("application-id"), Segment.plain("REPLY"),
+                Segment.plain(requestId));
     }
 
     public static Topic notify(final String requesterClientId, final String... resource) {
         final List<Segment> s = new LinkedList<>();
-        s.add(control());
-        s.add(account());
-        s.add(plain(requesterClientId));
-        s.add(replace("application-id"));
-        s.add(plain("NOTIFY"));
-        s.addAll(plain(resource));
+        s.add(Segment.control());
+        s.add(Segment.account());
+        s.add(Segment.plain(requesterClientId));
+        s.add(Segment.replace("application-id"));
+        s.add(Segment.plain("NOTIFY"));
+        s.addAll(Segment.plain(resource));
         return new Topic(s);
     }
 
@@ -252,11 +243,11 @@ public final class Topic {
      * @return a new topic
      */
     public static Topic application(final String application) {
-        return new Topic(control(), account(), clientId(), plain(application));
+        return new Topic(Segment.control(), Segment.account(), Segment.clientId(), Segment.plain(application));
     }
 
     public static Topic device(final String localTopic) {
-        return new Topic(control(), account(), clientId(), raw(localTopic));
+        return new Topic(Segment.control(), Segment.account(), Segment.clientId(), Segment.raw(localTopic));
     }
 
     public static Topic data(final String dataTopic) {
@@ -269,7 +260,7 @@ public final class Topic {
         if (dataTopic.startsWith("/")) {
             throw new IllegalArgumentException("Data topic must not start with /");
         }
-        return new Topic(account(), clientId(), applicationId(), raw(dataTopic));
+        return new Topic(Segment.account(), Segment.clientId(), Segment.applicationId(), Segment.raw(dataTopic));
     }
 
     public Topic append(final Segment segment) {
@@ -299,7 +290,7 @@ public final class Topic {
     }
 
     public Topic localize(final Topic otherTopic) {
-        return localize(otherTopic, emptyMap());
+        return localize(otherTopic, Collections.emptyMap());
     }
 
     public Topic localize(final Topic otherTopic, final Map<String, String> topicContext) {

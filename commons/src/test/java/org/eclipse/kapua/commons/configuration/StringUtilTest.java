@@ -11,9 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.eclipse.kapua.commons.configuration.metatype.Password;
+
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 public class StringUtilTest {
@@ -27,7 +27,7 @@ public class StringUtilTest {
         String passwordsString = StringUtil.valueToString(passwords);
 
         // Then
-        assertThat(passwordsString).isEqualTo("foo");
+        Assertions.assertThat(passwordsString).isEqualTo("foo");
     }
 
 }

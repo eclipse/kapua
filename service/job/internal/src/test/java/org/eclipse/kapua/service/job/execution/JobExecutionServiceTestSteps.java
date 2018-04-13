@@ -22,6 +22,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
@@ -39,6 +40,7 @@ import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.test.MockedLocator;
 import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 import org.joda.time.DateTime;
+import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,10 +48,6 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import java.math.BigInteger;
 import java.security.acl.Permission;
-
-import static org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl.attributeIsEqualTo;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
 
 // ****************************************************************************************
 // * Implementation of Gherkin steps used in JobExecutionService.feature scenarios.       *
@@ -112,15 +110,15 @@ public class JobExecutionServiceTestSteps extends AbstractKapuaSteps {
         MockedLocator mockLocator = (MockedLocator) locator;
 
         // Inject mocked Authorization Service method checkPermission
-        AuthorizationService mockedAuthorization = mock(AuthorizationService.class);
+        AuthorizationService mockedAuthorization = Mockito.mock(AuthorizationService.class);
         // TODO: Check why does this line needs an explicit cast!
         Mockito.doNothing().when(mockedAuthorization).checkPermission(
-                (org.eclipse.kapua.service.authorization.permission.Permission) any(Permission.class));
+                (org.eclipse.kapua.service.authorization.permission.Permission) Matchers.any(Permission.class));
         mockLocator.setMockedService(org.eclipse.kapua.service.authorization.AuthorizationService.class,
                 mockedAuthorization);
 
         // Inject mocked Permission Factory
-        PermissionFactory mockedPermissionFactory = mock(PermissionFactory.class);
+        PermissionFactory mockedPermissionFactory = Mockito.mock(PermissionFactory.class);
         mockLocator.setMockedFactory(org.eclipse.kapua.service.authorization.permission.PermissionFactory.class,
                 mockedPermissionFactory);
 
@@ -233,7 +231,7 @@ public class JobExecutionServiceTestSteps extends AbstractKapuaSteps {
             throws Exception {
 
         JobExecutionQuery tmpQuery = executionFactory.newQuery(commonData.currentScopeId);
-        tmpQuery.setPredicate(attributeIsEqualTo("jobId", jobData.job.getId()));
+        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo("jobId", jobData.job.getId()));
 
         try {
             commonData.primeException();
@@ -248,7 +246,7 @@ public class JobExecutionServiceTestSteps extends AbstractKapuaSteps {
             throws Exception {
 
         JobExecutionQuery tmpQuery = executionFactory.newQuery(commonData.currentScopeId);
-        tmpQuery.setPredicate(attributeIsEqualTo("jobId", jobData.job.getId()));
+        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo("jobId", jobData.job.getId()));
 
         try {
             commonData.primeException();

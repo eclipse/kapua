@@ -11,13 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator.simulation;
 
-import static java.lang.String.format;
-import static java.util.Objects.requireNonNull;
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class Configuration {
 
@@ -66,7 +64,7 @@ public class Configuration {
         }
 
         public void setMetrics(final Map<String, MetricsMapping> metrics) {
-            requireNonNull(metrics);
+            Objects.requireNonNull(metrics);
             this.metrics = metrics;
         }
 
@@ -77,20 +75,20 @@ public class Configuration {
         private void validate(final Map<String, Map<String, Object>> generators, final String id, final List<Exception> violations) {
 
             if (this.bodyGenerator != null && !this.bodyGenerator.isEmpty()) {
-                validateGeneratorReference(generators, format("Topic %s/body", id), this.bodyGenerator, violations);
+                validateGeneratorReference(generators, String.format("Topic %s/body", id), this.bodyGenerator, violations);
             }
 
             if (this.positionGenerator != null && !this.positionGenerator.isEmpty()) {
-                validateGeneratorReference(generators, format("Topic %s/position", id), this.positionGenerator, violations);
+                validateGeneratorReference(generators, String.format("Topic %s/position", id), this.positionGenerator, violations);
             }
 
             for (final Map.Entry<String, MetricsMapping> entry : this.metrics.entrySet()) {
                 final String generator = entry.getValue().getGenerator();
                 if (generator != null && !generator.isEmpty()) {
-                    validateGeneratorReference(generators, format("Topic %s/Metric %s", id, entry.getKey()), generator, violations);
+                    validateGeneratorReference(generators, String.format("Topic %s/Metric %s", id, entry.getKey()), generator, violations);
                 } else if (generators.size() != 1) {
                     violations.add(new IllegalStateException(
-                            format("Topic %s/Metric %s uses 'default' generator which requires exactly one generation, but there are: %s", id, entry.getKey(), generators.size())));
+                            String.format("Topic %s/Metric %s uses 'default' generator which requires exactly one generation, but there are: %s", id, entry.getKey(), generators.size())));
                 }
             }
 
@@ -98,7 +96,7 @@ public class Configuration {
 
         private void validateGeneratorReference(final Map<String, Map<String, Object>> generators, final String location, final String generator, final List<Exception> violations) {
             if (!generators.containsKey(generator)) {
-                violations.add(new IllegalStateException(format(" %s reference non-existing generator %s", location, generator)));
+                violations.add(new IllegalStateException(String.format(" %s reference non-existing generator %s", location, generator)));
             }
         }
 
@@ -144,7 +142,7 @@ public class Configuration {
         private Map<String, Map<String, Object>> generators = new HashMap<>();
 
         public void setScheduler(final Scheduler scheduler) {
-            requireNonNull(scheduler);
+            Objects.requireNonNull(scheduler);
             this.scheduler = scheduler;
         }
 
@@ -153,7 +151,7 @@ public class Configuration {
         }
 
         public void setGenerators(final Map<String, Map<String, Object>> generators) {
-            requireNonNull(generators);
+            Objects.requireNonNull(generators);
             this.generators = generators;
         }
 
@@ -162,7 +160,7 @@ public class Configuration {
         }
 
         public void setTopics(final Map<String, Topic> topics) {
-            requireNonNull(topics);
+            Objects.requireNonNull(topics);
             this.topics = topics;
         }
 
@@ -191,7 +189,7 @@ public class Configuration {
     private Map<String, Application> applications = new HashMap<>();
 
     public void setApplications(final Map<String, Application> applications) {
-        requireNonNull(applications);
+        Objects.requireNonNull(applications);
         this.applications = applications;
     }
 

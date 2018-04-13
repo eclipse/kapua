@@ -11,9 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.connection.steps;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
@@ -21,6 +18,8 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
+import org.junit.Assert;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
@@ -56,8 +55,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-
-import static org.junit.Assert.assertNotNull;
 
 @ScenarioScoped
 public class ConnectionSteps extends BaseQATests {
@@ -232,8 +229,8 @@ public class ConnectionSteps extends BaseQATests {
             DeviceConnectionListResult tmpConnLst = new DeviceConnectionListResultImpl();
 
             tmpAcc = accountService.findByName(account);
-            assertNotNull(tmpAcc);
-            assertNotNull(tmpAcc.getId());
+            Assert.assertNotNull(tmpAcc);
+            Assert.assertNotNull(tmpAcc.getId());
 
             tmpConn = deviceConnectionService.findByClientId(tmpAcc.getId(), clientId);
             Map<String, Object> props = deviceRegistryService.getConfigValues(tmpAcc.getId());
@@ -251,7 +248,7 @@ public class ConnectionSteps extends BaseQATests {
     public void countNumberOfConnections(int cnt) {
 
         DeviceConnectionListResult tmpConnLst = (DeviceConnectionListResult) stepData.get("DeviceConnectionList");
-        assertEquals(cnt, tmpConnLst.getSize());
+        Assert.assertEquals(cnt, tmpConnLst.getSize());
     }
 
     @Then("^The connection status is \"(.+)\"$")
@@ -260,11 +257,11 @@ public class ConnectionSteps extends BaseQATests {
         DeviceConnectionStatus tmpStat = parseConnectionStatusString(status);
         DeviceConnectionListResult tmpConnLst = (DeviceConnectionListResult) stepData.get("DeviceConnectionList");
 
-        assertNotNull(tmpConnLst);
-        assertNotEquals(0, tmpConnLst.getSize());
+        Assert.assertNotNull(tmpConnLst);
+        Assert.assertNotEquals(0, tmpConnLst.getSize());
 
         DeviceConnection tmpConnection = tmpConnLst.getFirstItem();
-        assertEquals(tmpStat, tmpConnection.getStatus());
+        Assert.assertEquals(tmpStat, tmpConnection.getStatus());
     }
 
     @Then("^The connection user is \"(.+)\"$")
@@ -274,11 +271,11 @@ public class ConnectionSteps extends BaseQATests {
             DeviceConnectionListResult tmpConnLst = (DeviceConnectionListResult) stepData.get("DeviceConnectionList");
             User tmpUsr = userService.findByName(user);
 
-            assertNotNull(tmpConnLst);
-            assertNotEquals(0, tmpConnLst.getSize());
+            Assert.assertNotNull(tmpConnLst);
+            Assert.assertNotEquals(0, tmpConnLst.getSize());
 
             DeviceConnection tmpConnection = tmpConnLst.getFirstItem();
-            assertEquals(tmpUsr.getId(), tmpConnection.getUserId());
+            Assert.assertEquals(tmpUsr.getId(), tmpConnection.getUserId());
         });
     }
 
@@ -290,8 +287,8 @@ public class ConnectionSteps extends BaseQATests {
             DeviceConnection tmpConn = deviceConnectionService.findByClientId(tmpAcc.getId(), device);
             DeviceConnectionStatus tmpStat = parseConnectionStatusString(status);
 
-            assertNotNull(tmpStat);
-            assertNotNull(tmpConn);
+            Assert.assertNotNull(tmpStat);
+            Assert.assertNotNull(tmpConn);
 
             tmpConn.setStatus(tmpStat);
             deviceConnectionService.update(tmpConn);
@@ -303,12 +300,12 @@ public class ConnectionSteps extends BaseQATests {
 
         KapuaSecurityUtils.doPrivileged(() -> {
             ConnectionUserCouplingMode tmpMode = parseConnectionCouplingString(mode);
-            assertNotNull(tmpMode);
+            Assert.assertNotNull(tmpMode);
 
             Account tmpAcc = accountService.findByName(account);
             DeviceConnection tmpConn = deviceConnectionService.findByClientId(tmpAcc.getId(), device);
 
-            assertNotNull(tmpConn);
+            Assert.assertNotNull(tmpConn);
 
             tmpConn.setUserCouplingMode(tmpMode);
             deviceConnectionService.update(tmpConn);
@@ -322,7 +319,7 @@ public class ConnectionSteps extends BaseQATests {
             Account tmpAcc = accountService.findByName(account);
             DeviceConnection tmpConn = deviceConnectionService.findByClientId(tmpAcc.getId(), device);
 
-            assertNotNull(tmpConn);
+            Assert.assertNotNull(tmpConn);
 
             tmpConn.setAllowUserChange(parseBooleanFromString(flag));
             deviceConnectionService.update(tmpConn);
@@ -337,7 +334,7 @@ public class ConnectionSteps extends BaseQATests {
             DeviceConnection tmpConn = deviceConnectionService.findByClientId(tmpAcc.getId(), device);
             KapuaId userId;
 
-            assertNotNull(tmpConn);
+            Assert.assertNotNull(tmpConn);
 
             if (resUser.isEmpty() || resUser.trim().toLowerCase().contains("null")) {
                 userId = null;
@@ -366,9 +363,9 @@ public class ConnectionSteps extends BaseQATests {
             DeviceConnection connection = deviceConnectionService.findByClientId(account.getId(), device);
             User user = userService.findByName(name);
 
-            assertNotNull(connection);
-            assertNotNull(user);
-            assertEquals(user.getId(), connection.getUserId());
+            Assert.assertNotNull(connection);
+            Assert.assertNotNull(user);
+            Assert.assertEquals(user.getId(), connection.getUserId());
         });
     }
 

@@ -12,6 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -46,14 +50,9 @@ import org.eclipse.kapua.service.datastore.model.query.SortField;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
 import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import static org.eclipse.kapua.service.datastore.model.query.SortField.descending;
 
 /**
  * Channel info registry implementation
@@ -190,7 +189,7 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
      */
     private void updateLastPublishedFields(ChannelInfo channelInfo) throws KapuaException {
         List<SortField> sort = new ArrayList<>();
-        sort.add(descending(MessageSchema.MESSAGE_TIMESTAMP));
+        sort.add(SortField.descending(MessageSchema.MESSAGE_TIMESTAMP));
 
         MessageQuery messageQuery = new MessageQueryImpl(channelInfo.getScopeId());
         messageQuery.setAskTotalCount(true);

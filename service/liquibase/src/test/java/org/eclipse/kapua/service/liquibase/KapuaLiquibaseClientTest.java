@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.liquibase;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -22,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,7 +56,7 @@ public class KapuaLiquibaseClientTest {
         while (sqlResults.next()) {
             tables.add(sqlResults.getString(1));
         }
-        assertThat(tables).contains("tst_liquibase");
+        Assertions.assertThat(tables).contains("tst_liquibase");
     }
 
     @Test
@@ -76,7 +75,7 @@ public class KapuaLiquibaseClientTest {
         while (sqlResults.next()) {
             tables.add(sqlResults.getString(1));
         }
-        assertThat(tables).contains("tst_liquibase");
+        Assertions.assertThat(tables).contains("tst_liquibase");
     }
 
     @Test
@@ -91,7 +90,7 @@ public class KapuaLiquibaseClientTest {
 
         // Then
         ResultSet sqlResults = connection.prepareStatement("SHOW TABLES").executeQuery();
-        assertThat(sqlResults.next()).isFalse();
+        Assertions.assertThat(sqlResults.next()).isFalse();
     }
 
     @Test(expected = Exception.class)
@@ -104,7 +103,7 @@ public class KapuaLiquibaseClientTest {
             new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "", "", Optional.of("foo")).update();
         } catch (Exception e) {
             // Then
-            assertThat(e).hasMessageContaining("Schema \"FOO\" not found");
+            Assertions.assertThat(e).hasMessageContaining("Schema \"FOO\" not found");
             throw e;
         }
     }

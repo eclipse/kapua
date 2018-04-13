@@ -46,8 +46,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
-import static org.eclipse.kapua.commons.util.ArgumentValidator.notEmptyOrNull;
-
 /**
  * {@link UserService} implementation.
  */
@@ -227,7 +225,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     public User findByExternalId(String externalId) throws KapuaException {
         //
         // Validation of the fields
-        notEmptyOrNull(externalId, "externalId");
+        ArgumentValidator.notEmptyOrNull(externalId, "externalId");
 
         //
         // Do the find

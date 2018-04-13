@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal;
 
-import static org.eclipse.kapua.message.internal.KapuaMessageUtil.populatePosition;
-
 import java.io.StringWriter;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -58,7 +56,7 @@ public class KapuaPositionTest extends Assert {
     @Test
     public void positionGetterSetters() throws Exception {
         KapuaPosition position = new KapuaPositionImpl();
-        populatePosition(position, referenceDate);
+        KapuaMessageUtil.populatePosition(position, referenceDate);
 
         assertEquals(Double.valueOf("45.1111"), position.getLongitude());
         assertEquals(Double.valueOf("15.3333"), position.getLatitude());
@@ -74,7 +72,7 @@ public class KapuaPositionTest extends Assert {
     @Test
     public void displayString() throws Exception {
         KapuaPosition position = new KapuaPositionImpl();
-        populatePosition(position, referenceDate);
+        KapuaMessageUtil.populatePosition(position, referenceDate);
 
         String displayStr = position.toDisplayString();
         assertTrue("\nExpected: " + POSITION_DISPLAY_STR +
@@ -93,7 +91,7 @@ public class KapuaPositionTest extends Assert {
     @Test
     public void toStringValue() throws Exception {
         KapuaPosition position = new KapuaPositionImpl();
-        populatePosition(position, referenceDate);
+        KapuaMessageUtil.populatePosition(position, referenceDate);
 
         String toStr = position.toString();
         assertTrue("\nExpected: " + DISPLAY_STR +
@@ -104,7 +102,7 @@ public class KapuaPositionTest extends Assert {
     @Test
     public void marshallPosition() throws Exception {
         KapuaPosition position = new KapuaPositionImpl();
-        populatePosition(position, referenceDate);
+        KapuaMessageUtil.populatePosition(position, referenceDate);
 
         StringWriter strWriter = new StringWriter();
         XmlUtil.marshal(position, strWriter);

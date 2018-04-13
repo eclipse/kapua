@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.standalone;
 
+import com.google.common.base.MoreObjects;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authz.AuthorizationException;
@@ -21,10 +22,12 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
 import org.eclipse.kapua.commons.model.id.KapuaIdFactoryImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
@@ -43,14 +46,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
-import static com.google.common.base.MoreObjects.firstNonNull;
-import static org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers.resolveJdbcUrl;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_PASSWORD;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_SCHEMA;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_SCHEMA_ENV;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_USERNAME;
-
 public class StandaloneDeviceRegistryFactory {
 
     public DeviceRegistryService create() {
@@ -61,12 +56,12 @@ public class StandaloneDeviceRegistryFactory {
         locator.setMockedFactory(KapuaMetatypeFactory.class, new KapuaMetatypeFactoryImpl());
         locator.setMockedFactory(KapuaIdFactory.class, new KapuaIdFactoryImpl());
 
-        System.setProperty(DB_JDBC_CONNECTION_URL_RESOLVER.key(), "H2");
+        System.setProperty(SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER.key(), "H2");
         SystemSetting config = SystemSetting.getInstance();
-        String dbUsername = config.getString(DB_USERNAME);
-        String dbPassword = config.getString(DB_PASSWORD);
-        String schema = firstNonNull(config.getString(DB_SCHEMA_ENV), config.getString(DB_SCHEMA));
-        new KapuaLiquibaseClient(resolveJdbcUrl(), dbUsername, dbPassword, Optional.of(schema)).update();
+        String dbUsername = config.getString(SystemSettingKey.DB_USERNAME);
+        String dbPassword = config.getString(SystemSettingKey.DB_PASSWORD);
+        String schema = MoreObjects.firstNonNull(config.getString(SystemSettingKey.DB_SCHEMA_ENV), config.getString(SystemSettingKey.DB_SCHEMA));
+        new KapuaLiquibaseClient(JdbcConnectionUrlResolvers.resolveJdbcUrl(), dbUsername, dbPassword, Optional.of(schema)).update();
 
         locator.setMockedService(AuthorizationService.class, new AuthorizationServiceImpl());
         locator.setMockedFactory(PermissionFactory.class, new PermissionFactoryImpl());

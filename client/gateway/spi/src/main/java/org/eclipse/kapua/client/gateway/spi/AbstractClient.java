@@ -11,8 +11,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.gateway.spi;
 
-import static java.util.concurrent.CompletableFuture.completedFuture;
-import static org.eclipse.kapua.client.gateway.spi.util.Futures.completedExceptionally;
+import org.eclipse.kapua.client.gateway.Application;
+import org.eclipse.kapua.client.gateway.Client;
+import org.eclipse.kapua.client.gateway.ErrorHandler;
+import org.eclipse.kapua.client.gateway.MessageHandler;
+import org.eclipse.kapua.client.gateway.Payload;
+import org.eclipse.kapua.client.gateway.Topic;
+import org.eclipse.kapua.client.gateway.Transport;
+import org.eclipse.kapua.client.gateway.spi.util.Futures;
+import org.eclipse.kapua.client.gateway.spi.util.TransportAsync;
+import org.eclipse.kapua.client.gateway.spi.util.TransportProxy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -21,21 +31,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
-
-import org.eclipse.kapua.client.gateway.Application;
-import org.eclipse.kapua.client.gateway.Client;
-import org.eclipse.kapua.client.gateway.ErrorHandler;
-import org.eclipse.kapua.client.gateway.MessageHandler;
-import org.eclipse.kapua.client.gateway.Payload;
-import org.eclipse.kapua.client.gateway.Topic;
-import org.eclipse.kapua.client.gateway.Transport;
-import org.eclipse.kapua.client.gateway.spi.util.TransportAsync;
-import org.eclipse.kapua.client.gateway.spi.util.TransportProxy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class AbstractClient implements Client {
 
@@ -234,13 +233,13 @@ public abstract class AbstractClient implements Client {
     }
 
     protected synchronized CompletionStage<?> internalSubscribe(final ContextImpl context, final String applicationId, final Topic topic, final MessageHandler messageHandler,
-            final ErrorHandler<? extends Throwable> errorHandler) {
+                                                                final ErrorHandler<? extends Throwable> errorHandler) {
         if (applications.get(applicationId) != context) {
-            return completedExceptionally(new IllegalStateException(String.format("Application '%s' is already closed", applicationId)));
+            return Futures.completedExceptionally(new IllegalStateException(String.format("Application '%s' is already closed", applicationId)));
         }
 
         if (!context.getSubscriptions().add(topic)) {
-            return completedFuture(null);
+            return CompletableFuture.completedFuture(null);
         }
 
         return handleSubscribe(applicationId, topic, messageHandler, errorHandler);
@@ -248,7 +247,7 @@ public abstract class AbstractClient implements Client {
 
     protected synchronized CompletionStage<?> internalPublish(final Context context, final String applicationId, final Topic topic, final Payload payload) {
         if (applications.get(applicationId) != context) {
-            return completedExceptionally(new IllegalStateException(String.format("Application '%s' is already closed", applicationId)));
+            return Futures.completedExceptionally(new IllegalStateException(String.format("Application '%s' is already closed", applicationId)));
         }
 
         return handlePublish(applicationId, topic, payload);

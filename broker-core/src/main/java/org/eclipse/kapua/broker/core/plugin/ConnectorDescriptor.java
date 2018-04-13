@@ -12,11 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin;
 
-import static java.util.Objects.requireNonNull;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.message.KapuaMessage;
@@ -81,9 +80,9 @@ public class ConnectorDescriptor implements Serializable {
      *            Kapua level messages implementation classes
      */
     public ConnectorDescriptor(String transportProtocol, Map<MessageType, Class<? extends DeviceMessage<?, ?>>> deviceClass, Map<MessageType, Class<? extends KapuaMessage<?, ?>>> kapuaClass) {
-        requireNonNull(deviceClass);
-        requireNonNull(kapuaClass);
-        requireNonNull(transportProtocol);
+        Objects.requireNonNull(deviceClass);
+        Objects.requireNonNull(kapuaClass);
+        Objects.requireNonNull(transportProtocol);
 
         this.deviceClass = new HashMap<>(deviceClass);
         this.kapuaClass = new HashMap<>(kapuaClass);

@@ -11,8 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator;
 
-import static java.util.Objects.requireNonNull;
-
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import org.eclipse.kapua.kura.simulator.payload.Message;
@@ -121,7 +120,7 @@ public class MqttAsyncTransport extends AbstractMqttTransport implements AutoClo
 
     @Override
     public void subscribe(final Topic topic, final Consumer<Message> consumer) {
-        requireNonNull(consumer);
+        Objects.requireNonNull(consumer);
 
         try {
             this.client.subscribe(topic.render(this.topicContext), 0, null, null, new IMqttMessageListener() {

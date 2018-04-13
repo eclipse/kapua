@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.transport.utils;
 
-import static org.apache.commons.lang3.RandomUtils.nextLong;
+import org.apache.commons.lang3.RandomUtils;
 
 /**
  * Utility class that generates random IDs for the transport layer.
@@ -75,7 +75,7 @@ public class ClientIdGenerator {
      */
     public String next(String prefix) {
         long timestamp = System.currentTimeMillis();
-        long randomNumber = nextLong(0, Long.MAX_VALUE);
+        long randomNumber = RandomUtils.nextLong(0, Long.MAX_VALUE);
 
         return String.format(GENERATED_ID_STRING_FORMAT,
                 prefix,

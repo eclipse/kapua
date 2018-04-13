@@ -12,8 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.setting;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 public class AbstractKapuaSettingTest {
@@ -39,7 +38,7 @@ public class AbstractKapuaSettingTest {
         String path = new TestSetting().property("PATH");
 
         // Then
-        assertThat(path).isNotEmpty();
+        Assertions.assertThat(path).isNotEmpty();
     }
 
     @Test
@@ -51,7 +50,7 @@ public class AbstractKapuaSettingTest {
         String path = new TestSetting().property("foo.bar.baz");
 
         // Then
-        assertThat(path).isEqualTo("qux");
+        Assertions.assertThat(path).isEqualTo("qux");
     }
 
     static class TestSetting extends AbstractKapuaSetting<TestSettingKey> {

@@ -11,10 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.gateway.kura;
 
-import static java.util.Collections.singletonMap;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.nio.ByteBuffer;
 import java.util.Collections;
 
@@ -41,7 +37,7 @@ public class PayloadCodecTest {
     @Test
     public void testEncodeEmpty1() throws Exception {
         final ByteBuffer result = codec.encode(Payload.of(Collections.emptyMap()), null);
-        assertNotNull(result);
+        Assert.assertNotNull(result);
     }
 
     @Test(expected = NullPointerException.class)
@@ -56,8 +52,8 @@ public class PayloadCodecTest {
 
         final Payload payload = codec.decode(buffer);
 
-        assertNotNull(payload);
-        assertTrue(payload.getValues().isEmpty());
+        Assert.assertNotNull(payload);
+        Assert.assertTrue(payload.getValues().isEmpty());
     }
 
     @Test
@@ -84,10 +80,10 @@ public class PayloadCodecTest {
         buffer2.position(20);
         final Payload payload2 = codec.decode(buffer2);
 
-        assertNotNull(payload1);
-        assertNotNull(payload2);
+        Assert.assertNotNull(payload1);
+        Assert.assertNotNull(payload2);
 
-        Assert.assertEquals(singletonMap("foo", 1), payload1.getValues());
-        Assert.assertEquals(singletonMap("bar", 2), payload2.getValues());
+        Assert.assertEquals(Collections.singletonMap("foo", 1), payload1.getValues());
+        Assert.assertEquals(Collections.singletonMap("bar", 2), payload2.getValues());
     }
 }

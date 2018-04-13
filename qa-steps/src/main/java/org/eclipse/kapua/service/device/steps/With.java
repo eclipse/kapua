@@ -11,9 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.steps;
 
-import static org.eclipse.kapua.locator.KapuaLocator.getInstance;
-
 import org.eclipse.kapua.commons.util.ThrowingRunnable;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.device.registry.Device;
@@ -28,7 +27,7 @@ public final class With {
     }
 
     public static void withLogin(final LoginCredentials credentials, final ThrowingRunnable runnable) throws Exception {
-        final AuthenticationService service = getInstance().getService(AuthenticationService.class);
+        final AuthenticationService service = KapuaLocator.getInstance().getService(AuthenticationService.class);
 
         try {
             service.login(credentials);
@@ -39,7 +38,7 @@ public final class With {
     }
 
     public static void withUserAccount(final String accountName, final ThrowingConsumer<User> consumer) throws Exception {
-        final UserService userService = getInstance().getService(UserService.class);
+        final UserService userService = KapuaLocator.getInstance().getService(UserService.class);
         final User account = userService.findByName(accountName);
 
         Assert.assertNotNull(String.format("Account %s should be found", accountName), account);
@@ -48,7 +47,7 @@ public final class With {
     }
 
     public static void withDevice(final User account, final String clientId, final ThrowingConsumer<Device> consumer) throws Exception {
-        DeviceRegistryService service = getInstance().getService(DeviceRegistryService.class);
+        DeviceRegistryService service = KapuaLocator.getInstance().getService(DeviceRegistryService.class);
         Device device = service.findByClientId(account.getId(), clientId);
 
         Assert.assertNotNull("Device should not be null", device);

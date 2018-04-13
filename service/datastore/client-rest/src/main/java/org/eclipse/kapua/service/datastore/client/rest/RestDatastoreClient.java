@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.client.rest;
 
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_SOURCE;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -445,7 +443,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
         if (resultsNode != null && resultsNode.size() > 0) {
             for (JsonNode result : resultsNode) {
                 @SuppressWarnings("unchecked")
-                Map<String, Object> object = MAPPER.convertValue(result.get(KEY_SOURCE), Map.class);
+                Map<String, Object> object = MAPPER.convertValue(result.get(SchemaKeys.KEY_SOURCE), Map.class);
                 String id = result.get(KEY_DOC_ID).asText();
                 String index = result.get(KEY_DOC_INDEX).asText();
                 String type = result.get(KEY_DOC_TYPE).asText();

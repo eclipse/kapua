@@ -20,6 +20,7 @@ import liquibase.exception.LiquibaseException;
 import liquibase.resource.FileSystemResourceAccessor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 import org.slf4j.Logger;
@@ -38,9 +39,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
-
-import static java.lang.Boolean.parseBoolean;
-import static org.apache.commons.lang3.SystemUtils.getJavaIoTmpDir;
 
 public class KapuaLiquibaseClient {
 
@@ -64,7 +62,7 @@ public class KapuaLiquibaseClient {
 
     public void update() {
         try {
-            if (parseBoolean(System.getProperty("LIQUIBASE_ENABLED", "true")) || parseBoolean(System.getenv("LIQUIBASE_ENABLED"))) {
+            if (Boolean.parseBoolean(System.getProperty("LIQUIBASE_ENABLED", "true")) || Boolean.parseBoolean(System.getenv("LIQUIBASE_ENABLED"))) {
                 try (Connection connection = DriverManager.getConnection(jdbcUrl, username, password)) {
                     loadResourcesStatic(connection, schema);
                 }
@@ -78,7 +76,7 @@ public class KapuaLiquibaseClient {
     protected static synchronized void loadResourcesStatic(Connection connection, Optional<String> schema) throws LiquibaseException, IOException {
         //
         // Copy files to temporary directory
-        String tmpDirectory = getJavaIoTmpDir().getAbsolutePath();
+        String tmpDirectory = SystemUtils.getJavaIoTmpDir().getAbsolutePath();
 
         File changelogTempDirectory = new File(tmpDirectory, "kapua-liquibase");
 

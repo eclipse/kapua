@@ -11,9 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.gateway;
 
-import static org.eclipse.kapua.client.gateway.Credentials.userAndPassword;
-import static org.eclipse.kapua.client.gateway.Transport.waitForConnection;
-
 import java.time.Duration;
 
 import org.eclipse.kapua.client.gateway.mqtt.fuse.FuseChannel;
@@ -34,14 +31,14 @@ public final class KuraProfileExample {
                 .accountName("kapua-sys")
                 .clientId("foo-bar-1")
                 .brokerUrl("tcp://localhost:1883")
-                .credentials(userAndPassword("kapua-broker", "kapua-password"))
+                .credentials(Credentials.userAndPassword("kapua-broker", "kapua-password"))
                 .build()) {
 
             try (final Application application = client.buildApplication("app1").build()) {
 
                 // wait for connection
 
-                if (!waitForConnection(application.transport(), Duration.ofSeconds(30))) {
+                if (!Transport.waitForConnection(application.transport(), Duration.ofSeconds(30))) {
                     throw new RuntimeException("Unable to connect to target broker");
                 }
 

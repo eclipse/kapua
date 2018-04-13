@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.steps;
 
-import javax.inject.Inject;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -22,7 +21,8 @@ import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static java.time.Duration.ofSeconds;
+import javax.inject.Inject;
+import java.time.Duration;
 
 @ScenarioScoped
 public class BasicSteps extends Assert {
@@ -58,7 +58,7 @@ public class BasicSteps extends Assert {
     @When("I wait (\\d+) seconds?.*")
     public void waitSeconds(int seconds) throws InterruptedException {
         double effectiveSeconds = ((double) seconds) * WAIT_MULTIPLIER;
-        Thread.sleep(ofSeconds((long) Math.ceil(effectiveSeconds)).toMillis());
+        Thread.sleep(Duration.ofSeconds((long) Math.ceil(effectiveSeconds)).toMillis());
     }
 
     @When("(\\d+) seconds?.* passed")

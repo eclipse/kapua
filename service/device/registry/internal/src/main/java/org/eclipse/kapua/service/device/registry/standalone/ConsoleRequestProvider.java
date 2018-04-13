@@ -21,9 +21,6 @@ import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.util.Collections;
 
-import static java.lang.Long.parseLong;
-import static java.util.Collections.singletonList;
-
 public class ConsoleRequestProvider {
 
     public void start() {
@@ -35,13 +32,13 @@ public class ConsoleRequestProvider {
             System.out.println("Enter message request:");
             while ((buffer = br.readLine()) != null) {
                 String[] message = buffer.split(" ");
-                KapuaId tenant = new KapuaEid(BigInteger.valueOf(parseLong(message[0])));
+                KapuaId tenant = new KapuaEid(BigInteger.valueOf(Long.parseLong(message[0])));
                 String operation = message[1];
                 String clientId = message[2];
 
                 Request request = null;
                 if (operation.equals("create")) {
-                    request = new Request(tenant, operation, singletonList(new DeviceFactoryImpl().newCreator(tenant, clientId)));
+                    request = new Request(tenant, operation, Collections.singletonList(new DeviceFactoryImpl().newCreator(tenant, clientId)));
                     staticRequestBinding.onMessage(request);
                 } else if (operation.equals("findByClientId")) {
                     request = new Request(tenant, operation, Collections.singletonList(clientId));

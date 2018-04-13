@@ -11,12 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator.main;
 
-import static ch.qos.logback.classic.Level.ALL;
-import static ch.qos.logback.classic.Level.INFO;
-import static ch.qos.logback.classic.Level.WARN;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.apache.commons.cli.Option.builder;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -34,12 +28,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.logging.Level;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -83,21 +78,21 @@ public class SimulatorRunner {
         final Options opts = new Options();
 
         opts.addOption(
-                builder("n")
+                Option.builder("n")
                         .longOpt("basename")
                         .hasArg().argName("BASENAME")
                         .desc("The base name of the simulator instance")
                         .build());
 
         opts.addOption(
-                builder()
+                Option.builder()
                         .longOpt("name-factory")
                         .hasArg().argName("FACTORY")
                         .desc("The name factory to use")
                         .build());
 
         opts.addOption(
-                builder("c")
+                Option.builder("c")
                         .longOpt("count")
                         .hasArg().argName("COUNT")
                         .type(Integer.class)
@@ -105,21 +100,21 @@ public class SimulatorRunner {
                         .build());
 
         opts.addOption(
-                builder("a")
+                Option.builder("a")
                         .longOpt("account-name")
                         .hasArg().argName("NAME")
                         .desc("The name of the account (defaults to 'kapua-sys')")
                         .build());
 
         opts.addOption(
-                builder("f")
+                Option.builder("f")
                         .longOpt("simulation")
                         .hasArg().argName("URI")
                         .desc("The URI or path to a JSON file containing a simple simulation setup")
                         .build());
 
         opts.addOption(
-                builder("s")
+                Option.builder("s")
                         .longOpt("seconds")
                         .hasArg().argName("SECONDS")
                         .type(Long.class)
@@ -133,13 +128,13 @@ public class SimulatorRunner {
             broker.setRequired(false);
 
             broker.addOption(
-                    builder("h")
+                    Option.builder("h")
                             .longOpt("broker-host")
                             .hasArg().argName("HOST")
                             .desc("Only the hostname of the broker, used for building the full URL")
                             .build());
             broker.addOption(
-                    builder("b")
+                    Option.builder("b")
                             .longOpt("broker")
                             .hasArg().argName("URL")
                             .desc("The full URL to the broker").build());
@@ -151,9 +146,9 @@ public class SimulatorRunner {
             final OptionGroup logging = new OptionGroup();
             logging.setRequired(false);
 
-            logging.addOption(builder("q").longOpt("quiet").desc("Suppress output").build());
-            logging.addOption(builder("v").longOpt("verbose").desc("Show more output").build());
-            logging.addOption(builder("d").longOpt("debug").desc("Show debug output").build());
+            logging.addOption(Option.builder("q").longOpt("quiet").desc("Suppress output").build());
+            logging.addOption(Option.builder("v").longOpt("verbose").desc("Show more output").build());
+            logging.addOption(Option.builder("d").longOpt("debug").desc("Show debug output").build());
 
             opts.addOptionGroup(logging);
         }
@@ -227,7 +222,7 @@ public class SimulatorRunner {
                 close.add(simulator);
             }
 
-            Thread.sleep(SECONDS.toMillis(shutdownAfter));
+            Thread.sleep(TimeUnit.SECONDS.toMillis(shutdownAfter));
             logger.info("Bye bye...");
         } finally {
             downloadExecutor.shutdown();
@@ -394,7 +389,7 @@ public class SimulatorRunner {
         java.util.logging.LogManager.getLogManager().reset();
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
-        java.util.logging.Logger.getLogger("org.eclipse.paho.client.mqttv3").setLevel(Level.ALL);
+        java.util.logging.Logger.getLogger("org.eclipse.paho.client.mqttv3").setLevel(java.util.logging.Level.ALL);
     }
 
     private static void setupLogging(final CommandLine cli) {
@@ -423,13 +418,13 @@ public class SimulatorRunner {
 
         final ch.qos.logback.classic.Logger rootLogger = context.getLogger(Logger.ROOT_LOGGER_NAME);
         if (cli.hasOption("d")) {
-            rootLogger.setLevel(ALL);
+            rootLogger.setLevel(ch.qos.logback.classic.Level.ALL);
         } else if (cli.hasOption("v")) {
-            rootLogger.setLevel(INFO);
+            rootLogger.setLevel(ch.qos.logback.classic.Level.INFO);
         } else if (cli.hasOption("q")) {
-            rootLogger.setLevel(WARN);
+            rootLogger.setLevel(ch.qos.logback.classic.Level.WARN);
         } else {
-            rootLogger.setLevel(INFO);
+            rootLogger.setLevel(ch.qos.logback.classic.Level.INFO);
         }
         rootLogger.addAppender(consoleAdapter);
     }

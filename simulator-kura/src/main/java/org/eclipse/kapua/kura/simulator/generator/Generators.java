@@ -11,10 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator.generator;
 
-import static java.util.Collections.singletonMap;
-
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
@@ -58,17 +57,17 @@ public final class Generators {
     }
 
     public static Function<Instant, Map<String, Object>> fromSingle(final String name, final Function<Instant, Double> function) {
-        return function.andThen(value -> singletonMap(name, value));
+        return function.andThen(value -> Collections.singletonMap(name, value));
     }
 
     public static Application simpleDataApplication(final String applicationId, final GeneratorScheduler scheduler, final String metricName,
             final Function<Instant, Double> metricFunction) {
-        return createApplication(applicationId, scheduler, "metrics", singletonMap(metricName, metricFunction));
+        return createApplication(applicationId, scheduler, "metrics", Collections.singletonMap(metricName, metricFunction));
     }
 
     public static Application createApplication(final String applicationId, final GeneratorScheduler scheduler, final String dataTopic,
             final String metricName, final Function<Instant, Double> metricFunction) {
-        return createApplication(applicationId, scheduler, dataTopic, singletonMap(metricName, metricFunction));
+        return createApplication(applicationId, scheduler, dataTopic, Collections.singletonMap(metricName, metricFunction));
     }
 
     public static Application createApplication(final String applicationId, final GeneratorScheduler scheduler, final String dataTopic,

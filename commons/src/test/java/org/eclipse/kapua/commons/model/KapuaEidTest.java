@@ -11,9 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collection;
@@ -21,6 +18,8 @@ import java.util.Random;
 
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
+
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -54,13 +53,13 @@ public class KapuaEidTest {
         KapuaEid kid = new KapuaEid(eid);
         String sid = kid.toCompactId();
 
-        assertEquals(eid, kid.getId());
-        assertEquals(eid.toString(), kid.toString());
+        Assert.assertEquals(eid, kid.getId());
+        Assert.assertEquals(eid.toString(), kid.toString());
 
         KapuaEid kid1 = KapuaEid.parseCompactId(sid);
-        assertEquals(eid, kid1.getId());
-        assertEquals(kid.toString(), kid1.toString());
-        assertEquals(kid.toCompactId(), kid1.toCompactId());
+        Assert.assertEquals(eid, kid1.getId());
+        Assert.assertEquals(kid.toString(), kid1.toString());
+        Assert.assertEquals(kid.toCompactId(), kid1.toCompactId());
     }
 
     @Test
@@ -68,15 +67,15 @@ public class KapuaEidTest {
         KapuaEid kapuaEid = new KapuaEid(eid);
         KapuaEid parsedKapuaEid = KapuaEid.parseKapuaId(kapuaEid);
 
-        assertTrue(kapuaEid == parsedKapuaEid);
-        assertEquals(kapuaEid, parsedKapuaEid);
-        assertEquals(eid, kapuaEid.getId());
-        assertEquals(eid.toString(), kapuaEid.toString());
+        Assert.assertTrue(kapuaEid == parsedKapuaEid);
+        Assert.assertEquals(kapuaEid, parsedKapuaEid);
+        Assert.assertEquals(eid, kapuaEid.getId());
+        Assert.assertEquals(eid.toString(), kapuaEid.toString());
 
         KapuaId kapuaIdAny = KapuaId.ANY;
         KapuaEid parsedKapuaIdAny = KapuaEid.parseKapuaId(kapuaIdAny);
 
-        assertTrue(parsedKapuaIdAny != kapuaIdAny);
-        assertEquals(parsedKapuaIdAny.getId(), kapuaIdAny.getId());
+        Assert.assertTrue(parsedKapuaIdAny != kapuaIdAny);
+        Assert.assertEquals(parsedKapuaIdAny.getId(), kapuaIdAny.getId());
     }
 }

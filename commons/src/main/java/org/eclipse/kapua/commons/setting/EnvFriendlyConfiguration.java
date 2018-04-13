@@ -11,11 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.setting;
 
-import static java.util.stream.Collectors.toList;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.configuration.CompositeConfiguration;
 
@@ -26,7 +25,7 @@ public class EnvFriendlyConfiguration extends CompositeConfiguration {
     @Override
     public Iterator<String> getKeys() {
         List<String> keys = ImmutableList.copyOf(super.getKeys());
-        List<String> envKeys = keys.stream().map(this::envKey).collect(toList());
+        List<String> envKeys = keys.stream().map(this::envKey).collect(Collectors.toList());
         List<String> result = new ArrayList<>();
         result.addAll(keys);
         result.addAll(envKeys);

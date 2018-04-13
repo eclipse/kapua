@@ -11,13 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator.app.data;
 
-import static java.util.Objects.requireNonNull;
-
 import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 
 import org.eclipse.kapua.kura.simulator.app.ApplicationContext;
 import org.eclipse.kapua.kura.simulator.app.Handler;
@@ -77,8 +76,8 @@ public class PeriodicGenerator implements Handler {
         this.context = context;
         this.handle = scheduler.add(this::tick);
 
-        this.generators = requireNonNull(generators);
-        this.topics = requireNonNull(topics);
+        this.generators = Objects.requireNonNull(generators);
+        this.topics = Objects.requireNonNull(topics);
     }
 
     @Override

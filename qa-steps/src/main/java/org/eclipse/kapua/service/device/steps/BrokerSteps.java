@@ -12,13 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.steps;
 
-import com.google.inject.Inject;
-import cucumber.api.Scenario;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
-import cucumber.runtime.java.guice.ScenarioScoped;
+import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.setting.BrokerSetting;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -47,17 +45,19 @@ import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
+
+import com.google.inject.Inject;
+import cucumber.api.Scenario;
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.junit.Assert;
-
-import java.math.BigInteger;
-import java.util.List;
-
-import static java.nio.file.Files.readAllBytes;
-import static java.nio.file.Paths.get;
 
 /**
  * Steps used in integration scenarios with running MQTT broker and process of
@@ -325,7 +325,7 @@ public class BrokerSteps extends Assert {
     @When("^topic \"(.*)\" content \"(.*)\" is published by client named \"(.*)\"$")
     public void publishMessageByClient(String topic, String content, String clientName) throws Exception {
         MqttClient mqttClient = (MqttClient) stepData.get(clientName);
-        byte[] payload = readAllBytes(get(content));
+        byte[] payload = Files.readAllBytes(Paths.get(content));
 
         if (mqttClient == null) {
             throw new Exception("Mqtt test client not found");

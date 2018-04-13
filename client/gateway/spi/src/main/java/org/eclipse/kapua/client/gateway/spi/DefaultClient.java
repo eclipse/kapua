@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.gateway.spi;
 
-import static org.eclipse.kapua.client.gateway.spi.util.MoreExecutors.preventShutdown;
-
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
@@ -26,6 +24,7 @@ import org.eclipse.kapua.client.gateway.ErrorHandler;
 import org.eclipse.kapua.client.gateway.MessageHandler;
 import org.eclipse.kapua.client.gateway.Payload;
 import org.eclipse.kapua.client.gateway.Topic;
+import org.eclipse.kapua.client.gateway.spi.util.MoreExecutors;
 
 public class DefaultClient extends AbstractClient {
 
@@ -86,7 +85,7 @@ public class DefaultClient extends AbstractClient {
 
         @Override
         public ScheduledExecutorService executor() {
-            return preventShutdown(executor);
+            return MoreExecutors.preventShutdown(executor);
         }
 
     };
