@@ -129,7 +129,7 @@ public class DataChannels extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
             @ApiParam(value = "The ChannelInfoQuery to use to filter results", required = true) ChannelInfoQuery query) throws Exception {
         query.setScopeId(scopeId);
-
+        query.addFetchAttributes(ChannelInfoField.TIMESTAMP.field());
         return CHANNEL_INFO_REGISTRY_SERVICE.query(query);
     }
 

@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -40,6 +41,7 @@ public abstract class AbstractStorableQuery<S extends Storable> implements Stora
     private boolean askTotalCount;
     private List<SortField> sortFields;
     private StorableFetchStyle fetchStyle;
+    private List<String> fetchAttributes;
 
     /**
      * Default constructor
@@ -50,6 +52,7 @@ public abstract class AbstractStorableQuery<S extends Storable> implements Stora
         super();
 
         fetchStyle = StorableFetchStyle.SOURCE_FULL;
+        fetchAttributes = new ArrayList<>();
         askTotalCount = false;
     }
 
@@ -160,4 +163,18 @@ public abstract class AbstractStorableQuery<S extends Storable> implements Stora
         this.fetchStyle = fetchStyle;
     }
 
+    @Override
+    public List<String> getFetchAttributes() {
+        return fetchAttributes;
+    }
+
+    @Override
+    public void addFetchAttributes(String fetchAttribute) {
+        fetchAttributes.add(fetchAttribute);
+    }
+
+    @Override
+    public void setFetchAttributes(List<String> fetchAttributeNames) {
+        fetchAttributes = fetchAttributeNames;
+    }
 }
