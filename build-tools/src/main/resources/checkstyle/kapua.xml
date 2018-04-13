@@ -32,6 +32,7 @@
         <!-- imports -->
 
         <module name="AvoidStarImport" />
+        <module name="AvoidStaticImport" />
         <module name="UnusedImports" />
 
         <!-- others -->
