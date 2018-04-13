@@ -564,7 +564,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
 
         Account account = (Account) stepData.get("LastAccount");
         ChannelInfoQuery tmpQuery = DatastoreQueryFactory.createBaseChannelInfoQuery(account.getId(), 100);
-
+        tmpQuery.addFetchAttributes(ChannelInfoField.TIMESTAMP.field());
         ChannelInfoListResult tmpList = channelInfoRegistryService.query(tmpQuery);
         stepData.put(chnKey, tmpList);
     }
@@ -579,7 +579,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         AndPredicate andPredicate = new AndPredicateImpl();
         andPredicate.getPredicates().add(timestampPredicate);
         tmpQuery.setPredicate(andPredicate);
-
+        tmpQuery.addFetchAttributes(ChannelInfoField.TIMESTAMP.field());
         ChannelInfoListResult tmpList = channelInfoRegistryService.query(tmpQuery);
         stepData.put(lstKey, tmpList);
     }
@@ -594,7 +594,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         AndPredicate andPredicate = new AndPredicateImpl();
         andPredicate.getPredicates().add(channelMatchPredicate);
         tmpQuery.setPredicate(andPredicate);
-
+        tmpQuery.addFetchAttributes(ChannelInfoField.TIMESTAMP.field());
         ChannelInfoListResult tmpList = channelInfoRegistryService.query(tmpQuery);
         stepData.put(lstKey, tmpList);
     }
@@ -1168,7 +1168,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         TermPredicate clientPredicate = storablePredicateFactory.newTermPredicate(ChannelInfoField.CLIENT_ID, clientId);
         andPredicate.getPredicates().add(clientPredicate);
         channelInfoQuery.setPredicate(andPredicate);
-
+        channelInfoQuery.addFetchAttributes(ChannelInfoField.TIMESTAMP.field());
         ChannelInfoListResult infoRes = channelInfoRegistryService.query(channelInfoQuery);
 
         stepData.put(resKey, infoRes);
@@ -1177,8 +1177,9 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
     @When("^I query for channel info$")
     public void queryForChannelInfo() throws KapuaException {
 
-        ChannelInfoQuery cnannelInfoQuery = (ChannelInfoQuery) stepData.get("channelInfoQuery");
-        ChannelInfoListResult result = channelInfoRegistryService.query(cnannelInfoQuery);
+        ChannelInfoQuery channelInfoQuery = (ChannelInfoQuery) stepData.get("channelInfoQuery");
+        channelInfoQuery.addFetchAttributes(ChannelInfoField.TIMESTAMP.field());
+        ChannelInfoListResult result = channelInfoRegistryService.query(channelInfoQuery);
         stepData.put("channelInfoListResult", result);
     }
 
@@ -1486,7 +1487,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         andPredicate.getPredicates().add(new TermPredicateImpl(ChannelInfoField.CLIENT_ID, tmpClId));
         ChannelInfoQuery channelInfoQuery = DatastoreQueryFactory.createBaseChannelInfoQuery(tmpAccId, 100);
         channelInfoQuery.setPredicate(andPredicate);
-
+        channelInfoQuery.addFetchAttributes(ChannelInfoField.TIMESTAMP.field());
         ChannelInfoListResult channelInfoList = channelInfoRegistryService.query(channelInfoQuery);
 
         assertNotNull("Cannot find the channel info registry!", channelInfoList);

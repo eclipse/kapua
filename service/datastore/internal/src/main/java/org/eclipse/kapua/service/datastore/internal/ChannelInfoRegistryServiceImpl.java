@@ -26,6 +26,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
+import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl;
@@ -119,7 +120,7 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
         checkDataAccess(query.getScopeId(), Actions.read);
         try {
             ChannelInfoListResult result = channelInfoRegistryFacade.query(query);
-            if (result != null) {
+            if (result != null && query.getFetchAttributes().contains(ChannelInfoField.TIMESTAMP.field())) {
                 // populate the lastMessageTimestamp
                 for (ChannelInfo channelInfo : result.getItems()) {
                     updateLastPublishedFields(channelInfo);

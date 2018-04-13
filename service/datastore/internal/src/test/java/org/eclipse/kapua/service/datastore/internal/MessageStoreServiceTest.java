@@ -1062,6 +1062,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         // start queries
 
         ChannelInfoQuery channelInfoQuery = getBaseChannelInfoQuery(account.getId());
+        channelInfoQuery.addFetchAttributes(ChannelInfoField.TIMESTAMP.field());
         setChannelInfoQueryBaseCriteria(channelInfoQuery, new DateRange(messageTime, capturedOnThirdMessage));
 
         ChannelInfoListResult channelList = CHANNEL_INFO_REGISTRY_SERVICE.query(channelInfoQuery);
