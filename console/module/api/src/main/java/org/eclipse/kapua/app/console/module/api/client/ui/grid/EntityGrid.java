@@ -26,6 +26,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Timer;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.ContentPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
@@ -46,6 +47,19 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
 
     protected GwtSession currentSession;
     private AbstractEntityView<M> parentEntityView;
+    /**
+     * Timer that when enabled (not null) refreshes the grid.
+     */
+    private Timer refreshTimer;
+    /**
+     * Used for checks if data on grid query has changed from last refresh.
+     */
+    protected boolean lastChanged;
+    /**
+     * List of entity changed flags.
+     */
+    protected int[] lastChange = new int[ENTITY_PAGE_SIZE];
+
 
     private EntityCRUDToolbar<M> entityCRUDToolbar;
     private boolean entityGridConfigured;
@@ -180,6 +194,27 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
     }
 
     protected abstract List<ColumnConfig> getColumns();
+
+    /**
+     * Enable refresh of data grid when data changes.
+     *
+     * @param refreshMillis milli seconds refresh interval
+     * @param timer timer that executes refresh if necessary
+     */
+    protected void enableRefreshTimer(int refreshMillis, Timer timer) {
+        refreshTimer = timer;
+        refreshTimer.scheduleRepeating(refreshMillis);
+    }
+
+    /**
+     * Disable periodic refresh of data grid.
+     */
+    protected void disableRefreshTimer() {
+        if (refreshTimer != null) {
+            refreshTimer.cancel();
+            refreshTimer = null;
+        }
+    }
 
     public void clearGridElement() {
         entityStore.removeAll();

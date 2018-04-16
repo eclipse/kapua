@@ -21,6 +21,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
@@ -45,6 +46,7 @@ import java.util.List;
 public class DeviceGrid extends EntityGrid<GwtDevice> {
 
     private GwtDeviceQuery query;
+    private PagingLoadConfig lastLoadConfig;
     private DeviceGridToolbar toolbar;
 
     private static final GwtDeviceServiceAsync GWT_DEVICE_SERVICE = GWT.create(GwtDeviceService.class);
@@ -52,11 +54,51 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
     private static final ConsoleDeviceMessages DEVICE_MSGS = GWT.create(ConsoleDeviceMessages.class);
     private static final ConsoleConnectionMessages CONNECTION_MSGS = GWT.create(ConsoleConnectionMessages.class);
 
+    public static final int GRID_REFRESH_MILLIS = 15000;
+
     public DeviceGrid(AbstractEntityView<GwtDevice> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
         query = new GwtDeviceQuery();
         query.setScopeId(currentSession.getSelectedAccountId());
         query.setPredicates(new GwtDeviceQueryPredicates());
+
+        Timer refreshTimer = new Timer() {
+
+            @Override
+            public void run() {
+                GWT_DEVICE_SERVICE.query(lastLoadConfig, query, new AsyncCallback<PagingLoadResult<GwtDevice>>() {
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        // Skip failure for refresh.
+                    }
+
+                    @Override
+                    public void onSuccess(PagingLoadResult<GwtDevice> results) {
+                        boolean changed = false;
+                        List<GwtDevice> data = results.getData();
+                        for (int i = 0; i < data.size(); i++) {
+                            GwtDevice result = data.get(i);
+                            int newStatus = result.getGwtDeviceConnectionStatusEnum().ordinal();
+                            if (newStatus != lastChange[i]) {
+                                changed = true;
+                            }
+                            lastChange[i] = newStatus;
+                        }
+                        if (changed) {
+                            refresh();
+                        }
+                    }
+                });
+            }
+        };
+        enableRefreshTimer(GRID_REFRESH_MILLIS, refreshTimer);
+    }
+
+    @Override
+    protected void onUnload() {
+        disableRefreshTimer();
+        super.onUnload();
     }
 
     @Override
@@ -65,6 +107,7 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
 
             @Override
             protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtDevice>> callback) {
+                lastLoadConfig = (PagingLoadConfig) loadConfig;
                 GWT_DEVICE_SERVICE.query((PagingLoadConfig) loadConfig,
                         query,
                         callback);
