@@ -54,7 +54,12 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
     /**
      * Used for checks if data on grid query has changed from last refresh.
      */
-    protected int lastOptlockSum;
+    protected boolean lastChanged;
+    /**
+     * List of entity changed flags.
+     */
+    protected int[] lastChange = new int[ENTITY_PAGE_SIZE];
+
 
     private EntityCRUDToolbar<M> entityCRUDToolbar;
     private boolean entityGridConfigured;

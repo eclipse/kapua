@@ -46,6 +46,7 @@ import java.util.List;
 public class DeviceGrid extends EntityGrid<GwtDevice> {
 
     private GwtDeviceQuery query;
+    private PagingLoadConfig lastLoadConfig;
     private DeviceGridToolbar toolbar;
 
     private static final GwtDeviceServiceAsync GWT_DEVICE_SERVICE = GWT.create(GwtDeviceService.class);
@@ -65,7 +66,7 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
 
             @Override
             public void run() {
-                GWT_DEVICE_SERVICE.query(query, new AsyncCallback<List<GwtDevice>>() {
+                GWT_DEVICE_SERVICE.query(lastLoadConfig, query, new AsyncCallback<PagingLoadResult<GwtDevice>>() {
 
                     @Override
                     public void onFailure(Throwable caught) {
@@ -73,13 +74,18 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
                     }
 
                     @Override
-                    public void onSuccess(List<GwtDevice> results) {
-                        int optlockSum = 0;
-                        for (GwtDevice result : results) {
-                            optlockSum += result.getOptlock();
+                    public void onSuccess(PagingLoadResult<GwtDevice> results) {
+                        boolean changed = false;
+                        List<GwtDevice> data = results.getData();
+                        for (int i = 0; i < data.size(); i++) {
+                            GwtDevice result = data.get(i);
+                            int newStatus = result.getGwtDeviceConnectionStatusEnum().ordinal();
+                            if (newStatus != lastChange[i]) {
+                                changed = true;
+                            }
+                            lastChange[i] = newStatus;
                         }
-                        if (optlockSum != lastOptlockSum) {
-                            lastOptlockSum = optlockSum;
+                        if (changed) {
                             refresh();
                         }
                     }
@@ -101,6 +107,7 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
 
             @Override
             protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtDevice>> callback) {
+                lastLoadConfig = (PagingLoadConfig) loadConfig;
                 GWT_DEVICE_SERVICE.query((PagingLoadConfig) loadConfig,
                         query,
                         callback);
