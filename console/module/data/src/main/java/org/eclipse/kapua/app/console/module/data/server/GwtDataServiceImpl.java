@@ -13,6 +13,7 @@ package org.eclipse.kapua.app.console.module.data.server;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -114,14 +115,21 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 query.setOffset(offset);
                 result = channelInfoService.query(query);
             }
+
             for (Map.Entry<String, GwtTopic> entry : topicMap.entrySet()) {
-                if (!entry.getKey().contains("/")) {
+                if (!entry.getKey().contains("/") || (entry.getKey().split("/").length == 2 && entry.getKey().split("/")[1].equals("#"))) {
                     channelInfoList.add(entry.getValue());
                 }
             }
         } catch (KapuaException e) {
             KapuaExceptionHandler.handle(e);
         }
+        Collections.sort(channelInfoList, new Comparator<GwtTopic>() {
+            @Override
+            public int compare(GwtTopic o1, GwtTopic o2) {
+                return o1.getSemanticTopic().compareTo(o2.getSemanticTopic());
+            }
+        });
         return channelInfoList;
     }
 
@@ -169,7 +177,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
     private void addToMap(HashMap<String, GwtTopic> topicMap, ChannelInfo channel) {
         String[] topicParts = channel.getName().split("/");
-        GwtTopic previous = null;
+        GwtTopic parent = null;
         String topicName = topicParts[0];
         String baseTopic = topicParts[0];
         String semanticTopic = baseTopic;
@@ -178,20 +186,17 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         }
         int i = 0;
         do {
-            GwtTopic t = topicMap.get(baseTopic);
+            GwtTopic t = null;
+            t = topicMap.get(semanticTopic);
             if (t == null) {
-                t = new GwtTopic(topicName, baseTopic, semanticTopic, channel.getLastMessageOn());
-                topicMap.put(baseTopic, t);
-                if (previous != null) {
-                    previous.add(t);
-                }
-            } else {
-                if (channel.getLastMessageOn() != null && t.getTimestamp() != null && t.getTimestamp().before(channel.getLastMessageOn())) {
-                    t.setTimestamp(channel.getLastMessageOn());
+                t = new GwtTopic(topicName, baseTopic, semanticTopic, null);
+                topicMap.put(semanticTopic, t);
+                if (parent != null) {
+                    parent.add(t);
                 }
             }
-            previous = t;
             i++;
+            parent = t;
             if (i < topicParts.length) {
                 topicName = topicParts[i];
                 baseTopic += "/" + topicName;
@@ -294,7 +299,12 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
     @Override
     public ListLoadResult<GwtHeader> findHeaders(LoadConfig config, String scopeId, GwtTopic topic) throws GwtKapuaException {
-        ChannelMatchPredicate predicate = STORABLE_PREDICATE_FACTORY.newChannelMatchPredicate(topic.getSemanticTopic().replaceFirst("/#$", ""));
+        StorablePredicate predicate;
+        if (topic.getSemanticTopic().endsWith("/#")) {
+            predicate = STORABLE_PREDICATE_FACTORY.newChannelMatchPredicate(topic.getSemanticTopic().replaceFirst("/#$", "/"));
+        } else {
+            predicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(MessageField.CHANNEL, topic.getSemanticTopic());
+        }
         return findHeaders(scopeId, predicate);
     }
 
@@ -320,10 +330,14 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     @Override
     public PagingLoadResult<GwtMessage> findMessagesByTopic(PagingLoadConfig loadConfig, String scopeId, GwtTopic topic, List<GwtHeader> headers, Date startDate, Date endDate)
             throws GwtKapuaException {
+        StorablePredicate predicate;
+        if (topic.getSemanticTopic().endsWith("/#")) {
+            predicate = STORABLE_PREDICATE_FACTORY.newChannelMatchPredicate(topic.getSemanticTopic().replaceFirst("/#$", "/"));
+        } else {
+            predicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(MessageField.CHANNEL, topic.getSemanticTopic());
+        }
 
-        StorablePredicate channelPredicate = STORABLE_PREDICATE_FACTORY.newChannelMatchPredicate(topic.getSemanticTopic().replaceFirst("/#$", ""));
-
-        return findMessages(loadConfig, scopeId, headers, startDate, endDate, channelPredicate);
+        return findMessages(loadConfig, scopeId, headers, startDate, endDate, predicate);
     }
 
     @Override
