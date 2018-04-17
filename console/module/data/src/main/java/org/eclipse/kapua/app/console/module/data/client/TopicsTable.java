@@ -14,9 +14,13 @@ package org.eclipse.kapua.app.console.module.data.client;
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.TreeGridEvent;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -30,6 +34,7 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
@@ -62,6 +67,7 @@ public class TopicsTable extends LayoutContainer {
             @Override
             public void onSuccess(List<GwtTopic> topics) {
                 store.add(topics, true);
+                updateTimestamps(new ArrayList<ModelData>(topics));
                 topicInfoGrid.unmask();
             }
 
@@ -157,6 +163,14 @@ public class TopicsTable extends LayoutContainer {
             selectionModel.addSelectionChangedListener(listener);
         }
         topicInfoGrid.setSelectionModel(selectionModel);
+
+        topicInfoGrid.addListener(Events.BeforeExpand, new Listener<TreeGridEvent<GwtTopic>>() {
+
+            @Override
+            public void handleEvent(final TreeGridEvent<GwtTopic> tge) {
+                updateTimestamps(tge.getModel().getChildren());
+            }
+        });
     }
 
     // --------------------------------------------------------------------------------------
@@ -172,5 +186,22 @@ public class TopicsTable extends LayoutContainer {
     public void clearTable() {
         topicInfoGrid.getStore().removeAll();
         topicInfoGrid.getTreeStore().removeAll();
+    }
+
+    private void updateTimestamps(List<ModelData> topics) {
+        dataService.updateTimestamps(currentSession.getSelectedAccountId(), topics, new AsyncCallback<List<GwtTopic>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                FailureHandler.handle(caught);
+            }
+
+            @Override
+            public void onSuccess(List<GwtTopic> result) {
+                for (GwtTopic topic : result) {
+                    store.findModel(topic).setTimestamp(topic.getTimestamp());
+                }
+                topicInfoGrid.getTreeView().refresh(false);
+            }
+        });
     }
 }

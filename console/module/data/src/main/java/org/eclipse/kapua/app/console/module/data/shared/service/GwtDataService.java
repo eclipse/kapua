@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.module.data.shared.service;
 import java.util.Date;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.gwt.user.client.rpc.RemoteService;
 
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
@@ -43,6 +44,9 @@ public interface GwtDataService extends RemoteService {
      * @throws GwtKapuaException
      */
     List<GwtTopic> findTopicsTree(String scopeId) throws GwtKapuaException;
+
+    List<GwtTopic> updateTimestamps(String scopeId, List<ModelData> topics)
+            throws GwtKapuaException;
 
     PagingLoadResult<GwtTopic> findTopicsList(PagingLoadConfig config, GwtDataChannelInfoQuery query) throws GwtKapuaException;
 

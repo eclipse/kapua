@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+
 import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.KapuaBaseTreeModel;
 
@@ -74,19 +75,19 @@ public class GwtTopic extends KapuaBaseTreeModel implements Serializable, IsSeri
     }
 
     public String getTopicName() {
-        return (String) get("topicName");
+        return get("topicName");
     }
 
     public String getBaseTopic() {
-        return (String) get("baseTopic");
+        return get("baseTopic");
     }
 
     public String getSemanticTopic() {
-        return (String) get("semanticTopic");
+        return get("semanticTopic");
     }
 
     public String getUnescapedSemanticTopic() {
-        return (String) getUnescaped("semanticTopic");
+        return getUnescaped("semanticTopic");
     }
 
     public void setTimestamp(Date timestamp) {
@@ -94,10 +95,18 @@ public class GwtTopic extends KapuaBaseTreeModel implements Serializable, IsSeri
     }
 
     public Date getTimestamp() {
-        return (Date) get("timestamp");
+        return get("timestamp");
     }
 
     public String getTimestampFormatted() {
-        return (String) get("timestampFormatted");
+        return get("timestampFormatted");
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof GwtTopic) {
+            return getSemanticTopic().equals(((GwtTopic) obj).getSemanticTopic());
+        }
+        return false;
     }
 }

@@ -11,13 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.data.server;
 
-import com.extjs.gxt.ui.client.data.BaseListLoadResult;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.extjs.gxt.ui.client.data.LoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import org.apache.commons.lang3.StringUtils;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
@@ -42,6 +42,10 @@ import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.mediator.MetricInfoField;
+import org.eclipse.kapua.service.datastore.internal.model.query.ChannelMatchPredicateImpl;
+import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
+import org.eclipse.kapua.service.datastore.internal.model.query.TermPredicateImpl;
+import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
@@ -59,6 +63,7 @@ import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
 import org.eclipse.kapua.service.datastore.model.query.SortDirection;
 import org.eclipse.kapua.service.datastore.model.query.SortField;
+import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 import org.eclipse.kapua.service.datastore.model.query.StorablePredicate;
 import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
 import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
@@ -69,12 +74,16 @@ import org.eclipse.kapua.service.device.registry.DevicePredicates;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.extjs.gxt.ui.client.data.BaseListLoadResult;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.LoadConfig;
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import org.apache.commons.lang3.StringUtils;
+
+import static org.eclipse.kapua.service.datastore.model.query.SortField.descending;
 
 public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements GwtDataService {
 
@@ -114,6 +123,48 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             KapuaExceptionHandler.handle(e);
         }
         return channelInfoList;
+    }
+
+    @Override
+    public List<GwtTopic> updateTimestamps(String gwtScopeId, List<ModelData> topics) throws GwtKapuaException {
+        KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtScopeId);
+        List<GwtTopic> updatedTopics = new ArrayList<GwtTopic>();
+        MessageStoreService messageStoreService = LOCATOR.getService(MessageStoreService.class);
+        try {
+            for (ModelData md : topics) {
+                GwtTopic topic = (GwtTopic) md;
+
+                List<SortField> sort = new ArrayList<SortField>();
+                sort.add(descending(MessageSchema.MESSAGE_TIMESTAMP));
+
+                MessageQuery messageQuery = new MessageQueryImpl(scopeId);
+                messageQuery.setAskTotalCount(true);
+                messageQuery.setFetchStyle(StorableFetchStyle.FIELDS);
+                messageQuery.setLimit(1);
+                messageQuery.setOffset(0);
+                messageQuery.setSortFields(sort);
+
+                String semanticTopic = topic.getSemanticTopic();
+                StorablePredicate predicate;
+
+                if (semanticTopic.endsWith("/#")) {
+                    predicate = new ChannelMatchPredicateImpl(semanticTopic.replaceFirst("/#$", "/"));
+                } else {
+                    predicate = new TermPredicateImpl(MessageField.CHANNEL, semanticTopic);
+                }
+
+                messageQuery.setPredicate(predicate);
+
+                MessageListResult messageList = messageStoreService.query(messageQuery);
+                if (messageList.getSize() == 1) {
+                    topic.setTimestamp(messageList.getFirstItem().getTimestamp());
+                }
+                updatedTopics.add(topic);
+            }
+        } catch (KapuaException e) {
+            KapuaExceptionHandler.handle(e);
+        }
+        return updatedTopics;
     }
 
     private void addToMap(HashMap<String, GwtTopic> topicMap, ChannelInfo channel) {
@@ -244,7 +295,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     @Override
     public ListLoadResult<GwtHeader> findHeaders(LoadConfig config, String scopeId, GwtTopic topic) throws GwtKapuaException {
         ChannelMatchPredicate predicate = STORABLE_PREDICATE_FACTORY.newChannelMatchPredicate(topic.getSemanticTopic().replaceFirst("/#$", ""));
-        return findHeaders(config, scopeId, predicate);
+        return findHeaders(scopeId, predicate);
     }
 
     @Override
@@ -256,14 +307,14 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     @Override
     public ListLoadResult<GwtHeader> findHeaders(LoadConfig config, String scopeId, GwtDatastoreDevice device) throws GwtKapuaException {
         TermPredicate predicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(MetricInfoField.CLIENT_ID, device.getDevice());
-        return findHeaders(config, scopeId, predicate);
+        return findHeaders(scopeId, predicate);
     }
 
     @Override
     public ListLoadResult<GwtHeader> findHeaders(LoadConfig config, String accountName,
-            GwtDatastoreAsset gwtDatastoreAsset) throws GwtKapuaException {
+                                                 GwtDatastoreAsset gwtDatastoreAsset) throws GwtKapuaException {
         ChannelMatchPredicate predicate = STORABLE_PREDICATE_FACTORY.newChannelMatchPredicate(gwtDatastoreAsset.getTopick());
-        return findHeaders(config, accountName, predicate);
+        return findHeaders(accountName, predicate);
     }
 
     @Override
@@ -295,7 +346,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         return findMessages(loadConfig, scopeId, headers, startDate, endDate, predicate);
     }
 
-    private ListLoadResult<GwtHeader> findHeaders(LoadConfig config, String scopeId, StorablePredicate predicate) throws GwtKapuaException {
+    private ListLoadResult<GwtHeader> findHeaders(String scopeId, StorablePredicate predicate) throws GwtKapuaException {
         MetricInfoRegistryService metricService = LOCATOR.getService(MetricInfoRegistryService.class);
         MetricInfoQuery query = DATASTORE_FACTORY.newMetricInfoQuery(GwtKapuaCommonsModelConverter.convertKapuaId(scopeId));
         query.setLimit(10000);
