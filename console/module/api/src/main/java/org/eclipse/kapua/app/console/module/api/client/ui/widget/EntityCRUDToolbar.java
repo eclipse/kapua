@@ -127,9 +127,11 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
                         if (filterButton.getText().equals(MSGS.deviceTableToolbarOpenFilter())) {
                             filterPanel.show();
                             filterButton.setText(MSGS.deviceTableToolbarCloseFilter());
+                            filterButton.toggle(false);
                         } else {
                             filterPanel.hide();
                             filterButton.setText(MSGS.deviceTableToolbarOpenFilter());
+                            filterButton.toggle(false);
                         }
                     } else {
                         filterPanel.hide();
@@ -138,7 +140,7 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
 
                 }
             });
-            filterButton.toggle(true);
+            filterButton.toggle(false);
             add(filterButton);
         }
 

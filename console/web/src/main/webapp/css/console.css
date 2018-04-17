@@ -215,3 +215,46 @@ table#header-button td, table#header-button button {
     left: 1px;
     top: 4px;
 }
+
+/** Removal of mozilla borders around button text. */
+button::-moz-focus-inner, button::-moz-focus-outer, button:-moz-focusring, button:focus
+{
+    border: none;
+}
+
+/** Added to sync behaviour of webkit and gecko based browsers for buttons. */
+.x-btn-focus .x-btn-tl{
+    background-position: -6px 0;
+}
+
+.x-btn-focus .x-btn-tr{
+    background-position: -9px 0;
+}
+
+.x-btn-focus .x-btn-tc{
+    background-position: 0 -9px;
+}
+
+.x-btn-focus .x-btn-ml{
+    background-position: -6px -24px;
+}
+
+.x-btn-focus .x-btn-mr{
+    background-position: -9px -24px;
+}
+
+.x-btn-focus .x-btn-mc{
+    background-position: 0 -2168px;
+}
+
+.x-btn-focus .x-btn-bl{
+    background-position: -6px -3px;
+}
+
+.x-btn-focus .x-btn-br{
+    background-position: -9px -3px;
+}
+
+.x-btn-focus .x-btn-bc{
+    background-position: 0 -18px;
+}
