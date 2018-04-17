@@ -233,9 +233,11 @@ public class DeviceAssetsPanel extends LayoutContainer {
         actionFieldSet.setLayout(layout);
 
         Field<?> field = null;
-        for (GwtDeviceAssetChannel channel : asset.getChannels()) {
-            field = paintChannel(channel);
-            actionFieldSet.add(field, formData);
+        if (asset != null) {
+            for (GwtDeviceAssetChannel channel : asset.getChannels()) {
+                field = paintChannel(channel);
+                actionFieldSet.add(field, formData);
+            }
         }
 
         if (!UserAgentUtils.isIE()) {

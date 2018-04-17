@@ -230,6 +230,8 @@ public class WestNavigationView extends LayoutContainer {
                     panel.setIcon(new KapuaIcon(firstView.getIcon()));
                     panel.setHeading(firstView.getName());
                     panel.add((AbstractView) firstView.getViewInstance(currentSession));
+                    panel.setBorders(false);
+                    panel.setBodyBorder(false);
 
                     centerPanel.add(panel);
                     centerPanel.layout();

@@ -137,12 +137,18 @@ public class DeviceConfigSnapshots extends LayoutContainer {
         devicesHistoryPanel.add(grid);
 
         add(devicesHistoryPanel);
+        layout(true);
+        toolBar.setStyleAttribute("border-left", "0px none");
+        toolBar.setStyleAttribute("border-right", "0px none");
+        toolBar.setStyleAttribute("border-top", "0px none");
+        toolBar.setStyleAttribute("border-bottom", "1px solid rgb(208, 208, 208)");
         initialized = true;
     }
 
     private void initToolBar() {
         toolBar = new ToolBar();
         toolBar.setEnabled(false);
+        toolBar.setBorders(false);
 
         //
         // Refresh Button

@@ -18,6 +18,7 @@ import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.TabPanel.TabPosition;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
@@ -81,6 +82,7 @@ public class DeviceTabConfiguration extends KapuaTabItem<GwtDevice> {
 
         setId("DeviceTabsContainer");
         setLayout(new FitLayout());
+        setBorders(false);
 
         tabsPanel = new TabPanel();
         tabsPanel.setPlain(true);
@@ -101,7 +103,7 @@ public class DeviceTabConfiguration extends KapuaTabItem<GwtDevice> {
         tabsPanel.add(tabComponents);
 
         tabSnapshots = new TabItem(MSGS.deviceConfigSnapshots(), new KapuaIcon(IconSet.ARCHIVE));
-        tabSnapshots.setBorders(false);
+        tabSnapshots.setBorders(true);
         tabSnapshots.setLayout(new FitLayout());
         tabSnapshots.add(configSnapshots);
         tabSnapshots.addListener(Events.Select, new Listener<ComponentEvent>() {
@@ -114,5 +116,14 @@ public class DeviceTabConfiguration extends KapuaTabItem<GwtDevice> {
         tabsPanel.add(tabSnapshots);
 
         add(tabsPanel);
+        layout(true);
+        Node node0 = tabsPanel.getElement();
+        Node node1 = node0.getChild(1);
+        Node node2 = node1.getChild(0);
+        if (node2.getNodeType() == Node.ELEMENT_NODE) {
+            Element elem = (Element) node2;
+            elem.setAttribute("style",
+                    "border-top: 0px; border-bottom: 0px; border-color: #d0d0d0; background: #eaeaea;");
+        }
     }
 }

@@ -144,7 +144,11 @@ public class DeviceConfigComponents extends LayoutContainer {
 
     private void initToolBar() {
         toolBar = new ToolBar();
-        toolBar.setBorders(false);
+        toolBar.setBorders(true);
+        toolBar.setStyleAttribute("border-left", "1px solid rgb(208, 208, 208)");
+        toolBar.setStyleAttribute("border-right", "1px solid rgb(208, 208, 208)");
+        toolBar.setStyleAttribute("border-top", "1px solid rgb(208, 208, 208)");
+        toolBar.setStyleAttribute("border-bottom", "0px none");
 
         //
         // Refresh Button
@@ -275,7 +279,7 @@ public class DeviceConfigComponents extends LayoutContainer {
         tree = new TreePanel<ModelData>(treeStore);
         tree.setWidth(200);
         tree.setDisplayProperty("componentName");
-        tree.setBorders(false);
+        tree.setBorders(true);
         tree.setLabelProvider(modelStringProvider);
         tree.setAutoSelect(true);
         tree.setStyleAttribute("background-color", "white");

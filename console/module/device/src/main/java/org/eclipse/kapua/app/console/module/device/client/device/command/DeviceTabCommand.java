@@ -37,6 +37,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -130,6 +131,15 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
         devicesCommandPanel.add(commandOutput);
 
         add(devicesCommandPanel);
+        layout(true);
+        result.setStyleAttribute("border-top", "0px none");
+        Element el = result.getElement();
+        Node node0 = el.getChild(0);
+        if (node0.getNodeType() == Node.ELEMENT_NODE) {
+            Element el0 = (Element) node0;
+            String style = el0.getAttribute("style");
+            el0.setAttribute("style", style + " border-top: 0px;");
+        }
         initialized = true;
     }
 
