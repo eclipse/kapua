@@ -12,9 +12,11 @@
 package org.eclipse.kapua.app.console.module.data.client;
 
 import com.extjs.gxt.ui.client.GXT;
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.data.SortInfo;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -67,6 +69,7 @@ public class TopicsTable extends LayoutContainer {
             @Override
             public void onSuccess(List<GwtTopic> topics) {
                 store.add(topics, true);
+                store.sort("topicName", Style.SortDir.ASC);
                 updateTimestamps(new ArrayList<ModelData>(topics));
                 topicInfoGrid.unmask();
             }
@@ -146,6 +149,7 @@ public class TopicsTable extends LayoutContainer {
         configs.add(column);
 
         store = new TreeStore<GwtTopic>();
+        store.setSortInfo(new SortInfo("topicName", Style.SortDir.ASC));
         dataService.findTopicsTree(currentSession.getSelectedAccountId(), topicsCallback);
         topicInfoGrid = new TreeGrid<GwtTopic>(store, new ColumnModel(configs));
         topicInfoGrid.setBorders(false);

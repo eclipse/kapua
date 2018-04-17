@@ -102,6 +102,10 @@ public class GwtTopic extends KapuaBaseTreeModel implements Serializable, IsSeri
         return get("timestampFormatted");
     }
 
+    public String[] getTopicFragments() {
+        return ((String)get("semanticTopic")).split("/");
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof GwtTopic) {
