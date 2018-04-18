@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtUpdatableEntityModel;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPredicates.GwtGroupDevice;
 
@@ -54,7 +55,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
         if ("lastEventOnFormatted".equals(property)) {
             Date lastEventOn = getLastEventOn();
             if (lastEventOn != null) {
-                return (X) lastEventOn;
+                return (X) DateUtils.formatDateTime(lastEventOn);
             } else {
                 return (X) "N/A";
             }
