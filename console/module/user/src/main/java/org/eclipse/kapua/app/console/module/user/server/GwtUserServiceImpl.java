@@ -19,11 +19,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import com.extjs.gxt.ui.client.data.BaseListLoadResult;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
@@ -40,6 +35,7 @@ import org.eclipse.kapua.app.console.module.user.shared.util.GwtKapuaUserModelCo
 import org.eclipse.kapua.app.console.module.user.shared.util.KapuaGwtUserModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
@@ -59,6 +55,12 @@ import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
+
+import com.extjs.gxt.ui.client.data.BaseListLoadResult;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
 /**
  * The server side implementation of the RPC service.
@@ -340,9 +342,9 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userDisplayName", user.getDisplayName()));
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userEmail", user.getEmail()));
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userPhoneNumber", user.getPhoneNumber()));
-                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userCreatedOn", user.getCreatedOn()));
+                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userCreatedOn", KapuaDateUtils.formatDateTime(user.getCreatedOn())));
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userCreatedBy", createdUser != null ? createdUser.getName() : null));
-                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userModifiedOn", user.getModifiedOn()));
+                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userModifiedOn", KapuaDateUtils.formatDateTime(user.getModifiedOn())));
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userModifiedBy", modifiedUser != null ? modifiedUser.getName() : null));
             }
         } catch (Exception e) {

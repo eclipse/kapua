@@ -11,11 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.job.server;
 
-import com.extjs.gxt.ui.client.data.BaseListLoadResult;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
+
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
@@ -32,6 +33,7 @@ import org.eclipse.kapua.app.console.module.job.shared.util.GwtKapuaJobModelConv
 import org.eclipse.kapua.app.console.module.job.shared.util.KapuaGwtJobModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.Job;
@@ -45,11 +47,11 @@ import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
+import com.extjs.gxt.ui.client.data.BaseListLoadResult;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
 public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJobService {
 
@@ -254,9 +256,9 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
             if (job != null) {
                 gwtJobDescription.add(new GwtGroupedNVPair("jobInfo", "jobName", job.getName()));
                 gwtJobDescription.add(new GwtGroupedNVPair("jobInfo", "jobDescription", job.getDescription()));
-                gwtJobDescription.add(new GwtGroupedNVPair("jobInfo", "jobCreatedOn", job.getCreatedOn()));
+                gwtJobDescription.add(new GwtGroupedNVPair("jobInfo", "jobCreatedOn", KapuaDateUtils.formatDateTime(job.getCreatedOn())));
                 gwtJobDescription.add(new GwtGroupedNVPair("jobInfo", "jobCreatedBy", createdUser != null ? createdUser.getName() : null));
-                gwtJobDescription.add(new GwtGroupedNVPair("jobInfo", "jobModifiedOn", job.getModifiedOn()));
+                gwtJobDescription.add(new GwtGroupedNVPair("jobInfo", "jobModifiedOn", KapuaDateUtils.formatDateTime(job.getModifiedOn())));
                 gwtJobDescription.add(new GwtGroupedNVPair("jobInfo", "jobModifiedBy", modifiedUser != null ? modifiedUser.getName() : null));
             }
         } catch (Exception e) {

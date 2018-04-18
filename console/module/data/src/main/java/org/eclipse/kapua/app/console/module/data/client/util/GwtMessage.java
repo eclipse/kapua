@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.module.data.client.util;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.KapuaBaseModel;
 
 public class GwtMessage extends KapuaBaseModel implements Serializable {
@@ -28,7 +29,7 @@ public class GwtMessage extends KapuaBaseModel implements Serializable {
     @SuppressWarnings({ "unchecked" })
     public <X> X get(String property) {
         if ("timestampFormatted".equals(property)) {
-            return (X) (getTimestamp().toString());
+            return (X) (DateUtils.formatDateTime(getTimestamp()));
         } else {
             return super.get(property);
         }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,19 +18,20 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
-import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
-import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
+import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroupCreator;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroupQuery;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupService;
-import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.authorization.shared.util.GwtKapuaAuthorizationModelConverter;
 import org.eclipse.kapua.app.console.module.authorization.shared.util.KapuaGwtAuthorizationModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.group.Group;
@@ -195,9 +196,9 @@ public class GwtGroupServiceImpl extends KapuaRemoteServiceServlet implements Gw
                 // gwtGroupDescription.add(new GwtGroupedNVPair("Entity", "Scope
                 // Id", KapuaGwtAuthenticationModelConverter.convertKapuaId(group.getScopeId())));
                 gwtGroupDescription.add(new GwtGroupedNVPair("accessGroupInfo", "accessGroupName", group.getName()));
-                gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupModifiedOn", group.getModifiedOn().toString()));
+                gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupModifiedOn", KapuaDateUtils.formatDateTime(group.getModifiedOn())));
                 gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupModifiedBy", modifiedUser != null ? modifiedUser.getName() : null));
-                gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupCreatedOn", group.getCreatedOn().toString()));
+                gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupCreatedOn", KapuaDateUtils.formatDateTime(group.getCreatedOn())));
                 gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupCreatedBy", createdUser != null ? createdUser.getName() : null));
 
             }

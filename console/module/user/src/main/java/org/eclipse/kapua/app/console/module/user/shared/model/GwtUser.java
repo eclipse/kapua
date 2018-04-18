@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.user.shared.model;
 
+import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtUpdatableEntityModel;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -35,7 +36,7 @@ public class GwtUser extends GwtUpdatableEntityModel implements IsSerializable {
             return (X) (GwtUserStatus.valueOf(getStatus()));
         } else if ("expirationDateFormatted".equals(property)) {
             if (getExpirationDate() != null) {
-                return (X) (getExpirationDate().toString());
+                return (X) (DateUtils.formatDateTime(getExpirationDate()));
             } else {
                 return (X) "N/A";
             }

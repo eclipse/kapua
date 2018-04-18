@@ -94,7 +94,7 @@ public class JobGrid extends EntityGrid<GwtJob> {
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("createdOn", MSGS.gridJobColumnHeaderCreatedOn(), 200);
+        columnConfig = new ColumnConfig("createdOnFormatted", MSGS.gridJobColumnHeaderCreatedOn(), 200);
         columnConfigs.add(columnConfig);
 
         return columnConfigs;
