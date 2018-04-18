@@ -11,12 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.server;
 
-import com.extjs.gxt.ui.client.data.BaseListLoadResult;
-import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Callable;
+
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
@@ -41,6 +41,7 @@ import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.model.domain.Actions;
@@ -73,11 +74,12 @@ import org.eclipse.kapua.service.tag.TagService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Callable;
+import com.extjs.gxt.ui.client.data.BaseListLoadResult;
+import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
 /**
  * The server side implementation of the Device RPC service.
@@ -211,7 +213,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
 
                         if (lastEvent != null) {
                             pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventType", lastEvent.getResource()));
-                            pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", lastEvent.getReceivedOn()));
+                            pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn",KapuaDateUtils.formatDateTime(lastEvent.getReceivedOn())));
                         } else {
                             pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventType", null));
                             pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", null));
@@ -219,7 +221,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                     } else {
                         if (deviceConnection != null) {
                             pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventType", deviceConnection.getStatus().name()));
-                            pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", deviceConnection.getModifiedOn()));
+                            pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", KapuaDateUtils.formatDateTime(deviceConnection.getModifiedOn())));
                         } else {
                             pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventType", null));
                             pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", null));

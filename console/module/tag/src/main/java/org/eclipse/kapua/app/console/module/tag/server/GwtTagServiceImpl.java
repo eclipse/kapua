@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,11 +17,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.api.shared.util.KapuaGwtCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
@@ -32,14 +32,9 @@ import org.eclipse.kapua.app.console.module.tag.shared.util.GwtKapuaTagModelConv
 import org.eclipse.kapua.app.console.module.tag.shared.util.KapuaGwtTagModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-
-import com.extjs.gxt.ui.client.data.BaseListLoadResult;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.tag.Tag;
@@ -52,6 +47,12 @@ import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserService;
+
+import com.extjs.gxt.ui.client.data.BaseListLoadResult;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
 public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtTagService {
 
@@ -197,9 +198,9 @@ public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtT
                 // gwtTagDescription.add(new GwtGroupedNVPair("Entity", "Scope
                 // Id", KapuaGwtCommonsModelConverter.convertKapuaId(tag.getScopeId())));
                 gwtTagDescription.add(new GwtGroupedNVPair("tagInfo", "tagName", tag.getName()));
-                gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagModifiedOn", tag.getModifiedOn().toString()));
+                gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagModifiedOn", KapuaDateUtils.formatDateTime(tag.getModifiedOn())));
                 gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagModifiedBy", modifiedUser != null ? modifiedUser.getName() : null));
-                gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagCreatedOn", tag.getCreatedOn().toString()));
+                gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagCreatedOn", KapuaDateUtils.formatDateTime(tag.getCreatedOn())));
                 gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagCreatedBy", createdUser != null ? createdUser.getName() : null));
 
             }

@@ -90,7 +90,7 @@ public class TagGrid extends EntityGrid<GwtTag> {
         columnConfig = new ColumnConfig("tagName", MSGS.gridTagColumnHeaderTagName(), 200);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("createdOn", MSGS.gridTagColumnHeaderCreatedOn(), 200);
+        columnConfig = new ColumnConfig("createdOnFormatted", MSGS.gridTagColumnHeaderCreatedOn(), 200);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("userName", MSGS.gridTagColumnHeaderCreatedBy(), 200);
