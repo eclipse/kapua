@@ -26,6 +26,7 @@ import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessRole;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.AccessInfoSessionPermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessRoleService;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessRoleServiceAsync;
 
@@ -70,7 +71,7 @@ public class UserTabAccessRoleGrid extends EntityGrid<GwtAccessRole> {
         if (selectedItem == null) {
             toolbar.getDeleteEntityButton().disable();
         } else {
-            toolbar.getDeleteEntityButton().enable();
+            toolbar.getDeleteEntityButton().setEnabled(currentSession.hasPermission(AccessInfoSessionPermission.delete()));
         }
     }
 

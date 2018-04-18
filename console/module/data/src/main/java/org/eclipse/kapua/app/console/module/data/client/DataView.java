@@ -18,6 +18,7 @@ import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractView;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.data.client.messages.ConsoleDataMessages;
+import org.eclipse.kapua.app.console.module.device.shared.model.permission.DeviceSessionPermission;
 
 public class DataView extends AbstractView {
 
@@ -52,10 +53,12 @@ public class DataView extends AbstractView {
 
         channelTabItem = new TopicsTabItem(currentSession);
         tabsPanel.add(channelTabItem);
-        deviceTabItem = new DeviceTabItem(currentSession);
-        tabsPanel.add(deviceTabItem);
-        assetTabItem = new AssetTabItem(currentSession);
-        tabsPanel.add(assetTabItem);
+        if(currentSession.hasPermission(DeviceSessionPermission.read())) {
+            deviceTabItem = new DeviceTabItem(currentSession);
+            tabsPanel.add(deviceTabItem);
+            assetTabItem = new AssetTabItem(currentSession);
+            tabsPanel.add(assetTabItem);
+        }
 
         add(tabsPanel);
     }

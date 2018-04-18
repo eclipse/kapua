@@ -214,7 +214,7 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
     }
 
     private void updateToolbarButtons() {
-        getToolbar().getAddEntityButton().setEnabled(selectedUserId != null);
+        getToolbar().getAddEntityButton().setEnabled(selectedUserId != null && currentSession.hasPermission(CredentialSessionPermission.write()));
         getToolbar().getEditEntityButton().setEnabled(getSelectionModel().getSelectedItem() != null && currentSession.hasPermission(CredentialSessionPermission.write()));
         getToolbar().getDeleteEntityButton().setEnabled(getSelectionModel().getSelectedItem() != null && currentSession.hasPermission(CredentialSessionPermission.delete()));
         getToolbar().getUnlockButton().setEnabled(

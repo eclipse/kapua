@@ -18,6 +18,7 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.tag.client.TagToolbarGrid;
+import org.eclipse.kapua.app.console.module.tag.shared.model.permission.TagSessionPermission;
 
 public class DeviceTagToolbar extends TagToolbarGrid {
 
@@ -59,7 +60,7 @@ public class DeviceTagToolbar extends TagToolbarGrid {
             addEntityButton.setEnabled(selectedDevice != null);
         }
         if (deleteEntityButton != null) {
-            deleteEntityButton.setEnabled(selectedDevice != null && selectedEntity != null);
+            deleteEntityButton.setEnabled(selectedDevice != null && selectedEntity != null && currentSession.hasPermission(TagSessionPermission.delete()));
         }
         if (addEntityButton != null) {
             refreshEntityButton.setEnabled(selectedDevice != null);

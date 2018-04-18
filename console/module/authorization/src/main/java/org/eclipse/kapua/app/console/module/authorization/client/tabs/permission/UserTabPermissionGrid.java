@@ -30,6 +30,8 @@ import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsolePermissionMessages;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessPermission;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.AccessInfoSessionPermission;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.DomainSessionPermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessPermissionService;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessPermissionServiceAsync;
 
@@ -71,7 +73,7 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
         if (selectedItem == null) {
             toolbar.getDeleteEntityButton().disable();
         } else {
-            toolbar.getDeleteEntityButton().enable();
+            toolbar.getDeleteEntityButton().setEnabled(currentSession.hasPermission(AccessInfoSessionPermission.delete()) && currentSession.hasPermission(DomainSessionPermission.delete()));
         }
     }
 
