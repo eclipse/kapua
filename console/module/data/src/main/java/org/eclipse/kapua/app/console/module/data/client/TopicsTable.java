@@ -146,6 +146,7 @@ public class TopicsTable extends LayoutContainer {
         configs.add(column);
 
         column = new ColumnConfig("timestamp", MSGS.topicInfoTableLastPostedHeader(), 150);
+        column.setRenderer(new TopicTimestampCellRenderer(currentSession));
         configs.add(column);
 
         store = new TreeStore<GwtTopic>();
