@@ -317,11 +317,7 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
             public void componentSelected(ButtonEvent ce) {
                 if (!resetProcess) {
                     resetProcess = true;
-                    resetButton.setEnabled(false);
-
                     formPanel.reset();
-
-                    resetButton.setEnabled(true);
                     resetProcess = false;
                 }
             }
