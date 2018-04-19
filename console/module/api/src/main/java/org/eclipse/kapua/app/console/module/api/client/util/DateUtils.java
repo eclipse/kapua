@@ -20,8 +20,6 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 
 public class DateUtils {
 
-//    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
-
     private static final String FORMAT = "EEE dd MMM yyyy HH:mm:ss ZZZZ";
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
@@ -32,6 +30,10 @@ public class DateUtils {
      * formatDate takes a date an return its string representation with date and time
      */
     public static String formatDateTime(Date d) {
+        return formatDateTime(d, TimeZone.createTimeZone(0));
+    }
+
+    public static String formatDateTime(Date d, TimeZone tz) {
         if (d == null) {
             return MSGS.dateTimeNone();
         }

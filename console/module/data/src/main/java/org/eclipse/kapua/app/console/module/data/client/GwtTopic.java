@@ -16,7 +16,6 @@ import java.util.Date;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.KapuaBaseTreeModel;
 
 public class GwtTopic extends KapuaBaseTreeModel implements Serializable, IsSerializable {
@@ -68,7 +67,7 @@ public class GwtTopic extends KapuaBaseTreeModel implements Serializable, IsSeri
     @SuppressWarnings({ "unchecked" })
     public <X> X get(String property) {
         if ("timestampFormatted".equals(property)) {
-            return (X) DateUtils.formatDateTime(getTimestamp());
+            return (X) getTimestamp().toString();
         } else {
             return super.get(property);
         }
