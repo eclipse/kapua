@@ -31,7 +31,6 @@ import org.eclipse.kapua.app.console.module.authorization.shared.util.GwtKapuaAu
 import org.eclipse.kapua.app.console.module.authorization.shared.util.KapuaGwtAuthorizationModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.group.Group;
@@ -196,9 +195,9 @@ public class GwtGroupServiceImpl extends KapuaRemoteServiceServlet implements Gw
                 // gwtGroupDescription.add(new GwtGroupedNVPair("Entity", "Scope
                 // Id", KapuaGwtAuthenticationModelConverter.convertKapuaId(group.getScopeId())));
                 gwtGroupDescription.add(new GwtGroupedNVPair("accessGroupInfo", "accessGroupName", group.getName()));
-                gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupModifiedOn", KapuaDateUtils.formatDateTime(group.getModifiedOn())));
+                gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupModifiedOn", group.getModifiedOn()));
                 gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupModifiedBy", modifiedUser != null ? modifiedUser.getName() : null));
-                gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupCreatedOn", KapuaDateUtils.formatDateTime(group.getCreatedOn())));
+                gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupCreatedOn", group.getCreatedOn()));
                 gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupCreatedBy", createdUser != null ? createdUser.getName() : null));
 
             }

@@ -32,7 +32,6 @@ import org.eclipse.kapua.app.console.module.tag.shared.util.GwtKapuaTagModelConv
 import org.eclipse.kapua.app.console.module.tag.shared.util.KapuaGwtTagModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.Device;
@@ -198,9 +197,9 @@ public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtT
                 // gwtTagDescription.add(new GwtGroupedNVPair("Entity", "Scope
                 // Id", KapuaGwtCommonsModelConverter.convertKapuaId(tag.getScopeId())));
                 gwtTagDescription.add(new GwtGroupedNVPair("tagInfo", "tagName", tag.getName()));
-                gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagModifiedOn", KapuaDateUtils.formatDateTime(tag.getModifiedOn())));
+                gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagModifiedOn", tag.getModifiedOn()));
                 gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagModifiedBy", modifiedUser != null ? modifiedUser.getName() : null));
-                gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagCreatedOn", KapuaDateUtils.formatDateTime(tag.getCreatedOn())));
+                gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagCreatedOn", tag.getCreatedOn()));
                 gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagCreatedBy", createdUser != null ? createdUser.getName() : null));
 
             }

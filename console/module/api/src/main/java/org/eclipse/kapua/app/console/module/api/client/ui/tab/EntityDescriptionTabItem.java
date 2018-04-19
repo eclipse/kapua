@@ -84,9 +84,16 @@ public abstract class EntityDescriptionTabItem<M extends GwtEntityModel> extends
         GridCellRenderer<GwtGroupedNVPair> renderer = new GridCellRenderer<GwtGroupedNVPair>() {
 
             @Override
-            public Object render(GwtGroupedNVPair model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtGroupedNVPair> store, Grid<GwtGroupedNVPair> grid) {
+            public Object render(GwtGroupedNVPair model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<GwtGroupedNVPair> store,
+                    Grid<GwtGroupedNVPair> grid) {
                 Object value = model.getValue();
-                return value;
+                if (value != null && value instanceof Date) {
+                    Date dateValue = (Date) value;
+                    return DateUtils.formatDateTime(dateValue);
+                } else {
+                    return value;
+                }
             }
         };
 

@@ -20,7 +20,6 @@ import java.time.format.DateTimeFormatter;
 //import java.time.format.ResolverStyle;
 import java.util.Date;
 import java.util.Locale;
-import java.util.TimeZone;
 
 /**
  * Date utilities
@@ -33,10 +32,6 @@ public final class KapuaDateUtils {
     public static final String ISO_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"; // example 24/01/2017T11:22:10.999Z
     public static final String FORMAT = "dd MMM yyyy HH:mm:ss ZZZZ";
 
-    private static final DateTimeFormatter LOCALTIMEFORMATTER = DateTimeFormatter
-            .ofPattern(FORMAT)
-            .withLocale(KapuaDateUtils.getLocale())
-            .withZone(TimeZone.getDefault().toZoneId());
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter
             .ofPattern(ISO_DATE_PATTERN)
             .withLocale(KapuaDateUtils.getLocale())
@@ -86,15 +81,6 @@ public final class KapuaDateUtils {
         } else {
             return FORMATTER.format(date.toInstant());
         }
-    }
-
-    // Format date and time in User's current Time Zone
-    public static String formatDateTime(Date d) {
-        if (d == null) {
-            return null;
-        }
-
-        return LOCALTIMEFORMATTER.format(d.toInstant());
     }
 
 }

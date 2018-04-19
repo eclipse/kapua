@@ -60,7 +60,6 @@ import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
-import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.commons.util.ThrowingRunnable;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
@@ -224,9 +223,9 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             });
 
             accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountName", account.getName()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountCreatedOn", KapuaDateUtils.formatDateTime(account.getCreatedOn())));
+            accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountCreatedOn", account.getCreatedOn()));
             accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountCreatedBy", userCreatedBy != null ? userCreatedBy.getName() : null));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountModifiedOn", KapuaDateUtils.formatDateTime(account.getModifiedOn())));
+            accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountModifiedOn", account.getModifiedOn()));
             accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountModifiedBy", userModifiedBy != null ? userModifiedBy.getName() : null));
 
             EndpointInfoListResult endpointInfos = KapuaSecurityUtils.doPrivileged(new Callable<EndpointInfoListResult>() {
