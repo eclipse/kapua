@@ -38,7 +38,6 @@ import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.role.Role;
@@ -240,9 +239,9 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             // If there are results
             if (role != null) {
                 gwtRoleDescription.add(new GwtGroupedNVPair("roleInfo", "roleName", role.getName()));
-                gwtRoleDescription.add(new GwtGroupedNVPair("roleInfo", "roleModifiedOn", KapuaDateUtils.formatDateTime(role.getModifiedOn())));
+                gwtRoleDescription.add(new GwtGroupedNVPair("roleInfo", "roleModifiedOn", role.getModifiedOn()));
                 gwtRoleDescription.add(new GwtGroupedNVPair("roleInfo", "roleModifiedBy", modifiedUser != null ? modifiedUser.getName() : null));
-                gwtRoleDescription.add(new GwtGroupedNVPair("roleInfo", "roleCreatedOn", KapuaDateUtils.formatDateTime(role.getCreatedOn())));
+                gwtRoleDescription.add(new GwtGroupedNVPair("roleInfo", "roleCreatedOn", role.getCreatedOn()));
                 gwtRoleDescription.add(new GwtGroupedNVPair("roleInfo", "roleCreatedBy", createdUser != null ? createdUser.getName() : null));
             }
 

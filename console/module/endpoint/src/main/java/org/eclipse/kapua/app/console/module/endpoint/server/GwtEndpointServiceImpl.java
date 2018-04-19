@@ -30,7 +30,6 @@ import org.eclipse.kapua.app.console.module.endpoint.shared.util.GwtKapuaEndpoin
 import org.eclipse.kapua.app.console.module.endpoint.shared.util.KapuaGwtEndpointModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.endpoint.EndpointInfo;
@@ -218,9 +217,9 @@ public class GwtEndpointServiceImpl extends KapuaRemoteServiceServlet implements
                 }
                 gwtEndpointDescription.add(new GwtGroupedNVPair("endpointInfo", "endpointUsages", usages));
 
-                gwtEndpointDescription.add(new GwtGroupedNVPair("entityInfo", "endpointModifiedOn", KapuaDateUtils.formatDateTime(endpointInfo.getModifiedOn())));
+                gwtEndpointDescription.add(new GwtGroupedNVPair("entityInfo", "endpointModifiedOn", endpointInfo.getModifiedOn()));
                 gwtEndpointDescription.add(new GwtGroupedNVPair("entityInfo", "endpointModifiedBy", modifiedUser != null ? modifiedUser.getName() : null));
-                gwtEndpointDescription.add(new GwtGroupedNVPair("entityInfo", "endpointCreatedOn", KapuaDateUtils.formatDateTime(endpointInfo.getCreatedOn())));
+                gwtEndpointDescription.add(new GwtGroupedNVPair("entityInfo", "endpointCreatedOn", endpointInfo.getCreatedOn()));
                 gwtEndpointDescription.add(new GwtGroupedNVPair("entityInfo", "endpointCreatedBy", createdUser != null ? createdUser.getName() : null));
 
             }

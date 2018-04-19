@@ -41,7 +41,6 @@ import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.model.domain.Actions;
@@ -213,7 +212,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
 
                         if (lastEvent != null) {
                             pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventType", lastEvent.getResource()));
-                            pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn",KapuaDateUtils.formatDateTime(lastEvent.getReceivedOn())));
+                            pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", lastEvent.getReceivedOn()));
                         } else {
                             pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventType", null));
                             pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", null));
@@ -221,7 +220,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                     } else {
                         if (deviceConnection != null) {
                             pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventType", deviceConnection.getStatus().name()));
-                            pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", KapuaDateUtils.formatDateTime(deviceConnection.getModifiedOn())));
+                            pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", deviceConnection.getModifiedOn()));
                         } else {
                             pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventType", null));
                             pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", null));

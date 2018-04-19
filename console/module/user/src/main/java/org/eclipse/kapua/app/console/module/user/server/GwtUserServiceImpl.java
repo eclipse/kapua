@@ -35,7 +35,6 @@ import org.eclipse.kapua.app.console.module.user.shared.util.GwtKapuaUserModelCo
 import org.eclipse.kapua.app.console.module.user.shared.util.KapuaGwtUserModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
@@ -342,9 +341,9 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userDisplayName", user.getDisplayName()));
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userEmail", user.getEmail()));
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userPhoneNumber", user.getPhoneNumber()));
-                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userCreatedOn", KapuaDateUtils.formatDateTime(user.getCreatedOn())));
+                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userCreatedOn", user.getCreatedOn()));
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userCreatedBy", createdUser != null ? createdUser.getName() : null));
-                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userModifiedOn", KapuaDateUtils.formatDateTime(user.getModifiedOn())));
+                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userModifiedOn", user.getModifiedOn()));
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userModifiedBy", modifiedUser != null ? modifiedUser.getName() : null));
             }
         } catch (Exception e) {
