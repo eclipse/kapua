@@ -49,8 +49,8 @@ public class UserAddDialog extends EntityAddEditDialog {
     protected static final ConsoleUserMessages USER_MSGS = GWT.create(ConsoleUserMessages.class);
 
     protected KapuaTextField<String> username;
-    protected TextField<String> password;
-    protected TextField<String> confirmPassword;
+    protected KapuaTextField<String> password;
+    protected KapuaTextField<String> confirmPassword;
     protected LabelField passwordTooltip;
     protected TextField<String> displayName;
     protected TextField<String> email;
@@ -117,20 +117,22 @@ public class UserAddDialog extends EntityAddEditDialog {
         infoFieldSet.add(username, subFieldsetFormData);
 
         if (currentSession.hasPermission(CredentialSessionPermission.write())) {
-            password = new TextField<String>();
+            password = new KapuaTextField<String>();
             password.setAllowBlank(false);
             password.setName("password");
             password.setFieldLabel("* " + USER_MSGS.dialogAddFieldPassword());
             password.setValidator(new PasswordFieldValidator(password));
             password.setPassword(true);
+            password.setMaxLength(255);
             infoFieldSet.add(password, subFieldsetFormData);
 
-            confirmPassword = new TextField<String>();
+            confirmPassword = new KapuaTextField<String>();
             confirmPassword.setAllowBlank(false);
             confirmPassword.setName("confirmPassword");
             confirmPassword.setFieldLabel("* " + USER_MSGS.dialogAddFieldConfirmPassword());
             confirmPassword.setValidator(new ConfirmPasswordFieldValidator(confirmPassword, password));
             confirmPassword.setPassword(true);
+            confirmPassword.setMaxLength(255);
             infoFieldSet.add(confirmPassword, subFieldsetFormData);
 
             passwordTooltip = new LabelField();
