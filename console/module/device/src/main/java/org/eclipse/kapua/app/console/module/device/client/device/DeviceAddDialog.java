@@ -152,9 +152,9 @@ public class DeviceAddDialog extends EntityAddEditDialog {
 
         // Display name
         displayNameField = new KapuaTextField<String>();
-        displayNameField.setAllowBlank(true);
+        displayNameField.setAllowBlank(false);
         displayNameField.setName("displayName");
-        displayNameField.setFieldLabel(DEVICE_MSGS.deviceFormDisplayName());
+        displayNameField.setFieldLabel("* " + DEVICE_MSGS.deviceFormDisplayName());
         displayNameField.setWidth(225);
         displayNameField.setMaxLength(255);
         fieldSet.add(displayNameField, formData);
