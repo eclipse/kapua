@@ -1288,6 +1288,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         // start queries
 
         MetricInfoQuery metricInfoQuery = getBaseMetricInfoQuery(account.getId());
+        metricInfoQuery.addFetchAttributes(MetricInfoField.TIMESTAMP_FULL.field());
         setMetricInfoQueryBaseCriteria(metricInfoQuery, new DateRange(capturedOn, capturedOnThirdMessage));
 
         MetricInfoListResult metricList = METRIC_INFO_REGISTRY_SERVICE.query(metricInfoQuery);
@@ -1458,6 +1459,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         sort.add(orderConstraint(SortField.ascending(MetricInfoSchema.METRIC_MTR_NAME_FULL), String.class));
 
         MetricInfoQuery metricInfoQuery = getMetricInfoOrderedQuery(account.getId(), (6 + 1) * messagesCount, sort);
+        metricInfoQuery.addFetchAttributes(MetricInfoField.TIMESTAMP_FULL.field());
         setMetricInfoQueryBaseCriteria(metricInfoQuery, new DateRange(capturedOn1, capturedOn2));
 
         MetricInfoListResult metricList = METRIC_INFO_REGISTRY_SERVICE.query(metricInfoQuery);
@@ -1571,6 +1573,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
         ClientInfoQuery clientInfoQuery = getBaseClientInfoQuery(account.getId(), 100);
         setClientInfoQueryBaseCriteria(clientInfoQuery, new DateRange(capturedOn, capturedOnThirdMessage));
+        clientInfoQuery.addFetchAttributes(ClientInfoField.TIMESTAMP.field());
 
         ClientInfoListResult clientList = CLIENT_INFO_REGISTRY_SERVICE.query(clientInfoQuery);
         checkClientInfo(clientList, 2, clientIds);

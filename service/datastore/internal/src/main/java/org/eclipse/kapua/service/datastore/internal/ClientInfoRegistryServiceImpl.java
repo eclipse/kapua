@@ -26,6 +26,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.datastore.ClientInfoRegistryService;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
+import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl;
@@ -119,7 +120,7 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
         checkAccess(query.getScopeId(), Actions.read);
         try {
             ClientInfoListResult result = clientInfoRegistryFacade.query(query);
-            if (result != null) {
+            if (result != null && query.getFetchAttributes().contains(ClientInfoField.TIMESTAMP.field())) {
                 // populate the lastMessageTimestamp
                 for (ClientInfo clientInfo : result.getItems()) {
                     updateLastPublishedFields(clientInfo);

@@ -131,7 +131,7 @@ public class DataMetrics extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
             @ApiParam(value = "The MetricInfoQuery to use to filter results", required = true) MetricInfoQuery query) throws Exception {
         query.setScopeId(scopeId);
-
+        query.addFetchAttributes(MetricInfoField.TIMESTAMP_FULL.field());
         return METRIC_INFO_REGISTRY_SERVICE.query(query);
     }
 

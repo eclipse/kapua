@@ -686,6 +686,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
 
         Account account = (Account) stepData.get("LastAccount");
         MetricInfoQuery tmpQuery = DatastoreQueryFactory.createBaseMetricInfoQuery(account.getId(), 100);
+        tmpQuery.addFetchAttributes(MetricInfoField.TIMESTAMP_FULL.field());
 
         stepData.put("metricInfoQuery", tmpQuery);
         MetricInfoListResult tmpList = metricInfoRegistryService.query(tmpQuery);
@@ -702,6 +703,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         AndPredicate andPredicate = new AndPredicateImpl();
         andPredicate.getPredicates().add(timestampPredicate);
         tmpQuery.setPredicate(andPredicate);
+        tmpQuery.addFetchAttributes(MetricInfoField.TIMESTAMP_FULL.field());
 
         stepData.put("metricInfoQuery", tmpQuery);
         MetricInfoListResult tmpList = metricInfoRegistryService.query(tmpQuery);
@@ -719,6 +721,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         andPredicate.getPredicates().add(timestampPredicate);
         tmpQuery.setPredicate(andPredicate);
         tmpQuery.setSortFields(getNamedMetricOrdering().stream().map(OrderConstraint::getField).collect(Collectors.toList()));
+        tmpQuery.addFetchAttributes(MetricInfoField.TIMESTAMP_FULL.field());
 
         stepData.put("metricInfoQuery", tmpQuery);
         MetricInfoListResult tmpList = metricInfoRegistryService.query(tmpQuery);
@@ -730,6 +733,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
 
         Account account = (Account) stepData.get("LastAccount");
         MetricInfoQuery query = getBaseMetricQuery(account.getId(), 100, getNamedMetricOrdering());
+        query.addFetchAttributes(MetricInfoField.TIMESTAMP_FULL.field());
         MetricInfoListResult metList = metricInfoRegistryService.query(query);
         stepData.put(lstKey, metList);
     }
@@ -752,6 +756,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         stepData.remove("metricInfoQuery");
         Account account = (Account) stepData.get("LastAccount");
         MetricInfoQuery tmpQuery = DatastoreQueryFactory.createBaseMetricInfoQuery(account.getId(), 100);
+        tmpQuery.addFetchAttributes(MetricInfoField.TIMESTAMP_FULL.field());
         AndPredicate andPredicate = new AndPredicateImpl();
         TermPredicate tmpPred = new TermPredicateImpl(MetricInfoField.CHANNEL, topic);
         MetricInfoListResult tmpList = null;
@@ -769,6 +774,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
 
         Account account = (Account) stepData.get("LastAccount");
         MetricInfoQuery tmpQuery = DatastoreQueryFactory.createBaseMetricInfoQuery(account.getId(), 100);
+        tmpQuery.addFetchAttributes(MetricInfoField.TIMESTAMP_FULL.field());
         AndPredicate andPredicate = new AndPredicateImpl();
         TermPredicate tmpPred = new TermPredicateImpl(MetricInfoField.CLIENT_ID, clientId);
         MetricInfoListResult tmpList = null;
@@ -863,7 +869,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
 
         Account account = (Account) stepData.get("LastAccount");
         ClientInfoQuery tmpQuery = DatastoreQueryFactory.createBaseClientInfoQuery(account.getId(), 100);
-
+        tmpQuery.addFetchAttributes(ClientInfoField.TIMESTAMP.field());
         ClientInfoListResult tmpList = clientInfoRegistryService.query(tmpQuery);
         stepData.put(clientKey, tmpList);
     }
@@ -878,6 +884,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         AndPredicate andPredicate = new AndPredicateImpl();
         andPredicate.getPredicates().add(timestampPredicate);
         tmpQuery.setPredicate(andPredicate);
+        tmpQuery.addFetchAttributes(ClientInfoField.TIMESTAMP.field());
 
         ClientInfoListResult tmpList = clientInfoRegistryService.query(tmpQuery);
         stepData.put(lstKey, tmpList);
@@ -892,6 +899,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         AndPredicate andPredicate = new AndPredicateImpl();
         andPredicate.getPredicates().add(clientIdPredicate);
         tmpQuery.setPredicate(andPredicate);
+        tmpQuery.addFetchAttributes(ClientInfoField.TIMESTAMP.field());
 
         ClientInfoListResult tmpList = clientInfoRegistryService.query(tmpQuery);
         stepData.put(lstKey, tmpList);
@@ -1231,6 +1239,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
     public void queryForMetricInfo() throws KapuaException {
 
         MetricInfoQuery metricInfoQuery = (MetricInfoQuery) stepData.get("metricInfoQuery");
+        metricInfoQuery.addFetchAttributes(MetricInfoField.TIMESTAMP_FULL.field());
         MetricInfoListResult result = metricInfoRegistryService.query(metricInfoQuery);
         stepData.put("metricInfoListResult", result);
     }
@@ -1283,6 +1292,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
     public void queryForClientInfo() throws KapuaException {
 
         ClientInfoQuery clientInfoQuery = (ClientInfoQuery) stepData.get("clientInfoQuery");
+        clientInfoQuery.addFetchAttributes(ClientInfoField.TIMESTAMP.field());
         ClientInfoListResult result = clientInfoRegistryService.query(clientInfoQuery);
         stepData.put("clientInfoListResult", result);
     }
@@ -1505,6 +1515,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         andPredicate.getPredicates().add(new TermPredicateImpl(ClientInfoField.CLIENT_ID, tmpClId));
         ClientInfoQuery clientInfoQuery = DatastoreQueryFactory.createBaseClientInfoQuery(tmpAccId, 100);
         clientInfoQuery.setPredicate(andPredicate);
+        clientInfoQuery.addFetchAttributes(ClientInfoField.TIMESTAMP.field());
 
         ClientInfoListResult clientInfoList = clientInfoRegistryService.query(clientInfoQuery);
 
@@ -1523,6 +1534,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         andPredicate.getPredicates().add(new TermPredicateImpl(MetricInfoField.CLIENT_ID, tmpClId));
         MetricInfoQuery metricInfoQuery = DatastoreQueryFactory.createBaseMetricInfoQuery(tmpAccId, 100);
         metricInfoQuery.setPredicate(andPredicate);
+        metricInfoQuery.addFetchAttributes(MetricInfoField.TIMESTAMP_FULL.field());
 
         MetricInfoListResult metricInfoList = metricInfoRegistryService.query(metricInfoQuery);
 
