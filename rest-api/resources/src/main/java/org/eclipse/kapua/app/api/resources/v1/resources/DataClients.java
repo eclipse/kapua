@@ -120,7 +120,7 @@ public class DataClients extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
             @ApiParam(value = "The ClientInfoQuery to use to filter results", required = true) ClientInfoQuery query) throws Exception {
         query.setScopeId(scopeId);
-
+        query.addFetchAttributes(ClientInfoField.TIMESTAMP.field());
         return CLIENT_INFO_REGISTRY_SERVICE.query(query);
     }
 

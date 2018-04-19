@@ -28,6 +28,7 @@ import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
 import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
+import org.eclipse.kapua.service.datastore.internal.mediator.MetricInfoField;
 import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ExistsPredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
@@ -122,7 +123,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
         checkDataAccess(query.getScopeId(), Actions.read);
         try {
             MetricInfoListResult result = metricInfoRegistryFacade.query(query);
-            if (result != null) {
+            if (result != null && query.getFetchAttributes().contains(MetricInfoField.TIMESTAMP_FULL.field())) {
                 // populate the lastMessageTimestamp
                 for (MetricInfo metricInfo : result.getItems()) {
                     updateLastPublishedFields(metricInfo);
