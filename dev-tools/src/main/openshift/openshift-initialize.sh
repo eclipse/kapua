@@ -12,14 +12,11 @@
 
 set -e
 
-# Configuration
-
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-. $SCRIPT_DIR/openshift-common.sh
+. ${SCRIPT_DIR}/openshift-common.sh
 
-  : OPENSHIFT_HOST=${OPENSHIFT_HOST:=localhost:8443}
+### Create Kapua project
 
+${OC} login ${OPENSHIFT_HOST} --username=${OPENSHIFT_USER} --password=${OPENSHIFT_PASS} ${OPENSHIFT_LOGIN_OPTS}
 
-# Create Kapua project
-$OC login $OPENSHIFT_HOST -u admin -p admin
-$OC new-project "$OPENSHIFT_PROJECT_NAME" --description="Open source IoT Platform" --display-name="Eclipse Kapua"
+${OC} new-project "${OPENSHIFT_PROJECT_NAME}" --description="Open source IoT Platform" --display-name="Eclipse Kapua"

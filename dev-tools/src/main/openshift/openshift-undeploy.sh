@@ -10,15 +10,17 @@
 #
 ###############################################################################
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-. $SCRIPT_DIR/openshift-common.sh
+set -e
 
-  : OPENSHIFT_HOST=${OPENSHIFT_HOST:=localhost:8443}
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+. ${SCRIPT_DIR}/openshift-common.sh
+
+### Remove Kapua
 
 echo Undeploying Eclipse Kapua from Openshift
 
-# deleting entire project with related resources
-$OC login $OPENSHIFT_HOST -u admin -p admin
-oc delete project eclipse-kapua
+${OC} login ${OPENSHIFT_HOST} --username=${OPENSHIFT_USER} --password=${OPENSHIFT_PASS} ${OPENSHIFT_LOGIN_OPTS}
+
+${OC} delete project "${OPENSHIFT_PROJECT_NAME}"
 
 echo Eclipse Kapua undeployed from Openshift
