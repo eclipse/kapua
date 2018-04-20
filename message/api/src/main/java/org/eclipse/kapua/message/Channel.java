@@ -8,11 +8,21 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.message;
 
-public interface Channel
-{
+import org.eclipse.kapua.message.xml.MessageXmlRegistry;
+
+import java.io.Serializable;
+
+import javax.xml.bind.annotation.XmlType;
+
+/**
+ * Channel definition.
+ *
+ * @since 1.0
+ */
+@XmlType(factoryClass = MessageXmlRegistry.class, factoryMethod = "newKapuaChannel") //
+public interface Channel extends Serializable {
 
 }

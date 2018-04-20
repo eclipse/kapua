@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,25 +8,32 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.setting;
 
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
-public class DatastoreSettings extends AbstractKapuaSetting<DatastoreSettingKey>
-{
-    private static final String    DATASTORE_CONFIG_RESOURCE = "kapua-datastore-setting.properties";
+/**
+ * Datastore settings implementation
+ * 
+ * @since 1.0
+ */
+public class DatastoreSettings extends AbstractKapuaSetting<DatastoreSettingKey> {
 
-    private static final DatastoreSettings instance = new DatastoreSettings();
+    private static final String DATASTORE_CONFIG_RESOURCE = "kapua-datastore-setting.properties";
 
-    private DatastoreSettings()
-    {
+    private static final DatastoreSettings INSTANCE = new DatastoreSettings();
+
+    private DatastoreSettings() {
         super(DATASTORE_CONFIG_RESOURCE);
     }
 
-    public static DatastoreSettings getInstance()
-    {
-        return instance;
+    /**
+     * Get the datastore setting instance
+     * 
+     * @return
+     */
+    public static DatastoreSettings getInstance() {
+        return INSTANCE;
     }
 }

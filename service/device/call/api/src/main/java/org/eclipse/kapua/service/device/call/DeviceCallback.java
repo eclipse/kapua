@@ -8,16 +8,32 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call;
 
 import org.eclipse.kapua.service.device.call.message.DeviceMessage;
 
-@SuppressWarnings("rawtypes")
-public interface DeviceCallback<RSM extends DeviceMessage>
-{
+/**
+ * Device callback definition
+ * 
+ * @param <RSM>
+ *            response message type
+ * 
+ * @since 1.0
+ * 
+ */
+public interface DeviceCallback<RSM extends DeviceMessage<?, ?>> {
+
+    /**
+     * Action to be invoked on response received
+     * 
+     * @param response
+     */
     public void responseReceived(RSM response);
 
+    /**
+     * Action to be invoked on timed out
+     */
     public void timedOut();
+
 }

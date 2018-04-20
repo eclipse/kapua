@@ -1,0 +1,182 @@
+#*******************************************************************************
+# Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     Eurotech - initial API and implementation
+#     Red Hat Inc
+#*******************************************************************************
+
+# Vagrant 1.9.6 or major is required
+# since one of the previous version had a bug with Centos/7 box
+Vagrant.require_version ">= 1.9.6"
+
+Vagrant.configure(2) do |config|
+  config.vm.box = "centos/7"
+  config.vm.box_check_update = false
+
+  # If Virtualbox provider
+  # Check that vagrant-vbguest plugin is installed
+  # If missing, install it.
+  config.vm.provider "virtualbox" do |vb|
+    unless Vagrant.has_plugin?("vagrant-vbguest")
+      system('if ! vagrant plugin list | grep -q vagrant-vbguest; then echo "Installing missing plugin: vagrant-vbguest" ;vagrant plugin install vagrant-vbguest; fi')
+    end
+  end
+
+  config.vm.provision "shell", inline: <<-SHELL
+    export DEBIAN_FRONTEND=noninteractive
+
+    export ELASTICSEARCH_VERSION="5.4.0"
+    export H2DB_VERSION="1.4.192"
+    export ACTIVE_MQ_VERSION="5.14.5"
+    export ARTEMIS_VERSION="2.2.0"
+    export TOMCAT_VERSION="8.0.41"
+    export BINDING_IP="192.168.33.10"
+
+    # Install OpenJDK 8
+    sudo yum clean all
+    sudo yum install -y java-1.8.0-openjdk-devel
+
+    # Install ActiveMQ
+    sudo mkdir -p /usr/local/activemq
+    cd /usr/local/activemq
+    sudo curl -O http://archive.apache.org/dist/activemq/${ACTIVE_MQ_VERSION}/apache-activemq-${ACTIVE_MQ_VERSION}-bin.tar.gz
+    sudo tar zxvf apache-activemq-${ACTIVE_MQ_VERSION}-bin.tar.gz
+    sudo rm apache-activemq-${ACTIVE_MQ_VERSION}-bin.tar.gz
+
+    # Remove unnecessary library
+    echo 'cleanup unnecessary libraries'
+    cd apache-activemq-${ACTIVE_MQ_VERSION}
+    sudo rm -rf activemq-all-*
+    sudo rm -rf lib/activemq-jaas-*
+    sudo rm -rf lib/activemq-openwire-legacy*
+    sudo rm -rf lib/activemq-web-*
+    sudo rm -rf lib/activemq-rar.txt
+    sudo rm -rf lib/geronimo-jms_1.1_spec-1.1.1.jar
+    sudo rm -rf lib/geronimo-jta_1.0.1B_spec*
+    sudo rm -rf lib/optional/activeio-core-*
+    sudo rm -rf lib/optional/activemq-amqp-*
+    sudo rm -rf lib/optional/activemq-jdbc-store*
+    sudo rm -rf lib/optional/activemq-leveldb-store*
+    sudo rm -rf lib/optional/activemq-log4j-appender*
+    sudo rm -rf lib/optional/activemq-shiro*
+    sudo rm -rf lib/optional/activemq-partition*
+    sudo rm -rf lib/optional/activemq-pool*
+    sudo rm -rf lib/optional/activemq-runtime-config*
+    sudo rm -rf lib/optional/activemq-stomp*
+    sudo rm -rf lib/optional/commons-codec-*
+    sudo rm -rf lib/optional/commons-collections-*
+    sudo rm -rf lib/optional/commons-dbcp*
+    sudo rm -rf lib/optional/commons-net*
+    sudo rm -rf lib/optional/commons-pool2*
+    sudo rm -rf lib/optional/geronimo-j2ee-connector*
+    sudo rm -rf lib/optional/guava*
+    sudo rm -rf lib/optional/hawt*
+    sudo rm -rf lib/optional/http*
+    sudo rm -rf lib/optional/insight-log*
+    sudo rm -rf lib/optional/jackson-*
+    sudo rm -rf lib/optional/jasypt-*
+    sudo rm -rf lib/optional/jaxb2-*
+    sudo rm -rf lib/optional/jettison-*
+    sudo rm -rf lib/optional/jmdns-*
+    sudo rm -rf lib/optional/leveldb*
+    sudo rm -rf lib/optional/org.apache.servicemix.bundles*
+    sudo rm -rf lib/optional/org.linkedin*
+    sudo rm -rf lib/optional/proton-j*
+    sudo rm -rf lib/optional/scala-library*
+    sudo rm -rf lib/optional/shiro*
+    sudo rm -rf lib/optional/snappy-*
+    sudo rm -rf lib/optional/spring-oxm-*
+    sudo rm -rf lib/optional/velocity*
+    sudo rm -rf lib/optional/xpp3-*
+    sudo rm -rf lib/optional/xstream-*
+    sudo rm -rf lib/optional/zookeeper-*
+
+    sudo rm -rf lib/web/apache*
+    sudo rm -rf lib/web/taglibs*
+    sudo rm -rf lib/web/spring*
+    sudo rm -rf lib/web/org.eclipse*
+    sudo rm -rf lib/web/json-simple*
+    sudo rm -rf lib/web/jolokia*
+    sudo rm -rf lib/web/rome*
+    sudo rm -rf lib/web/jdom*
+    sudo rm -rf lib/web/geronimo*
+    sudo rm -rf lib/web/asm*
+
+    sudo rm -rf bin/wrapper.jar
+    sudo rm -rf bin/macosx/
+    sudo rm -rf bin/linux-x86-32/
+    sudo rm -rf bin/linux-x86-64/
+
+    sudo rm -rf examples/
+    sudo rm -rf docs/
+    sudo rm -rf webapps/
+    sudo rm -rf webapps-demo/
+
+    # Install ActiveMQ Artemis (service broker)
+    sudo mkdir -p /usr/local/artemis
+    cd /usr/local/artemis
+    sudo curl -O https://archive.apache.org/dist/activemq/activemq-artemis/${ARTEMIS_VERSION}/apache-artemis-${ARTEMIS_VERSION}-bin.tar.gz
+    sudo tar zxvf apache-artemis-${ARTEMIS_VERSION}-bin.tar.gz
+    sudo rm apache-artemis-${ARTEMIS_VERSION}-bin.tar.gz
+    cd apache-artemis-${ARTEMIS_VERSION}
+    #create server
+    ./bin/artemis create \
+    --allow-anonymous \
+    --autocreate \
+    --cluster-password password \
+    --cluster-user user \
+    --clustered false \
+    --data ./data/kapua --default-port 61616 \
+    --disable-persistence false \
+    --home /usr/local/apache-artemis-${ARTEMIS_VERSION} \
+    --host ${BINDING_IP} \
+    --name kapua \
+    --password password \
+    --allow-anonymous \
+    --user user \
+    --verbose kapua
+
+    # Install H2 database
+    sudo mkdir -p /usr/local/h2database/h2database-${H2DB_VERSION}
+    cd /usr/local/h2database/h2database-${H2DB_VERSION}
+    sudo curl -O http://repo2.maven.org/maven2/com/h2database/h2/${H2DB_VERSION}/h2-${H2DB_VERSION}.jar
+
+    # Install Elasticsearch
+    sudo mkdir -p /usr/local/elasticsearch
+    cd /usr/local/elasticsearch
+    sudo curl -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz
+    sudo tar -xvf elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz
+    sudo rm elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz
+
+    # Install Tomcat8
+    sudo mkdir -p /usr/local/tomcat
+    cd /usr/local/tomcat
+    sudo curl -O https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz
+    sudo tar zxvf apache-tomcat-${TOMCAT_VERSION}.tar.gz
+    sudo rm apache-tomcat-${TOMCAT_VERSION}.tar.gz
+
+    # Fix tomcat8 to provide slf4j and logback
+    cd /usr/local/tomcat/apache-tomcat-${TOMCAT_VERSION}/lib
+    sudo curl -O https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.24/slf4j-api-1.7.24.jar
+    sudo curl -O https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.1.8/logback-core-1.1.8.jar
+    sudo curl -O https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.1.8/logback-classic-1.1.8.jar
+    sudo curl -O http://central.maven.org/maven2/javax/mail/javax.mail-api/1.5.6/javax.mail-api-1.5.6.jar
+
+    ############################
+    ### System Configuration ###
+    ############################
+    sudo bash -c 'echo "* soft nofile 65536" > /etc/security/limits.d/kapua.conf'
+    sudo bash -c 'echo "* hard nofile 65536" >> /etc/security/limits.d/kapua.conf'
+
+    sudo bash -c "echo 'vm.max_map_count=262144' > /etc/sysctl.d/98-kapua.conf"
+    sudo sysctl --system
+
+    cat /dev/null > ~/.bash_history && history -c
+  SHELL
+end

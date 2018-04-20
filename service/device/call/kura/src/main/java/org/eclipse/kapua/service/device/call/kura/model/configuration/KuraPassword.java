@@ -11,24 +11,37 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura.model.configuration;
 
-public class KuraPassword
-{
+/**
+ * Kura password
+ * 
+ * @since 1.0
+ *
+ */
+public class KuraPassword {
+
     private String password;
 
-    public KuraPassword(String password)
-    {
+    /**
+     * Constructor
+     * 
+     * @param password
+     */
+    public KuraPassword(String password) {
         super();
         this.password = password;
     }
 
-    public String getPassword()
-    {
+    /**
+     * Get the password
+     * 
+     * @return
+     */
+    public String getPassword() {
         return password;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return password;
     }
 }

@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
@@ -25,31 +24,29 @@ import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
  * @since 1.0
  *
  */
-public class AccountEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory
-{
-    private static final String                PERSISTENCE_UNIT_NAME = "kapua-account";
-    private static final String                DATASOURCE_NAME       = "kapua-dbpool";
-    private static final Map<String, String>   s_uniqueConstraints   = new HashMap<>();
+public class AccountEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory {
 
-    private static AccountEntityManagerFactory instance              = new AccountEntityManagerFactory();
+    private static final String PERSISTENCE_UNIT_NAME = "kapua-account";
+    private static final String DATASOURCE_NAME = "kapua-dbpool";
+    private static final Map<String, String> UNIQUE_CONTRAINTS = new HashMap<>();
+
+    private static AccountEntityManagerFactory instance = new AccountEntityManagerFactory();
 
     /**
      * Constructs a new entity manager factory and configure it to use the account persistence unit.
      */
-    private AccountEntityManagerFactory()
-    {
+    private AccountEntityManagerFactory() {
         super(PERSISTENCE_UNIT_NAME,
-              DATASOURCE_NAME,
-              s_uniqueConstraints);
+                DATASOURCE_NAME,
+                UNIQUE_CONTRAINTS);
     }
-    
+
     /**
      * Return the {@link EntityManager} singleton instance
      * 
      * @return
      */
-    public static AccountEntityManagerFactory getInstance()
-    {
+    public static AccountEntityManagerFactory getInstance() {
         return instance;
     }
 }

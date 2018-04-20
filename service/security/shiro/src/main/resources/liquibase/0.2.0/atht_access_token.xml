@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+  logicalFilePath="KapuaDB/changelog-authentication-0.2.0.xml">
+
+    <include relativeToChangelogFile="true" file="../common-properties.xml" />
+
+    <changeSet id="changelog-authentication-0.2.0_createAccessToken" author="eurotech">
+        <!-- Old SQL file
+        <sqlFile relativeToChangelogFile="true" path="./atht_access_token.sql" />
+        -->
+        <createTable tableName="atht_access_token">
+            <column name="scope_id" type="bigint(21) unsigned">
+                <constraints nullable="false" />
+            </column>
+            <column name="id" type="bigint(21) unsigned">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="created_on" type="timestamp(3)" defaultValueComputed="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_on" type="timestamp(3)" defaultValueComputed="${now}"/>
+            <column name="modified_by" type="bigint(21) unsigned"/>
+
+            <column name="user_id" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+            <column name="token_id" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expires_on" type="timestamp(3)" defaultValueComputed="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="refresh_token" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="refresh_expires_on" type="timestamp(3)" defaultValueComputed="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="invalidated_on" type="timestamp(3)"/>
+
+            <column name="optlock" type="int unsigned" />
+            <column name="attributes" type="text" />
+            <column name="properties" type="text" />
+        </createTable>
+
+        <createIndex tableName="atht_access_token" indexName="idx_atht_access_token_scope_id">
+            <column name="scope_id"/>
+        </createIndex>
+        <createIndex tableName="atht_access_token" indexName="idx_atht_access_token_user_id">
+            <column name="scope_id"/>
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

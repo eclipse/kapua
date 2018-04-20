@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+    Copyright (c) 2017 Red Hat Inc and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Red Hat Inc - initial API and implementation
+ -->
+
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.4.0 http://karaf.apache.org/xmlns/features/v1.4.0"
+    name="kapua-client-gateway-${project.version}">
+
+    <feature name="kapua-client-gateway" hidden="true"
+        version="${project.version}">
+        <bundle>mvn:${project.groupId}/kapua-client-gateway-api/${project.version}</bundle>
+        <bundle>mvn:${project.groupId}/kapua-client-gateway-spi/${project.version}</bundle>
+    </feature>
+
+    <feature name="kapua-client-gateway-profile-kura" hidden="true"
+        version="${project.version}">
+        <feature version="${project.version}">kapua-client-gateway</feature>
+        <bundle>mvn:${project.groupId}/kapua-client-gateway-profile-kura/${project.version}</bundle>
+
+        <bundle dependency="true">mvn:com.google.protobuf/protobuf-java/2.6.1</bundle>
+    </feature>
+
+    <feature name="kapua-client-gateway-provider-mqtt" hidden="true"
+        version="${project.version}">
+        <feature version="${project.version}">kapua-client-gateway</feature>
+        <bundle>mvn:${project.groupId}/kapua-client-gateway-provider-mqtt/${project.version}</bundle>
+    </feature>
+
+    <feature name="kapua-client-gateway-kura-fuse" version="${project.version}">
+        <feature version="${project.version}">kapua-client-gateway</feature>
+        <feature version="${project.version}">kapua-client-gateway-profile-kura</feature>
+        <feature version="${project.version}">kapua-client-gateway-provider-mqtt</feature>
+
+        <bundle>mvn:${project.groupId}/kapua-client-gateway-provider-fuse/${project.version}</bundle>
+
+        <bundle dependency="true">mvn:org.fusesource.mqtt-client/mqtt-client/1.14</bundle>
+        <bundle dependency="true">mvn:org.fusesource.hawtbuf/hawtbuf/1.11</bundle>
+        <bundle dependency="true">mvn:org.fusesource.hawtdispatch/hawtdispatch/1.22</bundle>
+        <bundle dependency="true">mvn:org.fusesource.hawtdispatch/hawtdispatch-transport/1.22</bundle>
+    </feature>
+
+    <feature name="kapua-client-gateway-kura-paho" version="${project.version}">
+        <feature version="${project.version}">kapua-client-gateway</feature>
+        <feature version="${project.version}">kapua-client-gateway-profile-kura</feature>
+        <feature version="${project.version}">kapua-client-gateway-provider-mqtt</feature>
+
+        <bundle>mvn:${project.groupId}/kapua-client-gateway-provider-paho/${project.version}</bundle>
+
+        <bundle dependency="true">mvn:org.eclipse.paho/org.eclipse.paho.client.mqttv3/1.1.1</bundle>
+    </feature>
+
+</features>

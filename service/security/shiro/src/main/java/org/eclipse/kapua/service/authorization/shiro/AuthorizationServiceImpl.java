@@ -8,59 +8,44 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.shiro;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authz.AuthorizationException;
-import org.apache.shiro.subject.Subject;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.KapuaIllegalStateException;
+import org.eclipse.kapua.KapuaUnauthenticatedException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
+import org.eclipse.kapua.service.authorization.shiro.exception.SubjectUnauthorizedException;
 
 /**
- * Authorization service implementation.
- * 
- * since 1.0
- * 
+ * {@link AuthorizationService} implementation.
+ *
+ * @since 1.0.0
  */
-public class AuthorizationServiceImpl implements AuthorizationService
-{
+@KapuaProvider
+public class AuthorizationServiceImpl implements AuthorizationService {
 
     @Override
     public boolean isPermitted(Permission permission)
-        throws KapuaException
-    {
-        boolean isPermitted = true;
+            throws KapuaException {
+        KapuaSession session = KapuaSecurityUtils.getSession();
 
-        try {
-            checkPermission(permission);
-        }
-        catch (AuthorizationException e) {
-            isPermitted = false;
+        if (session == null) {
+            throw new KapuaUnauthenticatedException();
         }
 
-        return isPermitted;
+        return session.isTrustedMode() ? true : SecurityUtils.getSubject().isPermitted((org.apache.shiro.authz.Permission) permission);
     }
 
     @Override
     public void checkPermission(Permission permission)
-        throws KapuaException
-    {
-        KapuaSession session = KapuaSecurityUtils.getSession();
-
-        // FIXME: this should throw something like unauthenticated exception
-        if (session == null) {
-            throw new KapuaIllegalStateException("null KapuaSession");
-        }
-
-        if (!session.isTrustedMode()) {
-            Subject subject = SecurityUtils.getSubject();
-            subject.checkPermission(permission.toString());
+            throws KapuaException {
+        if (!isPermitted(permission)) {
+            throw new SubjectUnauthorizedException(permission);
         }
     }
 }

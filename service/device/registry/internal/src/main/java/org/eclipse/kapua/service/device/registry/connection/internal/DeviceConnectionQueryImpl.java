@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection.internal;
 
@@ -17,15 +16,26 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
 
-public class DeviceConnectionQueryImpl extends AbstractKapuaQuery<DeviceConnection> implements DeviceConnectionQuery
-{
-    private DeviceConnectionQueryImpl()
-    {
+/**
+ * Device connection query.
+ *
+ * @since 1.0
+ */
+public class DeviceConnectionQueryImpl extends AbstractKapuaQuery<DeviceConnection> implements DeviceConnectionQuery {
+
+    /**
+     * Constructor
+     */
+    private DeviceConnectionQueryImpl() {
         super();
     }
 
-    public DeviceConnectionQueryImpl(KapuaId scopeId)
-    {
+    /**
+     * Constructor
+     *
+     * @param scopeId
+     */
+    public DeviceConnectionQueryImpl(KapuaId scopeId) {
         this();
         setScopeId(scopeId);
     }

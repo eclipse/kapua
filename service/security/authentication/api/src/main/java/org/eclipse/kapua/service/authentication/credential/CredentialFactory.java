@@ -8,30 +8,42 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential;
 
-import org.eclipse.kapua.model.KapuaObjectFactory;
+import org.eclipse.kapua.model.KapuaEntityFactory;
 import org.eclipse.kapua.model.id.KapuaId;
+
+import java.util.Date;
 
 /**
  * Credential factory service definition.
- * 
+ *
  * @since 1.0
- * 
+ *
  */
-public interface CredentialFactory extends KapuaObjectFactory
-{
+public interface CredentialFactory extends KapuaEntityFactory<Credential, CredentialCreator, CredentialQuery, CredentialListResult> {
+
     /**
-     * Create a new {@link CredentialCreator} for the specific credential type
-     * 
+     * Create a new {@link Credential}
+     *
      * @param scopeId
      * @param userId
      * @param credentialType
      * @param credentialKey
      * @return
      */
-    public CredentialCreator newCreator(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey);
+    public Credential newCredential(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey, CredentialStatus credentialStatus, Date expirationDate);
+
+    /**
+     * Create a new {@link CredentialCreator} for the specific credential type
+     *
+     * @param scopeId
+     * @param userId
+     * @param credentialType
+     * @param credentialKey
+     * @return
+     */
+    public CredentialCreator newCreator(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey, CredentialStatus credentialStatus, Date expirationDate);
 
 }

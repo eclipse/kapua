@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.transport.message.mqtt;
 
@@ -19,36 +19,28 @@ import org.eclipse.kapua.transport.message.pubsub.PubSubTransportMessage;
 
 /**
  * Implementation of {@link TransportMessage} API for MQTT transport facade.
- * 
- * @since 1.0.0
  */
 public class MqttMessage implements PubSubTransportMessage<MqttTopic, MqttPayload> {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * The request topic of this {@link MqttMessage}.
-     * 
-     * @since 1.0.0
      */
     private MqttTopic requestTopic;
 
     /**
      * The response topic of this {@link MqttMessage}.
-     * 
-     * @since 1.0.0
      */
     private MqttTopic responseTopic;
 
     /**
      * The timestamp of this {@link MqttMessage}.
-     * 
-     * @since 1.0.0
      */
     private Date timestamp;
 
     /**
      * The payload of this {@link MqttPayload}.
-     * 
-     * @since 1.0.0
      */
     private MqttPayload payload;
 
@@ -61,7 +53,6 @@ public class MqttMessage implements PubSubTransportMessage<MqttTopic, MqttPayloa
      *            The response {@link MqttTopic} to set for this {@link MqttMessage}.
      * @param requestPayload
      *            The request {@link MqttPayload} to set for this {@link MqttMessage}.
-     * @since 1.0.0
      */
     public MqttMessage(MqttTopic requestTopic, MqttTopic responseTopic, MqttPayload requestPayload) {
         this(requestTopic, (Date) null, requestPayload);
@@ -77,7 +68,6 @@ public class MqttMessage implements PubSubTransportMessage<MqttTopic, MqttPayloa
      *            The timestamp to set for this {@link MqttMessage}.
      * @param requestPayload
      *            The request {@link MqttPayload} to set for this {@link MqttMessage}.
-     * @since 1.0.0
      */
     public MqttMessage(MqttTopic requestTopic, Date receivedOn, MqttPayload requestPayload) {
         this.requestTopic = requestTopic;
@@ -89,7 +79,6 @@ public class MqttMessage implements PubSubTransportMessage<MqttTopic, MqttPayloa
      * Gets the request {@link MqttTopic} set for this {@link MqttMessage}.
      * 
      * @return The request {@link MqttTopic} set for this {@link MqttMessage}.
-     * @since 1.0.0
      */
     public MqttTopic getRequestTopic() {
         return requestTopic;
@@ -100,7 +89,6 @@ public class MqttMessage implements PubSubTransportMessage<MqttTopic, MqttPayloa
      * 
      * @param requestTopic
      *            The request {@link MqttTopic} to set for this {@link MqttMessage}.
-     * @since 1.0.0
      */
     public void setRequestTopic(MqttTopic requestTopic) {
         this.requestTopic = requestTopic;
@@ -110,7 +98,6 @@ public class MqttMessage implements PubSubTransportMessage<MqttTopic, MqttPayloa
      * Gets the response {@link MqttTopic} set for this {@link MqttMessage}.
      * 
      * @return The response {@link MqttTopic} set for this {@link MqttMessage}.
-     * @since 1.0.0
      */
     public MqttTopic getResponseTopic() {
         return responseTopic;
@@ -121,7 +108,6 @@ public class MqttMessage implements PubSubTransportMessage<MqttTopic, MqttPayloa
      * 
      * @param responseTopic
      *            The response {@link MqttTopic} to set for this {@link MqttMessage}.
-     * @since 1.0.0
      */
     public void setResponseTopic(MqttTopic responseTopic) {
         this.responseTopic = responseTopic;

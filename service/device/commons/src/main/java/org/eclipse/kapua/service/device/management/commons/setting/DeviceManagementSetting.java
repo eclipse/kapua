@@ -8,25 +8,40 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.commons.setting;
 
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
-public class DeviceManagementSetting extends AbstractKapuaSetting<DeviceManagementSettingKey>
-{
-    private static final String                  DEVICE_MANAGEMENT_SETTING_RESOURCE = "device-management-setting.properties";
+/**
+ * Class that offers access to device management settings
+ * 
+ * @since 1.0
+ *
+ */
+public class DeviceManagementSetting extends AbstractKapuaSetting<DeviceManagementSettingKey> {
 
-    private static final DeviceManagementSetting instance                           = new DeviceManagementSetting();
+    /**
+     * Resource file from which source properties.
+     * 
+     */
+    private static final String DEVICE_MANAGEMENT_SETTING_RESOURCE = "device-management-setting.properties";
 
-    private DeviceManagementSetting()
-    {
+    private static final DeviceManagementSetting INSTANCE = new DeviceManagementSetting();
+
+    /**
+     * Constructor
+     */
+    private DeviceManagementSetting() {
         super(DEVICE_MANAGEMENT_SETTING_RESOURCE);
     }
 
-    public static DeviceManagementSetting getInstance()
-    {
-        return instance;
+    /**
+     * Get a singleton instance of {@link DeviceManagementSetting}.
+     * 
+     * @return
+     */
+    public static DeviceManagementSetting getInstance() {
+        return INSTANCE;
     }
 }

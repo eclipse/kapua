@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,13 +8,13 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.user;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.service.KapuaDomainService;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaNamedEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
@@ -24,15 +24,22 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
  * UserService exposes APIs to manage User object under an Account.<br>
  * It includes APIs to create, update, find, list and delete Users.<br>
  * Instances of the UserService can be acquired through the ServiceLocator.
- * 
+ *
  * @since 1.0
- * 
  */
 public interface UserService extends KapuaEntityService<User, UserCreator>,
-                             KapuaUpdatableEntityService<User>,
-                             KapuaNamedEntityService<User>,
-                             KapuaConfigurableService
-{
+        KapuaUpdatableEntityService<User>,
+        KapuaNamedEntityService<User>,
+        KapuaDomainService<UserDomain>,
+        KapuaConfigurableService {
+
+    public static final UserDomain USER_DOMAIN = new UserDomain();
+
+    @Override
+    default UserDomain getServiceDomain() {
+        return USER_DOMAIN;
+    }
+
     /**
      * Creates a new user under the account specified in the UserCreator.<br>
      * The returned User object does not have its access information, roles
@@ -42,8 +49,9 @@ public interface UserService extends KapuaEntityService<User, UserCreator>,
      * @return created User
      * @throws KapuaException
      */
+    @Override
     public User create(UserCreator userCreator)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Updates an User in the database and returns the refreshed/reloaded entity instance.<br>
@@ -54,8 +62,9 @@ public interface UserService extends KapuaEntityService<User, UserCreator>,
      * @return
      * @throws KapuaException
      */
+    @Override
     public User update(User user)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Delete the supplied User.
@@ -64,7 +73,7 @@ public interface UserService extends KapuaEntityService<User, UserCreator>,
      * @throws KapuaException
      */
     public void delete(User user)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Returns the User with the specified Id; returns null if the user is not found.<br>
@@ -74,8 +83,9 @@ public interface UserService extends KapuaEntityService<User, UserCreator>,
      * @return
      * @throws KapuaException
      */
+    @Override
     public User find(KapuaId accountId, KapuaId userId)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Returns the User with the specified username; returns null if the user is not found.
@@ -83,12 +93,24 @@ public interface UserService extends KapuaEntityService<User, UserCreator>,
      * @return
      * @throws KapuaException
      */
+    @Override
     public User findByName(String name)
-        throws KapuaException;
+            throws KapuaException;
+
+    /**
+     * Find user by external id
+     *
+     * @param externalId the external ID to look for
+     * @return the user or {@code null} if the user could not be found
+     * @throws KapuaException in case anything goes wrong
+     */
+    public User findByExternalId(String externalId) throws KapuaException;
 
     /**
      * Queries for all users
      */
+    @Override
     public UserListResult query(KapuaQuery<User> query)
-        throws KapuaException;
+            throws KapuaException;
+
 }

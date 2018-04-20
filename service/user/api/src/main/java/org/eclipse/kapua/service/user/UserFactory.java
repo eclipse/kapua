@@ -8,50 +8,26 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.user;
 
-import org.eclipse.kapua.model.KapuaObjectFactory;
+import org.eclipse.kapua.model.KapuaEntityFactory;
 import org.eclipse.kapua.model.id.KapuaId;
 
 /**
  * User factory service definition.
- * 
+ *
  * @since 1.0
- * 
  */
-public interface UserFactory extends KapuaObjectFactory
-{
+public interface UserFactory extends KapuaEntityFactory<User, UserCreator, UserQuery, UserListResult> {
 
     /**
      * Creates a new {@link UserCreator} for the specified name
-     * 
+     *
      * @param scopedId
      * @param name
      * @return
      */
     public UserCreator newCreator(KapuaId scopedId, String name);
-    
-    /**
-     * Creates a new user entity
-     * 
-     * @return
-     */
-    public User newUser();
 
-    /**
-     * Creates a new user query for the specified scope identifier
-     * 
-     * @param scopedId
-     * @return
-     */
-    public UserQuery newQuery(KapuaId scopedId);
-    
-    /**
-     * Creates a new user result list
-     * 
-     * @return
-     */
-    public UserListResult newUserListResult();
 }

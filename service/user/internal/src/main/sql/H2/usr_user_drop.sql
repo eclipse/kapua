@@ -11,3 +11,4 @@
  *******************************************************************************/
 
 DROP TABLE IF EXISTS usr_user;
+DROP TABLE IF EXISTS DATABASECHANGELOG;

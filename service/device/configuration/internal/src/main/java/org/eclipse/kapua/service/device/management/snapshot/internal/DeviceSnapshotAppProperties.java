@@ -8,29 +8,35 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.snapshot.internal;
 
-import org.eclipse.kapua.service.device.management.KapuaAppProperties;
+import org.eclipse.kapua.service.device.management.message.KapuaAppProperties;
 
-public enum DeviceSnapshotAppProperties implements KapuaAppProperties
-{
-	APP_NAME("SNAPSHOT"),
-    APP_VERSION("1.0.0"),
-    ;
+/**
+ * Device snapshot properties definition.
+ *
+ * @since 1.0
+ */
+public enum DeviceSnapshotAppProperties implements KapuaAppProperties {
+    /**
+     * Application name
+     */
+    APP_NAME("SNAPSHOT"),
+    /**
+     * Application version
+     */
+    APP_VERSION("1.0.0"),;
 
     private String value;
 
-    DeviceSnapshotAppProperties(String value)
-    {
+    DeviceSnapshotAppProperties(String value) {
         this.value = value;
     }
 
     @Override
-    public String getValue()
-    {
+    public String getValue() {
         return value;
     }
-	
+
 }

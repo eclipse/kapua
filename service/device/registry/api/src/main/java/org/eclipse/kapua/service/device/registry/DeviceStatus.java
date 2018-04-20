@@ -8,12 +8,22 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry;
 
-public enum DeviceStatus
-{
+/**
+ * Device status.
+ * 
+ * @since 1.0
+ *
+ */
+public enum DeviceStatus {
+    /**
+     * Enabled
+     */
     ENABLED,
+    /**
+     * Disabled
+     */
     DISABLED
 }

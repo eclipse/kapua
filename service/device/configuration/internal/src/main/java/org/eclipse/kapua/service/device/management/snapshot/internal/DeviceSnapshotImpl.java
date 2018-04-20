@@ -8,32 +8,37 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
-
 package org.eclipse.kapua.service.device.management.snapshot.internal;
 
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshot;
 
+/**
+ * Device snapshot entity implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class DeviceSnapshotImpl implements DeviceSnapshot {
+
     private String id;
     private Long timestamp;
-    
+
     @Override
     public String getId() {
         return id;
     }
-    
+
     @Override
     public void setId(String id) {
         this.id = id;
     }
-    
+
     @Override
     public Long getTimestamp() {
         return timestamp;
     }
-    
+
     @Override
     public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;

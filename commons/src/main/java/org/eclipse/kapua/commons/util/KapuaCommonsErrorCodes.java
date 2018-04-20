@@ -8,13 +8,20 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.commons.util;
 
 import org.eclipse.kapua.KapuaErrorCode;
 
-public enum KapuaCommonsErrorCodes implements KapuaErrorCode
-{
+/**
+ * Kapua commons error codes
+ *
+ * @since 1.0
+ *
+ */
+public enum KapuaCommonsErrorCodes implements KapuaErrorCode {
+    /**
+     * Identifier generation error
+     */
     ID_GENERATION_ERROR
 }

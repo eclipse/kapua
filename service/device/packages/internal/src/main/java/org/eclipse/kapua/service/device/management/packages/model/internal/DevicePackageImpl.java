@@ -1,17 +1,29 @@
+/*******************************************************************************
+ * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.kapua.service.device.management.packages.model.internal;
 
 import java.util.Date;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackage;
+import org.eclipse.kapua.service.device.management.packages.model.DevicePackageBundleInfos;
 
-public class DevicePackageImpl implements DevicePackage
-{
+/**
+ * Device package.
+ * 
+ * @since 1.0
+ *
+ */
+public class DevicePackageImpl implements DevicePackage {
+
     private String name;
 
     private String version;
@@ -20,42 +32,47 @@ public class DevicePackageImpl implements DevicePackage
 
     private Date installDate;
 
-    public String getName()
-    {
+    @Override
+    public String getName() {
         return name;
     }
 
-    public void setName(String name)
-    {
+    @Override
+    public void setName(String name) {
         this.name = name;
     }
 
-    public String getVersion()
-    {
+    @Override
+    public String getVersion() {
         return version;
     }
 
-    public void setVersion(String version)
-    {
+    @Override
+    public void setVersion(String version) {
         this.version = version;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
-    public DevicePackageBundleInfosImpl getBundleInfos()
-    {
+    public DevicePackageBundleInfosImpl getBundleInfos() {
         if (bundleInfos == null) {
             bundleInfos = new DevicePackageBundleInfosImpl();
         }
         return bundleInfos;
     }
 
-    public Date getInstallDate()
-    {
+    @Override
+    public Date getInstallDate() {
         return installDate;
     }
 
-    public void setInstallDate(Date installDate)
-    {
+    @Override
+    public void setInstallDate(Date installDate) {
         this.installDate = installDate;
+    }
+
+    @Override
+    public void setBundleInfos(DevicePackageBundleInfos bundleInfos) {
+        this.bundleInfos = (DevicePackageBundleInfosImpl) bundleInfos;
     }
 }

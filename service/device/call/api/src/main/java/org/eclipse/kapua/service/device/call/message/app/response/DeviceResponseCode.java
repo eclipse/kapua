@@ -8,11 +8,22 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.message.app.response;
 
-public interface DeviceResponseCode
-{
+/**
+ * Device response code definition.<br>
+ * It is used to define a short result for the command response received by a device.
+ *
+ * @since 1.0
+ */
+public interface DeviceResponseCode {
 
+    public boolean isAccepted();
+
+    public boolean isBadRequest();
+
+    public boolean isNotFound();
+
+    public boolean isInternalError();
 }

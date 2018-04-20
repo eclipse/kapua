@@ -1,0 +1,9 @@
+org.eclipse.kapua.translator.jms.kura.TranslatorDataJmsKura
+org.eclipse.kapua.translator.jms.kura.TranslatorLifeAppsJmsKura
+org.eclipse.kapua.translator.jms.kura.TranslatorLifeBirthJmsKura
+org.eclipse.kapua.translator.jms.kura.TranslatorLifeDisconnectJmsKura
+org.eclipse.kapua.translator.jms.kura.TranslatorLifeMissingJmsKura
+org.eclipse.kapua.translator.jms.kura.TranslatorLifeNotifyJmsKura
+org.eclipse.kapua.translator.jms.kura.TranslatorLifeUnmatchedJmsKura
+
+org.eclipse.kapua.translator.kura.jms.TranslatorDataKuraJms

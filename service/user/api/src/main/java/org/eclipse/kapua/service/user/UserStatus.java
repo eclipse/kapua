@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.user;
 
@@ -18,7 +17,7 @@ import javax.xml.bind.annotation.XmlEnum;
 
 /**
  * User status
- * 
+ *
  * @since 1.0
  *
  */

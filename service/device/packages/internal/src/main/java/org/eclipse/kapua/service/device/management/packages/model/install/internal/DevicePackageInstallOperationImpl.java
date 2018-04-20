@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.kapua.service.device.management.packages.model.install.internal;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -8,6 +19,12 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallOperation;
 import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallStatus;
 
+/**
+ * Device package install operation entity.
+ * 
+ * @since 1.0
+ *
+ */
 @XmlRootElement(name = "packageInstallOperation")
 public class DevicePackageInstallOperationImpl implements DevicePackageInstallOperation {
 
@@ -35,26 +52,32 @@ public class DevicePackageInstallOperationImpl implements DevicePackageInstallOp
         }
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
 
+    @Override
     public String getVersion() {
         return version;
     }
 
+    @Override
     public void setVersion(String version) {
         this.version = version;
     }
 
+    @Override
     public DevicePackageInstallStatus getStatus() {
         return status;
     }
 
+    @Override
     public void setStatus(DevicePackageInstallStatus status) {
         this.status = status;
     }

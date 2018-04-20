@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,68 +8,51 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.pool;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.jms.BytesMessage;
 import javax.jms.JMSException;
+import javax.jms.TextMessage;
+import javax.jms.Topic;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.eclipse.kapua.broker.core.message.MessageConstants;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.message.JmsUtil;
+import org.eclipse.kapua.broker.core.message.MessageConstants;
+import org.eclipse.kapua.broker.core.plugin.KapuaConnectionContext;
 
 /**
- * Broker assistant ({@link JmsProducerWrapper}) implementation.<BR>
- * This class provide methods to send messages for the device life cycle (to be send outside to a device specific topic) and alert/login info update messages (to be send to a specific queue)
+ * Broker ({@link JmsProducerWrapper}) implementation.<BR>
+ * This class provide methods to send messages for the device life cycle (to be send outside to a device specific topic)
  * 
  * @since 1.0
  */
-public class JmsAssistantProducerWrapper extends JmsProducerWrapper
-{
+public class JmsAssistantProducerWrapper extends JmsProducerWrapper {
 
-    private final static List<String> semanticTopicConnect    = new ArrayList<String>();
-    private final static List<String> semanticTopicDisconnect = new ArrayList<String>();
-    private final static List<String> semanticTopicMissing    = new ArrayList<String>();
-
-    static {
-        semanticTopicConnect.add("MQTT");
-        semanticTopicConnect.add("CONNECT");
-
-        semanticTopicDisconnect.add("MQTT");
-        semanticTopicDisconnect.add("DISCONNECT");
-
-        semanticTopicMissing.add("MQTT");
-        semanticTopicMissing.add("MISSING");
-    }
-
-    public JmsAssistantProducerWrapper(ActiveMQConnectionFactory vmconnFactory, String destination, boolean transacted, boolean start) throws JMSException
-    {
+    public JmsAssistantProducerWrapper(ActiveMQConnectionFactory vmconnFactory, String destination, boolean transacted, boolean start) throws JMSException, KapuaException {
         super(vmconnFactory, destination, transacted, start);
     }
 
-    // ==========================================================
-    // Messages to be send into the internal KAPUA_SERVICE queue
-    // ==========================================================
     /**
-     * Send the data messages gone in error to a specific queue to keep them
+     * Send a text message to the specified topic
      * 
-     * @param messageNotStored
      * @param topic
+     * @param message
      * @throws JMSException
      */
-    public void sendDataMessageNotStored(String topic, byte[] messageNotStored) throws JMSException
-    {
-        BytesMessage message = session.createBytesMessage();
+    public void send(String topic, String message, KapuaConnectionContext kcc) throws JMSException {
+        TextMessage textMessage = session.createTextMessage();
+        Topic jmsTopic = session.createTopic(topic);
 
-        message.setStringProperty(MessageConstants.PROPERTY_ORIGINAL_TOPIC, JmsUtil.convertMqttWildCardToJms(topic));
-        message.setLongProperty(MessageConstants.PROPERTY_ENQUEUED_TIMESTAMP, System.currentTimeMillis());
-        message.writeBytes(messageNotStored);
+        textMessage.setStringProperty(MessageConstants.PROPERTY_BROKER_ID, kcc.getBrokerId());
+        textMessage.setStringProperty(MessageConstants.PROPERTY_CLIENT_ID, kcc.getClientId());
+        textMessage.setLongProperty(MessageConstants.PROPERTY_SCOPE_ID, kcc.getScopeIdAsLong());
+        textMessage.setStringProperty(MessageConstants.PROPERTY_ORIGINAL_TOPIC, JmsUtil.convertMqttWildCardToJms(topic));
+        textMessage.setLongProperty(MessageConstants.PROPERTY_ENQUEUED_TIMESTAMP, System.currentTimeMillis());
+        textMessage.setText(message);
+        textMessage.setJMSDestination(jmsTopic);
 
-        producer.send(message);
+        producer.send(jmsTopic, textMessage);
     }
 
 }

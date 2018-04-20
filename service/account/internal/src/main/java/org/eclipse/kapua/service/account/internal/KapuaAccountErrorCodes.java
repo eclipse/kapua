@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
@@ -24,13 +23,13 @@ public enum KapuaAccountErrorCodes implements KapuaErrorCode {
     /**
      * Internal error
      */
-	INTERNAL_ERROR,
+    INTERNAL_ERROR,
     /**
      * Illegal argument
      */
-	ILLEGAL_ARGUMENT,
+    ILLEGAL_ARGUMENT,
     /**
      * Operation not allowed
      */
-	OPERATION_NOT_ALLOWED;
+    OPERATION_NOT_ALLOWED;
 }

@@ -8,15 +8,30 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.message.device.lifecycle;
 
 import org.eclipse.kapua.message.KapuaChannel;
 
-public interface KapuaAppsChannel extends KapuaChannel
-{
+/**
+ * Kapua application message channel object definition.
+ * 
+ * @since 1.0
+ *
+ */
+public interface KapuaAppsChannel extends KapuaChannel {
+
+    /**
+     * Set client identifier
+     * 
+     * @return
+     */
     public String getClientId();
 
+    /**
+     * Set client identifier
+     * 
+     * @param clientId
+     */
     public void setClientId(String clientId);
 }

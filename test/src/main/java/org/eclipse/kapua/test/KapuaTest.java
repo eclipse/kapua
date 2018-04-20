@@ -1,6 +1,5 @@
-package org.eclipse.kapua.test;
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,33 +7,42 @@ package org.eclipse.kapua.test;
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- * Eurotech - initial API and implementation
+ *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
+package org.eclipse.kapua.test;
 
+import static org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers.resolveJdbcUrl;
+import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER;
+import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_PASSWORD;
+import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_USERNAME;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Random;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.jpa.*;
+import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.EntityManagerSession;
+import org.eclipse.kapua.commons.jpa.SimpleSqlScriptExecutor;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
-import org.eclipse.kapua.service.authentication.UsernamePasswordTokenFactory;
-import org.junit.AfterClass;
+import org.eclipse.kapua.service.authentication.CredentialsFactory;
+import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER;
-
 public class KapuaTest extends Assert {
 
-    private static final Logger LOG = LoggerFactory.getLogger(KapuaTest.class);
-
-    private static boolean isInitialized;
+    private static final Logger logger = LoggerFactory.getLogger(KapuaTest.class);
 
     protected static Random random = new Random();
     protected static KapuaLocator locator = KapuaLocator.getInstance();
@@ -42,38 +50,53 @@ public class KapuaTest extends Assert {
     protected static KapuaId adminUserId;
     protected static KapuaId adminScopeId;
 
+    private Connection connection;
+
     @Before
-    public void setUp() {
+    public void setUp() throws SQLException {
+        logger.debug("Setting up test...");
+        try {
+            System.setProperty(DB_JDBC_CONNECTION_URL_RESOLVER.key(), "H2");
+            SystemSetting config = SystemSetting.getInstance();
+            String dbUsername = config.getString(DB_USERNAME);
+            String dbPassword = config.getString(DB_PASSWORD);
+            String jdbcUrl = resolveJdbcUrl();
 
+            connection = DriverManager.getConnection(jdbcUrl, dbUsername, dbPassword);
 
-        LOG.debug("Setting up test...");
-        if (!isInitialized) {
-            LOG.debug("Kapua test context is not initialized. Initializing...");
-            try {
-                //
-                // Login
-                String username = "kapua-sys";
-                String password = "kapua-password";
+            new KapuaLiquibaseClient(jdbcUrl, dbUsername, dbPassword).update();
 
-                AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
-                UsernamePasswordTokenFactory credentialsFactory = locator.getFactory(UsernamePasswordTokenFactory.class);
-                authenticationService.login(credentialsFactory.newInstance(username, password.toCharArray()));
+            //
+            // Login
+            String username = "kapua-sys";
+            String password = "kapua-password";
 
-                //
-                // Get current user Id
-                adminUserId = KapuaSecurityUtils.getSession().getUserId();
-                adminScopeId = KapuaSecurityUtils.getSession().getScopeId();
-            } catch (KapuaException exc) {
-                exc.printStackTrace();
-            }
-            isInitialized = true;
+            AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
+            CredentialsFactory credentialsFactory = locator.getFactory(CredentialsFactory.class);
+            authenticationService.login(credentialsFactory.newUsernamePasswordCredentials(username, password));
+
+            //
+            // Get current user Id
+            adminUserId = KapuaSecurityUtils.getSession().getUserId();
+            adminScopeId = KapuaSecurityUtils.getSession().getScopeId();
+        } catch (KapuaException exc) {
+            exc.printStackTrace();
         }
     }
 
-    @AfterClass
-    public static void tearDown() {
-        LOG.debug("Stopping Kapua test context.");
-        isInitialized = false;
+    @After
+    public void tearDown() {
+        logger.debug("Stopping Kapua test context.");
+
+        try {
+            if (connection != null) {
+                connection.close();
+                connection = null;
+            }
+        } catch (SQLException e) {
+            logger.warn("Failed to close database", e);
+        }
+
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
@@ -100,9 +123,12 @@ public class KapuaTest extends Assert {
     /**
      * Generates a random {@link String} from the given parameters
      *
-     * @param chars length of the generated {@link String}
-     * @param letters whether or not use chars
-     * @param numbers whether or not use numbers
+     * @param chars
+     *            length of the generated {@link String}
+     * @param letters
+     *            whether or not use chars
+     * @param numbers
+     *            whether or not use numbers
      *
      * @return the generated {@link String}
      */
@@ -116,12 +142,7 @@ public class KapuaTest extends Assert {
 
     public static void scriptSession(AbstractEntityManagerFactory entityManagerFactory, String fileFilter) throws KapuaException {
         EntityManagerSession entityManagerSession = new EntityManagerSession(entityManagerFactory);
-        entityManagerSession.onEntityManagerAction(entityManager -> {
-            entityManager.beginTransaction();
-            new SimpleSqlScriptExecutor().scanScripts(fileFilter).executeUpdate(entityManager);
-            entityManager.commit();
-        });
+        entityManagerSession.onTransactedAction(entityManager -> new SimpleSqlScriptExecutor().scanScripts(fileFilter).executeUpdate(entityManager));
     }
-
 
 }

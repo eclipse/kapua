@@ -8,16 +8,21 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.message.internal.device.lifecycle;
 
 import org.eclipse.kapua.message.device.lifecycle.KapuaBirthPayload;
 import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
 
+/**
+ * Kapua data message payload object reference implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class KapuaBirthPayloadImpl extends KapuaPayloadImpl implements KapuaBirthPayload {
-	
-	private String uptime;
+
+    private String uptime;
     private String displayName;
     private String modelName;
     private String modelId;
@@ -47,212 +52,274 @@ public class KapuaBirthPayloadImpl extends KapuaPayloadImpl implements KapuaBirt
     private String modemImsi;
     private String modemIccid;
 
+    /**
+     * Constructor
+     * 
+     * @param uptime
+     * @param displayName
+     * @param modelName
+     * @param modelId
+     * @param partNumber
+     * @param serialNumber
+     * @param firmware
+     * @param firmwareVersion
+     * @param bios
+     * @param biosVersion
+     * @param os
+     * @param osVersion
+     * @param jvm
+     * @param jvmVersion
+     * @param jvmProfile
+     * @param containerFramework
+     * @param containerFrameworkVersion
+     * @param applicationFramework
+     * @param applicationFrameworkVersion
+     * @param connectionInterface
+     * @param connectionIp
+     * @param acceptEncoding
+     * @param applicationIdentifiers
+     * @param availableProcessors
+     * @param totalMemory
+     * @param osArch
+     * @param modemImei
+     * @param modemImsi
+     * @param modemIccid
+     */
     public KapuaBirthPayloadImpl(String uptime,
-    		String displayName,
-    		String modelName,
-			String modelId,
-			String partNumber,
-			String serialNumber,
-			String firmware,
-			String firmwareVersion,
-			String bios,
-			String biosVersion,
-			String os,
-			String osVersion,
-			String jvm,
-			String jvmVersion,
-			String jvmProfile,
-			String containerFramework,
-			String containerFrameworkVersion,
-			String applicationFramework,
-			String applicationFrameworkVersion,
-			String connectionInterface,
-			String connectionIp,
-			String acceptEncoding,
-			String applicationIdentifiers,
-			String availableProcessors,
-			String totalMemory,
-			String osArch, 
-			String modemImei,
-			String modemImsi,
-			String modemIccid) {
-    	this.uptime = uptime;
-    	this.displayName = displayName;
-    	this.modelName = modelName;
-    	this.modelId = modelId;
-    	this.partNumber = partNumber;
-    	this.serialNumber = serialNumber;
-    	this.firmware = firmware;
-    	this.firmwareVersion = firmwareVersion;
-    	this.bios = bios;
-    	this.biosVersion = biosVersion;
-    	this.os = os;
-    	this.osVersion = osVersion;
-    	this.jvm = jvm;
-    	this.jvmVersion = jvmVersion;
-    	this.jvmProfile = jvmProfile;
-    	this.containerFramework = containerFramework;
-    	this.containerFrameworkVersion = containerFrameworkVersion;
-    	this.applicationFramework = applicationFramework;
-    	this.applicationFrameworkVersion = applicationFrameworkVersion;
-    	this.connectionInterface = connectionInterface;
-    	this.connectionIp = connectionIp;
-    	this.acceptEncoding = acceptEncoding;
-    	this.applicationIdentifiers = applicationIdentifiers;
-    	this.availableProcessors = availableProcessors;
-    	this.totalMemory = totalMemory;
-    	this.osArch = osArch;
-    	this.modemImei = modemImei;
-    	this.modemImsi = modemImsi;
-    	this.modemIccid = modemIccid;
+            String displayName,
+            String modelName,
+            String modelId,
+            String partNumber,
+            String serialNumber,
+            String firmware,
+            String firmwareVersion,
+            String bios,
+            String biosVersion,
+            String os,
+            String osVersion,
+            String jvm,
+            String jvmVersion,
+            String jvmProfile,
+            String containerFramework,
+            String containerFrameworkVersion,
+            String applicationFramework,
+            String applicationFrameworkVersion,
+            String connectionInterface,
+            String connectionIp,
+            String acceptEncoding,
+            String applicationIdentifiers,
+            String availableProcessors,
+            String totalMemory,
+            String osArch,
+            String modemImei,
+            String modemImsi,
+            String modemIccid) {
+        this.uptime = uptime;
+        this.displayName = displayName;
+        this.modelName = modelName;
+        this.modelId = modelId;
+        this.partNumber = partNumber;
+        this.serialNumber = serialNumber;
+        this.firmware = firmware;
+        this.firmwareVersion = firmwareVersion;
+        this.bios = bios;
+        this.biosVersion = biosVersion;
+        this.os = os;
+        this.osVersion = osVersion;
+        this.jvm = jvm;
+        this.jvmVersion = jvmVersion;
+        this.jvmProfile = jvmProfile;
+        this.containerFramework = containerFramework;
+        this.containerFrameworkVersion = containerFrameworkVersion;
+        this.applicationFramework = applicationFramework;
+        this.applicationFrameworkVersion = applicationFrameworkVersion;
+        this.connectionInterface = connectionInterface;
+        this.connectionIp = connectionIp;
+        this.acceptEncoding = acceptEncoding;
+        this.applicationIdentifiers = applicationIdentifiers;
+        this.availableProcessors = availableProcessors;
+        this.totalMemory = totalMemory;
+        this.osArch = osArch;
+        this.modemImei = modemImei;
+        this.modemImsi = modemImsi;
+        this.modemIccid = modemIccid;
     }
-    
-    public String toDisplayString()
-    {
+
+    @Override
+    public String toDisplayString() {
         return new StringBuilder().append("[ getUptime()=").append(getUptime())
-                                  .append(", getDisplayName()=").append(getDisplayName())
-                                  .append(", getModelName()=").append(getModelName())
-                                  .append(", getModelId()=").append(getModelId())
-                                  .append(", getPartNumber()=").append(getPartNumber())
-                                  .append(", getSerialNumber()=").append(getSerialNumber())
-                                  .append(", getFirmwareVersion()=").append(getFirmwareVersion())
-                                  .append(", getBiosVersion()=").append(getBiosVersion())
-                                  .append(", getOs()=").append(getOs())
-                                  .append(", getOsVersion()=").append(getOsVersion())
-                                  .append(", getJvmName()=").append(getJvm())
-                                  .append(", getJvmVersion()=").append(getJvmVersion())
-                                  .append(", getJvmProfile()=").append(getJvmProfile())
-                                  .append(", getOsgiFramework()=").append(getContainerFramework())
-                                  .append(", getOsgiFrameworkVersion()=").append(getContainerFrameworkVersion())
-                                  .append(", getEsfKuraVersion()=").append(getApplicationFrameworkVersion())
-                                  .append(", getConnectionInterface()=").append(getConnectionInterface())
-                                  .append(", getConnectionIp()=").append(getConnectionIp())
-                                  .append(", getAcceptEncoding()=").append(getAcceptEncoding())
-                                  .append(", getApplicationIdentifiers()=").append(getApplicationIdentifiers())
-                                  .append(", getAvailableProcessors()=").append(getAvailableProcessors())
-                                  .append(", getTotalMemory()=").append(getTotalMemory())
-                                  .append(", getOsArch()=").append(getOsArch())
-                                  .append(", getModemImei()=").append(getModemImei())
-                                  .append(", getModemImsi()=").append(getModemImsi())
-                                  .append(", getModemIccid()=").append(getModemIccid())
-                                  .append("]")
-                                  .toString();
+                .append(", getDisplayName()=").append(getDisplayName())
+                .append(", getModelName()=").append(getModelName())
+                .append(", getModelId()=").append(getModelId())
+                .append(", getPartNumber()=").append(getPartNumber())
+                .append(", getSerialNumber()=").append(getSerialNumber())
+                .append(", getFirmwareVersion()=").append(getFirmwareVersion())
+                .append(", getBiosVersion()=").append(getBiosVersion())
+                .append(", getOs()=").append(getOs())
+                .append(", getOsVersion()=").append(getOsVersion())
+                .append(", getJvmName()=").append(getJvm())
+                .append(", getJvmVersion()=").append(getJvmVersion())
+                .append(", getJvmProfile()=").append(getJvmProfile())
+                .append(", getOsgiFramework()=").append(getContainerFramework())
+                .append(", getOsgiFrameworkVersion()=").append(getContainerFrameworkVersion())
+                .append(", getEsfKuraVersion()=").append(getApplicationFrameworkVersion())
+                .append(", getConnectionInterface()=").append(getConnectionInterface())
+                .append(", getConnectionIp()=").append(getConnectionIp())
+                .append(", getAcceptEncoding()=").append(getAcceptEncoding())
+                .append(", getApplicationIdentifiers()=").append(getApplicationIdentifiers())
+                .append(", getAvailableProcessors()=").append(getAvailableProcessors())
+                .append(", getTotalMemory()=").append(getTotalMemory())
+                .append(", getOsArch()=").append(getOsArch())
+                .append(", getModemImei()=").append(getModemImei())
+                .append(", getModemImsi()=").append(getModemImsi())
+                .append(", getModemIccid()=").append(getModemIccid())
+                .append("]")
+                .toString();
     }
 
-	public String getUptime() {
-		return uptime;
-	}
+    @Override
+    public String getUptime() {
+        return uptime;
+    }
 
-	public String getDisplayName() {
-		return displayName;
-	}
+    @Override
+    public String getDisplayName() {
+        return displayName;
+    }
 
-	public String getModelName() {
-		return modelName;
-	}
+    @Override
+    public String getModelName() {
+        return modelName;
+    }
 
-	public String getModelId() {
-		return modelId;
-	}
+    @Override
+    public String getModelId() {
+        return modelId;
+    }
 
-	public String getPartNumber() {
-		return partNumber;
-	}
+    @Override
+    public String getPartNumber() {
+        return partNumber;
+    }
 
-	public String getSerialNumber() {
-		return serialNumber;
-	}
+    @Override
+    public String getSerialNumber() {
+        return serialNumber;
+    }
 
-	public String getFirmware() {
-		return firmware;
-	}
+    @Override
+    public String getFirmware() {
+        return firmware;
+    }
 
-	public String getFirmwareVersion() {
-		return firmwareVersion;
-	}
+    @Override
+    public String getFirmwareVersion() {
+        return firmwareVersion;
+    }
 
-	public String getBios() {
-		return bios;
-	}
+    @Override
+    public String getBios() {
+        return bios;
+    }
 
-	public String getBiosVersion() {
-		return biosVersion;
-	}
+    @Override
+    public String getBiosVersion() {
+        return biosVersion;
+    }
 
-	public String getOs() {
-		return os;
-	}
+    @Override
+    public String getOs() {
+        return os;
+    }
 
-	public String getOsVersion() {
-		return osVersion;
-	}
+    @Override
+    public String getOsVersion() {
+        return osVersion;
+    }
 
-	public String getJvm() {
-		return jvm;
-	}
+    @Override
+    public String getJvm() {
+        return jvm;
+    }
 
-	public String getJvmVersion() {
-		return jvmVersion;
-	}
+    @Override
+    public String getJvmVersion() {
+        return jvmVersion;
+    }
 
-	public String getJvmProfile() {
-		return jvmProfile;
-	}
+    @Override
+    public String getJvmProfile() {
+        return jvmProfile;
+    }
 
-	public String getContainerFramework() {
-		return containerFramework;
-	}
+    @Override
+    public String getContainerFramework() {
+        return containerFramework;
+    }
 
-	public String getContainerFrameworkVersion() {
-		return containerFrameworkVersion;
-	}
+    @Override
+    public String getContainerFrameworkVersion() {
+        return containerFrameworkVersion;
+    }
 
-	public String getApplicationFramework() {
-		return applicationFramework;
-	}
+    @Override
+    public String getApplicationFramework() {
+        return applicationFramework;
+    }
 
-	public String getApplicationFrameworkVersion() {
-		return applicationFrameworkVersion;
-	}
+    @Override
+    public String getApplicationFrameworkVersion() {
+        return applicationFrameworkVersion;
+    }
 
-	public String getConnectionInterface() {
-		return connectionInterface;
-	}
+    @Override
+    public String getConnectionInterface() {
+        return connectionInterface;
+    }
 
-	public String getConnectionIp() {
-		return connectionIp;
-	}
+    @Override
+    public String getConnectionIp() {
+        return connectionIp;
+    }
 
-	public String getAcceptEncoding() {
-		return acceptEncoding;
-	}
+    @Override
+    public String getAcceptEncoding() {
+        return acceptEncoding;
+    }
 
-	public String getApplicationIdentifiers() {
-		return applicationIdentifiers;
-	}
+    @Override
+    public String getApplicationIdentifiers() {
+        return applicationIdentifiers;
+    }
 
-	public String getAvailableProcessors() {
-		return availableProcessors;
-	}
+    @Override
+    public String getAvailableProcessors() {
+        return availableProcessors;
+    }
 
-	public String getTotalMemory() {
-		return totalMemory;
-	}
+    @Override
+    public String getTotalMemory() {
+        return totalMemory;
+    }
 
-	public String getOsArch() {
-		return osArch;
-	}
+    @Override
+    public String getOsArch() {
+        return osArch;
+    }
 
-	public String getModemImei() {
-		return modemImei;
-	}
+    @Override
+    public String getModemImei() {
+        return modemImei;
+    }
 
-	public String getModemImsi() {
-		return modemImsi;
-	}
+    @Override
+    public String getModemImsi() {
+        return modemImsi;
+    }
 
-	public String getModemIccid() {
-		return modemIccid;
-	}
+    @Override
+    public String getModemIccid() {
+        return modemIccid;
+    }
 
 }

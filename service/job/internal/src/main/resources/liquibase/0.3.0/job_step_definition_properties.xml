@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+-->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+
+        logicalFilePath="KapuaDB/changelog-job-0.3.0.xml">
+
+    <include relativeToChangelogFile="true" file="../common-properties.xml"/>
+
+    <changeSet id="changelog-job-step-definition-properties-0.3.0_createTable" author="eurotech">
+        <createTable tableName="job_job_step_definition_properties">
+            <column name="step_definition_id" type="bigint(21) unsigned">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="property_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="property_value" type="text"/>
+        </createTable>
+
+        <sql dbms="h2">ALTER TABLE job_job_step_definition_properties ADD CHECK step_definition_id >= 0;</sql>
+
+        <addForeignKeyConstraint constraintName="fk_job_job_step_property_step_definition_id"
+                                 baseTableName="job_job_step_definition_properties"
+                                 baseColumnNames="step_definition_id"
+                                 referencedTableName="job_job_step_definition"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+
+        <rollback>
+            <dropTable tableName="job_job_step_definition_properties"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

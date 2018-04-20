@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,46 +8,73 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
 
-import org.eclipse.kapua.service.device.call.message.DevicePayload;
 import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
+import org.eclipse.kapua.service.device.call.message.lifecycle.DeviceLifecyclePayload;
 
-public class KuraDisconnectPayload extends KuraPayload implements DevicePayload
-{
-    private final static String UPTIME       = "uptime";
+/**
+ * {@link DeviceLifecyclePayload} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
+ */
+public class KuraDisconnectPayload extends KuraPayload implements DeviceLifecyclePayload {
+
+    /**
+     * Uptime metric name
+     */
+    private final static String UPTIME = "uptime";
+    /**
+     * Uptime device displayble name metric name
+     */
     private final static String DISPLAY_NAME = "display_name";
 
-    public KuraDisconnectPayload() 
-    {
-    	super();
+    /**
+     * Constructor
+     */
+    public KuraDisconnectPayload() {
+        super();
     }
 
-    public KuraDisconnectPayload(String uptime, String displayName)
-    {
+    /**
+     * Returns a displayable representation string
+     *
+     * @param uptime
+     * @param displayName
+     */
+    public KuraDisconnectPayload(String uptime, String displayName) {
         super();
 
         getMetrics().put(UPTIME, uptime);
         getMetrics().put(DISPLAY_NAME, displayName);
     }
 
-    public String getUptime()
-    {
+    /**
+     * Ge tthe device uptime
+     *
+     * @return
+     */
+    public String getUptime() {
         return (String) getMetrics().get(UPTIME);
     }
 
-    public String getDisplayName()
-    {
+    /**
+     * Get the device displayable name
+     *
+     * @return
+     */
+    public String getDisplayName() {
         return (String) getMetrics().get(DISPLAY_NAME);
     }
 
-    public String toDisplayString()
-    {
+    /**
+     * Returns a displayable representation string
+     *
+     * @return
+     */
+    public String toDisplayString() {
         return new StringBuilder().append("[ getUptime()=").append(getUptime())
-                                  .append(", getDisplayName()=").append(getDisplayName())
-                                  .append("]")
-                                  .toString();
+                .append(", getDisplayName()=").append(getDisplayName())
+                .append("]")
+                .toString();
     }
 }

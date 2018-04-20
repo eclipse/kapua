@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.user;
 
@@ -18,43 +17,43 @@ import org.eclipse.kapua.locator.KapuaLocator;
 
 /**
  * User xml factory class
- * 
+ *
  * @since 1.0
- * 
  */
 @XmlRegistry
 public class UserXmlRegistry {
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final UserFactory factory = locator.getFactory(UserFactory.class);
-    
+
     /**
      * Creates a new user instance
-     * 
+     *
      * @return
      */
-    public User newUser()
-    {
-        return factory.newUser();
+    public User newUser() {
+        return factory.newEntity(null);
     }
 
     /**
      * Creates a new user creator instance
-     * 
+     *
      * @return
      */
-    public UserCreator newUserCreator()
-    {
+    public UserCreator newUserCreator() {
         return factory.newCreator(null, null);
     }
 
     /**
-     * Creates new account list result
-     * 
+     * Creates new user list result
+     *
      * @return
      */
-    public UserListResult newAccountListResult()
-    {
-        return factory.newUserListResult();
+    public UserListResult newUserListResult() {
+        return factory.newListResult();
+    }
+
+    public UserQuery newQuery() {
+        return factory.newQuery(null);
     }
 }

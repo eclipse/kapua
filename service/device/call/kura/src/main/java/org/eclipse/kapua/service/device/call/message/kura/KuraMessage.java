@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,27 +8,37 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.message.kura;
 
-import java.util.Date;
-
 import org.eclipse.kapua.service.device.call.message.DeviceMessage;
 
-public class KuraMessage<C extends KuraChannel, P extends KuraPayload> implements DeviceMessage<C, P>
-{
-    protected C    channel;
-    protected Date timestamp;
-    protected P    payload;
+import java.util.Date;
 
-    public KuraMessage()
-    {
+/**
+ * {@link DeviceMessage} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
+ */
+public class KuraMessage<C extends KuraChannel, P extends KuraPayload> implements DeviceMessage<C, P> {
+
+    protected C channel;
+    protected Date timestamp;
+    protected P payload;
+
+    /**
+     * Constructor
+     */
+    public KuraMessage() {
         super();
     }
 
-    public KuraMessage(C channel, Date timestamp, P payload)
-    {
+    /**
+     * Constructor
+     *
+     * @param channel
+     * @param timestamp
+     * @param payload
+     */
+    public KuraMessage(C channel, Date timestamp, P payload) {
         this();
         this.channel = channel;
         this.timestamp = timestamp;
@@ -36,25 +46,32 @@ public class KuraMessage<C extends KuraChannel, P extends KuraPayload> implement
     }
 
     @Override
-    public C getChannel()
-    {
+    public C getChannel() {
         return channel;
     }
 
     @Override
-    public P getPayload()
-    {
+    public P getPayload() {
         return payload;
     }
 
     @Override
-    public Date getTimestamp()
-    {
+    public Date getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp)
-    {
+    @Override
+    public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
+    }
+
+    @Override
+    public void setChannel(C channel) {
+        this.channel = channel;
+    }
+
+    @Override
+    public void setPayload(P payload) {
+        this.payload = payload;
     }
 }

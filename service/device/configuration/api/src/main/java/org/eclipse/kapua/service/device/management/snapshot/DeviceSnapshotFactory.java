@@ -8,15 +8,30 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.snapshot;
 
 import org.eclipse.kapua.model.KapuaObjectFactory;
 
-public interface DeviceSnapshotFactory extends KapuaObjectFactory
-{
+/**
+ * Device snapshot entity service factory definition.
+ *
+ * @since 1.0
+ * 
+ */
+public interface DeviceSnapshotFactory extends KapuaObjectFactory {
+
+    /**
+     * Creates a new {@link DeviceSnapshot}
+     * 
+     * @return
+     */
     public DeviceSnapshot newDeviceSnapshot();
 
+    /**
+     * Creates a new {@link DeviceSnapshots}
+     * 
+     * @return
+     */
     public DeviceSnapshots newDeviceSnapshots();
 }

@@ -8,39 +8,38 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.commons.message.response;
 
 import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
-import org.eclipse.kapua.service.device.management.ResponseProperties;
-import org.eclipse.kapua.service.device.management.response.KapuaResponsePayload;
+import org.eclipse.kapua.service.device.management.message.ResponseProperties;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 
-public class KapuaResponsePayloadImpl extends KapuaPayloadImpl implements KapuaResponsePayload
-{
+/**
+ * Kapua response message payload implementation.
+ *
+ * @since 1.0
+ */
+public class KapuaResponsePayloadImpl extends KapuaPayloadImpl implements KapuaResponsePayload {
 
     @Override
-    public String getExceptionMessage()
-    {
-        return (String) getProperties().get(ResponseProperties.RESP_PROPERTY_EXCEPTION_MESSAGE.getValue());
+    public String getExceptionMessage() {
+        return (String) getMetrics().get(ResponseProperties.RESP_PROPERTY_EXCEPTION_MESSAGE.getValue());
     }
 
     @Override
-    public void setExceptionMessage(String setExecptionMessage)
-    {
-        getProperties().put(ResponseProperties.RESP_PROPERTY_EXCEPTION_MESSAGE.getValue(), setExecptionMessage);
+    public void setExceptionMessage(String setExecptionMessage) {
+        getMetrics().put(ResponseProperties.RESP_PROPERTY_EXCEPTION_MESSAGE.getValue(), setExecptionMessage);
     }
 
     @Override
-    public String getExceptionStack()
-    {
-        return (String) getProperties().get(ResponseProperties.RESP_PROPERTY_EXCEPTION_STACK.getValue());
+    public String getExceptionStack() {
+        return (String) getMetrics().get(ResponseProperties.RESP_PROPERTY_EXCEPTION_STACK.getValue());
     }
 
     @Override
-    public void setExceptionStack(String setExecptionStack)
-    {
-        getProperties().put(ResponseProperties.RESP_PROPERTY_EXCEPTION_STACK.getValue(), setExecptionStack);
+    public void setExceptionStack(String setExecptionStack) {
+        getMetrics().put(ResponseProperties.RESP_PROPERTY_EXCEPTION_STACK.getValue(), setExecptionStack);
     }
 
 }

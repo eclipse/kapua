@@ -8,27 +8,42 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.commons.setting;
 
 import org.eclipse.kapua.commons.setting.SettingKey;
 
-public enum DeviceManagementSettingKey implements SettingKey
-{
+/**
+ * Available settings key for device management service
+ * 
+ * @since 1.0
+ *
+ */
+public enum DeviceManagementSettingKey implements SettingKey {
+
+    /**
+     * Character encoding
+     */
     CHAR_ENCODING("character.encoding"),
 
+    /**
+     * Request timeout
+     */
     REQUEST_TIMEOUT("request.timeout");
 
     private String key;
 
-    private DeviceManagementSettingKey(String key)
-    {
+    /**
+     * Constructor
+     * 
+     * @param key
+     */
+    private DeviceManagementSettingKey(String key) {
         this.key = key;
     }
 
-    public String key()
-    {
+    @Override
+    public String key() {
         return key;
     }
 }

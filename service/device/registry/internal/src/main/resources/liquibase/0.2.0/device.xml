@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+  logicalFilePath="KapuaDB/changelog-device-0.2.0.xml">
+
+    <include relativeToChangelogFile="true" file="../common-properties.xml" />
+
+    <changeSet id="changelog-device-0.2.0" author="eurotech">
+        <!-- Old SQL file
+        <sqlFile relativeToChangelogFile="true" path="./device.sql" />
+        -->
+        <createTable tableName="dvc_device">
+            <column name="scope_id" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="bigint(21) unsigned">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="group_id" type="bigint(21) unsigned"/>
+            <column name="created_on" type="timestamp(3)" defaultValueComputed="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_on" type="timestamp(3)" defaultValueComputed="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="client_id" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="connection_id" type="bigint(21) unsigned">
+                <constraints nullable="true"/>
+            </column>
+            <column name="last_event_id" type="bigint(21) unsigned">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="status" type="varchar(64)" defaultValue="ENABLED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="display_name" type="varchar(255)"/>
+            <column name="serial_number" type="varchar(255)"/>
+            <column name="model_id" type="varchar(255)"/>
+            <column name="imei" type="varchar(24)"/>
+            <column name="imsi" type="varchar(15)"/>
+            <column name="iccid" type="varchar(22)"/>
+            <column name="bios_version" type="varchar(255)"/>
+            <column name="firmware_version" type="varchar(255)"/>
+            <column name="os_version" type="varchar(255)"/>
+            <column name="jvm_version" type="varchar(255)"/>
+            <column name="osgi_framework_version" type="varchar(255)"/>
+            <column name="app_framework_version" type="varchar(255)"/>
+            <column name="app_identifiers" type="varchar(1024)"/>
+            <column name="accept_encoding" type="varchar(255)"/>
+            <column name="gps_longitude" type="decimal(11,8)"/>
+            <column name="gps_latitude" type="decimal(11,8)"/>
+            <column name="custom_attribute_1" type="varchar(255)"/>
+            <column name="custom_attribute_2" type="varchar(255)"/>
+            <column name="custom_attribute_3" type="varchar(255)"/>
+            <column name="custom_attribute_4" type="varchar(255)"/>
+            <column name="custom_attribute_5" type="varchar(255)"/>
+            <column name="credentials_mode" type="varchar(64)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="preferred_user_id" type="bigint(21) unsigned" defaultValue="0"/>
+
+            <column name="optlock" type="int unsigned" />
+            <column name="attributes" type="text" />
+            <column name="properties" type="text" />
+        </createTable>
+
+        <addUniqueConstraint tableName="dvc_device" constraintName="uc_clientId" columnNames="scope_id, client_id"/>
+        <addUniqueConstraint tableName="dvc_device" constraintName="uc_imei" columnNames="scope_id, imei"/>
+        <addUniqueConstraint tableName="dvc_device" constraintName="uc_imsi" columnNames="scope_id, imsi"/>
+        <addUniqueConstraint tableName="dvc_device" constraintName="uc_iccid" columnNames="scope_id, iccid"/>
+
+        <createIndex tableName="dvc_device" indexName="idx_device_connection_id">
+            <column name="scope_id"/>
+            <column name="connection_id"/>
+        </createIndex>
+        <createIndex tableName="dvc_device" indexName="idx_device_serial_number">
+            <column name="scope_id"/>
+            <column name="serial_number"/>
+        </createIndex>
+        <createIndex tableName="dvc_device" indexName="idx_device_display_name">
+            <column name="scope_id"/>
+            <column name="display_name"/>
+        </createIndex>
+        <createIndex tableName="dvc_device" indexName="idx_device_status_id">
+            <column name="scope_id"/>
+            <column name="status"/>
+            <column name="client_id"/>
+        </createIndex>
+        <createIndex tableName="dvc_device" indexName="idx_device_status_dn">
+            <column name="scope_id"/>
+            <column name="status"/>
+            <column name="display_name"/>
+        </createIndex>
+        <createIndex tableName="dvc_device" indexName="idx_device_model_id">
+            <column name="scope_id"/>
+            <column name="model_id"/>
+            <column name="client_id"/>
+        </createIndex>
+        <createIndex tableName="dvc_device" indexName="idx_device_model_dn">
+            <column name="scope_id"/>
+            <column name="model_id"/>
+            <column name="display_name"/>
+        </createIndex>
+        <createIndex tableName="dvc_device" indexName="idx_device_esf_id">
+            <column name="scope_id"/>
+            <column name="app_framework_version"/>
+            <column name="client_id"/>
+        </createIndex>
+        <createIndex tableName="dvc_device" indexName="idx_device_esf_dn">
+            <column name="scope_id"/>
+            <column name="app_framework_version"/>
+            <column name="display_name"/>
+        </createIndex>
+        <createIndex tableName="dvc_device" indexName="idx_device_c1_id">
+            <column name="scope_id"/>
+            <column name="custom_attribute_1"/>
+            <column name="client_id"/>
+        </createIndex>
+        <createIndex tableName="dvc_device" indexName="idx_device_c1_dn">
+            <column name="scope_id"/>
+            <column name="custom_attribute_1"/>
+            <column name="display_name"/>
+        </createIndex>
+        <createIndex tableName="dvc_device" indexName="idx_device_c2_id">
+            <column name="scope_id"/>
+            <column name="custom_attribute_2"/>
+            <column name="client_id"/>
+        </createIndex>
+        <createIndex tableName="dvc_device" indexName="idx_device_c2_dn">
+            <column name="scope_id"/>
+            <column name="custom_attribute_2"/>
+            <column name="display_name"/>
+        </createIndex>
+        <createIndex tableName="dvc_device" indexName="idx_device_preferred_user_id">
+            <column name="scope_id"/>
+            <column name="preferred_user_id"/>
+        </createIndex>
+    </changeSet>
+    
+</databaseChangeLog>

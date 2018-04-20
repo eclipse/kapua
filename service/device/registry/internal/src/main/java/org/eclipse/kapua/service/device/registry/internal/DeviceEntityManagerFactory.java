@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.internal;
 
@@ -19,27 +18,43 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 
-public class DeviceEntityManagerFactory extends AbstractEntityManagerFactory
-{
-    private static final String               PERSISTENCE_UNIT_NAME = "kapua-device";
-    private static final String               DATASOURCE_NAME       = "kapua-dbpool";
-    private static final Map<String, String>  s_uniqueConstraints   = new HashMap<>();
+/**
+ * Entity manager factory for the device module.
+ *
+ * @since 1.0
+ */
+public class DeviceEntityManagerFactory extends AbstractEntityManagerFactory {
 
-    private static DeviceEntityManagerFactory instance              = new DeviceEntityManagerFactory();
+    private static final String PERSISTENCE_UNIT_NAME = "kapua-device";
+    private static final String DATASOURCE_NAME = "kapua-dbpool";
+    private static final Map<String, String> UNIQUE_CONSTRAINTS = new HashMap<>();
 
-    private DeviceEntityManagerFactory()
-    {
+    private static DeviceEntityManagerFactory instance = new DeviceEntityManagerFactory();
+
+    /**
+     * Constructs a new entity manager factory and configure it to use the device persistence unit.
+     */
+    private DeviceEntityManagerFactory() {
         super(PERSISTENCE_UNIT_NAME,
-              DATASOURCE_NAME,
-              s_uniqueConstraints);
+                DATASOURCE_NAME,
+                UNIQUE_CONSTRAINTS);
     }
 
+    /**
+     * Return a new {@link EntityManager} instance
+     *
+     * @return
+     */
     public static EntityManager getEntityManager()
-        throws KapuaException
-    {
+            throws KapuaException {
         return instance.createEntityManager();
     }
 
+    /**
+     * Return the {@link EntityManager} singleton instance
+     *
+     * @return
+     */
     public static DeviceEntityManagerFactory instance() {
         return instance;
     }

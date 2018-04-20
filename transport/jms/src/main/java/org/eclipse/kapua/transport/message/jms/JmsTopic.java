@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.transport.message.jms;
 
@@ -28,7 +27,7 @@ public class JmsTopic implements TransportChannel {
      * 
      * @since 1.0.0
      */
-    private final static String topicSeparator = JmsClientSetting.getInstance().getString(JmsClientSettingKeys.TRANSPORT_TOPIC_SEPARATOR);
+    private final static String TOPIC_SEPARATOR = JmsClientSetting.getInstance().getString(JmsClientSettingKeys.TRANSPORT_TOPIC_SEPARATOR);
 
     /**
      * The full topic.
@@ -66,9 +65,9 @@ public class JmsTopic implements TransportChannel {
             StringBuilder sb = new StringBuilder();
             for (String s : topicParts) {
                 sb.append(s)
-                        .append(topicSeparator);
+                        .append(TOPIC_SEPARATOR);
             }
-            sb.deleteCharAt(sb.length() - topicSeparator.length());
+            sb.deleteCharAt(sb.length() - TOPIC_SEPARATOR.length());
             setTopic(sb.toString());
         }
     }
@@ -104,6 +103,6 @@ public class JmsTopic implements TransportChannel {
         if (topic == null) {
             return null;
         }
-        return topic.split("\\" + topicSeparator);
+        return topic.split("\\" + TOPIC_SEPARATOR);
     }
 }

@@ -8,34 +8,24 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role;
 
-import org.eclipse.kapua.model.KapuaObjectFactory;
-import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.KapuaEntityFactory;
 
 /**
- * Role factory service definition.
+ * {@link Role} object factory.
  * 
- * @since 1.0
+ * @since 1.0.0
  *
  */
-public interface RoleFactory extends KapuaObjectFactory
-{
-    /**
-     * Creates a new {@link RoleCreator} for the specified scope identifier
-     * 
-     * @param scopeId
-     * @return
-     */
-    public RoleCreator newCreator(KapuaId scopeId);
+public interface RoleFactory extends KapuaEntityFactory<Role, RoleCreator, RoleQuery, RoleListResult> {
 
     /**
-     * Create a new role query for the specified scope identifier
+     * Instantiate a new {@link RolePermission} implementing object.
      * 
-     * @param scopeId
-     * @return
+     * @return A instance of the implementing class of {@link RolePermission}.
+     * @since 1.0.0
      */
-    public RoleQuery newQuery(KapuaId scopeId);
+    public RolePermission newRolePermission();
 }

@@ -8,22 +8,27 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential;
 
 /**
  * Available credential types
  * 
- * @since 1.0
- * 
+ * @since 1.0.0
  */
-public enum CredentialType
-{
+public enum CredentialType {
     /**
      * Password
      */
     PASSWORD,
-    // API_KEY
-    ;
+
+    /**
+     * API key
+     */
+    API_KEY,
+
+    /**
+     * Json Web Token
+     */
+    JWT;
 }

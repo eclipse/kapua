@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.message.internal;
 
@@ -16,176 +15,166 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import javax.persistence.Embeddable;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.kapua.message.KapuaPosition;
 
 /**
- * KapuaPosition is a data structure to capture a geo location. It can be
- * associated to an KapuaPayload to geotag an KapuaMessage before sending to the
- * Everyware Cloud. Refer to the description of each of the fields for more
- * information on the model of KapuaPosition.
+ * KapuaPosition is a data structure to capture a geo location.<br>
+ * It can be associated to an KapuaPayload to geotag an KapuaMessage before sending to Kapua.<br>
+ * Refer to the description of each of the fields for more information on the model of KapuaPosition.
+ * 
+ * @since 1.0
+ * 
  */
-@XmlRootElement(name = "position")
-@XmlAccessorType(XmlAccessType.FIELD)
 @Embeddable
-public class KapuaPositionImpl implements KapuaPosition
-{
+public class KapuaPositionImpl implements KapuaPosition {
+
+    private static final long serialVersionUID = 1L;
+
     /**
      * Longitude of this position in degrees. This is a mandatory field.
      */
-    @XmlElement(name = "longitude")
-    private Double  longitude;
+    private Double longitude;
 
     /**
      * Latitude of this position in degrees. This is a mandatory field.
      */
-    @XmlElement(name = "latitude")
-    private Double  latitude;
+    private Double latitude;
 
     /**
      * Altitude of the position in meters.
      */
-    @XmlElement(name = "altitude")
-    private Double  altitude;
+    private Double altitude;
 
     /**
      * Dilution of the precision (DOP) of the current GPS fix.
      */
-    @XmlElement(name = "precision")
-    private Double  precision;
+    private Double precision;
 
     /**
      * Heading (direction) of the position in degrees
      */
-    @XmlElement(name = "heading")
-    private Double  heading;
+    private Double heading;
 
     /**
      * Speed for this position in meter/sec.
      */
-    @XmlElement(name = "speed")
-    private Double  speed;
+    private Double speed;
 
     /**
      * Timestamp extracted from the GPS system
      */
-    @XmlElement(name = "timestamp")
-    private Date    timestamp;
+    private Date timestamp;
 
     /**
      * Number of satellites seen by the systems
      */
-    @XmlElement(name = "satellites")
     private Integer satellites;
 
     /**
      * Status of GPS system: 1 = no GPS response, 2 = error in response, 4 =
      * valid.
      */
-    @XmlElement(name = "status")
     private Integer status;
 
-    public KapuaPositionImpl()
-    {
+    /**
+     * Constructor
+     */
+    public KapuaPositionImpl() {
     }
 
-    public Double getLongitude()
-    {
+    @Override
+    public Double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(Double longitude)
-    {
+    @Override
+    public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
 
-    public Double getLatitude()
-    {
+    @Override
+    public Double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(Double latitude)
-    {
+    @Override
+    public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
 
-    public Double getAltitude()
-    {
+    @Override
+    public Double getAltitude() {
         return altitude;
     }
 
-    public void setAltitude(Double altitude)
-    {
+    @Override
+    public void setAltitude(Double altitude) {
         this.altitude = altitude;
     }
 
-    public Double getPrecision()
-    {
+    @Override
+    public Double getPrecision() {
         return precision;
     }
 
-    public void setPrecision(Double precision)
-    {
+    @Override
+    public void setPrecision(Double precision) {
         this.precision = precision;
     }
 
-    public Double getHeading()
-    {
+    @Override
+    public Double getHeading() {
         return heading;
     }
 
-    public void setHeading(Double heading)
-    {
+    @Override
+    public void setHeading(Double heading) {
         this.heading = heading;
     }
 
-    public Double getSpeed()
-    {
+    @Override
+    public Double getSpeed() {
         return speed;
     }
 
-    public void setSpeed(Double speed)
-    {
+    @Override
+    public void setSpeed(Double speed) {
         this.speed = speed;
     }
 
-    public Date getTimestamp()
-    {
+    @Override
+    public Date getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp)
-    {
+    @Override
+    public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
 
-    public Integer getSatellites()
-    {
+    @Override
+    public Integer getSatellites() {
         return satellites;
     }
 
-    public void setSatellites(Integer satellites)
-    {
+    @Override
+    public void setSatellites(Integer satellites) {
         this.satellites = satellites;
     }
 
-    public Integer getStatus()
-    {
+    @Override
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status)
-    {
+    @Override
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         // a-la JSON
         StringBuilder sb = new StringBuilder();
 
@@ -226,45 +215,45 @@ public class KapuaPositionImpl implements KapuaPosition
     /**
      * FIXME: Please make me pretty!!! :'(
      */
-    public String toDisplayString()
-    {
+    @Override
+    public String toDisplayString() {
         ArrayList<String> list = new ArrayList<String>();
         StringBuilder sb = new StringBuilder();
         if (latitude != null) {
             list.add(new StringBuilder("latitude").append("=").append(latitude)
-                                                  .toString());
+                    .toString());
         }
         if (longitude != null) {
             list.add(new StringBuilder("longitude").append("=")
-                                                   .append(longitude).toString());
+                    .append(longitude).toString());
         }
         if (altitude != null) {
             list.add(new StringBuilder("altitude").append("=").append(altitude)
-                                                  .toString());
+                    .toString());
         }
         if (precision != null) {
             list.add(new StringBuilder("precision").append("=")
-                                                   .append(precision).toString());
+                    .append(precision).toString());
         }
         if (heading != null) {
             list.add(new StringBuilder("heading").append("=").append(heading)
-                                                 .toString());
+                    .toString());
         }
         if (speed != null) {
             list.add(new StringBuilder("speed").append("=").append(speed)
-                                               .toString());
+                    .toString());
         }
         if (timestamp != null) {
             list.add(new StringBuilder("timestamp").append("=")
-                                                   .append(timestamp).toString());
+                    .append(timestamp).toString());
         }
         if (satellites != null) {
             list.add(new StringBuilder("satellites").append("=")
-                                                    .append(satellites).toString());
+                    .append(satellites).toString());
         }
         if (status != null) {
             list.add(new StringBuilder("status").append("=").append(status)
-                                                .toString());
+                    .toString());
         }
 
         if (list.size() == 0) {

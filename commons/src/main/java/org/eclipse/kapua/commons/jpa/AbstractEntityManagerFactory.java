@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,9 +8,10 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.commons.jpa;
+
+import static org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers.resolveJdbcUrl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,43 +28,25 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Utility class for JPA operations.
- * 
- * @since 1.0
- * 
+ *
+ * @since 1.0.0
  */
-public abstract class AbstractEntityManagerFactory {
+public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.commons.jpa.EntityManagerFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityManagerFactory.class);
 
-    private static final Map<String, String> s_uniqueConstraints = new HashMap<>();
+    private static final Map<String, String> UNIQUE_CONTRAINTS = new HashMap<>();
     private EntityManagerFactory entityManagerFactory;
 
     /**
-     * Jdbc url connection resolver service
-     */
-    private final JdbcConnectionUrlResolver jdbcConnectionUrlResolver;
-
-    /**
      * Protected constructor
-     * 
+     *
      * @param persistenceUnitName
      * @param datasourceName
      * @param uniqueConstraints
      */
-    protected AbstractEntityManagerFactory(String persistenceUnitName,
-            String datasourceName,
-            Map<String, String> uniqueConstraints) {
+    protected AbstractEntityManagerFactory(String persistenceUnitName, String datasourceName, Map<String, String> uniqueConstraints) {
         SystemSetting config = SystemSetting.getInstance();
-
-        String connectionUrlResolverType = config.getString(SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER, "DEFAULT");
-        LOG.debug("The following JDBC connection URL resolver type will be used: {}", connectionUrlResolverType);
-        if (connectionUrlResolverType.equals("DEFAULT")) {
-            jdbcConnectionUrlResolver = new DefaultConfigurableJdbcConnectionUrlResolver();
-        } else if (connectionUrlResolverType.equals("H2")) {
-            jdbcConnectionUrlResolver = new H2JdbcConnectionUrlResolver();
-        } else {
-            throw new IllegalArgumentException("Unknown JDBC connection URL resolver type: " + connectionUrlResolverType);
-        }
 
         //
         // Initialize the EntityManagerFactory
@@ -74,7 +57,7 @@ public abstract class AbstractEntityManagerFactory {
 
             configOverrides.put("eclipselink.cache.shared.default", "false"); // This has to be set to false in order to disable the local object cache of EclipseLink.
 
-            configOverrides.put("eclipselink.connection-pool.default.url", jdbcConnectionUrlResolver.connectionUrl());
+            configOverrides.put("eclipselink.connection-pool.default.url", resolveJdbcUrl());
             configOverrides.put("eclipselink.connection-pool.default.user", config.getString(SystemSettingKey.DB_USERNAME));
             configOverrides.put("eclipselink.connection-pool.default.password", config.getString(SystemSettingKey.DB_PASSWORD));
 
@@ -84,9 +67,11 @@ public abstract class AbstractEntityManagerFactory {
             configOverrides.put("eclipselink.connection-pool.default.max", config.getString(SystemSettingKey.DB_POOL_SIZE_MAX));
             configOverrides.put("eclipselink.connection-pool.default.wait", config.getString(SystemSettingKey.DB_POOL_BORROW_TIMEOUT));
 
+            configOverrides.put("eclipselink.logging.level", "FINE");
+            configOverrides.put("eclipselink.logging.parameters", "true");
+
             // Standalone JPA
-            entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnitName,
-                    configOverrides);
+            entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnitName, configOverrides);
         } catch (Throwable ex) {
             LOG.error("Error creating EntityManagerFactory", ex);
             throw new ExceptionInInitializerError(ex);
@@ -96,7 +81,7 @@ public abstract class AbstractEntityManagerFactory {
         // Set unique constrains for this persistence unit
         // FIXME: this is needed? With EclipseLink we lost the ConstraintViolationException.
         for (Entry<String, String> uc : uniqueConstraints.entrySet()) {
-            s_uniqueConstraints.put(uc.getKey(), uc.getValue());
+            UNIQUE_CONTRAINTS.put(uc.getKey(), uc.getValue());
         }
     }
 
@@ -104,11 +89,9 @@ public abstract class AbstractEntityManagerFactory {
 
     /**
      * Returns an EntityManager instance.
-     * 
+     *
      * @return An entity manager for the persistence unit.
-     * @throws KapuaException
-     *             If {@link EntityManagerFactory#createEntityManager()} cannot create the {@link EntityManager}
-     * 
+     * @throws KapuaException If {@link EntityManagerFactory#createEntityManager()} cannot create the {@link EntityManager}
      * @since 1.0.0
      */
     public EntityManager createEntityManager()

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Red Hat
- *
+ *     Eurotech
  *******************************************************************************/
 package org.eclipse.kapua.commons.jpa;
 
@@ -17,9 +17,8 @@ import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 
 /**
  * MariaDB Jdbc url connection resolver implementation
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class MariaDBJdbcConnectionUrlResolver implements JdbcConnectionUrlResolver {
 
@@ -43,7 +42,7 @@ public class MariaDBJdbcConnectionUrlResolver implements JdbcConnectionUrlResolv
                 .append("?");
 
         // Optional connection parameters
-        String useTimezone = config.getString(SystemSettingKey.DB_USE_TIMEZIONE);
+        String useTimezone = config.getString(SystemSettingKey.DB_USE_TIMEZONE);
         if (useTimezone != null) {
             dbConnectionString.append("useTimezone=")
                     .append(useTimezone)
@@ -71,8 +70,8 @@ public class MariaDBJdbcConnectionUrlResolver implements JdbcConnectionUrlResolv
                     .append("&");
         }
 
-        // This deletes the trailing '?' or '&'
-        dbConnectionString.deleteCharAt(dbConnectionString.length() - 1);
+        // Unmodifiable parameters
+        dbConnectionString.append("allowMultiQueries=true");
 
         return dbConnectionString.toString();
     }

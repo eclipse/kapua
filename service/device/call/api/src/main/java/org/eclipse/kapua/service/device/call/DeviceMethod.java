@@ -8,11 +8,16 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call;
 
-public interface DeviceMethod
-{
+/**
+ * Device method definition (Marker interface).<br>
+ * This object defines the command methods supported by a device.
+ * 
+ * @since 1.0
+ *
+ */
+public interface DeviceMethod {
 
 }

@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
@@ -27,9 +26,9 @@ import org.eclipse.kapua.service.account.Organization;
 @Embeddable
 public class OrganizationImpl implements Organization, Serializable {
 
-	private static final long serialVersionUID = -2963244741663925288L;
+    private static final long serialVersionUID = -2963244741663925288L;
 
-	private String name;
+    private String name;
     private String personName;
     private String email;
     private String phoneNumber;

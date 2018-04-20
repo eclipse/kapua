@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,88 +8,78 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.commons.util;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.StringWriter;
+import java.io.Reader;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Resource utilities
+ *
+ * @since 1.0
+ *
+ */
+public class ResourceUtils {
 
-public class ResourceUtils 
-{
-    public static final Logger s_logger = LoggerFactory.getLogger(ResourceUtils.class);
+    public static final Logger logger = LoggerFactory.getLogger(ResourceUtils.class);
 
-    public static URL getResource(String resource) {
-        URL url ;
+    private ResourceUtils() {
+    }
 
-        //Try with the Thread Context Loader.
+    /**
+     * Get the URL of a resource
+     *
+     * @param resource
+     *            to locate
+     * @return The URL to the resource, or {@code null} if it cannot be found
+     */
+    public static URL getResource(final String resource) {
+        // Try with the Thread Context Loader.
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        if(classLoader != null) {
-            url = classLoader.getResource(resource);
-            if(url != null) {
+        if (classLoader != null) {
+            URL url = classLoader.getResource(resource);
+            if (url != null) {
                 return url;
             }
         }
 
-        //Let's now try with the classloader that loaded this class.
+        // Let's now try with the classloader that loaded this class.
         classLoader = ResourceUtils.class.getClassLoader();
-        if(classLoader != null) {
-            url = classLoader.getResource(resource);
-            if(url != null) {
+        if (classLoader != null) {
+            URL url = classLoader.getResource(resource);
+            if (url != null) {
                 return url;
             }
         }
 
-        //Last ditch attempt. Get the resource from the classpath.
+        // Last ditch attempt. Get the resource from the classpath.
         return ClassLoader.getSystemResource(resource);
     }
 
-
     /**
-     * Reads a resource fully and returns it as a string.
-     *
-     * @param resourceUrl
-     * @return
+     * Open a URL as {@link Reader}
+     * 
+     * @param url
+     *            the URL to open
+     * @param charset
+     *            the character set to use
+     * @return the reader
      * @throws IOException
+     *             If any I/O error occurs
      */
-    public static String readResource(URL resourceUrl)
-    throws IOException {
-        String result = null;
-        BufferedReader resourceBr = null;
-        InputStreamReader resourceIsr = null;
-        try {
+    public static Reader openAsReader(final URL url, final Charset charset) throws IOException {
+        Objects.requireNonNull(url);
+        Objects.requireNonNull(charset);
 
-            resourceIsr = new InputStreamReader(resourceUrl.openStream());
-            resourceBr  = new BufferedReader(resourceIsr);
-
-            int iRead = 0;
-            char[] buffer = new char[1024];
-            StringWriter sw = new StringWriter();
-            while ((iRead = resourceBr.read(buffer)) != -1) {
-                sw.write(buffer, 0, iRead);
-            }
-            result = sw.toString();
-        } finally {
-            if (resourceBr != null) {
-                try {
-                    resourceBr.close();
-                } catch (IOException e)  {
-                    s_logger.warn("Error closing reader", e);
-                }
-                try {
-                    resourceIsr.close();
-                } catch (IOException e)  {
-                    s_logger.warn("Error closing reader", e);
-                }
-            }
-        }
-        return result;
+        return new InputStreamReader(url.openStream(), charset);
     }
 }

@@ -11,3 +11,5 @@
  *******************************************************************************/
 
 DROP TABLE IF EXISTS dvc_device;
+
+DROP TABLE IF EXISTS DATABASECHANGELOG;

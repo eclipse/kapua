@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Red Hat - loading test services
- *
  *******************************************************************************/
 package org.eclipse.kapua.locator.guice;
 
@@ -17,4 +16,5 @@ import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TestService {
+
 }

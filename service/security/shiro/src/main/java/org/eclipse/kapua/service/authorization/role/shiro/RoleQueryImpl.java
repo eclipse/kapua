@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role.shiro;
 
@@ -23,14 +22,12 @@ import org.eclipse.kapua.service.authorization.role.RoleQuery;
  * @since 1.0
  * 
  */
-public class RoleQueryImpl extends AbstractKapuaQuery<Role> implements RoleQuery
-{
+public class RoleQueryImpl extends AbstractKapuaQuery<Role> implements RoleQuery {
 
     /**
      * Constructor
      */
-    public RoleQueryImpl()
-    {
+    public RoleQueryImpl() {
         super();
     }
 
@@ -39,8 +36,7 @@ public class RoleQueryImpl extends AbstractKapuaQuery<Role> implements RoleQuery
      * 
      * @param scopeId
      */
-    public RoleQueryImpl(KapuaId scopeId)
-    {
+    public RoleQueryImpl(KapuaId scopeId) {
         this();
         setScopeId(scopeId);
     }

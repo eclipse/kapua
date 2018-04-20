@@ -8,25 +8,41 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.message.kura.setting;
 
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
-public class DeviceCallSetting extends AbstractKapuaSetting<DeviceCallSettingKeys>
-{
-    private static final String            DEVICE_CALL_SETTING_RESOURCE = "device-call-setting.properties";
+/**
+ * Class that offers access to device call settings
+ * 
+ * @since 1.0
+ *
+ */
+public class DeviceCallSetting extends AbstractKapuaSetting<DeviceCallSettingKeys> {
 
-    private static final DeviceCallSetting instance              = new DeviceCallSetting();
+    /**
+     * Resource file from which source properties.
+     * 
+     */
+    private static final String DEVICE_CALL_SETTING_RESOURCE = "device-call-setting.properties";
 
-    private DeviceCallSetting()
-    {
+    private static final DeviceCallSetting INSTANCE = new DeviceCallSetting();
+
+    /**
+     * Initialize the {@link AbstractKapuaSetting} with the {@link DeviceCallSetting#DEVICE_CALL_SETTING_RESOURCE} value.
+     * 
+     */
+    private DeviceCallSetting() {
         super(DEVICE_CALL_SETTING_RESOURCE);
     }
 
-    public static DeviceCallSetting getInstance()
-    {
-        return instance;
+    /**
+     * Gets a singleton instance of {@link DeviceCallSetting}.
+     * 
+     * @return A singleton instance of DeviceCallSetting.
+     */
+    public static DeviceCallSetting getInstance() {
+        return INSTANCE;
     }
 }

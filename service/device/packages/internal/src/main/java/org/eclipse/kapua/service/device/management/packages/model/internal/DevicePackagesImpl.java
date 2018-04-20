@@ -1,22 +1,37 @@
+/*******************************************************************************
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *     Red Hat Inc
+ *******************************************************************************/
 package org.eclipse.kapua.service.device.management.packages.model.internal;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
+import org.eclipse.kapua.service.device.management.packages.model.DevicePackage;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
 
-public class DevicePackagesImpl implements DevicePackages
-{
-    public List<DevicePackageImpl> deploymentPackages;
+/**
+ * Device packages list container.
+ * 
+ * @since 1.0
+ *
+ */
+public class DevicePackagesImpl implements DevicePackages {
+
+    private static final long serialVersionUID = 2450088980495469562L;
+
+    public List<DevicePackage> deploymentPackages;
 
     @Override
-    public List<DevicePackageImpl> getPackages()
-    {
+    public List<DevicePackage> getPackages() {
         if (deploymentPackages == null) {
             deploymentPackages = new ArrayList<>();
         }

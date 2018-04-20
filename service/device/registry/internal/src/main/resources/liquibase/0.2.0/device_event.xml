@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+  logicalFilePath="KapuaDB/changelog-device-0.2.0.xml">
+
+    <include relativeToChangelogFile="true" file="../common-properties.xml" />
+
+    <changeSet id="changelog-device-event-0.2.0" author="eurotech">
+        <!-- Old SQL file
+        <sqlFile relativeToChangelogFile="true" path="./device_event.sql" />
+        -->
+        <createTable tableName="dvc_device_event">
+            <column name="scope_id" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="bigint(21) unsigned">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="created_on" type="timestamp(3)" defaultValueComputed="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="device_id" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+            <column name="received_on" type="timestamp(3)" defaultValueComputed="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sent_on" type="timestamp(3)">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="pos_longitude" type="decimal(11,8)"/>
+            <column name="pos_latitude" type="decimal(11,8)"/>
+            <column name="pos_altitude" type="decimal(11,8)"/>
+            <column name="pos_precision" type="decimal(11,8)"/>
+            <column name="pos_heading" type="decimal(11,8)"/>
+            <column name="pos_speed" type="decimal(11,8)"/>
+            <column name="pos_timestamp" type="timestamp(3)" defaultValueComputed="${now}"/>
+            <column name="pos_satellites" type="int"/>
+            <column name="pos_status" type="int"/>
+
+            <column name="resource" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="action" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="response_code" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="event_message" type="text"/>
+
+            <column name="attributes" type="text" />
+            <column name="properties" type="text" />
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="scope_device_fk" baseTableName="dvc_device_event" baseColumnNames="device_id" referencedTableName="dvc_device" referencedColumnNames="id" onDelete="CASCADE"/>
+
+        <createIndex tableName="dvc_device_event" indexName="idx_device_event_id">
+            <column name="scope_id"/>
+            <column name="device_id"/>
+            <column name="resource"/>
+            <column name="action"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

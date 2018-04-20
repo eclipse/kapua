@@ -8,17 +8,31 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.message.device.lifecycle;
 
 import org.eclipse.kapua.message.KapuaMessage;
 
-public interface KapuaBirthMessage extends KapuaMessage<KapuaBirthChannel, KapuaBirthPayload>
-{
-	
-	public void setClientId(String clientId);
-	
-	public String getClientId();
+/**
+ * Kapua birth message object definition.
+ * 
+ * @since 1.0
+ *
+ */
+public interface KapuaBirthMessage extends KapuaMessage<KapuaBirthChannel, KapuaBirthPayload> {
+
+    /**
+     * Set the client identifier
+     * 
+     * @param clientId
+     */
+    public void setClientId(String clientId);
+
+    /**
+     * Get the client identifier
+     * 
+     * @return
+     */
+    public String getClientId();
 
 }

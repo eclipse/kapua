@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+###############################################################################
+# Copyright (c) 2017 Red Hat Inc and others
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+###############################################################################
+
+#
+# This script configures Kapua to make use of SSO using Keycloak
+#
+
+set -e
+
+# Commons
+
+. "${BASH_SOURCE%/*}/env"
+. "${BASH_SOURCE%/*}/functions"
+
+# Input parameters
+
+# Set Keycloak URL with Kapua
+
+KAPUA_URL="$(kapua_url)"
+KEYCLOAK_URL="$(keycloak_url)"
+
+echo "Configure Kapua for SSO:"
+echo "	Kapua Console URL: ${KAPUA_URL}"
+echo "	Keycloack URL:     ${KEYCLOAK_URL}"
+ 
+$OC set env -n "${KAPUA_PROJECT_NAME}" \
+   dc/kapua-console \
+   "KEYCLOAK_URL=${KEYCLOAK_URL}" \
+   "KAPUA_URL=${KAPUA_URL}" \
+   ${KEYCLOAK_CLIENT_SECRET:+KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}}
+

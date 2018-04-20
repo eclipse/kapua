@@ -8,85 +8,79 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.configuration.internal;
 
 import java.util.Map;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementRef;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import org.eclipse.kapua.commons.configuration.metatype.TocdImpl;
-import org.eclipse.kapua.commons.configuration.metatype.XmlConfigPropertiesAdapter;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 
-public class DeviceComponentConfigurationImpl implements DeviceComponentConfiguration
-{
-    private String              id;
-    private String              name;
-    private TocdImpl            definition;
+/**
+ * Device component configuration entity implementation.
+ *
+ * @since 1.0
+ */
+public class DeviceComponentConfigurationImpl implements DeviceComponentConfiguration {
+
+    private String id;
+    private String name;
+    private TocdImpl definition;
     private Map<String, Object> properties;
 
-    public DeviceComponentConfigurationImpl()
-    {
+    /**
+     * Constructor
+     */
+    public DeviceComponentConfigurationImpl() {
     }
 
-    public DeviceComponentConfigurationImpl(String id)
-    {
+    /**
+     * Constructor
+     *
+     * @param id
+     */
+    public DeviceComponentConfigurationImpl(String id) {
         this.id = id;
     }
 
     @Override
-    public String getId()
-    {
+    public String getId() {
         return id;
     }
 
     @Override
-    public void setId(String id)
-    {
+    public void setId(String id) {
         this.id = id;
     }
 
     @Override
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     @Override
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
     @Override
-    public void setDefinition(KapuaTocd definition)
-    {
+    public void setDefinition(KapuaTocd definition) {
         this.definition = (TocdImpl) definition;
     }
 
     @Override
-    public KapuaTocd getDefinition()
-    {
+    public KapuaTocd getDefinition() {
         return definition;
     }
 
     @Override
-    public Map<String, Object> getProperties()
-    {
+    public Map<String, Object> getProperties() {
         return properties;
     }
 
     @Override
-    public void setProperties(Map<String, Object> properties)
-    {
+    public void setProperties(Map<String, Object> properties) {
         this.properties = properties;
     }
 }

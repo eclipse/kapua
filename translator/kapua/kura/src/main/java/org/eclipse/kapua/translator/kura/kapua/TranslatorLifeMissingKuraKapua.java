@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
 
@@ -32,17 +31,15 @@ import org.eclipse.kapua.translator.Translator;
 
 /**
  * Messages translator implementation from {@link KuraMissingMessage} to {@link KapuaMissingMessage}
- * 
+ *
  * @since 1.0
  *
  */
-public class TranslatorLifeMissingKuraKapua extends Translator<KuraMissingMessage, KapuaMissingMessage>
-{
+public class TranslatorLifeMissingKuraKapua extends Translator<KuraMissingMessage, KapuaMissingMessage> {
 
     @Override
     public KapuaMissingMessage translate(KuraMissingMessage kuraMissingMessage)
-        throws KapuaException
-    {
+            throws KapuaException {
         KapuaMissingMessage kapuaMissingMessage = new KapuaMissingMessageImpl();
         kapuaMissingMessage.setChannel(translate(kuraMissingMessage.getChannel()));
         kapuaMissingMessage.setPayload(translate(kuraMissingMessage.getPayload()));
@@ -51,13 +48,17 @@ public class TranslatorLifeMissingKuraKapua extends Translator<KuraMissingMessag
         AccountService accountService = locator.getService(AccountService.class);
         Account account = accountService.findByName(kuraMissingMessage.getChannel().getScope());
 
+        if (account == null) {
+            throw new KapuaEntityNotFoundException(Account.TYPE, kuraMissingMessage.getChannel().getScope());
+        }
+
         DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
         Device device = deviceRegistryService.findByClientId(account.getId(), kuraMissingMessage.getChannel().getClientId());
 
         if (device == null) {
             throw new KapuaEntityNotFoundException(Device.class.toString(), kuraMissingMessage.getChannel().getClientId());
         }
-        
+
         kapuaMissingMessage.setDeviceId(device.getId());
         kapuaMissingMessage.setScopeId(account.getId());
         kapuaMissingMessage.setCapturedOn(kuraMissingMessage.getPayload().getTimestamp());
@@ -69,31 +70,27 @@ public class TranslatorLifeMissingKuraKapua extends Translator<KuraMissingMessag
     }
 
     private KapuaMissingChannel translate(KuraMissingChannel kuraMissingChannel)
-        throws KapuaException
-    {
+            throws KapuaException {
         KapuaMissingChannel kapuaMissingChannel = new KapuaMissingChannelImpl();
         kapuaMissingChannel.setClientId(kuraMissingChannel.getClientId());
         return kapuaMissingChannel;
     }
 
     private KapuaMissingPayload translate(KuraMissingPayload kuraMissingPayload)
-        throws KapuaException
-    {
+            throws KapuaException {
         KapuaMissingPayload kapuaMissingPayload = new KapuaMissingPayloadImpl();
         kapuaMissingPayload.setBody(kuraMissingPayload.getBody());
-        kapuaMissingPayload.setProperties(kuraMissingPayload.getMetrics());
+        kapuaMissingPayload.setMetrics(kuraMissingPayload.getMetrics());
         return kapuaMissingPayload;
     }
 
     @Override
-    public Class<KuraMissingMessage> getClassFrom()
-    {
+    public Class<KuraMissingMessage> getClassFrom() {
         return KuraMissingMessage.class;
     }
 
     @Override
-    public Class<KapuaMissingMessage> getClassTo()
-    {
+    public Class<KapuaMissingMessage> getClassTo() {
         return KapuaMissingMessage.class;
     }
 

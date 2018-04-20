@@ -8,35 +8,54 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.message.internal;
 
 import org.eclipse.kapua.KapuaException;
 
-public class MessageException extends KapuaException
-{
-    private static final long   serialVersionUID     = -6207605695086240243L;
+/**
+ * Message exception.
+ * 
+ * @since 1.0
+ *
+ */
+public class MessageException extends KapuaException {
+
+    private static final long serialVersionUID = -6207605695086240243L;
 
     private static final String KAPUA_ERROR_MESSAGES = "message-error-messages";
 
-    public MessageException(MessageErrorCodes code)
-    {
+    /**
+     * Constructor
+     * 
+     * @param code
+     */
+    public MessageException(MessageErrorCodes code) {
         super(code);
     }
 
-    public MessageException(MessageErrorCodes code, Object... arguments)
-    {
+    /**
+     * Constructor
+     * 
+     * @param code
+     * @param arguments
+     */
+    public MessageException(MessageErrorCodes code, Object... arguments) {
         super(code, arguments);
     }
 
-    public MessageException(MessageErrorCodes code, Throwable cause, Object... arguments)
-    {
+    /**
+     * Constructor
+     * 
+     * @param code
+     * @param cause
+     * @param arguments
+     */
+    public MessageException(MessageErrorCodes code, Throwable cause, Object... arguments) {
         super(code, cause, arguments);
     }
 
-    protected String getKapuaErrorMessagesBundle()
-    {
+    protected String getKapuaErrorMessagesBundle() {
         return KAPUA_ERROR_MESSAGES;
     }
 }

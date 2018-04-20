@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+        Red Hat Inc
+ -->
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.4.0//EN"
+        "https://raw.githubusercontent.com/gwtproject/gwt/2.4.0/distro-source/core/src/gwt-module.dtd">
+
+<module rename-to="adminCore">
+
+    <!-- Inherit the default GWT style sheet. You can change            -->
+    <!-- the theme of your GWT application by uncommenting              -->
+    <!-- any one of the following lines.                                -->
+    <!-- <inherits name='com.extjs.gxt.themes.Themes' />                -->
+
+    <inherits name='com.google.gwt.user.theme.standard.Standard'/>
+
+    <!-- Kapua module inherits                                          -->
+    <inherits name="org.eclipse.kapua.app.console.module.api.adminModuleApi"/>
+
+    <inherits name="org.eclipse.kapua.app.console.module.about.adminModuleAbout"/>
+    <inherits name="org.eclipse.kapua.app.console.module.account.adminModuleAccount"/>
+    <inherits name="org.eclipse.kapua.app.console.module.authentication.adminModuleAuthentication"/>
+    <inherits name="org.eclipse.kapua.app.console.module.authorization.adminModuleAuthorization"/>
+    <inherits name="org.eclipse.kapua.app.console.module.device.adminModuleDevice"/>
+    <inherits name="org.eclipse.kapua.app.console.module.job.adminModuleJob"/>
+    <inherits name="org.eclipse.kapua.app.console.module.data.adminModuleData"/>
+    <inherits name="org.eclipse.kapua.app.console.module.device.adminModuleDevice"/>
+    <inherits name="org.eclipse.kapua.app.console.module.endpoint.adminModuleEndpoint"/>
+    <inherits name="org.eclipse.kapua.app.console.module.job.adminModuleJob"/>
+    <inherits name="org.eclipse.kapua.app.console.module.tag.adminModuleTag"/>
+    <inherits name="org.eclipse.kapua.app.console.module.user.adminModuleUser"/>
+    <inherits name="org.eclipse.kapua.app.console.module.welcome.adminModuleWelcome"/>
+
+    <!-- Specify the paths for translatable code                        -->
+    <source path='client'/>
+    <source path='shared'/>
+</module>

@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization;
 
@@ -21,28 +20,34 @@ import org.eclipse.kapua.service.authorization.permission.Permission;
  * It includes APIs to create, update, find, list and delete Users.<br>
  * Instances of the UserService can be acquired through the ServiceLocator.
  * 
- * @since 1.0
+ * @since 1.0.0
  * 
  */
-public interface AuthorizationService extends KapuaService
-{
-    /**
-     * Return if the user (the current logged user retrieved by thread context) is allowed to perform the operation identified by provided the permission
-     * 
-     * @param permission
-     * @return
-     * @throws KapuaException if there is no logged context
-     */
-    public boolean isPermitted(Permission permission)
-        throws KapuaException;
+public interface AuthorizationService extends KapuaService {
 
     /**
-     * Check if the user (the current logged user retrieved by thread context) is allowed to perform the operation identified by provided the permission
+     * Returns if the user (the current logged user retrieved by thread context) is allowed to perform the operation identified by provided the permission.
      * 
      * @param permission
+     *            The permission to check.
+     * @return {@code true} if the current user has the given permission, {@code false} otherwise.
+     * @throws KapuaException
+     *             If there is no logged context.
      * 
-     * @throws KapuaException if there is no logged context or if the user has no right for the provided permission
+     * @since 1.0.0
+     */
+    public boolean isPermitted(Permission permission)
+            throws KapuaException;
+
+    /**
+     * Checks if the user (the current logged user retrieved by thread context) is allowed to perform the operation identified by provided the permission.
+     * 
+     * @param permission
+     *            The permission to check.
+     * @throws KapuaException
+     *             if there is no logged context or if the user has no right for the provided permission.
+     * @since 1.0.0
      */
     public void checkPermission(Permission permission)
-        throws KapuaException;
+            throws KapuaException;
 }

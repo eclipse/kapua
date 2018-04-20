@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.account;
 
@@ -17,6 +16,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import java.util.List;
 
 import org.eclipse.kapua.model.KapuaNamedEntity;
 
@@ -28,16 +29,13 @@ import org.eclipse.kapua.model.KapuaNamedEntity;
  */
 @XmlRootElement(name = "account")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "organization", 
-					  "parentAccountPath" },
-		factoryClass = AccountXmlRegistry.class, 
-		factoryMethod = "newAccount")
-public interface Account extends KapuaNamedEntity
-{
-    public static final String TYPE = "acct";
+@XmlType(propOrder = { "organization",
+        "parentAccountPath" }, factoryClass = AccountXmlRegistry.class, factoryMethod = "newAccount")
+public interface Account extends KapuaNamedEntity {
 
-    default public String getType()
-    {
+    public static final String TYPE = "account";
+
+    public default String getType() {
         return TYPE;
     }
 
@@ -72,4 +70,6 @@ public interface Account extends KapuaNamedEntity
      * @param parentAccountPath
      */
     public void setParentAccountPath(String parentAccountPath);
+
+    public List<Account> getChildAccounts();
 }

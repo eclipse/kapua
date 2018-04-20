@@ -1,0 +1,123 @@
+apiVersion: v1
+id: eclipse-kapua
+kind: Template
+name: eclipse-kapua
+metadata:
+  name: eclipse-kapua
+parameters:
+- name:           DOCKER_ACCOUNT
+  description:      The docker hub account name to pull from
+  value:            eclipse
+- name:           ELASTIC_SEARCH_MEMORY
+  descrption:       The minimum and maximun Java heap space for Elasticsearch
+  value:            '512m'
+- name:           IMAGE_VERSION
+  description:      The version of the image to use
+  value:            latest
+- name:           JAVA_OPTS_EXTRA
+  description:      Extra Java options
+  value:            ''
+- name:           JOLOKIA_PASSWORD
+  description:      The password used for the Jolokia endpoint authentication
+  generate:         expression
+  from:             '[a-zA-Z0-9]{15}'
+  required:         true
+- name:           JOLOKIA_USER
+  description:      The username used for the Jolokia endpoint authentication
+  value:            jolokia
+
+objects:
+
+
+
+  - apiVersion: v1
+    kind: DeploymentConfig
+    metadata:
+      generation: 1
+      labels:
+        app: kapua-api
+        hawkular-openshift-agent: jolokia-jetty
+      name: kapua-api
+    spec:
+      replicas: 1
+      selector:
+        app: kapua-api
+        deploymentconfig: kapua-api
+      template:
+        metadata:
+          labels:
+            app: kapua-api
+            deploymentconfig: kapua-api
+            hawkular-openshift-agent: jolokia-kapua
+        spec:
+          containers:
+          - env:
+            - name: JAVA_OPTS
+              value:
+                -Xmx1G
+                -Dcommons.db.schema.update=true
+                -Dcommons.db.connection.host=$SQL_SERVICE_HOST
+                -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT
+                -Dbroker.host=$KAPUA_BROKER_SERVICE_HOST
+                -Ddatastore.elasticsearch.nodes=$ELASTICSEARCH_PORT_9200_TCP_ADDR
+                -Dcertificate.jwt.private.key=file:///home/kapua/key.pk8
+                -Dcertificate.jwt.certificate=file:///home/kapua/cert.pem
+                -Dcommons.eventbus.url="failover:(amqp://${EVENTS_BROKER_PORT_5672_TCP_ADDR}:${EVENTS_BROKER_PORT_5672_TCP_PORT})"
+                -javaagent:/jolokia-jvm-agent.jar=port=8778,protocol=https,caCert=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt,clientPrincipal=cn=system:master-proxy,useSslClientAuthentication=true,extraClientCheck=true,host=0.0.0.0,discoveryEnabled=false,user=${JOLOKIA_USER},password=${JOLOKIA_PASSWORD}
+                ${JAVA_OPTS_EXTRA}
+            image: ${DOCKER_ACCOUNT}/kapua-api:${IMAGE_VERSION}
+            imagePullPolicy: IfNotPresent
+            name: kapua-api
+            ports:
+            - containerPort: 8778
+              name: jolokia
+            - containerPort: 8080
+            readinessProbe:
+              httpGet:
+                path: /
+                port: 8080
+              initialDelaySeconds: 15
+              timeoutSeconds: 5
+              failureThreshold: 3
+              periodSeconds: 10
+          dnsPolicy: ClusterFirst
+          restartPolicy: Always
+          terminationGracePeriodSeconds: 30
+          volumes:
+          - name: hawkular-openshift-agent
+            configMap:
+              name: hawkular-openshift-agent-jetty
+
+
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: kapua-api
+      labels:
+        app: kapua-api
+      annotations:
+        service.alpha.openshift.io/dependencies: '[{"name": "sql", "kind": "Service"}, {"name": "elasticsearch", "kind": "Service"}, {"name": "events-broker", "kind": "Service"}, {"name": "kapua-broker", "kind": "Service"}]'
+    spec:
+      ports:
+      - name: http
+        protocol: TCP
+        port: 8080
+        targetPort: 8080
+      selector:
+        app: kapua-api
+        deploymentconfig: kapua-api
+
+
+
+  - apiVersion: v1
+    kind: Route
+    metadata:
+      name: api
+      labels:
+        app: kapua-api
+    spec:
+      to:
+        kind: Service
+        name: kapua-api
+      port:
+        targetPort: http

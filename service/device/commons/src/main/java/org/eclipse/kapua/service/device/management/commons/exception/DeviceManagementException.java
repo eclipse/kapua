@@ -8,35 +8,53 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.commons.exception;
 
 import org.eclipse.kapua.KapuaException;
 
-public class DeviceManagementException extends KapuaException
-{
-    private static final long   serialVersionUID     = -6207605695086240243L;
+/**
+ * Device management exception.
+ *
+ * @since 1.0
+ */
+public class DeviceManagementException extends KapuaException {
+
+    private static final long serialVersionUID = -6207605695086240243L;
 
     private static final String KAPUA_ERROR_MESSAGES = "device-management-service-error-messages";
 
-    public DeviceManagementException(DeviceManagementErrorCodes code)
-    {
+    /**
+     * Constructor
+     *
+     * @param code
+     */
+    public DeviceManagementException(DeviceManagementErrorCodes code) {
         super(code);
     }
 
-    public DeviceManagementException(DeviceManagementErrorCodes code, Object... arguments)
-    {
+    /**
+     * Constructor
+     *
+     * @param code
+     * @param arguments
+     */
+    public DeviceManagementException(DeviceManagementErrorCodes code, Object... arguments) {
         super(code, arguments);
     }
 
-    public DeviceManagementException(DeviceManagementErrorCodes code, Throwable cause, Object... arguments)
-    {
+    /**
+     * Constructor
+     *
+     * @param code
+     * @param cause
+     * @param arguments
+     */
+    public DeviceManagementException(DeviceManagementErrorCodes code, Throwable cause, Object... arguments) {
         super(code, cause, arguments);
     }
 
-    protected String getKapuaErrorMessagesBundle()
-    {
+    protected String getKapuaErrorMessagesBundle() {
         return KAPUA_ERROR_MESSAGES;
     }
 }

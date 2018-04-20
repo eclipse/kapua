@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.translator.exception;
 
@@ -20,14 +19,10 @@ import org.eclipse.kapua.KapuaErrorCode;
  * @since 1.0
  * 
  */
-public enum TranslatorErrorCodes implements KapuaErrorCode
-{
+public enum TranslatorErrorCodes implements KapuaErrorCode {
     INVALID_MESSAGE,
 
-    INVALID_CHANNEL,
-    INVALID_CHANNEL_CLASSIFIER,
-    INVALID_CHANNEL_APP_NAME,
-    INVALID_CHANNEL_APP_VERSION,
+    INVALID_CHANNEL, INVALID_CHANNEL_CLASSIFIER, INVALID_CHANNEL_APP_NAME, INVALID_CHANNEL_APP_VERSION,
 
     INVALID_PAYLOAD,
 

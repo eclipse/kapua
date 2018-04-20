@@ -8,11 +8,21 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.commons.setting;
 
-public interface SettingKey
-{
+/**
+ * Setting key definition.
+ * 
+ * @since 1.0
+ *
+ */
+public interface SettingKey {
+
+    /**
+     * Get the setting key
+     * 
+     * @return
+     */
     public String key();
 }

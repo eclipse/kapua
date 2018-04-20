@@ -8,12 +8,23 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.model.KapuaEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.model.xml.DateXmlAdapter;
+
+import java.util.Date;
 
 /**
  * Credential creator service definition.
@@ -21,15 +32,31 @@ import org.eclipse.kapua.model.id.KapuaId;
  * @since 1.0
  *
  */
-public interface CredentialCreator extends KapuaEntityCreator<Credential>
-{
+@XmlRootElement(name = "credentialCreator")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(propOrder = { "userId",
+        "credentialType",
+        "credentialPlainKey",
+        "credentialStatus",
+        "expirationDate" }, factoryClass = CredentialXmlRegistry.class, factoryMethod = "newCredentialCreator")
+public interface CredentialCreator extends KapuaEntityCreator<Credential> {
 
     /**
      * Return the user identifier
      * 
      * @return
      */
+    @XmlElement(name = "userId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    @ApiModelProperty(dataType = "string")
     public KapuaId getUserId();
+
+    /**
+     * Set the credential user id
+     * 
+     * @param userId
+     */
+    public void setUserId(KapuaId userId);
 
     /**
      * Return the credential type.<br>
@@ -37,12 +64,39 @@ public interface CredentialCreator extends KapuaEntityCreator<Credential>
      * 
      * @return
      */
+    @XmlElement(name = "credentialType")
     public CredentialType getCredentialType();
+
+    /**
+     * Set the credential type
+     * 
+     * @param credentialType
+     */
+    public void setCredentialType(CredentialType credentialType);
 
     /**
      * Return the plain credential (unencrypted value).
      * 
      * @return
      */
+    @XmlElement(name = "credentialKey")
     public String getCredentialPlainKey();
+
+    /**
+     * Set the credential plain key
+     * 
+     * @param plainKey
+     */
+    public void setCredentialPlainKey(String plainKey);
+
+    @XmlElement(name = "expirationDate")
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
+    Date getExpirationDate();
+
+    void setExpirationDate(Date expirationDate);
+
+    @XmlElement(name = "credentialStatus")
+    CredentialStatus getCredentialStatus();
+
+    void setCredentialStatus(CredentialStatus credentialStatus);
 }

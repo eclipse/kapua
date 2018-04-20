@@ -1,11 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
- *  
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
@@ -14,13 +14,15 @@ package org.eclipse.kapua.commons.cache;
 /**
  * Kapua cache definition
  * 
- * @param <K> keys type
- * @param <V> values type
+ * @param <K>
+ *            keys type
+ * @param <V>
+ *            values type
  * 
  * @since 1.0
  */
-public interface Cache<K, V>
-{
+public interface Cache<K, V> {
+
     /**
      * Return the metric namespace
      * 
@@ -58,4 +60,10 @@ public interface Cache<K, V>
      * @param k
      */
     public void remove(K k);
+
+    /**
+     * Clear the cache
+     */
+    public void invalidateAll();
+
 }

@@ -8,13 +8,17 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.message.device.lifecycle;
 
 import org.eclipse.kapua.message.KapuaPayload;
 
-public interface KapuaMissingPayload extends KapuaPayload
-{
+/**
+ * Kapua data message payload object definition.
+ * 
+ * @since 1.0
+ *
+ */
+public interface KapuaMissingPayload extends KapuaPayload {
 
 }

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+  logicalFilePath="KapuaDB/changelog-authorization-0.2.0.xml">
+
+    <include relativeToChangelogFile="true" file="../common-properties.xml" />
+
+    <changeSet id="changelog-authorization-access-role-0.2.0" author="eurotech">
+        <!-- Old SQL file
+        <sqlFile relativeToChangelogFile="true" path="./athz_access_role.sql" />
+        -->
+        <createTable tableName="athz_access_role">
+            <column name="scope_id" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="bigint(21) unsigned">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="created_on" type="timestamp(3)" defaultValueComputed="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="access_info_id" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_id" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="access_info_id_fk_2" baseTableName="athz_access_role" baseColumnNames="access_info_id" referencedTableName="athz_access_info" referencedColumnNames="id" onDelete="CASCADE"/>
+        <addForeignKeyConstraint constraintName="role_id_fk_1" baseTableName="athz_access_role" baseColumnNames="role_id" referencedTableName="athz_role" referencedColumnNames="id" onDelete="CASCADE"/>
+
+        <createIndex tableName="athz_access_role" indexName="idx_scopeId_accessId_roleId" unique="true">
+            <column name="scope_id"/>
+            <column name="access_info_id"/>
+            <column name="role_id"/>
+        </createIndex>
+
+        <!-- Seed values -->
+        <insert tableName="athz_access_role">
+            <!-- kapua-sys assigned of role admin -->
+            <column name="scope_id" value="1"/>
+            <column name="id" value="1"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="1"/>
+            <column name="access_info_id" value="1"/>
+            <column name="role_id" value="1"/>
+        </insert>
+
+        <rollback>
+            <dropTable tableName="athz_access_role"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.transport.message.jms;
 
@@ -18,31 +18,31 @@ import org.eclipse.kapua.transport.message.TransportMessage;
 
 /**
  * Implementation of {@link TransportMessage} API for JMS transport facade.
- * 
- * @since 1.0.0
  */
 public class JmsMessage implements TransportMessage<JmsTopic, JmsPayload> {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * The topic of this {@link JmsMessage}.
      * 
      * @since 1.0.0
      */
-    private JmsTopic            topic;
+    private JmsTopic topic;
 
     /**
      * The receivedOn of this {@link JmsMessage}.
      * 
      * @since 1.0.0
      */
-    private Date                receivedOn;
+    private Date receivedOn;
 
     /**
      * The payload of this {@link JmsMessage}.
      * 
      * @since 1.0.0
      */
-    private JmsPayload          payload;
+    private JmsPayload payload;
 
     /**
      * Construct a {@link JmsMessage} with the given parameters.

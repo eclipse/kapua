@@ -1,169 +1,289 @@
+/*******************************************************************************
+ * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.kapua.service.device.management.packages.message.internal;
-
-import java.net.URI;
 
 import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.device.management.request.KapuaRequestPayload;
+import org.eclipse.kapua.service.device.management.message.request.KapuaRequestPayload;
 
-public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequestPayload
-{
-    public KapuaId getOperationId()
-    {
-        return (KapuaId) getProperties().get(PackageAppProperties.APP_PROPERTY_PACKAGE_OPERATION_ID.getValue());
+import java.net.URI;
+
+/**
+ * Package request message payload.
+ *
+ * @since 1.0
+ */
+public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequestPayload {
+
+    /**
+     * Get the operation identifier
+     *
+     * @return
+     */
+    public KapuaId getOperationId() {
+        return (KapuaId) getMetrics().get(PackageAppProperties.APP_PROPERTY_PACKAGE_OPERATION_ID.getValue());
     }
 
-    public void setOperationId(KapuaId operationId)
-    {
+    /**
+     * Set the operation identifier
+     *
+     * @param operationId
+     */
+    public void setOperationId(KapuaId operationId) {
         if (operationId != null) {
-            getProperties().put(PackageAppProperties.APP_PROPERTY_PACKAGE_OPERATION_ID.getValue(), operationId);
+            getMetrics().put(PackageAppProperties.APP_PROPERTY_PACKAGE_OPERATION_ID.getValue(), operationId);
         }
     }
 
-    public Boolean isReboot()
-    {
-        return (Boolean) getProperties().get(PackageAppProperties.APP_PROPERTY_PACKAGE_REBOOT.getValue());
+    /**
+     * Get the device reboot flag
+     *
+     * @return
+     */
+    public Boolean isReboot() {
+        return (Boolean) getMetrics().get(PackageAppProperties.APP_PROPERTY_PACKAGE_REBOOT.getValue());
     }
 
-    public void setReboot(Boolean reboot)
-    {
+    /**
+     * Set the device reboot flag
+     *
+     * @param reboot
+     */
+    public void setReboot(Boolean reboot) {
         if (reboot != null) {
-            getProperties().put(PackageAppProperties.APP_PROPERTY_PACKAGE_REBOOT.getValue(), reboot);
+            getMetrics().put(PackageAppProperties.APP_PROPERTY_PACKAGE_REBOOT.getValue(), reboot);
         }
     }
 
-    public Integer getRebootDelay()
-    {
-        return (Integer) getProperties().get(PackageAppProperties.APP_PROPERTY_PACKAGE_REBOOT_DELAY.getValue());
+    /**
+     * Get the device reboot flag
+     *
+     * @return
+     */
+    public Integer getRebootDelay() {
+        return (Integer) getMetrics().get(PackageAppProperties.APP_PROPERTY_PACKAGE_REBOOT_DELAY.getValue());
     }
 
-    public void setRebootDelay(Integer rebootDelay)
-    {
+    /**
+     * Set the device reboot flag
+     *
+     * @param rebootDelay
+     */
+    public void setRebootDelay(Integer rebootDelay) {
         if (rebootDelay != null) {
-            getProperties().put(PackageAppProperties.APP_PROPERTY_PACKAGE_REBOOT_DELAY.getValue(), rebootDelay);
+            getMetrics().put(PackageAppProperties.APP_PROPERTY_PACKAGE_REBOOT_DELAY.getValue(), rebootDelay);
         }
     }
 
     //
     // Download
     //
-    public URI getPackageDownloadURI()
-    {
-        return (URI) getProperties().get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_URI.getValue());
+
+    /**
+     * Get the package download URI
+     *
+     * @return
+     */
+    public URI getPackageDownloadURI() {
+        return (URI) getMetrics().get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_URI.getValue());
     }
 
-    public void setPackageDownloadURI(URI uri)
-    {
+    /**
+     * Set the package download URI
+     *
+     * @param uri
+     */
+    public void setPackageDownloadURI(URI uri) {
         if (uri != null) {
-            getProperties().put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_URI.getValue(), uri);
+            getMetrics().put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_URI.getValue(), uri);
         }
     }
 
-    public String getPackageDownloadName()
-    {
-        return (String) getProperties().get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_NAME.getValue());
+    /**
+     * Get the package name
+     *
+     * @return
+     */
+    public String getPackageDownloadName() {
+        return (String) getMetrics().get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_NAME.getValue());
     }
 
-    public void setPackageDownloadName(String packageName)
-    {
+    /**
+     * Set the package name
+     *
+     * @param packageName
+     */
+    public void setPackageDownloadName(String packageName) {
         if (packageName != null) {
-            getProperties().put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_NAME.getValue(), packageName);
+            getMetrics().put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_NAME.getValue(), packageName);
         }
     }
 
-    public String getPackageDownloadVersion()
-    {
-        return (String) getProperties().get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_VERSION.getValue());
+    /**
+     * Get the package version
+     *
+     * @return
+     */
+    public String getPackageDownloadVersion() {
+        return (String) getMetrics().get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_VERSION.getValue());
     }
 
-    public void setPackageDownloadVersion(String packageVersion)
-    {
+    /**
+     * Set the package version
+     *
+     * @param packageVersion
+     */
+    public void setPackageDownloadVersion(String packageVersion) {
         if (packageVersion != null) {
-            getProperties().put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_VERSION.getValue(), packageVersion);
+            getMetrics().put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_VERSION.getValue(), packageVersion);
         }
     }
 
-    public Boolean isPackageDownloadnstall()
-    {
-        return (Boolean) getProperties().get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_INSTALL.getValue());
+    /**
+     * Get the is a download package and install flag
+     *
+     * @return
+     */
+    public Boolean isPackageDownloadnstall() {
+        return (Boolean) getMetrics().get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_INSTALL.getValue());
     }
 
-    public void setPackageDownloadnstall(Boolean packageDownloadnstall)
-    {
+    /**
+     * Set the is a download package and install flag
+     *
+     * @param packageDownloadnstall
+     */
+    public void setPackageDownloadnstall(Boolean packageDownloadnstall) {
         if (packageDownloadnstall != null) {
-            getProperties().put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_INSTALL.getValue(), packageDownloadnstall);
+            getMetrics().put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_INSTALL.getValue(), packageDownloadnstall);
         }
     }
 
     //
     // Install
     //
-    public String getPackageInstallName()
-    {
-        return (String) getProperties().get(PackageAppProperties.APP_PROPERTY_PACKAGE_INSTALL_PACKAGE_NAME.getValue());
+
+    /**
+     * Get the package install name
+     *
+     * @return
+     */
+    public String getPackageInstallName() {
+        return (String) getMetrics().get(PackageAppProperties.APP_PROPERTY_PACKAGE_INSTALL_PACKAGE_NAME.getValue());
     }
 
-    public void setPackageInstallName(String packageName)
-    {
+    /**
+     * Set the package install name
+     *
+     * @param packageName
+     */
+    public void setPackageInstallName(String packageName) {
         if (packageName != null) {
-            getProperties().put(PackageAppProperties.APP_PROPERTY_PACKAGE_INSTALL_PACKAGE_NAME.getValue(), packageName);
+            getMetrics().put(PackageAppProperties.APP_PROPERTY_PACKAGE_INSTALL_PACKAGE_NAME.getValue(), packageName);
         }
     }
 
-    public String getPackageInstallVersion()
-    {
-        return (String) getProperties().get(PackageAppProperties.APP_PROPERTY_PACKAGE_INSTALL_PACKAGE_VERSION.getValue());
+    /**
+     * Get the package install version
+     *
+     * @return
+     */
+    public String getPackageInstallVersion() {
+        return (String) getMetrics().get(PackageAppProperties.APP_PROPERTY_PACKAGE_INSTALL_PACKAGE_VERSION.getValue());
     }
 
-    public void setPackageInstallVersion(String packageVersion)
-    {
+    /**
+     * Set the package install version
+     *
+     * @param packageVersion
+     */
+    public void setPackageInstallVersion(String packageVersion) {
         if (packageVersion != null) {
-            getProperties().put(PackageAppProperties.APP_PROPERTY_PACKAGE_INSTALL_PACKAGE_VERSION.getValue(), packageVersion);
+            getMetrics().put(PackageAppProperties.APP_PROPERTY_PACKAGE_INSTALL_PACKAGE_VERSION.getValue(), packageVersion);
         }
     }
 
     //
     // Uninstall
     //
-    public String getPackageUninstallName()
-    {
-        return (String) getProperties().get(PackageAppProperties.APP_PROPERTY_PACKAGE_UNINSTALL_PACKAGE_NAME.getValue());
+
+    /**
+     * Get the package uninstall name
+     *
+     * @return
+     */
+    public String getPackageUninstallName() {
+        return (String) getMetrics().get(PackageAppProperties.APP_PROPERTY_PACKAGE_UNINSTALL_PACKAGE_NAME.getValue());
     }
 
-    public void setPackageUninstallName(String packageName)
-    {
+    /**
+     * Set the package uninstall name
+     *
+     * @param packageName
+     */
+    public void setPackageUninstallName(String packageName) {
         if (packageName != null) {
-            getProperties().put(PackageAppProperties.APP_PROPERTY_PACKAGE_UNINSTALL_PACKAGE_NAME.getValue(), packageName);
+            getMetrics().put(PackageAppProperties.APP_PROPERTY_PACKAGE_UNINSTALL_PACKAGE_NAME.getValue(), packageName);
         }
     }
 
-    public String getPackageUninstallVersion()
-    {
-        return (String) getProperties().get(PackageAppProperties.APP_PROPERTY_PACKAGE_UNINSTALL_PACKAGE_VERSION.getValue());
+    /**
+     * Get the package uninstall version
+     *
+     * @return
+     */
+    public String getPackageUninstallVersion() {
+        return (String) getMetrics().get(PackageAppProperties.APP_PROPERTY_PACKAGE_UNINSTALL_PACKAGE_VERSION.getValue());
     }
 
-    public void setPackageUninstallVersion(String packageVersion)
-    {
+    /**
+     * Set the package uninstall version
+     *
+     * @param packageVersion
+     */
+    public void setPackageUninstallVersion(String packageVersion) {
         if (packageVersion != null) {
-            getProperties().put(PackageAppProperties.APP_PROPERTY_PACKAGE_UNINSTALL_PACKAGE_VERSION.getValue(), packageVersion);
+            getMetrics().put(PackageAppProperties.APP_PROPERTY_PACKAGE_UNINSTALL_PACKAGE_VERSION.getValue(), packageVersion);
         }
     }
 
     //
     // Utility methods
     //
-    public boolean isDownloadRequest()
-    {
+
+    /**
+     * Get the is a download request flag
+     *
+     * @return
+     */
+    public boolean isDownloadRequest() {
         return getPackageDownloadName() != null;
     }
 
-    public boolean isInstallRequest()
-    {
+    /**
+     * Get the is an install request flag
+     *
+     * @return
+     */
+    public boolean isInstallRequest() {
         return getPackageInstallName() != null;
     }
 
-    public boolean isUninstallRequest()
-    {
+    /**
+     * Get the is an uninstall request flag
+     *
+     * @return
+     */
+    public boolean isUninstallRequest() {
         return getPackageUninstallName() != null;
     }
 }

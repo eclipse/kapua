@@ -1,0 +1,40 @@
+{
+	"applications": {
+		"app1": {
+			"scheduler": { "period": 2000 },
+			"topics": {
+				"t1/data": {
+					"bodyGenerator": "body-gen",
+					"positionGenerator": "position-gen",
+					"metrics": {
+						"temp1": { "generator": "sine1", "name": "value" },
+						"temp2": { "generator": "sine2", "name": "value" }
+					}
+				},
+				"t2/data": {
+					"metrics": {
+						"temp1": { "generator": "sine1", "name": "value" },
+						"temp2": { "generator": "sine2", "name": "value" }
+					}
+				}
+			},
+			"generators": {
+				"body-gen": {
+				},
+				"position-gen": {
+				},
+				"sine1": {
+					"type": "sine", "period": 1000, "offset": 50, "amplitude": 100
+				},
+				"sine2": {
+					"type": "sine", "period": 2000, "shift": 45.5, "offset": 30, "amplitude": 100
+				},
+				"foo": {
+					"mydata": {
+						"foo": "bar"
+					}
+				}
+			}
+		}
+	}
+}

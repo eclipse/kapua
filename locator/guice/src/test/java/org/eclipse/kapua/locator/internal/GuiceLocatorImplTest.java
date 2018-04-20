@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,57 +9,110 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *     Red Hat - improved tests coverage
- *
  *******************************************************************************/
 package org.eclipse.kapua.locator.internal;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import java.util.List;
 
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.locator.KapuaLocatorErrorCodes;
 import org.eclipse.kapua.locator.guice.GuiceLocatorImpl;
-import org.eclipse.kapua.locator.guice.KapuaLocatorErrorCodes;
 import org.eclipse.kapua.locator.guice.TestService;
+import org.eclipse.kapua.locator.internal.guice.FactoryA;
+import org.eclipse.kapua.locator.internal.guice.FactoryB;
+import org.eclipse.kapua.locator.internal.guice.ServiceA;
+import org.eclipse.kapua.locator.internal.guice.ServiceB;
+import org.eclipse.kapua.locator.internal.guice.ServiceC;
 import org.eclipse.kapua.service.KapuaService;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore
 public class GuiceLocatorImplTest {
 
-	KapuaLocator locator = GuiceLocatorImpl.getInstance();
+    private KapuaLocator locator = GuiceLocatorImpl.getInstance();
 
-	@Test
-	public void shouldThrowKapuaExceptionWhenServiceIsNotAvailable() {
-		try {
-			locator.getService(MyService.class);
-		} catch (KapuaRuntimeException e) {
-			assertEquals(KapuaLocatorErrorCodes.SERVICE_UNAVAILABLE.name(), e.getCode().name());
-			return;
-		}
-		fail();
-	}
+    @Ignore
+    @Test
+    public void shouldThrowKapuaExceptionWhenServiceIsNotAvailable() {
+        try {
+            locator.getService(MyService.class);
+        } catch (KapuaRuntimeException e) {
+            assertEquals(KapuaLocatorErrorCodes.SERVICE_UNAVAILABLE.name(), e.getCode().name());
+            return;
+        }
+        fail();
+    }
 
-	@Test
-	public void shouldLoadTestService() {
-		MyTestableService service = locator.getService(MyTestableService.class);
-		Assert.assertTrue(service instanceof TestMyTestableService);
-	}
+    @Ignore
+    @Test
+    public void shouldLoadTestService() {
+        MyTestableService service = locator.getService(MyTestableService.class);
+        Assert.assertTrue(service instanceof TestMyTestableService);
+    }
 
-	static interface MyService extends KapuaService {}
+    @Test
+    public void shouldProvideServiceA() {
+        Assert.assertNotNull(locator.getService(ServiceA.class));
+    }
 
-	interface MyTestableService extends KapuaService {
+    @Test(expected = KapuaRuntimeException.class)
+    public void shouldProvideServiceB() {
+        Assert.assertNotNull(locator.getService(ServiceB.class));
+    }
 
-	}
+    @Test
+    public void shouldProvideFactoryA() {
+        Assert.assertNotNull(locator.getFactory(FactoryA.class));
+    }
 
-	public static class MyTestableServiceImpl implements MyTestableService {
+    @Test
+    public void shouldNotFindFactory() {
+        try {
+            locator.getFactory(FactoryB.class);
+            Assert.fail("getFactory must throw an exception for un-bound factories");
+        } catch (KapuaRuntimeException e) {
+            Assert.assertEquals(KapuaLocatorErrorCodes.FACTORY_UNAVAILABLE, e.getCode());
+        } catch (Throwable e) {
+            Assert.fail("Exception must be of type: " + KapuaRuntimeException.class.getName());
+        }
+    }
 
-	}
+    @Test
+    public void shouldProvideAll() {
+        List<KapuaService> result = locator.getServices();
+        Assert.assertEquals(1, result.size());
 
-	@TestService
-	public static class TestMyTestableService implements MyTestableService {
+        {
+            KapuaService service = result.get(0);
+            Assert.assertTrue(service instanceof ServiceA);
+        }
+    }
 
-	}
+    @Test(expected = KapuaRuntimeException.class)
+    public void shouldNotLoad() {
+        KapuaLocator locator = new GuiceLocatorImpl("locator-1.xml");
+        locator.getService(ServiceC.class);
+    }
+
+    static interface MyService extends KapuaService {
+    }
+
+    interface MyTestableService extends KapuaService {
+
+    }
+
+    public static class MyTestableServiceImpl implements MyTestableService {
+
+    }
+
+    @TestService
+    public static class TestMyTestableService implements MyTestableService {
+
+    }
 
 }

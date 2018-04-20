@@ -11,138 +11,203 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.command.message.internal;
 
+import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
+import org.eclipse.kapua.service.device.management.command.internal.CommandAppProperties;
+import org.eclipse.kapua.service.device.management.message.request.KapuaRequestPayload;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
-import org.eclipse.kapua.service.device.management.command.internal.CommandAppProperties;
-import org.eclipse.kapua.service.device.management.request.KapuaRequestPayload;
+/**
+ * Device command request payload.
+ *
+ * @since 1.0
+ */
+public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequestPayload {
 
-public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequestPayload
-{
-    public String[] getArguments()
-    {
+    /**
+     * Get the command argument list
+     *
+     * @return
+     */
+    public String[] getArguments() {
         List<String> argumentsList = new ArrayList<>();
 
-        for (int i = 0;; i++) {
-            String value = (String) getProperties().get(CommandAppProperties.APP_PROPERTY_ARG.getValue() + i);
+        for (int i = 0; ; i++) {
+            String value = (String) getMetrics().get(CommandAppProperties.APP_PROPERTY_ARG.getValue() + i);
             if (value != null) {
                 argumentsList.add(value);
-            }
-            else {
+            } else {
                 break;
             }
         }
 
         if (argumentsList.isEmpty()) {
             return null;
-        }
-        else {
+        } else {
             return argumentsList.toArray(new String[argumentsList.size()]);
         }
     }
 
-    public void setArguments(String[] arguments)
-    {
+    /**
+     * Set the command argument list
+     *
+     * @param arguments
+     */
+    public void setArguments(String[] arguments) {
         if (arguments != null) {
             for (int i = 0; i < arguments.length; i++) {
-                getProperties().put(CommandAppProperties.APP_PROPERTY_ARG.getValue() + i, arguments[i]);
+                getMetrics().put(CommandAppProperties.APP_PROPERTY_ARG.getValue() + i, arguments[i]);
             }
         }
     }
 
-    public String[] getEnvironmentPairs()
-    {
+    /**
+     * Get the environment pairs
+     *
+     * @return
+     */
+    public String[] getEnvironmentPairs() {
         List<String> v = new ArrayList<>();
 
-        for (int i = 0;; i++) {
-            String value = (String) getProperties().get(CommandAppProperties.APP_PROPERTY_ENVP.getValue() + i);
+        for (int i = 0; ; i++) {
+            String value = (String) getMetrics().get(CommandAppProperties.APP_PROPERTY_ENVP.getValue() + i);
             if (value != null) {
                 v.add(value);
-            }
-            else {
+            } else {
                 break;
             }
         }
 
         if (v.isEmpty()) {
             return null;
-        }
-        else {
+        } else {
             return v.toArray(new String[v.size()]);
         }
     }
 
-    public void setEnvironmentPairs(String[] environmentPairs)
-    {
+    /**
+     * Set the environment pairs
+     *
+     * @param environmentPairs
+     */
+    public void setEnvironmentPairs(String[] environmentPairs) {
         if (environmentPairs != null) {
             for (int i = 0; i < environmentPairs.length; i++) {
-                getProperties().put(CommandAppProperties.APP_PROPERTY_ENVP.getValue() + i, environmentPairs[i]);
+                getMetrics().put(CommandAppProperties.APP_PROPERTY_ENVP.getValue() + i, environmentPairs[i]);
             }
         }
     }
 
-    public String getWorkingDir()
-    {
-        return (String) getProperties().get(CommandAppProperties.APP_PROPERTY_DIR.getValue());
+    /**
+     * Get the working directory
+     *
+     * @return
+     */
+    public String getWorkingDir() {
+        return (String) getMetrics().get(CommandAppProperties.APP_PROPERTY_DIR.getValue());
     }
 
-    public void setWorkingDir(String workingDir)
-    {
+    /**
+     * Set the working directory
+     *
+     * @param workingDir
+     */
+    public void setWorkingDir(String workingDir) {
         if (workingDir != null) {
-            getProperties().put(CommandAppProperties.APP_PROPERTY_DIR.getValue(), workingDir);
+            getMetrics().put(CommandAppProperties.APP_PROPERTY_DIR.getValue(), workingDir);
         }
     }
 
-    public String getStdin()
-    {
-        return (String) getProperties().get(CommandAppProperties.APP_PROPERTY_STDIN.getValue());
+    /**
+     * Get the standard input
+     *
+     * @return
+     */
+    public String getStdin() {
+        return (String) getMetrics().get(CommandAppProperties.APP_PROPERTY_STDIN.getValue());
     }
 
-    public void setStdin(String stdin)
-    {
+    /**
+     * Set the standard input
+     *
+     * @param stdin
+     */
+    public void setStdin(String stdin) {
         if (stdin != null) {
-            getProperties().put(CommandAppProperties.APP_PROPERTY_STDIN.getValue(), stdin);
+            getMetrics().put(CommandAppProperties.APP_PROPERTY_STDIN.getValue(), stdin);
         }
     }
 
-    public Integer getTimeout()
-    {
-        return (Integer) getProperties().get(CommandAppProperties.APP_PROPERTY_TOUT.getValue());
+    /**
+     * Get the command timeout
+     *
+     * @return
+     */
+    public Integer getTimeout() {
+        return (Integer) getMetrics().get(CommandAppProperties.APP_PROPERTY_TOUT.getValue());
     }
 
-    public void setTimeout(int timeout)
-    {
-        getProperties().put(CommandAppProperties.APP_PROPERTY_TOUT.getValue(), Integer.valueOf(timeout));
+    /**
+     * Set the command timeout
+     *
+     * @param timeout
+     */
+    public void setTimeout(int timeout) {
+        getMetrics().put(CommandAppProperties.APP_PROPERTY_TOUT.getValue(), Integer.valueOf(timeout));
     }
 
-    public Boolean isRunAsync()
-    {
-        return (Boolean) getProperties().get(CommandAppProperties.APP_PROPERTY_ASYNC.getValue());
+    /**
+     * Get the run asynchronously flag
+     *
+     * @return
+     */
+    public Boolean isRunAsync() {
+        return (Boolean) getMetrics().get(CommandAppProperties.APP_PROPERTY_ASYNC.getValue());
     }
 
-    public void setRunAsync(boolean runAsync)
-    {
-        getProperties().put(CommandAppProperties.APP_PROPERTY_ASYNC.getValue(), Boolean.valueOf(runAsync));
+    /**
+     * Set the run asynchronously flag
+     *
+     * @param runAsync
+     */
+    public void setRunAsync(boolean runAsync) {
+        getMetrics().put(CommandAppProperties.APP_PROPERTY_ASYNC.getValue(), Boolean.valueOf(runAsync));
     }
 
-    public void setCommand(String cmd)
-    {
-        getProperties().put(CommandAppProperties.APP_PROPERTY_CMD.getValue(), cmd);
+    /**
+     * Set the command
+     *
+     * @param cmd
+     */
+    public void setCommand(String cmd) {
+        getMetrics().put(CommandAppProperties.APP_PROPERTY_CMD.getValue(), cmd);
     }
 
-    public String getCommand()
-    {
-        return (String) getProperties().get(CommandAppProperties.APP_PROPERTY_CMD.getValue());
+    /**
+     * Get the command
+     *
+     * @return
+     */
+    public String getCommand() {
+        return (String) getMetrics().get(CommandAppProperties.APP_PROPERTY_CMD.getValue());
     }
 
-    public void setPassword(String password)
-    {
-        getProperties().put(CommandAppProperties.APP_PROPERTY_PASSWORD.getValue(), password);
+    /**
+     * Set the password
+     *
+     * @param password
+     */
+    public void setPassword(String password) {
+        getMetrics().put(CommandAppProperties.APP_PROPERTY_PASSWORD.getValue(), password);
     }
 
-    public String getPassword()
-    {
-        return (String) getProperties().get(CommandAppProperties.APP_PROPERTY_PASSWORD.getValue());
+    /**
+     * Get the password
+     *
+     * @return
+     */
+    public String getPassword() {
+        return (String) getMetrics().get(CommandAppProperties.APP_PROPERTY_PASSWORD.getValue());
     }
 }

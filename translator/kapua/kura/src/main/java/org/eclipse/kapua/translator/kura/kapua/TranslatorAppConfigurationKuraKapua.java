@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,16 +8,9 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
-
-import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.xml.namespace.QName;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.Password;
@@ -25,98 +18,69 @@ import org.eclipse.kapua.commons.configuration.metatype.TadImpl;
 import org.eclipse.kapua.commons.configuration.metatype.TiconImpl;
 import org.eclipse.kapua.commons.configuration.metatype.TocdImpl;
 import org.eclipse.kapua.commons.configuration.metatype.ToptionImpl;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTicon;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.config.metatype.KapuaToption;
-import org.eclipse.kapua.service.account.Account;
-import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.device.call.kura.app.ConfigurationMetrics;
-import org.eclipse.kapua.service.device.call.kura.app.ResponseMetrics;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceConfiguration;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraPassword;
-import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponseChannel;
-import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponseMessage;
-import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponsePayload;
-import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSetting;
-import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSettingKeys;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMetrics;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
-import org.eclipse.kapua.service.device.management.configuration.internal.DeviceConfigurationAppProperties;
 import org.eclipse.kapua.service.device.management.configuration.internal.DeviceComponentConfigurationImpl;
+import org.eclipse.kapua.service.device.management.configuration.internal.DeviceConfigurationAppProperties;
 import org.eclipse.kapua.service.device.management.configuration.internal.DeviceConfigurationImpl;
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationResponseChannel;
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationResponseMessage;
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationResponsePayload;
-import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
 import org.eclipse.kapua.translator.exception.TranslatorException;
 
+import javax.xml.namespace.QName;
+import java.io.StringWriter;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 /**
  * Messages translator implementation from {@link KuraResponseMessage} to {@link ConfigurationResponseMessage}
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-public class TranslatorAppConfigurationKuraKapua extends Translator<KuraResponseMessage, ConfigurationResponseMessage>
-{
-    private static final String                                          CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
-    private static Map<ConfigurationMetrics, DeviceConfigurationAppProperties> metricsDictionary;
+public class TranslatorAppConfigurationKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<ConfigurationResponseChannel, ConfigurationResponsePayload, ConfigurationResponseMessage> {
+
+    private static final String CONTROL_MESSAGE_CLASSIFIER = SystemSetting.getInstance().getMessageClassifier();
+    private static final Map<ConfigurationMetrics, DeviceConfigurationAppProperties> METRICS_DICTIONARY;
+
+    static {
+        METRICS_DICTIONARY = new EnumMap<>(ConfigurationMetrics.class);
+
+        METRICS_DICTIONARY.put(ConfigurationMetrics.APP_ID, DeviceConfigurationAppProperties.APP_NAME);
+        METRICS_DICTIONARY.put(ConfigurationMetrics.APP_VERSION, DeviceConfigurationAppProperties.APP_VERSION);
+    }
 
     /**
      * Constructor
      */
-    public TranslatorAppConfigurationKuraKapua()
-    {
-        metricsDictionary = new HashMap<>();
-
-        metricsDictionary.put(ConfigurationMetrics.APP_ID, DeviceConfigurationAppProperties.APP_NAME);
-        metricsDictionary.put(ConfigurationMetrics.APP_VERSION, DeviceConfigurationAppProperties.APP_VERSION);
+    public TranslatorAppConfigurationKuraKapua() {
+        super(ConfigurationResponseMessage.class);
     }
 
     @Override
-    public ConfigurationResponseMessage translate(KuraResponseMessage kuraMessage)
-        throws KapuaException
-    {
-        //
-        // Kura channel
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AccountService accountService = locator.getService(AccountService.class);
-        Account account = accountService.findByName(kuraMessage.getChannel().getScope());
-
-        ConfigurationResponseChannel commandResponseChannel = translate(kuraMessage.getChannel());
-
-        //
-        // Kura payload
-        ConfigurationResponsePayload responsePayload = translate(kuraMessage.getPayload());
-
-        //
-        // Kura Message
-        ConfigurationResponseMessage kapuaMessage = new ConfigurationResponseMessage();
-        kapuaMessage.setScopeId(account.getId());
-        kapuaMessage.setChannel(commandResponseChannel);
-        kapuaMessage.setPayload(responsePayload);
-        kapuaMessage.setCapturedOn(kuraMessage.getPayload().getTimestamp());
-        kapuaMessage.setSentOn(kuraMessage.getPayload().getTimestamp());
-        kapuaMessage.setReceivedOn(kuraMessage.getTimestamp());
-        kapuaMessage.setResponseCode(TranslatorKuraKapuaUtils.translate((Integer) kuraMessage.getPayload().getMetrics().get(ResponseMetrics.RESP_METRIC_EXIT_CODE.getValue())));
-
-        //
-        // Return Kapua Message
-        return kapuaMessage;
-    }
-
-    private ConfigurationResponseChannel translate(KuraResponseChannel kuraChannel)
-        throws KapuaException
-    {
+    protected ConfigurationResponseChannel translateChannel(KuraResponseChannel kuraChannel) throws KapuaException {
 
         if (!CONTROL_MESSAGE_CLASSIFIER.equals(kuraChannel.getMessageClassification())) {
             throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_CLASSIFIER,
-                                          null,
-                                          kuraChannel.getMessageClassification());
+                    null,
+                    kuraChannel.getMessageClassification());
         }
 
         ConfigurationResponseChannel configurationResponseChannel = new ConfigurationResponseChannel();
@@ -125,14 +89,14 @@ public class TranslatorAppConfigurationKuraKapua extends Translator<KuraResponse
 
         if (!ConfigurationMetrics.APP_ID.getValue().equals(appIdTokens[0])) {
             throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME,
-                                          null,
-                                          appIdTokens[0]);
+                    null,
+                    appIdTokens[0]);
         }
 
         if (!ConfigurationMetrics.APP_VERSION.getValue().equals(appIdTokens[1])) {
             throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_VERSION,
-                                          null,
-                                          appIdTokens[1]);
+                    null,
+                    appIdTokens[1]);
         }
 
         configurationResponseChannel.setAppName(DeviceConfigurationAppProperties.APP_NAME);
@@ -143,13 +107,12 @@ public class TranslatorAppConfigurationKuraKapua extends Translator<KuraResponse
         return configurationResponseChannel;
     }
 
-    private ConfigurationResponsePayload translate(KuraResponsePayload kuraPayload)
-        throws KapuaException
-    {
+    @Override
+    protected ConfigurationResponsePayload translatePayload(KuraResponsePayload kuraPayload) throws KapuaException {
         ConfigurationResponsePayload configurationResponsePayload = new ConfigurationResponsePayload();
 
-        configurationResponsePayload.setExceptionMessage((String) kuraPayload.getMetrics().get(ResponseMetrics.RESP_METRIC_EXCEPTION_MESSAGE.getValue()));
-        configurationResponsePayload.setExceptionStack((String) kuraPayload.getMetrics().get(ResponseMetrics.RESP_METRIC_EXCEPTION_STACK.getValue()));
+        configurationResponsePayload.setExceptionMessage((String) kuraPayload.getMetrics().get(KuraResponseMetrics.RESP_METRIC_EXCEPTION_MESSAGE.getValue()));
+        configurationResponsePayload.setExceptionStack((String) kuraPayload.getMetrics().get(KuraResponseMetrics.RESP_METRIC_EXCEPTION_STACK.getValue()));
 
         DeviceManagementSetting config = DeviceManagementSetting.getInstance();
         String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
@@ -158,26 +121,24 @@ public class TranslatorAppConfigurationKuraKapua extends Translator<KuraResponse
             String body = null;
             try {
                 body = new String(kuraPayload.getBody(), charEncoding);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD,
-                                              e,
-                                              configurationResponsePayload.getBody());
+                        e,
+                        (Object) configurationResponsePayload.getBody());
             }
 
             KuraDeviceConfiguration kuraDeviceConfiguration = null;
             try {
                 kuraDeviceConfiguration = XmlUtil.unmarshal(body, KuraDeviceConfiguration.class);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD,
-                                              e,
-                                              body);
+                        e,
+                        body);
             }
 
             translateBody(configurationResponsePayload,
-                          charEncoding,
-                          kuraDeviceConfiguration);
+                    charEncoding,
+                    kuraDeviceConfiguration);
         }
 
         // Return Kapua Payload
@@ -185,8 +146,7 @@ public class TranslatorAppConfigurationKuraKapua extends Translator<KuraResponse
     }
 
     private void translateBody(ConfigurationResponsePayload configurationResponsePayload, String charEncoding, KuraDeviceConfiguration kuraDeviceConfiguration)
-        throws TranslatorException
-    {
+            throws TranslatorException {
         try {
             DeviceConfigurationImpl deviceConfiguration = new DeviceConfigurationImpl();
             for (KuraDeviceComponentConfiguration kuraDeviceCompConf : kuraDeviceConfiguration.getConfigurations()) {
@@ -210,16 +170,14 @@ public class TranslatorAppConfigurationKuraKapua extends Translator<KuraResponse
             byte[] requestBody = sw.toString().getBytes(charEncoding);
 
             configurationResponsePayload.setBody(requestBody);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new TranslatorException(TranslatorErrorCodes.INVALID_BODY,
-                                          e,
-                                          kuraDeviceConfiguration);
+                    e,
+                    kuraDeviceConfiguration);
         }
     }
 
-    private KapuaTocd translate(KapuaTocd kuraDefinition)
-    {
+    private KapuaTocd translate(KapuaTocd kuraDefinition) {
         TocdImpl definition = new TocdImpl();
 
         definition.setId(kuraDefinition.getId());
@@ -249,7 +207,7 @@ public class TranslatorAppConfigurationKuraKapua extends Translator<KuraResponse
 
             for (Entry<QName, String> entry : kuraAd.getOtherAttributes().entrySet()) {
                 ad.putOtherAttribute(entry.getKey(),
-                                     entry.getValue());
+                        entry.getValue());
             }
 
             definition.addAD(ad);
@@ -269,14 +227,13 @@ public class TranslatorAppConfigurationKuraKapua extends Translator<KuraResponse
 
         for (Entry<QName, String> entry : kuraDefinition.getOtherAttributes().entrySet()) {
             definition.putOtherAttribute(entry.getKey(),
-                                         entry.getValue());
+                    entry.getValue());
         }
 
         return definition;
     }
 
-    private Map<String, Object> translate(Map<String, Object> kuraProperties)
-    {
+    private Map<String, Object> translate(Map<String, Object> kuraProperties) {
         Map<String, Object> properties = new HashMap<>();
         for (Entry<String, Object> entry : kuraProperties.entrySet()) {
 
@@ -286,8 +243,7 @@ public class TranslatorAppConfigurationKuraKapua extends Translator<KuraResponse
             // Special management of Password type field
             if (value instanceof KuraPassword) {
                 value = new Password(((KuraPassword) value).getPassword());
-            }
-            else if (value instanceof KuraPassword[]) {
+            } else if (value instanceof KuraPassword[]) {
                 KuraPassword[] kuraPasswords = (KuraPassword[]) value;
                 Password[] passwords = new Password[kuraPasswords.length];
 
@@ -301,22 +257,8 @@ public class TranslatorAppConfigurationKuraKapua extends Translator<KuraResponse
 
             //
             // Set property
-            properties.put(entry.getKey(),
-                           value);
+            properties.put(entry.getKey(), value);
         }
         return properties;
     }
-
-    @Override
-    public Class<KuraResponseMessage> getClassFrom()
-    {
-        return KuraResponseMessage.class;
-    }
-
-    @Override
-    public Class<ConfigurationResponseMessage> getClassTo()
-    {
-        return ConfigurationResponseMessage.class;
-    }
-
 }

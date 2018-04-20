@@ -8,17 +8,38 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.bundle;
 
 import org.eclipse.kapua.locator.KapuaLocator;
 
+/**
+ * Device bundle xml factory class
+ *
+ * @since 1.0
+ *
+ */
 public class DeviceBundleXmlRegistry {
+
     private final KapuaLocator locator = KapuaLocator.getInstance();
+
     private final DeviceBundleFactory factory = locator.getFactory(DeviceBundleFactory.class);
 
-    public DeviceBundles newBundleListResult() { return factory.newBundleListResult(); }
+    /**
+     * Creates a new device bundles list
+     *
+     * @return
+     */
+    public DeviceBundles newBundleListResult() {
+        return factory.newBundleListResult();
+    }
 
-    public DeviceBundle newDeviceBundle() { return factory.newDeviceBundle(); }
+    /**
+     * Creates a new device bundle
+     *
+     * @return
+     */
+    public DeviceBundle newDeviceBundle() {
+        return factory.newDeviceBundle();
+    }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,50 +8,95 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
 import org.eclipse.kapua.commons.cache.LocalCache;
+import org.eclipse.kapua.service.datastore.internal.schema.Metadata;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 
-public class DatastoreCacheManager
-{
-    private static DatastoreCacheManager instance = new DatastoreCacheManager();
-    
-    private final LocalCache<String, Boolean> topicsCache;
-    private final LocalCache<String, Boolean> metricsCache;
-    private final LocalCache<String, Boolean> assetsCache;
+/**
+ * Datastore cache manager.<br>
+ * It keeps informations about channels, metrics and clients to speed up the store operation and avoid time consuming unnecessary operations.
+ * 
+ * @since 1.0.0
+ */
+public class DatastoreCacheManager {
 
-    private DatastoreCacheManager()
-    {
+    private static final DatastoreCacheManager INSTANCE = new DatastoreCacheManager();
+
+    private final LocalCache<String, Metadata> schemaCache;
+    private final LocalCache<String, Boolean> channelsCache;
+    private final LocalCache<String, Boolean> metricsCache;
+    private final LocalCache<String, Boolean> clientsCache;
+
+    private DatastoreCacheManager() {
         DatastoreSettings config = DatastoreSettings.getInstance();
         int expireAfter = config.getInt(DatastoreSettingKey.CONFIG_CACHE_LOCAL_EXPIRE_AFTER);
         int sizeMax = config.getInt(DatastoreSettingKey.CONFIG_CACHE_LOCAL_SIZE_MAXIMUM);
+        int sizeMaxMetadata = config.getInt(DatastoreSettingKey.CONFIG_CACHE_METADATA_LOCAL_SIZE_MAXIMUM);
 
         // TODO set expiration to happen frequently because the reset cache method will not get
         // called from service clients any more
-        // TODO wrap the caches into a Statically accessible method
-        topicsCache = new LocalCache<String, Boolean>(sizeMax, expireAfter, false);
-        metricsCache = new LocalCache<String, Boolean>(sizeMax, expireAfter, false);
-        assetsCache = new LocalCache<String, Boolean>(sizeMax, expireAfter, false);
+        channelsCache = new LocalCache<>(sizeMax, expireAfter, false);
+        metricsCache = new LocalCache<>(sizeMax, expireAfter, false);
+        clientsCache = new LocalCache<>(sizeMax, expireAfter, false);
+        schemaCache = new LocalCache<>(sizeMaxMetadata, null);
     }
 
-    public static DatastoreCacheManager getInstance()
-    {
-        return instance;
+    /**
+     * Get the cache manager instance
+     * 
+     * @return
+     * 
+     * @since 1.0.0
+     */
+    public static DatastoreCacheManager getInstance() {
+        return INSTANCE;
     }
-    
-    public LocalCache<String, Boolean> getTopicsCache(){
-       return topicsCache;
+
+    /**
+     * Get the channels informations cache
+     * 
+     * @return
+     * 
+     * @since 1.0.0
+     */
+    public LocalCache<String, Boolean> getChannelsCache() {
+        return channelsCache;
     }
-    
-    public LocalCache<String, Boolean> getMetricsCache(){
-       return metricsCache;
+
+    /**
+     * Get the metrics informations cache
+     * 
+     * @return
+     * 
+     * @since 1.0.0
+     */
+    public LocalCache<String, Boolean> getMetricsCache() {
+        return metricsCache;
     }
-    
-    public LocalCache<String, Boolean> getAssetsCache(){
-       return assetsCache;
+
+    /**
+     * Get the clients informations cache
+     * 
+     * @return
+     * 
+     * @since 1.0.0
+     */
+    public LocalCache<String, Boolean> getClientsCache() {
+        return clientsCache;
+    }
+
+    /**
+     * Get the metadata informations cache
+     * 
+     * @return
+     * 
+     * @since 1.0.0
+     */
+    public LocalCache<String, Metadata> getMetadataCache() {
+        return schemaCache;
     }
 }

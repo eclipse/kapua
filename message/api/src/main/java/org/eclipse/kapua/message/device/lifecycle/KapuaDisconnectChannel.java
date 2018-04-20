@@ -8,17 +8,31 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.message.device.lifecycle;
 
 import org.eclipse.kapua.message.KapuaChannel;
 
-public interface KapuaDisconnectChannel extends KapuaChannel
-{
-	
-	public String getClientId();
+/**
+ * Kapua disconnect message channel object definition.
+ * 
+ * @since 1.0
+ *
+ */
+public interface KapuaDisconnectChannel extends KapuaChannel {
 
+    /**
+     * Get client identifier
+     * 
+     * @return
+     */
+    public String getClientId();
+
+    /**
+     * Set client identifier
+     * 
+     * @param clientId
+     */
     public void setClientId(String clientId);
 
 }

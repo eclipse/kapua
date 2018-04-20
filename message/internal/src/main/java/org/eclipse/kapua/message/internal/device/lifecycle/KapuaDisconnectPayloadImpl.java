@@ -8,38 +8,51 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.message.internal.device.lifecycle;
 
 import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectPayload;
 import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
 
+/**
+ * Kapua data message payload object reference implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class KapuaDisconnectPayloadImpl extends KapuaPayloadImpl implements KapuaDisconnectPayload {
-	
-	private String uptime;
+
+    private String uptime;
     private String displayName;
 
+    /**
+     * Constructor
+     * 
+     * @param uptime
+     * @param displayName
+     */
     public KapuaDisconnectPayloadImpl(String uptime,
-    		String displayName) {
-    	this.uptime = uptime;
-    	this.displayName = displayName;
+            String displayName) {
+        this.uptime = uptime;
+        this.displayName = displayName;
     }
-    
-    public String toDisplayString()
-    {
+
+    @Override
+    public String toDisplayString() {
         return new StringBuilder().append("[ getUptime()=").append(getUptime())
-                                  .append(", getDisplayName()=").append(getDisplayName())
-                                  .append("]")
-                                  .toString();
+                .append(", getDisplayName()=").append(getDisplayName())
+                .append("]")
+                .toString();
     }
 
-	public String getUptime() {
-		return uptime;
-	}
+    @Override
+    public String getUptime() {
+        return uptime;
+    }
 
-	public String getDisplayName() {
-		return displayName;
-	}
+    @Override
+    public String getDisplayName() {
+        return displayName;
+    }
 
 }

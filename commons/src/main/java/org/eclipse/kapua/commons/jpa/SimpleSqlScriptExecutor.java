@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -26,108 +26,119 @@ import org.slf4j.LoggerFactory;
  * Sql script executor bean. Used to invoke the execution of sql scripts to update database schema.
  *
  * @since 1.0
- * 
  */
-public class SimpleSqlScriptExecutor
-{
+public class SimpleSqlScriptExecutor {
+
     private static final Logger logger = LoggerFactory.getLogger(SimpleSqlScriptExecutor.class);
 
-    private static String WILDCAR_ANY = "*";
+    private static final String WILDCAR_ANY = "*";
 
-    private static String RUN_SCRIPT_CMD = "RUNSCRIPT FROM '%s'";
+    private static final String RUN_SCRIPT_CMD = "RUNSCRIPT FROM '%s'";
 
     /**
      * Default sql scripts path
      */
-    private static String DEFAULT_SCRIPTS_PATH = "src/main/sql/H2";
+    private static final String DEFAULT_SCRIPTS_PATH = "src/main/sql/H2";
 
     // Members
 
-    private List<String> queryStrings = new ArrayList<>();
+    private final List<String> queryStrings = new ArrayList<>();
 
     // Operations
+
     /**
      * Clear the query string list
      */
-    public void clearQueries()
-    {
+    public void clearQueries() {
         queryStrings.clear();
     }
-    
+
     /**
      * Return the query list string
-     * 
+     *
      * @return
      */
-    public List<String> getQueries()
-    {
+    public List<String> getQueries() {
         return Collections.unmodifiableList(queryStrings);
     }
-    
+
     /**
      * Creates and configure a {@link SimpleSqlScriptExecutor} adding all the sql scripts matching the filter in the specified path
-     * 
-     * @param scanPath path to be scanned
-     * @param filenameFilter name filter matching <b>(must be not null!)</b>
+     *
+     * @param scanPath
+     *            path to be scanned
+     * @param filenameFilter
+     *            name filter matching <b>(must be not null!)</b>
      * @return
      */
     public SimpleSqlScriptExecutor scanScripts(String scanPath, String filenameFilter) {
-        
+
         String prefix = "";
         String suffix = "";
-        if(filenameFilter.contains(WILDCAR_ANY)) {
+        if (filenameFilter.contains(WILDCAR_ANY)) {
             int pos = filenameFilter.indexOf(WILDCAR_ANY);
             prefix = filenameFilter.substring(0, pos);
-            suffix = filenameFilter.substring(pos+1);
+            suffix = filenameFilter.substring(pos + 1);
         }
-           
+
         final String finalPrefix = prefix;
         final String finalSuffix = suffix;
-        
+
         FilenameFilter sqlfilter = (dir, name) -> {
-            if (finalPrefix.isEmpty() && finalSuffix.isEmpty())
+            if (finalPrefix.isEmpty() && finalSuffix.isEmpty()) {
                 return filenameFilter.equals(name);
+            }
 
-            if (!finalPrefix.isEmpty() && !name.startsWith(finalPrefix))
+            if (!finalPrefix.isEmpty() && !name.startsWith(finalPrefix)) {
                 return false;
+            }
 
-            if (!finalSuffix.isEmpty() && !name.endsWith(finalSuffix))
+            if (!finalSuffix.isEmpty() && !name.endsWith(finalSuffix)) {
                 return false;
+            }
 
             return true;
         };
-        
+
         String[] dirContents = new String[] {};
         File sqlDir = new File(scanPath);
         if (sqlDir.isDirectory()) {
             dirContents = sqlDir.list(sqlfilter);
         }
-        
-        List<String> dropScripts= new ArrayList<String>();
-        List<String> createScripts= new ArrayList<String>();
-        List<String> seedScripts= new ArrayList<String>();
-        
+
+        List<String> dropScripts = new ArrayList<>();
+        List<String> createScripts = new ArrayList<>();
+        List<String> seedScripts = new ArrayList<>();
+        List<String> deleteScripts = new ArrayList<>();
+
         String sep = String.valueOf(File.separatorChar);
-        for(String sqlItem:dirContents) {
+        for (String sqlItem : dirContents) {
             String sqlFileName = scanPath + (scanPath.endsWith(sep) ? "" : sep) + sqlItem;
             File sqlFile = new File(sqlFileName);
-            if(sqlFile.isFile() && sqlItem.endsWith("_drop.sql"))
-                dropScripts.add(String.format(RUN_SCRIPT_CMD,sqlFileName));
-            if(sqlFile.isFile() && sqlItem.endsWith("_create.sql"))
-                createScripts.add(String.format(RUN_SCRIPT_CMD,sqlFileName));
-            if(sqlFile.isFile() && sqlItem.endsWith("_seed.sql"))
-                seedScripts.add(String.format(RUN_SCRIPT_CMD,sqlFileName));
+            if (sqlFile.isFile() && sqlItem.endsWith("_drop.sql")) {
+                dropScripts.add(String.format(RUN_SCRIPT_CMD, sqlFileName));
+            }
+            if (sqlFile.isFile() && sqlItem.endsWith("_create.sql")) {
+                createScripts.add(String.format(RUN_SCRIPT_CMD, sqlFileName));
+            }
+            if (sqlFile.isFile() && sqlItem.endsWith("_seed.sql")) {
+                seedScripts.add(String.format(RUN_SCRIPT_CMD, sqlFileName));
+            }
+            if (sqlFile.isFile() && sqlItem.endsWith("_delete.sql")) {
+                deleteScripts.add(String.format(RUN_SCRIPT_CMD, sqlFileName));
+            }
         }
-        
-        this.addQueries(dropScripts);
-        this.addQueries(createScripts);
-        this.addQueries(seedScripts);
+
+        addQueries(dropScripts);
+        addQueries(createScripts);
+        addQueries(seedScripts);
+        addQueries(deleteScripts);
         return this;
     }
 
     /**
      * Creates and configure a {@link SimpleSqlScriptExecutor} adding all the sql scripts matching the filter in the default path {@link SimpleSqlScriptExecutor#DEFAULT_SCRIPTS_PATH}
-     * 
+     *
      * @param filenameFilter
      * @return
      */
@@ -137,49 +148,47 @@ public class SimpleSqlScriptExecutor
 
     /**
      * Add a query to the query string list
-     * 
+     *
      * @param sqlString
      * @return
      */
-    public SimpleSqlScriptExecutor addQuery(String sqlString)
-    {
-        this.queryStrings.add(sqlString);
+    public SimpleSqlScriptExecutor addQuery(String sqlString) {
+        queryStrings.add(sqlString);
         return this;
     }
-    
+
     /**
      * Add a queries to the query string list
-     * 
+     *
      * @param sqlStrings
      * @return
      */
-    public SimpleSqlScriptExecutor addQueries(List<String> sqlStrings)
-    {
-        if (sqlStrings==null)
+    public SimpleSqlScriptExecutor addQueries(List<String> sqlStrings) {
+        if (sqlStrings == null) {
             return this;
-        
-        this.queryStrings.addAll(sqlStrings);
-        
+        }
+
+        queryStrings.addAll(sqlStrings);
+
         return this;
     }
-    
+
     /**
      * Execute all the queries using the provided entity manager
-     * 
+     *
      * @param entityManager
      * @return
      */
-    public int executeUpdate(EntityManager entityManager)
-    {
-        int i=0;
-        
-        for(String qStr:queryStrings) {
+    public int executeUpdate(EntityManager entityManager) {
+        int i = 0;
+
+        for (String qStr : queryStrings) {
             logger.info("Running script: " + qStr);
             Query q = entityManager.createNativeQuery(qStr);
             q.executeUpdate();
             i++;
         }
-        
+
         return i;
     }
 }

@@ -8,22 +8,30 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.message.internal.device.lifecycle;
 
 import org.eclipse.kapua.message.device.lifecycle.KapuaMissingChannel;
 import org.eclipse.kapua.message.internal.KapuaChannelImpl;
 
+/**
+ * Kapua missing message channel object reference implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class KapuaMissingChannelImpl extends KapuaChannelImpl implements KapuaMissingChannel {
 
-	private String clientId;
-	  
-	public String getClientId() {
-		return clientId;
-	}
-	public void setClientId(String clientId) {
-		this.clientId = clientId;
-	}
-	  
+    private String clientId;
+
+    @Override
+    public String getClientId() {
+        return clientId;
+    }
+
+    @Override
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
 }

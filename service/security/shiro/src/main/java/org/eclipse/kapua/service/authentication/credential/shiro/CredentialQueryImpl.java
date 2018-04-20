@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.shiro;
 
@@ -23,14 +22,12 @@ import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
  * @since 1.0
  * 
  */
-public class CredentialQueryImpl extends AbstractKapuaQuery<Credential> implements CredentialQuery
-{
+public class CredentialQueryImpl extends AbstractKapuaQuery<Credential> implements CredentialQuery {
 
     /**
      * Constructor
      */
-    private CredentialQueryImpl()
-    {
+    public CredentialQueryImpl() {
         super();
     }
 
@@ -39,8 +36,7 @@ public class CredentialQueryImpl extends AbstractKapuaQuery<Credential> implemen
      * 
      * @param scopeId
      */
-    public CredentialQueryImpl(KapuaId scopeId)
-    {
+    public CredentialQueryImpl(KapuaId scopeId) {
         this();
         setScopeId(scopeId);
     }

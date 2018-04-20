@@ -1,0 +1,90 @@
+language: java
+
+jdk:
+  - oraclejdk8
+
+sudo: false
+dist: trusty
+
+# The cache is stored per-branch
+
+cache:
+  directories:
+  - $HOME/.m2
+
+install:
+  - echo ==== Setting up toolchain.xml ====
+  - ls /usr/lib/jvm
+  - ls
+  - cp build-tools/src/main/toolchains/travis-ci.xml ~/.m2/toolchains.xml
+  - echo ==== Setting up Maven 3.3 for Travis ====
+  - wget -O maven.tar.gz http://www-eu.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
+  - mkdir maven
+  - cd maven ; tar --strip-components 1 -xzf ../maven.tar.gz ; cd ..
+  - chmod a+x maven/bin/mvn
+
+before_script:
+  - export M2_HOME=$PWD/maven
+  - export PATH=${M2_HOME}/bin:${PATH}
+  - export MAVEN_OPTS=-Xmx256m
+  - hash -r
+
+jobs:
+  include:
+    - stage: build
+      script:
+        - $M2_HOME/bin/mvn -v
+        - $M2_HOME/bin/mvn -B -f external/pom.xml install
+    - stage: build
+      script:
+        - $M2_HOME/bin/mvn -v
+        - $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -DskipTests install
+    - stage: test
+      script:
+        - $M2_HOME/bin/mvn -B javadoc:jar
+    - stage: test
+      script:
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcucumber.options="--tags @default" -Pdev verify
+        - bash <(curl -s https://codecov.io/bash)
+    - stage: test
+      script:
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcucumber.options="--tags @brokerAcl" verify
+        - bash <(curl -s https://codecov.io/bash)
+    - stage: test
+      script:
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcucumber.options="--tags @tag" verify
+        - bash <(curl -s https://codecov.io/bash)
+    - stage: test
+      script:
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcucumber.options="--tags @broker" verify
+        - bash <(curl -s https://codecov.io/bash)
+    - stage: test
+      script:
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcucumber.options="--tags @device" verify
+        - bash <(curl -s https://codecov.io/bash)
+    - stage: test
+      script:
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcucumber.options="--tags @connection" verify
+        - bash <(curl -s https://codecov.io/bash)
+    - stage: test
+      script:
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcucumber.options="--tags @datastore" verify
+        - bash <(curl -s https://codecov.io/bash)
+    - stage: test
+      script:
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcucumber.options="--tags @user" verify
+        - bash <(curl -s https://codecov.io/bash)
+    - stage: test
+      script:
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcucumber.options="--tags @security" verify
+        - bash <(curl -s https://codecov.io/bash)
+
+# The following upgrades Java during the build in
+# order to work around an older Java 8 compiler issue
+# which has problems infering types. Travis ships a
+# rather old Java 8 version in its images.
+
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer

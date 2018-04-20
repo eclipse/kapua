@@ -1,24 +1,25 @@
 <?xml version="1.0"?>
 <!--
-    Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
-   
+    Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
     http://www.eclipse.org/legal/epl-v10.html
-   
+
     Contributors:
         Eurotech - initial API and implementation
-   
+        Red Hat Inc
  -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.eclipse.kapua</groupId>
         <artifactId>kapua-device-call</artifactId>
-        <version>0.2.0-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>kapua-device-call-kura</artifactId>
@@ -51,26 +52,56 @@
             <artifactId>kapua-message-internal</artifactId>
         </dependency>
 
-        <!-- -->
         <!-- External dependencies -->
         <dependency>
-            <!-- Object pooling for Mqtt clients -->
-            <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-pool2 -->
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-pool2</artifactId>
-            <version>2.3</version>
-        </dependency>
-        <dependency>
-            <!-- Paho MQTT client -->
+            <!-- Java MQTT client -->
             <groupId>org.eclipse.paho</groupId>
             <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
-            <version>1.1.0</version>
         </dependency>
         <dependency>
             <!-- Google protobuf for message encoding -->
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
         </dependency>
-        
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-registry-api</artifactId>
+        </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.github.os72</groupId>
+                <artifactId>protoc-jar-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <protocVersion>2.6.1</protocVersion>
+                            <includeStdTypes>true</includeStdTypes>
+                            <inputDirectories>
+                                <include>src/main/protobuf</include>
+                            </inputDirectories>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

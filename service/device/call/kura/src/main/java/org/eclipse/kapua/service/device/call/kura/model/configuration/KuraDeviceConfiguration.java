@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,26 +21,41 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * A container for a list of OSGi component configurations.
+ * 
+ * @since 1.0
+ * 
  */
 @XmlRootElement(name = "configurations")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class KuraDeviceConfiguration
-{
+public class KuraDeviceConfiguration {
+
     @XmlElement(name = "configuration")
     private List<KuraDeviceComponentConfiguration> configurations;
 
     // Required by JAXB
-    public KuraDeviceConfiguration()
-    {}
+    /**
+     * Constructor
+     */
+    public KuraDeviceConfiguration() {
+    }
 
-    public KuraDeviceConfiguration(String accountName, String clientId)
-    {
+    /**
+     * Constructor
+     * 
+     * @param accountName
+     * @param clientId
+     */
+    public KuraDeviceConfiguration(String accountName, String clientId) {
         this();
         configurations = new ArrayList<>();
     }
 
-    public List<KuraDeviceComponentConfiguration> getConfigurations()
-    {
+    /**
+     * Get the device component configuration list
+     * 
+     * @return
+     */
+    public List<KuraDeviceComponentConfiguration> getConfigurations() {
         if (configurations == null) {
             configurations = new ArrayList<>();
         }
@@ -48,8 +63,12 @@ public class KuraDeviceConfiguration
         return configurations;
     }
 
-    public void setConfigurations(List<KuraDeviceComponentConfiguration> configurations)
-    {
+    /**
+     * Set the device component configuration list
+     * 
+     * @param configurations
+     */
+    public void setConfigurations(List<KuraDeviceComponentConfiguration> configurations) {
         this.configurations = configurations;
     }
 }

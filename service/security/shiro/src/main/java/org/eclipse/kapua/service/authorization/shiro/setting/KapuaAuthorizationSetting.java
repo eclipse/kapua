@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.shiro.setting;
 
@@ -16,31 +15,26 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
 /**
  * Authorization setting implementation.
- * 
- * @since 1.0
- *
  */
-public class KapuaAuthorizationSetting extends AbstractKapuaSetting<KapuaAuthorizationSettingKeys>
-{
-    private static final String                    AUTHORIZATION_SETTING_RESOURCE = "kapua-authorization-setting.properties";
+public class KapuaAuthorizationSetting extends AbstractKapuaSetting<KapuaAuthorizationSettingKeys> {
 
-    private static final KapuaAuthorizationSetting instance                       = new KapuaAuthorizationSetting();
+    private static final String AUTHORIZATION_SETTING_RESOURCE = "kapua-authorization-setting.properties";
+
+    private static final KapuaAuthorizationSetting INSTANCE = new KapuaAuthorizationSetting();
 
     /**
      * Construct a new authorization setting reading settings from {@link KapuaAuthorizationSetting#AUTHORIZATION_SETTING_RESOURCE}
      */
-    private KapuaAuthorizationSetting()
-    {
+    private KapuaAuthorizationSetting() {
         super(AUTHORIZATION_SETTING_RESOURCE);
     }
 
     /**
      * Return the authorization setting instance (singleton)
-     * 
+     *
      * @return
      */
-    public static KapuaAuthorizationSetting getInstance()
-    {
-        return instance;
+    public static KapuaAuthorizationSetting getInstance() {
+        return INSTANCE;
     }
 }

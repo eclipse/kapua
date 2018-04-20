@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal.setting;
 
@@ -20,23 +19,21 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
  * @since 1.0
  *
  */
-public class KapuaAccountSetting extends AbstractKapuaSetting<KapuaAccountSettingKeys>
-{
+public class KapuaAccountSetting extends AbstractKapuaSetting<KapuaAccountSettingKeys> {
 
     /**
      * Resource file from which source properties.
      * 
      */
-    private static final String          ACCOUNT_CONFIG_RESOURCE = "kapua-account-setting.properties";
+    private static final String ACCOUNT_CONFIG_RESOURCE = "kapua-account-setting.properties";
 
-    private static final KapuaAccountSetting instance                = new KapuaAccountSetting();
+    private static final KapuaAccountSetting INSTANCE = new KapuaAccountSetting();
 
     /**
      * Initialize the {@link AbstractKapuaSetting} with the {@link KapuaAccountSettingKeys#ACCOUNT_KEY} value.
      * 
      */
-    private KapuaAccountSetting()
-    {
+    private KapuaAccountSetting() {
         super(ACCOUNT_CONFIG_RESOURCE);
     }
 
@@ -45,8 +42,7 @@ public class KapuaAccountSetting extends AbstractKapuaSetting<KapuaAccountSettin
      * 
      * @return A singleton instance of KapuaAccountSetting.
      */
-    public static KapuaAccountSetting getInstance()
-    {
-        return instance;
+    public static KapuaAccountSetting getInstance() {
+        return INSTANCE;
     }
 }

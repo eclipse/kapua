@@ -18,44 +18,43 @@ import org.eclipse.kapua.KapuaException;
 
 /**
  * Commons module entity manager reference service.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-public class CommonsEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory
-{
-    private static final String                PERSISTENCE_UNIT_NAME = "kapua-commons";
-    private static final String                DATASOURCE_NAME       = "kapua-dbpool";
-    private static final Map<String, String>   s_uniqueConstraints   = new HashMap<>();
+public class CommonsEntityManagerFactory extends AbstractEntityManagerFactory {
 
-    private static CommonsEntityManagerFactory instance              = new CommonsEntityManagerFactory();
+    private static final String PERSISTENCE_UNIT_NAME = "kapua-commons";
+    private static final String DATASOURCE_NAME = "kapua-dbpool";
+    private static final Map<String, String> UNIQUE_CONTRAINTS = new HashMap<>();
 
-    private CommonsEntityManagerFactory()
-    {
+    private static CommonsEntityManagerFactory instance = new CommonsEntityManagerFactory();
+
+    /**
+     * Constructor
+     */
+    private CommonsEntityManagerFactory() {
         super(PERSISTENCE_UNIT_NAME,
-              DATASOURCE_NAME,
-              s_uniqueConstraints);
+                DATASOURCE_NAME,
+                UNIQUE_CONTRAINTS);
     }
 
     /**
      * Return the entity manager
-     * 
+     *
      * @return
      * @throws KapuaException
      */
     public static EntityManager getEntityManager()
-        throws KapuaException
-    {
+            throws KapuaException {
         return instance.createEntityManager();
     }
-    
+
     /**
      * Return the {@link CommonsEntityManagerFactory} instance (singleton)
-     * 
+     *
      * @return
      */
-    public static CommonsEntityManagerFactory getInstance()
-    {
-    	return instance;
+    public static CommonsEntityManagerFactory getInstance() {
+        return instance;
     }
 }

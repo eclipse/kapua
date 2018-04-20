@@ -1,89 +1,253 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
-   
+    Copyright (c) 2016, 2017 Eurotech and/or its affiliates and others
+
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
     http://www.eclipse.org/legal/epl-v10.html
-   
+
     Contributors:
         Eurotech - initial API and implementation
-   
  -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.eclipse.kapua</groupId>
     <artifactId>kapua</artifactId>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>kapua</name>
     <packaging>pom</packaging>
 
     <properties>
+        <!-- Build properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
         <!-- Dependencies versions -->
+        <activemq.version>5.14.5</activemq.version>
+        <artemis.version>2.2.0</artemis.version>
         <assertj.version>3.2.0</assertj.version>
         <camel.version>2.16.3</camel.version>
+        <commons-beanutils.version>1.9.2</commons-beanutils.version>
+        <commons-cli.version>1.4</commons-cli.version>
+        <commons-codec.version>1.9</commons-codec.version>
         <commons-configuration.version>1.9</commons-configuration.version>
+        <commons-io.version>2.4</commons-io.version>
+        <commons-lang.version>3.4</commons-lang.version>
+        <commons-pool.version>2.3</commons-pool.version>
+        <cucumber.version>1.2.4</cucumber.version>
+        <dropwizard.version>3.1.2</dropwizard.version>
         <eclipselink.version>2.6.3</eclipselink.version>
+        <elasticsearch.version>2.3.4</elasticsearch.version>
+        <findbugs.version>2.0.1</findbugs.version>
+        <gson.version>2.7</gson.version>
         <guava.version>19.0</guava.version>
         <guice.version>4.1.0</guice.version>
         <h2.version>1.4.192</h2.version>
+        <httpcomponents.version>4.5.2</httpcomponents.version>
+        <javassist.version>3.19.0-GA</javassist.version>
+        <javax-inject.version>1</javax-inject.version>
         <joda.version>2.9.4</joda.version>
         <junit.version>4.11</junit.version>
+        <liquibase.version>3.0.5</liquibase.version>
         <mariadb.version>1.4.6</mariadb.version>
         <mockito.version>1.10.19</mockito.version>
+        <opencsv.version>3.7</opencsv.version>
+        <paho.version>1.1.0</paho.version>
+        <poi.version>3.11</poi.version>
         <protobuf.version>2.6.1</protobuf.version>
-        <slf4j.version>1.7.2</slf4j.version>
-        <shiro.version>1.2.3</shiro.version>
-        
+        <reflections.version>0.9.10</reflections.version>
+        <shiro.version>1.3.2</shiro.version>
+        <slf4j.version>1.7.24</slf4j.version>
+        <logback.version>1.1.8</logback.version>
+        <snakeyaml.version>1.15</snakeyaml.version>
+        <swagger.version>1.5.12</swagger.version>
+        <validation-api.version>1.1.0.Final</validation-api.version>
+        <cucumber.version>1.2.4</cucumber.version>
+        <elasticsearch.version>5.3.0</elasticsearch.version>
+        <elasticsearch-client-transport.version>5.3.0</elasticsearch-client-transport.version>
+        <elasticsearch-client-rest.version>5.3.0</elasticsearch-client-rest.version>
+        <elasticsearch-netty-3.version>3.10.6.Final</elasticsearch-netty-3.version>
+        <elasticsearch-netty-4.version>4.1.15.Final</elasticsearch-netty-4.version>
+        <jackson.version>2.8.6</jackson.version> <!-- same version used by elasticsearch -->
+        <log4j-api.version>2.8.2</log4j-api.version> <!-- same version used by elasticsearch -->
+        <log4j-to-slf4j.version>2.8.2</log4j-to-slf4j.version> <!-- same version used by elasticsearch -->
+        <log4j2-mock.version>0.0.1</log4j2-mock.version>
+        <tomcat.version>8.0.41</tomcat.version>
+        <qpid-jms-client.version>0.24.0</qpid-jms-client.version>
+        <qpid-proton.version>0.20.0</qpid-proton.version>
+        <quartz-scheduler.version>2.2.3</quartz-scheduler.version>
+
         <!-- Plugins versions -->
-        <maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
-        
+        <checkstyle-maven-plugin.version>2.17</checkstyle-maven-plugin.version>
+        <checkstyle.version>7.6.1</checkstyle.version>
+        <maven-assembly-plugin.version>3.0.0</maven-assembly-plugin.version>
+        <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
+        <docker-maven-plugin.version>0.19.1</docker-maven-plugin.version>
+        <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
+        <maven-dependency-plugin.version>3.0.1</maven-dependency-plugin.version>
+        <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
+        <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+        <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
+        <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
+        <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
+        <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
+        <maven-source-plugin.version>2.4</maven-source-plugin.version>
+        <nexus-staging-maven-plugin.version>1.6.5</nexus-staging-maven-plugin.version>
+        <sql-maven-plugin.version>1.5</sql-maven-plugin.version>
+
+        <jacoco.version>0.7.9</jacoco.version>
+        <surefire.version>2.20</surefire.version>
+
+        <!-- Docker configuration -->
+        <maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
+        <timestamp>${maven.build.timestamp}</timestamp>
+
         <!-- -->
         <!-- Database configuration for local installs and tests -->
-        <!-- Database host address is the one exported by the dev-tools/src/vagrant/Vagrantfile  -->        
-		<db.host>192.168.33.10</db.host>
-		<db.name>kapuadb</db.name>        
-		<db.schema>kapuadb</db.schema>        
-		<db.conn.properties>schema=${db.schema}</db.conn.properties>
-		<db.conn.url>jdbc:h2:tcp://${db.host}:3306/${db.name};${db.conn.properties}</db.conn.url>
+        <!-- Database host address is the one exported by the dev-tools/src/vagrant/Vagrantfile -->
+        <db.host>192.168.33.10</db.host>
+        <db.name>kapuadb</db.name>
+        <db.schema>kapuadb</db.schema>
+        <db.conn.properties>schema=${db.schema}</db.conn.properties>
+        <db.conn.url>jdbc:h2:tcp://${db.host}:3306/${db.name};${db.conn.properties}</db.conn.url>
         <db.username>kapua</db.username>
         <db.password>kapua</db.password>
-        
+        <db.driver>org.h2.Driver</db.driver>
     </properties>
 
     <build>
+        <defaultGoal>clean install</defaultGoal>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.karaf.tooling</groupId>
+                    <artifactId>karaf-maven-plugin</artifactId>
+                    <version>4.1.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>${maven-assembly-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>${maven-antrun-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>${maven-release-plugin.version}</version>
+                    <configuration>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                        <releaseProfiles>javadoc,deploy,release,!console</releaseProfiles>
+                        <goals>deploy</goals>
+                        <preparationGoals>clean install</preparationGoals>
+                        <tagNameFormat>@{project.version}</tagNameFormat>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.os72</groupId>
+                    <artifactId>protoc-jar-maven-plugin</artifactId>
+                    <version>3.1.0.5</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>io.fabric8</groupId>
+                    <artifactId>docker-maven-plugin</artifactId>
+                    <version>${docker-maven-plugin.version}</version>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven-compiler-plugin.version}</version>
                 </plugin>
-			    <plugin>
-        			<groupId>org.codehaus.mojo</groupId>
-        			<artifactId>sql-maven-plugin</artifactId>
-        			<version>1.5</version>
-        			<dependencies>
-				        <dependency>
-						    <groupId>com.h2database</groupId>
-						    <artifactId>h2</artifactId>
-						    <version>${h2.version}</version>
-						</dependency>
-				    </dependencies>
-				    <configuration>
-                    	<driver>org.h2.Driver</driver>
-						<url>${db.conn.url}</url>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>${maven-dependency-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${maven-resources-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${maven-javadoc-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>${maven-deploy-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>1.4.1</version>
+                    <executions>
+                        <execution>
+                            <id>enforce-maven</id>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                            <configuration>
+                                <rules>
+                                    <requireMavenVersion>
+                                        <version>3.3</version>
+                                    </requireMavenVersion>
+                                </rules>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>3.0.0</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${surefire.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>3.0.0</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>sql-maven-plugin</artifactId>
+                    <version>${sql-maven-plugin.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.h2database</groupId>
+                            <artifactId>h2</artifactId>
+                            <version>${h2.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <driver>${db.driver}</driver>
+                        <url>${db.conn.url}</url>
                         <username>${db.username}</username>
                         <password>${db.password}</password>
-                    </configuration>                    
-				</plugin>
+                    </configuration>
+                </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>license-maven-plugin</artifactId>
@@ -102,8 +266,8 @@
                                     <licenseMerge>Eclipse Distribution License Version 1.0|Eclipse Distribution License v. 1.0</licenseMerge>
                                     <licenseMerge>Eclipse Distribution License Version 1.0|Eclipse Distribution License (EDL), Version 1.0</licenseMerge>
 
-                                    <!-- <licenseMerge>EPL 1.0|Eclipse Public License Version 1.0</licenseMerge> <licenseMerge>EPL 1.0|Eclipse Public License - Version 1.0</licenseMerge> <licenseMerge>EPL 
-                                        1.0|Eclipse Public License (EPL), Version 1.0</licenseMerge> <licenseMerge>EPL 1.0|Eclipse Public License v1.0</licenseMerge> <licenseMerge>CCDL 1.0|Common Development and Distribution License (CDDL) v1.0</licenseMerge> 
+                                    <!-- <licenseMerge>EPL 1.0|Eclipse Public License Version 1.0</licenseMerge> <licenseMerge>EPL 1.0|Eclipse Public License - Version 1.0</licenseMerge> <licenseMerge>EPL
+                                        1.0|Eclipse Public License (EPL), Version 1.0</licenseMerge> <licenseMerge>EPL 1.0|Eclipse Public License v1.0</licenseMerge> <licenseMerge>CCDL 1.0|Common Development and Distribution License (CDDL) v1.0</licenseMerge>
                                         <licenseMerge>CCDL 1.0|Common Development and Distribution License</licenseMerge> <licenseMerge>CCDL 1.1</licenseMerge> -->
                                 </licenseMerges>
                             </configuration>
@@ -128,7 +292,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -141,7 +305,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -154,34 +318,132 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
-                                	<pluginExecutionFilter>
-                                		<groupId>
-                                			org.codehaus.mojo
-                                		</groupId>
-                                		<artifactId>
-                                			sql-maven-plugin
-                                		</artifactId>
-                                		<versionRange>
-                                			[1.5,)
-                                		</versionRange>
-                                		<goals>
-                                			<goal>execute</goal>
-                                		</goals>
-                                	</pluginExecutionFilter>
-                                	<action>
-                                		<ignore />
-                                	</action>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.codehaus.mojo</groupId>
+                                        <artifactId>sql-maven-plugin</artifactId>
+                                        <versionRange>[1.5,)</versionRange>
+                                        <goals>
+                                            <goal>execute</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore/>
+                                    </action>
                                 </pluginExecution>
                             </pluginExecutions>
                         </lifecycleMappingMetadata>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <groupId>org.liquibase</groupId>
+                    <artifactId>liquibase-maven-plugin</artifactId>
+                    <version>${liquibase.version}</version>
+                    <configuration>
+                        <driver>${db.driver}</driver>
+                        <url>${db.conn.url}</url>
+                        <username>${db.username}</username>
+                        <password>${db.password}</password>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.h2database</groupId>
+                            <artifactId>h2</artifactId>
+                            <version>${h2.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>${checkstyle-maven-plugin.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.eclipse.kapua.build</groupId>
+                            <artifactId>kapua-build-tools</artifactId>
+                            <version>${project.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>com.puppycrawl.tools</groupId>
+                            <artifactId>checkstyle</artifactId>
+                            <version>${checkstyle.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <configLocation>checkstyle/kapua.xml</configLocation>
+                        <suppressionsLocation>checkstyle/kapua.suppressions.xml</suppressionsLocation>
+
+                        <includeResources>false</includeResources>
+                        <includeTestResources>false</includeTestResources>
+
+                        <sourceDirectory>${project.basedir}</sourceDirectory>
+                        <includes>**/*.java, **/*.xml</includes>
+                        <excludes>**/target/**/*, **/.settings/**/*, maven/**/*, .maven/**/*, .idea/**/*</excludes>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <id>default-prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>default-report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>de.dentrassi.maven</groupId>
+                <artifactId>jacoco-extras</artifactId>
+                <version>0.1.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>xml</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <!-- Travis has an overall 3GB limit -->
+                    <argLine>@{argLine} -Xmx1024m</argLine>
+                    <systemPropertyVariables>
+                        <cucumber.options>${cucumber.options}</cucumber.options>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>checkstyle-check</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
     <dependencyManagement>
@@ -189,12 +451,57 @@
             <!-- Internal dependencies -->
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-broker-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-broker-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-client-gateway-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-client-gateway-profile-kura</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-client-gateway-provider-fuse</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-client-gateway-provider-mqtt</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-client-gateway-provider-paho</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-client-gateway-spi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-commons</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-endpoint-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-endpoint-internal</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -209,7 +516,37 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-datastore-client-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-datastore-client-embedded</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-datastore-client-transport</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-datastore-client-rest</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-device-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-device-asset-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-device-asset-internal</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -244,7 +581,27 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-device-command-test</artifactId>
+                <artifactId>kapua-device-asset-job</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-device-bundle-job</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-device-command-job</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-device-configuration-job</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-device-packages-job</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -284,12 +641,22 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-idgenerator-api</artifactId>
+                <artifactId>kapua-device-request-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-idgenerator-sequence</artifactId>
+                <artifactId>kapua-device-request-internal</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-stream-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-stream-internal</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -314,7 +681,52 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-locator-service</artifactId>
+                <artifactId>kapua-job-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-job-internal</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-job-engine-commons</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-job-engine</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-job-engine-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-job-engine-jbatch</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-scheduler-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-scheduler-quartz</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-liquibase</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-service-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -329,12 +741,52 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-security-registration-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-security-registration-simple</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-simulator-kura</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-security-authentication-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-security-shiro</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-sso-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-sso-jwt</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-sso-provider</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-sso-provider-generic</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-sso-provider-keycloak</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -349,12 +801,32 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-tag-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-tag-internal</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-translator-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-translator-kapua-kura</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-translator-kura-jms</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-translator-kura-mqtt</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -374,25 +846,75 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-transport-test</artifactId>
+                <artifactId>kapua-test</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-test</artifactId>
+                <artifactId>kapua-qa-steps</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-qa</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-rest-api-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-rest-api-resources</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-security-certificate-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-security-certificate-internal</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-foreignkeys</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <!-- External dependencies -->
             <dependency>
-                <groupId>org.apache.camel</groupId>
-                <artifactId>camel-core</artifactId>
-                <version>${camel.version}</version>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils</artifactId>
+                <version>${commons-beanutils.version}</version>
             </dependency>
+
             <dependency>
-                <groupId>org.apache.camel</groupId>
-                <artifactId>camel-jms</artifactId>
-                <version>${camel.version}</version>
+                <groupId>commons-cli</groupId>
+                <artifactId>commons-cli</artifactId>
+                <version>${commons-cli.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>${commons-codec.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${httpcomponents.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${gson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
@@ -402,6 +924,11 @@
             <dependency>
                 <groupId>com.google.inject</groupId>
                 <artifactId>guice</artifactId>
+                <version>${guice.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.inject.extensions</groupId>
+                <artifactId>guice-multibindings</artifactId>
                 <version>${guice.version}</version>
             </dependency>
             <dependency>
@@ -415,10 +942,127 @@
                 <version>${h2.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.ning</groupId>
+                <artifactId>compress-lzf</artifactId>
+                <version>1.0.3</version>
+            </dependency>
+            <dependency>
                 <groupId>commons-configuration</groupId>
                 <artifactId>commons-configuration</artifactId>
                 <version>${commons-configuration.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>info.cukes</groupId>
+                <artifactId>cucumber-core</artifactId>
+                <version>${cucumber.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>info.cukes</groupId>
+                <artifactId>cucumber-java</artifactId>
+                <version>${cucumber.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>info.cukes</groupId>
+                <artifactId>cucumber-junit</artifactId>
+                <version>${cucumber.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>info.cukes</groupId>
+                <artifactId>cucumber-guice</artifactId>
+                <version>${cucumber.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-core</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-jms</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-pool2</artifactId>
+                <version>${commons-pool.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>${poi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.opencsv</groupId>
+                <artifactId>opencsv</artifactId>
+                <version>${opencsv.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.paho</groupId>
+                <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+                <version>${paho.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.persistence</groupId>
+                <artifactId>org.eclipse.persistence.moxy</artifactId>
+                <version>${eclipselink.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish</groupId>
+                <artifactId>javax.json</artifactId>
+                <version>1.0.4</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.batch</groupId>
+                <artifactId>javax.batch-api</artifactId>
+                <version>1.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.inject</groupId>
+                <artifactId>javax.inject</artifactId>
+                <version>${javax-inject.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-core</artifactId>
+                <version>${liquibase.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.validation</groupId>
+                <artifactId>validation-api</artifactId>
+                <version>${validation-api.version}</version>
+            </dependency>
+
+            <dependency>
+                <!-- Used to parse the Cron expression-->
+                <groupId>org.quartz-scheduler</groupId>
+                <artifactId>quartz</artifactId>
+                <version>${quartz-scheduler.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <!-- This is not required. We are using EclipseLink connection pooling. -->
+                        <groupId>c3p0</groupId>
+                        <artifactId>c3p0</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.reflections</groupId>
+                <artifactId>reflections</artifactId>
+                <version>${reflections.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
@@ -428,6 +1072,11 @@
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.assertj</groupId>
@@ -445,19 +1094,146 @@
                 <version>${mockito.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>${log4j-api.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
+                <artifactId>jcl-over-slf4j</artifactId>
                 <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>log4j-over-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-to-slf4j</artifactId>
+                <version>${log4j-to-slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.dentrassi.elasticsearch</groupId>
+                <artifactId>log4j2-mock</artifactId>
+                <version>${log4j2-mock.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${snakeyaml.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.elasticsearch</groupId>
+                <artifactId>elasticsearch</artifactId>
+                <version>${elasticsearch.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.elasticsearch.client</groupId>
+                <artifactId>transport</artifactId>
+                <version>${elasticsearch-client-transport.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.elasticsearch.plugin</groupId>
+                <artifactId>transport-netty4-client</artifactId>
+                <version>${elasticsearch-client-transport.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>io.netty</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.elasticsearch.client</groupId>
+                <artifactId>rest</artifactId>
+                <version>${elasticsearch-client-rest.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.javassist</groupId>
+                <artifactId>javassist</artifactId>
+                <version>${javassist.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.findbugs</groupId>
+                <artifactId>annotations</artifactId>
+                <version>${findbugs.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.dropwizard.metrics</groupId>
+                <artifactId>metrics-core</artifactId>
+                <version>${dropwizard.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.bitbucket.b_c</groupId>
+                <artifactId>jose4j</artifactId>
+                <version>0.5.2</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.qpid</groupId>
+                <artifactId>qpid-jms-client</artifactId>
+                <version>${qpid-jms-client.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>io.netty</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-all</artifactId>
+                <version>${elasticsearch-netty-4.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>activemq-client</artifactId>
+                <version>${activemq.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>artemis-junit</artifactId>
+                <version>${artemis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>artemis-amqp-protocol</artifactId>
+                <version>${artemis.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
 
     <modules>
+        <module>build-tools</module>
+
         <module>commons</module>
         <module>locator</module>
         <module>service</module>
@@ -466,20 +1242,199 @@
         <module>translator</module>
         <module>broker-core</module>
         <module>test</module>
-        <module>dev-tools</module>
+        <module>qa</module>
+        <module>qa-steps</module>
+        <module>qa-openshift</module>
 
+        <module>sso</module>
 
-        <module>org.eclipse.kapua.translator.kura.mqtt</module>
-        <module>org.eclipse.kapua.translator.kura.jms</module>
-
+        <!-- Extras  -->
+        <module>extras</module>
 
         <!-- Applications -->
-        <module>org.eclipse.kapua.app.console</module>
-        <module>org.eclipse.kapua.app.api</module>
-        
-        <!-- assembly -->
-        <module>org.eclipse.kapua.assembly</module>
+        <module>rest-api</module>
+        <module>job-engine</module>
+
+        <!-- Client -->
+        <module>client</module>
+
+        <!-- Simulator framework -->
+        <module>simulator-kura</module>
+
+        <!-- Assembly -->
+        <module>assembly</module>
+
+        <module>dev-tools</module>
+        <module>broker</module>
     </modules>
+
+    <profiles>
+        <!-- Profile used to exclude console module on release process -->
+        <profile>
+            <id>console</id>
+            <modules>
+                <module>console</module>
+            </modules>
+        </profile>
+
+        <!-- Profile used to exclude external dependency modules -->
+        <!-- <profile>
+            <id>external</id>
+            <modules>
+                <module>external</module>
+            </modules>
+        </profile> -->
+
+        <!-- Profile used only during release process. -->
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>${maven-gpg-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>javadoc</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Profile used only during deploy. -->
+        <profile>
+            <id>deploy</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>${maven-source-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>${nexus-staging-maven-plugin.version}</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>dev-tools</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <modules>
+                <module>dev-tools</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>security-scan</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.owasp</groupId>
+                        <artifactId>dependency-check-maven</artifactId>
+                        <version>1.4.5</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>aggregate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <suppressionFile>src/main/dependency-checker/suppress.xml</suppressionFile>
+                            <format>ALL</format>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>add-about.html</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <file>
+                    <exists>${basedir}/about.html</exists>
+                </file>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>process-about.html</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>.</directory>
+                                            <includes>
+                                                <include>about.html</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <licenses>
         <license>
@@ -487,24 +1442,46 @@
             <url>http://www.eclipse.org/legal/epl-v10.html</url>
             <distribution>repo</distribution>
         </license>
-        <license>
-            <name>Eclipse Distribution License (EDL), Version 1.0</name>
-            <url>http://www.eclipse.org/org/documents/edl-v10.html</url>
-            <distribution>repo</distribution>
-        </license>
     </licenses>
 
     <scm>
-        <url>https://github.com/eurotech/kapua.git</url>
-        <connection>scm:git:ssh://git@github.com/eurotech/kapua.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/eurotech/kapua.git</developerConnection>
+        <url>https://github.com/eclipse/kapua.git</url>
+        <connection>scm:git:ssh://git@github.com/eclipse/kapua.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/eclipse/kapua.git</developerConnection>
     </scm>
 
     <issueManagement>
         <system>GitHub Issues</system>
-        <url>https://github.com/eurotech/kapua/issues/</url>
+        <url>https://github.com/eclipse/kapua/issues/</url>
     </issueManagement>
 
-	<!-- TODO continuous integration info -->
-	 
+    <!-- Meta information required for release -->
+
+    <description>Eclipse Kapua™</description>
+    <url>https://eclipse.org/kapua</url>
+
+    <developers>
+        <developer>
+            <name>Eclipse Kapua Development Team</name>
+            <email>kapua-dev@eclipse.org</email>
+            <url>https://projects.eclipse.org/projects/iot.kapua/who</url>
+        </developer>
+    </developers>
+
+    <organization>
+        <name>Eclipse.org</name>
+        <url>http://www.eclipse.org</url>
+    </organization>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
 </project>

@@ -8,24 +8,34 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.event.internal;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.commons.jpa.EntityManager;
+import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
 
-public class DeviceEventDAO extends ServiceDAO
-{
+/**
+ * Device event DAO
+ *
+ * @since 1.0.0
+ */
+public class DeviceEventDAO extends ServiceDAO {
 
-    public static DeviceEvent create(EntityManager em, DeviceEventCreator deviceEventCreator)
-    {
+    /**
+     * Create a new {@link DeviceEvent}
+     *
+     * @param em
+     * @param deviceEventCreator
+     * @return
+     */
+    public static DeviceEvent create(EntityManager em, DeviceEventCreator deviceEventCreator) {
         DeviceEvent deviceEvent = new DeviceEventImpl(deviceEventCreator.getScopeId());
         deviceEvent.setDeviceId(deviceEventCreator.getDeviceId());
         deviceEvent.setReceivedOn(deviceEventCreator.getReceivedOn());
@@ -39,34 +49,52 @@ public class DeviceEventDAO extends ServiceDAO
         return ServiceDAO.create(em, deviceEvent);
     }
 
-    public static DeviceEvent update(EntityManager em, DeviceEvent deviceConnection)
-        throws KapuaException
-    {
-        DeviceEventImpl deviceConnectionImpl = (DeviceEventImpl) deviceConnection;
-        // return ServiceDAO.update(em, DeviceEventImpl.class, deviceConnectionImpl);
-        // see issue #190
-        return null;
-    }
-
-    public static DeviceEvent find(EntityManager em, KapuaId deviceEventId)
-    {
+    /**
+     * Find the device event by device event identifier
+     *
+     * @param em
+     * @param deviceEventId
+     * @return
+     */
+    public static DeviceEvent find(EntityManager em, KapuaId deviceEventId) {
         return em.find(DeviceEventImpl.class, deviceEventId);
     }
 
+    /**
+     * Return the device event list matching the provided query
+     *
+     * @param em
+     * @param query
+     * @return
+     * @throws KapuaException
+     */
     public static DeviceEventListResult query(EntityManager em, KapuaQuery<DeviceEvent> query)
-        throws KapuaException
-    {
+            throws KapuaException {
         return ServiceDAO.query(em, DeviceEvent.class, DeviceEventImpl.class, new DeviceEventListResultImpl(), query);
     }
 
+    /**
+     * Return the device event count matching the provided query
+     *
+     * @param em
+     * @param query
+     * @return
+     * @throws KapuaException
+     */
     public static long count(EntityManager em, KapuaQuery<DeviceEvent> query)
-        throws KapuaException
-    {
+            throws KapuaException {
         return ServiceDAO.count(em, DeviceEvent.class, DeviceEventImpl.class, query);
     }
 
+    /**
+     * Delete the device event by device event identifier
+     *
+     * @param em
+     * @param deviceEventId
+     * @throws KapuaEntityNotFoundException If the {@link DeviceEvent} is not found.
+     */
     public static void delete(EntityManager em, KapuaId deviceEventId)
-    {
+            throws KapuaEntityNotFoundException {
         ServiceDAO.delete(em, DeviceEventImpl.class, deviceEventId);
     }
 

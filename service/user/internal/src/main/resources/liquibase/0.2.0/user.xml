@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+ <databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+  logicalFilePath="KapuaDB/changelog-user-0.2.0.xml">
+
+    <include relativeToChangelogFile="true" file="../common-properties.xml" />
+
+    <changeSet id="changelog-user-0.2.0_createTable" author="eurotech">
+        <!-- Old SQL file
+        <sqlFile relativeToChangelogFile="true" path="./user.sql" />
+        -->
+        <createTable tableName="usr_user">
+            <column name="scope_id" type="bigint(21) unsigned">
+                <constraints nullable="false" />
+            </column>
+            <column name="id" type="bigint(21) unsigned">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        
+            <column name="created_on" type="timestamp(3)" defaultValueComputed="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_on" type="timestamp(3)" defaultValueComputed="${now}"/>
+            <column name="modified_by" type="bigint(21) unsigned"/>
+
+            <column name="status" type="varchar(64)" defaultValue="ENABLED">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="display_name" type="varchar(255)" />
+            <column name="email" type="varchar(255)"/>
+            <column name="phone_number" type="varchar(64)" />
+            <column name="user_type" type="varchar(64)" defaultValue="INTERNAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="external_id" type="varchar(255)" />
+
+            <column name="optlock" type="int unsigned" />
+            <column name="attributes" type="text" />
+            <column name="properties" type="text" />
+        </createTable>
+
+        <createIndex tableName="usr_user" indexName="idx_user_scope_id">
+            <column name="scope_id"/>
+        </createIndex>
+
+        <!-- Seed values -->
+        <insert tableName="usr_user">
+            <column name="scope_id" value="1"/>
+            <column name="id" value="1"/>
+            <column name="name" value="kapua-sys"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="1"/>
+            <column name="modified_on" valueComputed="${now}"/>
+            <column name="modified_by" value="1"/>
+            <column name="status" value="ENABLED"/>
+            <column name="display_name" value="Kapua Sysadmin"/>
+            <column name="email" value="kapua-sys@eclipse.org"/>
+            <column name="phone_number" value="+1 555 123 4567"/>
+            <column name="user_type" value="INTERNAL"/>
+            <column name="optlock" value="0"/>
+        </insert>
+
+        <insert tableName="usr_user">
+            <column name="scope_id" value="1"/>
+            <column name="id" value="2"/>
+            <column name="name" value="kapua-broker"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="1"/>
+            <column name="modified_on" valueComputed="${now}"/>
+            <column name="modified_by" value="1"/>
+            <column name="status" value="ENABLED"/>
+            <column name="display_name" value="Kapua Broker"/>
+            <column name="email" value="kapua-broker@eclipse.org"/>
+            <column name="phone_number" value="+1 555 123 4567"/>
+            <column name="user_type" value="INTERNAL"/>
+            <column name="optlock" value="0"/>
+        </insert>
+        
+        <rollback>
+            <dropTable tableName="usr_user"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

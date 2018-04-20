@@ -11,3 +11,5 @@
  *******************************************************************************/
 
 DROP TABLE IF EXISTS dvc_device_event;
+
+DROP TABLE IF EXISTS DATABASECHANGELOG;

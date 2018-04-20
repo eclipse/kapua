@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication;
 
@@ -18,6 +17,5 @@ package org.eclipse.kapua.service.authentication;
  * @since 1.0
  * 
  */
-public interface AuthenticationCredentials
-{
+public interface AuthenticationCredentials {
 }

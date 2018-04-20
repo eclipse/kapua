@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.message.kura;
 
@@ -18,49 +17,55 @@ import javax.xml.bind.annotation.XmlElement;
 
 import org.eclipse.kapua.service.device.call.message.DevicePosition;
 
-public class KuraPosition implements DevicePosition
-{
+/**
+ * Kura device position implementation.
+ * 
+ * @since 1.0
+ *
+ */
+public class KuraPosition implements DevicePosition {
+
     /**
      * Longitude of this position in degrees. This is a mandatory field.
      */
     @XmlElement(name = "longitude")
-    private Double  longitude;
+    private Double longitude;
 
     /**
      * Latitude of this position in degrees. This is a mandatory field.
      */
     @XmlElement(name = "latitude")
-    private Double  latitude;
+    private Double latitude;
 
     /**
      * Altitude of the position in meters.
      */
     @XmlElement(name = "altitude")
-    private Double  altitude;
+    private Double altitude;
 
     /**
      * Dilution of the precision (DOP) of the current GPS fix.
      */
     @XmlElement(name = "precision")
-    private Double  precision;
+    private Double precision;
 
     /**
      * Heading (direction) of the position in degrees
      */
     @XmlElement(name = "heading")
-    private Double  heading;
+    private Double heading;
 
     /**
      * Speed for this position in meter/sec.
      */
     @XmlElement(name = "speed")
-    private Double  speed;
+    private Double speed;
 
     /**
      * Timestamp extracted from the GPS system
      */
     @XmlElement(name = "timestamp")
-    private Date    timestamp;
+    private Date timestamp;
 
     /**
      * Number of satellites seen by the systems
@@ -75,97 +80,100 @@ public class KuraPosition implements DevicePosition
     @XmlElement(name = "status")
     private Integer status;
 
-    public KuraPosition()
-    {
+    /**
+     * Constructor
+     */
+    public KuraPosition() {
     }
 
-    public Double getLongitude()
-    {
+    @Override
+    public Double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(Double longitude)
-    {
+    @Override
+    public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
 
-    public Double getLatitude()
-    {
+    @Override
+    public Double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(Double latitude)
-    {
+    @Override
+    public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
 
-    public Double getAltitude()
-    {
+    @Override
+    public Double getAltitude() {
         return altitude;
     }
 
-    public void setAltitude(Double altitude)
-    {
+    @Override
+    public void setAltitude(Double altitude) {
         this.altitude = altitude;
     }
 
-    public Double getPrecision()
-    {
+    @Override
+    public Double getPrecision() {
         return precision;
     }
 
-    public void setPrecision(Double precision)
-    {
+    @Override
+    public void setPrecision(Double precision) {
         this.precision = precision;
     }
 
-    public Double getHeading()
-    {
+    @Override
+    public Double getHeading() {
         return heading;
     }
 
-    public void setHeading(Double heading)
-    {
+    @Override
+    public void setHeading(Double heading) {
         this.heading = heading;
     }
 
-    public Double getSpeed()
-    {
+    @Override
+    public Double getSpeed() {
         return speed;
     }
 
-    public void setSpeed(Double speed)
-    {
+    @Override
+    public void setSpeed(Double speed) {
         this.speed = speed;
     }
 
-    public Date getTimestamp()
-    {
+    @Override
+    public Date getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp)
-    {
+    @Override
+    public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
 
-    public Integer getSatellites()
-    {
+    @Override
+    public Integer getSatellites() {
         return satellites;
     }
 
-    public void setSatellites(Integer satellites)
-    {
+    @Override
+    public void setSatellites(Integer satellites) {
         this.satellites = satellites;
     }
 
-    public Integer getStatus()
-    {
+    @Override
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status)
-    {
+    @Override
+    public void setStatus(Integer status) {
         this.status = status;
     }
+
 }

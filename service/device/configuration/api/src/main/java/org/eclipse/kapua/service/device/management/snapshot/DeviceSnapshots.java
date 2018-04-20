@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.snapshot;
 
@@ -22,13 +21,23 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.kapua.KapuaSerializable;
 
+/**
+ * Device snapshots entity definition.<br>
+ * This entity manages a list of {@link DeviceSnapshot}
+ * 
+ * @since 1.0
+ *
+ */
 @XmlRootElement(name = "snapshots")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "snapshots" },
-        factoryClass = DeviceSnapshotXmlRegistry.class, 
-        factoryMethod = "newDeviceSnapshots")
-public interface DeviceSnapshots extends KapuaSerializable
-{
-    @XmlElement(name="snapshotId")
+@XmlType(propOrder = { "snapshots" }, factoryClass = DeviceSnapshotXmlRegistry.class, factoryMethod = "newDeviceSnapshots")
+public interface DeviceSnapshots extends KapuaSerializable {
+
+    /**
+     * Get the device snapshot list
+     * 
+     * @return
+     */
+    @XmlElement(name = "snapshotId")
     public List<DeviceSnapshot> getSnapshots();
 }

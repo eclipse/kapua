@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+  logicalFilePath="KapuaDB/changelog-authorization-0.3.0.xml">
+
+    <changeSet id="athz_access_permission-id_check_positive-0.3.0" author="eurotech">
+        <sql dbms="h2">ALTER TABLE athz_access_info ADD CHECK scope_id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE athz_access_info ADD CHECK id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE athz_access_info ADD CHECK created_by >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE athz_access_info ADD CHECK modified_by >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE athz_access_info ADD CHECK user_id >= 0;</sql>
+    </changeSet>
+
+</databaseChangeLog>

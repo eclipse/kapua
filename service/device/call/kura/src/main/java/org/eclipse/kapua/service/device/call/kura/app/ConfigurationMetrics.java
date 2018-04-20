@@ -11,21 +11,35 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura.app;
 
-public enum ConfigurationMetrics
-{
-    APP_ID("CONF"), 
+/**
+ * Bundle metrics properties definition.
+ * 
+ * @since 1.0
+ *
+ */
+public enum ConfigurationMetrics {
+    /**
+     * Application identifier
+     */
+    APP_ID("CONF"),
+    /**
+     * Application version
+     */
     APP_VERSION("V1"),
     ;
 
     private String value;
 
-    ConfigurationMetrics(String value)
-    {
+    ConfigurationMetrics(String value) {
         this.value = value;
     }
 
-    public String getValue()
-    {
+    /**
+     * Get a value property associated to this specific enumeration key.
+     * 
+     * @return
+     */
+    public String getValue() {
         return value;
     }
 }

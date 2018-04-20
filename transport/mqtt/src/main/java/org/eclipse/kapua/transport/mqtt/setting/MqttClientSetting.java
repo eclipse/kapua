@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.transport.mqtt.setting;
 
@@ -29,11 +28,11 @@ public class MqttClientSetting extends AbstractKapuaSetting<MqttClientSettingKey
     private static final String MQTT_CLIENT_CONFIG_RESOURCE = "mqtt-client-setting.properties";
 
     /**
-     * Singleton instance of this {@link class}.
+     * Singleton instance of this {@link Class}.
      * 
      * @since 1.0.0
      */
-    private static final MqttClientSetting instance = new MqttClientSetting();
+    private static final MqttClientSetting INSTANCE = new MqttClientSetting();
 
     /**
      * Initialize the {@link AbstractKapuaSetting} with the {@link MqttClientSetting#MQTT_CLIENT_CONFIG_RESOURCE} value.
@@ -51,6 +50,6 @@ public class MqttClientSetting extends AbstractKapuaSetting<MqttClientSettingKey
      * @since 1.0.0
      */
     public static MqttClientSetting getInstance() {
-        return instance;
+        return INSTANCE;
     }
 }

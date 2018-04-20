@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011 , 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,205 +8,197 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
-import java.util.List;
-
-import javax.persistence.TypedQuery;
-
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.kapua.KapuaDuplicateNameException;
+import org.eclipse.kapua.KapuaDuplicateNameInAnotherAccountError;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
-import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
-import org.eclipse.kapua.commons.model.query.KapuaListResultImpl;
+import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.commons.jpa.EntityManager;
-import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
-import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.commons.util.CommonsValidationRegex;
+import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
+import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountListResult;
+import org.eclipse.kapua.service.account.AccountPredicates;
+import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
-import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 
+import javax.inject.Inject;
+import javax.persistence.TypedQuery;
+import java.util.Map;
+import java.util.Objects;
+
 /**
- * Account service implementation.
- * 
- * @since 1.0
+ * {@link AccountService} implementation.
  *
+ * @since 1.0.0
  */
-public class AccountServiceImpl extends AbstractKapuaConfigurableService implements AccountService
-{
-    private static final long serialVersionUID = -312489270279852500L;
+@KapuaProvider
+public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<Account, AccountCreator, AccountService, AccountListResult, AccountQuery, AccountFactory>
+        implements AccountService {
+
+    @Inject
+    private AuthorizationService authorizationService;
+
+    @Inject
+    private PermissionFactory permissionFactory;
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
-    public AccountServiceImpl()
-    {
-        super(AccountService.class.getName(), AccountDomain.ACCOUNT, AccountEntityManagerFactory.getInstance());
+    public AccountServiceImpl() {
+        super(AccountService.class.getName(), ACCOUNT_DOMAIN, AccountEntityManagerFactory.getInstance(), AccountService.class, AccountFactory.class);
     }
 
     @Override
-    public Account create(AccountCreator accountCreator)
-        throws KapuaException
-    {
+    //@RaiseServiceEvent
+    public Account create(AccountCreator accountCreator) throws KapuaException {
         //
-        // Validation of the fields
+        // Argument validation
         ArgumentValidator.notNull(accountCreator, "accountCreator");
-        ArgumentValidator.notEmptyOrNull(accountCreator.getName(), "name");
-        ArgumentValidator.notEmptyOrNull(accountCreator.getAccountPassword(), "accountPassword");
-        ArgumentValidator.notEmptyOrNull(accountCreator.getOrganizationName(), "organizationName");
-        ArgumentValidator.notEmptyOrNull(accountCreator.getOrganizationEmail(), "organizationEmail");
-        ArgumentValidator.notNull(accountCreator.getScopeId(), "scopeId");
-        ArgumentValidator.notNull(accountCreator.getScopeId().getId(), "scopeId.id");
-        ArgumentValidator.match(accountCreator.getAccountPassword(), ArgumentValidator.PASSWORD_REGEXP, "accountPassword");
-        ArgumentValidator.match(accountCreator.getOrganizationEmail(), ArgumentValidator.EMAIL_REGEXP, "organizationEmail");
+        ArgumentValidator.notNull(accountCreator.getScopeId(), "accountCreator.scopeId");
+        ArgumentValidator.notEmptyOrNull(accountCreator.getName(), "accountCreator.name");
+        ArgumentValidator.notEmptyOrNull(accountCreator.getOrganizationName(), "accountCreator.organizationName");
+        ArgumentValidator.notEmptyOrNull(accountCreator.getOrganizationEmail(), "accountCreator.organizationEmail");
+        ArgumentValidator.match(accountCreator.getOrganizationEmail(), CommonsValidationRegex.EMAIL_REGEXP, "accountCreator.organizationEmail");
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(AccountDomain.ACCOUNT, Actions.write, accountCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(ACCOUNT_DOMAIN, Actions.write, accountCreator.getScopeId()));
 
-        // Check if the parent account exists
-        if (findById(accountCreator.getScopeId()) == null) {
-            throw new KapuaIllegalArgumentException("scopeId", "parent account does not exist");
+        //
+        // Check child account policy
+        if (allowedChildEntities(accountCreator.getScopeId()) <= 0) {
+            throw new KapuaIllegalArgumentException("scopeId", "max child account reached");
         }
 
         //
-        // Create the account
-        Account account = null;
-        EntityManager em = AccountEntityManagerFactory.getInstance().createEntityManager();
-        try {
+        // Check if the parent account exists
+        if (findById(accountCreator.getScopeId()) == null) {
+            throw new KapuaIllegalArgumentException("scopeId", "parent account does not exist: " + accountCreator.getScopeId() + "::");
+        }
 
-            em.beginTransaction();
+        //
+        // check if the account collides with the SystemSettingKey#COMMONS_CONTROL_TOPIC_CLASSIFIER
+        if (!StringUtils.isEmpty(SystemSetting.getInstance().getMessageClassifier())) {
+            if (SystemSetting.getInstance().getMessageClassifier().equals(accountCreator.getName())) {
+                throw new KapuaIllegalArgumentException("name", "Reserved account name");// obfuscate this message? or change to something more clear like "the account name collides with some system
+                // configuration parameter"?
+            }
+        }
 
-            account = AccountDAO.create(em, accountCreator);
+        //
+        // Check duplicate name
+        AccountQuery query = new AccountQueryImpl(accountCreator.getScopeId());
+        query.setPredicate(new AttributePredicateImpl<>(AccountPredicates.NAME, accountCreator.getName()));
+        if (count(query) > 0) {
+            throw new KapuaDuplicateNameException(accountCreator.getName());
+        }
 
+        if (findByName(accountCreator.getName()) != null) {
+            throw new KapuaDuplicateNameInAnotherAccountError(accountCreator.getName());
+        }
+
+        return entityManagerSession.onTransactedInsert(em -> {
+            Account account = AccountDAO.create(em, accountCreator);
             em.persist(account);
 
             // Set the parent account path
             String parentAccountPath = AccountDAO.find(em, accountCreator.getScopeId()).getParentAccountPath() + "/" + account.getId();
             account.setParentAccountPath(parentAccountPath);
-
-            AccountDAO.update(em, account);
-
-            em.commit();
-        }
-        catch (Exception pe) {
-            em.rollback();
-            throw KapuaExceptionUtils.convertPersistenceException(pe);
-        }
-        finally {
-            em.close();
-        }
-
-        //
-        // reload the latest version of the entity
-        // to make sure we get all the latest info/version
-        return find(account.getScopeId(), account.getId());
+            return AccountDAO.update(em, account);
+        });
     }
 
     @Override
-    public Account update(Account account)
-        throws KapuaException
-    {
+    //@RaiseServiceEvent
+    public Account update(Account account) throws KapuaException {
         //
-        // Validation of the fields
-        ArgumentValidator.notNull(account.getId(), "id");
-        ArgumentValidator.notNull(account.getId().getId(), "id.id");
-        ArgumentValidator.notEmptyOrNull(account.getName(), "accountName");
-        ArgumentValidator.notNull(account.getOrganization(), "organization");
-        ArgumentValidator.match(account.getOrganization().getEmail(), ArgumentValidator.EMAIL_REGEXP, "organizationEmail");
+        // Argument validation
+        ArgumentValidator.notNull(account.getId(), "account.id");
+        ArgumentValidator.notEmptyOrNull(account.getName(), "account.name");
+        ArgumentValidator.notNull(account.getOrganization(), "account.organization");
+        ArgumentValidator.match(account.getOrganization().getEmail(), CommonsValidationRegex.EMAIL_REGEXP, "account.organization.email");
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(AccountDomain.ACCOUNT, Actions.write, account.getScopeId()));
+        if (KapuaSecurityUtils.getSession().getScopeId().equals(account.getId())) {
+            // Editing self
+            authorizationService.checkPermission(permissionFactory.newPermission(ACCOUNT_DOMAIN, Actions.write, account.getId()));
+        } else {
+            // Editing child
+            authorizationService.checkPermission(permissionFactory.newPermission(ACCOUNT_DOMAIN, Actions.write, account.getScopeId()));
+        }
 
         //
-        // Update the Account
-        EntityManager em = AccountEntityManagerFactory.getInstance().createEntityManager();
-        try {
+        // Check existence
+        Account oldAccount = find(account.getId());
+        if (oldAccount == null) {
+            throw new KapuaEntityNotFoundException(Account.TYPE, account.getId());
+        }
 
-            Account oldAccount = AccountDAO.find(em, account.getId());
-
-            if (oldAccount == null) {
-                throw new KapuaEntityNotFoundException(Account.TYPE, account.getId());
-            }
+        //
+        // Do update
+        return entityManagerSession.onTransactedResult(em -> {
 
             //
             // Verify unchanged parent account ID and parent account path
-            if (!oldAccount.getScopeId().equals(account.getScopeId())) {
-                throw new KapuaAccountException(KapuaAccountErrorCodes.ILLEGAL_ARGUMENT, null, "scopeId");
+            if (!Objects.equals(oldAccount.getScopeId(), account.getScopeId())) {
+                throw new KapuaAccountException(KapuaAccountErrorCodes.ILLEGAL_ARGUMENT, null, "account.scopeId");
             }
-            if (oldAccount.getParentAccountPath().compareTo(account.getParentAccountPath()) != 0) {
-                throw new KapuaAccountException(KapuaAccountErrorCodes.ILLEGAL_ARGUMENT, null, "parentAccountPath");
+            if (!oldAccount.getParentAccountPath().equals(account.getParentAccountPath())) {
+                throw new KapuaAccountException(KapuaAccountErrorCodes.ILLEGAL_ARGUMENT, null, "account.parentAccountPath");
             }
-            if (oldAccount.getName().compareTo(account.getName()) != 0) {
-                throw new KapuaAccountException(KapuaAccountErrorCodes.ILLEGAL_ARGUMENT, null, "accountName");
+            if (!oldAccount.getName().equals(account.getName())) {
+                throw new KapuaAccountException(KapuaAccountErrorCodes.ILLEGAL_ARGUMENT, null, "account.name");
             }
 
             // Update
-            em.beginTransaction();
-
-            AccountDAO.update(em, account);
-
-            em.commit();
-        }
-        catch (Exception e) {
-            em.rollback();
-            throw KapuaExceptionUtils.convertPersistenceException(e);
-        }
-        finally {
-            em.close();
-        }
-
-        return find(account.getScopeId(), account.getId());
+            return AccountDAO.update(em, account);
+        });
     }
 
     @Override
-    public void delete(KapuaId scopeId, KapuaId accountId)
-        throws KapuaException
-    {
-
+    //@RaiseServiceEvent
+    public void delete(KapuaId scopeId, KapuaId accountId) throws KapuaException {
         //
-        // Validation of the fields
-        ArgumentValidator.notNull(accountId, "id");
-        ArgumentValidator.notNull(scopeId, "id.id");
+        // Argument validation
+        ArgumentValidator.notNull(accountId, "scopeId");
+        ArgumentValidator.notNull(scopeId, "accountId");
 
         //
         // Check Access
-        Actions action = Actions.write;
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(AccountDomain.ACCOUNT, action, scopeId));
+        Actions action = Actions.delete;
+        authorizationService.checkPermission(permissionFactory.newPermission(ACCOUNT_DOMAIN, action, scopeId));
 
         //
         // Check if it has children
-        if (this.findChildAccountsTrusted(accountId).size() > 0) {
+        if (!findChildAccountsTrusted(accountId).isEmpty()) {
             throw new KapuaAccountException(KapuaAccountErrorCodes.OPERATION_NOT_ALLOWED, null, "This account cannot be deleted. Delete its child first.");
         }
 
         //
-        // Delete the Account
-        EntityManager em = AccountEntityManagerFactory.getInstance().createEntityManager();
-        try {
-
+        // Do delete
+        entityManagerSession.onTransactedAction(em -> {
             // Entity needs to be loaded in the context of the same EntityManger to be able to delete it afterwards
             Account accountx = AccountDAO.find(em, accountId);
             if (accountx == null) {
@@ -219,263 +211,157 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
                 throw new KapuaIllegalAccessException(action.name());
             }
 
-            if (settings.getString(SystemSettingKey.SYS_ADMIN_ACCOUNT).equals(accountx.getName())) {
+            if (settings.getString(SystemSettingKey.SYS_ADMIN_USERNAME).equals(accountx.getName())) {
                 throw new KapuaIllegalAccessException(action.name());
             }
 
-            em.beginTransaction();
             AccountDAO.delete(em, accountId);
-            em.commit();
-        }
-        catch (Exception e) {
-            em.rollback();
-            throw KapuaExceptionUtils.convertPersistenceException(e);
-        }
-        finally {
-            em.close();
-        }
+        });
     }
 
     @Override
-    public Account find(KapuaId scopeId, KapuaId id)
-        throws KapuaException
-    {
+    public Account find(KapuaId scopeId, KapuaId accountId) throws KapuaException {
         //
-        // Validation of the fields
+        // Argument validation
         ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(scopeId.getId(), "scopeId.id");
-        ArgumentValidator.notNull(id, "id");
-        ArgumentValidator.notNull(id.getId(), "id.id");
+        ArgumentValidator.notNull(accountId, "accountId");
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(AccountDomain.ACCOUNT, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(ACCOUNT_DOMAIN, Actions.read, scopeId));
 
         //
-        // Make sure account exists
-        return findById(id);
+        // Do find
+        return findById(accountId);
     }
 
     @Override
-    public Account find(KapuaId id)
-        throws KapuaException
-    {
+    public Account find(KapuaId accountId) throws KapuaException {
         //
-        // Validation of the fields
-        ArgumentValidator.notNull(id, "id");
-        ArgumentValidator.notNull(id.getId(), "id.id");
+        // Argument validation
+        ArgumentValidator.notNull(accountId, "accountId");
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(AccountDomain.ACCOUNT, Actions.read, id));
+        authorizationService.checkPermission(permissionFactory.newPermission(ACCOUNT_DOMAIN, Actions.read, accountId));
 
         //
         // Make sure account exists
-        return findById(id);
+        return findById(accountId);
     }
 
     @Override
-    public Account findByName(String name)
-        throws KapuaException
-    {
+    public Account findByName(String name) throws KapuaException {
         //
-        // Argument Validation
+        // Argument validation
         ArgumentValidator.notEmptyOrNull(name, "name");
 
         //
-        // Do the find
-        Account account = null;
-        EntityManager em = AccountEntityManagerFactory.getInstance().createEntityManager();
-        try {
-            account = AccountDAO.findByName(em, name);
-        }
-        catch (Exception e) {
-            throw KapuaExceptionUtils.convertPersistenceException(e);
-        }
-        finally {
-            em.close();
-        }
+        // Do find
+        return entityManagerSession.onResult(em -> {
+            Account account = AccountDAO.findByName(em, name);
 
-        //
-        // Check Access
-        if (account != null) {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-            PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-            authorizationService.checkPermission(permissionFactory.newPermission(AccountDomain.ACCOUNT, Actions.read, account.getId()));
-        }
+            //
+            // Check Access
+            if (account != null) {
+                authorizationService.checkPermission(permissionFactory.newPermission(ACCOUNT_DOMAIN, Actions.read, account.getId()));
+            }
 
-        return account;
+            return account;
+        });
     }
 
     @Override
-    public AccountListResult findChildsRecursively(KapuaId id)
-        throws KapuaException
-    {
-
+    public AccountListResult findChildsRecursively(KapuaId scopeId) throws KapuaException {
         //
-        // Validation of the fields
-        ArgumentValidator.notNull(id, "scopeId");
-        ArgumentValidator.notNull(id.getId(), "scopeId.id");
+        // Argument validation
+        ArgumentValidator.notNull(scopeId, "scopeId");
 
         //
         // Make sure account exists
-        Account account = findById(id);
+        Account account = findById(scopeId);
         if (account == null) {
-            throw new KapuaEntityNotFoundException(Account.TYPE, id);
+            throw new KapuaEntityNotFoundException(Account.TYPE, scopeId);
         }
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(AccountDomain.ACCOUNT, Actions.read, account.getId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(ACCOUNT_DOMAIN, Actions.read, account.getId()));
 
-        AccountListResult result = null;
-        EntityManager em = AccountEntityManagerFactory.getInstance().createEntityManager();
-        try {
+        return entityManagerSession.onResult(em -> {
+            AccountListResult result = null;
             TypedQuery<Account> q;
             q = em.createNamedQuery("Account.findChildAccountsRecursive", Account.class);
-            q.setParameter("parentAccountPath", account.getParentAccountPath() + "/%");
+            q.setParameter("parentAccountPath", "\\" + account.getParentAccountPath() + "/%");
 
             result = new AccountListResultImpl();
             result.addItems(q.getResultList());
-
-        }
-        catch (Exception e) {
-            em.rollback();
-            throw KapuaExceptionUtils.convertPersistenceException(e);
-        }
-        finally {
-            em.close();
-        }
-
-        return result;
+            return result;
+        });
     }
 
     @Override
-    public KapuaListResultImpl<Account> query(KapuaQuery<Account> query)
-        throws KapuaException
-    {
+    public AccountListResult query(KapuaQuery<Account> query) throws KapuaException {
+        //
+        // Argument validation
         ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(AccountDomain.ACCOUNT, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(ACCOUNT_DOMAIN, Actions.read, query.getScopeId()));
 
         //
-        // Do count
-        KapuaListResultImpl<Account> result = null;
-        EntityManager em = AccountEntityManagerFactory.getInstance().createEntityManager();
-        try {
-            result = AccountDAO.query(em, query);
-        }
-        catch (Exception e) {
-            throw KapuaExceptionUtils.convertPersistenceException(e);
-        }
-        finally {
-            em.close();
-        }
-
-        return result;
+        // Do query
+        return entityManagerSession.onResult(em -> AccountDAO.query(em, query));
     }
 
     @Override
-    public long count(KapuaQuery<Account> query)
-        throws KapuaException
-    {
+    public long count(KapuaQuery<Account> query) throws KapuaException {
+        //
+        // Argument validation
         ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(AccountDomain.ACCOUNT, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(ACCOUNT_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do count
-        long count = 0;
-        EntityManager em = AccountEntityManagerFactory.getInstance().createEntityManager();
-        try {
-            count = AccountDAO.count(em, query);
-        }
-        catch (Exception e) {
-            throw KapuaExceptionUtils.convertPersistenceException(e);
-        }
-        finally {
-            em.close();
-        }
-
-        return count;
+        return entityManagerSession.onResult(em -> AccountDAO.count(em, query));
     }
 
     /**
-     * Find an account without authorization.
-     * 
+     * Find an {@link Account} without authorization checks.
+     *
      * @param accountId
      * @return
      * @throws KapuaException
+     * @since 1.0.0
      */
-    private Account findById(KapuaId accountId)
-        throws KapuaException
-    {
-
+    private Account findById(KapuaId accountId) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(accountId, "accountId");
 
         //
-        // Do the find
-        Account account = null;
-        EntityManager em = AccountEntityManagerFactory.getInstance().createEntityManager();
-        try {
-            account = AccountDAO.find(em, accountId);
-        }
-        catch (Exception e) {
-            throw KapuaExceptionUtils.convertPersistenceException(e);
-        }
-        finally {
-            em.close();
-        }
-        return account;
+        // Do find
+        return entityManagerSession.onResult(em -> AccountDAO.find(em, accountId));
     }
 
-    private List<Account> findChildAccountsTrusted(KapuaId accountId)
-        throws KapuaException
-    {
+    private AccountListResult findChildAccountsTrusted(KapuaId accountId)
+            throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(accountId, "accountId");
         ArgumentValidator.notNull(accountId.getId(), "accountId.id");
 
         //
-        // Do the find
-        List<Account> accounts = null;
-        EntityManager em = AccountEntityManagerFactory.getInstance().createEntityManager();
-        try {
-            TypedQuery<Account> q = em.createNamedQuery("Account.findChildAccounts", Account.class);
-            q.setParameter("scopeId", accountId);
-            accounts = q.getResultList();
-        }
-        catch (Exception e) {
-            throw KapuaExceptionUtils.convertPersistenceException(e);
-        }
-        finally {
-            em.close();
-        }
-        return accounts;
+        // Do find
+        return entityManagerSession.onResult(em -> AccountDAO.query(em, new AccountQueryImpl(accountId)));
+    }
+
+    @Override
+    protected Map<String, Object> getConfigValues(Account entity) throws KapuaException {
+        return super.getConfigValues(entity.getId());
     }
 }

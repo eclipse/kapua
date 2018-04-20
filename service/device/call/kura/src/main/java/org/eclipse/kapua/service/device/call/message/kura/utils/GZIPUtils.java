@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,93 +8,82 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.message.kura.utils;
+
+import com.google.common.io.ByteSource;
+import com.google.common.io.ByteStreams;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-public class GZIPUtils
-{
+/**
+ * Gzip utilities.
+ *
+ * @since 1.0
+ */
+public class GZIPUtils {
 
-    public static boolean isCompressed(byte[] bytes)
-    {
-        if ((bytes == null) || (bytes.length < 2)) {
+    private GZIPUtils() {
+    }
+
+    /**
+     * Check if the byte array represents compressed data
+     *
+     * @param bytes The input data to check
+     * @return {@code true} if the data is compressed, {@code false} otherwise.
+     */
+    public static boolean isCompressed(byte[] bytes) {
+        if (bytes == null || bytes.length < 2) {
             return false;
-        }
-        else {
-            return ((bytes[0] == (byte) (GZIPInputStream.GZIP_MAGIC)) && (bytes[1] == (byte) (GZIPInputStream.GZIP_MAGIC >> 8)));
+        } else {
+            return bytes[0] == (byte) GZIPInputStream.GZIP_MAGIC && bytes[1] == (byte) (GZIPInputStream.GZIP_MAGIC >> 8);
         }
     }
 
-    public static byte[] compress(byte[] source)
-        throws IOException
-    {
+    /**
+     * Compress provided data with GZIP
+     *
+     * @param source the input data to compress
+     * @return the compressed output data, returns {@code null} if the input was {@code null}
+     * @throws IOException in case of an I/O error
+     */
+    public static byte[] compress(byte[] source) throws IOException {
+        if (source == null) {
+            return new byte[0];
+        }
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        GZIPOutputStream gzipos = null;
-        try {
-            gzipos = new GZIPOutputStream(baos);
-            gzipos.write(source);
+        try (
+                ByteArrayOutputStream result = new ByteArrayOutputStream();
+                OutputStream out = new GZIPOutputStream(result)
+        ) {
+            ByteSource.wrap(source).copyTo(out);
+            return result.toByteArray();
         }
-        catch (IOException e) {
-            throw e;
-        }
-        finally {
-            if (gzipos != null) {
-                try {
-                    gzipos.close();
-                }
-                catch (IOException e) {
-                    // Ignore
-                }
-            }
-        }
-        return baos.toByteArray();
     }
 
-    public static byte[] decompress(byte[] source)
-        throws IOException
-    {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ByteArrayInputStream bais = new ByteArrayInputStream(source);
-        GZIPInputStream gzipis = null;
-
-        try {
-            gzipis = new GZIPInputStream(bais);
-
-            int n;
-            final int MAX_BUF = 1024;
-            byte[] buf = new byte[MAX_BUF];
-            while ((n = gzipis.read(buf, 0, MAX_BUF)) != -1) {
-                baos.write(buf, 0, n);
-            }
-        }
-        catch (IOException e) {
-            throw e;
-        }
-        finally {
-            if (gzipis != null) {
-                try {
-                    gzipis.close();
-                }
-                catch (IOException e) {
-                    // Ignore
-                }
-            }
-
-            try {
-                baos.close();
-            }
-            catch (IOException e) {
-                // Ignore
-            }
+    /**
+     * Uncompress GZIP compressed data
+     *
+     * @param source the data to uncompress
+     * @return the uncompressed data, returns {@code null} if the input was {@code null}
+     * @throws IOException in case of an I/O error
+     */
+    public static byte[] decompress(byte[] source) throws IOException {
+        if (source == null) {
+            return new byte[0];
         }
 
-        return baos.toByteArray();
+        try (
+                ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(source);
+                GZIPInputStream inputStream = new GZIPInputStream(byteArrayInputStream)
+        ) {
+            return ByteStreams.toByteArray(inputStream);
+        }
     }
 }

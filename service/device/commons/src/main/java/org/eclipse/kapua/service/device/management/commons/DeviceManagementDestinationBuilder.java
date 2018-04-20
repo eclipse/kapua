@@ -8,44 +8,78 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.commons;
 
+/**
+ * Device management destination builder.
+ * 
+ * 
+ * @since 1.0
+ *
+ * @param <T>
+ *            destination type
+ */
 @SuppressWarnings("unchecked")
-public class DeviceManagementDestinationBuilder<T>
-{
+public class DeviceManagementDestinationBuilder<T> {
+
     protected String topicPrefix;
     protected String accountName;
     protected String assetId;
     protected String appId;
 
-    public T withTopicPrefix(String topicPrefix)
-    {
+    /**
+     * Add the topic prefix to the destination
+     * 
+     * @param topicPrefix
+     * @return
+     */
+    public T withTopicPrefix(String topicPrefix) {
         this.topicPrefix = topicPrefix;
         return (T) this;
     }
 
-    public T withAccountName(String accountName)
-    {
+    /**
+     * Add the account name to the destination
+     * 
+     * @param accountName
+     * @return
+     */
+    public T withAccountName(String accountName) {
         this.accountName = accountName;
         return (T) this;
     }
 
-    public T withAssetId(String assetId)
-    {
+    /**
+     * Add the asset identifier to the destination
+     * 
+     * @param assetId
+     * @return
+     */
+    public T withAssetId(String assetId) {
         this.assetId = assetId;
         return (T) this;
     }
 
-    public T withAppId(String appId)
-    {
+    /**
+     * Add the application identifier to the destination
+     * 
+     * @param appId
+     * @return
+     */
+    public T withAppId(String appId) {
         this.appId = appId;
         return (T) this;
     }
 
-    public static class Request extends DeviceManagementDestinationBuilder<Request>
-    {
+    /**
+     * Provides a destination builder for the device request messages.
+     * 
+     * @since 1.0
+     *
+     */
+    public static class Request extends DeviceManagementDestinationBuilder<Request> {
+
         /**
          * <p>
          * Topic format: <br/>
@@ -58,39 +92,52 @@ public class DeviceManagementDestinationBuilder<T>
          * </p>
          * 
          */
-        private static final String requestTopicStringFormat = "%s/%s/%s/%s/%s%s";
+        private static final String REQUEST_TOPIC_STRING_FORMAT = "%s/%s/%s/%s/%s%s";
 
-        private String              method;
-        private String[]            resources;
+        private String method;
+        private String[] resources;
 
-        public Request withMethod(String method)
-        {
+        /**
+         * Add the request method to the destination
+         * 
+         * @param method
+         * @return
+         */
+        public Request withMethod(String method) {
             this.method = method;
             return this;
         }
 
-        public Request withResources(String[] resources)
-        {
+        /**
+         * Add the resources to the destination
+         * 
+         * @param resources
+         * @return
+         */
+        public Request withResources(String[] resources) {
             this.resources = resources;
             return this;
         }
 
-        public String build()
-        {
+        /**
+         * Build the destination
+         * 
+         * @return
+         */
+        public String build() {
             String resourcesToString = buildResourcesString();
 
-            return String.format(requestTopicStringFormat,
-                                 topicPrefix,
-                                 accountName,
-                                 assetId,
-                                 appId,
-                                 method,
-                                 resourcesToString);
+            return String.format(REQUEST_TOPIC_STRING_FORMAT,
+                    topicPrefix,
+                    accountName,
+                    assetId,
+                    appId,
+                    method,
+                    resourcesToString);
 
         }
 
-        private String buildResourcesString()
-        {
+        private String buildResourcesString() {
             StringBuilder sb = new StringBuilder();
             if (resources != null) {
                 for (String r : resources) {

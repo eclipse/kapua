@@ -8,49 +8,55 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.bundle.message.internal;
 
-import org.eclipse.kapua.service.device.management.KapuaMethod;
-import org.eclipse.kapua.service.device.management.commons.message.response.KapuaAppChannelImpl;
-import org.eclipse.kapua.service.device.management.request.KapuaRequestChannel;
+import org.eclipse.kapua.service.device.management.commons.message.request.KapuaRequestChannelImpl;
 
-public class BundleRequestChannel extends KapuaAppChannelImpl implements KapuaRequestChannel
-{
-    private KapuaMethod method;
-    private String      bundleId;
+/**
+ * Device bundle information request channel.
+ * 
+ * @since 1.0
+ * 
+ */
+public class BundleRequestChannel extends KapuaRequestChannelImpl {
+
+    private String bundleId;
     private boolean start;
 
-    @Override
-    public KapuaMethod getMethod()
-    {
-        return method;
-    }
-
-    @Override
-    public void setMethod(KapuaMethod method)
-    {
-        this.method = method;
-    }
-
-    public String getBundleId()
-    {
+    /**
+     * Get the bundle identifier
+     * 
+     * @return
+     */
+    public String getBundleId() {
         return bundleId;
     }
 
-    public void setBundleId(String bundleId)
-    {
+    /**
+     * Set the bundle identifier
+     * 
+     * @param bundleId
+     */
+    public void setBundleId(String bundleId) {
         this.bundleId = bundleId;
     }
 
-    public boolean isStart()
-    {
+    /**
+     * Check if the bundle is started
+     * 
+     * @return
+     */
+    public boolean isStart() {
         return start;
     }
 
-    public void setStart(boolean start)
-    {
+    /**
+     * Set the bundle start flag
+     * 
+     * @param start
+     */
+    public void setStart(boolean start) {
         this.start = start;
     }
 }

@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.account;
 
@@ -23,9 +22,8 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass=AccountXmlRegistry.class, factoryMethod="newOrganization")
-public interface Organization
-{
+@XmlType(factoryClass = AccountXmlRegistry.class, factoryMethod = "newOrganization")
+public interface Organization {
 
     /**
      * Get the organization name

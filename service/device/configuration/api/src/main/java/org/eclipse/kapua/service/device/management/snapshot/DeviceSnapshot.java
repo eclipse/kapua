@@ -8,9 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
-
 package org.eclipse.kapua.service.device.management.snapshot;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -19,21 +17,45 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+/**
+ * Device snapshot entity definition.
+ * 
+ * @since 1.0
+ *
+ */
 @XmlRootElement(name = "snapshot")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "id", 
-                      "timestamp" },
-        factoryClass = DeviceSnapshotXmlRegistry.class, 
-        factoryMethod = "newDeviceSnapshot")
+@XmlType(propOrder = { "id",
+        "timestamp" }, factoryClass = DeviceSnapshotXmlRegistry.class, factoryMethod = "newDeviceSnapshot")
 public interface DeviceSnapshot {
-    
+
+    /**
+     * Get the snapshot identifier
+     * 
+     * @return
+     */
     @XmlElement(name = "id")
     public String getId();
-    
+
+    /**
+     * Set the snapshot identifier
+     * 
+     * @param id
+     */
     public void setId(String id);
 
+    /**
+     * Get the snapshot timestamp
+     * 
+     * @return
+     */
     @XmlElement(name = "timestamp")
     public Long getTimestamp();
-    
+
+    /**
+     * Set the snapshot timestamp
+     * 
+     * @param timestamp
+     */
     public void setTimestamp(Long timestamp);
 }

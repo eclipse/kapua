@@ -8,11 +8,18 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.message;
 
-public interface Message<C extends Channel, P extends Payload>
-{
+import org.eclipse.kapua.KapuaSerializable;
+
+/**
+ * Message definition.
+ *
+ * @param <C> channel type
+ * @param <P> payload type
+ * @since 1.0
+ */
+public interface Message<C extends Channel, P extends Payload> extends KapuaSerializable {
 
 }

@@ -8,11 +8,15 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.commons;
 
-public class DeviceManagementRequestTopic
-{
+/**
+ * Device management request topic. (Marker interface)
+ * 
+ * @since 1.0
+ *
+ */
+public class DeviceManagementRequestTopic {
 
 }

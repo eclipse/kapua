@@ -8,19 +8,17 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role.shiro;
 
+import java.util.HashSet;
 import java.util.Set;
-
-import javax.xml.bind.annotation.XmlElement;
 
 import org.eclipse.kapua.commons.model.AbstractKapuaEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
-import org.eclipse.kapua.service.authorization.role.RolePermission;
 
 /**
  * Role creator service implementation.
@@ -28,41 +26,42 @@ import org.eclipse.kapua.service.authorization.role.RolePermission;
  * @since 1.0
  * 
  */
-public class RoleCreatorImpl extends AbstractKapuaEntityCreator<Role> implements RoleCreator
-{
-    private static final long   serialVersionUID = 972154225756734130L;
+public class RoleCreatorImpl extends AbstractKapuaEntityCreator<Role> implements RoleCreator {
 
-    @XmlElement(name = "name")
-    private String              name;
+    private static final long serialVersionUID = 972154225756734130L;
 
-    private Set<RolePermission> permissions;
+    private String name;
+    private Set<Permission> permissions;
 
-    public RoleCreatorImpl(KapuaId scopeId)
-    {
+    /**
+     * Costructor
+     * 
+     * @param scopeId
+     */
+    public RoleCreatorImpl(KapuaId scopeId) {
         super(scopeId);
     }
 
     @Override
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
     @Override
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     @Override
-    public void setRoles(Set<RolePermission> permissions)
-    {
+    public void setPermissions(Set<Permission> permissions) {
         this.permissions = permissions;
     }
 
     @Override
-    public Set<RolePermission> getRoles()
-    {
+    public Set<Permission> getPermissions() {
+        if (permissions == null) {
+            permissions = new HashSet<>();
+        }
         return permissions;
     }
 

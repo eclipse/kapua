@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,41 +8,48 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.bundle.internal;
-
-import java.util.Date;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
-import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.device.management.KapuaMethod;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
+import org.eclipse.kapua.service.device.management.bundle.internal.exception.BundleGetManagementException;
+import org.eclipse.kapua.service.device.management.bundle.internal.exception.BundleStartManagementException;
+import org.eclipse.kapua.service.device.management.bundle.internal.exception.BundleStopManagementException;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleRequestChannel;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleRequestMessage;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleRequestPayload;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleResponseMessage;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleResponsePayload;
-import org.eclipse.kapua.service.device.management.commons.DeviceManagementDomain;
+import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
 import org.eclipse.kapua.service.device.management.commons.exception.DeviceManagementErrorCodes;
 import org.eclipse.kapua.service.device.management.commons.exception.DeviceManagementException;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
+import org.eclipse.kapua.service.device.management.message.KapuaMethod;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 
-public class DeviceBundleManagementServiceImpl implements DeviceBundleManagementService {
+import java.util.Date;
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+/**
+ * DeviceBundleManagementService implementation.
+ *
+ * @since 1.0.0
+ */
+@KapuaProvider
+public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceBundleManagementService {
+
     @Override
     public DeviceBundles get(KapuaId scopeId, KapuaId deviceId, Long timeout)
             throws KapuaException {
@@ -56,7 +63,7 @@ public class DeviceBundleManagementServiceImpl implements DeviceBundleManagement
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomain.DEVICE_MANAGEMENT, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
 
         //
         // Prepare the request
@@ -76,51 +83,45 @@ public class DeviceBundleManagementServiceImpl implements DeviceBundleManagement
 
         //
         // Do get
-        DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(bundleRequestMessage, timeout);
+        DeviceCallExecutor<BundleRequestChannel, BundleRequestPayload, BundleRequestMessage, BundleResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(bundleRequestMessage, timeout);
         BundleResponseMessage responseMessage = (BundleResponseMessage) deviceApplicationCall.send();
 
         //
-        // Parse the response
-        BundleResponsePayload responsePayload = responseMessage.getPayload();
-
-        DeviceManagementSetting config = DeviceManagementSetting.getInstance();
-        String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
-
-        String body = null;
-        try {
-            body = new String(responsePayload.getBody(), charEncoding);
-        } catch (Exception e) {
-            throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, responsePayload.getBody());
-
-        }
-
-        DeviceBundles deviceBundleList = null;
-        try {
-            deviceBundleList = XmlUtil.unmarshal(body, DeviceBundlesImpl.class);
-        } catch (Exception e) {
-            throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION,
-                    e,
-                    body);
-        }
+        // Create event
+        createDeviceEvent(scopeId, deviceId, bundleRequestMessage, responseMessage);
 
         //
-        // Create event
-        DeviceEventService deviceEventService = locator.getService(DeviceEventService.class);
-        DeviceEventFactory deviceEventFactory = locator.getFactory(DeviceEventFactory.class);
+        // Check response
+        if (responseMessage.getResponseCode().isAccepted()) {
+            BundleResponsePayload responsePayload = responseMessage.getPayload();
 
-        DeviceEventCreator deviceEventCreator = deviceEventFactory.newCreator(scopeId, deviceId, responseMessage.getReceivedOn(), DeviceBundleAppProperties.APP_NAME.getValue());
-        deviceEventCreator.setPosition(responseMessage.getPosition());
-        deviceEventCreator.setSentOn(responseMessage.getSentOn());
-        deviceEventCreator.setAction(KapuaMethod.READ);
-        deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
-        deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
+            DeviceManagementSetting config = DeviceManagementSetting.getInstance();
+            String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
-        deviceEventService.create(deviceEventCreator);
+            String body = null;
+            try {
+                body = new String(responsePayload.getBody(), charEncoding);
+            } catch (Exception e) {
+                throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, responsePayload.getBody());
+            }
 
-        return deviceBundleList;
+            DeviceBundles deviceBundleList = null;
+            try {
+                deviceBundleList = XmlUtil.unmarshal(body, DeviceBundlesImpl.class);
+            } catch (Exception e) {
+                throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION,
+                        e,
+                        body);
+            }
+
+            return deviceBundleList;
+        } else {
+            KapuaResponsePayload responsePayload = responseMessage.getPayload();
+
+            throw new BundleGetManagementException(responseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionStack());
+        }
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void start(KapuaId scopeId, KapuaId deviceId, String bundleId, Long timeout)
             throws KapuaException {
@@ -135,7 +136,7 @@ public class DeviceBundleManagementServiceImpl implements DeviceBundleManagement
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomain.DEVICE_MANAGEMENT, Actions.execute, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.execute, scopeId));
 
         //
         // Prepare the request
@@ -156,26 +157,23 @@ public class DeviceBundleManagementServiceImpl implements DeviceBundleManagement
         bundleRequestMessage.setChannel(bundleRequestChannel);
 
         //
-        // Do get
+        // Do start
         DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(bundleRequestMessage, timeout);
         BundleResponseMessage responseMessage = (BundleResponseMessage) deviceApplicationCall.send();
 
         //
         // Create event
-        DeviceEventService deviceEventService = locator.getService(DeviceEventService.class);
-        DeviceEventFactory deviceEventFactory = locator.getFactory(DeviceEventFactory.class);
+        createDeviceEvent(scopeId, deviceId, bundleRequestMessage, responseMessage);
 
-        DeviceEventCreator deviceEventCreator = deviceEventFactory.newCreator(scopeId, deviceId, responseMessage.getReceivedOn(), DeviceBundleAppProperties.APP_NAME.getValue());
-        deviceEventCreator.setPosition(responseMessage.getPosition());
-        deviceEventCreator.setSentOn(responseMessage.getSentOn());
-        deviceEventCreator.setAction(KapuaMethod.EXECUTE);
-        deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
-        deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
+        //
+        // Check response
+        if (!responseMessage.getResponseCode().isAccepted()) {
+            KapuaResponsePayload responsePayload = responseMessage.getPayload();
 
-        deviceEventService.create(deviceEventCreator);
+            throw new BundleStartManagementException(responseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionStack());
+        }
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void stop(KapuaId scopeId, KapuaId deviceId, String bundleId, Long timeout)
             throws KapuaException {
@@ -183,14 +181,14 @@ public class DeviceBundleManagementServiceImpl implements DeviceBundleManagement
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(deviceId, "deviceId");
-        ArgumentValidator.notEmptyOrNull(bundleId, "bundleID");
+        ArgumentValidator.notEmptyOrNull(bundleId, "bundleId");
 
         //
         // Check Access
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomain.DEVICE_MANAGEMENT, Actions.execute, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.execute, scopeId));
 
         //
         // Prepare the request
@@ -211,23 +209,21 @@ public class DeviceBundleManagementServiceImpl implements DeviceBundleManagement
         bundleRequestMessage.setChannel(bundleRequestChannel);
 
         //
-        // Do get
+        // Do stop
         DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(bundleRequestMessage, timeout);
         BundleResponseMessage responseMessage = (BundleResponseMessage) deviceApplicationCall.send();
 
         //
         // Create event
-        DeviceEventService deviceEventService = locator.getService(DeviceEventService.class);
-        DeviceEventFactory deviceEventFactory = locator.getFactory(DeviceEventFactory.class);
+        createDeviceEvent(scopeId, deviceId, bundleRequestMessage, responseMessage);
 
-        DeviceEventCreator deviceEventCreator = deviceEventFactory.newCreator(scopeId, deviceId, responseMessage.getReceivedOn(), DeviceBundleAppProperties.APP_NAME.getValue());
-        deviceEventCreator.setPosition(responseMessage.getPosition());
-        deviceEventCreator.setSentOn(responseMessage.getSentOn());
-        deviceEventCreator.setAction(KapuaMethod.EXECUTE);
-        deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
-        deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
+        //
+        // Check response
+        if (!responseMessage.getResponseCode().isAccepted()) {
+            KapuaResponsePayload responsePayload = responseMessage.getPayload();
 
-        deviceEventService.create(deviceEventCreator);
+            throw new BundleStopManagementException(responseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionStack());
+        }
     }
 
 }

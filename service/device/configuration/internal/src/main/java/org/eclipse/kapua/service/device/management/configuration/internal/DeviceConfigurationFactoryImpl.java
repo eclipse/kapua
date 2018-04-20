@@ -8,26 +8,29 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.configuration.internal;
 
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationFactory;
 
-public class DeviceConfigurationFactoryImpl implements DeviceConfigurationFactory
-{
+/**
+ * Device configuration entity service factory implementation.
+ *
+ * @since 1.0
+ */
+@KapuaProvider
+public class DeviceConfigurationFactoryImpl implements DeviceConfigurationFactory {
 
     @Override
-    public DeviceComponentConfiguration newComponentConfigurationInstance(String componentConfigurationId)
-    {
+    public DeviceComponentConfiguration newComponentConfigurationInstance(String componentConfigurationId) {
         return new DeviceComponentConfigurationImpl(componentConfigurationId);
     }
 
     @Override
-    public DeviceConfiguration newConfigurationInstance()
-    {
+    public DeviceConfiguration newConfigurationInstance() {
         return new DeviceConfigurationImpl();
     }
 

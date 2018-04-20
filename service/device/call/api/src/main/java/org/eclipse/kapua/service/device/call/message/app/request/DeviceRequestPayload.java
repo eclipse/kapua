@@ -8,19 +8,45 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.message.app.request;
 
-import org.eclipse.kapua.service.device.call.message.DevicePayload;
+import org.eclipse.kapua.service.device.call.message.app.DeviceAppPayload;
 
-public interface DeviceRequestPayload extends DevicePayload
-{
+/**
+ * Device request payload definition.
+ *
+ * @since 1.0
+ */
+public interface DeviceRequestPayload extends DeviceAppPayload {
+
+    /**
+     * Get the request identifier
+     *
+     * @return
+     */
     public String getRequestId();
 
+    /**
+     * Set the request identifier
+     *
+     * @param requestId
+     */
     public void setRequestId(String requestId);
 
+    /**
+     * Get the requester client identifier.<br>
+     * May be useful to reply only to the requester
+     *
+     * @return
+     */
     public String getRequesterClientId();
 
+    /**
+     * Set the requester client identifier.<br>
+     * May be useful to reply only to the requester
+     *
+     * @param requesterId
+     */
     public void setRequesterClientId(String requesterId);
 }

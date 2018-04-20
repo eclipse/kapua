@@ -8,14 +8,24 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.commons.model.query;
 
 import org.eclipse.kapua.model.query.KapuaFetchStyle;
 
-public enum EntityFetchStyle implements KapuaFetchStyle
-{
+/**
+ * Query fetch style behavior.
+ * 
+ * @since 1.0
+ *
+ */
+public enum EntityFetchStyle implements KapuaFetchStyle {
+    /**
+     * Partial entity fields retrieving
+     */
     BASIC,
+    /**
+     * Full entity retrieving
+     */
     FULL
 }

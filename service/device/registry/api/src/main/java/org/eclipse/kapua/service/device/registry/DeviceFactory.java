@@ -8,20 +8,27 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry;
 
-import org.eclipse.kapua.model.KapuaObjectFactory;
+import org.eclipse.kapua.model.KapuaEntityFactory;
 import org.eclipse.kapua.model.id.KapuaId;
 
-public interface DeviceFactory extends KapuaObjectFactory
-{
+/**
+ * Device service factory definition.
+ * 
+ * @since 1.0
+ *
+ */
+public interface DeviceFactory extends KapuaEntityFactory<Device, DeviceCreator, DeviceQuery, DeviceListResult> {
+
+    /**
+     * Creates a new device creator
+     * 
+     * @param scopeId
+     * @param clientId
+     * @return
+     */
     public DeviceCreator newCreator(KapuaId scopeId, String clientId);
 
-    public Device newDevice();
-    
-    public DeviceQuery newQuery(KapuaId scopeId);
-    
-    public DeviceListResult newDeviceListResult();
 }

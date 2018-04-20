@@ -8,13 +8,17 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.message.device.lifecycle;
 
 import org.eclipse.kapua.message.KapuaMessage;
 
-public interface KapuaAppsMessage extends KapuaMessage<KapuaAppsChannel, KapuaAppsPayload>
-{
+/**
+ * Kapua application message object definition.
+ * 
+ * @since 1.0
+ *
+ */
+public interface KapuaAppsMessage extends KapuaMessage<KapuaAppsChannel, KapuaAppsPayload> {
 
 }

@@ -8,11 +8,20 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.message;
 
-public interface Position
-{
+/**
+ * Device position definition.
+ *
+ * @since 1.0
+ */
+
+import org.eclipse.kapua.message.xml.MessageXmlRegistry;
+
+import javax.xml.bind.annotation.XmlType;
+
+@XmlType(factoryClass = MessageXmlRegistry.class, factoryMethod = "newPosition")
+        public interface Position {
 
 }

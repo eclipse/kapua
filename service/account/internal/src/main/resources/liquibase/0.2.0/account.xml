@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+  logicalFilePath="KapuaDB/changelog-account-0.2.0.xml">
+
+    <include relativeToChangelogFile="true" file="../common-properties.xml" />
+
+    <changeSet id="changelog-account-0.2.0_createTable" author="eurotech">
+        <createTable tableName="act_account">
+            <column name="scope_id" type="bigint(21) unsigned"/>
+            <column name="id" type="bigint(21) unsigned">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        
+            <column name="created_on" type="timestamp(3)" defaultValueComputed="${now}" />
+            <column name="created_by" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_on" type="timestamp(3)" defaultValueComputed="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="org_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="org_person_name" type="varchar(255)" />
+            <column name="org_email" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="org_phone_number" type="varchar(64)" />
+            <column name="org_address_line_1" type="varchar(255)" />
+            <column name="org_address_line_2" type="varchar(255)" />
+            <column name="org_address_line_3" type="varchar(255)" />
+            <column name="org_zip_postcode" type="varchar(255)" />
+            <column name="org_city" type="varchar(255)" />
+            <column name="org_state_province_county" type="varchar(255)" />
+            <column name="org_country" type="varchar(255)" />
+            
+            <column name="parent_account_path" type="varchar(64)" />
+            <column name="optlock" type="int unsigned" />
+            <column name="attributes" type="text" />
+            <column name="properties" type="text" />
+        </createTable>
+        
+        <addForeignKeyConstraint constraintName="scope_id_fk" baseTableName="act_account" baseColumnNames="scope_id" referencedTableName="act_account" referencedColumnNames="id" onDelete="RESTRICT"/>
+        
+        <createIndex tableName="act_account" indexName="idx_account_scope_id">
+            <column name="scope_id"/>
+        </createIndex>
+        
+        <insert tableName="act_account">
+            <column name="id" value="1"/>
+            <column name="name" value="kapua-sys"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="1"/>
+            <column name="modified_on" valueComputed="${now}"/>
+            <column name="modified_by" value="1"/>
+            <column name="org_name" value="kapua-org"/>
+            <column name="org_person_name" value="Kapua Sysadmin"/>
+            <column name="org_email" value="kapua-sys@eclipse.org"/>
+            <column name="org_phone_number" value="+1 555 123 4567"/>
+            <column name="parent_account_path" value="/1"/>
+            <column name="optlock" value="0"/>
+        </insert>
+        
+        <rollback>
+            <dropIndex tableName="act_account" indexName="idx_account_scope_id"/>
+            <dropTable tableName="act_account"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

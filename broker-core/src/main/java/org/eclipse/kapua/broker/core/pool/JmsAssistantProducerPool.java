@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.pool;
 
@@ -17,8 +16,8 @@ import java.util.Map;
 
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+import org.eclipse.kapua.broker.core.setting.BrokerSetting;
+import org.eclipse.kapua.broker.core.setting.BrokerSettingKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,17 +38,11 @@ import org.slf4j.LoggerFactory;
  * 
  * @since 1.0
  */
-public class JmsAssistantProducerPool extends GenericObjectPool<JmsAssistantProducerWrapper>
-{
+public class JmsAssistantProducerPool extends GenericObjectPool<JmsAssistantProducerWrapper> {
 
-    private static Logger s_logger = LoggerFactory.getLogger(JmsAssistantProducerPool.class);
+    private static final Logger logger = LoggerFactory.getLogger(JmsAssistantProducerPool.class);
 
-    public enum DESTINATIONS
-    {
-        /**
-         * Kapua service queue destination
-         */
-        KAPUA_SERVICE,
+    public enum DESTINATIONS {
         /**
          * To be used to send messages without known destination.
          * Otherwise the inactive monitor will not be able to remove the destination because it has a producer!
@@ -61,17 +54,11 @@ public class JmsAssistantProducerPool extends GenericObjectPool<JmsAssistantProd
 
     static {
         pools = new HashMap<JmsAssistantProducerPool.DESTINATIONS, JmsAssistantProducerPool>();
-        s_logger.info("Create pools for broker assistants (kapua server instance)");
-        s_logger.info("Create Service pool...");
-        // TODO parameter to be added to configuration
-        // pools.put(DESTINATIONS.KAPUA_SERVICE,
-        // new JmsAssistantProducerPool(new JmsAssistantProducerWrapperFactory(KapuaEnvironmentConfig.getInstance().getString(KapuaEnvironmentConfigKeys.SERVICE_QUEUE_NAME))));
-        pools.put(DESTINATIONS.KAPUA_SERVICE,
-                  new JmsAssistantProducerPool(new JmsAssistantProducerWrapperFactory("KapuaService")));
-        s_logger.info("Create NoDestination pool...");
+        logger.info("Create pools (internal broker use)...");
+        logger.info("Create NoDestination pool...");
         pools.put(DESTINATIONS.NO_DESTINATION,
-                  new JmsAssistantProducerPool(new JmsAssistantProducerWrapperFactory(null)));
-        s_logger.info("Create pools... done.");
+                new JmsAssistantProducerPool(new JmsAssistantProducerWrapperFactory(null)));
+        logger.info("Create pools (internal broker use)... done.");
     }
 
     /**
@@ -79,26 +66,21 @@ public class JmsAssistantProducerPool extends GenericObjectPool<JmsAssistantProd
      * 
      * @param factory
      */
-    protected JmsAssistantProducerPool(JmsAssistantProducerWrapperFactory factory)
-    {
+    protected JmsAssistantProducerPool(JmsAssistantProducerWrapperFactory factory) {
         super(factory);
-        // TODO parameter to be added to configuration
-        // int totalMaxSize = KapuaEnvironmentConfig.getInstance().getString(KapuaEnvironmentConfigKeys.POOL_TOTAL_MAX_SIZE);
-        // int maxSize = KapuaEnvironmentConfig.getInstance().getString(KapuaEnvironmentConfigKeys.POOL_MAX_SIZE);
-        // int minSize = KapuaEnvironmentConfig.getInstance().getString(KapuaEnvironmentConfigKeys.POOL_MIN_SIZE);
-        int totalMaxSize = 25;
-        int maxSize = 25;
-        int minSize = 10;
+        int totalMaxSize = BrokerSetting.getInstance().getInt(BrokerSettingKey.BROKER_CLIENT_POOL_NO_DEST_TOTAL_MAX_SIZE, 10);
+        int maxSize = BrokerSetting.getInstance().getInt(BrokerSettingKey.BROKER_CLIENT_POOL_NO_DEST_MAX_SIZE, 10);
+        int minSize = BrokerSetting.getInstance().getInt(BrokerSettingKey.BROKER_CLIENT_POOL_NO_DEST_MIN_SIZE, 5);
 
         GenericObjectPoolConfig jmsPoolConfig = new GenericObjectPoolConfig();
         jmsPoolConfig.setMaxTotal(totalMaxSize);
         jmsPoolConfig.setMaxIdle(maxSize);
         jmsPoolConfig.setMinIdle(minSize);
-        s_logger.info("Set test on return to true for JmsAssistantProducerPool");
+        logger.info("Set test on return to true for JmsAssistantProducerPool");
         jmsPoolConfig.setTestOnReturn(true);
-        s_logger.info("Set test on borrow to true for JmsAssistantProducerPool");
+        logger.info("Set test on borrow to true for JmsAssistantProducerPool");
         jmsPoolConfig.setTestOnBorrow(true);
-        s_logger.info("Set block when exausted to true for JmsAssistantProducerPool");
+        logger.info("Set block when exausted to true for JmsAssistantProducerPool");
         jmsPoolConfig.setBlockWhenExhausted(true);
 
         setConfig(jmsPoolConfig);
@@ -110,25 +92,20 @@ public class JmsAssistantProducerPool extends GenericObjectPool<JmsAssistantProd
      * @param destination
      * @return
      */
-    public static JmsAssistantProducerPool getIOnstance(DESTINATIONS destination)
-    {
+    public static JmsAssistantProducerPool getIOnstance(DESTINATIONS destination) {
         return pools.get(destination);
     }
 
     /**
      * Close all connection pools
      */
-    public static void closePools()
-    {
+    public static void closePools() {
         if (pools != null) {
-            s_logger.info("Close Service pool...");
-            pools.get(DESTINATIONS.KAPUA_SERVICE).close();
-            s_logger.info("Close NoDestination pool...");
+            logger.info("Close NoDestination pool...");
             pools.get(DESTINATIONS.NO_DESTINATION).close();
-            s_logger.info("Close pools... done.");
-        }
-        else {
-            s_logger.warn("Cannot close producer pools... Pools not initialized!");
+            logger.info("Close pools... done.");
+        } else {
+            logger.warn("Cannot close producer pools... Pools not initialized!");
         }
     }
 

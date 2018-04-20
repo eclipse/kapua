@@ -44,6 +44,7 @@ local.properties
 .settings/
 .loadpath
 .recommenders
+.checkstyle
 
 # Eclipse Core
 .project
@@ -109,5 +110,10 @@ velocity.log
 #
 # vagrant runtime environment
 #
-Vagrantfile
 .vagrant
+
+# Temporarly hide consoleV2 folder until it's merged from its branch
+console-v2/
+
+# Visual Studio Code project settings
+.vscode

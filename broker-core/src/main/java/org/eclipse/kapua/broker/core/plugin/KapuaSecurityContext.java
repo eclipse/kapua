@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin;
 
@@ -16,7 +15,6 @@ import java.security.Principal;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.activemq.command.ConnectionId;
 import org.apache.activemq.security.AuthorizationMap;
 import org.apache.activemq.security.SecurityContext;
 import org.eclipse.kapua.commons.security.KapuaSession;
@@ -29,90 +27,76 @@ import org.eclipse.kapua.service.authentication.KapuaPrincipal;
  * @since 1.0
  */
 public class KapuaSecurityContext extends SecurityContext {
-	
-    private KapuaPrincipal   principal;
-    private KapuaSession        kapuaSession;
-    private KapuaId          connectionId;
-    private Set<Principal>   principals;
+
+    private KapuaPrincipal principal;
+    private KapuaSession kapuaSession;
+    private KapuaId connectionId;
+    private Set<Principal> principals;
     private ConnectorDescriptor connectorDescriptor;
-    private ConnectionId        brokerConnectionId;
+    private String brokerConnectionId;
 
     private AuthorizationMap authMap;
-    private boolean          hasDataView;
-    private boolean          hasDataManage;
-    private boolean          hasDeviceView;
-    private boolean          hasDeviceManage;
+    private boolean hasDataView;
+    private boolean hasDataManage;
+    private boolean hasDeviceView;
+    private boolean hasDeviceManage;
 
-    public KapuaSecurityContext(KapuaPrincipal     principal,
-                              AuthorizationMap authMap,
-                              KapuaId connectionId,
-                              ConnectionId brokerConnectionId,
-                              ConnectorDescriptor connectorDescriptor) {
-        super(principal.getName());
+    public KapuaSecurityContext(KapuaConnectionContext kcc,
+            AuthorizationMap authMap) {
+        super(kcc.getPrincipal().getName());
 
-        this.principal = principal;
+        this.principal = kcc.getPrincipal();
         this.kapuaSession = KapuaSession.createFrom();
         principals = new HashSet<Principal>();
         principals.add(principal);
 
         this.authMap = authMap;
-        this.connectionId = connectionId;
-        this.connectorDescriptor = connectorDescriptor;
-        this.brokerConnectionId = brokerConnectionId;
+        this.connectionId = kcc.getKapuaConnectionId();
+        this.connectorDescriptor = kcc.getConnectorDescriptor();
+        this.brokerConnectionId = kcc.getConnectionId();
     }
 
-    public Principal getMainPrincipal()
-    {
+    public Principal getMainPrincipal() {
         return principal;
     }
 
-    public Set<Principal> getPrincipals()
-    {
+    public Set<Principal> getPrincipals() {
         return principals;
     }
 
-    public AuthorizationMap getAuthorizationMap()
-    {
+    public AuthorizationMap getAuthorizationMap() {
         return authMap;
     }
 
-    public KapuaId getConnectionId()
-    {
+    public KapuaId getConnectionId() {
         return connectionId;
     }
 
-    public ConnectionId getBrokerConnectionId()
-    {
+    public String getBrokerConnectionId() {
         return brokerConnectionId;
     }
 
-    public ConnectorDescriptor getConnectorDescriptor()
-    {
+    public ConnectorDescriptor getConnectorDescriptor() {
         return connectorDescriptor;
     }
 
-    public boolean hasDataView()
-    {
+    public boolean hasDataView() {
         return hasDataView;
     }
 
-    public boolean hasDataManage()
-    {
+    public boolean hasDataManage() {
         return hasDataManage;
     }
 
-    public boolean hasDeviceView()
-    {
+    public boolean hasDeviceView() {
         return hasDeviceView;
     }
 
-    public boolean hasDeviceManage()
-    {
+    public boolean hasDeviceManage() {
         return hasDeviceManage;
     }
 
-    public KapuaSession getKapuaSession()
-    {
+    public KapuaSession getKapuaSession() {
         return kapuaSession;
     }
 }

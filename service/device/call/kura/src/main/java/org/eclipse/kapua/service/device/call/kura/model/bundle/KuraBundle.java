@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura.model.bundle;
 
@@ -18,60 +17,96 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlRootElement(name="bundle")
+/**
+ * Kura bundle definition.
+ * 
+ * @since 1.0
+ *
+ */
+@XmlRootElement(name = "bundle")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder= {"name","version","id","state"})
-public class KuraBundle
-{
-    @XmlElement(name="name")
+@XmlType(propOrder = { "name", "version", "id", "state" })
+public class KuraBundle {
+
+    @XmlElement(name = "name")
     public String name;
 
-    @XmlElement(name="version")
+    @XmlElement(name = "version")
     public String version;
 
-    @XmlElement(name="id")
+    @XmlElement(name = "id")
     public long id;
 
-    @XmlElement(name="state")
+    @XmlElement(name = "state")
     public String state;
 
-    public String getName()
-    {
+    /**
+     * Get bundle name
+     */
+    public String getName() {
         return name;
     }
 
-    public void setName(String name)
-    {
+    /**
+     * Set bundle name
+     * 
+     * @param name
+     */
+    public void setName(String name) {
         this.name = name;
     }
 
-    public String getVersion()
-    {
+    /**
+     * Get bundle version
+     * 
+     * @return
+     */
+    public String getVersion() {
         return version;
     }
 
-    public void setVersion(String version)
-    {
+    /**
+     * Set bundle version
+     * 
+     * @param version
+     */
+    public void setVersion(String version) {
         this.version = version;
     }
 
-    public long getId()
-    {
+    /**
+     * Get bundle identifier
+     * 
+     * @return
+     */
+    public long getId() {
         return id;
     }
 
-    public void setId(long id)
-    {
+    /**
+     * Set bundle identifier
+     * 
+     * @param id
+     */
+    public void setId(long id) {
         this.id = id;
     }
 
-    public String getState()
-    {
+    /**
+     * Get bundle state
+     * 
+     * @return
+     */
+    public String getState() {
         return state;
     }
 
-    public void setState(String state)
-    {
+    /**
+     * Set bundle state
+     * 
+     * @param state
+     */
+    public void setState(String state) {
         this.state = state;
     }
 }

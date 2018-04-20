@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.pool;
 
@@ -26,27 +25,23 @@ import org.slf4j.LoggerFactory;
  *
  * @since 1.0
  */
-public class JmsAssistantProducerWrapperFactory extends BasePooledObjectFactory<JmsAssistantProducerWrapper>
-{
+public class JmsAssistantProducerWrapperFactory extends BasePooledObjectFactory<JmsAssistantProducerWrapper> {
 
-    private static Logger s_logger = LoggerFactory.getLogger(JmsAssistantProducerWrapperFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(JmsAssistantProducerWrapperFactory.class);
 
-    private String destination;
+    private final String destination;
 
-    public JmsAssistantProducerWrapperFactory(String destination)
-    {
+    public JmsAssistantProducerWrapperFactory(String destination) {
         this.destination = destination;
     }
 
     @Override
-    public JmsAssistantProducerWrapper create() throws Exception
-    {
-        return new JmsAssistantProducerWrapper(JmsConnectionFactory.vmConnFactory, destination, false, false);
+    public JmsAssistantProducerWrapper create() throws Exception {
+        return new JmsAssistantProducerWrapper(JmsConnectionFactory.VM_CONN_FACTORY, destination, false, false);
     }
 
     @Override
-    public PooledObject<JmsAssistantProducerWrapper> wrap(JmsAssistantProducerWrapper producerWrapper)
-    {
+    public PooledObject<JmsAssistantProducerWrapper> wrap(JmsAssistantProducerWrapper producerWrapper) {
         return new DefaultPooledObject<JmsAssistantProducerWrapper>(producerWrapper);
     }
 
@@ -54,23 +49,20 @@ public class JmsAssistantProducerWrapperFactory extends BasePooledObjectFactory<
      * Check if the session is still active
      */
     @Override
-    public boolean validateObject(PooledObject<JmsAssistantProducerWrapper> p)
-    {
+    public boolean validateObject(PooledObject<JmsAssistantProducerWrapper> p) {
         Session session = p.getObject().session;
         if (session instanceof ActiveMQSession) {
             return !((ActiveMQSession) session).isClosed();
-        }
-        else {
-            s_logger.warn("Wrong session object type {}", session.getClass());
+        } else {
+            logger.warn("Wrong session object type {}", session.getClass());
             return true;
         }
     }
 
     @Override
-    public void destroyObject(PooledObject<JmsAssistantProducerWrapper> pooledProducerWrapper) throws Exception
-    {
+    public void destroyObject(PooledObject<JmsAssistantProducerWrapper> pooledProducerWrapper) throws Exception {
         JmsAssistantProducerWrapper producerWrapper = pooledProducerWrapper.getObject();
-        s_logger.info("Close jms broker assistant producer wrapper: {}", producerWrapper.toString());
+        logger.info("Close jms broker assistant producer wrapper: {}", producerWrapper.toString());
         producerWrapper.close();
         super.destroyObject(pooledProducerWrapper);
     }

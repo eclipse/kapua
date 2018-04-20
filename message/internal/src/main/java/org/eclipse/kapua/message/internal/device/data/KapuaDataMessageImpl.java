@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.message.internal.device.data;
 
@@ -17,21 +17,11 @@ import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
 import org.eclipse.kapua.message.internal.KapuaMessageImpl;
 
-public class KapuaDataMessageImpl extends KapuaMessageImpl<KapuaDataChannel, KapuaDataPayload> implements KapuaDataMessage
-{
+/**
+ * Kapua data message object reference implementation.
+ */
+public class KapuaDataMessageImpl extends KapuaMessageImpl<KapuaDataChannel, KapuaDataPayload> implements KapuaDataMessage {
 
-    private String clientId;
-
-    @Override
-    public String getClientId()
-    {
-        return clientId;
-    }
-
-    @Override
-    public void setClientId(String clientId)
-    {
-        this.clientId = clientId;
-    }
+    private static final long serialVersionUID = 1L;
 
 }

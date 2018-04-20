@@ -8,88 +8,131 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection.internal;
 
-import javax.xml.bind.annotation.XmlElement;
-
-import org.eclipse.kapua.commons.model.AbstractKapuaEntityCreator;
+import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCreator;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 
-public class DeviceConnectionCreatorImpl extends AbstractKapuaEntityCreator<DeviceConnection> implements DeviceConnectionCreator
-{
+/**
+ * Device connection creator service implementation.
+ *
+ * @since 1.0
+ */
+public class DeviceConnectionCreatorImpl extends AbstractKapuaUpdatableEntityCreator<DeviceConnection> implements DeviceConnectionCreator {
+
     private static final long serialVersionUID = 2740394157765904615L;
 
-    @XmlElement(name = "clientId")
-    private String            clientId;
+    private DeviceConnectionStatus status;
+    private String clientId;
+    private KapuaId userId;
+    private ConnectionUserCouplingMode userCouplingMode;
+    private KapuaId reservedUserId;
+    private boolean allowUserChange;
+    private String protocol;
+    private String clientIp;
+    private String serverIp;
 
-    @XmlElement(name = "userId")
-    private KapuaId           userId;
-
-    @XmlElement(name = "protocol")
-    private String            protocol;
-
-    @XmlElement(name = "clientIp")
-    private String            clientIp;
-
-    @XmlElement(name = "serverIp")
-    private String            serverIp;
-
-    public DeviceConnectionCreatorImpl(KapuaId scopeId)
-    {
+    /**
+     * Constructor
+     *
+     * @param scopeId
+     */
+    public DeviceConnectionCreatorImpl(KapuaId scopeId) {
         super(scopeId);
     }
 
-    public String getClientId()
-    {
+    @Override
+    public DeviceConnectionStatus getStatus() {
+        return status;
+    }
+
+    @Override
+    public void setStatus(DeviceConnectionStatus status) {
+        this.status = status;
+    }
+
+    @Override
+    public String getClientId() {
         return clientId;
     }
 
-    public void setClientId(String clientId)
-    {
+    @Override
+    public void setClientId(String clientId) {
         this.clientId = clientId;
     }
 
-    public KapuaId getUserId()
-    {
+    @Override
+    public KapuaId getUserId() {
         return userId;
     }
 
-    public void setUserId(KapuaId userId)
-    {
+    @Override
+    public void setUserId(KapuaId userId) {
         this.userId = userId;
     }
 
-    public String getProtocol()
-    {
+    @Override
+    public ConnectionUserCouplingMode getUserCouplingMode() {
+        return userCouplingMode;
+    }
+
+    @Override
+    public void setUserCouplingMode(ConnectionUserCouplingMode userCouplingMode) {
+        this.userCouplingMode = userCouplingMode;
+    }
+
+    @Override
+    public KapuaId getReservedUserId() {
+        return reservedUserId;
+    }
+
+    @Override
+    public void setReservedUserId(KapuaId reservedUserId) {
+        this.reservedUserId = reservedUserId;
+    }
+
+    @Override
+    public boolean getAllowUserChange() {
+        return allowUserChange;
+    }
+
+    @Override
+    public void setAllowUserChange(boolean allowUserChange) {
+        this.allowUserChange = allowUserChange;
+    }
+
+    @Override
+    public String getProtocol() {
         return protocol;
     }
 
-    public void setProtocol(String protocol)
-    {
+    @Override
+    public void setProtocol(String protocol) {
         this.protocol = protocol;
     }
 
-    public String getClientIp()
-    {
+    @Override
+    public String getClientIp() {
         return clientIp;
     }
 
-    public void setClientIp(String clientIp)
-    {
+    @Override
+    public void setClientIp(String clientIp) {
         this.clientIp = clientIp;
     }
 
-    public String getServerIp()
-    {
+    @Override
+    public String getServerIp() {
         return serverIp;
     }
 
-    public void setServerIp(String serverIp)
-    {
+    @Override
+    public void setServerIp(String serverIp) {
         this.serverIp = serverIp;
     }
 }

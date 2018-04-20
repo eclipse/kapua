@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.transport.jms.setting;
 
@@ -29,11 +28,11 @@ public class JmsClientSetting extends AbstractKapuaSetting<JmsClientSettingKeys>
     private static final String JMS_CLIENT_CONFIG_RESOURCE = "jms-client-setting.properties";
 
     /**
-     * Singleton instance of this {@link class}.
+     * Singleton instance of this {@link Class}.
      * 
      * @since 1.0.0
      */
-    private static final JmsClientSetting instance = new JmsClientSetting();
+    private static final JmsClientSetting INSTANCE = new JmsClientSetting();
 
     /**
      * Initialize the {@link AbstractKapuaSetting} with the {@link JmsClientSetting#JMS_CLIENT_CONFIG_RESOURCE} value.
@@ -51,6 +50,6 @@ public class JmsClientSetting extends AbstractKapuaSetting<JmsClientSettingKeys>
      * @since 1.0.0
      */
     public static JmsClientSetting getInstance() {
-        return instance;
+        return INSTANCE;
     }
 }

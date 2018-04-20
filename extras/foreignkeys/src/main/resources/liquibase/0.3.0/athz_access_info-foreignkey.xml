@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+                   logicalFilePath="KapuaDB/changelog-foreignkeys-0.3.0.xml">
+
+    <changeSet id="changelog-athz_access_info-foreignkey-0.3.0" author="eurotech">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="athz_access_info"/>
+                <tableExists tableName="act_account"/>
+            </and>
+            <and>
+                <tableExists tableName="athz_access_info"/>
+                <tableExists tableName="usr_user"/>
+            </and>
+        </preConditions>
+        <addForeignKeyConstraint constraintName="fk_athz_access_info_scopeId"
+                                 baseTableName="athz_access_info"
+                                 baseColumnNames="scope_id"
+                                 referencedTableName="act_account"
+                                 referencedColumnNames="id"
+                                 deleteCascade="true"/>
+        <addForeignKeyConstraint constraintName="fk_athz_access_info_userId"
+                                 baseTableName="athz_access_info"
+                                 baseColumnNames="user_id"
+                                 referencedTableName="usr_user"
+                                 referencedColumnNames="id"
+                                 deleteCascade="true"/>
+    </changeSet>
+
+</databaseChangeLog>

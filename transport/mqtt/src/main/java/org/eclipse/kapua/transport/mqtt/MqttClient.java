@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.transport.mqtt;
 
@@ -37,7 +36,7 @@ public class MqttClient {
     /**
      * The wrapped Paho client.
      */
-    private org.eclipse.paho.client.mqttv3.MqttClient pahoMqttClient = null;
+    private org.eclipse.paho.client.mqttv3.MqttClient pahoMqttClient;
 
     /**
      * List of all subscribed topics by the {@link MqttClient#pahoMqttClient}.

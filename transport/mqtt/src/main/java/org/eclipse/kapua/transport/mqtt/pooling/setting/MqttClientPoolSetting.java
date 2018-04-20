@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.transport.mqtt.pooling.setting;
 
@@ -29,11 +28,11 @@ public class MqttClientPoolSetting extends AbstractKapuaSetting<MqttClientPoolSe
     private static final String MQTT_CLIENT_POOL_CONFIG_RESOURCE = "mqtt-client-pool-setting.properties";
 
     /**
-     * Singleton instance of this {@link class}.
+     * Singleton instance of this {@link Class}.
      * 
      * @since 1.0.0
      */
-    private static final MqttClientPoolSetting instance = new MqttClientPoolSetting();
+    private static final MqttClientPoolSetting INSTANCE = new MqttClientPoolSetting();
 
     /**
      * Initialize the {@link AbstractKapuaSetting} with the {@link MqttClientPoolSetting#MQTT_CLIENT_POOL_CONFIG_RESOURCE} value.
@@ -51,6 +50,6 @@ public class MqttClientPoolSetting extends AbstractKapuaSetting<MqttClientPoolSe
      * @since 1.0.0
      */
     public static MqttClientPoolSetting getInstance() {
-        return instance;
+        return INSTANCE;
     }
 }

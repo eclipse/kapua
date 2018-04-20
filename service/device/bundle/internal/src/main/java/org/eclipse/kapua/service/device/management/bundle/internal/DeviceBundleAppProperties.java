@@ -8,29 +8,35 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.bundle.internal;
 
-import org.eclipse.kapua.service.device.management.KapuaAppProperties;
+import org.eclipse.kapua.service.device.management.message.KapuaAppProperties;
 
-public enum DeviceBundleAppProperties implements KapuaAppProperties
-{
-	APP_NAME("BUNDLE"),
-    APP_VERSION("1.0.0"),
-    ;
+/**
+ * Device bundle properties definition.
+ *
+ * @since 1.0
+ */
+public enum DeviceBundleAppProperties implements KapuaAppProperties {
+    /**
+     * Application name
+     */
+    APP_NAME("BUNDLE"),
+    /**
+     * Version
+     */
+    APP_VERSION("1.0.0"),;
 
     private String value;
 
-    DeviceBundleAppProperties(String value)
-    {
+    DeviceBundleAppProperties(String value) {
         this.value = value;
     }
 
     @Override
-    public String getValue()
-    {
+    public String getValue() {
         return value;
     }
-	
+
 }

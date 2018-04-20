@@ -8,12 +8,20 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.message.device.data;
 
 import org.eclipse.kapua.message.KapuaChannel;
+import org.eclipse.kapua.message.xml.MessageXmlRegistry;
 
-public interface KapuaDataChannel extends KapuaChannel
-{
+import javax.xml.bind.annotation.XmlType;
+
+/**
+ * Kapua data message channel object definition.
+ * 
+ * @since 1.0
+ *
+ */
+@XmlType(factoryClass = MessageXmlRegistry.class, factoryMethod = "newKapuaDataChannel")
+public interface KapuaDataChannel extends KapuaChannel {
 }

@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration;
 
@@ -43,53 +42,55 @@ import org.eclipse.kapua.model.id.KapuaId;
  * @since 1.0
  * 
  */
-public class ServiceConfigImpl extends AbstractKapuaUpdatableEntity implements ServiceConfig
-{
-    private static final long  serialVersionUID = 8699765898092343484L;
+public class ServiceConfigImpl extends AbstractKapuaUpdatableEntity implements ServiceConfig {
+
+    private static final long serialVersionUID = 8699765898092343484L;
 
     @XmlElement(name = "pid")
     @Basic
     @Column(name = "pid")
-    private String             pid;
+    private String pid;
 
     @XmlTransient
     @Basic
     @Column(name = "configurations")
-    protected String   configurations;
+    protected String configurations;
 
-    public ServiceConfigImpl()
-    {
+    /**
+     * Constructor
+     */
+    public ServiceConfigImpl() {
         super();
     }
 
-    public ServiceConfigImpl(KapuaId scopeId)
-    {
+    /**
+     * Constructor
+     * 
+     * @param scopeId
+     */
+    public ServiceConfigImpl(KapuaId scopeId) {
         super(scopeId);
     }
 
     @Override
-    public String getPid()
-    {
+    public String getPid() {
         return pid;
     }
 
     @Override
-    public void setPid(String pid)
-    {
+    public void setPid(String pid) {
         this.pid = pid;
     }
 
     @Override
     public Properties getConfigurations()
-        throws KapuaException
-    {
+            throws KapuaException {
         Properties props = new Properties();
         if (configurations != null) {
             try {
                 props.load(new StringReader(configurations));
-            }
-            catch (IOException e) {
-                KapuaException.internalError(e);
+            } catch (IOException e) {
+                throw KapuaException.internalError(e);
             }
         }
         return props;
@@ -97,16 +98,14 @@ public class ServiceConfigImpl extends AbstractKapuaUpdatableEntity implements S
 
     @Override
     public void setConfigurations(Properties props)
-        throws KapuaException
-    {
+            throws KapuaException {
         if (props != null) {
             try {
                 StringWriter writer = new StringWriter();
                 props.store(writer, null);
                 configurations = writer.toString();
-            }
-            catch (IOException e) {
-                KapuaException.internalError(e);
+            } catch (IOException e) {
+                throw KapuaException.internalError(e);
             }
         }
     }

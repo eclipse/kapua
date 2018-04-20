@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,48 +8,49 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
+
+import org.eclipse.kapua.service.device.call.kura.KuraMethod;
+import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.kapua.service.device.call.kura.KuraMethod;
-import org.eclipse.kapua.service.device.management.KapuaMethod;
-
 /**
  * Dictionary class to define actions translations between Kura domain to Kapua domain.<br>
  * For detail about action please refer to {@link KapuaMethod} and {@link KuraMethod}
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-public class MethodDictionaryKuraKapua
-{
+public class MethodDictionaryKuraKapua {
+
     /**
      * Translations dictionary map
      */
-    private static Map<KuraMethod, KapuaMethod> dictionary;
+    private final static Map<KuraMethod, KapuaMethod> DICTIONARY;
 
     static {
-        dictionary = new HashMap<>();
+        DICTIONARY = new HashMap<>(5);
 
-        dictionary.put(KuraMethod.GET, KapuaMethod.READ);
-        dictionary.put(KuraMethod.POST, KapuaMethod.CREATE);
-        dictionary.put(KuraMethod.PUT, KapuaMethod.WRITE);
-        dictionary.put(KuraMethod.DEL, KapuaMethod.DELETE);
-        dictionary.put(KuraMethod.EXEC, KapuaMethod.EXECUTE);
+        DICTIONARY.put(KuraMethod.GET, KapuaMethod.READ);
+        DICTIONARY.put(KuraMethod.POST, KapuaMethod.CREATE);
+        DICTIONARY.put(KuraMethod.PUT, KapuaMethod.WRITE);
+        DICTIONARY.put(KuraMethod.DEL, KapuaMethod.DELETE);
+        DICTIONARY.put(KuraMethod.EXEC, KapuaMethod.EXECUTE);
+    }
+
+    private MethodDictionaryKuraKapua() {
     }
 
     /**
      * Returns the action translation from Kura domain to Kapua domain
-     * 
+     *
      * @param kuraMethod
      * @return
      */
-    public static KapuaMethod get(KuraMethod kuraMethod)
-    {
-        return dictionary.get(kuraMethod);
+    public static KapuaMethod get(KuraMethod kuraMethod) {
+        return DICTIONARY.get(kuraMethod);
     }
 }

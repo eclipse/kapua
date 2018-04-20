@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,23 +11,29 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura;
 
+import org.eclipse.kapua.service.device.call.DeviceCallback;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
+
 import java.util.ArrayList;
 
-import org.eclipse.kapua.service.device.call.DeviceCallback;
-import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponseMessage;
+/**
+ * {@link DeviceCallback} {@link Kura} implementation.
+ *
+ * @since 1.0
+ */
+public class KuraDeviceResponseContainer extends ArrayList<KuraResponseMessage> implements DeviceCallback<KuraResponseMessage> {
 
-public class KuraDeviceResponseContainer extends ArrayList<KuraResponseMessage> implements DeviceCallback<KuraResponseMessage>
-{
     private static final long serialVersionUID = -6909761350290400843L;
 
-    public KuraDeviceResponseContainer()
-    {
+    /**
+     * Constructor
+     */
+    public KuraDeviceResponseContainer() {
         super();
     }
 
     @Override
-    public void responseReceived(KuraResponseMessage response)
-    {
+    public void responseReceived(KuraResponseMessage response) {
         synchronized (this) {
             add(response);
             notifyAll();
@@ -35,8 +41,7 @@ public class KuraDeviceResponseContainer extends ArrayList<KuraResponseMessage> 
     }
 
     @Override
-    public void timedOut()
-    {
+    public void timedOut() {
         synchronized (this) {
             notifyAll();
         }

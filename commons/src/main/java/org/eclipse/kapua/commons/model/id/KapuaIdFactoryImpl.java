@@ -11,14 +11,28 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.model.id;
 
+import java.math.BigInteger;
+
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdFactory;
 
+/**
+ * Kapua identifier factory reference implementation.
+ * 
+ * @since 1.0
+ *
+ */
+@KapuaProvider
 public class KapuaIdFactoryImpl implements KapuaIdFactory {
 
-	@Override
-	public KapuaId newKapuaId(String shortId) {
-		return KapuaEid.parseShortId(shortId);
-	}
+    @Override
+    public KapuaId newKapuaId(String shortId) {
+        return KapuaEid.parseCompactId(shortId);
+    }
 
+    @Override
+    public KapuaId newKapuaId(BigInteger bigInteger) {
+        return new KapuaEid(bigInteger);
+    }
 }

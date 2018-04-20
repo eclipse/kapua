@@ -1,0 +1,366 @@
+apiVersion: v1
+id: eclipse-kapua
+kind: Template
+name: eclipse-kapua
+metadata:
+  name: eclipse-kapua
+parameters:
+- name:           DOCKER_ACCOUNT
+  description:      The docker hub account name to pull from
+  value:            eclipse
+- name:           ELASTIC_SEARCH_MEMORY
+  descrption:       The minimum and maximun Java heap space for Elasticsearch
+  value:            '512m'
+- name:           IMAGE_VERSION
+  description:      The version of the image to use
+  value:            latest
+- name:           JAVA_OPTS_EXTRA
+  description:      Extra Java options
+  value:            ''
+- name:           JOLOKIA_PASSWORD
+  description:      The password used for the Jolokia endpoint authentication
+  generate:         expression
+  from:             '[a-zA-Z0-9]{15}'
+  required:         true
+- name:           JOLOKIA_USER
+  description:      The username used for the Jolokia endpoint authentication
+  value:            jolokia
+
+objects:
+
+# Config Maps (Hawkular)
+
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: hawkular-openshift-agent-java
+    labels:
+      name: hawkular-openshift-agent-java
+      hawkular-openshift-agent: jolokia-java
+  data:
+    hawkular-openshift-agent: |
+      endpoints:
+      - type: jolokia
+        protocol: https
+        port: 8778
+        path: /jolokia/
+        collection_interval: 15s
+        credentials:
+          username: ${JOLOKIA_USER}
+          password: ${JOLOKIA_PASSWORD}
+        tls:
+          skip_certificate_validation: true
+        metrics:
+        - id: generic.javaHeapUsed
+          name: "java.lang:type=Memory#HeapMemoryUsage#used"
+          tags:
+            kapuaComponent: generic
+            kapuaMetricType: javaMemoryUsage
+          type: gauge
+          description: Heap Memory Used
+          units: B
+
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: hawkular-openshift-agent-broker
+    labels:
+      name: hawkular-openshift-agent-broker
+      hawkular-openshift-agent: jolokia-broker
+  data:
+    hawkular-openshift-agent: |
+      endpoints:
+      - type: jolokia
+        protocol: https
+        port: 8778
+        path: /jolokia/
+        collection_interval: 15s
+        credentials:
+          username: ${JOLOKIA_USER}
+          password: ${JOLOKIA_PASSWORD}
+        tls:
+          skip_certificate_validation: true
+        metrics:
+        - id: broker.javaHeapUsed
+          name: "java.lang:type=Memory#HeapMemoryUsage#used"
+          tags:
+            kapuaComponent: broker
+            kapuaMetricType: javaMemoryUsage
+          type: gauge
+          description: Heap Memory Used
+          units: B
+        - id: broker.connectionCount
+          name: "org.apache.activemq:type=Broker,brokerName=kapua#CurrentConnectionsCount"
+          tags:
+            kapuaComponent: broker
+            kapuaMetricType: connectionCount
+          type: gauge
+          description: Current connection count
+        - id: broker.messagesReceived
+          name: "org.apache.activemq:type=Broker,brokerName=kapua#TotalEnqueueCount"
+          tags:
+            kapuaComponent: broker
+            kapuaMetricType: messagesReceived
+          type: counter
+          description: Total messages received by the broker
+
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: hawkular-openshift-agent-jetty
+    labels:
+      name: hawkular-openshift-agent-jetty
+      hawkular-openshift-agent: jolokia-jetty
+  data:
+    hawkular-openshift-agent: |
+      endpoints:
+      - type: jolokia
+        protocol: https
+        port: 8778
+        path: /jolokia/
+        collection_interval: 15s
+        credentials:
+          username: ${JOLOKIA_USER}
+          password: ${JOLOKIA_PASSWORD}
+        tls:
+          skip_certificate_validation: true
+        metrics:
+        - id: jetty.javaHeapUsed
+          name: "java.lang:type=Memory#HeapMemoryUsage#used"
+          tags:
+            kapuaComponent: jetty
+            kapuaMetricType: javaMemoryUsage
+          type: gauge
+          description: Heap Memory Used
+          units: B
+        - id: jetty.requestsDispatched
+          name: "org.eclipse.jetty.server.handler:type=statisticshandler,id=0#dispatched"
+          tags:
+            kapuaComponent: jetty
+            kapuaMetricType: requestsDispatched
+          type: counter
+          description: Number fo requests dispatched
+
+# Deployment configs
+
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    generation: 1
+    labels:
+      app: sql
+    name: sql
+  spec:
+    replicas: 1
+    selector:
+      app: sql
+      deploymentconfig: sql
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          app: sql
+          deploymentconfig: sql
+          hawkular-openshift-agent: jolokia-java
+      spec:
+        containers:
+        - env:
+          - name: H2_OPTS
+            value: -javaagent:/jolokia-jvm-agent.jar=port=8778,protocol=https,caCert=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt,clientPrincipal=cn=system:master-proxy,useSslClientAuthentication=true,extraClientCheck=true,host=0.0.0.0,discoveryEnabled=false,user=${JOLOKIA_USER},password=${JOLOKIA_PASSWORD}
+          - name: JAVA_OPTS
+            value: "-Xms1G -Xmx1G"
+          image: ${DOCKER_ACCOUNT}/kapua-sql:${IMAGE_VERSION}
+          imagePullPolicy: IfNotPresent
+          name: sql
+          ports:
+          - containerPort: 8778
+            name: jolokia
+          - containerPort: 3306
+          - containerPort: 8181
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 3306
+            timeoutSeconds: 1
+          volumeMounts:
+          - mountPath: /opt/h2-data
+            name: sql-data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: sql-data
+        - name: hawkular-openshift-agent
+          configMap:
+            name: hawkular-openshift-agent-java
+
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    generation: 1
+    labels:
+      app: events-broker
+    name: events-broker
+  spec:
+    replicas: 1
+    selector:
+      app: events-broker
+      deploymentconfig: events-broker
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          app: events-broker
+          deploymentconfig: events-broker
+          hawkular-openshift-agent: jolokia-events-broker
+      spec:
+        containers:
+        - image: enmasseproject/activemq-artemis:2.2.0-1
+          imagePullPolicy: IfNotPresent
+          name: events-broker
+          readinessProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 1
+            tcpSocket:
+              port: 5672
+          livenessProbe:
+            initialDelaySeconds: 20
+            periodSeconds: 9
+            timeoutSeconds: 1
+            tcpSocket:
+              port: 5672
+          env:
+          - name: ARTEMIS_CONFIGURATION
+            value: /run/secrets
+          volumeMounts:
+          - mountPath: /run/secrets
+            name: config
+          - mountPath: /maven/data
+            name: events-broker-volume-1
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: config
+          secret:
+            secretName: events-broker-conf
+        - name: events-broker-volume-1
+          emptyDir: {}
+
+
+
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    generation: 1
+    labels:
+      app: elasticsearch
+    name: elasticsearch
+  spec:
+    replicas: 1
+    selector:
+      app: elasticsearch
+      deploymentconfig: elasticsearch
+    template:
+      metadata:
+        labels:
+          app: elasticsearch
+          deploymentconfig: elasticsearch
+          hawkular-openshift-agent: jolokia-kapua
+      spec:
+        containers:
+        - env:
+          - name: ES_JAVA_OPTS
+            value: "-Xms${ELASTIC_SEARCH_MEMORY} -Xmx${ELASTIC_SEARCH_MEMORY}"
+          image: elasticsearch:5.4
+          command:
+            - 'elasticsearch'
+            - '-Etransport.host=_site_'
+            - '-Ecluster.name=kapua-datastore'
+            - '-Ediscovery.type=single-node'
+          imagePullPolicy: Always
+          name: elasticsearch
+          ports:
+          - containerPort: 9200
+          - containerPort: 9300
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 9200
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+            periodSeconds: 10
+          volumeMounts:
+          - mountPath: /usr/share/elasticsearch/data
+            name: elasticsearch-data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: elasticsearch-data
+          emptyDir: {}
+
+# Services
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: sql
+    labels:
+      app: sql
+  spec:
+    ports:
+    - name: h2-sql
+      protocol: TCP
+      port: 3306
+      targetPort: 3306
+    - name: h2-web
+      protocol: TCP
+      port: 8181
+      targetPort: 8181
+    selector:
+      app: sql
+      deploymentconfig: sql
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: events-broker
+    labels:
+      app: events-broker
+  spec:
+    ports:
+    - port: 5672
+      protocol: TCP
+      targetPort: 5672
+    selector:
+      app: events-broker
+      deploymentconfig: events-broker
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: elasticsearch
+    labels:
+      app: elasticsearch
+  spec:
+    ports:
+    - name: http
+      protocol: TCP
+      port: 9200
+      targetPort: 9200
+    - name: transport
+      port: 9300
+      targetPort: 9300
+    selector:
+      app: elasticsearch
+      deploymentconfig: elasticsearch
+
+

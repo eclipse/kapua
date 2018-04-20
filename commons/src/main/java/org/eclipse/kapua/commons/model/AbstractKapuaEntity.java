@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.commons.model;
 
@@ -27,100 +26,141 @@ import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.generator.id.IdGeneratorService;
 
+/**
+ * {@link KapuaEntity} reference abstract implementation.
+ * 
+ * @see KapuaEntity
+ * 
+ * @since 1.0.0
+ *
+ */
 @SuppressWarnings("serial")
 @MappedSuperclass
 @Access(AccessType.FIELD)
-public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable
-{
+public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
+
     @EmbeddedId
     @AttributeOverrides({
-                          @AttributeOverride(name = "eid", column = @Column(name = "id", nullable = false, updatable = false))
+            @AttributeOverride(name = "eid", column = @Column(name = "id", nullable = false, updatable = false))
     })
     protected KapuaEid id;
 
     @Embedded
     @AttributeOverrides({
-                          @AttributeOverride(name = "eid", column = @Column(name = "scope_id", nullable = false, updatable = false))
+            @AttributeOverride(name = "eid", column = @Column(name = "scope_id", nullable = false, updatable = false))
     })
     protected KapuaEid scopeId;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_on", nullable = false)
-    protected Date     createdOn;
+    @Column(name = "created_on", nullable = false, updatable = false)
+    protected Date createdOn;
 
     @Embedded
     @AttributeOverrides({
-                          @AttributeOverride(name = "eid", column = @Column(name = "created_by", nullable = false, updatable = false))
+            @AttributeOverride(name = "eid", column = @Column(name = "created_by", nullable = false, updatable = false))
     })
     protected KapuaEid createdBy;
 
-    protected AbstractKapuaEntity()
-    {
+    /**
+     * Protected default constructor.<br>
+     * Required by JPA.
+     * 
+     * @since 1.0.0
+     */
+    protected AbstractKapuaEntity() {
+        super();
     }
 
-    public AbstractKapuaEntity(KapuaId scopeId)
-    {
+    /**
+     * Constructor.
+     * 
+     * @param scopeId
+     *            The scope {@link KapuaId} to set for this {@link KapuaEntity}.
+     * @since 1.0.0
+     */
+    public AbstractKapuaEntity(KapuaId scopeId) {
         this();
-        if (scopeId != null) {
-            this.scopeId = new KapuaEid(scopeId.getId());
-        }
+
+        setScopeId(scopeId);
     }
 
-    public KapuaId getScopeId()
-    {
-        return scopeId;
+    /**
+     * Constructor.
+     */
+    protected AbstractKapuaEntity(KapuaEntity entity) {
+        this();
+
+        setId(entity.getId());
+        setScopeId(entity.getScopeId());
+        setCreatedBy(entity.getCreatedBy());
+        setCreatedOn(entity.getCreatedOn());
     }
 
-    public KapuaId getId()
-    {
+    @Override
+    public KapuaId getId() {
         return id;
     }
 
-    public void setId(KapuaId id)
-    {
-    	this.id = (KapuaEid)id;
+    @Override
+    public void setId(KapuaId id) {
+        this.id = KapuaEid.parseKapuaId(id);
     }
 
-    public void setScopeId(KapuaId scopeId)
-    {
-        this.scopeId = (KapuaEid)scopeId;
+    @Override
+    public KapuaId getScopeId() {
+        return scopeId;
     }
 
-    public Date getCreatedOn()
-    {
+    @Override
+    public void setScopeId(KapuaId scopeId) {
+        this.scopeId = KapuaEid.parseKapuaId(scopeId);
+    }
+
+    @Override
+    public Date getCreatedOn() {
         return createdOn;
     }
 
-    public KapuaId getCreatedBy()
-    {
-        return createdBy;
-    }
-
-    @PrePersist
-    protected void prePersistsAction()
-        throws KapuaException
-    {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        IdGeneratorService idGenerator = locator.getService(IdGeneratorService.class);
-
-        this.id = new KapuaEid(idGenerator.generate().getId());
-        this.createdBy = new KapuaEid(KapuaSecurityUtils.getSession().getUserId().getId());
-        this.createdOn = new Date();
-    }
-    
+    /**
+     * Sets the created on date
+     * 
+     * @param createdOn
+     */
     public void setCreatedOn(Date createdOn) {
         this.createdOn = createdOn;
     }
-    
-    public void setCreatedBy(KapuaId createdBy) {
-        this.createdBy = (KapuaEid)createdBy;
+
+    @Override
+    public KapuaId getCreatedBy() {
+        return createdBy;
     }
+
+    /**
+     * Sets the created by identifier
+     * 
+     * @param createdBy
+     */
+    public void setCreatedBy(KapuaId createdBy) {
+        this.createdBy = KapuaEid.parseKapuaId(createdBy);
+    }
+
+    /**
+     * Before create action sets the {@link KapuaEntity} {@link #id}, {@link #createdBy} and {@link #createdOn}.
+     * 
+     * @since 1.0.0
+     */
+    @PrePersist
+    protected void prePersistsAction() {
+        setId(new KapuaEid(IdGenerator.generate()));
+
+        setCreatedBy(KapuaSecurityUtils.getSession().getUserId());
+        setCreatedOn(new Date());
+    }
+
 }

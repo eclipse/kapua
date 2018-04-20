@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
@@ -24,33 +23,33 @@ import org.eclipse.kapua.KapuaException;
  * @since 1.0
  * 
  */
-public class KapuaAccountException extends KapuaException 
-{
-	private static final long serialVersionUID = 6422745329878392484L;
+public class KapuaAccountException extends KapuaException {
 
-	private static final String KAPUA_ERROR_MESSAGES  = "kapua-account-service-error-messages";
+    private static final long serialVersionUID = 6422745329878392484L;
 
-	/**
-	 * Builds a new KapuaException instance based on the supplied KapuaErrorCode.
-	 * 
-	 * @param code
-	 */
-	public KapuaAccountException(KapuaAccountErrorCodes code) {
-		super(code);
-	}
+    private static final String KAPUA_ERROR_MESSAGES = "kapua-account-service-error-messages";
 
-	/**
-	 * Builds a new KapuaException instance based on the supplied KapuaErrorCode 
-	 * and optional arguments for the associated exception message.
-	 * 
-	 * @param code
-	 * @param arguments
-	 */
-	public KapuaAccountException(KapuaAccountErrorCodes code, Object... arguments) {
-		super(code, arguments);
-	}
+    /**
+     * Builds a new KapuaException instance based on the supplied KapuaErrorCode.
+     * 
+     * @param code
+     */
+    public KapuaAccountException(KapuaAccountErrorCodes code) {
+        super(code);
+    }
 
-	/**
+    /**
+     * Builds a new KapuaException instance based on the supplied KapuaErrorCode
+     * and optional arguments for the associated exception message.
+     * 
+     * @param code
+     * @param arguments
+     */
+    public KapuaAccountException(KapuaAccountErrorCodes code, Object... arguments) {
+        super(code, arguments);
+    }
+
+    /**
      * Builds a new KapuaAccountException instance based on the supplied KapuaAccountErrorCode,
      * an Throwable cause, and optional arguments for the associated exception message.
      * 
@@ -58,23 +57,23 @@ public class KapuaAccountException extends KapuaException
      * @param cause
      * @param arguments
      */
-	public KapuaAccountException(KapuaAccountErrorCodes code, Throwable cause, Object... arguments) {
-		super(code, cause, arguments);
-	}
+    public KapuaAccountException(KapuaAccountErrorCodes code, Throwable cause, Object... arguments) {
+        super(code, cause, arguments);
+    }
 
-	/**
-	 * Factory method to build an KapuaAccountException with the KapuaAccountErrorCode.INTERNAL_ERROR, 
-	 * and optional arguments for the associated exception message.
-	 * 
-	 * @param message
-	 * @return
-	 */
-	public static KapuaAccountException internalError(String message) {
-		return new KapuaAccountException(KapuaAccountErrorCodes.INTERNAL_ERROR, null, message);
-	}
+    /**
+     * Factory method to build an KapuaAccountException with the KapuaAccountErrorCode.INTERNAL_ERROR,
+     * and optional arguments for the associated exception message.
+     * 
+     * @param message
+     * @return
+     */
+    public static KapuaAccountException internalError(String message) {
+        return new KapuaAccountException(KapuaAccountErrorCodes.INTERNAL_ERROR, null, message);
+    }
 
-	@Override
-	protected String getKapuaErrorMessagesBundle() {
-		return KAPUA_ERROR_MESSAGES; 
-	}
+    @Override
+    protected String getKapuaErrorMessagesBundle() {
+        return KAPUA_ERROR_MESSAGES;
+    }
 }
