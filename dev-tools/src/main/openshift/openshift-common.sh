@@ -10,12 +10,25 @@
 #
 ###############################################################################
 
-export OPENSHIFT_PROJECT_NAME="eclipse-kapua"
-export OPENSHIFT_DIR=/tmp/openshift
+set -e
+
+: OPENSHIFT_DIR=${OPENSHIFT_DIR:='/var/tmp/openshift'}
 
 if which oc &>/dev/null; then
-  echo Using "oc" from path
-  export OC=oc
+    export OC=oc
 else
-  export OC=${OPENSHIFT_DIR}/openshift-origin-server-v1.4.1+3f9807a-linux-64bit/oc
+    export OC=${OC:="${OPENSHIFT_DIR}/oc"}
 fi
+
+: OPENSHIFT_HOST=${OPENSHIFT_HOST:='localhost:8443'}
+: OPENSHIFT_USER=${OPENSHIFT_USER:='admin'}
+: OPENSHIFT_PASS=${OPENSHIFT_PASS:='admin'}
+: OPENSHIFT_LOGIN_OPTS=${OPENSHIFT_LOGIN_OPTS:=''}
+
+: OPENSHIFT_PROJECT_NAME=${OPENSHIFT_PROJECT_NAME:='eclipse-kapua'}
+
+# print error and exit when necessary
+die() {
+    printf "$@" "\n" 1>&2 ;
+    exit 1;
+}
