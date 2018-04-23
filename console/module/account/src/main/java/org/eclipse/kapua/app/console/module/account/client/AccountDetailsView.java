@@ -81,6 +81,7 @@ public class AccountDetailsView extends AbstractView {
         tabPanel.setBorders(false);
         tabPanel.setBodyBorder(false);
         AccountTabConfiguration settingsTabItem = new AccountTabConfiguration(currentSession, this);
+        settingsTabItem.removeElements();
         settingsTabItem.setEntity(selectedAccount);
 
         AccountDetailsTabDescription accountDescriptionTab = new AccountDetailsTabDescription(currentSession);
