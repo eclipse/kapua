@@ -13,6 +13,9 @@ package org.eclipse.kapua.app.console.module.api.client.util;
 
 import java.util.Date;
 
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 
 public class DateUtils {
@@ -20,7 +23,7 @@ public class DateUtils {
 //    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
     private static final String NONE = "None";
-    private static final String FORMAT = "dd MMM yyyy HH:mm:ss ZZZZ";
+    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
     private DateUtils() {
     }
@@ -33,7 +36,7 @@ public class DateUtils {
             return NONE;
         }
 
-        return DateTimeFormat.getFormat(FORMAT).format(d);
+        return DateTimeFormat.getFormat(MSGS.formatDateTime()).format(d);
     }
 
     public static int getYear(Date date) {

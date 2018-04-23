@@ -30,7 +30,6 @@ public final class KapuaDateUtils {
     }
 
     public static final String ISO_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"; // example 24/01/2017T11:22:10.999Z
-    public static final String FORMAT = "dd MMM yyyy HH:mm:ss ZZZZ";
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter
             .ofPattern(ISO_DATE_PATTERN)
