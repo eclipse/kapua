@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -25,6 +25,7 @@ public class GwtDeviceCreator extends KapuaBaseModel implements Serializable {
     private String groupId;
     private String clientId;
     private String displayName;
+    private String deviceStatus;
 
     // Security options
     private GwtConnectionUserCouplingMode gwtCredentialsTight;
@@ -90,6 +91,14 @@ public class GwtDeviceCreator extends KapuaBaseModel implements Serializable {
 
     public void setGwtPreferredUserId(String gwtPreferredUserId) {
         this.gwtPreferredUserId = gwtPreferredUserId;
+    }
+
+    public String getDeviceStatus() {
+        return deviceStatus;
+    }
+
+    public void setDeviceStatus(String deviceStatus) {
+        this.deviceStatus = deviceStatus;
     }
 
     public String getCustomAttribute1() {

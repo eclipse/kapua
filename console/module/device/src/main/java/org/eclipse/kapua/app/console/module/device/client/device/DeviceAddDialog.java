@@ -110,7 +110,6 @@ public class DeviceAddDialog extends EntityAddEditDialog {
 
         // hide fields used for edit
         clientIdLabel.hide();
-        statusCombo.hide();
     }
 
     protected void generateBody() {
@@ -161,8 +160,9 @@ public class DeviceAddDialog extends EntityAddEditDialog {
 
         // Device Status
         statusCombo = new SimpleComboBox<GwtDeviceQueryPredicates.GwtDeviceStatus>();
+        statusCombo.setAllowBlank(false);
         statusCombo.setName("status");
-        statusCombo.setFieldLabel(DEVICE_MSGS.deviceFormStatus());
+        statusCombo.setFieldLabel("* " + DEVICE_MSGS.deviceFormStatus());
         statusCombo.setEditable(false);
         statusCombo.setTriggerAction(TriggerAction.ALL);
 
@@ -271,6 +271,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
             gwtDeviceCreator.setGroupId(groupCombo.getValue().getId());
         }
         gwtDeviceCreator.setDisplayName(displayNameField.getValue());
+        gwtDeviceCreator.setDeviceStatus(statusCombo.getSimpleValue().name());
 
         // Custom attributes
         gwtDeviceCreator.setCustomAttribute1(KapuaSafeHtmlUtils.htmlUnescape(customAttribute1Field.getValue()));
