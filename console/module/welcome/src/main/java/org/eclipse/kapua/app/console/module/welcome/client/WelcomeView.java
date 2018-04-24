@@ -12,6 +12,7 @@
 package org.eclipse.kapua.app.console.module.welcome.client;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.VerticalAlignment;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Text;
@@ -60,6 +61,7 @@ public class WelcomeView extends AbstractView {
         centerPanel.setBodyBorder(false);
         centerPanel.setBorders(false);
         centerPanel.setHeaderVisible(false);
+        centerPanel.setScrollMode(Scroll.AUTO);
 
         centerPanel.add(kapuaLogo, new TableData());
         centerPanel.add(welcomeMessage, new TableData(HorizontalAlignment.CENTER, VerticalAlignment.TOP));
