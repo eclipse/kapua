@@ -363,6 +363,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
             DeviceCreator deviceCreator = deviceFactory.newCreator(scopeId, gwtDeviceCreator.getClientId());
             deviceCreator.setDisplayName(gwtDeviceCreator.getDisplayName());
             deviceCreator.setGroupId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtDeviceCreator.getGroupId()));
+            deviceCreator.setStatus((DeviceStatus.valueOf(gwtDeviceCreator.getDeviceStatus())));
 
             // FIXME One day it will be specified from the form. In the meantime, defaults to LOOSE
             // deviceCreator.setCredentialsMode(DeviceCredentialsMode.LOOSE);
