@@ -46,4 +46,6 @@ public interface KapuaEntityPredicates extends KapuaPredicates {
      */
     String CREATED_BY = "createdBy";
 
+    String MODIFIED_ON = "modifiedOn";
+
 }
