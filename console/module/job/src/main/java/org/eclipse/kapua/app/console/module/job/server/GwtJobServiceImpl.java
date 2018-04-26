@@ -255,10 +255,10 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
             if (job != null) {
                 gwtJobDescription.add(new GwtGroupedNVPair("jobInfo", "jobName", job.getName()));
                 gwtJobDescription.add(new GwtGroupedNVPair("jobInfo", "jobDescription", job.getDescription()));
-                gwtJobDescription.add(new GwtGroupedNVPair("jobInfo", "jobCreatedOn", job.getCreatedOn()));
-                gwtJobDescription.add(new GwtGroupedNVPair("jobInfo", "jobCreatedBy", createdUser != null ? createdUser.getName() : null));
-                gwtJobDescription.add(new GwtGroupedNVPair("jobInfo", "jobModifiedOn", job.getModifiedOn()));
-                gwtJobDescription.add(new GwtGroupedNVPair("jobInfo", "jobModifiedBy", modifiedUser != null ? modifiedUser.getName() : null));
+                gwtJobDescription.add(new GwtGroupedNVPair("entityInfo", "jobCreatedOn", job.getCreatedOn()));
+                gwtJobDescription.add(new GwtGroupedNVPair("entityInfo", "jobCreatedBy", createdUser != null ? createdUser.getName() : null));
+                gwtJobDescription.add(new GwtGroupedNVPair("entityInfo", "jobModifiedOn", job.getModifiedOn()));
+                gwtJobDescription.add(new GwtGroupedNVPair("entityInfo", "jobModifiedBy", modifiedUser != null ? modifiedUser.getName() : null));
             }
         } catch (Exception e) {
             KapuaExceptionHandler.handle(e);
