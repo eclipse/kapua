@@ -83,8 +83,8 @@ public class UserAddDialog extends EntityAddEditDialog {
         userFormPanel.setHeaderVisible(false);
         userFormPanel.setPadding(0);
 
-        FormData subFieldsetFormData = new FormData("-11");
-        FormData subFormData = new FormData("0");
+        FormData subFieldsetFormData = new FormData();
+        FormData subFormData = new FormData();
 
         //
         // User info tab
