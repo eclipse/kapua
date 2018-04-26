@@ -67,7 +67,7 @@ public class AccountDetailsView extends AbstractView {
         bodyLayoutContainer.setLayout(new BorderLayout());
         bodyLayoutContainer.setScrollMode(Scroll.AUTO);
         bodyLayoutContainer.setStyleAttribute("background-color", "#F0F0F0");
-        bodyLayoutContainer.setStyleAttribute("padding", "0px");
+        bodyLayoutContainer.setStyleAttribute("padding", "2px 0px 0px 0px");
 
         LayoutContainer resultContainer = new LayoutContainer(new BorderLayout());
         resultContainer.setBorders(false);
