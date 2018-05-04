@@ -120,7 +120,6 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
 
     private void showUnlockDialog(GwtCredential selectedCredential) {
         CredentialUnlockDialog dialog = new CredentialUnlockDialog(selectedCredential);
-        thisToolbar.disable();
         dialog.addListener(Events.Hide, getHideDialogListener());
         dialog.show();
     }
