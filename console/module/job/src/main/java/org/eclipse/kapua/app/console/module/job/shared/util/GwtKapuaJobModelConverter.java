@@ -249,11 +249,9 @@ public class GwtKapuaJobModelConverter {
         String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? TriggerPredicates.ENTITY_ID : loadConfig.getSortField();
         if (sortField.equals("triggerName")) {
             sortField = TriggerPredicates.TRIGGER_NAME;
-        }
-        if (sortField.equals("startsOnFormatted")) {
+        } else if (sortField.equals("startsOnFormatted")) {
             sortField = TriggerPredicates.STARTS_ON;
-        }
-        if (sortField.equals("endsOnFormatted")) {
+        } else if (sortField.equals("endsOnFormatted")) {
             sortField = TriggerPredicates.ENDS_ON;
         }
         SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
