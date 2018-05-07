@@ -80,6 +80,14 @@ public class GwtRolePermission extends GwtEntityModel {
         set("targetScopeId", targetScopeId == null ? "ALL" : targetScopeId);
     }
 
+    public String getTargetScopeIdByName() {
+        return get("targetScopeIdByName");
+    }
+
+    public void setTargetScopeIdByName(String targetScopeIdByName) {
+        set("targetScopeIdByName", targetScopeIdByName == null ? "ALL" : targetScopeIdByName);
+    }
+
     /**
      * @return the group id of this permission
      * @since 1.0.0
