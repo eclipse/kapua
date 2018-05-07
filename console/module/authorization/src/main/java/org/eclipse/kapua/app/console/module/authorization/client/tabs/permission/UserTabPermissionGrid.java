@@ -92,7 +92,7 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("permissionTargetScopeIdByName", PERMISSION_MSGS.gridAccessRoleColumnHeaderTargetScopeId(), 200);
+        columnConfig = new ColumnConfig("groupName", USR_MSGS.gridAccessRoleColumnHeaderGroupName(), 200);
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
