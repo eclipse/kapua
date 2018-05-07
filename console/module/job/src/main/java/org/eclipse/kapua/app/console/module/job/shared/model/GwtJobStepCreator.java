@@ -20,7 +20,7 @@ public class GwtJobStepCreator extends GwtEntityCreator {
     private String jobName;
     private String jobDescription;
     private String jobId;
-    private int stepIndex;
+    private Integer stepIndex;
     private String jobStepDefinitionId;
     private List<GwtJobStepProperty> properties;
 
@@ -48,11 +48,11 @@ public class GwtJobStepCreator extends GwtEntityCreator {
         this.jobId = jobId;
     }
 
-    public int getStepIndex() {
+    public Integer getStepIndex() {
         return stepIndex;
     }
 
-    public void setStepIndex(int stepIndex) {
+    public void setStepIndex(Integer stepIndex) {
         this.stepIndex = stepIndex;
     }
 

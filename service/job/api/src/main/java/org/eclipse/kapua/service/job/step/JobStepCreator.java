@@ -40,9 +40,9 @@ public interface JobStepCreator extends KapuaNamedEntityCreator<JobStep> {
 
     void setJobId(KapuaId jobId);
 
-    int getStepIndex();
+    Integer getStepIndex();
 
-    void setStepIndex(int stepIndex);
+    void setStepIndex(Integer stepIndex);
 
     KapuaId getJobStepDefinitionId();
 

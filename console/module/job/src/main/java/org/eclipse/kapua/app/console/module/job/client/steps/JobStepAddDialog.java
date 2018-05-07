@@ -28,7 +28,6 @@ import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
@@ -61,8 +60,6 @@ public class JobStepAddDialog extends EntityAddEditDialog {
     protected static final String KAPUA_ID_CLASS_NAME = "org.eclipse.kapua.model.id.KapuaId";
 
     private final String jobId;
-
-    protected int jobStepIndex;
 
     protected final TextField<String> jobStepName;
     protected final KapuaTextField<String> jobStepDescription;
@@ -158,7 +155,6 @@ public class JobStepAddDialog extends EntityAddEditDialog {
         gwtJobStepCreator.setJobDescription(jobStepDescription.getValue());
         gwtJobStepCreator.setJobId(jobId);
         gwtJobStepCreator.setJobStepDefinitionId(jobStepDefinitionCombo.getValue().getId());
-        gwtJobStepCreator.setStepIndex(jobStepIndex);
         gwtJobStepCreator.setProperties(readStepProperties());
 
         JOB_STEP_SERVICE.create(xsrfToken, gwtJobStepCreator, new AsyncCallback<GwtJobStep>() {
@@ -251,23 +247,6 @@ public class JobStepAddDialog extends EntityAddEditDialog {
         }
 
         jobStepPropertiesPanel.layout(true);
-    }
-
-    @Override
-    protected void onRender(Element parent, int pos) {
-        super.onRender(parent, pos);
-        JOB_STEP_SERVICE.getFirstFreeStepIndex(currentSession.getSelectedAccountId(), jobId, new AsyncCallback<Integer>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-
-            }
-
-            @Override
-            public void onSuccess(Integer result) {
-                jobStepIndex = result;
-            }
-        });
     }
 
     protected List<GwtJobStepProperty> readStepProperties() {
