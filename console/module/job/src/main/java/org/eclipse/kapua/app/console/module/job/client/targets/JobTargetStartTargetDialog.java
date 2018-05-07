@@ -70,7 +70,7 @@ public class JobTargetStartTargetDialog extends SimpleDialog {
 
     @Override
     public String getHeaderMessage() {
-        return JOB_MSGS.jobStartTargetDialogHeader(gwtJob.getJobName(), gwtJobTarget.getId());
+        return JOB_MSGS.jobStartTargetDialogHeader(gwtJob.getJobName(), gwtJobTarget.getClientId());
     }
 
     @Override
