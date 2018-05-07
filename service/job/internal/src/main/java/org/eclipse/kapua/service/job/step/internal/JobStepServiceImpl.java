@@ -13,8 +13,10 @@ package org.eclipse.kapua.service.job.step.internal;
 
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.KapuaEntityUniquenessException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -30,6 +32,7 @@ import org.eclipse.kapua.service.job.internal.JobEntityManagerFactory;
 import org.eclipse.kapua.service.job.step.JobStep;
 import org.eclipse.kapua.service.job.step.JobStepCreator;
 import org.eclipse.kapua.service.job.step.JobStepFactory;
+import org.eclipse.kapua.service.job.step.JobStepIndex;
 import org.eclipse.kapua.service.job.step.JobStepListResult;
 import org.eclipse.kapua.service.job.step.JobStepPredicates;
 import org.eclipse.kapua.service.job.step.JobStepQuery;
@@ -37,6 +40,11 @@ import org.eclipse.kapua.service.job.step.JobStepService;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
+
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * {@link JobStepService} implementation
@@ -102,6 +110,36 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         if (count(query) > 0) {
             throw new KapuaDuplicateNameException(jobStepCreator.getName());
+        }
+
+        //
+        // Check step index
+        if (jobStepCreator.getStepIndex() == null) {
+            query.setPredicate(new AttributePredicateImpl<>(JobStepPredicates.JOB_ID, jobStepCreator.getJobId()));
+            query.setSortCriteria(new FieldSortCriteria(JobStepPredicates.STEP_INDEX, FieldSortCriteria.SortOrder.DESCENDING));
+            query.setLimit(1);
+
+            JobStepListResult jobStepListResult = query(query);
+            JobStep lastJobStep = jobStepListResult.getFirstItem();
+
+            jobStepCreator.setStepIndex(lastJobStep != null ? lastJobStep.getStepIndex() + 1 : JobStepIndex.FIRST);
+        } else {
+            query.setPredicate(
+                    new AndPredicateImpl(
+                            new AttributePredicateImpl<>(JobStepPredicates.JOB_ID, jobStepCreator.getJobId()),
+                            new AttributePredicateImpl<>(JobStepPredicates.STEP_INDEX, jobStepCreator.getStepIndex())
+                    )
+            );
+
+            if (count(query) > 0) {
+                List<Map.Entry<String, Object>> uniquesFieldValues = new ArrayList<>();
+
+                uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(JobStepPredicates.SCOPE_ID, jobStepCreator.getScopeId()));
+                uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(JobStepPredicates.JOB_ID, jobStepCreator.getJobId()));
+                uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(JobStepPredicates.STEP_INDEX, jobStepCreator.getStepIndex()));
+
+                throw new KapuaEntityUniquenessException(JobStep.TYPE, uniquesFieldValues);
+            }
         }
 
         //

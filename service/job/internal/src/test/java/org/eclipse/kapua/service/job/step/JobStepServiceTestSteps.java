@@ -30,10 +30,10 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.job.internal.JobEntityManagerFactory;
 import org.eclipse.kapua.service.job.JobJAXBContextProvider;
 import org.eclipse.kapua.service.job.common.CommonData;
 import org.eclipse.kapua.service.job.internal.JobData;
+import org.eclipse.kapua.service.job.internal.JobEntityManagerFactory;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionFactory;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
@@ -45,7 +45,6 @@ import org.eclipse.kapua.service.job.step.internal.JobStepServiceImpl;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.test.MockedLocator;
 import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
-
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -175,7 +174,7 @@ public class JobStepServiceTestSteps extends AbstractKapuaSteps {
         stepData.stepCreator.setJobStepDefinitionId(stepDefinitionData.currentStepDefinitionId);
 
         List<JobStepProperty> tmpPropLst = new ArrayList<>();
-        for(CucStepProperty prop : list) {
+        for (CucStepProperty prop : list) {
             tmpPropLst.add(stepFactory.newStepProperty(prop.getName(), prop.getType(), prop.getValue()));
         }
         stepData.stepCreator.setJobStepProperties(tmpPropLst);
@@ -270,7 +269,7 @@ public class JobStepServiceTestSteps extends AbstractKapuaSteps {
         try {
             commonData.primeException();
             stepService.delete(stepData.step.getScopeId(), stepData.step.getId());
-        } catch(KapuaException ex) {
+        } catch (KapuaException ex) {
             commonData.verifyException(ex);
         }
     }
@@ -282,7 +281,7 @@ public class JobStepServiceTestSteps extends AbstractKapuaSteps {
         assertEquals(stepData.stepCreator.getJobStepDefinitionId(), stepData.step.getJobStepDefinitionId());
         assertEquals(stepData.stepCreator.getName(), stepData.step.getName());
         assertEquals(stepData.stepCreator.getDescription(), stepData.step.getDescription());
-        assertEquals(stepData.stepCreator.getStepIndex(), stepData.step.getStepIndex());
+        assertEquals(stepData.stepCreator.getStepIndex(), (Integer) stepData.step.getStepIndex());
         assertEquals(stepData.stepCreator.getStepProperties().size(), stepData.step.getStepProperties().size());
     }
 
@@ -301,9 +300,9 @@ public class JobStepServiceTestSteps extends AbstractKapuaSteps {
         assertNotNull(stepFactory.newStepProperty("TestName", "TestType", "TestValue"));
     }
 
-// ************************************************************************************
-// * Private helper functions                                                         *
-// ************************************************************************************
+    // ************************************************************************************
+    // * Private helper functions                                                         *
+    // ************************************************************************************
 
     private JobStepCreator prepareDefaultCreator() {
 

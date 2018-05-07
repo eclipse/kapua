@@ -39,7 +39,7 @@ public class JobStepCreatorImpl extends AbstractKapuaNamedEntityCreator<JobStep>
 
     private String description;
     private KapuaId jobId;
-    private int stepIndex;
+    private Integer stepIndex;
     private KapuaId jobStepDefinitionId;
     private List<JobStepProperty> jobStepProperty;
 
@@ -64,12 +64,12 @@ public class JobStepCreatorImpl extends AbstractKapuaNamedEntityCreator<JobStep>
     }
 
     @Override
-    public int getStepIndex() {
+    public Integer getStepIndex() {
         return stepIndex;
     }
 
     @Override
-    public void setStepIndex(int stepIndex) {
+    public void setStepIndex(Integer stepIndex) {
         this.stepIndex = stepIndex;
     }
 
