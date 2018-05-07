@@ -128,6 +128,7 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
             try {
 
                 KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeShortId);
+                KapuaLocator locator = KapuaLocator.getInstance();
                 GroupService groupService = locator.getService(GroupService.class);
                 KapuaId userId = GwtKapuaCommonsModelConverter.convertKapuaId(userShortId);
 

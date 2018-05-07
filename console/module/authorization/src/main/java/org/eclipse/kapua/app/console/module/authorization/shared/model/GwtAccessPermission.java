@@ -73,14 +73,14 @@ public class GwtAccessPermission extends GwtUpdatableEntityModel {
         set("permissionForwardable", forwardable);
     }
 
-    }
-
     public String getGroupName() {
         return get("groupName");
     }
 
     public void setGroupName(String groupName) {
         set("groupName", groupName);
+    }
+
     /**
      * Returns the string representation for this {@link GwtPermission} in the following format:
      * <p>
