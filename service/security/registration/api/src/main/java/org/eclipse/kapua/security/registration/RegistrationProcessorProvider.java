@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Red Hat Inc and others.
+ * Copyright (c) 2017, 2018 Red Hat Inc and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Red Hat Inc - initial API and implementation
+ *     Eurotech
  *******************************************************************************/
 package org.eclipse.kapua.security.registration;
 
@@ -35,8 +36,8 @@ public interface RegistrationProcessorProvider {
      * <b>Note:</b> The caller takes ownership of the returned resources and must close them
      * properly once they are no longer used.
      * </p>
-     * 
+     *
      * @return A collection of processors provided by this provider
      */
-    public Collection<? extends RegistrationProcessor> createAll();
+    Collection<? extends RegistrationProcessor> createAll();
 }

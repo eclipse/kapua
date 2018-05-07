@@ -16,26 +16,25 @@ import org.eclipse.kapua.model.id.KapuaId;
 
 /**
  * Account factory service definition.
- * 
+ *
  * @since 1.0
- * 
  */
 public interface AccountFactory extends KapuaEntityFactory<Account, AccountCreator, AccountQuery, AccountListResult> {
 
     /**
      * Creates a new {@link AccountCreator} for the specified name
-     * 
+     *
      * @param scopeId
      * @param name
      * @return
      */
-    public AccountCreator newCreator(KapuaId scopeId, String name);
+    AccountCreator newCreator(KapuaId scopeId, String name);
 
     /**
      * Creates a new organization entity
-     * 
+     *
      * @return
      */
-    public Organization newOrganization();
+    Organization newOrganization();
 
 }

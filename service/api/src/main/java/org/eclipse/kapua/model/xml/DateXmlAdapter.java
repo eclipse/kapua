@@ -11,27 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.xml;
 
+import javax.xml.bind.DatatypeConverter;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
-
-import javax.xml.bind.DatatypeConverter;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 public class DateXmlAdapter extends XmlAdapter<String, Date> {
 
     public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
     public static final String TIME_ZONE_UTC = "UTC";
-
-    @Override
-    public Date unmarshal(String v) {
-        if (v == null || v.isEmpty()) {
-            return null;
-        }
-
-        return DatatypeConverter.parseDateTime(v).getTime();
-    }
 
     @Override
     public String marshal(Date v) throws Exception {
@@ -42,5 +32,14 @@ public class DateXmlAdapter extends XmlAdapter<String, Date> {
         SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
         format.setTimeZone(TimeZone.getTimeZone(TIME_ZONE_UTC));
         return format.format(v);
+    }
+
+    @Override
+    public Date unmarshal(String v) {
+        if (v == null || v.isEmpty()) {
+            return null;
+        }
+
+        return DatatypeConverter.parseDateTime(v).getTime();
     }
 }

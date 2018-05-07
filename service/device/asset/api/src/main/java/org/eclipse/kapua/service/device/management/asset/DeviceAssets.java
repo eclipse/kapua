@@ -11,15 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.asset;
 
-import java.util.List;
+import org.eclipse.kapua.KapuaSerializable;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
-import org.eclipse.kapua.KapuaSerializable;
+import java.util.List;
 
 /**
  * {@link DeviceAsset}s list entity definition.
@@ -35,19 +34,16 @@ public interface DeviceAssets extends KapuaSerializable {
      * Get the {@link DeviceAsset} {@link List}
      *
      * @return The {@link DeviceAsset} {@link List}.
-     * 
      * @since 1.0.0
      */
     @XmlElement(name = "deviceAsset")
-    public List<DeviceAsset> getAssets();
+    List<DeviceAsset> getAssets();
 
     /**
      * Sets the {@link DeviceAsset} {@link List}.
-     * 
-     * @param assets
-     *            The {@link DeviceAsset} {@link List}.
-     * 
+     *
+     * @param assets The {@link DeviceAsset} {@link List}.
      * @since 1.0.0
      */
-    public void setAssets(List<DeviceAsset> assets);
+    void setAssets(List<DeviceAsset> assets);
 }

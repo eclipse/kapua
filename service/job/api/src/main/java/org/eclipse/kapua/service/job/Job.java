@@ -11,43 +11,42 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job;
 
-import java.util.List;
+import org.eclipse.kapua.model.KapuaNamedEntity;
+import org.eclipse.kapua.service.job.step.JobStep;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
-import org.eclipse.kapua.model.KapuaNamedEntity;
-import org.eclipse.kapua.service.job.step.JobStep;
+import java.util.List;
 
 /**
  * {@link Job} entity.
- * 
- * @since 1.0.0
  *
+ * @since 1.0.0
  */
 @XmlRootElement(name = "job")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = JobXmlRegistry.class, factoryMethod = "newJob")
 public interface Job extends KapuaNamedEntity {
 
-    public static final String TYPE = "job";
+    String TYPE = "job";
 
-    public default String getType() {
+    @Override
+    default String getType() {
         return TYPE;
     }
 
-    public String getDescription();
+    String getDescription();
 
-    public void setDescription(String description);
+    void setDescription(String description);
 
-    public List<JobStep> getJobSteps();
+    List<JobStep> getJobSteps();
 
-    public void setJobSteps(List<JobStep> jobSteps);
+    void setJobSteps(List<JobStep> jobSteps);
 
-    public String getJobXmlDefinition();
+    String getJobXmlDefinition();
 
-    public void setJobXmlDefinition(String jobXmlDefinition);
+    void setJobXmlDefinition(String jobXmlDefinition);
 
 }

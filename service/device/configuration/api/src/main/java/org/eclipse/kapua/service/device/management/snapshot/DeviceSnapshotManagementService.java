@@ -32,8 +32,7 @@ public interface DeviceSnapshotManagementService extends KapuaService, DeviceMan
      * @return
      * @throws KapuaException
      */
-    public DeviceSnapshots get(KapuaId scopeId, KapuaId deviceid, Long timeout)
-            throws KapuaException;
+    DeviceSnapshots get(KapuaId scopeId, KapuaId deviceid, Long timeout) throws KapuaException;
 
     /**
      * Rollback the device configuration to the device snapshot identified by the provided snapshot identifier
@@ -44,6 +43,5 @@ public interface DeviceSnapshotManagementService extends KapuaService, DeviceMan
      * @param timeout    timeout waiting for the device response
      * @throws KapuaException
      */
-    public void rollback(KapuaId scopeId, KapuaId deviceid, String snapshotId, Long timeout)
-            throws KapuaException;
+    void rollback(KapuaId scopeId, KapuaId deviceid, String snapshotId, Long timeout) throws KapuaException;
 }

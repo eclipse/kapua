@@ -34,12 +34,12 @@ public interface KapuaRequestChannel extends KapuaAppChannel {
      *
      * @return
      */
-    public KapuaMethod getMethod();
+    KapuaMethod getMethod();
 
     /**
      * Set the request method
      *
      * @param method
      */
-    public void setMethod(KapuaMethod method);
+    void setMethod(KapuaMethod method);
 }

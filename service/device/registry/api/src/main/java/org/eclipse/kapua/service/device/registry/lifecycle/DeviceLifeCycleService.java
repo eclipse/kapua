@@ -28,10 +28,10 @@ import org.eclipse.kapua.service.KapuaService;
  */
 public interface DeviceLifeCycleService extends KapuaService, KapuaDomainService<DeviceLifecycleDomain> {
 
-    public static final DeviceLifecycleDomain DEVICE_LIFECYCLE_DOMAIN = new DeviceLifecycleDomain();
+    DeviceLifecycleDomain DEVICE_LIFECYCLE_DOMAIN = new DeviceLifecycleDomain();
 
     @Override
-    public default DeviceLifecycleDomain getServiceDomain() {
+    default DeviceLifecycleDomain getServiceDomain() {
         return DEVICE_LIFECYCLE_DOMAIN;
     }
 
@@ -42,8 +42,7 @@ public interface DeviceLifeCycleService extends KapuaService, KapuaDomainService
      * @param message
      * @throws KapuaException
      */
-    public <M extends KapuaBirthMessage> void birth(KapuaId connectionId, M message)
-            throws KapuaException;
+    <M extends KapuaBirthMessage> void birth(KapuaId connectionId, M message) throws KapuaException;
 
     /**
      * Processes a death certificate for a device, updating the device footprint with the information supplied.
@@ -52,8 +51,7 @@ public interface DeviceLifeCycleService extends KapuaService, KapuaDomainService
      * @param message
      * @throws KapuaException
      */
-    public <M extends KapuaDisconnectMessage> void death(KapuaId connectionId, M message)
-            throws KapuaException;
+    <M extends KapuaDisconnectMessage> void death(KapuaId connectionId, M message) throws KapuaException;
 
     /**
      * Processes a last-will testament for a device, updating the device footprint with the information supplied.
@@ -62,8 +60,7 @@ public interface DeviceLifeCycleService extends KapuaService, KapuaDomainService
      * @param message
      * @throws KapuaException
      */
-    public <M extends KapuaMissingMessage> void missing(KapuaId connectionId, M message)
-            throws KapuaException;
+    <M extends KapuaMissingMessage> void missing(KapuaId connectionId, M message) throws KapuaException;
 
     /**
      * Processes a birth certificate for a device, creating or updating the device footprint with the information supplied.
@@ -72,6 +69,5 @@ public interface DeviceLifeCycleService extends KapuaService, KapuaDomainService
      * @param message
      * @throws KapuaException
      */
-    public <M extends KapuaAppsMessage> void applications(KapuaId connectionId, M message)
-            throws KapuaException;
+    <M extends KapuaAppsMessage> void applications(KapuaId connectionId, M message) throws KapuaException;
 }

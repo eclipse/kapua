@@ -11,86 +11,78 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.model;
 
-import java.util.Date;
-
 import org.eclipse.kapua.model.id.KapuaId;
+
+import java.util.Date;
 
 /**
  * Channel information schema creator definition
- * 
+ *
  * @since 1.0.0
  */
 public interface ChannelInfoCreator extends StorableCreator<ChannelInfo> {
 
     /**
      * Get the account
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
-    public KapuaId getScopeId();
+    KapuaId getScopeId();
 
     /**
      * Get the client identifier
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
-    public String getClientId();
+    String getClientId();
 
     /**
      * Get the name
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
-    public String getName();
+    String getName();
 
     /**
      * Set the channel name
-     * 
+     *
      * @param name
-     * 
      * @since 1.0.0
      */
-    public void setName(String name);
+    void setName(String name);
 
     /**
      * Get the message identifier (of the first message published on this channel)
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
-    public StorableId getMessageId();
+    StorableId getMessageId();
 
     /**
      * Set the message identifier (of the first message published on this channel)
-     * 
+     *
      * @param messageId
-     * 
      * @since 1.0.0
      */
-    public void setMessageId(StorableId messageId);
+    void setMessageId(StorableId messageId);
 
     /**
      * Get the message timestamp (of the first message published on this channel)
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
-    public Date getMessageTimestamp();
+    Date getMessageTimestamp();
 
     /**
      * Set the message timestamp (of the first message published on this channel)
-     * 
+     *
      * @param messageTimestamp
-     * 
      * @since 1.0.0
      */
-    public void setMessageTimestamp(Date messageTimestamp);
+    void setMessageTimestamp(Date messageTimestamp);
 }

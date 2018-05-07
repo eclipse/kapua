@@ -24,10 +24,10 @@ import org.eclipse.kapua.service.device.registry.Device;
  */
 public interface DeviceEventService extends KapuaEntityService<DeviceEvent, DeviceEventCreator>, KapuaDomainService<DeviceEventDomain> {
 
-    public static final DeviceEventDomain DEVICE_EVENT_DOMAIN = new DeviceEventDomain();
+    DeviceEventDomain DEVICE_EVENT_DOMAIN = new DeviceEventDomain();
 
     @Override
-    public default DeviceEventDomain getServiceDomain() {
+    default DeviceEventDomain getServiceDomain() {
         return DEVICE_EVENT_DOMAIN;
     }
 
@@ -42,8 +42,7 @@ public interface DeviceEventService extends KapuaEntityService<DeviceEvent, Devi
      * @throws KapuaException
      * @since 1.0.0
      */
-    public DeviceEvent create(DeviceEventCreator creator, boolean updateDeviceLastEventId)
-            throws KapuaException;
+    DeviceEvent create(DeviceEventCreator creator, boolean updateDeviceLastEventId) throws KapuaException;
 
     /**
      * Returns the {@link DeviceEventListResult} with elements matching the provided query.
@@ -54,7 +53,6 @@ public interface DeviceEventService extends KapuaEntityService<DeviceEvent, Devi
      * @since 1.0.0
      */
     @Override
-    public DeviceEventListResult query(KapuaQuery<DeviceEvent> query)
-            throws KapuaException;
+    DeviceEventListResult query(KapuaQuery<DeviceEvent> query) throws KapuaException;
 
 }

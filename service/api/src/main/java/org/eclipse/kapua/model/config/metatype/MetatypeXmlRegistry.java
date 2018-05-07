@@ -16,9 +16,8 @@ import org.eclipse.kapua.locator.KapuaLocator;
 /**
  * Xml factory class.<br>
  * This class provides, through locator and factory service, a factory for few objects types.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class MetatypeXmlRegistry {
 
@@ -34,7 +33,7 @@ public class MetatypeXmlRegistry {
 
     /**
      * Returns a {@link KapuaTocd} instance
-     * 
+     *
      * @return
      */
     public KapuaTocd newKapuaTocd() {
@@ -43,7 +42,7 @@ public class MetatypeXmlRegistry {
 
     /**
      * Returns a {@link KapuaTad} instance
-     * 
+     *
      * @return
      */
     public KapuaTad newKapuaTad() {
@@ -52,26 +51,16 @@ public class MetatypeXmlRegistry {
 
     /**
      * Returns a {@link KapuaTicon} instance
-     * 
+     *
      * @return
      */
     public KapuaTicon newKapuaTicon() {
         return factory.newKapuaTicon();
     }
 
-    // /**
-    // * Returns a {@link KapuaTscalar} instance
-    // *
-    // * @return
-    // */
-    // public KapuaTscalar newKapuaTscalar()
-    // {
-    // return factory.newKapuaTscalar();
-    // }
-
     /**
      * Returns a {@link KapuaToption} instance
-     * 
+     *
      * @return
      */
     public KapuaToption newKapuaToption() {
@@ -80,7 +69,7 @@ public class MetatypeXmlRegistry {
 
     /**
      * Returns a {@link KapuaTmetadata} instance
-     * 
+     *
      * @return
      */
     public KapuaTmetadata newKapuaTmetadata() {
@@ -89,7 +78,7 @@ public class MetatypeXmlRegistry {
 
     /**
      * Returns a {@link KapuaTdesignate} instance
-     * 
+     *
      * @return
      */
     public KapuaTdesignate newKapuaTdesignate() {
@@ -98,7 +87,7 @@ public class MetatypeXmlRegistry {
 
     /**
      * Returns a {@link KapuaTobject} instance
-     * 
+     *
      * @return
      */
     public KapuaTobject newKapuaTobject() {

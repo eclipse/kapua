@@ -19,9 +19,8 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * Device package bundle information definition.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @XmlRootElement(name = "devicePackageBundleInfo")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -30,31 +29,31 @@ public interface DevicePackageBundleInfo {
 
     /**
      * Get the package bundle name
-     * 
+     *
      * @return
      */
     @XmlElement(name = "name")
-    public String getName();
+    String getName();
 
     /**
      * Set the package bundle name
-     * 
+     *
      * @param name
      */
-    public void setName(String name);
+    void setName(String name);
 
     /**
      * Get the package bundle version
-     * 
+     *
      * @return
      */
     @XmlElement(name = "version")
-    public String getVersion();
+    String getVersion();
 
     /**
      * Set the package bundle version
-     * 
+     *
      * @param version
      */
-    public void setVersion(String version);
+    void setVersion(String version);
 }

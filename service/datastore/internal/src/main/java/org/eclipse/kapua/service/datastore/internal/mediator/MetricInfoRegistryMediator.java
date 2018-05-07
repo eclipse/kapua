@@ -31,7 +31,7 @@ public interface MetricInfoRegistryMediator {
      * @return
      * @throws ClientException
      */
-    public Metadata getMetadata(KapuaId scopeId, long indexedOn)
+    Metadata getMetadata(KapuaId scopeId, long indexedOn)
             throws ClientException;
 
     /**
@@ -41,5 +41,5 @@ public interface MetricInfoRegistryMediator {
      * @param metricInfo
      * @throws ClientException
      */
-    public void onAfterMetricInfoDelete(KapuaId scopeId, MetricInfo metricInfo) throws ClientException;
+    void onAfterMetricInfoDelete(KapuaId scopeId, MetricInfo metricInfo) throws ClientException;
 }

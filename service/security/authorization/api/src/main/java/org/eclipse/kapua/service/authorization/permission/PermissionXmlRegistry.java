@@ -11,24 +11,23 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.permission;
 
-import javax.xml.bind.annotation.XmlRegistry;
-
 import org.eclipse.kapua.locator.KapuaLocator;
+
+import javax.xml.bind.annotation.XmlRegistry;
 
 @XmlRegistry
 public class PermissionXmlRegistry {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final PermissionFactory factory = locator.getFactory(PermissionFactory.class);
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
 
     /**
      * Creates a new {@link Permission} instance
-     * 
+     *
      * @return A new {@link Permission} instance
-     * 
      * @since 1.0.0
      */
     public Permission newPermission() {
-        return factory.newPermission(null, null, null, null);
+        return PERMISSION_FACTORY.newPermission(null, null, null, null);
     }
 }

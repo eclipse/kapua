@@ -14,15 +14,13 @@ package org.eclipse.kapua.service.datastore.client;
 /**
  * Client error messages
  * TODO move to properties file
- * 
+ *
  * @since 1.0
  */
 public class ClientErrorMessages {
 
-    private ClientErrorMessages() {
-
-    }
-
     public final static String CRUD_INTERNAL_ERROR = "An error occurred on performing the operation: [%s]";
 
+    private ClientErrorMessages() {
+    }
 }

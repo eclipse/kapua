@@ -11,23 +11,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.model;
 
-import java.util.Date;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.KapuaSerializable;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.util.Date;
+
 /**
  * Kapua base entity definition.<br>
  * All the Kapua entities will be an extension of this entity.
- * 
+ *
  * @since 1.0.0
  */
 @XmlType(propOrder = { //
@@ -38,65 +37,64 @@ import org.eclipse.kapua.model.xml.DateXmlAdapter;
 public interface KapuaEntity extends KapuaSerializable {
 
     @XmlTransient
-    public String getType();
+    String getType();
 
     /**
      * Get the Kapua identifier for the entity
-     * 
+     *
      * @return
      * @since 1.0.0
      */
     @XmlElement(name = "id")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     @ApiModelProperty(dataType = "string")
-    public KapuaId getId();
+    KapuaId getId();
 
     /**
      * Set the Kapua identifier for the entity
-     * 
+     *
      * @param id
      * @since 1.0.0
      */
-    public void setId(KapuaId id);
+    void setId(KapuaId id);
 
     /**
      * Get the Kapua scope identifier for the entity
-     * 
+     *
      * @return
      * @since 1.0.0
      */
     @XmlElement(name = "scopeId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     @ApiModelProperty(dataType = "string")
-    public KapuaId getScopeId();
+    KapuaId getScopeId();
 
     /**
      * Set the Kapua scope identifier for the entity.
-     * 
-     * @param scopeId
-     *            The Kapua scope identifier to set.
+     *
+     * @param scopeId The Kapua scope identifier to set.
      * @since 1.0.0
      */
-    public void setScopeId(KapuaId scopeId);
+    void setScopeId(KapuaId scopeId);
 
     /**
      * Get the created on date
-     * 
+     *
      * @return
      * @since 1.0.0
      */
     @XmlElement(name = "createdOn")
     @XmlJavaTypeAdapter(DateXmlAdapter.class)
-    public Date getCreatedOn();
+    Date getCreatedOn();
 
     /**
      * Set the created by Kapua identifier
-     * 
+     *
      * @return
      * @since 1.0.0
      */
     @XmlElement(name = "createdBy")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     @ApiModelProperty(dataType = "string")
-    public KapuaId getCreatedBy();
+    KapuaId getCreatedBy();
 }

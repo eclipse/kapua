@@ -27,125 +27,125 @@ public interface DevicePosition extends Position {
      *
      * @return
      */
-    public Double getLongitude();
+    Double getLongitude();
 
     /**
      * Set the device position longitude
      *
      * @param longitude
      */
-    public void setLongitude(Double longitude);
+    void setLongitude(Double longitude);
 
     /**
      * Get the device position latitude
      *
      * @return
      */
-    public Double getLatitude();
+    Double getLatitude();
 
     /**
      * Set the device position latitude
      *
      * @param latitude
      */
-    public void setLatitude(Double latitude);
+    void setLatitude(Double latitude);
 
     /**
      * Get the device position altitude
      *
      * @return
      */
-    public Double getAltitude();
+    Double getAltitude();
 
     /**
      * Set the device position altitude
      *
      * @param altitude
      */
-    public void setAltitude(Double altitude);
+    void setAltitude(Double altitude);
 
     /**
      * Get the device precision
      *
      * @return
      */
-    public Double getPrecision();
+    Double getPrecision();
 
     /**
      * Set the device precision
      *
      * @param precision
      */
-    public void setPrecision(Double precision);
+    void setPrecision(Double precision);
 
     /**
      * Get the device heading
      *
      * @return
      */
-    public Double getHeading();
+    Double getHeading();
 
     /**
      * Set the device heading
      *
      * @param heading
      */
-    public void setHeading(Double heading);
+    void setHeading(Double heading);
 
     /**
      * Get the device speed
      *
      * @return
      */
-    public Double getSpeed();
+    Double getSpeed();
 
     /**
      * Set the device speed
      *
      * @param speed
      */
-    public void setSpeed(Double speed);
+    void setSpeed(Double speed);
 
     /**
      * Get the timestamp
      *
      * @return
      */
-    public Date getTimestamp();
+    Date getTimestamp();
 
     /**
      * Set the timestamp
      *
      * @param timestamp
      */
-    public void setTimestamp(Date timestamp);
+    void setTimestamp(Date timestamp);
 
     /**
      * Get the satellites count
      *
      * @return
      */
-    public Integer getSatellites();
+    Integer getSatellites();
 
     /**
      * Set the satellites count
      *
      * @param satellites
      */
-    public void setSatellites(Integer satellites);
+    void setSatellites(Integer satellites);
 
     /**
      * Get the device status
      *
      * @return
      */
-    public Integer getStatus();
+    Integer getStatus();
 
     /**
      * Set the device status
      *
      * @param status
      */
-    public void setStatus(Integer status);
+    void setStatus(Integer status);
 
 }

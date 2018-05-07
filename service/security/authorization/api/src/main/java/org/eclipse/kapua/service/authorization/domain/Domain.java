@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -42,10 +42,10 @@ import java.util.Set;
         "groupable" })
 public interface Domain extends KapuaEntity {//, org.eclipse.kapua.model.domain.Domain {
 
-    public static final String TYPE = "domain";
+    String TYPE = "domain";
 
     @Override
-    public default String getType() {
+    default String getType() {
         return TYPE;
     }
 
@@ -56,7 +56,7 @@ public interface Domain extends KapuaEntity {//, org.eclipse.kapua.model.domain.
      * @param name The name of the {@link Domain}
      * @since 1.0.0
      */
-    public void setName(String name);
+    void setName(String name);
 
     /**
      * Gets the {@link Domain} name.
@@ -65,7 +65,7 @@ public interface Domain extends KapuaEntity {//, org.eclipse.kapua.model.domain.
      * @since 1.0.0
      */
     @XmlElement(name = "name")
-    public String getName();
+    String getName();
 
     /**
      * Sets the {@link KapuaService} name that use this {@link Domain}.<br>
@@ -79,7 +79,7 @@ public interface Domain extends KapuaEntity {//, org.eclipse.kapua.model.domain.
      * @param serviceName The {@link KapuaService} that use this {@link Domain}.<br>
      * @since 1.0.0
      */
-    public void setServiceName(String serviceName);
+    void setServiceName(String serviceName);
 
     /**
      * Gets the {@link KapuaService} name that use this {@link Domain}.<br>
@@ -89,7 +89,7 @@ public interface Domain extends KapuaEntity {//, org.eclipse.kapua.model.domain.
      * @since 1.0.0
      */
     @XmlElement(name = "serviceName")
-    public String getServiceName();
+    String getServiceName();
 
     /**
      * Sets the set of {@link Actions} available in this {@link Domain}.<br>
@@ -98,7 +98,7 @@ public interface Domain extends KapuaEntity {//, org.eclipse.kapua.model.domain.
      * @param actions The set of {@link Actions}.
      * @since 1.0.0
      */
-    public void setActions(Set<Actions> actions);
+    void setActions(Set<Actions> actions);
 
     /**
      * Gets the set of {@link Actions} available in this {@link Domain}.<br>
@@ -109,7 +109,7 @@ public interface Domain extends KapuaEntity {//, org.eclipse.kapua.model.domain.
      */
     @XmlElementWrapper(name = "actions")
     @XmlElement(name = "action")
-    public Set<Actions> getActions();
+    Set<Actions> getActions();
 
     /**
      * Sets whether or not this {@link Domain} is group-able or not.
@@ -119,7 +119,7 @@ public interface Domain extends KapuaEntity {//, org.eclipse.kapua.model.domain.
      * @param groupable {@code true} if the {@link org.eclipse.kapua.service.authorization.permission.Permission} on this {@link Domain} can have the {@link Permission#getGroupId()} property set, {@code false} otherwise.
      * @since 0.3.1
      */
-    public void setGroupable(boolean groupable);
+    void setGroupable(boolean groupable);
 
     /**
      * Gets whether or not this {@link Domain} is group-able or not.
@@ -128,7 +128,7 @@ public interface Domain extends KapuaEntity {//, org.eclipse.kapua.model.domain.
      * @since 0.3.1
      */
     @XmlElement(name = "groupable")
-    public boolean getGroupable();
+    boolean getGroupable();
 
     /**
      * Returns the {@link KapuaService} {@link org.eclipse.kapua.model.domain.Domain} represented from {@code this} {@link Domain} registry entry.
@@ -137,7 +137,7 @@ public interface Domain extends KapuaEntity {//, org.eclipse.kapua.model.domain.
      * @since 1.0.0
      */
     @XmlTransient
-    public default org.eclipse.kapua.model.domain.Domain getDomain() {
+    default org.eclipse.kapua.model.domain.Domain getDomain() {
         return new AbstractDomain() {
 
             @Override

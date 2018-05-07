@@ -37,7 +37,7 @@ public interface DomainCreator extends KapuaEntityCreator<Domain>, org.eclipse.k
      * @param name The {@link Domain} name.
      * @since 1.0.0
      */
-    public void setName(String name);
+    void setName(String name);
 
     /**
      * Sets the {@link KapuaService} name that uses the {@link Domain}.
@@ -45,7 +45,7 @@ public interface DomainCreator extends KapuaEntityCreator<Domain>, org.eclipse.k
      * @param serviceName The {@link KapuaService} name that uses the {@link Domain}.
      * @since 1.0.0
      */
-    public void setServiceName(String serviceName);
+    void setServiceName(String serviceName);
 
     /**
      * Sets the set of {@link Actions} available in the {@link Domain}.<br>
@@ -54,7 +54,7 @@ public interface DomainCreator extends KapuaEntityCreator<Domain>, org.eclipse.k
      * @param actions The set of {@link Actions}.
      * @since 1.0.0
      */
-    public void setActions(Set<Actions> actions);
+    void setActions(Set<Actions> actions);
 
     /**
      * Sets whether or not this {@link Domain} is group-able or not.
@@ -64,6 +64,6 @@ public interface DomainCreator extends KapuaEntityCreator<Domain>, org.eclipse.k
      * @param groupable {@code true} if the {@link org.eclipse.kapua.service.authorization.permission.Permission} on this {@link Domain} can have the {@link Permission#getGroupId()} property set, {@code false} otherwise.
      * @since 0.3.1
      */
-    public void setGroupable(boolean groupable);
+    void setGroupable(boolean groupable);
 
 }

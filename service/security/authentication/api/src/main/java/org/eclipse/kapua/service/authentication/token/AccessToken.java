@@ -11,8 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.token;
 
-import java.io.Serializable;
-import java.util.Date;
+import io.swagger.annotations.ApiModelProperty;
+import org.eclipse.kapua.model.KapuaUpdatableEntity;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.model.xml.DateXmlAdapter;
+import org.eclipse.kapua.service.user.User;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -20,13 +24,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import io.swagger.annotations.ApiModelProperty;
-import org.eclipse.kapua.model.KapuaUpdatableEntity;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.id.KapuaIdAdapter;
-import org.eclipse.kapua.model.xml.DateXmlAdapter;
-import org.eclipse.kapua.service.user.User;
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * {@link AccessToken} entity.
@@ -47,9 +46,10 @@ import org.eclipse.kapua.service.user.User;
         factoryMethod = "newAccessToken")
 public interface AccessToken extends KapuaUpdatableEntity, Serializable {
 
-    public static final String TYPE = "accessToken";
+    String TYPE = "accessToken";
 
-    public default String getType() {
+    @Override
+    default String getType() {
         return TYPE;
     }
 
@@ -60,37 +60,34 @@ public interface AccessToken extends KapuaUpdatableEntity, Serializable {
      * @since 1.0.0
      */
     @XmlElement(name = "tokenId")
-    public String getTokenId();
+    String getTokenId();
 
     /**
      * Sets the token id
      *
-     * @param tokenId
-     *            The token id.
+     * @param tokenId The token id.
      * @since 1.0.0
      */
-    public void setTokenId(String tokenId);
+    void setTokenId(String tokenId);
 
     /**
      * Return the user identifier
      *
      * @return The user identifier.
-     *
      * @since 1.0.0
      */
     @XmlElement(name = "userId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     @ApiModelProperty(dataType = "string")
-    public KapuaId getUserId();
+    KapuaId getUserId();
 
     /**
      * Sets the {@link User} id of this {@link AccessToken}
      *
-     * @param userId
-     *            The {@link User} id to set.
+     * @param userId The {@link User} id to set.
      * @since 1.0.0
      */
-    public void setUserId(KapuaId userId);
+    void setUserId(KapuaId userId);
 
     /**
      * Gets the expire date of this token.
@@ -100,16 +97,15 @@ public interface AccessToken extends KapuaUpdatableEntity, Serializable {
      */
     @XmlElement(name = "expiresOn")
     @XmlJavaTypeAdapter(DateXmlAdapter.class)
-    public Date getExpiresOn();
+    Date getExpiresOn();
 
     /**
      * Sets the expire date of this token.
      *
-     * @param expiresOn
-     *            The expire date of this token.
+     * @param expiresOn The expire date of this token.
      * @since 1.0.0
      */
-    public void setExpiresOn(Date expiresOn);
+    void setExpiresOn(Date expiresOn);
 
     /**
      * Gets the refresh token to obtain a new {@link AccessToken} after expiration.
@@ -118,16 +114,15 @@ public interface AccessToken extends KapuaUpdatableEntity, Serializable {
      * @since 1.0.0
      */
     @XmlElement(name = "refreshToken")
-    public String getRefreshToken();
+    String getRefreshToken();
 
     /**
      * Sets the refresh token to obtain a new {@link AccessToken} after expiration.
      *
-     * @param refreshToken
-     *            The refresh token
+     * @param refreshToken The refresh token
      * @since 1.0.0
      */
-    public void setRefreshToken(String refreshToken);
+    void setRefreshToken(String refreshToken);
 
     /**
      * Gets the expiration date of the refresh token.
@@ -137,16 +132,15 @@ public interface AccessToken extends KapuaUpdatableEntity, Serializable {
      */
     @XmlElement(name = "refreshExpiresOn")
     @XmlJavaTypeAdapter(DateXmlAdapter.class)
-    public Date getRefreshExpiresOn();
+    Date getRefreshExpiresOn();
 
     /**
      * Sets the expire date of this token.
      *
-     * @param refreshExpiresOn
-     *            The expiration date of the refresh token.
+     * @param refreshExpiresOn The expiration date of the refresh token.
      * @since 1.0.0
      */
-    public void setRefreshExpiresOn(Date refreshExpiresOn);
+    void setRefreshExpiresOn(Date refreshExpiresOn);
 
     /**
      * Gets the date the token has been invalidated (i.e. the date
@@ -154,22 +148,20 @@ public interface AccessToken extends KapuaUpdatableEntity, Serializable {
      * to a logout)
      *
      * @return The date the token has been invalidated.
-     *
      * @since 1.0.0
      */
     @XmlElement(name = "invalidatedOn")
     @XmlJavaTypeAdapter(DateXmlAdapter.class)
-    public Date getInvalidatedOn();
+    Date getInvalidatedOn();
 
     /**
      * Sets the date the token has been invalidated (i.e. the date
      * the refresh token has been used, or it has been invalidated due
      * to a logout)
      *
-     * @param invalidatedOn
-     *            The date when the token has been invalidated.
+     * @param invalidatedOn The date when the token has been invalidated.
      * @since 1.0.0
      */
-    public void setInvalidatedOn(Date invalidatedOn);
+    void setInvalidatedOn(Date invalidatedOn);
 
 }

@@ -16,10 +16,10 @@ import org.eclipse.kapua.service.KapuaService;
 
 public interface SchedulerService extends KapuaService, KapuaDomainService<SchedulerDomain> {
 
-    public static final SchedulerDomain SCHEDULER_DOMAIN = new SchedulerDomain();
+    SchedulerDomain SCHEDULER_DOMAIN = new SchedulerDomain();
 
     @Override
-    public default SchedulerDomain getServiceDomain() {
+    default SchedulerDomain getServiceDomain() {
         return SCHEDULER_DOMAIN;
     }
 

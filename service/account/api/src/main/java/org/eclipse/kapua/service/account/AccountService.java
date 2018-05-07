@@ -33,10 +33,10 @@ public interface AccountService extends KapuaEntityService<Account, AccountCreat
         KapuaDomainService<AccountDomain>,
         KapuaConfigurableService {
 
-    public static final AccountDomain ACCOUNT_DOMAIN = new AccountDomain();
+    AccountDomain ACCOUNT_DOMAIN = new AccountDomain();
 
     @Override
-    public default AccountDomain getServiceDomain() {
+    default AccountDomain getServiceDomain() {
         return ACCOUNT_DOMAIN;
     }
 
@@ -47,8 +47,7 @@ public interface AccountService extends KapuaEntityService<Account, AccountCreat
      * @return
      * @throws KapuaException
      */
-    public Account find(KapuaId id)
-            throws KapuaException;
+    Account find(KapuaId id) throws KapuaException;
 
     /**
      * Returns the {@link AccountListResult} with elements matching the provided query.
@@ -59,8 +58,7 @@ public interface AccountService extends KapuaEntityService<Account, AccountCreat
      * @since 1.0.0
      */
     @Override
-    public AccountListResult query(KapuaQuery<Account> query)
-            throws KapuaException;
+    AccountListResult query(KapuaQuery<Account> query) throws KapuaException;
 
     /**
      * Returns a List of direct child account of the provided account identifier
@@ -69,6 +67,5 @@ public interface AccountService extends KapuaEntityService<Account, AccountCreat
      * @return List of direct child account of an account
      * @throws KapuaException
      */
-    public AccountListResult findChildsRecursively(KapuaId accountId)
-            throws KapuaException;
+    AccountListResult findChildsRecursively(KapuaId accountId) throws KapuaException;
 }

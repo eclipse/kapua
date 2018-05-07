@@ -15,14 +15,14 @@ import org.eclipse.kapua.locator.KapuaLocator;
 
 public class AccessTokenXmlRegistry {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final AccessTokenFactory factory = locator.getFactory(AccessTokenFactory.class);
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final AccessTokenFactory ACCESS_TOKEN_FACTORY = LOCATOR.getFactory(AccessTokenFactory.class);
 
     public AccessToken newAccessToken() {
-        return factory.newEntity(null);
+        return ACCESS_TOKEN_FACTORY.newEntity(null);
     }
 
     public AccessTokenCreator newAccessTokenCreator() {
-        return factory.newCreator(null, null, null, null, null, null);
+        return ACCESS_TOKEN_FACTORY.newCreator(null, null, null, null, null, null);
     }
 }

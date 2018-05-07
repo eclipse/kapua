@@ -15,10 +15,10 @@ import org.eclipse.kapua.model.KapuaEntityFactory;
 
 public interface CertificateFactory extends KapuaEntityFactory<Certificate, CertificateCreator, CertificateQuery, CertificateListResult> {
 
-    public CertificateUsage newCertificateUsage(String name);
+    CertificateUsage newCertificateUsage(String name);
 
-    public KeyUsageSetting newKeyUsageSetting(KeyUsage usage, boolean allowed, Boolean kapuaAllowed);
+    KeyUsageSetting newKeyUsageSetting(KeyUsage usage, boolean allowed, Boolean kapuaAllowed);
 
-    public CertificateGenerator newCertificateGenerator();
+    CertificateGenerator newCertificateGenerator();
 
 }

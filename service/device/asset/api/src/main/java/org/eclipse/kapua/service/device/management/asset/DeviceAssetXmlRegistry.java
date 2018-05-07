@@ -11,9 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.asset;
 
-import javax.xml.bind.annotation.XmlRegistry;
-
 import org.eclipse.kapua.locator.KapuaLocator;
+
+import javax.xml.bind.annotation.XmlRegistry;
 
 /**
  * {@link DeviceAsset} XML factory class
@@ -23,40 +23,36 @@ import org.eclipse.kapua.locator.KapuaLocator;
 @XmlRegistry
 public class DeviceAssetXmlRegistry {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-
-    private final DeviceAssetFactory factory = locator.getFactory(DeviceAssetFactory.class);
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final DeviceAssetFactory DEVICE_ASSET_FACTORY = LOCATOR.getFactory(DeviceAssetFactory.class);
 
     /**
      * Instantiate a new {@link DeviceAssets}.
      *
      * @return The newly instantiate {@link DeviceAssets}.
-     * 
      * @since 1.0.0
      */
     public DeviceAssets newAssetListResult() {
-        return factory.newAssetListResult();
+        return DEVICE_ASSET_FACTORY.newAssetListResult();
     }
 
     /**
      * Instantiate a new {@link DeviceAsset}.
      *
      * @return The newly instantiated {@link DeviceAsset}.
-     * 
      * @since 1.0.0
      */
     public DeviceAsset newDeviceAsset() {
-        return factory.newDeviceAsset();
+        return DEVICE_ASSET_FACTORY.newDeviceAsset();
     }
 
     /**
      * Instantiate a new {@link DeviceAssetChannel}.
-     * 
+     *
      * @return The newly instantiated {@link DeviceAssetChannel}.
-     * 
      * @since 1.0.0
      */
     public DeviceAssetChannel newDeviceAssetChannel() {
-        return factory.newDeviceAssetChannel();
+        return DEVICE_ASSET_FACTORY.newDeviceAssetChannel();
     }
 }

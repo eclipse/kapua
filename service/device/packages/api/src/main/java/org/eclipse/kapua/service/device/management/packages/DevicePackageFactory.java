@@ -23,74 +23,76 @@ import org.eclipse.kapua.service.device.management.packages.model.uninstall.Devi
 
 /**
  * Device package service definition.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public interface DevicePackageFactory extends KapuaObjectFactory {
 
     /**
      * Creates a new {@link DevicePackages}
-     * 
+     *
      * @return
      */
-    public DevicePackages newDeviceDeploymentPackages();
+    DevicePackages newDeviceDeploymentPackages();
 
     /**
      * Creates a new {@link DevicePackage}
-     * 
+     *
      * @return
      */
-    public DevicePackage newDeviceDeploymentPackage();
+    DevicePackage newDeviceDeploymentPackage();
 
     /**
      * Creates a new device package bundle information
-     * 
+     *
      * @return
      */
-    public DevicePackageBundleInfo newDevicePackageBundleInfo();
+    DevicePackageBundleInfo newDevicePackageBundleInfo();
 
     /**
      * Creates a new device package bundle informations
-     * 
+     *
      * @return
      */
-    public DevicePackageBundleInfos newDevicePackageBundleInfos();
+    DevicePackageBundleInfos newDevicePackageBundleInfos();
 
     //
     // Download operation
     //
+
     /**
      * Creates a new device package download request
-     * 
+     *
      * @return
      */
-    public DevicePackageDownloadRequest newPackageDownloadRequest();
+    DevicePackageDownloadRequest newPackageDownloadRequest();
 
     /**
      * Creates a new device package download operation
-     * 
+     *
      * @return
      */
-    public DevicePackageDownloadOperation newPackageDownloadOperation();
+    DevicePackageDownloadOperation newPackageDownloadOperation();
 
     //
     // Install operation
     //
+
     /**
      * Creates a new {@link DevicePackageInstallRequest}
      *
      * @return
      */
-    public DevicePackageInstallRequest newPackageInstallRequest();
+    DevicePackageInstallRequest newPackageInstallRequest();
 
     //
     // Uninstall operation
     //
+
     /**
      * Creates a new device package uninstall request
-     * 
+     *
      * @return
      */
-    public DevicePackageUninstallRequest newPackageUninstallRequest();
+    DevicePackageUninstallRequest newPackageUninstallRequest();
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,10 +19,10 @@ import org.eclipse.kapua.service.job.JobDomain;
 
 public interface JobEngineService extends KapuaService, KapuaDomainService<JobDomain> {
 
-    public static final JobDomain JOB_DOMAIN = new JobDomain();
+    JobDomain JOB_DOMAIN = new JobDomain();
 
     @Override
-    public default JobDomain getServiceDomain() {
+    default JobDomain getServiceDomain() {
         return JOB_DOMAIN;
     }
 
@@ -34,7 +34,7 @@ public interface JobEngineService extends KapuaService, KapuaDomainService<JobDo
      * @throws KapuaException if something goes bad when starting the job
      * @since 1.0.0
      */
-    public void startJob(KapuaId scopeId, KapuaId jobId) throws KapuaException;
+    void startJob(KapuaId scopeId, KapuaId jobId) throws KapuaException;
 
     /**
      * Starts the {@link org.eclipse.kapua.service.job.Job} with the given {@link JobStartOptions}.
@@ -45,7 +45,7 @@ public interface JobEngineService extends KapuaService, KapuaDomainService<JobDo
      * @throws KapuaException if something goes bad when starting the job
      * @since 1.0.0
      */
-    public void startJob(KapuaId scopeId, KapuaId jobId, JobStartOptions jobStartOptions) throws KapuaException;
+    void startJob(KapuaId scopeId, KapuaId jobId, JobStartOptions jobStartOptions) throws KapuaException;
 
     /**
      * Checks whether or not the {@link org.eclipse.kapua.service.job.Job} is running.
@@ -56,7 +56,7 @@ public interface JobEngineService extends KapuaService, KapuaDomainService<JobDo
      * @throws KapuaException if something goes bad when checking the status of the job
      * @since 1.0.0
      */
-    public boolean isRunning(KapuaId scopeId, KapuaId jobId) throws KapuaException;
+    boolean isRunning(KapuaId scopeId, KapuaId jobId) throws KapuaException;
 
     /**
      * Stops the {@link org.eclipse.kapua.service.job.Job}.
@@ -72,6 +72,6 @@ public interface JobEngineService extends KapuaService, KapuaDomainService<JobDo
      * @throws KapuaException if something goes bad when checking the status of the job
      * @since 1.0.0
      */
-    public void stopJob(KapuaId scopeId, KapuaId jobId) throws KapuaException;
+    void stopJob(KapuaId scopeId, KapuaId jobId) throws KapuaException;
 
 }

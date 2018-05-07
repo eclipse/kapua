@@ -37,8 +37,7 @@ public interface MessageStoreService extends KapuaService, DatastoreService, Kap
      * @throws KapuaException
      * @since 1.0.0
      */
-    StorableId store(KapuaMessage<?, ?> message)
-            throws KapuaException;
+    StorableId store(KapuaMessage<?, ?> message) throws KapuaException;
 
     /**
      * Store the message setting the provided datastoreId
@@ -48,8 +47,7 @@ public interface MessageStoreService extends KapuaService, DatastoreService, Kap
      * @return
      * @throws KapuaException
      */
-    StorableId store(KapuaMessage<?, ?> message, String datastoreId)
-            throws KapuaException;
+    StorableId store(KapuaMessage<?, ?> message, String datastoreId) throws KapuaException;
 
     /**
      * Find message by identifier
@@ -61,8 +59,7 @@ public interface MessageStoreService extends KapuaService, DatastoreService, Kap
      * @throws KapuaException
      * @since 1.0.0
      */
-    DatastoreMessage find(KapuaId scopeId, StorableId id, StorableFetchStyle fetchStyle)
-            throws KapuaException;
+    DatastoreMessage find(KapuaId scopeId, StorableId id, StorableFetchStyle fetchStyle) throws KapuaException;
 
     /**
      * Query for messages objects matching the given query
@@ -72,8 +69,7 @@ public interface MessageStoreService extends KapuaService, DatastoreService, Kap
      * @throws KapuaException
      * @since 1.0.0
      */
-    MessageListResult query(MessageQuery query)
-            throws KapuaException;
+    MessageListResult query(MessageQuery query) throws KapuaException;
 
     /**
      * Get messages count matching the given query
@@ -83,8 +79,7 @@ public interface MessageStoreService extends KapuaService, DatastoreService, Kap
      * @throws KapuaException
      * @since 1.0.0
      */
-    long count(MessageQuery query)
-            throws KapuaException;
+    long count(MessageQuery query) throws KapuaException;
 
     /**
      * Delete message by identifier
@@ -94,8 +89,7 @@ public interface MessageStoreService extends KapuaService, DatastoreService, Kap
      * @throws KapuaException
      * @since 1.0.0
      */
-    void delete(KapuaId scopeId, StorableId id)
-            throws KapuaException;
+    void delete(KapuaId scopeId, StorableId id) throws KapuaException;
 
     /**
      * Delete messages matching the given query
@@ -104,7 +98,5 @@ public interface MessageStoreService extends KapuaService, DatastoreService, Kap
      * @throws KapuaException
      * @since 1.0.0
      */
-    void delete(MessageQuery query)
-            throws KapuaException;
-
+    void delete(MessageQuery query) throws KapuaException;
 }

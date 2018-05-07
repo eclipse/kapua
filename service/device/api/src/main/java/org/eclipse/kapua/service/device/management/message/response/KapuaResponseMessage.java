@@ -27,12 +27,12 @@ public interface KapuaResponseMessage<C extends KapuaResponseChannel, P extends 
      *
      * @return
      */
-    public KapuaResponseCode getResponseCode();
+    KapuaResponseCode getResponseCode();
 
     /**
      * Set the response code
      *
      * @param responseCode
      */
-    public void setResponseCode(KapuaResponseCode responseCode);
+    void setResponseCode(KapuaResponseCode responseCode);
 }

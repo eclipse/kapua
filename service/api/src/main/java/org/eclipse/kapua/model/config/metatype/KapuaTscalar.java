@@ -10,10 +10,11 @@
  *     Eurotech - initial API and implementation
  *******************************************************************************/
 package org.eclipse.kapua.model.config.metatype;
+
 /**
  * <p>
  * Java class for Tscalar complex type.
- *
+ * <p>
  * The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
@@ -34,7 +35,6 @@ package org.eclipse.kapua.model.config.metatype;
  * </pre>
  *
  * @since 1.0
- * 
  */
 public interface KapuaTscalar {
 
@@ -42,7 +42,6 @@ public interface KapuaTscalar {
      * Gets the value property.
      *
      * @return possible object is {@link String } with restricted values
-     *
      */
-    public String value();
+    String value();
 }

@@ -11,44 +11,44 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access;
 
-import javax.xml.bind.annotation.XmlRegistry;
-
 import org.eclipse.kapua.locator.KapuaLocator;
+
+import javax.xml.bind.annotation.XmlRegistry;
 
 @XmlRegistry
 public class AccessPermissionXmlRegistry {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final AccessPermissionFactory factory = locator.getFactory(AccessPermissionFactory.class);
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final AccessPermissionFactory ACCESS_PERMISSION_FACTORY = LOCATOR.getFactory(AccessPermissionFactory.class);
 
     /**
      * Creates a new {@link AccessPermission} instance
-     * 
+     *
      * @return
      */
     public AccessPermission newAccessPermission() {
-        return factory.newEntity(null);
+        return ACCESS_PERMISSION_FACTORY.newEntity(null);
     }
 
     /**
      * Creates a new {@link AccessPermission} instance
-     * 
+     *
      * @return
      */
     public AccessPermissionCreator newCreator() {
-        return factory.newCreator(null);
+        return ACCESS_PERMISSION_FACTORY.newCreator(null);
     }
 
     /**
      * Creates a new {@link AccessPermission} instance
-     * 
+     *
      * @return
      */
     public AccessPermissionListResult newAccessPermissionListResult() {
-        return factory.newListResult();
+        return ACCESS_PERMISSION_FACTORY.newListResult();
     }
 
     public AccessPermissionQuery newQuery() {
-        return factory.newQuery(null);
+        return ACCESS_PERMISSION_FACTORY.newQuery(null);
     }
 }

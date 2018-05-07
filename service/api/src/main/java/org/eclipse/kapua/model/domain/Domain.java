@@ -26,7 +26,7 @@ public interface Domain {
      * @return The {@link Domain} name.
      * @since 1.0.0
      */
-    public String getName();
+    String getName();
 
     /**
      * Gets the {@link org.eclipse.kapua.service.KapuaService} name that use this {@link Domain}.<br>
@@ -35,7 +35,7 @@ public interface Domain {
      * @return The {@link org.eclipse.kapua.service.KapuaService} that use this {@link Domain}.<br>
      * @since 1.0.0
      */
-    public String getServiceName();
+    String getServiceName();
 
     /**
      * Gets the set of {@link Actions} available in this {@link Domain}.<br>
@@ -44,7 +44,7 @@ public interface Domain {
      * @return The set of {@link Actions}.
      * @since 1.0.0
      */
-    public Set<Actions> getActions();
+    Set<Actions> getActions();
 
     /**
      * Gets whether or not this {@link Domain} is group-able or not.
@@ -52,5 +52,5 @@ public interface Domain {
      * @return {@code true} if the KapuaEntity is group-able or not, {@code false} otherwise.
      * @since 1.0.0
      */
-    public boolean getGroupable();
+    boolean getGroupable();
 }

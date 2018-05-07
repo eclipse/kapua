@@ -39,8 +39,7 @@ public interface ChannelInfoRegistryService extends KapuaService,
      * @throws KapuaException
      * @since 1.0.0
      */
-    public ChannelInfo find(KapuaId scopeId, StorableId id)
-            throws KapuaException;
+    ChannelInfo find(KapuaId scopeId, StorableId id) throws KapuaException;
 
     /**
      * Query for channels informations objects matching the given query
@@ -50,8 +49,7 @@ public interface ChannelInfoRegistryService extends KapuaService,
      * @throws KapuaException
      * @since 1.0.0
      */
-    public ChannelInfoListResult query(ChannelInfoQuery query)
-            throws KapuaException;
+    ChannelInfoListResult query(ChannelInfoQuery query) throws KapuaException;
 
     /**
      * Get the channels informations count matching the given query
@@ -61,7 +59,5 @@ public interface ChannelInfoRegistryService extends KapuaService,
      * @throws KapuaException
      * @since 1.0.0
      */
-    public long count(ChannelInfoQuery query)
-            throws KapuaException;
-
+    long count(ChannelInfoQuery query) throws KapuaException;
 }

@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Query converter definition. This object is responsible for translating datastore query model to client query.
- * 
+ *
  * @since 1.0
  */
 public interface QueryConverter {
@@ -23,25 +23,25 @@ public interface QueryConverter {
     /**
      * Query fetch style key
      */
-    public String QUERY_FETCH_STYLE_KEY = "query_fetch_style";
+    String QUERY_FETCH_STYLE_KEY = "query_fetch_style";
 
     /**
      * Convert the datastore query to the client query
-     * 
+     *
      * @param query
      * @return
      * @throws QueryMappingException
      * @throws DatamodelMappingException
      */
-    public JsonNode convertQuery(Object query) throws QueryMappingException, DatamodelMappingException;
+    JsonNode convertQuery(Object query) throws QueryMappingException, DatamodelMappingException;
 
     /**
      * Get the query fetch style
-     * 
+     *
      * @param query
      * @return
      * @throws QueryMappingException
      */
-    public Object getFetchStyle(Object query) throws QueryMappingException;
+    Object getFetchStyle(Object query) throws QueryMappingException;
 
 }

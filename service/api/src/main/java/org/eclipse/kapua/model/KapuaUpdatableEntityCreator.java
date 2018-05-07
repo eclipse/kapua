@@ -11,23 +11,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.model;
 
-import java.util.Properties;
-
 import org.eclipse.kapua.KapuaException;
+
+import java.util.Properties;
 
 /**
  * Kapua updateable entity creator service definition.
  *
- * @param <E>
- *            entity type
- * 
+ * @param <E> entity type
  * @since 1.0
- * 
  */
 public interface KapuaUpdatableEntityCreator<E extends KapuaEntity> extends KapuaEntityCreator<E> {
 
-    public Properties getEntityAttributes() throws KapuaException;
+    Properties getEntityAttributes() throws KapuaException;
 
-    public void setEntityAttributes(Properties entityAttributes) throws KapuaException;
+    void setEntityAttributes(Properties entityAttributes) throws KapuaException;
 
 }

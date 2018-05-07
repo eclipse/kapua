@@ -11,50 +11,49 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.step.definition;
 
-import javax.xml.bind.annotation.XmlRegistry;
-
 import org.eclipse.kapua.locator.KapuaLocator;
 
+import javax.xml.bind.annotation.XmlRegistry;
+
 /**
- * JobStepDefinition xml factory class
- * 
- * @since 1.0
+ * {@link JobStepDefinition} xml factory class
  *
+ * @since 1.0
  */
 @XmlRegistry
 public class JobStepDefinitionXmlRegistry {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final JobStepDefinitionFactory factory = locator.getFactory(JobStepDefinitionFactory.class);
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final JobStepDefinitionFactory JOB_STEP_DEFINITION_FACTORY = LOCATOR.getFactory(JobStepDefinitionFactory.class);
 
     /**
      * Creates a new job instance
-     * 
+     *
      * @return
      */
     public JobStepDefinition newJobStepDefinition() {
-        return factory.newEntity(null);
+        return JOB_STEP_DEFINITION_FACTORY.newEntity(null);
     }
 
     /**
      * Creates a new job creator instance
-     * 
+     *
      * @return
      */
     public JobStepDefinitionCreator newJobStepDefinitionCreator() {
-        return factory.newCreator(null);
+        return JOB_STEP_DEFINITION_FACTORY.newCreator(null);
     }
 
     /**
      * Creates a new job list result instance
-     * 
+     *
      * @return
      */
     public JobStepDefinitionListResult newJobStepDefinitionListResult() {
-        return factory.newListResult();
+        return JOB_STEP_DEFINITION_FACTORY.newListResult();
     }
 
     public JobStepDefinitionQuery newQuery() {
-        return factory.newQuery(null);
+        return JOB_STEP_DEFINITION_FACTORY.newQuery(null);
     }
 }

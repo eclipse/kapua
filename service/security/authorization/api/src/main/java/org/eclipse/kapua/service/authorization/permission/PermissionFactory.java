@@ -35,7 +35,7 @@ public interface PermissionFactory extends KapuaObjectFactory {
      * @param targetScopeId The target scope id of the new {@link Permission}.
      * @return A instance of the implementing class of {@link Permission}.
      */
-    public default Permission newPermission(Domain domain, Actions action, KapuaId targetScopeId) {
+    default Permission newPermission(Domain domain, Actions action, KapuaId targetScopeId) {
         return newPermission(domain, action, targetScopeId, null);
     }
 
@@ -48,7 +48,7 @@ public interface PermissionFactory extends KapuaObjectFactory {
      * @param groupId       The {@link Group} id that this {@link Permission} gives access.
      * @return A instance of the implementing class of {@link Permission}.
      */
-    public default Permission newPermission(Domain domain, Actions action, KapuaId targetScopeId, KapuaId groupId) {
+    default Permission newPermission(Domain domain, Actions action, KapuaId targetScopeId, KapuaId groupId) {
         return newPermission(domain, action, targetScopeId, groupId, false);
     }
 
@@ -62,7 +62,7 @@ public interface PermissionFactory extends KapuaObjectFactory {
      * @param forwardable   If the {@link Permission} is forward-able to children scopeIds
      * @return A instance of the implementing class of {@link Permission}.
      */
-    public Permission newPermission(Domain domain, Actions action, KapuaId targetScopeId, KapuaId groupId, boolean forwardable);
+    Permission newPermission(Domain domain, Actions action, KapuaId targetScopeId, KapuaId groupId, boolean forwardable);
 
     /**
      * Instantiate new {@link Permission}s implementing object with the provided parameters.
@@ -72,7 +72,7 @@ public interface PermissionFactory extends KapuaObjectFactory {
      * @param actions       The {@link Actions} of the new {@link Permission}s.
      * @return A collection of instances of the implementing class of {@link Permission}.
      */
-    public default Collection<Permission> newPermissions(Domain domain, KapuaId targetScopeId, Actions... actions) {
+    default Collection<Permission> newPermissions(Domain domain, KapuaId targetScopeId, Actions... actions) {
         return newPermissions(domain, targetScopeId, null, actions);
     }
 
@@ -85,7 +85,7 @@ public interface PermissionFactory extends KapuaObjectFactory {
      * @param actions       The {@link Actions} of the new {@link Permission}s.
      * @return A collection of instances of the implementing class of {@link Permission}.
      */
-    public default Collection<Permission> newPermissions(Domain domain, KapuaId targetScopeId, KapuaId groupId, Actions... actions) {
+    default Collection<Permission> newPermissions(Domain domain, KapuaId targetScopeId, KapuaId groupId, Actions... actions) {
         return newPermissions(domain, targetScopeId, groupId, false, actions);
     }
 
@@ -99,7 +99,7 @@ public interface PermissionFactory extends KapuaObjectFactory {
      * @param actions       The {@link Actions} of the new {@link Permission}s.
      * @return A collection of instances of the implementing class of {@link Permission}.
      */
-    public default Collection<Permission> newPermissions(Domain domain, KapuaId targetScopeId, KapuaId groupId, boolean forwardable, Actions... actions) {
+    default Collection<Permission> newPermissions(Domain domain, KapuaId targetScopeId, KapuaId groupId, boolean forwardable, Actions... actions) {
         return Arrays.stream(actions)
                 .map(action -> newPermission(domain, action, targetScopeId, groupId, forwardable))
                 .collect(Collectors.toList());

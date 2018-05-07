@@ -64,11 +64,11 @@ public interface CertificateCreator extends KapuaNamedEntityCreator<Certificate>
 
     void setPassword(String password);
 
-    public <C extends CertificateUsage> Set<C> getCertificateUsages();
+    <C extends CertificateUsage> Set<C> getCertificateUsages();
 
-    public void setCertificateUsages(Set<CertificateUsage> certificateUsages);
+    void setCertificateUsages(Set<CertificateUsage> certificateUsages);
 
-    public Boolean getForwardable();
+    Boolean getForwardable();
 
-    public void setForwardable(Boolean forwardable);
+    void setForwardable(Boolean forwardable);
 }

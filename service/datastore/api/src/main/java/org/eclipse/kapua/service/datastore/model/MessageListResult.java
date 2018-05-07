@@ -11,17 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.model;
 
+import org.eclipse.kapua.service.datastore.DatastoreMessageXmlRegistry;
+
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
-import org.eclipse.kapua.service.datastore.DatastoreMessageXmlRegistry;
 
 /**
  * Message information query result list definition.<br>
  * This object contains the list of the message objects retrieved by the search service.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @XmlRootElement(name = "datastoreMessages")
 @XmlType(factoryClass = DatastoreMessageXmlRegistry.class, factoryMethod = "newDatastoreMessageListResult")

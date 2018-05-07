@@ -15,16 +15,15 @@ import java.util.List;
 
 /**
  * Query "and" aggregation definition
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public interface AndPredicate extends StorablePredicate {
 
     /**
      * Get the {@link StorablePredicate} list
-     * 
+     *
      * @return
      */
-    public List<StorablePredicate> getPredicates();
+    List<StorablePredicate> getPredicates();
 }

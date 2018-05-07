@@ -29,10 +29,10 @@ public interface CredentialService extends KapuaEntityService<Credential, Creden
         KapuaDomainService<CredentialDomain>,
         KapuaConfigurableService {
 
-    public static final CredentialDomain CREDENTIAL_DOMAIN = new CredentialDomain();
+    CredentialDomain CREDENTIAL_DOMAIN = new CredentialDomain();
 
     @Override
-    public default CredentialDomain getServiceDomain() {
+    default CredentialDomain getServiceDomain() {
         return CREDENTIAL_DOMAIN;
     }
 
@@ -45,7 +45,7 @@ public interface CredentialService extends KapuaEntityService<Credential, Creden
      * @throws KapuaException
      * @since 1.0
      */
-    public CredentialListResult findByUserId(KapuaId scopeId, KapuaId userId)
+    CredentialListResult findByUserId(KapuaId scopeId, KapuaId userId)
             throws KapuaException;
 
     /**
@@ -56,7 +56,7 @@ public interface CredentialService extends KapuaEntityService<Credential, Creden
      * @throws KapuaException
      * @since 1.0
      */
-    public Credential findByApiKey(String tokenApiKey) throws KapuaException;
+    Credential findByApiKey(String tokenApiKey) throws KapuaException;
 
     /**
      * Queries for all users
@@ -64,7 +64,7 @@ public interface CredentialService extends KapuaEntityService<Credential, Creden
      * @param query
      */
     @Override
-    public CredentialListResult query(KapuaQuery<Credential> query)
+    CredentialListResult query(KapuaQuery<Credential> query)
             throws KapuaException;
 
     /**
@@ -74,5 +74,5 @@ public interface CredentialService extends KapuaEntityService<Credential, Creden
      * @param credentialId
      * @throws KapuaException
      */
-    public void unlock(KapuaId scopeId, KapuaId credentialId) throws KapuaException;
+    void unlock(KapuaId scopeId, KapuaId credentialId) throws KapuaException;
 }

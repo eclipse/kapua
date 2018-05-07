@@ -15,7 +15,7 @@ import org.eclipse.kapua.model.xml.ObjectTypeXmlAdapter;
 
 /**
  * Kapua identifier adapter. It marshal and unmarshal the Kapua identifier in a proper way.
- * 
+ *
  * @since 1.0.0
  */
 public class MetricInfoTypeAdapter extends ObjectTypeXmlAdapter {

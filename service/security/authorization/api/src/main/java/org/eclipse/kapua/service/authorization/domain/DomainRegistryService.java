@@ -24,10 +24,10 @@ import org.eclipse.kapua.service.KapuaEntityService;
  */
 public interface DomainRegistryService extends KapuaEntityService<Domain, DomainCreator>, KapuaDomainService<DomainDomain> {
 
-    public static final DomainDomain DOMAIN_DOMAIN = new DomainDomain();
+    DomainDomain DOMAIN_DOMAIN = new DomainDomain();
 
     @Override
-    public default DomainDomain getServiceDomain() {
+    default DomainDomain getServiceDomain() {
         return DOMAIN_DOMAIN;
     }
 
@@ -41,8 +41,7 @@ public interface DomainRegistryService extends KapuaEntityService<Domain, Domain
      * @since 1.0.0
      */
     @Override
-    public Domain create(DomainCreator domainCreator)
-            throws KapuaException;
+    Domain create(DomainCreator domainCreator) throws KapuaException;
 
     /**
      * Finds the {@link Domain} by scope identifier and {@link Domain} id.
@@ -54,8 +53,7 @@ public interface DomainRegistryService extends KapuaEntityService<Domain, Domain
      * @since 1.0.0
      */
     @Override
-    public Domain find(KapuaId scopeId, KapuaId domainId)
-            throws KapuaException;
+    Domain find(KapuaId scopeId, KapuaId domainId) throws KapuaException;
 
     /**
      * Finds the {@link Domain} by the service name.
@@ -65,8 +63,7 @@ public interface DomainRegistryService extends KapuaEntityService<Domain, Domain
      * @throws KapuaException
      * @since 1.0.0
      */
-    public Domain findByServiceName(String servicename)
-            throws KapuaException;
+    Domain findByServiceName(String servicename) throws KapuaException;
 
     /**
      * Returns the {@link DomainListResult} with elements matching the provided query.
@@ -77,8 +74,7 @@ public interface DomainRegistryService extends KapuaEntityService<Domain, Domain
      * @since 1.0.0
      */
     @Override
-    public DomainListResult query(KapuaQuery<Domain> query)
-            throws KapuaException;
+    DomainListResult query(KapuaQuery<Domain> query) throws KapuaException;
 
     /**
      * Returns the count of the {@link Domain} elements matching the provided query.
@@ -89,8 +85,7 @@ public interface DomainRegistryService extends KapuaEntityService<Domain, Domain
      * @since 1.0.0
      */
     @Override
-    public long count(KapuaQuery<Domain> query)
-            throws KapuaException;
+    long count(KapuaQuery<Domain> query) throws KapuaException;
 
     /**
      * Delete the {@link Domain} by scope id and {@link Domain} id.
@@ -101,7 +96,6 @@ public interface DomainRegistryService extends KapuaEntityService<Domain, Domain
      * @since 1.0.0
      */
     @Override
-    public void delete(KapuaId scopeId, KapuaId roleId)
-            throws KapuaException;
+    void delete(KapuaId scopeId, KapuaId roleId) throws KapuaException;
 
 }

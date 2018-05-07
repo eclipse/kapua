@@ -11,19 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.packages.model;
 
-import java.util.Date;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import java.util.Date;
 
 /**
  * Device package definition.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @XmlRootElement(name = "devicePackage")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -35,59 +33,59 @@ public interface DevicePackage {
 
     /**
      * Get the package name
-     * 
+     *
      * @return
      */
     @XmlElement(name = "name")
-    public String getName();
+    String getName();
 
     /**
      * Set the package name
-     * 
+     *
      * @param dpName
      */
-    public void setName(String dpName);
+    void setName(String dpName);
 
     /**
      * Get the package version
-     * 
+     *
      * @return
      */
     @XmlElement(name = "version")
-    public String getVersion();
+    String getVersion();
 
     /**
      * Set the package version
-     * 
+     *
      * @param dpVersion
      */
-    public void setVersion(String dpVersion);
+    void setVersion(String dpVersion);
 
     /**
      * Get device package bundle informations
-     * 
+     *
      * @return
      */
     @XmlElement(name = "bundleInfos")
-    public <B extends DevicePackageBundleInfos> B getBundleInfos();
+    <B extends DevicePackageBundleInfos> B getBundleInfos();
 
     /**
      * Set device package bundle informations
      */
-    public <B extends DevicePackageBundleInfos> void setBundleInfos(B bundleInfos);
+    <B extends DevicePackageBundleInfos> void setBundleInfos(B bundleInfos);
 
     /**
      * Get the installation date
-     * 
+     *
      * @return
      */
     @XmlElement(name = "installDate")
-    public Date getInstallDate();
+    Date getInstallDate();
 
     /**
      * Set the installation date
-     * 
+     *
      * @param installDate
      */
-    public void setInstallDate(Date installDate);
+    void setInstallDate(Date installDate);
 }

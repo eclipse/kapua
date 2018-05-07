@@ -11,50 +11,49 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.scheduler.trigger;
 
-import javax.xml.bind.annotation.XmlRegistry;
-
 import org.eclipse.kapua.locator.KapuaLocator;
 
+import javax.xml.bind.annotation.XmlRegistry;
+
 /**
- * Trigger xml factory class
- * 
- * @since 1.0
+ * {@link Trigger} xml factory class
  *
+ * @since 1.0
  */
 @XmlRegistry
 public class TriggerXmlRegistry {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final TriggerFactory factory = locator.getFactory(TriggerFactory.class);
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final TriggerFactory TRIGGER_FACTORY = LOCATOR.getFactory(TriggerFactory.class);
 
     /**
      * Creates a new schedule instance
-     * 
+     *
      * @return
      */
     public Trigger newTrigger() {
-        return factory.newEntity(null);
+        return TRIGGER_FACTORY.newEntity(null);
     }
 
     /**
      * Creates a new schedule creator instance
-     * 
+     *
      * @return
      */
     public TriggerCreator newTriggerCreator() {
-        return factory.newCreator(null);
+        return TRIGGER_FACTORY.newCreator(null);
     }
 
     /**
      * Creates a new schedule list result instance
-     * 
+     *
      * @return
      */
     public TriggerListResult newTriggerListResult() {
-        return factory.newListResult();
+        return TRIGGER_FACTORY.newListResult();
     }
 
     public TriggerQuery newQuery() {
-        return factory.newQuery(null);
+        return TRIGGER_FACTORY.newQuery(null);
     }
 }

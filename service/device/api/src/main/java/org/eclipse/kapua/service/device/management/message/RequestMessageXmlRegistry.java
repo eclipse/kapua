@@ -22,18 +22,18 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class RequestMessageXmlRegistry {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final KapuaRequestMessageFactory factory = locator.getFactory(KapuaRequestMessageFactory.class);
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final KapuaRequestMessageFactory KAPUA_REQUEST_MESSAGE_FACTORY = LOCATOR.getFactory(KapuaRequestMessageFactory.class);
 
     public KapuaRequestChannel newRequestChannel() {
-        return factory.newRequestChannel();
+        return KAPUA_REQUEST_MESSAGE_FACTORY.newRequestChannel();
     }
 
     public KapuaRequestMessage<?, ?> newRequestMessage() {
-        return factory.newRequestMessage();
+        return KAPUA_REQUEST_MESSAGE_FACTORY.newRequestMessage();
     }
 
     public KapuaRequestPayload newRequestPayload() {
-        return factory.newRequestPayload();
+        return KAPUA_REQUEST_MESSAGE_FACTORY.newRequestPayload();
     }
 }

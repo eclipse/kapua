@@ -12,6 +12,8 @@
 package org.eclipse.kapua.service.job.targets;
 
 public enum JobTargetStatus {
-    PROCESS_OK, PROCESS_FAILED, PROCESS_AWAITING
+    PROCESS_OK,
+    PROCESS_FAILED,
+    PROCESS_AWAITING
 
 }

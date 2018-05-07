@@ -31,110 +31,110 @@ public interface DeviceEventCreator extends KapuaEntityCreator<DeviceEvent> {
      *
      * @return
      */
-    public KapuaId getDeviceId();
+    KapuaId getDeviceId();
 
     /**
      * Set the device identifier
      *
      * @param deviceId
      */
-    public void setDeviceId(KapuaId deviceId);
+    void setDeviceId(KapuaId deviceId);
 
     /**
      * Get the sent on date
      *
      * @return
      */
-    public Date getSentOn();
+    Date getSentOn();
 
     /**
      * Set the sent on date
      *
      * @param sentOn
      */
-    public void setSentOn(Date sentOn);
+    void setSentOn(Date sentOn);
 
     /**
      * Get the received on date
      *
      * @return
      */
-    public Date getReceivedOn();
+    Date getReceivedOn();
 
     /**
      * Set the received on date
      *
      * @param receivedOn
      */
-    public void setReceivedOn(Date receivedOn);
+    void setReceivedOn(Date receivedOn);
 
     /**
      * Get device position
      *
      * @return
      */
-    public KapuaPosition getPosition();
+    KapuaPosition getPosition();
 
     /**
      * Set device position
      *
      * @param position
      */
-    public void setPosition(KapuaPosition position);
+    void setPosition(KapuaPosition position);
 
     /**
      * Get resource
      *
      * @return
      */
-    public String getResource();
+    String getResource();
 
     /**
      * Set resource
      *
      * @param resource
      */
-    public void setResource(String resource);
+    void setResource(String resource);
 
     /**
      * GHet action
      *
      * @return
      */
-    public KapuaMethod getAction();
+    KapuaMethod getAction();
 
     /**
      * Set action
      *
      * @param action
      */
-    public void setAction(KapuaMethod action);
+    void setAction(KapuaMethod action);
 
     /**
      * Get response code
      *
      * @return
      */
-    public KapuaResponseCode getResponseCode();
+    KapuaResponseCode getResponseCode();
 
     /**
      * Set response code
      *
      * @param responseCode
      */
-    public void setResponseCode(KapuaResponseCode responseCode);
+    void setResponseCode(KapuaResponseCode responseCode);
 
     /**
      * Get event message
      *
      * @return
      */
-    public String getEventMessage();
+    String getEventMessage();
 
     /**
      * Set event message
      *
      * @param eventMessage
      */
-    public void setEventMessage(String eventMessage);
+    void setEventMessage(String eventMessage);
 }

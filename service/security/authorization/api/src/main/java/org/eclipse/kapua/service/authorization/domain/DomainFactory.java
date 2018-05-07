@@ -16,22 +16,19 @@ import org.eclipse.kapua.service.KapuaService;
 
 /**
  * {@link Domain} object factory.
- * 
- * @since 1.0.0
  *
+ * @since 1.0.0
  */
 public interface DomainFactory extends KapuaEntityFactory<Domain, DomainCreator, DomainQuery, DomainListResult> {
 
     /**
      * Instantiate a new {@link DomainCreator} implementing object with the provided parameters.
-     * 
-     * @param name
-     *            The {@link Domain} name to set.
-     * @param serviceName
-     *            The {@link KapuaService} the uses this {@link Domain}.
+     *
+     * @param name        The {@link Domain} name to set.
+     * @param serviceName The {@link KapuaService} the uses this {@link Domain}.
      * @return A instance of the implementing class of {@link Domain}.
      * @since 1.0.0
      */
-    public DomainCreator newCreator(String name, String serviceName);
+    DomainCreator newCreator(String name, String serviceName);
 
 }

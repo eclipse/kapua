@@ -19,9 +19,8 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * Device snapshot entity definition.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @XmlRootElement(name = "snapshot")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -31,31 +30,31 @@ public interface DeviceSnapshot {
 
     /**
      * Get the snapshot identifier
-     * 
+     *
      * @return
      */
     @XmlElement(name = "id")
-    public String getId();
+    String getId();
 
     /**
      * Set the snapshot identifier
-     * 
+     *
      * @param id
      */
-    public void setId(String id);
+    void setId(String id);
 
     /**
      * Get the snapshot timestamp
-     * 
+     *
      * @return
      */
     @XmlElement(name = "timestamp")
-    public Long getTimestamp();
+    Long getTimestamp();
 
     /**
      * Set the snapshot timestamp
-     * 
+     *
      * @param timestamp
      */
-    public void setTimestamp(Long timestamp);
+    void setTimestamp(Long timestamp);
 }

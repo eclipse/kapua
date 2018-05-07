@@ -32,23 +32,23 @@ import java.util.List;
 @XmlType(factoryClass = JobStepXmlRegistry.class, factoryMethod = "newJobStepCreator")
 public interface JobStepCreator extends KapuaNamedEntityCreator<JobStep> {
 
-    public String getDescription();
+    String getDescription();
 
-    public void setDescription(String description);
+    void setDescription(String description);
 
-    public KapuaId getJobId();
+    KapuaId getJobId();
 
-    public void setJobId(KapuaId jobId);
+    void setJobId(KapuaId jobId);
 
-    public int getStepIndex();
+    int getStepIndex();
 
-    public void setStepIndex(int stepIndex);
+    void setStepIndex(int stepIndex);
 
-    public KapuaId getJobStepDefinitionId();
+    KapuaId getJobStepDefinitionId();
 
-    public void setJobStepDefinitionId(KapuaId jobStepDefinitionId);
+    void setJobStepDefinitionId(KapuaId jobStepDefinitionId);
 
-    public <P extends JobStepProperty> List<P> getStepProperties();
+    <P extends JobStepProperty> List<P> getStepProperties();
 
-    public void setJobStepProperties(List<JobStepProperty> jobStepProperties);
+    void setJobStepProperties(List<JobStepProperty> jobStepProperties);
 }

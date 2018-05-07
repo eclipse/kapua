@@ -13,13 +13,12 @@ package org.eclipse.kapua.service.datastore.client;
 
 /**
  * Schema keys and values type definition
- * 
+ *
  * @since 1.0
  */
 public class SchemaKeys {
 
     private SchemaKeys() {
-
     }
 
     /**

@@ -16,22 +16,19 @@ import org.eclipse.kapua.model.id.KapuaId;
 
 /**
  * {@link Group} object factory.
- * 
- * @since 1.0.0
  *
+ * @since 1.0.0
  */
 public interface GroupFactory extends KapuaEntityFactory<Group, GroupCreator, GroupQuery, GroupListResult> {
 
     /**
      * Instantiate a new {@link GroupCreator} implementing object with the provided parameters.
      *
-     * @param scopeId
-     *            The scope id of the group.
-     * @param name
-     *            The {@link Group} name to set.
+     * @param scopeId The scope id of the group.
+     * @param name    The {@link Group} name to set.
      * @return A instance of the implementing class of {@link Group}.
      * @since 1.0.0
      */
-    public GroupCreator newCreator(KapuaId scopeId, String name);
+    GroupCreator newCreator(KapuaId scopeId, String name);
 
 }

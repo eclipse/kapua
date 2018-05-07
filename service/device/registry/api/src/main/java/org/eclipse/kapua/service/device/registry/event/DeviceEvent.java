@@ -49,10 +49,10 @@ import java.util.Date;
         factoryMethod = "newDeviceEvent")
 public interface DeviceEvent extends KapuaEntity {
 
-    public static final String TYPE = "deviceEvent";
+    String TYPE = "deviceEvent";
 
     @Override
-    public default String getType() {
+    default String getType() {
         return TYPE;
     }
 
@@ -65,7 +65,7 @@ public interface DeviceEvent extends KapuaEntity {
     @XmlElement(name = "deviceId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     @ApiModelProperty(dataType = "string")
-    public KapuaId getDeviceId();
+    KapuaId getDeviceId();
 
     /**
      * Set the device identifier
@@ -73,7 +73,7 @@ public interface DeviceEvent extends KapuaEntity {
      * @param deviceId
      * @since 1.0.0
      */
-    public void setDeviceId(KapuaId deviceId);
+    void setDeviceId(KapuaId deviceId);
 
     /**
      * Get the sent on date
@@ -83,7 +83,7 @@ public interface DeviceEvent extends KapuaEntity {
      */
     @XmlElement(name = "sentOn")
     @XmlJavaTypeAdapter(DateXmlAdapter.class)
-    public Date getSentOn();
+    Date getSentOn();
 
     /**
      * Set the sent on date
@@ -91,7 +91,7 @@ public interface DeviceEvent extends KapuaEntity {
      * @param sentOn
      * @since 1.0.0
      */
-    public void setSentOn(Date sentOn);
+    void setSentOn(Date sentOn);
 
     /**
      * Get the received on date
@@ -101,7 +101,7 @@ public interface DeviceEvent extends KapuaEntity {
      */
     @XmlElement(name = "receivedOn")
     @XmlJavaTypeAdapter(DateXmlAdapter.class)
-    public Date getReceivedOn();
+    Date getReceivedOn();
 
     /**
      * Set the received on date
@@ -109,7 +109,7 @@ public interface DeviceEvent extends KapuaEntity {
      * @param receivedOn
      * @since 1.0.0
      */
-    public void setReceivedOn(Date receivedOn);
+    void setReceivedOn(Date receivedOn);
 
     /**
      * Get the device position
@@ -118,7 +118,7 @@ public interface DeviceEvent extends KapuaEntity {
      * @since 1.0.0
      */
     @XmlElement(name = "position")
-    public KapuaPosition getPosition();
+    KapuaPosition getPosition();
 
     /**
      * Set the device position
@@ -126,7 +126,7 @@ public interface DeviceEvent extends KapuaEntity {
      * @param position
      * @since 1.0.0
      */
-    public void setPosition(KapuaPosition position);
+    void setPosition(KapuaPosition position);
 
     /**
      * Get resource
@@ -135,14 +135,14 @@ public interface DeviceEvent extends KapuaEntity {
      * @since 1.0.0
      */
     @XmlElement(name = "resource")
-    public String getResource();
+    String getResource();
 
     /**
      * Set resource
      *
      * @param resource
      */
-    public void setResource(String resource);
+    void setResource(String resource);
 
     /**
      * Get action
@@ -151,7 +151,7 @@ public interface DeviceEvent extends KapuaEntity {
      * @since 1.0.0
      */
     @XmlElement(name = "action")
-    public KapuaMethod getAction();
+    KapuaMethod getAction();
 
     /**
      * Set action
@@ -159,7 +159,7 @@ public interface DeviceEvent extends KapuaEntity {
      * @param action
      * @since 1.0.0
      */
-    public void setAction(KapuaMethod action);
+    void setAction(KapuaMethod action);
 
     /**
      * Get response code
@@ -168,7 +168,7 @@ public interface DeviceEvent extends KapuaEntity {
      * @since 1.0.0
      */
     @XmlElement(name = "responseCode")
-    public KapuaResponseCode getResponseCode();
+    KapuaResponseCode getResponseCode();
 
     /**
      * Set the response code
@@ -176,7 +176,7 @@ public interface DeviceEvent extends KapuaEntity {
      * @param responseCode
      * @since 1.0.0
      */
-    public void setResponseCode(KapuaResponseCode responseCode);
+    void setResponseCode(KapuaResponseCode responseCode);
 
     /**
      * Get event message
@@ -185,7 +185,7 @@ public interface DeviceEvent extends KapuaEntity {
      * @since 1.0.0
      */
     @XmlElement(name = "eventMessage")
-    public String getEventMessage();
+    String getEventMessage();
 
     /**
      * Set the event message
@@ -193,6 +193,6 @@ public interface DeviceEvent extends KapuaEntity {
      * @param eventMessage
      * @since 1.0.0
      */
-    public void setEventMessage(String eventMessage);
+    void setEventMessage(String eventMessage);
 
 }

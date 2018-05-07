@@ -20,5 +20,5 @@ import org.eclipse.kapua.model.KapuaEntityFactory;
  */
 public interface EndpointInfoFactory extends KapuaEntityFactory<EndpointInfo, EndpointInfoCreator, EndpointInfoQuery, EndpointInfoListResult> {
 
-    public EndpointUsage newEndpointUsage(String name);
+    EndpointUsage newEndpointUsage(String name);
 }

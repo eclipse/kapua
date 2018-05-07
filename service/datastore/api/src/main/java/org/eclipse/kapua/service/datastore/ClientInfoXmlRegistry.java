@@ -11,11 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore;
 
-import javax.xml.bind.annotation.XmlRegistry;
-
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
+
+import javax.xml.bind.annotation.XmlRegistry;
 
 /**
  * Client information xml registry
@@ -25,24 +25,24 @@ import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 @XmlRegistry
 public class ClientInfoXmlRegistry {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final DatastoreObjectFactory factory = locator.getFactory(DatastoreObjectFactory.class);
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final DatastoreObjectFactory DATASTORE_OBJECT_FACTORY = LOCATOR.getFactory(DatastoreObjectFactory.class);
 
     /**
      * Creates a {@link ClientInfoListResult} instance
-     * 
+     *
      * @return
      */
     public ClientInfoListResult newClientInfoListResult() {
-        return factory.newClientInfoListResult();
+        return DATASTORE_OBJECT_FACTORY.newClientInfoListResult();
     }
 
     /**
      * Creates a {@link ClientInfoQuery} instance.
-     * 
+     *
      * @return
      */
     public ClientInfoQuery newQuery() {
-        return factory.newClientInfoQuery(null);
+        return DATASTORE_OBJECT_FACTORY.newClientInfoQuery(null);
     }
 }

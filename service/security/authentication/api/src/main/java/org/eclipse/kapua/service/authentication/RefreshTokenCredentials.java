@@ -19,9 +19,8 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * Api key {@link LoginCredentials} definition.
- * 
+ *
  * @since 1.0
- * 
  */
 @XmlRootElement(name = "refreshTokenCredentials")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -30,31 +29,31 @@ public interface RefreshTokenCredentials extends LoginCredentials {
 
     /**
      * return the token id
-     * 
+     *
      * @return
      */
     @XmlElement(name = "tokenId")
-    public String getTokenId();
+    String getTokenId();
 
     /**
      * Set the token id
-     * 
+     *
      * @param tokenId
      */
-    public void setTokenId(String tokenId);
+    void setTokenId(String tokenId);
 
     /**
      * return the refresh token
-     * 
+     *
      * @return
      */
     @XmlElement(name = "refreshToken")
-    public String getRefreshToken();
+    String getRefreshToken();
 
     /**
      * Set the refresh token
-     * 
+     *
      * @param refreshToken
      */
-    public void setRefreshToken(String refreshToken);
+    void setRefreshToken(String refreshToken);
 }

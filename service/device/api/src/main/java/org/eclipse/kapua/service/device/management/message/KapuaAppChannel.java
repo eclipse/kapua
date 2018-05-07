@@ -25,26 +25,26 @@ public interface KapuaAppChannel extends KapuaControlChannel {
      *
      * @return
      */
-    public KapuaAppProperties getAppName();
+    KapuaAppProperties getAppName();
 
     /**
      * Set the application name
      *
      * @param app
      */
-    public void setAppName(KapuaAppProperties app);
+    void setAppName(KapuaAppProperties app);
 
     /**
      * Get the application version
      *
      * @return
      */
-    public KapuaAppProperties getVersion();
+    KapuaAppProperties getVersion();
 
     /**
      * Set the application version
      *
      * @param version
      */
-    public void setVersion(KapuaAppProperties version);
+    void setVersion(KapuaAppProperties version);
 }

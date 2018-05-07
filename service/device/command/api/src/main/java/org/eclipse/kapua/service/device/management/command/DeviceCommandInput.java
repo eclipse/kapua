@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.command;
 
+import org.eclipse.kapua.model.KapuaEntity;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -18,13 +20,10 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.eclipse.kapua.model.KapuaEntity;
-
 /**
  * Device command input entity definition.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @XmlRootElement(name = "commandInput")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -43,137 +42,137 @@ public interface DeviceCommandInput extends KapuaEntity {
 
     /**
      * Get the device command
-     * 
+     *
      * @return
      */
     @XmlElement(name = "command")
-    public String getCommand();
+    String getCommand();
 
     /**
      * Set the device command
-     * 
+     *
      * @param command
      */
-    public void setCommand(String command);
+    void setCommand(String command);
 
     /**
      * Get the device password
-     * 
+     *
      * @return
      */
     @XmlElement(name = "password")
-    public String getPassword();
+    String getPassword();
 
     /**
      * Set the device password
-     * 
+     *
      * @param password
      */
-    public void setPassword(String password);
+    void setPassword(String password);
 
     /**
      * Get command arguments
-     * 
+     *
      * @return
      */
     @XmlElementWrapper(name = "arguments")
     @XmlElement(name = "argument")
-    public String[] getArguments();
+    String[] getArguments();
 
     /**
      * Set command arguments
-     * 
+     *
      * @param arguments
      */
-    public void setArguments(String[] arguments);
+    void setArguments(String[] arguments);
 
     /**
      * Get the command timeout
-     * 
+     *
      * @return
      */
     @XmlElement(name = "timeout")
-    public Integer getTimeout();
+    Integer getTimeout();
 
     /**
      * Set the command timeout
-     * 
+     *
      * @param timeout
      */
-    public void setTimeout(Integer timeout);
+    void setTimeout(Integer timeout);
 
     /**
      * Get the working directory
-     * 
+     *
      * @return
      */
     @XmlElement(name = "workingDir")
-    public String getWorkingDir();
+    String getWorkingDir();
 
     /**
      * Set the working directory
-     * 
+     *
      * @param workingDir
      */
-    public void setWorkingDir(String workingDir);
+    void setWorkingDir(String workingDir);
 
     /**
      * Get the command input body
-     * 
+     *
      * @return
      */
     @XmlElement(name = "body")
-    public byte[] getBody();
+    byte[] getBody();
 
     /**
      * Set the command input body
-     * 
+     *
      * @param bytes
      */
-    public void setBody(byte[] bytes);
+    void setBody(byte[] bytes);
 
     /**
      * Get the environment attributes
-     * 
+     *
      * @return
      */
     @XmlElement(name = "environment")
-    public String[] getEnvironment();
+    String[] getEnvironment();
 
     /**
      * Set the environment attributes
-     * 
+     *
      * @param environment
      */
-    public void setEnvironment(String[] environment);
+    void setEnvironment(String[] environment);
 
     /**
      * Get the asynchronous run flag
-     * 
+     *
      * @return
      */
     @XmlElement(name = "runAsynch")
-    public boolean isRunAsynch();
+    boolean isRunAsynch();
 
     /**
      * Set the asynchronous run flag
-     * 
+     *
      * @param runAsync
      */
-    public void setRunAsynch(boolean runAsync);
+    void setRunAsynch(boolean runAsync);
 
     /**
      * Get the device standard input
-     * 
+     *
      * @return
      */
     @XmlElement(name = "stdin")
-    public String getStdin();
+    String getStdin();
 
     /**
      * Set the device standard input
-     * 
+     *
      * @param stdin
      */
-    public void setStdin(String stdin);
+    void setStdin(String stdin);
 }

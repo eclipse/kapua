@@ -24,10 +24,10 @@ import org.eclipse.kapua.service.KapuaEntityService;
  */
 public interface RolePermissionService extends KapuaEntityService<RolePermission, RolePermissionCreator>, KapuaDomainService<RoleDomain> {
 
-    public static final RoleDomain ROLE_DOMAIN = new RoleDomain();
+    RoleDomain ROLE_DOMAIN = new RoleDomain();
 
     @Override
-    public default RoleDomain getServiceDomain() {
+    default RoleDomain getServiceDomain() {
         return ROLE_DOMAIN;
     }
 
@@ -40,8 +40,7 @@ public interface RolePermissionService extends KapuaEntityService<RolePermission
      * @since 1.0.0
      */
     @Override
-    public RolePermission create(RolePermissionCreator rolePermissionCreator)
-            throws KapuaException;
+    RolePermission create(RolePermissionCreator rolePermissionCreator) throws KapuaException;
 
     /**
      * Finds the {@link RolePermission} by scope identifier and {@link RolePermission} id.
@@ -53,8 +52,7 @@ public interface RolePermissionService extends KapuaEntityService<RolePermission
      * @since 1.0.0
      */
     @Override
-    public RolePermission find(KapuaId scopeId, KapuaId rolePermissionId)
-            throws KapuaException;
+    RolePermission find(KapuaId scopeId, KapuaId rolePermissionId) throws KapuaException;
 
     /**
      * Finds the {@link RolePermission}s by scope identifier and {@link Role} id.
@@ -65,8 +63,7 @@ public interface RolePermissionService extends KapuaEntityService<RolePermission
      * @throws KapuaException
      * @since 1.0.0
      */
-    public RolePermissionListResult findByRoleId(KapuaId scopeId, KapuaId roleId)
-            throws KapuaException;
+    RolePermissionListResult findByRoleId(KapuaId scopeId, KapuaId roleId) throws KapuaException;
 
     /**
      * Returns the {@link RolePermissionListResult} with elements matching the provided query.
@@ -77,8 +74,7 @@ public interface RolePermissionService extends KapuaEntityService<RolePermission
      * @since 1.0.0
      */
     @Override
-    public RolePermissionListResult query(KapuaQuery<RolePermission> query)
-            throws KapuaException;
+    RolePermissionListResult query(KapuaQuery<RolePermission> query) throws KapuaException;
 
     /**
      * Returns the count of the {@link RolePermission} elements matching the provided query.
@@ -89,8 +85,7 @@ public interface RolePermissionService extends KapuaEntityService<RolePermission
      * @since 1.0.0
      */
     @Override
-    public long count(KapuaQuery<RolePermission> query)
-            throws KapuaException;
+    long count(KapuaQuery<RolePermission> query) throws KapuaException;
 
     /**
      * Delete the {@link RolePermission} by scope id and {@link RolePermission} id.
@@ -101,7 +96,6 @@ public interface RolePermissionService extends KapuaEntityService<RolePermission
      * @since 1.0.0
      */
     @Override
-    public void delete(KapuaId scopeId, KapuaId rolePermissionId)
-            throws KapuaException;
+    void delete(KapuaId scopeId, KapuaId rolePermissionId) throws KapuaException;
 
 }

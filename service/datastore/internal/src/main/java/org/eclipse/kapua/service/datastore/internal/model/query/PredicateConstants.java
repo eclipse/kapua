@@ -13,7 +13,7 @@ package org.eclipse.kapua.service.datastore.internal.model.query;
 
 /**
  * Predicates constants (keys and fields names)
- * 
+ *
  * @since 1.0
  */
 public interface PredicateConstants {
@@ -21,51 +21,60 @@ public interface PredicateConstants {
     /**
      * Boolean term
      */
-    public String BOOL_KEY = "bool";
+    String BOOL_KEY = "bool";
+
     /**
      * Exists term
      */
-    public String EXISTS_KEY = "exists";
+    String EXISTS_KEY = "exists";
+
     /**
      * Field
      */
-    public String FIELD_KEY = "field";
+    String FIELD_KEY = "field";
+
     /**
      * Ids term
      */
-    public String IDS_KEY = "ids";
+    String IDS_KEY = "ids";
+
     /**
      * Must term
      */
-    public String MUST_KEY = "must";
+    String MUST_KEY = "must";
+
     /**
      * Prefix term
      */
-    public String PREFIX_KEY = "prefix";
+    String PREFIX_KEY = "prefix";
+
     /**
      * Range term
      */
-    public String RANGE_KEY = "range";
+    String RANGE_KEY = "range";
+
     /**
      * Term
      */
-    public String TERM_KEY = "term";
+    String TERM_KEY = "term";
+
     /**
      * Type term
      */
-    public String TYPE_KEY = "type";
+    String TYPE_KEY = "type";
+
     /**
      * Values term
      */
-    public String VALUES_KEY = "values";
+    String VALUES_KEY = "values";
 
     /**
      * Greater than comparator term
      */
-    public String GTE_KEY = "gte";
+    String GTE_KEY = "gte";
+
     /**
      * Less than comparator term
      */
-    public String LTE_KEY = "lte";
-
+    String LTE_KEY = "lte";
 }

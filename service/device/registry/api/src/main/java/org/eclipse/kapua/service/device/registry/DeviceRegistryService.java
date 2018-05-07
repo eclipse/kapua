@@ -29,10 +29,10 @@ public interface DeviceRegistryService extends KapuaEntityService<Device, Device
         KapuaDomainService<DeviceDomain>,
         KapuaConfigurableService {
 
-    public static final DeviceDomain DEVICE_DOMAIN = new DeviceDomain();
+    DeviceDomain DEVICE_DOMAIN = new DeviceDomain();
 
     @Override
-    public default DeviceDomain getServiceDomain() {
+    default DeviceDomain getServiceDomain() {
         return DEVICE_DOMAIN;
     }
 
@@ -45,8 +45,7 @@ public interface DeviceRegistryService extends KapuaEntityService<Device, Device
      * @since 1.0.0
      */
     @Override
-    public DeviceListResult query(KapuaQuery<Device> query)
-            throws KapuaException;
+    DeviceListResult query(KapuaQuery<Device> query) throws KapuaException;
 
     /**
      * Finds a device by its unique clientId and loads it with all its properties.
@@ -56,6 +55,5 @@ public interface DeviceRegistryService extends KapuaEntityService<Device, Device
      * @return
      * @throws KapuaException
      */
-    public Device findByClientId(KapuaId scopeId, String clientId)
-            throws KapuaException;
+    Device findByClientId(KapuaId scopeId, String clientId) throws KapuaException;
 }

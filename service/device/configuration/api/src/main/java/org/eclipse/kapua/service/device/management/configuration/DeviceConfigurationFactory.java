@@ -17,21 +17,20 @@ import org.eclipse.kapua.model.KapuaObjectFactory;
  * Device configuration entity service factory definition.
  *
  * @since 1.0
- * 
  */
 public interface DeviceConfigurationFactory extends KapuaObjectFactory {
 
     /**
      * Creates a new {@link DeviceComponentConfiguration} using the given component configuration identifier
-     * 
+     *
      * @return
      */
-    public DeviceComponentConfiguration newComponentConfigurationInstance(String componentConfigurationId);
+    DeviceComponentConfiguration newComponentConfigurationInstance(String componentConfigurationId);
 
     /**
      * Creates a new {@link DeviceConfiguration}
-     * 
+     *
      * @return
      */
-    public DeviceConfiguration newConfigurationInstance();
+    DeviceConfiguration newConfigurationInstance();
 }

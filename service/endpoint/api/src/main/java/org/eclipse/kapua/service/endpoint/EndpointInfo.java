@@ -33,39 +33,39 @@ import java.util.Set;
 @XmlType(factoryClass = EndpointInfoXmlRegistry.class, factoryMethod = "newEntity")
 public interface EndpointInfo extends KapuaUpdatableEntity {
 
-    public static final String TYPE = "endpointInfo";
+    String TYPE = "endpointInfo";
 
     @Override
-    public default String getType() {
+    default String getType() {
         return TYPE;
     }
 
     @XmlElement(name = "schema")
-    public String getSchema();
+    String getSchema();
 
-    public void setSchema(String schema);
+    void setSchema(String schema);
 
     @XmlElement(name = "dns")
-    public String getDns();
+    String getDns();
 
-    public void setDns(String dns);
+    void setDns(String dns);
 
     @XmlElement(name = "port")
-    public int getPort();
+    int getPort();
 
-    public void setPort(int port);
+    void setPort(int port);
 
     @XmlElement(name = "secure")
-    public boolean getSecure();
+    boolean getSecure();
 
-    public void setSecure(boolean secure);
+    void setSecure(boolean secure);
 
     @XmlElement(name = "usages")
-    public <E extends EndpointUsage> Set<E> getUsages();
+    <E extends EndpointUsage> Set<E> getUsages();
 
-    public void setUsages(Set<EndpointUsage> endpointUsages);
+    void setUsages(Set<EndpointUsage> endpointUsages);
 
-    public default String toStringURI() {
+    default String toStringURI() {
         try {
             return new URI(
                     getSchema(),

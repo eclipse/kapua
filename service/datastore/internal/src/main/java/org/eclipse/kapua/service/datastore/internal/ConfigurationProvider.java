@@ -19,29 +19,26 @@ import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreConfigu
 /**
  * Define a datastore configuration provider.<br>
  * These service is responsible to get the configuration parameters (profiled by account) such as the data ttl.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public interface ConfigurationProvider {
 
     /**
      * Get the configuration for the given scope
-     * 
+     *
      * @param scopeId
      * @return
      * @throws ConfigurationException
      */
-    public MessageStoreConfiguration getConfiguration(KapuaId scopeId)
-            throws ConfigurationException;
+    MessageStoreConfiguration getConfiguration(KapuaId scopeId) throws ConfigurationException;
 
     /**
      * Get the message information for the given scope
-     * 
+     *
      * @param scopeId
      * @return
      * @throws ConfigurationException
      */
-    public MessageInfo getInfo(KapuaId scopeId)
-            throws ConfigurationException;
+    MessageInfo getInfo(KapuaId scopeId) throws ConfigurationException;
 }

@@ -11,49 +11,49 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.targets;
 
+import org.eclipse.kapua.model.KapuaUpdatableEntity;
+import org.eclipse.kapua.model.id.KapuaId;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.eclipse.kapua.model.KapuaUpdatableEntity;
-import org.eclipse.kapua.model.id.KapuaId;
-
 /**
  * {@link JobTarget} entity.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @XmlRootElement(name = "jobTarget")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = JobTargetXmlRegistry.class, factoryMethod = "newJobTarget")
 public interface JobTarget extends KapuaUpdatableEntity {
 
-    public static final String TYPE = "jobTarget";
+    String TYPE = "jobTarget";
 
-    public default String getType() {
+    @Override
+    default String getType() {
         return TYPE;
     }
 
-    public KapuaId getJobId();
+    KapuaId getJobId();
 
-    public void setJobId(KapuaId jobId);
+    void setJobId(KapuaId jobId);
 
-    public KapuaId getJobTargetId();
+    KapuaId getJobTargetId();
 
-    public void setJobTargetId(KapuaId jobTargetId);
+    void setJobTargetId(KapuaId jobTargetId);
 
-    public JobTargetStatus getStatus();
+    JobTargetStatus getStatus();
 
-    public void setStatus(JobTargetStatus status);
+    void setStatus(JobTargetStatus status);
 
-    public int getStepIndex();
+    int getStepIndex();
 
-    public void setStepIndex(int stepIndex);
+    void setStepIndex(int stepIndex);
 
-    public Exception getException();
+    Exception getException();
 
-    public void setException(Exception e);
+    void setException(Exception e);
 
 }

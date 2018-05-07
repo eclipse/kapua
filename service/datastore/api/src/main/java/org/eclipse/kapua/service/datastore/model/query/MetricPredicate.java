@@ -13,7 +13,7 @@ package org.eclipse.kapua.service.datastore.model.query;
 
 /**
  * Query predicate for matching range values on message metrics implementation
- * 
+ *
  * @since 1.0.0
  */
 public interface MetricPredicate extends RangePredicate {
@@ -21,21 +21,18 @@ public interface MetricPredicate extends RangePredicate {
     /**
      * Gets the metric type to search.
      * This is required because metric with the same name can have different types.
-     * 
+     *
      * @return The metric type
-     * 
      * @since 1.0.0
      */
-    public Class<?> getType();
+    Class<?> getType();
 
     /**
      * Sets the metric type so search.
-     * 
-     * @param type
-     *            The metric type to search.
-     * 
+     *
+     * @param type The metric type to search.
      * @since 1.0.0
      */
-    public void setType(Class<?> type);
+    void setType(Class<?> type);
 
 }

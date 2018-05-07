@@ -27,6 +27,5 @@ public interface DeviceRequestManagementService extends KapuaService, DeviceMana
      * @return response output
      * @throws KapuaException
      */
-    GenericResponseMessage exec(GenericRequestMessage requestInput, Long timeout)
-            throws KapuaException;
+    GenericResponseMessage exec(GenericRequestMessage requestInput, Long timeout) throws KapuaException;
 }

@@ -16,12 +16,11 @@ import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 
 /**
  * {@link JobStepFactory} definition.
- * 
+ *
  * @since 1.0
- * 
  */
 public interface JobStepFactory extends KapuaEntityFactory<JobStep, JobStepCreator, JobStepQuery, JobStepListResult> {
 
-    public JobStepProperty newStepProperty(String name, String propertyType, String propertyValue);
+    JobStepProperty newStepProperty(String name, String propertyType, String propertyValue);
 
 }

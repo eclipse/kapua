@@ -15,11 +15,10 @@ import org.eclipse.kapua.model.KapuaEntityFactory;
 
 /**
  * Trigger factory service definition.
- * 
+ *
  * @since 1.0
- * 
  */
 public interface TriggerFactory extends KapuaEntityFactory<Trigger, TriggerCreator, TriggerQuery, TriggerListResult> {
 
-    public TriggerProperty newTriggerProperty(String name, String type, String value);
+    TriggerProperty newTriggerProperty(String name, String type, String value);
 }

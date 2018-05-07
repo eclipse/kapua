@@ -33,7 +33,7 @@ public interface UserService extends KapuaEntityService<User, UserCreator>,
         KapuaDomainService<UserDomain>,
         KapuaConfigurableService {
 
-    public static final UserDomain USER_DOMAIN = new UserDomain();
+    UserDomain USER_DOMAIN = new UserDomain();
 
     @Override
     default UserDomain getServiceDomain() {
@@ -50,8 +50,7 @@ public interface UserService extends KapuaEntityService<User, UserCreator>,
      * @throws KapuaException
      */
     @Override
-    public User create(UserCreator userCreator)
-            throws KapuaException;
+    User create(UserCreator userCreator) throws KapuaException;
 
     /**
      * Updates an User in the database and returns the refreshed/reloaded entity instance.<br>
@@ -63,8 +62,7 @@ public interface UserService extends KapuaEntityService<User, UserCreator>,
      * @throws KapuaException
      */
     @Override
-    public User update(User user)
-            throws KapuaException;
+    User update(User user) throws KapuaException;
 
     /**
      * Delete the supplied User.
@@ -72,8 +70,7 @@ public interface UserService extends KapuaEntityService<User, UserCreator>,
      * @param user
      * @throws KapuaException
      */
-    public void delete(User user)
-            throws KapuaException;
+    void delete(User user) throws KapuaException;
 
     /**
      * Returns the User with the specified Id; returns null if the user is not found.<br>
@@ -84,8 +81,7 @@ public interface UserService extends KapuaEntityService<User, UserCreator>,
      * @throws KapuaException
      */
     @Override
-    public User find(KapuaId accountId, KapuaId userId)
-            throws KapuaException;
+    User find(KapuaId accountId, KapuaId userId) throws KapuaException;
 
     /**
      * Returns the User with the specified username; returns null if the user is not found.
@@ -94,8 +90,7 @@ public interface UserService extends KapuaEntityService<User, UserCreator>,
      * @throws KapuaException
      */
     @Override
-    public User findByName(String name)
-            throws KapuaException;
+    User findByName(String name) throws KapuaException;
 
     /**
      * Find user by external id
@@ -104,13 +99,12 @@ public interface UserService extends KapuaEntityService<User, UserCreator>,
      * @return the user or {@code null} if the user could not be found
      * @throws KapuaException in case anything goes wrong
      */
-    public User findByExternalId(String externalId) throws KapuaException;
+    User findByExternalId(String externalId) throws KapuaException;
 
     /**
      * Queries for all users
      */
     @Override
-    public UserListResult query(KapuaQuery<User> query)
-            throws KapuaException;
+    UserListResult query(KapuaQuery<User> query) throws KapuaException;
 
 }

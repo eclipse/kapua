@@ -15,7 +15,7 @@ import org.eclipse.kapua.KapuaException;
 
 /**
  * Event bus listener definition
- * 
+ *
  * @since 1.0
  */
 public interface ServiceEventBusListener {
@@ -23,9 +23,9 @@ public interface ServiceEventBusListener {
     /**
      * Process the on event business logic<BR>
      * <B>NOTE: This method implementation must be thread safe!</B>
-     * 
+     *
      * @param kapuaEvent
      * @throws KapuaException
      */
-    public void onKapuaEvent(ServiceEvent kapuaEvent) throws KapuaException;
+    void onKapuaEvent(ServiceEvent kapuaEvent) throws KapuaException;
 }

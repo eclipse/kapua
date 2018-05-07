@@ -12,19 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.bundle;
 
-import java.util.List;
+import org.eclipse.kapua.KapuaSerializable;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
-import org.eclipse.kapua.KapuaSerializable;
+import java.util.List;
 
 /**
  * Device bundles list entity definition.
  *
  * @since 1.0
- *
  */
 @XmlType(propOrder = { "bundles" }, factoryClass = DeviceBundleXmlRegistry.class, factoryMethod = "newBundleListResult")
 @XmlRootElement(name = "bundles")
@@ -36,5 +34,5 @@ public interface DeviceBundles extends KapuaSerializable {
      * @return
      */
     @XmlElement(name = "bundle")
-    public List<DeviceBundle> getBundles();
+    List<DeviceBundle> getBundles();
 }

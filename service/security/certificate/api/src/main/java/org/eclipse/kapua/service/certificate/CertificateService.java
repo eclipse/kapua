@@ -26,10 +26,10 @@ public interface CertificateService extends KapuaEntityService<Certificate, Cert
         KapuaUpdatableEntityService<Certificate>,
         KapuaDomainService<CertificateDomain> {
 
-    public static final CertificateDomain CERTIFICATE_DOMAIN = new CertificateDomain();
+    CertificateDomain CERTIFICATE_DOMAIN = new CertificateDomain();
 
     @Override
-    public default CertificateDomain getServiceDomain() {
+    default CertificateDomain getServiceDomain() {
         return CERTIFICATE_DOMAIN;
     }
 

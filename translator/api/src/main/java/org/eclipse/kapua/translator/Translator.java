@@ -12,15 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator;
 
-import java.util.Objects;
-import java.util.ServiceLoader;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Objects;
+import java.util.ServiceLoader;
 
 /**
  * Translator base class. Translators are used to allow heterogeneous systems to exchange messages through layered messages domain.
@@ -31,35 +31,27 @@ import org.slf4j.LoggerFactory;
  * <li>Application level (ie Kura)</li>
  * <li>Transport level (ie jms, mqtt, ...)</li>
  * </ul>
- * 
- * @param <FROM_M>
- *            message from type
- * @param <TO_M>
- *            message to type
- * 
+ *
+ * @param <FROM_M> message from type
+ * @param <TO_M>   message to type
  * @since 1.0
- * 
  */
-@SuppressWarnings("rawtypes")
 public abstract class Translator<FROM_M extends Message, TO_M extends Message> {
 
-    private static final Logger logger = LoggerFactory.getLogger(Translator.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Translator.class);
 
-    private static final ServiceLoader<Translator> TRANSLATOR = ServiceLoader.load(Translator.class);
+    private static final ServiceLoader<Translator> AVAILABLE_TRANSLATORS = ServiceLoader.load(Translator.class);
 
     /**
      * Return a translator for the given messages classes.
      * <br>
      * This method will lookup instances of Translator through {@link java.util.ServiceLoader}
-     * 
-     * @param fromMessageClass
-     *            message from type
-     * @param toMessageClass
-     *            message to type
+     *
+     * @param fromMessageClass message from type
+     * @param toMessageClass   message to type
      * @return
      * @throws KapuaException
      */
-    @SuppressWarnings("unchecked")
     public static synchronized <FROM_M extends Message, TO_M extends Message, T extends Translator<FROM_M, TO_M>> T getTranslatorFor(Class<? extends FROM_M> fromMessageClass,
             Class<? extends TO_M> toMessageClass)
             throws KapuaException {
@@ -67,28 +59,25 @@ public abstract class Translator<FROM_M extends Message, TO_M extends Message> {
         Objects.requireNonNull(fromMessageClass);
         Objects.requireNonNull(toMessageClass);
 
-        for (Translator translator : TRANSLATOR) {
+        for (Translator translator : AVAILABLE_TRANSLATORS) {
             if ((fromMessageClass.isAssignableFrom(translator.getClassFrom())) &&
                     toMessageClass.isAssignableFrom(translator.getClassTo())) {
                 return (T) translator;
             }
         }
 
-        logger.error("Cannot find translator from: {}- to: {}", fromMessageClass.getName(), toMessageClass.getName());
+        LOG.error("Cannot find translator from: {} - to: {}", fromMessageClass.getName(), toMessageClass.getName());
         throw new KapuaRuntimeException(KapuaRuntimeErrorCodes.TRANSLATOR_NOT_FOUND,
                 null,
-                new Object[] {
-                        TRANSLATOR,
-                        fromMessageClass.getName(),
-                        toMessageClass.getName(),
-                });
+                AVAILABLE_TRANSLATORS,
+                fromMessageClass.getName(),
+                toMessageClass.getName());
     }
 
     /**
      * Translate message from the domain FROM_M to the domain TO_M
-     * 
-     * @param message
-     *            the message to translate
+     *
+     * @param message the message to translate
      * @return the translated message
      * @throws KapuaException
      */
@@ -96,14 +85,14 @@ public abstract class Translator<FROM_M extends Message, TO_M extends Message> {
 
     /**
      * Return the FROM_M message type
-     * 
+     *
      * @return
      */
     public abstract Class<FROM_M> getClassFrom();
 
     /**
      * Return the TO_M message type
-     * 
+     *
      * @return
      */
     public abstract Class<TO_M> getClassTo();

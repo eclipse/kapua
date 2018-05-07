@@ -11,76 +11,75 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.packages.model;
 
-import javax.xml.bind.annotation.XmlRegistry;
-
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageFactory;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
 
+import javax.xml.bind.annotation.XmlRegistry;
+
 /**
  * Device package xml factory class
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @XmlRegistry
 public class DevicePackageXmlRegistry {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final DevicePackageFactory factory = locator.getFactory(DevicePackageFactory.class);
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final DevicePackageFactory DEVICE_PACKAGE_FACTORY = LOCATOR.getFactory(DevicePackageFactory.class);
 
     /**
      * Creates a new device package instance
-     * 
+     *
      * @return
      */
     public DevicePackage newDevicePackage() {
-        return factory.newDeviceDeploymentPackage();
+        return DEVICE_PACKAGE_FACTORY.newDeviceDeploymentPackage();
     }
 
     /**
      * Creates a new device packages instance
-     * 
+     *
      * @return
      */
     public DevicePackages newDevicePackages() {
-        return factory.newDeviceDeploymentPackages();
+        return DEVICE_PACKAGE_FACTORY.newDeviceDeploymentPackages();
     }
 
     /**
      * Creates a new device package bundle information instance
-     * 
+     *
      * @return
      */
     public DevicePackageBundleInfo newDevicePackageBundleInfo() {
-        return factory.newDevicePackageBundleInfo();
+        return DEVICE_PACKAGE_FACTORY.newDevicePackageBundleInfo();
     }
 
     /**
      * Creates a new device package bundle informations instance
-     * 
+     *
      * @return
      */
     public DevicePackageBundleInfos newDevicePackageBundleInfos() {
-        return factory.newDevicePackageBundleInfos();
+        return DEVICE_PACKAGE_FACTORY.newDevicePackageBundleInfos();
     }
 
     /**
      * Creates a new device package download request instance
-     * 
+     *
      * @return
      */
     public DevicePackageDownloadRequest newDevicePackageDownloadRequest() {
-        return factory.newPackageDownloadRequest();
+        return DEVICE_PACKAGE_FACTORY.newPackageDownloadRequest();
     }
 
     /**
      * Creates a new device package uninstall request instance
-     * 
+     *
      * @return
      */
     public DevicePackageUninstallRequest newDevicePackageUninstallRequest() {
-        return factory.newPackageUninstallRequest();
+        return DEVICE_PACKAGE_FACTORY.newPackageUninstallRequest();
     }
 }

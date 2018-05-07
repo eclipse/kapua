@@ -22,7 +22,6 @@ import javax.xml.bind.annotation.XmlType;
  * This entity is used to get information about bundles installed in the device.
  *
  * @since 1.0
- *
  */
 @XmlRootElement(name = "bundle")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -35,14 +34,14 @@ public interface DeviceBundle {
      * @return
      */
     @XmlElement(name = "id")
-    public long getId();
+    long getId();
 
     /**
      * Set the bundle identifier
      *
      * @param id
      */
-    public void setId(long id);
+    void setId(long id);
 
     /**
      * Get the bundle name
@@ -50,14 +49,14 @@ public interface DeviceBundle {
      * @return
      */
     @XmlElement(name = "name")
-    public String getName();
+    String getName();
 
     /**
      * Set the bundle name
      *
      * @param name
      */
-    public void setName(String name);
+    void setName(String name);
 
     /**
      * Get the bundle state
@@ -65,14 +64,14 @@ public interface DeviceBundle {
      * @return
      */
     @XmlElement(name = "state")
-    public String getState();
+    String getState();
 
     /**
      * Set the bundle state
      *
      * @param state
      */
-    public void setState(String state);
+    void setState(String state);
 
     /**
      * Get the bundle version
@@ -80,13 +79,13 @@ public interface DeviceBundle {
      * @return
      */
     @XmlElement(name = "version")
-    public String getVersion();
+    String getVersion();
 
     /**
      * Set the bundle version
      *
      * @param version
      */
-    public void setVersion(String version);
+    void setVersion(String version);
 
 }

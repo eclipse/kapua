@@ -12,46 +12,41 @@
  *******************************************************************************/
 package org.eclipse.kapua.locator;
 
-import java.util.List;
-
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.service.KapuaService;
 
+import java.util.List;
+
 /**
  * Kapua service loader definition.<br>
  * Each service loader must provide the proper implementation for these methods.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public interface KapuaServiceLoader {
 
     /**
      * Returns an instance of a KapuaService implementing the provided KapuaService class.
-     * 
-     * @param serviceClass
-     *            - class of the service whose instance is required.
-     * @throws KapuaRuntimeException
-     *             with KapuaLocatorErrorCodes.SERVICE_UNAVAILABLE code if service is not available
+     *
+     * @param serviceClass - class of the service whose instance is required.
      * @return service instance
+     * @throws KapuaRuntimeException with KapuaLocatorErrorCodes.SERVICE_UNAVAILABLE code if service is not available
      */
-    public <S extends KapuaService> S getService(Class<S> serviceClass);
+    <S extends KapuaService> S getService(Class<S> serviceClass);
 
     /**
      * Returns an instance of a KapuaEntityFactory implementing the provided KapuaFactory class.
-     * 
-     * @param factoryClass
-     *            - class of the factory whose instance is required.
+     *
+     * @param factoryClass - class of the factory whose instance is required.
      * @return
      */
-    public <F extends KapuaObjectFactory> F getFactory(Class<F> factoryClass);
+    <F extends KapuaObjectFactory> F getFactory(Class<F> factoryClass);
 
     /**
      * Returns a list of all the classes implementing KapuaServices
      *
      * @return a list of all the classes implementing KapuaServices
      */
-    public List<KapuaService> getServices();
-
+    List<KapuaService> getServices();
 }

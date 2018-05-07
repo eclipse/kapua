@@ -31,10 +31,10 @@ public interface JobStepDefinitionService extends KapuaEntityService<JobStepDefi
         KapuaDomainService<JobDomain>,
         KapuaConfigurableService {
 
-    public static final JobDomain JOB_DOMAIN = new JobDomain();
+    JobDomain JOB_DOMAIN = new JobDomain();
 
     @Override
-    public default JobDomain getServiceDomain() {
+    default JobDomain getServiceDomain() {
         return JOB_DOMAIN;
     }
 
@@ -47,6 +47,5 @@ public interface JobStepDefinitionService extends KapuaEntityService<JobStepDefi
      * @since 1.0.0
      */
     @Override
-    public JobStepDefinitionListResult query(KapuaQuery<JobStepDefinition> query)
-            throws KapuaException;
+    JobStepDefinitionListResult query(KapuaQuery<JobStepDefinition> query) throws KapuaException;
 }

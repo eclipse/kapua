@@ -44,7 +44,7 @@ public interface RoleCreator extends KapuaEntityCreator<Role> {
      * @param name The {@link Role} name.
      * @since 1.0.0
      */
-    public void setName(String name);
+    void setName(String name);
 
     /**
      * Gets the {@link Role} name.
@@ -53,7 +53,7 @@ public interface RoleCreator extends KapuaEntityCreator<Role> {
      * @since 1.0.0
      */
     @XmlElement(name = "name")
-    public String getName();
+    String getName();
 
     /**
      * Sets the set of {@link Permissions} to assign to the {@link Role} created entity.
@@ -62,7 +62,7 @@ public interface RoleCreator extends KapuaEntityCreator<Role> {
      * @param permissions The set of {@link Permissions}.
      * @since 1.0.0
      */
-    public void setPermissions(Set<Permission> permissions);
+    void setPermissions(Set<Permission> permissions);
 
     /**
      * Gets the set of {@link Permission} added to this {@link Role}.
@@ -74,5 +74,5 @@ public interface RoleCreator extends KapuaEntityCreator<Role> {
      */
     @XmlElementWrapper(name = "permissions")
     @XmlElement(name = "permission")
-    public <P extends Permission> Set<P> getPermissions();
+    <P extends Permission> Set<P> getPermissions();
 }

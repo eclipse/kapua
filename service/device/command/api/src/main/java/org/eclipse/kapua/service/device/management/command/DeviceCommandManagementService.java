@@ -33,6 +33,5 @@ public interface DeviceCommandManagementService extends KapuaService, DeviceMana
      * @return
      * @throws KapuaException
      */
-    public DeviceCommandOutput exec(KapuaId scopeId, KapuaId deviceId, DeviceCommandInput commandInput, Long timeout)
-            throws KapuaException;
+    DeviceCommandOutput exec(KapuaId scopeId, KapuaId deviceId, DeviceCommandInput commandInput, Long timeout) throws KapuaException;
 }

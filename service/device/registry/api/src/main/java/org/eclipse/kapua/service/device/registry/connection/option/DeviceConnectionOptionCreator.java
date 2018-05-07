@@ -27,26 +27,26 @@ public interface DeviceConnectionOptionCreator extends KapuaUpdatableEntityCreat
      *
      * @return
      */
-    public ConnectionUserCouplingMode getUserCouplingMode();
+    ConnectionUserCouplingMode getUserCouplingMode();
 
     /**
      * Set the device connection user coupling mode.
      *
      * @param userCouplingMode
      */
-    public void setUserCouplingMode(ConnectionUserCouplingMode userCouplingMode);
+    void setUserCouplingMode(ConnectionUserCouplingMode userCouplingMode);
 
     /**
      * Get the reserved user identifier
      *
      * @return
      */
-    public KapuaId getReservedUserId();
+    KapuaId getReservedUserId();
 
     /**
      * Set the reserved user identifier
      *
      * @param reservedUserId
      */
-    public void setReservedUserId(KapuaId reservedUserId);
+    void setReservedUserId(KapuaId reservedUserId);
 }

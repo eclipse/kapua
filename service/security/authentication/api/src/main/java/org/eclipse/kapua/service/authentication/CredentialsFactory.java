@@ -21,54 +21,52 @@ public interface CredentialsFactory extends KapuaObjectFactory {
 
     /**
      * Creates a new {@link UsernamePasswordCredentials} instance based on provided username and password
-     * 
-     * @param username
-     *            the name of the user
-     * @param password
-     *            the password of the user
+     *
+     * @param username the name of the user
+     * @param password the password of the user
      * @return the new credentials
      */
-    public UsernamePasswordCredentials newUsernamePasswordCredentials(String username, String password);
+    UsernamePasswordCredentials newUsernamePasswordCredentials(String username, String password);
 
     /**
      * Creates a new {@link UsernamePasswordCredentials} instance based on username and password with no preset values
-     * 
+     *
      * @return the new, empty credentials instance
      */
-    public default UsernamePasswordCredentials newUsernamePasswordCredentials() {
+    default UsernamePasswordCredentials newUsernamePasswordCredentials() {
         return newUsernamePasswordCredentials(null, null);
     }
 
     /**
      * Creates a new {@link ApiKeyCredentials} instance based on provided api key
-     * 
+     *
      * @param apiKey
      * @return
      */
-    public ApiKeyCredentials newApiKeyCredentials(String apiKey);
+    ApiKeyCredentials newApiKeyCredentials(String apiKey);
 
     /**
      * Creates a new {@link JwtCredentials} instance based on provided Json Web Token
-     * 
+     *
      * @param jwt
      * @return
      */
-    public JwtCredentials newJwtCredentials(String jwt);
+    JwtCredentials newJwtCredentials(String jwt);
 
     /**
      * Creates a new {@link AccessTokenCredentials} instance based on provided tokenId
-     * 
+     *
      * @param tokenId
      * @return
      */
-    public AccessTokenCredentials newAccessTokenCredentials(String tokenId);
+    AccessTokenCredentials newAccessTokenCredentials(String tokenId);
 
     /**
      * Creates a new {@link RefreshTokenCredentials} instance based on provided tokenId and refresh token
-     * 
+     *
      * @param tokenId
      * @return
      */
-    public RefreshTokenCredentials newRefreshTokenCredentials(String tokenId, String refreshToken);
+    RefreshTokenCredentials newRefreshTokenCredentials(String tokenId, String refreshToken);
 
 }
