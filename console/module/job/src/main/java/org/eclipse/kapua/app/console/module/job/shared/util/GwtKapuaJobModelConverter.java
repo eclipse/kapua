@@ -188,8 +188,7 @@ public class GwtKapuaJobModelConverter {
             String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? JobStepPredicates.STEP_INDEX : loadConfig.getSortField();
             if (sortField.equals("jobStepName")) {
                 sortField = JobStepPredicates.JOB_STEP_NAME;
-            }
-            if (sortField.equals("jobStepDefinitionName")) {
+            } else if (sortField.equals("jobStepDefinitionName")) {
                 sortField = JobStepPredicates.JOB_STEP_DEFINITION_ID;
             }
             SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;

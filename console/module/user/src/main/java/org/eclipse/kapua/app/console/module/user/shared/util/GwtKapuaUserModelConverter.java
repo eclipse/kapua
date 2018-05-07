@@ -66,11 +66,9 @@ public class GwtKapuaUserModelConverter {
         String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? UserPredicates.NAME : loadConfig.getSortField();
         if (sortField.equals("username")) {
             sortField = UserPredicates.NAME;
-        }
-        if (sortField.equals("modifiedByName")) {
+        } else if (sortField.equals("modifiedByName")) {
             sortField = UserPredicates.MODIFIED_BY;
-        }
-        if (sortField.equals("expirationDateFormatted")) {
+        } else if (sortField.equals("expirationDateFormatted")) {
             sortField = UserPredicates.EXPIRATIN_DATE;
         }
         SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;

@@ -51,8 +51,7 @@ public class GwtKapuaAccountModelConverter {
         String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? AccountPredicates.NAME : loadConfig.getSortField();
         if (sortField.equals("modifiedOnFormatted")) {
             sortField = AccountPredicates.MODIFIED_ON;
-        }
-        if (sortField.equals("modifiedByName")) {
+        } else if (sortField.equals("modifiedByName")) {
             sortField = AccountPredicates.MODIFIED_BY;
         }
         SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;

@@ -124,8 +124,7 @@ public class GwtKapuaAuthorizationModelConverter {
         String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? RolePredicates.NAME : loadConfig.getSortField();
         if (sortField.equals("modifiedOnFormatted")) {
             sortField = RolePredicates.MODIFIED_ON;
-        }
-        if (sortField.equals("modifiedByName")) {
+        } else if (sortField.equals("modifiedByName")) {
             sortField = RolePredicates.MODIFIED_BY;
         }
         SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
