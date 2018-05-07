@@ -40,7 +40,7 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
 
     private static final GwtAccessPermissionServiceAsync GWT_ACCESS_PERMISSION_SERVICE = GWT.create(GwtAccessPermissionService.class);
 
-    private static final ConsolePermissionMessages USR_MSGS = GWT.create(ConsolePermissionMessages.class);
+    private static final ConsolePermissionMessages PERMISSION_MSGS = GWT.create(ConsolePermissionMessages.class);
     private static final ConsoleMessages COMMONS_MSGS = GWT.create(ConsoleMessages.class);
 
     private String userId;
@@ -80,23 +80,27 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
 
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
-        ColumnConfig columnConfig = new ColumnConfig("id", USR_MSGS.gridAccessRoleColumnHeaderId(), 100);
+        ColumnConfig columnConfig = new ColumnConfig("id", PERMISSION_MSGS.gridAccessRoleColumnHeaderId(), 100);
         columnConfig.setHidden(true);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("permissionDomain", USR_MSGS.gridAccessRoleColumnHeaderDomain(), 200);
+        columnConfig = new ColumnConfig("permissionDomain", PERMISSION_MSGS.gridAccessRoleColumnHeaderDomain(), 200);
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("permissionAction", USR_MSGS.gridAccessRoleColumnHeaderAction(), 200);
+        columnConfig = new ColumnConfig("permissionAction", PERMISSION_MSGS.gridAccessRoleColumnHeaderAction(), 200);
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("permissionGroupId", USR_MSGS.gridAccessRoleColumnHeaderGroupId(), 200);
+        columnConfig = new ColumnConfig("permissionTargetScopeIdByName", PERMISSION_MSGS.gridAccessRoleColumnHeaderTargetScopeId(), 200);
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("permissionForwardable", USR_MSGS.gridAccessRoleColumnHeaderForwardable(), 200);
+        columnConfig = new ColumnConfig("permissionGroupId", PERMISSION_MSGS.gridAccessRoleColumnHeaderGroupId(), 200);
+        columnConfig.setSortable(false);
+        columnConfigs.add(columnConfig);
+
+        columnConfig = new ColumnConfig("permissionForwardable", PERMISSION_MSGS.gridAccessRoleColumnHeaderForwardable(), 200);
         columnConfig.setRenderer(new GridCellRenderer<GwtAccessPermission>() {
 
             @Override
@@ -107,10 +111,10 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("createdOnFormatted", USR_MSGS.gridAccessRoleColumnHeaderCreatedOn(), 200);
+        columnConfig = new ColumnConfig("createdOnFormatted", PERMISSION_MSGS.gridAccessRoleColumnHeaderCreatedOn(), 200);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("createdByName", USR_MSGS.gridAccessRoleColumnHeaderCreatedBy(), 200);
+        columnConfig = new ColumnConfig("createdByName", PERMISSION_MSGS.gridAccessRoleColumnHeaderCreatedBy(), 200);
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
