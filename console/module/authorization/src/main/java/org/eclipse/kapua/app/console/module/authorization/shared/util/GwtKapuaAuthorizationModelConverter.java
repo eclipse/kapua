@@ -122,8 +122,10 @@ public class GwtKapuaAuthorizationModelConverter {
             roleQuery.setPredicate(new AttributePredicateImpl<String>(RolePredicates.NAME, gwtRoleQuery.getName(), Operator.LIKE));
         }
         String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? RolePredicates.NAME : loadConfig.getSortField();
-        if (sortField.equals("createdOnFormatted")) {
-            sortField = RolePredicates.CREATED_ON;
+        if (sortField.equals("modifiedOnFormatted")) {
+            sortField = RolePredicates.MODIFIED_ON;
+        } else if (sortField.equals("modifiedByName")) {
+            sortField = RolePredicates.MODIFIED_BY;
         }
         SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
         FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);

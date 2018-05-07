@@ -186,6 +186,11 @@ public class GwtKapuaJobModelConverter {
             sortCriteria = new FieldSortCriteria(sortField, sortOrder);
         } else {
             String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? JobStepPredicates.STEP_INDEX : loadConfig.getSortField();
+            if (sortField.equals("jobStepName")) {
+                sortField = JobStepPredicates.JOB_STEP_NAME;
+            } else if (sortField.equals("jobStepDefinitionName")) {
+                sortField = JobStepPredicates.JOB_STEP_DEFINITION_ID;
+            }
             SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
             sortCriteria = new FieldSortCriteria(sortField, sortOrder);
         }
@@ -242,6 +247,13 @@ public class GwtKapuaJobModelConverter {
                 .and(kapuaPropertyTypeAttributePredicate);
 
         String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? TriggerPredicates.ENTITY_ID : loadConfig.getSortField();
+        if (sortField.equals("triggerName")) {
+            sortField = TriggerPredicates.TRIGGER_NAME;
+        } else if (sortField.equals("startsOnFormatted")) {
+            sortField = TriggerPredicates.STARTS_ON;
+        } else if (sortField.equals("endsOnFormatted")) {
+            sortField = TriggerPredicates.ENDS_ON;
+        }
         SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
         FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
         triggerQuery.setSortCriteria(sortCriteria);
