@@ -94,6 +94,10 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
+        columnConfig = new ColumnConfig("targetScopeIdByName", ROLE_MSGS.gridRolePermissionColumnHeaderTargetScopeId(), 200);
+        columnConfig.setSortable(false);
+        columnConfigs.add(columnConfig);
+
         columnConfig = new ColumnConfig("groupId", ROLE_MSGS.gridRolePermissionColumnHeaderTargetGroup(), 100);
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);

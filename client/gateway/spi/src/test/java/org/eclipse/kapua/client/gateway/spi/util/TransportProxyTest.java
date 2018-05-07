@@ -11,9 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.gateway.spi.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
@@ -21,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.kapua.client.gateway.Transport.ListenerHandle;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -78,37 +76,37 @@ public class TransportProxyTest {
 
         try (final TransportProxy transportProxy = TransportProxy.proxy(transport, executor)) {
 
-            assertEquals(false, b1.get());
-            assertEquals(false, b2.get());
+            Assert.assertEquals(false, b1.get());
+            Assert.assertEquals(false, b2.get());
 
             final ListenerHandle h1 = transportProxy.listen(b1::set);
 
-            assertEquals(true, b1.await());
-            assertNull(b2.await());
+            Assert.assertEquals(true, b1.await());
+            Assert.assertNull(b2.await());
 
             final ListenerHandle h2 = transportProxy.listen(b2::set);
 
-            assertNull(b1.await());
-            assertEquals(true, b2.await());
+            Assert.assertNull(b1.await());
+            Assert.assertEquals(true, b2.await());
 
             transport.handleDisconnected();
 
-            assertEquals(false, b1.await());
-            assertEquals(false, b2.await());
+            Assert.assertEquals(false, b1.await());
+            Assert.assertEquals(false, b2.await());
 
             h2.close();
 
             transport.handleConnected();
 
-            assertEquals(true, b1.await());
-            assertNull(b2.await());
+            Assert.assertEquals(true, b1.await());
+            Assert.assertNull(b2.await());
 
             h1.close();
 
             transport.handleDisconnected();
 
-            assertNull(b1.await());
-            assertNull(b2.await());
+            Assert.assertNull(b1.await());
+            Assert.assertNull(b2.await());
 
         }
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,6 +15,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+
+import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.KapuaBaseModel;
 
 public class GwtDeviceEvent extends KapuaBaseModel implements Serializable {
@@ -52,7 +54,7 @@ public class GwtDeviceEvent extends KapuaBaseModel implements Serializable {
             }
         } else if ("receivedOnFormatted".equals(property)) {
             if (getReceivedOn() != null) {
-                return (X) (getReceivedOn());
+                return (X) (DateUtils.formatDateTime(getReceivedOn()));
             } else {
                 return (X) "N/A";
             }

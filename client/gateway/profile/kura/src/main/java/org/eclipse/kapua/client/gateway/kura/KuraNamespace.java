@@ -11,9 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.gateway.kura;
 
-import static java.util.Objects.requireNonNull;
-import static org.eclipse.kapua.client.gateway.Topic.ensureNotSpecial;
-
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -27,8 +25,8 @@ public class KuraNamespace implements MqttNamespace {
         private String accountName;
 
         public Builder accountName(final String accountName) {
-            requireNonNull(accountName);
-            ensureNotSpecial(accountName);
+            Objects.requireNonNull(accountName);
+            Topic.ensureNotSpecial(accountName);
 
             this.accountName = accountName;
             return this;
@@ -55,8 +53,8 @@ public class KuraNamespace implements MqttNamespace {
 
     @Override
     public String dataTopic(final String clientId, final String applicationId, final Topic topic) {
-        ensureNotSpecial(clientId);
-        ensureNotSpecial(applicationId);
+        Topic.ensureNotSpecial(clientId);
+        Topic.ensureNotSpecial(applicationId);
 
         return Stream.concat(
                 Stream.of(

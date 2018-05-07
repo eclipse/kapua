@@ -11,11 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator.simulation;
 
-import static java.util.Objects.requireNonNull;
-
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.eclipse.kapua.kura.simulator.app.Application;
@@ -31,8 +30,8 @@ import org.eclipse.kapua.kura.simulator.generator.GeneratorScheduler;
 public class ConfiguredSimulation implements Simulation {
 
     public static ConfiguredSimulation from(final Configuration.Application configuration, final String applicationId) {
-        requireNonNull(configuration);
-        requireNonNull(applicationId);
+        Objects.requireNonNull(configuration);
+        Objects.requireNonNull(applicationId);
 
         // create generators
 

@@ -11,19 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator.generator.basic;
 
-import static java.time.Duration.ofSeconds;
-import static java.util.Optional.of;
-import static org.eclipse.kapua.kura.simulator.generator.Generators.fromSingle;
-import static org.eclipse.kapua.kura.simulator.generator.Generators.sine;
-import static org.eclipse.kapua.kura.simulator.util.Get.getDouble;
-import static org.eclipse.kapua.kura.simulator.util.Get.getInteger;
-import static org.eclipse.kapua.kura.simulator.util.Get.getLong;
-
 import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
 
 import org.eclipse.kapua.kura.simulator.generator.Generator;
+import org.eclipse.kapua.kura.simulator.generator.Generators;
+import org.eclipse.kapua.kura.simulator.util.Get;
 
 public class SineGeneratorFactory extends AbstractGeneratorFactory {
 
@@ -33,12 +27,12 @@ public class SineGeneratorFactory extends AbstractGeneratorFactory {
 
     @Override
     protected Optional<Generator> createFrom(final Map<String, Object> configuration) {
-        final Duration period = getLong(configuration, "period").map(Duration::ofMillis).orElse(ofSeconds(60));
+        final Duration period = Get.getLong(configuration, "period").map(Duration::ofMillis).orElse(Duration.ofSeconds(60));
 
-        final Double amplitude = getDouble(configuration, "amplitude").orElse(100.0);
-        final Double offset = getDouble(configuration, "offset").orElse(0.0);
-        final Short shift = getInteger(configuration, "shift").map(i -> i.shortValue()).orElse(null);
+        final Double amplitude = Get.getDouble(configuration, "amplitude").orElse(100.0);
+        final Double offset = Get.getDouble(configuration, "offset").orElse(0.0);
+        final Short shift = Get.getInteger(configuration, "shift").map(i -> i.shortValue()).orElse(null);
 
-        return of(Generator.onlyMetrics(fromSingle("value", sine(period, amplitude, offset, shift))));
+        return Optional.of(Generator.onlyMetrics(Generators.fromSingle("value", Generators.sine(period, amplitude, offset, shift))));
     }
 }

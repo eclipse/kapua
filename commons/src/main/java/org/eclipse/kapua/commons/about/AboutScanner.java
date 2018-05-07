@@ -16,12 +16,15 @@ import com.google.common.io.CharStreams;
 import org.eclipse.kapua.commons.about.AboutEntry.License;
 import org.reflections.util.ClasspathHelper;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
 import java.util.jar.Manifest;
@@ -30,18 +33,14 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Comparator.comparing;
-import static org.slf4j.LoggerFactory.getLogger;
-
 public final class AboutScanner {
 
-    private static final Logger LOG = getLogger(AboutScanner.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AboutScanner.class);
 
     private final List<AboutEntry> entries;
 
     private AboutScanner(final Stream<AboutEntry> entries) {
-        this.entries = entries.sorted(comparing(AboutEntry::getId)).collect(Collectors.toList());
+        this.entries = entries.sorted(Comparator.comparing(AboutEntry::getId)).collect(Collectors.toList());
     }
 
     public List<AboutEntry> getEntries() {
@@ -140,7 +139,7 @@ public final class AboutScanner {
         setIdFromUrl(about, url);
 
         try {
-            about.setNotice(CharStreams.toString(new InputStreamReader(in, UTF_8)));
+            about.setNotice(CharStreams.toString(new InputStreamReader(in, StandardCharsets.UTF_8)));
         } catch (Exception e) {
         }
 
@@ -157,7 +156,7 @@ public final class AboutScanner {
         setIdFromUrl(about, url);
 
         try {
-            final String text = CharStreams.toString(new InputStreamReader(in, UTF_8));
+            final String text = CharStreams.toString(new InputStreamReader(in, StandardCharsets.UTF_8));
             if (about.getLicense() == License.UNKNOWN) {
                 // only set the text of we don't have any more precise information
                 about.setLicense(new License(null, text, null));

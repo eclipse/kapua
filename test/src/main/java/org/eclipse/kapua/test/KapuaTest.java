@@ -12,11 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.test;
 
-import static org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers.resolveJdbcUrl;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_PASSWORD;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_USERNAME;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -26,9 +21,11 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
+import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
 import org.eclipse.kapua.commons.jpa.SimpleSqlScriptExecutor;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
@@ -56,11 +53,11 @@ public class KapuaTest extends Assert {
     public void setUp() throws SQLException {
         logger.debug("Setting up test...");
         try {
-            System.setProperty(DB_JDBC_CONNECTION_URL_RESOLVER.key(), "H2");
+            System.setProperty(SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER.key(), "H2");
             SystemSetting config = SystemSetting.getInstance();
-            String dbUsername = config.getString(DB_USERNAME);
-            String dbPassword = config.getString(DB_PASSWORD);
-            String jdbcUrl = resolveJdbcUrl();
+            String dbUsername = config.getString(SystemSettingKey.DB_USERNAME);
+            String dbPassword = config.getString(SystemSettingKey.DB_PASSWORD);
+            String jdbcUrl = JdbcConnectionUrlResolvers.resolveJdbcUrl();
 
             connection = DriverManager.getConnection(jdbcUrl, dbUsername, dbPassword);
 
@@ -137,7 +134,7 @@ public class KapuaTest extends Assert {
     }
 
     protected static void enableH2Connection() {
-        System.setProperty(DB_JDBC_CONNECTION_URL_RESOLVER.key(), "H2");
+        System.setProperty(SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER.key(), "H2");
     }
 
     public static void scriptSession(AbstractEntityManagerFactory entityManagerFactory, String fileFilter) throws KapuaException {

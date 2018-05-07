@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.gateway.kura;
 
-import static org.junit.Assert.assertEquals;
-
 import org.eclipse.kapua.client.gateway.Topic;
 import org.eclipse.kapua.client.gateway.kura.KuraNamespace.Builder;
 import org.junit.Assert;
@@ -33,7 +31,7 @@ public class NamespaceTest {
     @Test
     public void testSetAndGetAccount() {
         final Builder builder = new KuraNamespace.Builder().accountName("foo");
-        assertEquals("foo", builder.accountName());
+        Assert.assertEquals("foo", builder.accountName());
     }
 
     @Test
@@ -41,7 +39,7 @@ public class NamespaceTest {
         final KuraNamespace namespace = new KuraNamespace.Builder()
                 .accountName("account")
                 .build();
-        assertEquals("account/c1/a1/seg1", namespace.dataTopic("c1", "a1", Topic.of("seg1")));
+        Assert.assertEquals("account/c1/a1/seg1", namespace.dataTopic("c1", "a1", Topic.of("seg1")));
     }
 
     @Test

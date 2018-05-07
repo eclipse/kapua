@@ -22,6 +22,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.client.ClientException;
 import org.eclipse.kapua.service.datastore.client.DatamodelMappingException;
 import org.eclipse.kapua.service.datastore.client.DatastoreClient;
+import org.eclipse.kapua.service.datastore.client.SchemaKeys;
 import org.eclipse.kapua.service.datastore.client.model.IndexRequest;
 import org.eclipse.kapua.service.datastore.client.model.IndexResponse;
 import org.eclipse.kapua.service.datastore.client.model.TypeDescriptor;
@@ -35,21 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.FIELD_NAME_MESSAGE;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.FIELD_NAME_METRICS;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.FIELD_NAME_PROPERTIES;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_DYNAMIC;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_INDEX;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_TYPE;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_SHARD_NUMBER;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_REFRESH_INTERVAL;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_REPLICA_NUMBER;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_FORMAT;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_DATE;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_KEYWORD;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_STRING;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.VALUE_TRUE;
 
 /**
  * Datastore schema creation/update
@@ -166,10 +152,10 @@ public class Schema {
         ObjectNode typePropertiesNode = SchemaUtil.getObjectNode(); // properties
         ObjectNode metricsNode = SchemaUtil.getObjectNode(); // metrics
         ObjectNode metricsPropertiesNode = SchemaUtil.getObjectNode(); // properties (metric properties)
-        typeNode.set(FIELD_NAME_MESSAGE, messageNode);
-        messageNode.set(FIELD_NAME_PROPERTIES, typePropertiesNode);
-        typePropertiesNode.set(FIELD_NAME_METRICS, metricsNode);
-        metricsNode.set(FIELD_NAME_PROPERTIES, metricsPropertiesNode);
+        typeNode.set(SchemaKeys.FIELD_NAME_MESSAGE, messageNode);
+        messageNode.set(SchemaKeys.FIELD_NAME_PROPERTIES, typePropertiesNode);
+        typePropertiesNode.set(SchemaKeys.FIELD_NAME_METRICS, metricsNode);
+        metricsNode.set(SchemaKeys.FIELD_NAME_PROPERTIES, metricsPropertiesNode);
 
         // metrics mapping
         Set<String> keys = esMetrics.keySet();
@@ -177,19 +163,19 @@ public class Schema {
         for (String key : keys) {
             Metric metric = esMetrics.get(key);
             metricMapping = SchemaUtil.getField(new KeyValueEntry[] {
-                    new KeyValueEntry(KEY_DYNAMIC, VALUE_TRUE) });
+                    new KeyValueEntry(SchemaKeys.KEY_DYNAMIC, SchemaKeys.VALUE_TRUE) });
             ObjectNode matricMappingPropertiesNode = SchemaUtil.getObjectNode(); // properties (inside metric name)
             ObjectNode valueMappingNode;
-            if (metric.getType().equals(TYPE_STRING)) {
-                valueMappingNode = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
-            } else if (metric.getType().equals(TYPE_DATE)) {
+            if (metric.getType().equals(SchemaKeys.TYPE_STRING)) {
+                valueMappingNode = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
+            } else if (metric.getType().equals(SchemaKeys.TYPE_DATE)) {
                 valueMappingNode = SchemaUtil.getField(
-                        new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_DATE), new KeyValueEntry(KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN) });
+                        new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN) });
             } else {
-                valueMappingNode = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, metric.getType()) });
+                valueMappingNode = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, metric.getType()) });
             }
             matricMappingPropertiesNode.set(DatastoreUtils.getClientMetricFromAcronym(metric.getType()), valueMappingNode);
-            metricMapping.set(FIELD_NAME_PROPERTIES, matricMappingPropertiesNode);
+            metricMapping.set(SchemaKeys.FIELD_NAME_PROPERTIES, matricMappingPropertiesNode);
             metricsPropertiesNode.set(metric.getName(), metricMapping);
         }
         return typeNode;
@@ -222,10 +208,10 @@ public class Schema {
         Integer idxReplicaNumber = DatastoreSettings.getInstance().getInt(DatastoreSettingKey.INDEX_REPLICA_NUMBER, 0);
         ObjectNode rootNode = SchemaUtil.getObjectNode();
         ObjectNode refreshIntervaleNode = SchemaUtil.getField(new KeyValueEntry[] {
-                new KeyValueEntry(KEY_REFRESH_INTERVAL, idxRefreshInterval),
-                new KeyValueEntry(KEY_SHARD_NUMBER, idxShardNumber),
-                new KeyValueEntry(KEY_REPLICA_NUMBER, idxReplicaNumber) });
-        rootNode.set(KEY_INDEX, refreshIntervaleNode);
+                new KeyValueEntry(SchemaKeys.KEY_REFRESH_INTERVAL, idxRefreshInterval),
+                new KeyValueEntry(SchemaKeys.KEY_SHARD_NUMBER, idxShardNumber),
+                new KeyValueEntry(SchemaKeys.KEY_REPLICA_NUMBER, idxReplicaNumber) });
+        rootNode.set(SchemaKeys.KEY_INDEX, refreshIntervaleNode);
         logger.info("Creating index for '{}' - refresh: '{}' - shards: '{}' replicas: '{}': ", new Object[] { idxName, idxRefreshInterval, idxShardNumber, idxReplicaNumber });
         return rootNode;
     }

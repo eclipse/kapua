@@ -16,6 +16,7 @@ import java.util.List;
 import org.eclipse.kapua.service.datastore.client.DatamodelMappingException;
 import org.eclipse.kapua.service.datastore.client.QueryConverter;
 import org.eclipse.kapua.service.datastore.client.QueryMappingException;
+import org.eclipse.kapua.service.datastore.client.SchemaKeys;
 import org.eclipse.kapua.service.datastore.internal.AbstractStorableQuery;
 import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.model.query.SortField;
@@ -23,14 +24,6 @@ import org.eclipse.kapua.service.datastore.model.query.SortField;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_EXCLUDES;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_FROM;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_INCLUDES;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_QUERY;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_SIZE;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_SOURCE;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_SORT;
 
 /**
  * Query converter implementation
@@ -48,12 +41,12 @@ public class QueryConverterImpl implements QueryConverter {
         AbstractStorableQuery<?> storableQuery = (AbstractStorableQuery<?>) query;
         // includes/excludes
         ObjectNode includesFields = SchemaUtil.getObjectNode();
-        includesFields.set(KEY_INCLUDES, SchemaUtil.getAsArrayNode(storableQuery.getIncludes(storableQuery.getFetchStyle())));
-        includesFields.set(KEY_EXCLUDES, SchemaUtil.getAsArrayNode(storableQuery.getExcludes(storableQuery.getFetchStyle())));
-        rootNode.set(KEY_SOURCE, includesFields);
+        includesFields.set(SchemaKeys.KEY_INCLUDES, SchemaUtil.getAsArrayNode(storableQuery.getIncludes(storableQuery.getFetchStyle())));
+        includesFields.set(SchemaKeys.KEY_EXCLUDES, SchemaUtil.getAsArrayNode(storableQuery.getExcludes(storableQuery.getFetchStyle())));
+        rootNode.set(SchemaKeys.KEY_SOURCE, includesFields);
         // query
         if (storableQuery.getPredicate() != null) {
-            rootNode.set(KEY_QUERY, storableQuery.getPredicate().toSerializedMap());
+            rootNode.set(SchemaKeys.KEY_QUERY, storableQuery.getPredicate().toSerializedMap());
         }
         // sort
         ArrayNode sortNode = SchemaUtil.getArrayNode();
@@ -66,13 +59,13 @@ public class QueryConverterImpl implements QueryConverter {
         // offset and limit settings
         Integer offset = storableQuery.getOffset();
         if (offset != null) {
-            rootNode.set(KEY_FROM, SchemaUtil.getNumericNode(offset));
+            rootNode.set(SchemaKeys.KEY_FROM, SchemaUtil.getNumericNode(offset));
         }
         Integer limit = storableQuery.getLimit();
         if (limit != null) {
-            rootNode.set(KEY_SIZE, SchemaUtil.getNumericNode(limit));
+            rootNode.set(SchemaKeys.KEY_SIZE, SchemaUtil.getNumericNode(limit));
         }
-        rootNode.set(KEY_SORT, sortNode);
+        rootNode.set(SchemaKeys.KEY_SORT, sortNode);
         return rootNode;
     }
 

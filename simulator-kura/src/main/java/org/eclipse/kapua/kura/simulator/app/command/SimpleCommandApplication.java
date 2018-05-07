@@ -11,8 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator.app.command;
 
-import static java.util.Objects.requireNonNull;
-
+import java.util.Objects;
 import java.util.function.Function;
 
 public class SimpleCommandApplication extends AbstractCommandApplication {
@@ -20,7 +19,7 @@ public class SimpleCommandApplication extends AbstractCommandApplication {
     private final Function<String, String> handler;
 
     public SimpleCommandApplication(final Function<String, String> handler) {
-        requireNonNull(handler);
+        Objects.requireNonNull(handler);
         this.handler = handler;
     }
 

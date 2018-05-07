@@ -12,18 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.steps;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.inject.Inject;
-
 import cucumber.api.Scenario;
+import cucumber.api.java.Before;
+import cucumber.api.java.en.And;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -40,12 +34,11 @@ import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.paho.client.mqttv3.MqttException;
+import org.junit.Assert;
 
-import cucumber.api.java.Before;
-import cucumber.api.java.en.And;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
+import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Steps for testing Access Control List functionality on Broker service.
@@ -185,9 +178,9 @@ public class AclSteps extends BaseQATests {
 
         if ((listenerMqttMessage != null) && (listenerMqttMessage.size() == 1)) {
             String message = listenerMqttMessage.get(topic);
-            assertEquals(payload, message);
+            Assert.assertEquals(payload, message);
         } else {
-            fail("Message not received by broker.");
+            Assert.fail("Message not received by broker.");
         }
     }
 
@@ -196,7 +189,7 @@ public class AclSteps extends BaseQATests {
 
         if ((listenerMqttMessage != null) && (listenerMqttMessage.size() >= 1)) {
             String message = listenerMqttMessage.get(topic);
-            assertNotEquals(payload, message);
+            Assert.assertNotEquals(payload, message);
         }
     }
 
@@ -206,10 +199,10 @@ public class AclSteps extends BaseQATests {
         Map<String, String> messages = clientMqttMessage.get(clientId);
         if ((messages != null) && (messages.size() >= 1)) {
             String message = messages.get(topic);
-            assertEquals(payload, message);
+            Assert.assertEquals(payload, message);
         } else {
             // TODO log (or append in the failure message) this error in a better way
-            fail("Message not received by broker." + (listenerMqttMessage != null && listenerMqttMessage.size() > 0 ? listenerMqttMessage.get(0) : " NULL"));
+            Assert.fail("Message not received by broker." + (listenerMqttMessage != null && listenerMqttMessage.size() > 0 ? listenerMqttMessage.get(0) : " NULL"));
         }
     }
 
@@ -219,7 +212,7 @@ public class AclSteps extends BaseQATests {
         Map<String, String> messages = clientMqttMessage.get(clientId);
         if ((messages != null) && (messages.size() >= 1)) {
             String message = messages.get(topic);
-            assertNotEquals(payload, message);
+            Assert.assertNotEquals(payload, message);
         }
     }
 
@@ -272,14 +265,14 @@ public class AclSteps extends BaseQATests {
     public void exceptionIsThrown() throws Throwable {
 
         Exception e = (Exception) stepData.get("exception");
-        assertNotNull("Exception expected!", e);
+        Assert.assertNotNull("Exception expected!", e);
     }
 
     @Then("^exception is not thrown$")
     public void exceptionIsNotThrown() throws Throwable {
 
         Exception e = (Exception) stepData.get("exception");
-        assertNull("Exception not expected!", e);
+        Assert.assertNull("Exception not expected!", e);
     }
 
     /**

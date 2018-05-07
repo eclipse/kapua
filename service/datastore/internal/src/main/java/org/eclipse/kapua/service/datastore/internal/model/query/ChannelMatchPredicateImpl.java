@@ -19,8 +19,6 @@ import org.eclipse.kapua.service.datastore.model.query.ChannelMatchPredicate;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import static org.eclipse.kapua.service.datastore.internal.model.query.PredicateConstants.PREFIX_KEY;
-
 /**
  * Implementation of query predicate for matching the channel value
  * 
@@ -65,7 +63,7 @@ public class ChannelMatchPredicateImpl implements ChannelMatchPredicate {
     public ObjectNode toSerializedMap() throws DatamodelMappingException {
         ObjectNode rootNode = SchemaUtil.getObjectNode();
         ObjectNode expressionNode = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(field.toString(), (String) expression) });
-        rootNode.set(PREFIX_KEY, expressionNode);
+        rootNode.set(PredicateConstants.PREFIX_KEY, expressionNode);
         return rootNode;
     }
 

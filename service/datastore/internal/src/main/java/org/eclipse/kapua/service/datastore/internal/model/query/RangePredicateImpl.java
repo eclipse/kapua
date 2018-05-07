@@ -19,10 +19,6 @@ import org.eclipse.kapua.service.datastore.model.query.StorableField;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import static org.eclipse.kapua.service.datastore.internal.model.query.PredicateConstants.RANGE_KEY;
-import static org.eclipse.kapua.service.datastore.internal.model.query.PredicateConstants.GTE_KEY;
-import static org.eclipse.kapua.service.datastore.internal.model.query.PredicateConstants.LTE_KEY;
-
 /**
  * Implementation of query predicate for matching range values
  *
@@ -157,14 +153,14 @@ public class RangePredicateImpl implements RangePredicate {
         ObjectNode rootNode = SchemaUtil.getObjectNode();
         ObjectNode valuesNode = SchemaUtil.getObjectNode();
         if (maxValue != null) {
-            SchemaUtil.appendField(valuesNode, LTE_KEY, maxValue);
+            SchemaUtil.appendField(valuesNode, PredicateConstants.LTE_KEY, maxValue);
         }
         if (minValue != null) {
-            SchemaUtil.appendField(valuesNode, GTE_KEY, minValue);
+            SchemaUtil.appendField(valuesNode, PredicateConstants.GTE_KEY, minValue);
         }
         ObjectNode termNode = SchemaUtil.getObjectNode();
         termNode.set(field, valuesNode);
-        rootNode.set(RANGE_KEY, termNode);
+        rootNode.set(PredicateConstants.RANGE_KEY, termNode);
         return rootNode;
     }
 

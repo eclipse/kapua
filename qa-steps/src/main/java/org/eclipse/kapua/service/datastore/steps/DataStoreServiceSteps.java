@@ -12,9 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.steps;
 
-import static org.eclipse.kapua.service.datastore.model.query.SortField.ascending;
-import static org.eclipse.kapua.service.datastore.model.query.SortField.descending;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.DateFormat;
@@ -1722,12 +1719,12 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
 
         List<OrderConstraint<?>> sort = new ArrayList<>();
 
-        sort.add(orderConstraint(descending(MessageSchema.MESSAGE_SENT_ON), Date.class));
-        sort.add(orderConstraint(ascending(MessageSchema.MESSAGE_TIMESTAMP), Date.class));
-        sort.add(orderConstraint(descending(MessageSchema.MESSAGE_CLIENT_ID), String.class));
+        sort.add(orderConstraint(SortField.descending(MessageSchema.MESSAGE_SENT_ON), Date.class));
+        sort.add(orderConstraint(SortField.ascending(MessageSchema.MESSAGE_TIMESTAMP), Date.class));
+        sort.add(orderConstraint(SortField.descending(MessageSchema.MESSAGE_CLIENT_ID), String.class));
 
         List<SortField> order = new ArrayList<>();
-        order.add(descending(MessageSchema.MESSAGE_TIMESTAMP));
+        order.add(SortField.descending(MessageSchema.MESSAGE_TIMESTAMP));
 
         return sort;
     }
@@ -1736,7 +1733,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
 
         List<OrderConstraint<?>> sort = new ArrayList<>();
 
-        sort.add(orderConstraint(ascending(MetricInfoSchema.METRIC_MTR_NAME_FULL), String.class));
+        sort.add(orderConstraint(SortField.ascending(MetricInfoSchema.METRIC_MTR_NAME_FULL), String.class));
 
         return sort;
     }

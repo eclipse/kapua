@@ -24,6 +24,7 @@ import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
 import org.eclipse.kapua.service.datastore.client.ClientUndefinedException;
 import org.eclipse.kapua.service.datastore.client.ModelContext;
 import org.eclipse.kapua.service.datastore.client.QueryConverter;
+import org.eclipse.kapua.service.datastore.client.SchemaKeys;
 import org.eclipse.kapua.service.datastore.client.model.BulkUpdateRequest;
 import org.eclipse.kapua.service.datastore.client.model.BulkUpdateResponse;
 import org.eclipse.kapua.service.datastore.client.model.IndexRequest;
@@ -76,10 +77,6 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_EXCLUDES;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_INCLUDES;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_SOURCE;
 
 /**
  * Client implementation based on Elasticsearch transport client.<br>
@@ -292,9 +289,9 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
         Object queryFetchStyle = queryConverter.getFetchStyle(query);
         logger.debug("Query - converted query: '{}'", queryMap);
         SearchResponse response = null;
-        ObjectNode fetchSourceFields = (ObjectNode) queryMap.path(KEY_SOURCE);
-        String[] includesFields = toIncludedExcludedFields(fetchSourceFields.path(KEY_INCLUDES));
-        String[] excludesFields = toIncludedExcludedFields(fetchSourceFields.path(KEY_EXCLUDES));
+        ObjectNode fetchSourceFields = (ObjectNode) queryMap.path(SchemaKeys.KEY_SOURCE);
+        String[] includesFields = toIncludedExcludedFields(fetchSourceFields.path(SchemaKeys.KEY_INCLUDES));
+        String[] excludesFields = toIncludedExcludedFields(fetchSourceFields.path(SchemaKeys.KEY_EXCLUDES));
         SearchRequestBuilder searchReqBuilder = esClientProvider.getClient().prepareSearch(typeDescriptor.getIndex());
         searchReqBuilder.setTypes(typeDescriptor.getType())
                 .setSource(toSearchSourceBuilder(queryMap))

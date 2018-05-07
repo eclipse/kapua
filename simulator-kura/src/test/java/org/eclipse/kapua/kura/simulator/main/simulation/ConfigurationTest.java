@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator.main.simulation;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.assertj.core.api.Assertions;
 
 import org.eclipse.kapua.kura.simulator.simulation.Configuration;
 import org.eclipse.kapua.kura.simulator.simulation.Configuration.Application;
@@ -22,12 +22,12 @@ public class ConfigurationTest {
 
     @Test
     public void testNotNull() {
-        assertThatThrownBy(() -> new Configuration().setApplications(null)).isInstanceOf(NullPointerException.class);
+        Assertions.assertThatThrownBy(() -> new Configuration().setApplications(null)).isInstanceOf(NullPointerException.class);
 
-        assertThatThrownBy(() -> new Application().setScheduler(null)).isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> new Application().setTopics(null)).isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> new Application().setGenerators(null)).isInstanceOf(NullPointerException.class);
+        Assertions.assertThatThrownBy(() -> new Application().setScheduler(null)).isInstanceOf(NullPointerException.class);
+        Assertions.assertThatThrownBy(() -> new Application().setTopics(null)).isInstanceOf(NullPointerException.class);
+        Assertions.assertThatThrownBy(() -> new Application().setGenerators(null)).isInstanceOf(NullPointerException.class);
 
-        assertThatThrownBy(() -> new Topic().setMetrics(null)).isInstanceOf(NullPointerException.class);
+        Assertions.assertThatThrownBy(() -> new Topic().setMetrics(null)).isInstanceOf(NullPointerException.class);
     }
 }

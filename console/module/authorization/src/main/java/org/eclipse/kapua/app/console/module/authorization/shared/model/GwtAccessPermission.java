@@ -49,6 +49,14 @@ public class GwtAccessPermission extends GwtUpdatableEntityModel {
         set("permissionTargetScopeId", permissionTargetScopeId == null ? "ALL" : permissionTargetScopeId);
     }
 
+    public String getPermissionTargetScopeIdByName() {
+        return get("permissionTargetScopeIdByName");
+    }
+
+    public void setPermissionTargetScopeIdByName(String permissionTargetScopeIdByName) {
+        set("permissionTargetScopeIdByName", permissionTargetScopeIdByName == null ? "ALL" : permissionTargetScopeIdByName);
+    }
+
     public String getPermissionGroupId() {
         return get("permissionGroupId");
     }
@@ -63,14 +71,6 @@ public class GwtAccessPermission extends GwtUpdatableEntityModel {
 
     public void setPermissionForwardable(boolean forwardable) {
         set("permissionForwardable", forwardable);
-    }
-
-    public String getPermissionUserName() {
-        return get("userName");
-    }
-
-    public void setPermissionUserName(String userName) {
-        set("userName", userName);
     }
 
     /**

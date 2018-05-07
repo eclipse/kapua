@@ -10,27 +10,32 @@
 #
 ###############################################################################
 
-if [ "${DOCKERIZED}" == "FALSE" ]; then
-    wget -nc https://github.com/openshift/origin/releases/download/v1.4.1/openshift-origin-server-v1.4.1-3f9807a-linux-64bit.tar.gz -O /tmp/openshift-origin-server-v1.4.1-3f9807a-linux-64bit.tar.gz
-fi
-
 set -e
 
-### Configuration
-
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-. $SCRIPT_DIR/openshift-common.sh
+. ${SCRIPT_DIR}/openshift-common.sh
+
+: OPENSHIFT_DOWNLOAD_LINK=${OPENSHIFT_DOWNLOAD_LINK:='https://github.com/openshift/origin/releases/download/v1.4.1/openshift-origin-server-v1.4.1-3f9807a-linux-64bit.tar.gz'}
 
 ### Install OpenShift distribution
 
-mkdir -p $OPENSHIFT_DIR
-tar xvzf /tmp/openshift-origin-server-v1.4.1-3f9807a-linux-64bit.tar.gz -C /tmp/openshift
+if [ -f "${OPENSHIFT_DIR}/oc" ]; then
+    echo "Found OpenShift client in ${OPENSHIFT_DIR}. Skipping download."
+else
+    mkdir -p ${OPENSHIFT_DIR}
+
+    pushd ${OPENSHIFT_DIR}
+    curl -L ${OPENSHIFT_DOWNLOAD_LINK} | tar xvz --strip 1
+    popd
+fi
 
 ### Start OpenShift cluster
 
 if [ "${DOCKERIZED}" == "FALSE" ]; then
-    cd $OPENSHIFT_DIR
-    $OPENSHIFT_DIR/openshift-origin-server-v1.4.1+3f9807a-linux-64bit/openshift start
+    ${OPENSHIFT_DIR}/openshift start
 else
-    $OC cluster up --metrics
+    ${OC} cluster up --metrics
 fi
+
+echo "OpenShift client has been installed in ${OPENSHIFT_DIR}."
+echo "Add ${OPENSHIFT_DIR} to your \$PATH or export OC=${OPENSHIFT_DIR}/oc before invoking other scripts."

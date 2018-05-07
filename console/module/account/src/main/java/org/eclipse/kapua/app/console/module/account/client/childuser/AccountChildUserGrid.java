@@ -140,7 +140,7 @@ public class AccountChildUserGrid extends EntityGrid<GwtUser> {
         columnConfig = new ColumnConfig("createdBy", MSGS.gridUserColumnHeaderCreatedBy(), 200);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("createdOn", MSGS.gridUserColumnHeaderCreatedOn(), 200);
+        columnConfig = new ColumnConfig("createdOnFormatted", MSGS.gridUserColumnHeaderCreatedOn(), 200);
         columnConfigs.add(columnConfig);
 
         return columnConfigs;

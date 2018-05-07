@@ -11,9 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user.internal;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-
 import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.Date;
@@ -50,6 +47,8 @@ import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserStatus;
 import org.eclipse.kapua.test.MockedLocator;
 import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
+
+import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 import cucumber.api.Scenario;
@@ -161,9 +160,9 @@ public class UserServiceSteps extends AbstractKapuaSteps {
             protected void configure() {
 
                 // Inject mocked Authorization Service method checkPermission
-                AuthorizationService mockedAuthorization = mock(AuthorizationService.class);
+                AuthorizationService mockedAuthorization = Mockito.mock(AuthorizationService.class);
                 try {
-                    Mockito.doNothing().when(mockedAuthorization).checkPermission(any(Permission.class));
+                    Mockito.doNothing().when(mockedAuthorization).checkPermission(Matchers.any(Permission.class));
                 } catch (KapuaException e) {
                     // skip
                 }
@@ -172,7 +171,7 @@ public class UserServiceSteps extends AbstractKapuaSteps {
 
                 mockedLocator.setMockedService(AuthorizationService.class, mockedAuthorization);
                 // Inject mocked Permission Factory
-                PermissionFactory mockedPermissionFactory = mock(PermissionFactory.class);
+                PermissionFactory mockedPermissionFactory = Mockito.mock(PermissionFactory.class);
                 mockedLocator.setMockedFactory(PermissionFactory.class, mockedPermissionFactory);
                 // Set KapuaMetatypeFactory for Metatype configuration
                 KapuaMetatypeFactory metaFactory = new KapuaMetatypeFactoryImpl();

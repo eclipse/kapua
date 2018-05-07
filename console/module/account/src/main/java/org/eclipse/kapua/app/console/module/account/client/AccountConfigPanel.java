@@ -838,7 +838,7 @@ public class AccountConfigPanel extends LayoutContainer {
             try {
                 intValue = Integer.valueOf(value);
             } catch (NumberFormatException nfe) {
-                return nfe.getMessage();
+                return MSGS.numberTooLargeErrorMessage();
             }
             if (intValue != null) {
                 if (minValue != null) {

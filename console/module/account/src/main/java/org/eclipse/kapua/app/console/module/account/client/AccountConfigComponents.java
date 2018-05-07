@@ -94,6 +94,7 @@ public class AccountConfigComponents extends LayoutContainer {
     private AccountConfigPanel devConfPanel;
     private BorderLayoutData centerData;
     private AccountDetailsTabDescription accountDetailsTabDescription;
+    private SeparatorToolItem separatorToolItem = new SeparatorToolItem();
 
     @SuppressWarnings("rawtypes")
     private BaseTreeLoader loader;
@@ -129,6 +130,7 @@ public class AccountConfigComponents extends LayoutContainer {
         dirty = false;
         initialized = false;
         gwtSession = currentSession;
+        initToolBar();
     }
 
     public void setAccount(GwtAccount selectedAccount) {
@@ -143,7 +145,6 @@ public class AccountConfigComponents extends LayoutContainer {
         setBorders(false);
 
         // init components
-        initToolBar();
         initConfigPanel();
 
         ContentPanel accountConfigurationPanel = new ContentPanel();
@@ -231,7 +232,7 @@ public class AccountConfigComponents extends LayoutContainer {
         gwtSession.setFormDirty(false);
 
         toolBar.add(apply);
-        toolBar.add(new SeparatorToolItem());
+        toolBar.add(separatorToolItem);
         toolBar.add(reset);
     }
 
@@ -564,6 +565,14 @@ public class AccountConfigComponents extends LayoutContainer {
             treeStore.add(comps, false);
 
             tree.unmask();
+        }
+    }
+
+    public void removeApplyAndResetButtons(){
+        if (toolBar != null) {
+            toolBar.remove(apply);
+            toolBar.remove(reset);
+            toolBar.remove(separatorToolItem);
         }
     }
 }

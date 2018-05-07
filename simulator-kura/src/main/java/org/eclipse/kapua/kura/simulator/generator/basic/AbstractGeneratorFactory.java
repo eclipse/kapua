@@ -11,14 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator.generator.basic;
 
-import static java.util.Optional.empty;
-
-import java.util.Map;
-import java.util.Optional;
-
 import org.eclipse.kapua.kura.simulator.generator.Generator;
 import org.eclipse.kapua.kura.simulator.generator.GeneratorFactory;
 import org.eclipse.kapua.kura.simulator.util.Get;
+
+import java.util.Map;
+import java.util.Optional;
 
 public abstract class AbstractGeneratorFactory implements GeneratorFactory {
 
@@ -32,7 +30,7 @@ public abstract class AbstractGeneratorFactory implements GeneratorFactory {
     public Optional<Generator> create(final Map<String, Object> configuration) {
         final Optional<String> type = Get.getNonEmptyString(configuration, "type");
         if (!this.type.equals(type)) {
-            return empty();
+            return Optional.empty();
         }
 
         return createFrom(configuration);

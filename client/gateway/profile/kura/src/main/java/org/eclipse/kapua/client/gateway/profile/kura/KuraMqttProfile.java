@@ -11,8 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.gateway.profile.kura;
 
-import static java.util.Objects.requireNonNull;
-
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -27,7 +26,7 @@ import org.eclipse.kapua.client.gateway.spi.DefaultClient;
 public class KuraMqttProfile<B extends AbstractMqttChannel.Builder<B>> {
 
     public static <B extends AbstractMqttChannel.Builder<B>> KuraMqttProfile<B> newProfile(final Supplier<B> builderSupplier) {
-        requireNonNull(builderSupplier);
+        Objects.requireNonNull(builderSupplier);
         return new KuraMqttProfile<>(builderSupplier);
     }
 

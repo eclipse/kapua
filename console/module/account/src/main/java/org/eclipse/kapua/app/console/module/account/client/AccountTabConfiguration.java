@@ -81,4 +81,8 @@ public class AccountTabConfiguration extends KapuaTabItem<GwtAccount> {
 
     }
 
+    public void removeElements(){
+        configComponents.removeApplyAndResetButtons();
+    }
+
 }

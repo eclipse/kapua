@@ -11,17 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.steps;
 
-import static java.time.Duration.ofMillis;
-import static java.time.Duration.ofSeconds;
-import static org.eclipse.kapua.locator.KapuaLocator.getInstance;
-import static org.eclipse.kapua.qa.utils.Suppressed.closeAll;
-import static org.eclipse.kapua.qa.utils.Wait.assertFor;
-import static org.eclipse.kapua.qa.utils.Wait.waitFor;
-import static org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus.CONNECTED;
-import static org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus.DISCONNECTED;
-import static org.eclipse.kapua.service.device.steps.With.withDevice;
-import static org.eclipse.kapua.service.device.steps.With.withUserAccount;
-
 import java.net.URI;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -47,9 +36,12 @@ import org.eclipse.kapua.kura.simulator.app.Application;
 import org.eclipse.kapua.kura.simulator.app.annotated.AnnotatedApplication;
 import org.eclipse.kapua.kura.simulator.app.command.SimpleCommandApplication;
 import org.eclipse.kapua.kura.simulator.app.deploy.SimpleDeployApplication;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.qa.steps.DBHelper;
 import org.eclipse.kapua.qa.steps.EmbeddedBroker;
 import org.eclipse.kapua.qa.utils.Starting;
+import org.eclipse.kapua.qa.utils.Suppressed;
+import org.eclipse.kapua.qa.utils.Wait;
 import org.eclipse.kapua.service.TestJAXBContextProvider;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
@@ -126,7 +118,7 @@ public class SimulatorSteps {
     @After
     public void cleanup() {
         try {
-            closeAll(closables.values().stream().flatMap(Collection::stream));
+            Suppressed.closeAll(closables.values().stream().flatMap(Collection::stream));
         } catch (final Exception e) {
             logger.warn("Error during closing of resources. This may probably be Paho complaining about already closed connections", e);
         }
@@ -148,7 +140,7 @@ public class SimulatorSteps {
 
     @Given("My credentials are username \"(.*)\" and password \"(.*)\"")
     public void setUsernamePasswordCredentials(final String username, final String password) {
-        session.setCredentials(getInstance().getFactory(CredentialsFactory.class).newUsernamePasswordCredentials(username, password));
+        session.setCredentials(KapuaLocator.getInstance().getFactory(CredentialsFactory.class).newUsernamePasswordCredentials(username, password));
     }
 
     @When("I start the simulator")
@@ -176,25 +168,25 @@ public class SimulatorSteps {
 
     @When("I stop the simulator")
     public void stopSimulator() {
-        closeAll(closables.remove("simulator/" + currentDevice.getClientId()));
+        Suppressed.closeAll(closables.remove("simulator/" + currentDevice.getClientId()));
 
         currentDevice.stopped();
     }
 
     @Then("Device (.*) for account (.*) is registered after (\\d+) seconds?")
     public void deviceIsRegistered(final String clientId, final String accountName, final int timeout) throws Exception {
-        assertFor("Wait for connection state to become " + CONNECTED, ofSeconds(timeout), DEFAULT_PERIOD, () -> {
+        Wait.assertFor("Wait for connection state to become " + DeviceConnectionStatus.CONNECTED, Duration.ofSeconds(timeout), DEFAULT_PERIOD, () -> {
             session.withLogin(() -> {
-                assertConnectionStatus(clientId, accountName, CONNECTED);
+                assertConnectionStatus(clientId, accountName, DeviceConnectionStatus.CONNECTED);
             });
         });
     }
 
     @Then("Device (.*) for account (.*) is not registered after (\\d+) seconds?")
     public void deviceIsNotRegistered(final String clientId, final String accountName, final int timeout) throws Exception {
-        assertFor("Wait for connection state to become " + DISCONNECTED, ofSeconds(timeout), DEFAULT_PERIOD, () -> {
+        Wait.assertFor("Wait for connection state to become " + DeviceConnectionStatus.DISCONNECTED, Duration.ofSeconds(timeout), DEFAULT_PERIOD, () -> {
             session.withLogin(() -> {
-                assertConnectionStatus(clientId, accountName, DISCONNECTED);
+                assertConnectionStatus(clientId, accountName, DeviceConnectionStatus.DISCONNECTED);
             });
         });
     }
@@ -202,8 +194,8 @@ public class SimulatorSteps {
     @Then("I expect the device to report the applications")
     public void checkApplications(final List<String> applications) throws Exception {
         session.withLogin(() -> {
-            withUserAccount(currentDevice.getAccountName(), account -> {
-                withDevice(account, currentDevice.getClientId(), device -> {
+            With.withUserAccount(currentDevice.getAccountName(), account -> {
+                With.withDevice(account, currentDevice.getClientId(), device -> {
                     final Set<String> apps = new HashSet<>(Arrays.asList(device.getApplicationIdentifiers().split(",")));
                     Assert.assertEquals(new HashSet<>(applications), apps);
                 });
@@ -215,8 +207,8 @@ public class SimulatorSteps {
     public void checkDeviceInformation() throws Exception {
         final String clientId = currentDevice.getClientId();
         session.withLogin(() -> {
-            withUserAccount(currentDevice.getAccountName(), account -> {
-                withDevice(account, clientId, device -> {
+            With.withUserAccount(currentDevice.getAccountName(), account -> {
+                With.withDevice(account, clientId, device -> {
 
                     Assert.assertNotNull(device);
 
@@ -246,10 +238,10 @@ public class SimulatorSteps {
     @When("I start the bundle (.*) with version (.*)")
     public void startBundle(final String bundleSymbolicName, final String version) throws Exception {
         session.withLogin(() -> {
-            withUserAccount(currentDevice.getAccountName(), account -> {
-                withDevice(account, currentDevice.getClientId(), device -> {
+            With.withUserAccount(currentDevice.getAccountName(), account -> {
+                With.withDevice(account, currentDevice.getClientId(), device -> {
                     DeviceBundle bundle = findBundle(bundleSymbolicName, version);
-                    DeviceBundleManagementService service = getInstance().getService(DeviceBundleManagementService.class);
+                    DeviceBundleManagementService service = KapuaLocator.getInstance().getService(DeviceBundleManagementService.class);
                     service.start(account.getId(), device.getId(), Long.toString(bundle.getId()), DEFAULT_REQUEST_TIMEOUT);
                 });
             });
@@ -259,10 +251,10 @@ public class SimulatorSteps {
     @When("I stop the bundle (.*) with version (.*)")
     public void stopBundle(final String bundleSymbolicName, final String version) throws Exception {
         session.withLogin(() -> {
-            withUserAccount(currentDevice.getAccountName(), account -> {
-                withDevice(account, currentDevice.getClientId(), device -> {
+            With.withUserAccount(currentDevice.getAccountName(), account -> {
+                With.withDevice(account, currentDevice.getClientId(), device -> {
                     DeviceBundle bundle = findBundle(bundleSymbolicName, version);
-                    DeviceBundleManagementService service = getInstance().getService(DeviceBundleManagementService.class);
+                    DeviceBundleManagementService service = KapuaLocator.getInstance().getService(DeviceBundleManagementService.class);
                     service.stop(account.getId(), device.getId(), Long.toString(bundle.getId()), DEFAULT_REQUEST_TIMEOUT);
                 });
             });
@@ -272,9 +264,9 @@ public class SimulatorSteps {
     @When("I fetch the bundle states")
     public void fetchBundlesState() throws Exception {
         session.withLogin(() -> {
-            withUserAccount(currentDevice.getAccountName(), account -> {
-                withDevice(account, currentDevice.getClientId(), device -> {
-                    DeviceBundleManagementService service = getInstance().getService(DeviceBundleManagementService.class);
+            With.withUserAccount(currentDevice.getAccountName(), account -> {
+                With.withDevice(account, currentDevice.getClientId(), device -> {
+                    DeviceBundleManagementService service = KapuaLocator.getInstance().getService(DeviceBundleManagementService.class);
                     DeviceBundles bundles = service.get(account.getId(), device.getId(), DEFAULT_REQUEST_TIMEOUT);
 
                     Assert.assertNotNull(bundles);
@@ -311,9 +303,9 @@ public class SimulatorSteps {
     @When("I fetch the package states")
     public void fetchPackagesState() throws Exception {
         session.withLogin(() -> {
-            withUserAccount(currentDevice.getAccountName(), account -> {
-                withDevice(account, currentDevice.getClientId(), device -> {
-                    final DevicePackageManagementService service = getInstance().getService(DevicePackageManagementService.class);
+            With.withUserAccount(currentDevice.getAccountName(), account -> {
+                With.withDevice(account, currentDevice.getClientId(), device -> {
+                    final DevicePackageManagementService service = KapuaLocator.getInstance().getService(DevicePackageManagementService.class);
 
                     final DevicePackages packages = service.getInstalled(account.getId(), device.getId(), DEFAULT_REQUEST_TIMEOUT);
 
@@ -358,11 +350,11 @@ public class SimulatorSteps {
     @When("I start to download package \"(.+)\" with version (.+) from (.*)")
     public void downloadPackage(final String packageName, final String version, final URI uri) throws Exception {
         session.withLogin(() -> {
-            withUserAccount(currentDevice.getAccountName(), account -> {
-                withDevice(account, currentDevice.getClientId(), device -> {
-                    final DevicePackageManagementService service = getInstance().getService(DevicePackageManagementService.class);
+            With.withUserAccount(currentDevice.getAccountName(), account -> {
+                With.withDevice(account, currentDevice.getClientId(), device -> {
+                    final DevicePackageManagementService service = KapuaLocator.getInstance().getService(DevicePackageManagementService.class);
 
-                    final DevicePackageDownloadRequest request = getInstance().getFactory(DevicePackageFactory.class).newPackageDownloadRequest();
+                    final DevicePackageDownloadRequest request = KapuaLocator.getInstance().getFactory(DevicePackageFactory.class).newPackageDownloadRequest();
                     request.setInstall(true);
                     request.setName(packageName);
                     request.setVersion(version);
@@ -377,12 +369,12 @@ public class SimulatorSteps {
     @Then("The download state changes to (.+) in the next (\\d+) seconds?")
     public void assertDownloadState(final String state, int waitSeconds) throws Exception {
         session.withLogin(() -> {
-            withUserAccount(currentDevice.getAccountName(), account -> {
-                withDevice(account, currentDevice.getClientId(), device -> {
-                    final DevicePackageManagementService service = getInstance().getService(DevicePackageManagementService.class);
+            With.withUserAccount(currentDevice.getAccountName(), account -> {
+                With.withDevice(account, currentDevice.getClientId(), device -> {
+                    final DevicePackageManagementService service = KapuaLocator.getInstance().getService(DevicePackageManagementService.class);
                     final DevicePackageDownloadStatus downloadState = DevicePackageDownloadStatus.valueOf(state);
 
-                    waitFor("Download state change", ofSeconds(waitSeconds), ofMillis(500), () -> {
+                    Wait.waitFor("Download state change", Duration.ofSeconds(waitSeconds), Duration.ofMillis(500), () -> {
                         final DevicePackageDownloadOperation operation = service.downloadStatus(account.getId(), device.getId(), DEFAULT_REQUEST_TIMEOUT);
                         if (operation == null) {
                             return false;
@@ -412,9 +404,9 @@ public class SimulatorSteps {
     }
 
     private void assertConnectionStatus(final String clientId, final String accountName, final DeviceConnectionStatus expectedState) throws Exception {
-        final DeviceConnectionService service = getInstance().getService(DeviceConnectionService.class);
+        final DeviceConnectionService service = KapuaLocator.getInstance().getService(DeviceConnectionService.class);
 
-        withUserAccount(accountName, account -> {
+        With.withUserAccount(accountName, account -> {
 
             final DeviceConnection result = service.findByClientId(account.getId(), clientId);
             Assert.assertNotNull(result);

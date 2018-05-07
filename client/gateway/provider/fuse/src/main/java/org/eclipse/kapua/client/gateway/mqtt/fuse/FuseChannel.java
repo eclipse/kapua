@@ -11,16 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.gateway.mqtt.fuse;
 
-import static java.util.Objects.requireNonNull;
-import static org.eclipse.kapua.client.gateway.mqtt.fuse.internal.Callbacks.asCallback;
-import static org.eclipse.kapua.client.gateway.spi.util.Strings.nonEmptyText;
-
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -31,6 +28,8 @@ import org.eclipse.kapua.client.gateway.mqtt.AbstractMqttChannel;
 import org.eclipse.kapua.client.gateway.mqtt.MqttMessageHandler;
 import org.eclipse.kapua.client.gateway.mqtt.MqttNamespace;
 import org.eclipse.kapua.client.gateway.mqtt.fuse.internal.Callbacks;
+import org.eclipse.kapua.client.gateway.spi.util.Strings;
+
 import org.fusesource.hawtbuf.Buffer;
 import org.fusesource.hawtbuf.UTF8Buffer;
 import org.fusesource.mqtt.client.Callback;
@@ -56,11 +55,11 @@ public class FuseChannel extends AbstractMqttChannel {
         @Override
         public FuseChannel build() throws Exception {
 
-            final URI broker = requireNonNull(broker(), "Broker must be set");
-            final String clientId = nonEmptyText(clientId(), "clientId");
+            final URI broker = Objects.requireNonNull(broker(), "Broker must be set");
+            final String clientId = Strings.nonEmptyText(clientId(), "clientId");
 
-            final MqttNamespace namespace = requireNonNull(namespace(), "Namespace must be set");
-            final BinaryPayloadCodec codec = requireNonNull(codec(), "Codec must be set");
+            final MqttNamespace namespace = Objects.requireNonNull(namespace(), "Namespace must be set");
+            final BinaryPayloadCodec codec = Objects.requireNonNull(codec(), "Codec must be set");
 
             final MQTT mqtt = new MQTT();
             mqtt.setCleanSession(false);
@@ -159,7 +158,7 @@ public class FuseChannel extends AbstractMqttChannel {
     @Override
     public CompletionStage<?> publishMqtt(final String topic, final ByteBuffer payload) {
         final CompletableFuture<Void> future = new CompletableFuture<>();
-        connection.publish(Buffer.utf8(topic), new Buffer(payload), QoS.AT_LEAST_ONCE, false, asCallback(future));
+        connection.publish(Buffer.utf8(topic), new Buffer(payload), QoS.AT_LEAST_ONCE, false, Callbacks.asCallback(future));
         return future;
     }
 

@@ -11,9 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator.util;
 
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
-
 import java.util.Map;
 import java.util.Optional;
 
@@ -25,43 +22,43 @@ public final class Get {
     public static Optional<Long> getLong(final Map<String, Object> configuration, final String key) {
         final Object value = configuration.get(key);
         if (value == null) {
-            return empty();
+            return Optional.empty();
         }
         if (value instanceof Long) {
-            return of((Long) value);
+            return Optional.of((Long) value);
         }
         if (value instanceof Number) {
-            return of(((Number) value).longValue());
+            return Optional.of(((Number) value).longValue());
         }
-        return of(Long.parseLong(value.toString()));
+        return Optional.of(Long.parseLong(value.toString()));
     }
 
     public static Optional<Integer> getInteger(final Map<String, Object> configuration, final String key) {
         final Object value = configuration.get(key);
         if (value == null) {
-            return empty();
+            return Optional.empty();
         }
         if (value instanceof Integer) {
-            return of((Integer) value);
+            return Optional.of((Integer) value);
         }
         if (value instanceof Number) {
-            return of(((Number) value).intValue());
+            return Optional.of(((Number) value).intValue());
         }
-        return of(Integer.parseInt(value.toString()));
+        return Optional.of(Integer.parseInt(value.toString()));
     }
 
     public static Optional<Double> getDouble(final Map<String, Object> configuration, final String key) {
         final Object value = configuration.get(key);
         if (value == null) {
-            return empty();
+            return Optional.empty();
         }
         if (value instanceof Double) {
-            return of((Double) value);
+            return Optional.of((Double) value);
         }
         if (value instanceof Number) {
-            return of(((Number) value).doubleValue());
+            return Optional.of(((Number) value).doubleValue());
         }
-        return of(Double.parseDouble(value.toString()));
+        return Optional.of(Double.parseDouble(value.toString()));
     }
 
     public static Optional<String> getNonEmptyString(final Map<String, Object> configuration, final String key) {
@@ -71,12 +68,12 @@ public final class Get {
     public static Optional<String> getString(final Map<String, Object> configuration, final String key) {
         final Object value = configuration.get(key);
         if (value == null) {
-            return empty();
+            return Optional.empty();
         }
         if (value instanceof String) {
-            return of((String) value);
+            return Optional.of((String) value);
         }
-        return of(value.toString());
+        return Optional.of(value.toString());
     }
 
 }

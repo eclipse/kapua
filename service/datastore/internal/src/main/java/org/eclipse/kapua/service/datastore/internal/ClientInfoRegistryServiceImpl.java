@@ -53,8 +53,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.eclipse.kapua.service.datastore.model.query.SortField.descending;
-
 /**
  * Client information registry implementation.
  *
@@ -188,7 +186,7 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
      */
     private void updateLastPublishedFields(ClientInfo clientInfo) throws KapuaException {
         List<SortField> sort = new ArrayList<>();
-        sort.add(descending(MessageSchema.MESSAGE_TIMESTAMP));
+        sort.add(SortField.descending(MessageSchema.MESSAGE_TIMESTAMP));
 
         MessageQuery messageQuery = new MessageQueryImpl(clientInfo.getScopeId());
         messageQuery.setAskTotalCount(true);

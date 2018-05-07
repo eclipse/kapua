@@ -11,9 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator.generator;
 
-import static java.util.Objects.requireNonNull;
-
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ServiceLoader;
 
@@ -58,8 +57,8 @@ public final class GeneratorFactories {
      * @return the optional result, never {@code null}
      */
     public static Optional<Generator> create(final Map<String, Object> configuration, final Iterable<GeneratorFactory> factories) {
-        requireNonNull(configuration);
-        requireNonNull(factories);
+        Objects.requireNonNull(configuration);
+        Objects.requireNonNull(factories);
 
         for (final GeneratorFactory factory : factories) {
             final Optional<Generator> generator = factory.create(configuration);

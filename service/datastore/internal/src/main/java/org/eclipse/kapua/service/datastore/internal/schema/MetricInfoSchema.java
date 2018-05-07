@@ -16,22 +16,8 @@ import org.eclipse.kapua.service.datastore.client.DatamodelMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_ALL;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_DYNAMIC;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_ENABLED;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_FORMAT;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_INCLUDE_IN_ALL;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_INDEX;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_TYPE;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_SOURCE;
-
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_DATE;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_KEYWORD;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_OBJECT;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.VALUE_TRUE;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.FIELD_NAME_PROPERTIES;
-
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
+import org.eclipse.kapua.service.datastore.client.SchemaKeys;
 
 /**
  * Metric info schema definition
@@ -47,15 +33,15 @@ public class MetricInfoSchema {
     /**
      * Metric information schema name
      */
-    public final static String METRIC_TYPE_NAME = "metric";
+    public static final String METRIC_TYPE_NAME = "metric";
     /**
      * Metric information - channel
      */
-    public final static String METRIC_CHANNEL = "channel";
+    public static final String METRIC_CHANNEL = "channel";
     /**
      * Metric information - client identifier
      */
-    public final static String METRIC_CLIENT_ID = "client_id";
+    public static final String METRIC_CLIENT_ID = "client_id";
     /**
      * Metric information - scope id
      */
@@ -63,47 +49,47 @@ public class MetricInfoSchema {
     /**
      * Metric information - metric map prefix
      */
-    public final static String METRIC_MTR = "metric";
+    public static final String METRIC_MTR = "metric";
     /**
      * Metric information - name
      */
-    public final static String METRIC_MTR_NAME = "name";
+    public static final String METRIC_MTR_NAME = "name";
     /**
      * Metric information - full name (so with the metric type suffix)
      */
-    public final static String METRIC_MTR_NAME_FULL = "metric.name";
+    public static final String METRIC_MTR_NAME_FULL = "metric.name";
     /**
      * Metric information - type
      */
-    public final static String METRIC_MTR_TYPE = "type";
+    public static final String METRIC_MTR_TYPE = "type";
     /**
      * Metric information - full type (so with the metric type suffix)
      */
-    public final static String METRIC_MTR_TYPE_FULL = "metric.type";
+    public static final String METRIC_MTR_TYPE_FULL = "metric.type";
     /**
      * Metric information - value
      */
-    public final static String METRIC_MTR_VALUE = "value";
+    public static final String METRIC_MTR_VALUE = "value";
     /**
      * Metric information - full value (so with the metric type suffix)
      */
-    public final static String METRIC_MTR_VALUE_FULL = "metric.value";
+    public static final String METRIC_MTR_VALUE_FULL = "metric.value";
     /**
      * Metric information - message timestamp (of the first message published in this channel)
      */
-    public final static String METRIC_MTR_TIMESTAMP = "timestamp";
+    public static final String METRIC_MTR_TIMESTAMP = "timestamp";
     /**
      * Metric information - message timestamp (of the first message published in this channel, with the metric type suffix)
      */
-    public final static String METRIC_MTR_TIMESTAMP_FULL = "metric.timestamp";
+    public static final String METRIC_MTR_TIMESTAMP_FULL = "metric.timestamp";
     /**
      * Metric information - message identifier (of the first message published in this channel)
      */
-    public final static String METRIC_MTR_MSG_ID = "message_id";
+    public static final String METRIC_MTR_MSG_ID = "message_id";
     /**
      * Metric information - full message identifier (of the first message published in this channel, with the metric type suffix)
      */
-    public final static String METRIC_MTR_MSG_ID_FULL = "metric.message_id";
+    public static final String METRIC_MTR_MSG_ID_FULL = "metric.message_id";
 
     /**
      * Create and return the Json representation of the metric info schema
@@ -118,47 +104,47 @@ public class MetricInfoSchema {
 
         ObjectNode metricName = SchemaUtil.getObjectNode();
         ObjectNode sourceMetric = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_ENABLED, sourceEnable) });
-        metricName.set(KEY_SOURCE, sourceMetric);
+                new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_ENABLED, sourceEnable) });
+        metricName.set(SchemaKeys.KEY_SOURCE, sourceMetric);
 
         ObjectNode allMetric = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_ENABLED, allEnable) });
-        metricName.set(KEY_ALL, allMetric);
+                new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_ENABLED, allEnable) });
+        metricName.set(SchemaKeys.KEY_ALL, allMetric);
 
         ObjectNode propertiesNode = SchemaUtil.getObjectNode();
         ObjectNode metricAccount = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
+                new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
         propertiesNode.set(METRIC_SCOPE_ID, metricAccount);
         ObjectNode metricClientId = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
+                new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
         propertiesNode.set(METRIC_CLIENT_ID, metricClientId);
         ObjectNode metricChannel = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
+                new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
         propertiesNode.set(METRIC_CHANNEL, metricChannel);
 
         ObjectNode metricMtrNode = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_OBJECT), new KeyValueEntry(KEY_ENABLED, true),
-                        new KeyValueEntry(KEY_DYNAMIC, false), new KeyValueEntry(KEY_INCLUDE_IN_ALL, false) });
+                new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_OBJECT), new KeyValueEntry(SchemaKeys.KEY_ENABLED, true),
+                        new KeyValueEntry(SchemaKeys.KEY_DYNAMIC, false), new KeyValueEntry(SchemaKeys.KEY_INCLUDE_IN_ALL, false) });
         ObjectNode metricMtrPropertiesNode = SchemaUtil.getObjectNode();
         ObjectNode metricMtrNameNode = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
+                new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
         metricMtrPropertiesNode.set(METRIC_MTR_NAME, metricMtrNameNode);
         ObjectNode metricMtrTypeNode = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
+                new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
         metricMtrPropertiesNode.set(METRIC_MTR_TYPE, metricMtrTypeNode);
         ObjectNode metricMtrValueNode = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
+                new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
         metricMtrPropertiesNode.set(METRIC_MTR_VALUE, metricMtrValueNode);
         ObjectNode metricMtrTimestampNode = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_DATE), new KeyValueEntry(KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN) });
+                new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN) });
         metricMtrPropertiesNode.set(METRIC_MTR_TIMESTAMP, metricMtrTimestampNode);
         ObjectNode metricMtrMsgIdNode = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
+                new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
         metricMtrPropertiesNode.set(METRIC_MTR_MSG_ID, metricMtrMsgIdNode);
-        metricMtrNode.set(FIELD_NAME_PROPERTIES, metricMtrPropertiesNode);
+        metricMtrNode.set(SchemaKeys.FIELD_NAME_PROPERTIES, metricMtrPropertiesNode);
         propertiesNode.set(METRIC_MTR, metricMtrNode);
 
-        metricName.set(FIELD_NAME_PROPERTIES, propertiesNode);
+        metricName.set(SchemaKeys.FIELD_NAME_PROPERTIES, propertiesNode);
 
         rootNode.set(METRIC_TYPE_NAME, metricName);
         return rootNode;

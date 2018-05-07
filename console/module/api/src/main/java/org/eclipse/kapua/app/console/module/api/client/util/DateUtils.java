@@ -13,15 +13,17 @@ package org.eclipse.kapua.app.console.module.api.client.util;
 
 import java.util.Date;
 
-import com.google.gwt.i18n.client.TimeZone;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 
 public class DateUtils {
 
 //    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    private static final String NONE = "None";
+    private static final String FORMAT = "EEE dd MMM yyyy HH:mm:ss ZZZZ";
+    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
     private DateUtils() {
     }
@@ -31,11 +33,10 @@ public class DateUtils {
      */
     public static String formatDateTime(Date d) {
         if (d == null) {
-            return NONE;
+            return MSGS.dateTimeNone();
         }
 
-        TimeZone utcTimeZione = TimeZone.createTimeZone(0);
-        return DateTimeFormat.getFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(d, utcTimeZione);
+        return DateTimeFormat.getFormat(FORMAT).format(d);
     }
 
     public static int getYear(Date date) {

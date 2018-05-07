@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.internal;
 
-import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -42,6 +40,8 @@ import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConne
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventImpl;
 import org.eclipse.kapua.service.tag.Taggable;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * {@link Device} implementation.
@@ -499,6 +499,6 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device, 
 
     @Override
     public String toString() {
-        return reflectionToString(this);
+        return ToStringBuilder.reflectionToString(this);
     }
 }

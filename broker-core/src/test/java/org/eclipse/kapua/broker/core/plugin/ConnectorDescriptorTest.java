@@ -11,17 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin;
 
-import static org.eclipse.kapua.broker.core.plugin.Tests.runWithProperties;
-
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor.MessageType;
 import org.eclipse.kapua.broker.core.setting.BrokerSetting;
 import org.eclipse.kapua.broker.core.setting.BrokerSettingKey;
+
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -78,7 +77,7 @@ public class ConnectorDescriptorTest {
         final Map<String, String> properties = new HashMap<>();
         properties.put(BrokerSettingKey.DISABLE_DEFAULT_CONNECTOR_DESCRIPTOR.key(), "true");
 
-        runWithProperties(properties, () -> {
+        Tests.runWithProperties(properties, () -> {
             DefaultConnectorDescriptionProvider provider = new DefaultConnectorDescriptionProvider();
             ConnectorDescriptor descriptor = provider.getDescriptor("foo");
             Assert.assertNull(descriptor);
@@ -93,7 +92,7 @@ public class ConnectorDescriptorTest {
         final Map<String, String> properties = new HashMap<>();
         properties.put(BrokerSettingKey.CONFIGURATION_URI.key(), "file:src/test/resources/does-not-exist.properties");
 
-        runWithProperties(properties, DefaultConnectorDescriptionProvider::new);
+        Tests.runWithProperties(properties, DefaultConnectorDescriptionProvider::new);
     }
 
     /**
@@ -104,7 +103,7 @@ public class ConnectorDescriptorTest {
         final Map<String, String> properties = new HashMap<>();
         properties.put(BrokerSettingKey.CONFIGURATION_URI.key(), "file:src/test/resources/conector.descriptor/1.properties");
 
-        runWithProperties(properties, () -> {
+        Tests.runWithProperties(properties, () -> {
             DefaultConnectorDescriptionProvider provider = new DefaultConnectorDescriptionProvider();
             ConnectorDescriptor descriptor = provider.getDescriptor("foo");
             Assert.assertNotNull(descriptor);
@@ -120,7 +119,7 @@ public class ConnectorDescriptorTest {
         properties.put(BrokerSettingKey.DISABLE_DEFAULT_CONNECTOR_DESCRIPTOR.key(), "true");
         properties.put(BrokerSettingKey.CONFIGURATION_URI.key(), "file:src/test/resources/conector.descriptor/1.properties");
 
-        runWithProperties(properties, () -> {
+        Tests.runWithProperties(properties, () -> {
             DefaultConnectorDescriptionProvider provider = new DefaultConnectorDescriptionProvider();
             ConnectorDescriptor descriptor = provider.getDescriptor("foo");
             Assert.assertNull(descriptor);
@@ -136,7 +135,7 @@ public class ConnectorDescriptorTest {
         properties.put(BrokerSettingKey.DISABLE_DEFAULT_CONNECTOR_DESCRIPTOR.key(), "true");
         properties.put(BrokerSettingKey.CONFIGURATION_URI.key(), "file:src/test/resources/conector.descriptor/2.properties");
 
-        runWithProperties(properties, () -> {
+        Tests.runWithProperties(properties, () -> {
             DefaultConnectorDescriptionProvider provider = new DefaultConnectorDescriptionProvider();
             Assert.assertNull(provider.getDescriptor("foo"));
 
@@ -160,7 +159,7 @@ public class ConnectorDescriptorTest {
         properties.put(BrokerSettingKey.DISABLE_DEFAULT_CONNECTOR_DESCRIPTOR.key(), "true");
         properties.put(BrokerSettingKey.CONFIGURATION_URI.key(), "file:src/test/resources/conector.descriptor/3.properties");
 
-        runWithProperties(properties, DefaultConnectorDescriptionProvider::new);
+        Tests.runWithProperties(properties, DefaultConnectorDescriptionProvider::new);
     }
 
     /**
@@ -171,7 +170,7 @@ public class ConnectorDescriptorTest {
         final Map<String, String> properties = new HashMap<>();
         properties.put(BrokerSettingKey.CONFIGURATION_URI.key(), "");
 
-        runWithProperties(properties, DefaultConnectorDescriptionProvider::new);
+        Tests.runWithProperties(properties, DefaultConnectorDescriptionProvider::new);
     }
 
     @Test

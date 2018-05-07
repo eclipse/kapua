@@ -19,8 +19,6 @@ import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import static org.eclipse.kapua.service.datastore.internal.model.query.PredicateConstants.TERM_KEY;
-
 /**
  * Implementation of query predicate for matching field value
  * 
@@ -98,7 +96,7 @@ public class TermPredicateImpl implements TermPredicate {
     public ObjectNode toSerializedMap() throws DatamodelMappingException {
         ObjectNode rootNode = SchemaUtil.getObjectNode();
         ObjectNode termNode = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(field.field(), value) });
-        rootNode.set(TERM_KEY, termNode);
+        rootNode.set(PredicateConstants.TERM_KEY, termNode);
         return rootNode;
     }
 

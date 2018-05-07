@@ -11,9 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.steps;
 
-import static java.time.Duration.ofSeconds;
-import static org.eclipse.kapua.qa.utils.Suppressed.withRuntimeException;
-
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -83,7 +81,7 @@ public class EmbeddedEventBroker {
             jmsServer = new EmbeddedJMS().setConfiguration(configuration).setJmsConfiguration(jmsConfig).start();
 
             if (EXTRA_STARTUP_DELAY > 0) {
-                Thread.sleep(ofSeconds(EXTRA_STARTUP_DELAY).toMillis());
+                Thread.sleep(Duration.ofSeconds(EXTRA_STARTUP_DELAY).toMillis());
             }
 
             //TODO to remove once the application life cycle will be implemented
@@ -99,7 +97,7 @@ public class EmbeddedEventBroker {
     @After(value = "@StopEventBroker")
     public void stop() {
         logger.info("Stopping instance ...");
-        try (final Suppressed<RuntimeException> s = withRuntimeException()) {
+        try (final Suppressed<RuntimeException> s = Suppressed.withRuntimeException()) {
             // close all resources
             closables.values().stream().flatMap(values -> values.stream()).forEach(s::closeSuppressed);
             // shut down broker

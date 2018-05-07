@@ -11,16 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator.birth;
 
-import static java.time.Instant.now;
-import static org.eclipse.kapua.kura.simulator.app.Sender.transportSender;
-import static org.eclipse.kapua.kura.simulator.topic.Topic.device;
-
+import java.time.Instant;
 import java.util.Set;
 import java.util.function.Supplier;
 
 import org.eclipse.kapua.kura.simulator.GatewayConfiguration;
 import org.eclipse.kapua.kura.simulator.Module;
 import org.eclipse.kapua.kura.simulator.Transport;
+import org.eclipse.kapua.kura.simulator.app.Sender;
+import org.eclipse.kapua.kura.simulator.topic.Topic;
 
 public class BirthCertificateModule implements Module {
 
@@ -28,11 +27,11 @@ public class BirthCertificateModule implements Module {
 
     public BirthCertificateModule(final GatewayConfiguration configuration,
             final Supplier<Set<String>> applicationIds) {
-        birthCertificateBuilder = new BirthCertificateBuilder(configuration, now(), applicationIds);
+        birthCertificateBuilder = new BirthCertificateBuilder(configuration, Instant.now(), applicationIds);
     }
 
     @Override
     public void connected(final Transport transport) {
-        transportSender(device("MQTT/BIRTH"), transport).send(birthCertificateBuilder.build());
+        Sender.transportSender(Topic.device("MQTT/BIRTH"), transport).send(birthCertificateBuilder.build());
     }
 }

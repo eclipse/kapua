@@ -20,10 +20,8 @@ import cucumber.api.java.Before;
 import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 
-import static org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers.resolveJdbcUrl;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_PASSWORD;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_USERNAME;
+import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 
 @ScenarioScoped
 public class DatabaseInstance {
@@ -37,11 +35,11 @@ public class DatabaseInstance {
     private Connection connection;
 
     public DatabaseInstance() throws SQLException {
-        System.setProperty(DB_JDBC_CONNECTION_URL_RESOLVER.key(), "H2");
+        System.setProperty(SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER.key(), "H2");
         SystemSetting config = SystemSetting.getInstance();
-        dbUsername = config.getString(DB_USERNAME);
-        dbPassword = config.getString(DB_PASSWORD);
-        jdbcUrl = resolveJdbcUrl();
+        dbUsername = config.getString(SystemSettingKey.DB_USERNAME);
+        dbPassword = config.getString(SystemSettingKey.DB_PASSWORD);
+        jdbcUrl = JdbcConnectionUrlResolvers.resolveJdbcUrl();
 
         // FIXME: find out why start/stop don't get called
         connection = DriverManager.getConnection(jdbcUrl, dbUsername, dbPassword);
