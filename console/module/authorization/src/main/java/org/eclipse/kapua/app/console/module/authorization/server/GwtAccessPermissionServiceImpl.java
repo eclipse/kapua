@@ -31,7 +31,10 @@ import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.KapuaEntityPredicates;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
@@ -52,6 +55,16 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
 
     private static final long serialVersionUID = 3606053200278262228L;
 
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final AccessInfoService ACCESS_INFO_SERVICE = LOCATOR.getService(AccessInfoService.class);
+
+    private static final AccessPermissionService ACCESS_PERMISSION_SERVICE = LOCATOR.getService(AccessPermissionService.class);
+    private static final AccessPermissionFactory ACCESS_PERMISSION_FACTORY = LOCATOR.getFactory(AccessPermissionFactory.class);
+
+    private static final AccountService ACCOUNT_SERVICE = LOCATOR.getService(AccountService.class);
+    private static final UserService USER_SERVICE = LOCATOR.getService(UserService.class);
+
     @Override
     public GwtAccessPermission create(GwtXSRFToken xsrfToken, GwtAccessPermissionCreator gwtAccessPermissionCreator) throws GwtKapuaException {
 
@@ -67,9 +80,7 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
             AccessPermissionCreator accessPermissionCreator = GwtKapuaAuthorizationModelConverter.convertAccessPermissionCreator(gwtAccessPermissionCreator);
 
             // Create
-            KapuaLocator locator = KapuaLocator.getInstance();
-            AccessPermissionService accessPermissionService = locator.getService(AccessPermissionService.class);
-            AccessPermission accessPermission = accessPermissionService.create(accessPermissionCreator);
+            AccessPermission accessPermission = ACCESS_PERMISSION_SERVICE.create(accessPermissionCreator);
 
             // Convert
             gwtAccessPermission = KapuaGwtAuthorizationModelConverter.convertAccessPermission(accessPermission);
@@ -98,9 +109,7 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
             KapuaId accessPermissionId = GwtKapuaCommonsModelConverter.convertKapuaId(accessPermissionShortId);
 
             // Delete
-            KapuaLocator locator = KapuaLocator.getInstance();
-            AccessPermissionService accessPermissionService = locator.getService(AccessPermissionService.class);
-            accessPermissionService.delete(scopeId, accessPermissionId);
+            ACCESS_PERMISSION_SERVICE.delete(scopeId, accessPermissionId);
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
@@ -112,42 +121,53 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
         // Do get
         int totalLength = 0;
         List<GwtAccessPermission> gwtAccessPermissions = new ArrayList<GwtAccessPermission>();
-        if (userShortId != null) {
 
+        if (userShortId != null) {
             try {
-                KapuaLocator locator = KapuaLocator.getInstance();
-                AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
-                AccessPermissionService accessPermissionService = locator.getService(AccessPermissionService.class);
-                AccessPermissionFactory accessPermissionFactory = locator.getFactory(AccessPermissionFactory.class);
-                final UserService userService = locator.getService(UserService.class);
-                final KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeShortId);
+
+                KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeShortId);
                 KapuaId userId = GwtKapuaCommonsModelConverter.convertKapuaId(userShortId);
 
-                AccessInfo accessInfo = accessInfoService.findByUserId(scopeId, userId);
-                final User user = userService.find(scopeId, userId);
+                AccessInfo accessInfo = ACCESS_INFO_SERVICE.findByUserId(scopeId, userId);
 
                 if (accessInfo != null) {
-                    AccessPermissionQuery accessPermissionQuery = accessPermissionFactory.newQuery(scopeId);
+                    AccessPermissionQuery accessPermissionQuery = ACCESS_PERMISSION_FACTORY.newQuery(scopeId);
                     accessPermissionQuery.setPredicate(new AttributePredicateImpl<KapuaId>(AccessPermissionPredicates.ACCESS_INFO_ID, accessInfo.getId()));
                     accessPermissionQuery.setLimit(loadConfig.getLimit());
                     accessPermissionQuery.setOffset(loadConfig.getOffset());
-                    String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? "createdOn" : loadConfig.getSortField();
+
+                    String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? KapuaEntityPredicates.CREATED_ON : loadConfig.getSortField();
                     SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
                     FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
                     accessPermissionQuery.setSortCriteria(sortCriteria);
-                    AccessPermissionListResult accessPermissionList = accessPermissionService.query(accessPermissionQuery);
+
+                    AccessPermissionListResult accessPermissionList = ACCESS_PERMISSION_SERVICE.query(accessPermissionQuery);
+
                     if (!accessPermissionList.isEmpty()) {
-                        totalLength = Long.valueOf(accessPermissionService.count(accessPermissionQuery)).intValue();
-                        for (AccessPermission accessPermission : accessPermissionList.getItems()) {
-                            User createdUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
+                        totalLength = (int) ACCESS_PERMISSION_SERVICE.count(accessPermissionQuery);
+                        for (final AccessPermission accessPermission : accessPermissionList.getItems()) {
+                            User createdByUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
 
                                 @Override
                                 public User call() throws Exception {
-                                    return userService.find(scopeId, user.getCreatedBy());
+                                    return USER_SERVICE.find(accessPermission.getScopeId(), accessPermission.getCreatedBy());
                                 }
                             });
+
+                            Account targetScopeIdAccount = null;
+                            if (accessPermission.getPermission().getTargetScopeId() != null) {
+                                targetScopeIdAccount = KapuaSecurityUtils.doPrivileged(new Callable<Account>() {
+
+                                    @Override
+                                    public Account call() throws Exception {
+                                        return ACCOUNT_SERVICE.find(accessPermission.getScopeId(), accessPermission.getPermission().getTargetScopeId());
+                                    }
+                                });
+                            }
+
                             GwtAccessPermission gwtAccessPermission = KapuaGwtAuthorizationModelConverter.convertAccessPermission(accessPermission);
-                            gwtAccessPermission.setCreatedByName(createdUser.getName());
+                            gwtAccessPermission.setCreatedByName(createdByUser != null ? createdByUser.getName() : null);
+                            gwtAccessPermission.setPermissionTargetScopeIdByName(targetScopeIdAccount != null ? targetScopeIdAccount.getName() : null);
                             gwtAccessPermissions.add(gwtAccessPermission);
                         }
                     }
@@ -156,6 +176,7 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
                 KapuaExceptionHandler.handle(t);
             }
         }
+
         return new BasePagingLoadResult<GwtAccessPermission>(gwtAccessPermissions, loadConfig.getOffset(), totalLength);
     }
 }
