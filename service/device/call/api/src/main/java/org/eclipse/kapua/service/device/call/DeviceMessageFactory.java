@@ -21,53 +21,51 @@ import org.eclipse.kapua.service.device.call.message.app.request.DeviceRequestPa
 
 /**
  * Device message service factory definition.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-@SuppressWarnings("rawtypes")
 public interface DeviceMessageFactory extends KapuaObjectFactory {
 
     /**
      * Creates a new device message
-     * 
+     *
      * @return
      */
-    public DeviceMessage newMessage();
+    DeviceMessage newMessage();
 
     /**
      * Creates a new device request message
-     * 
+     *
      * @return
      */
-    public DeviceRequestMessage newRequestMessage();
+    DeviceRequestMessage newRequestMessage();
 
     /**
      * Creates a new device channel
-     * 
+     *
      * @return
      */
-    public DeviceChannel newChannel();
+    DeviceChannel newChannel();
 
     /**
      * Creates a new device request channel
-     * 
+     *
      * @return
      */
-    public DeviceRequestChannel newRequestChannel();
+    DeviceRequestChannel newRequestChannel();
 
     /**
      * Creates a new device payload
-     * 
+     *
      * @return
      */
-    public DevicePayload newPayload();
+    DevicePayload newPayload();
 
     /**
      * Creates a new device request payload
-     * 
+     *
      * @return
      */
-    public DeviceRequestPayload newRequestPayload();
+    DeviceRequestPayload newRequestPayload();
 
 }

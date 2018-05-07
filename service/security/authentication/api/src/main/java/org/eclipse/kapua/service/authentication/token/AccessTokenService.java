@@ -25,10 +25,10 @@ import org.eclipse.kapua.service.authentication.AuthenticationService;
  */
 public interface AccessTokenService extends KapuaEntityService<AccessToken, AccessTokenCreator>, KapuaUpdatableEntityService<AccessToken>, KapuaDomainService<AccessTokenDomain> {
 
-    public static final AccessTokenDomain ACCESS_TOKEN_DOMAIN = new AccessTokenDomain();
+    AccessTokenDomain ACCESS_TOKEN_DOMAIN = new AccessTokenDomain();
 
     @Override
-    public default AccessTokenDomain getServiceDomain() {
+    default AccessTokenDomain getServiceDomain() {
         return ACCESS_TOKEN_DOMAIN;
     }
 
@@ -41,8 +41,7 @@ public interface AccessTokenService extends KapuaEntityService<AccessToken, Acce
      * @throws KapuaException
      * @since 1.0
      */
-    public AccessTokenListResult findByUserId(KapuaId scopeId, KapuaId userId)
-            throws KapuaException;
+    AccessTokenListResult findByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException;
 
     /**
      * Find the access token by the given tokenId.
@@ -52,8 +51,7 @@ public interface AccessTokenService extends KapuaEntityService<AccessToken, Acce
      * @throws KapuaException
      * @since 1.0
      */
-    public AccessToken findByTokenId(String tokenId)
-            throws KapuaException;
+    AccessToken findByTokenId(String tokenId) throws KapuaException;
 
     /**
      * Invalidated the {@link AccessToken} by its id. After calling this method the token will be no longer valid and a new
@@ -63,5 +61,5 @@ public interface AccessTokenService extends KapuaEntityService<AccessToken, Acce
      * @param id      The {@link KapuaId} of the {@link AccessToken} to delete.
      * @since 1.0
      */
-    public void invalidate(KapuaId scopeId, KapuaId id) throws KapuaException;
+    void invalidate(KapuaId scopeId, KapuaId id) throws KapuaException;
 }

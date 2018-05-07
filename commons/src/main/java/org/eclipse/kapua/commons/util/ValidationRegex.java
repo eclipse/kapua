@@ -15,5 +15,5 @@ import java.util.regex.Pattern;
 
 public interface ValidationRegex {
 
-    public Pattern getPattern();
+    Pattern getPattern();
 }

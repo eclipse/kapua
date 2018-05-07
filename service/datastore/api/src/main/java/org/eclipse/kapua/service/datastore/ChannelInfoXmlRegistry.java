@@ -11,11 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore;
 
-import javax.xml.bind.annotation.XmlRegistry;
-
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
+
+import javax.xml.bind.annotation.XmlRegistry;
 
 /**
  * Channel information xml registry
@@ -25,24 +25,24 @@ import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 @XmlRegistry
 public class ChannelInfoXmlRegistry {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final DatastoreObjectFactory factory = locator.getFactory(DatastoreObjectFactory.class);
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final DatastoreObjectFactory DATASTORE_OBJECT_FACTORY = LOCATOR.getFactory(DatastoreObjectFactory.class);
 
     /**
      * Creates a {@link ChannelInfoListResult} instance
-     * 
+     *
      * @return
      */
     public ChannelInfoListResult newChannelInfoListResult() {
-        return factory.newChannelInfoListResult();
+        return DATASTORE_OBJECT_FACTORY.newChannelInfoListResult();
     }
 
     /**
      * Creates a {@link ChannelInfoQuery} instance.
-     * 
+     *
      * @return
      */
     public ChannelInfoQuery newQuery() {
-        return factory.newChannelInfoQuery(null);
+        return DATASTORE_OBJECT_FACTORY.newChannelInfoQuery(null);
     }
 }

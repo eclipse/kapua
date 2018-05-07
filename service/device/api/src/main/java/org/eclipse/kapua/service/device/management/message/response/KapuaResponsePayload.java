@@ -27,26 +27,26 @@ public interface KapuaResponsePayload extends KapuaPayload {
      *
      * @return
      */
-    public String getExceptionMessage();
+    String getExceptionMessage();
 
     /**
      * Set the exception message (if present)
      *
      * @param setExecptionMessage
      */
-    public void setExceptionMessage(String setExecptionMessage);
+    void setExceptionMessage(String setExecptionMessage);
 
     /**
      * Get the exception stack trace (if present)
      *
      * @return
      */
-    public String getExceptionStack();
+    String getExceptionStack();
 
     /**
      * Set the exception stack trace (if present)
      *
      * @param setExecptionStack
      */
-    public void setExceptionStack(String setExecptionStack);
+    void setExceptionStack(String setExecptionStack);
 }

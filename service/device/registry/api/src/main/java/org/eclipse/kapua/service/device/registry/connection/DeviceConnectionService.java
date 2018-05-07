@@ -30,10 +30,10 @@ public interface DeviceConnectionService extends KapuaEntityService<DeviceConnec
         KapuaDomainService<DeviceConnectionDomain>,
         KapuaConfigurableService {
 
-    public static final DeviceConnectionDomain DEVICE_CONNECTION_DOMAIN = new DeviceConnectionDomain();
+    DeviceConnectionDomain DEVICE_CONNECTION_DOMAIN = new DeviceConnectionDomain();
 
     @Override
-    public default DeviceConnectionDomain getServiceDomain() {
+    default DeviceConnectionDomain getServiceDomain() {
         return DEVICE_CONNECTION_DOMAIN;
     }
 
@@ -45,7 +45,7 @@ public interface DeviceConnectionService extends KapuaEntityService<DeviceConnec
      * @return
      * @throws KapuaException
      */
-    public DeviceConnection findByClientId(KapuaId scopeId, String clientId)
+    DeviceConnection findByClientId(KapuaId scopeId, String clientId)
             throws KapuaException;
 
     /**
@@ -57,7 +57,7 @@ public interface DeviceConnectionService extends KapuaEntityService<DeviceConnec
      * @since 1.0.0
      */
     @Override
-    public DeviceConnectionListResult query(KapuaQuery<DeviceConnection> query)
+    DeviceConnectionListResult query(KapuaQuery<DeviceConnection> query)
             throws KapuaException;
 
     /**
@@ -68,7 +68,7 @@ public interface DeviceConnectionService extends KapuaEntityService<DeviceConnec
      * @param creator
      * @throws KapuaException
      */
-    public void connect(DeviceConnectionCreator creator)
+    void connect(DeviceConnectionCreator creator)
             throws KapuaException;
 
     /**
@@ -78,6 +78,6 @@ public interface DeviceConnectionService extends KapuaEntityService<DeviceConnec
      * @param clientId
      * @throws KapuaException
      */
-    public void disconnect(KapuaId scopeId, String clientId)
+    void disconnect(KapuaId scopeId, String clientId)
             throws KapuaException;
 }

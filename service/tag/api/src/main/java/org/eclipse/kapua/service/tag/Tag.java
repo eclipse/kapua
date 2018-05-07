@@ -11,7 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.tag;
 
-import java.math.BigInteger;
+import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.KapuaUpdatableEntity;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdFactory;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -19,18 +22,14 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
-
-import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.KapuaUpdatableEntity;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.id.KapuaIdFactory;
+import java.math.BigInteger;
 
 /**
  * Tag entity definition.<br>
  * Tags serve as tag for entities marked as {@link Taggable}.
  * It is possible to assign a tag to an entity.
  * {@link Tag#getName()} must be unique within the scope.
- * 
+ *
  * @since 1.0.0
  */
 @XmlRootElement(name = "tag")
@@ -40,31 +39,31 @@ import org.eclipse.kapua.model.id.KapuaIdFactory;
 public interface Tag extends KapuaUpdatableEntity {
 
     @XmlTransient
-    public static final KapuaId ANY = KapuaLocator.getInstance().getFactory(KapuaIdFactory.class).newKapuaId(BigInteger.ONE.negate());
+    KapuaId ANY = KapuaLocator.getInstance().getFactory(KapuaIdFactory.class).newKapuaId(BigInteger.ONE.negate());
 
-    public static final String TYPE = "tag";
+    String TYPE = "tag";
 
-    public default String getType() {
+    @Override
+    default String getType() {
         return TYPE;
     }
 
     /**
      * Sets the {@link Tag} name.<br>
      * It must be unique within the scope.
-     * 
-     * @param name
-     *            The name of the {@link Tag}
+     *
+     * @param name The name of the {@link Tag}
      * @since 1.0.0
      */
-    public void setName(String name);
+    void setName(String name);
 
     /**
      * Gets the {@link Tag} name.
-     * 
+     *
      * @return The {@link Tag} name.
      * @since 1.0.0
      */
     @XmlElement(name = "name")
-    public String getName();
+    String getName();
 
 }

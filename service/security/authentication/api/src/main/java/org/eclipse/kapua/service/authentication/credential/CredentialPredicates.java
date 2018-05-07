@@ -11,21 +11,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential;
 
+import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
+
 /**
  * Credential predicates used to build query predicates.
- * 
+ *
  * @since 1.0.0
- * 
  */
-public class CredentialPredicates {
+public interface CredentialPredicates extends KapuaUpdatableEntityPredicates {
 
-    private CredentialPredicates() {
-    }
-
-    public static final String USER_ID = "userId";
-    public static final String CREDENTIAL_TYPE = "credentialType";
-    public static final String CREDENTIAL_KEY = "credentialKey";
-    public static final String USER_NAME = "userName";
-    public static final String EXPIRATION_DATE = "expirationDate";
+    String USER_ID = "userId";
+    String CREDENTIAL_TYPE = "credentialType";
+    String CREDENTIAL_KEY = "credentialKey";
+    String EXPIRATION_DATE = "expirationDate";
 
 }

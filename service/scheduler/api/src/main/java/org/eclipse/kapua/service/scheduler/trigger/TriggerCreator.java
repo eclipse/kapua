@@ -11,45 +11,43 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.scheduler.trigger;
 
-import java.util.Date;
-import java.util.List;
+import org.eclipse.kapua.model.KapuaNamedEntityCreator;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
-import org.eclipse.kapua.model.KapuaNamedEntityCreator;
+import java.util.Date;
+import java.util.List;
 
 /**
  * TriggerCreator encapsulates all the information needed to create a new Trigger in the system.<br>
  * The data provided will be used to seed the new Trigger and its related information such as the associated organization and users.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @XmlRootElement(name = "accountCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = TriggerXmlRegistry.class, factoryMethod = "newTriggerCreator")
 public interface TriggerCreator extends KapuaNamedEntityCreator<Trigger> {
 
-    public Date getStartsOn();
+    Date getStartsOn();
 
-    public void setStartsOn(Date starstOn);
+    void setStartsOn(Date starstOn);
 
-    public Date getEndsOn();
+    Date getEndsOn();
 
-    public void setEndsOn(Date endsOn);
+    void setEndsOn(Date endsOn);
 
-    public String getCronScheduling();
+    String getCronScheduling();
 
-    public void setCronScheduling(String cronScheduling);
+    void setCronScheduling(String cronScheduling);
 
-    public Long getRetryInterval();
+    Long getRetryInterval();
 
-    public void setRetryInterval(Long retryInterval);
+    void setRetryInterval(Long retryInterval);
 
-    public <P extends TriggerProperty> List<P> getTriggerProperties();
+    <P extends TriggerProperty> List<P> getTriggerProperties();
 
-    public void setTriggerProperties(List<TriggerProperty> triggerProperties);
+    void setTriggerProperties(List<TriggerProperty> triggerProperties);
 }

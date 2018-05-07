@@ -34,8 +34,7 @@ public interface DeviceAssetManagementService extends KapuaService, DeviceManage
      * @throws KapuaException
      * @since 1.0.0
      */
-    public DeviceAssets get(KapuaId scopeId, KapuaId deviceId, DeviceAssets deviceAssets, Long timeout)
-            throws KapuaException;
+    DeviceAssets get(KapuaId scopeId, KapuaId deviceId, DeviceAssets deviceAssets, Long timeout) throws KapuaException;
 
     /**
      * Reads current values from the device channels
@@ -48,8 +47,7 @@ public interface DeviceAssetManagementService extends KapuaService, DeviceManage
      * @throws KapuaException
      * @since 1.0.0
      */
-    public DeviceAssets read(KapuaId scopeId, KapuaId deviceId, DeviceAssets deviceAssets, Long timeout)
-            throws KapuaException;
+    DeviceAssets read(KapuaId scopeId, KapuaId deviceId, DeviceAssets deviceAssets, Long timeout) throws KapuaException;
 
     /**
      * Writes values to the device channels
@@ -62,7 +60,5 @@ public interface DeviceAssetManagementService extends KapuaService, DeviceManage
      * @throws KapuaException
      * @since 1.0.0
      */
-    public DeviceAssets write(KapuaId scopeId, KapuaId deviceId, DeviceAssets deviceAssets, Long timeout)
-            throws KapuaException;
-
+    DeviceAssets write(KapuaId scopeId, KapuaId deviceId, DeviceAssets deviceAssets, Long timeout) throws KapuaException;
 }

@@ -11,38 +11,36 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job;
 
-import java.util.List;
+import org.eclipse.kapua.model.KapuaNamedEntityCreator;
+import org.eclipse.kapua.service.job.step.JobStep;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
-import org.eclipse.kapua.model.KapuaNamedEntityCreator;
-import org.eclipse.kapua.service.job.step.JobStep;
+import java.util.List;
 
 /**
  * {@link JobCreator} encapsulates all the information needed to create a new JobStepDefinition in the system.<br>
  * The data provided will be used to seed the new JobStepDefinition.
- * 
- * @since 1.0.0
  *
+ * @since 1.0.0
  */
 @XmlRootElement(name = "jobCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = JobXmlRegistry.class, factoryMethod = "newJobCreator")
 public interface JobCreator extends KapuaNamedEntityCreator<Job> {
 
-    public String getDescription();
+    String getDescription();
 
-    public void setDescription(String description);
+    void setDescription(String description);
 
-    public List<JobStep> getJobSteps();
+    List<JobStep> getJobSteps();
 
-    public void setJobSteps(List<JobStep> jobSteps);
+    void setJobSteps(List<JobStep> jobSteps);
 
-    public String getJobXmlDefinition();
+    String getJobXmlDefinition();
 
-    public void setJobXmlDefinition(String jobXmlDefinition);
+    void setJobXmlDefinition(String jobXmlDefinition);
 
 }

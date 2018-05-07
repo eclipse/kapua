@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlType;
 public interface CertificateQuery extends KapuaQuery<Certificate> {
 
     @XmlElement(name = "includeInherited")
-    public Boolean getIncludeInherited();
+    Boolean getIncludeInherited();
 
-    public void setIncludeInherited(Boolean includeInherited);
+    void setIncludeInherited(Boolean includeInherited);
 }

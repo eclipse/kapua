@@ -13,20 +13,19 @@ package org.eclipse.kapua.model;
 
 /**
  * {@link KapuaUpdatableEntity} query predicates.
- * 
- * @since 1.0.0
  *
+ * @since 1.0.0
  */
 public interface KapuaUpdatableEntityPredicates extends KapuaEntityPredicates {
 
     /**
      * {@link KapuaUpdatableEntity} modified on date.
      */
-    public static final String MODIFIED_ON = "modifiedOn";
+    String MODIFIED_ON = "modifiedOn";
 
     /**
      * {@link KapuaUpdatableEntity} modified by id.
      */
-    public static final String MODIFIED_BY = "modifiedBy";
+    String MODIFIED_BY = "modifiedBy";
 
 }

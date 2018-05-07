@@ -32,8 +32,7 @@ public interface DeviceBundleManagementService extends KapuaService, DeviceManag
      * @return
      * @throws KapuaException
      */
-    public DeviceBundles get(KapuaId scopeId, KapuaId deviceId, Long timeout)
-            throws KapuaException;
+    DeviceBundles get(KapuaId scopeId, KapuaId deviceId, Long timeout) throws KapuaException;
 
     /**
      * Start the device bundle identified by the given device identifier and device bundle identifier
@@ -44,8 +43,7 @@ public interface DeviceBundleManagementService extends KapuaService, DeviceManag
      * @param timeout  timeout waiting for the device response
      * @throws KapuaException
      */
-    public void start(KapuaId scopeId, KapuaId deviceId, String bundleId, Long timeout)
-            throws KapuaException;
+    void start(KapuaId scopeId, KapuaId deviceId, String bundleId, Long timeout) throws KapuaException;
 
     /**
      * Stop the device bundle identified by the given device identifier and device bundle identifier
@@ -56,6 +54,5 @@ public interface DeviceBundleManagementService extends KapuaService, DeviceManag
      * @param timeout  timeout waiting for the device response
      * @throws KapuaException
      */
-    public void stop(KapuaId scopeId, KapuaId deviceId, String bundleId, Long timeout)
-            throws KapuaException;
+    void stop(KapuaId scopeId, KapuaId deviceId, String bundleId, Long timeout) throws KapuaException;
 }

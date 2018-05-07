@@ -17,12 +17,10 @@ import org.eclipse.kapua.locator.KapuaLocator;
  * Device bundle xml factory class
  *
  * @since 1.0
- *
  */
 public class DeviceBundleXmlRegistry {
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
-
     private final DeviceBundleFactory factory = locator.getFactory(DeviceBundleFactory.class);
 
     /**

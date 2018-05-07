@@ -33,7 +33,7 @@ public interface ChannelInfoRegistryMediator {
      * @return
      * @throws ClientException
      */
-    public Metadata getMetadata(KapuaId scopeId, long indexedOn)
+    Metadata getMetadata(KapuaId scopeId, long indexedOn)
             throws ClientException;
 
     /**
@@ -45,7 +45,7 @@ public interface ChannelInfoRegistryMediator {
      * @throws QueryMappingException
      * @throws ClientException
      */
-    public void onBeforeChannelInfoDelete(ChannelInfo channelInfo)
+    void onBeforeChannelInfoDelete(ChannelInfo channelInfo)
             throws KapuaIllegalArgumentException,
             ConfigurationException,
             QueryMappingException,
@@ -56,5 +56,5 @@ public interface ChannelInfoRegistryMediator {
      *
      * @param channelInfo
      */
-    public void onAfterChannelInfoDelete(ChannelInfo channelInfo);
+    void onAfterChannelInfoDelete(ChannelInfo channelInfo);
 }

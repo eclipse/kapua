@@ -20,7 +20,6 @@ import java.util.Date;
  * Credential factory service definition.
  *
  * @since 1.0
- *
  */
 public interface CredentialFactory extends KapuaEntityFactory<Credential, CredentialCreator, CredentialQuery, CredentialListResult> {
 
@@ -33,7 +32,7 @@ public interface CredentialFactory extends KapuaEntityFactory<Credential, Creden
      * @param credentialKey
      * @return
      */
-    public Credential newCredential(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey, CredentialStatus credentialStatus, Date expirationDate);
+    Credential newCredential(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey, CredentialStatus credentialStatus, Date expirationDate);
 
     /**
      * Create a new {@link CredentialCreator} for the specific credential type
@@ -44,6 +43,6 @@ public interface CredentialFactory extends KapuaEntityFactory<Credential, Creden
      * @param credentialKey
      * @return
      */
-    public CredentialCreator newCreator(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey, CredentialStatus credentialStatus, Date expirationDate);
+    CredentialCreator newCreator(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey, CredentialStatus credentialStatus, Date expirationDate);
 
 }

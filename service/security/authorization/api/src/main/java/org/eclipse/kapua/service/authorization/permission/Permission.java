@@ -47,8 +47,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
         factoryMethod = "newPermission")
 public interface Permission {
 
-    public static final String WILDCARD = "*";
-    public static final String SEPARATOR = ":";
+    String WILDCARD = "*";
+    String SEPARATOR = ":";
 
     /**
      * Sets the domain on which the {@link Permission} gives access.
@@ -56,7 +56,7 @@ public interface Permission {
      * @param domain The domain of the {@link Permission}.
      * @since 1.0.0
      */
-    public void setDomain(String domain);
+    void setDomain(String domain);
 
     /**
      * Gets the domain on which the {@link Permission} gives access.
@@ -65,7 +65,7 @@ public interface Permission {
      * @since 1.0.0
      */
     @XmlElement(name = "domain")
-    public String getDomain();
+    String getDomain();
 
     /**
      * Sets the {@link org.eclipse.kapua.model.domain.Actions} that this {@link Permission} allows to do on the domain.
@@ -73,7 +73,7 @@ public interface Permission {
      * @param action The {@link javax.swing.Action} that this {@link Permission} allows
      * @since 1.0.0
      */
-    public void setAction(Actions action);
+    void setAction(Actions action);
 
     /**
      * Gets the {@link Actions} that this {@link Permission} allows to do on the domain.
@@ -82,7 +82,7 @@ public interface Permission {
      * @since 1.0.0
      */
     @XmlElement(name = "action")
-    public Actions getAction();
+    Actions getAction();
 
     /**
      * Sets the target scope id that this {@link Permission} gives access.
@@ -90,7 +90,7 @@ public interface Permission {
      * @param targetScopeId The target scope id that this {@link Permission} gives access.
      * @since 1.0.0
      */
-    public void setTargetScopeId(KapuaId targetScopeId);
+    void setTargetScopeId(KapuaId targetScopeId);
 
     /**
      * Gets the target scope id that this {@link Permission} gives access.
@@ -101,7 +101,7 @@ public interface Permission {
     @XmlElement(name = "targetScopeId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     @ApiModelProperty(dataType = "string")
-    public KapuaId getTargetScopeId();
+    KapuaId getTargetScopeId();
 
     /**
      * Sets the {@link Group} id that this {@link Permission} gives access.
@@ -109,7 +109,7 @@ public interface Permission {
      * @param groupId The {@link Group} id that this {@link Permission} gives access.
      * @since 1.0.0
      */
-    public void setGroupId(KapuaId groupId);
+    void setGroupId(KapuaId groupId);
 
     /**
      * Gets the {@link Group} id that this {@link Permission} gives access.
@@ -120,7 +120,7 @@ public interface Permission {
     @XmlElement(name = "groupId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     @ApiModelProperty(dataType = "string")
-    public KapuaId getGroupId();
+    KapuaId getGroupId();
 
     /**
      * Sets whether or not this {@link Permission} is valid also for children scopeId.
@@ -128,7 +128,7 @@ public interface Permission {
      * @param forwardable {@code true} if this {@link Permission} is forward-able to children scopeIds.
      * @since 1.0.0
      */
-    public void setForwardable(boolean forwardable);
+    void setForwardable(boolean forwardable);
 
     /**
      * Gets whether or not this {@link Permission} is valid also for children scopeIds.
@@ -139,5 +139,5 @@ public interface Permission {
      * @since 1.0.0
      */
     @XmlElement(name = "forwardable")
-    public boolean getForwardable();
+    boolean getForwardable();
 }

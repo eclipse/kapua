@@ -18,9 +18,8 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * Username and password {@link AuthenticationCredentials} definition.
- * 
+ *
  * @since 1.0
- * 
  */
 @XmlRootElement(name = "accessTokenCredentials")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -29,15 +28,15 @@ public interface AccessTokenCredentials extends SessionCredentials {
 
     /**
      * Return the token id
-     * 
+     *
      * @return
      */
-    public String getTokenId();
+    String getTokenId();
 
     /**
      * Set the token id
-     * 
+     *
      * @param tokenId
      */
-    public void setTokenId(String tokenId);
+    void setTokenId(String tokenId);
 }

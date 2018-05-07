@@ -11,19 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access;
 
+import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
+
 /**
  * Query predicate attribute name for {@link AccessInfo} entity.
- * 
+ *
  * @since 1.0.0
- * 
  */
-public class AccessInfoPredicates {
-
-    private AccessInfoPredicates() {
-    }
+public interface AccessInfoPredicates extends KapuaUpdatableEntityPredicates {
 
     /**
      * User id
      */
-    public static final String USER_ID = "userId";
+    String USER_ID = "userId";
 }

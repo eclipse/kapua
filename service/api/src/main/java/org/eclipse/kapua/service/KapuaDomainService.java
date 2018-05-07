@@ -20,5 +20,5 @@ import org.eclipse.kapua.model.domain.Domain;
  */
 public interface KapuaDomainService<D extends Domain> extends KapuaService {
 
-    public D getServiceDomain();
+    D getServiceDomain();
 }

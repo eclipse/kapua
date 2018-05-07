@@ -11,16 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user;
 
+import org.eclipse.kapua.model.KapuaNamedEntityCreator;
+import org.eclipse.kapua.model.xml.DateXmlAdapter;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.eclipse.kapua.model.KapuaNamedEntityCreator;
-import org.eclipse.kapua.model.xml.DateXmlAdapter;
-
 import java.util.Date;
 
 /**
@@ -36,7 +35,7 @@ import java.util.Date;
         "userType",
         "externalId",
         "expirationDate",
-        "userStatus"},
+        "userStatus" },
         factoryClass = UserXmlRegistry.class,
         factoryMethod = "newUserCreator")
 public interface UserCreator extends KapuaNamedEntityCreator<User> {
@@ -47,14 +46,14 @@ public interface UserCreator extends KapuaNamedEntityCreator<User> {
      * @return
      */
     @XmlElement(name = "displayName")
-    public String getDisplayName();
+    String getDisplayName();
 
     /**
      * Set the display name
      *
      * @param displayName
      */
-    public void setDisplayName(String displayName);
+    void setDisplayName(String displayName);
 
     /**
      * Get the email
@@ -62,14 +61,14 @@ public interface UserCreator extends KapuaNamedEntityCreator<User> {
      * @return
      */
     @XmlElement(name = "email")
-    public String getEmail();
+    String getEmail();
 
     /**
      * Set the email
      *
      * @param email
      */
-    public void setEmail(String email);
+    void setEmail(String email);
 
     /**
      * Get the phone number
@@ -77,14 +76,14 @@ public interface UserCreator extends KapuaNamedEntityCreator<User> {
      * @return
      */
     @XmlElement(name = "phoneNumber")
-    public String getPhoneNumber();
+    String getPhoneNumber();
 
     /**
      * Set the phone number
      *
      * @param phoneNumber
      */
-    public void setPhoneNumber(String phoneNumber);
+    void setPhoneNumber(String phoneNumber);
 
     /**
      * Get the user type
@@ -92,14 +91,14 @@ public interface UserCreator extends KapuaNamedEntityCreator<User> {
      * @return
      */
     @XmlElement(name = "userType")
-    public UserType getUserType();
+    UserType getUserType();
 
     /**
      * Set the user type
      *
      * @param userType
      */
-    public void setUserType(UserType userType);
+    void setUserType(UserType userType);
 
     /**
      * Get the external ID
@@ -107,14 +106,14 @@ public interface UserCreator extends KapuaNamedEntityCreator<User> {
      * @return
      */
     @XmlElement(name = "externalId")
-    public String getExternalId();
+    String getExternalId();
 
     /**
      * Set the external ID
      *
      * @param externalId
      */
-    public void setExternalId(String externalId);
+    void setExternalId(String externalId);
 
     @XmlElement(name = "expirationDate")
     @XmlJavaTypeAdapter(DateXmlAdapter.class)
@@ -122,7 +121,7 @@ public interface UserCreator extends KapuaNamedEntityCreator<User> {
 
     void setExpirationDate(Date expirationDate);
 
-    @XmlElement(name="userStatus")
+    @XmlElement(name = "userStatus")
     UserStatus getUserStatus();
 
     void setUserStatus(UserStatus userStatus);

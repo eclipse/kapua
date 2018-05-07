@@ -11,21 +11,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.asset.xml;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.type.ObjectValueConverter;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetFactory;
 
+import javax.xml.bind.annotation.adapters.XmlAdapter;
+
 /**
  * XML adapter for {@link DeviceAssetChannel}.
- * 
+ *
  * @since 1.0.0
  */
 public class DeviceAssetChannelXmlAdapter extends XmlAdapter<XmlAdaptedDeviceAssetChannel, DeviceAssetChannel> {
 
-    DeviceAssetFactory factory = KapuaLocator.getInstance().getFactory(DeviceAssetFactory.class);
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final DeviceAssetFactory DEVICE_ASSET_FACTORY = LOCATOR.getFactory(DeviceAssetFactory.class);
 
     @Override
     public XmlAdaptedDeviceAssetChannel marshal(DeviceAssetChannel deviceAssetChannel) throws Exception {
@@ -44,7 +45,7 @@ public class DeviceAssetChannelXmlAdapter extends XmlAdapter<XmlAdaptedDeviceAss
     @Override
     public DeviceAssetChannel unmarshal(XmlAdaptedDeviceAssetChannel xmlAdaptedDeviceAssetChannel) throws Exception {
 
-        DeviceAssetChannel adaptedDeviceAssetChannel = factory.newDeviceAssetChannel();
+        DeviceAssetChannel adaptedDeviceAssetChannel = DEVICE_ASSET_FACTORY.newDeviceAssetChannel();
         adaptedDeviceAssetChannel.setName(xmlAdaptedDeviceAssetChannel.getName());
         adaptedDeviceAssetChannel.setType(xmlAdaptedDeviceAssetChannel.getValueType());
         adaptedDeviceAssetChannel.setValue(ObjectValueConverter.fromString(xmlAdaptedDeviceAssetChannel.getValue(), adaptedDeviceAssetChannel.getType()));

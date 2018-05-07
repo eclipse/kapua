@@ -11,52 +11,51 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.step;
 
-import java.util.List;
+import org.eclipse.kapua.model.KapuaNamedEntity;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
-import org.eclipse.kapua.model.KapuaNamedEntity;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
+import java.util.List;
 
 /**
  * {@link JobStep} entity.
  *
  * @since 1.0
- *
  */
 @XmlRootElement(name = "jobStep")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = JobStepXmlRegistry.class, factoryMethod = "newJobStep")
 public interface JobStep extends KapuaNamedEntity {
 
-    public static final String TYPE = "jobStep";
+    String TYPE = "jobStep";
 
-    public default String getType() {
+    @Override
+    default String getType() {
         return TYPE;
     }
 
-    public String getDescription();
+    String getDescription();
 
-    public void setDescription(String description);
+    void setDescription(String description);
 
-    public KapuaId getJobId();
+    KapuaId getJobId();
 
-    public void setJobId(KapuaId jobId);
+    void setJobId(KapuaId jobId);
 
-    public int getStepIndex();
+    int getStepIndex();
 
-    public void setStepIndex(int stepIndex);
+    void setStepIndex(int stepIndex);
 
-    public KapuaId getJobStepDefinitionId();
+    KapuaId getJobStepDefinitionId();
 
-    public void setJobStepDefinitionId(KapuaId jobDefinitionId);
+    void setJobStepDefinitionId(KapuaId jobDefinitionId);
 
-    public <P extends JobStepProperty> List<P> getStepProperties();
+    <P extends JobStepProperty> List<P> getStepProperties();
 
-    public void setStepProperties(List<JobStepProperty> jobStepProperties);
+    void setStepProperties(List<JobStepProperty> jobStepProperties);
 
 }

@@ -11,31 +11,30 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.targets;
 
+import org.eclipse.kapua.model.KapuaUpdatableEntityCreator;
+import org.eclipse.kapua.model.id.KapuaId;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.eclipse.kapua.model.KapuaUpdatableEntityCreator;
-import org.eclipse.kapua.model.id.KapuaId;
-
 /**
  * {@link JobTargetCreator} encapsulates all the information needed to create a new JobTarget in the system.<br>
  * The data provided will be used to seed the new JobTarget.
- * 
- * @since 1.0.0
  *
+ * @since 1.0.0
  */
 @XmlRootElement(name = "jobTargetCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = JobTargetXmlRegistry.class, factoryMethod = "newJobTargetCreator")
 public interface JobTargetCreator extends KapuaUpdatableEntityCreator<JobTarget> {
 
-    public KapuaId getJobId();
+    KapuaId getJobId();
 
-    public void setJobId(KapuaId jobId);
+    void setJobId(KapuaId jobId);
 
-    public KapuaId getJobTargetId();
+    KapuaId getJobTargetId();
 
-    public void setJobTargetId(KapuaId jobTargetId);
+    void setJobTargetId(KapuaId jobTargetId);
 }

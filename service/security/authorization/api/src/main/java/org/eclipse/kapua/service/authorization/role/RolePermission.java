@@ -44,10 +44,10 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
         factoryMethod = "newRolePermission")
 public interface RolePermission extends KapuaEntity {
 
-    public static final String TYPE = "rolePermission";
+    String TYPE = "rolePermission";
 
     @Override
-    public default String getType() {
+    default String getType() {
         return TYPE;
     }
 
@@ -57,7 +57,7 @@ public interface RolePermission extends KapuaEntity {
      * @param roleId The {@link RoleInfo} id.
      * @since 1.0.0
      */
-    public void setRoleId(KapuaId roleId);
+    void setRoleId(KapuaId roleId);
 
     /**
      * Gets the {@link Role} id of which this {@link RolePermission} belongs.
@@ -68,7 +68,7 @@ public interface RolePermission extends KapuaEntity {
     @XmlElement(name = "roleId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     @ApiModelProperty(dataType = "string")
-    public KapuaId getRoleId();
+    KapuaId getRoleId();
 
     /**
      * Sets the {@link Permission} that this {@link RolePermission} has.<br>
@@ -77,7 +77,7 @@ public interface RolePermission extends KapuaEntity {
      * @param permission The {@link Permission} to set for this {@link RolePermission}.
      * @since 1.0.0
      */
-    public void setPermission(Permission permission);
+    void setPermission(Permission permission);
 
     /**
      * Gets the {@link Permission} that this {@link RolePermission} has.
@@ -87,5 +87,5 @@ public interface RolePermission extends KapuaEntity {
      * @since 1.0.0
      */
     @XmlElement(name = "permission")
-    public <P extends Permission> P getPermission();
+    <P extends Permission> P getPermission();
 }

@@ -11,40 +11,40 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection;
 
-import javax.xml.bind.annotation.XmlRegistry;
-
 import org.eclipse.kapua.locator.KapuaLocator;
 
+import javax.xml.bind.annotation.XmlRegistry;
+
 /**
- * Device connection xml factory class
+ * {@link DeviceConnection} xml factory class
  *
  * @since 1.0
  */
 @XmlRegistry
 public class DeviceConnectionXmlRegistry {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final DeviceConnectionFactory factory = locator.getFactory(DeviceConnectionFactory.class);
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final DeviceConnectionFactory DEVICE_CONNECTION_FACTORY = LOCATOR.getFactory(DeviceConnectionFactory.class);
 
     /**
      * Creates a new {@link DeviceConnection}
-     * 
+     *
      * @return
      */
     public DeviceConnection newDeviceConnection() {
-        return factory.newEntity(null);
+        return DEVICE_CONNECTION_FACTORY.newEntity(null);
     }
 
     /**
      * Creates a new device list result
-     * 
+     *
      * @return
      */
     public DeviceConnectionListResult newDeviceConnectionListResult() {
-        return factory.newListResult();
+        return DEVICE_CONNECTION_FACTORY.newListResult();
     }
 
     public DeviceConnectionQuery newQuery() {
-        return factory.newQuery(null);
+        return DEVICE_CONNECTION_FACTORY.newQuery(null);
     }
 }

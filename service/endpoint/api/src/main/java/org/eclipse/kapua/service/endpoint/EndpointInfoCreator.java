@@ -30,23 +30,23 @@ import java.util.Set;
 @XmlType(factoryClass = EndpointInfoXmlRegistry.class, factoryMethod = "newCreator")
 public interface EndpointInfoCreator extends KapuaEntityCreator<EndpointInfo> {
 
-    public String getSchema();
+    String getSchema();
 
-    public void setSchema(String schema);
+    void setSchema(String schema);
 
-    public String getDns();
+    String getDns();
 
-    public void setDns(String dns);
+    void setDns(String dns);
 
-    public int getPort();
+    int getPort();
 
-    public void setPort(int port);
+    void setPort(int port);
 
-    public boolean getSecure();
+    boolean getSecure();
 
-    public void setSecure(boolean secure);
+    void setSecure(boolean secure);
 
-    public Set<EndpointUsage> getUsages();
+    Set<EndpointUsage> getUsages();
 
-    public void setUsages(Set<EndpointUsage> usages);
+    void setUsages(Set<EndpointUsage> usages);
 }

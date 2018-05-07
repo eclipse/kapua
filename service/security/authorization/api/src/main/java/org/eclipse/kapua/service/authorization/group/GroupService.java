@@ -29,10 +29,10 @@ public interface GroupService extends KapuaEntityService<Group, GroupCreator>,
         KapuaDomainService<GroupDomain>,
         KapuaConfigurableService {
 
-    public static final GroupDomain GROUP_DOMAIN = new GroupDomain();
+    GroupDomain GROUP_DOMAIN = new GroupDomain();
 
     @Override
-    public default GroupDomain getServiceDomain() {
+    default GroupDomain getServiceDomain() {
         return GROUP_DOMAIN;
     }
 
@@ -46,8 +46,7 @@ public interface GroupService extends KapuaEntityService<Group, GroupCreator>,
      * @since 1.0.0
      */
     @Override
-    public Group create(GroupCreator groupCreator)
-            throws KapuaException;
+    Group create(GroupCreator groupCreator) throws KapuaException;
 
     /**
      * Updates the {@link Group} according the given updated entity.<br>
@@ -59,8 +58,7 @@ public interface GroupService extends KapuaEntityService<Group, GroupCreator>,
      * @since 1.0.0
      */
     @Override
-    public Group update(Group group)
-            throws KapuaException;
+    Group update(Group group) throws KapuaException;
 
     /**
      * Finds the {@link Group} by scope identifier and {@link Group} id.
@@ -72,8 +70,7 @@ public interface GroupService extends KapuaEntityService<Group, GroupCreator>,
      * @since 1.0.0
      */
     @Override
-    public Group find(KapuaId scopeId, KapuaId groupId)
-            throws KapuaException;
+    Group find(KapuaId scopeId, KapuaId groupId) throws KapuaException;
 
     /**
      * Returns the {@link GroupListResult} with elements matching the provided query.
@@ -84,8 +81,7 @@ public interface GroupService extends KapuaEntityService<Group, GroupCreator>,
      * @since 1.0.0
      */
     @Override
-    public GroupListResult query(KapuaQuery<Group> query)
-            throws KapuaException;
+    GroupListResult query(KapuaQuery<Group> query) throws KapuaException;
 
     /**
      * Returns the count of the {@link Group} elements matching the provided query.
@@ -96,8 +92,7 @@ public interface GroupService extends KapuaEntityService<Group, GroupCreator>,
      * @since 1.0.0
      */
     @Override
-    public long count(KapuaQuery<Group> query)
-            throws KapuaException;
+    long count(KapuaQuery<Group> query) throws KapuaException;
 
     /**
      * Delete the {@link Group} by scope id and {@link Group} id.
@@ -108,7 +103,6 @@ public interface GroupService extends KapuaEntityService<Group, GroupCreator>,
      * @since 1.0.0
      */
     @Override
-    public void delete(KapuaId scopeId, KapuaId groupId)
-            throws KapuaException;
+    void delete(KapuaId scopeId, KapuaId groupId) throws KapuaException;
 
 }

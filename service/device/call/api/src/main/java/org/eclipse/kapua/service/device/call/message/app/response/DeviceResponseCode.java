@@ -19,11 +19,11 @@ package org.eclipse.kapua.service.device.call.message.app.response;
  */
 public interface DeviceResponseCode {
 
-    public boolean isAccepted();
+    boolean isAccepted();
 
-    public boolean isBadRequest();
+    boolean isBadRequest();
 
-    public boolean isNotFound();
+    boolean isNotFound();
 
-    public boolean isInternalError();
+    boolean isInternalError();
 }

@@ -11,18 +11,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection.option;
 
+import org.eclipse.kapua.model.KapuaUpdatableEntity;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.eclipse.kapua.model.KapuaUpdatableEntity;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.id.KapuaIdAdapter;
-import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
-import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 
 /**
  * Device connection options entity definition.
@@ -40,26 +40,27 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
         factoryMethod = "newDeviceConnectionOption")
 public interface DeviceConnectionOption extends KapuaUpdatableEntity {
 
-    public static final String TYPE = "deviceConnectionOption";
+    String TYPE = "deviceConnectionOption";
 
-    public default String getType() {
+    @Override
+    default String getType() {
         return TYPE;
     }
 
     /**
      * Gets whether or not the {@link DeviceConnection} can change user on the next login.
-     * 
+     *
      * @return <code>true</code> if device can changhe user to connect, <code>false</code> if not.
      */
     @XmlElement(name = "allowUserChange")
-    public boolean getAllowUserChange();
+    boolean getAllowUserChange();
 
     /**
      * Sets whether or not the {@link DeviceConnection} can change user on the next login.
-     * 
+     *
      * @param allowUserChange
      */
-    public void setAllowUserChange(boolean allowUserChange);
+    void setAllowUserChange(boolean allowUserChange);
 
     /**
      * Get the device connection user coupling mode.
@@ -67,14 +68,14 @@ public interface DeviceConnectionOption extends KapuaUpdatableEntity {
      * @return
      */
     @XmlElement(name = "userCouplingMode")
-    public ConnectionUserCouplingMode getUserCouplingMode();
+    ConnectionUserCouplingMode getUserCouplingMode();
 
     /**
      * Set the device connection user coupling mode.
      *
      * @param userCouplingMode
      */
-    public void setUserCouplingMode(ConnectionUserCouplingMode userCouplingMode);
+    void setUserCouplingMode(ConnectionUserCouplingMode userCouplingMode);
 
     /**
      * Get the reserved user identifier
@@ -83,12 +84,12 @@ public interface DeviceConnectionOption extends KapuaUpdatableEntity {
      */
     @XmlElement(name = "reservedUserId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    public KapuaId getReservedUserId();
+    KapuaId getReservedUserId();
 
     /**
      * Set the reserved user identifier
      *
      * @param reservedUserId
      */
-    public void setReservedUserId(KapuaId reservedUserId);
+    void setReservedUserId(KapuaId reservedUserId);
 }

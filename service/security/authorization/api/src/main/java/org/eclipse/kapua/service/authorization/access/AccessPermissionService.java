@@ -24,10 +24,10 @@ import org.eclipse.kapua.service.KapuaEntityService;
  */
 public interface AccessPermissionService extends KapuaEntityService<AccessPermission, AccessPermissionCreator>, KapuaDomainService<AccessInfoDomain> {
 
-    public static final AccessInfoDomain ACCESS_INFO_DOMAIN = new AccessInfoDomain();
+    AccessInfoDomain ACCESS_INFO_DOMAIN = new AccessInfoDomain();
 
     @Override
-    public default AccessInfoDomain getServiceDomain() {
+    default AccessInfoDomain getServiceDomain() {
         return ACCESS_INFO_DOMAIN;
     }
 
@@ -40,8 +40,7 @@ public interface AccessPermissionService extends KapuaEntityService<AccessPermis
      * @since 1.0.0
      */
     @Override
-    public AccessPermission create(AccessPermissionCreator accessPermissionCreator)
-            throws KapuaException;
+    AccessPermission create(AccessPermissionCreator accessPermissionCreator) throws KapuaException;
 
     /**
      * Finds the {@link AccessPermission} by scope identifier and {@link AccessPermission} id.
@@ -53,8 +52,7 @@ public interface AccessPermissionService extends KapuaEntityService<AccessPermis
      * @since 1.0.0
      */
     @Override
-    public AccessPermission find(KapuaId scopeId, KapuaId accessPermissionId)
-            throws KapuaException;
+    AccessPermission find(KapuaId scopeId, KapuaId accessPermissionId) throws KapuaException;
 
     /**
      * Finds the {@link AccessPermission}s by scope identifier and {@link AccessInfo} id.
@@ -65,8 +63,7 @@ public interface AccessPermissionService extends KapuaEntityService<AccessPermis
      * @throws KapuaException
      * @since 1.0.0
      */
-    public AccessPermissionListResult findByAccessInfoId(KapuaId scopeId, KapuaId accessInfoId)
-            throws KapuaException;
+    AccessPermissionListResult findByAccessInfoId(KapuaId scopeId, KapuaId accessInfoId) throws KapuaException;
 
     /**
      * Returns the {@link AccessPermissionListResult} with elements matching the provided query.
@@ -77,8 +74,7 @@ public interface AccessPermissionService extends KapuaEntityService<AccessPermis
      * @since 1.0.0
      */
     @Override
-    public AccessPermissionListResult query(KapuaQuery<AccessPermission> query)
-            throws KapuaException;
+    AccessPermissionListResult query(KapuaQuery<AccessPermission> query) throws KapuaException;
 
     /**
      * Returns the count of the {@link AccessPermission} elements matching the provided query.
@@ -89,8 +85,7 @@ public interface AccessPermissionService extends KapuaEntityService<AccessPermis
      * @since 1.0.0
      */
     @Override
-    public long count(KapuaQuery<AccessPermission> query)
-            throws KapuaException;
+    long count(KapuaQuery<AccessPermission> query) throws KapuaException;
 
     /**
      * Delete the {@link AccessPermission} by scope id and {@link AccessPermission} id.
@@ -101,7 +96,6 @@ public interface AccessPermissionService extends KapuaEntityService<AccessPermis
      * @since 1.0.0
      */
     @Override
-    public void delete(KapuaId scopeId, KapuaId accessPermissionId)
-            throws KapuaException;
+    void delete(KapuaId scopeId, KapuaId accessPermissionId) throws KapuaException;
 
 }

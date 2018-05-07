@@ -31,8 +31,7 @@ public interface AuthenticationService extends KapuaService {
      * @return
      * @throws KapuaException an exception is thrown if the credentials are not found on the system, are expired or are disabled
      */
-    public AccessToken login(LoginCredentials loginCredentials)
-            throws KapuaException;
+    AccessToken login(LoginCredentials loginCredentials) throws KapuaException;
 
     /**
      * FIXME: add javadoc
@@ -40,16 +39,14 @@ public interface AuthenticationService extends KapuaService {
      * @param sessionCredentials
      * @throws KapuaException an exception is thrown if the credentials are not found on the system, are expired or are disabled
      */
-    public void authenticate(SessionCredentials sessionCredentials)
-            throws KapuaException;
+    void authenticate(SessionCredentials sessionCredentials) throws KapuaException;
 
     /**
      * Logout the current logged user
      *
      * @throws KapuaException
      */
-    public void logout()
-            throws KapuaException;
+    void logout() throws KapuaException;
 
     /**
      * Return the {@link AccessToken} identified by the provided token identifier
@@ -58,11 +55,9 @@ public interface AuthenticationService extends KapuaService {
      * @return
      * @throws KapuaException if no {@link AccessToken} is found for that token identifier
      */
-    public AccessToken findAccessToken(String tokenId)
-            throws KapuaException;
+    AccessToken findAccessToken(String tokenId) throws KapuaException;
 
-    public AccessToken refreshAccessToken(String tokenId, String refreshToken)
-            throws KapuaException;
+    AccessToken refreshAccessToken(String tokenId, String refreshToken) throws KapuaException;
 
     /**
      * Verifies the password of a user without logging him in, and thus create any kind of session
@@ -70,7 +65,6 @@ public interface AuthenticationService extends KapuaService {
      * @param loginCredentials
      * @throws KapuaException an exception is thrown if the credentials are not found on the system, are expired or are disabled
      */
-    public void verifyCredentials(LoginCredentials loginCredentials)
-            throws KapuaException;
+    void verifyCredentials(LoginCredentials loginCredentials) throws KapuaException;
 
 }

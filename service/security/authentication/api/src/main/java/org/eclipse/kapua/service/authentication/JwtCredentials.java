@@ -19,9 +19,8 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * Jwt {@link LoginCredentials} definition.
- * 
+ *
  * @since 1.0
- * 
  */
 @XmlRootElement(name = "jwtCredentials")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -30,16 +29,16 @@ public interface JwtCredentials extends LoginCredentials {
 
     /**
      * Gets the Json Web Token
-     * 
+     *
      * @return
      */
     @XmlElement(name = "jwt")
-    public String getJwt();
+    String getJwt();
 
     /**
      * Set the Json Web Token
-     * 
+     *
      * @param jwt
      */
-    public void setJwt(String jwt);
+    void setJwt(String jwt);
 }

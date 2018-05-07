@@ -25,8 +25,8 @@ import javax.xml.bind.annotation.XmlType;
         factoryMethod = "newCertificateUsage")
 public interface CertificateUsage {
 
-    public String getName();
+    String getName();
 
-    public void setName(String name);
+    void setName(String name);
 
 }

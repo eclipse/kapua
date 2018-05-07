@@ -16,25 +16,24 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * Kapua named entity definition.
- * 
+ *
  * @since 1.0
- * 
  */
 @XmlType(propOrder = { "name" })
 public interface KapuaNamedEntity extends KapuaUpdatableEntity {
 
     /**
      * Get the entity name
-     * 
+     *
      * @return
      */
     @XmlElement(name = "name")
-    public String getName();
+    String getName();
 
     /**
      * Set the entity name
-     * 
+     *
      * @param name
      */
-    public void setName(String name);
+    void setName(String name);
 }

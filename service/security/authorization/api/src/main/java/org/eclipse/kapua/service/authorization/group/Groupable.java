@@ -11,37 +11,35 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.group;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 /**
  * Interface used to mark group-able entities.
- *
  */
 public interface Groupable {
 
     /**
      * Sets the {@link Group} id of this entity.
-     * 
-     * @param groupId
-     *            The {@link Group} id to assign.
+     *
+     * @param groupId The {@link Group} id to assign.
      * @since 1.0.0
      */
-    public void setGroupId(KapuaId groupId);
+    void setGroupId(KapuaId groupId);
 
     /**
      * Gets the {@link Group} id assigned to this entity.
-     * 
+     *
      * @return The {@link Group} id assigned to this entity.
      * @since 1.0.0
      */
     @XmlElement(name = "groupId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     @ApiModelProperty(dataType = "string")
-    public KapuaId getGroupId();
+    KapuaId getGroupId();
 
 }

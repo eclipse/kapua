@@ -31,10 +31,10 @@ public interface JobExecutionService extends KapuaEntityService<JobExecution, Jo
         KapuaDomainService<JobDomain>,
         KapuaConfigurableService {
 
-    public static final JobDomain JOB_DOMAIN = new JobDomain();
+    JobDomain JOB_DOMAIN = new JobDomain();
 
     @Override
-    public default JobDomain getServiceDomain() {
+    default JobDomain getServiceDomain() {
         return JOB_DOMAIN;
     }
 
@@ -47,6 +47,6 @@ public interface JobExecutionService extends KapuaEntityService<JobExecution, Jo
      * @since 1.0.0
      */
     @Override
-    public JobExecutionListResult query(KapuaQuery<JobExecution> query)
+    JobExecutionListResult query(KapuaQuery<JobExecution> query)
             throws KapuaException;
 }

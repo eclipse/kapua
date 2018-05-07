@@ -34,8 +34,7 @@ public interface DeviceConfigurationManagementService extends KapuaService, Devi
      * @return
      * @throws KapuaException
      */
-    public DeviceConfiguration get(KapuaId scopeId,
-            KapuaId deviceId,
+    DeviceConfiguration get(KapuaId scopeId, KapuaId deviceId,
             String configurationId,
             String configurationComponentPid,
             Long timeout)
@@ -50,8 +49,7 @@ public interface DeviceConfigurationManagementService extends KapuaService, Devi
      * @param timeout         timeout waiting for the device response
      * @throws KapuaException
      */
-    public void put(KapuaId scopeId, KapuaId deviceId, String xmlDeviceConfig, Long timeout)
-            throws KapuaException;
+    void put(KapuaId scopeId, KapuaId deviceId, String xmlDeviceConfig, Long timeout) throws KapuaException;
 
     /**
      * Put the provided configuration to the device identified by the provided device identifier
@@ -62,8 +60,7 @@ public interface DeviceConfigurationManagementService extends KapuaService, Devi
      * @param timeout      timeout waiting for the device response
      * @throws KapuaException
      */
-    public void put(KapuaId scopeId, KapuaId deviceId, DeviceConfiguration deviceConfig, Long timeout)
-            throws KapuaException;
+    void put(KapuaId scopeId, KapuaId deviceId, DeviceConfiguration deviceConfig, Long timeout) throws KapuaException;
 
     /**
      * Put the provided configuration to the device identified by the provided device identifier
@@ -74,6 +71,5 @@ public interface DeviceConfigurationManagementService extends KapuaService, Devi
      * @param timeout               timeout waiting for the device response
      * @throws KapuaException
      */
-    public void put(KapuaId scopeId, KapuaId deviceId, DeviceComponentConfiguration deviceComponentConfig, Long timeout)
-            throws KapuaException;
+    void put(KapuaId scopeId, KapuaId deviceId, DeviceComponentConfiguration deviceComponentConfig, Long timeout) throws KapuaException;
 }

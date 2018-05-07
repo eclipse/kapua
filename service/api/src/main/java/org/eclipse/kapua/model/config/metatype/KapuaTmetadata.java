@@ -11,9 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.config.metatype;
 
-import java.util.List;
-import java.util.Map;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyAttribute;
@@ -23,14 +20,12 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
-
-import org.w3c.dom.Element;
-
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
  * Java class for Tmetadata complex type.
- *
  * <p>
  * The following schema fragment specifies the expected content contained within this class.
  *
@@ -49,139 +44,100 @@ import org.w3c.dom.Element;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- *
- *
  */
 @XmlRootElement(name = "MetaData", namespace = "http://www.osgi.org/xmlns/metatype/v1.2.0")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(name = "Tmetadata", propOrder = {
-                                           "OCD",
-                                           "designate",
-                                           "any",
-                                           "localization",
-                                           "otherAttributes"
+        "OCD",
+        "designate",
+        "any",
+        "localization",
+        "otherAttributes"
 }, factoryClass = MetatypeXmlRegistry.class, factoryMethod = "newKapuaTmetadata")
 public interface KapuaTmetadata {
 
     /**
      * Gets the value of the ocd property.
-     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the ocd property.
-     *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getOCD().add(newItem);
      * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link KapuaTocd }
-     *
-     *
      */
     @XmlElement(name = "OCD", namespace = "http://www.osgi.org/xmlns/metatype/v1.2.0")
-    public List<KapuaTocd> getOCD();
+    List<KapuaTocd> getOCD();
 
-    public void setOCD(List<KapuaTocd> ocd);
+    void setOCD(List<KapuaTocd> ocd);
 
     /**
      * Gets the value of the designate property.
-     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the designate property.
-     *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getDesignate().add(newItem);
      * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link KapuaTdesignate }
-     *
-     *
      */
     @XmlElement(name = "Designate", namespace = "http://www.osgi.org/xmlns/metatype/v1.2.0")
-    public List<KapuaTdesignate> getDesignate();
+    List<KapuaTdesignate> getDesignate();
 
-    public void setDesignate(List<KapuaTdesignate> designate);
+    void setDesignate(List<KapuaTdesignate> designate);
 
     /**
      * Gets the value of the any property.
-     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the any property.
-     *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getAny().add(newItem);
      * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link Element }
-     * {@link Object }
-     *
-     *
      */
     @XmlAnyElement(lax = true)
-    public List<Object> getAny();
+    List<Object> getAny();
 
-    public void setAny(List<Object> any);
+    void setAny(List<Object> any);
 
     /**
      * Gets the value of the localization property.
      *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
+     * @return possible object is {@link String }
      */
     @XmlAttribute(name = "localization")
-    public String getLocalization();
+    String getLocalization();
 
     /**
      * Sets the value of the localization property.
      *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
+     * @param value allowed object is {@link String }
      */
-    public void setLocalization(String value);
+    void setLocalization(String value);
 
     /**
      * Gets a map that contains attributes that aren't bound to any typed property on this class.
-     *
      * <p>
      * the map is keyed by the name of the attribute and
      * the value is the string value of the attribute.
-     *
+     * <p>
      * the map returned by this method is live, and you can add new attribute
      * by updating the map directly. Because of this design, there's no setter.
      *
-     *
-     * @return
-     *     always non-null
+     * @return always non-null
      */
     @XmlAnyAttribute
-    public Map<QName, String> getOtherAttributes();
+    Map<QName, String> getOtherAttributes();
 
-    public void setOtherAttributes(Map<QName, String> otherAttributes);
+    void setOtherAttributes(Map<QName, String> otherAttributes);
 }

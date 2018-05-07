@@ -11,29 +11,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.query;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdFactory;
 
+import javax.xml.bind.annotation.adapters.XmlAdapter;
+
 /**
  * Kapua result list adapter. It marshal and unmarshal the Kapua result list in a proper way.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class KapuaListResultAdapter extends XmlAdapter<String, KapuaId> {
 
-    /**
-     * Locator instance
-     */
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-
-    /**
-     * Meta type factory instance
-     */
-    private final KapuaIdFactory kapuaIdFactory = locator.getFactory(KapuaIdFactory.class);
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final KapuaIdFactory KAPUA_ID_FACTORY = LOCATOR.getFactory(KapuaIdFactory.class);
 
     @Override
     public String marshal(KapuaId v) throws Exception {
@@ -42,7 +34,7 @@ public class KapuaListResultAdapter extends XmlAdapter<String, KapuaId> {
 
     @Override
     public KapuaId unmarshal(String v) throws Exception {
-        return kapuaIdFactory.newKapuaId(v);
+        return KAPUA_ID_FACTORY.newKapuaId(v);
     }
 
 }

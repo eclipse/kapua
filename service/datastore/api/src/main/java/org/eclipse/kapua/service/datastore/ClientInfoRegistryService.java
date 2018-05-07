@@ -39,8 +39,7 @@ public interface ClientInfoRegistryService extends KapuaService,
      * @throws KapuaException
      * @since 1.0.0
      */
-    public ClientInfo find(KapuaId scopeId, StorableId id)
-            throws KapuaException;
+    ClientInfo find(KapuaId scopeId, StorableId id) throws KapuaException;
 
     /**
      * Query for clients informations objects matching the given query
@@ -50,8 +49,7 @@ public interface ClientInfoRegistryService extends KapuaService,
      * @throws KapuaException
      * @since 1.0.0
      */
-    public ClientInfoListResult query(ClientInfoQuery query)
-            throws KapuaException;
+    ClientInfoListResult query(ClientInfoQuery query) throws KapuaException;
 
     /**
      * Get the clients informations count matching the given query
@@ -61,7 +59,6 @@ public interface ClientInfoRegistryService extends KapuaService,
      * @throws KapuaException
      * @since 1.0.0
      */
-    public long count(ClientInfoQuery query)
-            throws KapuaException;
+    long count(ClientInfoQuery query) throws KapuaException;
 
 }

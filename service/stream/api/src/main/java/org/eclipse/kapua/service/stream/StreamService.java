@@ -20,13 +20,12 @@ import org.eclipse.kapua.service.device.management.message.response.KapuaRespons
 
 public interface StreamService extends KapuaService, KapuaDomainService<StreamDomain> {
 
-    public static final StreamDomain STREAM_DOMAIN = new StreamDomain();
+    StreamDomain STREAM_DOMAIN = new StreamDomain();
 
     @Override
-    public default StreamDomain getServiceDomain() {
+    default StreamDomain getServiceDomain() {
         return STREAM_DOMAIN;
     }
 
-    KapuaResponseMessage<?, ?> publish(KapuaDataMessage message, Long timeout)
-            throws KapuaException;
+    KapuaResponseMessage<?, ?> publish(KapuaDataMessage message, Long timeout) throws KapuaException;
 }

@@ -16,22 +16,19 @@ import org.eclipse.kapua.model.id.KapuaId;
 
 /**
  * {@link Tag} object factory.
- * 
- * @since 1.0.0
  *
+ * @since 1.0.0
  */
 public interface TagFactory extends KapuaEntityFactory<Tag, TagCreator, TagQuery, TagListResult> {
 
     /**
      * Instantiate a new {@link TagCreator} implementing object with the provided parameters.
      *
-     * @param scopeId
-     *            The scope id of the tag.
-     * @param name
-     *            The {@link Tag} name to set.
+     * @param scopeId The scope id of the tag.
+     * @param name    The {@link Tag} name to set.
      * @return A instance of the implementing class of {@link Tag}.
      * @since 1.0.0
      */
-    public TagCreator newCreator(KapuaId scopeId, String name);
+    TagCreator newCreator(KapuaId scopeId, String name);
 
 }

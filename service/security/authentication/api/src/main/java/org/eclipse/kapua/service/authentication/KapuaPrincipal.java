@@ -11,53 +11,52 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication;
 
-import java.security.Principal;
-
 import org.eclipse.kapua.model.id.KapuaId;
+
+import java.security.Principal;
 
 /**
  * Kapua {@link Principal} implementation.<br>
  * Uniquely identifies a user.
- * 
+ *
  * @since 1.0
- * 
  */
 // TODO it's an object used by both authorization and authentication... should leave it in authentication module?
 public interface KapuaPrincipal extends Principal, java.io.Serializable {
 
     /**
      * Return the token identifier
-     * 
+     *
      * @return
      */
-    public String getTokenId();
+    String getTokenId();
 
     /**
      * Return the user id
-     * 
+     *
      * @return
      */
-    public KapuaId getUserId();
+    KapuaId getUserId();
 
     /**
      * Retur the account it
-     * 
+     *
      * @return
      */
-    public KapuaId getAccountId();
+    KapuaId getAccountId();
 
     /**
      * Return the remote client ip from which the user should be connected
-     * 
+     *
      * @return
      */
-    public String getClientIp();
+    String getClientIp();
 
     /**
      * Return the client identifiers from which the user should be connected
-     * 
+     *
      * @return
      */
-    public String getClientId();
+    String getClientId();
 
 }

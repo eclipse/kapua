@@ -13,17 +13,16 @@ package org.eclipse.kapua.service.datastore.model.query;
 
 /**
  * Query predicate definition for checking if a field exists
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public interface ExistsPredicate extends StorablePredicate {
 
     /**
      * Returns the field name to check
-     * 
+     *
      * @return
      */
-    public String getName();
+    String getName();
 
 }

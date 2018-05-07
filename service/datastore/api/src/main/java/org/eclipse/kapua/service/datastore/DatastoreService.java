@@ -16,10 +16,10 @@ import org.eclipse.kapua.service.KapuaService;
 
 public interface DatastoreService extends KapuaService, KapuaDomainService<DatastoreDomain> {
 
-    public static final DatastoreDomain DATASTORE_DOMAIN = new DatastoreDomain();
+    DatastoreDomain DATASTORE_DOMAIN = new DatastoreDomain();
 
     @Override
-    public default DatastoreDomain getServiceDomain() {
+    default DatastoreDomain getServiceDomain() {
         return DATASTORE_DOMAIN;
     }
 }

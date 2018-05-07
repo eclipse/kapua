@@ -17,11 +17,11 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 
 public interface KapuaEntityFactory<E extends KapuaEntity, C extends KapuaEntityCreator<E>, Q extends KapuaQuery<E>, L extends KapuaListResult<E>> extends KapuaObjectFactory {
 
-    public E newEntity(KapuaId scopeId);
+    E newEntity(KapuaId scopeId);
 
-    public C newCreator(KapuaId scopeId);
+    C newCreator(KapuaId scopeId);
 
-    public Q newQuery(KapuaId scopeId);
+    Q newQuery(KapuaId scopeId);
 
-    public L newListResult();
+    L newListResult();
 }

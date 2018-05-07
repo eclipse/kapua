@@ -29,10 +29,10 @@ public interface TagService extends KapuaEntityService<Tag, TagCreator>,
         KapuaDomainService<TagDomain>,
         KapuaConfigurableService {
 
-    public static final TagDomain TAG_DOMAIN = new TagDomain();
+    TagDomain TAG_DOMAIN = new TagDomain();
 
     @Override
-    public default TagDomain getServiceDomain() {
+    default TagDomain getServiceDomain() {
         return TAG_DOMAIN;
     }
 
@@ -46,8 +46,7 @@ public interface TagService extends KapuaEntityService<Tag, TagCreator>,
      * @since 1.0.0
      */
     @Override
-    public Tag create(TagCreator tagCreator)
-            throws KapuaException;
+    Tag create(TagCreator tagCreator) throws KapuaException;
 
     /**
      * Updates the {@link Tag} according the given updated entity.<br>
@@ -59,8 +58,7 @@ public interface TagService extends KapuaEntityService<Tag, TagCreator>,
      * @since 1.0.0
      */
     @Override
-    public Tag update(Tag tag)
-            throws KapuaException;
+    Tag update(Tag tag) throws KapuaException;
 
     /**
      * Finds the {@link Tag} by scope identifier and {@link Tag} id.
@@ -72,8 +70,7 @@ public interface TagService extends KapuaEntityService<Tag, TagCreator>,
      * @since 1.0.0
      */
     @Override
-    public Tag find(KapuaId scopeId, KapuaId tagId)
-            throws KapuaException;
+    Tag find(KapuaId scopeId, KapuaId tagId) throws KapuaException;
 
     /**
      * Returns the {@link TagListResult} with elements matching the provided query.
@@ -84,8 +81,7 @@ public interface TagService extends KapuaEntityService<Tag, TagCreator>,
      * @since 1.0.0
      */
     @Override
-    public TagListResult query(KapuaQuery<Tag> query)
-            throws KapuaException;
+    TagListResult query(KapuaQuery<Tag> query) throws KapuaException;
 
     /**
      * Returns the count of the {@link Tag} elements matching the provided query.
@@ -96,8 +92,7 @@ public interface TagService extends KapuaEntityService<Tag, TagCreator>,
      * @since 1.0.0
      */
     @Override
-    public long count(KapuaQuery<Tag> query)
-            throws KapuaException;
+    long count(KapuaQuery<Tag> query) throws KapuaException;
 
     /**
      * Delete the {@link Tag} by scope id and {@link Tag} id.
@@ -108,7 +103,6 @@ public interface TagService extends KapuaEntityService<Tag, TagCreator>,
      * @since 1.0.0
      */
     @Override
-    public void delete(KapuaId scopeId, KapuaId tagId)
-            throws KapuaException;
+    void delete(KapuaId scopeId, KapuaId tagId) throws KapuaException;
 
 }

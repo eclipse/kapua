@@ -18,9 +18,8 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * Username and password {@link LoginCredentials} definition.
- * 
+ *
  * @since 1.0
- * 
  */
 @XmlRootElement(name = "usernamePasswordCredentials")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -29,29 +28,29 @@ public interface UsernamePasswordCredentials extends LoginCredentials {
 
     /**
      * return the username
-     * 
+     *
      * @return
      */
-    public String getUsername();
+    String getUsername();
 
     /**
      * Set the username
-     * 
+     *
      * @param username
      */
-    public void setUsername(String username);
+    void setUsername(String username);
 
     /**
      * return the password
-     * 
+     *
      * @return
      */
-    public String getPassword();
+    String getPassword();
 
     /**
      * Set the password
-     * 
+     *
      * @param password
      */
-    public void setPassword(String password);
+    void setPassword(String password);
 }

@@ -11,43 +11,42 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.execution;
 
-import java.util.Date;
+import org.eclipse.kapua.model.KapuaUpdatableEntity;
+import org.eclipse.kapua.model.id.KapuaId;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
-import org.eclipse.kapua.model.KapuaUpdatableEntity;
-import org.eclipse.kapua.model.id.KapuaId;
+import java.util.Date;
 
 /**
  * {@link JobExecution} entity.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @XmlRootElement(name = "jobExecution")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = JobExecutionXmlRegistry.class, factoryMethod = "newJobExecution")
 public interface JobExecution extends KapuaUpdatableEntity {
 
-    public static final String TYPE = "jobExecution";
+    String TYPE = "jobExecution";
 
-    public default String getType() {
+    @Override
+    default String getType() {
         return TYPE;
     }
 
-    public KapuaId getJobId();
+    KapuaId getJobId();
 
-    public void setJobId(KapuaId jobId);
+    void setJobId(KapuaId jobId);
 
-    public Date getStartedOn();
+    Date getStartedOn();
 
-    public void setStartedOn(Date startedOn);
+    void setStartedOn(Date startedOn);
 
-    public Date getEndedOn();
+    Date getEndedOn();
 
-    public void setEndedOn(Date endedOn);
+    void setEndedOn(Date endedOn);
 
 }

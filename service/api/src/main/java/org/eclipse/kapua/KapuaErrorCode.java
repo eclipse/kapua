@@ -15,14 +15,13 @@ package org.eclipse.kapua;
  * Kapua error code definition.
  *
  * @since 1.0
- *
  */
 public interface KapuaErrorCode {
 
     /**
      * Get the error code name
-     * 
+     *
      * @return
      */
-    public String name();
+    String name();
 }

@@ -28,6 +28,6 @@ public interface UserFactory extends KapuaEntityFactory<User, UserCreator, UserQ
      * @param name
      * @return
      */
-    public UserCreator newCreator(KapuaId scopedId, String name);
+    UserCreator newCreator(KapuaId scopedId, String name);
 
 }

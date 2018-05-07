@@ -21,64 +21,55 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 /**
  * Common interface for all KapuaService that are managing identifiable entities.
  *
- * @param <E>
- *            - Class of the KapuaEntity being managed by this Service
- * @param <C>
- *            - Creator Class of the KapuaEntity being managed by this Service
- * 
+ * @param <E> - Class of the KapuaEntity being managed by this Service
+ * @param <C> - Creator Class of the KapuaEntity being managed by this Service
  * @since 1.0
- * 
  */
 public interface KapuaEntityService<E extends KapuaEntity, C extends KapuaEntityCreator<E>> extends KapuaService {
 
     /**
      * Creates the entity using information provided via entity creator
-     * 
+     *
      * @param creator
      * @return
      * @throws KapuaException
      */
-    public E create(C creator)
-            throws KapuaException;
+    E create(C creator) throws KapuaException;
 
     /**
      * Find the entity identified by entity and scope identifiers
-     * 
+     *
      * @param scopeId
      * @param entityId
      * @return
      * @throws KapuaException
      */
-    public E find(KapuaId scopeId, KapuaId entityId)
-            throws KapuaException;
+    E find(KapuaId scopeId, KapuaId entityId) throws KapuaException;
 
     /**
      * Returns the entity list matching the provided query
-     * 
+     *
      * @param query
      * @return
      * @throws KapuaException
      */
-    public KapuaListResult<E> query(KapuaQuery<E> query)
-            throws KapuaException;
+    KapuaListResult<E> query(KapuaQuery<E> query) throws KapuaException;
 
     /**
      * Returns the entity count matching the provided query
-     * 
+     *
      * @param query
      * @return
      * @throws KapuaException
      */
-    public long count(KapuaQuery<E> query)
-            throws KapuaException;
+    long count(KapuaQuery<E> query) throws KapuaException;
 
     /**
      * Delete the entity identified by the entity and scope identifiers
-     * 
+     *
      * @param scopeId
      * @param entityId
      * @throws KapuaException
      */
-    public void delete(KapuaId scopeId, KapuaId entityId)
-            throws KapuaException;
+    void delete(KapuaId scopeId, KapuaId entityId) throws KapuaException;
 }

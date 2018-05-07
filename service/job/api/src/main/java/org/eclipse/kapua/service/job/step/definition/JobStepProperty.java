@@ -13,16 +13,16 @@ package org.eclipse.kapua.service.job.step.definition;
 
 public interface JobStepProperty {
 
-    public String getName();
+    String getName();
 
-    public void setName(String name);
+    void setName(String name);
 
-    public String getPropertyType();
+    String getPropertyType();
 
-    public void setPropertyType(String propertyType);
+    void setPropertyType(String propertyType);
 
-    public String getPropertyValue();
+    String getPropertyValue();
 
-    public void setPropertyValue(String propertyValue);
+    void setPropertyValue(String propertyValue);
 
 }

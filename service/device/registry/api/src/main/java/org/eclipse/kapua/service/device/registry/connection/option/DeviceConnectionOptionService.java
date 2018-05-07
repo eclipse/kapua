@@ -25,10 +25,10 @@ public interface DeviceConnectionOptionService extends KapuaEntityService<Device
         KapuaUpdatableEntityService<DeviceConnectionOption>,
         KapuaDomainService<DeviceConnectionDomain> {
 
-    public static final DeviceConnectionDomain DEVICE_CONNECTION_DOMAIN = new DeviceConnectionDomain();
+    DeviceConnectionDomain DEVICE_CONNECTION_DOMAIN = new DeviceConnectionDomain();
 
     @Override
-    public default DeviceConnectionDomain getServiceDomain() {
+    default DeviceConnectionDomain getServiceDomain() {
         return DEVICE_CONNECTION_DOMAIN;
     }
 }

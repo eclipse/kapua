@@ -37,7 +37,7 @@ public interface KapuaRequestMessage<C extends KapuaRequestChannel, P extends Ka
      * @return
      */
     @XmlTransient
-    public <M extends KapuaRequestMessage<C, P>> Class<M> getRequestClass();
+    <M extends KapuaRequestMessage<C, P>> Class<M> getRequestClass();
 
     /**
      * Get the response message class type
@@ -45,6 +45,6 @@ public interface KapuaRequestMessage<C extends KapuaRequestChannel, P extends Ka
      * @return
      */
     @XmlTransient
-    public <RSC extends KapuaResponseChannel, RSP extends KapuaResponsePayload, M extends KapuaResponseMessage<RSC, RSP>> Class<M> getResponseClass();
+    <RSC extends KapuaResponseChannel, RSP extends KapuaResponsePayload, M extends KapuaResponseMessage<RSC, RSP>> Class<M> getResponseClass();
 
 }

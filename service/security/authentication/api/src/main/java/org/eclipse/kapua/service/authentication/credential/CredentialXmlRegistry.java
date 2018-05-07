@@ -11,44 +11,44 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential;
 
-import javax.xml.bind.annotation.XmlRegistry;
-
 import org.eclipse.kapua.locator.KapuaLocator;
+
+import javax.xml.bind.annotation.XmlRegistry;
 
 @XmlRegistry
 public class CredentialXmlRegistry {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final CredentialFactory factory = locator.getFactory(CredentialFactory.class);
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final CredentialFactory CREDENTIAL_FACTORY = LOCATOR.getFactory(CredentialFactory.class);
 
     /**
      * Creates a new credential instance
-     * 
+     *
      * @return
      */
     public Credential newCredential() {
-        return factory.newEntity(null);
+        return CREDENTIAL_FACTORY.newEntity(null);
     }
 
     /**
      * Creates a new credential list result instance
-     * 
+     *
      * @return
      */
     public CredentialListResult newCredentialListResult() {
-        return factory.newListResult();
+        return CREDENTIAL_FACTORY.newListResult();
     }
 
     /**
      * Creates a new credential creator instance
-     * 
+     *
      * @return
      */
     public CredentialCreator newCredentialCreator() {
-        return factory.newCreator(null, null, null, null, null, null);
+        return CREDENTIAL_FACTORY.newCreator(null, null, null, null, null, null);
     }
 
     public CredentialQuery newQuery() {
-        return factory.newQuery(null);
+        return CREDENTIAL_FACTORY.newQuery(null);
     }
 }

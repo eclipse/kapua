@@ -32,7 +32,7 @@ public interface ClientInfoRegistryMediator {
      * @return
      * @throws ClientException
      */
-    public Metadata getMetadata(KapuaId scopeId, long indexedOn)
+    Metadata getMetadata(KapuaId scopeId, long indexedOn)
             throws ClientException;
 
     /**
@@ -43,7 +43,7 @@ public interface ClientInfoRegistryMediator {
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
      */
-    public void onAfterClientInfoDelete(KapuaId scopeId, ClientInfo clientInfo)
+    void onAfterClientInfoDelete(KapuaId scopeId, ClientInfo clientInfo)
             throws KapuaIllegalArgumentException,
             ConfigurationException,
             ClientException;

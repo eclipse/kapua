@@ -24,10 +24,10 @@ import org.eclipse.kapua.service.KapuaEntityService;
  */
 public interface AccessRoleService extends KapuaEntityService<AccessRole, AccessRoleCreator>, KapuaDomainService<AccessInfoDomain> {
 
-    public static final AccessInfoDomain ACCESS_INFO_DOMAIN = new AccessInfoDomain();
+    AccessInfoDomain ACCESS_INFO_DOMAIN = new AccessInfoDomain();
 
     @Override
-    public default AccessInfoDomain getServiceDomain() {
+    default AccessInfoDomain getServiceDomain() {
         return ACCESS_INFO_DOMAIN;
     }
 
@@ -40,8 +40,7 @@ public interface AccessRoleService extends KapuaEntityService<AccessRole, Access
      * @since 1.0.0
      */
     @Override
-    public AccessRole create(AccessRoleCreator accessRoleCreator)
-            throws KapuaException;
+    AccessRole create(AccessRoleCreator accessRoleCreator) throws KapuaException;
 
     /**
      * Finds the {@link AccessRole} by scope identifier and {@link AccessRole} id.
@@ -53,8 +52,7 @@ public interface AccessRoleService extends KapuaEntityService<AccessRole, Access
      * @since 1.0.0
      */
     @Override
-    public AccessRole find(KapuaId scopeId, KapuaId accessRoleId)
-            throws KapuaException;
+    AccessRole find(KapuaId scopeId, KapuaId accessRoleId) throws KapuaException;
 
     /**
      * Finds the {@link AccessRole}s by scope identifier and {@link AccessInfo} id.
@@ -65,8 +63,7 @@ public interface AccessRoleService extends KapuaEntityService<AccessRole, Access
      * @throws KapuaException
      * @since 1.0.0
      */
-    public AccessRoleListResult findByAccessInfoId(KapuaId scopeId, KapuaId accessInfoId)
-            throws KapuaException;
+    AccessRoleListResult findByAccessInfoId(KapuaId scopeId, KapuaId accessInfoId) throws KapuaException;
 
     /**
      * Returns the {@link AccessRoleListResult} with elements matching the provided query.
@@ -77,8 +74,7 @@ public interface AccessRoleService extends KapuaEntityService<AccessRole, Access
      * @since 1.0.0
      */
     @Override
-    public AccessRoleListResult query(KapuaQuery<AccessRole> query)
-            throws KapuaException;
+    AccessRoleListResult query(KapuaQuery<AccessRole> query) throws KapuaException;
 
     /**
      * Returns the count of the {@link AccessRole} elements matching the provided query.
@@ -89,8 +85,7 @@ public interface AccessRoleService extends KapuaEntityService<AccessRole, Access
      * @since 1.0.0
      */
     @Override
-    public long count(KapuaQuery<AccessRole> query)
-            throws KapuaException;
+    long count(KapuaQuery<AccessRole> query) throws KapuaException;
 
     /**
      * Delete the {@link AccessRole} by scope id and {@link AccessRole} id.
@@ -101,7 +96,6 @@ public interface AccessRoleService extends KapuaEntityService<AccessRole, Access
      * @since 1.0.0
      */
     @Override
-    public void delete(KapuaId scopeId, KapuaId accessRoleId)
-            throws KapuaException;
+    void delete(KapuaId scopeId, KapuaId accessRoleId) throws KapuaException;
 
 }

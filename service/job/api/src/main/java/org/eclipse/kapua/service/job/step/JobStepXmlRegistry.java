@@ -11,50 +11,49 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.step;
 
-import javax.xml.bind.annotation.XmlRegistry;
-
 import org.eclipse.kapua.locator.KapuaLocator;
 
+import javax.xml.bind.annotation.XmlRegistry;
+
 /**
- * JobStep xml factory class
- * 
- * @since 1.0
+ * {@link JobStep} xml factory class
  *
+ * @since 1.0
  */
 @XmlRegistry
 public class JobStepXmlRegistry {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final JobStepFactory factory = locator.getFactory(JobStepFactory.class);
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final JobStepFactory JOB_STEP_FACTORY = LOCATOR.getFactory(JobStepFactory.class);
 
     /**
      * Creates a new job instance
-     * 
+     *
      * @return
      */
     public JobStep newJobStep() {
-        return factory.newEntity(null);
+        return JOB_STEP_FACTORY.newEntity(null);
     }
 
     /**
      * Creates a new job creator instance
-     * 
+     *
      * @return
      */
     public JobStepCreator newJobStepCreator() {
-        return factory.newCreator(null);
+        return JOB_STEP_FACTORY.newCreator(null);
     }
 
     /**
      * Creates a new job list result instance
-     * 
+     *
      * @return
      */
     public JobStepListResult newJobStepListResult() {
-        return factory.newListResult();
+        return JOB_STEP_FACTORY.newListResult();
     }
 
     public JobStepQuery newQuery() {
-        return factory.newQuery(null);
+        return JOB_STEP_FACTORY.newQuery(null);
     }
 }

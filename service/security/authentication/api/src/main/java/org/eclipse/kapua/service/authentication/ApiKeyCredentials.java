@@ -19,9 +19,8 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * Api key {@link LoginCredentials} definition.
- * 
+ *
  * @since 1.0
- * 
  */
 @XmlRootElement(name = "apiKeyCredentials")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -30,16 +29,16 @@ public interface ApiKeyCredentials extends LoginCredentials {
 
     /**
      * return the api key
-     * 
+     *
      * @return
      */
     @XmlElement(name = "apiKey")
-    public String getApiKey();
+    String getApiKey();
 
     /**
      * Set the api key
-     * 
+     *
      * @param apiKey
      */
-    public void setApiKey(String apiKey);
+    void setApiKey(String apiKey);
 }

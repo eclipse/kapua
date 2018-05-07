@@ -29,10 +29,10 @@ public interface RoleService extends KapuaEntityService<Role, RoleCreator>,
         KapuaDomainService<RoleDomain>,
         KapuaConfigurableService {
 
-    public static final RoleDomain ROLE_DOMAIN = new RoleDomain();
+    RoleDomain ROLE_DOMAIN = new RoleDomain();
 
     @Override
-    public default RoleDomain getServiceDomain() {
+    default RoleDomain getServiceDomain() {
         return ROLE_DOMAIN;
     }
 
@@ -45,8 +45,7 @@ public interface RoleService extends KapuaEntityService<Role, RoleCreator>,
      * @since 1.0.0
      */
     @Override
-    public Role create(RoleCreator roleCreator)
-            throws KapuaException;
+    Role create(RoleCreator roleCreator) throws KapuaException;
 
     /**
      * Updates the {@link Role} according the given updated entity.<br>
@@ -58,8 +57,7 @@ public interface RoleService extends KapuaEntityService<Role, RoleCreator>,
      * @since 1.0.0
      */
     @Override
-    public Role update(Role role)
-            throws KapuaException;
+    Role update(Role role) throws KapuaException;
 
     /**
      * Finds the {@link Role} by scope identifier and {@link Role} id.
@@ -71,8 +69,7 @@ public interface RoleService extends KapuaEntityService<Role, RoleCreator>,
      * @since 1.0.0
      */
     @Override
-    public Role find(KapuaId scopeId, KapuaId roleId)
-            throws KapuaException;
+    Role find(KapuaId scopeId, KapuaId roleId) throws KapuaException;
 
     /**
      * Returns the {@link RoleListResult} with elements matching the provided query.
@@ -83,8 +80,7 @@ public interface RoleService extends KapuaEntityService<Role, RoleCreator>,
      * @since 1.0.0
      */
     @Override
-    public RoleListResult query(KapuaQuery<Role> query)
-            throws KapuaException;
+    RoleListResult query(KapuaQuery<Role> query) throws KapuaException;
 
     /**
      * Returns the count of the {@link Role} elements matching the provided query.
@@ -95,8 +91,7 @@ public interface RoleService extends KapuaEntityService<Role, RoleCreator>,
      * @since 1.0.0
      */
     @Override
-    public long count(KapuaQuery<Role> query)
-            throws KapuaException;
+    long count(KapuaQuery<Role> query) throws KapuaException;
 
     /**
      * Delete the {@link Role} by scope id and {@link Role} id.
@@ -107,7 +102,6 @@ public interface RoleService extends KapuaEntityService<Role, RoleCreator>,
      * @since 1.0.0
      */
     @Override
-    public void delete(KapuaId scopeId, KapuaId roleId)
-            throws KapuaException;
+    void delete(KapuaId scopeId, KapuaId roleId) throws KapuaException;
 
 }

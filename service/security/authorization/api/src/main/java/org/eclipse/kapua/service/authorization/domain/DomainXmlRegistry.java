@@ -11,17 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.domain;
 
-import javax.xml.bind.annotation.XmlRegistry;
-
 import org.eclipse.kapua.locator.KapuaLocator;
+
+import javax.xml.bind.annotation.XmlRegistry;
 
 @XmlRegistry
 public class DomainXmlRegistry {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final DomainFactory factory = locator.getFactory(DomainFactory.class);
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final DomainFactory DOMAIN_FACTORY = LOCATOR.getFactory(DomainFactory.class);
 
     public DomainQuery newQuery() {
-        return factory.newQuery(null);
+        return DOMAIN_FACTORY.newQuery(null);
     }
 }

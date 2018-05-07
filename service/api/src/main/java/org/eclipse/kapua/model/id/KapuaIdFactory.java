@@ -12,13 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.id;
 
-import java.math.BigInteger;
-
 import org.eclipse.kapua.model.KapuaObjectFactory;
+
+import java.math.BigInteger;
 
 /**
  * {@link KapuaId} factory definition.
- * 
+ *
  * @since 1.0.0
  */
 public interface KapuaIdFactory extends KapuaObjectFactory {
@@ -28,7 +28,7 @@ public interface KapuaIdFactory extends KapuaObjectFactory {
      * <p>
      * <b>Note:</b> This operation must be the inverse function of {@link KapuaId#toCompactId()} so, in other word, this code should't fail:
      * </p>
-     * 
+     *
      * <pre>{@code
      * KapuaIdFactory kapuaIdFactory = KapuaLocator.getInstance().getService(KapuaIdFactory.class);
      * String shortId = "some well formed encoded short id";
@@ -36,22 +36,19 @@ public interface KapuaIdFactory extends KapuaObjectFactory {
      * String shortIdConverted = id.getShortId();
      * AssertTrue(shortId.equals(shortIdConverted));
      * }</pre>
-     * 
-     * @param shortId
-     *            The {@link KapuaId} short id to parse.
+     *
+     * @param shortId The {@link KapuaId} short id to parse.
      * @return The {@link KapuaId} parsed from its short representation.
      * @since 1.0.0
      */
-    public KapuaId newKapuaId(String shortId);
+    KapuaId newKapuaId(String shortId);
 
     /**
      * Creates a new {@link KapuaId} form the {@link BigInteger} parameter.
-     * 
-     * @param bigInteger
-     *            The {@link BigInteger} from which create the {@link KapuaId}.
+     *
+     * @param bigInteger The {@link BigInteger} from which create the {@link KapuaId}.
      * @return The new {@link KapuaId}
      * @since 1.0.0
      */
-    public KapuaId newKapuaId(BigInteger bigInteger);
-
+    KapuaId newKapuaId(BigInteger bigInteger);
 }

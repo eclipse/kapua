@@ -11,15 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.group;
 
-import java.math.BigInteger;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
-
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -27,47 +18,54 @@ import org.eclipse.kapua.model.id.KapuaIdFactory;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+import java.math.BigInteger;
+
 /**
  * Group entity definition.<br>
  * Groups serve as tag for entities marked as {@link Groupable}.
  * It is possible to assign a group to an entity.
  * It is possible to assign {@link AccessPermission} and {@link RolePermission} based on the {@link Group#getId()}.
  * {@link Group#getName()} must be unique within the scope.
- * 
+ *
  * @since 1.0.0
  */
 @XmlRootElement(name = "group")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "name" }, //
-        factoryClass = GroupXmlRegistry.class, factoryMethod = "newGroup")
+@XmlType(factoryClass = GroupXmlRegistry.class, factoryMethod = "newGroup")
 public interface Group extends KapuaUpdatableEntity {
 
     @XmlTransient
-    public static final KapuaId ANY = KapuaLocator.getInstance().getFactory(KapuaIdFactory.class).newKapuaId(BigInteger.ONE.negate());
+    KapuaId ANY = KapuaLocator.getInstance().getFactory(KapuaIdFactory.class).newKapuaId(BigInteger.ONE.negate());
 
-    public static final String TYPE = "group";
+    String TYPE = "group";
 
-    public default String getType() {
+    @Override
+    default String getType() {
         return TYPE;
     }
 
     /**
      * Sets the {@link Group} name.<br>
      * It must be unique within the scope.
-     * 
-     * @param name
-     *            The name of the {@link Group}
+     *
+     * @param name The name of the {@link Group}
      * @since 1.0.0
      */
-    public void setName(String name);
+    void setName(String name);
 
     /**
      * Gets the {@link Group} name.
-     * 
+     *
      * @return The {@link Group} name.
      * @since 1.0.0
      */
     @XmlElement(name = "name")
-    public String getName();
+    String getName();
 
 }

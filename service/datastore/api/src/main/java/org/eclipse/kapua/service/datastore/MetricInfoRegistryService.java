@@ -38,8 +38,7 @@ public interface MetricInfoRegistryService extends KapuaService, DatastoreServic
      * @throws KapuaException
      * @since 1.0.0
      */
-    public MetricInfo find(KapuaId scopeId, StorableId id)
-            throws KapuaException;
+    MetricInfo find(KapuaId scopeId, StorableId id) throws KapuaException;
 
     /**
      * Query for metrics informations objects matching the given query
@@ -49,8 +48,7 @@ public interface MetricInfoRegistryService extends KapuaService, DatastoreServic
      * @throws KapuaException
      * @since 1.0.0
      */
-    public MetricInfoListResult query(MetricInfoQuery query)
-            throws KapuaException;
+    MetricInfoListResult query(MetricInfoQuery query) throws KapuaException;
 
     /**
      * Get the metrics informations count matching the given query
@@ -60,7 +58,6 @@ public interface MetricInfoRegistryService extends KapuaService, DatastoreServic
      * @throws KapuaException
      * @since 1.0.0
      */
-    public long count(MetricInfoQuery query)
-            throws KapuaException;
+    long count(MetricInfoQuery query) throws KapuaException;
 
 }

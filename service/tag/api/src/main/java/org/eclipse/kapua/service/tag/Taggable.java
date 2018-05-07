@@ -11,14 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.tag;
 
-import java.util.Set;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
+
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.util.Set;
 
 /**
  * Interface used to mark tag-able entities.
@@ -29,22 +28,22 @@ public interface Taggable {
 
     /**
      * Sets the set of {@link Tag} id of this entity.
-     * 
-     * @param tagIds
-     *            The set {@link Tag} id to assign.
+     *
+     * @param tagIds The set {@link Tag} id to assign.
      * @since 1.0.0
      */
-    public void setTagIds(Set<KapuaId> tagIds);
+
+    void setTagIds(Set<KapuaId> tagIds);
 
     /**
      * Gets the set of {@link Tag} id assigned to this entity.
-     * 
+     *
      * @return The set {@link Tag} id assigned to this entity.
      * @since 1.0.0
      */
     @XmlElement(name = "tagId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     @ApiModelProperty(dataType = "string")
-    public <I extends KapuaId> Set<I> getTagIds();
+    <I extends KapuaId> Set<I> getTagIds();
 
 }

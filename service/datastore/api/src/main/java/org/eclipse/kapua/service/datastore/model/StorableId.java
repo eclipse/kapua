@@ -14,16 +14,16 @@ package org.eclipse.kapua.service.datastore.model;
 /**
  * Storable identifier definition.<br>
  * It defines the identifier of every object that can be stored in a datastore schema.
- * 
+ *
  * @since 1.0
- * 
  */
 public interface StorableId {
 
     /**
      * Return the storable identifier as a string
-     * 
+     *
      * @return
      */
-    public String toString();
+    @Override
+    String toString();
 }

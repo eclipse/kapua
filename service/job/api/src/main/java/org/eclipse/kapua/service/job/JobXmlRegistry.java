@@ -11,50 +11,49 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job;
 
-import javax.xml.bind.annotation.XmlRegistry;
-
 import org.eclipse.kapua.locator.KapuaLocator;
 
+import javax.xml.bind.annotation.XmlRegistry;
+
 /**
- * Job xml factory class
- * 
- * @since 1.0
+ * {@link Job} xml factory class
  *
+ * @since 1.0
  */
 @XmlRegistry
 public class JobXmlRegistry {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final JobFactory factory = locator.getFactory(JobFactory.class);
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final JobFactory JOB_FACTORY = LOCATOR.getFactory(JobFactory.class);
 
     /**
      * Creates a new job instance
-     * 
+     *
      * @return
      */
     public Job newJob() {
-        return factory.newEntity(null);
+        return JOB_FACTORY.newEntity(null);
     }
 
     /**
      * Creates a new job creator instance
-     * 
+     *
      * @return
      */
     public JobCreator newJobCreator() {
-        return factory.newCreator(null);
+        return JOB_FACTORY.newCreator(null);
     }
 
     /**
      * Creates a new job list result instance
-     * 
+     *
      * @return
      */
     public JobListResult newJobListResult() {
-        return factory.newListResult();
+        return JOB_FACTORY.newListResult();
     }
 
     public JobQuery newQuery() {
-        return factory.newQuery(null);
+        return JOB_FACTORY.newQuery(null);
     }
 }

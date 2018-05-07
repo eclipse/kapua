@@ -13,16 +13,16 @@ package org.eclipse.kapua.service.certificate;
 
 public interface KeyUsageSetting {
 
-    public KeyUsage getKeyUsage();
+    KeyUsage getKeyUsage();
 
-    public void setKeyUsage(KeyUsage keyUsage);
+    void setKeyUsage(KeyUsage keyUsage);
 
-    public boolean getAllowed();
+    boolean getAllowed();
 
-    public void setAllowed(boolean allowed);
+    void setAllowed(boolean allowed);
 
-    public Boolean getKapuaAllowed();
+    Boolean getKapuaAllowed();
 
-    public void setKapuaAllowed(Boolean allowed);
+    void setKapuaAllowed(Boolean allowed);
 
 }

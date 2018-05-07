@@ -25,7 +25,7 @@ public interface DeviceChannel extends Channel {
      *
      * @return
      */
-    public String getMessageClassification();
+    String getMessageClassification();
 
     /**
      * Sets the message classification.<br>
@@ -34,34 +34,34 @@ public interface DeviceChannel extends Channel {
      *
      * @param messageClassification
      */
-    public void setMessageClassification(String messageClassification);
+    void setMessageClassification(String messageClassification);
 
     /**
      * Get the message scope
      *
      * @return
      */
-    public String getScope();
+    String getScope();
 
     /**
      * Set th emessage scope
      *
      * @param scope
      */
-    public void setScope(String scope);
+    void setScope(String scope);
 
     /**
      * Get the client identifier
      *
      * @return
      */
-    public String getClientId();
+    String getClientId();
 
     /**
      * Set the client identifier
      *
      * @param clientId
      */
-    public void setClientId(String clientId);
+    void setClientId(String clientId);
 
 }

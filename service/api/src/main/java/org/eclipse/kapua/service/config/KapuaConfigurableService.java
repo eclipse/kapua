@@ -11,44 +11,43 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.config;
 
-import java.util.Map;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 
+import java.util.Map;
+
 /**
  * Configurable service definition
- * 
+ *
  * @since 1.0
- * 
  */
 public interface KapuaConfigurableService {
 
     /**
      * Return the service configuration metadata
-     * 
+     *
      * @return
      * @throws KapuaException
      */
-    public KapuaTocd getConfigMetadata() throws KapuaException;
+    KapuaTocd getConfigMetadata() throws KapuaException;
 
     /**
      * Return a map of configuration values associated with the provided scope id
-     * 
+     *
      * @param scopeId
      * @return
      * @throws KapuaException
      */
-    public Map<String, Object> getConfigValues(KapuaId scopeId) throws KapuaException;
+    Map<String, Object> getConfigValues(KapuaId scopeId) throws KapuaException;
 
     /**
      * Set the configuration values for the specified scope id
-     * 
+     *
      * @param scopeId
      * @param values
      * @throws KapuaException
      */
-    public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException;
+    void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException;
 
 }

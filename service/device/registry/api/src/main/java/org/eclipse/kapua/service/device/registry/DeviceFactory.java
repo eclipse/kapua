@@ -16,19 +16,18 @@ import org.eclipse.kapua.model.id.KapuaId;
 
 /**
  * Device service factory definition.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public interface DeviceFactory extends KapuaEntityFactory<Device, DeviceCreator, DeviceQuery, DeviceListResult> {
 
     /**
      * Creates a new device creator
-     * 
+     *
      * @param scopeId
      * @param clientId
      * @return
      */
-    public DeviceCreator newCreator(KapuaId scopeId, String clientId);
+    DeviceCreator newCreator(KapuaId scopeId, String clientId);
 
 }

@@ -11,48 +11,46 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.step.definition;
 
-import java.util.List;
+import org.eclipse.kapua.model.KapuaNamedEntityCreator;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
-import org.eclipse.kapua.model.KapuaNamedEntityCreator;
+import java.util.List;
 
 /**
  * {@link JobStepDefinitionCreator} encapsulates all the information needed to create a new JobStepDefinition in the system.<br>
  * The data provided will be used to seed the new JobStepDefinition.
- * 
- * @since 1.0.0
  *
+ * @since 1.0.0
  */
 @XmlRootElement(name = "jobStepDefinitionCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = JobStepDefinitionXmlRegistry.class, factoryMethod = "newJobStepDefinitionCreator")
 public interface JobStepDefinitionCreator extends KapuaNamedEntityCreator<JobStepDefinition> {
 
-    public String getDescription();
+    String getDescription();
 
-    public void setDescription(String description);
+    void setDescription(String description);
 
-    public JobStepType getStepType();
+    JobStepType getStepType();
 
-    public void setStepType(JobStepType jobStepType);
+    void setStepType(JobStepType jobStepType);
 
-    public String getReaderName();
+    String getReaderName();
 
-    public void setReaderName(String readerName);
+    void setReaderName(String readerName);
 
-    public String getProcessorName();
+    String getProcessorName();
 
-    public void setProcessorName(String processorName);
+    void setProcessorName(String processorName);
 
-    public String getWriterName();
+    String getWriterName();
 
-    public void setWriterName(String writesName);
+    void setWriterName(String writesName);
 
-    public List<JobStepProperty> getStepProperties();
+    List<JobStepProperty> getStepProperties();
 
-    public void setStepProperties(List<JobStepProperty> jobStepProperties);
+    void setStepProperties(List<JobStepProperty> jobStepProperties);
 }

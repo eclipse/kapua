@@ -16,10 +16,10 @@ import org.eclipse.kapua.service.KapuaService;
 
 public interface DeviceManagementService extends KapuaService, KapuaDomainService<DeviceManagementDomain> {
 
-    public static final DeviceManagementDomain DEVICE_MANAGEMENT_DOMAIN = new DeviceManagementDomain();
+    DeviceManagementDomain DEVICE_MANAGEMENT_DOMAIN = new DeviceManagementDomain();
 
     @Override
-    public default DeviceManagementDomain getServiceDomain() {
+    default DeviceManagementDomain getServiceDomain() {
         return DEVICE_MANAGEMENT_DOMAIN;
     }
 

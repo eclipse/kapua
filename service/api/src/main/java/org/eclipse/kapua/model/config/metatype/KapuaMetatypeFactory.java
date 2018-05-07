@@ -16,68 +16,66 @@ import org.eclipse.kapua.model.KapuaObjectFactory;
 /**
  * Kapua metatype objects factory service definition.<br>
  * This class provides, through locator and factory service, a factory for few objects types.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-public interface KapuaMetatypeFactory extends KapuaObjectFactory{
+public interface KapuaMetatypeFactory extends KapuaObjectFactory {
 
     /**
      * Returns a {@link KapuaTocd} instance
-     * 
+     *
      * @return
      */
-    public KapuaTocd newKapuaTocd();
+    KapuaTocd newKapuaTocd();
 
     /**
      * Returns a {@link KapuaTad} instance
-     * 
+     *
      * @return
      */
-    public KapuaTad newKapuaTad();
+    KapuaTad newKapuaTad();
 
     /**
      * Returns a {@link KapuaTscalar} instance
-     * 
+     *
      * @param type
-     * 
      * @return
      */
-    public KapuaTscalar newKapuaTscalar(String type);
+    KapuaTscalar newKapuaTscalar(String type);
 
     /**
      * Returns a {@link KapuaToption} instance
-     * 
+     *
      * @return
      */
-    public KapuaToption newKapuaToption();
+    KapuaToption newKapuaToption();
 
     /**
      * Returns a {@link KapuaTicon} instance
-     * 
+     *
      * @return
      */
-    public KapuaTicon newKapuaTicon();
+    KapuaTicon newKapuaTicon();
 
     /**
      * Returns a {@link KapuaTmetadata} instance
-     * 
+     *
      * @return
      */
-    public KapuaTmetadata newKapuaTmetadata();
+    KapuaTmetadata newKapuaTmetadata();
 
     /**
      * Returns a {@link KapuaTdesignate} instance
-     * 
+     *
      * @return
      */
-    public KapuaTdesignate newKapuaTdesignate();
+    KapuaTdesignate newKapuaTdesignate();
 
     /**
      * Returns a {@link KapuaTobject} instance
-     * 
+     *
      * @return
      */
-    public KapuaTobject newKapuaTobject();
+    KapuaTobject newKapuaTobject();
 
 }

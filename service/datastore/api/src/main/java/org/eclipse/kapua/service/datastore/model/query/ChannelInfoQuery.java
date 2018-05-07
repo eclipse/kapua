@@ -11,22 +11,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.model.query;
 
+import org.eclipse.kapua.service.datastore.ChannelInfoXmlRegistry;
+import org.eclipse.kapua.service.datastore.model.ChannelInfo;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.eclipse.kapua.service.datastore.ChannelInfoXmlRegistry;
-import org.eclipse.kapua.service.datastore.model.ChannelInfo;
-
 /**
  * Channel information schema query definition
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = ChannelInfoXmlRegistry.class, factoryMethod = "newQuery")
 public interface ChannelInfoQuery extends StorableQuery<ChannelInfo> {
+
 }

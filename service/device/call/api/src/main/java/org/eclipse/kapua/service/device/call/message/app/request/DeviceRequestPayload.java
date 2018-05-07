@@ -25,14 +25,14 @@ public interface DeviceRequestPayload extends DeviceAppPayload {
      *
      * @return
      */
-    public String getRequestId();
+    String getRequestId();
 
     /**
      * Set the request identifier
      *
      * @param requestId
      */
-    public void setRequestId(String requestId);
+    void setRequestId(String requestId);
 
     /**
      * Get the requester client identifier.<br>
@@ -40,7 +40,7 @@ public interface DeviceRequestPayload extends DeviceAppPayload {
      *
      * @return
      */
-    public String getRequesterClientId();
+    String getRequesterClientId();
 
     /**
      * Set the requester client identifier.<br>
@@ -48,5 +48,5 @@ public interface DeviceRequestPayload extends DeviceAppPayload {
      *
      * @param requesterId
      */
-    public void setRequesterClientId(String requesterId);
+    void setRequesterClientId(String requesterId);
 }

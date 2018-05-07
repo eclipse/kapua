@@ -11,44 +11,44 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role;
 
-import javax.xml.bind.annotation.XmlRegistry;
-
 import org.eclipse.kapua.locator.KapuaLocator;
+
+import javax.xml.bind.annotation.XmlRegistry;
 
 @XmlRegistry
 public class RolePermissionXmlRegistry {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final RolePermissionFactory factory = locator.getFactory(RolePermissionFactory.class);
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final RolePermissionFactory ROLE_PERMISSION_FACTORY = LOCATOR.getFactory(RolePermissionFactory.class);
 
     /**
      * Creates a new {@link RolePermission} instance
-     * 
+     *
      * @return
      */
     public RolePermission newRolePermission() {
-        return factory.newEntity(null);
+        return ROLE_PERMISSION_FACTORY.newEntity(null);
     }
 
     /**
      * Creates a new {@link RolePermission} instance
-     * 
+     *
      * @return
      */
     public RolePermissionCreator newCreator() {
-        return factory.newCreator(null);
+        return ROLE_PERMISSION_FACTORY.newCreator(null);
     }
 
     /**
      * Creates a new {@link RolePermissionListResult} instance
-     * 
+     *
      * @return
      */
     public RolePermissionListResult newRolePermissionListResult() {
-        return factory.newListResult();
+        return ROLE_PERMISSION_FACTORY.newListResult();
     }
 
     public RolePermissionQuery newQuery() {
-        return factory.newQuery(null);
+        return ROLE_PERMISSION_FACTORY.newQuery(null);
     }
 }

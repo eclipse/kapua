@@ -11,20 +11,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user;
 
-import javax.xml.bind.annotation.XmlRegistry;
-
 import org.eclipse.kapua.locator.KapuaLocator;
 
+import javax.xml.bind.annotation.XmlRegistry;
+
 /**
- * User xml factory class
+ * {@link User} xml factory class
  *
  * @since 1.0
  */
 @XmlRegistry
 public class UserXmlRegistry {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final UserFactory factory = locator.getFactory(UserFactory.class);
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final UserFactory USER_FACTORY = LOCATOR.getFactory(UserFactory.class);
 
     /**
      * Creates a new user instance
@@ -32,7 +32,7 @@ public class UserXmlRegistry {
      * @return
      */
     public User newUser() {
-        return factory.newEntity(null);
+        return USER_FACTORY.newEntity(null);
     }
 
     /**
@@ -41,7 +41,7 @@ public class UserXmlRegistry {
      * @return
      */
     public UserCreator newUserCreator() {
-        return factory.newCreator(null, null);
+        return USER_FACTORY.newCreator(null, null);
     }
 
     /**
@@ -50,10 +50,10 @@ public class UserXmlRegistry {
      * @return
      */
     public UserListResult newUserListResult() {
-        return factory.newListResult();
+        return USER_FACTORY.newListResult();
     }
 
     public UserQuery newQuery() {
-        return factory.newQuery(null);
+        return USER_FACTORY.newQuery(null);
     }
 }

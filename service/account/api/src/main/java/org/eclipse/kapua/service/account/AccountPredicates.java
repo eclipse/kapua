@@ -15,9 +15,6 @@ import org.eclipse.kapua.model.KapuaNamedEntityPredicates;
 
 public interface AccountPredicates extends KapuaNamedEntityPredicates {
 
-    /**
-     * The {@link Account} name.
-     */
     String PARENT_ACCOUNT_PATH = "parentAccountPath";
 
     String CHILD_ACCOUNTS = "childAccounts";

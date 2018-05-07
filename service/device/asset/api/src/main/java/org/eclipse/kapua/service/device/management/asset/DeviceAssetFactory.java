@@ -24,26 +24,23 @@ public interface DeviceAssetFactory extends KapuaObjectFactory {
      * Instantiate a new {@link DeviceAssets} instance.
      *
      * @return The newly instantiated {@link DeviceAssets}.
-     * 
      * @since 1.0.0
      */
-    public DeviceAssets newAssetListResult();
+    DeviceAssets newAssetListResult();
 
     /**
      * Instantiate a new {@link DeviceAsset} instance.
      *
      * @return The newly instantiated {@link DeviceAsset}.
-     * 
      * @since 1.0.0
      */
-    public DeviceAsset newDeviceAsset();
+    DeviceAsset newDeviceAsset();
 
     /**
      * Instantiate a new {@link DeviceAssetChannel} instance.
-     * 
+     *
      * @return The newly instantiated {@link DeviceAssetChannel}
-     * 
      * @since 1.0.0
      */
-    public DeviceAssetChannel newDeviceAssetChannel();
+    DeviceAssetChannel newDeviceAssetChannel();
 }

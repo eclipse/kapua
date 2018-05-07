@@ -11,50 +11,49 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.scheduler.trigger;
 
-import java.util.Date;
-import java.util.List;
+import org.eclipse.kapua.model.KapuaNamedEntity;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
-import org.eclipse.kapua.model.KapuaNamedEntity;
+import java.util.Date;
+import java.util.List;
 
 /**
  * User schedule entity.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @XmlRootElement(name = "schedule")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = TriggerXmlRegistry.class, factoryMethod = "newTrigger")
 public interface Trigger extends KapuaNamedEntity {
 
-    public static final String TYPE = "schedule";
+    String TYPE = "schedule";
 
-    public default String getType() {
+    @Override
+    default String getType() {
         return TYPE;
     }
 
-    public Date getStartsOn();
+    Date getStartsOn();
 
-    public void setStartsOn(Date starstOn);
+    void setStartsOn(Date starstOn);
 
-    public Date getEndsOn();
+    Date getEndsOn();
 
-    public void setEndsOn(Date endsOn);
+    void setEndsOn(Date endsOn);
 
-    public String getCronScheduling();
+    String getCronScheduling();
 
-    public void setCronScheduling(String cronScheduling);
+    void setCronScheduling(String cronScheduling);
 
-    public Long getRetryInterval();
+    Long getRetryInterval();
 
-    public void setRetryInterval(Long retryInterval);
+    void setRetryInterval(Long retryInterval);
 
-    public <P extends TriggerProperty> List<P> getTriggerProperties();
+    <P extends TriggerProperty> List<P> getTriggerProperties();
 
-    public void setTriggerProperties(List<TriggerProperty> triggerProperties);
+    void setTriggerProperties(List<TriggerProperty> triggerProperties);
 }

@@ -25,93 +25,86 @@ import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
 
 /**
  * Datastore object factory definition
- * 
+ *
  * @since 1.0.0
  */
 public interface DatastoreObjectFactory extends KapuaObjectFactory {
 
     /**
      * Return a new channel information query
-     * 
+     *
      * @param scopeId
      * @return
-     * 
      * @since 1.0.0
      */
-    public ChannelInfoQuery newChannelInfoQuery(KapuaId scopeId);
+    ChannelInfoQuery newChannelInfoQuery(KapuaId scopeId);
 
     /**
      * Return a new channel information query
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
-    public ChannelInfoListResult newChannelInfoListResult();
+    ChannelInfoListResult newChannelInfoListResult();
 
     /**
      * Return a new client information query
-     * 
+     *
      * @param scopeId
      * @return
-     * 
      * @since 1.0.0
      */
-    public ClientInfoQuery newClientInfoQuery(KapuaId scopeId);
+    ClientInfoQuery newClientInfoQuery(KapuaId scopeId);
 
     /**
      * Return a new client information query
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
-    public ClientInfoListResult newClientInfoListResult();
+    ClientInfoListResult newClientInfoListResult();
 
     /**
      * Return a new datastore message query
-     * 
+     *
      * @param scopeId
      * @return
-     * 
      * @since 1.0.0
      */
-    public MessageQuery newDatastoreMessageQuery(KapuaId scopeId);
+    MessageQuery newDatastoreMessageQuery(KapuaId scopeId);
 
     /**
+     * s
      * Return a new metric information query
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
-    public MessageListResult newDatastoreMessageListResult();
+    MessageListResult newDatastoreMessageListResult();
 
     /**
      * Return a new metric information query
-     * 
+     *
      * @param scopeId
      * @return
-     * 
      * @since 1.0.0
      */
-    public MetricInfoQuery newMetricInfoQuery(KapuaId scopeId);
+    MetricInfoQuery newMetricInfoQuery(KapuaId scopeId);
 
     /**
      * Return a new metric information query
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
-    public MetricInfoListResult newMetricInfoListResult();
+    MetricInfoListResult newMetricInfoListResult();
 
     /**
      * Returns a new Metric instance
-     * 
+     *
      * @param name
      * @param value
      * @return
      */
-    public Metric<?> newMetric(String name, Object value);
+    Metric<?> newMetric(String name, Object value);
 }

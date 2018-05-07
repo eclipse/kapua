@@ -11,6 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access;
 
+import io.swagger.annotations.ApiModelProperty;
+import org.eclipse.kapua.model.KapuaUpdatableEntity;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -18,18 +23,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import io.swagger.annotations.ApiModelProperty;
-import org.eclipse.kapua.model.KapuaUpdatableEntity;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.id.KapuaIdAdapter;
-
 /**
  * Access info entity definition.<br>
  * It contains all authorization accesses for a {@link org.eclipse.kapua.service.user.User}.<br>
  * It refers to the {@link org.eclipse.kapua.service.user.User} entity by the {@link AccessInfo#getUserId()} property.<br>
  * <br>
  * {@link AccessInfo} is unique by the {@link AccessInfo#getUserId()} property.
- * 
+ *
  * @since 1.0.0
  */
 @XmlRootElement
@@ -39,29 +39,29 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
         factoryMethod = "newAccessInfo")
 public interface AccessInfo extends KapuaUpdatableEntity {
 
-    public static final String TYPE = "accessInfo";
+    String TYPE = "accessInfo";
 
-    public default String getType() {
+    @Override
+    default String getType() {
         return TYPE;
     }
 
     /**
      * Sets the user id.
-     * 
-     * @param userId
-     *            The user id.
+     *
+     * @param userId The user id.
      * @since 1.0.0
      */
-    public void setUserId(KapuaId userId);
+    void setUserId(KapuaId userId);
 
     /**
      * Gets the user id.
-     * 
+     *
      * @return The user id.
      * @since 1.0.0
      */
     @XmlElement(name = "userId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     @ApiModelProperty(dataType = "string")
-    public KapuaId getUserId();
+    KapuaId getUserId();
 }

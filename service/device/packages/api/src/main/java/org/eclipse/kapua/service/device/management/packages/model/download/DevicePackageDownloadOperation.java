@@ -15,66 +15,65 @@ import org.eclipse.kapua.model.id.KapuaId;
 
 /**
  * Device download package operation entity definition.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public interface DevicePackageDownloadOperation {
 
     /**
      * Get the download package identifier
-     * 
+     *
      * @return
      */
-    public KapuaId getId();
+    KapuaId getId();
 
     /**
      * Set the download package identifier
-     * 
+     *
      * @param id
      */
-    public void setId(KapuaId id);
+    void setId(KapuaId id);
 
     /**
      * Get the package size
-     * 
+     *
      * @return
      */
-    public Integer getSize();
+    Integer getSize();
 
     /**
      * Set the package size
-     * 
+     *
      * @param downloadSize
      */
-    public void setSize(Integer downloadSize);
+    void setSize(Integer downloadSize);
 
     /**
      * Get the download progress
-     * 
+     *
      * @return
      */
-    public Integer getProgress();
+    Integer getProgress();
 
     /**
      * Set the download progress
-     * 
+     *
      * @param downloadProgress
      */
-    public void setProgress(Integer downloadProgress);
+    void setProgress(Integer downloadProgress);
 
     /**
      * Get the download status
-     * 
+     *
      * @return
      */
-    public DevicePackageDownloadStatus getStatus();
+    DevicePackageDownloadStatus getStatus();
 
     /**
      * Set the download status
-     * 
+     *
      * @param status
      */
-    public void setStatus(DevicePackageDownloadStatus status);
+    void setStatus(DevicePackageDownloadStatus status);
 
 }

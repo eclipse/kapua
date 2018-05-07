@@ -17,11 +17,12 @@ import org.eclipse.kapua.service.authentication.JwtCredentials;
 
 public interface RegistrationService extends KapuaService {
 
-    public boolean createAccount(JwtCredentials credentials) throws KapuaException;
+    boolean createAccount(JwtCredentials credentials) throws KapuaException;
 
     /**
      * Test if account creation is enabled
+     *
      * @return {@code true} if account creation is enabled, {@code false} otherwise
      */
-    public boolean isAccountCreationEnabled();
+    boolean isAccountCreationEnabled();
 }

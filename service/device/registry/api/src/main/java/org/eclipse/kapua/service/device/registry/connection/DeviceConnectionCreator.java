@@ -30,70 +30,70 @@ public interface DeviceConnectionCreator extends KapuaUpdatableEntityCreator<Dev
      * @return
      */
     @XmlElement(name = "status")
-    public DeviceConnectionStatus getStatus();
+    DeviceConnectionStatus getStatus();
 
     /**
      * Set the device connection status
      *
      * @param status
      */
-    public void setStatus(DeviceConnectionStatus status);
+    void setStatus(DeviceConnectionStatus status);
 
     /**
      * Get the client identifier
      *
      * @return
      */
-    public String getClientId();
+    String getClientId();
 
     /**
      * Set the client identifier
      *
      * @param clientId
      */
-    public void setClientId(String clientId);
+    void setClientId(String clientId);
 
     /**
      * Get the user identifier
      *
      * @return
      */
-    public KapuaId getUserId();
+    KapuaId getUserId();
 
     /**
      * Set the user identifier
      *
      * @param userId
      */
-    public void setUserId(KapuaId userId);
+    void setUserId(KapuaId userId);
 
     /**
      * Get the device connection user coupling mode.
      *
      * @return
      */
-    public ConnectionUserCouplingMode getUserCouplingMode();
+    ConnectionUserCouplingMode getUserCouplingMode();
 
     /**
      * Set the device connection user coupling mode.
      *
      * @param userCouplingMode
      */
-    public void setUserCouplingMode(ConnectionUserCouplingMode userCouplingMode);
+    void setUserCouplingMode(ConnectionUserCouplingMode userCouplingMode);
 
     /**
      * Get the reserved user identifier
      *
      * @return
      */
-    public KapuaId getReservedUserId();
+    KapuaId getReservedUserId();
 
     /**
      * Set the reserved user identifier
      *
      * @param reservedUserId
      */
-    public void setReservedUserId(KapuaId reservedUserId);
+    void setReservedUserId(KapuaId reservedUserId);
 
     /**
      * Gets whether or not the {@link DeviceConnection} can change user on the next login.
@@ -101,54 +101,54 @@ public interface DeviceConnectionCreator extends KapuaUpdatableEntityCreator<Dev
      * @return <code>true</code> if device can changhe user to connect, <code>false</code> if not.
      */
     @XmlElement(name = "allowUserChange")
-    public boolean getAllowUserChange();
+    boolean getAllowUserChange();
 
     /**
      * Sets whether or not the {@link DeviceConnection} can change user on the next login.
      *
      * @param allowUserChange
      */
-    public void setAllowUserChange(boolean allowUserChange);
+    void setAllowUserChange(boolean allowUserChange);
 
     /**
      * Get the device protocol
      *
      * @return
      */
-    public String getProtocol();
+    String getProtocol();
 
     /**
      * Set the device protocol
      *
      * @param protocol
      */
-    public void setProtocol(String protocol);
+    void setProtocol(String protocol);
 
     /**
      * Get the client ip
      *
      * @return
      */
-    public String getClientIp();
+    String getClientIp();
 
     /**
      * Set the client ip
      *
      * @param clientIp
      */
-    public void setClientIp(String clientIp);
+    void setClientIp(String clientIp);
 
     /**
      * Get the server ip
      *
      * @return
      */
-    public String getServerIp();
+    String getServerIp();
 
     /**
      * Set the server ip
      *
      * @param serverIp
      */
-    public void setServerIp(String serverIp);
+    void setServerIp(String serverIp);
 }

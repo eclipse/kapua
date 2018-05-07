@@ -14,10 +14,8 @@ package org.eclipse.kapua.service.datastore.client;
 /**
  * Datastore client wrapper definition.
  *
+ * @param <C> client type
  * @since 1.0
- *
- * @param <C>
- *            client type
  */
 public interface ClientProvider<C> {
 
@@ -26,6 +24,5 @@ public interface ClientProvider<C> {
      *
      * @return
      */
-    public C getClient();
-
+    C getClient();
 }

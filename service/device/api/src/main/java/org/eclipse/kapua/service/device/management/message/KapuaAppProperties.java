@@ -26,5 +26,5 @@ public interface KapuaAppProperties {
      *
      * @return
      */
-    public String getValue();
+    String getValue();
 }

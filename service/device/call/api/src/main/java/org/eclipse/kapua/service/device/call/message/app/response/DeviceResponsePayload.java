@@ -23,27 +23,27 @@ public interface DeviceResponsePayload extends DeviceAppPayload {
      *
      * @return
      */
-    public <C extends DeviceResponseCode> C getResponseCode();
+    <C extends DeviceResponseCode> C getResponseCode();
 
     /**
      * Get the command exception message
      *
      * @return
      */
-    public String getExceptionMessage();
+    String getExceptionMessage();
 
     /**
      * Get the command exception stack
      *
      * @return
      */
-    public String getExceptionStack();
+    String getExceptionStack();
 
     /**
      * Get the command response body
      *
      * @return
      */
-    public byte[] getResponseBody();
+    byte[] getResponseBody();
 
 }

@@ -25,10 +25,10 @@ import org.eclipse.kapua.service.user.User;
  */
 public interface AccessInfoService extends KapuaEntityService<AccessInfo, AccessInfoCreator>, KapuaDomainService<AccessInfoDomain> {
 
-    public static final AccessInfoDomain ACCESS_INFO_DOMAIN = new AccessInfoDomain();
+    AccessInfoDomain ACCESS_INFO_DOMAIN = new AccessInfoDomain();
 
     @Override
-    public default AccessInfoDomain getServiceDomain() {
+    default AccessInfoDomain getServiceDomain() {
         return ACCESS_INFO_DOMAIN;
     }
 
@@ -42,7 +42,7 @@ public interface AccessInfoService extends KapuaEntityService<AccessInfo, Access
      * @since 1.0.0
      */
     @Override
-    public AccessInfo create(AccessInfoCreator accessInfoCreator)
+    AccessInfo create(AccessInfoCreator accessInfoCreator)
             throws KapuaException;
 
     /**
@@ -54,7 +54,7 @@ public interface AccessInfoService extends KapuaEntityService<AccessInfo, Access
      * @throws KapuaException
      * @since 1.0.0
      */
-    public AccessInfo findByUserId(KapuaId scopeId, KapuaId userId)
+    AccessInfo findByUserId(KapuaId scopeId, KapuaId userId)
             throws KapuaException;
 
     /**
@@ -67,7 +67,7 @@ public interface AccessInfoService extends KapuaEntityService<AccessInfo, Access
      * @since 1.0.0
      */
     @Override
-    public AccessInfo find(KapuaId scopeId, KapuaId accessInfoId)
+    AccessInfo find(KapuaId scopeId, KapuaId accessInfoId)
             throws KapuaException;
 
     /**
@@ -79,7 +79,7 @@ public interface AccessInfoService extends KapuaEntityService<AccessInfo, Access
      * @since 1.0.0
      */
     @Override
-    public AccessInfoListResult query(KapuaQuery<AccessInfo> query)
+    AccessInfoListResult query(KapuaQuery<AccessInfo> query)
             throws KapuaException;
 
     /**
@@ -91,7 +91,7 @@ public interface AccessInfoService extends KapuaEntityService<AccessInfo, Access
      * @since 1.0.0
      */
     @Override
-    public long count(KapuaQuery<AccessInfo> query)
+    long count(KapuaQuery<AccessInfo> query)
             throws KapuaException;
 
     /**
@@ -103,6 +103,6 @@ public interface AccessInfoService extends KapuaEntityService<AccessInfo, Access
      * @since 1.0.0
      */
     @Override
-    public void delete(KapuaId scopeId, KapuaId accessInfoId)
+    void delete(KapuaId scopeId, KapuaId accessInfoId)
             throws KapuaException;
 }

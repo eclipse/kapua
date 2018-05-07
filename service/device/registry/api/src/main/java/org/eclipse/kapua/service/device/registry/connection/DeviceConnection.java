@@ -11,18 +11,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection;
 
+import io.swagger.annotations.ApiModelProperty;
+import org.eclipse.kapua.model.KapuaUpdatableEntity;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import io.swagger.annotations.ApiModelProperty;
-import org.eclipse.kapua.model.KapuaUpdatableEntity;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.id.KapuaIdAdapter;
-import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
 
 /**
  * Device connection entity definition.
@@ -45,9 +45,10 @@ import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
         factoryMethod = "newDeviceConnection")
 public interface DeviceConnection extends KapuaUpdatableEntity {
 
-    public static final String TYPE = "deviceConnection";
+    String TYPE = "deviceConnection";
 
-    public default String getType() {
+    @Override
+    default String getType() {
         return TYPE;
     }
 
@@ -57,14 +58,14 @@ public interface DeviceConnection extends KapuaUpdatableEntity {
      * @return
      */
     @XmlElement(name = "status")
-    public DeviceConnectionStatus getStatus();
+    DeviceConnectionStatus getStatus();
 
     /**
      * Set the device connection status
      *
      * @param status
      */
-    public void setStatus(DeviceConnectionStatus status);
+    void setStatus(DeviceConnectionStatus status);
 
     /**
      * Get the client identifier
@@ -72,14 +73,14 @@ public interface DeviceConnection extends KapuaUpdatableEntity {
      * @return
      */
     @XmlElement(name = "clientId")
-    public String getClientId();
+    String getClientId();
 
     /**
      * Set the client identifier
      *
      * @param clientId
      */
-    public void setClientId(String clientId);
+    void setClientId(String clientId);
 
     /**
      * Get the user identifier
@@ -89,29 +90,29 @@ public interface DeviceConnection extends KapuaUpdatableEntity {
     @XmlElement(name = "userId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     @ApiModelProperty(dataType = "string")
-    public KapuaId getUserId();
+    KapuaId getUserId();
 
     /**
      * Set the user identifier
      *
      * @param userId
      */
-    public void setUserId(KapuaId userId);
+    void setUserId(KapuaId userId);
 
     /**
      * Gets whether or not the {@link DeviceConnection} can change user on the next login.
-     * 
+     *
      * @return <code>true</code> if device can changhe user to connect, <code>false</code> if not.
      */
     @XmlElement(name = "allowUserChange")
-    public boolean getAllowUserChange();
+    boolean getAllowUserChange();
 
     /**
      * Sets whether or not the {@link DeviceConnection} can change user on the next login.
-     * 
+     *
      * @param allowUserChange
      */
-    public void setAllowUserChange(boolean allowUserChange);
+    void setAllowUserChange(boolean allowUserChange);
 
     /**
      * Get the device connection user coupling mode.
@@ -119,14 +120,14 @@ public interface DeviceConnection extends KapuaUpdatableEntity {
      * @return
      */
     @XmlElement(name = "userCouplingMode")
-    public ConnectionUserCouplingMode getUserCouplingMode();
+    ConnectionUserCouplingMode getUserCouplingMode();
 
     /**
      * Set the device connection user coupling mode.
      *
      * @param userCouplingMode
      */
-    public void setUserCouplingMode(ConnectionUserCouplingMode userCouplingMode);
+    void setUserCouplingMode(ConnectionUserCouplingMode userCouplingMode);
 
     /**
      * Get the reserved user identifier
@@ -136,14 +137,14 @@ public interface DeviceConnection extends KapuaUpdatableEntity {
     @XmlElement(name = "reservedUserId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     @ApiModelProperty(dataType = "string")
-    public KapuaId getReservedUserId();
+    KapuaId getReservedUserId();
 
     /**
      * Set the reserved user identifier
      *
      * @param reservedUserId
      */
-    public void setReservedUserId(KapuaId reservedUserId);
+    void setReservedUserId(KapuaId reservedUserId);
 
     /**
      * Get the device protocol
@@ -151,14 +152,14 @@ public interface DeviceConnection extends KapuaUpdatableEntity {
      * @return
      */
     @XmlElement(name = "protocol")
-    public String getProtocol();
+    String getProtocol();
 
     /**
      * Set the device protocol
      *
      * @param protocol
      */
-    public void setProtocol(String protocol);
+    void setProtocol(String protocol);
 
     /**
      * Get the client ip
@@ -166,14 +167,14 @@ public interface DeviceConnection extends KapuaUpdatableEntity {
      * @return
      */
     @XmlElement(name = "clientIp")
-    public String getClientIp();
+    String getClientIp();
 
     /**
      * Set the client ip
      *
      * @param clientIp
      */
-    public void setClientIp(String clientIp);
+    void setClientIp(String clientIp);
 
     /**
      * Get the server ip
@@ -181,12 +182,12 @@ public interface DeviceConnection extends KapuaUpdatableEntity {
      * @return
      */
     @XmlElement(name = "serverIp")
-    public String getServerIp();
+    String getServerIp();
 
     /**
      * Set the server ip
      *
      * @param serverIp
      */
-    public void setServerIp(String serverIp);
+    void setServerIp(String serverIp);
 }

@@ -11,16 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user;
 
+import org.eclipse.kapua.model.KapuaNamedEntity;
+import org.eclipse.kapua.model.xml.DateXmlAdapter;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.eclipse.kapua.model.KapuaNamedEntity;
-import org.eclipse.kapua.model.xml.DateXmlAdapter;
-
 import java.util.Date;
 
 /**
@@ -42,9 +41,10 @@ import java.util.Date;
         factoryMethod = "newUser")
 public interface User extends KapuaNamedEntity {
 
-    public static final String TYPE = "user";
+    String TYPE = "user";
 
-    public default String getType() {
+    @Override
+    default String getType() {
         return TYPE;
     }
 
@@ -54,14 +54,14 @@ public interface User extends KapuaNamedEntity {
      * @return
      */
     @XmlElement(name = "status")
-    public UserStatus getStatus();
+    UserStatus getStatus();
 
     /**
      * Get the user status
      *
      * @param status
      */
-    public void setStatus(UserStatus status);
+    void setStatus(UserStatus status);
 
     /**
      * Return the display name (may be a friendly username to show in the UI)
@@ -69,14 +69,14 @@ public interface User extends KapuaNamedEntity {
      * @return
      */
     @XmlElement(name = "displayName")
-    public String getDisplayName();
+    String getDisplayName();
 
     /**
      * Set the display name
      *
      * @param displayName
      */
-    public void setDisplayName(String displayName);
+    void setDisplayName(String displayName);
 
     /**
      * Get the user email
@@ -84,14 +84,14 @@ public interface User extends KapuaNamedEntity {
      * @return
      */
     @XmlElement(name = "email")
-    public String getEmail();
+    String getEmail();
 
     /**
      * Set the user email
      *
      * @param email
      */
-    public void setEmail(String email);
+    void setEmail(String email);
 
     /**
      * Get the phone number
@@ -99,14 +99,14 @@ public interface User extends KapuaNamedEntity {
      * @return
      */
     @XmlElement(name = "phoneNumber")
-    public String getPhoneNumber();
+    String getPhoneNumber();
 
     /**
      * Set the phone number
      *
      * @param phoneNumber
      */
-    public void setPhoneNumber(String phoneNumber);
+    void setPhoneNumber(String phoneNumber);
 
     /**
      * Get the user type
@@ -114,12 +114,12 @@ public interface User extends KapuaNamedEntity {
      * @return
      */
     @XmlElement(name = "userType")
-    public UserType getUserType();
+    UserType getUserType();
 
     /**
      * Set the user type
      */
-    public void setUserType(UserType userType);
+    void setUserType(UserType userType);
 
     /**
      * Get the external ID
@@ -127,18 +127,18 @@ public interface User extends KapuaNamedEntity {
      * @return
      */
     @XmlElement(name = "externalId")
-    public String getExternalId();
+    String getExternalId();
 
     /**
      * Set the external ID
      *
      * @param externalId
      */
-    public void setExternalId(String externalId);
+    void setExternalId(String externalId);
 
-    @XmlElement(name="expirationDate")
+    @XmlElement(name = "expirationDate")
     @XmlJavaTypeAdapter(DateXmlAdapter.class)
-    public Date getExpirationDate();
+    Date getExpirationDate();
 
-    public void setExpirationDate(Date expirationDate);
+    void setExpirationDate(Date expirationDate);
 }

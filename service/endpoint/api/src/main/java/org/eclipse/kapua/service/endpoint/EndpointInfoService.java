@@ -26,10 +26,10 @@ public interface EndpointInfoService extends KapuaEntityService<EndpointInfo, En
         KapuaUpdatableEntityService<EndpointInfo>,
         KapuaDomainService<EndpointInfoDomain> {
 
-    public static final EndpointInfoDomain ENDPOINT_INFO_DOMAIN = new EndpointInfoDomain();
+    EndpointInfoDomain ENDPOINT_INFO_DOMAIN = new EndpointInfoDomain();
 
     @Override
-    public default EndpointInfoDomain getServiceDomain() {
+    default EndpointInfoDomain getServiceDomain() {
         return ENDPOINT_INFO_DOMAIN;
     }
 
@@ -42,6 +42,6 @@ public interface EndpointInfoService extends KapuaEntityService<EndpointInfo, En
      * @since 1.0.0
      */
     @Override
-    public EndpointInfoListResult query(KapuaQuery<EndpointInfo> query)
+    EndpointInfoListResult query(KapuaQuery<EndpointInfo> query)
             throws KapuaException;
 }

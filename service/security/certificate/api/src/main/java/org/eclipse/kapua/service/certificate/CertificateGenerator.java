@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate;
 
+import org.eclipse.kapua.service.certificate.xml.CertificateXmlRegistry;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -19,8 +21,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Date;
 import java.util.Set;
-
-import org.eclipse.kapua.service.certificate.xml.CertificateXmlRegistry;
 
 /**
  * {@link CertificateGenerator} encapsulates all the information needed to generate a new Certificate in the system.
@@ -76,7 +76,7 @@ public interface CertificateGenerator {
 
     void setCertificateUsages(Set<CertificateUsage> certificateUsages);
 
-    public Boolean getForwardable();
+    Boolean getForwardable();
 
-    public void setForwardable(Boolean forwardable);
+    void setForwardable(Boolean forwardable);
 }

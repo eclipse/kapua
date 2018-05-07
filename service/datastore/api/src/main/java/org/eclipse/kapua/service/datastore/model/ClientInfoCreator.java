@@ -11,77 +11,70 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.model;
 
-import java.util.Date;
-
 import org.eclipse.kapua.model.id.KapuaId;
+
+import java.util.Date;
 
 /**
  * Client information schema creator definition
- * 
+ *
  * @since 1.0.0
  */
 public interface ClientInfoCreator extends StorableCreator<ClientInfo> {
 
     /**
      * Get the account
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
-    public KapuaId getScopeId();
+    KapuaId getScopeId();
 
     /**
      * Get the client identifier
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
-    public String getClientId();
+    String getClientId();
 
     /**
      * Set the client identifier
-     * 
+     *
      * @param clientId
-     * 
      * @since 1.0.0
      */
-    public void setClientId(String clientId);
+    void setClientId(String clientId);
 
     /**
      * Get the message identifier (of the first message published by this client)
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
-    public StorableId getMessageId();
+    StorableId getMessageId();
 
     /**
      * Set the message identifier (of the first message published by this client)
-     * 
+     *
      * @param messageId
-     * 
      * @since 1.0.0
      */
-    public void setMessageId(StorableId messageId);
+    void setMessageId(StorableId messageId);
 
     /**
      * Get the message timestamp (of the first message published by this client)
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
-    public Date getMessageTimestamp();
+    Date getMessageTimestamp();
 
     /**
      * Set the message timestamp (of the first message published by this client)
-     * 
+     *
      * @param messageTimestamp
-     * 
      * @since 1.0.0
      */
-    public void setMessageTimestamp(Date messageTimestamp);
+    void setMessageTimestamp(Date messageTimestamp);
 }

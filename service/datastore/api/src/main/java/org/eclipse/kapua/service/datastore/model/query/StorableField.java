@@ -13,16 +13,15 @@ package org.eclipse.kapua.service.datastore.model.query;
 
 /**
  * Storable field definition
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public interface StorableField {
 
     /**
      * Return the field name
-     * 
+     *
      * @return
      */
-    public String field();
+    String field();
 }

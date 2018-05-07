@@ -11,13 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaEntity;
@@ -25,6 +18,13 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleService;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * Access role entity.<br>
@@ -36,7 +36,7 @@ import org.eclipse.kapua.service.authorization.role.RoleService;
  * {@link AccessRole#getAccessInfoId()} and {@link AccessRole#getRoleId()} property is forbidden.<br>
  * <br>
  * To edit {@link Role} entity please refer to {@link RoleService#update(Role)}
- * 
+ *
  * @since 1.0.0
  */
 @XmlRootElement(name = "accessRole")
@@ -46,49 +46,48 @@ import org.eclipse.kapua.service.authorization.role.RoleService;
         factoryMethod = "newAccessRole")
 public interface AccessRole extends KapuaEntity {
 
-    public static final String TYPE = "accessRole";
+    String TYPE = "accessRole";
 
-    public default String getType() {
+    @Override
+    default String getType() {
         return TYPE;
     }
 
     /**
      * Sets the {@link KapuaId} id of which this {@link AccessRole} belongs.
-     * 
-     * @param accessInfoId
-     *            The {@link KapuaId} id.
+     *
+     * @param accessInfoId The {@link KapuaId} id.
      * @since 1.0.0
      */
-    public void setAccessInfoId(KapuaId accessInfoId);
+    void setAccessInfoId(KapuaId accessInfoId);
 
     /**
      * Gets the {@link AccessInfo} id of which this {@link AccessRole} belongs.
-     * 
+     *
      * @return The {@link AccessInfo} id.
      * @since 1.0.0
      */
     @XmlElement(name = "accessInfoId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     @ApiModelProperty(dataType = "string")
-    public KapuaId getAccessInfoId();
+    KapuaId getAccessInfoId();
 
     /**
      * Sets the {@link Role} id that this {@link AccessRole} has.<br>
      * It up to the implementation class to make a clone of the given {@link Role} or use the given {@link Role}.
-     * 
-     * @param roleId
-     *            The {@link Role} id to set for this {@link AccessRole}.
+     *
+     * @param roleId The {@link Role} id to set for this {@link AccessRole}.
      * @since 1.0.0
      */
-    public void setRoleId(KapuaId roleId) throws KapuaException;
+    void setRoleId(KapuaId roleId) throws KapuaException;
 
     /**
      * Gets the {@link Role} id that this {@link AccessRole} has.
-     * 
+     *
      * @return The {@link Role} id that this {@link AccessRole} has.
      */
     @XmlElement(name = "roleId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     @ApiModelProperty(dataType = "string")
-    public KapuaId getRoleId();
+    KapuaId getRoleId();
 }

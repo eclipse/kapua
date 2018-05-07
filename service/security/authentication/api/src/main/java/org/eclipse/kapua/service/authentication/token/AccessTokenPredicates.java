@@ -11,18 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.token;
 
+import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
+
 /**
  * Access Token predicates used to build query predicates.
- * 
+ *
  * @since 1.0
- * 
  */
-public class AccessTokenPredicates {
+public interface AccessTokenPredicates extends KapuaUpdatableEntityPredicates {
 
-    private AccessTokenPredicates() {
-    }
-
-    public static final String TOKEN_ID = "tokenId";
-    public static final String USER_ID = "userId";
+    String TOKEN_ID = "tokenId";
+    String USER_ID = "userId";
 
 }

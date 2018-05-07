@@ -11,11 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore;
 
-import javax.xml.bind.annotation.XmlRegistry;
-
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
+
+import javax.xml.bind.annotation.XmlRegistry;
 
 /**
  * Metric information xml registry
@@ -25,24 +25,24 @@ import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
 @XmlRegistry
 public class MetricInfoXmlRegistry {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final DatastoreObjectFactory factory = locator.getFactory(DatastoreObjectFactory.class);
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final DatastoreObjectFactory DATASTORE_OBJECT_FACTORY = LOCATOR.getFactory(DatastoreObjectFactory.class);
 
     /**
      * Creates a {@link MetricInfoListResult} instance
-     * 
+     *
      * @return
      */
     public MetricInfoListResult newMetricInfoListResult() {
-        return factory.newMetricInfoListResult();
+        return DATASTORE_OBJECT_FACTORY.newMetricInfoListResult();
     }
 
     /**
      * Creates a {@link MetricInfoQuery} instance.
-     * 
+     *
      * @return
      */
     public MetricInfoQuery newQuery() {
-        return factory.newMetricInfoQuery(null);
+        return DATASTORE_OBJECT_FACTORY.newMetricInfoQuery(null);
     }
 }
