@@ -11,6 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.event;
 
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.core.ServiceModule;
+import org.eclipse.kapua.event.ServiceEventBus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,25 +25,18 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.core.ServiceModule;
-import org.eclipse.kapua.event.ServiceEventBus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Base {@link ServiceModule} implementation to be used by the modules that listen for events.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public abstract class ServiceEventModule implements ServiceModule {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceEventModule.class);
 
-    private final static int MAX_WAIT_LOOP_ON_SHUTDOWN = 30;
-    private final static int SCHEDULED_EXECUTION_TIME_WINDOW = 30;
-    private final static long WAIT_TIME = 1000;
+    private static final int MAX_WAIT_LOOP_ON_SHUTDOWN = 30;
+    private static final int SCHEDULED_EXECUTION_TIME_WINDOW = 30;
+    private static final long WAIT_TIME = 1000;
 
     private ServiceEventModuleConfiguration serviceEventModuleConfiguration;
     private Set<String> subscriberNames = new HashSet<>();
@@ -74,16 +73,16 @@ public abstract class ServiceEventModule implements ServiceModule {
 
         // register events to the service map
         LOGGER.info("Starting service event module... register services names");
-        ServiceMap.registerServices(serviceEventModuleConfiguration.getInternalAddress(), new ArrayList<String>(subscriberNames));
+        ServiceMap.registerServices(serviceEventModuleConfiguration.getInternalAddress(), new ArrayList<>(subscriberNames));
 
         // Start the House keeper
         LOGGER.info("Starting service event module... start housekeeper");
         houseKeeperScheduler = Executors.newScheduledThreadPool(1);
         houseKeeperJob = new ServiceEventHousekeeper(
-                serviceEventModuleConfiguration.getEntityManagerFactory(), 
-                eventbus, 
+                serviceEventModuleConfiguration.getEntityManagerFactory(),
+                eventbus,
                 serviceEventModuleConfiguration.getInternalAddress(),
-                new ArrayList<String>(subscriberNames));
+                new ArrayList<>(subscriberNames));
         // Start time can be made random from 0 to 30 seconds
         houseKeeperHandler = houseKeeperScheduler.scheduleAtFixedRate(houseKeeperJob, SCHEDULED_EXECUTION_TIME_WINDOW, SCHEDULED_EXECUTION_TIME_WINDOW, TimeUnit.SECONDS);
         LOGGER.info("Starting service event module... DONE");
@@ -99,8 +98,7 @@ public abstract class ServiceEventModule implements ServiceModule {
         LOGGER.info("Stopping service event module... house keeper scheduler [step 1/3]");
         if (houseKeeperJob != null) {
             houseKeeperJob.stop();
-        }
-        else {
+        } else {
             LOGGER.warn("Cannot shutdown the housekeeper scheduler [step 1/3] since it is null (initialization may not be successful)");
         }
         LOGGER.info("Stopping service event module... house keeper scheduler [step 2/3]");
@@ -117,20 +115,18 @@ public abstract class ServiceEventModule implements ServiceModule {
                     break;
                 }
             }
-        }
-        else {
+        } else {
             LOGGER.warn("Cannot shutdown the housekeeper scheduler [step 2/3] since it is null (initialization may not be successful)");
         }
         LOGGER.info("Stopping service event module... house keeper scheduler [step 3/3]");
         if (houseKeeperScheduler != null) {
             houseKeeperScheduler.shutdown();
-        }
-        else {
+        } else {
             LOGGER.warn("Cannot shutdown the housekeeper scheduler [step 3/3] since it is null (initialization may not be successful)");
         }
         LOGGER.info("Stopping service event module... unregister services names");
         if (serviceEventModuleConfiguration != null) {
-            ServiceMap.unregisterServices(new ArrayList<String>(subscriberNames));
+            ServiceMap.unregisterServices(new ArrayList<>(subscriberNames));
             subscriberNames.clear();
         } else {
             LOGGER.warn("Cannot unregister services since configuration is null (initialization may not be successful)");

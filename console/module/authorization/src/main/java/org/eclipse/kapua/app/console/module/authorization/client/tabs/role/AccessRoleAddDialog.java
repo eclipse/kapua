@@ -39,11 +39,12 @@ import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRole
 
 public class AccessRoleAddDialog extends EntityAddEditDialog {
 
-    private final static GwtRoleServiceAsync GWT_ROLE_SERVICE = GWT.create(GwtRoleService.class);
-    private final static GwtAccessRoleServiceAsync GWT_ACCESS_ROLE_SERVICE = GWT.create(GwtAccessRoleService.class);
-    private final static GwtAccessInfoServiceAsync GWT_ACCESS_INFO_SERVICE = GWT.create(GwtAccessInfoService.class);
-
     private static final ConsolePermissionMessages MSGS = GWT.create(ConsolePermissionMessages.class);
+
+    private static final GwtRoleServiceAsync GWT_ROLE_SERVICE = GWT.create(GwtRoleService.class);
+    private static final GwtAccessRoleServiceAsync GWT_ACCESS_ROLE_SERVICE = GWT.create(GwtAccessRoleService.class);
+    private static final GwtAccessInfoServiceAsync GWT_ACCESS_INFO_SERVICE = GWT.create(GwtAccessInfoService.class);
+
     private ComboBox<GwtRole> rolesCombo;
     private String accessInfoId;
 

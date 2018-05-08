@@ -33,16 +33,16 @@ import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnect
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionOption;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceConnectionOptionService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceConnectionOptionServiceAsync;
-import org.eclipse.kapua.app.console.module.user.shared.model.permission.UserSessionPermission;
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.permission.UserSessionPermission;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserService;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserServiceAsync;
 
 public class ConnectionEditDialog extends EntityAddEditDialog {
 
-    private final static GwtUserServiceAsync GWT_USER_SERVICE = GWT.create(GwtUserService.class);
-    private final static GwtDeviceConnectionOptionServiceAsync GWT_CONNECTION_OPTION_SERVICE = GWT.create(GwtDeviceConnectionOptionService.class);
-    private final static ConsoleConnectionMessages MSGS = GWT.create(ConsoleConnectionMessages.class);
+    private static final GwtUserServiceAsync GWT_USER_SERVICE = GWT.create(GwtUserService.class);
+    private static final GwtDeviceConnectionOptionServiceAsync GWT_CONNECTION_OPTION_SERVICE = GWT.create(GwtDeviceConnectionOptionService.class);
+    private static final ConsoleConnectionMessages MSGS = GWT.create(ConsoleConnectionMessages.class);
 
     private GwtDeviceConnection selectedDeviceConnection;
     // Security Options fields

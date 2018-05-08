@@ -12,13 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.converter;
 
-import java.util.Base64;
-import java.util.Date;
-
-import javax.jms.BytesMessage;
-import javax.jms.JMSException;
-import javax.jms.Message;
-
+import com.codahale.metrics.Counter;
 import org.apache.camel.Converter;
 import org.apache.camel.Exchange;
 import org.apache.camel.component.jms.JmsMessage;
@@ -37,7 +31,11 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.codahale.metrics.Counter;
+import javax.jms.BytesMessage;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import java.util.Base64;
+import java.util.Date;
 
 /**
  * Kapua message converter reference implementation used to convert from Camel incoming messages ({@link JmsMessage}) to a platform specific message type.
@@ -49,8 +47,8 @@ public abstract class AbstractKapuaConverter {
     public static final Logger logger = LoggerFactory.getLogger(AbstractKapuaConverter.class);
 
     // metrics
-    protected final static String METRIC_COMPONENT_NAME = "converter";
-    protected final static MetricsService METRICS_SERVICE = MetricServiceFactory.getInstance();
+    protected static final String METRIC_COMPONENT_NAME = "converter";
+    protected static final MetricsService METRICS_SERVICE = MetricServiceFactory.getInstance();
 
     private final Counter metricConverterJmsMessage;
     private final Counter metricConverterJmsErrorMessage;
@@ -70,11 +68,9 @@ public abstract class AbstractKapuaConverter {
      *
      * @param exchange
      * @param value
-     * @param messageType
-     *            expected incoming message type
+     * @param messageType expected incoming message type
      * @return Message container that contains message of asked type
-     * @throws KapuaException
-     *             if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
+     * @throws KapuaException if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
      */
     protected CamelKapuaMessage<?> convertTo(Exchange exchange, Object value, MessageType messageType) throws KapuaException {
         // assume that the message is a Camel Jms message
@@ -104,8 +100,7 @@ public abstract class AbstractKapuaConverter {
      * @param exchange
      * @param value
      * @return jms Message
-     * @throws KapuaException
-     *             if incoming message does not contain a javax.jms.BytesMessage
+     * @throws KapuaException if incoming message does not contain a javax.jms.BytesMessage
      */
     @Converter
     public Message convertToJmsMessage(Exchange exchange, Object value) throws KapuaException {

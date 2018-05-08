@@ -11,14 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.security;
 
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authentication.KapuaPrincipal;
+import org.eclipse.kapua.service.authentication.token.AccessToken;
+
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authentication.KapuaPrincipal;
-import org.eclipse.kapua.service.authentication.token.AccessToken;
 
 /**
  * Kapua session
@@ -29,7 +29,7 @@ public class KapuaSession implements Serializable {
 
     private static final long serialVersionUID = -3831904230950408142L;
 
-    public final static String KAPUA_SESSION_KEY = "KapuaSession";
+    public static final String KAPUA_SESSION_KEY = "KapuaSession";
 
     private static final List<String> TRUSTED_CLASSES = new ArrayList<>();
     private static final String TRUST_CLASS_METHOD_PATTERN = "{0}.{1}";
@@ -115,7 +115,7 @@ public class KapuaSession implements Serializable {
      *
      * @return
      */
-    private final static boolean isCallerClassTrusted() {
+    private static boolean isCallerClassTrusted() {
         // the stack trace should be like
         // 0 ---> Thread
         // 1 ---> KapuaSession -> isCallerClassTrusted()
@@ -147,7 +147,7 @@ public class KapuaSession implements Serializable {
 
     /**
      * Constructs a {@link KapuaSession} with given parameter
-     * 
+     *
      * @param principal
      */
     public KapuaSession(KapuaPrincipal principal) {

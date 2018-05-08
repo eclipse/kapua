@@ -11,34 +11,33 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.util;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * Utility class to instantiate object through reflection
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class ClassUtil {
 
-    protected final static Logger logger = LoggerFactory.getLogger(ClassUtil.class);
+    protected static final Logger logger = LoggerFactory.getLogger(ClassUtil.class);
 
-    private final static String CANNOT_LOAD_INSTANCE_ERROR_MSG = "Cannot load instance %s for %s. Please check the configuration file!";
-    private final static String PARAMETER_ERROR_MSG = "Invalid parameters. Parameters types and values differ!";
+    private static final String CANNOT_LOAD_INSTANCE_ERROR_MSG = "Cannot load instance %s for %s. Please check the configuration file!";
+    private static final String PARAMETER_ERROR_MSG = "Invalid parameters. Parameters types and values differ!";
 
     private ClassUtil() {
     }
 
     /**
      * Create a class new instance (fallback to the default instance if something goes wrong)
-     * 
+     *
      * @param clazz
      * @param defaultInstance
      * @return
@@ -48,16 +47,13 @@ public class ClassUtil {
         return newInstance(clazz, defaultInstance, null, null);
     }
 
-    @SuppressWarnings("unchecked")
     /**
      * Create a class new instance by invoking the proper constructor (fallback to the default instance if something goes wrong)
-     * 
+     *
      * @param clazz
      * @param defaultInstance
-     * @param parameterTypes
-     *            constructor parameters type
-     * @param parameters
-     *            constructor parameters value
+     * @param parameterTypes  constructor parameters type
+     * @param parameters      constructor parameters value
      * @return
      * @throws KapuaException
      */
@@ -73,8 +69,7 @@ public class ClassUtil {
             } catch (ClassNotFoundException e) {
                 throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, e, String.format(CANNOT_LOAD_INSTANCE_ERROR_MSG, clazz, clazzToInstantiate));
             }
-        }
-        else {
+        } else {
             logger.info("Initializing instance of. Instantiate default instance {} ...", defaultInstance);
         }
         if (parameterTypes == null || parameterTypes.length <= 0) {
@@ -83,8 +78,7 @@ public class ClassUtil {
             } catch (InstantiationException | IllegalAccessException e) {
                 throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, e, String.format(CANNOT_LOAD_INSTANCE_ERROR_MSG, clazz, clazzToInstantiate));
             }
-        }
-        else {
+        } else {
             if (parameters == null || parameters.length != parameterTypes.length) {
                 throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, PARAMETER_ERROR_MSG);
             }

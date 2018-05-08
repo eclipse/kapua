@@ -32,8 +32,8 @@ import org.eclipse.kapua.app.console.module.endpoint.shared.service.GwtEndpointS
 
 public class EndpointAddDialog extends EntityAddEditDialog {
 
-    private final static GwtEndpointServiceAsync GWT_ENDPOINT_SERVICE = GWT.create(GwtEndpointService.class);
-    private final static ConsoleEndpointMessages MSGS = GWT.create(ConsoleEndpointMessages.class);
+    private static final GwtEndpointServiceAsync GWT_ENDPOINT_SERVICE = GWT.create(GwtEndpointService.class);
+    private static final ConsoleEndpointMessages MSGS = GWT.create(ConsoleEndpointMessages.class);
 
     protected KapuaTextField<String> endpointSchemaField;
     protected KapuaTextField<String> endpointDnsField;

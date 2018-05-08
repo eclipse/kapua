@@ -26,8 +26,8 @@ public class MessageConstants {
     public static final String METRIC_ACCOUNT = "account";
     public static final String METRIC_CLIENT_ID = "clientId";
     public static final String METRIC_IP = "ip";
-    public final static String PROPERTY_ORIGINAL_TOPIC = "originalTopic";
-    public final static String PROPERTY_ENQUEUED_TIMESTAMP = "enqueuedTimestamp";
+    public static final String PROPERTY_ORIGINAL_TOPIC = "originalTopic";
+    public static final String PROPERTY_ENQUEUED_TIMESTAMP = "enqueuedTimestamp";
     public static final String PROPERTY_BROKER_ID = "brokerId";
     public static final String PROPERTY_CLIENT_ID = "clientId";
     public static final String PROPERTY_SCOPE_ID = "scopeId";

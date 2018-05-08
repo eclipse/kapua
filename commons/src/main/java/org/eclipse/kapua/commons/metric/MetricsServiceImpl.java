@@ -11,15 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.metric;
 
-import java.text.MessageFormat;
-import java.util.concurrent.TimeUnit;
-
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Histogram;
@@ -27,6 +18,14 @@ import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.JmxReporter.Builder;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.text.MessageFormat;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Metric report exporter handler.
@@ -36,9 +35,9 @@ import com.codahale.metrics.Timer;
  */
 public class MetricsServiceImpl implements MetricsService {
 
-    private static Logger logger = LoggerFactory.getLogger(MetricsServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(MetricsServiceImpl.class);
 
-    public final static String METRICS_NAME_FORMAT = "{0}.{1}.{2}";
+    public static final String METRICS_NAME_FORMAT = "{0}.{1}.{2}";
 
     private final MetricRegistry metricRegistry;
 
@@ -152,7 +151,7 @@ public class MetricsServiceImpl implements MetricsService {
      * <p>
      * The default is that JMX support is enabled
      * </p>
-     * 
+     *
      * @return {@code true} JMX should be enabled, {@code false} otherwise
      */
     private static boolean isJmxEnabled() {

@@ -33,7 +33,7 @@ import java.util.List;
 
 public class RoleGrid extends EntityGrid<GwtRole> {
 
-    private final static ConsoleRoleMessages ROLE_MSGS = GWT.create(ConsoleRoleMessages.class);
+    private static final ConsoleRoleMessages ROLE_MSGS = GWT.create(ConsoleRoleMessages.class);
 
     private static final GwtRoleServiceAsync GWT_ROLE_SERVICE = GWT.create(GwtRoleService.class);
 

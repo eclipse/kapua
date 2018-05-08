@@ -11,11 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.listener;
 
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
-import org.eclipse.kapua.commons.metric.MetricsService;
-
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Timer;
+import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import org.eclipse.kapua.commons.metric.MetricsService;
 
 /**
  * Default camel pojo endpoint listener.
@@ -26,16 +25,15 @@ public abstract class AbstractListener {
 
     // metrics
     private String metricComponentName = "listener";
-    private final static MetricsService METRICS_SERVICE = MetricServiceFactory.getInstance();
+    private static final MetricsService METRICS_SERVICE = MetricServiceFactory.getInstance();
 
     protected String name;
 
     /**
      * Create a listener with the specific name.<BR>
      * The "listener" constant will be used as metricComponentName.
-     * 
-     * @param name
-     *            First level name to categorize the metrics inside the listener
+     *
+     * @param name First level name to categorize the metrics inside the listener
      */
     protected AbstractListener(String name) {
         this.name = name;
@@ -43,11 +41,9 @@ public abstract class AbstractListener {
 
     /**
      * Create a listener with the specific metricComponentName and name
-     * 
-     * @param metricComponentName
-     *            Root name to categorize the metrics inside the listener
-     * @param name
-     *            First level name to categorize the metrics inside the listener
+     *
+     * @param metricComponentName Root name to categorize the metrics inside the listener
+     * @param name                First level name to categorize the metrics inside the listener
      */
     protected AbstractListener(String metricComponentName, String name) {
         this(name);
@@ -57,7 +53,7 @@ public abstract class AbstractListener {
     /**
      * Register a Counter with the specified names as suffix.<BR>
      * The prefix is described by a combination of constructor parameters name and metricComponentName depending on which constructor will be used.
-     * 
+     *
      * @param names
      * @return
      */
@@ -68,7 +64,7 @@ public abstract class AbstractListener {
     /**
      * Register a Timer with the specified names as suffix.<BR>
      * The prefix is described by a combination of constructor parameters name and metricComponentName depending on which constructor will be used.
-     * 
+     *
      * @param names
      * @return
      */

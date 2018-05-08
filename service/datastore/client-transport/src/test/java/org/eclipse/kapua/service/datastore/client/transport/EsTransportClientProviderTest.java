@@ -11,9 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.client.transport;
 
+import org.assertj.core.api.Assertions;
+import org.assertj.core.api.Condition;
 import org.eclipse.kapua.commons.setting.AbstractBaseKapuaSetting;
-import org.eclipse.kapua.service.datastore.client.transport.EsTransportClientProvider;
-import org.eclipse.kapua.service.datastore.client.transport.EsTransportClientProvider;
+import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
+import org.elasticsearch.client.Client;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -24,16 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
-import org.assertj.core.api.Condition;
-import org.eclipse.kapua.commons.setting.AbstractBaseKapuaSetting;
-import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
-import org.eclipse.kapua.service.datastore.client.transport.ClientSettingsKey;
-import org.eclipse.kapua.service.datastore.client.transport.EsTransportClientProvider;
-import org.elasticsearch.client.Client;
-import org.junit.Ignore;
-import org.junit.Test;
-
 public class EsTransportClientProviderTest {
 
     /**
@@ -42,11 +36,11 @@ public class EsTransportClientProviderTest {
      * In case this hostname does exists on your network, which is highly unlikely, it can be overridden.
      * </p>
      */
-    private final static String UNKWNON_HOST = System.getProperty("test.org.eclipse.kapua.service.datastore.unknowHost", "26-non-existing-host-05.");
+    private static final String UNKWNON_HOST = System.getProperty("test.org.eclipse.kapua.service.datastore.unknowHost", "26-non-existing-host-05.");
 
     private static final String CLUSTER_NAME = "foo-cluster";
 
-    private final static Condition<InetSocketAddress> UNRESOLVED = new Condition<>(InetSocketAddress::isUnresolved, "Host unresolved");
+    private static final Condition<InetSocketAddress> UNRESOLVED = new Condition<>(InetSocketAddress::isUnresolved, "Host unresolved");
 
     private void assertThatResolvedAs(InetSocketAddress result, Class<? extends InetAddress> addressClazz, String hostAddress, int port) {
         Assertions.assertThat(result).isNotNull();
@@ -138,7 +132,8 @@ public class EsTransportClientProviderTest {
 
     @Test
     public void testHosts1() throws ClientUnavailableException {
-        AbstractBaseKapuaSetting<ClientSettingsKey> settings = AbstractBaseKapuaSetting.fromMap(Collections.singletonMap(ClientSettingsKey.ELASTICSEARCH_NODES.key(), "127.0.0.1,127.0.0.2:1234,[::1]:5678"));
+        AbstractBaseKapuaSetting<ClientSettingsKey> settings = AbstractBaseKapuaSetting
+                .fromMap(Collections.singletonMap(ClientSettingsKey.ELASTICSEARCH_NODES.key(), "127.0.0.1,127.0.0.2:1234,[::1]:5678"));
         List<InetSocketAddress> result = EsTransportClientProvider.parseAddresses(settings);
         Assertions.assertThat(result).hasSize(3);
 

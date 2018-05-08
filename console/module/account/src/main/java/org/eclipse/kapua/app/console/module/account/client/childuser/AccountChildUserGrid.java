@@ -42,9 +42,9 @@ import java.util.List;
 
 public class AccountChildUserGrid extends EntityGrid<GwtUser> {
 
-    private static final GwtUserServiceAsync GWT_USER_SERVICE = GWT.create(GwtUserService.class);
+    private static final ConsoleUserMessages MSGS = GWT.create(ConsoleUserMessages.class);
 
-    private final static ConsoleUserMessages MSGS = GWT.create(ConsoleUserMessages.class);
+    private static final GwtUserServiceAsync GWT_USER_SERVICE = GWT.create(GwtUserService.class);
 
     private GwtUserQuery query;
     private AccountChildUserToolbar toolbar;

@@ -11,22 +11,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.model.id;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
-
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+
+import java.math.BigInteger;
+import java.security.SecureRandom;
 
 /**
  * Generates random identifier
  *
  * @since 1.0
- *
  */
 public class IdGenerator {
 
-    private final static SecureRandom SECURE_RANDOM = new SecureRandom();
-    private final static int ID_SIZE = SystemSetting.getInstance().getInt(SystemSettingKey.KAPUA_KEY_SIZE);
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+    private static final int ID_SIZE = SystemSetting.getInstance().getInt(SystemSettingKey.KAPUA_KEY_SIZE);
 
     private IdGenerator() {
     }

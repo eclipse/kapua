@@ -24,8 +24,10 @@ import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGrou
 
 public class GroupEditDialog extends GroupAddDialog {
 
-    private final static GwtGroupServiceAsync GWT_GROUP_SERVICE = GWT.create(GwtGroupService.class);
-    private final static ConsoleGroupMessages MSGS = GWT.create(ConsoleGroupMessages.class);
+    private static final ConsoleGroupMessages MSGS = GWT.create(ConsoleGroupMessages.class);
+
+    private static final GwtGroupServiceAsync GWT_GROUP_SERVICE = GWT.create(GwtGroupService.class);
+
     private GwtGroup selectedGroup;
 
     public GroupEditDialog(GwtSession currentSession, GwtGroup selectedGroup) {

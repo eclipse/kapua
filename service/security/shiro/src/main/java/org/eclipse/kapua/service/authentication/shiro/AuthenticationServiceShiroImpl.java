@@ -74,7 +74,7 @@ import java.util.UUID;
 @KapuaProvider
 public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
-    private final static Logger LOG = LoggerFactory.getLogger(AuthenticationServiceShiroImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AuthenticationServiceShiroImpl.class);
 
     static {
         // Make the SecurityManager instance available to the entire application:

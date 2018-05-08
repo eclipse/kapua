@@ -31,9 +31,9 @@ import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRole
 
 public class RoleAddDialog extends EntityAddEditDialog {
 
-    private final static ConsoleRoleMessages MSGS = GWT.create(ConsoleRoleMessages.class);
+    private static final ConsoleRoleMessages MSGS = GWT.create(ConsoleRoleMessages.class);
 
-    private final static GwtRoleServiceAsync GWT_ROLE_SERVICE = GWT.create(GwtRoleService.class);
+    private static final GwtRoleServiceAsync GWT_ROLE_SERVICE = GWT.create(GwtRoleService.class);
 
     protected KapuaTextField<String> roleNameField;
 

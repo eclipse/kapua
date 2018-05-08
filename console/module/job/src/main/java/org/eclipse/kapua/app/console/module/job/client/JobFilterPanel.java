@@ -25,8 +25,8 @@ import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobQuery;
 
 public class JobFilterPanel extends EntityFilterPanel<GwtJob> {
 
-    private final static ConsoleJobMessages JOB_MSGS = GWT.create(ConsoleJobMessages.class);
-    private final static int WIDTH = 193;
+    private static final ConsoleJobMessages JOB_MSGS = GWT.create(ConsoleJobMessages.class);
+    private static final int WIDTH = 193;
     private static final int MAX_LEN = 255;
 
     private final EntityGrid<GwtJob> entityGrid;

@@ -11,8 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.listener;
 
-import java.util.Base64;
-
+import com.codahale.metrics.Counter;
 import org.apache.camel.Exchange;
 import org.apache.camel.spi.UriEndpoint;
 import org.apache.commons.lang3.SerializationUtils;
@@ -21,19 +20,19 @@ import org.eclipse.kapua.broker.core.message.MessageConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.codahale.metrics.Counter;
+import java.util.Base64;
 
 @UriEndpoint(title = "error message processor", syntax = "bean:errorMessageListener", scheme = "bean")
 /**
  * Error message listener endpoint.
- * 
+ *
  * @since 1.0
  */
 public class ErrorMessageListener extends AbstractListener {
 
-    public final static String NO_EXCEPTION_FOUND_MESSAGE = "NO EXCEPTION FOUND!";
-
     private static final Logger logger = LoggerFactory.getLogger(ErrorMessageListener.class);
+
+    private static final String NO_EXCEPTION_FOUND_MESSAGE = "NO EXCEPTION FOUND!";
 
     private Counter metricError;
     private Counter metricErrorLifeCycleMessage;
@@ -46,7 +45,7 @@ public class ErrorMessageListener extends AbstractListener {
 
     /**
      * Process an error condition for an elaboration of a generic message
-     * 
+     *
      * @param exchange
      * @param message
      * @throws KapuaException
@@ -58,7 +57,7 @@ public class ErrorMessageListener extends AbstractListener {
 
     /**
      * Process an error condition for an elaboration of a life cycle message
-     * 
+     *
      * @param exchange
      * @param message
      * @throws KapuaException
@@ -70,7 +69,7 @@ public class ErrorMessageListener extends AbstractListener {
 
     /**
      * Process an error condition for an elaboration of a camel routing unmatched message
-     * 
+     *
      * @param exchange
      * @param message
      * @throws KapuaException
@@ -86,8 +85,7 @@ public class ErrorMessageListener extends AbstractListener {
         String encodedException = exchange.getIn().getHeader(MessageConstants.HEADER_KAPUA_PROCESSING_EXCEPTION, String.class);
         if (encodedException != null) {
             t = (Throwable) SerializationUtils.deserialize(Base64.getDecoder().decode(exchange.getIn().getHeader(MessageConstants.HEADER_KAPUA_PROCESSING_EXCEPTION, String.class)));
-        }
-        else {
+        } else {
             // otherwise fallback to the exchange property or the exchange exception
             t = ((Throwable) exchange.getProperty(CamelConstants.JMS_EXCHANGE_FAILURE_EXCEPTION));
             if (t == null) {

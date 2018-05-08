@@ -11,10 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.activemq.command.ConnectionInfo;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.KapuaPrincipal;
@@ -23,14 +19,18 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Connection information container
- * 
+ *
  * @since 1.0
  */
 public class KapuaConnectionContext {
 
-    protected final static Logger logger = LoggerFactory.getLogger(KapuaConnectionContext.class);
+    protected static final Logger logger = LoggerFactory.getLogger(KapuaConnectionContext.class);
 
     private String brokerId;
     private KapuaPrincipal principal;

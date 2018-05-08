@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 
 public class SchedulerServiceInit {
 
-    private final static Logger logger = LoggerFactory.getLogger(SchedulerServiceInit.class);
+    private static final Logger logger = LoggerFactory.getLogger(SchedulerServiceInit.class);
 
     private SchedulerServiceInit() {
     }

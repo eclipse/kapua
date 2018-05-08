@@ -11,19 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.router;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.dom.DOMSource;
-
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
@@ -36,15 +23,26 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.dom.DOMSource;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * {@link CamelKapuaDefaultRouter} {@link EndPoint} adapter
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class EndPointAdapter extends XmlAdapter<Element, List<EndPoint>> {
 
-    private final static Logger logger = LoggerFactory.getLogger(EndPointAdapter.class);
+    private static final Logger logger = LoggerFactory.getLogger(EndPointAdapter.class);
 
     public EndPointAdapter() {
     }

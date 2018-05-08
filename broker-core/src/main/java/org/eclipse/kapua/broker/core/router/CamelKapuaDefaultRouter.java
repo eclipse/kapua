@@ -11,15 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.router;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.URL;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
-
 import org.apache.camel.Exchange;
 import org.apache.camel.Header;
 import org.apache.camel.Properties;
@@ -37,14 +28,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
+import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Default message router
- * 
+ *
  * @since 1.0
  */
 public class CamelKapuaDefaultRouter {
 
-    private final static Logger logger = LoggerFactory.getLogger(CamelKapuaDefaultRouter.class);
+    private static final Logger logger = LoggerFactory.getLogger(CamelKapuaDefaultRouter.class);
 
     private EndPointContainer endPointContainer;
 

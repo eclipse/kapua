@@ -22,11 +22,11 @@ public class KuraDisconnectPayload extends KuraPayload implements DeviceLifecycl
     /**
      * Uptime metric name
      */
-    private final static String UPTIME = "uptime";
+    private static final String UPTIME = "uptime";
     /**
      * Uptime device displayble name metric name
      */
-    private final static String DISPLAY_NAME = "display_name";
+    private static final String DISPLAY_NAME = "display_name";
 
     /**
      * Constructor
@@ -71,9 +71,13 @@ public class KuraDisconnectPayload extends KuraPayload implements DeviceLifecycl
      *
      * @return
      */
+    @Override
     public String toDisplayString() {
-        return new StringBuilder().append("[ getUptime()=").append(getUptime())
-                .append(", getDisplayName()=").append(getDisplayName())
+        return new StringBuilder()
+                .append("[ getUptime()=")
+                .append(getUptime())
+                .append(", getDisplayName()=")
+                .append(getDisplayName())
                 .append("]")
                 .toString();
     }

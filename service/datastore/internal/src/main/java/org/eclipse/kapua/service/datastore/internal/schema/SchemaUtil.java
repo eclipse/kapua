@@ -11,31 +11,30 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.schema;
 
-import java.text.ParseException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.NumericNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.client.DatamodelMappingException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.model.StorableId;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.NumericNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.TextNode;
+import java.text.ParseException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Schema utility class
- * 
+ *
  * @since 1.0
  */
 public class SchemaUtil {
 
-    final static JsonNodeFactory FACTORY = JsonNodeFactory.instance;
+    private static final JsonNodeFactory FACTORY = JsonNodeFactory.instance;
 
     private static final String UNSUPPORTED_OBJECT_TYPE_ERROR_MSG = "The conversion of object [%s] is not supported!";
     private static final String NOT_VALID_OBJECT_TYPE_ERROR_MSG = "Cannot convert date [%s]";
@@ -47,7 +46,7 @@ public class SchemaUtil {
     /**
      * Return a map of map. The contained map has, as entries, the couples subKeys-values.<br>
      * <b>NOTE! No arrays subKeys-values coherence will be done (length or null check)!</b>
-     * 
+     *
      * @param key
      * @param subKeys
      * @param values
@@ -55,7 +54,7 @@ public class SchemaUtil {
      */
     public static Map<String, Object> getMapOfMap(String key, String[] subKeys, String[] values) {
         Map<String, String> mapChildren = new HashMap<>();
-        for (int i=0; i<subKeys.length; i++) {
+        for (int i = 0; i < subKeys.length; i++) {
             mapChildren.put(subKeys[i], values[i]);
         }
         Map<String, Object> map = new HashMap<>();
@@ -65,7 +64,7 @@ public class SchemaUtil {
 
     /**
      * Get the Elasticsearch data index name
-     * 
+     *
      * @param scopeId
      * @return
      */
@@ -75,7 +74,7 @@ public class SchemaUtil {
 
     /**
      * Get the Kapua data index name
-     * 
+     *
      * @param scopeId
      * @return
      */
@@ -85,7 +84,7 @@ public class SchemaUtil {
 
     /**
      * Create a new object node with the provided fields/values
-     * 
+     *
      * @param entries
      * @return
      * @throws DatamodelMappingException
@@ -100,7 +99,7 @@ public class SchemaUtil {
 
     /**
      * Create a new object node with the provided field/value
-     * 
+     *
      * @param name
      * @param value
      * @return
@@ -114,7 +113,7 @@ public class SchemaUtil {
 
     /**
      * Append the provided field/value to the object node
-     * 
+     *
      * @param node
      * @param name
      * @param value
@@ -152,7 +151,7 @@ public class SchemaUtil {
 
     /**
      * Create a new object node
-     * 
+     *
      * @return
      */
     public static ObjectNode getObjectNode() {
@@ -161,7 +160,7 @@ public class SchemaUtil {
 
     /**
      * Create a new numeric node
-     * 
+     *
      * @param number
      * @return
      */
@@ -171,7 +170,7 @@ public class SchemaUtil {
 
     /**
      * Create a new array node
-     * 
+     *
      * @return
      */
     public static ArrayNode getArrayNode() {
@@ -180,7 +179,7 @@ public class SchemaUtil {
 
     /**
      * Create a new text node
-     * 
+     *
      * @param value
      * @return
      */
@@ -190,7 +189,7 @@ public class SchemaUtil {
 
     /**
      * Convert the provided array to an array node
-     * 
+     *
      * @param fields
      * @return
      */

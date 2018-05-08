@@ -11,17 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core;
 
-import java.util.Set;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.event.ServiceEventBusManager;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Set;
+
 public class ServiceModuleBundle {
 
-    private final static Logger logger = LoggerFactory.getLogger(ServiceModuleBundle.class);
+    private static final Logger logger = LoggerFactory.getLogger(ServiceModuleBundle.class);
 
     public ServiceModuleBundle() {
         // Initialize the kapua locator

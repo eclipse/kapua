@@ -51,9 +51,9 @@ import java.util.Map;
  */
 public abstract class AuthenticationLogic {
 
-    protected final static Logger logger = LoggerFactory.getLogger(AuthenticationLogic.class);
+    protected static final Logger logger = LoggerFactory.getLogger(AuthenticationLogic.class);
 
-    protected final static String PERMISSION_LOG = "{0}/{1}/{2} - {3}";
+    protected static final String PERMISSION_LOG = "{0}/{1}/{2} - {3}";
 
     protected String aclHash;
     protected String aclAdvisory;

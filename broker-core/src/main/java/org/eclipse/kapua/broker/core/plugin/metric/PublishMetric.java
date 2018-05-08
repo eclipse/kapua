@@ -11,16 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin.metric;
 
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
-import org.eclipse.kapua.commons.metric.MetricsService;
-
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Histogram;
 import com.codahale.metrics.Timer;
+import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import org.eclipse.kapua.commons.metric.MetricsService;
 
 public class PublishMetric {
 
-    private final static PublishMetric PUBLISH_METRIC = new PublishMetric();
+    private static final PublishMetric PUBLISH_METRIC = new PublishMetric();
 
     private Counter allowedMessages;
     private Counter notAllowedMessages;

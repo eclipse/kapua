@@ -29,7 +29,7 @@ public class SystemSetting extends AbstractKapuaSetting<SystemSettingKey> {
     private static final String CONFIG_RESOURCE_NAME = "kapua-environment-setting.properties";
 
     private static final SystemSetting INSTANCE = new SystemSetting();
-    private final static String COMMONS_CONTROL_MESSAGE_CLASSIFIER = "commons.control_message.classifier";
+    private static final String COMMONS_CONTROL_MESSAGE_CLASSIFIER = "commons.control_message.classifier";
 
     // Constructors
 

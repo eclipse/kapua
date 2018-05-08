@@ -11,23 +11,23 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.client.group;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityDeleteDialog;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsoleGroupMessages;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupService;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGroupServiceAsync;
 
 public class GroupDeleteDialog extends EntityDeleteDialog {
 
-    private static final GwtGroupServiceAsync GWT_GROUP_SERVICE = GWT.create(GwtGroupService.class);
-    private GwtGroup gwtGroup;
-    private final static ConsoleGroupMessages MSGS = GWT.create(ConsoleGroupMessages.class);
+    private static final ConsoleGroupMessages MSGS = GWT.create(ConsoleGroupMessages.class);
 
+    private static final GwtGroupServiceAsync GWT_GROUP_SERVICE = GWT.create(GwtGroupService.class);
+
+    private GwtGroup gwtGroup;
 
     public GroupDeleteDialog(GwtGroup gwtGroup) {
         this.gwtGroup = gwtGroup;

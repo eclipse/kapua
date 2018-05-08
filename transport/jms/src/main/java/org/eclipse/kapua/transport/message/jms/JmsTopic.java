@@ -17,30 +17,29 @@ import org.eclipse.kapua.transport.message.TransportChannel;
 
 /**
  * Implementation of {@link TransportChannel} API for JMS transport facade
- * 
+ *
  * @since 1.0.0
  */
 public class JmsTopic implements TransportChannel {
 
     /**
      * The topic separator value for JMS topics returned from {@link JmsClientSetting}.{@link JmsClientSettingKeys#TRANSPORT_TOPIC_SEPARATOR}
-     * 
+     *
      * @since 1.0.0
      */
-    private final static String TOPIC_SEPARATOR = JmsClientSetting.getInstance().getString(JmsClientSettingKeys.TRANSPORT_TOPIC_SEPARATOR);
+    private static final String TOPIC_SEPARATOR = JmsClientSetting.getInstance().getString(JmsClientSettingKeys.TRANSPORT_TOPIC_SEPARATOR);
 
     /**
      * The full topic.
-     * 
+     *
      * @since 1.0.0
      */
     private String topic;
 
     /**
      * Construct a {@link JmsTopic} with the given parameter
-     * 
-     * @param topic
-     *            The topic to set for this {@link JmsTopic}
+     *
+     * @param topic The topic to set for this {@link JmsTopic}
      * @since 1.0.0
      */
     public JmsTopic(String topic) {
@@ -53,9 +52,8 @@ public class JmsTopic implements TransportChannel {
      * Topic is built by concatenating all {@link String}[] token following the array order,
      * separating each token with the topic separator configured in {@link JmsClientSetting}.{@link JmsClientSettingKeys#TRANSPORT_TOPIC_SEPARATOR}
      * </p>
-     * 
-     * @param topicParts
-     *            The {@link String}[] from which build the full topic.
+     *
+     * @param topicParts The {@link String}[] from which build the full topic.
      * @since 1.0.0
      */
     public JmsTopic(String[] topicParts) {
@@ -74,7 +72,7 @@ public class JmsTopic implements TransportChannel {
 
     /**
      * Gets the full topic set for this {@link JmsTopic}
-     * 
+     *
      * @return the full topic of this {@link JmsTopic}
      * @since 1.0.0
      */
@@ -84,9 +82,8 @@ public class JmsTopic implements TransportChannel {
 
     /**
      * Sets the full topic for this {@link JmsTopic}
-     * 
-     * @param topic
-     *            The full topic to set for this {@link JmsTopic}
+     *
+     * @param topic The full topic to set for this {@link JmsTopic}
      * @since 1.0.0
      */
     public void setTopic(String topic) {
@@ -95,7 +92,7 @@ public class JmsTopic implements TransportChannel {
 
     /**
      * Gets the topic split-ed by the topic separator configured in {@link JmsClientSetting}.{@link JmsClientSettingKeys#TRANSPORT_TOPIC_SEPARATOR}
-     * 
+     *
      * @return The topic tokens or {@code null} if full topic has been set to {@code null}
      * @since 1.0.0
      */

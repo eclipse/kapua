@@ -26,7 +26,7 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactoryImpl {
 
-    private final static QName _MetaData_QNAME = new QName("http://www.osgi.org/xmlns/metatype/v1.2.0", "MetaData");
+    private static final QName _MetaData_QNAME = new QName("http://www.osgi.org/xmlns/metatype/v1.2.0", "MetaData");
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes.
@@ -95,7 +95,7 @@ public class ObjectFactoryImpl {
      */
     @XmlElementDecl(namespace = "http://www.osgi.org/xmlns/metatype/v1.2.0", name = "MetaData")
     public JAXBElement<TmetadataImpl> createMetaData(TmetadataImpl value) {
-        return new JAXBElement<TmetadataImpl>(_MetaData_QNAME, TmetadataImpl.class, null, value);
+        return new JAXBElement<>(_MetaData_QNAME, TmetadataImpl.class, null, value);
     }
 
 }

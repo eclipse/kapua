@@ -24,8 +24,8 @@ import org.eclipse.kapua.app.console.module.tag.shared.service.GwtTagServiceAsyn
 
 public class TagEditDialog extends TagAddDialog {
 
-    private final static GwtTagServiceAsync GWT_TAG_SERVICE = GWT.create(GwtTagService.class);
-    private final static ConsoleTagMessages MSGS = GWT.create(ConsoleTagMessages.class);
+    private static final GwtTagServiceAsync GWT_TAG_SERVICE = GWT.create(GwtTagService.class);
+    private static final ConsoleTagMessages MSGS = GWT.create(ConsoleTagMessages.class);
     private GwtTag selectedTag;
 
     public TagEditDialog(GwtSession currentSession, GwtTag selectedTag) {

@@ -21,30 +21,30 @@ import org.eclipse.kapua.event.ServiceEvent;
  */
 public interface ServiceEventMarshaler {
 
-    public final static String CONTENT_TYPE_KEY = "ContentType";
+    String CONTENT_TYPE_KEY = "ContentType";
 
     /**
      * Return the encoded content type
-     * 
+     *
      * @return
      */
-    public String getContentType();
+    String getContentType();
 
     /**
      * Unmarshal the message received from the bus
-     * 
+     *
      * @param message
      * @return
      * @throws KapuaException
      */
-    public ServiceEvent unmarshal(String message) throws KapuaException;
+    ServiceEvent unmarshal(String message) throws KapuaException;
 
     /**
      * Marshal the message to the service event bus
-     * 
+     *
      * @param kapuaEvent
      * @throws KapuaException
      */
-    public String marshal(ServiceEvent kapuaEvent) throws KapuaException;
+    String marshal(ServiceEvent kapuaEvent) throws KapuaException;
 
 }
