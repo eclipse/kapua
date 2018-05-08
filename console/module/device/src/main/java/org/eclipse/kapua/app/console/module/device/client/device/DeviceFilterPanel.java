@@ -264,7 +264,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
             fieldsPanel.add(groupLabel);
 
             allGroup = new GwtGroup();
-            allGroup.setGroupName("ANY");
+            allGroup.setGroupName("ANY GROUP");
             allGroup.setId(null);
 
             noGroup = new GwtGroup();
@@ -318,7 +318,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
             fieldsPanel.add(tagLabel);
 
             allTag = new GwtTag();
-            allTag.setTagName("ANY");
+            allTag.setTagName("ANY TAG");
             allTag.setId(null);
 
             tagsCombo = new ComboBox<GwtTag>();
