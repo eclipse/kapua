@@ -96,10 +96,6 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("permissionGroupId", PERMISSION_MSGS.gridAccessRoleColumnHeaderGroupId(), 200);
-        columnConfig.setSortable(false);
-        columnConfigs.add(columnConfig);
-
         columnConfig = new ColumnConfig("permissionForwardable", PERMISSION_MSGS.gridAccessRoleColumnHeaderForwardable(), 200);
         columnConfig.setRenderer(new GridCellRenderer<GwtAccessPermission>() {
 
