@@ -44,6 +44,8 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult
 import org.eclipse.kapua.service.authorization.access.AccessPermissionPredicates;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionQuery;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
+import org.eclipse.kapua.service.authorization.group.Group;
+import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 
@@ -126,6 +128,8 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
             try {
 
                 KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeShortId);
+                KapuaLocator locator = KapuaLocator.getInstance();
+                GroupService groupService = locator.getService(GroupService.class);
                 KapuaId userId = GwtKapuaCommonsModelConverter.convertKapuaId(userShortId);
 
                 AccessInfo accessInfo = ACCESS_INFO_SERVICE.findByUserId(scopeId, userId);
@@ -168,8 +172,16 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
                             }
 
                             GwtAccessPermission gwtAccessPermission = KapuaGwtAuthorizationModelConverter.convertAccessPermission(accessPermission);
-                            gwtAccessPermission.setCreatedByName(createdByUser != null ? createdByUser.getName() : null);
-                            gwtAccessPermission.setPermissionTargetScopeIdByName(targetScopeIdAccount != null ? targetScopeIdAccount.getName() : null);
+                            if (accessPermission.getPermission().getGroupId() != null) {
+                                Group group = groupService.find(scopeId,
+                                        accessPermission.getPermission().getGroupId());
+                                if (group != null) {
+                                    gwtAccessPermission.setGroupName(group.getName());
+                                }
+                            } else {
+                                gwtAccessPermission.setGroupName("ALL");
+                            }
+
                             gwtAccessPermissions.add(gwtAccessPermission);
                         }
                     }
