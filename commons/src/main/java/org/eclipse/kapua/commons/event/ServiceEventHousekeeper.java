@@ -11,11 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.event;
 
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.List;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
@@ -33,18 +28,22 @@ import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceI
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
+import org.eclipse.kapua.event.ServiceEvent.EventStatus;
 import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.event.ServiceEventBusException;
-import org.eclipse.kapua.event.ServiceEvent.EventStatus;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+import java.util.List;
+
 /**
  * Event bus housekeeper. It is responsible to send unsent messages or send again messages gone in error.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class ServiceEventHousekeeper implements Runnable {
 
@@ -55,9 +54,9 @@ public class ServiceEventHousekeeper implements Runnable {
         SEND_ERROR
     }
 
-    private final static long WAIT_TIME = SystemSetting.getInstance().getLong(SystemSettingKey.HOUSEKEEPER_EXECUTION_WAIT_TIME);
-    private final static long OLD_MESSAGES_TIME_WINDOW = SystemSetting.getInstance().getLong(SystemSettingKey.HOUSEKEEPER_OLD_MESSAGES_TIME_WINDOW);
-    private final static int EVENT_SCAN_WINDOW = SystemSetting.getInstance().getInt(SystemSettingKey.HOUSEKEEPER_EVENT_SCAN_WINDOW);
+    private static final long WAIT_TIME = SystemSetting.getInstance().getLong(SystemSettingKey.HOUSEKEEPER_EXECUTION_WAIT_TIME);
+    private static final long OLD_MESSAGES_TIME_WINDOW = SystemSetting.getInstance().getLong(SystemSettingKey.HOUSEKEEPER_OLD_MESSAGES_TIME_WINDOW);
+    private static final int EVENT_SCAN_WINDOW = SystemSetting.getInstance().getInt(SystemSettingKey.HOUSEKEEPER_EVENT_SCAN_WINDOW);
 
     private final Object monitor = new Object();
 
@@ -72,7 +71,7 @@ public class ServiceEventHousekeeper implements Runnable {
 
     /**
      * Default constructor
-     * 
+     *
      * @param entityManagerFactory
      * @param eventbus
      * @param serviceInternalEventAddress
@@ -92,7 +91,7 @@ public class ServiceEventHousekeeper implements Runnable {
     public void run() {
         //TODO handling events table cleanup
         running = true;
-        while(running) {
+        while (running) {
             waitStep();
             for (String serviceName : servicesNames) {
                 try {
@@ -101,11 +100,9 @@ public class ServiceEventHousekeeper implements Runnable {
                             processServiceEvents(serviceName);
                         });
                     }
-                }
-                catch (KapuaException e) {
+                } catch (KapuaException e) {
                     LOGGER.warn("Generic error {}", e.getMessage(), e);
-                }
-                finally {
+                } finally {
                     //remove the lock if present
                     if (manager.isTransactionActive()) {
                         manager.rollback();
@@ -128,11 +125,9 @@ public class ServiceEventHousekeeper implements Runnable {
             findAndSendUnsentEvents(serviceName, EventsProcessType.OLD);
             //release lock
             updateLock(kapuaEventHousekeeper, serviceName, startRun);
-        }
-        catch (LockException | NoExecutionNeededException e) {
+        } catch (LockException | NoExecutionNeededException e) {
             LOGGER.trace("The lock is handled by someone else or the last execution was to close");
-        }
-        finally {
+        } finally {
             //remove the lock if present
             if (manager.isTransactionActive()) {
                 manager.rollback();
@@ -146,7 +141,7 @@ public class ServiceEventHousekeeper implements Runnable {
         if (!unsentMessagesList.isEmpty()) {
             for (EventStoreRecord kapuaEvent : unsentMessagesList.getItems()) {
                 try {
-                    LOGGER.info("publish event: service '{}' - operation '{}' - id '{}'", new Object[]{kapuaEvent.getService(), kapuaEvent.getOperation(), kapuaEvent.getContextId()});
+                    LOGGER.info("publish event: service '{}' - operation '{}' - id '{}'", new Object[] { kapuaEvent.getService(), kapuaEvent.getOperation(), kapuaEvent.getContextId() });
                     eventbus.publish(serviceInternalEventAddress, ServiceEventUtil.toServiceEventBus(kapuaEvent));
                     //if message was sent successfully then confirm the event in the event table
                     //if something goes wrong during this update the event message may be raised twice (but this condition should happens rarely and it is compliant to the contract of the service events)
@@ -156,7 +151,7 @@ public class ServiceEventHousekeeper implements Runnable {
                 } catch (ServiceEventBusException e) {
                     LOGGER.warn("Exception publishing event: {}", e.getMessage(), e);
                 } catch (KapuaException e) {
-                  //this may be a valid condition if the HouseKeeper is doing the update concurrently with this task
+                    //this may be a valid condition if the HouseKeeper is doing the update concurrently with this task
                     LOGGER.warn("Exception acknowledging event: {}", e.getMessage(), e);
                 }
             }
@@ -170,8 +165,7 @@ public class ServiceEventHousekeeper implements Runnable {
         if (EventsProcessType.SEND_ERROR.equals(eventsProcessType)) {
             LOGGER.trace("Looking for SENT_ERROR events. Add EventStatus=SENT_ERROR query predicate.");
             andPredicate.and(new AttributePredicateImpl<>(EventStoreRecordPredicates.EVENT_STATUS, EventStatus.SEND_ERROR));
-        }
-        else {
+        } else {
             LOGGER.trace("Looking for OLD events. Add EventStatus=RAISED query predicate.");
             andPredicate.and(new AttributePredicateImpl<>(EventStoreRecordPredicates.EVENT_STATUS, EventStatus.TRIGGERED));
             //add timestamp predicate
@@ -206,8 +200,7 @@ public class ServiceEventHousekeeper implements Runnable {
         try {
             manager.beginTransaction();
             kapuaEventHousekeeper = manager.findWithLock(HousekeeperRun.class, serviceName);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new LockException(String.format("Cannot acquire lock: %s", e.getMessage()), e);
         }
         // Check last housekeeper run

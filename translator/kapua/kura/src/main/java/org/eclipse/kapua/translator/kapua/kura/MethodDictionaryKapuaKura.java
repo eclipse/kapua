@@ -29,7 +29,7 @@ public class MethodDictionaryKapuaKura {
     /**
      * Translations dictionary map
      */
-    private final static Map<KapuaMethod, KuraMethod> DICTIONARY;
+    private static final Map<KapuaMethod, KuraMethod> DICTIONARY;
 
     static {
         DICTIONARY = new HashMap<>(5);

@@ -11,12 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.tag.client;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityDeleteDialog;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.tag.client.messages.ConsoleTagMessages;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
 import org.eclipse.kapua.app.console.module.tag.shared.service.GwtTagService;
@@ -24,9 +23,11 @@ import org.eclipse.kapua.app.console.module.tag.shared.service.GwtTagServiceAsyn
 
 public class TagDeleteDialog extends EntityDeleteDialog {
 
+    private static final ConsoleTagMessages MSGS = GWT.create(ConsoleTagMessages.class);
+
     private static final GwtTagServiceAsync GWT_TAG_SERVICE = GWT.create(GwtTagService.class);
+
     private GwtTag gwtTag;
-    private final static ConsoleTagMessages MSGS = GWT.create(ConsoleTagMessages.class);
 
     public TagDeleteDialog(GwtTag gwtTag) {
         this.gwtTag = gwtTag;

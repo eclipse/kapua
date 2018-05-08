@@ -24,7 +24,7 @@ import org.eclipse.kapua.broker.core.setting.BrokerSettingKey;
  */
 public class DefaultBrokerIpResolver implements BrokerIpResolver {
 
-    private final static String CANNOT_FIND_IP_ERROR_MSG = "Cannot find the ip. Please check the configuration!";
+    private static final String CANNOT_FIND_IP_ERROR_MSG = "Cannot find the ip. Please check the configuration!";
     private String brokerIpOrHostName;
 
     public DefaultBrokerIpResolver() throws KapuaException {

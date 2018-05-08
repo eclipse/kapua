@@ -11,14 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.router;
 
-import java.util.HashMap;
-
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 
+import java.util.HashMap;
+
 public class PlaceholderReplacer {
 
-    private final static String REGEX_REPLACEMENT_CHARS = "([\\\\\\.\\)\\]\\}\\(‌​\\[\\{\\*\\+\\?\\^\\$\\|])";
+    private static final String REGEX_REPLACEMENT_CHARS = "([\\\\\\.\\)\\]\\}\\(‌​\\[\\{\\*\\+\\?\\^\\$\\|])";
 
     enum CAMEL_ROUTER_PLACEHOLDER {
         CLASSIFIER

@@ -11,15 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin.metric;
 
+import com.codahale.metrics.Counter;
+import com.codahale.metrics.Timer;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsService;
 
-import com.codahale.metrics.Counter;
-import com.codahale.metrics.Timer;
-
 public class LoginMetric {
 
-    private final static LoginMetric LOGIN_METRIC = new LoginMetric();
+    private static final LoginMetric LOGIN_METRIC = new LoginMetric();
 
     private Counter success;
     private Counter failure;

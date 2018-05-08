@@ -27,8 +27,8 @@ import org.eclipse.kapua.app.console.module.user.shared.model.GwtUserQuery;
 
 public class UserFilterPanel extends EntityFilterPanel<GwtUser> {
 
-    private final static ConsoleUserMessages USER_MSGS = GWT.create(ConsoleUserMessages.class);
-    private final static int WIDTH = 193;
+    private static final ConsoleUserMessages USER_MSGS = GWT.create(ConsoleUserMessages.class);
+    private static final int WIDTH = 193;
     private static final int MAX_LEN = 255;
 
     private final EntityGrid<GwtUser> entityGrid;

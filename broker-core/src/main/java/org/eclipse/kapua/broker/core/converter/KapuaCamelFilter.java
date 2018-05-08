@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.converter;
 
-import java.util.Base64;
-
 import org.apache.camel.Exchange;
 import org.apache.commons.lang.SerializationException;
 import org.apache.commons.lang3.SerializationUtils;
@@ -25,13 +23,14 @@ import org.eclipse.kapua.commons.security.KapuaSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Base64;
+
 /**
  * Kapua Camel session filter used to bind/unbind Kapua session to the thread context
- *
  */
 public class KapuaCamelFilter extends AbstractListener {
 
-    private final static Logger logger = LoggerFactory.getLogger(KapuaCamelFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(KapuaCamelFilter.class);
 
     public KapuaCamelFilter() {
         super("filter");
@@ -39,7 +38,7 @@ public class KapuaCamelFilter extends AbstractListener {
 
     /**
      * Bind the Kapua session retrieved from the message header (with key {@link MessageConstants#HEADER_KAPUA_SESSION}) to the current thread context.
-     * 
+     *
      * @param exchange
      * @param value
      * @throws KapuaException
@@ -60,7 +59,7 @@ public class KapuaCamelFilter extends AbstractListener {
 
     /**
      * Unbind the Kapua session from the current thread context.
-     * 
+     *
      * @param exchange
      * @param value
      * @throws KapuaException
@@ -71,7 +70,7 @@ public class KapuaCamelFilter extends AbstractListener {
 
     /**
      * Bridge the error condition putting the in the JmsMessage header (At the present only the Exception raised is handled by this method)
-     * 
+     *
      * @param exchange
      * @param value
      */
@@ -83,8 +82,7 @@ public class KapuaCamelFilter extends AbstractListener {
         } else if (exchange.getException() != null) {
             exchange.getIn().setHeader(MessageConstants.HEADER_KAPUA_PROCESSING_EXCEPTION,
                     Base64.getEncoder().encodeToString(SerializationUtils.serialize(exchange.getException())));
-        }
-        else {
+        } else {
             logger.debug("Cannot serialize exception since it is null!");
         }
     }

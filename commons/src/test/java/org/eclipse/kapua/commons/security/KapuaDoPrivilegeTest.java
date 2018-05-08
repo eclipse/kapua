@@ -11,6 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.security;
 
+import org.junit.Assert;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -19,24 +24,18 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Test the correctness of the doPrivilege calls.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class KapuaDoPrivilegeTest {
 
     private static Logger logger = LoggerFactory.getLogger(KapuaDoPrivilegeTest.class);
 
-    private final static int MAX_EXECUTION = 10;
-    private final static int CONCURRENT_THREAD = 20;
-    private final static int FIX_WAIT_TIME_FOR_EXECUTION_END = 30000;
+    private static final int MAX_EXECUTION = 10;
+    private static final int CONCURRENT_THREAD = 20;
+    private static final int FIX_WAIT_TIME_FOR_EXECUTION_END = 30000;
 
     private static long maxRandomWait;
 
@@ -60,7 +59,7 @@ public class KapuaDoPrivilegeTest {
         maxRandomWait = 100;
         ScheduledExecutorService es = Executors.newScheduledThreadPool(CONCURRENT_THREAD);
         long executionTimeOut = MAX_EXECUTION * maxRandomWait + FIX_WAIT_TIME_FOR_EXECUTION_END;
-        List<ScheduledFuture<Void>> doPrivilegeList = new ArrayList<ScheduledFuture<Void>>();
+        List<ScheduledFuture<Void>> doPrivilegeList = new ArrayList<>();
         for (int i = 0; i < CONCURRENT_THREAD; i++) {
             doPrivilegeList.add(es.schedule(new DoPrivilegeCallable("sync_random_wait_" + i), 0, TimeUnit.MILLISECONDS));
         }
@@ -86,7 +85,7 @@ public class KapuaDoPrivilegeTest {
         maxRandomWait = 100;
         ScheduledExecutorService es = Executors.newScheduledThreadPool(CONCURRENT_THREAD);
         long executionTimeOut = MAX_EXECUTION * maxRandomWait + FIX_WAIT_TIME_FOR_EXECUTION_END;
-        List<ScheduledFuture<Void>> doPrivilegeList = new ArrayList<ScheduledFuture<Void>>();
+        List<ScheduledFuture<Void>> doPrivilegeList = new ArrayList<>();
         for (int i = 0; i < CONCURRENT_THREAD; i++) {
             long delay = (long) (Math.random() * 200d);
             logger.debug("Delay: ", new Object[] { delay });

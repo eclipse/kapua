@@ -21,17 +21,17 @@ import org.slf4j.LoggerFactory;
 /**
  * ActiveMQ application filter plugin implementation (application context lifecycle filter).<br>
  * <br>
- * 
+ * <p>
  * Filter to startup/shutdown proprly the application context.<br>
  * <br>
- * 
+ * <p>
  * This filter is added inside ActiveMQ filter chain plugin by {@link org.eclipse.kapua.broker.core.KapuaBrokerApplicationPlugin}
- * 
+ *
  * @since 1.0
  */
 public class KapuaApplicationBrokerFilter extends BrokerFilter {
 
-    private final static Logger logger = LoggerFactory.getLogger(KapuaApplicationBrokerFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(KapuaApplicationBrokerFilter.class);
 
     // The following line must be done before any invocation of KapuaLocator.getInstance()
     private static ServiceModuleBundle application;
@@ -44,9 +44,11 @@ public class KapuaApplicationBrokerFilter extends BrokerFilter {
     public void start()
             throws Exception {
         logger.info(">>> Application broker filter: calling start...");
-        synchronized(KapuaApplicationBrokerFilter.class) {
+        synchronized (KapuaApplicationBrokerFilter.class) {
             if (application == null) {
-                application = new ServiceModuleBundle() {};
+                application = new ServiceModuleBundle() {
+
+                };
             }
             application.startup();
         }
@@ -59,7 +61,7 @@ public class KapuaApplicationBrokerFilter extends BrokerFilter {
             throws Exception {
         logger.info(">>> Application broker filter: calling stop...");
         super.stop();
-        synchronized(KapuaApplicationBrokerFilter.class) {
+        synchronized (KapuaApplicationBrokerFilter.class) {
             if (application != null) {
                 application.shutdown();
             }

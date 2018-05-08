@@ -11,25 +11,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.event;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ServiceLoader;
-
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.event.ServiceEventBusException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ServiceLoader;
+
 /**
  * Service event bus manager. It handles the service event bus life cycle
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class ServiceEventBusManager {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(ServiceEventBusManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceEventBusManager.class);
 
     public static final String JMS_20_EVENT_BUS = "JMS_20_EVENT_BUS";
 
@@ -61,7 +60,7 @@ public class ServiceEventBusManager {
 
     /**
      * Get the event bus instance
-     * 
+     *
      * @return
      * @throws ServiceEventBusException
      */
@@ -81,7 +80,7 @@ public class ServiceEventBusManager {
 
     /**
      * Start the event bus
-     * 
+     *
      * @throws ServiceEventBusException
      */
     public static void start() throws ServiceEventBusException {
@@ -93,7 +92,7 @@ public class ServiceEventBusManager {
 
     /**
      * Stop the event bus
-     * 
+     *
      * @throws ServiceEventBusException
      */
     public static void stop() throws ServiceEventBusException {

@@ -11,16 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.schema;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.service.datastore.client.DatamodelMappingException;
 import org.eclipse.kapua.service.datastore.client.SchemaKeys;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 /**
  * Channel info schema definition
- * 
+ *
  * @since 1.0
  */
 public class ChannelInfoSchema {
@@ -32,15 +31,15 @@ public class ChannelInfoSchema {
     /**
      * Channel information schema name
      */
-    public final static String CHANNEL_TYPE_NAME = "channel";
+    public static final String CHANNEL_TYPE_NAME = "channel";
     /**
      * Channel information - channel
      */
-    public final static String CHANNEL_NAME = "channel";
+    public static final String CHANNEL_NAME = "channel";
     /**
      * Channel information - client identifier
      */
-    public final static String CHANNEL_CLIENT_ID = "client_id";
+    public static final String CHANNEL_CLIENT_ID = "client_id";
     /**
      * Channel information - scope id
      */
@@ -48,15 +47,15 @@ public class ChannelInfoSchema {
     /**
      * Channel information - message timestamp (of the first message published in this channel)
      */
-    public final static String CHANNEL_TIMESTAMP = "timestamp";
+    public static final String CHANNEL_TIMESTAMP = "timestamp";
     /**
      * Channel information - message identifier (of the first message published in this channel)
      */
-    public final static String CHANNEL_MESSAGE_ID = "message_id";
+    public static final String CHANNEL_MESSAGE_ID = "message_id";
 
     /**
      * Create and return the Json representation of the channel info schema
-     * 
+     *
      * @param allEnable
      * @param sourceEnable
      * @return
@@ -82,7 +81,7 @@ public class ChannelInfoSchema {
                 new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
         propertiesNode.set(CHANNEL_CLIENT_ID, channelClientId);
         ObjectNode channelName = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX,SchemaKeys. VALUE_TRUE) });
+                new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
         propertiesNode.set(CHANNEL_NAME, channelName);
         ObjectNode channelTimestamp = SchemaUtil.getField(
                 new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN) });

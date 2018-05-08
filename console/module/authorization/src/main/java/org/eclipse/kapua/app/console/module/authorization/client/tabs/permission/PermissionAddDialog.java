@@ -49,12 +49,12 @@ import java.util.List;
 
 public class PermissionAddDialog extends EntityAddEditDialog {
 
-    private final static ConsolePermissionMessages MSGS = GWT.create(ConsolePermissionMessages.class);
+    private static final ConsolePermissionMessages MSGS = GWT.create(ConsolePermissionMessages.class);
 
-    private final static GwtDomainRegistryServiceAsync GWT_DOMAIN_SERVICE = GWT.create(GwtDomainRegistryService.class);
-    private final static GwtAccessPermissionServiceAsync GWT_ACCESS_PERMISSION_SERVICE = GWT.create(GwtAccessPermissionService.class);
-    private final static GwtAccessInfoServiceAsync GWT_ACCESS_INFO_SERVICE = GWT.create(GwtAccessInfoService.class);
-    private final static GwtGroupServiceAsync GWT_GROUP_SERVICE = GWT.create(GwtGroupService.class);
+    private static final GwtDomainRegistryServiceAsync GWT_DOMAIN_SERVICE = GWT.create(GwtDomainRegistryService.class);
+    private static final GwtAccessPermissionServiceAsync GWT_ACCESS_PERMISSION_SERVICE = GWT.create(GwtAccessPermissionService.class);
+    private static final GwtAccessInfoServiceAsync GWT_ACCESS_INFO_SERVICE = GWT.create(GwtAccessInfoService.class);
+    private static final GwtGroupServiceAsync GWT_GROUP_SERVICE = GWT.create(GwtGroupService.class);
 
     private ComboBox<GwtDomain> domainsCombo;
     private SimpleComboBox<GwtAction> actionsCombo;
@@ -98,9 +98,9 @@ public class PermissionAddDialog extends EntityAddEditDialog {
     protected void onRender(Element parent, int pos) {
         super.onRender(parent, pos);
         submitButton.disable();
-            }
+    }
 
-            @Override
+    @Override
     public void createBody() {
         FormPanel permissionFormPanel = new FormPanel(FORM_LABEL_WIDTH);
 

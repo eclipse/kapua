@@ -31,8 +31,9 @@ import org.eclipse.kapua.app.console.module.tag.shared.service.GwtTagServiceAsyn
 
 public class TagAddDialog extends EntityAddEditDialog {
 
-    private final static GwtTagServiceAsync GWT_TAG_SERVICE = GWT.create(GwtTagService.class);
-    private final static ConsoleTagMessages MSGS = GWT.create(ConsoleTagMessages.class);
+    private static final ConsoleTagMessages MSGS = GWT.create(ConsoleTagMessages.class);
+
+    private static final GwtTagServiceAsync GWT_TAG_SERVICE = GWT.create(GwtTagService.class);
 
     protected KapuaTextField<String> tagNameField;
 

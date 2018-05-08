@@ -40,9 +40,9 @@ import java.util.Map;
  */
 public class DefaultAuthenticator implements Authenticator {
 
-    protected final static Logger logger = LoggerFactory.getLogger(DefaultAuthenticator.class);
+    protected static final Logger logger = LoggerFactory.getLogger(DefaultAuthenticator.class);
 
-    private final static String SYSTEM_MESSAGE_CREATOR_CLASS_NAME;
+    private static final String SYSTEM_MESSAGE_CREATOR_CLASS_NAME;
 
     static {
         SYSTEM_MESSAGE_CREATOR_CLASS_NAME = BrokerSetting.getInstance().getString(BrokerSettingKey.SYSTEM_MESSAGE_CREATOR_CLASS_NAME);

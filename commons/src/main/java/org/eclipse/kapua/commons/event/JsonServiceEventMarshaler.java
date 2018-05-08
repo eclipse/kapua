@@ -11,26 +11,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.event;
 
-import javax.xml.bind.JAXBException;
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLStreamException;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.event.ServiceEventBusException;
-
 import org.xml.sax.SAXException;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLStreamException;
 
 /**
  * Xml event bus marshaller implementation
- * 
+ *
  * @since 1.0
- * 
  */
 public class JsonServiceEventMarshaler implements ServiceEventMarshaler {
 
-    public final static String CONTENT_TYPE_JSON = "application/json";
+    public static final String CONTENT_TYPE_JSON = "application/json";
 
     @Override
     public String getContentType() {

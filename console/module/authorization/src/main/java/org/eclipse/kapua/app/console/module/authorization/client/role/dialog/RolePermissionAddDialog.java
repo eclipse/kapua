@@ -47,10 +47,11 @@ import java.util.List;
 
 public class RolePermissionAddDialog extends EntityAddEditDialog {
 
-    private final static ConsolePermissionMessages MSGS = GWT.create(ConsolePermissionMessages.class);
-    private final static GwtDomainRegistryServiceAsync DOMAIN_SERVICE = GWT.create(GwtDomainRegistryService.class);
-    private final static GwtGroupServiceAsync GWT_GROUP_SERVICE = GWT.create(GwtGroupService.class);
-    private final static GwtDomainRegistryServiceAsync GWT_DOMAIN_SERVICE = GWT.create(GwtDomainRegistryService.class);
+    private static final ConsolePermissionMessages MSGS = GWT.create(ConsolePermissionMessages.class);
+
+    private static final GwtDomainRegistryServiceAsync DOMAIN_SERVICE = GWT.create(GwtDomainRegistryService.class);
+    private static final GwtGroupServiceAsync GWT_GROUP_SERVICE = GWT.create(GwtGroupService.class);
+    private static final GwtDomainRegistryServiceAsync GWT_DOMAIN_SERVICE = GWT.create(GwtDomainRegistryService.class);
 
     private ComboBox<GwtDomain> domainsCombo;
     private SimpleComboBox<GwtAction> actionsCombo;

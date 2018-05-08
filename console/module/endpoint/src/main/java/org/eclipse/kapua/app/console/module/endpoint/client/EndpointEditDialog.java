@@ -22,8 +22,8 @@ import org.eclipse.kapua.app.console.module.endpoint.shared.service.GwtEndpointS
 
 public class EndpointEditDialog extends EndpointAddDialog {
 
-    private final static GwtEndpointServiceAsync GWT_ENDPOINT_SERVICE = GWT.create(GwtEndpointService.class);
-    private final static ConsoleEndpointMessages MSGS = GWT.create(ConsoleEndpointMessages.class);
+    private static final GwtEndpointServiceAsync GWT_ENDPOINT_SERVICE = GWT.create(GwtEndpointService.class);
+    private static final ConsoleEndpointMessages MSGS = GWT.create(ConsoleEndpointMessages.class);
     private GwtEndpoint selectedEndpoint;
 
     public EndpointEditDialog(GwtSession currentSession, GwtEndpoint selectedEndpoint) {

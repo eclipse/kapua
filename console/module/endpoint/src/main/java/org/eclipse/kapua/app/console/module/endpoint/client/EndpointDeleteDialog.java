@@ -23,9 +23,11 @@ import org.eclipse.kapua.app.console.module.endpoint.shared.service.GwtEndpointS
 
 public class EndpointDeleteDialog extends EntityDeleteDialog {
 
+    private static final ConsoleEndpointMessages MSGS = GWT.create(ConsoleEndpointMessages.class);
+
     private static final GwtEndpointServiceAsync GWT_ENDPOINT_SERVICE = GWT.create(GwtEndpointService.class);
+
     private GwtEndpoint gwtEndpoint;
-    private final static ConsoleEndpointMessages MSGS = GWT.create(ConsoleEndpointMessages.class);
 
     public EndpointDeleteDialog(GwtEndpoint gwtEndpoint) {
         this.gwtEndpoint = gwtEndpoint;

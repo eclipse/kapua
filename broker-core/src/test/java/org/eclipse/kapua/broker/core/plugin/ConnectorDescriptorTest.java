@@ -11,23 +11,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor.MessageType;
 import org.eclipse.kapua.broker.core.setting.BrokerSetting;
 import org.eclipse.kapua.broker.core.setting.BrokerSettingKey;
-
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ConnectorDescriptorTest {
 
-    private final static String BROKER_IP_RESOLVER_CLASS_NAME;
+    private static final String BROKER_IP_RESOLVER_CLASS_NAME;
 
     static {
         BrokerSetting config = BrokerSetting.getInstance();
@@ -215,9 +214,9 @@ public class ConnectorDescriptorTest {
     /**
      * Code reused form KapuaSecurityBrokerFilter for instantiating broker ip resolver class.
      *
-     * @param clazz class that instantiates broker ip resolver
+     * @param clazz           class that instantiates broker ip resolver
      * @param defaultInstance default instance of class
-     * @param <T> generic type
+     * @param <T>             generic type
      * @return instance of ip resolver
      * @throws KapuaException
      */
@@ -226,7 +225,6 @@ public class ConnectorDescriptorTest {
         // lazy synchronization
         try {
             if (!StringUtils.isEmpty(clazz)) {
-                @SuppressWarnings("unchecked")
                 Class<T> clazzToInstantiate = (Class<T>) Class.forName(clazz);
                 instance = clazzToInstantiate.newInstance();
             } else {

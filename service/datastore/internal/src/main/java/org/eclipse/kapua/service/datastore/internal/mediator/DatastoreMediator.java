@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.mediator;
 
-import java.util.Map;
-
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaPayload;
@@ -39,6 +37,8 @@ import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 
+import java.util.Map;
+
 /**
  * Datastore mediator definition
  *
@@ -49,7 +49,7 @@ public class DatastoreMediator implements MessageStoreMediator,
         ChannelInfoRegistryMediator,
         MetricInfoRegistryMediator {
 
-    private final static DatastoreMediator INSTANCE;
+    private static final DatastoreMediator INSTANCE;
 
     private final Schema esSchema;
 
@@ -122,7 +122,7 @@ public class DatastoreMediator implements MessageStoreMediator,
     }
 
     /*
-     * 
+     *
      * Message Store Mediator methods
      */
     @Override
@@ -189,7 +189,7 @@ public class DatastoreMediator implements MessageStoreMediator,
     }
 
     /*
-     * 
+     *
      * ClientInfo Store Mediator methods
      */
     @Override
@@ -203,7 +203,7 @@ public class DatastoreMediator implements MessageStoreMediator,
     }
 
     /*
-     * 
+     *
      * ChannelInfo Store Mediator methods
      */
     @Override
@@ -225,7 +225,7 @@ public class DatastoreMediator implements MessageStoreMediator,
     }
 
     /*
-     * 
+     *
      * MetricInfo Store Mediator methods
      */
     @Override

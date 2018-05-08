@@ -18,8 +18,8 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class EndpointInfoXmlRegistry {
 
-    private final static KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private final static EndpointInfoFactory FACTORY = LOCATOR.getFactory(EndpointInfoFactory.class);
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final EndpointInfoFactory FACTORY = LOCATOR.getFactory(EndpointInfoFactory.class);
 
     /**
      * Creates a new {@link EndpointInfo} instance

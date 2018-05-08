@@ -33,10 +33,10 @@ import java.util.List;
 
 public class DeviceTagAddDialog extends EntityAddEditDialog {
 
-    private final static ConsoleDeviceMessages MSGS = GWT.create(ConsoleDeviceMessages.class);
+    private static final ConsoleDeviceMessages MSGS = GWT.create(ConsoleDeviceMessages.class);
 
-    private final static GwtTagServiceAsync GWT_TAG_SERVICE = GWT.create(GwtTagService.class);
-    private final static GwtDeviceServiceAsync GWT_DEVICE_SERVICE = GWT.create(GwtDeviceService.class);
+    private static final GwtTagServiceAsync GWT_TAG_SERVICE = GWT.create(GwtTagService.class);
+    private static final GwtDeviceServiceAsync GWT_DEVICE_SERVICE = GWT.create(GwtDeviceService.class);
 
     private ComboBox<GwtTag> tagsCombo;
 

@@ -11,11 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.google.inject.ConfigurationException;
 import com.google.inject.Injector;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -24,27 +19,31 @@ import org.eclipse.kapua.service.KapuaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Locator service implementation used for mocking Kapua services and Kapua object
  * factories. Mocking framework such as Mockito can be used to create mocked service
  * which is than injected into this locator using setters.
  * Mocked services can be set multiple times, for each test case individually. This
  * locator implementation should be used only for testing purposes.
- * 
+ * <p>
  * Locator can be configured in maven pom file or command line as system parameter:
- * 
+ * <p>
  * -Dlocator.class.impl=org.eclipse.kapua.test.MockedLocator
- *
+ * <p>
  * In cucumber setting is done in custom cucumber runner CucumberWithProperties.
- *
+ * <p>
  * Mocked locator can be used in two ways:
- *  - setting services with seter and having local Map of services and factories
- *  - setting services with Google Guice DI
- *
+ * - setting services with seter and having local Map of services and factories
+ * - setting services with Google Guice DI
  */
 public class MockedLocator extends KapuaLocator {
 
-    private final static Logger logger = LoggerFactory.getLogger(MockedLocator.class);
+    private static final Logger logger = LoggerFactory.getLogger(MockedLocator.class);
 
     private Map<Class<?>, KapuaService> serviceMap = new HashMap<>();
 
@@ -70,13 +69,11 @@ public class MockedLocator extends KapuaLocator {
         factoryMap.put(clazz, factory);
     }
 
-    @SuppressWarnings("unchecked")
     private <S extends KapuaService> S getMockedService(Class<S> clazz) {
 
         return (S) serviceMap.get(clazz);
     }
 
-    @SuppressWarnings("unchecked")
     private <F extends KapuaObjectFactory> F getMockedFactory(Class<F> clazz) {
 
         return (F) factoryMap.get(clazz);

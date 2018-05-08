@@ -34,9 +34,9 @@ import java.util.List;
 
 public class UserTabAccessRoleGrid extends EntityGrid<GwtAccessRole> {
 
-    private static final GwtAccessRoleServiceAsync GWT_ACCESS_ROLE_SERVICE = GWT.create(GwtAccessRoleService.class);
+    private static final ConsoleRoleMessages MSGS = GWT.create(ConsoleRoleMessages.class);
 
-    private final static ConsoleRoleMessages MSGS = GWT.create(ConsoleRoleMessages.class);
+    private static final GwtAccessRoleServiceAsync GWT_ACCESS_ROLE_SERVICE = GWT.create(GwtAccessRoleService.class);
 
     private String userId;
 

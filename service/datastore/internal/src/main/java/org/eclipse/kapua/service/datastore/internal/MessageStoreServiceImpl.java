@@ -74,7 +74,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
     protected final AccountService accountService = LOCATOR.getService(AccountService.class);
     protected final AuthorizationService authorizationService = LOCATOR.getService(AuthorizationService.class);
     protected final PermissionFactory permissionFactory = LOCATOR.getFactory(PermissionFactory.class);
-    protected final static Integer MAX_ENTRIES_ON_DELETE = DatastoreSettings.getInstance().get(Integer.class, DatastoreSettingKey.CONFIG_MAX_ENTRIES_ON_DELETE);
+    protected static final Integer MAX_ENTRIES_ON_DELETE = DatastoreSettings.getInstance().get(Integer.class, DatastoreSettingKey.CONFIG_MAX_ENTRIES_ON_DELETE);
 
     protected final MessageStoreFacade messageStoreFacade;
 

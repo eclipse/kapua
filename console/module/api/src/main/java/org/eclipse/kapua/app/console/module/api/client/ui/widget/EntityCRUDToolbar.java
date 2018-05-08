@@ -44,7 +44,7 @@ import java.util.List;
 
 public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
 
-    private final static ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
+    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
     protected GwtSession currentSession;
 

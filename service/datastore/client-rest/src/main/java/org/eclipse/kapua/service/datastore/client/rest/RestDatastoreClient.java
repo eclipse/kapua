@@ -11,16 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.client.rest;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeoutException;
-
+import com.codahale.metrics.Counter;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.http.HttpEntity;
 import org.apache.http.ParseException;
 import org.apache.http.client.entity.EntityBuilder;
@@ -31,12 +28,12 @@ import org.apache.http.util.EntityUtils;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsService;
+import org.eclipse.kapua.service.datastore.client.ClientCommunicationException;
 import org.eclipse.kapua.service.datastore.client.ClientErrorCodes;
 import org.eclipse.kapua.service.datastore.client.ClientException;
 import org.eclipse.kapua.service.datastore.client.ClientProvider;
 import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
 import org.eclipse.kapua.service.datastore.client.ClientUndefinedException;
-import org.eclipse.kapua.service.datastore.client.ClientCommunicationException;
 import org.eclipse.kapua.service.datastore.client.ModelContext;
 import org.eclipse.kapua.service.datastore.client.QueryConverter;
 import org.eclipse.kapua.service.datastore.client.SchemaKeys;
@@ -56,13 +53,15 @@ import org.elasticsearch.client.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.codahale.metrics.Counter;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Client implementation based on Elasticsearch rest client.<br>
@@ -74,13 +73,13 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
 
     private static final Logger logger = LoggerFactory.getLogger(RestDatastoreClient.class);
 
-    private final static String GET_ACTION = "GET";
-    private final static String DELETE_ACTION = "DELETE";
-    private final static String POST_ACTION = "POST";
-    private final static String PUT_ACTION = "PUT";
-    private final static String HEAD_ACTION = "HEAD";
+    private static final String GET_ACTION = "GET";
+    private static final String DELETE_ACTION = "DELETE";
+    private static final String POST_ACTION = "POST";
+    private static final String PUT_ACTION = "PUT";
+    private static final String HEAD_ACTION = "HEAD";
 
-    private final static String INDEX_ALL = "ALL";
+    private static final String INDEX_ALL = "ALL";
 
     private static final String KEY_DOC = "doc";
     private static final String KEY_DOC_AS_UPSERT = "doc_as_upsert";
@@ -108,9 +107,9 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
     private static final String CLIENT_COMMUNICATION_TIMEOUT_MSG = "Elasticsearch client timeout";
     private static final String CLIENT_GENERIC_ERROR_MSG = "Generic client error";
 
-    private final static Random RANDOM = new Random();
-    private final static int MAX_RETRY_ATTEMPT = ClientSettings.getInstance().getInt(ClientSettingsKey.ELASTICSEARCH_REST_TIMEOUT_MAX_RETRY, 3);
-    private final static long MAX_RETRY_WAIT_TIME = ClientSettings.getInstance().getLong(ClientSettingsKey.ELASTICSEARCH_REST_TIMEOUT_MAX_WAIT, 2500);
+    private static final Random RANDOM = new Random();
+    private static final int MAX_RETRY_ATTEMPT = ClientSettings.getInstance().getInt(ClientSettingsKey.ELASTICSEARCH_REST_TIMEOUT_MAX_RETRY, 3);
+    private static final long MAX_RETRY_WAIT_TIME = ClientSettings.getInstance().getLong(ClientSettingsKey.ELASTICSEARCH_REST_TIMEOUT_MAX_WAIT, 2500);
 
     private static RestDatastoreClient instance;
 
@@ -143,8 +142,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
                     instance = new RestDatastoreClient();
                 }
             }
-        }
-        else if (instance.getClientProvider() == null) {
+        } else if (instance.getClientProvider() == null) {
             synchronized (RestDatastoreClient.class) {
                 if (instance.getClientProvider() == null) {
                     instance.initClientProvider();
@@ -169,8 +167,8 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
                         cleanupClient(true);
                     }
                     initClientProvider();
-                    restCallRuntimeExecCount = metricService.getCounter("datastore-rest-client", "rest-client", new String[]{"runtime_exc", "count"});
-                    timeoutRetryCount = metricService.getCounter("datastore-rest-client", "rest-client", new String[]{"timeout_retry", "count"});
+                    restCallRuntimeExecCount = metricService.getCounter("datastore-rest-client", "rest-client", new String[] { "runtime_exc", "count" });
+                    timeoutRetryCount = metricService.getCounter("datastore-rest-client", "rest-client", new String[] { "timeout_retry", "count" });
                     timeoutRetryLimitReachedCount = metricService.getCounter("datastore-rest-client", "rest-client", new String[] { "timeout_retry_limit_reached", "count" });
                 }
             }
@@ -442,7 +440,6 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
         ResultList<T> resultList = new ResultList<>(totalCount);
         if (resultsNode != null && resultsNode.size() > 0) {
             for (JsonNode result : resultsNode) {
-                @SuppressWarnings("unchecked")
                 Map<String, Object> object = MAPPER.convertValue(result.get(SchemaKeys.KEY_SOURCE), Map.class);
                 String id = result.get(KEY_DOC_ID).asText();
                 String index = result.get(KEY_DOC_INDEX).asText();
@@ -628,7 +625,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
                         Collections.<String, String>emptyMap());
             }
         }, typeDescriptor.getIndex(), "MAPPING EXIST");
-        if (isMappingExistsResponse !=null && isMappingExistsResponse.getStatusLine()!=null) {
+        if (isMappingExistsResponse != null && isMappingExistsResponse.getStatusLine() != null) {
             if (isMappingExistsResponse.getStatusLine().getStatusCode() == 200) {
                 return true;
             } else if (isMappingExistsResponse.getStatusLine().getStatusCode() == 404) {
@@ -722,7 +719,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
             // for that call the deleteIndexResponse=null case could be considered as good response since if an index doesn't exist (404) the delete could be considered successful.
             // the deleteIndexResponse is null also if the error is due to a bad index request (400) but this error, except if there is an application bug, shouldn't never happen.
             if (deleteIndexResponse == null) {
-                logger.debug("Deleting index {} : index does not exist", index);               
+                logger.debug("Deleting index {} : index does not exist", index);
             } else if (!isRequestSuccessful(deleteIndexResponse)) {
                 throw new ClientException(ClientErrorCodes.ACTION_ERROR,
                         (deleteIndexResponse != null && deleteIndexResponse.getStatusLine() != null) ? deleteIndexResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);

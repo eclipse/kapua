@@ -62,9 +62,9 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     private static final ConsoleDeviceMessages DEVICE_MSGS = GWT.create(ConsoleDeviceMessages.class);
 
-    private final static String SERVLET_URL = "file/command";
+    private static final String SERVLET_URL = "file/command";
 
-    private final static int COMMAND_TIMEOUT_SECS = 60;
+    private static final int COMMAND_TIMEOUT_SECS = 60;
 
     // XSRF
     private final GwtSecurityTokenServiceAsync gwtXSRFService = GWT.create(GwtSecurityTokenService.class);

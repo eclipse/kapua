@@ -11,15 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin.metric;
 
+import com.codahale.metrics.Counter;
+import com.codahale.metrics.Timer;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsService;
 
-import com.codahale.metrics.Counter;
-import com.codahale.metrics.Timer;
-
 public class SubscribeMetric {
 
-    private final static SubscribeMetric SUBSCRIBE_METRIC = new SubscribeMetric();
+    private static final SubscribeMetric SUBSCRIBE_METRIC = new SubscribeMetric();
 
     private Counter allowedMessages;
     private Counter notAllowedMessages;

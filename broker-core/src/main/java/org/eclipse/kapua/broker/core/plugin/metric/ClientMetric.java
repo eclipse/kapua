@@ -11,14 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin.metric;
 
+import com.codahale.metrics.Counter;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsService;
 
-import com.codahale.metrics.Counter;
-
 public class ClientMetric {
 
-    private final static ClientMetric CLIENT_METRIC = new ClientMetric();
+    private static final ClientMetric CLIENT_METRIC = new ClientMetric();
 
     private Counter connectedClient;
     private Counter connectedKapuasys;

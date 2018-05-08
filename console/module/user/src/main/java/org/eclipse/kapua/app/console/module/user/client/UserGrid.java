@@ -32,9 +32,9 @@ import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolb
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.user.client.messages.ConsoleUserMessages;
-import org.eclipse.kapua.app.console.module.user.shared.model.permission.UserSessionPermission;
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUserQuery;
+import org.eclipse.kapua.app.console.module.user.shared.model.permission.UserSessionPermission;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserService;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserServiceAsync;
 
@@ -48,8 +48,8 @@ public class UserGrid extends EntityGrid<GwtUser> {
 
     private static final GwtUserServiceAsync GWT_USER_SERVICE = GWT.create(GwtUserService.class);
 
-    private final static ConsoleUserMessages USER_MSGS = GWT.create(ConsoleUserMessages.class);
-    private final static ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
+    private static final ConsoleUserMessages USER_MSGS = GWT.create(ConsoleUserMessages.class);
+    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
     public UserGrid(AbstractEntityView<GwtUser> entityView, GwtSession currentSession) {
         super(entityView, currentSession);

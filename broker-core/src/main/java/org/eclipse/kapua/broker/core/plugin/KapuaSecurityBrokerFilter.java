@@ -12,24 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin;
 
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
-import javax.jms.JMSException;
-import javax.jms.MessageListener;
-import javax.security.auth.login.CredentialException;
-
+import com.codahale.metrics.Timer.Context;
+import com.google.common.collect.ImmutableList;
 import org.apache.activemq.broker.Broker;
 import org.apache.activemq.broker.BrokerFilter;
 import org.apache.activemq.broker.BrokerService;
@@ -85,37 +69,51 @@ import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.codahale.metrics.Timer.Context;
-import com.google.common.collect.ImmutableList;
+import javax.jms.JMSException;
+import javax.jms.MessageListener;
+import javax.security.auth.login.CredentialException;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * ActiveMQ broker filter plugin implementation (security filter).<br>
  * <br>
- * 
+ * <p>
  * Filter allow unfiltered connection/disconnection and publishing/subscribe action for pass through connection (embedded broker and filter also). This connection type is used by broker assistant
  * bundle.<br>
  * Otherwise perform all kapua authorization/check action.<br>
  * <br>
- * 
+ * <p>
  * This filter is added inside ActiveMQ filter chain plugin by {@link org.eclipse.kapua.broker.core.KapuaBrokerSecurityPlugin}
  */
 public class KapuaSecurityBrokerFilter extends BrokerFilter {
 
-    protected final static Logger logger = LoggerFactory.getLogger(KapuaSecurityBrokerFilter.class);
+    protected static final Logger logger = LoggerFactory.getLogger(KapuaSecurityBrokerFilter.class);
 
-    protected final static List<String> VT_DURABLE_PREFIX = ImmutableList.of(
-            "Consumer.{0}:AT_LEAST_ONCE.{1}", "Consumer.{0}:EXACTLY_ONCE.{1}");
-    protected final static String VT_CONSUMER_PREFIX = "Consumer";
+    protected static final List<String> VT_DURABLE_PREFIX = ImmutableList.of("Consumer.{0}:AT_LEAST_ONCE.{1}", "Consumer.{0}:EXACTLY_ONCE.{1}");
+    protected static final String VT_CONSUMER_PREFIX = "Consumer";
+
     // full client id, with account prepended
-    protected final static String MULTI_ACCOUNT_CLIENT_ID = "{0}:{1}";
+    protected static final String MULTI_ACCOUNT_CLIENT_ID = "{0}:{1}";
     public static final String VT_TOPIC_PREFIX = "VirtualTopic.";
 
-    private final static String CONNECT_MESSAGE_TOPIC_PATTERN = "VirtualTopic.%s.%s.%s.MQTT.CONNECT";
-    private final static String BROKER_IP_RESOLVER_CLASS_NAME;
-    private final static String BROKER_ID_RESOLVER_CLASS_NAME;
-    private final static String AUTHENTICATOR_CLASS_NAME;
-    private final static String BROKER_JAXB_CONTEXT_CLASS_NAME;
-    private final static Long STEALING_LINK_INITIALIZATION_MAX_WAIT_TIME;
+    private static final String CONNECT_MESSAGE_TOPIC_PATTERN = "VirtualTopic.%s.%s.%s.MQTT.CONNECT";
+    private static final String BROKER_IP_RESOLVER_CLASS_NAME;
+    private static final String BROKER_ID_RESOLVER_CLASS_NAME;
+    private static final String AUTHENTICATOR_CLASS_NAME;
+    private static final String BROKER_JAXB_CONTEXT_CLASS_NAME;
+    private static final Long STEALING_LINK_INITIALIZATION_MAX_WAIT_TIME;
     private static boolean stealingLinkEnabled;
     private Future<?> stealingLinkManagerFuture;
 
@@ -135,8 +133,8 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     protected JmsConsumerWrapper stealingLinkManagerConsumer;
     protected String brokerId;
 
-    protected final static Map<String, String> CONNECTION_MAP = new ConcurrentHashMap<>();
-    private final static String CONNECTOR_NAME_VM = String.format("vm://%s", BrokerSetting.getInstance().getString(BrokerSettingKey.BROKER_NAME));
+    protected static final Map<String, String> CONNECTION_MAP = new ConcurrentHashMap<>();
+    private static final String CONNECTOR_NAME_VM = String.format("vm://%s", BrokerSetting.getInstance().getString(BrokerSettingKey.BROKER_NAME));
     private Authenticator authenticator;
 
     private AuthenticationService authenticationService = KapuaLocator.getInstance().getService(AuthenticationService.class);
@@ -194,7 +192,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
 
     /**
      * Register the stealink link manager (if enabled)
-     * 
+     *
      * @throws KapuaRuntimeException
      * @throws JMSException
      * @throws KapuaException
@@ -227,7 +225,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
 
     /**
      * Subscribe and process the connect messages to enforce the stealing link
-     * 
+     *
      * @throws KapuaRuntimeException
      * @throws JMSException
      * @throws KapuaException
@@ -237,80 +235,80 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                 String.format(KapuaSecurityBrokerFilter.CONNECT_MESSAGE_TOPIC_PATTERN + ".>", SystemSetting.getInstance().getMessageClassifier(), "*", "*"),
                 false, true, new MessageListener() {
 
-                    @Override
-                    public void onMessage(javax.jms.Message message) {
-                        // just for logging purpose
-                        String destination = null;
-                        String messageId = null;
+            @Override
+            public void onMessage(javax.jms.Message message) {
+                // just for logging purpose
+                String destination = null;
+                String messageId = null;
+                try {
+                    destination = message.getJMSDestination().toString();
+                    messageId = message.getJMSMessageID();
+                } catch (JMSException e1) {
+                    // ignore it
+                }
+                logger.debug("Received connect message topic: '{}' - message id: '{}'", new Object[] { destination, messageId });
+                String messageBrokerId;
+                try {
+                    messageBrokerId = message.getStringProperty(MessageConstants.PROPERTY_BROKER_ID);
+                    if (!brokerId.equals(messageBrokerId)) {
+                        logger.debug("Received connect message from another broker id: '{}' topic: '{}' - message id: '{}'", new Object[] { messageBrokerId, destination, messageId });
+                        KapuaConnectionContext kcc = null;
+                        // try parsing from message context (if the message is coming from other brokers it has these fields evaluated)
                         try {
-                            destination = message.getJMSDestination().toString();
-                            messageId = message.getJMSMessageID();
-                        } catch (JMSException e1) {
-                            // ignore it
+                            logger.debug("Get connected device informations from the message session");
+                            kcc = parseMessageSession(message);
+                        } catch (JMSException | KapuaException e) {
+                            logger.debug("Get connected device informations from the topic");
+                            // otherwise looking for these informations by looking at the topic
+                            kcc = parseTopicInfo(message);
                         }
-                        logger.debug("Received connect message topic: '{}' - message id: '{}'", new Object[] { destination, messageId });
-                        String messageBrokerId;
-                        try {
-                            messageBrokerId = message.getStringProperty(MessageConstants.PROPERTY_BROKER_ID);
-                            if (!brokerId.equals(messageBrokerId)) {
-                                logger.debug("Received connect message from another broker id: '{}' topic: '{}' - message id: '{}'", new Object[] { messageBrokerId, destination, messageId });
-                                KapuaConnectionContext kcc = null;
-                                // try parsing from message context (if the message is coming from other brokers it has these fields evaluated)
-                                try {
-                                    logger.debug("Get connected device informations from the message session");
-                                    kcc = parseMessageSession(message);
-                                } catch (JMSException | KapuaException e) {
-                                    logger.debug("Get connected device informations from the topic");
-                                    // otherwise looking for these informations by looking at the topic
-                                    kcc = parseTopicInfo(message);
-                                }
-                                if (CONNECTION_MAP.get(kcc.getFullClientId()) != null) {
-                                    logger.debug("Stealing link detected - broker id: '{}' topic: '{}' - message id: '{}'", new Object[] { messageBrokerId, destination, messageId });
-                                    // iterate over all connected clients
-                                    for(Connection conn : getClients()) {
-                                        logger.debug("Checking if {} equals {}", kcc.getFullClientId(), conn.getConnectionId());
-                                        if (kcc.getFullClientId().equals(conn.getConnectionId())) {
-                                            // Include Exception to notify the security broker filter
-                                            logger.info("New connection detected for {} on another broker.  Stopping the current connection...", kcc.getFullClientId());
-                                            loginMetric.getRemoteStealingLinkDisconnect().inc();
-                                            conn.serviceExceptionAsync(new IOException(new KapuaDuplicateClientIdException(kcc.getFullClientId())));
+                        if (CONNECTION_MAP.get(kcc.getFullClientId()) != null) {
+                            logger.debug("Stealing link detected - broker id: '{}' topic: '{}' - message id: '{}'", new Object[] { messageBrokerId, destination, messageId });
+                            // iterate over all connected clients
+                            for (Connection conn : getClients()) {
+                                logger.debug("Checking if {} equals {}", kcc.getFullClientId(), conn.getConnectionId());
+                                if (kcc.getFullClientId().equals(conn.getConnectionId())) {
+                                    // Include Exception to notify the security broker filter
+                                    logger.info("New connection detected for {} on another broker.  Stopping the current connection...", kcc.getFullClientId());
+                                    loginMetric.getRemoteStealingLinkDisconnect().inc();
+                                    conn.serviceExceptionAsync(new IOException(new KapuaDuplicateClientIdException(kcc.getFullClientId())));
 
-                                            // assume only one connection since this broker should have already handled any duplicates
-                                            return;
-                                        }
-                                    }
+                                    // assume only one connection since this broker should have already handled any duplicates
+                                    return;
                                 }
                             }
-                        } catch (Exception e) {
-                            logger.error("Cannot enforce stealing link check in the received message on topic '{}'", destination, e);
                         }
                     }
+                } catch (Exception e) {
+                    logger.error("Cannot enforce stealing link check in the received message on topic '{}'", destination, e);
+                }
+            }
 
-                    private KapuaConnectionContext parseMessageSession(javax.jms.Message message) throws JMSException, KapuaException {
-                        Long scopeId = message.propertyExists(MessageConstants.PROPERTY_SCOPE_ID) ? message.getLongProperty(MessageConstants.PROPERTY_SCOPE_ID) : null;
-                        String clientId = message.getStringProperty(MessageConstants.PROPERTY_CLIENT_ID);
-                        if (scopeId == null || scopeId.longValue() <= 0 || StringUtils.isEmpty(clientId)) {
-                            logger.debug("Invalid message context. Try parsing the topic.");
-                            throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Invalid message context");
-                        }
-                        return new KapuaConnectionContext(scopeId, clientId, MULTI_ACCOUNT_CLIENT_ID);
-                    }
+            private KapuaConnectionContext parseMessageSession(javax.jms.Message message) throws JMSException, KapuaException {
+                Long scopeId = message.propertyExists(MessageConstants.PROPERTY_SCOPE_ID) ? message.getLongProperty(MessageConstants.PROPERTY_SCOPE_ID) : null;
+                String clientId = message.getStringProperty(MessageConstants.PROPERTY_CLIENT_ID);
+                if (scopeId == null || scopeId.longValue() <= 0 || StringUtils.isEmpty(clientId)) {
+                    logger.debug("Invalid message context. Try parsing the topic.");
+                    throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Invalid message context");
+                }
+                return new KapuaConnectionContext(scopeId, clientId, MULTI_ACCOUNT_CLIENT_ID);
+            }
 
-                    private KapuaConnectionContext parseTopicInfo(javax.jms.Message message) throws JMSException, KapuaException {
-                        String originalTopic = message.getStringProperty(MessageConstants.PROPERTY_ORIGINAL_TOPIC);
-                        String topic[] = originalTopic.split("\\.");
-                        if (topic.length != 5) {
-                            logger.error("Invalid topic format. Cannot process connect message.");
-                            throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "wrong connect message topic");
-                        }
-                        String accountName = topic[1];
-                        String clientId = topic[2];
-                        Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.findByName(accountName));
-                        Long scopeId = account.getId().getId().longValue();
-                        return new KapuaConnectionContext(scopeId, clientId, MULTI_ACCOUNT_CLIENT_ID);
-                    }
+            private KapuaConnectionContext parseTopicInfo(javax.jms.Message message) throws JMSException, KapuaException {
+                String originalTopic = message.getStringProperty(MessageConstants.PROPERTY_ORIGINAL_TOPIC);
+                String topic[] = originalTopic.split("\\.");
+                if (topic.length != 5) {
+                    logger.error("Invalid topic format. Cannot process connect message.");
+                    throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "wrong connect message topic");
+                }
+                String accountName = topic[1];
+                String clientId = topic[2];
+                Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.findByName(accountName));
+                Long scopeId = account.getId().getId().longValue();
+                return new KapuaConnectionContext(scopeId, clientId, MULTI_ACCOUNT_CLIENT_ID);
+            }
 
-                });
+        });
     }
 
     /**
@@ -332,7 +330,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     /**
      * Check if the connection is pass through.
      * Pass through connection is a connection with null connector (Advisory topic connection) or embedded broker connection (connection string starts by vm://)
-     * 
+     *
      * @param context
      * @return
      */
@@ -356,7 +354,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
      * Return true if security context is a broker context or if is a pass through connection
      * False if connection context is null or if security context is null and the connection context is not a pass through connection
      * Return true if
-     * 
+     *
      * @param context
      * @return
      */
@@ -373,10 +371,10 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     /**
      * Add connection.
      * If connection is not a pass through connection check username/password credential and device limits and then register the connection into kapua environment
-     * 
+     * <p>
      * Return error code is compliant to fix ENTMQ-731
      * Extract of MQTTProtocolConverter.java
-     * 
+     * <p>
      * if (exception instanceof InvalidClientIDException) {
      * ack.code(CONNACK.Code.CONNECTION_REFUSED_IDENTIFIER_REJECTED);
      * }
@@ -389,7 +387,6 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
      * else {
      * ack.code(CONNACK.Code.CONNECTION_REFUSED_SERVER_UNAVAILABLE);
      * }
-     * 
      */
     @Override
     public void addConnection(ConnectionContext context, ConnectionInfo info)
@@ -506,12 +503,10 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                     if (info.getConnectionId().getValue().equals(CONNECTION_MAP.get(kcc.getFullClientId()))) {
                         // cleanup stealing link detection map
                         CONNECTION_MAP.remove(kcc.getFullClientId());
-                    }
-                    else {
+                    } else {
                         logger.info("Cannot find client id in the connection map. May be it's due to a stealing link. ({})", kcc.getFullClientId());
                     }
-                }
-                else {
+                } else {
                     logger.warn("Cannot find Kapua connection context or client id is null");
                 }
             }
@@ -661,7 +656,6 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     //
     // ------------------------------------------------------------------
 
-    @SuppressWarnings("rawtypes")
     protected DefaultAuthorizationMap buildAuthorization(KapuaConnectionContext kcc, List<org.eclipse.kapua.broker.core.plugin.authentication.AuthorizationEntry> authorizationEntries) {
         List<DestinationMapEntry> entries = new ArrayList<>();
         for (org.eclipse.kapua.broker.core.plugin.authentication.AuthorizationEntry entry : authorizationEntries) {
@@ -682,9 +676,9 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     protected AuthorizationEntry createAuthorizationEntry(KapuaConnectionContext kcc, Acl acl, String address) {
         AuthorizationEntry authorizationEntry = new AuthorizationEntry();
         authorizationEntry.setDestination(ActiveMQDestination.createDestination(address, ActiveMQDestination.TOPIC_TYPE));
-        Set<Object> writeACLs = new HashSet<Object>();
-        Set<Object> readACLs = new HashSet<Object>();
-        Set<Object> adminACLs = new HashSet<Object>();
+        Set<Object> writeACLs = new HashSet<>();
+        Set<Object> readACLs = new HashSet<>();
+        Set<Object> adminACLs = new HashSet<>();
         if (acl.isRead()) {
             readACLs.add(kcc.getPrincipal());
         }

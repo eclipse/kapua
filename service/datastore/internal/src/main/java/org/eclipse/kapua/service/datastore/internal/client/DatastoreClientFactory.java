@@ -11,17 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.client;
 
-import org.eclipse.kapua.service.datastore.client.DatastoreClient;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 import org.eclipse.kapua.service.datastore.client.ClientException;
 import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
+import org.eclipse.kapua.service.datastore.client.DatastoreClient;
 import org.eclipse.kapua.service.datastore.internal.converter.ModelContextImpl;
 import org.eclipse.kapua.service.datastore.internal.converter.QueryConverterImpl;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * Datastore client factory. It returns the singleton client instance.<br>
@@ -31,8 +30,8 @@ import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
  */
 public class DatastoreClientFactory {
 
-    private final static String CANNOT_LOAD_CLIENT_ERROR_MSG = "Cannot load the provided client class name [%s]. Check the configuration.";
-    private final static String CLIENT_CLASS_NAME;
+    private static final String CANNOT_LOAD_CLIENT_ERROR_MSG = "Cannot load the provided client class name [%s]. Check the configuration.";
+    private static final String CLIENT_CLASS_NAME;
     private static Class<DatastoreClient> datastoreClientInstance;
     private static DatastoreClient instance;
 
@@ -46,11 +45,10 @@ public class DatastoreClientFactory {
 
     /**
      * Return the client instance. The implementation is specified by {@link DatastoreSettingKey#CONFIG_CLIENT_CLASS}.
-     * 
+     *
      * @return
      * @throws ClientUnavailableException
      */
-    @SuppressWarnings("unchecked")
     public static DatastoreClient getInstance() throws ClientUnavailableException {
         //lazy synchronization
         if (instance == null) {
@@ -83,7 +81,7 @@ public class DatastoreClientFactory {
 
     /**
      * Close the client instance
-     * 
+     *
      * @throws ClientException
      */
     public static void close() throws ClientException {

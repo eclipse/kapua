@@ -12,16 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.mediator;
 
-import java.text.ParseException;
-import java.time.Duration;
-import java.util.Date;
-import java.util.Map;
-
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.service.datastore.internal.model.DataIndexBy;
 import org.eclipse.kapua.service.datastore.internal.model.MetricsIndexBy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.text.ParseException;
+import java.time.Duration;
+import java.util.Date;
+import java.util.Map;
 
 /**
  * Message store configuration parameters (user dependent)
@@ -36,37 +36,37 @@ public class MessageStoreConfiguration {
      * Expiration date key.<br>
      * <b>The key must be aligned with the key used in org.eclipse.kapua.service.datastore.MessageStoreService.xml meta data configuration file).</b>
      */
-    public final static String CONFIGURATION_EXPIRATION_DATE_KEY = "messageStore.expirationDate";
+    public static final String CONFIGURATION_EXPIRATION_DATE_KEY = "messageStore.expirationDate";
 
     /**
      * Data storage enabled key.<br>
      * <b>The key must be aligned with the key used in org.eclipse.kapua.service.datastore.MessageStoreService.xml meta data configuration file).</b>
      */
-    public final static String CONFIGURATION_DATA_STORAGE_ENABLED_KEY = "messageStore.enabled";
+    public static final String CONFIGURATION_DATA_STORAGE_ENABLED_KEY = "messageStore.enabled";
 
     /**
      * Data time to live key.<br>
      * <b>The key must be aligned with the key used in org.eclipse.kapua.service.datastore.MessageStoreService.xml meta data configuration file).</b>
      */
-    public final static String CONFIGURATION_DATA_TTL_KEY = "dataTTL";
+    public static final String CONFIGURATION_DATA_TTL_KEY = "dataTTL";
 
     /**
      * Data received per month limit key.<br>
      * <b>The key must be aligned with the key used in org.eclipse.kapua.service.datastore.MessageStoreService.xml meta data configuration file).</b>
      */
-    public final static String CONFIGURATION_RX_BYTE_LIMIT_KEY = "rxByteLimit";
+    public static final String CONFIGURATION_RX_BYTE_LIMIT_KEY = "rxByteLimit";
 
     /**
      * Data index by key (available options are in DataIndexBy enumeration).<br>
      * <b>The key must be aligned with the key used in org.eclipse.kapua.service.datastore.MessageStoreService.xml meta data configuration file).</b>
      */
-    public final static String CONFIGURATION_DATA_INDEX_BY_KEY = "dataIndexBy";
+    public static final String CONFIGURATION_DATA_INDEX_BY_KEY = "dataIndexBy";
 
     /**
      * Metrics index by key (available options are in MetricsIndexBy enumeration).<br>
      * <b>The key must be aligned with the key used in org.eclipse.kapua.service.datastore.MessageStoreService.xml meta data configuration file).</b>
      */
-    public final static String CONFIGURATION_METRICS_INDEX_BY_KEY = "metricsIndexBy";
+    public static final String CONFIGURATION_METRICS_INDEX_BY_KEY = "metricsIndexBy";
 
     /**
      * Defines a value in service plan as unlimited resource
