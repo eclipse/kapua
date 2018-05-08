@@ -50,9 +50,9 @@ public class TagGrid extends EntityGrid<GwtTag> {
     protected void selectionChangedEvent(GwtTag selectedItem) {
         super.selectionChangedEvent(selectedItem);
         if (getToolbar().getEditEntityButton() != null && getToolbar().getAddEntityButton() != null && getToolbar().getDeleteEntityButton() != null) {
+            getToolbar().getAddEntityButton().setEnabled(currentSession.hasPermission(TagSessionPermission.write()));
             if (selectedItem != null) {
                 getToolbar().getEditEntityButton().setEnabled(currentSession.hasPermission(TagSessionPermission.write()));
-                getToolbar().getAddEntityButton().setEnabled(currentSession.hasPermission(TagSessionPermission.write()));
                 getToolbar().getDeleteEntityButton().setEnabled(currentSession.hasPermission(TagSessionPermission.delete()));
             } else {
                 getToolbar().getEditEntityButton().setEnabled(false);

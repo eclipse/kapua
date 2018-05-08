@@ -231,9 +231,9 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
     @Override
     protected void selectionChangedEvent(GwtDevice selectedItem) {
         super.selectionChangedEvent(selectedItem);
+        getToolbar().getAddEntityButton().setEnabled(currentSession.hasPermission(DeviceSessionPermission.write()));
         if (selectedItem != null) {
             getToolbar().getEditEntityButton().setEnabled(currentSession.hasPermission(DeviceSessionPermission.write()));
-            getToolbar().getAddEntityButton().setEnabled(currentSession.hasPermission(DeviceSessionPermission.write()));
             getToolbar().getDeleteEntityButton().setEnabled(currentSession.hasPermission(DeviceSessionPermission.delete()));
         } else {
             getToolbar().getEditEntityButton().setEnabled(false);

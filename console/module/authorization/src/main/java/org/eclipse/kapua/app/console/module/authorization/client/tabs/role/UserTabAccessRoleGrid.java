@@ -72,6 +72,7 @@ public class UserTabAccessRoleGrid extends EntityGrid<GwtAccessRole> {
             toolbar.getDeleteEntityButton().disable();
         } else {
             toolbar.getDeleteEntityButton().setEnabled(currentSession.hasPermission(AccessInfoSessionPermission.delete()));
+            toolbar.getAddEntityButton().setEnabled(currentSession.hasPermission(AccessInfoSessionPermission.write()));
         }
     }
 

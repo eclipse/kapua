@@ -47,9 +47,9 @@ public class GroupGrid extends EntityGrid<GwtGroup> {
     @Override
     protected void selectionChangedEvent(GwtGroup selectedItem) {
         super.selectionChangedEvent(selectedItem);
+        getToolbar().getAddEntityButton().setEnabled(currentSession.hasPermission(GroupSessionPermission.write()));
         if (selectedItem != null) {
             getToolbar().getEditEntityButton().setEnabled(currentSession.hasPermission(GroupSessionPermission.write()));
-            getToolbar().getAddEntityButton().setEnabled(currentSession.hasPermission(GroupSessionPermission.write()));
             getToolbar().getDeleteEntityButton().setEnabled(currentSession.hasPermission(GroupSessionPermission.delete()));
         } else {
             getToolbar().getEditEntityButton().setEnabled(false);

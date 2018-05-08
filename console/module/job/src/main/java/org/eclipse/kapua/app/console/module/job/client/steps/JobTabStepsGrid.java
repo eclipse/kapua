@@ -19,6 +19,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
@@ -27,6 +28,7 @@ import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessag
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJob;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStep;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStepQuery;
+import org.eclipse.kapua.app.console.module.job.shared.model.permission.JobSessionPermission;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobService;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobServiceAsync;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobStepService;
@@ -140,18 +142,18 @@ public class JobTabStepsGrid extends EntityGrid<GwtJobStep> {
             @Override
             public void onSuccess(GwtJob result) {
                 if (result.getJobXmlDefinition() == null) {
-                    JobTabStepsGrid.this.toolbar.getAddEntityButton().enable();
-                    if (selectedItem == null) {
-                        JobTabStepsGrid.this.toolbar.getEditEntityButton().disable();
-                        JobTabStepsGrid.this.toolbar.getDeleteEntityButton().disable();
+                    JobTabStepsGrid.this.toolbar.getAddEntityButton().setEnabled(currentSession.hasPermission(JobSessionPermission.write()));
+                    if (selectedItem != null) {
+                        JobTabStepsGrid.this.toolbar.getEditEntityButton().setEnabled(currentSession.hasPermission(JobSessionPermission.write()));
+                        JobTabStepsGrid.this.toolbar.getDeleteEntityButton().setEnabled(currentSession.hasPermission(JobSessionPermission.write()));
                     } else {
-                        JobTabStepsGrid.this.toolbar.getEditEntityButton().enable();
-                        JobTabStepsGrid.this.toolbar.getDeleteEntityButton().enable();
+                        JobTabStepsGrid.this.toolbar.getEditEntityButton().setEnabled(false);
+                        JobTabStepsGrid.this.toolbar.getDeleteEntityButton().setEnabled(false);
                     }
                 } else {
-                    JobTabStepsGrid.this.toolbar.getAddEntityButton().disable();
-                    JobTabStepsGrid.this.toolbar.getEditEntityButton().disable();
-                    JobTabStepsGrid.this.toolbar.getDeleteEntityButton().disable();
+                    JobTabStepsGrid.this.toolbar.getAddEntityButton().setEnabled(false);
+                    JobTabStepsGrid.this.toolbar.getEditEntityButton().setEnabled(false);
+                    JobTabStepsGrid.this.toolbar.getDeleteEntityButton().setEnabled(false);
                 }
             }
         });
