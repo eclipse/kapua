@@ -15,6 +15,16 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.broker.core.routeloader.BasicOnException;
+import org.eclipse.kapua.broker.core.routeloader.BasicRoute;
+import org.eclipse.kapua.broker.core.routeloader.Brick;
+import org.eclipse.kapua.broker.core.routeloader.ChoiceLeaf;
+import org.eclipse.kapua.broker.core.routeloader.ChoiceRoot;
+import org.eclipse.kapua.broker.core.routeloader.EndpointBeanTo;
+import org.eclipse.kapua.broker.core.routeloader.EndpointUriTo;
+import org.eclipse.kapua.broker.core.routeloader.OnException;
+import org.eclipse.kapua.broker.core.routeloader.Route;
+import org.eclipse.kapua.broker.core.routeloader.RouteContainer;
 import org.eclipse.kapua.broker.core.router.EndChainEndPoint;
 import org.eclipse.kapua.broker.core.router.EndPointContainer;
 import org.eclipse.kapua.broker.core.router.ParentEndPoint;
@@ -61,6 +71,16 @@ public class BrokerJAXBContextProvider implements JAXBContextProvider {
                     SimpleEndPoint.class,
                     ParentEndPoint.class,
                     EndChainEndPoint.class,
+                    RouteContainer.class,
+                    Route.class,
+                    BasicRoute.class,
+                    EndpointBeanTo.class,
+                    EndpointUriTo.class,
+                    Brick.class,
+                    ChoiceRoot.class,
+                    ChoiceLeaf.class,
+                    BasicOnException.class,
+                    OnException.class,
 
                     // KapuaEvent
                     ServiceEvent.class,

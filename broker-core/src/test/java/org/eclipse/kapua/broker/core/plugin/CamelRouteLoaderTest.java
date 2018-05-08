@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,13 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin;
 
-import org.eclipse.kapua.broker.core.router.CamelKapuaDefaultRouter;
+import org.eclipse.kapua.broker.core.routeloader.CamelRouteLoader;
+import org.eclipse.kapua.broker.core.routeloader.RouteContainer;
 import org.junit.Test;
 
-public class CamelRoutesLoaderTest {
+public class CamelRouteLoaderTest {
 
     @Test
-    public void testRouteLoad() {
-        new CamelKapuaDefaultRouter();
+    public void testRouteLoader() {
+        RouteContainer routeContainer = CamelRouteLoader.loadRoutes("camel-dynamic-routes.xml");
+        // TODO check the consistency of the loaded object with the expected model
     }
+
 }

@@ -42,14 +42,14 @@ import org.xml.sax.SAXException;
  * 
  * @since 1.0
  */
-public class CamelKapuaDefaultRouter {
+public class CamelDefaultRouter {
 
-    private final static Logger logger = LoggerFactory.getLogger(CamelKapuaDefaultRouter.class);
+    private final static Logger logger = LoggerFactory.getLogger(CamelDefaultRouter.class);
 
     private EndPointContainer endPointContainer;
 
-    public CamelKapuaDefaultRouter() {
-        String configurationFileName = BrokerSetting.getInstance().getString(BrokerSettingKey.CAMEL_DEFAULT_ROUTE_CONFIGURATION_FILE_NAME);
+    public CamelDefaultRouter() {
+        String configurationFileName = BrokerSetting.getInstance().getString(BrokerSettingKey.CAMEL_DEFAULT_ROUTER_CONFIGURATION_FILE_NAME);
         URL url = null;
         try {
             url = KapuaFileUtils.getAsURL(configurationFileName);

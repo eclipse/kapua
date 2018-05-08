@@ -33,15 +33,6 @@ public interface EndPoint {
 
     void toLog(StringBuffer buffer, String prefix);
 
-    static String replacePlaceholder(String regex) {
-        try {
-            return PlaceholderReplacer.replace(regex);
-        } catch (Exception e) {
-            logger.error("Cannot replace placeholder '{}'", regex, e);
-            return null;
-        }
-    }
-
     static Pattern parseRegex(String regex) {
         try {
             return Pattern.compile(regex);

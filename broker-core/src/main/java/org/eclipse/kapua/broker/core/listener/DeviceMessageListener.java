@@ -11,16 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.listener;
 
+import org.apache.camel.Exchange;
 import org.apache.camel.spi.UriEndpoint;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.message.CamelKapuaMessage;
+import org.eclipse.kapua.broker.core.message.MessageConstants;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaBirthMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaMissingMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaNotifyMessage;
-import org.eclipse.kapua.message.device.lifecycle.KapuaUnmatchedMessage;
 import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,32 +72,6 @@ public class DeviceMessageListener extends AbstractListener {
         try {
             deviceLifeCycleService.birth(birthMessage.getConnectionId(), birthMessage.getMessage());
             metricDeviceBirthMessage.inc();
-            // //republish BA
-            // Date now = new Date();
-            // KapuaPayload kapuaPayload = birthMessage.getMessage().getPayload();
-            // kapuaPayload.getMetrics().put("server_event_time", Long.toString(now.getTime()));
-            //
-            // birthMessage.getMessage().setSemanticChannel(BIRTH_SEMANTIC_TOPIC);
-            // try {
-            // logger.debug("MESSAGE: {}", kapuaPayload);
-            // JmsAssistantProducerPool pool = JmsAssistantProducerPool.getIOnstance(DESTINATIONS.NO_DESTINATION);
-            // JmsAssistantProducerWrapper producer = null;
-            // try {
-            // producer = pool.borrowObject();
-            // producer.sendRawMessage(birthMessage);
-            // }
-            // finally {
-            // pool.returnObject(producer);
-            // }
-            // }
-            // catch (JMSException e) {
-            // logger.error("An error occurred while publishing device history event: {}", e.getMessage());
-            // return;
-            // }
-            // catch (Throwable t) {
-            // logger.warn("Cannot send birth life cycle message {}! {}", new Object[]{birthMessage.getMessage().getChannel().toString(), t.getMessage()}, t);
-            // return;
-            // }
         } catch (KapuaException e) {
             metricDeviceErrorMessage.inc();
             logger.error("Error while processing device birth life-cycle event", e);
@@ -166,11 +141,12 @@ public class DeviceMessageListener extends AbstractListener {
     /**
      * Process a unmatched message.
      * 
-     * @param unmatchedMessage
+     * @param exchange
+     * @param value
      */
-    public void processUnmatchedMessage(CamelKapuaMessage<KapuaUnmatchedMessage> unmatchedMessage) {
-        logger.info("Received unmatched message from device channel: {}",
-                new Object[] { unmatchedMessage.getMessage().getChannel().toString() });
+    public void processUnmatchedMessage(Exchange exchange, Object value) {
+        logger.info("Received unmatched message from destination: {}",
+                new Object[] { exchange.getIn().getHeader(MessageConstants.PROPERTY_ORIGINAL_TOPIC) });
         metricDeviceUnmatchedMessage.inc();
     }
 
