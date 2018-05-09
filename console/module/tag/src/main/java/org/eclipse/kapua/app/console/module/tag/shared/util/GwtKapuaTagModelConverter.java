@@ -63,6 +63,8 @@ public class GwtKapuaTagModelConverter {
         String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? TagPredicates.NAME : loadConfig.getSortField();
         if (sortField.equals("tagName")) {
             sortField = TagPredicates.NAME;
+        } else if (sortField.equals("createdOnFormatted")) {
+            sortField = TagPredicates.CREATED_ON;
         }
         SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
         FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);

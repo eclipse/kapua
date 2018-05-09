@@ -70,6 +70,10 @@ public class GwtKapuaUserModelConverter {
             sortField = UserPredicates.MODIFIED_BY;
         } else if (sortField.equals("expirationDateFormatted")) {
             sortField = UserPredicates.EXPIRATIN_DATE;
+        } else if (sortField.equals("modifiedOnFormatted")) {
+            sortField = UserPredicates.MODIFIED_ON;
+        } else if (sortField.equals("createdOnFormatted")) {
+            sortField = UserPredicates.CREATED_ON;
         }
         SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
         FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);

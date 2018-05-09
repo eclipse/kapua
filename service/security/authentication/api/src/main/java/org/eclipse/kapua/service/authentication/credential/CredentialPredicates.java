@@ -24,5 +24,6 @@ public interface CredentialPredicates extends KapuaUpdatableEntityPredicates {
     String CREDENTIAL_TYPE = "credentialType";
     String CREDENTIAL_KEY = "credentialKey";
     String EXPIRATION_DATE = "expirationDate";
+    public static final String MODIFIED_ON = "modifiedOn";
 
 }
