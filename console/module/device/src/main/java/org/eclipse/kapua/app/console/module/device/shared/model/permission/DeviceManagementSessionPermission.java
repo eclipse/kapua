@@ -22,7 +22,7 @@ public class DeviceManagementSessionPermission extends GwtSessionPermission {
     }
 
     private DeviceManagementSessionPermission(GwtSessionPermissionAction action) {
-        super("device", action, GwtSessionPermissionScope.SELF);
+        super("device_management", action, GwtSessionPermissionScope.SELF);
     }
 
     public static DeviceManagementSessionPermission read() {
