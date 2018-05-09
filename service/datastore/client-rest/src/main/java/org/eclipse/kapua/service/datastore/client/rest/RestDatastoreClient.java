@@ -372,11 +372,11 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
                             failureMessage = failureNode.asText();
                         }
                         bulkResponse.add(new UpdateResponse(metricId, new TypeDescriptor(indexName, typeName), failureMessage));
-                        logger.info("Upsert failed [{}, {}, {}]", new Object[] { indexName, typeName, failureMessage });
+                        logger.info("Upsert failed [{}, {}, {}]", indexName, typeName, failureMessage);
                         continue;
                     }
                     bulkResponse.add(new UpdateResponse(metricId, new TypeDescriptor(indexName, typeName)));
-                    logger.debug("Upsert on channel metric succesfully executed [{}.{}, {}]", new Object[] { indexName, typeName, metricId });
+                    logger.debug("Upsert on channel metric successfully executed [{}.{}, {}]", indexName, typeName, metricId);
                 } else {
                     throw new ClientException(ClientErrorCodes.ACTION_ERROR, "Unexpected action response");
                 }

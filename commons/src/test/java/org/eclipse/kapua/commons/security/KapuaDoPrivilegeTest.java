@@ -88,7 +88,7 @@ public class KapuaDoPrivilegeTest {
         List<ScheduledFuture<Void>> doPrivilegeList = new ArrayList<>();
         for (int i = 0; i < CONCURRENT_THREAD; i++) {
             long delay = (long) (Math.random() * 200d);
-            logger.debug("Delay: ", new Object[] { delay });
+            logger.debug("Delay: ", delay);
             doPrivilegeList.add(es.schedule(new DoPrivilegeCallable("nosync_random_wait_" + i), delay, TimeUnit.MILLISECONDS));
         }
         waitForTermination(doPrivilegeList, executionTimeOut);
@@ -100,7 +100,7 @@ public class KapuaDoPrivilegeTest {
         doPrivilegeList.clear();
         for (int i = 0; i < CONCURRENT_THREAD; i++) {
             long delay = (long) (Math.random() * 100d);
-            logger.debug("Delay: ", new Object[] { delay });
+            logger.debug("Delay: ", delay);
             doPrivilegeList.add(es.schedule(new DoPrivilegeCallable("nosync_no_random_wait_" + i), delay, TimeUnit.MILLISECONDS));
         }
         waitForTermination(doPrivilegeList, executionTimeOut);
@@ -156,7 +156,7 @@ public class KapuaDoPrivilegeTest {
 
             if (executionProgress < MAX_EXECUTION) {
                 long wait = (long) (Math.random() * maxRandomWait);
-                logger.debug(callableName + " Wait: ", new Object[] { wait });
+                logger.debug(callableName + " Wait: ", wait);
                 Thread.sleep(wait);
                 KapuaSecurityUtils.doPrivileged(() -> doPrivilegeCode(Integer.valueOf(executionProgress.intValue() + 1)));
             }
@@ -164,9 +164,13 @@ public class KapuaDoPrivilegeTest {
             String kapuaSessionId = getKapuaSessionId();
 
             logger.debug("Execution: {} - KapuaSession object ID before {} - and after {} the nested DoPriviledge call",
-                    new Object[] { executionProgress.intValue(), originalKapuaSessionId, kapuaSessionId });
+                    executionProgress.intValue(),
+                    originalKapuaSessionId,
+                    kapuaSessionId);
+
             Assert.assertEquals("Wrong session ID!!! The do priledge method corrupted the KapuaSession", kapuaSessionId, originalKapuaSessionId);
-            return (Void) null;
+
+            return null;
         }
 
     }

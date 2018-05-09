@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.listener;
 
+import com.codahale.metrics.Counter;
 import org.apache.camel.Exchange;
 import org.apache.camel.spi.UriEndpoint;
 import org.eclipse.kapua.KapuaException;
@@ -24,8 +25,6 @@ import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreCommunicat
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.codahale.metrics.Counter;
-
 /**
  * Data storage message listener
  *
@@ -34,7 +33,7 @@ import com.codahale.metrics.Counter;
 @UriEndpoint(title = "Data storage message processor", syntax = "bean:dataMessageProcessor", scheme = "bean")
 public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMessage<?>> {
 
-    private static final Logger logger = LoggerFactory.getLogger(DataStorageMessageProcessor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DataStorageMessageProcessor.class);
     private static final String METRIC_COMPONENT_NAME = "datastore";
 
     private final MessageStoreService messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
@@ -47,6 +46,7 @@ public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMes
     public DataStorageMessageProcessor() {
         super("DataStorage");
         MetricsService metricService = MetricServiceFactory.getInstance();
+
         metricQueueCommunicationErrorCount = metricService.getCounter(METRIC_COMPONENT_NAME, "datastore", "store", "queue", "communication", "error", "count");
         metricQueueConfigurationErrorCount = metricService.getCounter(METRIC_COMPONENT_NAME, "datastore", "store", "queue", "configuration", "error", "count");
         metricQueueGenericErrorCount = metricService.getCounter(METRIC_COMPONENT_NAME, "datastore", "store", "queue", "generic", "error", "count");
@@ -54,12 +54,13 @@ public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMes
 
     /**
      * Process a data message.
-     * 
+     *
      * @throws KapuaException
      */
+    @Override
     public void processMessage(CamelKapuaMessage<?> message) throws KapuaException {
         // data messages
-        logger.debug("Received data message from device channel: client id '{}' - {}", message.getMessage().getClientId(), message.getMessage().getChannel());
+        LOG.debug("Received data message from device channel: client id '{}' - {}", message.getMessage().getClientId(), message.getMessage().getChannel());
         try {
             messageStoreService.store(message.getMessage(), message.getDatastoreId());
         } catch (DatastoreCommunicationException e) {
@@ -69,18 +70,18 @@ public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMes
     }
 
     public void processCommunicationErrorMessage(Exchange exchange, CamelKapuaMessage<?> message) throws KapuaException {
-        logger.info("Message datastoreId: '{}' - Message Id: '{}'", new Object[] { message.getDatastoreId(), message.getMessage().getId() });
+        LOG.info("Message datastoreId: '{}' - Message Id: '{}'", message.getDatastoreId(), message.getMessage().getId());
         processMessage(message);
         metricQueueCommunicationErrorCount.dec();
     }
 
     public void processConfigurationErrorMessage(Exchange exchange, CamelKapuaMessage<?> message) throws KapuaException {
-        logger.info("Message datastoreId: '{}' - Message Id '{}'", new Object[] { message.getDatastoreId(), message.getMessage().getId() });
+        LOG.info("Message datastoreId: '{}' - Message Id '{}'", message.getDatastoreId(), message.getMessage().getId());
         metricQueueConfigurationErrorCount.dec();
     }
 
     public void processGenericErrorMessage(Exchange exchange, CamelKapuaMessage<?> message) throws KapuaException {
-        logger.info("Message datastoreId: '{}' - Message Id '{}'", new Object[] { message.getDatastoreId(), message.getMessage().getId() });
+        LOG.info("Message datastoreId: '{}' - Message Id '{}'", message.getDatastoreId(), message.getMessage().getId());
         metricQueueGenericErrorCount.dec();
     }
 

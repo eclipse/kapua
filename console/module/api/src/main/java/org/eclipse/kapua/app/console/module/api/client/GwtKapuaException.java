@@ -11,10 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.api.client;
 
-import java.util.MissingResourceException;
-
 import com.google.gwt.core.client.GWT;
 import org.eclipse.kapua.app.console.module.api.client.messages.ValidationMessages;
+
+import java.util.MissingResourceException;
 
 /**
  * The GwtKapuaException class is the superclass of all GWT errors and exceptions in the Kapua project. It extends the JDK Exception class by requesting its invokers to provide an error code
@@ -23,7 +23,6 @@ import org.eclipse.kapua.app.console.module.api.client.messages.ValidationMessag
  * exception messages to be reported. Exceptions messages are stored in the KapuaExceptionMessagesBundle Properties Bundle and they are keyed on the exception code.
  *
  * @author mcarrer
- *
  */
 public class GwtKapuaException extends Exception {
 
@@ -33,7 +32,6 @@ public class GwtKapuaException extends Exception {
     protected String[] arguments;
     protected Integer remainingLoginAttempts;
 
-    @SuppressWarnings("unused")
     private GwtKapuaException() {
         super();
     }
@@ -42,12 +40,10 @@ public class GwtKapuaException extends Exception {
         super(message);
     }
 
-    @SuppressWarnings("unused")
     private GwtKapuaException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    @SuppressWarnings("unused")
     private GwtKapuaException(Throwable t) {
         super(t);
     }
@@ -96,10 +92,12 @@ public class GwtKapuaException extends Exception {
         return errorCode;
     }
 
+    @Override
     public String getMessage() {
         return getLocalizedMessage();
     }
 
+    @Override
     public String getLocalizedMessage() {
 
         String msg = errorCode.toString();

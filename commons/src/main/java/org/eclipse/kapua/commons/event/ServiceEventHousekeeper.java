@@ -141,7 +141,11 @@ public class ServiceEventHousekeeper implements Runnable {
         if (!unsentMessagesList.isEmpty()) {
             for (EventStoreRecord kapuaEvent : unsentMessagesList.getItems()) {
                 try {
-                    LOGGER.info("publish event: service '{}' - operation '{}' - id '{}'", new Object[] { kapuaEvent.getService(), kapuaEvent.getOperation(), kapuaEvent.getContextId() });
+                    LOGGER.info("publish event: service '{}' - operation '{}' - id '{}'",
+                            kapuaEvent.getService(),
+                            kapuaEvent.getOperation(),
+                            kapuaEvent.getContextId());
+
                     eventbus.publish(serviceInternalEventAddress, ServiceEventUtil.toServiceEventBus(kapuaEvent));
                     //if message was sent successfully then confirm the event in the event table
                     //if something goes wrong during this update the event message may be raised twice (but this condition should happens rarely and it is compliant to the contract of the service events)

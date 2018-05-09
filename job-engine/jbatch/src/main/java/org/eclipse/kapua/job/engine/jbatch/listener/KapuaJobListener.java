@@ -49,7 +49,7 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
     public void beforeJob() throws Exception {
         JobContextWrapper jobContextWrapper = new JobContextWrapper(jobContext);
 
-        LOG.info("JOB {} - {} - Running before job...", new Object[] { jobContextWrapper.getJobId(), jobContextWrapper.getJobName() });
+        LOG.info("JOB {} - {} - Running before job...", jobContextWrapper.getJobId(), jobContextWrapper.getJobName());
 
         JobExecutionCreator jobExecutionCreator = JOB_EXECUTION_FACTORY.newCreator(jobContextWrapper.getScopeId());
 
@@ -68,14 +68,14 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
             throw new KapuaIllegalStateException(String.format("Cannot start job [%s]. Another instance of this job is running.", jobContextWrapper.getJobName()));
         }
 
-        LOG.info("JOB {} - {} - Running before job... DONE!", new Object[] { jobContextWrapper.getJobId(), jobContextWrapper.getJobName() });
+        LOG.info("JOB {} - {} - Running before job... DONE!", jobContextWrapper.getJobId(), jobContextWrapper.getJobName());
     }
 
     @Override
     public void afterJob() throws Exception {
         JobContextWrapper jobContextWrapper = new JobContextWrapper(jobContext);
 
-        LOG.info("JOB {} - {} - Running after job...", new Object[] { jobContextWrapper.getJobId(), jobContextWrapper.getJobName() });
+        LOG.info("JOB {} - {} - Running after job...", jobContextWrapper.getJobId(), jobContextWrapper.getJobName());
 
         KapuaId kapuaExecutionId = jobContextWrapper.getKapuaExecutionId();
         if (kapuaExecutionId == null) {
@@ -90,6 +90,6 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
 
         KapuaSecurityUtils.doPrivileged(() -> JOB_EXECUTION_SERVICE.update(jobExecution));
 
-        LOG.info("JOB {} - {} - Running after job... DONE!", new Object[] { jobContextWrapper.getJobId(), jobContextWrapper.getJobName() });
+        LOG.info("JOB {} - {} - Running after job... DONE!", jobContextWrapper.getJobId(), jobContextWrapper.getJobName());
     }
 }

@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.jpa;
 
-import javax.persistence.PersistenceException;
-
 import org.eclipse.kapua.KapuaEntityExistsException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.event.ServiceEventScope;
@@ -26,6 +24,8 @@ import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.persistence.PersistenceException;
 
 /**
  * Entity manager session reference implementation.
@@ -259,7 +259,7 @@ public class EntityManagerSession {
                         logger.debug("Kapua event - update entity id to '{}'", ((KapuaEntity) instance).getId());
                         serviceEventBus.setEntityId(((KapuaEntity) instance).getId());
                     }
-                    logger.info("Entity '{}' with id '{}' found!", new Object[]{instance.getClass().getName(), ((KapuaEntity) instance).getId()});
+                    logger.info("Entity '{}' with id '{}' found!", instance.getClass().getName(), ((KapuaEntity) instance).getId());
                 }
 
                 //insert the kapua event only if it's a new entity

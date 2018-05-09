@@ -87,12 +87,7 @@ public class MqttFacade implements TransportFacade<MqttTopic, MqttPayload, MqttM
 
         if (timeout != null) {
             if (responses.isEmpty()) {
-                throw new MqttClientException(MqttClientErrorCodes.CLIENT_TIMEOUT_EXCEPTION,
-                        null,
-                        new Object[] {
-                                mqttMessage.getRequestTopic()
-                        });
-
+                throw new MqttClientException(MqttClientErrorCodes.CLIENT_TIMEOUT_EXCEPTION, null, mqttMessage.getRequestTopic());
             }
 
             return responses.get(0);
@@ -112,7 +107,7 @@ public class MqttFacade implements TransportFacade<MqttTopic, MqttPayload, MqttM
      * @param timeout     The timeout of waiting the response from the device.
      *                    If {@code null} request will be fired without waiting for the response.
      *                    If mqttMessage has no response message set, timeout will be ignore even if set.
-     * @throws KapuaException FIXME [javadoc] document exception
+     * @throws KapuaException
      * @see MqttMessage#getResponseTopic()
      * @since 1.0.0.
      */
@@ -127,9 +122,7 @@ public class MqttFacade implements TransportFacade<MqttTopic, MqttPayload, MqttM
                     borrowedClient.setCallback(mqttClientCallback);
                     borrowedClient.subscribe(mqttMessage.getResponseTopic());
                 } catch (KapuaException e) {
-                    throw new MqttClientException(MqttClientErrorCodes.CLIENT_SUBSCRIBE_ERROR,
-                            e,
-                            new Object[] { mqttMessage.getResponseTopic().getTopic() });
+                    throw new MqttClientException(MqttClientErrorCodes.CLIENT_SUBSCRIBE_ERROR, e, mqttMessage.getResponseTopic().getTopic());
                 }
             }
 
@@ -138,10 +131,11 @@ public class MqttFacade implements TransportFacade<MqttTopic, MqttPayload, MqttM
             try {
                 borrowedClient.publish(mqttMessage);
             } catch (KapuaException e) {
-                throw new MqttClientException(MqttClientErrorCodes.CLIENT_PUBLISH_ERROR,
+                throw new MqttClientException(
+                        MqttClientErrorCodes.CLIENT_PUBLISH_ERROR,
                         e,
-                        new Object[] { mqttMessage.getRequestTopic().getTopic(),
-                                mqttMessage.getPayload().getBody() });
+                        mqttMessage.getRequestTopic().getTopic(),
+                        mqttMessage.getPayload().getBody());
             }
 
             //
@@ -173,9 +167,7 @@ public class MqttFacade implements TransportFacade<MqttTopic, MqttPayload, MqttM
                     }
                 } catch (InterruptedException e) {
                     Thread.interrupted();
-                    throw new MqttClientException(MqttClientErrorCodes.CLIENT_CALLBACK_ERROR,
-                            e,
-                            (Object[]) null);
+                    throw new MqttClientException(MqttClientErrorCodes.CLIENT_CALLBACK_ERROR, e, (Object) null);
                 } finally {
                     timeoutTimer.cancel();
                 }

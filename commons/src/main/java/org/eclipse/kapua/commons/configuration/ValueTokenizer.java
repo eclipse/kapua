@@ -12,16 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration;
 
+import org.eclipse.kapua.commons.configuration.metatype.TscalarImpl;
+import org.eclipse.kapua.model.config.metatype.KapuaTad;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
-import org.eclipse.kapua.commons.configuration.metatype.TscalarImpl;
-import org.eclipse.kapua.model.config.metatype.KapuaTad;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The implementation of this class is inspired from the org.eclipse.equinox.metatype.impl.ValueTokenizer class
@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ValueTokenizer {
 
-    private static final Logger logger = LoggerFactory.getLogger(ValueTokenizer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ValueTokenizer.class);
 
     private static final String VALUE_INVALID = "Value is invalid";
     private static final String NULL_VALUE_INVALID = "Null cannot be validated";
@@ -85,7 +85,7 @@ public class ValueTokenizer {
                 } else {
                     // If the ESCAPE character occurs as the last character
                     // of the string, log the error and ignore it.
-                    logger.error(VALUE_INVALID);
+                    LOG.error(VALUE_INVALID);
                 }
                 break;
             default:
@@ -154,7 +154,8 @@ public class ValueTokenizer {
         if (values.isEmpty()) {
             return null;
         }
-        return values.toArray(new String[values.size()]);
+
+        return values.toArray(new String[0]);
     }
 
     /**
@@ -166,15 +167,17 @@ public class ValueTokenizer {
         if (values.isEmpty()) {
             return null;
         }
+
         if (values.size() == 1) {
             return values.get(0);
         }
-        StringBuffer buffer = new StringBuffer(values.get(0));
+
+        StringBuilder builder = new StringBuilder(values.get(0));
         for (int i = 1; i < values.size(); i++) {
-            buffer.append(',');
-            buffer.append(values.get(i));
+            builder.append(',')
+                    .append(values.get(i));
         }
-        return buffer.toString();
+        return builder.toString();
     }
 
     /**
@@ -194,17 +197,17 @@ public class ValueTokenizer {
             // If the cardinality is zero, the value must contain one and only one token.
             if (cardinality == 0) {
                 if (values.size() != 1) {
-                    return MessageFormat.format(CARDINALITY_VIOLATION, new Object[] { getValuesAsString(), values.size(), 1, 1 });
+                    return MessageFormat.format(CARDINALITY_VIOLATION, getValuesAsString(), values.size(), 1, 1);
                 }
             }
             // Otherwise, the number of tokens must be between 0 and cardinality, inclusive.
             else if (values.size() > cardinality) {
-                return MessageFormat.format(CARDINALITY_VIOLATION, new Object[] { getValuesAsString(), values.size(), 0, cardinality });
+                return MessageFormat.format(CARDINALITY_VIOLATION, getValuesAsString(), values.size(), 0, cardinality);
             }
             // Now inspect each token.
             for (String s : values) {
                 // If options were declared and the value does not match one of them, the value is not valid.
-                if (!ad.getOption().isEmpty() && ad.getOption().stream().filter( option -> s.equals(option.getValue()) ).count() == 0) {
+                if (!ad.getOption().isEmpty() && ad.getOption().stream().filter(option -> s.equals(option.getValue())).count() == 0) {
                     return MessageFormat.format(VALUE_OUT_OF_OPTION, s);
                 }
                 // Check the type. Also check the range if min or max were declared.
@@ -258,9 +261,9 @@ public class ValueTokenizer {
                     // Seems unnecessary to impose any further restrictions.
                     break;
                 case CHAR:
-                    minVal = ad.getMin() == null ? null : Character.valueOf(ad.getMin().charAt(0));
-                    maxVal = ad.getMax() == null ? null : Character.valueOf(ad.getMax().charAt(0));
-                    Character charVal = Character.valueOf(s.charAt(0));
+                    minVal = ad.getMin() == null ? null : ad.getMin().charAt(0);
+                    maxVal = ad.getMax() == null ? null : ad.getMax().charAt(0);
+                    Character charVal = s.charAt(0);
                     if (minVal != null && charVal.compareTo((Character) minVal) < 0) {
                         rangeError = true;
                     } else if (maxVal != null && charVal.compareTo((Character) maxVal) > 0) {
@@ -308,7 +311,7 @@ public class ValueTokenizer {
             return ""; //$NON-NLS-1$
         } catch (Throwable t) {
             String message = MessageFormat.format(INTERNAL_ERROR, t.getMessage());
-            logger.debug(message, t);
+            LOG.debug(message, t);
             return message;
         }
     }

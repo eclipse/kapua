@@ -25,7 +25,7 @@ import java.util.Map;
  */
 public class ServiceMap {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceMap.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ServiceMap.class);
 
     //no need to have a concurrent map since:
     //if a service is not available (due to register process in progress) no event is sent
@@ -47,14 +47,11 @@ public class ServiceMap {
             String tmpServiceName = AVAILABLE_SERVICES.get(serviceName);
             if (tmpServiceName == null) {
                 AVAILABLE_SERVICES.put(serviceName, serviceAddress);
-                LOGGER.info("Bound service '{}' to address '{}'",
-                        new Object[] { serviceName, serviceAddress });
+                LOG.info("Bound service '{}' to address '{}'", serviceName, serviceAddress);
             } else if (!serviceAddress.equals(tmpServiceName)) {
-                LOGGER.warn("The service '{}' is already registered with a different address (old '{}' - new '{}'). No change will be made",
-                        new Object[] { serviceName, tmpServiceName, serviceAddress });
+                LOG.warn("The service '{}' is already registered with a different address (old '{}' - new '{}'). No change will be made", serviceName, tmpServiceName, serviceAddress);
             } else {
-                LOGGER.info("The service '{}' is already registered with address '{}'",
-                        new Object[] { serviceName, serviceAddress });
+                LOG.info("The service '{}' is already registered with address '{}'", serviceName, serviceAddress);
             }
         }
     }
@@ -69,10 +66,9 @@ public class ServiceMap {
             for (String serviceName : servicesNames) {
                 String tmpServiceName = AVAILABLE_SERVICES.remove(serviceName);
                 if (tmpServiceName == null) {
-                    LOGGER.warn("Cannot deregister service '{}'. The service wasn't registered!", serviceName);
+                    LOG.warn("Cannot deregister service '{}'. The service wasn't registered!", serviceName);
                 } else {
-                    LOGGER.info("Deregistered service '{}' from address '{}'",
-                            new Object[] { serviceName, tmpServiceName });
+                    LOG.info("Deregistered service '{}' from address '{}'", serviceName, tmpServiceName);
                 }
             }
         }

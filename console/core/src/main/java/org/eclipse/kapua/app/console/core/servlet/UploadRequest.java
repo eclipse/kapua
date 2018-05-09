@@ -69,7 +69,11 @@ class UploadRequest extends ServletFileUpload {
                 long sizeInBytes = item.getSize();
 
                 logger.debug("File upload item name: {}, fileName: {}, contentType: {}, isInMemory: {}, size: {}",
-                        new Object[] { fieldName, fileName, contentType, isInMemory, sizeInBytes });
+                        fieldName,
+                        fileName,
+                        contentType,
+                        isInMemory,
+                        sizeInBytes);
 
                 fileItems.add(item);
             }

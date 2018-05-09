@@ -11,40 +11,23 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.server;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLConnection;
-import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.StringTokenizer;
-
+import com.extjs.gxt.ui.client.data.BaseListLoadResult;
+import com.extjs.gxt.ui.client.data.ListLoadResult;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.sanselan.ImageFormat;
 import org.apache.sanselan.Sanselan;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
-import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSettingKeys;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigParameter;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigParameter.GwtConfigParameterType;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtBundleInfo;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeploymentPackage;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceCommandInput;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceCommandOutput;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtSnapshot;
@@ -88,18 +71,34 @@ import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.extjs.gxt.ui.client.data.BaseListLoadResult;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-
 import javax.xml.namespace.QName;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
+import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.StringTokenizer;
 
 /**
  * The server side implementation of the Device RPC service.
  */
 public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet implements GwtDeviceManagementService {
 
-    private static Logger logger = LoggerFactory.getLogger(GwtDeviceManagementServiceImpl.class);
     private static final long serialVersionUID = -1391026997499175151L;
+
+    private static final Logger LOG = LoggerFactory.getLogger(GwtDeviceManagementServiceImpl.class);
 
     //
     // Packages
@@ -179,6 +178,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
         }
     }
 
+    @Override
     public ListLoadResult<GwtPackageOperation> getDownloadOperations(String scopeShortId, String deviceShortId)
             throws GwtKapuaException {
         List<GwtPackageOperation> gwtDeviceOperations = new ArrayList<GwtPackageOperation>();
@@ -298,7 +298,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
                         gwtConfig.setId(config.getId());
                         gwtConfig.setName(ocd.getName());
                         gwtConfig.setDescription(ocd.getDescription());
-                        if (ocd.getIcon() != null && ocd.getIcon().size() > 0) {
+                        if (ocd.getIcon() != null && !ocd.getIcon().isEmpty()) {
                             KapuaTicon icon = ocd.getIcon().get(0);
 
                             checkIconResource(icon);
@@ -317,7 +317,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
                                 gwtParam.setType(GwtConfigParameterType.fromString(ad.getType().value()));
                                 gwtParam.setRequired(ad.isRequired());
                                 gwtParam.setCardinality(ad.getCardinality());
-                                if (ad.getOption() != null && ad.getOption().size() > 0) {
+                                if (ad.getOption() != null && !ad.getOption().isEmpty()) {
                                     Map<String, String> options = new HashMap<String, String>();
                                     for (KapuaToption option : ad.getOption()) {
                                         options.put(option.getLabel(), option.getValue());
@@ -327,7 +327,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
                                 gwtParam.setMin(ad.getMin());
                                 gwtParam.setMax(ad.getMax());
                                 Map<String, String> gwtEntries = new HashMap<String, String>();
-                                for(Entry<QName, String> entry : ad.getOtherAttributes().entrySet()) {
+                                for (Entry<QName, String> entry : ad.getOtherAttributes().entrySet()) {
                                     gwtEntries.put(entry.getKey().toString(), entry.getValue());
                                 }
                                 gwtParam.setOtherAttributes(gwtEntries);
@@ -600,14 +600,12 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             }
 
             DeviceCommandInput commandInput = deviceCommandFactory.newCommandInput();
-            // commandInput.setArguments(gwtCommandInput.getArguments());
             commandInput.setArguments(args);
-            // commandInput.setCommand(gwtCommandInput.getCommand());
             commandInput.setCommand(command);
             commandInput.setEnvironment(gwtCommandInput.getEnvironment());
-            commandInput.setRunAsynch(gwtCommandInput.isRunAsynch() != null ? gwtCommandInput.isRunAsynch().booleanValue() : false);
+            commandInput.setRunAsynch(gwtCommandInput.isRunAsynch() != null && gwtCommandInput.isRunAsynch().booleanValue());
             commandInput.setStdin(gwtCommandInput.getStdin());
-            commandInput.setTimeout(gwtCommandInput.getTimeout() != null ? gwtCommandInput.getTimeout().intValue() : 0);
+            commandInput.setTimeout(gwtCommandInput.getTimeout() != null ? gwtCommandInput.getTimeout() : 0);
             commandInput.setWorkingDir(gwtCommandInput.getWorkingDir());
             commandInput.setBody(gwtCommandInput.getZipBytes());
 
@@ -688,7 +686,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
                 objValue = new Password(strValue);
                 break;
             case CHAR:
-                objValue = Character.valueOf(strValue.charAt(0));
+                objValue = strValue.charAt(0);
                 break;
             case STRING:
                 objValue = strValue;
@@ -716,7 +714,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
 
         case CHAR:
             for (String value : defaultValues) {
-                values.add(Character.valueOf(value.charAt(0)));
+                values.add(value.charAt(0));
             }
             return values.toArray(new Character[] {});
 
@@ -789,7 +787,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             File tmpFile = null;
 
             try {
-                logger.info("Got configuration component icon from URL: {}", iconResource);
+                LOG.info("Got configuration component icon from URL: {}", iconResource);
 
                 //
                 // Tmp file name creation
@@ -814,7 +812,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
 
                 File tmpDir = new File(tmpDirPathSb.toString());
                 if (!tmpDir.exists()) {
-                    logger.info("Creating tmp dir on path: {}", tmpDir.toString());
+                    LOG.info("Creating tmp dir on path: {}", tmpDir);
                     tmpDir.mkdir();
                 }
 
@@ -831,7 +829,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
                     long maxCacheTime = config.getLong(ConsoleSettingKeys.DEVICE_CONFIGURATION_ICON_CACHE_TIME);
 
                     if (System.currentTimeMillis() - lastModifiedDate > maxCacheTime) {
-                        logger.info("Deleting old cached file: {}", tmpFile.toString());
+                        LOG.info("Deleting old cached file: {}", tmpFile);
                         tmpFile.delete();
                     }
                 }
@@ -852,15 +850,14 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
                     try {
                         Long contentLength = Long.parseLong(contentLengthString);
                         if (contentLength > maxLength) {
-                            logger.warn("Content lenght exceeded ({}/{}) for URL: {}",
-                                    new Object[] { contentLength, maxLength, iconResource });
+                            LOG.warn("Content lenght exceeded ({}/{}) for URL: {}", contentLength, maxLength, iconResource);
                             throw new IOException("Content-Length reported a length of " + contentLength + " which exceeds the maximum allowed size of " + maxLength);
                         }
                     } catch (NumberFormatException nfe) {
-                        logger.warn("Cannot get Content-Length header!");
+                        LOG.warn("Cannot get Content-Length header!");
                     }
 
-                    logger.info("Creating file: {}", tmpFile.toString());
+                    LOG.info("Creating file: {}", tmpFile);
                     tmpFile.createNewFile();
 
                     // Icon download
@@ -875,8 +872,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
                             maxLength -= len;
 
                             if (maxLength < 0) {
-                                logger.warn("Maximum content lenght exceeded ({}) for URL: {}",
-                                        new Object[] { maxLength, iconResource });
+                                LOG.warn("Maximum content lenght exceeded ({}) for URL: {}", maxLength, iconResource);
                                 throw new IOException("Maximum content lenght exceeded (" + maxLength + ") for URL: " + iconResource);
                             }
                         }
@@ -884,7 +880,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
                         os.close();
                     }
 
-                    logger.info("Downloaded file: {}", tmpFile.toString());
+                    LOG.info("Downloaded file: {}", tmpFile);
 
                     // Image metadata content checks
                     ImageFormat imgFormat = Sanselan.guessFormat(tmpFile);
@@ -893,18 +889,18 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
                             imgFormat.equals(ImageFormat.IMAGE_FORMAT_GIF) ||
                             imgFormat.equals(ImageFormat.IMAGE_FORMAT_JPEG) ||
                             imgFormat.equals(ImageFormat.IMAGE_FORMAT_PNG)) {
-                        logger.info("Detected image format: {}", imgFormat.name);
+                        LOG.info("Detected image format: {}", imgFormat.name);
                     } else if (imgFormat.equals(ImageFormat.IMAGE_FORMAT_UNKNOWN)) {
-                        logger.error("Unknown file format for URL: {}", iconResource);
+                        LOG.error("Unknown file format for URL: {}", iconResource);
                         throw new IOException("Unknown file format for URL: " + iconResource);
                     } else {
-                        logger.error("Usupported file format ({}) for URL: {}", imgFormat, iconResource);
+                        LOG.error("Usupported file format ({}) for URL: {}", imgFormat, iconResource);
                         throw new IOException("Unknown file format for URL: {}" + iconResource);
                     }
 
-                    logger.info("Image validation passed for URL: {}", iconResource);
+                    LOG.info("Image validation passed for URL: {}", iconResource);
                 } else {
-                    logger.info("Using cached file: {}", tmpFile.toString());
+                    LOG.info("Using cached file: {}", tmpFile);
                 }
 
                 //
@@ -913,17 +909,16 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
                         .append(tmpFileName)
                         .toString();
 
-                logger.info("Injecting configuration component icon: {}", newResourceURL);
+                LOG.info("Injecting configuration component icon: {}", newResourceURL);
                 icon.setResource(newResourceURL);
             } catch (Exception e) {
-                if (tmpFile != null &&
-                        tmpFile.exists()) {
+                if (tmpFile != null && tmpFile.exists()) {
                     tmpFile.delete();
                 }
 
                 icon.setResource("Default");
 
-                logger.error("Error while checking component configuration icon. Using the default plugin icon.", e);
+                LOG.error("Error while checking component configuration icon. Using the default plugin icon.", e);
             }
         }
         //

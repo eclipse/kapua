@@ -246,12 +246,12 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                 } catch (JMSException e1) {
                     // ignore it
                 }
-                logger.debug("Received connect message topic: '{}' - message id: '{}'", new Object[] { destination, messageId });
+                logger.debug("Received connect message topic: '{}' - message id: '{}'", destination, messageId);
                 String messageBrokerId;
                 try {
                     messageBrokerId = message.getStringProperty(MessageConstants.PROPERTY_BROKER_ID);
                     if (!brokerId.equals(messageBrokerId)) {
-                        logger.debug("Received connect message from another broker id: '{}' topic: '{}' - message id: '{}'", new Object[] { messageBrokerId, destination, messageId });
+                        logger.debug("Received connect message from another broker id: '{}' topic: '{}' - message id: '{}'", messageBrokerId, destination, messageId);
                         KapuaConnectionContext kcc = null;
                         // try parsing from message context (if the message is coming from other brokers it has these fields evaluated)
                         try {
@@ -263,7 +263,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                             kcc = parseTopicInfo(message);
                         }
                         if (CONNECTION_MAP.get(kcc.getFullClientId()) != null) {
-                            logger.debug("Stealing link detected - broker id: '{}' topic: '{}' - message id: '{}'", new Object[] { messageBrokerId, destination, messageId });
+                            logger.debug("Stealing link detected - broker id: '{}' topic: '{}' - message id: '{}'", messageBrokerId, destination, messageId);
                             // iterate over all connected clients
                             for (Connection conn : getClients()) {
                                 logger.debug("Checking if {} equals {}", kcc.getFullClientId(), conn.getConnectionId());
@@ -287,7 +287,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             private KapuaConnectionContext parseMessageSession(javax.jms.Message message) throws JMSException, KapuaException {
                 Long scopeId = message.propertyExists(MessageConstants.PROPERTY_SCOPE_ID) ? message.getLongProperty(MessageConstants.PROPERTY_SCOPE_ID) : null;
                 String clientId = message.getStringProperty(MessageConstants.PROPERTY_CLIENT_ID);
-                if (scopeId == null || scopeId.longValue() <= 0 || StringUtils.isEmpty(clientId)) {
+                if (scopeId == null || scopeId <= 0 || StringUtils.isEmpty(clientId)) {
                     logger.debug("Invalid message context. Try parsing the topic.");
                     throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Invalid message context");
                 }
@@ -540,9 +540,8 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
 
     private void internalSend(ProducerBrokerExchange producerExchange, Message messageSend)
             throws Exception {
-        if (!StringUtils.containsNone(messageSend.getDestination().getPhysicalName(), new char[] { '+', '#' })) {
-            String message = MessageFormat.format("The caracters '+' and '#' cannot be included in a topic! Destination: {}",
-                    messageSend.getDestination());
+        if (!StringUtils.containsNone(messageSend.getDestination().getPhysicalName(), '+', '#')) {
+            String message = MessageFormat.format("The caracters '+' and '#' cannot be included in a topic! Destination: {0}", messageSend.getDestination());
             throw new SecurityException(message);
         }
         if (!isBrokerContext(producerExchange.getConnectionContext())) {

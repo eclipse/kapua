@@ -11,14 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
@@ -29,9 +21,17 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
+
 public class IndexCalculatorTest extends KapuaTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(IndexCalculatorTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(IndexCalculatorTest.class);
 
     @Test
     public void testIndex() throws KapuaException, ParseException, InterruptedException {
@@ -76,8 +76,13 @@ public class IndexCalculatorTest extends KapuaTest {
         calStartDate.setTimeInMillis(startDate.getTime());
         Calendar calEndDate = Calendar.getInstance(TimeZone.getTimeZone("UTC"), KapuaDateUtils.getLocale());
         calEndDate.setTimeInMillis(endDate.getTime());
-        logger.info("StartDate week {} - day {} *** EndDate week {} - day {}",
-                new Object[] { calStartDate.get(Calendar.WEEK_OF_YEAR), calStartDate.get(Calendar.DAY_OF_WEEK), calEndDate.get(Calendar.WEEK_OF_YEAR), calEndDate.get(Calendar.DAY_OF_WEEK) });
+
+        LOG.info("StartDate week {} - day {} *** EndDate week {} - day {}",
+                calStartDate.get(Calendar.WEEK_OF_YEAR),
+                calStartDate.get(Calendar.DAY_OF_WEEK),
+                calEndDate.get(Calendar.WEEK_OF_YEAR),
+                calEndDate.get(Calendar.DAY_OF_WEEK));
+
         String[] index = DatastoreUtils.convertToDataIndexes(KapuaEid.ONE, startDate.toInstant(), endDate.toInstant());
         compareResult(expectedIndexes, index);
     }
@@ -97,7 +102,7 @@ public class IndexCalculatorTest extends KapuaTest {
                 result.add(String.format("%s-%s-%s", scopeId, i, (j < 10 ? "0" + j : j)));
             }
         }
-        return result.toArray(new String[result.size()]);
+        return result.toArray(new String[0]);
     }
 
     private void compareResult(String[] expected, String[] result) {

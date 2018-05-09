@@ -12,29 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Random;
-import java.util.Set;
-import java.util.TimeZone;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.kapua.KapuaException;
@@ -115,12 +92,34 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
+import java.util.Set;
+import java.util.TimeZone;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger(MessageStoreServiceTest.class);
     private static final long PUBLISH_DATE_TEST_CHECK_TIME_WINDOW = 1000l;
 
-    @SuppressWarnings("unused")
     // this unused instance is just added to initialize the embedded node as first step before executing any action on datastore side.
     // otherwise, if the datastore service is initialized before the embedded es node startup, the transport connector is not able to be initialized (since it tries to connect to the node)
     // if the embedded node is initialized in @Before method of this class, the initialization happens after this is loaded by the classloader so the datastore service initialization, at that point,
@@ -159,9 +158,8 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * The method deletes all indices and resets the Kapua internal singleton state.
      * This is required to ensure that each unit test, as it currently expects, starts with an empty ES setup
      * </p>
-     * 
-     * @throws Exception
-     *             any case anything goes wrong
+     *
+     * @throws Exception any case anything goes wrong
      */
     @Before
     public void deleteAllIndices() throws Exception {
@@ -303,12 +301,12 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     // long count6 = MESSAGE_STORE_SERVICE.count(messageQuery1);
     // setMessageQueryBaseCriteria(messageQuery1, clientId, new DateRange(KapuaDateUtils.parseDate("2017-05-01T00:00:00.000Z"), KapuaDateUtils.parseDate("2017-05-31T00:00:00.000Z")));
     // long count7 = MESSAGE_STORE_SERVICE.count(messageQuery1);
-    // logger.info("{} - {} - {} - {} - {} - {} - {} - {}", new Object[] { count0, count1, count2, count3, count4, count5, count6, count7 });
+    // logger.info("{} - {} - {} - {} - {} - {} - {} - {}",  count0, count1, count2, count3, count4, count5, count6, count7 );
     // }
 
     private KapuaDataMessage insertMessage(Account account, String clientId, KapuaId deviceId, String semanticTopic, byte[] payload, Date sentOn) throws InterruptedException {
         KapuaDataPayloadImpl messagePayload = new KapuaDataPayloadImpl();
-        Map<String, Object> metrics = new HashMap<String, Object>();
+        Map<String, Object> metrics = new HashMap<>();
         metrics.put("float", new Float((float) 0.01));
         messagePayload.setMetrics(metrics);
         messagePayload.setBody(payload);
@@ -341,7 +339,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
         KapuaDataPayloadImpl messagePayload = new KapuaDataPayloadImpl();
 
-        Map<String, Object> metrics = new HashMap<String, Object>();
+        Map<String, Object> metrics = new HashMap<>();
         metrics.put("float", new Float((float) 0.01));
         metrics.put("integer", new Integer(1));
         metrics.put("double", (double) 0.01);
@@ -437,7 +435,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
             KapuaDataPayloadImpl messagePayload = new KapuaDataPayloadImpl();
 
-            Map<String, Object> metrics = new HashMap<String, Object>();
+            Map<String, Object> metrics = new HashMap<>();
             metrics.put("float", new Float((float) 0.01));
             metrics.put("integer", new Integer(1));
             metrics.put("double", (double) 0.01);
@@ -564,15 +562,15 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
             MessageListResult messageList = MESSAGE_STORE_SERVICE.query(messageQuery);
             checkMessagesCount(messageList, semanticTopic.length);
             for (int i = 0; i < messageList.getSize(); i++) {
-                 DatastoreMessage message = messageList.getItems().get(i);
+                DatastoreMessage message = messageList.getItems().get(i);
                 KapuaDataMessage messageToCompare = messages[i];
                 checkMessageId(message, messageStoredIds.get(i));
-                 checkTopic(message, messageToCompare.getChannel().toString());
-                 checkMessageBody(message, messageToCompare.getPayload().getBody());
-                 checkMetricsSize(message, messageToCompare.getPayload().getMetrics().size());
-                 checkMetrics(message, messageToCompare.getPayload().getMetrics());
-                 checkPosition(message, messageToCompare.getPosition());
-             }
+                checkTopic(message, messageToCompare.getChannel().toString());
+                checkMessageBody(message, messageToCompare.getPayload().getBody());
+                checkMetricsSize(message, messageToCompare.getPayload().getMetrics().size());
+                checkMetrics(message, messageToCompare.getPayload().getMetrics());
+                checkPosition(message, messageToCompare.getPosition());
+            }
         } catch (KapuaException e) {
             logger.error("Exception: ", e.getMessage(), e);
         }
@@ -615,7 +613,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     /**
      * This test checks the coherence of the registry cache for the metrics info (so if, once the cache is erased, after a new metric insert the firstMessageId and firstMessageOn contain the previous
      * value)
-     * 
+     *
      * @throws Exception
      */
     public void checkRegistryCache() throws Exception {
@@ -637,7 +635,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
         KapuaDataPayloadImpl messagePayload = new KapuaDataPayloadImpl();
 
-        Map<String, Object> metrics = new HashMap<String, Object>();
+        Map<String, Object> metrics = new HashMap<>();
         metrics.put("float", new Float((float) 0.01));
         metrics.put("integer", new Integer(1));
         metrics.put("double", (double) 0.01);
@@ -1796,7 +1794,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     }
 
     private Map<String, Object> getMetrics(KapuaDataMessage message, int profile) {
-        Map<String, Object> metrics = new HashMap<String, Object>();
+        Map<String, Object> metrics = new HashMap<>();
         for (int i = 0; i < 6; i++) {
             metrics.put("metric_" + i, getMetricValue(profile + i));
         }
@@ -1979,7 +1977,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     }
 
     /**
-     *
      * @param channelInfoQuery
      * @param channelPredicate
      */
@@ -2091,6 +2088,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     //
     // Utility methods to help to check the message result
     //
+
     /**
      * Check if in the result set has the expected messages count and return the first (if any)
      *
@@ -2400,9 +2398,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         checkMetricsSize(messageToCheck, correctMessage.getPayload().getMetrics().size());
         checkMetrics(messageToCheck, correctMessage.getPayload().getMetrics());
         checkPosition(messageToCheck, correctMessage.getPosition());
-        checkMessageDate(messageToCheck, new Range<Date>("timestamp", correctMessage.getCapturedOn()), new Range<Date>("sentOn", correctMessage.getSentOn()),
-                new Range<Date>("capturedOn", correctMessage.getCapturedOn()),
-                new Range<Date>("receivedOn", correctMessage.getReceivedOn()));
+        checkMessageDate(messageToCheck, new Range<>("timestamp", correctMessage.getCapturedOn()), new Range<>("sentOn", correctMessage.getSentOn()),
+                new Range<>("capturedOn", correctMessage.getCapturedOn()),
+                new Range<>("receivedOn", correctMessage.getReceivedOn()));
         checkChannelFirstMessageIdAndDate(account, correctMessage.getClientId(), firstPublishedMessage, firstPublishedOn);
         checkClientFirstMessageIdAndDate(account, correctMessage.getClientId(), firstPublishedMessage, firstPublishedOn);
         checkMetricFirstMessageIdAndDate(account, correctMessage.getClientId(), firstPublishedMessage, firstPublishedOn);
@@ -2622,6 +2620,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     //
     // Configuration utility
     //
+
     /**
      * Update the store service configuration with the provided values
      *

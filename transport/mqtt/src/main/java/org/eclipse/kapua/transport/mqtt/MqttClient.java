@@ -11,10 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.transport.mqtt;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.transport.TransportClientConnectOptions;
 import org.eclipse.kapua.transport.message.mqtt.MqttMessage;
@@ -24,11 +20,15 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 /**
  * Class that wrap a {@link org.eclipse.paho.client.mqttv3.MqttClient} and
  * adds some utility methods to manage the operations at the transport level
  * in Kapua.
- * 
+ *
  * @since 1.0.0
  */
 public class MqttClient {
@@ -46,13 +46,12 @@ public class MqttClient {
     //
     // Connection management
     //
+
     /**
      * Connects the {@link MqttClient#pahoMqttClient} according to the given {@link TransportClientConnectOptions}.
-     * 
-     * @param options
-     *            The connection options to use
-     * @throws MqttClientException
-     *             When connect fails.
+     *
+     * @param options The connection options to use
+     * @throws MqttClientException When connect fails.
      * @since 1.0.0
      */
     public void connectClient(TransportClientConnectOptions options)
@@ -79,9 +78,9 @@ public class MqttClient {
         } catch (MqttException e) {
             throw new MqttClientException(MqttClientErrorCodes.CLIENT_CONNECT_ERROR,
                     e,
-                    new Object[] { options.getEndpointURI().toString(),
-                            options.getClientId(),
-                            options.getUsername() });
+                    options.getEndpointURI().toString(),
+                    options.getClientId(),
+                    options.getUsername());
         }
     }
 
@@ -90,10 +89,8 @@ public class MqttClient {
      * <p>
      * Before disconnecting cleaning of subscriptions is attempted.
      * </p>
-     * 
-     * @throws KapuaException
-     *             When disconnect fails.
-     * 
+     *
+     * @throws KapuaException When disconnect fails.
      * @since 1.0.0
      */
     public void disconnectClient()
@@ -101,13 +98,9 @@ public class MqttClient {
         try {
             unsubscribeAll();
 
-            if (getPahoClient() != null) {
-                getPahoClient().disconnect();
-            }
+            getPahoClient().disconnect();
         } catch (MqttException e) {
-            throw new MqttClientException(MqttClientErrorCodes.CLIENT_DISCONNECT_ERROR,
-                    e,
-                    (Object[]) null);
+            throw new MqttClientException(MqttClientErrorCodes.CLIENT_DISCONNECT_ERROR, e, (Object) null);
         }
     }
 
@@ -116,32 +109,28 @@ public class MqttClient {
      * <p>
      * Before termination {@link MqttClient#disconnectClient()} is invoked to clean up appended subscriptions and close connection.
      * </p>
-     * 
-     * @throws KapuaException
-     *             Whne close fails.
+     *
+     * @throws KapuaException Whne close fails.
      * @since 1.0.0
      */
     public void terminateClient()
             throws KapuaException {
         try {
-            if (getPahoClient() != null) {
-                if (getPahoClient().isConnected()) {
-                    disconnectClient();
-                }
-
-                getPahoClient().close();
-                pahoMqttClient = null;
+            if (getPahoClient().isConnected()) {
+                disconnectClient();
             }
+
+            getPahoClient().close();
+
+            pahoMqttClient = null;
         } catch (MqttException e) {
-            throw new MqttClientException(MqttClientErrorCodes.CLIENT_TERMINATE_ERROR,
-                    e,
-                    (Object[]) null);
+            throw new MqttClientException(MqttClientErrorCodes.CLIENT_TERMINATE_ERROR, e, (Object) null);
         }
     }
 
     /**
      * Checks if this {@link MqttClient} is connected.
-     * 
+     *
      * @return {@code true} if connected, {@code false} otherwise.
      * @since 1.0.0
      */
@@ -157,17 +146,15 @@ public class MqttClient {
     //
     // Message management
     //
+
     /**
      * Publish a {@link MqttMessage}.
      * <p>
      * QoS of publishing is set to 0.
      * </p>
-     * 
-     * @param mqttMessage
-     *            The {@link MqttMessage} to publish.
-     * 
-     * @throws KapuaException
-     *             When publish fails.
+     *
+     * @param mqttMessage The {@link MqttMessage} to publish.
+     * @throws KapuaException When publish fails.
      * @since 1.0.0
      */
     public void publish(MqttMessage mqttMessage)
@@ -181,19 +168,15 @@ public class MqttClient {
                     0,
                     false);
         } catch (MqttException | KapuaException e) {
-            throw new MqttClientException(MqttClientErrorCodes.CLIENT_SUBSCRIBE_ERROR,
-                    e,
-                    new Object[] { mqttTopic.toString() });
+            throw new MqttClientException(MqttClientErrorCodes.CLIENT_SUBSCRIBE_ERROR, e, mqttTopic.toString());
         }
     }
 
     /**
      * Subscribes this client to the given {@link MqttTopic}.
-     * 
-     * @param mqttTopic
-     *            The {@link MqttTopic} to subscribe to.
-     * @throws KapuaException
-     *             When subscribe fails.
+     *
+     * @param mqttTopic The {@link MqttTopic} to subscribe to.
+     * @throws KapuaException When subscribe fails.
      * @since 1.0.0
      */
     public void subscribe(MqttTopic mqttTopic)
@@ -202,19 +185,15 @@ public class MqttClient {
             getPahoClient().subscribe(mqttTopic.getTopic());
             subscribedTopics.add(mqttTopic);
         } catch (MqttException | KapuaException e) {
-            throw new MqttClientException(MqttClientErrorCodes.CLIENT_SUBSCRIBE_ERROR,
-                    e,
-                    new Object[] { mqttTopic.getTopic() });
+            throw new MqttClientException(MqttClientErrorCodes.CLIENT_SUBSCRIBE_ERROR, e, mqttTopic.getTopic());
         }
     }
 
     /**
      * Unsubscribes this client from the given {@link MqttTopic}.
-     * 
-     * @param mqttTopic
-     *            The {@link MqttTopic} to unsubscribe to.
-     * @throws KapuaException
-     *             When unsubscribe fails.
+     *
+     * @param mqttTopic The {@link MqttTopic} to unsubscribe to.
+     * @throws KapuaException When unsubscribe fails.
      * @since 1.0.0
      */
     private void unsubscribe(MqttTopic mqttTopic)
@@ -222,17 +201,15 @@ public class MqttClient {
         try {
             getPahoClient().unsubscribe(mqttTopic.getTopic());
         } catch (MqttException | KapuaException e) {
-            throw new MqttClientException(MqttClientErrorCodes.CLIENT_UNSUBSCRIBE_ERROR,
-                    e,
-                    new Object[] { mqttTopic.toString() });
+            throw new MqttClientException(MqttClientErrorCodes.CLIENT_UNSUBSCRIBE_ERROR, e, mqttTopic.toString());
         }
+
     }
 
     /**
      * Unsubscribes this client from all topics subscribed.
-     * 
-     * @throws KapuaException
-     *             When any of the unsubscribe fails.
+     *
+     * @throws KapuaException When any of the unsubscribe fails.
      * @since 1.0.0
      */
     public synchronized void unsubscribeAll()
@@ -242,7 +219,6 @@ public class MqttClient {
         while (subscribptionIterator.hasNext()) {
             MqttTopic mqttTopic = subscribptionIterator.next();
             unsubscribe(mqttTopic);
-
         }
 
         subscribedTopics.clear();
@@ -250,29 +226,24 @@ public class MqttClient {
 
     /**
      * Sets a {@link MqttClientCallback} to this client.
-     * 
-     * @param mqttClientCallback
-     *            The {@link MqttClientCallback} to use.
-     * @throws KapuaException
-     *             When set the callback fails.
+     *
+     * @param mqttClientCallback The {@link MqttClientCallback} to use.
+     * @throws KapuaException When set the callback fails.
      */
     public void setCallback(MqttClientCallback mqttClientCallback)
             throws KapuaException {
         try {
             getPahoClient().setCallback(mqttClientCallback);
         } catch (KapuaException e) {
-            throw new MqttClientException(MqttClientErrorCodes.CLIENT_CALLBACK_ERROR,
-                    e,
-                    (Object[]) null);
+            throw new MqttClientException(MqttClientErrorCodes.CLIENT_CALLBACK_ERROR, e, (Object) null);
         }
 
     }
 
     /**
      * Cleans this client from any callback set and unsubscribes from all {@link MqttTopic} subscribed.
-     * 
-     * @throws KapuaException
-     *             When any of the clean operations fails.
+     *
+     * @throws KapuaException When any of the clean operations fails.
      */
     public void clean()
             throws KapuaException {
@@ -281,9 +252,7 @@ public class MqttClient {
             unsubscribeAll();
         } catch (KapuaException e) {
             terminateClient();
-            throw new MqttClientException(MqttClientErrorCodes.CLIENT_CLEAN_ERROR,
-                    e,
-                    (Object[]) null);
+            throw new MqttClientException(MqttClientErrorCodes.CLIENT_CLEAN_ERROR, e, (Object) null);
         }
 
     }
@@ -291,9 +260,10 @@ public class MqttClient {
     //
     // Utilty
     //
+
     /**
      * Gets the clientId of the wrapped {@link MqttClient#pahoMqttClient}.
-     * 
+     *
      * @return The clientId of the wrapped {@link MqttClient#pahoMqttClient}.
      */
     public String getClientId() {
@@ -306,17 +276,13 @@ public class MqttClient {
 
     /**
      * Gets the reference to the wrapped {@link MqttClient#pahoMqttClient} ready to be used.
-     * 
+     *
      * @return The wrapped {@link MqttClient#pahoMqttClient}.
-     * @throws KapuaException
-     *             If client has never been connected using {@link MqttClient#connectClient(TransportClientConnectOptions)}.
+     * @throws KapuaException If client has never been connected using {@link MqttClient#connectClient(TransportClientConnectOptions)}.
      */
-    private synchronized org.eclipse.paho.client.mqttv3.MqttClient getPahoClient()
-            throws KapuaException {
+    private synchronized org.eclipse.paho.client.mqttv3.MqttClient getPahoClient() throws KapuaException {
         if (pahoMqttClient == null) {
-            throw new MqttClientException(MqttClientErrorCodes.CLIENT_NOT_CONNECTED,
-                    null,
-                    (Object[]) null);
+            throw new MqttClientException(MqttClientErrorCodes.CLIENT_NOT_CONNECTED, null, (Object) null);
         }
 
         return pahoMqttClient;

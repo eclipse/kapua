@@ -11,9 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.event;
 
-import java.lang.annotation.Annotation;
-import java.util.Date;
-
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.eclipse.kapua.commons.core.InterceptorBind;
@@ -25,8 +22,8 @@ import org.eclipse.kapua.commons.service.event.store.internal.EventStoreDAO;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.event.RaiseServiceEvent;
 import org.eclipse.kapua.event.ServiceEvent;
-import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.event.ServiceEvent.EventStatus;
+import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -34,16 +31,19 @@ import org.eclipse.kapua.service.KapuaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.annotation.Annotation;
+import java.util.Date;
+
 /**
  * Event interceptor. It builds the event object and sends it to the event bus.
- * 
+ *
  * @since 1.0
  */
 @KapuaProvider
 @InterceptorBind(matchSubclassOf = KapuaService.class, matchAnnotatedWith = RaiseServiceEvent.class)
 public class RaiseServiceEventInterceptor implements MethodInterceptor {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RaiseServiceEventInterceptor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RaiseServiceEventInterceptor.class);
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
@@ -67,7 +67,7 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
             try {
                 sendEvent(invocation, serviceEvent, returnObject);
             } catch (ServiceEventBusException e) {
-                LOGGER.warn("Error sending event: {}", e.getMessage(), e);
+                LOG.warn("Error sending event: {}", e.getMessage(), e);
             }
 
             return returnObject;
@@ -101,16 +101,16 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
             // String serviceName = splittedServiceInterfaceName.length > 0 ? splittedServiceInterfaceName[splittedServiceInterfaceName.length-1] : "";
             // String cleanedServiceName = serviceName.substring(0, serviceName.length()-"Service".length()).toLowerCase();
             String cleanedServiceName = serviceInterfaceName;
-            LOGGER.info("Service name '{}' ", cleanedServiceName);
+            LOG.info("Service name '{}' ", cleanedServiceName);
             serviceEvent.setService(cleanedServiceName);
             Object[] arguments = invocation.getArguments();
             if (arguments != null) {
                 for (Object tmp : arguments) {
-                    LOGGER.info("Scan for entity. Object: {}", tmp != null ? tmp.getClass() : "null");
+                    LOG.info("Scan for entity. Object: {}", tmp != null ? tmp.getClass() : "null");
                     if (tmp instanceof KapuaEntity) {
                         serviceEvent.setEntityType(tmp.getClass().getName());
                         serviceEvent.setEntityId(((KapuaEntity) tmp).getId());
-                        LOGGER.info("Entity '{}' with id '{}' found!", new Object[] { tmp.getClass().getName(), ((KapuaEntity) tmp).getId() });
+                        LOG.info("Entity '{}' with id '{}' found!", tmp.getClass().getName(), ((KapuaEntity) tmp).getId());
                         return;
                     }
                 }
@@ -138,7 +138,7 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
                             }
                         } catch (ClassNotFoundException e) {
                             // do nothing
-                            LOGGER.warn("Cannon find class {}", str, e);
+                            LOG.warn("Cannon find class {}", str, e);
                         }
                     }
                 }
@@ -162,12 +162,16 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
         String address = ServiceMap.getAddress(serviceEvent.getService());
         try {
             ServiceEventBusManager.getInstance().publish(address, serviceEvent);
-            LOGGER.info("SENT event from service {} to {} - entity type {} - entity id {} - context id {}",
-                    new Object[] { serviceEvent.getService(), address, serviceEvent.getEntityType(), serviceEvent.getEntityId(), serviceEvent.getContextId() });
+            LOG.info("SENT event from service {} to {} - entity type {} - entity id {} - context id {}",
+                    serviceEvent.getService(),
+                    address,
+                    serviceEvent.getEntityType(),
+                    serviceEvent.getEntityId(),
+                    serviceEvent.getContextId());
             // if message was sent successfully then confirm the event in the event table
             updateEventStatus(invocation, serviceEvent, EventStatus.SENT);
         } catch (ServiceEventBusException e) {
-            LOGGER.warn("Error sending event", e);
+            LOG.warn("Error sending event", e);
             // mark event status as SEND_ERROR
             updateEventStatus(invocation, serviceEvent, EventStatus.SEND_ERROR);
         }
@@ -182,7 +186,7 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
                                 ServiceEventUtil.mergeToEntity(EventStoreDAO.find(em, KapuaEid.parseCompactId(serviceEventBus.getId())), serviceEventBus)));
             } catch (Throwable t) {
                 // this may be a valid condition if the HouseKeeper is doing the update concurrently with this task
-                LOGGER.warn("Error updating event status: {}", t.getMessage(), t);
+                LOG.warn("Error updating event status: {}", t.getMessage(), t);
             }
         }
     }
