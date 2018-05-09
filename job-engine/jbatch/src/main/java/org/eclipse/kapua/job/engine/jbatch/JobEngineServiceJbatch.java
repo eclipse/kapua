@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,11 +22,11 @@ import org.eclipse.kapua.job.engine.jbatch.driver.JbatchDriver;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobAlreadyRunningException;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobCheckRunningException;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobInvalidTargetException;
-import org.eclipse.kapua.job.engine.jbatch.exception.JobMissingStepException;
-import org.eclipse.kapua.job.engine.jbatch.exception.JobMissingTargetException;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobNotRunningException;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobStaringException;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobStopppingException;
+import org.eclipse.kapua.job.engine.jbatch.exception.KapuaJobEngineErrorCodes;
+import org.eclipse.kapua.job.engine.jbatch.exception.KapuaJobEngineException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
@@ -89,7 +89,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         JobTargetQuery jobTargetQuery = JOB_TARGET_FACTORY.newQuery(scopeId);
         jobTargetQuery.setPredicate(new AttributePredicateImpl<>(JobTargetPredicates.JOB_ID, jobId));
         if (JOB_TARGET_SERVICE.count(jobTargetQuery) <= 0) {
-            throw new JobMissingTargetException(scopeId, jobId);
+            throw new KapuaJobEngineException(KapuaJobEngineErrorCodes.JOB_TARGET_MISSING);
         }
 
         //
@@ -112,7 +112,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         JobStepQuery jobStepQuery = JOB_STEP_FACTORY.newQuery(scopeId);
         jobStepQuery.setPredicate(new AttributePredicateImpl<>(JobStepPredicates.JOB_ID, jobId));
         if (JOB_STEP_SERVICE.count(jobStepQuery) <= 0) {
-            throw new JobMissingStepException(scopeId, jobId);
+            throw new KapuaJobEngineException(KapuaJobEngineErrorCodes.JOB_STEP_MISSING);
         }
 
         //
