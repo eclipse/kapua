@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.listener;
 
+import com.codahale.metrics.Counter;
 import org.apache.camel.spi.UriEndpoint;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.message.CamelKapuaMessage;
@@ -24,8 +25,6 @@ import org.eclipse.kapua.message.device.lifecycle.KapuaUnmatchedMessage;
 import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.codahale.metrics.Counter;
 
 /**
  * Device messages listener (device life cycle).<br>
@@ -64,7 +63,7 @@ public class DeviceMessageListener extends AbstractListener {
 
     /**
      * Process a birth message.
-     * 
+     *
      * @param birthMessage
      */
     public void processBirthMessage(CamelKapuaMessage<KapuaBirthMessage> birthMessage) {
@@ -94,19 +93,18 @@ public class DeviceMessageListener extends AbstractListener {
             // return;
             // }
             // catch (Throwable t) {
-            // logger.warn("Cannot send birth life cycle message {}! {}", new Object[]{birthMessage.getMessage().getChannel().toString(), t.getMessage()}, t);
+            // logger.warn("Cannot send birth life cycle message {}! {}", birthMessage.getMessage().getChannel().toString(), t.getMessage(), t);
             // return;
             // }
         } catch (KapuaException e) {
             metricDeviceErrorMessage.inc();
             logger.error("Error while processing device birth life-cycle event", e);
-            return;
         }
     }
 
     /**
      * Process a disconnect message.
-     * 
+     *
      * @param disconnectMessage
      */
     public void processDisconnectMessage(CamelKapuaMessage<KapuaDisconnectMessage> disconnectMessage) {
@@ -116,13 +114,12 @@ public class DeviceMessageListener extends AbstractListener {
         } catch (KapuaException e) {
             metricDeviceErrorMessage.inc();
             logger.error("Error while processing device disconnect life-cycle event", e);
-            return;
         }
     }
 
     /**
      * Process an application message.
-     * 
+     *
      * @param appsMessage
      */
     public void processAppsMessage(CamelKapuaMessage<KapuaAppsMessage> appsMessage) {
@@ -132,13 +129,12 @@ public class DeviceMessageListener extends AbstractListener {
         } catch (KapuaException e) {
             metricDeviceErrorMessage.inc();
             logger.error("Error while processing device apps life-cycle event", e);
-            return;
         }
     }
 
     /**
      * Process a missing message.
-     * 
+     *
      * @param missingMessage
      */
     public void processMissingMessage(CamelKapuaMessage<KapuaMissingMessage> missingMessage) {
@@ -148,29 +144,26 @@ public class DeviceMessageListener extends AbstractListener {
         } catch (KapuaException e) {
             metricDeviceErrorMessage.inc();
             logger.error("Error while processing device missing life-cycle event", e);
-            return;
         }
     }
 
     /**
      * Process a notify message.
-     * 
+     *
      * @param notifyMessage
      */
     public void processNotifyMessage(CamelKapuaMessage<KapuaNotifyMessage> notifyMessage) {
-        logger.info("Received notify message from device channel: {}",
-                new Object[] { notifyMessage.getMessage().getChannel().toString() });
+        logger.info("Received notify message from device channel: {}", notifyMessage.getMessage().getChannel());
         metricDeviceNotifyMessage.inc();
     }
 
     /**
      * Process a unmatched message.
-     * 
+     *
      * @param unmatchedMessage
      */
     public void processUnmatchedMessage(CamelKapuaMessage<KapuaUnmatchedMessage> unmatchedMessage) {
-        logger.info("Received unmatched message from device channel: {}",
-                new Object[] { unmatchedMessage.getMessage().getChannel().toString() });
+        logger.info("Received unmatched message from device channel: {}", unmatchedMessage.getMessage().getChannel());
         metricDeviceUnmatchedMessage.inc();
     }
 

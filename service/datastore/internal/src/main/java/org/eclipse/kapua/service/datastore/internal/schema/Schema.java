@@ -11,12 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.schema;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.client.ClientException;
@@ -35,28 +30,30 @@ import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Datastore schema creation/update
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class Schema {
 
-    private static final Logger logger = LoggerFactory.getLogger(Schema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Schema.class);
 
     /**
      * Construct the Elasticsearch schema
-     * 
      */
     public Schema() {
     }
 
     /**
      * Synchronize metadata
-     * 
+     *
      * @param scopeId
      * @param time
      * @return
@@ -70,15 +67,15 @@ public class Schema {
             return currentMetadata;
         }
 
-        logger.debug("Before entering updating metadata");
+        LOG.debug("Before entering updating metadata");
         synchronized (Schema.class) {
-            logger.debug("Entered updating metadata");
+            LOG.debug("Entered updating metadata");
             DatastoreClient datastoreClient = DatastoreClientFactory.getInstance();
             // Check existence of the data index
             IndexResponse dataIndexExistsResponse = datastoreClient.isIndexExists(new IndexRequest(dataIndexName));
             if (!dataIndexExistsResponse.isIndexExists()) {
                 datastoreClient.createIndex(dataIndexName, getMappingSchema(dataIndexName));
-                logger.info("Data index created: " + dataIndexName);
+                LOG.info("Data index created: " + dataIndexName);
             }
 
             boolean enableAllField = false;
@@ -90,7 +87,7 @@ public class Schema {
             IndexResponse registryIndexExistsResponse = datastoreClient.isIndexExists(new IndexRequest(registryIndexName));
             if (!registryIndexExistsResponse.isIndexExists()) {
                 datastoreClient.createIndex(registryIndexName, getMappingSchema(registryIndexName));
-                logger.info("Metadata index created: " + registryIndexExistsResponse);
+                LOG.info("Metadata index created: " + registryIndexExistsResponse);
 
                 datastoreClient.putMapping(new TypeDescriptor(registryIndexName, ChannelInfoSchema.CHANNEL_TYPE_NAME), ChannelInfoSchema.getChannelTypeSchema(enableAllField, enableSourceField));
                 datastoreClient.putMapping(new TypeDescriptor(registryIndexName, MetricInfoSchema.METRIC_TYPE_NAME), MetricInfoSchema.getMetricTypeSchema(enableAllField, enableSourceField));
@@ -98,7 +95,7 @@ public class Schema {
             }
 
             currentMetadata = new Metadata(dataIndexName, registryIndexName);
-            logger.debug("Leaving updating metadata");
+            LOG.debug("Leaving updating metadata");
         }
 
         // Current metadata can only increase the custom mappings
@@ -112,7 +109,7 @@ public class Schema {
 
     /**
      * Update metric mappings
-     * 
+     *
      * @param scopeId
      * @param time
      * @param metrics
@@ -138,7 +135,7 @@ public class Schema {
             metricsMapping = getNewMessageMappingsBuilder(diffs);
         }
 
-        logger.trace("Sending dynamic message mappings: " + metricsMapping);
+        LOG.trace("Sending dynamic message mappings: " + metricsMapping);
         DatastoreClientFactory.getInstance().putMapping(new TypeDescriptor(currentMetadata.getDataIndexName(), MessageSchema.MESSAGE_TYPE_NAME), metricsMapping);
     }
 
@@ -167,7 +164,8 @@ public class Schema {
             ObjectNode matricMappingPropertiesNode = SchemaUtil.getObjectNode(); // properties (inside metric name)
             ObjectNode valueMappingNode;
             if (metric.getType().equals(SchemaKeys.TYPE_STRING)) {
-                valueMappingNode = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
+                valueMappingNode = SchemaUtil
+                        .getField(new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
             } else if (metric.getType().equals(SchemaKeys.TYPE_DATE)) {
                 valueMappingNode = SchemaUtil.getField(
                         new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN) });
@@ -193,7 +191,7 @@ public class Schema {
             el = iter.next();
             if (!currentMetadata.getMessageMappingsCache().containsKey(el.getKey())) {
                 if (diffs == null) {
-                    diffs = new HashMap<String, Metric>(100);
+                    diffs = new HashMap<>(100);
                 }
                 currentMetadata.getMessageMappingsCache().put(el.getKey(), el.getValue());
                 diffs.put(el.getKey(), el.getValue());
@@ -206,13 +204,15 @@ public class Schema {
         String idxRefreshInterval = String.format("%ss", DatastoreSettings.getInstance().getLong(DatastoreSettingKey.INDEX_REFRESH_INTERVAL));
         Integer idxShardNumber = DatastoreSettings.getInstance().getInt(DatastoreSettingKey.INDEX_SHARD_NUMBER, 1);
         Integer idxReplicaNumber = DatastoreSettings.getInstance().getInt(DatastoreSettingKey.INDEX_REPLICA_NUMBER, 0);
+
         ObjectNode rootNode = SchemaUtil.getObjectNode();
         ObjectNode refreshIntervaleNode = SchemaUtil.getField(new KeyValueEntry[] {
                 new KeyValueEntry(SchemaKeys.KEY_REFRESH_INTERVAL, idxRefreshInterval),
                 new KeyValueEntry(SchemaKeys.KEY_SHARD_NUMBER, idxShardNumber),
                 new KeyValueEntry(SchemaKeys.KEY_REPLICA_NUMBER, idxReplicaNumber) });
+
         rootNode.set(SchemaKeys.KEY_INDEX, refreshIntervaleNode);
-        logger.info("Creating index for '{}' - refresh: '{}' - shards: '{}' replicas: '{}': ", new Object[] { idxName, idxRefreshInterval, idxShardNumber, idxReplicaNumber });
+        LOG.info("Creating index for '{}' - refresh: '{}' - shards: '{}' replicas: '{}': ", idxName, idxRefreshInterval, idxShardNumber, idxReplicaNumber);
         return rootNode;
     }
 

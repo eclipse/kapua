@@ -12,17 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.locator.guice;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.google.common.collect.ImmutableSet;
+import com.google.common.reflect.ClassPath;
+import com.google.common.reflect.ClassPath.ClassInfo;
+import com.google.inject.AbstractModule;
+import com.google.inject.Singleton;
+import com.google.inject.matcher.Matcher;
+import com.google.inject.matcher.Matchers;
+import com.google.inject.multibindings.Multibinder;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
@@ -37,14 +34,16 @@ import org.eclipse.kapua.service.KapuaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.reflect.ClassPath;
-import com.google.common.reflect.ClassPath.ClassInfo;
-import com.google.inject.AbstractModule;
-import com.google.inject.Singleton;
-import com.google.inject.matcher.Matcher;
-import com.google.inject.matcher.Matchers;
-import com.google.inject.multibindings.Multibinder;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class KapuaModule extends AbstractModule {
 
@@ -176,14 +175,13 @@ public class KapuaModule extends AbstractModule {
             // Bind service modules
             logger.info("Binding service modules ..");
             //cast is safe by design
-            multibinders.put(ServiceModule.class, (Multibinder<Class<?>>) Multibinder.newSetBinder(binder(), (Class<?>)ServiceModule.class));
+            multibinders.put(ServiceModule.class, (Multibinder<Class<?>>) Multibinder.newSetBinder(binder(), (Class<?>) ServiceModule.class));
             for (Class<?> clazz : providers) {
                 if (ServiceModule.class.isAssignableFrom(clazz)) {
-                    @SuppressWarnings("rawtypes")
                     ComponentResolver resolver = ComponentResolver.newInstance(ServiceModule.class, clazz);
                     //cast is safe by design
                     if (resolver.getProvidedClass().isAssignableFrom(clazz)) {
-                        logger.info("Assignable from {}", new Object[]{resolver.getProvidedClass(), clazz});
+                        logger.info("Assignable from {}", resolver.getProvidedClass(), clazz);
                         multibinders.get(resolver.getProvidedClass()).addBinding().to(resolver.getImplementationClass());
                     }
                     continue;

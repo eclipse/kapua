@@ -124,7 +124,7 @@ public class MetricsServiceImpl implements MetricsService {
      * @return
      */
     private String getMetricName(String module, String component, String... metricsName) {
-        return MessageFormat.format(METRICS_NAME_FORMAT, new Object[] { module, component, convertToDotNotation(metricsName) });
+        return MessageFormat.format(METRICS_NAME_FORMAT, module, component, convertToDotNotation(metricsName));
     }
 
     /**

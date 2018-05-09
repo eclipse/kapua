@@ -12,10 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -50,9 +46,12 @@ import org.eclipse.kapua.service.datastore.model.query.SortField;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
 import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Channel info registry implementation
@@ -217,12 +216,11 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
             lastPublishedMessageTimestamp = messageList.getFirstItem().getTimestamp();
         } else if (messageList.isEmpty()) {
             // this condition could happens due to the ttl of the messages (so if it happens, it does not necessarily mean there has been an error!)
-            LOG.warn("Cannot find last timestamp for the specified client id '{}' - account '{}'", new Object[] { channelInfo.getScopeId(), channelInfo.getClientId() });
+            LOG.warn("Cannot find last timestamp for the specified client id '{}' - account '{}'", channelInfo.getScopeId(), channelInfo.getClientId());
         } else {
             // this condition shouldn't never happens since the query has a limit 1
             // if happens it means than an elasticsearch internal error happens and/or our driver didn't set it correctly!
-            LOG.error("Cannot find last timestamp for the specified client id '{}' - account '{}'. More than one result returned by the query!",
-                    new Object[] { channelInfo.getScopeId(), channelInfo.getClientId() });
+            LOG.error("Cannot find last timestamp for the specified client id '{}' - account '{}'. More than one result returned by the query!", channelInfo.getScopeId(), channelInfo.getClientId());
         }
 
         channelInfo.setLastMessageId(lastPublishedMessageId);

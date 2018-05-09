@@ -30,7 +30,7 @@ import java.util.Base64;
  */
 public class ErrorMessageListener extends AbstractListener {
 
-    private static final Logger logger = LoggerFactory.getLogger(ErrorMessageListener.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ErrorMessageListener.class);
 
     private static final String NO_EXCEPTION_FOUND_MESSAGE = "NO EXCEPTION FOUND!";
 
@@ -84,7 +84,7 @@ public class ErrorMessageListener extends AbstractListener {
         // looking at the property filled by the KapuaCamelFilter#bridgeError)
         String encodedException = exchange.getIn().getHeader(MessageConstants.HEADER_KAPUA_PROCESSING_EXCEPTION, String.class);
         if (encodedException != null) {
-            t = (Throwable) SerializationUtils.deserialize(Base64.getDecoder().decode(exchange.getIn().getHeader(MessageConstants.HEADER_KAPUA_PROCESSING_EXCEPTION, String.class)));
+            t = SerializationUtils.deserialize(Base64.getDecoder().decode(exchange.getIn().getHeader(MessageConstants.HEADER_KAPUA_PROCESSING_EXCEPTION, String.class)));
         } else {
             // otherwise fallback to the exchange property or the exchange exception
             t = ((Throwable) exchange.getProperty(CamelConstants.JMS_EXCHANGE_FAILURE_EXCEPTION));
@@ -92,21 +92,19 @@ public class ErrorMessageListener extends AbstractListener {
                 t = exchange.getException();
             }
         }
-        logger.warn("Processing error message for service {}... Message type {} - Endpoint {} - Error message {}",
-                new Object[] {
-                        serviceName,
-                        (message != null ? message.getClass().getName() : null),
-                        exchange.getProperty(CamelConstants.JMS_EXCHANGE_FAILURE_ENDPOINT),
-                        t != null ? t.getMessage() : NO_EXCEPTION_FOUND_MESSAGE });
-        logger.warn("Exception: ", t);
+        LOG.warn("Processing error message for service {}... Message type {} - Endpoint {} - Error message {}",
+                serviceName,
+                (message != null ? message.getClass().getName() : null),
+                exchange.getProperty(CamelConstants.JMS_EXCHANGE_FAILURE_ENDPOINT),
+                t != null ? t.getMessage() : NO_EXCEPTION_FOUND_MESSAGE);
+        LOG.warn("Exception: ", t);
     }
 
     private void logUnmatched(Exchange exchange, Object message, String serviceName) {
-        logger.warn("Processing unmatched message for service {}... Message type {} - Endpoint {}",
-                new Object[] {
-                        serviceName,
-                        (message != null ? message.getClass().getName() : null),
-                        exchange.getProperty(CamelConstants.JMS_EXCHANGE_FAILURE_ENDPOINT) });
+        LOG.warn("Processing unmatched message for service {}... Message type {} - Endpoint {}",
+                serviceName,
+                (message != null ? message.getClass().getName() : null),
+                exchange.getProperty(CamelConstants.JMS_EXCHANGE_FAILURE_ENDPOINT));
     }
 
 }

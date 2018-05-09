@@ -216,13 +216,13 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
             lastPublishedMessageTimestamp = messageList.getFirstItem().getTimestamp();
         } else if (messageList.isEmpty()) {
             // this condition could happens due to the ttl of the messages (so if it happens, it does not necessarily mean there has been an error!)
-            LOG.warn("Cannot find last timestamp for the specified client id '{}' - account '{}'", new Object[] { metricInfo.getClientId(), metricInfo.getScopeId() });
+            LOG.warn("Cannot find last timestamp for the specified client id '{}' - account '{}'", metricInfo.getClientId(), metricInfo.getScopeId());
         } else {
             // this condition shouldn't never happens since the query has a limit 1
             // if happens it means than an elasticsearch internal error happens and/or our driver didn't set it correctly!
-            LOG.error("Cannot find last timestamp for the specified client id '{}' - account '{}'. More than one result returned by the query!",
-                    new Object[] { metricInfo.getClientId(), metricInfo.getScopeId() });
+            LOG.error("Cannot find last timestamp for the specified client id '{}' - account '{}'. More than one result returned by the query!", metricInfo.getClientId(), metricInfo.getScopeId());
         }
+
         metricInfo.setLastMessageId(lastPublishedMessageId);
         metricInfo.setLastMessageOn(lastPublishedMessageTimestamp);
     }

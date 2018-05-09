@@ -11,13 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.util.xml;
 
-import java.lang.reflect.Constructor;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
-
-import javax.xml.bind.JAXBException;
-
 import org.junit.Assert;
 import org.junit.Test;
+
+import javax.xml.bind.JAXBException;
+import java.lang.reflect.Constructor;
 
 public class XmlUtilTest extends Assert {
 
@@ -32,14 +30,13 @@ public class XmlUtilTest extends Assert {
     public void testSetContextProvider() {
         JAXBContextProvider provider = null;
         XmlUtil.setContextProvider(provider);
-
     }
 
     @Test
     public void testMarshal() throws Exception {
         Object[] jaxbElements = new Object[] { 123, "string", "s" };
         int sizeOfjaxbElements = jaxbElements.length;
-        Object[] jaxbElementsFalse = new Object[] {null};
+        Object[] jaxbElementsFalse = new Object[] { null };
         int sizeOfjaxbElementsFalse = jaxbElementsFalse.length;
         // JAXBException
         for (int i = 0; i < sizeOfjaxbElements; i++) {
@@ -63,7 +60,7 @@ public class XmlUtilTest extends Assert {
 
     @Test
     public void testUnmarshal() throws JAXBException {
-        String[] listOfStrings = new String[] {"string",null};
+        String[] listOfStrings = new String[] { "string", null };
         int sizeOfList = listOfStrings.length;
         for (int i = 0; i < sizeOfList; i++) {
             try {

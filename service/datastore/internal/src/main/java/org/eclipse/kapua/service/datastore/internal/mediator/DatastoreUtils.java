@@ -12,6 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.mediator;
 
+import com.google.common.hash.Hashing;
+import org.eclipse.kapua.commons.util.KapuaDateUtils;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.time.Instant;
@@ -30,13 +36,6 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 
-import org.eclipse.kapua.commons.util.KapuaDateUtils;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.hash.Hashing;
-
 /**
  * Datastore utility class
  *
@@ -44,7 +43,7 @@ import com.google.common.hash.Hashing;
  */
 public class DatastoreUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(DatastoreUtils.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DatastoreUtils.class);
 
     private DatastoreUtils() {
     }
@@ -85,7 +84,7 @@ public class DatastoreUtils {
 
     /**
      * Return the hash code for the provided components (typically components are a sequence of account - client id - channel ...)
-     * 
+     *
      * @param components
      * @return
      */
@@ -110,7 +109,7 @@ public class DatastoreUtils {
             DatastoreUtils.checkIdxAliasName(name);
             normName = name;
         } catch (IllegalArgumentException exc) {
-            logger.trace(exc.getMessage(), exc);
+            LOG.trace(exc.getMessage(), exc);
             normName = name.toLowerCase().replace(ILLEGAL_CHARS, "_");
             DatastoreUtils.checkIdxAliasName(normName);
         }
@@ -130,7 +129,7 @@ public class DatastoreUtils {
         if (newName.contains(".")) {
             newName = newName.replace(String.valueOf(SPECIAL_DOLLAR), SPECIAL_DOLLAR_ESC);
             newName = newName.replace(String.valueOf(SPECIAL_DOT), SPECIAL_DOT_ESC);
-            logger.trace(String.format("Metric %s contains a special char '%s' that will be replaced with '%s'", name, String.valueOf(SPECIAL_DOT), SPECIAL_DOT_ESC));
+            LOG.trace(String.format("Metric %s contains a special char '%s' that will be replaced with '%s'", name, String.valueOf(SPECIAL_DOT), SPECIAL_DOT_ESC));
         }
         return newName;
     }
@@ -257,7 +256,7 @@ public class DatastoreUtils {
 
     /**
      * Return the list of the data indexes between start and end instant by scope id.
-     * 
+     *
      * @param scopeId
      * @param start
      * @param end
@@ -283,7 +282,7 @@ public class DatastoreUtils {
         List<String> indexes = new ArrayList<>();
         while (startInstant.isBefore(endInstant) || areInThesameWeek(startInstant, endInstant)) {
             String index = DatastoreUtils.getDataIndexName(scopeId, startInstant.toEpochMilli());
-            logger.info("Adding index: {}", index);
+            LOG.info("Adding index: {}", index);
             indexes.add(index);
             startInstant = startInstant.plus(7, ChronoUnit.DAYS);
         }
@@ -298,21 +297,21 @@ public class DatastoreUtils {
                         break;
                     }
                     String indexToAdd = DatastoreUtils.getDataIndexName(scopeId, KapuaDateUtils.parseDate(dateToCheck).toInstant().toEpochMilli());
-                    logger.info("Index to add {} - date {}", new Object[] { indexToAdd, dateToCheck });
+                    LOG.info("Index to add {} - date {}", indexToAdd, dateToCheck);
                     if (!indexes.contains(indexToAdd)) {
-                        logger.info("Adding index: {}", indexToAdd);
+                        LOG.info("Adding index: {}", indexToAdd);
                         indexes.add(indexToAdd);
-                        logger.debug(">>> Add index {} - date {}", new Object[] { indexToAdd, dateToCheck });
+                        LOG.debug(">>> Add index {} - date {}", indexToAdd, dateToCheck);
                     } else {
-                        logger.debug("Index {} already present in the list", indexToAdd);
+                        LOG.debug("Index {} already present in the list", indexToAdd);
                     }
                 } catch (ParseException e) {
-                    logger.error("Cannot evaluate week of the year for the date", e);
+                    LOG.error("Cannot evaluate week of the year for the date", e);
                     throw new DatastoreException(DatastoreErrorCodes.INTERNAL_ERROR, e);
                 }
             }
         }
-        return indexes.toArray(new String[indexes.size()]);
+        return indexes.toArray(new String[0]);
     }
 
     public static List<String> filterIndexesBeforeDate(KapuaId scopeId, String[] indexes, Instant startInstant) {
@@ -320,7 +319,7 @@ public class DatastoreUtils {
         List<String> filteredIndexes = new ArrayList<>();
         String lastIndexToInclude = DatastoreUtils.getDataIndexName(scopeId, getLastDayOfTheWeek(startInstant).toEpochMilli());
         for (String index : indexes) {
-            if (lastIndexToInclude.compareTo(index)>=0) {
+            if (lastIndexToInclude.compareTo(index) >= 0) {
                 filteredIndexes.add(index);
             }
         }
