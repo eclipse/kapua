@@ -96,7 +96,7 @@ public class JobTabStepsToolbar extends EntityCRUDToolbar<GwtJobStep> {
             });
         } else {
             if (addEntityButton != null) {
-                addEntityButton.setEnabled(false);
+                addEntityButton.setEnabled(currentSession.hasPermission(JobSessionPermission.write()));
             }
             if (editEntityButton != null) {
                 editEntityButton.setEnabled(false);

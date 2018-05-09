@@ -145,7 +145,7 @@ public class JobTabStepsGrid extends EntityGrid<GwtJobStep> {
                     JobTabStepsGrid.this.toolbar.getAddEntityButton().setEnabled(currentSession.hasPermission(JobSessionPermission.write()));
                     if (selectedItem != null) {
                         JobTabStepsGrid.this.toolbar.getEditEntityButton().setEnabled(currentSession.hasPermission(JobSessionPermission.write()));
-                        JobTabStepsGrid.this.toolbar.getDeleteEntityButton().setEnabled(currentSession.hasPermission(JobSessionPermission.write()));
+                        JobTabStepsGrid.this.toolbar.getDeleteEntityButton().setEnabled(currentSession.hasPermission(JobSessionPermission.delete()));
                     } else {
                         JobTabStepsGrid.this.toolbar.getEditEntityButton().setEnabled(false);
                         JobTabStepsGrid.this.toolbar.getDeleteEntityButton().setEnabled(false);
