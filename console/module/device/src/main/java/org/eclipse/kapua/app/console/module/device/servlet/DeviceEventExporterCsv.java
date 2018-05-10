@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -68,6 +68,11 @@ public class DeviceEventExporterCsv extends DeviceEventExporter {
         }
 
         dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
+
+        response.setContentType("text/csv");
+        response.setCharacterEncoding("UTF-8");
+        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(accountName, "UTF-8") + "_device_events.csv");
+        response.setHeader("Cache-Control", "no-transform, max-age=0");
 
         OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream(), Charset.forName("UTF-8"));
         writer = new CSVWriter(osw);
@@ -171,11 +176,6 @@ public class DeviceEventExporterCsv extends DeviceEventExporter {
     @Override
     public void close()
             throws ServletException, IOException {
-        response.setContentType("text/csv");
-        response.setCharacterEncoding("UTF-8");
-        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(accountName, "UTF-8") + "_devices.csv");
-        response.setHeader("Cache-Control", "no-transform, max-age=0");
-
         writer.flush();
 
         writer.close();
