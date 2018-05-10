@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,6 +18,7 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.StatusCodeException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
@@ -47,7 +48,14 @@ public class FailureHandler {
 
             case UNAUTHENTICATED:
                 ConsoleInfo.display(CMSGS.loggedOut(), caught.getLocalizedMessage());
-                Window.Location.reload();
+                Timer timer = new Timer() {
+
+                    @Override
+                    public void run() {
+                        Window.Location.reload();
+                    }
+                };
+                timer.schedule(5000);
                 break;
 
             default:
