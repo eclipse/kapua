@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -112,8 +112,9 @@ public class UserEditDialog extends UserAddDialog {
     }
 
     private void populateEditDialog(GwtUser gwtUser) {
-        username.setValue(gwtUser.getUsername());
-        username.disable();
+        infoFieldSet.remove(username);
+        usernameLabel.setVisible(true);
+        usernameLabel.setValue(gwtUser.getUsername());
         if (password != null) {
             password.setVisible(false);
             password.setAllowBlank(true);
