@@ -11,12 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.account.client.toolbar;
 
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.account.client.messages.ConsoleAccountMessages;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
@@ -40,7 +42,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
     protected static final ConsoleAccountMessages MSGS = GWT.create(ConsoleAccountMessages.class);
     protected static final GwtAccountServiceAsync GWT_ACCOUNT_SERVICE = GWT.create(GwtAccountService.class);
 
-    private static final int LABEL_WIDTH_FORM = 190;
+    private static final int LABEL_WIDTH_FORM = 150;
 
     protected final FieldSet fieldSet = new FieldSet();
 
@@ -69,7 +71,15 @@ public class AccountAddDialog extends EntityAddEditDialog {
 
     public AccountAddDialog(GwtSession currentSession) {
         super(currentSession);
-        DialogUtils.resizeDialog(this, 600, 560);
+        DialogUtils.resizeDialog(this, 600, 550);
+    }
+
+    @Override
+    protected void onRender(Element parent, int pos) {
+        super.onRender(parent, pos);
+        bodyPanel.setAutoHeight(true);
+        setClosable(false);
+        setScrollMode(Scroll.AUTO);    
     }
 
     @Override
@@ -92,6 +102,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
         parentAccountNameLabel.setName("parentAccount");
         parentAccountNameLabel.setFieldLabel(MSGS.accountFormParentAccount());
         parentAccountNameLabel.setLabelSeparator(":");
+        parentAccountNameLabel.setStyleAttribute("word-wrap", "break-word");
         parentAccountNameLabel.setValue(currentSession.getSelectedAccountName());
         fieldSet.add(parentAccountNameLabel, accountFieldsetFormData);
 
@@ -101,7 +112,8 @@ public class AccountAddDialog extends EntityAddEditDialog {
         accountNameLabel.setFieldLabel(MSGS.accountFormName());
         accountNameLabel.setLabelSeparator(":");
         accountNameLabel.setVisible(false);
-        fieldSet.add(accountNameLabel);
+        accountNameLabel.setStyleAttribute("word-wrap", "break-word");
+        fieldSet.add(accountNameLabel, accountFieldsetFormData);
 
         accountNameField.setAllowBlank(false);
         accountNameField.setMaxLength(255);
@@ -165,6 +177,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
         organizationSubFieldSet.setBorders(false);
         organizationSubFieldSet.setCollapsible(true);
         organizationSubFieldSet.setWidth(540);
+        organizationSubFieldSet.setHeight(230);
 
         FormLayout organizationSubLayout = new FormLayout();
         organizationSubLayout.setLabelWidth(LABEL_WIDTH_FORM - 11);

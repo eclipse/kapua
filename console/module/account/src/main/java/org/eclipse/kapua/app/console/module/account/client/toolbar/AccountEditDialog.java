@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.account.client.toolbar;
 
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
@@ -27,13 +28,15 @@ public class AccountEditDialog extends AccountAddDialog {
     public AccountEditDialog(GwtSession currentSession, GwtAccount selectedAccount) {
         super(currentSession);
         this.selectedAccount = selectedAccount;
-        DialogUtils.resizeDialog(this, 600, 560);
+        DialogUtils.resizeDialog(this, 600, 550);
     }
 
     @Override
     protected void onRender(Element parent, int pos) {
         super.onRender(parent, pos);
+        bodyPanel.setAutoHeight(true);
         setClosable(false);
+        setScrollMode(Scroll.AUTO);
 
         fieldSet.remove(accountNameField);
         accountNameLabel.setVisible(true);
