@@ -194,7 +194,7 @@ public class TopicsTable extends LayoutContainer {
     }
 
     private void updateTimestamps(List<ModelData> topics) {
-        dataService.updateTimestamps(currentSession.getSelectedAccountId(), topics, new AsyncCallback<List<GwtTopic>>() {
+        dataService.updateTopicTimestamps(currentSession.getSelectedAccountId(), topics, new AsyncCallback<List<GwtTopic>>() {
             @Override
             public void onFailure(Throwable caught) {
                 FailureHandler.handle(caught);

@@ -47,7 +47,9 @@ public class KapuaGwtDataModelConverter {
      * @return
      */
     public static GwtDatastoreDevice convertToDatastoreDevice(ClientInfo client) {
-        return new GwtDatastoreDevice(client.getClientId(), client.getLastMessageOn());
+        GwtDatastoreDevice device = new GwtDatastoreDevice(client.getClientId(), client.getLastMessageOn());
+        device.setClientId(client.getClientId());
+        return device;
     }
 
     /**

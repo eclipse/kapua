@@ -61,4 +61,24 @@ public class GwtDatastoreDevice extends KapuaBaseModel implements Serializable {
     public String getTimestampFormatted() {
         return (String) get("timestampFormatted");
     }
+
+    public void setTimestamp(Date timestamp) {
+        set("timestamp", timestamp);
+    }
+
+    public String getClientId() {
+        return get("clientId");
+    }
+
+    public void setClientId(String clientId) {
+        set("clientId", clientId);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof GwtDatastoreDevice) {
+            return getClientId().equals(((GwtDatastoreDevice) obj).getClientId());
+        }
+        return false;
+    }
 }
