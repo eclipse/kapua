@@ -45,7 +45,10 @@ public interface GwtDataService extends RemoteService {
      */
     List<GwtTopic> findTopicsTree(String scopeId) throws GwtKapuaException;
 
-    List<GwtTopic> updateTimestamps(String scopeId, List<ModelData> topics)
+    List<GwtTopic> updateTopicTimestamps(String gwtScopeId, List<ModelData> topics)
+            throws GwtKapuaException;
+
+    List<GwtDatastoreDevice> updateDeviceTimestamps(String gwtScopeId, List<GwtDatastoreDevice> device)
             throws GwtKapuaException;
 
     PagingLoadResult<GwtTopic> findTopicsList(PagingLoadConfig config, GwtDataChannelInfoQuery query) throws GwtKapuaException;
@@ -56,7 +59,7 @@ public interface GwtDataService extends RemoteService {
      * @return
      * @throws GwtKapuaException
      */
-    ListLoadResult<GwtDatastoreDevice> findDevices(LoadConfig config, String scopeId) throws GwtKapuaException;
+    PagingLoadResult<GwtDatastoreDevice> findDevices(PagingLoadConfig config, String scopeId, String filter) throws GwtKapuaException;
 
     ListLoadResult<GwtDatastoreAsset> findAssets(LoadConfig config, String scopeId, GwtDatastoreDevice selectedDevice) throws GwtKapuaException;
 

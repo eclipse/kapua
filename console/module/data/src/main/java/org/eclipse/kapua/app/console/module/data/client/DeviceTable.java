@@ -11,10 +11,25 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.data.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.module.api.client.util.SwappableListStore;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.data.client.messages.ConsoleDataMessages;
+import org.eclipse.kapua.app.console.module.data.shared.model.GwtDatastoreDevice;
+import org.eclipse.kapua.app.console.module.data.shared.service.GwtDataService;
+import org.eclipse.kapua.app.console.module.data.shared.service.GwtDataServiceAsync;
+
 import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.data.BaseListLoader;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.extjs.gxt.ui.client.data.LoadConfig;
+import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.data.BasePagingLoader;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
@@ -24,40 +39,31 @@ import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
-import org.eclipse.kapua.app.console.module.api.client.util.SwappableListStore;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
-import org.eclipse.kapua.app.console.module.data.client.messages.ConsoleDataMessages;
-import org.eclipse.kapua.app.console.module.data.shared.model.GwtDatastoreDevice;
-import org.eclipse.kapua.app.console.module.data.shared.service.GwtDataService;
-import org.eclipse.kapua.app.console.module.data.shared.service.GwtDataServiceAsync;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DeviceTable extends LayoutContainer {
 
-    // private static final int DEVICE_PAGE_SIZE = 50;
-    private static final ConsoleDataMessages MSGS = GWT.create(ConsoleDataMessages.class);
+    private static final int DEVICE_PAGE_SIZE = 50;
+    private static final ConsoleDataMessages DATA_MSGS = GWT.create(ConsoleDataMessages.class);
 
     private static GwtDataServiceAsync dataService = GWT.create(GwtDataService.class);
 
-    private BaseListLoader<ListLoadResult<GwtDatastoreDevice>> loader;
+    private BasePagingLoader<PagingLoadResult<GwtDatastoreDevice>> loader;
     private GwtSession currentSession;
     private Grid<GwtDatastoreDevice> deviceGrid;
     private ContentPanel tableContainer;
     private List<SelectionChangedListener<GwtDatastoreDevice>> listeners = new ArrayList<SelectionChangedListener<GwtDatastoreDevice>>();
-    // private PagingToolBar pagingToolBar;
+    private PagingToolBar pagingToolBar;
+    private TextField<String> filterField;
 
     public DeviceTable(GwtSession currentSession) {
         this.currentSession = currentSession;
@@ -85,7 +91,7 @@ public class DeviceTable extends LayoutContainer {
     private void initDeviceTable() {
         initDeviceGrid();
 
-        Button refreshButton = new Button(MSGS.refresh(), new KapuaIcon(IconSet.REFRESH), new SelectionListener<ButtonEvent>() {
+        Button refreshButton = new Button(DATA_MSGS.refresh(), new KapuaIcon(IconSet.REFRESH), new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -97,33 +103,71 @@ public class DeviceTable extends LayoutContainer {
         tableContainer.setBorders(false);
         tableContainer.setBodyBorder(true);
         tableContainer.setHeaderVisible(true);
-        tableContainer.setHeading(MSGS.deviceInfoTableHeader());
+        tableContainer.setHeading(DATA_MSGS.deviceInfoTableHeader());
         tableContainer.setScrollMode(Scroll.AUTOY);
         tableContainer.setLayout(new FitLayout());
         tableContainer.add(deviceGrid);
 
+        filterField = new TextField<String>();
+        filterField.setEmptyText(DATA_MSGS.deviceInfoTableFilter());
         ToolBar tb = new ToolBar();
+        tb.add(filterField);
         tb.add(refreshButton);
         tableContainer.setTopComponent(tb);
+
+        pagingToolBar = new PagingToolBar(DEVICE_PAGE_SIZE);
+        pagingToolBar.bind(loader);
+        pagingToolBar.enable();
+
+        tableContainer.setBottomComponent(pagingToolBar);
     }
 
     private void initDeviceGrid() {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
-        ColumnConfig column = new ColumnConfig("friendlyDevice", MSGS.deviceInfoTableTopicHeader(), 150);
+        ColumnConfig column = new ColumnConfig("friendlyDevice", DATA_MSGS.deviceInfoTableTopicHeader(), 150);
         configs.add(column);
 
-        column = new ColumnConfig("timestamp", MSGS.deviceInfoTableLastPostedHeader(), 150);
+        column = new ColumnConfig("timestamp", DATA_MSGS.deviceInfoTableLastPostedHeader(), 150);
+        column.setRenderer(new DeviceTimestampCellRenderer(currentSession));
         configs.add(column);
-        RpcProxy<ListLoadResult<GwtDatastoreDevice>> proxy = new RpcProxy<ListLoadResult<GwtDatastoreDevice>>() {
+        RpcProxy<PagingLoadResult<GwtDatastoreDevice>> proxy = new RpcProxy<PagingLoadResult<GwtDatastoreDevice>>() {
 
             @Override
-            protected void load(Object loadConfig,
-                    AsyncCallback<ListLoadResult<GwtDatastoreDevice>> callback) {
-                dataService.findDevices((LoadConfig) loadConfig, currentSession.getSelectedAccountId(), callback);
+            protected void load(Object loadConfig, final AsyncCallback<PagingLoadResult<GwtDatastoreDevice>> callback) {
+                dataService.findDevices((PagingLoadConfig) loadConfig, currentSession.getSelectedAccountId(), filterField.getValue(), new AsyncCallback<PagingLoadResult<GwtDatastoreDevice>>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        FailureHandler.handle(caught);
+                        deviceGrid.unmask();
+                    }
+
+                    @Override
+                    public void onSuccess(PagingLoadResult<GwtDatastoreDevice> result) {
+                        callback.onSuccess(result);
+                        dataService.updateDeviceTimestamps(currentSession.getSelectedAccountId(), result.getData(), new AsyncCallback<List<GwtDatastoreDevice>>() {
+                            @Override
+                            public void onFailure(Throwable caught) {
+                                FailureHandler.handle(caught);
+                                deviceGrid.unmask();
+                            }
+
+                            @Override
+                            public void onSuccess(List<GwtDatastoreDevice> result) {
+                                for (GwtDatastoreDevice device : result) {
+                                    deviceGrid.getStore().findModel(device).setTimestamp(device.getTimestamp());
+                                }
+                                deviceGrid.getView().refresh(false);
+                            }
+                        });
+                    }
+                });
             }
         };
 
-        loader = new BaseListLoader<ListLoadResult<GwtDatastoreDevice>>(proxy);
+        loader = new BasePagingLoader<PagingLoadResult<GwtDatastoreDevice>>(proxy);
+        loader.setRemoteSort(true);
+        loader.setSortDir(SortDir.ASC);
+        loader.setSortField("friendlyDevice");
         //
         SwappableListStore<GwtDatastoreDevice> store = new SwappableListStore<GwtDatastoreDevice>(loader);
         deviceGrid = new Grid<GwtDatastoreDevice>(store, new ColumnModel(configs));
@@ -133,12 +177,11 @@ public class DeviceTable extends LayoutContainer {
         deviceGrid.setStripeRows(true);
         deviceGrid.getView().setAutoFill(true);
         deviceGrid.getView().setForceFit(true);
-        deviceGrid.getView().setEmptyText(MSGS.deviceTableEmptyText());
+        deviceGrid.getView().setEmptyText(DATA_MSGS.deviceTableEmptyText());
         deviceGrid.disableTextSelection(false);
         for (SelectionChangedListener<GwtDatastoreDevice> listener : listeners) {
             deviceGrid.getSelectionModel().addSelectionChangedListener(listener);
         }
-
         deviceGrid.addListener(Events.Render, new Listener<ComponentEvent>() {
 
             @Override
@@ -146,10 +189,6 @@ public class DeviceTable extends LayoutContainer {
                 loader.load();
             }
         });
-        // pagingToolBar = new PagingToolBar(DEVICE_PAGE_SIZE);
-        // pagingToolBar.bind(loader);
-        // pagingToolBar.enable();
-
     }
 
     public void addSelectionChangedListener(SelectionChangedListener<GwtDatastoreDevice> listener) {
