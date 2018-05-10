@@ -48,7 +48,9 @@ public class UserAddDialog extends EntityAddEditDialog {
 
     protected static final ConsoleUserMessages USER_MSGS = GWT.create(ConsoleUserMessages.class);
 
+    protected FieldSet infoFieldSet;
     protected KapuaTextField<String> username;
+    protected LabelField usernameLabel;
     protected KapuaTextField<String> password;
     protected KapuaTextField<String> confirmPassword;
     protected LabelField passwordTooltip;
@@ -89,7 +91,7 @@ public class UserAddDialog extends EntityAddEditDialog {
         //
         // User info tab
         //
-        FieldSet infoFieldSet = new FieldSet();
+        infoFieldSet = new FieldSet();
         infoFieldSet.setHeading(USER_MSGS.dialogAddFieldSet());
         infoFieldSet.setBorders(true);
         infoFieldSet.setStyleAttribute("margin", "0px 10px 0px 10px");
@@ -107,6 +109,12 @@ public class UserAddDialog extends EntityAddEditDialog {
         infoFieldSet.setStyleAttribute("background-color", "E8E8E8");
         statusFieldSet.setLayout(statusLayout);
         statusFieldSet.setStyleAttribute("background-color", "E8E8E8");
+
+        usernameLabel = new LabelField();
+        usernameLabel.setFieldLabel(USER_MSGS.dialogAddFieldUsername());
+        usernameLabel.setLabelSeparator(":");
+        usernameLabel.setVisible(false);
+        infoFieldSet.add(usernameLabel);
 
         username = new KapuaTextField<String>();
         username.setAllowBlank(false);

@@ -90,7 +90,9 @@ public class CredentialEditDialog extends CredentialAddDialog {
     @Override
     protected void onRender(Element parent, int pos) {
         super.onRender(parent, pos);
-        credentialType.disable();
+        credentialFormPanel.remove(credentialType);
+        credentialTypeLabel.setVisible(true);
+        credentialTypeLabel.setValue(selectedCredential.getCredentialType());
         password.setValidator(new PasswordUpdateFieldValidator(password));
         password.setFieldLabel(MSGS.dialogEditFieldNewPassword());
         password.setAllowBlank(true);
