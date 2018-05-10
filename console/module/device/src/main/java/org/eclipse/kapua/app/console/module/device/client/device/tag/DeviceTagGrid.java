@@ -75,7 +75,9 @@ public class DeviceTagGrid extends TagGrid {
 
     @Override
     protected DeviceTagToolbar getToolbar() {
-        deviceTagToolbar = new DeviceTagToolbar(currentSession);
+        if (deviceTagToolbar == null) {
+            deviceTagToolbar = new DeviceTagToolbar(currentSession);
+        }
         return deviceTagToolbar;
     }
 
