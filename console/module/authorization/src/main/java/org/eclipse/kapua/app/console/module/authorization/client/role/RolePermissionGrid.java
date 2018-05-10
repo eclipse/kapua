@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -31,7 +31,7 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRolePermission;
-import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.DomainSessionPermission;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.AccessInfoSessionPermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRoleService;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRoleServiceAsync;
 
@@ -133,11 +133,11 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
     @Override
     protected void selectionChangedEvent(GwtRolePermission selectedItem) {
         super.selectionChangedEvent(selectedItem);
-        rolePermissionToolBar.getAddEntityButton().setEnabled(currentSession.hasPermission(DomainSessionPermission.read()));
+        rolePermissionToolBar.getAddEntityButton().setEnabled(currentSession.hasPermission(AccessInfoSessionPermission.write()));
         if (selectedItem == null) {
             rolePermissionToolBar.getDeleteEntityButton().disable();
         } else {
-            rolePermissionToolBar.getDeleteEntityButton().enable();
+            rolePermissionToolBar.getDeleteEntityButton().setEnabled(currentSession.hasPermission(AccessInfoSessionPermission.delete()));;
         }
     }
 

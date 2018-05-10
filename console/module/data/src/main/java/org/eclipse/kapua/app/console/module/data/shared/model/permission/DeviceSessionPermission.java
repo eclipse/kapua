@@ -15,29 +15,25 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionP
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionAction;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSessionPermissionScope;
 
-public class DeviceManagementSessionPermission extends GwtSessionPermission {
+public class DeviceSessionPermission extends GwtSessionPermission {
 
-    protected DeviceManagementSessionPermission() {
+    protected DeviceSessionPermission() {
         super();
     }
 
-    private DeviceManagementSessionPermission(GwtSessionPermissionAction action) {
-        super("device_management", action, GwtSessionPermissionScope.SELF);
+    private DeviceSessionPermission(GwtSessionPermissionAction action) {
+        super("device", action, GwtSessionPermissionScope.SELF);
     }
 
-    public static DeviceManagementSessionPermission read() {
-        return new DeviceManagementSessionPermission(GwtSessionPermissionAction.read);
+    public static DeviceSessionPermission read() {
+        return new DeviceSessionPermission(GwtSessionPermissionAction.read);
     }
 
-    public static DeviceManagementSessionPermission write() {
-        return new DeviceManagementSessionPermission(GwtSessionPermissionAction.write);
+    public static DeviceSessionPermission write() {
+        return new DeviceSessionPermission(GwtSessionPermissionAction.write);
     }
 
-    public static DeviceManagementSessionPermission delete() {
-        return new DeviceManagementSessionPermission(GwtSessionPermissionAction.delete);
-    }
-
-    public static DeviceManagementSessionPermission execute() {
-        return new DeviceManagementSessionPermission(GwtSessionPermissionAction.execute);
+    public static DeviceSessionPermission delete() {
+        return new DeviceSessionPermission(GwtSessionPermissionAction.delete);
     }
 }

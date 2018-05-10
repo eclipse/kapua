@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,6 +19,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolb
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJob;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStep;
+import org.eclipse.kapua.app.console.module.job.shared.model.permission.JobSessionPermission;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobService;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobServiceAsync;
 
@@ -83,7 +84,7 @@ public class JobTabStepsToolbar extends EntityCRUDToolbar<GwtJobStep> {
                 @Override
                 public void onSuccess(GwtJob result) {
                     if (addEntityButton != null) {
-                        addEntityButton.setEnabled(result.getJobXmlDefinition() == null);
+                        addEntityButton.setEnabled(result.getJobXmlDefinition() == null && currentSession.hasPermission(JobSessionPermission.write()));
                     }
                     if (editEntityButton != null) {
                         editEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null && result.getJobXmlDefinition() == null);
@@ -95,7 +96,7 @@ public class JobTabStepsToolbar extends EntityCRUDToolbar<GwtJobStep> {
             });
         } else {
             if (addEntityButton != null) {
-                addEntityButton.setEnabled(false);
+                addEntityButton.setEnabled(currentSession.hasPermission(JobSessionPermission.write()));
             }
             if (editEntityButton != null) {
                 editEntityButton.setEnabled(false);

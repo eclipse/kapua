@@ -19,6 +19,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authentication.client.messages.ConsoleCredentialMessages;
 import org.eclipse.kapua.app.console.module.authentication.client.tabs.credentials.CredentialGrid;
+import org.eclipse.kapua.app.console.module.authentication.shared.model.permission.CredentialSessionPermission;
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 
 public class UserTabItemCredentials extends KapuaTabItem<GwtUser> {
@@ -61,7 +62,7 @@ public class UserTabItemCredentials extends KapuaTabItem<GwtUser> {
     @Override
     protected void doRefresh() {
         credentialsGrid.refresh();
-        credentialsGrid.getToolbar().getAddEntityButton().setEnabled(selectedEntity != null);
+        credentialsGrid.getToolbar().getAddEntityButton().setEnabled(selectedEntity != null && currentSession.hasPermission(CredentialSessionPermission.write()));
         credentialsGrid.getToolbar().getRefreshEntityButton().setEnabled(selectedEntity != null);
     }
 

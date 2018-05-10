@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,6 +15,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.Abstra
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.device.client.device.DeviceView;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
+import org.eclipse.kapua.app.console.module.device.shared.model.permission.DeviceManagementSessionPermission;
 
 public class DeviceTabConfigurationDescriptor extends AbstractEntityTabDescriptor<GwtDevice, DeviceTabConfiguration, DeviceView> {
 
@@ -35,6 +36,6 @@ public class DeviceTabConfigurationDescriptor extends AbstractEntityTabDescripto
 
     @Override
     public Boolean isEnabled(GwtSession currentSession) {
-        return true;
+        return currentSession.hasPermission(DeviceManagementSessionPermission.read());
     }
 }
