@@ -75,6 +75,8 @@ public class GwtKapuaAuthenticationModelConverter {
         String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? CredentialPredicates.CREDENTIAL_TYPE : loadConfig.getSortField();
         if (sortField.equals("expirationDateFormatted")) {
             sortField = CredentialPredicates.EXPIRATION_DATE;
+        } else if (sortField.equals("modifiedOnFormatted")) {
+            sortField = CredentialPredicates.MODIFIED_ON;
         }
         SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
         FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);

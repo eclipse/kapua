@@ -64,6 +64,8 @@ public class GwtKapuaEndpointModelConverter {
 
         if (sortField.equals("schema")) {
             sortField = EndpointInfoPredicates.SCHEMA;
+        } else if (sortField.equals("createdOnFormatted")) {
+            sortField = EndpointInfoPredicates.CREATED_ON;
         }
 
         SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;

@@ -131,6 +131,8 @@ public class GwtKapuaJobModelConverter {
         String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? JobPredicates.NAME : loadConfig.getSortField();
         if (sortField.equals("jobName")) {
             sortField = JobPredicates.NAME;
+        } else if (sortField.equals("createdOnFormatted")) {
+            sortField = JobPredicates.CREATED_ON;
         }
         SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
         FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);

@@ -93,6 +93,8 @@ public class GwtKapuaAuthorizationModelConverter {
         String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? GroupPredicates.NAME : loadConfig.getSortField();
         if (sortField.equals("groupName")) {
             sortField = GroupPredicates.NAME;
+        } else if (sortField.equals("createdOnFormatted")) {
+            sortField = GroupPredicates.CREATED_ON;
         }
         SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
         FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
