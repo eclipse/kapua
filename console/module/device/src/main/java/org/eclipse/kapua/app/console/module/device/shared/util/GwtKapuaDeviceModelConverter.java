@@ -155,28 +155,28 @@ public class GwtKapuaDeviceModelConverter {
         AndPredicateImpl andPred = new AndPredicateImpl();
 
         if (predicates.getClientId() != null) {
-            andPred = andPred.and(new AttributePredicateImpl<String>(DevicePredicates.CLIENT_ID, predicates.getUnescapedClientId(), Operator.STARTS_WITH));
+            andPred = andPred.and(new AttributePredicateImpl<String>(DevicePredicates.CLIENT_ID, predicates.getUnescapedClientId(), Operator.LIKE));
         }
         if (predicates.getDisplayName() != null) {
-            andPred = andPred.and(new AttributePredicateImpl<String>(DevicePredicates.DISPLAY_NAME, predicates.getUnescapedDisplayName(), Operator.STARTS_WITH));
+            andPred = andPred.and(new AttributePredicateImpl<String>(DevicePredicates.DISPLAY_NAME, predicates.getUnescapedDisplayName(), Operator.LIKE));
         }
         if (predicates.getSerialNumber() != null) {
-            andPred = andPred.and(new AttributePredicateImpl<String>(DevicePredicates.SERIAL_NUMBER, predicates.getUnescapedSerialNumber()));
+            andPred = andPred.and(new AttributePredicateImpl<String>(DevicePredicates.SERIAL_NUMBER, predicates.getUnescapedSerialNumber(), Operator.LIKE));
         }
         if (predicates.getDeviceStatus() != null) {
             andPred = andPred.and(new AttributePredicateImpl<DeviceStatus>(DevicePredicates.STATUS, DeviceStatus.valueOf(predicates.getDeviceStatus())));
         }
         if (predicates.getIotFrameworkVersion() != null) {
-            andPred = andPred.and(new AttributePredicateImpl<String>(DevicePredicates.APPLICATION_FRAMEWORK_VERSION, predicates.getIotFrameworkVersion()));
+            andPred = andPred.and(new AttributePredicateImpl<String>(DevicePredicates.APPLICATION_FRAMEWORK_VERSION, predicates.getIotFrameworkVersion(), Operator.LIKE));
         }
         if (predicates.getApplicationIdentifiers() != null) {
             andPred = andPred.and(new AttributePredicateImpl<String>(DevicePredicates.APPLICATION_IDENTIFIERS, predicates.getApplicationIdentifiers(), Operator.LIKE));
         }
         if (predicates.getCustomAttribute1() != null) {
-            andPred = andPred.and(new AttributePredicateImpl<String>(DevicePredicates.CUSTOM_ATTRIBUTE_1, predicates.getCustomAttribute1()));
+            andPred = andPred.and(new AttributePredicateImpl<String>(DevicePredicates.CUSTOM_ATTRIBUTE_1, predicates.getCustomAttribute1(), Operator.LIKE));
         }
         if (predicates.getCustomAttribute2() != null) {
-            andPred = andPred.and(new AttributePredicateImpl<String>(DevicePredicates.CUSTOM_ATTRIBUTE_2, predicates.getCustomAttribute2()));
+            andPred = andPred.and(new AttributePredicateImpl<String>(DevicePredicates.CUSTOM_ATTRIBUTE_2, predicates.getCustomAttribute2(), Operator.LIKE));
         }
         if (predicates.getDeviceConnectionStatus() != null) {
             switch (predicates.getDeviceConnectionStatusEnum()) {
