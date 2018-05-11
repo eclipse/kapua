@@ -11,12 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.api.client.util;
 
-import java.util.Date;
-
-import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.TimeZone;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+
+import java.util.Date;
 
 public class DateUtils {
 
