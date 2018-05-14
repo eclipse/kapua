@@ -277,6 +277,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
             // query
             UserListResult users = userService.query(userQuery);
+            totalLength = Long.valueOf(userService.count(userQuery)).intValue();
 
             // If there are results
             if (!users.isEmpty()) {
@@ -291,8 +292,6 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 for (User user : allUsers.getItems()) {
                     usernameMap.put(user.getId().toCompactId(), user.getName());
                 }
-                // count
-                totalLength = Long.valueOf(userService.count(userQuery)).intValue();
 
                 // Convert to GWT entity
                 for (User u : users.getItems()) {

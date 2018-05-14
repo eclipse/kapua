@@ -147,8 +147,8 @@ public class GwtEndpointServiceImpl extends KapuaRemoteServiceServlet implements
                 usernameMap.put(user.getId().toCompactId(), user.getName());
             }
             EndpointInfoListResult endpoints = ENDPOINT_INFO_SERVICE.query(endpointQuery);
+            totalLength = Long.valueOf(ENDPOINT_INFO_SERVICE.count(endpointQuery)).intValue();
             if (!endpoints.isEmpty()) {
-                totalLength = Long.valueOf(ENDPOINT_INFO_SERVICE.count(endpointQuery)).intValue();
 
                 for (EndpointInfo ei : endpoints.getItems()) {
                     GwtEndpoint gwtEndpoint = KapuaGwtEndpointModelConverter.convertEndpoint(ei);

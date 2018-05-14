@@ -137,8 +137,8 @@ public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtT
                 usernameMap.put(user.getId().toCompactId(), user.getName());
             }
             TagListResult tags = tagService.query(tagQuery);
+            totalLength = Long.valueOf(tagService.count(tagQuery)).intValue();
             if (!tags.isEmpty()) {
-                totalLength = Long.valueOf(tagService.count(tagQuery)).intValue();
                 for (Tag g : tags.getItems()) {
                     GwtTag gwtTag = KapuaGwtTagModelConverter.convertTag(g);
                     gwtTag.setUserName(usernameMap.get(g.getCreatedBy().toCompactId()));

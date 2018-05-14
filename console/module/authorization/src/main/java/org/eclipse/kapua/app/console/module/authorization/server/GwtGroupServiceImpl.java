@@ -124,6 +124,8 @@ public class GwtGroupServiceImpl extends KapuaRemoteServiceServlet implements Gw
             GroupQuery groupQuery = GwtKapuaAuthorizationModelConverter.convertGroupQuery(loadConfig,
                     gwtGroupQuery);
             GroupListResult groups = groupService.query(groupQuery);
+            totalLength = Long.valueOf(groupService.count(groupQuery)).intValue();
+
             UserListResult userListResult = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
 
                 @Override
@@ -136,7 +138,6 @@ public class GwtGroupServiceImpl extends KapuaRemoteServiceServlet implements Gw
                 usernameMap.put(user.getId().toCompactId(), user.getName());
             }
             if (!groups.isEmpty()) {
-                totalLength = Long.valueOf(groupService.count(groupQuery)).intValue();
                 for (Group g : groups.getItems()) {
                     GwtGroup gwtGroup = KapuaGwtAuthorizationModelConverter.convertGroup(g);
                     gwtGroup.setUserName(usernameMap.get(g.getCreatedBy().toCompactId()));

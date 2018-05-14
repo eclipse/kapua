@@ -177,6 +177,7 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
             // query
             RoleListResult roles = ROLE_SERVICE.query(roleQuery);
+            totalLength = Long.valueOf(ROLE_SERVICE.count(roleQuery)).intValue();
 
             UserListResult userListResult = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
 
@@ -193,9 +194,6 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
             // If there are results
             if (!roles.isEmpty()) {
-                // count
-                totalLength = Long.valueOf(ROLE_SERVICE.count(roleQuery)).intValue();
-
                 // Converto to GWT entity
                 for (Role r : roles.getItems()) {
                     GwtRole gwtRole = KapuaGwtAuthorizationModelConverter.convertRole(r);
