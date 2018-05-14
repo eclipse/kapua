@@ -93,10 +93,9 @@ public class JobGridToolbar extends EntityCRUDToolbar<GwtJob> {
 
     @Override
     protected KapuaDialog getDeleteDialog() {
-        GwtJob selectedJob = gridSelectionModel.getSelectedItem();
         JobDeleteDialog dialog = null;
-        if (selectedJob != null) {
-            dialog = new JobDeleteDialog(selectedJob);
+        if (selectedEntity != null) {
+            dialog = new JobDeleteDialog(selectedEntity);
         }
         return dialog;
     }

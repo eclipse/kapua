@@ -654,6 +654,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
 
         try {
             accounts = ACCOUNT_SERVICE.query(query);
+            totalLength = Long.valueOf(ACCOUNT_SERVICE.count(query)).intValue();
             if (!accounts.isEmpty()) {
                 final UserQuery userQuery = USER_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtAccountQuery.getScopeId()));
                 Map<String, String> usernameMap = new HashMap<String, String>();
@@ -668,8 +669,6 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                 for (User user : usernames.getItems()) {
                     usernameMap.put(user.getId().toCompactId(), user.getName());
                 }
-
-                totalLength = Long.valueOf(ACCOUNT_SERVICE.count(query)).intValue();
 
                 for (Account a : accounts.getItems()) {
                     GwtAccount gwtAccount = KapuaGwtAccountModelConverter.convertAccount(a);

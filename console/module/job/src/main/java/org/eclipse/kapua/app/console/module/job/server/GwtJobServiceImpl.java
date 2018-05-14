@@ -69,6 +69,7 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
 
             // query
             JobListResult jobs = jobService.query(jobQuery);
+            totalLength = Long.valueOf(jobService.count(jobQuery)).intValue();
 
             // If there are results
             if (!jobs.isEmpty()) {
@@ -85,8 +86,6 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
                 for (User user : userListResult.getItems()) {
                     usernameMap.put(user.getId().toCompactId(), user.getName());
                 }
-                // count
-                totalLength = Long.valueOf(jobService.count(jobQuery)).intValue();
 
                 // Converto to GWT entity
                 for (Job j : jobs.getItems()) {
