@@ -309,7 +309,7 @@ public class JobStepServiceTestSteps extends AbstractKapuaSteps {
         JobStepCreator tmpCr = stepFactory.newCreator(commonData.currentScopeId);
         tmpCr.setName(String.format("StepName_%d", random.nextInt()));
         tmpCr.setDescription("StepDescription");
-        tmpCr.setStepIndex(0);
+        //        tmpCr.setStepIndex(0);
 
         return tmpCr;
     }
