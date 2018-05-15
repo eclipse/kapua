@@ -45,6 +45,13 @@ public class GwtJobTargetServiceImpl extends KapuaRemoteServiceServlet implement
 
     private static final String NOT_AVAILABLE = "Not available";
 
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final JobTargetService JOB_TARGET_SERVICE = LOCATOR.getService(JobTargetService.class);
+    private static final JobTargetFactory JOB_TARGET_FACTORY = LOCATOR.getFactory(JobTargetFactory.class);
+
+    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
+
     @Override
     public PagingLoadResult<GwtJobTarget> query(PagingLoadConfig loadConfig, GwtJobTargetQuery gwtJobTargetQuery) throws GwtKapuaException {
         //
@@ -52,25 +59,18 @@ public class GwtJobTargetServiceImpl extends KapuaRemoteServiceServlet implement
         int totalLength = 0;
         List<GwtJobTarget> gwtJobTargetList = new ArrayList<GwtJobTarget>();
         try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            JobTargetService jobTargetService = locator.getService(JobTargetService.class);
-
             // Convert from GWT entity
             JobTargetQuery jobTargetQuery = GwtKapuaJobModelConverter.convertJobTargetQuery(gwtJobTargetQuery, loadConfig);
 
             // query
-            JobTargetListResult jobTargetList = jobTargetService.query(jobTargetQuery);
+            JobTargetListResult jobTargetList = JOB_TARGET_SERVICE.query(jobTargetQuery);
+            totalLength = (int) JOB_TARGET_SERVICE.count(jobTargetQuery);
 
-            // If there are results
-            if (!jobTargetList.isEmpty()) {
-                // count
-                totalLength = Long.valueOf(jobTargetService.count(jobTargetQuery)).intValue();
-                // Converto to GWT entity
-                for (JobTarget jt : jobTargetList.getItems()) {
-                    gwtJobTargetList.add(KapuaGwtJobModelConverter.convertJobTarget(jt));
-                }
-                insertClientId(gwtJobTargetList);
+            // Converto to GWT entity
+            for (JobTarget jt : jobTargetList.getItems()) {
+                gwtJobTargetList.add(KapuaGwtJobModelConverter.convertJobTarget(jt));
             }
+            insertClientId(gwtJobTargetList);
 
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
@@ -108,22 +108,19 @@ public class GwtJobTargetServiceImpl extends KapuaRemoteServiceServlet implement
         List<GwtJobTarget> existingTargets = findByJobId(scopeId, jobId, false);
         List<GwtJobTarget> gwtJobTargetList = new ArrayList<GwtJobTarget>();
         try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            JobTargetFactory jobTargetFactory = locator.getFactory(JobTargetFactory.class);
 
             for (GwtJobTargetCreator gwtJobTargetCreator : gwtJobTargetCreatorList) {
                 if (findExtistingTarget(gwtJobTargetCreator.getJobTargetId(), existingTargets)) {
                     continue;
                 }
                 KapuaId creatorScopeId = KapuaEid.parseCompactId(gwtJobTargetCreator.getScopeId());
-                JobTargetCreator jobTargetCreator = jobTargetFactory.newCreator(creatorScopeId);
+                JobTargetCreator jobTargetCreator = JOB_TARGET_FACTORY.newCreator(creatorScopeId);
                 jobTargetCreator.setJobId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobTargetCreator.getJobId()));
                 jobTargetCreator.setJobTargetId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobTargetCreator.getJobTargetId()));
 
                 //
                 // Create the Job Target
-                JobTargetService jobTargetService = locator.getService(JobTargetService.class);
-                JobTarget jobTarget = jobTargetService.create(jobTargetCreator);
+                JobTarget jobTarget = JOB_TARGET_SERVICE.create(jobTargetCreator);
 
                 // convert to GwtJobTarget and return
                 gwtJobTargetList.add(KapuaGwtJobModelConverter.convertJobTarget(jobTarget));
@@ -148,13 +145,11 @@ public class GwtJobTargetServiceImpl extends KapuaRemoteServiceServlet implement
     public void delete(GwtXSRFToken xsrfToken, String gwtScopeId, String gwtJobTargetId) throws GwtKapuaException {
         checkXSRFToken(xsrfToken);
 
-        KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtScopeId);
-        KapuaId jobTargetId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobTargetId);
-
         try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            JobTargetService jobTargetService = locator.getService(JobTargetService.class);
-            jobTargetService.delete(scopeId, jobTargetId);
+            KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtScopeId);
+            KapuaId jobTargetId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobTargetId);
+
+            JOB_TARGET_SERVICE.delete(scopeId, jobTargetId);
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
@@ -167,16 +162,15 @@ public class GwtJobTargetServiceImpl extends KapuaRemoteServiceServlet implement
      * @throws KapuaException
      */
     private void insertClientId(List<GwtJobTarget> gwtJobTargetList) throws KapuaException {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
 
         for (GwtJobTarget gwtJobTarget : gwtJobTargetList) {
-            Device device = deviceRegistryService.find(KapuaEid.parseCompactId(gwtJobTarget.getScopeId()),
-                    KapuaEid.parseCompactId(gwtJobTarget.getJobTargetId()));
+            Device device = DEVICE_REGISTRY_SERVICE.find(KapuaEid.parseCompactId(gwtJobTarget.getScopeId()), KapuaEid.parseCompactId(gwtJobTarget.getJobTargetId()));
+
             String clientId = null;
             if (device != null) {
                 clientId = device.getClientId();
             }
+
             if (clientId != null) {
                 gwtJobTarget.setClientId(clientId);
             } else {

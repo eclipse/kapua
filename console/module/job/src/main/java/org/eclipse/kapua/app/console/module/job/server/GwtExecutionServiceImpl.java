@@ -38,27 +38,25 @@ public class GwtExecutionServiceImpl extends KapuaRemoteServiceServlet implement
 
     @Override
     public PagingLoadResult<GwtExecution> findByJobId(PagingLoadConfig loadConfig, String scopeId, String jobId) throws GwtKapuaException {
-        List<GwtExecution> gwtExecutionList = new ArrayList<GwtExecution>();
         int totalLength = 0;
-        GwtExecutionQuery gwtExecutionQuery = new GwtExecutionQuery();
-        gwtExecutionQuery.setScopeId(scopeId);
-        gwtExecutionQuery.setJobId(jobId);
+        List<GwtExecution> gwtExecutionList = new ArrayList<GwtExecution>();
         try {
+            GwtExecutionQuery gwtExecutionQuery = new GwtExecutionQuery();
+            gwtExecutionQuery.setScopeId(scopeId);
+            gwtExecutionQuery.setJobId(jobId);
+
             JobExecutionQuery executionQuery = GwtKapuaJobModelConverter.convertJobExecutionQuery(loadConfig, gwtExecutionQuery);
             JobExecutionListResult jobExecutionList = EXECUTION_SERVICE.query(executionQuery);
+            totalLength = (int) EXECUTION_SERVICE.count(executionQuery);
 
-            if (!jobExecutionList.isEmpty()) {
-                // count
-                totalLength = Long.valueOf(EXECUTION_SERVICE.count(executionQuery)).intValue();
-
-                // Converto to GWT entity
-                for (JobExecution jobExecution : jobExecutionList.getItems()) {
-                    gwtExecutionList.add(KapuaGwtJobModelConverter.convertJobExecution(jobExecution));
-                }
+            // Converto to GWT entity
+            for (JobExecution jobExecution : jobExecutionList.getItems()) {
+                gwtExecutionList.add(KapuaGwtJobModelConverter.convertJobExecution(jobExecution));
             }
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
+
         return new BasePagingLoadResult<GwtExecution>(gwtExecutionList, loadConfig.getOffset(), totalLength);
     }
 }

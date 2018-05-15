@@ -11,12 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.tag.server;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
-
+import com.extjs.gxt.ui.client.data.BaseListLoadResult;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
@@ -47,26 +46,35 @@ import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserService;
 
-import com.extjs.gxt.ui.client.data.BaseListLoadResult;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
 
 public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtTagService {
 
     private static final long serialVersionUID = 929002466564699535L;
 
+    KapuaLocator locator = KapuaLocator.getInstance();
+
+    DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
+
+    TagService tagService = locator.getService(TagService.class);
+    TagFactory tagFactory = locator.getFactory(TagFactory.class);
+
+    final UserService userService = locator.getService(UserService.class);
+    final UserFactory userFactory = locator.getFactory(UserFactory.class);
+
     @Override
     public GwtTag create(GwtTagCreator gwtTagCreator) throws GwtKapuaException {
         GwtTag gwtTag = null;
         try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            TagFactory tagFactory = locator.getFactory(TagFactory.class);
             KapuaId scopeId = KapuaEid.parseCompactId(gwtTagCreator.getScopeId());
             TagCreator tagCreator = tagFactory.newCreator(scopeId, gwtTagCreator.getName());
-            TagService tagService = locator.getService(TagService.class);
+
             Tag tag = tagService.create(tagCreator);
+
             gwtTag = KapuaGwtTagModelConverter.convertTag(tag);
 
         } catch (Exception e) {
@@ -79,10 +87,9 @@ public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtT
     public GwtTag update(GwtTag gwtTag) throws GwtKapuaException {
         GwtTag gwtTagUpdated = null;
         try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            TagService tagService = locator.getService(TagService.class);
             KapuaId scopeId = KapuaEid.parseCompactId(gwtTag.getScopeId());
             KapuaId tagId = KapuaEid.parseCompactId(gwtTag.getId());
+
             Tag tag = tagService.find(scopeId, tagId);
 
             if (tag != null) {
@@ -102,9 +109,8 @@ public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtT
         KapuaId tagId = KapuaEid.parseCompactId(tagShortId);
         GwtTag gwtTag = null;
         try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            TagService tagService = locator.getService(TagService.class);
             Tag tag = tagService.find(scopeId, tagId);
+
             if (tag != null) {
                 gwtTag = KapuaGwtTagModelConverter.convertTag(tag);
             }
@@ -115,33 +121,34 @@ public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtT
     }
 
     @Override
-    public PagingLoadResult<GwtTag> query(PagingLoadConfig loadConfig,
-            final GwtTagQuery gwtTagQuery) throws GwtKapuaException {
+    public PagingLoadResult<GwtTag> query(PagingLoadConfig loadConfig, final GwtTagQuery gwtTagQuery) throws GwtKapuaException {
         int totalLength = 0;
         List<GwtTag> gwtTagList = new ArrayList<GwtTag>();
         try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            TagService tagService = locator.getService(TagService.class);
             TagQuery tagQuery = GwtKapuaTagModelConverter.convertTagQuery(loadConfig, gwtTagQuery);
-            final UserService userService = locator.getService(UserService.class);
-            final UserFactory userFactory = locator.getFactory(UserFactory.class);
-            Map<String, String> usernameMap = new HashMap<String, String>();
-            UserListResult userListResult = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
 
-                @Override
-                public UserListResult call() throws Exception {
-                    return userService.query(userFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtTagQuery.getScopeId())));
-                }
-            });
-            for (User user : userListResult.getItems()) {
-                usernameMap.put(user.getId().toCompactId(), user.getName());
-            }
             TagListResult tags = tagService.query(tagQuery);
             totalLength = (int) tagService.count(tagQuery);
-            for (Tag g : tags.getItems()) {
-                GwtTag gwtTag = KapuaGwtTagModelConverter.convertTag(g);
-                gwtTag.setUserName(usernameMap.get(g.getCreatedBy().toCompactId()));
-                gwtTagList.add(gwtTag);
+
+            if (!tags.isEmpty()) {
+                UserListResult userListResult = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
+
+                    @Override
+                    public UserListResult call() throws Exception {
+                        return userService.query(userFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtTagQuery.getScopeId())));
+                    }
+                });
+
+                Map<String, String> usernameMap = new HashMap<String, String>();
+                for (User user : userListResult.getItems()) {
+                    usernameMap.put(user.getId().toCompactId(), user.getName());
+                }
+
+                for (Tag g : tags.getItems()) {
+                    GwtTag gwtTag = KapuaGwtTagModelConverter.convertTag(g);
+                    gwtTag.setUserName(usernameMap.get(g.getCreatedBy().toCompactId()));
+                    gwtTagList.add(gwtTag);
+                }
             }
         } catch (Exception e) {
             KapuaExceptionHandler.handle(e);
@@ -151,14 +158,13 @@ public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtT
     }
 
     @Override
-    public void delete(String scopeId, String tagId) throws GwtKapuaException {
+    public void delete(String scopeIdString, String tagIdString) throws GwtKapuaException {
 
         try {
-            KapuaId scopeId2 = KapuaEid.parseCompactId(scopeId);
-            KapuaId tagId2 = GwtKapuaCommonsModelConverter.convertKapuaId(tagId);
-            KapuaLocator locator = KapuaLocator.getInstance();
-            TagService tagService = locator.getService(TagService.class);
-            tagService.delete(scopeId2, tagId2);
+            KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
+            KapuaId tagId = GwtKapuaCommonsModelConverter.convertKapuaId(tagIdString);
+
+            tagService.delete(scopeId, tagId);
         } catch (Exception e) {
             KapuaExceptionHandler.handle(e);
         }
@@ -169,28 +175,27 @@ public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtT
     public ListLoadResult<GwtGroupedNVPair> getTagDescription(String scopeShortId, String tagShortId) throws GwtKapuaException {
         List<GwtGroupedNVPair> gwtTagDescription = new ArrayList<GwtGroupedNVPair>();
         try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            TagService tagService = locator.getService(TagService.class);
-            final UserService userService = locator.getService(UserService.class);
             final KapuaId scopeId = KapuaEid.parseCompactId(scopeShortId);
             KapuaId tagId = KapuaEid.parseCompactId(tagShortId);
+
             final Tag tag = tagService.find(scopeId, tagId);
-            User createdUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
-
-                @Override
-                public User call() throws Exception {
-                    return userService.find(scopeId, tag.getCreatedBy());
-                }
-            });
-            User modifiedUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
-
-                @Override
-                public User call() throws Exception {
-                    return userService.find(scopeId, tag.getModifiedBy());
-                }
-            });
 
             if (tag != null) {
+                User createdUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
+
+                    @Override
+                    public User call() throws Exception {
+                        return userService.find(scopeId, tag.getCreatedBy());
+                    }
+                });
+                User modifiedUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
+
+                    @Override
+                    public User call() throws Exception {
+                        return userService.find(scopeId, tag.getModifiedBy());
+                    }
+                });
+
                 // gwtTagDescription.add(new GwtGroupedNVPair("Entity", "Scope
                 // Id", KapuaGwtCommonsModelConverter.convertKapuaId(tag.getScopeId())));
                 gwtTagDescription.add(new GwtGroupedNVPair("tagInfo", "tagName", tag.getName()));
@@ -207,19 +212,18 @@ public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtT
     }
 
     @Override
-    public List<GwtTag> findAll(String scopeId) {
+    public List<GwtTag> findAll(String scopeId) throws GwtKapuaException {
         List<GwtTag> tagList = new ArrayList<GwtTag>();
-        KapuaLocator locator = KapuaLocator.getInstance();
-        TagService tagService = locator.getService(TagService.class);
-        TagFactory tagFactory = locator.getFactory(TagFactory.class);
-        TagQuery query = tagFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(scopeId));
         try {
+            TagQuery query = tagFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(scopeId));
+
             TagListResult result = tagService.query(query);
+
             for (Tag tag : result.getItems()) {
                 tagList.add(KapuaGwtTagModelConverter.convertTag(tag));
             }
         } catch (KapuaException e) {
-            e.printStackTrace();
+            KapuaExceptionHandler.handle(e);
         }
         return tagList;
     }
@@ -228,20 +232,22 @@ public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtT
     public PagingLoadResult<GwtTag> findByDeviceId(PagingLoadConfig loadConfig, String gwtScopeId, String gwtDeviceId) throws GwtKapuaException {
         KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtScopeId);
         KapuaId deviceId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtDeviceId);
-        KapuaLocator locator = KapuaLocator.getInstance();
-        DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
+
         try {
             Device device = deviceRegistryService.find(scopeId, deviceId);
-            if (device.getTagIds().size() == 0) {
+            if (device.getTagIds().isEmpty()) {
                 return new BasePagingLoadResult<GwtTag>(new ArrayList<GwtTag>(), 0, 0);
             }
-            List<String> gwtTagIds = new ArrayList<String>();
+
             GwtTagQuery gwtTagQuery = new GwtTagQuery();
             gwtTagQuery.setScopeId(gwtScopeId);
+
+            List<String> gwtTagIds = new ArrayList<String>();
             for (KapuaId tagId : device.getTagIds()) {
                 gwtTagIds.add(KapuaGwtCommonsModelConverter.convertKapuaId(tagId));
             }
             gwtTagQuery.setIds(gwtTagIds);
+
             return query(loadConfig, gwtTagQuery);
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);

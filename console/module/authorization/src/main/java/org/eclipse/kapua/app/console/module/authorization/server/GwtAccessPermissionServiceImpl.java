@@ -139,6 +139,7 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
                     accessPermissionQuery.setPredicate(new AttributePredicateImpl<KapuaId>(AccessPermissionPredicates.ACCESS_INFO_ID, accessInfo.getId()));
                     accessPermissionQuery.setLimit(loadConfig.getLimit());
                     accessPermissionQuery.setOffset(loadConfig.getOffset());
+
                     String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? KapuaEntityPredicates.CREATED_ON : loadConfig.getSortField();
                     if (sortField.equals("createdOnFormatted")) {
                         sortField = AccessPermissionPredicates.CREATED_ON;
@@ -148,9 +149,9 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
                     accessPermissionQuery.setSortCriteria(sortCriteria);
 
                     AccessPermissionListResult accessPermissionList = ACCESS_PERMISSION_SERVICE.query(accessPermissionQuery);
+                    totalLength = (int) ACCESS_PERMISSION_SERVICE.count(accessPermissionQuery);
 
                     if (!accessPermissionList.isEmpty()) {
-                        totalLength = (int) ACCESS_PERMISSION_SERVICE.count(accessPermissionQuery);
                         for (final AccessPermission accessPermission : accessPermissionList.getItems()) {
                             User createdByUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
 
@@ -173,14 +174,17 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
 
                             GwtAccessPermission gwtAccessPermission = KapuaGwtAuthorizationModelConverter.convertAccessPermission(accessPermission);
                             if (accessPermission.getPermission().getGroupId() != null) {
-                                Group group = groupService.find(scopeId,
-                                        accessPermission.getPermission().getGroupId());
+                                Group group = groupService.find(scopeId, accessPermission.getPermission().getGroupId());
+
                                 if (group != null) {
                                     gwtAccessPermission.setGroupName(group.getName());
                                 }
                             } else {
                                 gwtAccessPermission.setGroupName("ALL");
                             }
+
+                            gwtAccessPermission.setCreatedByName(createdByUser != null ? createdByUser.getName() : null);
+                            gwtAccessPermission.setPermissionTargetScopeIdByName(targetScopeIdAccount != null ? targetScopeIdAccount.getName() : null);
 
                             gwtAccessPermissions.add(gwtAccessPermission);
                         }

@@ -11,14 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.job.server;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
-
-import org.eclipse.kapua.KapuaDuplicateNameException;
-import org.eclipse.kapua.KapuaException;
+import com.extjs.gxt.ui.client.data.BaseListLoadResult;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
@@ -46,13 +43,21 @@ import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserService;
 
-import com.extjs.gxt.ui.client.data.BaseListLoadResult;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
 
 public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJobService {
+
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final JobService JOB_SERVICE = LOCATOR.getService(JobService.class);
+    private static final JobFactory JOB_FACTORY = LOCATOR.getFactory(JobFactory.class);
+
+    private static final UserService USER_SERVICE = LOCATOR.getService(UserService.class);
+    private static final UserFactory USER_FACTORY = LOCATOR.getFactory(UserFactory.class);
 
     @Override
     public PagingLoadResult<GwtJob> query(PagingLoadConfig loadConfig, final GwtJobQuery gwtJobQuery) throws GwtKapuaException {
@@ -61,25 +66,21 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
         int totalLength = 0;
         List<GwtJob> gwtJobs = new ArrayList<GwtJob>();
         try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            JobService jobService = locator.getService(JobService.class);
 
             // Convert from GWT entity
             JobQuery jobQuery = GwtKapuaJobModelConverter.convertJobQuery(gwtJobQuery, loadConfig);
 
             // query
-            JobListResult jobs = jobService.query(jobQuery);
-            totalLength = (int) jobService.count(jobQuery);
+            JobListResult jobs = JOB_SERVICE.query(jobQuery);
+            totalLength = (int) JOB_SERVICE.count(jobQuery);
 
             // If there are results
             if (!jobs.isEmpty()) {
-                final UserService userService = locator.getService(UserService.class);
-                final UserFactory userFactory = locator.getFactory(UserFactory.class);
                 UserListResult userListResult = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
 
                     @Override
                     public UserListResult call() throws Exception {
-                        return userService.query(userFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobQuery.getScopeId())));
+                        return USER_SERVICE.query(USER_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobQuery.getScopeId())));
                     }
                 });
                 Map<String, String> usernameMap = new HashMap<String, String>();
@@ -108,26 +109,14 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
 
         GwtJob gwtJob = null;
         try {
-            List<GwtJob> allJobs;
-            allJobs = findAll(gwtJobCreator.getScopeId());
-            for (GwtJob temp : allJobs) {
-                if (temp.getJobName().equals(gwtJobCreator.getName())) {
-                    throw new KapuaDuplicateNameException(gwtJobCreator.getName());
-                }
-            }
-
-            KapuaLocator locator = KapuaLocator.getInstance();
-            JobFactory jobFactory = locator.getFactory(JobFactory.class);
-
             KapuaId scopeId = KapuaEid.parseCompactId(gwtJobCreator.getScopeId());
-            JobCreator jobCreator = jobFactory.newCreator(scopeId);
+            JobCreator jobCreator = JOB_FACTORY.newCreator(scopeId);
             jobCreator.setName(gwtJobCreator.getName());
             jobCreator.setDescription(gwtJobCreator.getDescription());
 
             //
             // Create the Job
-            JobService jobService = locator.getService(JobService.class);
-            Job job = jobService.create(jobCreator);
+            Job job = JOB_SERVICE.create(jobCreator);
 
             // convert to GwtJob and return
             gwtJob = KapuaGwtJobModelConverter.convertJob(job);
@@ -145,9 +134,8 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
 
         GwtJob gwtJob = null;
         try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            JobService jobService = locator.getService(JobService.class);
-            Job job = jobService.find(scopeId, jobId);
+            Job job = JOB_SERVICE.find(scopeId, jobId);
+
             if (job != null) {
                 gwtJob = KapuaGwtJobModelConverter.convertJob(job);
             }
@@ -164,13 +152,10 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
 
         GwtJob gwtJobUpdated = null;
         try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            JobService jobService = locator.getService(JobService.class);
-
             KapuaId scopeId = KapuaEid.parseCompactId(gwtJob.getScopeId());
             KapuaId jobId = KapuaEid.parseCompactId(gwtJob.getId());
 
-            Job job = jobService.find(scopeId, jobId);
+            Job job = JOB_SERVICE.find(scopeId, jobId);
 
             if (job != null) {
 
@@ -183,7 +168,7 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
                 job.setOptlock(gwtJob.getOptlock());
 
                 // update the job
-                gwtJobUpdated = KapuaGwtJobModelConverter.convertJob(jobService.update(job));
+                gwtJobUpdated = KapuaGwtJobModelConverter.convertJob(JOB_SERVICE.update(job));
             }
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
@@ -196,33 +181,14 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
     public void delete(GwtXSRFToken xsrfToken, String gwtScopeId, String gwtJobId) throws GwtKapuaException {
         checkXSRFToken(xsrfToken);
 
-        KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtScopeId);
-        KapuaId jobId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobId);
-
         try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            JobService jobService = locator.getService(JobService.class);
-            jobService.delete(scopeId, jobId);
+            KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtScopeId);
+            KapuaId jobId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobId);
+
+            JOB_SERVICE.delete(scopeId, jobId);
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
-    }
-
-    public List<GwtJob> findAll(String scopeId) {
-        List<GwtJob> jobList = new ArrayList<GwtJob>();
-        KapuaLocator locator = KapuaLocator.getInstance();
-        JobService jobService = locator.getService(JobService.class);
-        JobFactory jobFactory = locator.getFactory(JobFactory.class);
-        JobQuery query = jobFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(scopeId));
-        try {
-            JobListResult result = jobService.query(query);
-            for (Job job : result.getItems()) {
-                jobList.add(KapuaGwtJobModelConverter.convertJob(job));
-            }
-        } catch (KapuaException e) {
-            e.printStackTrace();
-        }
-        return jobList;
     }
 
     @Override
@@ -230,24 +196,24 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
             String gwtJobId) throws GwtKapuaException {
         List<GwtGroupedNVPair> gwtJobDescription = new ArrayList<GwtGroupedNVPair>();
         try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            final UserService userService = locator.getService(UserService.class);
-            final JobService jobService = locator.getService(JobService.class);
             final KapuaId scopeId = KapuaEid.parseCompactId(gwtScopeId);
-            final KapuaId jobId = KapuaEid.parseCompactId(gwtJobId);
-            final Job job = jobService.find(scopeId, jobId);
+            KapuaId jobId = KapuaEid.parseCompactId(gwtJobId);
+
+            final Job job = JOB_SERVICE.find(scopeId, jobId);
+
             final User createdUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
 
                 @Override
                 public User call() throws Exception {
-                    return userService.find(scopeId, job.getCreatedBy());
+                    return USER_SERVICE.find(scopeId, job.getCreatedBy());
                 }
             });
+
             final User modifiedUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
 
                 @Override
                 public User call() throws Exception {
-                    return userService.find(scopeId, job.getModifiedBy());
+                    return USER_SERVICE.find(scopeId, job.getModifiedBy());
                 }
             });
 
