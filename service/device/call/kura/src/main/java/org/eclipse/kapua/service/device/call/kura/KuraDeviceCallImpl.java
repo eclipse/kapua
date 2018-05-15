@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.device.call.kura;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
@@ -87,7 +88,7 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
         KuraResponseMessage response = null;
         TransportFacade transportFacade = null;
         try {
-            Account account = accountService.findByName(requestMessage.getChannel().getScope());
+            Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.findByName(requestMessage.getChannel().getScope()));
             Device device = deviceRegistryService.findByClientId(account.getId(), requestMessage.getChannel().getClientId());
             String serverIp = device.getConnection().getServerIp();
 
