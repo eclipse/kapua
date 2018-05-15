@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -30,14 +30,13 @@ public class KuraXmlConfigPropertiesAdapter extends XmlAdapter<KuraXmlConfigProp
 
     @Override
     public KuraXmlConfigPropertiesAdapted marshal(Map<String, Object> props) throws Exception {
-        List<XmlConfigPropertyAdapted> adaptedValues = new ArrayList();
+        List<XmlConfigPropertyAdapted> adaptedValues = new ArrayList<>();
         if (props != null) {
-            for (String key : props.keySet()) {
+            props.forEach((name, value) -> {
 
                 XmlConfigPropertyAdapted adaptedValue = new XmlConfigPropertyAdapted();
-                adaptedValue.setName(key);
+                adaptedValue.setName(name);
 
-                Object value = props.get(key);
                 if (value instanceof String) {
                     adaptedValue.setArray(false);
                     adaptedValue.setType(ConfigPropertyType.stringType);
@@ -186,7 +185,7 @@ public class KuraXmlConfigPropertiesAdapter extends XmlAdapter<KuraXmlConfigProp
                 }
 
                 adaptedValues.add(adaptedValue);
-            }
+            });
         }
 
         KuraXmlConfigPropertiesAdapted result = new KuraXmlConfigPropertiesAdapted();
@@ -195,13 +194,13 @@ public class KuraXmlConfigPropertiesAdapter extends XmlAdapter<KuraXmlConfigProp
     }
 
     @Override
-    public Map<String, Object> unmarshal(KuraXmlConfigPropertiesAdapted adaptedPropsAdapted)
-            throws Exception {
-        Map<String, Object> properties = new HashMap<>();
+    public Map<String, Object> unmarshal(KuraXmlConfigPropertiesAdapted adaptedPropsAdapted) {
         XmlConfigPropertyAdapted[] adaptedProps = adaptedPropsAdapted.getProperties();
         if (adaptedProps == null) {
-            return properties;
+            return new HashMap<>();
         }
+
+        Map<String, Object> properties = new HashMap<>();
         for (XmlConfigPropertyAdapted adaptedProp : adaptedProps) {
             String propName = adaptedProp.getName();
             ConfigPropertyType type = adaptedProp.getType();
@@ -239,7 +238,10 @@ public class KuraXmlConfigPropertiesAdapter extends XmlAdapter<KuraXmlConfigProp
                         break;
                     case passwordType:
                         propValue = adaptedProp.getValues()[0];
-                        propValue = adaptedProp.isEncrypted() ? new KuraPassword(CryptoUtil.decodeBase64((String) propValue)) : new KuraPassword((String) propValue);
+                        propValue =
+                                adaptedProp.isEncrypted() ?
+                                        new KuraPassword(CryptoUtil.decodeBase64((String) propValue)) :
+                                        new KuraPassword((String) propValue);
                         break;
                     }
                 } else {
@@ -324,7 +326,10 @@ public class KuraXmlConfigPropertiesAdapter extends XmlAdapter<KuraXmlConfigProp
                         KuraPassword[] pwdValues = new KuraPassword[adaptedProp.getValues().length];
                         for (int i = 0; i < adaptedProp.getValues().length; i++) {
                             if (adaptedProp.getValues()[i] != null) {
-                                pwdValues[i] = adaptedProp.isEncrypted() ? new KuraPassword(CryptoUtil.decodeBase64(adaptedProp.getValues()[i])) : new KuraPassword(adaptedProp.getValues()[i]);
+                                pwdValues[i] =
+                                        adaptedProp.isEncrypted() ?
+                                                new KuraPassword(CryptoUtil.decodeBase64(adaptedProp.getValues()[i])) :
+                                                new KuraPassword(adaptedProp.getValues()[i]);
                             }
                         }
                         propValue = pwdValues;

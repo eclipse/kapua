@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -31,10 +31,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  * Datastore schema creation/update
@@ -129,7 +127,7 @@ public class Schema {
         synchronized (Schema.class) {
             // Update mappings only if a metric is new (not in cache)
             diffs = getMessageMappingDiffs(currentMetadata, metrics);
-            if (diffs == null || diffs.size() == 0) {
+            if (diffs == null || diffs.isEmpty()) {
                 return;
             }
             metricsMapping = getNewMessageMappingsBuilder(diffs);
@@ -155,23 +153,28 @@ public class Schema {
         metricsNode.set(SchemaKeys.FIELD_NAME_PROPERTIES, metricsPropertiesNode);
 
         // metrics mapping
-        Set<String> keys = esMetrics.keySet();
         ObjectNode metricMapping;
-        for (String key : keys) {
-            Metric metric = esMetrics.get(key);
-            metricMapping = SchemaUtil.getField(new KeyValueEntry[] {
-                    new KeyValueEntry(SchemaKeys.KEY_DYNAMIC, SchemaKeys.VALUE_TRUE) });
+        for (Entry<String, Metric> esMetric : esMetrics.entrySet()) {
+            Metric metric = esMetric.getValue();
+            metricMapping = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_DYNAMIC, SchemaKeys.VALUE_TRUE) });
+
             ObjectNode matricMappingPropertiesNode = SchemaUtil.getObjectNode(); // properties (inside metric name)
             ObjectNode valueMappingNode;
-            if (metric.getType().equals(SchemaKeys.TYPE_STRING)) {
+
+            switch (metric.getType()) {
+            case SchemaKeys.TYPE_STRING:
                 valueMappingNode = SchemaUtil
                         .getField(new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
-            } else if (metric.getType().equals(SchemaKeys.TYPE_DATE)) {
+                break;
+            case SchemaKeys.TYPE_DATE:
                 valueMappingNode = SchemaUtil.getField(
                         new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN) });
-            } else {
+                break;
+            default:
                 valueMappingNode = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, metric.getType()) });
+                break;
             }
+
             matricMappingPropertiesNode.set(DatastoreUtils.getClientMetricFromAcronym(metric.getType()), valueMappingNode);
             metricMapping.set(SchemaKeys.FIELD_NAME_PROPERTIES, matricMappingPropertiesNode);
             metricsPropertiesNode.set(metric.getName(), metricMapping);
@@ -180,23 +183,21 @@ public class Schema {
     }
 
     private Map<String, Metric> getMessageMappingDiffs(Metadata currentMetadata, Map<String, Metric> esMetrics) {
-        if (esMetrics == null || esMetrics.size() == 0) {
+        if (esMetrics == null || esMetrics.isEmpty()) {
             return null;
         }
 
-        Entry<String, Metric> el;
         Map<String, Metric> diffs = null;
-        Iterator<Entry<String, Metric>> iter = esMetrics.entrySet().iterator();
-        while (iter.hasNext()) {
-            el = iter.next();
-            if (!currentMetadata.getMessageMappingsCache().containsKey(el.getKey())) {
+        for (Entry<String, Metric> esMetric : esMetrics.entrySet()) {
+            if (!currentMetadata.getMessageMappingsCache().containsKey(esMetric.getKey())) {
                 if (diffs == null) {
                     diffs = new HashMap<>(100);
                 }
-                currentMetadata.getMessageMappingsCache().put(el.getKey(), el.getValue());
-                diffs.put(el.getKey(), el.getValue());
+                currentMetadata.getMessageMappingsCache().put(esMetric.getKey(), esMetric.getValue());
+                diffs.put(esMetric.getKey(), esMetric.getValue());
             }
         }
+
         return diffs;
     }
 

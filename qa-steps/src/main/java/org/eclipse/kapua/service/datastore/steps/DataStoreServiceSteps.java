@@ -12,25 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.steps;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TimeZone;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.inject.Inject;
-
+import cucumber.api.Scenario;
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
+import cucumber.api.java.en.And;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+import cucumber.runtime.java.guice.ScenarioScoped;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.shiro.SecurityUtils;
 import org.eclipse.kapua.KapuaException;
@@ -104,14 +93,23 @@ import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cucumber.api.Scenario;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.And;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
-import cucumber.runtime.java.guice.ScenarioScoped;
+import javax.inject.Inject;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TimeZone;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Steps used in Datastore scenarios.
@@ -401,7 +399,6 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         stepData.put(idKey, storeId);
     }
 
-    @SuppressWarnings("unchecked")
     @Given("^I store the messages from list \"(.*)\" and remember the IDs as \"(.*)\"$")
     public void insertRandomMessagesIntoDatastore(String msgListKey, String idListKey) throws KapuaException {
 
@@ -462,7 +459,6 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         messageStoreService.delete(account.getId(), msgId);
     }
 
-    @SuppressWarnings("unchecked")
     @When("^I pick the ID number (\\d+) from the list \"(.*)\" and remember it as \"(.*)\"$")
     public void pickAMessageIdFromAList(int index, String lstKey, String idKey) {
 
@@ -514,13 +510,12 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         stepData.put(msgKey, tmpMsg);
     }
 
-    @SuppressWarnings("unchecked")
     @When("^I search for messages with IDs from the list \"(.*)\" and store them in the list \"(.*)\"$")
     public void searchForMessagesInTheDatastore(String idListKey, String msgListKey) throws KapuaException {
 
         Account account = (Account) stepData.get("LastAccount");
         List<StorableId> msgIdLst = (List<StorableId>) stepData.get(idListKey);
-        List<DatastoreMessage> tmpMsgLst = new ArrayList<DatastoreMessage>();
+        List<DatastoreMessage> tmpMsgLst = new ArrayList<>();
         DatastoreMessage tmpMsg;
 
         for (StorableId tmpId : msgIdLst) {
@@ -1007,7 +1002,6 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Then("^The datastore messages in list \"(.*)\" matches the prepared messages in list \"(.*)\"$")
     public void checkThatTheStoredMessagesMatchTheOriginals(String datastoreMsgLstKey, String originalMsgLstKey) throws KapuaException {
 
@@ -1049,7 +1043,6 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         assertNull(channelInfo);
     }
 
-    @SuppressWarnings("unchecked")
     @Then("^The channel info items \"(.+)\" match the prepared messages in \"(.+)\"$")
     public void checkThatChannelInfoMatchesTheMessageData(String channelKey, String msgKey) {
 
@@ -1377,14 +1370,14 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         dfSyd.setTimeZone(TimeZone.getTimeZone("Australia/Sydney"));
         Date dateSyd = dfSyd.parse("01/04/2017 03:00:00");
 
-        Map<String, Object> tmpMetrics = new HashMap<String, Object>();
+        Map<String, Object> tmpMetrics = new HashMap<>();
         tmpMetrics.put("float", random.nextFloat() * 100);
         tmpMetrics.put("float_int", Float.valueOf(random.nextInt()));
         tmpMetrics.put("double", random.nextDouble() * 100);
         tmpMetrics.put("double_int", Float.valueOf(random.nextInt()));
         tmpMetrics.put("integer", random.nextInt());
         tmpMetrics.put("long", random.nextLong());
-        tmpMetrics.put("long_int", (long)random.nextInt());
+        tmpMetrics.put("long_int", (long) random.nextInt());
         tmpMetrics.put("string_value", Integer.toString(random.nextInt()));
         tmpMetrics.put("date_value_brussels", dateBr);
         tmpMetrics.put("date_value_la", dateLA);
@@ -1452,7 +1445,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
     private List<StorableId> insertMessagesInStore(List<KapuaDataMessage> messages) throws KapuaException {
 
         StorableId tmpId = null;
-        List<StorableId> tmpList = new ArrayList<StorableId>();
+        List<StorableId> tmpList = new ArrayList<>();
 
         for (KapuaDataMessage tmpMsg : messages) {
             tmpId = insertMessageInStore(tmpMsg);
@@ -1870,16 +1863,19 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
     private static String getFieldName(String field, boolean capitalizeFirstLetter) {
 
         String str[] = cleanupFieldName(field);
-        String fieldName = null;
+
+        StringBuilder fieldNameSb = new StringBuilder();
         if (capitalizeFirstLetter) {
-            fieldName = str[0].substring(0, 1).toUpperCase() + str[0].substring(1);
+            fieldNameSb.append(str[0].substring(0, 1).toUpperCase()).append(str[0].substring(1));
         } else {
-            fieldName = str[0];
+            fieldNameSb.append(str[0]);
         }
+
         for (int i = 1; i < str.length; i++) {
-            fieldName += str[i].substring(0, 1).toUpperCase() + str[i].substring(1);
+            fieldNameSb.append(str[i].substring(0, 1).toUpperCase()).append(str[i].substring(1));
         }
-        return fieldName;
+
+        return fieldNameSb.toString();
     }
 
     private static String[] cleanupFieldName(String field) {
@@ -1888,8 +1884,9 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         if (lastDot > -1) {
             field = field.substring(lastDot + 1, field.length());
         }
+
         String str[] = field.split("_");
-        if (str == null || str.length <= 0) {
+        if (str.length <= 0) {
             throw new IllegalArgumentException(String.format("Invalid field name [%s]", field));
         }
         return str;
