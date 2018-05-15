@@ -11,16 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.client.embedded;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.UUIDs;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.reindex.ReindexPlugin;
 import org.elasticsearch.node.InternalSettingsPreparer;
-//import org.elasticsearch.common.settings.Settings.Builder;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeValidationException;
 import org.elasticsearch.percolator.PercolatorPlugin;
@@ -30,19 +25,24 @@ import org.elasticsearch.transport.Netty4Plugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+
+//import org.elasticsearch.common.settings.Settings.Builder;
+
 /**
  * Elasticsearch embedded node engine. To be used for test purpose.<br>
  * This class will start an Elasticsearch node bounds the transport connector to the port 9300 and rest to the port 9200 on 127.0.0.1.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class EsEmbeddedEngine {
 
-    private static final Logger logger = LoggerFactory.getLogger(EsEmbeddedEngine.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EsEmbeddedEngine.class);
 
     private static String defaultDataDirectory;
-    private static Node node;
+    private static volatile Node node;
 
     public EsEmbeddedEngine() {
         // lazy synchronization
@@ -50,20 +50,20 @@ public class EsEmbeddedEngine {
             synchronized (EsEmbeddedEngine.this) {
                 defaultDataDirectory = "target/elasticsearch/data/" + UUIDs.randomBase64UUID();
                 if (node == null) {
-                    logger.info("Starting Elasticsearch embedded node... (data directory: '{}')", defaultDataDirectory);
+                    LOG.info("Starting Elasticsearch embedded node... (data directory: '{}')", defaultDataDirectory);
                     EmbeddedNodeSettings clientSettings = EmbeddedNodeSettings.getInstance();
                     String clusterName = clientSettings.getString(EmbeddedNodeSettingsKey.ELASTICSEARCH_CLUSTER);
-                    logger.info("Cluster name [{}]", clusterName);
+                    LOG.info("Cluster name [{}]", clusterName);
 
                     // transport
                     int transportTcpPort = clientSettings.getInt(EmbeddedNodeSettingsKey.ELASTICSEARCH_TRANSPORT_PORT);
                     String transportTcpHost = clientSettings.getString(EmbeddedNodeSettingsKey.ELASTICSEARCH_TRANSPORT_NODE);
-                    logger.info(">>> Transport: host [{}] - port [{}]", transportTcpHost, transportTcpPort);
+                    LOG.info(">>> Transport: host [{}] - port [{}]", transportTcpHost, transportTcpPort);
 
                     // rest
                     int restTcpPort = clientSettings.getInt(EmbeddedNodeSettingsKey.ELASTICSEARCH_REST_PORT);
                     String restTcpHost = clientSettings.getString(EmbeddedNodeSettingsKey.ELASTICSEARCH_REST_NODE);
-                    logger.info(">>> Rest: host [{}] - port [{}]", restTcpHost, restTcpPort);
+                    LOG.info(">>> Rest: host [{}] - port [{}]", restTcpHost, restTcpPort);
                     // ES 5.3 FIX
                     // Builder elasticsearchSettings = Settings.settingsBuilder()
                     // .put("http.enabled", "false")
@@ -93,7 +93,7 @@ public class EsEmbeddedEngine {
                     } catch (NodeValidationException e) {
                         throw new RuntimeException("Cannot start embedded node!", e);
                     }
-                    logger.info("Starting Elasticsearch embedded node... DONE");
+                    LOG.info("Starting Elasticsearch embedded node... DONE");
                 }
             }
         }
@@ -105,10 +105,10 @@ public class EsEmbeddedEngine {
 
     public void close() throws IOException {
         if (node != null) {
-            logger.info("Closing Elasticsearch embedded node...");
+            LOG.info("Closing Elasticsearch embedded node...");
             node.close();
             node = null;
-            logger.info("Closing Elasticsearch embedded node... DONE");
+            LOG.info("Closing Elasticsearch embedded node... DONE");
         }
     }
 
