@@ -212,7 +212,6 @@ public class ServiceDAO {
         //
         // Updating if not null
         if (entityToUpdate != null) {
-            // FIXME: why do this??
             AbstractKapuaUpdatableEntity updatableEntity = (AbstractKapuaUpdatableEntity) entity;
             updatableEntity.setCreatedOn(entityToUpdate.getCreatedOn());
             updatableEntity.setCreatedBy(entityToUpdate.getCreatedBy());
@@ -304,7 +303,6 @@ public class ServiceDAO {
      * @throws KapuaException If filter predicates in the {@link KapuaQuery} are incorrect. See {@link #handleKapuaQueryPredicates(QueryPredicate, Map, CriteriaBuilder, Root, EntityType)}.
      * @since 1.0.0
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     public static <I extends KapuaEntity, E extends I, L extends KapuaListResult<I>> L query(EntityManager em,
             Class<I> interfaceClass,
             Class<E> implementingClass,
@@ -383,18 +381,16 @@ public class ServiceDAO {
         TypedQuery<E> query = em.createQuery(criteriaSelectQuery);
 
         // Populate query parameters
-        for (ParameterExpression pe : binds.keySet()) {
-            query.setParameter(pe, binds.get(pe));
-        }
+        binds.forEach(query::setParameter); // Whoah! This is very magic!
 
         // Set offset
         if (kapuaQuery.getOffset() != null) {
-            query.setFirstResult(kapuaQuery.getOffset().intValue());
+            query.setFirstResult(kapuaQuery.getOffset());
         }
 
         // Set limit
         if (kapuaQuery.getLimit() != null) {
-            query.setMaxResults(kapuaQuery.getLimit().intValue() + 1);
+            query.setMaxResults(kapuaQuery.getLimit() + 1);
         }
 
         // Finally querying!
@@ -402,7 +398,7 @@ public class ServiceDAO {
 
         // Check limit exceeded
         if (kapuaQuery.getLimit() != null &&
-                result.size() > kapuaQuery.getLimit().intValue()) {
+                result.size() > kapuaQuery.getLimit()) {
             result.remove(kapuaQuery.getLimit().intValue());
             resultContainer.setLimitExceeded(true);
         }
@@ -423,7 +419,6 @@ public class ServiceDAO {
      * @throws KapuaException If filter predicates in the {@link KapuaQuery} are incorrect. See {@link #handleKapuaQueryPredicates(QueryPredicate, Map, CriteriaBuilder, Root, EntityType)}.
      * @since 1.0.0
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     public static <I extends KapuaEntity, E extends I> long count(EntityManager em,
             Class<I> interfaceClass,
             Class<E> implementingClass,
@@ -473,9 +468,7 @@ public class ServiceDAO {
         TypedQuery<Long> query = em.createQuery(criteriaSelectQuery);
 
         // Populate query parameters
-        for (ParameterExpression pe : binds.keySet()) {
-            query.setParameter(pe, binds.get(pe));
-        }
+        binds.forEach(query::setParameter); // Whoah! This is very magic!
 
         return query.getSingleResult();
     }
@@ -491,7 +484,6 @@ public class ServiceDAO {
      * @return
      * @throws KapuaException
      */
-    @SuppressWarnings("rawtypes")
     protected static <E> Expression<Boolean> handleKapuaQueryPredicates(QueryPredicate qp,
             Map<ParameterExpression, Object> binds,
             CriteriaBuilder cb,
@@ -512,22 +504,22 @@ public class ServiceDAO {
         return expr;
     }
 
-    @SuppressWarnings("rawtypes")
     private static <E> Expression<Boolean> handleAndPredicate(AndPredicate andPredicate,
             Map<ParameterExpression, Object> binds,
             CriteriaBuilder cb,
             Root<E> entityRoot,
             EntityType<E> entityType)
             throws KapuaException {
-        List<Expression<Boolean>> exprs = new ArrayList<>();
-        for (QueryPredicate pred : andPredicate.getPredicates()) {
-            Expression<Boolean> expr = handleKapuaQueryPredicates(pred, binds, cb, entityRoot, entityType);
-            exprs.add(expr);
+        List<Expression<Boolean>> expressions = new ArrayList<>();
+
+        for (QueryPredicate queryPredicate : andPredicate.getPredicates()) {
+            Expression<Boolean> expr = handleKapuaQueryPredicates(queryPredicate, binds, cb, entityRoot, entityType);
+            expressions.add(expr);
         }
-        return cb.and(exprs.toArray(new Predicate[] {}));
+
+        return cb.and(expressions.toArray(new Predicate[] {}));
     }
 
-    @SuppressWarnings("rawtypes")
     private static <E> Expression<Boolean> handleOrPredicate(OrPredicate orPredicate,
             Map<ParameterExpression, Object> binds,
             CriteriaBuilder cb,
@@ -542,7 +534,6 @@ public class ServiceDAO {
         return cb.or(exprs.toArray(new Predicate[] {}));
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     private static <E> Expression<Boolean> handleAttributePredicate(AttributePredicate attrPred,
             Map<ParameterExpression, Object> binds,
             CriteriaBuilder cb,
@@ -669,8 +660,7 @@ public class ServiceDAO {
      * @return The {@link Path} expression that matches the given {@code attributeName} parameter.
      * @since 1.0.0
      */
-    @SuppressWarnings("rawtypes")
-    protected static <E> Path extractAttribute(Root<E> entityRoot, String attributeName) {
+    private static <E> Path extractAttribute(Root<E> entityRoot, String attributeName) {
 
         Path<?> expressionPath;
         if (attributeName.contains(ATTRIBUTE_SEPARATOR)) {
@@ -689,7 +679,6 @@ public class ServiceDAO {
      * @param groupPredicateName The name of the {@link Group} id field.
      * @since 1.0.0
      */
-    @SuppressWarnings("rawtypes")
     protected static void handleKapuaQueryGroupPredicate(KapuaQuery query, Domain domain, String groupPredicateName) throws KapuaException {
 
         if (ACCESS_INFO_FACTORY != null) {

@@ -11,11 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
+import com.codahale.metrics.Counter;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.cache.LocalCache;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
@@ -69,13 +65,14 @@ import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.codahale.metrics.Counter;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Message store facade
  *
  * @since 1.0.0
- *
  */
 public final class MessageStoreFacade {
 
@@ -95,7 +92,6 @@ public final class MessageStoreFacade {
      * @param confProvider
      * @param mediator
      * @throws ClientUnavailableException
-     * 
      * @since 1.0.0
      */
     public MessageStoreFacade(ConfigurationProvider confProvider, MessageStoreMediator mediator) throws ClientUnavailableException {
@@ -137,12 +133,10 @@ public final class MessageStoreFacade {
         }
 
         Date capturedOn = message.getCapturedOn();
-        long currentDate = KapuaDateUtils.getKapuaSysDate().toEpochMilli();
-
         // Overwrite timestamp if necessary
         // Use the account service plan to determine whether we will give
         // precede to the device time
-        long indexedOn = currentDate;
+        long indexedOn = KapuaDateUtils.getKapuaSysDate().toEpochMilli();
         if (DataIndexBy.DEVICE_TIMESTAMP.equals(accountServicePlan.getDataIndexBy())) {
             if (capturedOn != null) {
                 indexedOn = capturedOn.getTime();
@@ -171,15 +165,14 @@ public final class MessageStoreFacade {
         InsertRequest insertRequest = new InsertRequest(messageToStore.getDatastoreId().toString(), typeDescriptor, messageToStore);
         // Possibly update the schema with new metric mappings
         Map<String, Metric> metrics = new HashMap<>();
-        if (message.getPayload() != null && message.getPayload().getMetrics() != null && message.getPayload().getMetrics().size() > 0) {
+        if (message.getPayload() != null && message.getPayload().getMetrics() != null && !message.getPayload().getMetrics().isEmpty()) {
+
             Map<String, Object> messageMetrics = message.getPayload().getMetrics();
-            Iterator<String> metricsIterator = messageMetrics.keySet().iterator();
-            while (metricsIterator.hasNext()) {
-                String kapuaMetricName = metricsIterator.next();
-                String metricName = DatastoreUtils.normalizeMetricName(kapuaMetricName);
-                Object metricValue = messageMetrics.get(kapuaMetricName);
-                String clientMetricType = DatastoreUtils.getClientMetricFromType(metricValue.getClass());
+            for (Map.Entry<String, Object> messageMetric : messageMetrics.entrySet()) {
+                String metricName = DatastoreUtils.normalizeMetricName(messageMetric.getKey());
+                String clientMetricType = DatastoreUtils.getClientMetricFromType(messageMetric.getValue().getClass());
                 Metric metric = new Metric(metricName, clientMetricType);
+
                 // each metric is potentially a dynamic field so report it a new mapping
                 String mappedName = DatastoreUtils.getMetricValueQualifier(metricName, clientMetricType);
                 metrics.put(mappedName, metric);
@@ -246,10 +239,8 @@ public final class MessageStoreFacade {
      * @throws ClientException
      */
     public DatastoreMessage find(KapuaId scopeId, StorableId id, StorableFetchStyle fetchStyle)
-            throws KapuaIllegalArgumentException,
-            ConfigurationException,
-            QueryMappingException,
-            ClientException {
+            throws KapuaIllegalArgumentException, ClientException {
+
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(id, "id");
         ArgumentValidator.notNull(fetchStyle, "fetchStyle");
@@ -268,7 +259,7 @@ public final class MessageStoreFacade {
 
     /**
      * Find messages matching the given query
-     * 
+     *
      * @param query
      * @return
      * @throws KapuaIllegalArgumentException
@@ -298,7 +289,7 @@ public final class MessageStoreFacade {
 
     /**
      * Get messages count matching the given query
-     * 
+     *
      * @param query
      * @return
      * @throws KapuaIllegalArgumentException
@@ -309,7 +300,6 @@ public final class MessageStoreFacade {
     public long count(MessageQuery query)
             throws KapuaIllegalArgumentException,
             ConfigurationException,
-            QueryMappingException,
             ClientException {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
@@ -331,7 +321,7 @@ public final class MessageStoreFacade {
      * Delete messages count matching the given query.<br>
      * <b>Be careful using this function since it doesn't guarantee the datastore consistency.<br>
      * It just deletes the messages that matching the query without checking the consistency of the registries.</b>
-     * 
+     *
      * @param query
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
@@ -341,7 +331,6 @@ public final class MessageStoreFacade {
     public void delete(MessageQuery query)
             throws KapuaIllegalArgumentException,
             ConfigurationException,
-            QueryMappingException,
             ClientException {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
@@ -364,7 +353,7 @@ public final class MessageStoreFacade {
      * Date range must be valid (so no null dates and start date before end date).<br>
      * <b>Be careful using this function since it doesn't guarantee the datastore consistency.<br>
      * It just deletes the messages that matching the date range without checking the consistency of the registries.</b>
-     * 
+     *
      * @param scopeId
      * @param startDate
      * @param endDate
@@ -377,7 +366,6 @@ public final class MessageStoreFacade {
 
     // TODO cache will not be reset from the client code it should be automatically reset
     // after some time.
-    @SuppressWarnings("unused")
     private void resetCache(KapuaId scopeId, KapuaId deviceId, String channel, String clientId)
             throws Exception {
 
@@ -432,10 +420,10 @@ public final class MessageStoreFacade {
                 offset += pageSize + 1;
             }
         }
-        logger.debug(String.format("Removed cached channel metrics for [%s]", channel));
+        logger.debug("Removed cached channel metrics for: {}", channel);
         TypeDescriptor typeMetricDescriptor = new TypeDescriptor(dataIndexName, MetricInfoSchema.METRIC_TYPE_NAME);
         client.deleteByQuery(typeMetricDescriptor, metricQuery);
-        logger.debug(String.format("Removed channel metrics for [%s]", channel));
+        logger.debug("Removed channel metrics for: {}", channel);
         ChannelInfoQueryImpl channelQuery = new ChannelInfoQueryImpl(scopeId);
         channelQuery.setLimit(pageSize + 1);
         channelQuery.setOffset(offset);
@@ -465,11 +453,11 @@ public final class MessageStoreFacade {
             }
         }
 
-        logger.debug(String.format("Removed cached channels for [%s]", channel));
+        logger.debug("Removed cached channels for: {}", channel);
         TypeDescriptor typeChannelDescriptor = new TypeDescriptor(dataIndexName, ChannelInfoSchema.CHANNEL_TYPE_NAME);
         client.deleteByQuery(typeChannelDescriptor, channelQuery);
 
-        logger.debug(String.format("Removed channels for [%s]", channel));
+        logger.debug("Removed channels for: {}", channel);
         // Remove client
         if (isClientToDelete) {
             ClientInfoQueryImpl clientInfoQuery = new ClientInfoQueryImpl(scopeId);
@@ -499,11 +487,11 @@ public final class MessageStoreFacade {
                 }
             }
 
-            logger.debug(String.format("Removed cached clients for [%s]", channel));
+            logger.debug("Removed cached clients for: {}", channel);
             TypeDescriptor typeClientDescriptor = new TypeDescriptor(dataIndexName, ClientInfoSchema.CLIENT_TYPE_NAME);
             client.deleteByQuery(typeClientDescriptor, clientInfoQuery);
 
-            logger.debug(String.format("Removed clients for [%s]", channel));
+            logger.debug("Removed clients for: {}", channel);
         }
     }
 
@@ -516,7 +504,6 @@ public final class MessageStoreFacade {
      * @return
      * @since 1.0.0
      */
-    @SuppressWarnings("unused")
     private boolean isAnyAccount(String accountPart) {
         return DatastoreChannel.SINGLE_LEVEL_WCARD.equals(accountPart);
     }
@@ -535,7 +522,7 @@ public final class MessageStoreFacade {
 
     /**
      * This constructor should be used for wrapping Kapua message into datastore message for insert purpose
-     * 
+     *
      * @param message
      */
     private DatastoreMessage convertTo(KapuaMessage<?, ?> message, String messageId) {
