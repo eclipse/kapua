@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.job.server;
 
-import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
@@ -158,23 +157,6 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
         }
 
         return gwtJobStep;
-    }
-
-    @Override
-    public int getFirstFreeStepIndex(String gwtScopeId, String gwtJobId) throws GwtKapuaException {
-        GwtJobStepQuery query = new GwtJobStepQuery();
-        query.setScopeId(gwtScopeId);
-        query.setJobId(gwtJobId);
-        query.setSortAttribute(GwtJobStepQuery.GwtSortAttribute.STEP_INDEX);
-        query.setSortOrder(GwtJobStepQuery.GwtSortOrder.DESCENDING);
-
-        BasePagingLoadConfig loadConfig = new BasePagingLoadConfig();
-        PagingLoadResult<GwtJobStep> result = query(loadConfig, query);
-        if (result.getData().size() > 0) {
-            return result.getData().get(0).getStepIndex() + 1;
-        } else {
-            return 0;
-        }
     }
 
     @Override

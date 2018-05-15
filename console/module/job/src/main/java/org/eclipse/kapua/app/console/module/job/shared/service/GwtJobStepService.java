@@ -40,9 +40,6 @@ public interface GwtJobStepService extends RemoteService {
     void delete(GwtXSRFToken xsrfToken, String gwtScopeId, String gwtJobStepId)
             throws GwtKapuaException;
 
-    int getFirstFreeStepIndex(String gwtScopeId, String gwtJobId)
-            throws GwtKapuaException;
-
     /**
      * Updates a Job step in the database and returns the refreshed/reloaded entity instance.
      *
