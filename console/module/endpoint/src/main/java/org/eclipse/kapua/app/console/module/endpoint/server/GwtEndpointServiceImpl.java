@@ -147,16 +147,12 @@ public class GwtEndpointServiceImpl extends KapuaRemoteServiceServlet implements
                 usernameMap.put(user.getId().toCompactId(), user.getName());
             }
             EndpointInfoListResult endpoints = ENDPOINT_INFO_SERVICE.query(endpointQuery);
-            totalLength = Long.valueOf(ENDPOINT_INFO_SERVICE.count(endpointQuery)).intValue();
-            if (!endpoints.isEmpty()) {
-
-                for (EndpointInfo ei : endpoints.getItems()) {
-                    GwtEndpoint gwtEndpoint = KapuaGwtEndpointModelConverter.convertEndpoint(ei);
-                    gwtEndpoint.setCreatedByName(ei.getCreatedBy() != null ? usernameMap.get(ei.getCreatedBy().toCompactId()) : null);
-                    gwtEndpoint.setModifiedByName(ei.getModifiedBy() != null ? usernameMap.get(ei.getModifiedBy().toCompactId()) : null);
-                    gwtEndpointList.add(gwtEndpoint);
-
-                }
+            totalLength = (int) ENDPOINT_INFO_SERVICE.count(endpointQuery);
+            for (EndpointInfo ei : endpoints.getItems()) {
+                GwtEndpoint gwtEndpoint = KapuaGwtEndpointModelConverter.convertEndpoint(ei);
+                gwtEndpoint.setCreatedByName(ei.getCreatedBy() != null ? usernameMap.get(ei.getCreatedBy().toCompactId()) : null);
+                gwtEndpoint.setModifiedByName(ei.getModifiedBy() != null ? usernameMap.get(ei.getModifiedBy().toCompactId()) : null);
+                gwtEndpointList.add(gwtEndpoint);
             }
         } catch (Exception e) {
             KapuaExceptionHandler.handle(e);

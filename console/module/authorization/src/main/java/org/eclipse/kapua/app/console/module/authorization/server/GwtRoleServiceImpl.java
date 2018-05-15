@@ -280,9 +280,9 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             query.setSortCriteria(sortCriteria);
 
             RolePermissionListResult list = ROLE_PERMISSION_SERVICE.query(query);
+            totalLength = (int) ROLE_PERMISSION_SERVICE.count(query);
 
             if (list != null) {
-                totalLength = (int) ROLE_PERMISSION_SERVICE.count(query);
                 for (final RolePermission rolePermission : list.getItems()) {
                     User createdByUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
 

@@ -137,14 +137,11 @@ public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtT
                 usernameMap.put(user.getId().toCompactId(), user.getName());
             }
             TagListResult tags = tagService.query(tagQuery);
-            totalLength = Long.valueOf(tagService.count(tagQuery)).intValue();
-            if (!tags.isEmpty()) {
-                for (Tag g : tags.getItems()) {
-                    GwtTag gwtTag = KapuaGwtTagModelConverter.convertTag(g);
-                    gwtTag.setUserName(usernameMap.get(g.getCreatedBy().toCompactId()));
-                    gwtTagList.add(gwtTag);
-
-                }
+            totalLength = (int) tagService.count(tagQuery);
+            for (Tag g : tags.getItems()) {
+                GwtTag gwtTag = KapuaGwtTagModelConverter.convertTag(g);
+                gwtTag.setUserName(usernameMap.get(g.getCreatedBy().toCompactId()));
+                gwtTagList.add(gwtTag);
             }
         } catch (Exception e) {
             KapuaExceptionHandler.handle(e);
