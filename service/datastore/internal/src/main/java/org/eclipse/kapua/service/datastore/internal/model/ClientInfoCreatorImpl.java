@@ -11,15 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model;
 
-import java.util.Date;
-
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.model.ClientInfoCreator;
 import org.eclipse.kapua.service.datastore.model.StorableId;
 
+import java.util.Date;
+
 /**
  * Client information schema creator implementation
- * 
+ *
  * @since 1.0.0
  */
 public class ClientInfoCreatorImpl implements ClientInfoCreator {
@@ -31,7 +31,7 @@ public class ClientInfoCreatorImpl implements ClientInfoCreator {
 
     /**
      * Construct a client information creator for the given account
-     * 
+     *
      * @param scopeId
      */
     public ClientInfoCreatorImpl(KapuaId scopeId) {
@@ -44,7 +44,7 @@ public class ClientInfoCreatorImpl implements ClientInfoCreator {
     }
 
     protected void setScopeId(KapuaId scopeId) {
-        this.scopeId = scopeId != null ? scopeId : scopeId;
+        this.scopeId = scopeId;
     }
 
     @Override
