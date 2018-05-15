@@ -44,7 +44,7 @@ public class ConsoleRequestProvider {
                     request = new Request(tenant, operation, Collections.singletonList(clientId));
                     staticRequestBinding.onMessage(request);
                 }
-                System.out.println(request.getResponse());
+                System.out.println(request != null ? request.getResponse() : "null");
                 System.out.println("Enter message request:");
             }
         } catch (IOException e) {

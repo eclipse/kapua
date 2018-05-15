@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,16 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.event;
 
+import org.eclipse.kapua.KapuaRuntimeException;
+import org.eclipse.kapua.event.ServiceEvent;
+
 import java.util.Stack;
 import java.util.UUID;
 
-import org.eclipse.kapua.event.ServiceEvent;
-
 /**
- * Utility class to handle the thread context event stack.
- * 
- * @since 1.0
+ * Utility class to handle the {@link ThreadLocal} context event stack.
  *
+ * @since 1.0
  */
 public class ServiceEventScope {
 
@@ -31,7 +31,7 @@ public class ServiceEventScope {
 
     /**
      * Append the Kapua event to the current thread context Kapua event stack (setting a new context id in the Kapua event)
-     * 
+     *
      * @return
      */
     public static ServiceEvent begin() {
@@ -44,7 +44,7 @@ public class ServiceEventScope {
         }
 
         // Is it the first call in the stack?
-        String contextId = null;
+        String contextId;
         if (!eventStack.empty()) {
             ServiceEvent lastEvent = eventStack.peek();
             contextId = lastEvent.getContextId();
@@ -55,12 +55,13 @@ public class ServiceEventScope {
         ServiceEvent newEvent = new ServiceEvent();
         newEvent.setContextId(contextId);
         eventStack.push(newEvent);
+
         return eventStack.peek();
     }
 
     /**
      * Create a new thread context Kapua event stack and set the Kapua event at the top
-     * 
+     *
      * @param event
      */
     public static void set(ServiceEvent event) {
@@ -71,7 +72,7 @@ public class ServiceEventScope {
 
     /**
      * Get the current Kapua event from the thread context Kapua event stack
-     * 
+     *
      * @return
      */
     public static ServiceEvent get() {
@@ -91,6 +92,10 @@ public class ServiceEventScope {
             eventContextThdLocal.set(null);
         }
 
-        eventStack.pop();
+        if (eventStack != null) {
+            eventStack.pop();
+        } else {
+            throw KapuaRuntimeException.internalError("Event stack shouldn't be 'null'");
+        }
     }
 }

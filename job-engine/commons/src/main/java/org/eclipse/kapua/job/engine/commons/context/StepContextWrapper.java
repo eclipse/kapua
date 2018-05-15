@@ -11,7 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.commons.context;
 
+import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -36,9 +38,14 @@ public class StepContextWrapper {
     }
 
     public int getStepIndex() {
-        Properties jobContextProperties = stepContext.getProperties();
-        String stepIndexString = jobContextProperties.getProperty(StepContextPropertyNames.STEP_INDEX);
-        return stepIndexString != null ? Integer.parseInt(stepIndexString) : null;
+        Properties stepContextProperties = stepContext.getProperties();
+        String stepIndexString = stepContextProperties.getProperty(StepContextPropertyNames.STEP_INDEX);
+
+        if (Strings.isNullOrEmpty(stepIndexString)) {
+            throw KapuaRuntimeException.internalError("stepIndexString is not available in the StepContext.properties");
+        }
+
+        return Integer.parseInt(stepIndexString);
     }
 
     public Integer getNextStepIndex() {
