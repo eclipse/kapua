@@ -69,7 +69,7 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
 
             // query
             JobListResult jobs = jobService.query(jobQuery);
-            totalLength = Long.valueOf(jobService.count(jobQuery)).intValue();
+            totalLength = (int) jobService.count(jobQuery);
 
             // If there are results
             if (!jobs.isEmpty()) {

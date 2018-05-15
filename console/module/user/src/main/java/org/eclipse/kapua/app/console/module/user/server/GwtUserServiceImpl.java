@@ -277,7 +277,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
             // query
             UserListResult users = userService.query(userQuery);
-            totalLength = Long.valueOf(userService.count(userQuery)).intValue();
+            totalLength = (int) userService.count(userQuery);
 
             // If there are results
             if (!users.isEmpty()) {
