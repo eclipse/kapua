@@ -44,6 +44,11 @@ import java.util.List;
 
 public class GwtTriggerServiceImpl extends KapuaRemoteServiceServlet implements GwtTriggerService {
 
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final TriggerService TRIGGER_SERVICE = LOCATOR.getService(TriggerService.class);
+    private static final TriggerFactory TRIGGER_FACTORY = LOCATOR.getFactory(TriggerFactory.class);
+
     @Override
     public PagingLoadResult<GwtTrigger> findByJobId(PagingLoadConfig loadConfig, String gwtScopeId, String gwtJobId) throws GwtKapuaException {
         //
@@ -51,26 +56,20 @@ public class GwtTriggerServiceImpl extends KapuaRemoteServiceServlet implements 
         int totalLength = 0;
         List<GwtTrigger> gwtTriggerList = new ArrayList<GwtTrigger>();
         try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            TriggerService triggerService = locator.getService(TriggerService.class);
-
             // Convert from GWT entity
             GwtTriggerQuery gwtTriggerQuery = new GwtTriggerQuery();
             gwtTriggerQuery.setScopeId(gwtScopeId);
             gwtTriggerQuery.setJobId(gwtJobId);
+
             TriggerQuery triggerQuery = GwtKapuaJobModelConverter.convertTriggerQuery(gwtTriggerQuery, loadConfig);
+
             // query
-            TriggerListResult triggerListResult = triggerService.query(triggerQuery);
+            TriggerListResult triggerListResult = TRIGGER_SERVICE.query(triggerQuery);
+            totalLength = (int) TRIGGER_SERVICE.count(triggerQuery);
 
-            // If there are results
-            if (!triggerListResult.isEmpty()) {
-                // count
-                totalLength = Long.valueOf(triggerService.count(triggerQuery)).intValue();
-
-                // Converto to GWT entity
-                for (Trigger trigger : triggerListResult.getItems()) {
-                    gwtTriggerList.add(KapuaGwtJobModelConverter.convertTrigger(trigger));
-                }
+            // Converto to GWT entity
+            for (Trigger trigger : triggerListResult.getItems()) {
+                gwtTriggerList.add(KapuaGwtJobModelConverter.convertTrigger(trigger));
             }
 
         } catch (Throwable t) {
@@ -86,13 +85,10 @@ public class GwtTriggerServiceImpl extends KapuaRemoteServiceServlet implements 
 
         GwtTrigger gwtTrigger = null;
         try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            TriggerFactory triggerFactory = locator.getFactory(TriggerFactory.class);
-            TriggerService triggerService = locator.getService(TriggerService.class);
             //
             KapuaId scopeId = KapuaEid.parseCompactId(gwtTriggerCreator.getScopeId());
 
-            TriggerCreator triggerCreator = triggerFactory.newCreator(scopeId);
+            TriggerCreator triggerCreator = TRIGGER_FACTORY.newCreator(scopeId);
             triggerCreator.setName(gwtTriggerCreator.getTriggerName());
             triggerCreator.setStartsOn(gwtTriggerCreator.getStartsOn());
             triggerCreator.setEndsOn(gwtTriggerCreator.getEndsOn());
@@ -101,7 +97,7 @@ public class GwtTriggerServiceImpl extends KapuaRemoteServiceServlet implements 
             triggerCreator.setTriggerProperties(GwtKapuaJobModelConverter.convertTriggerProperties(gwtTriggerCreator.getTriggerProperties()));
 
             // Create the User
-            Trigger trigger = triggerService.create(triggerCreator);
+            Trigger trigger = TRIGGER_SERVICE.create(triggerCreator);
 
             // convert to GwtAccount and return
             // reload the user as we want to load all its permissions
@@ -119,16 +115,12 @@ public class GwtTriggerServiceImpl extends KapuaRemoteServiceServlet implements 
 
         GwtTrigger gwtTriggerUpdated = null;
         try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            TriggerService triggerService = locator.getService(TriggerService.class);
-
             KapuaId scopeId = KapuaEid.parseCompactId(gwtTrigger.getScopeId());
             KapuaId triggerId = KapuaEid.parseCompactId(gwtTrigger.getId());
 
-            Trigger trigger = triggerService.find(scopeId, triggerId);
+            Trigger trigger = TRIGGER_SERVICE.find(scopeId, triggerId);
 
             if (trigger != null) {
-
                 //
                 // Update trigger
                 trigger.setName(gwtTrigger.getTriggerName());
@@ -141,7 +133,7 @@ public class GwtTriggerServiceImpl extends KapuaRemoteServiceServlet implements 
                 trigger.setOptlock(gwtTrigger.getOptlock());
 
                 // update the trigger
-                gwtTriggerUpdated = KapuaGwtJobModelConverter.convertTrigger(triggerService.update(trigger));
+                gwtTriggerUpdated = KapuaGwtJobModelConverter.convertTrigger(TRIGGER_SERVICE.update(trigger));
             }
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
@@ -153,13 +145,11 @@ public class GwtTriggerServiceImpl extends KapuaRemoteServiceServlet implements 
     public void delete(GwtXSRFToken xsrfToken, String gwtScopeId, String gwtTriggerId) throws GwtKapuaException {
         checkXSRFToken(xsrfToken);
 
-        KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtScopeId);
-        KapuaId triggerId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtTriggerId);
-
         try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            TriggerService triggerService = locator.getService(TriggerService.class);
-            triggerService.delete(scopeId, triggerId);
+            KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtScopeId);
+            KapuaId triggerId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtTriggerId);
+
+            TRIGGER_SERVICE.delete(scopeId, triggerId);
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }

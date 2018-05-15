@@ -33,14 +33,12 @@ public interface GwtEndpointService extends RemoteService {
 
     public GwtEndpoint find(String scopeShortId, String roleShortId) throws GwtKapuaException;
 
-    public PagingLoadResult<GwtEndpoint> query(PagingLoadConfig loadConfig,
-            GwtEndpointQuery gwtEndpointQuery) throws GwtKapuaException;
+    public PagingLoadResult<GwtEndpoint> query(PagingLoadConfig loadConfig, GwtEndpointQuery gwtEndpointQuery) throws GwtKapuaException;
 
     public void delete(String scopeId, String endpointId) throws GwtKapuaException;
 
-    public ListLoadResult<GwtGroupedNVPair> getEndpointDescription(String scopeShortId,
-            String endpointShortId) throws GwtKapuaException;
+    public ListLoadResult<GwtGroupedNVPair> getEndpointDescription(String scopeShortId, String endpointShortId) throws GwtKapuaException;
 
-    public List<GwtEndpoint> findAll(String scopeId);
+    public List<GwtEndpoint> findAll(String scopeId) throws GwtKapuaException;
 
 }

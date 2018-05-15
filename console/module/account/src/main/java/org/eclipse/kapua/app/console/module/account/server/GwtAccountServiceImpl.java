@@ -11,25 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.account.server;
 
-import javax.xml.namespace.QName;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
-import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.concurrent.Callable;
-
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
@@ -92,6 +73,25 @@ import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.xml.namespace.QName;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.concurrent.Callable;
 
 /**
  * The server side implementation of the RPC service.
@@ -414,7 +414,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                         gwtConfig.setId(tocd.getId());
                         gwtConfig.setName(tocd.getName());
                         gwtConfig.setDescription(tocd.getDescription());
-                        if (tocd.getIcon() != null && tocd.getIcon().size() > 0) {
+                        if (tocd.getIcon() != null && !tocd.getIcon().isEmpty()) {
                             KapuaTicon icon = tocd.getIcon().get(0);
 
                             checkIconResource(icon);
@@ -434,7 +434,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                                 gwtParam.setType(GwtConfigParameter.GwtConfigParameterType.fromString(ad.getType().value()));
                                 gwtParam.setRequired(ad.isRequired());
                                 gwtParam.setCardinality(ad.getCardinality());
-                                if (ad.getOption() != null && ad.getOption().size() > 0) {
+                                if (ad.getOption() != null && !ad.getOption().isEmpty()) {
                                     Map<String, String> options = new HashMap<String, String>();
                                     for (KapuaToption option : ad.getOption()) {
                                         options.put(option.getLabel(), option.getValue());
@@ -528,7 +528,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
 
                 File tmpDir = new File(tmpDirPathSb.toString());
                 if (!tmpDir.exists()) {
-                    LOG.info("Creating tmp dir on path: {}", tmpDir.toString());
+                    LOG.info("Creating tmp dir on path: {}", tmpDir);
                     tmpDir.mkdir();
                 }
 
@@ -545,7 +545,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                     long maxCacheTime = config.getLong(ConsoleSettingKeys.DEVICE_CONFIGURATION_ICON_CACHE_TIME);
 
                     if (System.currentTimeMillis() - lastModifiedDate > maxCacheTime) {
-                        LOG.info("Deleting old cached file: {}", tmpFile.toString());
+                        LOG.info("Deleting old cached file: {}", tmpFile);
                         tmpFile.delete();
                     }
                 }
@@ -573,7 +573,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                         LOG.warn("Cannot get Content-Length header!");
                     }
 
-                    LOG.info("Creating file: {}", tmpFile.toString());
+                    LOG.info("Creating file: {}", tmpFile);
                     tmpFile.createNewFile();
 
                     // Icon download
@@ -600,7 +600,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                         is.close();
                     }
 
-                    LOG.info("Downloaded file: {}", tmpFile.toString());
+                    LOG.info("Downloaded file: {}", tmpFile);
 
                     // Image metadata content checks
                     ImageFormat imgFormat = Sanselan.guessFormat(tmpFile);
@@ -620,7 +620,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
 
                     LOG.info("Image validation passed for URL: {}", iconResource);
                 } else {
-                    LOG.info("Using cached file: {}", tmpFile.toString());
+                    LOG.info("Using cached file: {}", tmpFile);
                 }
 
                 //
@@ -631,8 +631,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                 LOG.info("Injecting configuration component icon: {}", newResourceURL);
                 icon.setResource(newResourceURL);
             } catch (Exception e) {
-                if (tmpFile != null &&
-                        tmpFile.exists()) {
+                if (tmpFile != null && tmpFile.exists()) {
                     tmpFile.delete();
                 }
 
@@ -647,17 +646,17 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
 
     @Override
     public PagingLoadResult<GwtAccount> query(PagingLoadConfig loadConfig, GwtAccountQuery gwtAccountQuery) throws GwtKapuaException {
-        KapuaListResult<Account> accounts;
-        List<GwtAccount> gwtAccounts = new ArrayList<GwtAccount>();
-        int totalLength = 0;
-        AccountQuery query = GwtKapuaAccountModelConverter.convertAccountQuery(loadConfig, gwtAccountQuery);
 
+        int totalLength = 0;
+        List<GwtAccount> gwtAccounts = new ArrayList<GwtAccount>();
         try {
-            accounts = ACCOUNT_SERVICE.query(query);
+            AccountQuery query = GwtKapuaAccountModelConverter.convertAccountQuery(loadConfig, gwtAccountQuery);
+
+            KapuaListResult<Account> accounts = ACCOUNT_SERVICE.query(query);
             totalLength = (int) ACCOUNT_SERVICE.count(query);
+
             if (!accounts.isEmpty()) {
                 final UserQuery userQuery = USER_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtAccountQuery.getScopeId()));
-                Map<String, String> usernameMap = new HashMap<String, String>();
                 UserListResult usernames = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
 
                     @Override
@@ -666,6 +665,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                     }
                 });
 
+                Map<String, String> usernameMap = new HashMap<String, String>();
                 for (User user : usernames.getItems()) {
                     usernameMap.put(user.getId().toCompactId(), user.getName());
                 }

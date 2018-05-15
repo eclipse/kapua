@@ -11,12 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.server;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
-
+import com.extjs.gxt.ui.client.data.BaseListLoadResult;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
@@ -42,11 +41,11 @@ import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
 
-import com.extjs.gxt.ui.client.data.BaseListLoadResult;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
 
 /**
  * The server side implementation of the RPC service.
@@ -55,42 +54,52 @@ public class GwtDeviceConnectionServiceImpl extends KapuaRemoteServiceServlet im
 
     private static final long serialVersionUID = 3314502846487119577L;
 
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final DeviceConnectionService DEVICE_CONNECTION_SERVICE = LOCATOR.getService(DeviceConnectionService.class);
+
+    private static final UserService USER_SERVICE = LOCATOR.getService(UserService.class);
+    private static final UserFactory USER_FACTORY = LOCATOR.getFactory(UserFactory.class);
+
     @Override
     public PagingLoadResult<GwtDeviceConnection> query(PagingLoadConfig loadConfig, GwtDeviceConnectionQuery gwtDeviceConnectionQuery) throws GwtKapuaException {
-        KapuaListResult<DeviceConnection> deviceConnections;
-        List<GwtDeviceConnection> gwtDeviceConnections = new ArrayList<GwtDeviceConnection>();
+
         int totalLength = 0;
-        KapuaLocator locator = KapuaLocator.getInstance();
-        DeviceConnectionService deviceConnectionService = locator.getService(DeviceConnectionService.class);
-        DeviceConnectionQuery query = GwtKapuaDeviceModelConverter.convertConnectionQuery(loadConfig, gwtDeviceConnectionQuery);
-        final UserService userService = locator.getService(UserService.class);
-        final UserFactory userFactory = locator.getFactory(UserFactory.class);
-        Map<String, String> users = new HashMap<String, String>();
-        final UserQuery userQuery = userFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtDeviceConnectionQuery.getScopeId()));
+        List<GwtDeviceConnection> gwtDeviceConnections = new ArrayList<GwtDeviceConnection>();
         try {
-            UserListResult userList = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
+            DeviceConnectionQuery query = GwtKapuaDeviceModelConverter.convertConnectionQuery(loadConfig, gwtDeviceConnectionQuery);
 
-                @Override
-                public UserListResult call() throws Exception {
-                    return userService.query(userQuery);
-                }
-            });
-            for (User user : userList.getItems()) {
-                users.put(user.getId().toCompactId(), user.getName());
-            }
-            deviceConnections = deviceConnectionService.query(query);
-            totalLength = Long.valueOf(deviceConnectionService.count(query)).intValue();
-            for (DeviceConnection dc : deviceConnections.getItems()) {
-                GwtDeviceConnection gwtDeviceConnection = KapuaGwtDeviceModelConverter.convertDeviceConnection(dc);
-                if (dc.getUserId() != null) {
-                    gwtDeviceConnection.setUserName(users.get(dc.getUserId().toCompactId()));
-                }
-                if (dc.getReservedUserId() != null) {
-                    gwtDeviceConnection.setReservedUserName(users.get(dc.getReservedUserId().toCompactId()));
-                }
-                gwtDeviceConnections.add(gwtDeviceConnection);
-            }
+            KapuaListResult<DeviceConnection> deviceConnections = DEVICE_CONNECTION_SERVICE.query(query);
+            totalLength = (int) DEVICE_CONNECTION_SERVICE.count(query);
 
+            if (!deviceConnections.isEmpty()) {
+                Map<String, String> users = new HashMap<String, String>();
+                final UserQuery userQuery = USER_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtDeviceConnectionQuery.getScopeId()));
+
+                UserListResult userList = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
+
+                    @Override
+                    public UserListResult call() throws Exception {
+                        return USER_SERVICE.query(userQuery);
+                    }
+                });
+                for (User user : userList.getItems()) {
+                    users.put(user.getId().toCompactId(), user.getName());
+                }
+
+                for (DeviceConnection dc : deviceConnections.getItems()) {
+                    GwtDeviceConnection gwtDeviceConnection = KapuaGwtDeviceModelConverter.convertDeviceConnection(dc);
+                    if (dc.getUserId() != null) {
+                        gwtDeviceConnection.setUserName(users.get(dc.getUserId().toCompactId()));
+                    }
+
+                    if (dc.getReservedUserId() != null) {
+                        gwtDeviceConnection.setReservedUserName(users.get(dc.getReservedUserId().toCompactId()));
+                    }
+
+                    gwtDeviceConnections.add(gwtDeviceConnection);
+                }
+            }
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
@@ -105,9 +114,8 @@ public class GwtDeviceConnectionServiceImpl extends KapuaRemoteServiceServlet im
 
         GwtDeviceConnection gwtDeviceConnection = null;
         try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            DeviceConnectionService deviceConnectionService = locator.getService(DeviceConnectionService.class);
-            gwtDeviceConnection = KapuaGwtDeviceModelConverter.convertDeviceConnection(deviceConnectionService.find(scopeId, deviceConnectionId));
+
+            gwtDeviceConnection = KapuaGwtDeviceModelConverter.convertDeviceConnection(DEVICE_CONNECTION_SERVICE.find(scopeId, deviceConnectionId));
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
@@ -119,46 +127,45 @@ public class GwtDeviceConnectionServiceImpl extends KapuaRemoteServiceServlet im
     public ListLoadResult<GwtGroupedNVPair> getConnectionInfo(String scopeIdString, String gwtDeviceConnectionId) throws GwtKapuaException {
         KapuaId deviceConnectionId = KapuaEid.parseCompactId(gwtDeviceConnectionId);
         final KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
-        KapuaLocator locator = KapuaLocator.getInstance();
-        DeviceConnectionService deviceConnectionService = locator.getService(DeviceConnectionService.class);
-        final UserService userService = locator.getService(UserService.class);
 
         List<GwtGroupedNVPair> deviceConnectionPropertiesPairs = new ArrayList<GwtGroupedNVPair>();
         try {
-            final DeviceConnection deviceConnection = deviceConnectionService.find(scopeId, deviceConnectionId);
+            final DeviceConnection deviceConnection = DEVICE_CONNECTION_SERVICE.find(scopeId, deviceConnectionId);
             User connectionUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
 
                 @Override
                 public User call() throws Exception {
-                    return userService.find(scopeId, deviceConnection.getUserId());
+                    return USER_SERVICE.find(scopeId, deviceConnection.getUserId());
                 }
             });
             User createdUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
 
                 @Override
                 public User call() throws Exception {
-                    return userService.find(scopeId, deviceConnection.getCreatedBy());
+                    return USER_SERVICE.find(scopeId, deviceConnection.getCreatedBy());
                 }
             });
             User modifiedUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
 
                 @Override
                 public User call() throws Exception {
-                    return userService.find(scopeId, deviceConnection.getModifiedBy());
+                    return USER_SERVICE.find(scopeId, deviceConnection.getModifiedBy());
                 }
             });
+
             User reservedUser;
             if (deviceConnection.getReservedUserId() != null) {
                 reservedUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
 
                     @Override
                     public User call() throws Exception {
-                        return userService.find(scopeId, deviceConnection.getReservedUserId());
+                        return USER_SERVICE.find(scopeId, deviceConnection.getReservedUserId());
                     }
                 });
             } else {
                 reservedUser = null;
             }
+
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionStatus", deviceConnection.getStatus().toString()));
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionModifiedOn", deviceConnection.getModifiedOn()));
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionModifiedBy", modifiedUser != null ? modifiedUser.getName() : null));
@@ -171,7 +178,8 @@ public class GwtDeviceConnectionServiceImpl extends KapuaRemoteServiceServlet im
             if (deviceConnection.getUserCouplingMode() != null) {
                 gwtConnectionUserCouplingMode = GwtConnectionUserCouplingMode.valueOf(deviceConnection.getUserCouplingMode().name());
             }
-            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionUserCouplingModeInfo", "connectionUserCouplingMode", gwtConnectionUserCouplingMode != null ? gwtConnectionUserCouplingMode.getLabel() : null));
+            deviceConnectionPropertiesPairs
+                    .add(new GwtGroupedNVPair("connectionUserCouplingModeInfo", "connectionUserCouplingMode", gwtConnectionUserCouplingMode != null ? gwtConnectionUserCouplingMode.getLabel() : null));
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionUserCouplingModeInfo", "connectionReservedUser", reservedUser != null ? reservedUser.getName() : null));
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionUserCouplingModeInfo", "allowUserChange", deviceConnection.getAllowUserChange()));
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionFirstEstablishedOn", deviceConnection.getCreatedOn()));

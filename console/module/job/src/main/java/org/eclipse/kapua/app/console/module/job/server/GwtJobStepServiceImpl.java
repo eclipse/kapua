@@ -43,6 +43,11 @@ import java.util.List;
 
 public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements GwtJobStepService {
 
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final JobStepService JOB_STEP_SERVICE = LOCATOR.getService(JobStepService.class);
+    private static final JobStepDefinitionService JOB_STEP_DEFINITION_SERVICE = LOCATOR.getService(JobStepDefinitionService.class);
+
     @Override
     public PagingLoadResult<GwtJobStep> query(PagingLoadConfig loadConfig, GwtJobStepQuery gwtJobStepQuery) throws GwtKapuaException {
         //
@@ -50,31 +55,24 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
         int totalLength = 0;
         List<GwtJobStep> gwtJobStepList = new ArrayList<GwtJobStep>();
         try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            JobStepService jobStepService = locator.getService(JobStepService.class);
-            JobStepDefinitionService jobStepDefinitionService = locator.getService(JobStepDefinitionService.class);
             // Convert from GWT entity
             JobStepQuery jobStepQuery = GwtKapuaJobModelConverter.convertJobStepQuery(gwtJobStepQuery, loadConfig);
 
             // query
-            JobStepListResult jobStepList = jobStepService.query(jobStepQuery);
+            JobStepListResult jobStepList = JOB_STEP_SERVICE.query(jobStepQuery);
+            totalLength = (int) JOB_STEP_SERVICE.count(jobStepQuery);
 
-            // If there are results
-            if (!jobStepList.isEmpty()) {
-                // count
-                totalLength = Long.valueOf(jobStepService.count(jobStepQuery)).intValue();
+            // Converto to GWT entity
+            for (JobStep js : jobStepList.getItems()) {
+                GwtJobStep gwtJobStep = KapuaGwtJobModelConverter.convertJobStep(js);
 
-                // Converto to GWT entity
-                for (JobStep js : jobStepList.getItems()) {
-                    GwtJobStep gwtJobStep = KapuaGwtJobModelConverter.convertJobStep(js);
-                    JobStepDefinition jobStepDefinition = jobStepDefinitionService
-                            .find(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobStep.getScopeId()), GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobStep.getJobStepDefinitionId()));
-                    gwtJobStep.setJobStepDefinitionName(jobStepDefinition.getName());
+                JobStepDefinition jobStepDefinition = JOB_STEP_DEFINITION_SERVICE
+                        .find(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobStep.getScopeId()), GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobStep.getJobStepDefinitionId()));
+                gwtJobStep.setJobStepDefinitionName(jobStepDefinition.getName());
 
-                    setEnumOnJobStepProperty(gwtJobStep.getStepProperties());
+                setEnumOnJobStepProperty(gwtJobStep.getStepProperties());
 
-                    gwtJobStepList.add(gwtJobStep);
-                }
+                gwtJobStepList.add(gwtJobStep);
             }
 
         } catch (Throwable t) {
@@ -90,6 +88,7 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
             GwtJobStepQuery gwtJobStepQuery = new GwtJobStepQuery();
             gwtJobStepQuery.setScopeId(scopeId);
             gwtJobStepQuery.setJobId(jobId);
+
             return query(loadConfig, gwtJobStepQuery);
         } else {
             return new BasePagingLoadResult<GwtJobStep>(new ArrayList<GwtJobStep>(), 0, 0);
@@ -110,9 +109,7 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
             JobStepCreator jobStepCreator = GwtKapuaJobModelConverter.convertJobStepCreator(gwtJobStepCreator);
 
             // Create
-            KapuaLocator locator = KapuaLocator.getInstance();
-            JobStepService jobStepService = locator.getService(JobStepService.class);
-            JobStep jobStep = jobStepService.create(jobStepCreator);
+            JobStep jobStep = JOB_STEP_SERVICE.create(jobStepCreator);
 
             // Convert
             gwtJobStep = KapuaGwtJobModelConverter.convertJobStep(jobStep);
@@ -135,9 +132,7 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
         KapuaId jobTargetId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobStepId);
 
         try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            JobStepService jobTargetService = locator.getService(JobStepService.class);
-            jobTargetService.delete(scopeId, jobTargetId);
+            JOB_STEP_SERVICE.delete(scopeId, jobTargetId);
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
@@ -145,14 +140,14 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
 
     @Override
     public GwtJobStep find(String gwtScopeId, String gwtJobStepId) throws GwtKapuaException {
-        KapuaId scopeId = KapuaEid.parseCompactId(gwtScopeId);
-        KapuaId jobStepId = KapuaEid.parseCompactId(gwtJobStepId);
 
         GwtJobStep gwtJobStep = null;
         try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            JobStepService gwtJobStepService = locator.getService(JobStepService.class);
-            JobStep jobStep = gwtJobStepService.find(scopeId, jobStepId);
+            KapuaId scopeId = KapuaEid.parseCompactId(gwtScopeId);
+            KapuaId jobStepId = KapuaEid.parseCompactId(gwtJobStepId);
+
+            JobStep jobStep = JOB_STEP_SERVICE.find(scopeId, jobStepId);
+
             if (jobStep != null) {
                 gwtJobStep = KapuaGwtJobModelConverter.convertJobStep(jobStep);
 
@@ -167,12 +162,13 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
 
     @Override
     public int getFirstFreeStepIndex(String gwtScopeId, String gwtJobId) throws GwtKapuaException {
-        BasePagingLoadConfig loadConfig = new BasePagingLoadConfig();
         GwtJobStepQuery query = new GwtJobStepQuery();
         query.setScopeId(gwtScopeId);
         query.setJobId(gwtJobId);
         query.setSortAttribute(GwtJobStepQuery.GwtSortAttribute.STEP_INDEX);
         query.setSortOrder(GwtJobStepQuery.GwtSortOrder.DESCENDING);
+
+        BasePagingLoadConfig loadConfig = new BasePagingLoadConfig();
         PagingLoadResult<GwtJobStep> result = query(loadConfig, query);
         if (result.getData().size() > 0) {
             return result.getData().get(0).getStepIndex() + 1;
@@ -187,13 +183,10 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
 
         GwtJobStep gwtJobStepUpdated = null;
         try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            JobStepService jobStepService = locator.getService(JobStepService.class);
-
             KapuaId scopeId = KapuaEid.parseCompactId(gwtJobStep.getScopeId());
             KapuaId userId = KapuaEid.parseCompactId(gwtJobStep.getId());
 
-            JobStep jobStep = jobStepService.find(scopeId, userId);
+            JobStep jobStep = JOB_STEP_SERVICE.find(scopeId, userId);
 
             if (jobStep != null) {
 
@@ -208,7 +201,7 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
                 jobStep.setOptlock(gwtJobStep.getOptlock());
 
                 // update the user
-                JobStep jobStepUpdated = jobStepService.update(jobStep);
+                JobStep jobStepUpdated = JOB_STEP_SERVICE.update(jobStep);
 
                 //
                 // convert to GwtAccount and return

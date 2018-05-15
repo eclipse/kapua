@@ -179,21 +179,20 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             RoleListResult roles = ROLE_SERVICE.query(roleQuery);
             totalLength = Long.valueOf(ROLE_SERVICE.count(roleQuery)).intValue();
 
-            UserListResult userListResult = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
-
-                @Override
-                public UserListResult call() throws Exception {
-                    return USER_SERVICE.query(USER_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtRoleQuery.getScopeId())));
-                }
-            });
-
-            Map<String, String> usernameMap = new HashMap<String, String>();
-            for (User user : userListResult.getItems()) {
-                usernameMap.put(user.getId().toCompactId(), user.getName());
-            }
-
-            // If there are results
             if (!roles.isEmpty()) {
+                UserListResult userListResult = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
+
+                    @Override
+                    public UserListResult call() throws Exception {
+                        return USER_SERVICE.query(USER_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtRoleQuery.getScopeId())));
+                    }
+                });
+
+                Map<String, String> usernameMap = new HashMap<String, String>();
+                for (User user : userListResult.getItems()) {
+                    usernameMap.put(user.getId().toCompactId(), user.getName());
+                }
+
                 // Converto to GWT entity
                 for (Role r : roles.getItems()) {
                     GwtRole gwtRole = KapuaGwtAuthorizationModelConverter.convertRole(r);
