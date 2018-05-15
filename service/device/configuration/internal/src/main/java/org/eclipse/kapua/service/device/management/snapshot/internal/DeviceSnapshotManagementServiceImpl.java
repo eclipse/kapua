@@ -100,18 +100,14 @@ public class DeviceSnapshotManagementServiceImpl extends AbstractDeviceManagemen
             try {
                 body = new String(responsePayload.getBody(), charEncoding);
             } catch (Exception e) {
-                throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION,
-                        e,
-                        responsePayload.getBody());
+                throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, (Object) responsePayload.getBody());
             }
 
             DeviceSnapshots deviceSnapshots = null;
             try {
                 deviceSnapshots = XmlUtil.unmarshal(body, DeviceSnapshotsImpl.class);
             } catch (Exception e) {
-                throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION,
-                        e,
-                        body);
+                throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, body);
             }
 
             return deviceSnapshots;

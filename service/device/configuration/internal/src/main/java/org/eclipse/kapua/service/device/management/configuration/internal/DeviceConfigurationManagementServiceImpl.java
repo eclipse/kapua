@@ -112,8 +112,7 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
                 try {
                     body = new String(responsePayload.getBody(), charEncoding);
                 } catch (Exception e) {
-                    throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, responsePayload.getBody());
-
+                    throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, (Object) responsePayload.getBody());
                 }
 
                 try {
@@ -211,7 +210,6 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
                     XmlUtil.unmarshal(xmlDeviceConfig, DeviceConfigurationImpl.class),
                     timeout);
         } catch (JAXBException | XMLStreamException | FactoryConfigurationError | SAXException e) {
-            // FIXME: rethrow or log this exception
             throw new KapuaIllegalArgumentException(xmlDeviceConfig, xmlDeviceConfig);
         }
     }

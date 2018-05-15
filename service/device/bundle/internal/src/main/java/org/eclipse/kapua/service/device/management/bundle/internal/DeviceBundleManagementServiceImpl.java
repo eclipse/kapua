@@ -84,7 +84,7 @@ public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementS
         //
         // Do get
         DeviceCallExecutor<BundleRequestChannel, BundleRequestPayload, BundleRequestMessage, BundleResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(bundleRequestMessage, timeout);
-        BundleResponseMessage responseMessage = (BundleResponseMessage) deviceApplicationCall.send();
+        BundleResponseMessage responseMessage = deviceApplicationCall.send();
 
         //
         // Create event
@@ -102,7 +102,7 @@ public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementS
             try {
                 body = new String(responsePayload.getBody(), charEncoding);
             } catch (Exception e) {
-                throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, responsePayload.getBody());
+                throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, (Object) responsePayload.getBody());
             }
 
             DeviceBundles deviceBundleList = null;
