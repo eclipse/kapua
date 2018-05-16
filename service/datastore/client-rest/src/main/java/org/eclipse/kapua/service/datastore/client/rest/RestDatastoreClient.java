@@ -12,7 +12,6 @@
 package org.eclipse.kapua.service.datastore.client.rest;
 
 import com.codahale.metrics.Counter;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -435,7 +434,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
             resultsNode = ((ArrayNode) hitsNode.get(KEY_HITS));
         } else if (queryResponse != null) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR,
-                    (queryResponse != null && queryResponse.getStatusLine() != null) ? queryResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
+                    (queryResponse.getStatusLine() != null) ? queryResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
         }
         ResultList<T> resultList = new ResultList<>(totalCount);
         if (resultsNode != null && resultsNode.size() > 0) {
@@ -486,7 +485,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
             }
         } else if (queryResponse != null) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR,
-                    (queryResponse != null && queryResponse.getStatusLine() != null) ? queryResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
+                    (queryResponse.getStatusLine() != null) ? queryResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
         }
         return totalCount;
     }
@@ -507,7 +506,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
         }, typeDescriptor.getIndex(), "DELETE");
         if (deleteResponse != null && !isRequestSuccessful(deleteResponse)) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR,
-                    (deleteResponse != null && deleteResponse.getStatusLine() != null) ? deleteResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
+                    (deleteResponse.getStatusLine() != null) ? deleteResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
         }
     }
 
@@ -531,7 +530,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
         }, typeDescriptor.getIndex(), "DELETE BY QUERY");
         if (deleteResponse != null && !isRequestSuccessful(deleteResponse)) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR,
-                    (deleteResponse != null && deleteResponse.getStatusLine() != null) ? deleteResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
+                    (deleteResponse.getStatusLine() != null) ? deleteResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
         }
     }
 
@@ -722,7 +721,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
                 logger.debug("Deleting index {} : index does not exist", index);
             } else if (!isRequestSuccessful(deleteIndexResponse)) {
                 throw new ClientException(ClientErrorCodes.ACTION_ERROR,
-                        (deleteIndexResponse != null && deleteIndexResponse.getStatusLine() != null) ? deleteIndexResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
+                        (deleteIndexResponse.getStatusLine() != null) ? deleteIndexResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
             }
             logger.debug("Deleting index {} DONE", index);
         }
@@ -771,8 +770,6 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
             } else {
                 throw new ClientException(ClientErrorCodes.ACTION_ERROR, re);
             }
-        } catch (JsonProcessingException e) {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR, e);
         } catch (IOException e) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR, e);
         } catch (Exception e) {

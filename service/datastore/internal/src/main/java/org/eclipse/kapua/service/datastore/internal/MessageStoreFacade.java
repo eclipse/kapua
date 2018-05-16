@@ -234,7 +234,6 @@ public final class MessageStoreFacade {
      * @param fetchStyle
      * @return
      * @throws KapuaIllegalArgumentException
-     * @throws ConfigurationException
      * @throws QueryMappingException
      * @throws ClientException
      */
