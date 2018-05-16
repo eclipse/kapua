@@ -11,13 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access.shiro;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -25,11 +18,17 @@ import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionImpl;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 /**
  * User permission implementation.
  *
  * @since 1.0
- *
  */
 @Entity(name = "AccessPermission")
 @Table(name = "athz_access_permission")
@@ -94,7 +93,6 @@ public class AccessPermissionImpl extends AbstractKapuaEntity implements AccessP
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Permission getPermission() {
         return permission != null ? permission : new PermissionImpl(null, null, null, null);
     }
@@ -127,13 +125,7 @@ public class AccessPermissionImpl extends AbstractKapuaEntity implements AccessP
         } else if (!accessInfoId.equals(other.accessInfoId)) {
             return false;
         }
-        if (getPermission() == null) {
-            if (other.getPermission() != null) {
-                return false;
-            }
-        } else if (!getPermission().equals(other.getPermission())) {
-            return false;
-        }
-        return true;
+
+        return getPermission().equals(other.getPermission());
     }
 }

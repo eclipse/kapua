@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -108,14 +108,14 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> extends Abstrac
                     if (fileFullPath.endsWith(".properties")) {
                         loadConfigResource(compositeConfig, fileFullPath);
                     } else {
-                        LOG.warn(String.format("Ignored file: '%s'", fileFullPath));
+                        LOG.warn("Ignored file: '{}'", fileFullPath);
                     }
                 }
             } else {
-                LOG.warn(String.format("Empty config directory: '%s'", configResourceDirName));
+                LOG.warn("Empty config directory: '{}'", configResourceDirName);
             }
         } else {
-            LOG.error(String.format("Unable to locate directory: '%s'", configResourceDirName));
+            LOG.error("Unable to locate directory: '{}'", configResourceDirName);
             throw new KapuaSettingException(KapuaSettingErrorCodes.RESOURCE_NOT_FOUND, null, configResourceDirName);
         }
     }
@@ -136,16 +136,10 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> extends Abstrac
         try {
             configUrl = KapuaFileUtils.getAsURL(configResourceName);
 
-            if (configUrl != null) {
-                compositeConfig.addConfiguration(new PropertiesConfiguration(configUrl));
-                LOG.debug("Loaded configuration resource: '{}'", configResourceName);
-            } else {
-                LOG.error("Unable to locate configuration resource: '{}'", configResourceName);
-                throw new KapuaSettingException(KapuaSettingErrorCodes.RESOURCE_NOT_FOUND, null, configResourceName);
-            }
+            compositeConfig.addConfiguration(new PropertiesConfiguration(configUrl));
+            LOG.debug("Loaded configuration resource: '{}'", configResourceName);
         } catch (ConfigurationException ce) {
             throw new KapuaSettingException(KapuaSettingErrorCodes.INVALID_RESOURCE_FILE, ce, configUrl);
         }
     }
-
 }

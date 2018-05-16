@@ -11,7 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role.shiro;
 
-import java.util.Date;
+import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authorization.permission.Permission;
+import org.eclipse.kapua.service.authorization.permission.shiro.PermissionImpl;
+import org.eclipse.kapua.service.authorization.role.RolePermission;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -20,14 +26,7 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
-
-import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authorization.permission.Permission;
-import org.eclipse.kapua.service.authorization.permission.shiro.PermissionImpl;
-import org.eclipse.kapua.service.authorization.role.RolePermission;
+import java.util.Date;
 
 /**
  * {@link RolePermission} implementation.
@@ -106,7 +105,6 @@ public class RolePermissionImpl extends AbstractKapuaEntity implements RolePermi
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Permission getPermission() {
         return permission != null ? permission : new PermissionImpl(null, null, null, null);
     }
@@ -155,13 +153,7 @@ public class RolePermissionImpl extends AbstractKapuaEntity implements RolePermi
         } else if (!roleId.equals(other.roleId)) {
             return false;
         }
-        if (getPermission() == null) {
-            if (other.getPermission() != null) {
-                return false;
-            }
-        } else if (!getPermission().equals(other.getPermission())) {
-            return false;
-        }
-        return true;
+
+        return getPermission().equals(other.getPermission());
     }
 }
