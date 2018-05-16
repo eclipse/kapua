@@ -378,6 +378,8 @@ public class DeviceConfigSnapshots extends LayoutContainer {
             } else {
                 toolBar.enable();
                 refreshButton.enable();
+                downloadButton.disable();
+                rollbackButton.disable();
                 reload();
             }
         }
