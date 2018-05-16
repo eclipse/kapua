@@ -128,6 +128,7 @@ public class UserEditDialog extends UserAddDialog {
         if (passwordTooltip != null) {
             passwordTooltip.hide();
         }
+        username.setValue(gwtUser.getUsername());
         displayName.setValue(gwtUser.getDisplayName());
         email.setValue(gwtUser.getEmail());
         phoneNumber.setValue(gwtUser.getPhoneNumber());
