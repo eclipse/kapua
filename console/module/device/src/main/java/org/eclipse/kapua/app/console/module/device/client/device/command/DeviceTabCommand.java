@@ -59,6 +59,7 @@ import org.eclipse.kapua.app.console.module.device.shared.model.permission.Devic
 public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
 
     private static final String UNDEFINED_ERROR = "Error: ";
+    private static final String INTERNAL_ERROR = "Error: INTERNAL_ERROR";
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     private static final ConsoleDeviceMessages DEVICE_MSGS = GWT.create(ConsoleDeviceMessages.class);
 
@@ -216,8 +217,11 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
 
                     if (UNDEFINED_ERROR.equals(errorMessage)) {
                         errorMessage = DEVICE_MSGS.deviceConnectionError();
+                    } else if (errorMessage.contains(INTERNAL_ERROR)) {
+                        errorMessage = errorMessage.substring(errorMessage.indexOf(INTERNAL_ERROR) + INTERNAL_ERROR.length() + 1,
+                                errorMessage.indexOf(": error="));
                     }
-                    MessageBox.alert(MSGS.error(), MSGS.fileUploadFailure() + ":<br/>" + errorMessage, null);
+                    MessageBox.alert(MSGS.error(), MSGS.commandExecutionFailure() + ":<br/>" + errorMessage, null);
                     commandInput.unmask();
                 } else {
                     int outputMessageStartIndex = htmlResult.indexOf("<pre");
