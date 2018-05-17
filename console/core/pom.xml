@@ -17,7 +17,7 @@
     <parent>
         <artifactId>kapua-console</artifactId>
         <groupId>org.eclipse.kapua</groupId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0-M5</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -143,13 +143,13 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-endpoint</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0-M5</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-endpoint</artifactId>
             <classifier>sources</classifier>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0-M5</version>
         </dependency>
 
         <dependency>
