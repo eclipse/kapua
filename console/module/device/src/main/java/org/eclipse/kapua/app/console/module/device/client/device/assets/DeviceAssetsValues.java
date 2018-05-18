@@ -134,12 +134,12 @@ public class DeviceAssetsValues extends LayoutContainer {
         devicesAssetPanel.add(assetValuesContainer);
 
         add(devicesAssetPanel);
-        layout(true);
         toolBar.setStyleAttribute("border-left", "1px solid rgb(208, 208, 208)");
         toolBar.setStyleAttribute("border-right", "1px solid rgb(208, 208, 208)");
         toolBar.setStyleAttribute("border-top", "1px solid rgb(208, 208, 208)");
         toolBar.setStyleAttribute("border-bottom", "0px none");
         initialized = true;
+        layout(true);
     }
 
     private void initToolBar() {
@@ -272,7 +272,7 @@ public class DeviceAssetsValues extends LayoutContainer {
         tree.setDisplayProperty("componentName");
         tree.setBorders(true);
         tree.setLabelProvider(modelStringProvider);
-        tree.setAutoSelect(false);
+        tree.setAutoSelect(true);
         tree.setStyleAttribute("background-color", "white");
 
         assetValuesContainer.add(tree, westData);
