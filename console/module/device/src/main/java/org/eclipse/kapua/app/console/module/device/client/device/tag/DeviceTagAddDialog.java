@@ -105,6 +105,7 @@ public class DeviceTagAddDialog extends EntityAddEditDialog {
         tagsCombo.setFieldLabel("* " + MSGS.dialogDeviceTagAddFieldTag());
         tagsCombo.setTriggerAction(TriggerAction.ALL);
         tagsCombo.setDisplayField("tagName");
+        tagsCombo.setTemplate("<tpl for=\".\"><div role=\"listitem\" class=\"x-combo-list-item\" title={tagName}>{tagName}</div></tpl>");
 
         GWT_TAG_SERVICE.findAll(selectedDevice.getScopeId(), new AsyncCallback<List<GwtTag>>() {
 
