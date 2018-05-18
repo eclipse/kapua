@@ -17,6 +17,8 @@ import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.module.api.shared.eventMessages.MessageChecker;
+import org.eclipse.kapua.app.console.module.api.shared.eventMessages.handlers.UserDisplayNameMessageHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserService;
@@ -78,6 +80,9 @@ public class UserEditDialog extends UserAddDialog {
                 exitStatus = true;
                 exitMessage = USER_MSGS.dialogEditConfirmation();
                 hide();
+                MessageChecker checker = new MessageChecker();
+                checker.addMessageReceivedEventHandler(UserDisplayNameMessageHandler.getInstance());
+                checker.newMessageReceived(arg0.getDisplayName());
             }
 
             @Override
