@@ -80,9 +80,11 @@ public class UserEditDialog extends UserAddDialog {
                 exitStatus = true;
                 exitMessage = USER_MSGS.dialogEditConfirmation();
                 hide();
-                MessageChecker checker = new MessageChecker();
-                checker.addMessageReceivedEventHandler(UserDisplayNameMessageHandler.getInstance());
-                checker.newMessageReceived(arg0.getDisplayName());
+                if(currentSession.getUserName().equals(selectedUser.getUsername())) {
+                    MessageChecker checker = new MessageChecker();
+                    checker.addMessageReceivedEventHandler(UserDisplayNameMessageHandler.getInstance());
+                    checker.newMessageReceived(arg0.getDisplayName());
+                }
             }
 
             @Override
