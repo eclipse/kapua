@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -42,6 +42,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.ExportButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.DateRangeSelector;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.DateRangeSelectorListener;
@@ -89,9 +90,11 @@ public class ResultsTable extends LayoutContainer {
     private Date endDate;
     private ExportButton exportButton;
     private DateRangeSelector dateRangeSelector;
+    private Button queryButton;
 
-    public ResultsTable(GwtSession currentSession) {
+    public ResultsTable(GwtSession currentSession, Button queryButton) {
         this.currentSession = currentSession;
+        this.queryButton = queryButton;
     }
 
     @Override
@@ -167,6 +170,34 @@ public class ResultsTable extends LayoutContainer {
                 }
             }
         });
+        loader.addListener(Loader.BeforeLoad, new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent baseEvent) {
+                if (queryButton != null) {
+                    queryButton.disable();
+                }
+            }
+        } );
+        loader.addListener(Loader.Load, new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent baseEvent) {
+                if (queryButton != null) {
+                    queryButton.enable();
+                }
+            }
+        } );
+        loader.addListener(Loader.LoadException, new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent baseEvent) {
+                if (queryButton != null) {
+                    queryButton.enable();
+                }
+            }
+        } );
+
         loader.setSortField("timestampFormatted");
         loader.setSortDir(SortDir.DESC);
         loader.setRemoteSort(true);

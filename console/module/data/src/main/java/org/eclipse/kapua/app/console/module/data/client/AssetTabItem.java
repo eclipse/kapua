@@ -139,6 +139,7 @@ public class AssetTabItem extends TabItem {
             }
         });
         queryButton.disable();
+
         TableLayout queryButtonTL = new TableLayout();
         queryButtonTL.setCellPadding(0);
         LayoutContainer queryButtonContainer = new LayoutContainer(queryButtonTL);
@@ -154,7 +155,7 @@ public class AssetTabItem extends TabItem {
         resultsTabPanel.setBorders(false);
         resultsTabPanel.setBodyBorder(false);
 
-        resultsTable = new ResultsTable(currentSession);
+        resultsTable = new ResultsTable(currentSession, queryButton);
         TabItem resultsTableTabItem = new TabItem(MSGS.resultsTableTabItemTitle(), new KapuaIcon(IconSet.TABLE));
         resultsTableTabItem.setLayout(new FitLayout());
         resultsTableTabItem.add(resultsTable);
