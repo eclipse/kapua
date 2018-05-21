@@ -59,6 +59,11 @@ public class JobStepAddDialog extends EntityAddEditDialog {
      */
     protected static final String KAPUA_ID_CLASS_NAME = "org.eclipse.kapua.model.id.KapuaId";
 
+    /**
+     * Limitation of double value as max integer 2^52.
+     */
+    public static final long MAX_SAFE_INTEGER = 4503599627370496L;
+
     private final String jobId;
 
     protected final TextField<String> jobStepName;
@@ -220,7 +225,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
                 numberField.setData(PROPERTY_TYPE, property.getPropertyType());
                 numberField.setData(PROPERTY_NAME, property.getPropertyName());
                 if (propertyType.equals(Long.class.getName())) {
-                    numberField.setMaxValue(Long.MAX_VALUE);
+                    numberField.setMaxValue(MAX_SAFE_INTEGER);
                 } else if (propertyType.equals(Integer.class.getName())) {
                     numberField.setMaxValue(Integer.MAX_VALUE);
                 } else if (propertyType.equals(Float.class.getName())) {
