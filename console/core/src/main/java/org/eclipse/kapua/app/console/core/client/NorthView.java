@@ -121,6 +121,10 @@ public class NorthView extends LayoutContainer {
                 new TableData(Style.HorizontalAlignment.RIGHT,
                         Style.VerticalAlignment.MIDDLE));
 
+        ReceiveMessageHandler receiveMessageHandler = new ReceiveMessageHandler();
+        receiveMessageHandler.getChecker().addMessageReceivedEventHandler(receiveMessageHandler);
+        receiveMessageHandler.setView(this);
+
         add(panel);
     }
 
@@ -356,7 +360,7 @@ public class NorthView extends LayoutContainer {
      * else:<br/>
      * {username} @ {selectedAccountName}<br/>
      */
-    private void updateUserActionButtonLabel() {
+    public void updateUserActionButtonLabel() {
         // Current selected scope
         String accountName = currentSession.getSelectedAccountName();
 
@@ -366,5 +370,9 @@ public class NorthView extends LayoutContainer {
             userDisplayName = username;
         }
         userActionButton.setText(MSGS.consoleHeaderUserActionButtonLabel(userDisplayName, accountName));
+    }
+
+    public void setDisplayName(String name) {
+        this.userDisplayName = name;
     }
 }
