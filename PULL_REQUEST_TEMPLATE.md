@@ -1,8 +1,12 @@
+Brief description of the PR.
+[e.g. Added `null` check on `object` to avoid `NullPointerException`]
+
+**Related Issue**
 This PR fixes/closes _{issue number}_
 
 **Description of the solution adopted**
-Brief and concise description of the changes made to solve/close one or more issues.
-[e.g. Added `null` check on `object` to avoid `NullPointerException`]
+A more detailed description of the changes made to solve/close one or more issues.
+If the PR is simple and easy to inderstand this section can be skipped.
 
 **Screenshots**
 If applicable, add screenshots to help explain your solution
