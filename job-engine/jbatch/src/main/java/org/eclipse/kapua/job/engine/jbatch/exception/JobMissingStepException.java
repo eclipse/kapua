@@ -13,7 +13,7 @@ package org.eclipse.kapua.job.engine.jbatch.exception;
 
 import org.eclipse.kapua.model.id.KapuaId;
 
-public class JobMissingStepException extends StartJobEngineException {
+public class JobMissingStepException extends JobEngineException {
 
     public JobMissingStepException(KapuaId scopeId, KapuaId jobId) {
         super(KapuaJobEngineErrorCodes.JOB_STEP_MISSING, scopeId, jobId);

@@ -19,6 +19,7 @@ import com.ibm.jbatch.jsl.model.JSLJob;
 import com.ibm.jbatch.jsl.model.Step;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
+
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.job.engine.JobStartOptions;
@@ -26,6 +27,7 @@ import org.eclipse.kapua.job.engine.jbatch.driver.exception.CannotBuildJobDefDri
 import org.eclipse.kapua.job.engine.jbatch.driver.exception.CannotCleanJobDefFileDriverException;
 import org.eclipse.kapua.job.engine.jbatch.driver.exception.CannotCreateTmpDirDriverException;
 import org.eclipse.kapua.job.engine.jbatch.driver.exception.CannotWriteJobDefFileDriverException;
+import org.eclipse.kapua.job.engine.jbatch.driver.exception.CleanJobDataDriverException;
 import org.eclipse.kapua.job.engine.jbatch.driver.exception.ExecutionNotFoundDriverException;
 import org.eclipse.kapua.job.engine.jbatch.driver.exception.ExecutionNotRunningDriverException;
 import org.eclipse.kapua.job.engine.jbatch.driver.exception.JbatchDriverException;
@@ -47,6 +49,7 @@ import org.eclipse.kapua.service.job.step.JobStepQuery;
 import org.eclipse.kapua.service.job.step.JobStepService;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -143,14 +146,14 @@ public class JbatchDriver {
                 Step jslStep = new Step();
                 JobStepDefinition jobStepDefinition = STEP_DEFINITION_SERVICE.find(jobStep.getScopeId(), jobStep.getJobStepDefinitionId());
                 switch (jobStepDefinition.getStepType()) {
-                case GENERIC:
-                    jslStep.setBatchlet(JobDefinitionBuildUtils.buildGenericStep(jobStepDefinition));
-                    break;
-                case TARGET:
-                    jslStep.setChunk(JobDefinitionBuildUtils.buildChunkStep(jobStepDefinition));
-                    break;
-                default:
-                    throw new KapuaIllegalArgumentException(jobStepDefinition.getStepType().name(), "jobStepDefinition.stepType");
+                    case GENERIC:
+                        jslStep.setBatchlet(JobDefinitionBuildUtils.buildGenericStep(jobStepDefinition));
+                        break;
+                    case TARGET:
+                        jslStep.setChunk(JobDefinitionBuildUtils.buildChunkStep(jobStepDefinition));
+                        break;
+                    default:
+                        throw new KapuaIllegalArgumentException(jobStepDefinition.getStepType().name(), "jobStepDefinition.stepType");
                 }
 
                 jslStep.setId("step-" + jobStep.getStepIndex());
@@ -266,9 +269,13 @@ public class JbatchDriver {
         return getRunningJobExecution(scopeId, jobId) != null;
     }
 
-    public static void cleanJobData(@NotNull KapuaId scopeId, @NotNull KapuaId jobId) {
+    public static void cleanJobData(@NotNull KapuaId scopeId, @NotNull KapuaId jobId) throws CleanJobDataDriverException {
         String jobName = getJbatchJobName(scopeId, jobId);
-        ((KapuaJDBCPersistenceManagerImpl)ServicesManagerImpl.getInstance().getPersistenceManagerService()).purgeByName(jobName);
+        try {
+            ((KapuaJDBCPersistenceManagerImpl) ServicesManagerImpl.getInstance().getPersistenceManagerService()).purgeByName(jobName);
+        } catch (Exception ex) {
+            throw new CleanJobDataDriverException(jobName);
+        }
     }
 
     //

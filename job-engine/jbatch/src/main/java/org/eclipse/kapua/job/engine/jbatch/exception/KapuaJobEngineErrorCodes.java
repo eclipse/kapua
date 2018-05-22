@@ -58,6 +58,11 @@ public enum KapuaJobEngineErrorCodes implements KapuaErrorCode {
     /**
      * The {@link org.eclipse.kapua.service.job.Job} is not currently running
      */
-    JOB_NOT_RUNNING
+    JOB_NOT_RUNNING,
+
+    /**
+     * Data related to the {@link org.eclipse.kapua.service.job.Job} could not be cleaned
+     */
+    CANNOT_CLEANUP_JOB_DATA,
 
 }

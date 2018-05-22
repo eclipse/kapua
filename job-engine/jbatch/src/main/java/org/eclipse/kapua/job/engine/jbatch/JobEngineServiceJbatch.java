@@ -19,11 +19,12 @@ import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.job.engine.jbatch.driver.JbatchDriver;
+import org.eclipse.kapua.job.engine.jbatch.exception.CleanJobDataException;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobAlreadyRunningException;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobCheckRunningException;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobInvalidTargetException;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobNotRunningException;
-import org.eclipse.kapua.job.engine.jbatch.exception.JobStaringException;
+import org.eclipse.kapua.job.engine.jbatch.exception.JobStartingException;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobStopppingException;
 import org.eclipse.kapua.job.engine.jbatch.exception.KapuaJobEngineErrorCodes;
 import org.eclipse.kapua.job.engine.jbatch.exception.KapuaJobEngineException;
@@ -126,7 +127,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         try {
             JbatchDriver.startJob(scopeId, jobId, jobStartOptions);
         } catch (Exception e) {
-            throw new JobStaringException(e, scopeId, jobId);
+            throw new JobStartingException(e, scopeId, jobId);
         }
     }
 
@@ -192,6 +193,31 @@ public class JobEngineServiceJbatch implements JobEngineService {
 
     @Override
     public void cleanJobData(KapuaId scopeId, KapuaId jobId) throws KapuaException {
-        JbatchDriver.cleanJobData(scopeId, jobId);
+        //
+        // Argument Validation
+        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(jobId, "jobId");
+
+        //
+        // Check Access
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.execute, scopeId));
+
+        //
+        // Check existence
+        Job job = JOB_SERVICE.find(scopeId, jobId);
+        if (job == null) {
+            throw new KapuaEntityNotFoundException(Job.TYPE, jobId);
+        }
+
+        //
+        // Check job not running
+        if (JbatchDriver.isRunningJob(scopeId, jobId)) {
+            throw new JobNotRunningException(scopeId, jobId);
+        }
+        try {
+            JbatchDriver.cleanJobData(scopeId, jobId);
+        } catch (Exception ex) {
+            throw new CleanJobDataException(ex, scopeId, jobId);
+        }
     }
 }
