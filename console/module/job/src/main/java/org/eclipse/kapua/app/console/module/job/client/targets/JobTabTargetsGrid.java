@@ -96,10 +96,6 @@ public class JobTabTargetsGrid extends EntityGrid<GwtJobTarget> {
         columnConfig = new ColumnConfig("status", MSGS.gridJobTargetColumnHeaderStatus(), 200);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("errorMessage", MSGS.gridJobTargetColumnHeaderErrorMessage(), 200);
-        columnConfig.setSortable(false);
-        columnConfigs.add(columnConfig);
-
         return columnConfigs;
     }
 
