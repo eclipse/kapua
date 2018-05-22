@@ -74,4 +74,13 @@ public interface JobEngineService extends KapuaService, KapuaDomainService<JobDo
      */
     void stopJob(KapuaId scopeId, KapuaId jobId) throws KapuaException;
 
+    /**
+     * Cleans all the Job related data from the data structures supporting the {@link JobEngineService}
+     *
+     * @param scopeId The scopeId of the {@link org.eclipse.kapua.service.job.Job}
+     * @param jobId   The id of the {@link org.eclipse.kapua.service.job.Job}
+     * @throws KapuaException if something goes bad when checking the status of the job
+     * @since 1.0.0
+     */
+    void cleanJobData(KapuaId scopeId, KapuaId jobId) throws KapuaException;
 }

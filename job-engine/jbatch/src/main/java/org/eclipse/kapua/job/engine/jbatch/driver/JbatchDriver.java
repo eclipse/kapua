@@ -14,6 +14,7 @@ package org.eclipse.kapua.job.engine.jbatch.driver;
 import com.google.common.collect.Lists;
 import com.ibm.jbatch.container.jsl.ExecutionElement;
 import com.ibm.jbatch.container.jsl.ModelSerializerFactory;
+import com.ibm.jbatch.container.servicesmanager.ServicesManagerImpl;
 import com.ibm.jbatch.jsl.model.JSLJob;
 import com.ibm.jbatch.jsl.model.Step;
 import org.apache.commons.io.IOUtils;
@@ -32,6 +33,7 @@ import org.eclipse.kapua.job.engine.jbatch.driver.exception.JobExecutionIsRunnin
 import org.eclipse.kapua.job.engine.jbatch.driver.exception.JobStartingDriverException;
 import org.eclipse.kapua.job.engine.jbatch.driver.utils.JbatchUtil;
 import org.eclipse.kapua.job.engine.jbatch.driver.utils.JobDefinitionBuildUtils;
+import org.eclipse.kapua.job.engine.jbatch.persistence.KapuaJDBCPersistenceManagerImpl;
 import org.eclipse.kapua.job.engine.jbatch.setting.KapuaJobEngineSetting;
 import org.eclipse.kapua.job.engine.jbatch.setting.KapuaJobEngineSettingKeys;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -262,6 +264,11 @@ public class JbatchDriver {
      */
     public static boolean isRunningJob(@NotNull KapuaId scopeId, @NotNull KapuaId jobId) {
         return getRunningJobExecution(scopeId, jobId) != null;
+    }
+
+    public static void cleanJobData(@NotNull KapuaId scopeId, @NotNull KapuaId jobId) {
+        String jobName = getJbatchJobName(scopeId, jobId);
+        ((KapuaJDBCPersistenceManagerImpl)ServicesManagerImpl.getInstance().getPersistenceManagerService()).purgeByName(jobName);
     }
 
     //

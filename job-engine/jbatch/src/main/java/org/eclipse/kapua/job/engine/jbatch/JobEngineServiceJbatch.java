@@ -189,4 +189,9 @@ public class JobEngineServiceJbatch implements JobEngineService {
             throw new JobStopppingException(e, scopeId, jobId);
         }
     }
+
+    @Override
+    public void cleanJobData(KapuaId scopeId, KapuaId jobId) throws KapuaException {
+        JbatchDriver.cleanJobData(scopeId, jobId);
+    }
 }
