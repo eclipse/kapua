@@ -76,7 +76,8 @@ public class JobStepEditDialog extends JobStepAddDialog {
                 Map<String, Object> propertiesMap = new HashMap<String, Object>();
                 for (GwtJobStepProperty property : gwtJobStep.getStepProperties()) {
                     if (property.getPropertyType().equals(Long.class.getName())) {
-                        propertiesMap.put(property.getPropertyName(), Long.valueOf(property.getPropertyValue()));
+                        propertiesMap.put(property.getPropertyName(),
+                                property.getPropertyValue() == null ? null : Long.valueOf(property.getPropertyValue()));
                     } else {
                         propertiesMap.put(property.getPropertyName(), property.getPropertyValue());
                     }
