@@ -73,14 +73,19 @@ public class JobStepEditDialog extends JobStepAddDialog {
                 jobStepDescription.setValue(gwtJobStep.getDescription());
                 jobStepDefinitionCombo.setValue(result);
 
-                Map<String, String> propertiesMap = new HashMap<String, String>();
+                Map<String, Object> propertiesMap = new HashMap<String, Object>();
                 for (GwtJobStepProperty property : gwtJobStep.getStepProperties()) {
-                    propertiesMap.put(property.getPropertyName(), property.getPropertyValue());
+                    if (property.getPropertyType().equals(Long.class.getName())) {
+                        propertiesMap.put(property.getPropertyName(),
+                                property.getPropertyValue() == null ? null : Long.valueOf(property.getPropertyValue()));
+                    } else {
+                        propertiesMap.put(property.getPropertyName(), property.getPropertyValue());
+                    }
                 }
 
                 for (Component component : jobStepPropertiesPanel.getItems()) {
-                    Field<String> field = (Field<String>) component;
-                    field.setValue(propertiesMap.get(field.getData(PROPERTY_NAME).toString()));
+                    Field<Object> field = (Field<Object>) component;
+                    field.setValue(propertiesMap.get(field.getData(PROPERTY_NAME)));
                 }
 
                 unmaskDialog();
