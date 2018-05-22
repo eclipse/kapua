@@ -298,8 +298,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
                         gwtConfig.setId(config.getId());
                         if(config.getId().indexOf('.') == -1){
                             gwtConfig.setName(config.getId());
-                        }
-                        else{
+                        } else {
                             gwtConfig.setName(ocd.getName());
                         }
                         gwtConfig.setDescription(ocd.getDescription());
