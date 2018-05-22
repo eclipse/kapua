@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -296,7 +296,11 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
                     if (ocd != null) {
                         GwtConfigComponent gwtConfig = new GwtConfigComponent();
                         gwtConfig.setId(config.getId());
-                        gwtConfig.setName(ocd.getName());
+                        if(config.getId().indexOf('.') == -1){
+                            gwtConfig.setName(config.getId());
+                        } else {
+                            gwtConfig.setName(ocd.getName());
+                        }
                         gwtConfig.setDescription(ocd.getDescription());
                         if (ocd.getIcon() != null && !ocd.getIcon().isEmpty()) {
                             KapuaTicon icon = ocd.getIcon().get(0);
