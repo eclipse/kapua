@@ -30,6 +30,10 @@ public class GwtJobStep extends GwtUpdatableEntityModel implements IsSerializabl
         return get("description");
     }
 
+    public String getUnescapedDescription() {
+        return (String) getUnescaped("description");
+    }
+
     public void setDescription(String description) {
         set("description", description);
     }

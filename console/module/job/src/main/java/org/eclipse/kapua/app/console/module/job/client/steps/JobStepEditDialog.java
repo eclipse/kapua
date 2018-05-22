@@ -20,6 +20,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStep;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStepDefinition;
@@ -70,7 +71,7 @@ public class JobStepEditDialog extends JobStepAddDialog {
             @Override
             public void onSuccess(GwtJobStepDefinition result) {
                 jobStepName.setValue(gwtJobStep.getJobStepName());
-                jobStepDescription.setValue(gwtJobStep.getDescription());
+                jobStepDescription.setValue(gwtJobStep.getUnescapedDescription());
                 jobStepDefinitionCombo.setValue(result);
 
                 Map<String, String> propertiesMap = new HashMap<String, String>();
@@ -91,7 +92,7 @@ public class JobStepEditDialog extends JobStepAddDialog {
     @Override
     public void submit() {
         selectedJobStep.setJobStepName(jobStepName.getValue());
-        selectedJobStep.setDescription(jobStepDescription.getValue());
+        selectedJobStep.setDescription(KapuaSafeHtmlUtils.htmlUnescape(jobStepDescription.getValue()));
         selectedJobStep.setJobStepDefinitionId(jobStepDefinitionCombo.getValue().getId());
         selectedJobStep.setStepProperties(readStepProperties());
 
