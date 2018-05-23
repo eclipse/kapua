@@ -14,11 +14,13 @@ package org.eclipse.kapua.connector.amqp;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.vertx.core.Future;
 import org.apache.qpid.proton.amqp.Binary;
 import org.apache.qpid.proton.amqp.messaging.AmqpValue;
 import org.apache.qpid.proton.amqp.messaging.Data;
 import org.apache.qpid.proton.amqp.messaging.Section;
 import org.apache.qpid.proton.message.Message;
+
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.connector.AbstractConnectorVerticle;
 import org.eclipse.kapua.connector.Converter;
@@ -27,6 +29,7 @@ import org.eclipse.kapua.connector.Processor;
 import org.eclipse.kapua.connector.amqp.settings.ConnectorSettings;
 import org.eclipse.kapua.connector.amqp.settings.ConnectorSettingsKey;
 import org.eclipse.kapua.message.transport.TransportMessage;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +60,7 @@ public class AmqpConnectorVerticle extends AbstractConnectorVerticle<byte[], Tra
     }
 
     @Override
-    public void start() throws KapuaConnectorException {
+    public void startInternal(Future<Void> startFuture) throws KapuaConnectorException {
         // make sure connection is already closed
         closeConnection();
 
@@ -71,18 +74,13 @@ public class AmqpConnectorVerticle extends AbstractConnectorVerticle<byte[], Tra
                 this::handleProtonConnection);
 
         logger.info("Connecting to broker {}:{}... Done.", brokerHost, brokerPort);
-        // invoking superclass start
-        super.start();
+
     }
 
     @Override
-    public void stop() throws KapuaConnectorException {
-
+    public void stopInternal(Future<Void> stopFuture) throws KapuaConnectorException {
         logger.info("Closing broker connection...");
         closeConnection();
-
-        // invoking superclass start
-        super.stop();
     }
 
     private void closeConnection() {
@@ -106,7 +104,8 @@ public class AmqpConnectorVerticle extends AbstractConnectorVerticle<byte[], Tra
     }
 
     /**
-     * Callback for Connection Handler implementing interface Handler<AsyncResult<ProtonConnection>> 
+     * Callback for Connection Handler implementing interface Handler<AsyncResult<ProtonConnection>>
+     *
      * @param event
      */
     public void handleProtonConnection(AsyncResult<ProtonConnection> event) {
@@ -122,6 +121,7 @@ public class AmqpConnectorVerticle extends AbstractConnectorVerticle<byte[], Tra
 
     /**
      * Callback for Proton Message receiver implementing interface ProtonMessageHandler
+     *
      * @param delivery
      * @param message
      */
@@ -130,7 +130,7 @@ public class AmqpConnectorVerticle extends AbstractConnectorVerticle<byte[], Tra
         try {
 
             // build the message properties
-            Map<String,Object> convertedMsgProperties = new HashMap<String,Object>();
+            Map<String, Object> convertedMsgProperties = new HashMap<String, Object>();
             for (String propName : message.getApplicationProperties().getValue().keySet()) {
                 logger.info("Incoming message proerpties: {} : {}", propName, message.getApplicationProperties().getValue().get(propName));
             }
@@ -138,9 +138,8 @@ public class AmqpConnectorVerticle extends AbstractConnectorVerticle<byte[], Tra
             // process the incoming message
             byte[] messageBody = extractBytePayload(message.getBody());
             super.handleMessage(convertedMsgProperties, messageBody);
-        } 
-        catch (KapuaConnectorException e) {
-            logger.warn("Error processing message: "+e.getMessage(), e);
+        } catch (KapuaConnectorException e) {
+            logger.warn("Error processing message: " + e.getMessage(), e);
         }
 
         // By default, the receiver automatically accepts (and settles) the delivery

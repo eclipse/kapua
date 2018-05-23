@@ -13,6 +13,7 @@ package org.eclipse.kapua.connector;
 
 import java.util.Map;
 
+import io.vertx.core.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,9 +36,24 @@ public abstract class AbstractConnectorVerticle<S,T> extends AbstractVerticle {
         this(null, processor);
     }
 
-    public void start() throws KapuaConnectorException {
-        logger.info("Invoking processor.start...");
-        processor.start();
+    protected abstract void startInternal(Future<Void> startFuture) throws KapuaConnectorException;
+
+    protected abstract void stopInternal(Future<Void> stopFuture) throws KapuaConnectorException;
+
+    public void start(Future<Void> startFuture) throws KapuaConnectorException {
+        try {
+            // Start subclass
+            startInternal(startFuture);
+
+            //Start processor
+            logger.info("Invoking processor.start...");
+            processor.start();
+
+            startFuture.complete();
+        } catch (Exception ex) {
+            logger.warn("Verticle start failed", ex);
+            startFuture.fail(ex);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -53,8 +69,19 @@ public abstract class AbstractConnectorVerticle<S,T> extends AbstractVerticle {
         processor.process(convertedMessage);
     }
 
-    public void stop() throws KapuaConnectorException {
-        logger.info("Invoking processor.stop...");
-        processor.stop();
+    public void stop(Future<Void> stopFuture) throws KapuaConnectorException {
+        try {
+            // Stop subclass
+            stopInternal(stopFuture);
+
+            // Stop processor
+            logger.info("Invoking processor.stop...");
+            processor.stop();
+
+            stopFuture.complete();
+        } catch (Exception ex) {
+            logger.warn("Verticle stop failed", ex);
+            stopFuture.fail(ex);
+        }
     }
 }

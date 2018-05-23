@@ -12,6 +12,7 @@
 package org.eclipse.kapua.message;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.kapua.KapuaSerializable;
 
@@ -22,6 +23,10 @@ import org.eclipse.kapua.KapuaSerializable;
  * @param <P> payload type
  * @since 1.0
  */
+@XmlType(propOrder = { //
+        "channel", //
+        "payload"
+})
 public interface Message<C extends Channel, P extends Payload> extends KapuaSerializable {
     /**
      * Get the message channel
