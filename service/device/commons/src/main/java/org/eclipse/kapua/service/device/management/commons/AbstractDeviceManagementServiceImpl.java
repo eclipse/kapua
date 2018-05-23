@@ -23,7 +23,7 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 
 /**
- * Utility {@code abstract} {@link Class} used to provide utility methods to all implementation of Device Management Services.
+ * Utility {@code abstract} {@link Class} used to provide utility methods to all implementation of {@link org.eclipse.kapua.service.device.management.DeviceManagementService}s.
  *
  * @since 1.0.0
  */
