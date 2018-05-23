@@ -124,4 +124,12 @@ public class JmsMessage implements TransportMessage<JmsTopic, JmsPayload> {
         this.payload = payload;
     }
 
+    public JmsTopic getChannel() {
+        return topic;
+    }
+
+    public void setChannel(JmsTopic topic) {
+        this.topic = topic;
+    }
+
 }

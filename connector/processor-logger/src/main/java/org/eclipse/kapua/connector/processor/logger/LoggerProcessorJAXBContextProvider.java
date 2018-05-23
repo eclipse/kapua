@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,11 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.connector.processor.logger;
 
+import javax.swing.text.Position;
+import javax.validation.Payload;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
+import org.eclipse.kapua.message.Channel;
 import org.eclipse.kapua.message.Message;
 import org.eclipse.kapua.message.transport.TransportChannel;
 import org.eclipse.kapua.message.transport.TransportMessage;
@@ -26,6 +29,7 @@ import org.eclipse.kapua.message.xml.MessageXmlRegistry;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 public class LoggerProcessorJAXBContextProvider implements JAXBContextProvider {
 
@@ -38,6 +42,9 @@ public class LoggerProcessorJAXBContextProvider implements JAXBContextProvider {
         if (context == null) {
             Class<?>[] classes = new Class<?>[] {
                     Message.class,
+                    Channel.class,
+                    Payload.class,
+                    Position.class,
                     TransportMessage.class,
                     TransportChannel.class,
                     TransportPayload.class,

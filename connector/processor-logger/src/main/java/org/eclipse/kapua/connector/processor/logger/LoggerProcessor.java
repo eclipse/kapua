@@ -26,7 +26,8 @@ public class LoggerProcessor implements Processor<TransportMessage> {
 
     @Override
     public void start() throws KapuaConnectorException {
-        XmlUtil.setContextProvider( new LoggerProcessorJAXBContextProvider());
+        XmlUtil.setContextProvider(new LoggerProcessorJAXBContextProvider());
+        logger.info("Instantiate Jaxb Context... Done.");
     }
 
     @Override
@@ -34,7 +35,7 @@ public class LoggerProcessor implements Processor<TransportMessage> {
 
         StringWriter sw = new StringWriter();
         try {
-            XmlUtil.marshal(message, sw);
+            XmlUtil.marshalJson(message, sw);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

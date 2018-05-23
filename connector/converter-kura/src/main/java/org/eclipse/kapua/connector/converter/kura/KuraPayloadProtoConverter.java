@@ -71,7 +71,7 @@ public class KuraPayloadProtoConverter implements Converter<byte[], TransportMes
         String transportQosProp = (String) properties.get(Converter.MESSAGE_QOS);
         if (!Strings.isNullOrEmpty(transportQosProp)) {
             TransportQos transportQos = TransportQos.valueOf(transportQosProp);
-            transportMessage.setQoS(transportQos);
+            transportMessage.setQos(transportQos);
         }
 
         // timestamps

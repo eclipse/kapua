@@ -150,4 +150,12 @@ public class MqttMessage implements PubSubTransportMessage<MqttTopic, MqttPayloa
     public void setPayload(MqttPayload payload) {
         this.payload = payload;
     }
+
+    public MqttTopic getChannel( ) {
+        return requestTopic;
+    }
+
+    public void setChannel(MqttTopic topic) {
+        this.requestTopic = topic;
+    }
 }
