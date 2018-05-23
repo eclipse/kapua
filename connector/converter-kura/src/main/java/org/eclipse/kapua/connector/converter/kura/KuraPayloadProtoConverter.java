@@ -65,13 +65,13 @@ public class KuraPayloadProtoConverter implements Converter<byte[], TransportMes
         }
 
         // scopeName, clientId, originalDestination, semanticParts
-        //processTransportTopic(transportMessage, transportTopic);
+        processTransportTopic(transportMessage, transportTopic);
 
         // Qos
-        String transportQosProp = (String) properties.get(Converter.MESSAGE_QOS);
-        if (!Strings.isNullOrEmpty(transportQosProp)) {
-            TransportQos transportQos = TransportQos.valueOf(transportQosProp);
-            transportMessage.setQos(transportQos);
+        Object qos = properties.get(Converter.MESSAGE_QOS);
+        if (qos != null && qos instanceof TransportQos) {
+            TransportQos transporQos = (TransportQos) properties.get(Converter.MESSAGE_QOS);
+            transportMessage.setQos(transporQos);
         }
 
         // timestamps

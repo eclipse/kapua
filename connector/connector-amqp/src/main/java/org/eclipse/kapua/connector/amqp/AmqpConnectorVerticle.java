@@ -29,7 +29,7 @@ import org.eclipse.kapua.connector.Processor;
 import org.eclipse.kapua.connector.amqp.settings.ConnectorSettings;
 import org.eclipse.kapua.connector.amqp.settings.ConnectorSettingsKey;
 import org.eclipse.kapua.message.transport.TransportMessage;
-
+import org.eclipse.kapua.message.transport.TransportQos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +43,9 @@ public class AmqpConnectorVerticle extends AbstractConnectorVerticle<byte[], Tra
     protected final static Logger logger = LoggerFactory.getLogger(AmqpConnectorVerticle.class);
 
     // TODO: Make this parametrizable
+    private final static String VIRTUAL_TOPIC_PREFIX = "topic://VirtualTopic.";
+    private final static int VIRTUAL_TOPIC_PREFIX_LENGTH = VIRTUAL_TOPIC_PREFIX.length();
+    private final static String ACTIVEMQ_QOS = "ActiveMQ.MQTT.QoS";
     private final static String QUEUE_PATTERN = "queue://Consumer.%s.VirtualTopic.>";// Consumer.*.VirtualTopic.>
 
     private ProtonClient client;
@@ -131,8 +134,28 @@ public class AmqpConnectorVerticle extends AbstractConnectorVerticle<byte[], Tra
 
             // build the message properties
             Map<String, Object> convertedMsgProperties = new HashMap<String, Object>();
-            for (String propName : message.getApplicationProperties().getValue().keySet()) {
-                logger.info("Incoming message proerpties: {} : {}", propName, message.getApplicationProperties().getValue().get(propName));
+
+            // extract original MQTT topic
+            String mqttTopic = message.getProperties().getTo(); // topic://VirtualTopic.kapua-sys.02:42:AC:11:00:02.heater.data
+            mqttTopic = mqttTopic.substring(VIRTUAL_TOPIC_PREFIX_LENGTH);
+            mqttTopic = mqttTopic.replace(".", "/");
+            convertedMsgProperties.put(Converter.MESSAGE_DESTINATION, mqttTopic);
+
+            // extract the original QoS
+            Object activeMqQos = message.getApplicationProperties().getValue().get(ACTIVEMQ_QOS);
+            if (activeMqQos != null && activeMqQos instanceof Integer) {
+                int activeMqQosInt = (int) activeMqQos;                
+                switch (activeMqQosInt) {
+                case 0:
+                    convertedMsgProperties.put(Converter.MESSAGE_QOS, TransportQos.AT_MOST_ONCE);
+                    break;
+                case 1:
+                    convertedMsgProperties.put(Converter.MESSAGE_QOS, TransportQos.AT_LEAST_ONCE);
+                    break;
+                case 2:
+                    convertedMsgProperties.put(Converter.MESSAGE_QOS, TransportQos.EXACTLY_ONCE);
+                    break;
+                }                
             }
 
             // process the incoming message
@@ -147,7 +170,6 @@ public class AmqpConnectorVerticle extends AbstractConnectorVerticle<byte[], Tra
         // To change this and always manage dispositions yourself, use the
         // setAutoAccept method on the receiver.
     }
-
 
     private static byte[] extractBytePayload(Section body) throws KapuaConnectorException {
         logger.info("Received message with body: {}", body);
