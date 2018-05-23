@@ -17,7 +17,9 @@ import org.eclipse.kapua.commons.util.ThrowingRunnable;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessage;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponseChannel;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
@@ -34,21 +36,8 @@ public abstract class AbstractDeviceManagementServiceImpl {
     private static final DeviceEventService DEVICE_EVENT_SERVICE = LOCATOR.getService(DeviceEventService.class);
     private static final DeviceEventFactory DEVICE_EVENT_FACTORY = LOCATOR.getFactory(DeviceEventFactory.class);
 
-    /**
-     * Creates a {@link org.eclipse.kapua.service.device.registry.event.DeviceEvent} extracting data from the given {@link KapuaRequestMessage} and {@link KapuaResponseMessage}.
-     * <p>
-     * This operation is performed using {@link KapuaSecurityUtils#doPrivileged(ThrowingRunnable)} since {@link org.eclipse.kapua.service.device.registry.event.DeviceEventDomain} isn't a required
-     * permission to use any of the {@link org.eclipse.kapua.service.device.management.DeviceManagementService}s.
-     *
-     * @param scopeId         The scopeId in which to create the {@link org.eclipse.kapua.service.device.registry.event.DeviceEvent}
-     * @param deviceId        The {@link org.eclipse.kapua.service.device.registry.Device} id for which the {@link org.eclipse.kapua.service.device.registry.event.DeviceEvent} is created
-     * @param requestMessage  The {@link KapuaRequestMessage} of the {@link org.eclipse.kapua.service.device.management.DeviceManagementService} operation from which to extract data.
-     * @param responseMessage The {@link KapuaResponseMessage} of the {@link org.eclipse.kapua.service.device.management.DeviceManagementService} operation from which to extract data.
-     * @throws KapuaException If the creation of the {@link org.eclipse.kapua.service.device.registry.event.DeviceEvent} fails for some reasons
-     * @since 1.0.0
-     */
-    protected void createDeviceEvent(KapuaId scopeId, KapuaId deviceId, KapuaRequestMessage<?, ?> requestMessage,
-            KapuaResponseMessage responseMessage) throws KapuaException {
+    protected <C extends KapuaRequestChannel, P extends KapuaRequestPayload, RC extends KapuaResponseChannel, RP extends KapuaResponsePayload> void createDeviceEvent(KapuaId scopeId, KapuaId deviceId, KapuaRequestMessage<C, P> requestMessage,
+            KapuaResponseMessage<RC,RP> responseMessage) throws KapuaException {
 
         DeviceEventCreator deviceEventCreator =
                 DEVICE_EVENT_FACTORY.newCreator(
