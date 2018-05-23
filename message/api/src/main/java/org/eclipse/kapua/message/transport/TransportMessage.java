@@ -36,9 +36,9 @@ import org.eclipse.kapua.message.xml.MessageXmlRegistry;
         "clientId", //
         "sentOn", //
         "receivedOn", //
-        "position", //
-        "channel", //
-        "payload" //
+        "messageType",
+        "qos",
+        "position"
 }, factoryClass = MessageXmlRegistry.class, factoryMethod = "newTransportMessage") 
 public interface TransportMessage extends Message<TransportChannel, TransportPayload> {
 
@@ -77,6 +77,7 @@ public interface TransportMessage extends Message<TransportChannel, TransportPay
      * 
      * @return
      */
+    @XmlElement(name = "messageType")
     public TransportMessageType getMessageType();
 
     /**
@@ -89,12 +90,13 @@ public interface TransportMessage extends Message<TransportChannel, TransportPay
      * 
      * @return
      */
-    public TransportQos getQoS();
+    @XmlElement(name = "qos")
+    public TransportQos getQos();
 
     /**
      * Sets the qos used in the in the transport of the message
      */
-    public void setQoS(TransportQos qos);
+    public void setQos(TransportQos qos);
 
     /**
      * Get the message sent on date

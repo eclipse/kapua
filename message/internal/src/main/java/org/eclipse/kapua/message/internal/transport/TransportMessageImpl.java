@@ -59,12 +59,12 @@ public class TransportMessageImpl extends KapuaMessageImpl<TransportChannel, Tra
     }
 
     @Override
-    public TransportQos getQoS() {
+    public TransportQos getQos() {
         return transportQos;
     }
 
     @Override
-    public void setQoS(TransportQos transportQos) {
+    public void setQos(TransportQos transportQos) {
         this.transportQos = transportQos;
     }
 
