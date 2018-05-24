@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,6 +16,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJob;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobService;
@@ -41,7 +42,7 @@ public class JobEditDialog extends JobAddDialog {
     @Override
     public void submit() {
         selectedJob.setJobName(name.getValue());
-        selectedJob.setDescription(description.getValue());
+        selectedJob.setDescription(KapuaSafeHtmlUtils.htmlUnescape(description.getValue()));
 
         gwtJobService.update(xsrfToken, selectedJob, new AsyncCallback<GwtJob>() {
 
@@ -84,6 +85,6 @@ public class JobEditDialog extends JobAddDialog {
 
     private void populateEditDialog(GwtJob gwtJob) {
         name.setValue(gwtJob.getJobName());
-        description.setValue(gwtJob.getDescription());
+        description.setValue(gwtJob.getUnescapedDescription());
     }
 }

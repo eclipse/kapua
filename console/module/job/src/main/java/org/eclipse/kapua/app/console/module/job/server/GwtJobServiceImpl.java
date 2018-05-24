@@ -162,7 +162,7 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
                 //
                 // Update job
                 job.setName(gwtJob.getJobName());
-                job.setDescription(gwtJob.getDescription());
+                job.setDescription(gwtJob.getUnescapedDescription());
 
                 // optlock
                 job.setOptlock(gwtJob.getOptlock());

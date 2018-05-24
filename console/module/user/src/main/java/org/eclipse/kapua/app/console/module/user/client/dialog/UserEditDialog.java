@@ -17,6 +17,7 @@ import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserService;
@@ -65,7 +66,7 @@ public class UserEditDialog extends UserAddDialog {
     @Override
     public void submit() {
         selectedUser.setUsername(username.getValue());
-        selectedUser.setDisplayName(displayName.getValue());
+        selectedUser.setDisplayName(KapuaSafeHtmlUtils.htmlUnescape(displayName.getValue()));
         selectedUser.setEmail(email.getValue());
         selectedUser.setPhoneNumber(phoneNumber.getValue());
         selectedUser.setStatus(userStatus.getValue().getValue().toString());
@@ -129,7 +130,7 @@ public class UserEditDialog extends UserAddDialog {
             passwordTooltip.hide();
         }
         username.setValue(gwtUser.getUsername());
-        displayName.setValue(gwtUser.getDisplayName());
+        displayName.setValue(gwtUser.getUnescapedDisplayName());
         email.setValue(gwtUser.getEmail());
         phoneNumber.setValue(gwtUser.getPhoneNumber());
         userStatus.setSimpleValue(gwtUser.getStatusEnum());
