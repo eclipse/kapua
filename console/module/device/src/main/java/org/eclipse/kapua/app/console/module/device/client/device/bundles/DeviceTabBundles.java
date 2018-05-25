@@ -341,6 +341,9 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
                         stopButton.disable();
                         startButton.enable();
                     }
+                } else {
+                    startButton.disable();
+                    stopButton.disable();
                 }
             }
         });
