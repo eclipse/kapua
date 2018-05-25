@@ -18,6 +18,7 @@
         logicalFilePath="KapuaDB/changelog-authorization-1.0.0.xml">
 
     <include relativeToChangelogFile="true" file="./athz-sys-housekeeper-run-seed.xml"/>
+    <include relativeToChangelogFile="true" file="./athz-sys-housekeeper-update-domain-service.xml"/>
 
     <include relativeToChangelogFile="true" file="./athz-access_info-domain.xml"/>
     <include relativeToChangelogFile="true" file="./athz-domain-domain.xml"/>

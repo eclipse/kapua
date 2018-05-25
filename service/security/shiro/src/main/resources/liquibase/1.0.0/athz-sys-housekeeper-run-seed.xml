@@ -11,33 +11,33 @@
         Eurotech - initial API and implementation
  -->
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
-                   logicalFilePath="KapuaDB/changelog-authorization-1.0.0.xml">
+    logicalFilePath="KapuaDB/changelog-authorization-1.0.0.xml">
 
     <changeSet id="changelog-athz-sys-housekeeper-run-1.0.0-seed"
-               author="eurotech">
+        author="eurotech">
         <!-- Seed values -->
         <insert tableName="sys_housekeeper_run">
-            <column name="service" value="org.eclipse.kapua.service.authorization.access.AccessInfoService"/>
-            <column name="last_run_on" valueComputed="${now}"/>
-            <column name="version" value="1"/>
+            <column name="service" value="org.eclipse.kapua.service.authorization.access.AccessInfoService" />
+            <column name="last_run_on" valueComputed="${now}" />
+            <column name="version" value="1" />
         </insert>
         <insert tableName="sys_housekeeper_run">
-            <column name="service" value="org.eclipse.kapua.service.authorization.role.RoleService"/>
-            <column name="last_run_on" valueComputed="${now}"/>
-            <column name="version" value="1"/>
+            <column name="service" value="org.eclipse.kapua.service.authorization.role.RoleService" />
+            <column name="last_run_on" valueComputed="${now}" />
+            <column name="version" value="1" />
         </insert>
         <insert tableName="sys_housekeeper_run">
-            <column name="service" value="org.eclipse.kapua.service.authorization.group.GroupService"/>
-            <column name="last_run_on" valueComputed="${now}"/>
-            <column name="version" value="1"/>
+            <column name="service" value="org.eclipse.kapua.service.authorization.group.GroupService" />
+            <column name="last_run_on" valueComputed="${now}" />
+            <column name="version" value="1" />
         </insert>
         <insert tableName="sys_housekeeper_run">
-            <column name="service" value="org.eclipse.kapua.service.authorization.domain.DomainRegistryService"/>
-            <column name="last_run_on" valueComputed="${now}"/>
-            <column name="version" value="1"/>
+            <column name="service" value="org.eclipse.kapua.service.authorization.domain.DomainService" />
+            <column name="last_run_on" valueComputed="${now}" />
+            <column name="version" value="1" />
         </insert>
     </changeSet>
 </databaseChangeLog>

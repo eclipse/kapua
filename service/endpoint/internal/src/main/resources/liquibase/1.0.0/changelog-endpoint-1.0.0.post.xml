@@ -18,5 +18,6 @@
         logicalFilePath="KapuaDB/changelog-endpoint-1.0.0.xml">
 
     <include relativeToChangelogFile="true" file="./endpoint_info-domain.xml"/>
+    <include relativeToChangelogFile="true" file="./update-endpoint_info-domain.xml"/>
 
 </databaseChangeLog>
