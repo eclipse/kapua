@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -92,11 +92,11 @@ public class JobTabExecutionsGrid extends EntityGrid<GwtExecution> {
         });
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("startedOn", JOB_MSGS.gridJobExecutionsColumnHeaderStartedOnFormatted(), 200);
+        columnConfig = new ColumnConfig("startedOnFormatted", JOB_MSGS.gridJobExecutionsColumnHeaderStartedOnFormatted(), 200);
         columnConfig.setSortable(true);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("endedOn", JOB_MSGS.gridJobExecutionsColumnHeaderEndedOnFormatted(), 200);
+        columnConfig = new ColumnConfig("endedOnFormatted", JOB_MSGS.gridJobExecutionsColumnHeaderEndedOnFormatted(), 200);
         columnConfig.setSortable(true);
         columnConfigs.add(columnConfig);
 
