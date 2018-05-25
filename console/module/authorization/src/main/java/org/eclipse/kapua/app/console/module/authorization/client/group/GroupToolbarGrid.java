@@ -35,6 +35,7 @@ public class GroupToolbarGrid extends EntityCRUDToolbar<GwtGroup> {
     @Override
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
+        getRefreshAndDeselectButton().hide();
         getAddEntityButton().setEnabled(currentSession.hasPermission(GroupSessionPermission.write()));
     }
 

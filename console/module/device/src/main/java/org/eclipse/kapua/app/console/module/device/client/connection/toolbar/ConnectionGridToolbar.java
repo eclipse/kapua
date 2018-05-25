@@ -25,6 +25,7 @@ public class ConnectionGridToolbar extends EntityCRUDToolbar<GwtDeviceConnection
         setAddButtonVisible(false);
         setEditButtonVisible(true);
         setDeleteButtonVisible(false);
+        setRefreshAndDeselectVisible(false);
     }
 
     @Override

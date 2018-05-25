@@ -120,6 +120,7 @@ public class UserTabAccessRoleGrid extends EntityGrid<GwtAccessRole> {
         if (toolbar == null) {
             toolbar = new UserTabAccessRoleToolbar(currentSession);
             toolbar.setEditButtonVisible(false);
+            toolbar.setRefreshAndDeselectVisible(false);
             toolbar.setBorders(true);
         }
         return toolbar;

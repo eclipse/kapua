@@ -64,7 +64,9 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
     private boolean deleteEntityButtonShow = true;
 
     protected RefreshButton refreshEntityButton;
+    protected RefreshButton refreshAndDeselectEntityButton;
     private boolean refreshEntityButtonShow = true;
+    private boolean refreshAndClearGridShow = true;
 
     protected ToggleButton filterButton;
     private boolean filterButtonShow = true;
@@ -111,6 +113,10 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
             add(refreshEntityButton);
         }
 
+        if (refreshAndClearGridShow) {
+            refreshAndDeselectEntityButton = new RefreshButton(getRefreshAndDeselectButtonSelectionListener());
+            add(refreshAndDeselectEntityButton);
+        }
         // Check on extra buttons defined in the implemented Toolbar
         for (Component button : getExtraButtons()) {
             add(new SeparatorToolItem());
@@ -242,6 +248,10 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
         this.deleteEntityButtonShow = show;
     }
 
+    public void setRefreshAndDeselectVisible(boolean show) {
+        this.refreshAndClearGridShow = show;
+    }
+
     //
     // Refresh button methods
     //
@@ -250,6 +260,17 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
+                entityGrid.refresh();
+            }
+        };
+    }
+
+    protected SelectionListener<ButtonEvent> getRefreshAndDeselectButtonSelectionListener() {
+        return new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                entityGrid.getSelectionModel().deselectAll();
                 entityGrid.refresh();
             }
         };
@@ -332,7 +353,23 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
         return filterButton;
     }
 
+    public RefreshButton getRefreshAndDeselectButton() {
+        if (refreshEntityButton == null) {
+            refreshEntityButton = new RefreshButton(getRefreshAndDeselectButtonSelectionListener());
+        }
+
+        return refreshEntityButton;
+    }
+
     public void setFilterPanel(EntityFilterPanel<M> filterPanel) {
         this.filterPanel = filterPanel;
+    }
+
+    public RefreshButton getRefreshButton() {
+        if (refreshEntityButton == null) {
+            refreshEntityButton = new RefreshButton(getRefreshAndDeselectButtonSelectionListener());
+        }
+
+        return refreshEntityButton;
     }
 }

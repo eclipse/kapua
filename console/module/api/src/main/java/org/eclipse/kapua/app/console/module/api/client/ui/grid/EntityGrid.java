@@ -11,21 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.api.client.ui.grid;
 
-import com.extjs.gxt.ui.client.Style.SelectionMode;
-import com.extjs.gxt.ui.client.data.BasePagingLoader;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import com.extjs.gxt.ui.client.data.RpcProxy;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
-import com.extjs.gxt.ui.client.widget.grid.GridView;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Element;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.ContentPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
@@ -36,7 +24,23 @@ import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 
-import java.util.List;
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.Style.SelectionMode;
+import com.extjs.gxt.ui.client.data.BasePagingLoader;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
+import com.extjs.gxt.ui.client.widget.grid.GridView;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Element;
 
 public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel {
 
@@ -55,7 +59,9 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
     protected ListStore<M> entityStore;
     protected PagingToolBar entityPagingToolbar;
     protected EntityFilterPanel<M> filterPanel;
-
+    protected final EntityGridCheckBoxSelectionModel<M> selectionModel = new EntityGridCheckBoxSelectionModel<M>();
+    private List<SelectionChangedListener<M>> listeners = new ArrayList<SelectionChangedListener<M>>();
+    protected CheckBoxSelectionModel<M> selectionModels = new EntityGridCheckBoxSelectionModel<M>();
     /* Some grids (most notably "slave" grids, i.e. the ones that depends from the entity *
      * selected in another grid) should not be refreshed on render, otherwise they would be *
      * refreshed twice and the paging toolbar may be disabled because of this */
@@ -122,7 +128,6 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
         // Grid view options
         GridView gridView = entityGrid.getView();
         gridView.setEmptyText(MSGS.gridEmptyResult());
-
         //
         // Do first load
         if (refreshOnRender) {
@@ -169,10 +174,15 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
         //
         // Configure columns
         ColumnModel columnModel = new ColumnModel(getColumns());
-
+        selectionModel.setSelectionMode(Style.SelectionMode.SIMPLE);
+        for (SelectionChangedListener<M> listener : listeners) {
+            selectionModel.addSelectionChangedListener(listener);
+        }
         //
         // Set grid
         entityGrid = new KapuaGrid<M>(entityStore, columnModel);
+        entityGrid.addPlugin(selectionModel);
+        entityGrid.setSelectionModel(selectionModel);
         add(entityGrid);
 
         entityGridConfigured = true;
@@ -186,7 +196,9 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
     }
 
     public void refresh() {
-        entityCRUDToolbar.getRefreshEntityButton().setEnabled(false);
+        if (entityCRUDToolbar.getRefreshEntityButton() != null) {
+            entityCRUDToolbar.getRefreshEntityButton().setEnabled(false);
+        }
         entityLoader.load(0, entityLoader.getLimit());
     }
 
@@ -234,6 +246,11 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
      * Method is called when grid is loaded.
      */
     public void loaded() {
-        entityCRUDToolbar.getRefreshEntityButton().setEnabled(true);
+        if (entityCRUDToolbar.getRefreshEntityButton() != null) {
+            entityCRUDToolbar.getRefreshEntityButton().setEnabled(true);
+        }
+        if (!entityGrid.getSelectionModel().getSelectedItems().isEmpty()) {
+            entityGrid.getSelectionModel().deselectAll();
+        }
     }
 }

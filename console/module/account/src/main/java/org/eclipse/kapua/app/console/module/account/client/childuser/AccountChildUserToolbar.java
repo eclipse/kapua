@@ -32,6 +32,7 @@ public class AccountChildUserToolbar extends EntityCRUDToolbar<GwtUser> {
     public void setSelectedAccountId(String accountId) {
         this.accountId = accountId;
         updateToolBarButtons();
+        setRefreshAndDeselectVisible(false);
     }
 
     public void updateToolBarButtons() {
