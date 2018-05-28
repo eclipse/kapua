@@ -38,6 +38,10 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-job-engine-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-scheduler-api</artifactId>
+        </dependency>
 
         <!-- Internal dependencies -->
         <dependency>
@@ -94,7 +98,11 @@
             <artifactId>kapua-job-engine-jbatch</artifactId>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-scheduler-quartz</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>

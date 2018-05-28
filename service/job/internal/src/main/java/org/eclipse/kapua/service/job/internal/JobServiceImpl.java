@@ -36,6 +36,12 @@ import org.eclipse.kapua.service.job.JobListResult;
 import org.eclipse.kapua.service.job.JobPredicates;
 import org.eclipse.kapua.service.job.JobQuery;
 import org.eclipse.kapua.service.job.JobService;
+import org.eclipse.kapua.service.scheduler.trigger.Trigger;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerPredicates;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
 
 /**
  * {@link JobService} implementation
@@ -186,6 +192,24 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         // Check existence
         if (find(scopeId, jobId) == null) {
             throw new KapuaEntityNotFoundException(Job.TYPE, jobId);
+        }
+
+        //
+        // Find all the triggers that are associated with this job
+        TriggerService triggerService = LOCATOR.getService(TriggerService.class);
+        TriggerFactory triggerFactory = LOCATOR.getFactory(TriggerFactory.class);
+        TriggerQuery query = triggerFactory.newQuery(scopeId);
+        AndPredicateImpl andPredicate = new AndPredicateImpl()
+                .and(new AttributePredicateImpl<>(TriggerPredicates.TRIGGER_PROPERTIES_NAME, "jobId"))
+                .and(new AttributePredicateImpl<>(TriggerPredicates.TRIGGER_PROPERTIES_VALUE, jobId.toCompactId()))
+                .and(new AttributePredicateImpl<>(TriggerPredicates.TRIGGER_PROPERTIES_TYPE, KapuaId.class.getName()));
+        query.setPredicate(andPredicate);
+        TriggerListResult triggers = triggerService.query(query);
+
+        //
+        // Delete all the triggers that are associated with this job
+        for(Trigger trig : triggers.getItems()) {
+            triggerService.delete(trig.getScopeId(), trig.getId());
         }
 
         //
