@@ -32,10 +32,6 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class TopicTimestampCellRenderer implements GridCellRenderer<GwtTopic> {
@@ -89,24 +85,8 @@ public class TopicTimestampCellRenderer implements GridCellRenderer<GwtTopic> {
                 });
             }
         });
-        hp.add(refreshButton);
+
         refreshButton.hide();
-
-        // Show refresh button on mouse over
-        hp.addDomHandler(new MouseOverHandler() {
-            @Override
-            public void onMouseOver(MouseOverEvent arg0) {
-                refreshButton.show();
-            }
-        }, MouseOverEvent.getType());
-
-        // Hide refresh button on mouse out
-        hp.addDomHandler(new MouseOutHandler() {
-            @Override
-            public void onMouseOut(MouseOutEvent arg0) {
-                refreshButton.hide();
-            }
-        }, MouseOutEvent.getType());
 
         return hp;
     }

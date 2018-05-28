@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolBar;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.SwappableListStore;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
@@ -44,7 +45,6 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
@@ -62,7 +62,7 @@ public class DeviceTable extends LayoutContainer {
     private Grid<GwtDatastoreDevice> deviceGrid;
     private ContentPanel tableContainer;
     private List<SelectionChangedListener<GwtDatastoreDevice>> listeners = new ArrayList<SelectionChangedListener<GwtDatastoreDevice>>();
-    private PagingToolBar pagingToolBar;
+    private KapuaPagingToolBar pagingToolBar;
     private TextField<String> filterField;
 
     public DeviceTable(GwtSession currentSession) {
@@ -115,7 +115,7 @@ public class DeviceTable extends LayoutContainer {
         tb.add(refreshButton);
         tableContainer.setTopComponent(tb);
 
-        pagingToolBar = new PagingToolBar(DEVICE_PAGE_SIZE);
+        pagingToolBar = new KapuaPagingToolBar(DEVICE_PAGE_SIZE);
         pagingToolBar.bind(loader);
         pagingToolBar.enable();
 
