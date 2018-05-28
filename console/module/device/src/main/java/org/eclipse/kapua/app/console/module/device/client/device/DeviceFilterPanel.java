@@ -279,6 +279,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
             groupsCombo.setAllowBlank(false);
             groupsCombo.setEmptyText(DEVICE_MSGS.deviceFilteringPanelLoading());
             groupsCombo.setDisplayField("groupName");
+            groupsCombo.setTemplate("<tpl for=\".\"><div role=\"listitem\" class=\"x-combo-list-item\" title={groupName}>{groupName}</div></tpl>");
             groupsCombo.setValueField("id");
             groupsCombo.setName("groupId");
             groupsCombo.setWidth(WIDTH);
@@ -329,6 +330,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
             tagsCombo.setAllowBlank(false);
             tagsCombo.setEmptyText(DEVICE_MSGS.deviceFilteringPanelLoading());
             tagsCombo.setDisplayField("tagName");
+            tagsCombo.setTemplate("<tpl for=\".\"><div role=\"listitem\" class=\"x-combo-list-item\" title={tagName}>{tagName}</div></tpl>");
             tagsCombo.setValueField("id");
             tagsCombo.setName("tagId");
             tagsCombo.setWidth(WIDTH);
