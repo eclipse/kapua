@@ -274,7 +274,7 @@ public class JbatchDriver {
         try {
             ((KapuaJDBCPersistenceManagerImpl) ServicesManagerImpl.getInstance().getPersistenceManagerService()).purgeByName(jobName);
         } catch (Exception ex) {
-            throw new CleanJobDataDriverException(jobName);
+            throw new CleanJobDataDriverException(ex, jobName);
         }
     }
 

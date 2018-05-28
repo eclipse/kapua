@@ -18,6 +18,7 @@ import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -190,7 +191,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         //
         // Do delete
 
-        JOB_ENGINE_SERVICE.cleanJobData(scopeId, jobId);
+        KapuaSecurityUtils.doPrivileged(() -> JOB_ENGINE_SERVICE.cleanJobData(scopeId, jobId));
         entityManagerSession.onTransactedAction(em -> JobDAO.delete(em, jobId));
     }
 

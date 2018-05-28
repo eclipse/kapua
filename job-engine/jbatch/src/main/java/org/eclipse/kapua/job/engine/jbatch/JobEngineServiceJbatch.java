@@ -24,6 +24,7 @@ import org.eclipse.kapua.job.engine.jbatch.exception.JobAlreadyRunningException;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobCheckRunningException;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobInvalidTargetException;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobNotRunningException;
+import org.eclipse.kapua.job.engine.jbatch.exception.JobRunningException;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobStartingException;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobStopppingException;
 import org.eclipse.kapua.job.engine.jbatch.exception.KapuaJobEngineErrorCodes;
@@ -200,7 +201,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.execute, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.delete, null));
 
         //
         // Check existence
@@ -212,7 +213,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         //
         // Check job not running
         if (JbatchDriver.isRunningJob(scopeId, jobId)) {
-            throw new JobNotRunningException(scopeId, jobId);
+            throw new JobRunningException(scopeId, jobId);
         }
         try {
             JbatchDriver.cleanJobData(scopeId, jobId);

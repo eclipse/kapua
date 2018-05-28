@@ -9,10 +9,13 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.job.engine.jbatch.driver.exception;
+package org.eclipse.kapua.job.engine.jbatch.exception;
 
-public class CleanJobDataDriverException extends JbatchDriverException {
-    public CleanJobDataDriverException(Throwable t, String jobName) {
-        super(JbatchDriverErrorCodes.CANNOT_CLEAN_JOB_DATA, t, jobName);
+import org.eclipse.kapua.model.id.KapuaId;
+
+public class JobRunningException extends JobEngineException {
+
+    public JobRunningException(KapuaId scopeId, KapuaId jobId) {
+        super(KapuaJobEngineErrorCodes.JOB_RUNNING, scopeId, jobId);
     }
 }

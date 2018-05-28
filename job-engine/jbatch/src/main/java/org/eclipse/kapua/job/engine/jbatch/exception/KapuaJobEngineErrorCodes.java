@@ -46,6 +46,11 @@ public enum KapuaJobEngineErrorCodes implements KapuaErrorCode {
     JOB_STARTING,
 
     /**
+     * The {@link org.eclipse.kapua.service.job.Job} is currently running
+     */
+    JOB_RUNNING,
+
+    /**
      * Checking the status of the {@link org.eclipse.kapua.service.job.Job} has thrown an error
      */
     JOB_CHECK_RUNNING,
