@@ -145,6 +145,7 @@ public class AccessRoleAddDialog extends EntityAddEditDialog {
         rolesCombo.setTriggerAction(TriggerAction.ALL);
         rolesCombo.setStore(roleStore);
         rolesCombo.setDisplayField("name");
+        rolesCombo.setTemplate("<tpl for=\".\"><div role=\"listitem\" class=\"x-combo-list-item\" title={name}>{name}</div></tpl>");
         rolesCombo.setValueField("id");
 
         roleFormPanel.add(rolesCombo);

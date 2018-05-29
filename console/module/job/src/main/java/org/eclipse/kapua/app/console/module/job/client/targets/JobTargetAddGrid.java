@@ -12,11 +12,17 @@
 package org.eclipse.kapua.app.console.module.job.client.targets;
 
 import com.extjs.gxt.ui.client.Style.SelectionMode;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
@@ -102,10 +108,12 @@ public class JobTargetAddGrid extends EntityGrid<GwtDevice> {
         column = new ColumnConfig("clientId", DVC_MSGS.deviceTableClientID(), 175);
         column.setSortable(true);
         columnConfigs.add(column);
+        column.setRenderer(gridCellRenderer);
 
         column = new ColumnConfig("displayName", DVC_MSGS.deviceTableDisplayName(), 150);
         column.setSortable(true);
         columnConfigs.add(column);
+        column.setRenderer(gridCellRenderer);
 
         return columnConfigs;
     }
@@ -128,5 +136,17 @@ public class JobTargetAddGrid extends EntityGrid<GwtDevice> {
     public void setFilterQuery(GwtQuery filterQuery) {
         this.query = (GwtDeviceQuery) filterQuery;
     }
+
+    GridCellRenderer<ModelData> gridCellRenderer = new GridCellRenderer<ModelData>() {
+        @Override
+        public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,
+                ListStore<ModelData> store, Grid<ModelData> grid) {
+            String value = model.get(property);
+            if (value != null) {
+                return "<tpl for=\".\"><div title=" + Format.htmlEncode(value) + ">" + Format.htmlEncode(value) + "</div></tpl>";
+            }
+            return value;
+        }
+    };
 
 }
