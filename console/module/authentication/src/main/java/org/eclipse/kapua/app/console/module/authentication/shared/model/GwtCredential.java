@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,6 +13,7 @@ package org.eclipse.kapua.app.console.module.authentication.shared.model;
 
 import java.util.Date;
 
+import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtUpdatableEntityModel;
 
 public class GwtCredential extends GwtUpdatableEntityModel {
@@ -32,7 +33,7 @@ public class GwtCredential extends GwtUpdatableEntityModel {
             return (X) GwtCredentialStatus.valueOf(getCredentialStatus());
         } else if ("expirationDateFormatted".equals(property)) {
             if (getExpirationDate() != null) {
-                return (X) (getExpirationDate().toString());
+                return (X) ((DateUtils.formatDateTime(getExpirationDate())));
             } else {
                 return (X) "N/A";
             }

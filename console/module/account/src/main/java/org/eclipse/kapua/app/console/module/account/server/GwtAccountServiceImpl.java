@@ -222,9 +222,9 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                 }
             });
 
-            accountPropertiesPairs.add(new GwtGroupedNVPair("entityInfo", "accountCreatedOn", account.getCreatedOn().toString()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair("entityInfo", "accountCreatedOn", account.getCreatedOn()));
             accountPropertiesPairs.add(new GwtGroupedNVPair("entityInfo", "accountCreatedBy", userCreatedBy != null ? userCreatedBy.getName() : null));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("entityInfo", "accountModifiedOn", account.getModifiedOn().toString()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair("entityInfo", "accountModifiedOn", account.getModifiedOn()));
             accountPropertiesPairs.add(new GwtGroupedNVPair("entityInfo", "accountModifiedBy", userModifiedBy != null ? userModifiedBy.getName() : null));
             accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountName", account.getName()));
 
