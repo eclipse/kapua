@@ -146,6 +146,11 @@ public class GwtKapuaDeviceModelConverter {
             deviceQuery.setOffset(loadConfig.getOffset());
 
             String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? DevicePredicates.CLIENT_ID : loadConfig.getSortField();
+            if (sortField.equals("clientId")) {
+                sortField = DevicePredicates.CLIENT_ID;
+            } else if (sortField.equals("displayName")) {
+                sortField = DevicePredicates.DISPLAY_NAME;
+            }
             SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
             FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
             deviceQuery.setSortCriteria(sortCriteria);
@@ -208,16 +213,9 @@ public class GwtKapuaDeviceModelConverter {
                 sortOrder = SortOrder.DESCENDING;
             }
 
-            if (predicates.getSortAttribute().equals(GwtDeviceQueryPredicates.GwtSortAttribute.CLIENT_ID.name())) {
-                deviceQuery.setSortCriteria(new FieldSortCriteria(DevicePredicates.CLIENT_ID, sortOrder));
-            } else if (predicates.getSortAttribute().equals(GwtDeviceQueryPredicates.GwtSortAttribute.DISPLAY_NAME.name())) {
-                deviceQuery.setSortCriteria(new FieldSortCriteria(DevicePredicates.DISPLAY_NAME, sortOrder));
-            } else if (predicates.getSortAttribute().equals(GwtDeviceQueryPredicates.GwtSortAttribute.LAST_EVENT_ON.name())) {
-                deviceQuery.setSortCriteria(new FieldSortCriteria(DevicePredicates.LAST_EVENT_ON, sortOrder));
-            }
         } else {
             deviceQuery.setSortCriteria(new FieldSortCriteria(DevicePredicates.CLIENT_ID, SortOrder.ASCENDING));
-        }
+        } 
 
         deviceQuery.setPredicate(andPred);
 
