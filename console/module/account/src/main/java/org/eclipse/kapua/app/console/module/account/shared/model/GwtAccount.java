@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtUpdatableEntityModel;
 
 public class GwtAccount extends GwtUpdatableEntityModel implements Serializable {
@@ -96,6 +97,14 @@ public class GwtAccount extends GwtUpdatableEntityModel implements Serializable 
 
     public String getParentAccountId() {
         return (String) get("parentAccountId");
+    }
+
+    public String getParentAccountPath() {
+        return get("parentAccountPath");
+    }
+
+    public void setParentAccountPath(String parentAccountPath) {
+        set("parentAccountPath", parentAccountPath);
     }
 
     public List<GwtAccount> getChildAccounts() {

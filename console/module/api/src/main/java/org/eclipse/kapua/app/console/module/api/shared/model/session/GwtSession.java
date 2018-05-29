@@ -31,11 +31,13 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
 
     // User info
     private String accountId;
+    private String accountPath;
     private String rootAccountId;
     private String rootAccountName;
 
     private String selectedAccountId;
     private String selectedAccountName;
+    private String selectedAccountPath;
 
     private String userId;
     private String userName;
@@ -92,6 +94,14 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
         this.accountId = accountId;
     }
 
+    public String getAccountPath() {
+        return accountPath;
+    }
+
+    public void setAccountPath(String accountPath) {
+        this.accountPath = accountPath;
+    }
+
     public void setRootAccountId(String rootAccountId) {
         this.rootAccountId = rootAccountId;
     }
@@ -106,6 +116,14 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
 
     public String getSelectedAccountId() {
         return selectedAccountId;
+    }
+
+    public String getSelectedAccountPath() {
+        return selectedAccountPath;
+    }
+
+    public void setSelectedAccountPath(String selectedAccountPath) {
+        this.selectedAccountPath = selectedAccountPath;
     }
 
     public String getUserName() {

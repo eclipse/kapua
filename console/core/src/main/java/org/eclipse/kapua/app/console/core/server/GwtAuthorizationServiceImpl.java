@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.core.server;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtJwtCredential;
 import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtLoginCredential;
@@ -61,6 +62,7 @@ import org.eclipse.kapua.service.authorization.role.RolePermissionService;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -275,6 +277,9 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         gwtSession.setUserDisplayName(gwtUser.getDisplayName());
         gwtSession.setRootAccountName(gwtAccount.getName());
         gwtSession.setSelectedAccountName(gwtAccount.getName());
+
+        gwtSession.setAccountPath(gwtAccount.getParentAccountPath());
+        gwtSession.setSelectedAccountPath(gwtAccount.getParentAccountPath());
 
         //
         // Load permissions

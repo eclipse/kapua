@@ -44,6 +44,7 @@ public class KapuaGwtAccountModelConverter {
         gwtAccount.setName(account.getName());
         gwtAccount.setGwtOrganization(convertOrganization(account.getOrganization()));
         gwtAccount.setParentAccountId(account.getScopeId() != null ? account.getScopeId().toCompactId() : null);
+        gwtAccount.setParentAccountPath(account.getParentAccountPath());
         gwtAccount.setOptlock(account.getOptlock());
         gwtAccount.set("orgName", account.getOrganization().getName());
         gwtAccount.set("orgEmail", account.getOrganization().getEmail());
