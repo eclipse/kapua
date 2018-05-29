@@ -22,9 +22,9 @@ public enum GwtEndpointValidationRegex implements GwtValidationRegex, IsSerializ
     URI_SCHEME("^[a-zA-Z][a-zA-Z0-9\\-\\.\\+]{0,}$"),
 
     /**
-     * ^[a-zA-Z][a-zA-Z0-9\-\.\+]{0,}$
+     * ^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$
      */
-    URI_DNS("^[a-zA-Z0-9\\-\\.\\+]{2,}$"),
+    URI_DNS("^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9](?:\\.[a-zA-Z]{2,})+$"),
 
     /**
      * ^[a-zA-Z][a-zA-Z0-9\-\.\+]{0,}$
