@@ -11,11 +11,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.jbatch.exception;
 
-import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.KapuaException;
 
-public class JobStaringException extends StartJobEngineException {
+public class JobEngineException extends KapuaException {
 
-    public JobStaringException(Throwable t, KapuaId scopeId, KapuaId jobId) {
-        super(KapuaJobEngineErrorCodes.JOB_STARTING, t, scopeId, jobId);
+    protected JobEngineException(KapuaJobEngineErrorCodes code) {
+        super(code);
     }
+
+    protected JobEngineException(KapuaJobEngineErrorCodes code, Object... arguments) {
+        super(code, arguments);
+    }
+
+    protected JobEngineException(KapuaJobEngineErrorCodes code, Throwable cause, Object... arguments) {
+        super(code, cause, arguments);
+    }
+
 }

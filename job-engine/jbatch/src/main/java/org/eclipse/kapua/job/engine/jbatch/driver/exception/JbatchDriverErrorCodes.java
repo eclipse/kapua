@@ -36,4 +36,5 @@ public enum JbatchDriverErrorCodes implements KapuaErrorCode {
 
     JOB_EXECUTION_IS_RUNNING,
 
+    CANNOT_CLEAN_JOB_DATA;
 }

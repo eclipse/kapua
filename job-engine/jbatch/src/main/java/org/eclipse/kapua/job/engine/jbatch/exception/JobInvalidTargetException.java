@@ -15,7 +15,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 
 import java.util.List;
 
-public class JobInvalidTargetException extends StartJobEngineException {
+public class JobInvalidTargetException extends JobEngineException {
 
     public JobInvalidTargetException(KapuaId scopeId, KapuaId jobId, List<KapuaId> targetSublist) {
         super(KapuaJobEngineErrorCodes.JOB_TARGET_INVALID, scopeId, jobId, targetSublist);

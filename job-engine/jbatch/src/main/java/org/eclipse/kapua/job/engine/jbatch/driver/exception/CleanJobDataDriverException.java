@@ -9,13 +9,10 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.job.engine.jbatch.exception;
+package org.eclipse.kapua.job.engine.jbatch.driver.exception;
 
-import org.eclipse.kapua.model.id.KapuaId;
-
-public class JobMissingTargetException extends JobEngineException {
-
-    public JobMissingTargetException(KapuaId scopeId, KapuaId jobId) {
-        super(KapuaJobEngineErrorCodes.JOB_TARGET_MISSING, scopeId, jobId);
+public class CleanJobDataDriverException extends JbatchDriverException {
+    public CleanJobDataDriverException(Throwable t, String jobName) {
+        super(JbatchDriverErrorCodes.CANNOT_CLEAN_JOB_DATA, t, jobName);
     }
 }

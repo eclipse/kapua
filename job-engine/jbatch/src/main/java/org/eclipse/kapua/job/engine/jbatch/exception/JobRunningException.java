@@ -13,9 +13,9 @@ package org.eclipse.kapua.job.engine.jbatch.exception;
 
 import org.eclipse.kapua.model.id.KapuaId;
 
-public class JobMissingTargetException extends JobEngineException {
+public class JobRunningException extends JobEngineException {
 
-    public JobMissingTargetException(KapuaId scopeId, KapuaId jobId) {
-        super(KapuaJobEngineErrorCodes.JOB_TARGET_MISSING, scopeId, jobId);
+    public JobRunningException(KapuaId scopeId, KapuaId jobId) {
+        super(KapuaJobEngineErrorCodes.JOB_RUNNING, scopeId, jobId);
     }
 }

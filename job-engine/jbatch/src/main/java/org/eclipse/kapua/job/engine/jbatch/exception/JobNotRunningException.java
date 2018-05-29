@@ -13,7 +13,7 @@ package org.eclipse.kapua.job.engine.jbatch.exception;
 
 import org.eclipse.kapua.model.id.KapuaId;
 
-public class JobNotRunningException extends StartJobEngineException {
+public class JobNotRunningException extends JobEngineException {
 
     public JobNotRunningException(KapuaId scopeId, KapuaId jobId) {
         super(KapuaJobEngineErrorCodes.JOB_NOT_RUNNING, scopeId, jobId);
