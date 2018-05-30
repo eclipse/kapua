@@ -324,6 +324,7 @@ public class NorthView extends LayoutContainer {
                         if (result != null) {
                             currentSession.setSelectedAccountId(result.getId());
                             currentSession.setSelectedAccountName(result.getName());
+                            currentSession.setSelectedAccountPath(result.getParentAccountPath());
                         }
 
                         // Update userActionButtonLabel with the current data
