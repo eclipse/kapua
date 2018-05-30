@@ -99,6 +99,7 @@ public class RoleSubjectGrid extends EntityGrid<GwtUser> {
         toolbar.setEditButtonVisible(false);
         toolbar.setDeleteButtonVisible(false);
         toolbar.setFilterButtonVisible(false);
+        toolbar.setRefreshAndDeselectVisible(false);
         toolbar.setBorders(true);
 
         return toolbar;

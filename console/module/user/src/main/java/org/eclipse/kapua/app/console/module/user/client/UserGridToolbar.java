@@ -55,6 +55,7 @@ public class UserGridToolbar extends EntityCRUDToolbar<GwtUser> {
     @Override
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
+        getRefreshAndDeselectButton().hide();
         getEditEntityButton().disable();
         getDeleteEntityButton().disable();
         getAddEntityButton().setEnabled(currentSession.hasPermission(UserSessionPermission.write()));

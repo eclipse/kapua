@@ -47,6 +47,7 @@ public class RoleToolbarGrid extends EntityCRUDToolbar<GwtRole> {
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
         getAddEntityButton().setEnabled(currentSession.hasPermission(RoleSessionPermission.write()));
+        getRefreshAndDeselectButton().hide();
     }
 
     @Override
