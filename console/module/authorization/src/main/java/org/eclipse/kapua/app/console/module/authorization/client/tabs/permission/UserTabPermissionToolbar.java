@@ -62,6 +62,7 @@ public class UserTabPermissionToolbar extends EntityCRUDToolbar<GwtAccessPermiss
                 currentSession.hasPermission(DomainSessionPermission.read()) && currentSession.hasPermission(DomainSessionPermission.write()));
         deleteEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null);
         refreshEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null);
+        getRefreshAndDeselectButton().hide();
     }
 
     @Override

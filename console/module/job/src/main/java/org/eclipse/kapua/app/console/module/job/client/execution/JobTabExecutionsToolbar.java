@@ -37,6 +37,7 @@ public class JobTabExecutionsToolbar extends EntityCRUDToolbar<GwtExecution> {
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
         checkButtons();
+        refreshAndDeselectEntityButton.hide();
     }
 
     private void checkButtons() {

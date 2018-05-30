@@ -83,6 +83,7 @@ public class JobTabTargetsToolbar extends EntityCRUDToolbar<GwtJobTarget> {
         super.onRender(target, index);
 
         checkButtons();
+        getRefreshAndDeselectButton().hide();
     }
 
     @Override
