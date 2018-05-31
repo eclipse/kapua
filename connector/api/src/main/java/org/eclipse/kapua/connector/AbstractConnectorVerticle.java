@@ -14,6 +14,11 @@ package org.eclipse.kapua.connector;
 import java.util.Map;
 
 import io.vertx.core.Future;
+
+import org.eclipse.kapua.converter.Converter;
+import org.eclipse.kapua.converter.KapuaConverterException;
+import org.eclipse.kapua.processor.KapuaProcessorException;
+import org.eclipse.kapua.processor.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +62,7 @@ public abstract class AbstractConnectorVerticle<S,T> extends AbstractVerticle {
     }
 
     @SuppressWarnings("unchecked")
-    public void handleMessage(Map<String,Object> properties, S message) throws KapuaConnectorException {
+    public void handleMessage(Map<String,Object> properties, S message) throws KapuaConnectorException, KapuaConverterException, KapuaProcessorException {
 
         T convertedMessage = null;
         if (converter != null) {
