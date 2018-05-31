@@ -17,7 +17,6 @@ import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
@@ -31,6 +30,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGridCheckBoxSelectionModel;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolBar;
+import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
@@ -141,9 +141,9 @@ public class JobTargetAddGrid extends EntityGrid<GwtDevice> {
         @Override
         public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,
                 ListStore<ModelData> store, Grid<ModelData> grid) {
-            String value = model.get(property);
+            String value = model.get(KapuaSafeHtmlUtils.htmlUnescape(property));
             if (value != null) {
-                return "<tpl for=\".\"><div title=" + Format.htmlEncode(value) + ">" + Format.htmlEncode(value) + "</div></tpl>";
+                return "<tpl for=\".\"><div title=" + value + ">" + value + "</div></tpl>";
             }
             return value;
         }
