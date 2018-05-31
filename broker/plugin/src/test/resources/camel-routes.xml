@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+        Red Hat Inc
+ -->
+ <!-- 
+ The regex can have placeholders. The replacement will be addressed by the EndPoint implementation while setting the regex.
+ For the available managed placeholders see the CAMEL_ROUTER_PLACEHOLDER enum.
+  -->
+ <endPoints>
+    <endPoints>
+        <endPoint>
+            <regex>${CLASSIFIER}.*</regex>
+            <endPoints>
+                <simpleEndPoint>
+                    <regex>${CLASSIFIER}(.*\.){2}MQTT\.BIRTH</regex>
+                    <endPoint>bean:kapuaLifeCycleConverter?method=convertToBirth,bean:deviceMessageListener?method=processBirthMessage</endPoint>
+                </simpleEndPoint>
+                <simpleEndPoint>
+                    <regex>${CLASSIFIER}(.*\.){2}MQTT\.DC</regex>
+                    <endPoint>bean:kapuaLifeCycleConverter?method=convertToDisconnect,bean:deviceMessageListener?method=processDisconnectMessage</endPoint>
+                </simpleEndPoint>
+                <simpleEndPoint>
+                    <regex>${CLASSIFIER}(.*\.){2}MQTT\.APPS</regex>
+                    <endPoint>bean:kapuaLifeCycleConverter?method=convertToApps,bean:deviceMessageListener?method=processAppsMessage</endPoint>
+                </simpleEndPoint>
+                <simpleEndPoint>
+                    <regex>${CLASSIFIER}(.*\.){2}MQTT\.LWT</regex>
+                    <endPoint>bean:kapuaLifeCycleConverter?method=convertToMissing,bean:deviceMessageListener?method=processMissingMessage</endPoint>
+                </simpleEndPoint>
+                <simpleEndPoint>
+                    <regex>${CLASSIFIER}(.*\.){2}MQTT\.NOTIFY</regex>
+                    <endPoint>bean:kapuaLifeCycleConverter?method=convertToNotify,bean:deviceMessageListener?method=processNotifyMessage</endPoint>
+                </simpleEndPoint>
+                <endChainEndPoint>
+                </endChainEndPoint>
+            </endPoints>
+        </endPoint>
+        <simpleEndPoint>
+            <regex>.*</regex>
+            <endPoint>bean:kapuaDataConverter?method=convertToData,bean:dataStorageMessageProcessor?method=processMessage</endPoint>
+        </simpleEndPoint>
+    </endPoints>
+ </endPoints>
