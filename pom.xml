@@ -32,6 +32,8 @@
         <artemis.version>2.2.0</artemis.version>
         <assertj.version>3.2.0</assertj.version>
         <camel.version>2.16.3</camel.version>
+        <vertx.version>3.5.1</vertx.version>
+        <hono.version>0.6</hono.version>
         <commons-beanutils.version>1.9.2</commons-beanutils.version>
         <commons-cli.version>1.4</commons-cli.version>
         <commons-codec.version>1.9</commons-codec.version>
@@ -461,7 +463,17 @@
             <!-- Internal dependencies -->
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
+                <artifactId>eclipseiot</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-broker-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-broker-plugin</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -904,6 +916,22 @@
                 <artifactId>kapua-security-certificate-internal</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-apps-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-broker-client-amqp</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-broker-client-hono</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-connector</artifactId>
@@ -916,12 +944,42 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-connector-commons</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-connector-activemq</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-connector-hono</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-converter-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-converter-activemq</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-converter-hono</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-converter-kura</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-connector-amqp</artifactId>
+                <artifactId>kapua-processor-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -929,13 +987,32 @@
                 <artifactId>kapua-processor-logger</artifactId>
                 <version>${project.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-processor-datastore</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-processor-lifecycle</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-processor-error-amqp-activemq</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-foreignkeys</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>apps-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <!-- External dependencies -->
             <dependency>
                 <groupId>commons-beanutils</groupId>
@@ -1273,6 +1350,26 @@
                 <artifactId>artemis-amqp-protocol</artifactId>
                 <version>${artemis.version}</version>
             </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-core</artifactId>
+                <version>${vertx.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-proton</artifactId>
+                <version>${vertx.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-health-check</artifactId>
+                <version>${vertx.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.hono</groupId>
+                <artifactId>hono-client</artifactId>
+                <version>${hono.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
@@ -1308,6 +1405,7 @@
     </dependencyManagement>
 
     <modules>
+        <module>apps</module>
         <module>build-tools</module>
 
         <module>commons</module>
@@ -1316,8 +1414,9 @@
         <module>message</module>
         <module>transport</module>
         <module>translator</module>
-        <module>broker-core</module>
         <module>connector</module>
+        <module>converter</module>
+        <module>processor</module>
 
         <module>test</module>
         <module>qa</module>

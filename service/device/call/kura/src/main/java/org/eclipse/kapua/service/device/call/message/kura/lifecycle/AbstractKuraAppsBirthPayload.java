@@ -11,40 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
 
+import org.eclipse.kapua.service.device.call.kura.KuraMetricsNames;
 import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
 import org.eclipse.kapua.service.device.call.message.lifecycle.DeviceLifecyclePayload;
 
 public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceLifecyclePayload {
-
-    protected static final String UPTIME = "uptime";
-    protected static final String DISPLAY_NAME = "display_name";
-    protected static final String MODEL_NAME = "model_name";
-    protected static final String MODEL_ID = "model_id";
-    protected static final String PART_NUMBER = "part_number";
-    protected static final String SERIAL_NUMBER = "serial_number";
-    protected static final String AVAILABLE_PROCESSORS = "available_processors";
-    protected static final String TOTAL_MEMORY = "total_memory";
-    protected static final String FIRMWARE_VERSION = "firmware_version";
-    protected static final String BIOS_VERSION = "bios_version";
-    protected static final String OS = "os";
-    protected static final String OS_VERSION = "os_version";
-    protected static final String OS_ARCH = "os_arch";
-    protected static final String JVM_NAME = "jvm_name";
-    protected static final String JVM_VERSION = "jvm_version";
-    protected static final String JVM_PROFILE = "jvm_profile";
-    protected static final String ESF_VERSION = "esf_version";
-    protected static final String KURA_VERSION = "kura_version";
-    protected static final String APPLICATION_FRAMEWORK = "application_framework";
-    protected static final String APPLICATION_FRAMEWORK_VERSION = "application_framework_version";
-    protected static final String OSGI_FRAMEWORK = "osgi_framework";
-    protected static final String OSGI_FRAMEWORK_VERSION = "osgi_framework_version";
-    protected static final String CONNECTION_INTERFACE = "connection_interface";
-    protected static final String CONNECTION_IP = "connection_ip";
-    protected static final String ACCEPT_ENCODING = "accept_encoding";
-    protected static final String APPLICATION_IDS = "application_ids";
-    protected static final String MODEM_IMEI = "modem_imei";
-    protected static final String MODEM_IMSI = "modem_imsi";
-    protected static final String MODEM_ICCID = "modem_iccid";
 
     protected static final String DEFAULT_APPLICATION_FRAMEWORK = "Kura";
 
@@ -115,85 +86,85 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
         super();
 
         if (uptime != null) {
-            getMetrics().put(UPTIME, uptime);
+            getMetrics().put(KuraMetricsNames.UPTIME, uptime);
         }
         if (displayName != null) {
-            getMetrics().put(DISPLAY_NAME, displayName);
+            getMetrics().put(KuraMetricsNames.DISPLAY_NAME, displayName);
         }
         if (modelName != null) {
-            getMetrics().put(MODEL_NAME, modelName);
+            getMetrics().put(KuraMetricsNames.MODEL_NAME, modelName);
         }
         if (modelId != null) {
-            getMetrics().put(MODEL_ID, modelId);
+            getMetrics().put(KuraMetricsNames.MODEL_ID, modelId);
         }
         if (partNumber != null) {
-            getMetrics().put(PART_NUMBER, partNumber);
+            getMetrics().put(KuraMetricsNames.PART_NUMBER, partNumber);
         }
         if (serialNumber != null) {
-            getMetrics().put(SERIAL_NUMBER, serialNumber);
+            getMetrics().put(KuraMetricsNames.SERIAL_NUMBER, serialNumber);
         }
         if (firmwareVersion != null) {
-            getMetrics().put(FIRMWARE_VERSION, firmwareVersion);
+            getMetrics().put(KuraMetricsNames.FIRMWARE_VERSION, firmwareVersion);
         }
         if (biosVersion != null) {
-            getMetrics().put(BIOS_VERSION, biosVersion);
+            getMetrics().put(KuraMetricsNames.BIOS_VERSION, biosVersion);
         }
         if (os != null) {
-            getMetrics().put(OS, os);
+            getMetrics().put(KuraMetricsNames.OS, os);
         }
         if (osVersion != null) {
-            getMetrics().put(OS_VERSION, osVersion);
+            getMetrics().put(KuraMetricsNames.OS_VERSION, osVersion);
         }
         if (jvmName != null) {
-            getMetrics().put(JVM_NAME, jvmName);
+            getMetrics().put(KuraMetricsNames.JVM_NAME, jvmName);
         }
         if (jvmVersion != null) {
-            getMetrics().put(JVM_VERSION, jvmVersion);
+            getMetrics().put(KuraMetricsNames.JVM_VERSION, jvmVersion);
         }
         if (jvmProfile != null) {
-            getMetrics().put(JVM_PROFILE, jvmProfile);
+            getMetrics().put(KuraMetricsNames.JVM_PROFILE, jvmProfile);
         }
         if (applicationFramework != null) {
-            getMetrics().put(APPLICATION_FRAMEWORK, applicationFramework);
+            getMetrics().put(KuraMetricsNames.APPLICATION_FRAMEWORK, applicationFramework);
         }
         if (applicationFrameworkVersion != null) {
-            getMetrics().put(APPLICATION_FRAMEWORK_VERSION, applicationFrameworkVersion);
+            getMetrics().put(KuraMetricsNames.APPLICATION_FRAMEWORK_VERSION, applicationFrameworkVersion);
         }
         if (connectionInterface != null) {
-            getMetrics().put(CONNECTION_INTERFACE, connectionInterface);
+            getMetrics().put(KuraMetricsNames.CONNECTION_INTERFACE, connectionInterface);
         }
         if (connectionIp != null) {
-            getMetrics().put(CONNECTION_IP, connectionIp);
+            getMetrics().put(KuraMetricsNames.CONNECTION_IP, connectionIp);
         }
         if (acceptEncoding != null) {
-            getMetrics().put(ACCEPT_ENCODING, acceptEncoding);
+            getMetrics().put(KuraMetricsNames.ACCEPT_ENCODING, acceptEncoding);
         }
         if (applicationIdentifiers != null) {
-            getMetrics().put(APPLICATION_IDS, applicationIdentifiers);
+            getMetrics().put(KuraMetricsNames.APPLICATION_IDS, applicationIdentifiers);
         }
         if (availableProcessors != null) {
-            getMetrics().put(AVAILABLE_PROCESSORS, availableProcessors);
+            getMetrics().put(KuraMetricsNames.AVAILABLE_PROCESSORS, availableProcessors);
         }
         if (totalMemory != null) {
-            getMetrics().put(TOTAL_MEMORY, totalMemory);
+            getMetrics().put(KuraMetricsNames.TOTAL_MEMORY, totalMemory);
         }
         if (osArch != null) {
-            getMetrics().put(OS_ARCH, osArch);
+            getMetrics().put(KuraMetricsNames.OS_ARCH, osArch);
         }
         if (osgiFramework != null) {
-            getMetrics().put(OSGI_FRAMEWORK, osgiFramework);
+            getMetrics().put(KuraMetricsNames.OSGI_FRAMEWORK, osgiFramework);
         }
         if (osgiFrameworkVersion != null) {
-            getMetrics().put(OSGI_FRAMEWORK_VERSION, osgiFrameworkVersion);
+            getMetrics().put(KuraMetricsNames.OSGI_FRAMEWORK_VERSION, osgiFrameworkVersion);
         }
         if (modemImei != null) {
-            getMetrics().put(MODEM_IMEI, modemImei);
+            getMetrics().put(KuraMetricsNames.MODEM_IMEI, modemImei);
         }
         if (modemImsi != null) {
-            getMetrics().put(MODEM_IMSI, modemImsi);
+            getMetrics().put(KuraMetricsNames.MODEM_IMSI, modemImsi);
         }
         if (modemIccid != null) {
-            getMetrics().put(MODEM_ICCID, modemIccid);
+            getMetrics().put(KuraMetricsNames.MODEM_ICCID, modemIccid);
         }
     }
 
@@ -203,7 +174,7 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      * @return
      */
     public String getUptime() {
-        return (String) getMetrics().get(UPTIME);
+        return (String) getMetrics().get(KuraMetricsNames.UPTIME);
     }
 
     /**
@@ -212,7 +183,7 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      * @return
      */
     public String getDisplayName() {
-        return (String) getMetrics().get(DISPLAY_NAME);
+        return (String) getMetrics().get(KuraMetricsNames.DISPLAY_NAME);
     }
 
     /**
@@ -221,7 +192,7 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      * @return
      */
     public String getModelName() {
-        return (String) getMetrics().get(MODEL_NAME);
+        return (String) getMetrics().get(KuraMetricsNames.MODEL_NAME);
     }
 
     /**
@@ -230,7 +201,7 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      * @return
      */
     public String getModelId() {
-        return (String) getMetrics().get(MODEL_ID);
+        return (String) getMetrics().get(KuraMetricsNames.MODEL_ID);
     }
 
     /**
@@ -239,7 +210,7 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      * @return
      */
     public String getPartNumber() {
-        return (String) getMetrics().get(PART_NUMBER);
+        return (String) getMetrics().get(KuraMetricsNames.PART_NUMBER);
     }
 
     /**
@@ -248,7 +219,7 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      * @return
      */
     public String getSerialNumber() {
-        return (String) getMetrics().get(SERIAL_NUMBER);
+        return (String) getMetrics().get(KuraMetricsNames.SERIAL_NUMBER);
     }
 
     /**
@@ -257,7 +228,7 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      * @return
      */
     public String getFirmware() {
-        return (String) getMetrics().get(FIRMWARE_VERSION);
+        return (String) getMetrics().get(KuraMetricsNames.FIRMWARE_VERSION);
     }
 
     /**
@@ -266,7 +237,7 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      * @return
      */
     public String getFirmwareVersion() {
-        return (String) getMetrics().get(FIRMWARE_VERSION);
+        return (String) getMetrics().get(KuraMetricsNames.FIRMWARE_VERSION);
     }
 
     /**
@@ -275,7 +246,7 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      * @return
      */
     public String getBios() {
-        return (String) getMetrics().get(BIOS_VERSION);
+        return (String) getMetrics().get(KuraMetricsNames.BIOS_VERSION);
     }
 
     /**
@@ -284,7 +255,7 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      * @return
      */
     public String getBiosVersion() {
-        return (String) getMetrics().get(BIOS_VERSION);
+        return (String) getMetrics().get(KuraMetricsNames.BIOS_VERSION);
     }
 
     /**
@@ -293,7 +264,7 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      * @return
      */
     public String getOs() {
-        return (String) getMetrics().get(OS);
+        return (String) getMetrics().get(KuraMetricsNames.OS);
     }
 
     /**
@@ -302,7 +273,7 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      * @return
      */
     public String getOsVersion() {
-        return (String) getMetrics().get(OS_VERSION);
+        return (String) getMetrics().get(KuraMetricsNames.OS_VERSION);
     }
 
     /**
@@ -311,7 +282,7 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      * @return
      */
     public String getJvm() {
-        return (String) getMetrics().get(JVM_NAME);
+        return (String) getMetrics().get(KuraMetricsNames.JVM_NAME);
     }
 
     /**
@@ -320,7 +291,7 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      * @return
      */
     public String getJvmVersion() {
-        return (String) getMetrics().get(JVM_VERSION);
+        return (String) getMetrics().get(KuraMetricsNames.JVM_VERSION);
     }
 
     /**
@@ -329,7 +300,7 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      * @return
      */
     public String getJvmProfile() {
-        return (String) getMetrics().get(JVM_PROFILE);
+        return (String) getMetrics().get(KuraMetricsNames.JVM_PROFILE);
     }
 
     /**
@@ -338,7 +309,7 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      * @return
      */
     public String getContainerFramework() {
-        return (String) getMetrics().get(OSGI_FRAMEWORK);
+        return (String) getMetrics().get(KuraMetricsNames.OSGI_FRAMEWORK);
     }
 
     /**
@@ -347,7 +318,7 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      * @return
      */
     public String getContainerFrameworkVersion() {
-        return (String) getMetrics().get(OSGI_FRAMEWORK_VERSION);
+        return (String) getMetrics().get(KuraMetricsNames.OSGI_FRAMEWORK_VERSION);
     }
 
     /**
@@ -356,7 +327,7 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      * @return
      */
     public String getApplicationFramework() {
-        String value = (String) getMetrics().get(APPLICATION_FRAMEWORK);
+        String value = (String) getMetrics().get(KuraMetricsNames.APPLICATION_FRAMEWORK);
         if (value != null) {
             return value;
         }
@@ -369,15 +340,15 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      * @return
      */
     public String getApplicationFrameworkVersion() {
-        String value = (String) getMetrics().get(APPLICATION_FRAMEWORK_VERSION);
+        String value = (String) getMetrics().get(KuraMetricsNames.APPLICATION_FRAMEWORK_VERSION);
         if (value != null) {
             return value;
         }
-        value = (String) getMetrics().get(KURA_VERSION);
+        value = (String) getMetrics().get(KuraMetricsNames.KURA_VERSION);
         if (value != null) {
             return value;
         }
-        return (String) getMetrics().get(ESF_VERSION);
+        return (String) getMetrics().get(KuraMetricsNames.ESF_VERSION);
     }
 
     /**
@@ -386,7 +357,7 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      * @return
      */
     public String getConnectionInterface() {
-        return (String) getMetrics().get(CONNECTION_INTERFACE);
+        return (String) getMetrics().get(KuraMetricsNames.CONNECTION_INTERFACE);
     }
 
     /**
@@ -395,7 +366,7 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      * @return
      */
     public String getConnectionIp() {
-        return (String) getMetrics().get(CONNECTION_IP);
+        return (String) getMetrics().get(KuraMetricsNames.CONNECTION_IP);
     }
 
     /**
@@ -404,7 +375,7 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      * @return
      */
     public String getAcceptEncoding() {
-        return (String) getMetrics().get(ACCEPT_ENCODING);
+        return (String) getMetrics().get(KuraMetricsNames.ACCEPT_ENCODING);
     }
 
     /**
@@ -413,7 +384,7 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      * @return
      */
     public String getApplicationIdentifiers() {
-        return (String) getMetrics().get(APPLICATION_IDS);
+        return (String) getMetrics().get(KuraMetricsNames.APPLICATION_IDS);
     }
 
     /**
@@ -422,7 +393,7 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      * @return
      */
     public String getAvailableProcessors() {
-        return (String) getMetrics().get(AVAILABLE_PROCESSORS);
+        return (String) getMetrics().get(KuraMetricsNames.AVAILABLE_PROCESSORS);
     }
 
     /**
@@ -431,7 +402,7 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      * @return
      */
     public String getTotalMemory() {
-        return (String) getMetrics().get(TOTAL_MEMORY);
+        return (String) getMetrics().get(KuraMetricsNames.TOTAL_MEMORY);
     }
 
     /**
@@ -440,7 +411,7 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      * @return
      */
     public String getOsArch() {
-        return (String) getMetrics().get(OS_ARCH);
+        return (String) getMetrics().get(KuraMetricsNames.OS_ARCH);
     }
 
     /**
@@ -449,7 +420,7 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      * @return
      */
     public String getModemImei() {
-        return (String) getMetrics().get(MODEM_IMEI);
+        return (String) getMetrics().get(KuraMetricsNames.MODEM_IMEI);
     }
 
     /**
@@ -458,7 +429,7 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      * @return
      */
     public String getModemImsi() {
-        return (String) getMetrics().get(MODEM_IMSI);
+        return (String) getMetrics().get(KuraMetricsNames.MODEM_IMSI);
     }
 
     /**
@@ -467,7 +438,7 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      * @return
      */
     public String getModemIccid() {
-        return (String) getMetrics().get(MODEM_ICCID);
+        return (String) getMetrics().get(KuraMetricsNames.MODEM_ICCID);
     }
 
     /**
