@@ -19,6 +19,7 @@ import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -48,7 +49,6 @@ import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
 
-import javax.inject.Inject;
 import java.util.TimeZone;
 
 /**
@@ -60,11 +60,10 @@ import java.util.TimeZone;
 public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<Trigger, TriggerCreator, TriggerService, TriggerListResult, TriggerQuery, TriggerFactory>
         implements TriggerService {
 
-    @Inject
-    private AuthorizationService authorizationService;
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
-    @Inject
-    private PermissionFactory permissionFactory;
+    private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
+    private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
 
     /**
      * Constructor.
@@ -85,7 +84,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(SCHEDULER_DOMAIN, Actions.write, triggerCreator.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(SCHEDULER_DOMAIN, Actions.write, triggerCreator.getScopeId()));
 
         //
         // Check duplicate name
@@ -174,7 +173,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(SCHEDULER_DOMAIN, Actions.write, trigger.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(SCHEDULER_DOMAIN, Actions.write, trigger.getScopeId()));
 
         //
         // Check existence
@@ -210,7 +209,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(SCHEDULER_DOMAIN, Actions.delete, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(SCHEDULER_DOMAIN, Actions.delete, scopeId));
 
         //
         // Check existence
@@ -246,7 +245,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(SCHEDULER_DOMAIN, Actions.read, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(SCHEDULER_DOMAIN, Actions.read, scopeId));
 
         //
         // Do find
@@ -262,7 +261,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(SCHEDULER_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(SCHEDULER_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -278,7 +277,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(SCHEDULER_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(SCHEDULER_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do count

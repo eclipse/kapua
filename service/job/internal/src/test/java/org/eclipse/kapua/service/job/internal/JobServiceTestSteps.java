@@ -77,6 +77,7 @@ public class JobServiceTestSteps extends AbstractKapuaSteps {
     private static final String DEFAULT_COMMONS_PATH = "../../../commons";
     private static final String DROP_JOB_TABLES = "job_drop.sql";
     private static final String DROP_JOB_ENGINE_TABLES = "job_engine_drop.sql";
+    private static final String DROP_TRIGGER_TABLES = "trigger_drop.sql";
 
     private static final KapuaId ROOT_ID = new KapuaEid(BigInteger.ONE);
 
@@ -164,6 +165,7 @@ public class JobServiceTestSteps extends AbstractKapuaSteps {
         // Drop the Job Service tables
         scriptSession(JobEntityManagerFactory.getInstance(), DROP_JOB_TABLES);
         scriptSession(JobEntityManagerFactory.getInstance(), DROP_JOB_ENGINE_TABLES);
+        scriptSession(JobEntityManagerFactory.getInstance(), DROP_TRIGGER_TABLES);
         KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
         KapuaSecurityUtils.clearSession();
     }
