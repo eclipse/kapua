@@ -15,23 +15,15 @@
 
     <parent>
         <groupId>org.eclipse.kapua</groupId>
-        <artifactId>kapua-connector</artifactId>
+        <artifactId>kapua-processor</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kapua-connector-api</artifactId>
+    <artifactId>kapua-processor-api</artifactId>
     <name>${project.artifactId}</name>
 
     <dependencies>
         <!-- Internal dependencies -->
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-converter-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-processor-api</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-service-api</artifactId>

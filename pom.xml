@@ -885,6 +885,16 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-converter-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-processor-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-connector-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -901,6 +911,11 @@
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-processor-logger</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-processor-datastore</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -1256,6 +1271,7 @@
     </dependencyManagement>
 
     <modules>
+        <module>apps</module>
         <module>build-tools</module>
 
         <module>commons</module>
@@ -1266,6 +1282,8 @@
         <module>translator</module>
         <module>broker-core</module>
         <module>connector</module>
+        <module>converter</module>
+        <module>processor</module>
 
         <module>test</module>
         <module>qa</module>
