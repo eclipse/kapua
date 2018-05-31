@@ -65,14 +65,14 @@ public class MessageXmlRegistry {
     }
 
     public TransportMessage newTransportMessage() {
-        return factory.newTransportMessage();
+        return KAPUA_MESSAGE_FACTORY.newTransportMessage();
     }
 
     public TransportChannel newTransportChannel() {
-        return factory.newTransportChannel();
+        return KAPUA_MESSAGE_FACTORY.newTransportChannel();
     }
 
     public TransportPayload newTransportPayload() {
-        return factory.newTransportPayload();
+        return KAPUA_MESSAGE_FACTORY.newTransportPayload();
     }
 }
