@@ -146,11 +146,6 @@ public class GwtKapuaDeviceModelConverter {
             deviceQuery.setOffset(loadConfig.getOffset());
 
             String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? DevicePredicates.CLIENT_ID : loadConfig.getSortField();
-            if (sortField.equals("clientId")) {
-                sortField = DevicePredicates.CLIENT_ID;
-            } else if (sortField.equals("displayName")) {
-                sortField = DevicePredicates.DISPLAY_NAME;
-            }
             SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
             FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
             deviceQuery.setSortCriteria(sortCriteria);
