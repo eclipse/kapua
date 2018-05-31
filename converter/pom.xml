@@ -21,12 +21,12 @@
     </parent>
     <packaging>pom</packaging>
 
-    <artifactId>kapua-connector</artifactId>
+    <artifactId>kapua-converter</artifactId>
     <name>${project.artifactId}</name>
 
     <modules>
         <module>api</module>
-        <module>amqp</module>
+        <module>kura</module>
     </modules>
 
 </project>
