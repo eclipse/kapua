@@ -14,6 +14,7 @@ package org.eclipse.kapua.processor.logger;
 import java.io.StringWriter;
 
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.connector.MessageContext;
 import org.eclipse.kapua.message.transport.TransportMessage;
 import org.eclipse.kapua.processor.KapuaProcessorException;
 import org.eclipse.kapua.processor.Processor;
@@ -31,14 +32,13 @@ public class LoggerProcessor implements Processor<TransportMessage> {
     }
 
     @Override
-    public void process(TransportMessage message) throws KapuaProcessorException {
+    public void process(MessageContext<TransportMessage> message) throws KapuaProcessorException {
 
         StringWriter sw = new StringWriter();
         try {
-            XmlUtil.marshalJson(message, sw);
+            XmlUtil.marshalJson(message.getMessage(), sw);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error("Exception while marshalling message: {}", e.getMessage(), e);
         }
 
         logger.info(sw.toString());
