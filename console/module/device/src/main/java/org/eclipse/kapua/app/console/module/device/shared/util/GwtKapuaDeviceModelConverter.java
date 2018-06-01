@@ -210,7 +210,7 @@ public class GwtKapuaDeviceModelConverter {
 
         } else {
             deviceQuery.setSortCriteria(new FieldSortCriteria(DevicePredicates.CLIENT_ID, SortOrder.ASCENDING));
-        } 
+        }
 
         deviceQuery.setPredicate(andPred);
 
