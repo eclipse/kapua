@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.datastore.internal;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
@@ -34,8 +35,10 @@ import org.eclipse.kapua.service.datastore.ClientInfoRegistryService;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
+import org.eclipse.kapua.service.datastore.client.ClientException;
 import org.eclipse.kapua.service.datastore.client.DatastoreClient;
 import org.eclipse.kapua.service.datastore.client.embedded.EsEmbeddedEngine;
+import org.eclipse.kapua.service.datastore.client.model.IndexRequest;
 import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoField;
@@ -85,6 +88,7 @@ import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -177,8 +181,35 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
     @Test
     public void deleteByDate() throws InterruptedException, KapuaException, ParseException {
+        Map<String, Object> settings = new HashMap<>();
+        settings.put("enabled", true);
+        settings.put("dataTTL", 30);
+        settings.put("rxByteLimit", 0);
+        settings.put("dataIndexBy", "DEVICE_TIMESTAMP");
+        String indexingWindow;
+
+        // Delete by Week
+        indexingWindow = DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK;
+        settings.put(DatastoreUtils.INDEXING_WINDOW_OPTION, indexingWindow);
+        MESSAGE_STORE_SERVICE.setConfigValues(KapuaId.ONE, null, settings);
+        internalDeleteByDate(indexingWindow);
+
+        // Index by Day
+        indexingWindow = DatastoreUtils.INDEXING_WINDOW_OPTION_DAY;
+        settings.put(DatastoreUtils.INDEXING_WINDOW_OPTION, indexingWindow);
+        MESSAGE_STORE_SERVICE.setConfigValues(KapuaId.ONE, null, settings);
+        internalDeleteByDate(indexingWindow);
+
+        // Delete by Hour
+        indexingWindow = DatastoreUtils.INDEXING_WINDOW_OPTION_HOUR;
+        settings.put(DatastoreUtils.INDEXING_WINDOW_OPTION, indexingWindow);
+        MESSAGE_STORE_SERVICE.setConfigValues(KapuaId.ONE, null, settings);
+        internalDeleteByDate(indexingWindow);
+    }
+
+    private void internalDeleteByDate(String indexingWindowOption) throws InterruptedException, KapuaException, ParseException {
         Account account = getTestAccountCreator(adminScopeId);
-        String[] semanticTopic = new String[] {
+        String[] semanticTopic = new String[]{
                 "delete/by/date/test"
         };
 
@@ -241,8 +272,8 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         assertEquals(messagesCount, count);
 
         // delete by month window
-        messagesCount -= 56;
-        String[] indexes = DatastoreUtils.convertToDataIndexes(KapuaEid.ONE, KapuaDateUtils.parseDate("2016-12-01T00:00:00.000Z").toInstant(),
+        messagesCount = indexingWindowOption.equals(DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK) ? messagesCount - 42 : messagesCount - 60;
+        String[] indexes = DatastoreUtils.convertToDataIndexes(getDataIndexesByAccount(KapuaEid.ONE), KapuaDateUtils.parseDate("2016-12-01T00:00:00.000Z").toInstant(),
                 KapuaDateUtils.parseDate("2016-12-31T00:00:00.000Z").toInstant());
         datastoreClient.deleteIndexes(indexes);
         DatastoreMediator.getInstance().refreshAllIndexes();
@@ -250,16 +281,16 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         assertEquals(messagesCount, count);
 
         // delete by month window
-        messagesCount -= 28;
-        indexes = DatastoreUtils.convertToDataIndexes(KapuaEid.ONE, KapuaDateUtils.parseDate("2017-01-01T00:00:00.000Z").toInstant(), KapuaDateUtils.parseDate("2017-01-31T00:00:00.000Z").toInstant());
+        messagesCount = indexingWindowOption.equals(DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK) ? messagesCount - 28 : messagesCount - 30;
+        indexes = DatastoreUtils.convertToDataIndexes(getDataIndexesByAccount(KapuaEid.ONE), KapuaDateUtils.parseDate("2017-01-01T00:00:00.000Z").toInstant(), KapuaDateUtils.parseDate("2017-01-31T00:00:00.000Z").toInstant());
         datastoreClient.deleteIndexes(indexes);
         DatastoreMediator.getInstance().refreshAllIndexes();
         count = MESSAGE_STORE_SERVICE.count(messageQuery);
         assertEquals(messagesCount, count);
 
         // delete by month window
-        messagesCount -= 63;
-        indexes = DatastoreUtils.convertToDataIndexes(KapuaEid.ONE, KapuaDateUtils.parseDate("2017-02-01T00:00:00.000Z").toInstant(), KapuaDateUtils.parseDate("2017-02-31T00:00:00.000Z").toInstant());
+        messagesCount = indexingWindowOption.equals(DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK) ? messagesCount - 63 : messagesCount - 81;
+        indexes = DatastoreUtils.convertToDataIndexes(getDataIndexesByAccount(KapuaEid.ONE), KapuaDateUtils.parseDate("2017-02-01T00:00:00.000Z").toInstant(), KapuaDateUtils.parseDate("2017-02-31T00:00:00.000Z").toInstant());
         datastoreClient.deleteIndexes(indexes);
         DatastoreMediator.getInstance().refreshAllIndexes();
         count = MESSAGE_STORE_SERVICE.count(messageQuery);
@@ -267,7 +298,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
         // do a new query
         messagesCount = 0;
-        indexes = DatastoreUtils.convertToDataIndexes(KapuaEid.ONE, startDate.toInstant().minus(7, ChronoUnit.DAYS), endDate.toInstant().plus(7, ChronoUnit.DAYS));
+        indexes = DatastoreUtils.convertToDataIndexes(getDataIndexesByAccount(KapuaEid.ONE), startDate.toInstant().minus(7, ChronoUnit.DAYS), endDate.toInstant().plus(7, ChronoUnit.DAYS));
         datastoreClient.deleteIndexes(indexes);
         DatastoreMediator.getInstance().refreshAllIndexes();
         MESSAGE_STORE_SERVICE.count(messageQuery);
@@ -322,7 +353,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     @Test
     public void deleteById() throws KapuaException, ParseException, InterruptedException {
         Account account = getTestAccountCreator(adminScopeId);
-        String[] semanticTopic = new String[] {
+        String[] semanticTopic = new String[]{
                 "delete/by/id/test"
         };
 
@@ -414,7 +445,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     @Test
     public void deleteByQuery() throws KapuaException, ParseException, InterruptedException {
         Account account = getTestAccountCreator(adminScopeId);
-        String[] semanticTopic = new String[] {
+        String[] semanticTopic = new String[]{
                 "delete/by/query/test/1",
                 "delete/by/query/test/2",
                 "delete/by/query/test/3"
@@ -517,7 +548,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     @Test
     public void checkMappingForSameMetricNameAndDifferentType() throws KapuaException, ParseException, InterruptedException {
         Account account = getTestAccountCreator(adminScopeId);
-        String[] semanticTopic = new String[] {
+        String[] semanticTopic = new String[]{
                 "same/metric/name/different/type/1",
                 "same/metric/name/different/type/2"
         };
@@ -618,7 +649,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      */
     public void checkRegistryCache() throws Exception {
         Account account = getTestAccountCreator(adminScopeId);
-        String[] semanticTopic = new String[] {
+        String[] semanticTopic = new String[]{
                 "registry/cache/check"
         };
 
@@ -696,7 +727,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         Account account = getTestAccountCreator(adminScopeId);
         Random random = new Random();
 
-        String[] semanticTopic = new String[] {
+        String[] semanticTopic = new String[]{
                 "bus/route/one",
                 "bus/route/one",
                 "bus/route/two/a",
@@ -793,7 +824,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
             throws Exception {
         Account account = getTestAccountCreator(adminScopeId);
 
-        String[] semanticTopic = new String[] {
+        String[] semanticTopic = new String[]{
                 "bus/route/one",
                 "bus/route/one",
                 "bus/route/two/a",
@@ -980,8 +1011,8 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         DeviceCreator deviceCreator = DEVICE_FACTORY.newCreator(account.getId(), clientId);
         Device device = DEVICE_REGISTRY_SERVICE.create(deviceCreator);
 
-        String[] clientIds = new String[] { "ci_client_by_account_client1", "ci_client_by_account_client2", "ci_client_by_account_client3", "ci_client_by_account_client4" };
-        String[] semanticTopic = new String[] { "ci_client_by_account/1/2/3" };
+        String[] clientIds = new String[]{ "ci_client_by_account_client1", "ci_client_by_account_client2", "ci_client_by_account_client3", "ci_client_by_account_client4" };
+        String[] semanticTopic = new String[]{ "ci_client_by_account/1/2/3" };
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date receivedOn = new Date();
@@ -1034,8 +1065,8 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         DeviceCreator deviceCreator = DEVICE_FACTORY.newCreator(account.getId(), clientId);
         Device device = DEVICE_REGISTRY_SERVICE.create(deviceCreator);
 
-        String[] clientIds = new String[] { "ci_client_by_pd_by_account_client1", "ci_client_by_pd_by_account_client2" };
-        String[] semanticTopic = new String[] { "ci_client_by_pd_by_account/1/2/3" };
+        String[] clientIds = new String[]{ "ci_client_by_pd_by_account_client1", "ci_client_by_pd_by_account_client2" };
+        String[] semanticTopic = new String[]{ "ci_client_by_pd_by_account/1/2/3" };
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date capturedOnSecondMessage = new Date(capturedOn.getTime() + PUBLISH_DATE_TEST_CHECK_TIME_WINDOW);
@@ -1093,8 +1124,8 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         DeviceCreator deviceCreator = DEVICE_FACTORY.newCreator(account.getId(), clientId);
         Device device = DEVICE_REGISTRY_SERVICE.create(deviceCreator);
 
-        String[] clientIds = new String[] { "ci_topic_by_account_client1", "ci_topic_by_account_client2" };
-        String[] semanticTopic = new String[] { "ci_topic_by_account/1/2/3", "ci_topic_by_account/1/2/4", "ci_topic_by_account/1/2/5", "ci_topic_by_account/1/2/6" };
+        String[] clientIds = new String[]{ "ci_topic_by_account_client1", "ci_topic_by_account_client2" };
+        String[] semanticTopic = new String[]{ "ci_topic_by_account/1/2/3", "ci_topic_by_account/1/2/4", "ci_topic_by_account/1/2/5", "ci_topic_by_account/1/2/6" };
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date receivedOn = new Date();
@@ -1145,8 +1176,8 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         DeviceCreator deviceCreator = DEVICE_FACTORY.newCreator(account.getId(), clientId);
         Device device = DEVICE_REGISTRY_SERVICE.create(deviceCreator);
 
-        String[] clientIds = new String[] { "ci_topic_by_client_client1" };
-        String[] semanticTopic = new String[] { "ci_topic_by_client/1/2/3", "ci_topic_by_client/1/2/4", "ci_topic_by_client/1/2/5", "ci_topic_by_client/1/2/6" };
+        String[] clientIds = new String[]{ "ci_topic_by_client_client1" };
+        String[] semanticTopic = new String[]{ "ci_topic_by_client/1/2/3", "ci_topic_by_client/1/2/4", "ci_topic_by_client/1/2/5", "ci_topic_by_client/1/2/6" };
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date receivedOn = new Date();
@@ -1197,9 +1228,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         DeviceCreator deviceCreator = DEVICE_FACTORY.newCreator(account.getId(), clientId);
         Device device = DEVICE_REGISTRY_SERVICE.create(deviceCreator);
 
-        String[] clientIds = new String[] { "mi_client_by_account_client1", "mi_client_by_account_client2" };
-        String[] metrics = new String[] { "mi_client_by_account_metric1", "mi_client_by_account_metric2", "mi_client_by_account_metric3", "mi_client_by_account_metric4" };
-        String[] semanticTopic = new String[] { "mi_client_by_account/1/2/3" };
+        String[] clientIds = new String[]{ "mi_client_by_account_client1", "mi_client_by_account_client2" };
+        String[] metrics = new String[]{ "mi_client_by_account_metric1", "mi_client_by_account_metric2", "mi_client_by_account_metric3", "mi_client_by_account_metric4" };
+        String[] semanticTopic = new String[]{ "mi_client_by_account/1/2/3" };
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date receivedOn = new Date();
@@ -1245,9 +1276,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         DeviceCreator deviceCreator = DEVICE_FACTORY.newCreator(account.getId(), clientId);
         Device device = DEVICE_REGISTRY_SERVICE.create(deviceCreator);
 
-        String[] clientIds = new String[] { "mi_client_by_pd_by_account_client1", "mi_client_by_pd_by_account_client2" };
-        String[] metrics = new String[] { "mi_client_by_pd_by_account_metric1", "mi_client_by_pd_by_account_metric2", "mi_client_by_pd_by_account_metric3", "mi_client_by_pd_by_account_metric4" };
-        String[] semanticTopic = new String[] { "mi_client_by_pd_by_account/1/2/3" };
+        String[] clientIds = new String[]{ "mi_client_by_pd_by_account_client1", "mi_client_by_pd_by_account_client2" };
+        String[] metrics = new String[]{ "mi_client_by_pd_by_account_metric1", "mi_client_by_pd_by_account_metric2", "mi_client_by_pd_by_account_metric3", "mi_client_by_pd_by_account_metric4" };
+        String[] semanticTopic = new String[]{ "mi_client_by_pd_by_account/1/2/3" };
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date capturedOnSecondMessage = new Date(capturedOn.getTime() + PUBLISH_DATE_TEST_CHECK_TIME_WINDOW);
@@ -1327,9 +1358,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         DeviceCreator deviceCreator = DEVICE_FACTORY.newCreator(account.getId(), clientId);
         Device device = DEVICE_REGISTRY_SERVICE.create(deviceCreator);
 
-        String[] clientIds = new String[] { "mi_client_by_client_client1", "mi_client_by_client_client2" };
-        String[] metrics = new String[] { "mi_client_by_client_metric1", "mi_client_by_client_metric2", "mi_client_by_client_metric3", "mi_client_by_client_metric4" };
-        String[] semanticTopic = new String[] { "mi_client_by_client/1/2/3" };
+        String[] clientIds = new String[]{ "mi_client_by_client_client1", "mi_client_by_client_client2" };
+        String[] metrics = new String[]{ "mi_client_by_client_metric1", "mi_client_by_client_metric2", "mi_client_by_client_metric3", "mi_client_by_client_metric4" };
+        String[] semanticTopic = new String[]{ "mi_client_by_client/1/2/3" };
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date receivedOn = new Date();
@@ -1363,7 +1394,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         setMetricInfoQueryBaseCriteria(metricInfoQuery, clientIds[0], null, null);
 
         MetricInfoListResult metricList = METRIC_INFO_REGISTRY_SERVICE.query(metricInfoQuery);
-        checkMetricInfoClientIdsAndMetricNames(metricList, 4, new String[] { clientIds[0] }, metrics);
+        checkMetricInfoClientIdsAndMetricNames(metricList, 4, new String[]{ clientIds[0] }, metrics);
     }
 
     /**
@@ -1376,7 +1407,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
             throws Exception {
         Account account = getTestAccountCreator(adminScopeId);
 
-        String[] semanticTopic = new String[] {
+        String[] semanticTopic = new String[]{
                 "bus/route/one",
                 "bus/route/one",
                 "bus/route/two/a",
@@ -1384,19 +1415,19 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
                 "tram/route/one",
                 "car/one"
         };
-        String[] metrics = new String[] { "m_order_metric1", "m_order_metric2", "m_order_metric3", "m_order_metric4", "m_order_metric5", "m_order_metric6" };
-        String[] clientIds = new String[] { String.format("device-%d", new Date().getTime()), String.format("device-%d", new Date().getTime() + 100) };
-        String[] metricsValuesString = new String[] { "string_metric_1", "string_metric_2", "string_metric_3", "string_metric_4", "string_metric_5", "string_metric_6" };
-        Date[] metricsValuesDate = new Date[] { new Date(new SimpleDateFormat("hh:MM:ss dd/MM/yyyy").parse("10:10:01 01/01/2017").getTime()),
+        String[] metrics = new String[]{ "m_order_metric1", "m_order_metric2", "m_order_metric3", "m_order_metric4", "m_order_metric5", "m_order_metric6" };
+        String[] clientIds = new String[]{ String.format("device-%d", new Date().getTime()), String.format("device-%d", new Date().getTime() + 100) };
+        String[] metricsValuesString = new String[]{ "string_metric_1", "string_metric_2", "string_metric_3", "string_metric_4", "string_metric_5", "string_metric_6" };
+        Date[] metricsValuesDate = new Date[]{ new Date(new SimpleDateFormat("hh:MM:ss dd/MM/yyyy").parse("10:10:01 01/01/2017").getTime()),
                 new Date(new SimpleDateFormat("hh:MM:ss dd/MM/yyyy").parse("10:10:02 01/01/2017").getTime()),
                 new Date(new SimpleDateFormat("hh:MM:ss dd/MM/yyyy").parse("10:10:03 01/01/2017").getTime()),
                 new Date(new SimpleDateFormat("hh:MM:ss dd/MM/yyyy").parse("10:10:04 01/01/2017").getTime()),
                 new Date(new SimpleDateFormat("hh:MM:ss dd/MM/yyyy").parse("10:10:05 01/01/2017").getTime()),
                 new Date(new SimpleDateFormat("hh:MM:ss dd/MM/yyyy").parse("10:10:06 01/01/2017").getTime()) };
-        int[] metricsValuesInt = new int[] { 10, 20, 30, 40, 50, 60 };
-        float[] metricsValuesFloat = new float[] { 0.002f, 10.12f, 20.22f, 33.33f, 44.44f, 55.66f };
-        double[] metricsValuesDouble = new double[] { 1.002d, 11.12d, 21.22d, 34.33d, 45.44d, 56.66d };
-        boolean[] metricsValuesBoolean = new boolean[] { true, true, false, true, false, false };
+        int[] metricsValuesInt = new int[]{ 10, 20, 30, 40, 50, 60 };
+        float[] metricsValuesFloat = new float[]{ 0.002f, 10.12f, 20.22f, 33.33f, 44.44f, 55.66f };
+        double[] metricsValuesDouble = new double[]{ 1.002d, 11.12d, 21.22d, 34.33d, 45.44d, 56.66d };
+        boolean[] metricsValuesBoolean = new boolean[]{ true, true, false, true, false, false };
 
         DeviceCreator deviceCreator = DEVICE_FACTORY.newCreator(account.getId(), clientIds[0]);
         Device device1 = DEVICE_REGISTRY_SERVICE.create(deviceCreator);
@@ -1463,7 +1494,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         setMetricInfoQueryBaseCriteria(metricInfoQuery, new DateRange(capturedOn1, capturedOn2));
 
         MetricInfoListResult metricList = METRIC_INFO_REGISTRY_SERVICE.query(metricInfoQuery);
-        checkMetricInfoClientIdsAndMetricNames(metricList, metrics.length * semanticTopic.length, new String[] { clientIds[0], clientIds[1] }, new String[] { metrics[0], metrics[1], metrics[2],
+        checkMetricInfoClientIdsAndMetricNames(metricList, metrics.length * semanticTopic.length, new String[]{ clientIds[0], clientIds[1] }, new String[]{ metrics[0], metrics[1], metrics[2],
                 metrics[3], metrics[4], metrics[5] });
         checkMetricDateBound(metricList, new Date(capturedOn1.getTime()), new Date(capturedOn2.getTime()));
 
@@ -1488,8 +1519,8 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         DeviceCreator deviceCreator = DEVICE_FACTORY.newCreator(account.getId(), clientId);
         Device device = DEVICE_REGISTRY_SERVICE.create(deviceCreator);
 
-        String[] clientIds = new String[] { "clii_client_by_account_client1", "clii_client_by_account_client2" };
-        String[] semanticTopic = new String[] { "clii_client_by_account/1/2/3", "clii_client_by_account/1/2/4", "clii_client_by_account/1/2/5", "clii_client_by_account/1/2/6" };
+        String[] clientIds = new String[]{ "clii_client_by_account_client1", "clii_client_by_account_client2" };
+        String[] semanticTopic = new String[]{ "clii_client_by_account/1/2/3", "clii_client_by_account/1/2/4", "clii_client_by_account/1/2/5", "clii_client_by_account/1/2/6" };
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date receivedOn = new Date();
@@ -1539,8 +1570,8 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         DeviceCreator deviceCreator = DEVICE_FACTORY.newCreator(account.getId(), clientId);
         Device device = DEVICE_REGISTRY_SERVICE.create(deviceCreator);
 
-        String[] clientIds = new String[] { "clii_client_by_pd_by_account_client1", "clii_client_by_pd_by_account_client2" };
-        String[] semanticTopic = new String[] { "clii_client_by_pd_by_account/1/2/3" };
+        String[] clientIds = new String[]{ "clii_client_by_pd_by_account_client1", "clii_client_by_pd_by_account_client2" };
+        String[] semanticTopic = new String[]{ "clii_client_by_pd_by_account/1/2/3" };
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date capturedOnSecondMessage = new Date(capturedOn.getTime() + PUBLISH_DATE_TEST_CHECK_TIME_WINDOW);
@@ -1601,8 +1632,8 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         DeviceCreator deviceCreator = DEVICE_FACTORY.newCreator(account.getId(), clientId);
         Device device = DEVICE_REGISTRY_SERVICE.create(deviceCreator);
 
-        String[] clientIds = new String[] { "clii_by_client_client1", "clii_by_client_client2", "clii_by_client_client3", "clii_by_client_client4" };
-        String[] semanticTopic = new String[] { "clii_by_client/1/2/3", "clii_by_client/1/2/4" };
+        String[] clientIds = new String[]{ "clii_by_client_client1", "clii_by_client_client2", "clii_by_client_client3", "clii_by_client_client4" };
+        String[] semanticTopic = new String[]{ "clii_by_client/1/2/3", "clii_by_client/1/2/4" };
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date receivedOn = new Date();
@@ -1635,7 +1666,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         setClientInfoQueryBaseCriteria(clientInfoQuery, clientIds[0], null);
 
         ClientInfoListResult clientList = CLIENT_INFO_REGISTRY_SERVICE.query(clientInfoQuery);
-        checkClientInfo(clientList, 1, new String[] { clientIds[0] });
+        checkClientInfo(clientList, 1, new String[]{ clientIds[0] });
     }
 
     @Test
@@ -1647,8 +1678,8 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         DeviceCreator deviceCreator = DEVICE_FACTORY.newCreator(account.getId(), clientId);
         Device device = DEVICE_REGISTRY_SERVICE.create(deviceCreator);
 
-        String[] clientIds = new String[] { "tba_client1" };
-        String[] semanticTopic = new String[] { "tba_1/1/1/1", "tba_1/1/1/2", "tba_1/1/1/3", "tba_1/1/2/1", "tba_1/1/2/2", "tba_1/1/2/3",
+        String[] clientIds = new String[]{ "tba_client1" };
+        String[] semanticTopic = new String[]{ "tba_1/1/1/1", "tba_1/1/1/2", "tba_1/1/1/3", "tba_1/1/2/1", "tba_1/1/2/2", "tba_1/1/2/3",
                 "tba_1/2/1/1", "tba_1/2/1/2", "tba_1/2/1/3", "tba_1/2/2/1", "tba_1/2/2/2", "tba_1/2/2/3",
                 "tba_2/1/1/1", "tba_2/1/1/2", "tba_2/1/1/3", "tba_2/1/2/1", "tba_2/1/2/2", "tba_2/1/2/3",
                 "tba_2/2/1/1", "tba_2/2/1/2", "tba_2/2/1/3", "tba_2/2/2/1", "tba_2/2/2/2", "tba_2/2/2/3" };
@@ -1728,7 +1759,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * @return
      */
     private KapuaDataMessage createMessage(String clientId, KapuaId scopeId, KapuaId deviceId,
-            Date receivedOn, Date capturedOn, Date sentOn) {
+                                           Date receivedOn, Date capturedOn, Date sentOn) {
         KapuaDataMessage message = new KapuaDataMessageImpl();
         message.setReceivedOn(receivedOn);
         message.setCapturedOn(capturedOn);
@@ -1808,18 +1839,18 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     private Object getMetricValue(int number) {
         int choiche = number % 6;
         switch (choiche) {
-        case 0:
-            return new Double(1 * Math.E);
-        case 1:
-            return new Float(2);
-        case 2:
-            return new Integer(3);
-        case 3:
-            return new Long(4);
-        case 4:
-            return new String("string_value");
-        default:
-            return new Date();
+            case 0:
+                return new Double(1 * Math.E);
+            case 1:
+                return new Float(2);
+            case 2:
+                return new Integer(3);
+            case 3:
+                return new Long(4);
+            case 4:
+                return new String("string_value");
+            default:
+                return new Date();
         }
     }
 
@@ -2637,7 +2668,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * @throws KapuaException
      */
     private void updateConfiguration(MessageStoreService messageStoreService, KapuaId scopeId, KapuaId parentId, DataIndexBy dataIndexBy, MetricsIndexBy metricsIndexBy, int dataTTL,
-            boolean storageEnabled)
+                                     boolean storageEnabled)
             throws KapuaException {
         Map<String, Object> config = messageStoreService.getConfigValues(scopeId);
         if (config == null) {
@@ -2850,6 +2881,10 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         KapuaLocator locator = KapuaLocator.getInstance();
         Account account = locator.getService(AccountService.class).findByName("kapua-sys");
         return account;
+    }
+
+    private String[] getDataIndexesByAccount(KapuaId scopeId) throws ClientException {
+        return datastoreClient.findIndexes(new IndexRequest(scopeId.toStringId() + "-*")).getIndexes();
     }
 
 }

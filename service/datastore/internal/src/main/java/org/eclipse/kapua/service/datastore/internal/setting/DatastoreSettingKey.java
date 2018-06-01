@@ -61,7 +61,11 @@ public enum DatastoreSettingKey implements SettingKey {
     /**
      * Elasticsearch index refresh interval (the data is available for a search operation only if it is indexed)
      */
-    CONFIG_MAX_ENTRIES_ON_DELETE("datastore.delete.max_entries_on_delete");
+    CONFIG_MAX_ENTRIES_ON_DELETE("datastore.delete.max_entries_on_delete"),
+    /**
+     * Elasticsearch index name system-wide prefix
+     */
+    INDEX_PREFIX("datastore.index.prefix");
 
     private String key;
 

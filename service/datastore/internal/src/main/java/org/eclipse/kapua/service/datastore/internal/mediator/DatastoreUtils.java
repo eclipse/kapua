@@ -12,28 +12,41 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.mediator;
 
+import javax.validation.constraints.NotNull;
+
 import com.google.common.hash.Hashing;
+
+import org.eclipse.kapua.KapuaErrorCodes;
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.datastore.MessageStoreService;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.time.Instant;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.ResolverStyle;
+import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalField;
+import java.time.temporal.TemporalAccessor;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 /**
@@ -44,6 +57,7 @@ import java.util.regex.Pattern;
 public class DatastoreUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(DatastoreUtils.class);
+    private static final MessageStoreService MESSAGE_STORE_SERVICE = KapuaLocator.getInstance().getService(MessageStoreService.class);
 
     private DatastoreUtils() {
     }
@@ -74,13 +88,38 @@ public class DatastoreUtils {
     public static final String CLIENT_METRIC_TYPE_BOOLEAN_ACRONYM = "bln";
     public static final String CLIENT_METRIC_TYPE_BINARY_ACRONYM = "bin";
 
-    private static final DateTimeFormatter DATA_INDEX_FORMATTER = DateTimeFormatter
-            .ofPattern("YYYY-ww")
+    public static final String INDEXING_WINDOW_OPTION = "indexingWindow";
+    public static final String INDEXING_WINDOW_OPTION_WEEK = "WEEK";
+    public static final String INDEXING_WINDOW_OPTION_DAY = "DAY";
+    public static final String INDEXING_WINDOW_OPTION_HOUR = "HOUR";
+
+    private static final DateTimeFormatter DATA_INDEX_FORMATTER_WEEK = new DateTimeFormatterBuilder()
+            .parseDefaulting(WeekFields.ISO.dayOfWeek(), 1)
+            .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
+            .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
+            .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
+            .appendPattern("YYYY-ww")
+            .toFormatter(KapuaDateUtils.getLocale())
             .withLocale(KapuaDateUtils.getLocale())
             .withResolverStyle(ResolverStyle.STRICT)
             .withZone(KapuaDateUtils.getTimeZone());
-    private static final TemporalField WEEK_OF_MONTH = WeekFields.of(KapuaDateUtils.getLocale()).weekOfMonth();
-    private static final TemporalField WEEK_OF_YEAR = WeekFields.of(KapuaDateUtils.getLocale()).weekOfYear();
+    private static final DateTimeFormatter DATA_INDEX_FORMATTER_DAY = new DateTimeFormatterBuilder()
+            .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
+            .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
+            .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
+            .appendPattern("YYYY-ww-ee")
+            .toFormatter(KapuaDateUtils.getLocale())
+            .withLocale(KapuaDateUtils.getLocale())
+            .withResolverStyle(ResolverStyle.STRICT)
+            .withZone(KapuaDateUtils.getTimeZone());
+    private static final DateTimeFormatter DATA_INDEX_FORMATTER_HOUR = new DateTimeFormatterBuilder()
+            .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
+            .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
+            .appendPattern("YYYY-ww-ee-HH")
+            .toFormatter(KapuaDateUtils.getLocale())
+            .withLocale(KapuaDateUtils.getLocale())
+            .withResolverStyle(ResolverStyle.STRICT)
+            .withZone(KapuaDateUtils.getTimeZone());
 
     /**
      * Return the hash code for the provided components (typically components are a sequence of account - client id - channel ...)
@@ -212,9 +251,14 @@ public class DatastoreUtils {
      * @return
      */
     public static String getDataIndexName(KapuaId scopeId) {
+        final StringBuilder sb = new StringBuilder();
+        final String prefix = DatastoreSettings.getInstance().getString(DatastoreSettingKey.INDEX_PREFIX);
+        if (StringUtils.isNotEmpty(prefix)) {
+            sb.append(prefix).append("-");
+        }
         String indexName = DatastoreUtils.normalizedIndexName(scopeId.toStringId());
-        indexName = String.format("%s-*", indexName);
-        return indexName;
+        sb.append(indexName).append("-*");
+        return sb.toString();
     }
 
     /**
@@ -224,11 +268,35 @@ public class DatastoreUtils {
      * @param timestamp
      * @return
      */
-    public static String getDataIndexName(KapuaId scopeId, long timestamp) {
-        final String actualName = DatastoreUtils.normalizedIndexName(scopeId.toStringId());
-        final StringBuilder sb = new StringBuilder(actualName).append('-');
-        DATA_INDEX_FORMATTER.formatTo(Instant.ofEpochMilli(timestamp).atOffset(ZoneOffset.UTC), sb);
-        return sb.toString();
+    public static String getDataIndexName(KapuaId scopeId, long timestamp) throws KapuaException {
+        try {
+            final StringBuilder sb = new StringBuilder();
+            final String prefix = DatastoreSettings.getInstance().getString(DatastoreSettingKey.INDEX_PREFIX);
+            if (StringUtils.isNotEmpty(prefix)) {
+                sb.append(prefix).append("-");
+            }
+            final String actualName = DatastoreUtils.normalizedIndexName(scopeId.toStringId());
+            sb.append(actualName).append('-');
+            String indexingWindowOption = KapuaSecurityUtils.doPrivileged(() -> MESSAGE_STORE_SERVICE.getConfigValues(scopeId)).get(INDEXING_WINDOW_OPTION).toString();
+            DateTimeFormatter formatter;
+            switch (indexingWindowOption) {
+                default:
+                case INDEXING_WINDOW_OPTION_WEEK:
+                    formatter = DATA_INDEX_FORMATTER_WEEK;
+                    break;
+                case INDEXING_WINDOW_OPTION_DAY:
+                    formatter = DATA_INDEX_FORMATTER_DAY;
+                    break;
+                case INDEXING_WINDOW_OPTION_HOUR:
+                    formatter = DATA_INDEX_FORMATTER_HOUR;
+                    break;
+            }
+            formatter.formatTo(Instant.ofEpochMilli(timestamp).atOffset(ZoneOffset.UTC), sb);
+            return sb.toString();
+        } catch (KapuaException kaex) {
+            LOG.error("Error fetching MessageStoreService configuration", kaex);
+            throw kaex;
+        }
     }
 
     /**
@@ -239,9 +307,14 @@ public class DatastoreUtils {
      * @since 1.0.0
      */
     public static String getRegistryIndexName(KapuaId scopeId) {
-        String actualName = DatastoreUtils.normalizedIndexName(scopeId.toStringId());
-        actualName = String.format(".%s", actualName);
-        return actualName;
+        final StringBuilder sb = new StringBuilder();
+        final String prefix = DatastoreSettings.getInstance().getString(DatastoreSettingKey.INDEX_PREFIX);
+        if (StringUtils.isNotEmpty(prefix)) {
+            sb.append(prefix).append("-");
+        }
+        String indexName = DatastoreUtils.normalizedIndexName(scopeId.toStringId());
+        sb.append(".").append(indexName);
+        return sb.toString();
     }
 
     /**
@@ -255,110 +328,89 @@ public class DatastoreUtils {
     }
 
     /**
-     * Return the list of the data indexes between start and end instant by scope id.
+     * Return the list of the data indexes between start and windowEnd instant by scope id.
+     * Only the indexes that will be *FULLY* included in the list (i.e. with a starting date ON OR AFTER the window start AND
+     * the end date ON OR BEFORE the window end will be returned
      *
-     * @param scopeId
-     * @param start
-     * @param end
+     * @param indexes
+     * @param windowStart
+     * @param windowEnd
      * @return
      * @throws DatastoreException
      */
-    public static String[] convertToDataIndexes(KapuaId scopeId, Instant start, Instant end) throws DatastoreException {
-        // drop partial week so start from "from + 1 week" to "end - 1 week" included
-        // if the start date is not the first day of the week and the end date is not the end day of the week
-        Instant startInstant = getFirstDayOfTheWeek(start);
-        Instant endInstant = getLastDayOfTheWeek(end);
-        // this code:
-        // int startYear = Year.from(startInstant).getValue();
-        // int endYear = Year.from(startInstant).getValue();
-        // throws java.time.temporal.UnsupportedTemporalTypeException: Unsupported field: Year
-        // switch to use oldest library (Calendar)
-        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone(KapuaDateUtils.getTimeZone()), KapuaDateUtils.getLocale());
-        cal.setTime(Date.from(startInstant));
-        int startYear = cal.get(Calendar.YEAR);
-        cal.setTime(Date.from(endInstant));
-        int endYear = cal.get(Calendar.YEAR);
-
-        List<String> indexes = new ArrayList<>();
-        while (startInstant.isBefore(endInstant) || areInThesameWeek(startInstant, endInstant)) {
-            String index = DatastoreUtils.getDataIndexName(scopeId, startInstant.toEpochMilli());
-            LOG.info("Adding index: {}", index);
-            indexes.add(index);
-            startInstant = startInstant.plus(7, ChronoUnit.DAYS);
+    public static String[] convertToDataIndexes(@NotNull String[] indexes, Instant windowStart, Instant windowEnd) throws DatastoreException {
+        if (windowStart == null && windowEnd == null) {
+            return indexes;
         }
-        //add last week of years (this algorithm can skip the last week of the year depending on the start date)
-        for (int i = startYear; i < endYear; i++) {
-            // get last year week
-            for (int k = 0; k < 7; k++) {
-                try {
-                    String dateToCheck = String.format("%s-12-%sT06:00:00.000Z", i, (31 - k));
-                    Instant instantToCheck = KapuaDateUtils.parseDate(dateToCheck).toInstant();
-                    if (instantToCheck.isBefore(start)) {
-                        break;
-                    }
-                    String indexToAdd = DatastoreUtils.getDataIndexName(scopeId, KapuaDateUtils.parseDate(dateToCheck).toInstant().toEpochMilli());
-                    LOG.info("Index to add {} - date {}", indexToAdd, dateToCheck);
-                    if (!indexes.contains(indexToAdd)) {
-                        LOG.info("Adding index: {}", indexToAdd);
-                        indexes.add(indexToAdd);
-                        LOG.debug(">>> Add index {} - date {}", indexToAdd, dateToCheck);
-                    } else {
-                        LOG.debug("Index {} already present in the list", indexToAdd);
-                    }
-                } catch (ParseException e) {
-                    LOG.error("Cannot evaluate week of the year for the date", e);
-                    throw new DatastoreException(DatastoreErrorCodes.INTERNAL_ERROR, e);
-                }
-            }
-        }
-        return indexes.toArray(new String[0]);
-    }
 
-    public static List<String> filterIndexesBeforeDate(KapuaId scopeId, String[] indexes, Instant startInstant) {
-        //see https://docs.oracle.com/javase/8/docs/api/java/util/List.html#remove-int-
-        List<String> filteredIndexes = new ArrayList<>();
-        String lastIndexToInclude = DatastoreUtils.getDataIndexName(scopeId, getLastDayOfTheWeek(startInstant).toEpochMilli());
+        List<String> result = new ArrayList<>();
         for (String index : indexes) {
-            if (lastIndexToInclude.compareTo(index) >= 0) {
-                filteredIndexes.add(index);
+            if (index == null) {
+                continue;
+            }
+            String strippedIndex = stripPrefixAndAccount(index);
+            int fragments = strippedIndex.split("-").length;
+            DateTimeFormatter formatter;
+            ChronoUnit indexUnit;
+            int indexWidth;
+            switch (fragments) {
+                case 2:
+                default:
+                    // YYYY-ww
+                    formatter = DATA_INDEX_FORMATTER_WEEK;
+                    indexUnit = ChronoUnit.DAYS;
+                    indexWidth = 7;
+                    break;
+                case 3:
+                    // YYYY-ww-ee
+                    formatter = DATA_INDEX_FORMATTER_DAY;
+                    indexUnit = ChronoUnit.DAYS;
+                    indexWidth = 1;
+                    break;
+                case 4:
+                    // YYYY-ww-ee-HH
+                    formatter = DATA_INDEX_FORMATTER_HOUR;
+                    indexUnit = ChronoUnit.HOURS;
+                    indexWidth = 1;
+                    break;
+            }
+
+            try {
+                TemporalAccessor temporalAccessor = formatter.parse(strippedIndex);
+                Instant indexStart = LocalDateTime.of(
+                        temporalAccessor.get(ChronoField.YEAR),
+                        temporalAccessor.get(ChronoField.MONTH_OF_YEAR),
+                        temporalAccessor.get(ChronoField.DAY_OF_MONTH),
+                        temporalAccessor.get(ChronoField.HOUR_OF_DAY),
+                        temporalAccessor.get(ChronoField.MINUTE_OF_HOUR),
+                        temporalAccessor.get(ChronoField.SECOND_OF_MINUTE)
+                ).toInstant(ZoneOffset.UTC);
+                Instant indexEnd = indexStart.plus(indexWidth, indexUnit).minusNanos(1);
+
+                if (windowStart == null && isIndexFullyBeforeInstant(indexStart, indexEnd, windowEnd) ||
+                   (windowEnd == null && isIndexFullyAfterInstant(indexStart, indexEnd, windowStart)) ||
+                   (windowStart != null && windowEnd != null && isIndexFullyAfterInstant(indexStart, indexEnd, windowStart) && isIndexFullyBeforeInstant(indexStart, indexEnd, windowEnd))) {
+                    result.add(index);
+                }
+            } catch (Exception ex) {
+                throw new DatastoreException(KapuaErrorCodes.ILLEGAL_ARGUMENT, ex);
             }
         }
-        return filteredIndexes;
+        return result.toArray(new String[0]);
     }
 
-    private static Instant getLastDayOfTheWeek(Instant instant) {
-        while (!isEndingDayOfTheWeek(instant)) {
-            instant = instant.minus(1, ChronoUnit.DAYS);
-        }
-        return instant;
+    private static boolean isIndexFullyAfterInstant(@NotNull Instant indexStart, @NotNull Instant indexEnd, @NotNull Instant checkpoint) {
+        return !indexStart.isBefore(checkpoint) && !indexEnd.isBefore(checkpoint);
     }
 
-    private static Instant getFirstDayOfTheWeek(Instant instant) {
-        while (!isStartingDayOfTheWeek(instant)) {
-            instant = instant.plus(1, ChronoUnit.DAYS);
-        }
-        return instant;
+    private static boolean isIndexFullyBeforeInstant(@NotNull Instant indexStart, @NotNull Instant indexEnd, @NotNull Instant checkpoint) {
+        return !indexStart.isAfter(checkpoint) && !indexEnd.isAfter(checkpoint);
     }
 
-    private static boolean isStartingDayOfTheWeek(Instant instant) {
-        LocalDate localDate = instant.atZone(ZoneOffset.UTC).toLocalDate();
-        LocalDate localDateNextDay = instant.atZone(ZoneOffset.UTC).minusDays(1).toLocalDate();
-        return localDate.get(WEEK_OF_YEAR) != localDateNextDay.get(WEEK_OF_YEAR);
-        // DayOfWeek firstDayOfWeek = WeekFields.of(KapuaDateUtils.getLocale()).getFirstDayOfWeek();
-        // LocalDate startOfCurrentWeek = localDate.with(TemporalAdjusters.previousOrSame(firstDayOfWeek));
-        // return startOfCurrentWeek.isEqual(localDate);
-    }
-
-    private static boolean isEndingDayOfTheWeek(Instant instant) {
-        LocalDate localDate = instant.atZone(ZoneOffset.UTC).toLocalDate();
-        LocalDate localDateNextDay = instant.atZone(ZoneOffset.UTC).plusDays(1).toLocalDate();
-        return localDate.get(WEEK_OF_YEAR) != localDateNextDay.get(WEEK_OF_YEAR);
-    }
-
-    private static boolean areInThesameWeek(Instant instant1, Instant instant2) {
-        LocalDate localDate1 = instant1.atZone(ZoneOffset.UTC).toLocalDate();
-        LocalDate localDate2 = instant2.atZone(ZoneOffset.UTC).toLocalDate();
-        return localDate1.get(WEEK_OF_YEAR) == localDate2.get(WEEK_OF_YEAR);
+    private static String stripPrefixAndAccount(@NotNull String index) {
+        String[] fragments = index.split("-");
+        int start = index.matches("^[A-Za-z].*$") ? 2 : 1;
+        return StringUtils.join(Arrays.copyOfRange(fragments, start, fragments.length), '-');
     }
 
     /**

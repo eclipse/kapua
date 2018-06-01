@@ -18,11 +18,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.kapua.service.datastore.internal.AbstractMessageStoreServiceTest;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreConfiguration;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class MessageStoraConfigurationTest {
+public class MessageStoreConfigurationTest extends AbstractMessageStoreServiceTest {
 
     @Test
     public void test1() {

@@ -12,6 +12,8 @@
 package org.eclipse.kapua.service.datastore.internal.schema;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.client.ClientException;
@@ -23,10 +25,12 @@ import org.eclipse.kapua.service.datastore.client.model.IndexResponse;
 import org.eclipse.kapua.service.datastore.client.model.TypeDescriptor;
 import org.eclipse.kapua.service.datastore.internal.DatastoreCacheManager;
 import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
+import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreErrorCodes;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.internal.mediator.Metric;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +63,13 @@ public class Schema {
      */
     public Metadata synch(KapuaId scopeId, long time)
             throws ClientException {
-        String dataIndexName = DatastoreUtils.getDataIndexName(scopeId, time);
+        String dataIndexName;
+        try {
+            dataIndexName = DatastoreUtils.getDataIndexName(scopeId, time);
+        } catch (KapuaException kaex) {
+            throw new ClientException(DatastoreErrorCodes.CONFIGURATION_ERROR, "Error while generating index name", kaex);
+        }
+
         Metadata currentMetadata = DatastoreCacheManager.getInstance().getMetadataCache().get(dataIndexName);
         if (currentMetadata != null) {
             return currentMetadata;
@@ -118,7 +128,12 @@ public class Schema {
         if (metrics == null || metrics.size() == 0) {
             return;
         }
-        String newIndex = DatastoreUtils.getDataIndexName(scopeId, time);
+        String newIndex;
+        try {
+            newIndex = DatastoreUtils.getDataIndexName(scopeId, time);
+        } catch (KapuaException kaex) {
+            throw new ClientException(DatastoreErrorCodes.CONFIGURATION_ERROR, "Error while generating index name", kaex);
+        }
         Metadata currentMetadata = DatastoreCacheManager.getInstance().getMetadataCache().get(newIndex);
 
         ObjectNode metricsMapping = null;
@@ -156,23 +171,23 @@ public class Schema {
         ObjectNode metricMapping;
         for (Entry<String, Metric> esMetric : esMetrics.entrySet()) {
             Metric metric = esMetric.getValue();
-            metricMapping = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_DYNAMIC, SchemaKeys.VALUE_TRUE) });
+            metricMapping = SchemaUtil.getField(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_DYNAMIC, SchemaKeys.VALUE_TRUE) });
 
             ObjectNode matricMappingPropertiesNode = SchemaUtil.getObjectNode(); // properties (inside metric name)
             ObjectNode valueMappingNode;
 
             switch (metric.getType()) {
-            case SchemaKeys.TYPE_STRING:
-                valueMappingNode = SchemaUtil
-                        .getField(new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
-                break;
-            case SchemaKeys.TYPE_DATE:
-                valueMappingNode = SchemaUtil.getField(
-                        new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN) });
-                break;
-            default:
-                valueMappingNode = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(SchemaKeys.KEY_TYPE, metric.getType()) });
-                break;
+                case SchemaKeys.TYPE_STRING:
+                    valueMappingNode = SchemaUtil
+                            .getField(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
+                    break;
+                case SchemaKeys.TYPE_DATE:
+                    valueMappingNode = SchemaUtil.getField(
+                            new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN) });
+                    break;
+                default:
+                    valueMappingNode = SchemaUtil.getField(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, metric.getType()) });
+                    break;
             }
 
             matricMappingPropertiesNode.set(DatastoreUtils.getClientMetricFromAcronym(metric.getType()), valueMappingNode);
@@ -207,7 +222,7 @@ public class Schema {
         Integer idxReplicaNumber = DatastoreSettings.getInstance().getInt(DatastoreSettingKey.INDEX_REPLICA_NUMBER, 0);
 
         ObjectNode rootNode = SchemaUtil.getObjectNode();
-        ObjectNode refreshIntervaleNode = SchemaUtil.getField(new KeyValueEntry[] {
+        ObjectNode refreshIntervaleNode = SchemaUtil.getField(new KeyValueEntry[]{
                 new KeyValueEntry(SchemaKeys.KEY_REFRESH_INTERVAL, idxRefreshInterval),
                 new KeyValueEntry(SchemaKeys.KEY_SHARD_NUMBER, idxShardNumber),
                 new KeyValueEntry(SchemaKeys.KEY_REPLICA_NUMBER, idxReplicaNumber) });
