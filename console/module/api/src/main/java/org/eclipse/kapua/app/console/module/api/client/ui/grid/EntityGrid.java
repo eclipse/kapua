@@ -187,7 +187,8 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
 
     public void refresh() {
         entityCRUDToolbar.getRefreshEntityButton().setEnabled(false);
-        entityLoader.load(0, entityLoader.getLimit());
+        entityLoader.setReuseLoadConfig(true);
+        entityLoader.load();
     }
 
     public void refresh(GwtQuery query) {
