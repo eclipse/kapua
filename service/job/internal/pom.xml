@@ -34,6 +34,10 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-security-authorization-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-job-engine-api</artifactId>
+        </dependency>
 
         <!-- Internal dependencies -->
         <dependency>
@@ -87,11 +91,8 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-job-engine-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-job-engine-jbatch</artifactId>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
