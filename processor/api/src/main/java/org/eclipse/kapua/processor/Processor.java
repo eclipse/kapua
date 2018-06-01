@@ -11,11 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.processor;
 
+import org.eclipse.kapua.connector.MessageContext;
+
 public interface Processor<T> {
 
     public void start() throws KapuaProcessorException;
 
-    public void process(T message) throws KapuaProcessorException;
+    public void process(MessageContext<T> message) throws KapuaProcessorException;
 
     public void stop() throws KapuaProcessorException;
 }
