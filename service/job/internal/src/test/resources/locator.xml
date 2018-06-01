@@ -22,6 +22,8 @@
         <api>org.eclipse.kapua.service.authorization.domain.DomainRegistryService</api>
         <api>org.eclipse.kapua.service.authorization.permission.PermissionFactory</api>
         <api>org.eclipse.kapua.service.user.UserService</api>
+        <api>org.eclipse.kapua.job.engine.JobEngineService</api>
+
         <!-- 
         <provide>
             <api></api>
