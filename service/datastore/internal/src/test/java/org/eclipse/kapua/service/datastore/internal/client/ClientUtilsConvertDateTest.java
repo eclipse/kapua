@@ -16,10 +16,12 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 
 import org.assertj.core.api.Assertions;
+
+import org.eclipse.kapua.service.datastore.internal.AbstractMessageStoreServiceTest;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.junit.Test;
 
-public class ClientUtilsConvertDateTest {
+public class ClientUtilsConvertDateTest extends AbstractMessageStoreServiceTest {
 
     @Test(expected = java.lang.IllegalArgumentException.class)
     public void convertNullString() {

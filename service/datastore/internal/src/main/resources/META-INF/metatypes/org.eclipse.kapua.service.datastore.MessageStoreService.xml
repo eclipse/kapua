@@ -15,7 +15,7 @@
          name="MessageStoreService"
          description="This is the configuration for the kapua MessageStoreService ">
 
-        <Icon resource="OSGI-INF/message-store-service.png" size="32"/>
+        <Icon resource="OSGI-INF/message-store-service.png" size="32" />
 
         <AD id="enabled"
             name="messageStore.enabled"
@@ -26,6 +26,17 @@
             description="Message store enable.">
         </AD>
 
+        <AD id="indexingWindow"
+            name="indexingWindow"
+            type="String"
+            required="true"
+            default="WEEK"
+            description="Message retention period in days.">
+            <Option label="HOUR" value="HOUR" />
+            <Option label="DAY" value="DAY" />
+            <Option label="WEEK" value="WEEK" />
+        </AD>
+
         <AD id="dataTTL"
             name="dataTTL"
             type="Integer"
@@ -33,7 +44,7 @@
             required="true"
             default="30"
             min="0"
-            description="Message retention period in days."/>
+            description="Message retention period, according to the selected indexingWindow." />
 
         <AD id="rxByteLimit"
             name="rxByteLimit"
@@ -42,7 +53,7 @@
             required="true"
             default="0"
             min="0"
-            description="Total data usage per month."/>
+            description="Total data usage per month." />
 
         <AD id="dataIndexBy"
             name="dataIndexBy"
@@ -58,6 +69,6 @@
     </OCD>
 
     <Designate pid="org.eclipse.kapua.service.datastore.MessageStoreService">
-        <Object ocdref="org.eclipse.kapua.service.datastore.MessageStoreService"/>
+        <Object ocdref="org.eclipse.kapua.service.datastore.MessageStoreService" />
     </Designate>
 </MetaData>
