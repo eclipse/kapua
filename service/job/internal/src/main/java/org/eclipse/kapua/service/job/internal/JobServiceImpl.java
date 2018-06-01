@@ -49,7 +49,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
     private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
-    private static final JobEngineService JOB_ENGINE_SERVICE = LOCATOR.getService(JobEngineService.class);
+    private final JobEngineService jobEngineService = LOCATOR.getService(JobEngineService.class);
 
     public JobServiceImpl() {
         super(JobService.class.getName(), JOB_DOMAIN, JobEntityManagerFactory.getInstance(), JobService.class, JobFactory.class);
@@ -191,7 +191,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         //
         // Do delete
 
-        KapuaSecurityUtils.doPrivileged(() -> JOB_ENGINE_SERVICE.cleanJobData(scopeId, jobId));
+        KapuaSecurityUtils.doPrivileged(() -> jobEngineService.cleanJobData(scopeId, jobId));
         entityManagerSession.onTransactedAction(em -> JobDAO.delete(em, jobId));
     }
 

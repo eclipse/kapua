@@ -27,6 +27,8 @@ import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.job.engine.JobEngineService;
+import org.eclipse.kapua.job.engine.jbatch.JobEngineServiceJbatch;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
@@ -69,10 +71,11 @@ import java.util.Map;
 @ScenarioScoped
 public class JobServiceTestSteps extends AbstractKapuaSteps {
 
-    private static final Logger logger = LoggerFactory.getLogger(JobServiceTestSteps.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JobServiceTestSteps.class);
 
     private static final String DEFAULT_COMMONS_PATH = "../../../commons";
     private static final String DROP_JOB_TABLES = "job_drop.sql";
+    private static final String DROP_JOB_ENGINE_TABLES = "job_engine_drop.sql";
 
     private static final KapuaId ROOT_ID = new KapuaEid(BigInteger.ONE);
 
@@ -137,6 +140,9 @@ public class JobServiceTestSteps extends AbstractKapuaSteps {
         jobService = new JobServiceImpl();
         mockLocator.setMockedService(org.eclipse.kapua.service.job.JobService.class, jobService);
 
+        // Inject the implementations of the depending services
+        mockLocator.setMockedService(JobEngineService.class, new JobEngineServiceJbatch());
+
         // Set KapuaMetatypeFactory for Metatype configuration
         mockLocator.setMockedFactory(org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory.class, new KapuaMetatypeFactoryImpl());
 
@@ -154,6 +160,7 @@ public class JobServiceTestSteps extends AbstractKapuaSteps {
             throws Exception {
         // Drop the Job Service tables
         scriptSession(JobEntityManagerFactory.getInstance(), DROP_JOB_TABLES);
+        scriptSession(JobEntityManagerFactory.getInstance(), DROP_JOB_ENGINE_TABLES);
         KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
         KapuaSecurityUtils.clearSession();
     }
