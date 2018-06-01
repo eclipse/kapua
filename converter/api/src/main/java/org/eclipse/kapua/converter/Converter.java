@@ -11,12 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.converter;
 
-import java.util.Map;
+import org.eclipse.kapua.connector.MessageContext;
 
 public interface Converter<F,T> {
 
     public static final String MESSAGE_DESTINATION = new String("message-destination");
     public static final String MESSAGE_QOS = new String("message-qos");
+    public static final String MESSAGE_TYPE = new String("message-type");
 
-    public T convert(Map<String,Object> properties, F message) throws KapuaConverterException;
+    public MessageContext<T> convert(MessageContext<F> message) throws KapuaConverterException;
 }

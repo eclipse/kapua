@@ -9,31 +9,41 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.eclipseiot.setting;
+package org.eclipse.kapua.connector.activemq.settings;
 
 import org.eclipse.kapua.commons.setting.SettingKey;
 
 /**
- * Broker settings
+ * ConnectorActiveMQSettingsKey keys.
+ * 
+ * @since 1.0
  */
-public enum EclipseiotSettingKey implements SettingKey {
+public enum ConnectorActiveMQSettingsKey implements SettingKey {
 
     /**
-     * Verticle class implementation to instantiate
+     * Broker name (or ip)
      */
-    VERTICLE_CLASS_NAME("eclipseiot.verticle.class"),
+    BROKER_HOST("broker.host"),
     /**
-     * Converter class
+     * Broker url
      */
-    CONVERTER_CLASS_NAME("eclipseiot.converter.class"),
+    BROKER_PORT("broker.port"),
     /**
-     * Processor class
+     * Username
      */
-    PROCESSOR_CLASS_NAME("eclipseiot.processor.class");
+    BROKER_USERNAME("broker.username"),
+    /**
+     * Broker password
+     */
+    BROKER_PASSWORD("broker.password"),
+    /**
+     * Broker client id
+     */
+    BROKER_CLIENT_ID("broker.client_id");
 
     private String key;
 
-    private EclipseiotSettingKey(String key) {
+    private ConnectorActiveMQSettingsKey(String key) {
         this.key = key;
     }
 

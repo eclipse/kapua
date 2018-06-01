@@ -885,17 +885,37 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-connector-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-connector-commons</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-connector-activemq</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-connector-hono</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-converter-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-processor-api</artifactId>
+                <artifactId>kapua-converter-activemq</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-connector-api</artifactId>
+                <artifactId>kapua-converter-hono</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -905,7 +925,7 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-connector-amqp</artifactId>
+                <artifactId>kapua-processor-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

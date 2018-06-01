@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.kapua.commons.util.GZipUtil;
+import org.eclipse.kapua.connector.MessageContext;
 import org.eclipse.kapua.converter.Converter;
 import org.eclipse.kapua.converter.ConverterErrorCodes;
 import org.eclipse.kapua.converter.KapuaConverterException;
@@ -32,7 +33,6 @@ import org.eclipse.kapua.message.internal.transport.TransportMessageImpl;
 import org.eclipse.kapua.message.internal.transport.TransportPayloadImpl;
 import org.eclipse.kapua.message.transport.TransportChannel;
 import org.eclipse.kapua.message.transport.TransportMessage;
-import org.eclipse.kapua.message.transport.TransportMessageType;
 import org.eclipse.kapua.message.transport.TransportPayload;
 import org.eclipse.kapua.message.transport.TransportQos;
 import org.slf4j.Logger;
@@ -47,11 +47,11 @@ public class KuraPayloadProtoConverter implements Converter<byte[], TransportMes
     protected final static Logger logger = LoggerFactory.getLogger(KuraPayloadProtoConverter.class);
 
     @Override
-    public TransportMessage convert(Map<String, Object> properties, byte[] message) throws KapuaConverterException {
+    public MessageContext<TransportMessage> convert(MessageContext<byte[]> message) throws KapuaConverterException {
         // convert the payload
         KuraPayload kuraPayload = null;
         try {
-            kuraPayload = buildKuraPayloadFromByteArray(message);
+            kuraPayload = buildKuraPayloadFromByteArray(message.getMessage());
         } catch (KuraInvalidMessageException | IOException e) {
             throw new KapuaConverterException(ConverterErrorCodes.CONVERTION_ERROR, e);
         }
@@ -59,7 +59,7 @@ public class KuraPayloadProtoConverter implements Converter<byte[], TransportMes
         TransportMessage transportMessage = new TransportMessageImpl();
 
         // topic and everything related: topic, scope id, device id, client id, channel
-        String transportTopic = (String) properties.get(Converter.MESSAGE_DESTINATION);
+        String transportTopic = (String) message.getProperty(Converter.MESSAGE_DESTINATION);
         if (Strings.isNullOrEmpty(transportTopic)) {
             new KapuaConverterException(ConverterErrorCodes.CONVERTION_NO_TOPIC);
         }
@@ -68,9 +68,9 @@ public class KuraPayloadProtoConverter implements Converter<byte[], TransportMes
         processTransportTopic(transportMessage, transportTopic);
 
         // Qos
-        Object qos = properties.get(Converter.MESSAGE_QOS);
+        Object qos = message.getProperty(Converter.MESSAGE_QOS);
         if (qos != null && qos instanceof TransportQos) {
-            TransportQos transporQos = (TransportQos) properties.get(Converter.MESSAGE_QOS);
+            TransportQos transporQos = (TransportQos) message.getProperty(Converter.MESSAGE_QOS);
             transportMessage.setQos(transporQos);
         }
 
@@ -84,7 +84,7 @@ public class KuraPayloadProtoConverter implements Converter<byte[], TransportMes
         // payload
         transportMessage.setPayload(buildTransportPayload(kuraPayload));
 
-        return transportMessage;
+        return new MessageContext<TransportMessage>(transportMessage, message.getProperties());
     }
 
     private void processTransportTopic(TransportMessage transportMessage, String transportTopic) {
@@ -96,15 +96,6 @@ public class KuraPayloadProtoConverter implements Converter<byte[], TransportMes
         int topicPartIndex = 0;
         String[] topicParts = transportTopic.split("/");
 
-        // process prefix and extract message type
-        // FIXME: pluggable message types and dialects
-        String topicPrefix = topicParts[0];
-        if ("$EDC".equals(topicPrefix)) {
-            transportMessage.setMessageType(TransportMessageType.CONTROL);
-            topicPartIndex++;
-        } else {
-            transportMessage.setMessageType(TransportMessageType.TELEMETRY);
-        }
         String scopeName = topicParts[topicPartIndex++];
         transportMessage.setScopeName(scopeName);
 
