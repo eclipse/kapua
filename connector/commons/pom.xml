@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-    Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+    Copyright (c) 2018 Eurotech and/or its affiliates and others
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -10,20 +10,18 @@
     Contributors:
         Eurotech - initial API and implementation
  -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.eclipse.kapua</groupId>
-        <artifactId>kapua</artifactId>
+        <artifactId>kapua-connector</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <packaging>pom</packaging>
 
-    <artifactId>kapua-apps</artifactId>
+    <artifactId>kapua-connector-commons</artifactId>
+    <name>${project.artifactId}</name>
 
-    <modules>
-        <module>eclipseiot</module>
-    </modules>
+    <dependencies>
+    </dependencies>
 </project>
