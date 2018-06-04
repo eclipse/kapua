@@ -9,6 +9,7 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
+@jobs
 Feature: Job step service CRUD tests
     The Job Step service is responsible for maintaining job steps.
 

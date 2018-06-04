@@ -9,6 +9,7 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
+@jobs
 Feature: Job Target service CRUD tests
     The Job service is responsible for maintaining a list of job targets.
 
