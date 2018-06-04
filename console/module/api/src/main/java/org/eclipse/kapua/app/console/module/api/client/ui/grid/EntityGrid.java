@@ -195,8 +195,7 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
     }
 
     public void refresh() {
-        if (entityCRUDToolbar.getRefreshEntityButton() != null) {
-            entityCRUDToolbar.getRefreshEntityButton().setEnabled(false);
+        entityCRUDToolbar.getRefreshEntityButton().setEnabled(false);
         entityLoader.setReuseLoadConfig(true);
         entityLoader.load();
     }
