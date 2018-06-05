@@ -36,6 +36,7 @@
         <module>broker</module>
         <module>events-broker</module>
         <module>api</module>
+        <module>eclipseiot</module>
     </modules>
     
     <profiles>

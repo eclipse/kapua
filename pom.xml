@@ -450,6 +450,11 @@
             <!-- Internal dependencies -->
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
+                <artifactId>eclipseiot</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-broker-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
