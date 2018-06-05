@@ -15,25 +15,25 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
 /**
  * Eclipseiot setting implementation.<br>
- * This class handles settings for the {@link EclipseiotSettingKey}.
+ * This class handles settings for the {@link MessageConsumerSettingKey}.
  */
-public final class EclipseiotSetting extends AbstractKapuaSetting<EclipseiotSettingKey> {
+public final class MessageConsumerSetting extends AbstractKapuaSetting<MessageConsumerSettingKey> {
 
     private static final String CONFIG_RESOURCE_NAME = "eclipseiot-setting.properties";
 
-    private static EclipseiotSetting instance;
+    private static MessageConsumerSetting instance;
 
-    private EclipseiotSetting() {
+    private MessageConsumerSetting() {
         super(CONFIG_RESOURCE_NAME);
     }
 
     /**
      * Return the Eclipseiot setting instance (singleton)
      */
-    public static EclipseiotSetting getInstance() {
-        synchronized (EclipseiotSetting.class) {
+    public static MessageConsumerSetting getInstance() {
+        synchronized (MessageConsumerSetting.class) {
             if (instance == null) {
-                instance = new EclipseiotSetting();
+                instance = new MessageConsumerSetting();
             }
             return instance;
         }
@@ -51,7 +51,7 @@ public final class EclipseiotSetting extends AbstractKapuaSetting<EclipseiotSett
      * </p>
      */
     public static void resetInstance() {
-        synchronized (EclipseiotSetting.class) {
+        synchronized (MessageConsumerSetting.class) {
             instance = null;
         }
     }
