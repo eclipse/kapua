@@ -16,7 +16,7 @@ import org.eclipse.kapua.commons.setting.SettingKey;
 /**
  * Broker settings
  */
-public enum EclipseiotSettingKey implements SettingKey {
+public enum MessageConsumerSettingKey implements SettingKey {
 
     /**
      * Verticle class implementation to instantiate
@@ -33,7 +33,7 @@ public enum EclipseiotSettingKey implements SettingKey {
 
     private String key;
 
-    private EclipseiotSettingKey(String key) {
+    private MessageConsumerSettingKey(String key) {
         this.key = key;
     }
 

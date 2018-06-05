@@ -11,9 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.connector;
 
-import io.vertx.core.Future;
-import io.vertx.core.Vertx;
-
 import org.eclipse.kapua.converter.Converter;
 import org.eclipse.kapua.converter.KapuaConverterException;
 import org.eclipse.kapua.processor.KapuaProcessorException;
@@ -21,11 +18,14 @@ import org.eclipse.kapua.processor.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.vertx.core.Future;
+import io.vertx.core.Vertx;
+
 /**
  * Abstract connector to be customized with specific server connection code.<br>
  * The incoming message will flow through the converter (if provided) and the processor
  * 
- * @param <M> Message type (optional)
+ * @param <M> Converter message type (optional)
  * @param <P> Processor message type
  */
 public abstract class AbstractConnector<M, P> {
@@ -39,8 +39,8 @@ public abstract class AbstractConnector<M, P> {
     /**
      * Default protected constructor
      * @param Vertx instance
-     * @param converter message converter instance
-     * @param processor message processor instance
+     * @param converter message instance
+     * @param processor processor instance
      */
     protected AbstractConnector(Vertx vertx, Converter<M, P> converter, Processor<P> processor) {
         this.converter = converter;
@@ -51,7 +51,7 @@ public abstract class AbstractConnector<M, P> {
     /**
      * Constructor with no message converter
      * @param Vertx instance
-     * @param processor
+     * @param processor processor instance
      */
     protected AbstractConnector(Vertx vertx, Processor<P> processor) {
         this(vertx, null, processor);
@@ -62,14 +62,14 @@ public abstract class AbstractConnector<M, P> {
      * @param startFuture
      * @throws KapuaConnectorException
      */
-    protected abstract void startInternal(Future<Void> startFuture) throws KapuaConnectorException;
+    protected abstract void startInternal(Future<Void> startFuture);
 
     /**
      * Internal components stop hook
      * @param stopFuture
      * @throws KapuaConnectorException
      */
-    protected abstract void stopInternal(Future<Void> stopFuture) throws KapuaConnectorException;
+    protected abstract void stopInternal(Future<Void> stopFuture);
 
     /**
      * 
@@ -80,19 +80,24 @@ public abstract class AbstractConnector<M, P> {
     protected abstract MessageContext<M> convert(MessageContext<?> message) throws KapuaConverterException;
 
     public void start(Future<Void> startFuture) throws KapuaConnectorException {
-        try {
-            // Start subclass
-            startInternal(startFuture);
-
-            //Start processor
-            logger.info("Invoking processor.start...");
-            processor.start();
-
-            startFuture.complete();
-        } catch (Exception ex) {
-            logger.warn("Verticle start failed", ex);
-            startFuture.fail(ex);
-        }
+        logger.debug("Starting connector...");
+        Future<Void> composerFuture = Future.future();
+        composerFuture.compose(mapper -> {
+            Future<Void> internalFuture = Future.future();
+            startInternal(internalFuture);
+            return internalFuture;
+        })
+        .setHandler(result -> {
+            if (result.succeeded()) {
+                logger.debug("Starting connector...DONE");
+                startFuture.complete();
+            } else {
+                logger.warn("Starting connector...FAIL [message:{}]", result.cause().getMessage());
+                logger.debug("\tException:", result.cause());
+                startFuture.fail(result.cause());
+            }
+        });
+        processor.start(composerFuture);
     }
 
     @SuppressWarnings("unchecked")
@@ -109,18 +114,22 @@ public abstract class AbstractConnector<M, P> {
     }
 
     public void stop(Future<Void> stopFuture) throws KapuaConnectorException {
-        try {
-            // Stop subclass
-            stopInternal(stopFuture);
-
-            // Stop processor
-            logger.info("Invoking processor.stop...");
-            processor.stop();
-
-            stopFuture.complete();
-        } catch (Exception ex) {
-            logger.warn("Verticle stop failed", ex);
-            stopFuture.fail(ex);
-        }
+        logger.debug("Stopping connector...");
+        Future<Void> composerFuture = Future.future();
+        composerFuture.compose(mapper -> {
+            Future<Void> internalFuture = Future.future();
+            processor.stop(internalFuture);
+            return internalFuture;
+        })
+        .setHandler(result -> {
+            if (result.succeeded()) {
+                logger.debug("Stopping connector...DONE");
+                stopFuture.complete();
+            } else {
+                logger.warn("Stopping connector...FAIL [message:{}]", result.cause().getMessage());
+                stopFuture.fail(result.cause());
+            }
+        });
+        stopInternal(composerFuture);
     }
 }

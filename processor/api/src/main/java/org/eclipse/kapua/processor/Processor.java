@@ -13,11 +13,13 @@ package org.eclipse.kapua.processor;
 
 import org.eclipse.kapua.connector.MessageContext;
 
+import io.vertx.core.Future;
+
 public interface Processor<T> {
 
-    public void start() throws KapuaProcessorException;
+    public void start(Future<Void> future);
 
     public void process(MessageContext<T> message) throws KapuaProcessorException;
 
-    public void stop() throws KapuaProcessorException;
+    public void stop(Future<Void> future);
 }

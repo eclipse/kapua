@@ -33,24 +33,27 @@ import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.vertx.core.Future;
+
 public class DatastoreProcessor implements Processor<TransportMessage> {
 
     private static final Logger logger = LoggerFactory.getLogger(DatastoreProcessor.class);
 
-    private AccountService accountService = KapuaLocator.getInstance().getService(AccountService.class);
-    private MessageStoreService messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
+    private AccountService accountService;
+    private MessageStoreService messageStoreService;
 
     @Override
-    public void start() throws KapuaProcessorException {
-        logger.info("Instantiate Jaxb Context... Done.");
+    public void start(Future<Void> startFuture) {
+        accountService = KapuaLocator.getInstance().getService(AccountService.class);
+        //calling the get message store service in order to initialize the ES link here
+        messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
+        startFuture.complete();
     }
 
     @Override
     public void process(MessageContext<TransportMessage> message) throws KapuaProcessorException {
-        logger.info("Datastore service... received message: {}", message);
-        logger.info("Datastore service... converting message...");
+        logger.debug("Datastore service... converting received message: {}", message);
         TransportMessage tm = message.getMessage();
-
         KapuaDataMessage kapuaDataMessage = new KapuaDataMessageImpl();
 
         //channel
@@ -78,10 +81,9 @@ public class DatastoreProcessor implements Processor<TransportMessage> {
                     throw new KapuaProcessorException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "message.scopeName", tm.getScopeName());
                 }
                 kapuaDataMessage.setScopeId(account.getId());
-                logger.info("Datastore service... converting message... DONE");
-                logger.info("Datastore service... storing message...");
+                logger.debug("Datastore service... converting message... DONE storing message...");
                 messageStoreService.store(kapuaDataMessage);
-                logger.info("Datastore service... storing message... DONE");
+                logger.debug("Datastore service... storing message... DONE");
             });
         } catch (KapuaException e) {
             logger.info("Datastore service... Error processing message {}", e.getMessage());
@@ -90,8 +92,9 @@ public class DatastoreProcessor implements Processor<TransportMessage> {
     }
 
     @Override
-    public void stop() throws KapuaProcessorException {
+    public void stop(Future<Void> stopFuture) {
         // nothing to do
+        stopFuture.complete();
     }
 
 }

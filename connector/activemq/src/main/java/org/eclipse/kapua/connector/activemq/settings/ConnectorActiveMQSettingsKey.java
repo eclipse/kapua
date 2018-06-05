@@ -23,23 +23,31 @@ public enum ConnectorActiveMQSettingsKey implements SettingKey {
     /**
      * Broker name (or ip)
      */
-    BROKER_HOST("broker.host"),
+    BROKER_HOST("connector.activemq.broker.host"),
     /**
      * Broker url
      */
-    BROKER_PORT("broker.port"),
+    BROKER_PORT("connector.activemq.broker.port"),
     /**
      * Username
      */
-    BROKER_USERNAME("broker.username"),
+    BROKER_USERNAME("connector.activemq.broker.username"),
     /**
      * Broker password
      */
-    BROKER_PASSWORD("broker.password"),
+    BROKER_PASSWORD("connector.activemq.broker.password"),
     /**
      * Broker client id
      */
-    BROKER_CLIENT_ID("broker.client_id");
+    BROKER_CLIENT_ID("connector.activemq.broker.client_id"),
+    /**
+     * Maximum reconnection attempt (without any success between them) before exiting JVM (negative numbers means no exit)
+     */
+    MAX_RECONNECTION_ATTEMPTS("connector.activemq.maximum_reconnection_attempt"),
+    /**
+     * Exiting code when maximum reconnection attempt is reached
+     */
+    EXIT_CODE("connector.activemq.exit_code");
 
     private String key;
 

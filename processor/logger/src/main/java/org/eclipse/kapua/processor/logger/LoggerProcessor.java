@@ -21,14 +21,17 @@ import org.eclipse.kapua.processor.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.vertx.core.Future;
+
 public class LoggerProcessor implements Processor<TransportMessage> {
 
     private static final Logger logger = LoggerFactory.getLogger(LoggerProcessor.class);
 
     @Override
-    public void start() throws KapuaProcessorException {
+    public void start(Future<Void> startFuture) {
         XmlUtil.setContextProvider(new LoggerProcessorJAXBContextProvider());
         logger.info("Instantiate Jaxb Context... Done.");
+        startFuture.complete();
     }
 
     @Override
@@ -45,8 +48,9 @@ public class LoggerProcessor implements Processor<TransportMessage> {
     }
 
     @Override
-    public void stop() throws KapuaProcessorException {
+    public void stop(Future<Void> stopFuture) {
         // nothing to do
+        stopFuture.complete();
     }
 
 }

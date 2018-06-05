@@ -34,9 +34,9 @@ import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EclipseIotJAXBContextProvider implements JAXBContextProvider {
+public class MessageConsumerJAXBContextProvider implements JAXBContextProvider {
 
-    private static Logger logger = LoggerFactory.getLogger(EclipseIotJAXBContextProvider.class);
+    private static Logger logger = LoggerFactory.getLogger(MessageConsumerJAXBContextProvider.class);
 
     private JAXBContext context;
 

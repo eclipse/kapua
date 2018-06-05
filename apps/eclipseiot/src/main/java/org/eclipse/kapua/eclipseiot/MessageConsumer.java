@@ -11,24 +11,29 @@
  *******************************************************************************/
 package org.eclipse.kapua.eclipseiot;
 
+import java.util.Optional;
 import java.util.logging.Level;
 
-import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ClassUtil;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.connector.AbstractConnector;
 import org.eclipse.kapua.converter.Converter;
-import org.eclipse.kapua.eclipseiot.setting.EclipseiotSetting;
-import org.eclipse.kapua.eclipseiot.setting.EclipseiotSettingKey;
+import org.eclipse.kapua.eclipseiot.setting.MessageConsumerSetting;
+import org.eclipse.kapua.eclipseiot.setting.MessageConsumerSettingKey;
 import org.eclipse.kapua.message.transport.TransportMessage;
 import org.eclipse.kapua.processor.Processor;
+import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.MoreObjects;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
-import io.vertx.core.VertxOptions;
 
 /**
  * 
@@ -43,34 +48,24 @@ public class EclipseIot extends AbstractVerticle {
     private static final String PROCESSOR_CLASS_NAME;
 
     static {
-        EclipseiotSetting config = EclipseiotSetting.getInstance();
-        VERTICLE_CLASS_NAME = config.getString(EclipseiotSettingKey.VERTICLE_CLASS_NAME);
-        CONVERTER_CLASS_NAME = config.getString(EclipseiotSettingKey.CONVERTER_CLASS_NAME);
-        PROCESSOR_CLASS_NAME = config.getString(EclipseiotSettingKey.PROCESSOR_CLASS_NAME);
+        SystemSetting configSys = SystemSetting.getInstance();
+        logger.info("Checking database... '{}'", configSys.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE));
+        if(configSys.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false)) {
+            logger.debug("Starting Liquibase embedded client.");
+            String dbUsername = configSys.getString(SystemSettingKey.DB_USERNAME);
+            String dbPassword = configSys.getString(SystemSettingKey.DB_PASSWORD);
+            String schema = MoreObjects.firstNonNull(configSys.getString(SystemSettingKey.DB_SCHEMA_ENV), configSys.getString(SystemSettingKey.DB_SCHEMA));
+            new KapuaLiquibaseClient(JdbcConnectionUrlResolvers.resolveJdbcUrl(), dbUsername, dbPassword, Optional.of(schema)).update();
+        }
+        MessageConsumerSetting config = MessageConsumerSetting.getInstance();
+        VERTICLE_CLASS_NAME = config.getString(MessageConsumerSettingKey.VERTICLE_CLASS_NAME);
+        CONVERTER_CLASS_NAME = config.getString(MessageConsumerSettingKey.CONVERTER_CLASS_NAME);
+        PROCESSOR_CLASS_NAME = config.getString(MessageConsumerSettingKey.PROCESSOR_CLASS_NAME);
     }
 
     private AbstractConnector<?, ?> connectorVerticle;
     private Converter<?, ?> converter;
     private Processor<TransportMessage> processor;
-
-    public static void main(String argv[]) throws KapuaException {
-        VertxOptions options = new VertxOptions();
-        options.setBlockedThreadCheckInterval(60 * 1000);
-        // TODO more options?
-        Vertx vertx = Vertx.vertx(options);
-        vertx.deployVerticle(new EclipseIot());
-
-//        logger.info("Waiting 30 seconds before stopping consumer");
-//        try {
-//            Thread.sleep(30000);
-//        } catch (InterruptedException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-//        logger.info("Stopping consumer");
-
-//        vertx.close();
-    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -78,7 +73,7 @@ public class EclipseIot extends AbstractVerticle {
         Future<Void> future = Future.future();
         //disable Vertx BlockedThreadChecker log
         java.util.logging.Logger.getLogger("io.vertx.core.impl.BlockedThreadChecker").setLevel(Level.OFF);
-        XmlUtil.setContextProvider(new EclipseIotJAXBContextProvider());
+        XmlUtil.setContextProvider(new MessageConsumerJAXBContextProvider());
         logger.info("Instantiating EclipseIot...");
         logger.info("Instantiating EclipseIot... initializing converter");
         converter = ClassUtil.newInstance(CONVERTER_CLASS_NAME, Converter.class);
@@ -96,9 +91,6 @@ public class EclipseIot extends AbstractVerticle {
         Future<Void> future = Future.future();
         if (connectorVerticle!=null) {
             connectorVerticle.stop(future);
-        }
-        if (processor!=null) {
-            processor.stop();
         }
     }
 
