@@ -174,7 +174,7 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
 
                 //
                 // Update job step
-                jobStep.setName(gwtJobStep.getJobStepName());
+                jobStep.setName(gwtJobStep.getUnescapedJobStepName());
                 jobStep.setDescription(gwtJobStep.getUnescapedDescription());
                 jobStep.setJobStepDefinitionId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobStep.getJobStepDefinitionId()));
                 jobStep.setStepProperties(GwtKapuaJobModelConverter.convertJobStepProperties(gwtJobStep.getStepProperties()));

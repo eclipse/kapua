@@ -70,7 +70,7 @@ public class JobStepEditDialog extends JobStepAddDialog {
 
             @Override
             public void onSuccess(GwtJobStepDefinition result) {
-                jobStepName.setValue(gwtJobStep.getJobStepName());
+                jobStepName.setValue(gwtJobStep.getUnescapedJobStepName());
                 jobStepDescription.setValue(gwtJobStep.getUnescapedDescription());
                 jobStepDefinitionCombo.setValue(result);
 
@@ -96,7 +96,7 @@ public class JobStepEditDialog extends JobStepAddDialog {
 
     @Override
     public void submit() {
-        selectedJobStep.setJobStepName(jobStepName.getValue());
+        selectedJobStep.setJobStepName(KapuaSafeHtmlUtils.htmlUnescape(jobStepName.getValue()));
         selectedJobStep.setDescription(KapuaSafeHtmlUtils.htmlUnescape(jobStepDescription.getValue()));
         selectedJobStep.setJobStepDefinitionId(jobStepDefinitionCombo.getValue().getId());
         selectedJobStep.setStepProperties(readStepProperties());
