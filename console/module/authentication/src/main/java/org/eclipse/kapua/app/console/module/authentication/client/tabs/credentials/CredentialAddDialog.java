@@ -22,8 +22,10 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
+import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.ConfirmPasswordFieldValidator;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.PasswordFieldValidator;
@@ -40,6 +42,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaDateField;
 public class CredentialAddDialog extends EntityAddEditDialog {
 
     protected static final ConsoleCredentialMessages MSGS = GWT.create(ConsoleCredentialMessages.class);
+    private static final ConsoleMessages CMSGS = GWT.create(ConsoleMessages.class);
 
     protected FormPanel credentialFormPanel;
     private String selectedUserId;
@@ -187,9 +190,9 @@ public class CredentialAddDialog extends EntityAddEditDialog {
                 status.hide();
 
                 exitStatus = false;
-                exitMessage = MSGS.dialogAddError(cause.getLocalizedMessage());
-
-                hide();
+                exitMessage = cause.getLocalizedMessage();
+                credentialType.markInvalid(exitMessage);
+                ConsoleInfo.display(CMSGS.error(), exitMessage);
             }
         });
     }
