@@ -19,12 +19,15 @@ import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
+import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsolePermissionMessages;
@@ -48,6 +51,7 @@ import java.util.List;
 public class RolePermissionAddDialog extends EntityAddEditDialog {
 
     private static final ConsolePermissionMessages MSGS = GWT.create(ConsolePermissionMessages.class);
+    private static final ConsoleMessages CMSGS = GWT.create(ConsoleMessages.class);
 
     private static final GwtDomainRegistryServiceAsync DOMAIN_SERVICE = GWT.create(GwtDomainRegistryService.class);
     private static final GwtGroupServiceAsync GWT_GROUP_SERVICE = GWT.create(GwtGroupService.class);
@@ -134,8 +138,12 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
                         actionsCombo.add(result);
                         actionsCombo.setSimpleValue(allAction);
                         actionsCombo.enable();
+                        groupsCombo.clearInvalid();
 
-                        if (selectedDomain.getGroupable()) {
+                        if (allDomain.equals(selectedDomain)) {
+                            groupsCombo.setEnabled(true);
+                            groupsCombo.setValue(allGroup);
+                        } else if (selectedDomain.getGroupable()) {
                             groupsCombo.setEnabled(selectedDomain.getGroupable());
                             groupsCombo.setValue(allGroup);
 
@@ -161,6 +169,15 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
         actionsCombo.setFieldLabel(MSGS.permissionAddDialogAction());
         actionsCombo.setTriggerAction(TriggerAction.ALL);
         actionsCombo.setEmptyText(MSGS.permissionAddDialogLoading());
+
+        actionsCombo.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<GwtAction>>() {
+
+            public void selectionChanged(SelectionChangedEvent<SimpleComboValue<GwtAction>> se) {
+                domainsCombo.clearInvalid();
+                actionsCombo.clearInvalid();
+                groupsCombo.clearInvalid();
+            }
+        });
 
         permissionFormPanel.add(actionsCombo);
 
@@ -195,6 +212,17 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
                     groupsCombo.enable();
                 }
             });
+
+            groupsCombo.addSelectionChangedListener(new SelectionChangedListener<GwtGroup>() {
+
+                @Override
+                public void selectionChanged(SelectionChangedEvent<GwtGroup> se) {
+                    domainsCombo.clearInvalid();
+                    actionsCombo.clearInvalid();
+                    groupsCombo.clearInvalid();
+                }
+            });
+
             permissionFormPanel.add(groupsCombo);
         } else {
             groupsCombo.getStore().add(allGroup);
@@ -223,7 +251,7 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
         permission.setDomain(domainsCombo.getValue().getDomainId());
         permission.setAction(actionsCombo.getValue().getValue().toString());
         permission.setTargetScopeId(currentSession.getSelectedAccountId());
-        permission.setGroupId(groupsCombo.getValue().getId());
+        permission.setGroupId(groupsCombo.getValue() != null ? groupsCombo.getValue().getId() : null);
         permission.setForwardable(forwardableChecboxGroup.getValue() != null);
 
         GwtRolePermissionCreator rolePermission = new GwtRolePermissionCreator();
@@ -255,7 +283,12 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
                     exitMessage = MSGS.dialogAddError(MSGS.dialogAddPermissionError(cause.getLocalizedMessage()));
                 }
 
-                hide();
+                domainsCombo.markInvalid(exitMessage);
+                actionsCombo.markInvalid(exitMessage);
+                if (groupsCombo.isEnabled()){
+                    groupsCombo.markInvalid(exitMessage);
+                }    
+                ConsoleInfo.display(CMSGS.error(), exitMessage);
             }
         });
 

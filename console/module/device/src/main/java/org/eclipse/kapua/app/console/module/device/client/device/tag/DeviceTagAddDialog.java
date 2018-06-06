@@ -17,9 +17,12 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
@@ -71,9 +74,14 @@ public class DeviceTagAddDialog extends EntityAddEditDialog {
                 cancelButton.enable();
                 status.hide();
                 exitStatus = false;
-                exitMessage = MSGS.dialogDeviceTagAddError(cause.getLocalizedMessage());
 
-                hide();
+                FailureHandler.handleFormException(formPanel, cause);
+                if (cause instanceof GwtKapuaException) {
+                    GwtKapuaException gwtCause = (GwtKapuaException) cause;
+                    if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
+                        tagsCombo.markInvalid(gwtCause.getMessage());
+                    }
+                }
             }
         });
     }

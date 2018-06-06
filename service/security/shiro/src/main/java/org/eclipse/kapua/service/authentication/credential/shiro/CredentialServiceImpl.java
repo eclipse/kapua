@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -82,7 +82,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
             CredentialListResult existingCredentials = findByUserId(credentialCreator.getScopeId(), credentialCreator.getUserId());
             for (Credential credential : existingCredentials.getItems()) {
                 if (credential.getCredentialType().equals(CredentialType.PASSWORD)) {
-                    throw new KapuaExistingCredentialException(CredentialType.PASSWORD, credential.getUserId().toCompactId());
+                    throw new KapuaExistingCredentialException(CredentialType.PASSWORD);
                 }
             }
         }

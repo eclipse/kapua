@@ -21,8 +21,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
+import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsolePermissionMessages;
@@ -40,6 +42,7 @@ import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRole
 public class AccessRoleAddDialog extends EntityAddEditDialog {
 
     private static final ConsolePermissionMessages MSGS = GWT.create(ConsolePermissionMessages.class);
+    private static final ConsoleMessages CMSGS = GWT.create(ConsoleMessages.class);
 
     private static final GwtRoleServiceAsync GWT_ROLE_SERVICE = GWT.create(GwtRoleService.class);
     private static final GwtAccessRoleServiceAsync GWT_ACCESS_ROLE_SERVICE = GWT.create(GwtAccessRoleService.class);
@@ -105,7 +108,8 @@ public class AccessRoleAddDialog extends EntityAddEditDialog {
                     exitMessage = MSGS.dialogAddError(MSGS.dialogAddRoleError(cause.getLocalizedMessage()));
                 }
 
-                hide();
+                rolesCombo.markInvalid(exitMessage);
+                ConsoleInfo.display(CMSGS.error(), exitMessage);
             }
         });
     }

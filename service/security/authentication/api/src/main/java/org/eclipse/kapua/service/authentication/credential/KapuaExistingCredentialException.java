@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,12 +23,12 @@ import org.eclipse.kapua.KapuaException;
 public class KapuaExistingCredentialException extends KapuaException {
 
     private static final long serialVersionUID = -2761138212317761216L;
-    private static final String MESSAGE_FORMAT = "Credential of type %s for user id %s already exists";
+    private static final String MESSAGE_FORMAT = "Credential of type %s already exists for this user.";
 
     /**
      * Constructor for the {@link KapuaExistingCredentialException} taking in the duplicated name.
      */
-    public KapuaExistingCredentialException(CredentialType credentialType, String userId) {
-        super(KapuaErrorCodes.ENTITY_ALREADY_EXISTS, String.format(MESSAGE_FORMAT, credentialType, userId));
+    public KapuaExistingCredentialException(CredentialType credentialType) {
+        super(KapuaErrorCodes.ENTITY_ALREADY_EXISTS, String.format(MESSAGE_FORMAT, credentialType));
     }
 }
