@@ -47,22 +47,28 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
     protected GwtSession currentSession;
     private AbstractEntityView<M> parentEntityView;
 
-    private EntityCRUDToolbar<M> entityCRUDToolbar;
-    private boolean entityGridConfigured;
-    private SelectionMode selectionMode = SelectionMode.SINGLE;
+    protected EntityCRUDToolbar<M> entityCRUDToolbar;
     protected KapuaGrid<M> entityGrid;
-    protected BasePagingLoader<PagingLoadResult<M>> entityLoader;
-    protected ListStore<M> entityStore;
     protected PagingToolBar entityPagingToolbar;
     protected EntityFilterPanel<M> filterPanel;
 
-    /* Some grids (most notably "slave" grids, i.e. the ones that depends from the entity *
-     * selected in another grid) should not be refreshed on render, otherwise they would be *
-     * refreshed twice and the paging toolbar may be disabled because of this */
+    protected BasePagingLoader<PagingLoadResult<M>> entityLoader;
+    protected ListStore<M> entityStore;
+
+    /**
+     * Some grids (most notably "slave" grids, i.e. the ones that depends from the entity
+     * selected in another grid) should not be refreshed on render, otherwise they would be
+     * refreshed twice and the paging toolbar may be disabled because of this
+     */
     protected boolean refreshOnRender = true;
+
+    protected SelectionMode selectionMode = SelectionMode.SINGLE;
+    protected boolean keepSelectedItemsAfterLoad = true;
+    protected boolean entityGridConfigured;
 
     protected EntityGrid(AbstractEntityView<M> entityView, GwtSession currentSession) {
         super(new FitLayout());
+
         //
         // Set other properties
         this.parentEntityView = entityView;
@@ -80,6 +86,7 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
         if (entityCRUDToolbar != null) {
             setTopComponent(entityCRUDToolbar);
         }
+
         //
         // Paging toolbar
         entityPagingToolbar = getPagingToolbar();
@@ -94,9 +101,8 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
 
         //
         // Configure Entity Grid
-
         if (!entityGridConfigured) {
-            configureEntityGrid(SelectionMode.SINGLE);
+            configureEntityGrid();
         }
 
         // Force layout so the entityGrid gets rendered and its listeners initialized
@@ -141,12 +147,9 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
     }
 
     /**
-     * Configuring entity grid, because it needs to be configured before
-     * onRender method is called.
-     * 
-     * @param selectionMode selection mode on grid, default is SINGLE.
+     * Configuring entity grid, because it needs to be configured before onRender method is called.
      */
-    protected void configureEntityGrid(SelectionMode selectionMode) {
+    protected void configureEntityGrid() {
         // Data Proxy
         RpcProxy<PagingLoadResult<M>> dataProxy = getDataProxy();
 
@@ -158,7 +161,10 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
 
         //
         // Grid Data Load Listener
-        entityLoader.addLoadListener(new EntityGridLoadListener<M>(this, entityStore));
+        EntityGridLoadListener<M> entityGridLoadListener = new EntityGridLoadListener<M>(this, entityStore);
+        entityGridLoadListener.setKeepSelectedOnLoad(keepSelectedItemsAfterLoad);
+
+        entityLoader.addLoadListener(entityGridLoadListener);
 
         //
         // Bind Entity Paging Toolbar
@@ -176,7 +182,6 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
         add(entityGrid);
 
         entityGridConfigured = true;
-        this.selectionMode = selectionMode;
     }
 
     protected abstract List<ColumnConfig> getColumns();

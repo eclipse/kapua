@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.job.client.targets;
 
-import com.extjs.gxt.ui.client.Style.SelectionMode;
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
@@ -62,6 +62,10 @@ public class JobTargetAddGrid extends EntityGrid<GwtDevice> {
 
         query = new GwtDeviceQuery();
         query.setScopeId(currentSession.getSelectedAccountId());
+
+        // Configure grid options
+        selectionMode = Style.SelectionMode.SIMPLE;
+        keepSelectedItemsAfterLoad = false;
     }
 
     @Override
@@ -75,9 +79,7 @@ public class JobTargetAddGrid extends EntityGrid<GwtDevice> {
 
             @Override
             protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtDevice>> callback) {
-                GWT_DEVICE_SERVICE.query((PagingLoadConfig) loadConfig,
-                        query,
-                        callback);
+                GWT_DEVICE_SERVICE.query((PagingLoadConfig) loadConfig, query, callback);
             }
 
         };
@@ -95,6 +97,7 @@ public class JobTargetAddGrid extends EntityGrid<GwtDevice> {
         toolbar.setEditButtonVisible(false);
         toolbar.setDeleteButtonVisible(false);
         toolbar.setRefreshButtonVisible(true);
+
         return toolbar;
     }
 
@@ -120,7 +123,8 @@ public class JobTargetAddGrid extends EntityGrid<GwtDevice> {
 
     @Override
     protected void onRender(Element target, int index) {
-        configureEntityGrid(SelectionMode.SIMPLE);
+        configureEntityGrid();
+
         entityGrid.addPlugin(selectionModel);
         entityGrid.setSelectionModel(selectionModel);
 
@@ -138,6 +142,7 @@ public class JobTargetAddGrid extends EntityGrid<GwtDevice> {
     }
 
     GridCellRenderer<ModelData> gridCellRenderer = new GridCellRenderer<ModelData>() {
+
         @Override
         public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,
                 ListStore<ModelData> store, Grid<ModelData> grid) {
