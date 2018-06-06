@@ -37,6 +37,7 @@ public class TagToolbarGrid extends EntityCRUDToolbar<GwtTag> {
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
         getAddEntityButton().setEnabled(currentSession.hasPermission(TagSessionPermission.write()));
+        getRefreshAndDeselectButton().hide();
     }
 
     @Override

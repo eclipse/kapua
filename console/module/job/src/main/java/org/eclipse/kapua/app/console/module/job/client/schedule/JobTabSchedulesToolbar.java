@@ -43,6 +43,7 @@ public class JobTabSchedulesToolbar extends EntityCRUDToolbar<GwtTrigger> {
             addEntityButton.setEnabled(false);
             refreshEntityButton.setEnabled(false);
         }
+        refreshAndDeselectEntityButton.hide();
     }
 
     @Override

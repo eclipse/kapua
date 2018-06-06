@@ -71,6 +71,7 @@ public class DeviceTagToolbar extends TagToolbarGrid {
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
         setBorders(true);
+        refreshAndDeselectEntityButton.hide();
         addEntityButton.setText(DEVICE_MSGS.tabTagsAddButton());
         deleteEntityButton.setText(DEVICE_MSGS.tabTagsDeleteButton());
     }

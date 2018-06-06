@@ -12,23 +12,17 @@
 package org.eclipse.kapua.app.console.module.job.client.targets;
 
 import com.extjs.gxt.ui.client.Style.SelectionMode;
-import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.util.Format;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnData;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
-import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGridCheckBoxSelectionModel;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolBar;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
@@ -48,7 +42,7 @@ public class JobTargetAddGrid extends EntityGrid<GwtDevice> {
     private static final GwtDeviceServiceAsync GWT_DEVICE_SERVICE = GWT.create(GwtDeviceService.class);
     private static final ConsoleDeviceMessages DVC_MSGS = GWT.create(ConsoleDeviceMessages.class);
 
-    private final EntityGridCheckBoxSelectionModel<GwtDevice> selectionModel = new EntityGridCheckBoxSelectionModel<GwtDevice>();
+    private List<SelectionChangedListener<GwtDevice>> listeners = new ArrayList<SelectionChangedListener<GwtDevice>>();
 
     private static final int ENTITY_PAGE_SIZE = 10;
 
@@ -79,7 +73,6 @@ public class JobTargetAddGrid extends EntityGrid<GwtDevice> {
                         query,
                         callback);
             }
-
         };
     }
 
@@ -94,26 +87,25 @@ public class JobTargetAddGrid extends EntityGrid<GwtDevice> {
         toolbar.setAddButtonVisible(false);
         toolbar.setEditButtonVisible(false);
         toolbar.setDeleteButtonVisible(false);
-        toolbar.setRefreshButtonVisible(true);
+        toolbar.setRefreshButtonVisible(false);
+        toolbar.getRefreshButton().hide();
+        toolbar.setRefreshAndDeselectVisible(true);
         return toolbar;
     }
 
     @Override
     protected List<ColumnConfig> getColumns() {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
-
-        ColumnConfig column = selectionModel.getColumn();
-        columnConfigs.add(column);
+        columnConfigs.add(selectionModel.getColumn());
+        ColumnConfig column;
 
         column = new ColumnConfig("clientId", DVC_MSGS.deviceTableClientID(), 175);
         column.setSortable(true);
         columnConfigs.add(column);
-        column.setRenderer(gridCellRenderer);
 
         column = new ColumnConfig("displayName", DVC_MSGS.deviceTableDisplayName(), 150);
         column.setSortable(true);
         columnConfigs.add(column);
-        column.setRenderer(gridCellRenderer);
 
         return columnConfigs;
     }
@@ -121,9 +113,6 @@ public class JobTargetAddGrid extends EntityGrid<GwtDevice> {
     @Override
     protected void onRender(Element target, int index) {
         configureEntityGrid(SelectionMode.SIMPLE);
-        entityGrid.addPlugin(selectionModel);
-        entityGrid.setSelectionModel(selectionModel);
-
         super.onRender(target, index);
     }
 
@@ -136,17 +125,5 @@ public class JobTargetAddGrid extends EntityGrid<GwtDevice> {
     public void setFilterQuery(GwtQuery filterQuery) {
         this.query = (GwtDeviceQuery) filterQuery;
     }
-
-    GridCellRenderer<ModelData> gridCellRenderer = new GridCellRenderer<ModelData>() {
-        @Override
-        public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,
-                ListStore<ModelData> store, Grid<ModelData> grid) {
-            String value = model.get(property);
-            if (value != null) {
-                return "<tpl for=\".\"><div title=" + Format.htmlEncode(value) + ">" + Format.htmlEncode(value) + "</div></tpl>";
-            }
-            return value;
-        }
-    };
 
 }

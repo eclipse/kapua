@@ -58,6 +58,7 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
     protected EntityCRUDToolbar<GwtRolePermission> getToolbar() {
         if (rolePermissionToolBar == null) {
             rolePermissionToolBar = new RolePermissionToolbar(currentSession, this);
+            rolePermissionToolBar.setRefreshAndDeselectVisible(false);
         }
 
         return rolePermissionToolBar;

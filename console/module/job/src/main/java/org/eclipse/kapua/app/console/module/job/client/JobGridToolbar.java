@@ -73,6 +73,7 @@ public class JobGridToolbar extends EntityCRUDToolbar<GwtJob> {
 
         getEditEntityButton().disable();
         getDeleteEntityButton().disable();
+        refreshAndDeselectEntityButton.hide();
         getAddEntityButton().setEnabled(currentSession.hasPermission(JobSessionPermission.write()));
     }
 

@@ -104,6 +104,8 @@ public class GroupSubjectGrid extends EntityGrid<GwtDevice> {
         toolbar.setEditButtonVisible(false);
         toolbar.setDeleteButtonVisible(false);
         toolbar.setFilterButtonVisible(false);
+        toolbar.setRefreshAndDeselectVisible(false);
+        toolbar.getRefreshAndDeselectButton().hide();
         toolbar.setBorders(true);
 
         return toolbar;

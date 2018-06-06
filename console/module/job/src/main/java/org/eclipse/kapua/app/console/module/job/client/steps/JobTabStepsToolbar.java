@@ -70,6 +70,7 @@ public class JobTabStepsToolbar extends EntityCRUDToolbar<GwtJobStep> {
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
         checkButtons();
+        refreshAndDeselectEntityButton.hide();
     }
 
     private void checkButtons() {
