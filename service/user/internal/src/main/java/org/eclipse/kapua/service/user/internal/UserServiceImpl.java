@@ -143,6 +143,11 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
             // Check not deleting environment admin
             validateSystemUser(user.getName());
         }
+        if (user.getId().equals(KapuaSecurityUtils.getSession().getUserId())) {
+            if (user.getStatus().equals(UserStatus.DISABLED)) {
+                throw new KapuaIllegalArgumentException("name", user.getName());
+            }
+        }
         //
         // Do update
         return entityManagerSession.onTransactedResult(em -> {
