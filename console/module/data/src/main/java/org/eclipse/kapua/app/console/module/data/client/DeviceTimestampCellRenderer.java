@@ -107,6 +107,8 @@ public class DeviceTimestampCellRenderer implements GridCellRenderer<GwtDatastor
             public void onSuccess(List<GwtDatastoreDevice> gwtDatastoreDevices) {
                 if (gwtDatastoreDevices != null && gwtDatastoreDevices.size() == 1) {
                     gwtDevice.setTimestamp(gwtDatastoreDevices.get(0).getTimestamp());
+                } else {
+                    cellText.setText(DATA_MSGS.topicInfoTableNoLastPostDate());
                 }
                 grid.getView().refresh(false);
                 cellText.unmask();
