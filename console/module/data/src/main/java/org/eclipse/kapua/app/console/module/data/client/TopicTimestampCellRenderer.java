@@ -82,6 +82,8 @@ public class TopicTimestampCellRenderer implements GridCellRenderer<GwtTopic> {
                     public void onSuccess(List<GwtTopic> list) {
                         if (list != null && list.size() == 1) {
                             gwtTopic.setTimestamp(list.get(0).getTimestamp());
+                        } else {
+                            cellText.setText(DATA_MSGS.topicInfoTableNoLastPostDate());
                         }
                         grid.getView().refresh(false);
                         cellText.unmask();
