@@ -56,6 +56,8 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
     private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
     private final JobEngineService jobEngineService = LOCATOR.getService(JobEngineService.class);
+    private final TriggerService triggerService = LOCATOR.getService(TriggerService.class);
+    private final TriggerFactory triggerFactory = LOCATOR.getFactory(TriggerFactory.class);
 
     public JobServiceImpl() {
         super(JobService.class.getName(), JOB_DOMAIN, JobEntityManagerFactory.getInstance(), JobService.class, JobFactory.class);
@@ -196,25 +198,24 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Find all the triggers that are associated with this job
-        TriggerService triggerService = LOCATOR.getService(TriggerService.class);
-        TriggerFactory triggerFactory = LOCATOR.getFactory(TriggerFactory.class);
         TriggerQuery query = triggerFactory.newQuery(scopeId);
         AndPredicateImpl andPredicate = new AndPredicateImpl()
                 .and(new AttributePredicateImpl<>(TriggerPredicates.TRIGGER_PROPERTIES_NAME, "jobId"))
                 .and(new AttributePredicateImpl<>(TriggerPredicates.TRIGGER_PROPERTIES_VALUE, jobId.toCompactId()))
                 .and(new AttributePredicateImpl<>(TriggerPredicates.TRIGGER_PROPERTIES_TYPE, KapuaId.class.getName()));
         query.setPredicate(andPredicate);
-        TriggerListResult triggers = triggerService.query(query);
 
         //
-        // Delete all the triggers that are associated with this job
-        for(Trigger trig : triggers.getItems()) {
-            triggerService.delete(trig.getScopeId(), trig.getId());
-        }
+        // Query for and delete all the triggers that are associated with this job
+        KapuaSecurityUtils.doPrivileged(() -> {
+            TriggerListResult triggers = triggerService.query(query);
+            for(Trigger trig : triggers.getItems()) {
+                triggerService.delete(trig.getScopeId(), trig.getId());
+            }
+        });
 
         //
         // Do delete
-
         KapuaSecurityUtils.doPrivileged(() -> jobEngineService.cleanJobData(scopeId, jobId));
         entityManagerSession.onTransactedAction(em -> JobDAO.delete(em, jobId));
     }
