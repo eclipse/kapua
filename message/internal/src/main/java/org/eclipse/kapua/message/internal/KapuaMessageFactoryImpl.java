@@ -29,13 +29,8 @@ import org.eclipse.kapua.message.internal.device.data.KapuaDataPayloadImpl;
 public class KapuaMessageFactoryImpl implements KapuaMessageFactory {
 
     @Override
-    public KapuaMessage<?, ?> newMessage() {
+    public KapuaMessage newMessage() {
         return new KapuaMessageImpl<>();
-    }
-
-    @Override
-    public KapuaDataMessage newKapuaDataMessage() {
-        return new KapuaDataMessageImpl();
     }
 
     @Override
@@ -51,6 +46,11 @@ public class KapuaMessageFactoryImpl implements KapuaMessageFactory {
     @Override
     public KapuaPosition newPosition() {
         return new KapuaPositionImpl();
+    }
+
+    @Override
+    public KapuaDataMessage newKapuaDataMessage() {
+        return new KapuaDataMessageImpl();
     }
 
     @Override
