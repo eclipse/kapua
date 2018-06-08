@@ -13,6 +13,7 @@ package org.eclipse.kapua.app.console.module.user.client.dialog;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
@@ -95,6 +96,10 @@ public class UserEditDialog extends UserAddDialog {
                     GwtKapuaException gwtCause = (GwtKapuaException) cause;
                     if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
                         username.markInvalid(gwtCause.getMessage());
+                    } else if (gwtCause.getCode().equals(GwtKapuaErrorCode.ILLEGAL_ARGUMENT)) {
+                        if (gwtCause.getArguments().length == 2 && gwtCause.getArguments()[0].equals("status") && gwtCause.getArguments()[1].equals("DISABLED")) {
+                            userStatus.markInvalid(gwtCause.getMessage());
+                        }
                     }
                 }
             }

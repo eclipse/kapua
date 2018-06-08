@@ -15,6 +15,7 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaEntityUniquenessException;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.KapuaUnauthenticatedException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
@@ -69,10 +70,8 @@ public class KapuaExceptionHandler {
 
             // default
             throw new GwtKapuaException(GwtKapuaErrorCode.INVALID_USERNAME_PASSWORD, t);
-        } else if (t instanceof KapuaRuntimeException && ((KapuaRuntimeException) t).getCode().equals(KapuaErrorCodes.ENTITY_ALREADY_EXISTS)) {
-            logger.error("entity already exists", t);
-            throw new GwtKapuaException(GwtKapuaErrorCode.ENTITY_ALREADY_EXISTS, t, t.getLocalizedMessage());
-        } else if (t.getCause() instanceof KapuaRuntimeException && ((KapuaRuntimeException) t.getCause()).getCode().equals(KapuaErrorCodes.ENTITY_ALREADY_EXISTS)) {
+        } else if (t instanceof KapuaRuntimeException && ((KapuaRuntimeException) t).getCode().equals(KapuaErrorCodes.ENTITY_ALREADY_EXISTS) ||
+                   t.getCause() instanceof KapuaRuntimeException && ((KapuaRuntimeException) t.getCause()).getCode().equals(KapuaErrorCodes.ENTITY_ALREADY_EXISTS)) {
             logger.error("entity already exists", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.ENTITY_ALREADY_EXISTS, t, t.getLocalizedMessage());
         } else if (t instanceof KapuaException && ((KapuaException) t).getCode().equals(KapuaErrorCodes.INTERNAL_ERROR)) {
@@ -111,6 +110,8 @@ public class KapuaExceptionHandler {
             errorFieldsSb.delete(errorFieldsSb.length() - 2, errorFieldsSb.length()).append(")");
 
             throw new GwtKapuaException(GwtKapuaErrorCode.ENTITY_UNIQUENESS, t, errorFieldsSb.toString());
+        } else if (t instanceof KapuaIllegalArgumentException) {
+            throw new GwtKapuaException(GwtKapuaErrorCode.ILLEGAL_ARGUMENT, t, ((KapuaIllegalArgumentException) t).getArgumentName(), ((KapuaIllegalArgumentException) t).getArgumentValue());
         } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.BUNDLE_START_ERROR)){
             logger.warn("Bundle could not be started", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.BUNDLE_START_ERROR, t, t.getLocalizedMessage());
