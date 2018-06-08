@@ -90,6 +90,10 @@ public class JobTabTargetsGrid extends EntityGrid<GwtJobTarget> {
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
+        columnConfig = new ColumnConfig("displayName", MSGS.gridJobTargetColumnHeaderDisplayName(), 300);
+        columnConfig.setSortable(false);
+        columnConfigs.add(columnConfig);
+
         columnConfig = new ColumnConfig("stepIndex", MSGS.gridJobTargetColumnHeaderJobStepIndex(), 300);
         columnConfigs.add(columnConfig);
 

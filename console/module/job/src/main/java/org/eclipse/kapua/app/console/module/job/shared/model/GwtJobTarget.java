@@ -80,4 +80,12 @@ public class GwtJobTarget extends GwtUpdatableEntityModel {
     public void setClientId(String clientId) {
         set("clientId", clientId);
     }
+
+    public String getDisplayName() {
+        return get("displayName");
+    }
+
+    public void setDisplayName(String displayName) {
+        set("displayName", displayName);
+    }
 }
