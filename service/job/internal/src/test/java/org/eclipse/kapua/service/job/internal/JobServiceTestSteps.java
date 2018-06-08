@@ -30,6 +30,7 @@ import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.jbatch.JobEngineServiceJbatch;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
@@ -45,6 +46,8 @@ import org.eclipse.kapua.service.job.common.TestConfig;
 import org.eclipse.kapua.service.job.step.JobStep;
 import org.eclipse.kapua.service.job.step.StepData;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
 import org.eclipse.kapua.service.scheduler.trigger.quartz.TriggerFactoryImpl;
 import org.eclipse.kapua.service.scheduler.trigger.quartz.TriggerServiceImpl;
 import org.eclipse.kapua.test.MockedLocator;
@@ -128,27 +131,25 @@ public class JobServiceTestSteps extends AbstractKapuaSteps {
         // TODO: Check why does this line need an explicit cast!
         Mockito.doNothing().when(mockedAuthorization).checkPermission(
                 (org.eclipse.kapua.service.authorization.permission.Permission) Matchers.any(Permission.class));
-        mockLocator.setMockedService(org.eclipse.kapua.service.authorization.AuthorizationService.class,
-                mockedAuthorization);
+        mockLocator.setMockedService(AuthorizationService.class, mockedAuthorization);
 
         // Inject mocked Permission Factory
         PermissionFactory mockedPermissionFactory = Mockito.mock(PermissionFactory.class);
-        mockLocator.setMockedFactory(org.eclipse.kapua.service.authorization.permission.PermissionFactory.class,
-                mockedPermissionFactory);
+        mockLocator.setMockedFactory(PermissionFactory.class, mockedPermissionFactory);
 
         // Inject actual service implementations
         jobFactory = new JobFactoryImpl();
-        mockLocator.setMockedFactory(org.eclipse.kapua.service.job.JobFactory.class, jobFactory);
+        mockLocator.setMockedFactory(JobFactory.class, jobFactory);
         jobService = new JobServiceImpl();
-        mockLocator.setMockedService(org.eclipse.kapua.service.job.JobService.class, jobService);
+        mockLocator.setMockedService(JobService.class, jobService);
 
         // Inject the implementations of the depending services
         mockLocator.setMockedService(JobEngineService.class, new JobEngineServiceJbatch());
-        mockLocator.setMockedFactory(org.eclipse.kapua.service.scheduler.trigger.TriggerFactory.class, new TriggerFactoryImpl());
-        mockLocator.setMockedService(org.eclipse.kapua.service.scheduler.trigger.TriggerService.class, new TriggerServiceImpl());
+        mockLocator.setMockedFactory(TriggerFactory.class, new TriggerFactoryImpl());
+        mockLocator.setMockedService(TriggerService.class, new TriggerServiceImpl());
 
         // Set KapuaMetatypeFactory for Metatype configuration
-        mockLocator.setMockedFactory(org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory.class, new KapuaMetatypeFactoryImpl());
+        mockLocator.setMockedFactory(KapuaMetatypeFactory.class, new KapuaMetatypeFactoryImpl());
 
         // All operations on database are performed using system user.
         KapuaSession kapuaSession = new KapuaSession(null, ROOT_ID, ROOT_ID);
