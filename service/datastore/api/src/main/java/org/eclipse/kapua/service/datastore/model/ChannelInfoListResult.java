@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.model;
 
-import org.eclipse.kapua.service.datastore.ChannelInfoXmlRegistry;
+import org.eclipse.kapua.service.datastore.model.xml.ChannelInfoXmlRegistry;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;

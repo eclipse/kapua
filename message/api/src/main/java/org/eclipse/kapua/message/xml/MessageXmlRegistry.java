@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.xml;
 
-import javax.xml.bind.annotation.XmlRegistry;
-
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaChannel;
 import org.eclipse.kapua.message.KapuaMessage;
@@ -24,41 +22,43 @@ import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
 
+import javax.xml.bind.annotation.XmlRegistry;
+
 /**
  * Message XML factory class
  */
 @XmlRegistry
 public class MessageXmlRegistry {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final KapuaMessageFactory factory = locator.getFactory(KapuaMessageFactory.class);
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final KapuaMessageFactory KAPUA_MESSAGE_FACTORY = LOCATOR.getFactory(KapuaMessageFactory.class);
 
     public KapuaPayload newPayload() {
-        return factory.newPayload();
+        return KAPUA_MESSAGE_FACTORY.newPayload();
     }
 
-    public KapuaMessage<?,?> newKapuaMessage() {
-        return factory.newMessage();
+    public KapuaMessage newKapuaMessage() {
+        return KAPUA_MESSAGE_FACTORY.newMessage();
     }
 
     public KapuaDataMessage newKapuaDataMessage() {
-        return factory.newKapuaDataMessage();
+        return KAPUA_MESSAGE_FACTORY.newKapuaDataMessage();
     }
 
     public KapuaChannel newKapuaChannel() {
-        return factory.newChannel();
+        return KAPUA_MESSAGE_FACTORY.newChannel();
     }
 
     public KapuaPosition newPosition() {
-        return factory.newPosition();
+        return KAPUA_MESSAGE_FACTORY.newPosition();
     }
 
     public KapuaDataChannel newKapuaDataChannel() {
-        return factory.newKapuaDataChannel();
+        return KAPUA_MESSAGE_FACTORY.newKapuaDataChannel();
     }
 
     public KapuaDataPayload newKapuaDataPayload() {
-        return factory.newKapuaDataPayload();
+        return KAPUA_MESSAGE_FACTORY.newKapuaDataPayload();
     }
 
 }

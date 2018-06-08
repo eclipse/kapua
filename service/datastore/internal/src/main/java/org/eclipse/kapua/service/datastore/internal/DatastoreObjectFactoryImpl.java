@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,23 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import java.util.Date;
-
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
-import org.eclipse.kapua.service.datastore.internal.model.BinaryMetric;
-import org.eclipse.kapua.service.datastore.internal.model.BooleanMetric;
 import org.eclipse.kapua.service.datastore.internal.model.ChannelInfoListResultImpl;
 import org.eclipse.kapua.service.datastore.internal.model.ClientInfoListResultImpl;
-import org.eclipse.kapua.service.datastore.internal.model.DateMetric;
-import org.eclipse.kapua.service.datastore.internal.model.DoubleMetric;
-import org.eclipse.kapua.service.datastore.internal.model.FloatMetric;
-import org.eclipse.kapua.service.datastore.internal.model.IntMetric;
-import org.eclipse.kapua.service.datastore.internal.model.LongMetric;
 import org.eclipse.kapua.service.datastore.internal.model.MessageListResultImpl;
 import org.eclipse.kapua.service.datastore.internal.model.MetricInfoListResultImpl;
-import org.eclipse.kapua.service.datastore.internal.model.StringMetric;
 import org.eclipse.kapua.service.datastore.internal.model.query.ChannelInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ClientInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
@@ -35,7 +25,6 @@ import org.eclipse.kapua.service.datastore.internal.model.query.MetricInfoQueryI
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
-import org.eclipse.kapua.service.datastore.model.Metric;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
@@ -90,40 +79,4 @@ public class DatastoreObjectFactoryImpl implements DatastoreObjectFactory {
         return new MetricInfoListResultImpl();
     }
 
-    @Override
-    public Metric<?> newMetric(String name, Object value) {
-        if (value instanceof String) {
-            return new StringMetric(name, value);
-        }
-
-        if (value instanceof Integer) {
-            return new IntMetric(name, value);
-        }
-
-        if (value instanceof Long) {
-            return new LongMetric(name, value);
-        }
-
-        if (value instanceof Float) {
-            return new FloatMetric(name, value);
-        }
-
-        if (value instanceof Double) {
-            return new DoubleMetric(name, value);
-        }
-
-        if (value instanceof Date) {
-            return new DateMetric(name, value);
-        }
-
-        if (value instanceof Byte[]) {
-            return new BinaryMetric(name, value);
-        }
-
-        if (value instanceof Boolean) {
-            return new BooleanMetric(name, value);
-        }
-
-        throw new IllegalArgumentException(String.format("Metric value type for "));
-    }
 }
