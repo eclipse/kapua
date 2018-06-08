@@ -145,7 +145,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         }
         if (user.getId().equals(KapuaSecurityUtils.getSession().getUserId())) {
             if (user.getStatus().equals(UserStatus.DISABLED)) {
-                throw new KapuaIllegalArgumentException("name", user.getName());
+                throw new KapuaIllegalArgumentException("status", user.getStatus().name());
             }
         }
         //
