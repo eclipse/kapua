@@ -18,6 +18,8 @@ import org.eclipse.kapua.app.api.core.exception.model.SubjectUnauthorizedExcepti
 import org.eclipse.kapua.app.api.core.exception.model.ThrowableInfo;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.StorableEntityId;
+import org.eclipse.kapua.app.api.resources.v1.resources.model.data.JsonDatastoreMessage;
+import org.eclipse.kapua.app.api.resources.v1.resources.model.data.JsonKapuaPayload;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordCreator;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordListResult;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordQuery;
@@ -203,6 +205,7 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
             properties.put(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
 
             jaxbContext = JAXBContextFactory.createContext(new Class[] {
+
                     // REST API utility models
                     CountResult.class,
 
@@ -248,13 +251,17 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     MetricInfoXmlRegistry.class,
 
                     // Data Messages
-                    DatastoreMessage.class,
+                    KapuaDataMessage.class,
                     MessageListResult.class,
                     MessageQuery.class,
-                    DatastoreMessageXmlRegistry.class,
-                    KapuaDataMessage.class,
-                    InsertResponse.class,
                     MessageXmlRegistry.class,
+
+                    JsonKapuaPayload.class,
+                    JsonDatastoreMessage.class,
+
+                    DatastoreMessage.class,
+                    DatastoreMessageXmlRegistry.class,
+                    InsertResponse.class,
                     StorableEntityId.class,
                     StorableId.class,
 

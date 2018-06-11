@@ -18,8 +18,8 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.message.KapuaChannel;
 import org.eclipse.kapua.message.KapuaPosition;
+import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
 import org.eclipse.kapua.message.internal.KapuaPositionImpl;
@@ -2134,7 +2134,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * @param topicSemanticPart
      */
     private void checkTopic(DatastoreMessage message, String topicSemanticPart) {
-        KapuaChannel channel = message.getChannel();
+        KapuaDataChannel channel = message.getChannel();
         assertNotNull("Null message channel!", channel);
         List<String> semanticParts = channel.getSemanticParts();
         assertNotNull("Null topic semantic part!", semanticParts);

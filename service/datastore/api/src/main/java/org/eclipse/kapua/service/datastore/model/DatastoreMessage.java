@@ -12,9 +12,9 @@
 package org.eclipse.kapua.service.datastore.model;
 
 import io.swagger.annotations.ApiModelProperty;
-import org.eclipse.kapua.message.KapuaChannel;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.message.KapuaPosition;
+import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
@@ -209,14 +209,14 @@ public interface DatastoreMessage extends Storable {
      * @return
      */
     @XmlElement(name = "channel")
-    KapuaChannel getChannel();
+    KapuaDataChannel getChannel();
 
     /**
      * Set the message channel
      *
      * @param semanticChannel
      */
-    void setChannel(KapuaChannel semanticChannel);
+    void setChannel(KapuaDataChannel semanticChannel);
 
     /**
      * Get the message payload

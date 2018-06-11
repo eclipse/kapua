@@ -13,11 +13,11 @@
 package org.eclipse.kapua.message.internal;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.message.KapuaChannel;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.message.KapuaMessageFactory;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.message.KapuaPosition;
+import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,14 +33,14 @@ public class KapuaMessageFactoryTest extends Assert {
 
     @Test
     public void newMessage() throws Exception {
-        KapuaMessage<?,?> message = kapuaMessageFactory.newMessage();
+        KapuaMessage<?, ?> message = kapuaMessageFactory.newMessage();
 
         assertNotNull(message);
     }
 
     @Test
     public void newChannel() throws Exception {
-        KapuaChannel channel = kapuaMessageFactory.newChannel();
+        KapuaDataChannel channel = kapuaMessageFactory.newKapuaDataChannel();
 
         assertNotNull(channel);
     }

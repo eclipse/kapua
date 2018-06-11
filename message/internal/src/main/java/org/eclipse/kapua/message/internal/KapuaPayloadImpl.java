@@ -20,9 +20,8 @@ import org.eclipse.kapua.message.KapuaPayload;
 
 /**
  * Kapua message payload object reference implementation.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class KapuaPayloadImpl implements KapuaPayload {
 

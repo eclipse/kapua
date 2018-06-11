@@ -11,21 +11,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.kapua.message.KapuaChannel;
+import org.eclipse.kapua.message.device.data.KapuaDataChannel;
+import org.eclipse.kapua.message.internal.device.data.KapuaDataChannelImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class KapuaChannelTest extends Assert {
 
-    KapuaChannel kapuaChannel;
+    KapuaDataChannel kapuaDataChannel;
 
     @Before
     public void before() throws Exception {
-        kapuaChannel = new KapuaChannelImpl();
+        kapuaDataChannel = new KapuaDataChannelImpl();
     }
 
     @Test
@@ -34,8 +35,8 @@ public class KapuaChannelTest extends Assert {
         semanticParts.add("part1");
         semanticParts.add("part2");
         semanticParts.add("part3");
-        kapuaChannel.setSemanticParts(semanticParts);
-        List<String> getSemanticParts = kapuaChannel.getSemanticParts();
+        kapuaDataChannel.setSemanticParts(semanticParts);
+        List<String> getSemanticParts = kapuaDataChannel.getSemanticParts();
 
         assertEquals(semanticParts, getSemanticParts);
     }
@@ -46,8 +47,8 @@ public class KapuaChannelTest extends Assert {
         semanticParts.add("part1");
         semanticParts.add("part2");
         semanticParts.add("part3");
-        kapuaChannel.setSemanticParts(semanticParts);
-        String toString = kapuaChannel.toString();
+        kapuaDataChannel.setSemanticParts(semanticParts);
+        String toString = kapuaDataChannel.toString();
 
         assertEquals("part1/part2/part3", toString);
     }
@@ -56,8 +57,8 @@ public class KapuaChannelTest extends Assert {
     public void semanticPartsToStringEmpty() throws Exception {
         List<String> semanticParts = new ArrayList<>();
 
-        kapuaChannel.setSemanticParts(semanticParts);
-        String toString = kapuaChannel.toString();
+        kapuaDataChannel.setSemanticParts(semanticParts);
+        String toString = kapuaDataChannel.toString();
 
         assertEquals("", toString);
     }
@@ -65,8 +66,8 @@ public class KapuaChannelTest extends Assert {
     @Test
     public void semanticPartsToStringNull() throws Exception {
 
-        kapuaChannel.setSemanticParts(null);
-        String toString = kapuaChannel.toString();
+        kapuaDataChannel.setSemanticParts(null);
+        String toString = kapuaDataChannel.toString();
 
         assertEquals("", toString);
     }
