@@ -22,6 +22,4 @@ import org.eclipse.kapua.message.internal.KapuaMessageImpl;
  */
 public class KapuaDataMessageImpl extends KapuaMessageImpl<KapuaDataChannel, KapuaDataPayload> implements KapuaDataMessage {
 
-    private static final long serialVersionUID = 1L;
-
 }
