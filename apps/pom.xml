@@ -24,7 +24,7 @@
     <artifactId>kapua-apps</artifactId>
 
     <modules>
-        <module>eclipseiot</module>
+        <module>hono-consumer</module>
     </modules>
 
 </project>

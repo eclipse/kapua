@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.eclipseiot;
+package org.eclipse.kapua.consumer.hono;
 
 import java.util.Optional;
 import java.util.logging.Level;
@@ -17,14 +17,10 @@ import java.util.logging.Level;
 import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
-import org.eclipse.kapua.commons.util.ClassUtil;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.connector.AbstractConnector;
-import org.eclipse.kapua.converter.Converter;
-import org.eclipse.kapua.eclipseiot.setting.MessageConsumerSetting;
-import org.eclipse.kapua.eclipseiot.setting.MessageConsumerSettingKey;
-import org.eclipse.kapua.message.transport.TransportMessage;
-import org.eclipse.kapua.processor.Processor;
+import org.eclipse.kapua.connector.hono.AmqpHonoConnector;
+import org.eclipse.kapua.converter.kura.KuraPayloadProtoConverter;
+import org.eclipse.kapua.processor.datastore.DatastoreProcessor;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,19 +29,14 @@ import com.google.common.base.MoreObjects;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
-import io.vertx.core.Vertx;
 
 /**
- * 
+ * Hono AMQP consumer with Kura payload converter and Kapua data store ingestion
  *
  */
-public class MessageConsumer extends AbstractVerticle {
+public class HonoConsumer extends AbstractVerticle {
 
-    protected final static Logger logger = LoggerFactory.getLogger(MessageConsumer.class);
-
-    private static final String VERTICLE_CLASS_NAME;
-    private static final String CONVERTER_CLASS_NAME;
-    private static final String PROCESSOR_CLASS_NAME;
+    protected final static Logger logger = LoggerFactory.getLogger(HonoConsumer.class);
 
     static {
         SystemSetting configSys = SystemSetting.getInstance();
@@ -57,32 +48,26 @@ public class MessageConsumer extends AbstractVerticle {
             String schema = MoreObjects.firstNonNull(configSys.getString(SystemSettingKey.DB_SCHEMA_ENV), configSys.getString(SystemSettingKey.DB_SCHEMA));
             new KapuaLiquibaseClient(JdbcConnectionUrlResolvers.resolveJdbcUrl(), dbUsername, dbPassword, Optional.of(schema)).update();
         }
-        MessageConsumerSetting config = MessageConsumerSetting.getInstance();
-        VERTICLE_CLASS_NAME = config.getString(MessageConsumerSettingKey.VERTICLE_CLASS_NAME);
-        CONVERTER_CLASS_NAME = config.getString(MessageConsumerSettingKey.CONVERTER_CLASS_NAME);
-        PROCESSOR_CLASS_NAME = config.getString(MessageConsumerSettingKey.PROCESSOR_CLASS_NAME);
     }
 
-    private AbstractConnector<?, ?> connectorVerticle;
-    private Converter<?, ?> converter;
-    private Processor<TransportMessage> processor;
+    private AmqpHonoConnector connectorVerticle;
+    private KuraPayloadProtoConverter converter;
+    private DatastoreProcessor processor;
 
-    @SuppressWarnings("unchecked")
     @Override
     public void start() throws Exception {
         Future<Void> future = Future.future();
         //disable Vertx BlockedThreadChecker log
         java.util.logging.Logger.getLogger("io.vertx.core.impl.BlockedThreadChecker").setLevel(Level.OFF);
-        XmlUtil.setContextProvider(new MessageConsumerJAXBContextProvider());
-        logger.info("Instantiating MessageConsumer...");
-        logger.info("Instantiating MessageConsumer... initializing converter");
-        converter = ClassUtil.newInstance(CONVERTER_CLASS_NAME, Converter.class);
-        logger.info("Instantiating MessageConsumer... initializing processor");
-        processor = ClassUtil.newInstance(PROCESSOR_CLASS_NAME, Processor.class);
-        logger.info("Instantiating MessageConsumer... instantiating verticle");
-        connectorVerticle = ClassUtil.newInstance(VERTICLE_CLASS_NAME, AbstractConnector.class,
-                new Class[] {Vertx.class, Converter.class, Processor.class},
-                new Object[]{vertx, converter, processor});
+        XmlUtil.setContextProvider(new HonoConsumerJAXBContextProvider());
+        logger.info("Instantiating HonoConsumer...");
+        logger.info("Instantiating HonoConsumer... initializing KuraPayloadProtoConverter");
+        converter = new KuraPayloadProtoConverter();
+        logger.info("Instantiating HonoConsumer... initializing DataStoreProcessor");
+        processor = new DatastoreProcessor();
+        logger.info("Instantiating HonoConsumer... instantiating AmqpHonoConnector");
+        connectorVerticle = new AmqpHonoConnector(vertx, converter, processor);
+        logger.info("Instantiating HonoConsumer... DONE");
         connectorVerticle.start(future);
     }
 

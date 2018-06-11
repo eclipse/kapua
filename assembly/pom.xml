@@ -37,7 +37,6 @@
 
         <module>broker</module>
         <module>api</module>
-        <module>eclipseiot</module>
     </modules>
 
     <profiles>
