@@ -22,7 +22,10 @@ import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -157,7 +160,7 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
         toolBar.add(refreshButton);
         toolBar.add(new SeparatorToolItem());
 
-        Menu menu = new Menu();
+        final Menu menu = new Menu();
         menu.add(new KapuaMenuItem(MSGS.exportToExcel(), IconSet.FILE_EXCEL_O,
                 new SelectionListener<MenuEvent>() {
 
@@ -175,6 +178,13 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
                     }
                 }));
         export = new ExportButton();
+        export.addListener(Events.OnClick, new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                export.showMenu();
+            }
+        });
         export.setMenu(menu);
 
         toolBar.add(export);
