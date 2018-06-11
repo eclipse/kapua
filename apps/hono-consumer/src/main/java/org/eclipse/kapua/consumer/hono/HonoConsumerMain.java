@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.eclipseiot;
+package org.eclipse.kapua.consumer.hono;
 
 import org.eclipse.kapua.KapuaException;
 import org.slf4j.Logger;
@@ -23,12 +23,12 @@ import io.vertx.core.VertxOptions;
  * 
  *
  */
-public class MessageConsumerMain extends AbstractVerticle {
+public class HonoConsumerMain extends AbstractVerticle {
 
-    protected final static Logger logger = LoggerFactory.getLogger(MessageConsumerMain.class);
+    protected final static Logger logger = LoggerFactory.getLogger(HonoConsumerMain.class);
 
     public static void main(String argv[]) throws KapuaException {
-        MessageConsumer messageConsumer = new MessageConsumer();
+        HonoConsumer messageConsumer = new HonoConsumer();
         VertxOptions options = new VertxOptions();
         options.setBlockedThreadCheckInterval(60 * 1000);
         // TODO more options?

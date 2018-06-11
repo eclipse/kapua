@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.eclipseiot;
+package org.eclipse.kapua.consumer.hono;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -34,9 +34,9 @@ import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MessageConsumerJAXBContextProvider implements JAXBContextProvider {
+public class HonoConsumerJAXBContextProvider implements JAXBContextProvider {
 
-    private static Logger logger = LoggerFactory.getLogger(MessageConsumerJAXBContextProvider.class);
+    private static Logger logger = LoggerFactory.getLogger(HonoConsumerJAXBContextProvider.class);
 
     private JAXBContext context;
 
