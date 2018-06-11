@@ -18,6 +18,7 @@ import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolBar;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.SwappableListStore;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
@@ -40,7 +41,6 @@ import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
@@ -63,7 +63,7 @@ public class DeviceTable extends LayoutContainer {
     private ContentPanel tableContainer;
     private List<SelectionChangedListener<GwtDatastoreDevice>> listeners = new ArrayList<SelectionChangedListener<GwtDatastoreDevice>>();
     private KapuaPagingToolBar pagingToolBar;
-    private TextField<String> filterField;
+    private KapuaTextField<String> filterField;
 
     public DeviceTable(GwtSession currentSession) {
         this.currentSession = currentSession;
@@ -108,7 +108,8 @@ public class DeviceTable extends LayoutContainer {
         tableContainer.setLayout(new FitLayout());
         tableContainer.add(deviceGrid);
 
-        filterField = new TextField<String>();
+        filterField = new KapuaTextField<String>();
+        filterField.setMaxLength(255);
         filterField.setEmptyText(DATA_MSGS.deviceInfoTableFilter());
         ToolBar tb = new ToolBar();
         tb.add(filterField);

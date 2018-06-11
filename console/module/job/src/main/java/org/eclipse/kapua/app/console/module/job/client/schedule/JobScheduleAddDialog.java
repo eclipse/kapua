@@ -13,7 +13,6 @@ package org.eclipse.kapua.app.console.module.job.client.schedule;
 
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.MultiField;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.TimeField;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -54,7 +53,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
     protected final DateField endsOn;
     protected final TimeField endsOnTime;
     protected final KapuaNumberField retryInterval;
-    protected final TextField<String> cronExpression;
+    protected final KapuaTextField<String> cronExpression;
 
     public JobScheduleAddDialog(GwtSession currentSession, String jobId) {
         super(currentSession);
@@ -70,7 +69,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         endsOnTime = new TimeField();
         endsOnTime.setEditable(false);
         retryInterval = new KapuaNumberField();
-        cronExpression = new TextField<String>();
+        cronExpression = new KapuaTextField<String>();
 
         DialogUtils.resizeDialog(this, 400, 250);
     }
@@ -125,6 +124,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         mainPanel.add(retryInterval);
 
         cronExpression.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleCronScheduleLabel());
+        cronExpression.setMaxLength(255);
         mainPanel.add(cronExpression);
 
         bodyPanel.add(mainPanel);
