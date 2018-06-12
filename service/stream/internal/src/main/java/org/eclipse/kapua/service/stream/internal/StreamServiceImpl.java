@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.stream.internal;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -52,8 +53,9 @@ public class StreamServiceImpl implements StreamService {
             throws KapuaException {
         //
         // Argument validation
-        ArgumentValidator.notNull(requestMessage.getClientId(), "clientId");
         ArgumentValidator.notNull(requestMessage.getScopeId(), "scopeId");
+        ArgumentValidator.notNull(requestMessage.getDeviceId(), "deviceId");
+        ArgumentValidator.notNull(requestMessage.getClientId(), "clientId");
 
         //
         // Check Access
@@ -65,6 +67,11 @@ public class StreamServiceImpl implements StreamService {
         try {
 
             Device device = DEVICE_REGISTRY_SERVICE.find(requestMessage.getScopeId(), requestMessage.getDeviceId());
+
+            if (device == null) {
+                throw new KapuaEntityNotFoundException(Device.TYPE, requestMessage.getDeviceId());
+            }
+
             String nodeUri = device.getConnection().getServerIp();
 
             //
@@ -108,7 +115,6 @@ public class StreamServiceImpl implements StreamService {
     //
     // Private methods
     //
-    @SuppressWarnings("unchecked")
     private TransportFacade<?, ?, TransportMessage<?, ?>, ?> borrowClient(String serverUri)
             throws KuraMqttDeviceCallException {
         TransportFacade<?, ?, TransportMessage<?, ?>, ?> transportFacade;
