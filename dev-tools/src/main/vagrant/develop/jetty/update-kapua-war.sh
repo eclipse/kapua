@@ -10,6 +10,11 @@
 #     Eurotech - initial API and implementation
 #
 #*******************************************************************************
-# Kapua jars and activemq.xml need to be added before starting the activemq instance...
-./update-kapua-war.sh
-bin/startup.sh
+echo 'remove old symbolic link to console web application'
+rm /var/lib/jetty/webapps/admin.war
+echo 'remove old symbolic link to api web application'
+rm /var/lib/jetty/webapps/api.war
+echo 'create symbolic link to console web application'
+ln -s /kapua/console/web/target/admin.war /var/lib/jetty/webapps/admin.war
+echo 'create symbolic link to api web application'
+ln -s /kapua/rest-api/web/target/api.war /var/lib/jetty/webapps/api.war

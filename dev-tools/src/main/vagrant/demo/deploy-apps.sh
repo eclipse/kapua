@@ -10,7 +10,7 @@
 #      Eurotech - initial API and implementation
 #*******************************************************************************
 vagrant ssh demo -c "echo 'deploying the Kapua broker'
-	cd /usr/local/kapua/apache-tomcat-${TOMCAT_VERSION}
+	cd /var/lib/jetty
 	sudo rm -rf webapp/admin*
 	sudo rm -rf webapp/api*
 	echo 'copying Kapua console web application'
@@ -18,4 +18,4 @@ vagrant ssh demo -c "echo 'deploying the Kapua broker'
 	echo 'copying Kapua api web application'
 	sudo cp /kapua/rest-api/web/target/api.war webapps/api.war
 	cd ..
-	sudo chown -R vagrant:vagrant apache-tomcat-${TOMCAT_VERSION}"
+	sudo chown -R vagrant:vagrant jetty"

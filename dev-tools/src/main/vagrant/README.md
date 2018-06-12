@@ -4,7 +4,7 @@ This module provides script and configuration files to create 2 different Vagran
 * ActiveMQ
 * Elasticsearch
 * H2 Database
-* Tomcat
+* Jetty
 
 The 2 machine provided (through creation script) are:
 
@@ -69,7 +69,7 @@ Once the development machine has been created (or started manually as described 
 $ vagrant ssh
 ```
 
-***Note:*** to allow the database creation and seeding the broker and the Tomcat. Please run a full Kapua project build from the project root directory outside of the vagrant box (see the commands below)
+***Note:*** to allow the database creation and seeding the broker and the Jetty. Please run a full Kapua project build from the project root directory outside of the vagrant box (see the commands below)
 ```
 $ mvn clean install -f external/pom.xml
 $ mvn clean install -DskipTests -P console
@@ -91,16 +91,16 @@ To stop the broker type:
 bin/activemq stop
 ```
 
-The servlet container (Tomcat) directory is:
+The servlet container (Jetty) directory is:
 ```
-$ /usr/local/tomcat/apache-tomcat-${TOMCAT_VERSION}
+$ /usr/local/jetty/jetty-distribution-${JETTY_VERSION}
 ```
-There is a script to start the Tomcat
+There is a script to start the Jetty container:
 ```
-$ ./start-tomcat.sh
+$ ./start-jetty.sh
 ```
 
-The script recreates the link between api and console wars inside the Kapua workspace and the webapps directory of Tomcat. To stop Tomcat call the standard stop script inside bin directory.
+The script recreates the link between api and console wars inside the Kapua workspace and the webapps directory of Jetty. To stop Jetty call the `stop-jetty.sh` script in the same directory.
 
 ## Verifying and accessing Kapua components
 
@@ -163,7 +163,7 @@ As for the development machine, once the demo machine has been created (or start
 $ vagrant ssh demo
 ```
 
-The fresh machine has both the ActiveMQ and Tomcat installed, but please don't use them, it's just due to the reuse of the base-box.
+The fresh machine has both the ActiveMQ and Jetty installed, but please don't use them, it's just due to the reuse of the base-box.
 To start ***using properly the demo machine*** run a full Kapua build as follow:
 
 ```
@@ -184,12 +184,12 @@ $ bin/activemq start
 
 To stop it follow the instructions for the develop machine.
 
-The api and console are properly installed in a Tomcat container in the directory
+The api and console are properly installed in a Jetty container in the directory
 ```
-$ /usr/local/kapua/apache-tomcat-${TOMCAT_VERSION}/webapps
+$ /usr/local/kapua/jetty-distribution-${JETTY_VERSION}/webapps
 ```
 
-To start and stop the Tomcat please use the standard scripts under the bin directory of the Tomcat installation.
+To start and stop the Jetty container please use the standard scripts under the root of the Jetty distribution.
 ```
 $ bin/startup.sh
 ```
