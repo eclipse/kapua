@@ -66,7 +66,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
 
     private final String jobId;
 
-    protected final TextField<String> jobStepName;
+    protected final KapuaTextField<String> jobStepName;
     protected final KapuaTextField<String> jobStepDescription;
     protected final ComboBox<GwtJobStepDefinition> jobStepDefinitionCombo;
     protected final FieldSet jobStepPropertiesFieldSet;
@@ -85,7 +85,8 @@ public class JobStepAddDialog extends EntityAddEditDialog {
 
         this.jobId = jobId;
 
-        jobStepName = new TextField<String>();
+        jobStepName = new KapuaTextField<String>();
+        jobStepName.setMaxLength(255);
         jobStepDescription = new KapuaTextField<String>();
         jobStepDefinitionCombo = new ComboBox<GwtJobStepDefinition>();
         jobStepPropertiesFieldSet = new FieldSet();

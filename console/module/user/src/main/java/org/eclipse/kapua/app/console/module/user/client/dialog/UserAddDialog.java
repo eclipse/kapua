@@ -16,7 +16,6 @@ import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
@@ -54,9 +53,9 @@ public class UserAddDialog extends EntityAddEditDialog {
     protected KapuaTextField<String> password;
     protected KapuaTextField<String> confirmPassword;
     protected LabelField passwordTooltip;
-    protected TextField<String> displayName;
-    protected TextField<String> email;
-    protected TextField<String> phoneNumber;
+    protected KapuaTextField<String> displayName;
+    protected KapuaTextField<String> email;
+    protected KapuaTextField<String> phoneNumber;
     protected SimpleComboBox<GwtUser.GwtUserStatus> userStatus;
     protected KapuaDateField expirationDate;
     protected NumberField optlock;
@@ -150,20 +149,20 @@ public class UserAddDialog extends EntityAddEditDialog {
             passwordTooltip.setStyleAttribute("font-size", "10px");
             infoFieldSet.add(passwordTooltip);
         }
-        displayName = new TextField<String>();
+        displayName = new KapuaTextField<String>();
         displayName.setName("displayName");
         displayName.setFieldLabel(USER_MSGS.dialogAddFieldDisplayName());
         displayName.setMaxLength(255);
         infoFieldSet.add(displayName, subFieldsetFormData);
 
-        email = new TextField<String>();
+        email = new KapuaTextField<String>();
         email.setName("userEmail");
         email.setFieldLabel(USER_MSGS.dialogAddFieldEmail());
         email.setValidator(new TextFieldValidator(email, FieldType.EMAIL));
         email.setMaxLength(255);
         infoFieldSet.add(email, subFieldsetFormData);
 
-        phoneNumber = new TextField<String>();
+        phoneNumber = new KapuaTextField<String>();
         phoneNumber.setName("phoneNumber");
         phoneNumber.setFieldLabel(USER_MSGS.dialogAddFieldPhoneNumber());
         phoneNumber.setValidator(new TextFieldValidator(phoneNumber, FieldType.PHONE));
