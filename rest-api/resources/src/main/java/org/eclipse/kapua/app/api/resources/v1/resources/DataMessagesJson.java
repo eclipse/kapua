@@ -50,16 +50,37 @@ import java.util.List;
  * <p>
  * The {@link org.eclipse.kapua.message.KapuaPayload} is marshalled with the following format:
  * <pre>
- *    <payload xsi:type="kapuaDataPayload">
- *       <metrics/>
- *       <body>YXNk</body>
- *    </payload>
+ * &lt;payload xsi:type=&quot;kapuaDataPayload&quot;&gt;
+ *     &lt;metrics&gt;
+ *         &lt;metric&gt;
+ *              &lt;valueType&gt;float&lt;valueType/&gt;
+ *              &lt;value&gt;5.0&lt;value/&gt;
+ *              &lt;name&gt;temperatureExternal&lt;name/&gt;
+ *         &lt;metric/&gt;
+ *         &lt;metric&gt;
+ *              &lt;valueType&gt;float&lt;valueType/&gt;
+ *              &lt;value&gt;19.25&lt;value/&gt;
+ *              &lt;name&gt;temperatureInternal&lt;name/&gt;
+ *         &lt;metric/&gt;
+ *         &lt;metric&gt;
+ *              &lt;valueType&gt;float&lt;valueType/&gt;
+ *              &lt;value&gt;30.00&lt;value/&gt;
+ *              &lt;name&gt;temperatureExhaust&lt;name/&gt;
+ *         &lt;metric/&gt;
+ *         &lt;metric&gt;
+ *              &lt;valueType&gt;integer&lt;valueType/&gt;
+ *              &lt;value&gt;-1422687692&lt;value/&gt;
+ *              &lt;name&gt;errorCode&lt;name/&gt;
+ *         &lt;metric/&gt;
+ *     &lt;metrics/&gt;
+ *     &lt;body&gt;YXNk&lt;/body&gt;
+ * &lt;/payload&gt;
  * </pre>
  * <p>
  * But the JSON has the following format:
  * <pre>
  * "payload": {
- *    "metric": {
+ *    "metrics": {
  *       "metric": [
  *           {
  *              "valueType" : "float",
@@ -79,7 +100,8 @@ import java.util.List;
  *              "name" : "errorCode"
  *           }
  *       ]
- *    }
+ *    },
+ *    "body": "YXNk"
  * }
  * </pre>
  * For some reasons in JSON format "metrics" is an object with "metric" array as a field.
@@ -92,6 +114,31 @@ import java.util.List;
  * <li>{@link KapuaDataMessage} to {@link JsonKapuaDataMessage}</li>
  * <li>{@link DatastoreMessage} to {@link JsonDatastoreMessage}</li>
  * </ul>
+ * Final JSON output is:
+ * <pre>
+ * "payload": {
+ *     "metrics": [
+ *         {
+ *             "valueType" : "float",
+ *             "value" : "5.0",
+ *             "name" : "temperatureExternal"
+ *         }, {
+ *             "valueType" : "float",
+ *              "value" : "19.25",
+ *              "name" : "temperatureInternal"
+ *         }, {
+ *              "valueType" : "float",
+ *              "value" : "30.0",
+ *              "name" : "temperatureExhaust"
+ *         }, {
+ *              "valueType" : "integer",
+ *              "value" : "-1422687692",
+ *              "name" : "errorCode"
+ *         }
+ *    ],
+ *    "body": "YXNk"
+ * }
+ * </pre>
  */
 @Api(value = "Data Messages", authorizations = { @Authorization(value = "kapuaAccessToken") })
 @Path("{scopeId}/data/messages")
