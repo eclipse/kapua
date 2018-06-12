@@ -36,6 +36,7 @@ Vagrant.configure(2) do |config|
     export ACTIVE_MQ_VERSION="5.14.5"
     export ARTEMIS_VERSION="2.2.0"
     export TOMCAT_VERSION="8.0.41"
+    export JETTY_VERSION="9.4.6.v20170531"
     export BINDING_IP="192.168.33.10"
 
     # Install OpenJDK 8
@@ -154,19 +155,25 @@ Vagrant.configure(2) do |config|
     sudo tar -xvf elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz
     sudo rm elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz
 
-    # Install Tomcat8
-    sudo mkdir -p /usr/local/tomcat
-    cd /usr/local/tomcat
-    sudo curl -O https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz
-    sudo tar zxvf apache-tomcat-${TOMCAT_VERSION}.tar.gz
-    sudo rm apache-tomcat-${TOMCAT_VERSION}.tar.gz
+    # Install Jetty
+    sudo mkdir -p /usr/local/jetty
+    cd /usr/local/jetty
+    curl -s https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/${JETTY_VERSION}/jetty-distribution-${JETTY_VERSION}.tar.gz -o jetty-distribution.tar.gz
+    sudo tar zxvf jetty-distribution.tar.gz
+    sudo rm jetty-distribution.tar.gz
 
-    # Fix tomcat8 to provide slf4j and logback
-    cd /usr/local/tomcat/apache-tomcat-${TOMCAT_VERSION}/lib
-    sudo curl -O https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.24/slf4j-api-1.7.24.jar
-    sudo curl -O https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.1.8/logback-core-1.1.8.jar
-    sudo curl -O https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.1.8/logback-classic-1.1.8.jar
-    sudo curl -O http://central.maven.org/maven2/javax/mail/javax.mail-api/1.5.6/javax.mail-api-1.5.6.jar
+    cd /usr/local/jetty/jetty-distribution-${JETTY_VERSION}
+    mkdir -p /var/lib/jetty/lib/ext /var/lib/jetty/start.d /var/lib/jetty/modules
+
+    cd /var/lib/jetty/modules
+    curl -O https://raw.githubusercontent.com/jetty-project/logging-modules/master/capture-all/logging.mod
+    curl -O https://raw.githubusercontent.com/jetty-project/logging-modules/master/centralized/webapp-logging.mod
+
+    cd /usr/local/jetty/jetty-distribution-${JETTY_VERSION}
+    java -jar start.jar --approve-all-licenses --create-startd --add-to-start=http,jsp,jstl,websocket,deploy,logging,webapp-logging,jmx,stats -Djetty.base=/var/lib/jetty
+
+    sudo chown -R vagrant /usr/local/jetty/jetty-distribution-${JETTY_VERSION}
+    sudo chown -R vagrant /var/lib/jetty
 
     ############################
     ### System Configuration ###

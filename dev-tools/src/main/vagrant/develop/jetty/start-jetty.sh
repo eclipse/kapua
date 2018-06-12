@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+# Copyright (c) 2018 Eurotech and/or its affiliates and others
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -10,11 +10,6 @@
 #     Eurotech - initial API and implementation
 #
 #*******************************************************************************
-echo 'remove old symbolic link to console web application'
-rm webapps/admin.war
-echo 'remove old symbolic link to api web application'
-rm webapps/api.war
-echo 'create symbolic link to console web application'
-ln -s /kapua/console/web/target/admin.war webapps/admin.war
-echo 'create symbolic link to api web application'
-ln -s /kapua/rest-api/web/target/api.war webapps/api.war
+# Kapua jars and activemq.xml need to be added before starting the activemq instance...
+./update-kapua-war.sh
+java $JAVA_OPTS -jar start.jar $JETTY_OPTS "$@"

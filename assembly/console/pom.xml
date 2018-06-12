@@ -36,25 +36,6 @@
 
         <!-- Console dependency -->
         <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat</artifactId>
-            <version>${tomcat.version}</version>
-            <type>tar.gz</type>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tomcat.extras</groupId>
-            <artifactId>tomcat-extras-juli</artifactId>
-            <version>${tomcat.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tomcat.extras</groupId>
-            <artifactId>tomcat-extras-juli-adapters</artifactId>
-            <version>${tomcat.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-web</artifactId>
             <version>${project.version}</version>
@@ -265,21 +246,6 @@
             <artifactId>log4j-over-slf4j</artifactId>
         </dependency>
 
-        <!--
-            Java APIs from Tomcat:
-            We stick to 8.0.38 because they are only APIs and we can
-            piggyback on this version.
-            -->
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-servlet-api</artifactId>
-            <version>8.0.38</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-websocket-api</artifactId>
-            <version>8.0.38</version>
-        </dependency>
     </dependencies>
 
     <build>

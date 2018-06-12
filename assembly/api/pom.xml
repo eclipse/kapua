@@ -40,25 +40,6 @@
 
         <!-- REST api dependency -->
         <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat</artifactId>
-            <version>${tomcat.version}</version>
-            <type>tar.gz</type>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tomcat.extras</groupId>
-            <artifactId>tomcat-extras-juli</artifactId>
-            <version>${tomcat.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tomcat.extras</groupId>
-            <artifactId>tomcat-extras-juli-adapters</artifactId>
-            <version>${tomcat.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-rest-api-web</artifactId>
             <version>${project.version}</version>
@@ -269,21 +250,6 @@
             <artifactId>log4j-over-slf4j</artifactId>
         </dependency>
 
-        <!--
-            Java APIs from Tomcat:
-            We stick to 8.0.38 because they are only APIs and we can
-            piggyback on this version.
-            -->
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-servlet-api</artifactId>
-            <version>8.0.38</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-websocket-api</artifactId>
-            <version>8.0.38</version>
-        </dependency>
     </dependencies>
 
     <build>
@@ -310,29 +276,6 @@
                 </executions>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>unpack-tomcat</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.apache.tomcat</groupId>
-                                    <artifactId>tomcat</artifactId>
-                                    <type>tar.gz</type>
-                                    <outputDirectory>target/dependencies/tomcat</outputDirectory>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 
@@ -351,7 +294,6 @@
                         <configuration>
                             <environmentVariables>
                                 <KAPUA_VERSION>${project.version}</KAPUA_VERSION>
-                                <TOMCAT_VERSION>${tomcat.version}</TOMCAT_VERSION>
                                 <ACTIVEMQ_VERSION>${activemq.version}</ACTIVEMQ_VERSION>
                             </environmentVariables>
                         </configuration>
