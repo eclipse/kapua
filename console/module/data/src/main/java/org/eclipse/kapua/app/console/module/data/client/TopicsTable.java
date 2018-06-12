@@ -36,7 +36,6 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
@@ -178,11 +177,6 @@ public class TopicsTable extends LayoutContainer {
         });
     }
 
-    // --------------------------------------------------------------------------------------
-    //
-    // Unload of the GXT Component
-    //
-    // --------------------------------------------------------------------------------------
     @Override
     public void onUnload() {
         super.onUnload();
@@ -195,6 +189,7 @@ public class TopicsTable extends LayoutContainer {
 
     private void updateTimestamps(List<ModelData> topics) {
         dataService.updateTopicTimestamps(currentSession.getSelectedAccountId(), topics, new AsyncCallback<List<GwtTopic>>() {
+
             @Override
             public void onFailure(Throwable caught) {
                 FailureHandler.handle(caught);
@@ -203,7 +198,7 @@ public class TopicsTable extends LayoutContainer {
             @Override
             public void onSuccess(List<GwtTopic> result) {
                 for (GwtTopic topic : result) {
-                    store.findModel(topic).setTimestamp(topic.getTimestamp());
+                    store.findModel(topic).setTimestamp(topic.getTimestamp() != null ? topic.getTimestamp() : GwtTopic.NO_TIMESTAMP);
                 }
                 topicInfoGrid.getTreeView().refresh(false);
             }

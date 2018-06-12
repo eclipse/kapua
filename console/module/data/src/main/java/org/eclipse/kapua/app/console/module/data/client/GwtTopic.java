@@ -11,17 +11,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.data.client;
 
-import java.io.Serializable;
-import java.util.Date;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
-
 import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.KapuaBaseTreeModel;
+
+import java.io.Serializable;
+import java.util.Date;
 
 public class GwtTopic extends KapuaBaseTreeModel implements Serializable, IsSerializable {
 
     private static final long serialVersionUID = 7519496938895060911L;
+
+    static final Date NO_TIMESTAMP = new Date(0);
 
     public GwtTopic() {
         super();
@@ -65,7 +66,6 @@ public class GwtTopic extends KapuaBaseTreeModel implements Serializable, IsSeri
     }
 
     @Override
-    @SuppressWarnings({ "unchecked" })
     public <X> X get(String property) {
         if ("timestampFormatted".equals(property)) {
             return (X) (DateUtils.formatDateTime(getTimestamp()));
@@ -103,7 +103,7 @@ public class GwtTopic extends KapuaBaseTreeModel implements Serializable, IsSeri
     }
 
     public String[] getTopicFragments() {
-        return ((String)get("semanticTopic")).split("/");
+        return ((String) get("semanticTopic")).split("/");
     }
 
     @Override
