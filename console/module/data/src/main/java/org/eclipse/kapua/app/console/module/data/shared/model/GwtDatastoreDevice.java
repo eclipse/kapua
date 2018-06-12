@@ -11,16 +11,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.data.shared.model;
 
-import java.io.Serializable;
-import java.util.Date;
-
 import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.KapuaBaseModel;
 
+import java.io.Serializable;
+import java.util.Date;
+
 public class GwtDatastoreDevice extends KapuaBaseModel implements Serializable {
+
     private static final long serialVersionUID = 5756712401178232349L;
 
+    public static final Date NO_TIMESTAMP = new Date(0);
+
     public GwtDatastoreDevice() {
+        super();
     }
 
     public GwtDatastoreDevice(String device, Date timestamp) {
@@ -29,7 +33,6 @@ public class GwtDatastoreDevice extends KapuaBaseModel implements Serializable {
     }
 
     @Override
-    @SuppressWarnings({"unchecked"})
     public <X> X get(String property) {
         if ("timestampFormatted".equals(property)) {
             return (X) (DateUtils.formatDateTime(getTimestamp()));
