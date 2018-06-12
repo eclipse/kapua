@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -56,6 +56,7 @@ public class DeviceAssetsPanel extends LayoutContainer {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     private static final ConsoleDeviceMessages DEVICE_MSGS = GWT.create(ConsoleDeviceMessages.class);
+    public static final long MAX_SAFE_INTEGER = 4503599627370496L;
 
     private GwtDeviceAsset asset;
     private FormPanel actionFormPanel;
@@ -294,6 +295,7 @@ public class DeviceAssetsPanel extends LayoutContainer {
         field.setAllowBlank(true);
         field.setFieldLabel(channel.getName() + " (" + channel.getType() + " - " + channel.getMode() + ")");
         field.addPlugin(dirtyPlugin);
+        field.setMaxValue(MAX_SAFE_INTEGER);
 
         switch (channel.getTypeEnum()) {
         case LONG:
@@ -323,6 +325,7 @@ public class DeviceAssetsPanel extends LayoutContainer {
             if (channel.getValue() != null) {
                 field.setValue(Integer.parseInt(channel.getValue()));
                 field.setOriginalValue(Integer.parseInt(channel.getValue()));
+                field.setMaxValue(Integer.MAX_VALUE - 1);
             }
             break;
         default:
