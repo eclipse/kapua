@@ -15,6 +15,10 @@ import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.EventType;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.google.gwt.core.client.GWT;
 
 public class ExportButton extends SplitButton {
@@ -23,5 +27,16 @@ public class ExportButton extends SplitButton {
 
     public ExportButton() {
         super(MSGS.buttonExport(), new KapuaIcon(IconSet.DOWNLOAD));
+    }
+
+    @Override
+    public void addListener(EventType eventType, Listener<? extends BaseEvent> listener) {
+        super.addListener(Events.OnClick, new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                showMenu();
+            }
+        });
     }
 }
