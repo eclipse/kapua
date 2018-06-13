@@ -39,6 +39,7 @@ import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
@@ -218,10 +219,10 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
                     if (UNDEFINED_ERROR.equals(errorMessage)) {
                         errorMessage = DEVICE_MSGS.deviceConnectionError();
                     } else if (errorMessage.contains(INTERNAL_ERROR)) {
-                        errorMessage = errorMessage.substring(errorMessage.indexOf(INTERNAL_ERROR) + INTERNAL_ERROR.length() + 1,
-                                errorMessage.indexOf(": error="));
+                        errorMessage = DEVICE_MSGS.deviceCommandExecutionErrorMessage();
                     }
-                    MessageBox.alert(MSGS.error(), MSGS.commandExecutionFailure() + ":<br/>" + errorMessage, null);
+                    StyleInjector.inject(".x-window-dlg .ext-mb-icon {width: 50px; height: 50px;}"); 
+                    MessageBox.alert(MSGS.error(), MSGS.commandExecutionFailure() + ":<br/>" + errorMessage, null).getDialog().addStyleName("x-window-dlg .ext-mb-icon" );
                     commandInput.unmask();
                 } else {
                     int outputMessageStartIndex = htmlResult.indexOf("<pre");
@@ -260,6 +261,8 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
         commandField = new TextField<String>();
         commandField.setName("command");
         commandField.setAllowBlank(false);
+        commandField.setMaxLength(1024);
+        commandField.getMessages().setMaxLengthText(DEVICE_MSGS.deviceCommandMaxLengthErrorMessage());
         commandField.setFieldLabel("* " + DEVICE_MSGS.deviceCommandExecute());
         commandField.setLayoutData(layout);
         fieldSet.add(commandField, formData);
