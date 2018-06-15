@@ -19,6 +19,8 @@ import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.message.KapuaMessage;
+import org.eclipse.kapua.message.device.data.KapuaDataChannel;
+import org.eclipse.kapua.message.internal.device.data.KapuaDataChannelImpl;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.client.ClientException;
 import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
@@ -525,9 +527,12 @@ public final class MessageStoreFacade {
      * @param message
      */
     private DatastoreMessage convertTo(KapuaMessage<?, ?> message, String messageId) {
+        KapuaDataChannel datastoreChannel = new KapuaDataChannelImpl();
+        datastoreChannel.setSemanticParts(message.getChannel().getSemanticParts());
+
         DatastoreMessage datastoreMessage = new DatastoreMessageImpl();
         datastoreMessage.setCapturedOn(message.getCapturedOn());
-        datastoreMessage.setChannel(message.getChannel());
+        datastoreMessage.setChannel(datastoreChannel);
         datastoreMessage.setClientId(message.getClientId());
         datastoreMessage.setDeviceId(message.getDeviceId());
         datastoreMessage.setId(message.getId());

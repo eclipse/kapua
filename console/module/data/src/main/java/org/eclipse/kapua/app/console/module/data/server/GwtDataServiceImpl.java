@@ -11,14 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.data.server;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.BaseListLoadResult;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.LoadConfig;
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.google.common.base.Strings;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
@@ -75,16 +77,13 @@ import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.BaseListLoadResult;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.extjs.gxt.ui.client.data.LoadConfig;
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import com.google.common.base.Strings;
-import org.apache.commons.lang3.StringUtils;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements GwtDataService {
 
@@ -125,6 +124,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             KapuaExceptionHandler.handle(e);
         }
         Collections.sort(channelInfoList, new Comparator<GwtTopic>() {
+
             @Override
             public int compare(GwtTopic o1, GwtTopic o2) {
                 return o1.getSemanticTopic().compareTo(o2.getSemanticTopic());
@@ -164,7 +164,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 messageQuery.setPredicate(predicate);
 
                 MessageListResult messageList = messageStoreService.query(messageQuery);
-                if (messageList.getSize() == 1) {
+                if (messageList.getFirstItem() != null) {
                     topic.setTimestamp(messageList.getFirstItem().getTimestamp());
                 }
                 updatedTopics.add(topic);
@@ -192,7 +192,8 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 query.setFetchAttributes(Collections.singletonList(ClientInfoField.TIMESTAMP.field()));
                 query.setPredicate(new TermPredicateImpl(ClientInfoField.CLIENT_ID, device.getClientId()));
                 ClientInfoListResult result = clientInfoRegistryService.query(query);
-                if (result.getSize() == 1) {
+
+                if (result.getFirstItem() != null) {
                     updatedDevice = KapuaGwtDataModelConverter.convertToDatastoreDevice(result.getFirstItem());
                     updatedDevices.add(updatedDevice);
                 }
@@ -297,6 +298,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                         clientIdsMap.put(device.getClientId(), device.getDisplayName());
                     }
                 }
+
                 for (ClientInfo client : result.getItems()) {
                     GwtDatastoreDevice gwtDatastoreDevice = KapuaGwtDataModelConverter.convertToDatastoreDevice(client);
                     String clientId = client.getClientId();
@@ -361,8 +363,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     }
 
     @Override
-    public ListLoadResult<GwtHeader> findHeaders(LoadConfig config, String accountName,
-                                                 GwtDatastoreAsset gwtDatastoreAsset) throws GwtKapuaException {
+    public ListLoadResult<GwtHeader> findHeaders(LoadConfig config, String accountName, GwtDatastoreAsset gwtDatastoreAsset) throws GwtKapuaException {
         ChannelMatchPredicate predicate = STORABLE_PREDICATE_FACTORY.newChannelMatchPredicate(gwtDatastoreAsset.getTopick());
         return findHeaders(accountName, predicate);
     }

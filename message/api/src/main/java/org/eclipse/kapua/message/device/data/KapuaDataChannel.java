@@ -18,10 +18,10 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * Kapua data message channel object definition.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @XmlType(factoryClass = MessageXmlRegistry.class, factoryMethod = "newKapuaDataChannel")
 public interface KapuaDataChannel extends KapuaChannel {
+
 }

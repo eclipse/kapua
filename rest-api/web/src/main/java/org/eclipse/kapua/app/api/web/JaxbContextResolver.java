@@ -18,6 +18,8 @@ import org.eclipse.kapua.app.api.core.exception.model.SubjectUnauthorizedExcepti
 import org.eclipse.kapua.app.api.core.exception.model.ThrowableInfo;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.StorableEntityId;
+import org.eclipse.kapua.app.api.resources.v1.resources.model.data.JsonDatastoreMessage;
+import org.eclipse.kapua.app.api.resources.v1.resources.model.data.JsonKapuaPayload;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordCreator;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordListResult;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordQuery;
@@ -84,10 +86,6 @@ import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
 import org.eclipse.kapua.service.authorization.role.RolePermissionXmlRegistry;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleXmlRegistry;
-import org.eclipse.kapua.service.datastore.ChannelInfoXmlRegistry;
-import org.eclipse.kapua.service.datastore.ClientInfoXmlRegistry;
-import org.eclipse.kapua.service.datastore.DatastoreMessageXmlRegistry;
-import org.eclipse.kapua.service.datastore.MetricInfoXmlRegistry;
 import org.eclipse.kapua.service.datastore.client.model.InsertResponse;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
@@ -102,6 +100,10 @@ import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
+import org.eclipse.kapua.service.datastore.model.xml.ChannelInfoXmlRegistry;
+import org.eclipse.kapua.service.datastore.model.xml.ClientInfoXmlRegistry;
+import org.eclipse.kapua.service.datastore.model.xml.DatastoreMessageXmlRegistry;
+import org.eclipse.kapua.service.datastore.model.xml.MetricInfoXmlRegistry;
 import org.eclipse.kapua.service.device.call.kura.model.bundle.KuraBundles;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceConfiguration;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackage;
@@ -203,6 +205,7 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
             properties.put(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
 
             jaxbContext = JAXBContextFactory.createContext(new Class[] {
+
                     // REST API utility models
                     CountResult.class,
 
@@ -248,13 +251,17 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     MetricInfoXmlRegistry.class,
 
                     // Data Messages
-                    DatastoreMessage.class,
+                    KapuaDataMessage.class,
                     MessageListResult.class,
                     MessageQuery.class,
-                    DatastoreMessageXmlRegistry.class,
-                    KapuaDataMessage.class,
-                    InsertResponse.class,
                     MessageXmlRegistry.class,
+
+                    JsonKapuaPayload.class,
+                    JsonDatastoreMessage.class,
+
+                    DatastoreMessage.class,
+                    DatastoreMessageXmlRegistry.class,
+                    InsertResponse.class,
                     StorableEntityId.class,
                     StorableId.class,
 

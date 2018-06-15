@@ -12,18 +12,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model;
 
-import java.util.Date;
-
-import org.eclipse.kapua.message.KapuaChannel;
 import org.eclipse.kapua.message.KapuaPayload;
+import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.internal.KapuaMessageImpl;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.StorableId;
 
+import java.util.Date;
+
 /**
  * Implementation of the message returned by the data store find services
  */
-public class DatastoreMessageImpl extends KapuaMessageImpl<KapuaChannel, KapuaPayload> implements DatastoreMessage {
+public class DatastoreMessageImpl extends KapuaMessageImpl<KapuaDataChannel, KapuaPayload> implements DatastoreMessage {
 
     private static final long serialVersionUID = 1L;
 
@@ -47,9 +47,10 @@ public class DatastoreMessageImpl extends KapuaMessageImpl<KapuaChannel, KapuaPa
 
     /**
      * Set the message timestamp
-     * 
+     *
      * @param timestamp
      */
+    @Override
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }

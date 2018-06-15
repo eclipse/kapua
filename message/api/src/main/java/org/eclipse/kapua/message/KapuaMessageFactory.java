@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,47 +18,58 @@ import org.eclipse.kapua.message.device.data.KapuaDataPayload;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 
 /**
- * Kapua message service factory definition.
+ * {@link KapuaMessage}s {@link KapuaObjectFactory} definition.
  *
  * @since 1.0
  */
 public interface KapuaMessageFactory extends KapuaObjectFactory {
 
     /**
-     * Creates and returns a new {@link KapuaMessage}
+     * Creates a new {@link KapuaMessage}
      *
-     * @return
+     * @return the new {@link KapuaMessage}
      */
-    public KapuaMessage<?,?> newMessage();
+    public KapuaMessage newMessage();
 
     /**
-     * Creates and returns a new {@link KapuaDataMessage}
-     * @return
-     */
-    public KapuaDataMessage newKapuaDataMessage();
-
-    /**
-     * Creates and returns a new {@link KapuaChannel}
+     * Creates a new {@link KapuaChannel}
      *
-     * @return
+     * @return the new {@link KapuaChannel}
      */
     public KapuaChannel newChannel();
 
     /**
-     * Creates and returns a new {@link KapuaPayload}
+     * Creates a new {@link KapuaPayload}
      *
-     * @return
+     * @return the new {@link KapuaPayload}
      */
     public KapuaPayload newPayload();
 
     /**
-     * Creates and returns a new {@link KapuaPosition}
+     * Creates a new {@link KapuaPosition}
      *
-     * @return
+     * @return the new {@link KapuaPosition}
      */
     public KapuaPosition newPosition();
 
+    /**
+     * Creates a new {@link KapuaDataMessage}
+     *
+     * @return the new {@link KapuaDataMessage}
+     */
+    public KapuaDataMessage newKapuaDataMessage();
+
+    /**
+     * Creates a new {@link KapuaDataChannel}
+     *
+     * @return the new {@link KapuaDataChannel}
+     */
     KapuaDataChannel newKapuaDataChannel();
 
+    /**
+     * Creates a new {@link KapuaDataPayload}.
+     *
+     * @return the new {@link KapuaDataPayload}.
+     */
     KapuaDataPayload newKapuaDataPayload();
 }

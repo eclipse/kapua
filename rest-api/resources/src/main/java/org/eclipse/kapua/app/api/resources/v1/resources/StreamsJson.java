@@ -16,9 +16,12 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
-import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.app.api.resources.v1.resources.model.data.JsonKapuaDataMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
-import org.eclipse.kapua.service.stream.StreamService;
+import org.eclipse.kapua.message.device.data.KapuaDataPayload;
+import org.eclipse.kapua.message.internal.device.data.KapuaDataMessageImpl;
+import org.eclipse.kapua.message.internal.device.data.KapuaDataPayloadImpl;
+import org.eclipse.kapua.model.type.ObjectValueConverter;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -30,10 +33,9 @@ import javax.ws.rs.core.Response;
 
 @Api(value = "Streams", authorizations = { @Authorization(value = "kapuaAccessToken") })
 @Path("{scopeId}/streams")
-public class Streams extends AbstractKapuaResource {
+public class StreamsJson extends AbstractKapuaResource {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final StreamService streamService = locator.getService(StreamService.class);
+    private static final Streams STREAMS = new Streams();
 
     /**
      * Publishes a fire-and-forget message to a topic composed of:
@@ -71,27 +73,52 @@ public class Streams extends AbstractKapuaResource {
      *           "value": "bbb",
      *           "name": "metric-2"
      *         }
-     *      ]
+     *     ]
      *   }
      * }
      * </pre>
      *
      * @param scopeId
      * @param timeout
-     * @param requestMessage
+     * @param jsonKapuaDataMessage
      * @return
      * @throws Exception
      */
     @POST
     @Path("messages")
-    @Consumes({ MediaType.APPLICATION_XML })
+    @Consumes({ MediaType.APPLICATION_JSON })
     @ApiOperation(nickname = "streamPublish", value = "Publishes a fire-and-forget message", notes = "Publishes a fire-and-forget message to a topic composed of [account-name] / [client-id] / [semtantic-parts]")
     public Response publish(
             @ApiParam(value = "The ScopeId of the device", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The timeout of the request execution") @QueryParam("timeout") Long timeout,
-            @ApiParam(value = "The input request", required = true) KapuaDataMessage requestMessage) throws Exception {
-        requestMessage.setScopeId(scopeId);
-        streamService.publish(requestMessage, timeout);
+            @ApiParam(value = "The input request", required = true) JsonKapuaDataMessage jsonKapuaDataMessage) throws Exception {
+        KapuaDataMessage kapuaDataMessage = new KapuaDataMessageImpl();
+
+        kapuaDataMessage.setId(jsonKapuaDataMessage.getId());
+        kapuaDataMessage.setScopeId(scopeId);
+        kapuaDataMessage.setDeviceId(jsonKapuaDataMessage.getDeviceId());
+        kapuaDataMessage.setClientId(jsonKapuaDataMessage.getClientId());
+        kapuaDataMessage.setReceivedOn(jsonKapuaDataMessage.getReceivedOn());
+        kapuaDataMessage.setSentOn(jsonKapuaDataMessage.getSentOn());
+        kapuaDataMessage.setCapturedOn(jsonKapuaDataMessage.getCapturedOn());
+        kapuaDataMessage.setPosition(jsonKapuaDataMessage.getPosition());
+        kapuaDataMessage.setChannel(jsonKapuaDataMessage.getChannel());
+
+        KapuaDataPayload kapuaDataPayload = new KapuaDataPayloadImpl();
+        kapuaDataPayload.setBody(jsonKapuaDataMessage.getPayload().getBody());
+
+        jsonKapuaDataMessage.getPayload().getMetrics().forEach(
+                jsonMetric -> {
+                    String name = jsonMetric.getName();
+                    Object value = ObjectValueConverter.fromString(jsonMetric.getValue(), jsonMetric.getValueType());
+
+                    kapuaDataPayload.getMetrics().put(name, value);
+                });
+
+        kapuaDataMessage.setPayload(kapuaDataPayload);
+
+        STREAMS.publish(scopeId, timeout, kapuaDataMessage);
+
         return Response.ok().build();
     }
 }
