@@ -281,52 +281,6 @@
 
     <profiles>
         <profile>
-            <id>deployVagrant</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>1.1</version>
-                        <configuration>
-                            <environmentVariables>
-                                <KAPUA_VERSION>${project.version}</KAPUA_VERSION>
-                                <ACTIVEMQ_VERSION>${activemq.version}</ACTIVEMQ_VERSION>
-                            </environmentVariables>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>vagrant_console_deploy</id>
-                                <phase>install</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>./deploy-apps.sh</executable>
-                                    <workingDirectory>${basedir}/../../dev-tools/src/main/vagrant/demo</workingDirectory>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>vagrant_broker_deploy</id>
-                                <phase>install</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>./deploy-broker.sh</executable>
-                                    <workingDirectory>${basedir}/../../dev-tools/src/main/vagrant/demo</workingDirectory>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
             <id>release</id>
             <properties>
                 <timestamp>latest</timestamp>
@@ -376,7 +330,7 @@
                                                 chown -R kapua:kapua /home/kapua
                                             </runCmd>
                                             <runCmd>
-                                               chmod og+rwx /home/kapua
+                                                chmod og+rwx /home/kapua
                                             </runCmd>
                                         </runCmds>
                                     </build>
