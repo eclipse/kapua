@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 #*******************************************************************************
 # Copyright (c) 2018 Eurotech and/or its affiliates and others
 #

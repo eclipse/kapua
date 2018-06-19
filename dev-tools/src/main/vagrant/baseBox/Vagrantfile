@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+# Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -35,7 +35,6 @@ Vagrant.configure(2) do |config|
     export H2DB_VERSION="1.4.192"
     export ACTIVE_MQ_VERSION="5.14.5"
     export ARTEMIS_VERSION="2.2.0"
-    export TOMCAT_VERSION="8.0.41"
     export JETTY_VERSION="9.4.6.v20170531"
     export BINDING_IP="192.168.33.10"
 
