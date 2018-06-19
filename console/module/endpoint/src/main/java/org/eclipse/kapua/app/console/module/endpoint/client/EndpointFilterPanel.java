@@ -83,11 +83,11 @@ public class EndpointFilterPanel extends EntityFilterPanel<GwtEndpoint> {
         verticalPanel.add(dnsField);
 
         //
-        // DNS
+        // Port
         Label portLabel = new Label(MSGS.filterFieldEndpointPortLabel());
-        nameLabel.setWidth(WIDTH);
-        nameLabel.setStyleAttribute("margin", "5px");
-        verticalPanel.add(nameLabel);
+        portLabel.setWidth(WIDTH);
+        portLabel.setStyleAttribute("margin", "5px");
+        verticalPanel.add(portLabel);
 
         portField = new KapuaNumberField();
         portField.setName("port");
@@ -100,7 +100,7 @@ public class EndpointFilterPanel extends EntityFilterPanel<GwtEndpoint> {
         portField.setStyleAttribute("margin-right", "5px");
         portField.setStyleAttribute("margin-bottom", "10px");
 
-        verticalPanel.add(dnsField);
+        verticalPanel.add(portField);
 
     }
 
