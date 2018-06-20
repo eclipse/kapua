@@ -44,10 +44,10 @@
                                     <name>${docker.account}/kapua-events-broker</name>
                                     <build>
                                         <assembly>
-                                            <descriptor>${basedir}/src/main/descriptors/events-broker.xml</descriptor>
+                                            <descriptor>${project.basedir}/descriptors/events-broker.xml</descriptor>
                                             <basedir>/</basedir>
                                         </assembly>
-                                        <dockerFile>Dockerfile</dockerFile>
+                                        <dockerFile>${project.basedir}/docker/Dockerfile</dockerFile>
                                     </build>
                                 </image>
                             </images>

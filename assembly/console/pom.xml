@@ -260,7 +260,7 @@
                         </goals>
                         <configuration>
                             <descriptors>
-                                <descriptor>src/main/descriptors/kapua-console-jetty.xml</descriptor>
+                                <descriptor>${project.basedir}/descriptors/kapua-console-jetty.xml</descriptor>
                             </descriptors>
                             <tarLongFileMode>posix</tarLongFileMode>
                             <finalName>kapua-console-${project.version}</finalName>
@@ -293,7 +293,7 @@
                                     <build>
                                         <from>${docker.account}/jetty-base</from>
                                         <assembly>
-                                            <descriptor>${basedir}/src/main/descriptors/kapua-console-jetty.xml</descriptor>
+                                            <descriptor>${project.basedir}/descriptors/kapua-console-jetty.xml</descriptor>
                                             <basedir>/</basedir>
                                         </assembly>
                                         <env>
