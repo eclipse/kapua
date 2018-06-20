@@ -167,12 +167,15 @@ public class GwtJobTargetServiceImpl extends KapuaRemoteServiceServlet implement
             Device device = DEVICE_REGISTRY_SERVICE.find(KapuaEid.parseCompactId(gwtJobTarget.getScopeId()), KapuaEid.parseCompactId(gwtJobTarget.getJobTargetId()));
 
             String clientId = null;
+            String displayName = null;
             if (device != null) {
                 clientId = device.getClientId();
+                displayName = device.getDisplayName();
             }
 
             if (clientId != null) {
                 gwtJobTarget.setClientId(clientId);
+                gwtJobTarget.setDisplayName(displayName);
             } else {
                 gwtJobTarget.setClientId(NOT_AVAILABLE);
             }
