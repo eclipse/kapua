@@ -13,12 +13,11 @@
 ###############################################################################
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-. $SCRIPT_DIR/docker-common.sh
+. ${SCRIPT_DIR}/docker-common.sh
 
 echo "Deploying Eclipse Kapua..."
 
-docker-compose up -d
+docker-compose -f ${SCRIPT_DIR}/compose/docker-compose.yml up -d
 
 echo "Deploying Eclipse Kapua... DONE!"
-
-echo Run \'docker-compose logs -f\' for container logs
+echo "Run \"docker-compose -f ${SCRIPT_DIR}/compose/docker-compose.yml logs -f\" for container logs"

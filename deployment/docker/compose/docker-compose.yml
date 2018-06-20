@@ -1,21 +1,5 @@
 version: '3.1'
 
-secrets:
-  broker.xml:
-    file: ${CONFIG}/broker.xml
-  bootstrap.xml:
-    file: ${CONFIG}/bootstrap.xml
-  artemis-users.properties:
-    file: ${CONFIG}/artemis-users.properties
-  artemis-roles.properties:
-    file: ${CONFIG}/artemis-roles.properties
-  login.config:
-    file: ${CONFIG}/login.config
-  logging.properties:
-    file: ${CONFIG}/logging.properties
-  artemis.profile:
-    file: ${CONFIG}/artemis.profile
-
 services:
   db:
     image: kapua/kapua-sql:${IMAGE_VERSION}
@@ -34,19 +18,9 @@ services:
       - transport.ping_schedule=-1
       - transport.tcp.connect_timeout=30s
   events-broker:
-    image: enmasseproject/activemq-artemis:2.2.0-1
+    image: kapua/kapua-events-broker:${IMAGE_VERSION}
     ports:
     - 5672:5672
-    environment:
-    - ARTEMIS_CONFIGURATION=/run/secrets
-    secrets:
-    - broker.xml
-    - bootstrap.xml
-    - artemis-users.properties
-    - artemis-roles.properties
-    - login.config
-    - logging.properties
-    - artemis.profile
   broker:
     image: kapua/kapua-broker:${IMAGE_VERSION}
     ports:
@@ -55,6 +29,7 @@ services:
     depends_on:
       - db
       - es
+      - events-broker
   kapua-console:
     image: kapua/kapua-console:${IMAGE_VERSION}
     ports:
@@ -63,6 +38,7 @@ services:
       - broker
       - db
       - es
+      - events-broker
   kapua-api:
     image: kapua/kapua-api:${IMAGE_VERSION}
     ports:
@@ -71,4 +47,4 @@ services:
       - broker
       - db
       - es
-
+      - events-broker
