@@ -221,7 +221,7 @@ objects:
           hawkular-openshift-agent: jolokia-events-broker
       spec:
         containers:
-        - image: enmasseproject/activemq-artemis:2.2.0-1
+        - image: ${DOCKER_ACCOUNT}/kapua-events-broker:${IMAGE_VERSION}
           imagePullPolicy: IfNotPresent
           name: events-broker
           readinessProbe:
@@ -236,25 +236,15 @@ objects:
             timeoutSeconds: 1
             tcpSocket:
               port: 5672
-          env:
-          - name: ARTEMIS_CONFIGURATION
-            value: /run/secrets
           volumeMounts:
-          - mountPath: /run/secrets
-            name: config
-          - mountPath: /maven/data
+          - mountPath: /opt/artemis/data
             name: events-broker-volume-1
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         terminationGracePeriodSeconds: 30
         volumes:
-        - name: config
-          secret:
-            secretName: events-broker-conf
         - name: events-broker-volume-1
           emptyDir: {}
-
-
 
 - apiVersion: v1
   kind: DeploymentConfig
