@@ -15,6 +15,10 @@
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 . $SCRIPT_DIR/docker-common.sh
 
-echo Undeploying Eclipse Kapua
-docker-compose down
-echo Undeploying Eclipse Kapua ... done!
+echo "Deploying Eclipse Kapua..."
+
+docker-compose up -d
+
+echo "Deploying Eclipse Kapua... DONE!"
+
+echo Run \'docker-compose logs -f\' for container logs
