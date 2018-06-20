@@ -27,23 +27,6 @@ ${OC} login ${OPENSHIFT_HOST} --username=${OPENSHIFT_USER} --password=${OPENSHIF
 
 ${OC} describe "project/${OPENSHIFT_PROJECT_NAME}" &>/dev/null || die "Project '${OPENSHIFT_PROJECT_NAME}' not created or OpenShift is unreachable. Try with:\n\n\toc new-project ${OPENSHIFT_PROJECT_NAME}\n\n"
 
-### Create secrets
-
-echo "Creating Kapua secrets..."
-
-CONFIG=${SCRIPT_DIR}/../../assembly/events-broker/etc/
-
-${OC} create secret generic events-broker-conf \
-  --from-file=${CONFIG}/broker.xml \
-  --from-file=${CONFIG}/bootstrap.xml \
-  --from-file=${CONFIG}/artemis-users.properties \
-  --from-file=${CONFIG}/artemis-roles.properties \
-  --from-file=${CONFIG}/login.config \
-  --from-file=${CONFIG}/logging.properties \
-  --from-file=${CONFIG}/artemis.profile
-
-echo "Creating Kapua secrets... DONE!"
-
 ### Create Kapua from template
 
 echo "Creating Kapua from templates..."
