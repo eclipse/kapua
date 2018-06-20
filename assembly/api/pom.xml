@@ -260,7 +260,7 @@
                         </goals>
                         <configuration>
                             <descriptors>
-                                <descriptor>src/main/descriptors/kapua-api-jetty.xml</descriptor>
+                                <descriptor>${project.basedir}/descriptors/kapua-api-jetty.xml</descriptor>
                             </descriptors>
                             <tarLongFileMode>posix</tarLongFileMode>
                             <finalName>kapua-api-${project.version}</finalName>
@@ -294,7 +294,7 @@
                                     <build>
                                         <from>${docker.account}/jetty-base</from>
                                         <assembly>
-                                            <descriptor>${basedir}/src/main/descriptors/kapua-api-jetty.xml</descriptor>
+                                            <descriptor>${project.basedir}/descriptors/kapua-api-jetty.xml</descriptor>
                                             <basedir>/var/lib/jetty</basedir>
                                         </assembly>
                                         <env>

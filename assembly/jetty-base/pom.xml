@@ -58,7 +58,7 @@
                                     ]]></runCmd>
                                         </runCmds>
                                         <assembly>
-                                            <descriptor>${basedir}/src/main/descriptors/jetty-base.xml</descriptor>
+                                            <descriptor>${project.basedir}/descriptors/jetty-base.xml</descriptor>
                                             <basedir>/</basedir>
                                         </assembly>
                                         <workdir>/var/lib/jetty</workdir>

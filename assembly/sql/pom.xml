@@ -45,7 +45,7 @@
                                     <build>
                                         <from>${docker.account}/java-base</from>
                                         <assembly>
-                                            <descriptor>/src/main/descriptors/kapua-sql.xml</descriptor>
+                                            <descriptor>${project.basedir}/descriptors/kapua-sql.xml</descriptor>
                                             <basedir>/</basedir>
                                         </assembly>
                                         <runCmds>
