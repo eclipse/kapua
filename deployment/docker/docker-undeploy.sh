@@ -13,10 +13,10 @@
 ###############################################################################
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-. $SCRIPT_DIR/docker-common.sh
+. ${SCRIPT_DIR}/docker-common.sh
 
 echo "Undeploying Eclipse Kapua..."
 
-docker-compose down
+docker-compose -f ${SCRIPT_DIR}/compose/docker-compose.yml down
 
 echo "Undeploying Eclipse Kapua... DONE!"
