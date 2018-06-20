@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+    Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -21,13 +21,8 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kapua-assembly-api</artifactId>
     <packaging>pom</packaging>
-
-    <properties>
-        <docker.account>kapua</docker.account>
-        <java.base.image>centos:7</java.base.image>
-    </properties>
+    <artifactId>kapua-assembly-api</artifactId>
 
     <dependencies>
 
@@ -249,7 +244,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>log4j-over-slf4j</artifactId>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -286,7 +280,6 @@
                 <timestamp>latest</timestamp>
             </properties>
         </profile>
-
         <profile>
             <id>docker</id>
             <build>
