@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-
 ###############################################################################
-# Copyright (c) 2016, 2017 Red Hat Inc and others
+# Copyright (c) 2016, 2018 Red Hat Inc and others
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -30,9 +29,9 @@ ${OC} describe "project/${OPENSHIFT_PROJECT_NAME}" &>/dev/null || die "Project '
 
 ### Create secrets
 
-echo Creating Kapua secrets ...
+echo "Creating Kapua secrets..."
 
-CONFIG=${SCRIPT_DIR}/../../../../assembly/events-broker/etc/
+CONFIG=${SCRIPT_DIR}/../../assembly/events-broker/etc/
 
 ${OC} create secret generic events-broker-conf \
   --from-file=${CONFIG}/broker.xml \
@@ -43,14 +42,15 @@ ${OC} create secret generic events-broker-conf \
   --from-file=${CONFIG}/logging.properties \
   --from-file=${CONFIG}/artemis.profile
 
+echo "Creating Kapua secrets... DONE!"
+
 ### Create Kapua from template
 
-echo Creating Kapua from template ...
+echo "Creating Kapua from templates..."
 
-#${OC} new-app -n "${OPENSHIFT_PROJECT_NAME}" -f kapua-template.yml -p "DOCKER_ACCOUNT=${DOCKER_ACCOUNT}" -p "IMAGE_VERSION=${IMAGE_VERSION}" -p "JAVA_OPTS_EXTRA=${JAVA_OPTS_EXTRA}"
-${OC} new-app -n "${OPENSHIFT_PROJECT_NAME}" -f kapua-template-core.yml -p "DOCKER_ACCOUNT=${DOCKER_ACCOUNT}" -p "IMAGE_VERSION=${IMAGE_VERSION}" -p "JAVA_OPTS_EXTRA=${JAVA_OPTS_EXTRA}"
-${OC} new-app -n "${OPENSHIFT_PROJECT_NAME}" -f kapua-template-broker.yml -p "DOCKER_ACCOUNT=${DOCKER_ACCOUNT}" -p "IMAGE_VERSION=${IMAGE_VERSION}" -p "JAVA_OPTS_EXTRA=${JAVA_OPTS_EXTRA}"
-${OC} new-app -n "${OPENSHIFT_PROJECT_NAME}" -f kapua-template-console.yml -p "DOCKER_ACCOUNT=${DOCKER_ACCOUNT}" -p "IMAGE_VERSION=${IMAGE_VERSION}" -p "JAVA_OPTS_EXTRA=${JAVA_OPTS_EXTRA}"
-${OC} new-app -n "${OPENSHIFT_PROJECT_NAME}" -f kapua-template-api.yml -p "DOCKER_ACCOUNT=${DOCKER_ACCOUNT}" -p "IMAGE_VERSION=${IMAGE_VERSION}" -p "JAVA_OPTS_EXTRA=${JAVA_OPTS_EXTRA}"
+${OC} new-app -n "${OPENSHIFT_PROJECT_NAME}" -f templates/kapua-template-core.yml    -p "DOCKER_ACCOUNT=${DOCKER_ACCOUNT}" -p "IMAGE_VERSION=${IMAGE_VERSION}" -p "JAVA_OPTS_EXTRA=${JAVA_OPTS_EXTRA}"
+${OC} new-app -n "${OPENSHIFT_PROJECT_NAME}" -f templates/kapua-template-broker.yml  -p "DOCKER_ACCOUNT=${DOCKER_ACCOUNT}" -p "IMAGE_VERSION=${IMAGE_VERSION}" -p "JAVA_OPTS_EXTRA=${JAVA_OPTS_EXTRA}"
+${OC} new-app -n "${OPENSHIFT_PROJECT_NAME}" -f templates/kapua-template-console.yml -p "DOCKER_ACCOUNT=${DOCKER_ACCOUNT}" -p "IMAGE_VERSION=${IMAGE_VERSION}" -p "JAVA_OPTS_EXTRA=${JAVA_OPTS_EXTRA}"
+${OC} new-app -n "${OPENSHIFT_PROJECT_NAME}" -f templates/kapua-template-api.yml     -p "DOCKER_ACCOUNT=${DOCKER_ACCOUNT}" -p "IMAGE_VERSION=${IMAGE_VERSION}" -p "JAVA_OPTS_EXTRA=${JAVA_OPTS_EXTRA}"
 
-echo Creating Kapua from template ... done!
+echo "Creating Kapua from templates... DONE!"
