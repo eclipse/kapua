@@ -19,6 +19,7 @@
     <artifactId>kapua</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <name>kapua</name>
+
     <packaging>pom</packaging>
 
     <properties>
@@ -76,7 +77,6 @@
         <log4j-api.version>2.8.2</log4j-api.version> <!-- same version used by elasticsearch -->
         <log4j-to-slf4j.version>2.8.2</log4j-to-slf4j.version> <!-- same version used by elasticsearch -->
         <log4j2-mock.version>0.0.1</log4j2-mock.version>
-        <tomcat.version>8.0.41</tomcat.version>
         <qpid-jms-client.version>0.24.0</qpid-jms-client.version>
         <qpid-proton.version>0.20.0</qpid-proton.version>
         <quartz-scheduler.version>2.2.3</quartz-scheduler.version>
@@ -1253,6 +1253,7 @@
         <!-- Applications -->
         <module>rest-api</module>
         <module>job-engine</module>
+        <module>broker</module>
 
         <!-- Client -->
         <module>client</module>
@@ -1264,7 +1265,7 @@
         <module>assembly</module>
 
         <module>dev-tools</module>
-        <module>broker</module>
+        <module>deployment</module>
     </modules>
 
     <profiles>

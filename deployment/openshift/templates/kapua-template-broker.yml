@@ -150,12 +150,3 @@ objects:
     selector:
       app: kapua-broker
       deploymentconfig: kapua-broker
-
-
-
-
-
-
-
-
-

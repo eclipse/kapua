@@ -119,10 +119,3 @@ objects:
         name: kapua-console
       port:
         targetPort: http
-
-
-
-
-
-
-
