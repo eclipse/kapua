@@ -1,8 +1,4 @@
-# Kapua on Minishift
+# Kapua Deployments
 
-To learn more on how to run Kapua in Minishift, please consult [developer manual](https://github.com/eclipse/kapua/blob/develop/docs/developer-guide/en/running.md#minishift).
-
-The most recent version of the documentation can be viewed online at:
-
-* http://download.eclipse.org/kapua/docs/develop/user-manual/en/
-* http://download.eclipse.org/kapua/docs/develop/developer-guide/en/
+This module contains all available deployments of ready-to-use Kapua.<br>
+**Still, all of this deployment are not meant to be used on a production environment as they are!**  
