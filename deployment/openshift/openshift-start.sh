@@ -20,7 +20,6 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 : OPENSHIFT_DOWNLOAD_LINK=${OPENSHIFT_DOWNLOAD_LINK:='https://github.com/openshift/origin/releases/download/v1.4.1/openshift-origin-server-v1.4.1-3f9807a-linux-64bit.tar.gz'}
 
 ### Install OpenShift distribution
-
 if [ -f "${OPENSHIFT_DIR}/oc" ]; then
     echo "Found OpenShift client in ${OPENSHIFT_DIR}. Skipping download."
 else
