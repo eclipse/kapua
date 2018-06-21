@@ -514,7 +514,7 @@ public class DeviceAssetsValues extends LayoutContainer {
         public void loaderLoadException(LoadEvent le) {
 
             if (le.exception != null) {
-                ConsoleInfo.display(MSGS.popupError(), DEVICE_MSGS.deviceConnectionError());
+                ConsoleInfo.display(MSGS.popupError(), DEVICE_MSGS.assetNoAssetsErrorMessage());
             }
 
             List<ModelData> assets = new ArrayList<ModelData>();
