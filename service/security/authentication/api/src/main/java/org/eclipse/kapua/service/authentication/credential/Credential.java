@@ -110,7 +110,7 @@ public interface Credential extends KapuaUpdatableEntity {
      *
      * @param status The credential status
      */
-    void setCredentialStatus(CredentialStatus status);
+    void setStatus(CredentialStatus status);
 
     /**
      * Gets the current Credential expiration date
