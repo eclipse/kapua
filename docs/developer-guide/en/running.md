@@ -18,7 +18,7 @@ Before running Kapua on Docker, you need to
 
 Now, you can start Kapua by using Docker Compose. To do so, run
   
-    kapua/dev-tools/src/main/docker/docker-deploy.sh
+    kapua/deployments/docker/docker-deploy.sh
     
 After Kapua has been started, you can navigate your browser to http://localhost:8080 and log in using the following credentials:
 `kapua-sys` : `kapua-password`
@@ -34,7 +34,7 @@ By default, the `latest` version of images will be used. If you want to run some
     
 To stop Kapua, run
     
-    kapua/dev-tools/src/main/docker/docker-undeploy.sh
+    kapua/deployments/docker/docker-undeploy.sh
 
 ## OpenShift
 
@@ -49,11 +49,11 @@ Currently we support running OpenShift only on Linux OS. If you would like to ru
 For running Kapua on an OpenShift you need to
 have OpenShift cluster installed and started in a first place. You can install it by yourself or rely on the script we provides:
 
-    sudo kapua/dev-tools/src/main/openshift/openshift-start.sh
+    sudo kapua/deployments/openshift/openshift-start.sh
 
 If you are running your OpenShift cluster for a first time, execute the following initialized script as well:
 
-    kapua/dev-tools/src/main/openshift/openshift-initialize.sh
+    kapua/deployments/openshift/openshift-initialize.sh
 
 Initialization script is responsible for logging you into a cluster and creating new OpenShift project for Kapua.
 
@@ -63,7 +63,7 @@ If your Openshift cluster is not on the localhost, set the `OPENSHIFT_HOST` envi
 
 If for some reasons, you cannot start your cluster, try to execute the startup script with option `DOCKERIZED=FALSE`:
 
-    sudo DOCKERIZED=FALSE kapua/dev-tools/src/main/openshift/openshift-start.sh
+    sudo DOCKERIZED=FALSE kapua/deployments/openshift/openshift-start.sh
 
 Option `DOCKERIZED=FALSE` tells startup script to use standard binary installation of OpenShift Origin instead of Docker-based `oc cluster up` command.
 
@@ -71,7 +71,7 @@ Option `DOCKERIZED=FALSE` tells startup script to use standard binary installati
 
 Now when you have OpenShift cluster up, running and initialized, execute the following script:
 
-    cd kapua/dev-tools/src/main/openshift
+    cd kapua/deployments/openshift
     ./openshift-deploy.sh
 
 Now open the following URL in your web browser - `http://localhost:8080`. And log-in into Kapua UI using default
@@ -111,13 +111,13 @@ Steps to run Kapua on Minishift are the  following
 4. Initialize Kapua project
 
     ~~~bash
-    kapua/dev-tools/src/main/openshift/openshift-initialize.sh
+    kapua/deployments/openshift/openshift-initialize.sh
     ~~~
 
 5. Deploy Kapua components
 
     ~~~bash
-    cd kapua/dev-tools/src/main/openshift
+    cd kapua/deployments/openshift
     ./openshift-deploy.sh
     ~~~
 
