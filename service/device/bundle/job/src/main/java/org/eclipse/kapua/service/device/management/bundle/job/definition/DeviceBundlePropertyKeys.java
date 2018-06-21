@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.command.job.definition;
+package org.eclipse.kapua.service.device.management.bundle.job.definition;
 
 import org.eclipse.kapua.service.job.step.definition.JobPropertyKey;
 
