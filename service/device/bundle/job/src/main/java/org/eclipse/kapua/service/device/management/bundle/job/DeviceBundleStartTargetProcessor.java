@@ -16,7 +16,7 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.job.engine.commons.operation.AbstractTargetProcessor;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService;
-import org.eclipse.kapua.service.device.management.command.job.definition.DeviceBundlePropertyKeys;
+import org.eclipse.kapua.service.device.management.bundle.job.definition.DeviceBundlePropertyKeys;
 import org.eclipse.kapua.service.job.operation.TargetOperation;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 
