@@ -56,7 +56,7 @@ public class GwtKapuaEndpointModelConverter {
         }
 
         if (gwtEndpointQuery.getPort() != null) {
-            andPredicate.and(new AttributePredicateImpl<Integer>(EndpointInfoPredicates.SCHEMA, gwtEndpointQuery.getPort().intValue()));
+            andPredicate.and(new AttributePredicateImpl<Integer>(EndpointInfoPredicates.PORT, gwtEndpointQuery.getPort().intValue(), AttributePredicate.Operator.LIKE));
         }
 
         // Sort order conversion
