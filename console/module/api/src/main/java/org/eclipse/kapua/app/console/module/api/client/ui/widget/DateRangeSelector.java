@@ -13,7 +13,10 @@ package org.eclipse.kapua.app.console.module.api.client.ui.widget;
 
 import java.util.Date;
 
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Dialog;
@@ -106,6 +109,13 @@ public class DateRangeSelector extends LayoutContainer {
                 }));
 
         dateRange.setMenu(menu);
+        dateRange.addListener(Events.OnClick, new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                dateRange.showMenu();
+            }
+        });
 
         // initialize with the last 24 hours
         onMenuItemSelected(2, null);
