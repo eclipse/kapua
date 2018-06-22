@@ -111,7 +111,7 @@ public class EndpointInfoServiceImpl
         ArgumentValidator.lengthRange(endpointInfo.getDns(), 3L, 1024L, "endpointInfo.dns");
 
         ArgumentValidator.notNegative(endpointInfo.getPort(), "endpointInfo.port");
-        ArgumentValidator.numRange(endpointInfo.getPort(), 0, 65535, "endpointInfo.port");
+        ArgumentValidator.numRange(endpointInfo.getPort(), 1, 65535, "endpointInfo.port");
 
         //
         // Check Access
