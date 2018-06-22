@@ -75,8 +75,8 @@ public class EndpointAddDialog extends EntityAddEditDialog {
         endpointPortField.setAllowNegative(false);
         endpointPortField.setAllowDecimals(false);
         endpointPortField.setMaxLength(5);
-        endpointPortField.setMinValue(0);
-        endpointPortField.setMaxValue(65536);
+        endpointPortField.setMinValue(1);
+        endpointPortField.setMaxValue(65535);
         endpointFormPanel.add(endpointPortField);
 
         endpointSercureCheckbox = new CheckBox();
