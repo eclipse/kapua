@@ -25,6 +25,7 @@
 
     <modules>
         <module>foreignkeys</module>
+        <module>hono-integration</module>
     </modules>
 
 </project>
