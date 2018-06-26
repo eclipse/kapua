@@ -12,6 +12,8 @@
 package org.eclipse.kapua.app.console.module.api.client;
 
 public enum GwtKapuaErrorCode {
+    BUNDLE_START_ERROR,
+    BUNDLE_STOP_ERROR,
     CANNOT_REMOVE_LAST_ADMIN,
     CURRENT_ADMIN_PASSWORD_DOES_NOT_MATCH,
     DUPLICATE_NAME,

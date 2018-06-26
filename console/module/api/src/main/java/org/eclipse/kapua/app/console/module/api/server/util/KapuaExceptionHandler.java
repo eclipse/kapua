@@ -111,6 +111,12 @@ public class KapuaExceptionHandler {
             errorFieldsSb.delete(errorFieldsSb.length() - 2, errorFieldsSb.length()).append(")");
 
             throw new GwtKapuaException(GwtKapuaErrorCode.ENTITY_UNIQUENESS, t, errorFieldsSb.toString());
+        } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.BUNDLE_START_ERROR)){
+            logger.warn("Bundle could not be started", t);
+            throw new GwtKapuaException(GwtKapuaErrorCode.BUNDLE_START_ERROR, t, t.getLocalizedMessage());
+        } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.BUNDLE_STOP_ERROR)){
+            logger.warn("Bundle could not be stoped", t);
+            throw new GwtKapuaException(GwtKapuaErrorCode.BUNDLE_STOP_ERROR, t, t.getLocalizedMessage());
         } else {
             // all others => log and throw internal error code
             logger.warn("RPC service non-application error", t);
