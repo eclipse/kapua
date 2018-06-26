@@ -146,7 +146,7 @@ public class GwtKapuaAuthenticationModelConverter {
         credential.setFirstLoginFailure(gwtCredential.getFirstLoginFailure());
         credential.setLoginFailuresReset(gwtCredential.getLoginFailuresReset());
         credential.setLockoutReset(gwtCredential.getLockoutReset());
-        //
+        // 
         // Return converted
         return credential;
     }
