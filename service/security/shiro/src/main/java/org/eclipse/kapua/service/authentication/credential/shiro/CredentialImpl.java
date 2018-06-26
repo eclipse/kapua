@@ -69,7 +69,7 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
 
     @Enumerated(EnumType.STRING)
     @Column(name = "credential_status", nullable = false)
-    private CredentialStatus credentialStatus;
+    private CredentialStatus status;
 
     @Basic
     @Column(name = "login_failures", nullable = false)
@@ -107,7 +107,7 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
         this.userId = (KapuaEid) userId;
         this.credentialType = credentialType;
         this.credentialKey = credentialKey;
-        this.credentialStatus = credentialStatus;
+        this.status = credentialStatus;
         this.expirationDate = expirationDate;
     }
 
@@ -148,12 +148,12 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
 
     @Override
     public CredentialStatus getStatus() {
-        return credentialStatus;
+        return status;
     }
 
     @Override
-    public void setCredentialStatus(CredentialStatus status) {
-        this.credentialStatus = status;
+    public void setStatus(CredentialStatus status) {
+        this.status = status;
     }
 
     @Override
@@ -170,9 +170,6 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
         this.userId = userId;
     }
 
-    public CredentialStatus getCredentialStatus() {
-        return credentialStatus;
-    }
 
     @Override
     public int getLoginFailures() {
