@@ -207,6 +207,9 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
                                     callback);
                         }
                     });
+                    grid.unmask();
+                    toolBar.enable();
+                    stopButton.disable();
                 } else {
                     MessageBox.alert(MSGS.dialogAlerts(), DEVICE_MSGS.deviceOffline(),
                             new Listener<MessageBoxEvent>() {
@@ -261,6 +264,9 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
                                             }
                                         });
                                     }
+                                    grid.unmask();
+                                    toolBar.enable();
+                                    startButton.disable();
                                 }
                             });
                 } else {

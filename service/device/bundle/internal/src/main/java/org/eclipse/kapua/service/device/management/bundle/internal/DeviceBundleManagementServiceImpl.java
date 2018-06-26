@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,8 +24,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
 import org.eclipse.kapua.service.device.management.bundle.internal.exception.BundleGetManagementException;
-import org.eclipse.kapua.service.device.management.bundle.internal.exception.BundleStartManagementException;
-import org.eclipse.kapua.service.device.management.bundle.internal.exception.BundleStopManagementException;
+import org.eclipse.kapua.service.device.management.bundle.internal.exception.BundleManagementResponseErrorCodes;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleRequestChannel;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleRequestMessage;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleRequestPayload;
@@ -170,7 +169,7 @@ public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementS
         if (!responseMessage.getResponseCode().isAccepted()) {
             KapuaResponsePayload responsePayload = responseMessage.getPayload();
 
-            throw new BundleStartManagementException(responseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionStack());
+            throw new KapuaException(BundleManagementResponseErrorCodes.BUNDLE_START_ERROR);
         }
     }
 
@@ -222,7 +221,7 @@ public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementS
         if (!responseMessage.getResponseCode().isAccepted()) {
             KapuaResponsePayload responsePayload = responseMessage.getPayload();
 
-            throw new BundleStopManagementException(responseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionStack());
+            throw new KapuaException(BundleManagementResponseErrorCodes.BUNDLE_STOP_ERROR);
         }
     }
 
