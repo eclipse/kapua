@@ -49,11 +49,8 @@ import org.eclipse.kapua.app.console.module.api.client.util.Years;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class AboutView extends AbstractView implements View {
-
-    private static final Logger logger = Logger.getLogger("AboutView");
 
     private static final ConsoleAboutMessages MSGS = GWT.create(ConsoleAboutMessages.class);
 
@@ -157,6 +154,7 @@ public class AboutView extends AbstractView implements View {
         northBorder.setMargins(new Margins(0, -3, 0, 0));
         centerBorder.setSplit(true);
         centerBorder.setMargins(new Margins(10, -3, 0, 1));
+
         final LayoutContainer mainPanel = new LayoutContainer(borderLayout);
         mainPanel.setHeight("100%");
         mainPanel.add(blurb, northBorder);
@@ -187,8 +185,6 @@ public class AboutView extends AbstractView implements View {
     }
 
     protected void applyAboutInformation(final GwtAboutInformation about, final Grid<BeanModel> grid, final ListStore<BeanModel> store) {
-        logger.info("Entries: " + about.getDependencies().size());
-
         final BeanModelFactory factory = BeanModelLookup.get().getFactory(GwtAboutDependency.class);
         store.add(factory.createModel(about.getDependencies()));
         grid.getView().refresh(false);
