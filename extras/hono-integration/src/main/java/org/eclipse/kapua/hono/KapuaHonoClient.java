@@ -19,6 +19,7 @@ import io.vertx.proton.ProtonConnection;
 import io.vertx.proton.ProtonDelivery;
 import org.apache.qpid.proton.amqp.Symbol;
 import org.apache.qpid.proton.message.Message;
+import org.eclipse.hono.client.CommandClient;
 import org.eclipse.hono.client.CredentialsClient;
 import org.eclipse.hono.client.HonoClient;
 import org.eclipse.hono.client.MessageConsumer;
@@ -130,5 +131,20 @@ public class KapuaHonoClient implements HonoClient {
     @Override
     public boolean supportsCapability(Symbol capability) {
         return false;
+    }
+
+    @Override
+    public void disconnect() {
+
+    }
+
+    @Override
+    public void disconnect(Handler<AsyncResult<Void>> handler) {
+
+    }
+
+    @Override
+    public Future<CommandClient> getOrCreateCommandClient(String s, String s1) {
+        return null;
     }
 }
