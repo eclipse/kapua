@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -118,7 +118,7 @@ public class ServiceDAO {
         try {
             locator = KapuaLocator.getInstance();
         } catch (ExceptionInInitializerError kre) {
-            LOG.warn("KapuaLocator not available! Access Group featue may be not suppoted!", kre);
+            LOG.warn("KapuaLocator not available! Access Group feature may be not supported!", kre);
         }
 
         if (locator != null) {
@@ -140,7 +140,6 @@ public class ServiceDAO {
             ROLE_SERVICE = null;
             ROLE_PERMISSION_SERVICE = null;
         }
-
     }
 
     protected ServiceDAO() {
@@ -156,8 +155,6 @@ public class ServiceDAO {
      * @since 1.0.0
      */
     public static <E extends KapuaEntity> E create(EntityManager em, E entity) {
-        //
-        // Creating entity
         try {
             em.persist(entity);
             em.flush();
@@ -180,7 +177,6 @@ public class ServiceDAO {
     }
 
     private static boolean isInsertConstraintViolation(PersistenceException e) {
-        // extract the sql exception
         Throwable cause = e.getCause();
         while (cause != null && !(cause instanceof SQLException)) {
             cause = cause.getCause();
@@ -506,73 +502,99 @@ public class ServiceDAO {
     }
 
     /**
-     * Criteria for query entity utility method
+     * Handles {@link QueryPredicate} contained of a {@link KapuaQuery}.
+     * <p>
+     * It manages different types of {@link QueryPredicate} like:
+     * <ul>
+     * <li>{@link AttributePredicate}</li>
+     * <li>{@link AndPredicate}</li>
+     * <li>{@link OrPredicate}</li>
+     * </ol>
+     * <p>
+     * It can be invoked recursively (i.e. to handle {@link AttributePredicate}s of the {@link AndPredicate}.
      *
-     * @param qp
-     * @param binds
-     * @param cb
-     * @param userPermissionRoot
-     * @param entityType
-     * @return
-     * @throws KapuaException
+     * @param queryPredicate     The {@link QueryPredicate} to handle.
+     * @param binds              The {@link Map}&lg;{@link String}, {@link Object}&gt; of the query values.
+     * @param cb                 The JPA {@link CriteriaBuilder} of the {@link javax.persistence.Query}.
+     * @param userPermissionRoot The JPA {@link Root} of the {@link javax.persistence.Query}.
+     * @param entityType         The JPA {@link EntityType} of the {@link javax.persistence.Query}.
+     * @return The handled {@link Predicate}
+     * @throws KapuaException If any problem occurs.
      */
-    protected static <E> Expression<Boolean> handleKapuaQueryPredicates(QueryPredicate qp,
-                                                                        Map<ParameterExpression, Object> binds,
-                                                                        CriteriaBuilder cb,
-                                                                        Root<E> userPermissionRoot,
-                                                                        EntityType<E> entityType)
+    private static <E> Predicate handleKapuaQueryPredicates(QueryPredicate queryPredicate,
+                                                            Map<ParameterExpression, Object> binds,
+                                                            CriteriaBuilder cb,
+                                                            Root<E> userPermissionRoot,
+                                                            EntityType<E> entityType)
             throws KapuaException {
-        Expression<Boolean> expr = null;
-        if (qp instanceof AttributePredicate) {
-            AttributePredicate attrPred = (AttributePredicate) qp;
-            expr = handleAttributePredicate(attrPred, binds, cb, userPermissionRoot, entityType);
-        } else if (qp instanceof AndPredicate) {
-            AndPredicate andPredicate = (AndPredicate) qp;
-            expr = handleAndPredicate(andPredicate, binds, cb, userPermissionRoot, entityType);
-        } else if (qp instanceof OrPredicate) {
-            OrPredicate orPredicate = (OrPredicate) qp;
-            expr = handleOrPredicate(orPredicate, binds, cb, userPermissionRoot, entityType);
+        Predicate predicate = null;
+        if (queryPredicate instanceof AttributePredicate) {
+            AttributePredicate attributePredicate = (AttributePredicate) queryPredicate;
+            predicate = handleAttributePredicate(attributePredicate, binds, cb, userPermissionRoot, entityType);
+        } else if (queryPredicate instanceof AndPredicate) {
+            AndPredicate andPredicate = (AndPredicate) queryPredicate;
+            predicate = handleAndPredicate(andPredicate, binds, cb, userPermissionRoot, entityType);
+        } else if (queryPredicate instanceof OrPredicate) {
+            OrPredicate orPredicate = (OrPredicate) queryPredicate;
+            predicate = handleOrPredicate(orPredicate, binds, cb, userPermissionRoot, entityType);
         }
-        return expr;
+        return predicate;
     }
 
-    private static <E> Expression<Boolean> handleAndPredicate(AndPredicate andPredicate,
-                                                              Map<ParameterExpression, Object> binds,
-                                                              CriteriaBuilder cb,
-                                                              Root<E> entityRoot,
-                                                              EntityType<E> entityType)
+    private static <E> Predicate handleAndPredicate(AndPredicate andPredicate,
+                                                    Map<ParameterExpression, Object> binds,
+                                                    CriteriaBuilder cb,
+                                                    Root<E> entityRoot,
+                                                    EntityType<E> entityType)
             throws KapuaException {
-        List<Expression<Boolean>> expressions = new ArrayList<>();
 
-        for (QueryPredicate queryPredicate : andPredicate.getPredicates()) {
-            Expression<Boolean> expr = handleKapuaQueryPredicates(queryPredicate, binds, cb, entityRoot, entityType);
-            expressions.add(expr);
-        }
+        Predicate[] jpaAndPredicates =
+                handlePredicate(
+                        andPredicate.getPredicates(),
+                        binds,
+                        cb,
+                        entityRoot,
+                        entityType);
 
-        return cb.and(expressions.toArray(new Predicate[]{}));
+        return cb.and(jpaAndPredicates);
+
     }
 
-    private static <E> Expression<Boolean> handleOrPredicate(OrPredicate orPredicate,
-                                                             Map<ParameterExpression, Object> binds,
-                                                             CriteriaBuilder cb,
-                                                             Root<E> entityRoot,
-                                                             EntityType<E> entityType)
+    private static <E> Predicate handleOrPredicate(OrPredicate orPredicate,
+                                                   Map<ParameterExpression, Object> binds,
+                                                   CriteriaBuilder cb,
+                                                   Root<E> entityRoot,
+                                                   EntityType<E> entityType)
             throws KapuaException {
-        List<Expression<Boolean>> exprs = new ArrayList<>();
-        for (QueryPredicate pred : orPredicate.getPredicates()) {
-            Expression<Boolean> expr = handleKapuaQueryPredicates(pred, binds, cb, entityRoot, entityType);
-            exprs.add(expr);
-        }
-        return cb.or(exprs.toArray(new Predicate[]{}));
+
+        Predicate[] jpaOrPredicates =
+                handlePredicate(
+                        orPredicate.getPredicates(),
+                        binds,
+                        cb,
+                        entityRoot,
+                        entityType);
+
+        return cb.or(jpaOrPredicates);
     }
 
-    private static <E> Expression<Boolean> handleAttributePredicate(AttributePredicate attrPred,
-                                                                    Map<ParameterExpression, Object> binds,
-                                                                    CriteriaBuilder cb,
-                                                                    Root<E> entityRoot,
-                                                                    EntityType<E> entityType)
+    private static <E> Predicate[] handlePredicate(List<QueryPredicate> orPredicates, Map<ParameterExpression, Object> binds, CriteriaBuilder cb, Root<E> entityRoot, EntityType<E> entityType) throws KapuaException {
+        Predicate[] jpaOrPredicates = new Predicate[orPredicates.size()];
+
+        for (int i = 0; i < orPredicates.size(); i++) {
+            Predicate expr = handleKapuaQueryPredicates(orPredicates.get(i), binds, cb, entityRoot, entityType);
+            jpaOrPredicates[i] = expr;
+        }
+        return jpaOrPredicates;
+    }
+
+    private static <E> Predicate handleAttributePredicate(AttributePredicate attrPred,
+                                                          Map<ParameterExpression, Object> binds,
+                                                          CriteriaBuilder cb,
+                                                          Root<E> entityRoot,
+                                                          EntityType<E> entityType)
             throws KapuaException {
-        Expression<Boolean> expr;
+        Predicate expr;
         String attrName = attrPred.getAttributeName();
 
         // Parse attributes
@@ -612,14 +634,14 @@ public class ServiceDAO {
                     strAttrValue = attrValue.toString().replace(LIKE, ESCAPE + LIKE).replace(ANY, ESCAPE + ANY);
                     ParameterExpression<String> pl = cb.parameter(String.class);
                     binds.put(pl, LIKE + strAttrValue + LIKE);
-                    expr = cb.like((Expression<String>) extractAttribute(entityRoot, attrName), pl);
+                    expr = cb.like(extractAttribute(entityRoot, attrName), pl);
                     break;
 
                 case STARTS_WITH:
                     strAttrValue = attrValue.toString().replace(LIKE, ESCAPE + LIKE).replace(ANY, ESCAPE + ANY);
                     ParameterExpression<String> psw = cb.parameter(String.class);
                     binds.put(psw, strAttrValue + LIKE);
-                    expr = cb.like((Expression<String>) extractAttribute(entityRoot, attrName), psw);
+                    expr = cb.like(extractAttribute(entityRoot, attrName), psw);
                     break;
 
                 case IS_NULL:
@@ -636,9 +658,9 @@ public class ServiceDAO {
 
                 case GREATER_THAN:
                     if (attrValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
+                        Comparable comparableAttrValue = (Comparable) attrValue;
                         Expression<? extends Comparable> comparableExpression = extractAttribute(entityRoot, attrName);
-                        Comparable comparablAttrValue = (Comparable) attrValue;
-                        expr = cb.greaterThan(comparableExpression, comparablAttrValue);
+                        expr = cb.greaterThan(comparableExpression, comparableAttrValue);
                     } else {
                         throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Trying to compare a non-comparable value");
                     }
@@ -647,8 +669,8 @@ public class ServiceDAO {
                 case GREATER_THAN_OR_EQUAL:
                     if (attrValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
                         Expression<? extends Comparable> comparableExpression = extractAttribute(entityRoot, attrName);
-                        Comparable comparablAttrValue = (Comparable) attrValue;
-                        expr = cb.greaterThanOrEqualTo(comparableExpression, comparablAttrValue);
+                        Comparable comparableAttrValue = (Comparable) attrValue;
+                        expr = cb.greaterThanOrEqualTo(comparableExpression, comparableAttrValue);
                     } else {
                         throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Trying to compare a non-comparable value");
                     }
@@ -657,8 +679,8 @@ public class ServiceDAO {
                 case LESS_THAN:
                     if (attrValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
                         Expression<? extends Comparable> comparableExpression = extractAttribute(entityRoot, attrName);
-                        Comparable comparablAttrValue = (Comparable) attrValue;
-                        expr = cb.lessThan(comparableExpression, comparablAttrValue);
+                        Comparable comparableAttrValue = (Comparable) attrValue;
+                        expr = cb.lessThan(comparableExpression, comparableAttrValue);
                     } else {
                         throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Trying to compare a non-comparable value");
                     }
@@ -666,8 +688,8 @@ public class ServiceDAO {
                 case LESS_THAN_OR_EQUAL:
                     if (attrValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
                         Expression<? extends Comparable> comparableExpression = extractAttribute(entityRoot, attrName);
-                        Comparable comparablAttrValue = (Comparable) attrValue;
-                        expr = cb.lessThanOrEqualTo(comparableExpression, comparablAttrValue);
+                        Comparable comparableAttrValue = (Comparable) attrValue;
+                        expr = cb.lessThanOrEqualTo(comparableExpression, comparableAttrValue);
                     } else {
                         throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Trying to compare a non-comparable value");
                     }
@@ -692,9 +714,9 @@ public class ServiceDAO {
      * @return The {@link Path} expression that matches the given {@code attributeName} parameter.
      * @since 1.0.0
      */
-    private static <E> Path extractAttribute(Root<E> entityRoot, String attributeName) {
+    private static <E, P> Path<P> extractAttribute(Root<E> entityRoot, String attributeName) {
 
-        Path<?> expressionPath;
+        Path<P> expressionPath;
         if (attributeName.contains(ATTRIBUTE_SEPARATOR)) {
             expressionPath = entityRoot.get(attributeName.split(ATTRIBUTE_SEPARATOR_ESCAPED)[0]).get(attributeName.split(ATTRIBUTE_SEPARATOR_ESCAPED)[1]);
         } else {
@@ -730,16 +752,8 @@ public class ServiceDAO {
                         AccessPermissionListResult accessPermissions = KapuaSecurityUtils.doPrivileged(() -> ACCESS_PERMISSION_SERVICE.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId()));
 
                         for (AccessPermission ap : accessPermissions.getItems()) {
-                            Permission p = ap.getPermission();
-                            if (p.getDomain() == null || domain.getName().equals(p.getDomain())) {
-                                if (p.getAction() == null || Actions.read.equals(p.getAction())) {
-                                    if (p.getGroupId() == null) {
-                                        groupPermissions.clear();
-                                        break;
-                                    } else {
-                                        groupPermissions.add(p);
-                                    }
-                                }
+                            if (checkGroupPermission(domain, groupPermissions, ap.getPermission())) {
+                                break;
                             }
                         }
 
@@ -753,17 +767,8 @@ public class ServiceDAO {
                             RolePermissionListResult rolePermissions = KapuaSecurityUtils.doPrivileged(() -> ROLE_PERMISSION_SERVICE.findByRoleId(role.getScopeId(), role.getId()));
 
                             for (RolePermission rp : rolePermissions.getItems()) {
-
-                                Permission p = rp.getPermission();
-                                if (p.getDomain() == null || domain.getName().equals(p.getDomain())) {
-                                    if (p.getAction() == null || Actions.read.equals(p.getAction())) {
-                                        if (p.getGroupId() == null) {
-                                            groupPermissions.clear();
-                                            break;
-                                        } else {
-                                            groupPermissions.add(p);
-                                        }
-                                    }
+                                if (checkGroupPermission(domain, groupPermissions, rp.getPermission())) {
+                                    break;
                                 }
                             }
                         }
@@ -789,7 +794,20 @@ public class ServiceDAO {
                 }
             }
         } else {
-            LOG.warn("Access Group is disabled");
+            LOG.warn("'Access Group Permission' feature is disabled");
         }
+    }
+
+    private static boolean checkGroupPermission(Domain domain, List<Permission> groupPermissions, Permission p) {
+        if ((p.getDomain() == null || domain.getName().equals(p.getDomain())) &&
+                (p.getAction() == null || Actions.read.equals(p.getAction()))) {
+            if (p.getGroupId() == null) {
+                groupPermissions.clear();
+                return true;
+            } else {
+                groupPermissions.add(p);
+            }
+        }
+        return false;
     }
 }
