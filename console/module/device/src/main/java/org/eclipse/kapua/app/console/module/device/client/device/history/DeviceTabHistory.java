@@ -185,7 +185,8 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
 
             @Override
             public void onUpdate() {
-                refresh();
+                grid.getView().refresh(true);
+                reload();
             }
         });
 
