@@ -25,6 +25,7 @@ import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
@@ -119,12 +120,25 @@ public class EndpointInfoServiceImpl
 
         //
         // Check duplicate endpoint
-        checkDuplicateEndpointInfo(
-                endpointInfo.getScopeId(),
-                endpointInfo.getSchema(),
-                endpointInfo.getDns(),
-                endpointInfo.getPort());
+        EndpointInfoQuery query = new EndpointInfoQueryImpl(endpointInfo.getScopeId());
+        query.setPredicate(
+                new AndPredicateImpl(
+                        new AttributePredicateImpl<>(EndpointInfoPredicates.SCHEMA, endpointInfo.getSchema()),
+                        new AttributePredicateImpl<>(EndpointInfoPredicates.DNS, endpointInfo.getDns()),
+                        new AttributePredicateImpl<>(EndpointInfoPredicates.PORT, endpointInfo.getPort()),
+                        new AttributePredicateImpl<>(EndpointInfoPredicates.ENTITY_ID, endpointInfo.getId(), Operator.NOT_EQUAL)
+                )
+        );
 
+        if (count(query) > 0) {
+             List<Map.Entry<String, Object>> uniquesFieldValues = new ArrayList<>();
+             uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(EndpointInfoPredicates.SCOPE_ID, endpointInfo.getScopeId()));
+             uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(EndpointInfoPredicates.SCHEMA, endpointInfo.getSchema()));
+             uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(EndpointInfoPredicates.DNS, endpointInfo.getDns()));
+             uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(EndpointInfoPredicates.PORT, endpointInfo.getPort()));
+
+             throw new KapuaEntityUniquenessException(EndpointInfo.TYPE, uniquesFieldValues);
+        }
         //
         // Do update
         return entityManagerSession.onTransactedInsert(em -> EndpointInfoDAO.update(em, endpointInfo));
