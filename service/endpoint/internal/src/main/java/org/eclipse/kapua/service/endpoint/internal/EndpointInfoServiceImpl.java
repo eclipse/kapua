@@ -25,6 +25,7 @@ import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
@@ -89,6 +90,7 @@ public class EndpointInfoServiceImpl
         // Check duplicate endpoint
         checkDuplicateEndpointInfo(
                 endpointInfoCreator.getScopeId(),
+                null,
                 endpointInfoCreator.getSchema(),
                 endpointInfoCreator.getDns(),
                 endpointInfoCreator.getPort());
@@ -120,25 +122,14 @@ public class EndpointInfoServiceImpl
 
         //
         // Check duplicate endpoint
-        EndpointInfoQuery query = new EndpointInfoQueryImpl(endpointInfo.getScopeId());
-        query.setPredicate(
-                new AndPredicateImpl(
-                        new AttributePredicateImpl<>(EndpointInfoPredicates.SCHEMA, endpointInfo.getSchema()),
-                        new AttributePredicateImpl<>(EndpointInfoPredicates.DNS, endpointInfo.getDns()),
-                        new AttributePredicateImpl<>(EndpointInfoPredicates.PORT, endpointInfo.getPort()),
-                        new AttributePredicateImpl<>(EndpointInfoPredicates.ENTITY_ID, endpointInfo.getId(), Operator.NOT_EQUAL)
-                )
-        );
-
-        if (count(query) > 0) {
-             List<Map.Entry<String, Object>> uniquesFieldValues = new ArrayList<>();
-             uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(EndpointInfoPredicates.SCOPE_ID, endpointInfo.getScopeId()));
-             uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(EndpointInfoPredicates.SCHEMA, endpointInfo.getSchema()));
-             uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(EndpointInfoPredicates.DNS, endpointInfo.getDns()));
-             uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(EndpointInfoPredicates.PORT, endpointInfo.getPort()));
-
-             throw new KapuaEntityUniquenessException(EndpointInfo.TYPE, uniquesFieldValues);
-        }
+        //
+        // Check duplicate endpoint
+        checkDuplicateEndpointInfo(
+                endpointInfo.getScopeId(),
+                endpointInfo.getId(),
+                endpointInfo.getSchema(),
+                endpointInfo.getDns(),
+                endpointInfo.getPort());
         //
         // Do update
         return entityManagerSession.onTransactedInsert(em -> EndpointInfoDAO.update(em, endpointInfo));
@@ -254,22 +245,28 @@ public class EndpointInfoServiceImpl
     /**
      * Checks whether or not another {@link EndpointInfo} already exists with the given values.
      *
-     * @param scopeId The ScopeId of the {@link EndpointInfo}
-     * @param schema  The {@link EndpointInfo#getSchema()}  value.
-     * @param dns     The {@link EndpointInfo#getDns()}  value.
-     * @param port    The {@link EndpointInfo#getPort()} value.
+     * @param scopeId  The ScopeId of the {@link EndpointInfo}
+     * @param entityId The entity id, if exists. On update you need to exclude the same entity.
+     * @param schema   The {@link EndpointInfo#getSchema()}  value.
+     * @param dns      The {@link EndpointInfo#getDns()}  value.
+     * @param port     The {@link EndpointInfo#getPort()} value.
      * @throws KapuaException if the values provided matches another {@link EndpointInfo}
      * @since 1.0.0
      */
-    private void checkDuplicateEndpointInfo(KapuaId scopeId, String schema, String dns, int port) throws KapuaException {
-        EndpointInfoQuery query = new EndpointInfoQueryImpl(scopeId);
-        query.setPredicate(
-                new AndPredicateImpl(
-                        new AttributePredicateImpl<>(EndpointInfoPredicates.SCHEMA, schema),
-                        new AttributePredicateImpl<>(EndpointInfoPredicates.DNS, dns),
-                        new AttributePredicateImpl<>(EndpointInfoPredicates.PORT, port)
-                )
+    private void checkDuplicateEndpointInfo(KapuaId scopeId, KapuaId entityId, String schema, String dns, int port) throws KapuaException {
+
+        AndPredicate andPredicate = new AndPredicateImpl(
+                new AttributePredicateImpl<>(EndpointInfoPredicates.SCHEMA, schema),
+                new AttributePredicateImpl<>(EndpointInfoPredicates.DNS, dns),
+                new AttributePredicateImpl<>(EndpointInfoPredicates.PORT, port)
         );
+
+        if (entityId != null) {
+            andPredicate.and(new AttributePredicateImpl<>(EndpointInfoPredicates.ENTITY_ID, entityId, Operator.NOT_EQUAL));
+        }
+
+        EndpointInfoQuery query = new EndpointInfoQueryImpl(scopeId);
+        query.setPredicate(andPredicate);
 
         if (count(query) > 0) {
             List<Map.Entry<String, Object>> uniquesFieldValues = new ArrayList<>();
