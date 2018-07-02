@@ -99,6 +99,8 @@ public class CredentialAddDialog extends EntityAddEditDialog {
                 password.setAllowBlank(selectionChangedEvent.getSelectedItem().getValue() != GwtCredentialType.PASSWORD);
                 confirmPassword.setVisible(selectionChangedEvent.getSelectedItem().getValue() == GwtCredentialType.PASSWORD);
                 confirmPassword.setAllowBlank(selectionChangedEvent.getSelectedItem().getValue() != GwtCredentialType.PASSWORD);
+                password.clearInvalid();
+                confirmPassword.clearInvalid();
             }
         });
         credentialFormPanel.add(credentialType);
