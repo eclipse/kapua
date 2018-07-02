@@ -17,13 +17,13 @@ destroy_old_machines(){
 }
 
 start_develop(){
-    echo 'Kapua vagrant develop machine... starting'
+    echo 'Starting Kapua Vagrant develop machine...'
 
     vagrant up
 
-    echo 'Kapua vagrant develop machine... starting DONE'
+    echo 'Starting Kapua Vagrant develop machine... DONE!'
     echo "Please type 'vagrant ssh' to connect to the machine."
-    echo "Follow the instructions to start the kapua components from the machine"
+    echo "Follow the instructions to start the Kapua components from the machine"
 }
 
 print_usage(){

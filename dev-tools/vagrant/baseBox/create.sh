@@ -9,11 +9,10 @@
 #
 # Contributors:
 #     Eurotech - initial API and implementation
-#
 #*******************************************************************************
 
 BASEDIR=$(dirname "$0")
-KAPUA_BOX_VERSION=0.7
+KAPUA_BOX_VERSION=0.8
 KAPUA_BOX_NAME="kapua-dev-box/${KAPUA_BOX_VERSION}"
 KAPUA_BOX_TMP_DIR="/tmp/kapua-dev-box"
 
@@ -30,8 +29,9 @@ if vagrant box list | grep -q "${KAPUA_BOX_NAME}"; then
    echo
 
    if [[ ${REPLY} =~ ^[Yy]$ ]]; then
-      echo 'Removing base kapua box named: ' ${KAPUA_BOX_NAME} ' ...'
+      echo "Removing base kapua box named: ${KAPUA_BOX_NAME}..."
       vagrant box remove ${KAPUA_BOX_NAME}
+      echo "Removing base kapua box named: ${KAPUA_BOX_NAME}... DONE!"
    fi
 fi
 
@@ -39,7 +39,7 @@ fi
 # with the creation. Otherwise the user hasn't confirmed the removal
 # so skip.
 if ! vagrant box list | grep -q "${KAPUA_BOX_NAME}"; then
-   echo "Creating base kapua box named ${KAPUA_BOX_NAME} ..."
+   echo "Creating base Kapua box named ${KAPUA_BOX_NAME}..."
 
    rm -rf ${KAPUA_BOX_TMP_DIR}
    mkdir -p ${KAPUA_BOX_TMP_DIR}
@@ -57,5 +57,5 @@ if ! vagrant box list | grep -q "${KAPUA_BOX_NAME}"; then
 
    rm -rf ${KAPUA_BOX_TMP_DIR}
 
-   echo '... done.'
+   echo "Creating base Kapua box named ${KAPUA_BOX_NAME}... DONE!"
 fi

@@ -40,11 +40,11 @@ Vagrant.configure("2") do |config|
 
   # Share the kapua directory with the vagrant machine to allow
   # the ActiveMQ broker to access the kapua code (jars)
-  config.vm.synced_folder "../../../../", "/kapua",
+  config.vm.synced_folder "../../", "/kapua",
     owner: "vagrant", group: "vagrant",
     mount_options: ["dmode=775", "fmode=664"]
 
-  config.vm.box = "kapua-dev-box/0.7"
+  config.vm.box = "kapua-dev-box/0.8"
   config.vm.box_check_update = false
 
   # DBMS
@@ -78,15 +78,17 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provision "shell", env: env_vars, inline: <<-SHELL
-    openssl req -x509 -newkey rsa:4096 -keyout /home/vagrant/key.pem -out /home/vagrant/cert.pem -days 365 -nodes -subj '/O=Eclipse Kapua/C=XX'
-    openssl pkcs8 -topk8 -in /home/vagrant/key.pem -out /home/vagrant/key.pk8 -nocrypt
+    echo "Creating Kapua certificates..."
+    openssl req -x509 -newkey rsa:4096 -keyout /home/vagrant/key.pem -out /home/vagrant/cert.pem -days 365 -nodes -subj '/O=Eclipse Kapua/C=XX' > /dev/null
+    openssl pkcs8 -topk8 -in /home/vagrant/key.pem -out /home/vagrant/key.pk8 -nocrypt > /dev/null
     rm /home/vagrant/key.pem
+    echo "Creating Kapua certificates... DONE!"
   SHELL
 
   config.vm.provision "shell", env: env_vars, inline: <<-SHELL
 
     # Setup permanent environment vars
-    sudo ln -sf /kapua/dev-tools/src/main/vagrant/develop/etc/profile.d/kapua_env.sh /etc/profile.d/kapua_env.sh
+    sudo ln -sf /kapua/dev-tools/vagrant/develop/envs/kapua_env.sh /etc/profile.d/kapua_env.sh
     export JETTY_VERSION=${JETTY_VERSION}
 
     ###########################
@@ -94,31 +96,33 @@ Vagrant.configure("2") do |config|
     ###########################
 
     # Run the database engine
-    su --login -c "java -cp /usr/local/h2database/h2database-${H2DB_VERSION}/h2*.jar org.h2.tools.Server -baseDir /home/vagrant/H2/kapua -webAllowOthers -tcpAllowOthers -tcpPort 3306 &" vagrant
+    su --login -c "java -cp /usr/local/h2/h2*.jar org.h2.tools.Server -baseDir /home/vagrant/H2/kapua -webAllowOthers -tcpAllowOthers -tcpPort 3306 &" vagrant
 
     # Create the initial database
-    java -cp /usr/local/h2database/h2database-${H2DB_VERSION}/h2*.jar org.h2.tools.Shell -url jdbc:h2:tcp://localhost:3306/kapuadb -user "root" -password "password" -sql "CREATE SCHEMA IF NOT EXISTS kapuadb; \
+    java -cp /usr/local/h2/h2*.jar org.h2.tools.Shell -url jdbc:h2:tcp://localhost:3306/kapuadb -user "root" -password "password" -sql "CREATE SCHEMA IF NOT EXISTS kapuadb; \
     CREATE USER IF NOT EXISTS kapua PASSWORD 'kapua'; \
     GRANT ALL ON SCHEMA kapuadb TO kapua;"
 
     ############################
     ### Elasticsearch Engine ###
     ############################
-
     # needed by the elasticsearch 5.4.0
-    sudo bash -c "echo 'cluster.name: kapua-datastore' >> /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/config/elasticsearch.yml"
-    sudo bash -c "echo 'transport.host: ${BINDING_IP}' >> /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/config/elasticsearch.yml"
-    sudo bash -c "echo 'transport.tcp.port: 9300' >> /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/config/elasticsearch.yml"
-    sudo bash -c "echo 'transport.tcp.connect_timeout: 30s' >> /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/config/elasticsearch.yml"
-    sudo bash -c "echo 'http.host: ${BINDING_IP}' >> /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/config/elasticsearch.yml"
-    sudo bash -c "echo 'http.port: 9200' >> /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/config/elasticsearch.yml"
-    sudo bash -c "echo 'transport.ping_schedule: -1' >> /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/config/elasticsearch.yml"
+
+    ELASTICSEARCH_INSTALL_DIR=/usr/local/elasticsearch/
+
+    sudo bash -c "echo 'cluster.name: kapua-datastore' >>      ${ELASTICSEARCH_INSTALL_DIR}/config/elasticsearch.yml"
+    sudo bash -c "echo 'transport.host: ${BINDING_IP}' >>      ${ELASTICSEARCH_INSTALL_DIR}/config/elasticsearch.yml"
+    sudo bash -c "echo 'transport.tcp.port: 9300' >>           ${ELASTICSEARCH_INSTALL_DIR}/config/elasticsearch.yml"
+    sudo bash -c "echo 'transport.tcp.connect_timeout: 30s' >> ${ELASTICSEARCH_INSTALL_DIR}/config/elasticsearch.yml"
+    sudo bash -c "echo 'http.host: ${BINDING_IP}' >>           ${ELASTICSEARCH_INSTALL_DIR}/config/elasticsearch.yml"
+    sudo bash -c "echo 'http.port: 9200' >>                    ${ELASTICSEARCH_INSTALL_DIR}/config/elasticsearch.yml"
+    sudo bash -c "echo 'transport.ping_schedule: -1' >>        ${ELASTICSEARCH_INSTALL_DIR}/config/elasticsearch.yml"
 
     # needed when using OpenJDK
-    sudo bash -c "echo '-XX:-AssumeMP' >> /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/config/jvm.options"
+    sudo bash -c "echo '-XX:-AssumeMP' >> ${ELASTICSEARCH_INSTALL_DIR}/config/jvm.options"
 
     # Set folder permissions
-    sudo chown -R vagrant /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}
+    sudo chown -R vagrant ${ELASTICSEARCH_INSTALL_DIR}
   SHELL
 
   config.vm.define "develop", primary: true, autostart: true do |develop|
@@ -130,24 +134,25 @@ Vagrant.configure("2") do |config|
     config.vm.provision "shell", env: env_vars, inline: <<-SHELL
 
       # Stop H2 instance
-      pkill -f h2database
+      pkill -f h2
 
       ######################
       ### ActiveMQ setup ###
       ######################
 
       # ActiveMQ post-install setup
-      cd /usr/local/activemq/apache-activemq-${ACTIVEMQ_VERSION}
+      cd /usr/local/activemq/
       rm conf/activemq.xml
 
-      ln -s /kapua/assembly/broker/src/main/resources/conf/broker/activemq.xml conf/activemq.xml
-      ln -s /kapua/assembly/broker/src/main/resources/conf/broker/camel.xml conf/camel.xml
-      echo 'configuring conf/log4j.properties'
+      ln -s /kapua/assembly/broker/configurations/activemq.xml conf/activemq.xml
+      ln -s /kapua/assembly/broker/configurations/camel.xml conf/camel.xml
+      echo 'Configuring conf/log4j.properties...'
       sudo sed -i 's/log4j.appender.logfile.layout.ConversionPattern=%d | %-5p | %m | %c | %t%n/log4j.appender.logfile.layout.ConversionPattern=%d | %-5p | %t | %c | %m%n/g' conf/log4j.properties
       sudo sed -i 's/log4j.appender.audit.layout.ConversionPattern=%-5p | %m | %t%n/log4j.appender.audit.layout.ConversionPattern=%-5p | %t%n | %m/g' conf/log4j.properties
+      echo 'Configuring conf/log4j.properties... DONE!'
 
-      cp /kapua/dev-tools/src/main/vagrant/develop/broker/update-kapua-jars-cfg.sh .
-      cp /kapua/dev-tools/src/main/vagrant/develop/broker/start-broker.sh .
+      cp /kapua/dev-tools/vagrant/develop/broker/update-kapua-jars-cfg.sh .
+      cp /kapua/dev-tools/vagrant/develop/broker/start-broker.sh .
       chmod 555 update-kapua-jars-cfg.sh
       chmod 555 start-broker.sh
       
@@ -156,24 +161,25 @@ Vagrant.configure("2") do |config|
       sudo sed -i 's/ACTIVEMQ_VERSION/'"$ACTIVEMQ_VERSION"'/g' update-kapua-jars-cfg.sh
       sudo sed -i 's/ACTIVEMQ_VERSION/'"$ACTIVEMQ_VERSION"'/g' start-broker.sh
       sudo sed -i 's/ARTEMIS_VERSION/'"$ARTEMIS_VERSION"'/g' start-broker.sh
-      sudo chown -R vagrant:vagrant /usr/local/activemq/apache-activemq-${ACTIVEMQ_VERSION}
+      sudo chown -R vagrant:vagrant /usr/local/activemq/
 
       ##############################
-      ### ActiveMQ Artemis setup ###
+      ### Artemis setup ###
       ##############################
-      cd /usr/local/artemis/apache-artemis-${ARTEMIS_VERSION}/kapua
-      echo "copy broker.xml"
-      sudo cp /kapua/assembly/events-broker/etc/broker.xml etc/
+      cd /usr/local/artemis/kapua
+      echo "Setting up Artemis..."
+      sudo cp /kapua/assembly/events-broker/configurations/broker.xml etc/
       sudo sed -i '/<acceptor.*5672.*<\\/acceptor>/! s|<acceptor.*</acceptor>||g' etc/broker.xml
-      sudo sed -i "s|/usr/local/apache-artemis-${ARTEMIS_VERSION}|/usr/local/artemis/apache-artemis-${ARTEMIS_VERSION}|g" etc/artemis.profile
+      sudo sed -i "s|/usr/local/artemis|/usr/local/artemis|g" etc/artemis.profile
       sudo sed -i "s|localhost:8161|${BINDING_IP}:8161|g" etc/bootstrap.xml
-      sudo chown -R vagrant:vagrant /usr/local/artemis/apache-artemis-${ARTEMIS_VERSION}
+      sudo chown -R vagrant:vagrant /usr/local/artemis/
+      echo "Setting up Artemis... DONE!"
 
       ##########################
       ### Jetty post install ###
       ##########################
-      cd /usr/local/jetty/jetty-distribution-${JETTY_VERSION}
-      cp /kapua/dev-tools/src/main/vagrant/develop/jetty/*.sh .
+      cd /usr/local/jetty
+      cp /kapua/dev-tools/vagrant/develop/jetty/*.sh .
       chmod 555 start-jetty.sh
       chmod 555 update-kapua-war.sh
       sudo sed -i 's/KAPUA_VERSION/'"$KAPUA_VERSION"'/g' update-kapua-war.sh
@@ -181,9 +187,9 @@ Vagrant.configure("2") do |config|
     SHELL
 
     config.vm.provision "shell", env: env_vars, run: "always", inline: <<-SHELL
-      setsid su --login -c "/usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/bin/elasticsearch -d" vagrant
-      setsid su --login -c "java -cp /usr/local/h2database/h2database-${H2DB_VERSION}/h2*.jar org.h2.tools.Server -baseDir /home/vagrant/H2/kapua -webAllowOthers -tcpAllowOthers -tcpPort 3306 &" vagrant
-      setsid su --login -c "/usr/local/artemis/apache-artemis-2.2.0/kapua/bin/artemis-service start" vagrant
+      setsid su --login -c "java -cp /usr/local/h2/h2*.jar org.h2.tools.Server -baseDir /home/vagrant/H2/kapua -webAllowOthers -tcpAllowOthers -tcpPort 3306 &" vagrant
+      setsid su --login -c "/usr/local/elasticsearch/bin/elasticsearch -d" vagrant
+      setsid su --login -c "/usr/local/artemis/kapua/bin/artemis-service start" vagrant
     SHELL
 
   end
