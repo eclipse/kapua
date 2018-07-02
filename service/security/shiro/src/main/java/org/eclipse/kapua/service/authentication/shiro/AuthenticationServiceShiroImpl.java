@@ -130,7 +130,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
         //
         // Login the user
-        AccessToken accessToken;
+        AccessToken accessToken = null;
         Subject currentUser = null;
         try {
             // Shiro login
@@ -151,7 +151,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             LOG.info("Login for thread '{}' - '{}' - '{}'", Thread.currentThread().getId(), Thread.currentThread().getName(), shiroSubject);
 
         } catch (ShiroException se) {
-            throw handleTokenLoginException(se, currentUser, shiroAuthenticationToken);
+            handleTokenLoginException(se, currentUser, shiroAuthenticationToken);
         }
 
         return accessToken;
@@ -336,7 +336,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         }
     }
 
-    private KapuaException handleTokenLoginException(ShiroException se, Subject currentSubject, AuthenticationToken authenticationToken) throws KapuaException {
+    private void handleTokenLoginException(ShiroException se, Subject currentSubject, AuthenticationToken authenticationToken) throws KapuaException {
 
         if (currentSubject != null) {
             currentSubject.logout();
@@ -359,7 +359,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         }
 
         KapuaDelayUtil.executeDelay();
-        return kae;
+        throw kae;
     }
 
     /**
