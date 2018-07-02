@@ -108,7 +108,7 @@
 
         <!-- -->
         <!-- Database configuration for local installs and tests -->
-        <!-- Database host address is the one exported by the dev-tools/src/vagrant/Vagrantfile -->
+        <!-- Database host address is the one exported by the dev-tools/vagrant/Vagrantfile -->
         <db.host>192.168.33.10</db.host>
         <db.name>kapuadb</db.name>
         <db.schema>kapuadb</db.schema>

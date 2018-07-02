@@ -233,6 +233,6 @@ By manually installing RPMs you won't receive updates for those packages. You wi
 
 After Vagrant is installed you can run Kapua by running:
 
-    cd dev-tools/src/main/vagrant
+    cd dev-tools/vagrant
     sudo ./start.sh base-box
 
