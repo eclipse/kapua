@@ -19,7 +19,7 @@ needs also to be installed.
 To create the Kapua base box run the script with `base-box` as first parameter from the vagrant directory of the dev-tools module
 
 ```
-$ cd $KAPUA_GITHUB_HOME_DIR/dev-tools/src/main/vagrant
+$ cd $KAPUA_GITHUB_HOME_DIR/dev-tools/vagrant
 $ ./start.sh base-box
 ```
 
@@ -34,7 +34,7 @@ Once the `base-box` is created, from the same directory, it's possible to invoke
 
 ```
 $ cd $KAPUA_GITHUB_HOME_DIR
-$ cd dev-tools/src/main/vagrant
+$ cd dev-tools/vagrant
 $ ./start.sh develop
 ```
 
@@ -42,10 +42,10 @@ The machine can be created every time you need (running the same commands) or, a
 If you choose to start it again instead of recreating, you should enter the Vagrant machine and start manually the H2 service (please replace ${H2DB_VERSION} with the correct value):
 ```
 $ cd $KAPUA_GITHUB_HOME_DIR
-$ cd dev-tools/src/main/vagrant
+$ cd dev-tools/vagrant
 $ vagrant up
 $ vagrant ssh
-$ java -cp /usr/local/h2database/h2database-${H2DB_VERSION}/h2*.jar org.h2.tools.Server -baseDir /home/vagrant/H2/kapua -webAllowOthers -tcpAllowOthers -tcpPort 3306 &
+$ java -cp /usr/local/h2/h2*.jar org.h2.tools.Server -baseDir /home/vagrant/H2/kapua -webAllowOthers -tcpAllowOthers -tcpPort 3306 &
 ```
 
 ## Running the Kapua dev-box
@@ -64,7 +64,7 @@ $ vagrant ssh
 
 Move under the _Message broker_ directory:
 ```
-$ cd /usr/local/activemq/apache-activemq-${ACTIVEMQ_VERSION}
+$ cd /usr/local/activemq/
 ```
 
 And start it.
@@ -80,7 +80,7 @@ bin/activemq stop
 
 The servlet container (Jetty) directory is:
 ```
-$ /usr/local/jetty/jetty-distribution-${JETTY_VERSION}
+$ /usr/local/jetty/
 ```
 There is a script to start the Jetty container:
 ```

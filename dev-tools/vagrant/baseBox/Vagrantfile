@@ -142,7 +142,7 @@ Vagrant.configure(2) do |config|
     --clustered false \
     --data ./data/kapua --default-port 61616 \
     --disable-persistence false \
-    --home /usr/local/apache-artemis-${ARTEMIS_VERSION} \
+    --home /usr/local/artemis \
     --host ${BINDING_IP} \
     --name kapua \
     --password password \
