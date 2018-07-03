@@ -11,14 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.connector;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.converter.Converter;
 import org.eclipse.kapua.converter.KapuaConverterException;
-import org.eclipse.kapua.processor.KapuaProcessorException;
 import org.eclipse.kapua.processor.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
+import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 
 /**
@@ -28,23 +31,28 @@ import io.vertx.core.Vertx;
  * @param <M> Converter message type (optional)
  * @param <P> Processor message type
  */
-public abstract class AbstractConnector<M, P> {
+public abstract class AbstractConnector<M, P> extends AbstractVerticle {
 
     protected final static Logger logger = LoggerFactory.getLogger(AbstractConnector.class);
 
     protected Vertx vertx;
     protected Converter<M, P> converter;
     protected Processor<P> processor;
+    @SuppressWarnings("rawtypes")
+    protected Processor errorProcessor;
+    private boolean connected;
 
     /**
      * Default protected constructor
      * @param Vertx instance
      * @param converter message instance
      * @param processor processor instance
+     * @param errorProcessor error processor instance (handles messages errors)
      */
-    protected AbstractConnector(Vertx vertx, Converter<M, P> converter, Processor<P> processor) {
+    protected AbstractConnector(Vertx vertx, Converter<M, P> converter, Processor<P> processor, @SuppressWarnings("rawtypes") Processor errorProcessor) {
         this.converter = converter;
         this.processor = processor;
+        this.errorProcessor = errorProcessor;
         this.vertx = vertx;
     }
 
@@ -54,7 +62,7 @@ public abstract class AbstractConnector<M, P> {
      * @param processor processor instance
      */
     protected AbstractConnector(Vertx vertx, Processor<P> processor) {
-        this(vertx, null, processor);
+        this(vertx, null, processor, null);
     }
 
     /**
@@ -79,12 +87,32 @@ public abstract class AbstractConnector<M, P> {
      */
     protected abstract MessageContext<M> convert(MessageContext<?> message) throws KapuaConverterException;
 
-    public void start(Future<Void> startFuture) throws KapuaConnectorException {
+    public boolean isConnected() {
+        return connected;
+    }
+
+    protected void setConnected(boolean connected) {
+        this.connected = connected;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void start(Future<Void> startFuture) throws Exception {
         logger.debug("Starting connector...");
         Future<Void> composerFuture = Future.future();
         composerFuture.compose(mapper -> {
             Future<Void> internalFuture = Future.future();
             startInternal(internalFuture);
+            return internalFuture;
+        })
+        .compose(mapper -> {
+            Future<Void> internalFuture = Future.future();
+            if(errorProcessor != null) {
+                errorProcessor.start(internalFuture);
+            }
+            else {
+                internalFuture.complete();
+            }
             return internalFuture;
         })
         .setHandler(result -> {
@@ -101,24 +129,53 @@ public abstract class AbstractConnector<M, P> {
     }
 
     @SuppressWarnings("unchecked")
-    protected void handleMessage(MessageContext<?> message) throws KapuaConnectorException, KapuaConverterException, KapuaProcessorException {
+    //TODO choose the exception type!!!
+    protected void handleMessage(MessageContext<?> message, Handler<AsyncResult<Void>> result) throws Exception {
         MessageContext<M> msg = convert(message);
-        MessageContext<P> convertedMessage = null;
-        if (converter != null) {
-            convertedMessage = converter.convert(msg);
-        } else {
-            convertedMessage = (MessageContext<P>) msg;
-        }
-
-        processor.process(convertedMessage);
+        Future<Void> composerFuture = Future.future();
+        composerFuture.compose(mapper -> {
+            Future<Void> internalFuture = Future.future();
+            try {
+                MessageContext<P> convertedMessage = null;
+                if (converter != null) {
+                    convertedMessage = converter.convert(msg);
+                } else {
+                    convertedMessage = (MessageContext<P>) msg;
+                }
+                processor.process(convertedMessage, internalFuture);
+            } catch (KapuaException e) {
+                internalFuture.fail(e);
+            }
+            return internalFuture;
+        })
+        .setHandler(ar -> {
+            if (ar.succeeded()) {
+                result.handle(Future.succeededFuture());
+            } else {
+                result.handle(Future.failedFuture(ar.cause()));
+            }
+        });
+        composerFuture.complete();
     }
 
-    public void stop(Future<Void> stopFuture) throws KapuaConnectorException {
+    @SuppressWarnings("unchecked")
+    @Override
+    public void stop(Future<Void> stopFuture) throws Exception {
         logger.debug("Stopping connector...");
         Future<Void> composerFuture = Future.future();
         composerFuture.compose(mapper -> {
             Future<Void> internalFuture = Future.future();
             processor.stop(internalFuture);
+            return internalFuture;
+        })
+        .compose(mapper -> {
+            Future<Void> internalFuture = Future.future();
+            if(errorProcessor != null) {
+                errorProcessor.stop(internalFuture);
+            }
+            else {
+                internalFuture.complete();
+            }
             return internalFuture;
         })
         .setHandler(result -> {
@@ -132,4 +189,5 @@ public abstract class AbstractConnector<M, P> {
         });
         stopInternal(composerFuture);
     }
+
 }

@@ -57,6 +57,7 @@ public class ClassUtil {
      * @return
      * @throws KapuaException
      */
+    @SuppressWarnings("unchecked")
     public static <T> T newInstance(String clazz, Class<T> defaultInstance, Class<?>[] parameterTypes, Object[] parameters) throws KapuaException {
         logger.info("Initializing instance...");
         T instance;

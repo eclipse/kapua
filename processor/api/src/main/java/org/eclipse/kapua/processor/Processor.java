@@ -11,15 +11,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.processor;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.connector.MessageContext;
 
+import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
+import io.vertx.core.Handler;
 
 public interface Processor<T> {
 
     public void start(Future<Void> future);
 
-    public void process(MessageContext<T> message) throws KapuaProcessorException;
+    public void process(MessageContext<T> message, Handler<AsyncResult<Void>> result) throws KapuaException;
 
     public void stop(Future<Void> future);
+
 }

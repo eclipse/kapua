@@ -18,6 +18,9 @@ public interface Converter<F,T> {
     public static final String MESSAGE_DESTINATION = new String("message-destination");
     public static final String MESSAGE_QOS = new String("message-qos");
     public static final String MESSAGE_TYPE = new String("message-type");
+    public static final String CONNECTION_ID = new String("connection-id");
+    //TODO it's the same field in org.eclipse.kapua.broker.core.message.MessageConstants. move them to a shared place
+    public static final String HEADER_KAPUA_CONNECTION_ID = "KAPUA_CONNECTION_ID";
 
     public MessageContext<T> convert(MessageContext<F> message) throws KapuaConverterException;
 }

@@ -164,6 +164,8 @@
                                 uri="tcp://0.0.0.0:61616?transport.maximumConnections=1000&amp;transport.socketBufferSize=131072&amp;ioBufferSize=16384&amp;transport.activeMQSubscriptionPrefetch=32766&amp;transport.publishDollarTopics=true&amp;transport.subscriptionStrategy=mqtt-virtual-topic-subscriptions"/>
             <transportConnector name="ws"
                                 uri="ws://0.0.0.0:61614?maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600&amp;transport.publishDollarTopics=true&amp;transport.subscriptionStrategy=mqtt-virtual-topic-subscriptions"/>
+            <transportConnector name="amqp"
+                                uri="amqp+nio://0.0.0.0:5672?maximumConnections=1000&amp;wireFormat.maxFrameSize=1048576" />
         </transportConnectors>
         <!-- NOTE:
         The following template shows how to configure a network of brokers (i.e. a broker cluster).
@@ -205,7 +207,7 @@
         -->
     </broker>
 
-    <import resource="camel.xml"/>
+    <!--<import resource="camel.xml"/>-->
     <!--<import resource="camel-experimental.xml"/>-->
 
 </beans>

@@ -23,6 +23,10 @@ public class MessageContext<M> {
 
     private M message;
     private Map<String, Object> properties;
+    /**
+     * Field used to propagate exception to the error handler if defined
+     */
+    private Exception error;
 
     public MessageContext(M message) {
         this.message = message;
@@ -40,6 +44,14 @@ public class MessageContext<M> {
 
     public void setMessage(M message) {
         this.message = message;
+    }
+
+    public Exception getError() {
+        return error;
+    }
+
+    public void setError(Exception error) {
+        this.error = error;
     }
 
     public Map<String, Object> getProperties() {
