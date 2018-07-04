@@ -65,6 +65,7 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
     protected SelectionMode selectionMode = SelectionMode.SINGLE;
     protected boolean keepSelectedItemsAfterLoad = true;
     protected boolean entityGridConfigured;
+    private EntityGridLoadListener<M> entityGridLoadListener;
 
     protected EntityGrid(AbstractEntityView<M> entityView, GwtSession currentSession) {
         super(new FitLayout());
@@ -161,7 +162,11 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
 
         //
         // Grid Data Load Listener
-        EntityGridLoadListener<M> entityGridLoadListener = new EntityGridLoadListener<M>(this, entityStore);
+        if (EntityFilterPanel.getSearchButton() != null && EntityFilterPanel.getResetButton() != null) {
+            entityGridLoadListener = new EntityGridLoadListener<M>(this, entityStore, EntityFilterPanel.getSearchButton(), EntityFilterPanel.getResetButton());
+        } else {
+            entityGridLoadListener = new EntityGridLoadListener<M>(this, entityStore);
+        }
         entityGridLoadListener.setKeepSelectedOnLoad(keepSelectedItemsAfterLoad);
 
         entityLoader.addLoadListener(entityGridLoadListener);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -34,8 +34,8 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 public abstract class EntityFilterPanel<M extends GwtEntityModel> extends ContentPanel {
 
     private final VerticalPanel fieldsPanel;
-    private final Button searchButton;
-    private final Button resetButton;
+    private static Button searchButton;
+    private static Button resetButton;
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     private static final int WIDTH = 200;
@@ -106,4 +106,12 @@ public abstract class EntityFilterPanel<M extends GwtEntityModel> extends Conten
     public abstract void resetFields();
 
     public abstract void doFilter();
+
+    public static Button getSearchButton() {
+        return searchButton;
+    }
+
+    public static Button getResetButton() {
+        return resetButton;
+    }
 }
