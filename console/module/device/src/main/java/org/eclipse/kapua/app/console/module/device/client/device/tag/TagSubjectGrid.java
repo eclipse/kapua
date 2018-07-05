@@ -114,6 +114,7 @@ public class TagSubjectGrid extends EntityGrid<GwtDevice> {
             query.setPredicates(predicates);
         }
         refresh();
+        entityPagingToolbar.enable();
     }
 
     @Override
