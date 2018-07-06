@@ -162,11 +162,7 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
 
         //
         // Grid Data Load Listener
-        if (EntityFilterPanel.getSearchButton() != null && EntityFilterPanel.getResetButton() != null) {
-            entityGridLoadListener = new EntityGridLoadListener<M>(this, entityStore, EntityFilterPanel.getSearchButton(), EntityFilterPanel.getResetButton());
-        } else {
-            entityGridLoadListener = new EntityGridLoadListener<M>(this, entityStore);
-        }
+        entityGridLoadListener = new EntityGridLoadListener<M>(this, entityStore, EntityFilterPanel.getSearchButton(), EntityFilterPanel.getResetButton());
         entityGridLoadListener.setKeepSelectedOnLoad(keepSelectedItemsAfterLoad);
 
         entityLoader.addLoadListener(entityGridLoadListener);
