@@ -457,7 +457,7 @@ public class DeviceConfigPanel extends LayoutContainer {
             field.setMaxLength(1);
             field.setValidator((CharValidator) validator);
         }
-        if (validator != null && validator instanceof StringValidator && field.getId().equals("WireGraph")) {
+        if (validator != null && validator instanceof StringValidator && !param.getId().equals("WireGraph")) {
             field.setValidator((StringValidator) validator);
         }
         return field;
