@@ -130,6 +130,7 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
         initialized = true;
 
         loader.load();
+        pagingToolBar.enable();
     }
 
     private void initToolBar() {
@@ -150,6 +151,7 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
 
                     refreshProcess = false;
                     refreshButton.setEnabled(true);
+                    pagingToolBar.enable();
                 }
             }
         });
