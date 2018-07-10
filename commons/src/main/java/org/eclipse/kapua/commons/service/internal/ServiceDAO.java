@@ -433,7 +433,7 @@ public class ServiceDAO {
 
         //
         // SELECT
-        criteriaSelectQuery.select(cb.count(entityRoot));
+        criteriaSelectQuery.select(cb.countDistinct(entityRoot));
 
         //
         // WHERE
