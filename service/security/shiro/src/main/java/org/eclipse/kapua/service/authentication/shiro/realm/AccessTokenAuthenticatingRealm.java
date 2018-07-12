@@ -29,6 +29,7 @@ import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 import org.eclipse.kapua.service.authentication.shiro.AccessTokenCredentialsImpl;
+import org.eclipse.kapua.service.authentication.shiro.exceptions.ExpiredAccountException;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authentication.token.AccessTokenService;
 import org.eclipse.kapua.service.user.User;
@@ -137,6 +138,11 @@ public class AccessTokenAuthenticatingRealm extends AuthenticatingRealm {
         // Check existence
         if (account == null) {
             throw new UnknownAccountException();
+        }
+
+        // Check account expired
+        if (account.getExpirationDate() != null && !account.getExpirationDate().after(new Date())) {
+            throw new ExpiredAccountException(account.getExpirationDate());
         }
 
         //

@@ -12,12 +12,15 @@
 package org.eclipse.kapua.service.account;
 
 import org.eclipse.kapua.model.KapuaNamedEntityCreator;
+import org.eclipse.kapua.model.xml.DateXmlAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.util.Date;
 
 /**
  * AccountCreator encapsulates all the information needed to create a new Account in the system.<br>
@@ -36,7 +39,8 @@ import javax.xml.bind.annotation.XmlType;
         "organizationCity",
         "organizationZipPostCode",
         "organizationStateProvinceCounty",
-        "organizationCountry" }, factoryClass = AccountXmlRegistry.class, factoryMethod = "newAccountCreator")
+        "organizationCountry",
+        "expirationDate" }, factoryClass = AccountXmlRegistry.class, factoryMethod = "newAccountCreator")
 public interface AccountCreator extends KapuaNamedEntityCreator<Account> {
 
     /**
@@ -188,4 +192,20 @@ public interface AccountCreator extends KapuaNamedEntityCreator<Account> {
      * @param organizationCountry
      */
     void setOrganizationCountry(String organizationCountry);
+
+    /**
+     * Get the expiration date
+     *
+     * @return the current Account expiration date
+     */
+    @XmlElement(name = "expirationDate")
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
+    Date getExpirationDate();
+
+    /**
+     * Set the expiration date
+     *
+     * @param expirationDate the current Account expiration date
+     */
+    void setExpirationDate(Date expirationDate);
 }

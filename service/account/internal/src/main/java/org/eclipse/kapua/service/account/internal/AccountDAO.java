@@ -59,6 +59,7 @@ public class AccountDAO {
 
         AccountImpl accountImpl = new AccountImpl(accountCreator.getScopeId(), accountCreator.getName());
         accountImpl.setOrganization(organizationImpl);
+        accountImpl.setExpirationDate(accountCreator.getExpirationDate());
 
         return ServiceDAO.create(em, accountImpl);
     }

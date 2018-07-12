@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.test.account;
 
+import java.util.Date;
 import java.util.Properties;
 
 import org.eclipse.kapua.KapuaException;
@@ -171,4 +172,14 @@ public class AccountCreatorMock implements AccountCreator {
 
     }
 
+    @Override
+    public Date getExpirationDate() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setExpirationDate(Date expirationDate) {
+        // TODO Auto-generated method stub
+    }
 }

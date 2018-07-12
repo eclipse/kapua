@@ -12,12 +12,15 @@
 package org.eclipse.kapua.service.account;
 
 import org.eclipse.kapua.model.KapuaNamedEntity;
+import org.eclipse.kapua.model.xml.DateXmlAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -70,4 +73,21 @@ public interface Account extends KapuaNamedEntity {
     void setParentAccountPath(String parentAccountPath);
 
     List<Account> getChildAccounts();
+
+    /**
+     * Gets the current Account expiration date
+     *
+     * @return the current Account expiration date
+     */
+    @XmlElement(name = "expirationDate")
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
+    Date getExpirationDate();
+
+    /**
+     * Sets the current Account expiration date
+     *
+     * @param expirationDate the current Account expiration date
+     */
+    void setExpirationDate(Date expirationDate);
+
 }

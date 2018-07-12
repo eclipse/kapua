@@ -49,6 +49,7 @@ public class KapuaGwtAccountModelConverter {
         gwtAccount.set("orgName", account.getOrganization().getName());
         gwtAccount.set("orgEmail", account.getOrganization().getEmail());
         gwtAccount.setChildAccounts(convertChildAccounts(account.getChildAccounts()));
+        gwtAccount.setExpirationDate(account.getExpirationDate());
         //
         // Return converted entity
         return gwtAccount;

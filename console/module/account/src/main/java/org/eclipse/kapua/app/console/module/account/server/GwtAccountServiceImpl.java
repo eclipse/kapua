@@ -140,6 +140,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             accountCreator.setOrganizationZipPostCode(gwtAccountCreator.getOrganizationZipPostCode());
             accountCreator.setOrganizationStateProvinceCounty(gwtAccountCreator.getOrganizationStateProvinceCounty());
             accountCreator.setOrganizationCountry(gwtAccountCreator.getOrganizationCountry());
+            accountCreator.setExpirationDate(gwtAccountCreator.getExpirationDate());
 
             //
             // Create the Account
@@ -320,6 +321,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             account.getOrganization().setCity(gwtAccount.getGwtOrganization().getCity());
             account.getOrganization().setStateProvinceCounty(gwtAccount.getGwtOrganization().getStateProvinceCounty());
             account.getOrganization().setCountry(gwtAccount.getGwtOrganization().getCountry());
+            account.setExpirationDate(gwtAccount.getExpirationDate());
             account.setOptlock(gwtAccount.getOptlock());
 
             account = ACCOUNT_SERVICE.update(account);

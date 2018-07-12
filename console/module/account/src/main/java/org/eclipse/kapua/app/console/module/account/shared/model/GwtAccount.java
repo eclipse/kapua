@@ -12,10 +12,12 @@
 package org.eclipse.kapua.app.console.module.account.shared.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtUpdatableEntityModel;
 
 public class GwtAccount extends GwtUpdatableEntityModel implements Serializable {
@@ -61,6 +63,20 @@ public class GwtAccount extends GwtUpdatableEntityModel implements Serializable 
 
     public GwtAccount() {
         super();
+    }
+
+    @Override
+    @SuppressWarnings({ "unchecked" })
+    public <X> X get(String property) {
+        if ("expirationDateFormatted".equals(property)) {
+            if (getExpirationDate() != null) {
+                return (X) ((DateUtils.formatDateTime(getExpirationDate())));
+            } else {
+                return (X) "N/A";
+            }
+        } else {
+            return super.get(property);
+        }
     }
 
     public String getName() {
@@ -113,5 +129,17 @@ public class GwtAccount extends GwtUpdatableEntityModel implements Serializable 
 
     public void setChildAccounts(List<GwtAccount> childAccounts) {
         set("childAccounts", childAccounts);
+    }
+
+    public Date getExpirationDate() {
+        return get("expirationDate");
+    }
+
+    public String getExpirationDateFormatted() {
+        return get("expirationDateFormatted");
+    }
+
+    public void setExpirationDate(Date expirationDate) {
+        set("expirationDate", expirationDate);
     }
 }

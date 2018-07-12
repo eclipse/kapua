@@ -20,6 +20,7 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.security.registration.RegistrationProcessor;
+import org.eclipse.kapua.security.registration.simple.setting.SimpleSetting;
 import org.eclipse.kapua.security.registration.simple.setting.SimpleSettingKeys;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
@@ -52,6 +53,9 @@ import org.jose4j.jwt.consumer.JwtContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -212,6 +216,7 @@ public class SimpleRegistrationProcessor implements RegistrationProcessor {
         AccountCreator accountCreator = accountFactory.newCreator(settings.getRootAccount(), name);
         accountCreator.setOrganizationEmail(email);
         accountCreator.setOrganizationName(name);
+        accountCreator.setExpirationDate(Date.from(Instant.now().plus(SimpleSetting.getInstance().getInt(SimpleSettingKeys.ACCOUNT_EXPIRATION_DATE_DAYS, 30), ChronoUnit.DAYS)));
 
         // create account
 
