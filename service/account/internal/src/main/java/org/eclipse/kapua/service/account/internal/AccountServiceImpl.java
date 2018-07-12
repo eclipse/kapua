@@ -173,7 +173,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             // if parent account never expires no check is needed
             if (account.getExpirationDate() == null || parentAccount.getExpirationDate().before(account.getExpirationDate())) {
                 // if current account expiration date is null it will be obviously after parent expiration date
-                throw new KapuaIllegalArgumentException("expirationDate", account.getExpirationDate().toString() != null ? account.getExpirationDate().toString() : "no expiration date set");
+                throw new KapuaIllegalArgumentException("expirationDate", account.getExpirationDate() != null ? account.getExpirationDate().toString() : "no expiration date set");
             }
         }
 
@@ -185,7 +185,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
                 // if child account expiration date is null it will be obviously after current account expiration date
                 return childAccount.getExpirationDate() == null || childAccount.getExpirationDate().after(account.getExpirationDate());
             })) {
-                throw new KapuaIllegalArgumentException("expirationDate", account.getExpirationDate().toString() != null ? account.getExpirationDate().toString() : "no expiration date set");
+                throw new KapuaIllegalArgumentException("expirationDate", account.getExpirationDate() != null ? account.getExpirationDate().toString() : "no expiration date set");
             }
         }
 
