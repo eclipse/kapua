@@ -64,6 +64,11 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.math.BigInteger;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -230,6 +235,22 @@ public class UserServiceSteps extends BaseQATests {
             stepData.put("LastAccount", tmpAccount);
         } else {
             stepData.remove("LastAccount");
+        }
+    }
+
+    @When("I change the current account expiration date to \"(.+)\"")
+    public void changeCurrentAccountExpirationDate(String newExpiration) throws Exception {
+
+        Account currAcc = (Account) stepData.get("LastAccount");
+        Date newDate = parseDateString(newExpiration);
+
+        try {
+            primeException();
+            currAcc.setExpirationDate(newDate);
+            Account tmpAcc = accountService.update(currAcc);
+            stepData.put("LastAccount", tmpAcc);
+        } catch (KapuaException e) {
+            verifyException(e);
         }
     }
 
@@ -425,7 +446,7 @@ public class UserServiceSteps extends BaseQATests {
             primeException();
             try {
                 Account account = accountService.create(accountCreatorCreator(testAccount.getName(),
-                        testAccount.getScopeId()));
+                        testAccount.getScopeId(), testAccount.getExpirationDate()));
                 accountList.add(account);
             } catch (KapuaException ke) {
                 verifyException(ke);
@@ -499,10 +520,13 @@ public class UserServiceSteps extends BaseQATests {
      * @param scopeId acount scope id
      * @return
      */
-    private AccountCreator accountCreatorCreator(String name, BigInteger scopeId) {
+    private AccountCreator accountCreatorCreator(String name, BigInteger scopeId, Date expiration) {
         AccountCreator accountCreator;
 
         accountCreator = new AccountFactoryImpl().newCreator(new KapuaEid(scopeId), name);
+        if (expiration != null) {
+            accountCreator.setExpirationDate(expiration);
+        }
         accountCreator.setOrganizationName("ACME Inc.");
         accountCreator.setOrganizationEmail("some@one.com");
 
@@ -576,4 +600,38 @@ public class UserServiceSteps extends BaseQATests {
 
         return accessInfoCreator;
     }
+
+    private Date parseDateString(String date) {
+        DateFormat df = new SimpleDateFormat("dd/mm/yyyy");
+        Date expDate = null;
+        Instant now = Instant.now();
+
+        if (date == null) {
+            return null;
+        }
+        // Special keywords for date
+        switch (date.trim().toLowerCase()) {
+            case "yesterday":
+                expDate = Date.from(now.minus(Duration.ofDays(1)));
+                break;
+            case "today":
+                expDate = Date.from(now);
+                break;
+            case "tomorrow":
+                expDate = Date.from(now.plus(Duration.ofDays(1)));
+                break;
+            case "null":
+                break;
+        }
+
+        // Not one of the special cases. Just parse the date.
+        try {
+            expDate = df.parse(date.trim().toLowerCase());
+        } catch (ParseException | NullPointerException e) {
+            // skip, leave date null
+        }
+
+        return expDate;
+    }
+
 }

@@ -12,6 +12,12 @@
 package org.eclipse.kapua.service.user.steps;
 
 import java.math.BigInteger;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Date;
 
 /**
  * Data object used in Gherkin to transfer Account data.
@@ -21,6 +27,8 @@ public class TestAccount {
     private String name;
 
     private BigInteger scopeId;
+
+    private String expirationDate;
 
     public String getName() {
         return name;
@@ -36,5 +44,39 @@ public class TestAccount {
 
     public void setScopeId(BigInteger scopeId) {
         this.scopeId = scopeId;
+    }
+
+    public void setExpirationDate(String date) {
+        this.expirationDate = date;
+    }
+
+    public Date getExpirationDate() {
+        DateFormat df = new SimpleDateFormat("dd/mm/yyyy");
+        Date expDate = null;
+        Instant now = Instant.now();
+
+        if (expirationDate == null) {
+            return null;
+        }
+        // Special keywords for date
+        switch (expirationDate.trim().toLowerCase()) {
+            case "yesterday":
+                expDate = Date.from(now.minus(Duration.ofDays(1)));
+                break;
+            case "today":
+                expDate = Date.from(now);
+                break;
+            case "tomorrow":
+                expDate = Date.from(now.plus(Duration.ofDays(1)));
+                break;
+        }
+        // Just parse date
+        try {
+            expDate = df.parse(expirationDate.trim().toLowerCase());
+        } catch (ParseException | NullPointerException e) {
+            // skip, leave date null
+        }
+
+        return expDate;
     }
 }
