@@ -72,7 +72,7 @@ public class GwtAccount extends GwtUpdatableEntityModel implements Serializable 
             if (getExpirationDate() != null) {
                 return (X) ((DateUtils.formatDateTime(getExpirationDate())));
             } else {
-                return (X) "N/A";
+                return (X) "Never";
             }
         } else {
             return super.get(property);
