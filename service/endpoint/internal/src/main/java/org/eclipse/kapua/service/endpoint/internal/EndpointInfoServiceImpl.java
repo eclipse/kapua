@@ -77,7 +77,7 @@ public class EndpointInfoServiceImpl
 
         ArgumentValidator.notEmptyOrNull(endpointInfoCreator.getDns(), "endpointInfoCreator.dns");
         ArgumentValidator.match(endpointInfoCreator.getDns(), CommonsValidationRegex.URI_DNS, "endpointInfoCreator.dns");
-        ArgumentValidator.lengthRange(endpointInfoCreator.getDns(), 3L, 1024L, "endpointInfoCreator.dns");
+        ArgumentValidator.lengthRange(endpointInfoCreator.getDns(), 1L, 1024L, "endpointInfoCreator.dns");
 
         ArgumentValidator.notNegative(endpointInfoCreator.getPort(), "endpointInfoCreator.port");
         ArgumentValidator.numRange(endpointInfoCreator.getPort(), 1, 65535, "endpointInfoCreator.port");
@@ -111,7 +111,7 @@ public class EndpointInfoServiceImpl
 
         ArgumentValidator.notEmptyOrNull(endpointInfo.getDns(), "endpointInfo.dns");
         ArgumentValidator.match(endpointInfo.getDns(), CommonsValidationRegex.URI_DNS, "endpointInfo.dns");
-        ArgumentValidator.lengthRange(endpointInfo.getDns(), 3L, 1024L, "endpointInfo.dns");
+        ArgumentValidator.lengthRange(endpointInfo.getDns(), 1L, 1024L, "endpointInfo.dns");
 
         ArgumentValidator.notNegative(endpointInfo.getPort(), "endpointInfo.port");
         ArgumentValidator.numRange(endpointInfo.getPort(), 1, 65535, "endpointInfo.port");
