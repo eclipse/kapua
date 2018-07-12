@@ -29,14 +29,15 @@ public class KapuaJDBCPersistenceManagerImpl extends JDBCPersistenceManagerImpl 
 
     private static final String CLASSNAME = KapuaJDBCPersistenceManagerImpl.class.getName();
 
+    private static final Logger LOG = Logger.getLogger(CLASSNAME);
+
     private static final String JDBC_CONNECTION_URL = JdbcConnectionUrlResolvers.resolveJdbcUrl();
 
     private static final SystemSetting CONFIG = SystemSetting.getInstance();
     private static final String USERNAME = CONFIG.getString(SystemSettingKey.DB_USERNAME);
     private static final String PASSWORD = CONFIG.getString(SystemSettingKey.DB_PASSWORD);
 
-    private final static Logger logger = Logger.getLogger(CLASSNAME);
-
+    @Override
     protected Connection getConnectionToDefaultSchema() throws SQLException {
         return getConnection();
     }
@@ -47,17 +48,19 @@ public class KapuaJDBCPersistenceManagerImpl extends JDBCPersistenceManagerImpl 
     }
 
     public void purgeByName(String jobName) {
-        logger.entering(CLASSNAME, "purgeByName", jobName);
+        LOG.entering(CLASSNAME, "purgeByName", jobName);
         String deleteJobs = "DELETE FROM jobinstancedata WHERE name = ?";
+
         String deleteJobExecutions = "DELETE FROM executioninstancedata "
                 + "WHERE jobexecid IN ("
-                + "SELECT B.jobexecid FROM jobinstancedata A INNER JOIN executioninstancedata B "
+                + "SELECT B.jobexecid FROM jobinstancedata A INNER JOIN (SELECT * FROM executioninstancedata) B "
                 + "ON A.jobinstanceid = B.jobinstanceid "
                 + "WHERE A.name = ?)";
+
         String deleteStepExecutions = "DELETE FROM stepexecutioninstancedata "
                 + "WHERE stepexecid IN ("
                 + "SELECT C.stepexecid FROM jobinstancedata A INNER JOIN executioninstancedata B "
-                + "ON A.jobinstanceid = B.jobinstanceid INNER JOIN stepexecutioninstancedata C "
+                + "ON A.jobinstanceid = B.jobinstanceid INNER JOIN (SELECT * FROM stepexecutioninstancedata) C "
                 + "ON B.jobexecid = C.jobexecid "
                 + "WHERE A.name = ?)";
 
@@ -78,7 +81,8 @@ public class KapuaJDBCPersistenceManagerImpl extends JDBCPersistenceManagerImpl 
         } catch (SQLException e) {
             throw new PersistenceException(e);
         }
-        logger.exiting(CLASSNAME, "purge");
+
+        LOG.exiting(CLASSNAME, "purgeByName");
     }
 
 }
