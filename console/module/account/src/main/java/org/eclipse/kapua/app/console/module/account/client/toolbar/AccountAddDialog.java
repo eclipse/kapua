@@ -18,8 +18,10 @@ import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import org.eclipse.kapua.app.console.module.account.client.messages.ConsoleAccountMessages;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountCreator;
@@ -29,6 +31,7 @@ import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaDateField;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
@@ -52,6 +55,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
     protected final KapuaTextField<String> accountNameField = new KapuaTextField<String>();
     protected final KapuaTextField<String> accountPassword = new KapuaTextField<String>();
     protected final KapuaTextField<String> confirmPassword = new KapuaTextField<String>();
+    protected final KapuaDateField expirationDateField = new KapuaDateField();
 
     // broker cluster
     protected final NumberField optlock = new NumberField();
@@ -71,7 +75,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
 
     public AccountAddDialog(GwtSession currentSession) {
         super(currentSession);
-        DialogUtils.resizeDialog(this, 600, 550);
+        DialogUtils.resizeDialog(this, 600, 580);
     }
 
     @Override
@@ -79,7 +83,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
         super.onRender(parent, pos);
         bodyPanel.setAutoHeight(true);
         setClosable(false);
-        setScrollMode(Scroll.AUTO);    
+        setScrollMode(Scroll.AUTO);
     }
 
     @Override
@@ -121,6 +125,13 @@ public class AccountAddDialog extends EntityAddEditDialog {
         accountNameField.setFieldLabel("* " + MSGS.accountFormName());
         accountNameField.setValidator(new TextFieldValidator(accountNameField, FieldType.SIMPLE_NAME));
         fieldSet.add(accountNameField, accountFieldsetFormData);
+
+        expirationDateField.setEmptyText(MSGS.accountFormNoExpiration());
+        expirationDateField.setFieldLabel(MSGS.accountFormExpirationDate());
+        expirationDateField.setFormatValue(true);
+        expirationDateField.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
+        expirationDateField.setMaxLength(10);
+        fieldSet.add(expirationDateField, accountFieldsetFormData);
 
         accountFormPanel.add(fieldSet);
 
@@ -244,6 +255,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
         gwtAccountCreator.setParentAccountId(currentSession.getSelectedAccountId());
         gwtAccountCreator.setAccountName(accountNameField.getValue());
         gwtAccountCreator.setAccountPassword(accountPassword.getValue());
+        gwtAccountCreator.setExpirationDate(expirationDateField.getValue());
 
         // Organization data
         gwtAccountCreator.setOrganizationName(organizationName.getValue());
@@ -273,6 +285,8 @@ public class AccountAddDialog extends EntityAddEditDialog {
                             GwtKapuaException gwtCause = (GwtKapuaException) cause;
                             if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
                                 accountNameField.markInvalid(gwtCause.getMessage());
+                            } else if (gwtCause.getCode().equals(GwtKapuaErrorCode.ILLEGAL_ARGUMENT) && gwtCause.getArguments()[0].equals("expirationDate")) {
+                                expirationDateField.markInvalid(MSGS.conflictingExpirationDate());
                             }
                         }
                     }

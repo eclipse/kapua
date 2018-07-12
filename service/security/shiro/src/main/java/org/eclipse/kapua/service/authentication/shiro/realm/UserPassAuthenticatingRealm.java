@@ -36,6 +36,7 @@ import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.shiro.UsernamePasswordCredentialsImpl;
+import org.eclipse.kapua.service.authentication.shiro.exceptions.ExpiredAccountException;
 import org.eclipse.kapua.service.authentication.shiro.exceptions.TemporaryLockedAccountException;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
@@ -131,6 +132,11 @@ public class UserPassAuthenticatingRealm extends AuthenticatingRealm {
         // Check existence
         if (account == null) {
             throw new UnknownAccountException();
+        }
+
+        // Check account expired
+        if (account.getExpirationDate() != null && !account.getExpirationDate().after(new Date())) {
+            throw new ExpiredAccountException(account.getExpirationDate());
         }
 
         //

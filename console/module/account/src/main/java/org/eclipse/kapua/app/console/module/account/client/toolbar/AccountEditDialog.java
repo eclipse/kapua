@@ -16,6 +16,8 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtOrganization;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
@@ -28,7 +30,7 @@ public class AccountEditDialog extends AccountAddDialog {
     public AccountEditDialog(GwtSession currentSession, GwtAccount selectedAccount) {
         super(currentSession);
         this.selectedAccount = selectedAccount;
-        DialogUtils.resizeDialog(this, 600, 550);
+        DialogUtils.resizeDialog(this, 600, 580);
     }
 
     @Override
@@ -43,6 +45,9 @@ public class AccountEditDialog extends AccountAddDialog {
 
         accountNameLabel.setValue(selectedAccount.getName());
         accountNameField.setValue(selectedAccount.getName());
+
+        expirationDateField.setValue(selectedAccount.getExpirationDate());
+        expirationDateField.setOriginalValue(selectedAccount.getExpirationDate());
 
         organizationName.setValue(selectedAccount.getGwtOrganization().getName());
         organizationName.setOriginalValue(selectedAccount.getGwtOrganization().getName());
@@ -93,6 +98,7 @@ public class AccountEditDialog extends AccountAddDialog {
         gwtOrganization.setStateProvinceCounty(organizationStateProvinceCounty.getValue());
         gwtOrganization.setCountry(organizationCountry.getValue());
         selectedAccount.setGwtOrganization(gwtOrganization);
+        selectedAccount.setExpirationDate(expirationDateField.getValue());
 
         GWT_ACCOUNT_SERVICE.update(xsrfToken,
                 selectedAccount,
@@ -103,6 +109,17 @@ public class AccountEditDialog extends AccountAddDialog {
                         FailureHandler.handleFormException(formPanel, caught);
                         status.hide();
                         formPanel.getButtonBar().enable();
+                        unmask();
+                        submitButton.enable();
+                        cancelButton.enable();
+                        if (caught instanceof GwtKapuaException) {
+                            GwtKapuaException gwtCause = (GwtKapuaException) caught;
+                            if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
+                                accountNameField.markInvalid(gwtCause.getMessage());
+                            } else if (gwtCause.getCode().equals(GwtKapuaErrorCode.ILLEGAL_ARGUMENT) && gwtCause.getArguments()[0].equals("expirationDate")) {
+                                expirationDateField.markInvalid(MSGS.conflictingExpirationDate());
+                            }
+                        }
                     }
 
                     @Override

@@ -29,7 +29,10 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -72,6 +75,10 @@ public class AccountImpl extends AbstractKapuaNamedEntity implements Account {
     @JoinColumn(name = "scope_id", referencedColumnName = "id", insertable = false, updatable = false)
     @OrderBy("name ASC")
     private List<AccountImpl> childAccounts;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "expiration_date")
+    protected Date expirationDate;
 
     /**
      * Constructor
@@ -127,5 +134,16 @@ public class AccountImpl extends AbstractKapuaNamedEntity implements Account {
         list.addAll(childAccounts);
         return list;
     }
+
+    @Override
+    public Date getExpirationDate() {
+        return expirationDate;
+    }
+
+    @Override
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
 
 }

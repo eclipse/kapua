@@ -112,6 +112,12 @@ public class AccountGrid extends EntityGrid<GwtAccount> {
         column.setSortable(false);
         configs.add(column);
 
+        column = new ColumnConfig("expirationDateFormatted", 120);
+        column.setHeader(ACCOUNT_MSGS.accountTableExpirationDate());
+        column.setWidth(150);
+        column.setSortable(false);
+        configs.add(column);
+
         column = new ColumnConfig("modifiedOnFormatted", ACCOUNT_MSGS.accountTableModifiedOn(), 130);
         column.setAlignment(HorizontalAlignment.CENTER);
         configs.add(column);

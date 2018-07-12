@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.account.internal;
 
 import org.apache.commons.lang3.StringUtils;
+
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaDuplicateNameInAnotherAccountError;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
@@ -118,6 +119,16 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             throw new KapuaDuplicateNameInAnotherAccountError(accountCreator.getName());
         }
 
+        // check that expiration date is no later than parent expiration date
+        Account parentAccount = KapuaSecurityUtils.doPrivileged(() -> find(accountCreator.getScopeId()));
+        if (parentAccount != null && parentAccount.getExpirationDate() != null) {
+            // parent account never expires no check is needed
+            if (accountCreator.getExpirationDate() == null || parentAccount.getExpirationDate().before(accountCreator.getExpirationDate())) {
+                // if current account expiration date is null it will be obviously after parent expiration date
+                throw new KapuaIllegalArgumentException("expirationDate", accountCreator.getExpirationDate() != null ? accountCreator.getExpirationDate().toString() : "no expiration date set");
+            }
+        }
+
         return entityManagerSession.onTransactedInsert(em -> {
             Account account = AccountDAO.create(em, accountCreator);
             em.persist(account);
@@ -154,6 +165,28 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         Account oldAccount = find(account.getId());
         if (oldAccount == null) {
             throw new KapuaEntityNotFoundException(Account.TYPE, account.getId());
+        }
+
+        // check that expiration date is no later than parent expiration date
+        Account parentAccount = KapuaSecurityUtils.doPrivileged(() -> find(oldAccount.getScopeId()));
+        if (parentAccount != null && parentAccount.getExpirationDate() != null) {
+            // if parent account never expires no check is needed
+            if (account.getExpirationDate() == null || parentAccount.getExpirationDate().before(account.getExpirationDate())) {
+                // if current account expiration date is null it will be obviously after parent expiration date
+                throw new KapuaIllegalArgumentException("expirationDate", account.getExpirationDate().toString() != null ? account.getExpirationDate().toString() : "no expiration date set");
+            }
+        }
+
+        // check that expiration date is after all the children account
+        if (account.getExpirationDate() != null) {
+            // if expiration date is null it means the account never expires, so it will be obviously later its children
+            AccountListResult childrenAccounts = findChildsRecursively(account.getId());
+            if (childrenAccounts.getItems().stream().anyMatch(childAccount -> {
+                // if child account expiration date is null it will be obviously after current account expiration date
+                return childAccount.getExpirationDate() == null || childAccount.getExpirationDate().after(account.getExpirationDate());
+            })) {
+                throw new KapuaIllegalArgumentException("expirationDate", account.getExpirationDate().toString() != null ? account.getExpirationDate().toString() : "no expiration date set");
+            }
         }
 
         //
