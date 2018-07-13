@@ -1,0 +1,131 @@
+/*******************************************************************************
+ * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.kapua.commons.core.vertx;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.http.HttpServer;
+import io.vertx.core.http.HttpServerOptions;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
+import io.vertx.ext.dropwizard.MetricsService;
+import io.vertx.ext.healthchecks.HealthCheckHandler;
+import io.vertx.ext.web.Router;
+
+/**
+ * Base class to implement an {@link HttpRestServer} verticle
+ * <p>
+ * It exposes two predefined http endpoints, one to execute health 
+ * checks and one to retrieve metrics.
+ *
+ */
+public class AbstractHttpRestServer extends AbstractVerticle implements HttpRestServer {
+
+    private static Logger logger = LoggerFactory.getLogger(AbstractHttpRestServer.class);
+
+    private static final String HEALTH_PATH = "/health";
+    private static final String METRICS_PATH = "/metrics";
+    private static final String METRICS_BASE_NAME_PARAM = "baseName";
+
+    private List<HttpRouteProvider> routeProviders = new ArrayList<>();
+    private List<HealthCheckProvider> healthCheckProviders = new ArrayList<>();
+
+    private HttpServer httpServer;
+    private Router router;
+    private HealthCheckHandler healthCheckHandler;
+
+    private MetricsService metricsService;
+
+    private HttpRestServerConfig configs;
+
+    public HttpRestServerConfig getConfigs() {
+        return configs;
+    }
+
+    public void setConfigs(HttpRestServerConfig configs) {
+        this.configs = configs;
+    }
+
+    @Override
+    public void start() throws Exception {
+        logger.trace("Starting verticle...");
+        super.start();
+
+        this.router = Router.router(vertx);
+        this.healthCheckHandler = HealthCheckHandler.create(vertx);
+        this.router.get(HEALTH_PATH).handler(this.healthCheckHandler);
+
+        this.metricsService = MetricsService.create(vertx);
+        this.router.get(METRICS_PATH).handler(ctx -> {
+            if (!vertx.isMetricsEnabled()) {
+                logger.warn("Metrics are disabled");
+                ctx.response().setStatusCode(404).end();
+                return;
+            }
+
+            String metricPrefix = getConfigs().getMetricsRoot();
+            String baseName = ctx.request().getParam(METRICS_BASE_NAME_PARAM);
+            if (baseName != null) {
+                metricPrefix = baseName;
+            }
+            ctx.response().end(this.metricsService.getMetricsSnapshot(metricPrefix).toBuffer());
+        });
+
+        for(HttpRouteProvider endpoint:routeProviders) {
+            endpoint.registerRoutes(router);
+        }
+
+        for(HealthCheckProvider provider:healthCheckProviders) {
+            provider.registerHealthChecks(healthCheckHandler);
+        }
+
+        HttpServerOptions opts = new HttpServerOptions();
+        opts.setHost(this.getConfigs().getHost());
+        opts.setPort(this.getConfigs().getPort());
+        this.httpServer = vertx.createHttpServer(opts);
+
+        this.httpServer.requestHandler(router::accept);
+
+        this.httpServer.listen(ar -> {
+            if (ar.succeeded()) {
+                logger.info("Http server listening on port {}", this.httpServer.actualPort());
+                logger.trace("Starting verticle...DONE");
+            } else {
+                logger.error("Starting verticle...FAILED", ar.cause());
+            }
+        });        
+   }
+
+    @Override
+    public void stop() throws Exception {
+        this.httpServer.close(ar -> {
+            if (ar.succeeded()) {
+                logger.info("Http server closed!");
+            } else {
+                logger.error("Error closing http server!");
+            }
+        });        
+        super.stop();
+    }
+
+    @Override
+    public void registerRouteProvider(HttpRouteProvider endpoint) {
+        this.routeProviders.add(endpoint);
+    }
+
+    @Override
+    public void registerHealthCheckProvider(HealthCheckProvider provider) {
+        this.healthCheckProviders.add(provider);
+    }
+}
