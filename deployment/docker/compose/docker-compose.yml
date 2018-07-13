@@ -20,13 +20,14 @@ services:
   events-broker:
     image: kapua/kapua-events-broker:${IMAGE_VERSION}
     ports:
-      - 5672:5672
+    - 5682:5682
   broker:
     image: kapua/kapua-broker:${IMAGE_VERSION}
     ports:
-      - 1883:1883
-      - 8883:8883
-      - 61614:61614
+    - 1883:1883
+    - 8883:8883
+    - 61614:61614
+    - 5672:5672
     depends_on:
       - db
       - es
