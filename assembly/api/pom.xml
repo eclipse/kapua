@@ -312,7 +312,7 @@
                                                 -Ddatastore.elasticsearch.nodes=es \
                                                 -Ddatastore.elasticsearch.port=9200 \
                                                 -Ddatastore.client.class=\${DATASTORE_CLIENT} \
-                                                -Dcommons.eventbus.url="failover:(amqp://events-broker:5672)?jms.sendTimeout=1000" \
+                                                -Dcommons.eventbus.url="failover:(amqp://events-broker:5682)?jms.sendTimeout=1000" \
                                                 -Dcertificate.jwt.private.key=file:///home/kapua/key.pk8 \
                                                 -Dcertificate.jwt.certificate=file:///home/kapua/cert.pem
                                             </JAVA_OPTS>
