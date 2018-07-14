@@ -12,8 +12,6 @@
 package org.eclipse.kapua.consumer.activemq.datastore;
 
 import org.eclipse.kapua.commons.core.BeanContextConfig;
-import org.eclipse.kapua.commons.core.Configuration;
-import org.eclipse.kapua.commons.core.vertx.Environment;
 import org.eclipse.kapua.commons.core.vertx.EnvironmentSetup;
 import org.eclipse.kapua.commons.core.vertx.VertxApplication;
 
@@ -24,6 +22,7 @@ import org.eclipse.kapua.commons.core.vertx.VertxApplication;
 public class Consumer extends VertxApplication<MainVerticle> {
 
     private static final String NAME = "ActiveMQ-datastore";
+
     public static void main(String args[]) throws Exception {
         new Consumer().run(args);
     }
@@ -34,13 +33,13 @@ public class Consumer extends VertxApplication<MainVerticle> {
     }
 
     @Override
-    public void initialize(EnvironmentSetup setup) {
-        setup.configure(new BeanContextConfig() {});
+    public Class<MainVerticle> getMainVerticle() {
+        return MainVerticle.class;
     }
 
     @Override
-    public void run(Environment environment, Configuration config) {
-        super.deployMainVerticle(environment, MainVerticle.class);
+    public void initialize(EnvironmentSetup setup) throws Exception {
+        super.initialize(setup);
+        setup.configure(new BeanContextConfig());
     }
-
 }

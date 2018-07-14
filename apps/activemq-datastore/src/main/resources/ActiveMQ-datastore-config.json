@@ -1,9 +1,11 @@
 {
     "vertx": {
+	    "startup-timeout": 20000,
+	    "shutdown-timeout": 20000,
         "metrics-enabled": true,
-        "metrics-root": "demoBase",
-        "warning-exception-time": 864000000,
-        "blocked-thread-check-interval": 864000000
+        "metrics-root": "kapuaBase",
+        "warning-exception-time": 86400000,
+        "blocked-thread-check-interval": 86400000
     },
     "http-server" : {
         "host" : "localhost",
