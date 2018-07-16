@@ -22,6 +22,9 @@ Feature: Datastore tests
   @StartDatastore
   Scenario: Start datastore for all scenarios
 
+  @StartExternalConsumers
+  Scenario: Start external consumers for all scenario
+
   Scenario: Delete items by the datastore ID
     Delete a previously stored message and verify that it is not in the store any more. Also delete and check the
     message related channel, metric and client info entries.
@@ -653,6 +656,9 @@ Feature: Datastore tests
       |tba_2/1/1/2 |
       |tba_2/1/1/3 |
     And All indices are deleted
+
+  @StopExternalConsumers
+  Scenario: Stop external consumers for all scenario
 
   @StopBroker
   Scenario: Stop broker after all scenarios

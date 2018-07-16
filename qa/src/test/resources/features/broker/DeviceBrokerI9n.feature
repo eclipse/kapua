@@ -18,11 +18,14 @@ Feature: Device Broker Integration
   @StartEventBroker
   Scenario: Start broker for all scenarios
 
+  @StartDatastore
+  Scenario: Start datastore for all scenarios
+
   @StartBroker
   Scenario: Start event broker for all scenarios
 
-  @StartDatastore
-  Scenario: Start datastore for all scenarios
+  @StartExternalConsumers
+  Scenario: Start external consumers for all scenario
 
   Scenario: Send BIRTH message and then DC message
     Effectively this is connect and disconnect of Kura device.
@@ -42,6 +45,9 @@ Feature: Device Broker Integration
     Then Exit code 0 is received
     And I logout
     And Device death message is sent
+
+  @StopExternalConsumers
+  Scenario: Stop external consumers for all scenario
 
   @StopBroker
   Scenario: Stop broker after all scenarios

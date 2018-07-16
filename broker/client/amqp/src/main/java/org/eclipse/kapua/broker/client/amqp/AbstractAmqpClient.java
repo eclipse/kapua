@@ -92,8 +92,10 @@ public abstract class AbstractAmqpClient {
 
     public void disconnect(Future<Void> stopFuture) {
         disconnecting = true;
+        logger.info("Closing connection {} for client {}...", connection, client);
         if (connection != null) {
-            connection.close();
+            connection.disconnect();
+            logger.info("Closing connection {} for client {}... DONE", connection, client);
             connection = null;
         }
         //in any case complete with a positive result the future

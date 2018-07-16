@@ -16,8 +16,6 @@ import javax.xml.bind.JAXBException;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.router.EndChainEndPoint;
-import org.eclipse.kapua.broker.core.router.EndPoint;
-import org.eclipse.kapua.broker.core.router.EndPointAdapter;
 import org.eclipse.kapua.broker.core.router.EndPointContainer;
 import org.eclipse.kapua.broker.core.router.ParentEndPoint;
 import org.eclipse.kapua.broker.core.router.SimpleEndPoint;
@@ -59,10 +57,8 @@ public class CoreJAXBContextProvider implements JAXBContextProvider {
                     KapuaTdesignate.class,
                     KapuaTobject.class,
                     MetatypeXmlRegistry.class,
-                    EndChainEndPoint.class,
-                    EndPoint.class,
-                    EndPointAdapter.class,
                     EndPointContainer.class,
+                    EndChainEndPoint.class,
                     ParentEndPoint.class,
                     SimpleEndPoint.class,
                     EndPoint.class,
