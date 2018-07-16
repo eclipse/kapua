@@ -15,7 +15,7 @@ import com.google.common.collect.Lists;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.event.ServiceEvent;
@@ -67,8 +67,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
     public Device create(DeviceCreator deviceCreator) throws KapuaException {
         DeviceValidation.validateCreatePreconditions(deviceCreator);
         if (allowedChildEntities(deviceCreator.getScopeId()) <= 0) {
-            // TODO Check exception type to be catched by the broker
-            throw new KapuaIllegalArgumentException("scopeId", "max devices reached");
+            throw new KapuaMaxNumberOfItemsReachedException("Devices");
         }
 
         DeviceQuery query = new DeviceQueryImpl(deviceCreator.getScopeId());
