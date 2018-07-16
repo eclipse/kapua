@@ -90,6 +90,10 @@ public enum KapuaErrorCodes implements KapuaErrorCode {
     /**
      * The device has returned an error when stopping bundle
      */
-    BUNDLE_STOP_ERROR
+    BUNDLE_STOP_ERROR,
 
+    /**
+     * Max number of items is reached
+     */
+    MAX_NUMBER_OF_ITEMS_REACHED
 }

@@ -17,6 +17,7 @@ import org.eclipse.kapua.KapuaDuplicateNameInAnotherAccountError;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -86,7 +87,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         int remainingChildEntities = allowedChildEntities(userCreator.getScopeId());
         if (remainingChildEntities <= 0) {
             LOGGER.info("Exceeded child limit - remaining: {}", remainingChildEntities);
-            throw new KapuaIllegalArgumentException("scopeId", "max users reached");
+            throw new KapuaMaxNumberOfItemsReachedException("Users");
         }
 
         //
