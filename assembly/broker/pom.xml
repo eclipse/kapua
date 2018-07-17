@@ -74,6 +74,18 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-tag-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-tag-internal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-datastore-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-user-api</artifactId>
         </dependency>
         <dependency>
@@ -228,6 +240,20 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-to-slf4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-servlet-api</artifactId>
+            <version>8.0.38</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-websocket-api</artifactId>
+            <version>8.0.38</version>
         </dependency>
     </dependencies>
 
@@ -502,7 +528,7 @@
                                                 -Ddatastore.elasticsearch.nodes=es \
                                                 -Ddatastore.elasticsearch.port=9200 \
                                                 -Ddatastore.client.class=\${DATASTORE_CLIENT} \
-                                                -Dcommons.eventbus.url="failover:(amqp://events-broker:5672)?jms.sendTimeout=1000" \
+                                                -Dcommons.eventbus.url="failover:(amqp://events-broker:5682)?jms.sendTimeout=1000" \
                                                 -Dcertificate.jwt.private.key=file:///home/kapua/key.pk8 \
                                                 -Dcertificate.jwt.certificate=file:///home/kapua/cert.pem \
                                                 -Dbroker.ip=broker
@@ -512,7 +538,7 @@
                                             <port>1883</port><!-- MQTT -->
                                             <port>8883</port><!-- MQTTS -->
                                             <port>8778</port><!-- Jolokia -->
-                                            <port>5682</port><!-- AMQP -->
+                                            <port>5672</port><!-- AMQP -->
                                             <port>61614</port><!-- MQTT-WS -->
                                         </ports>
                                         <user>kapua</user>
