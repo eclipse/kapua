@@ -21,6 +21,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.converter.AbstractKapuaConverter;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor.MessageType;
+import org.eclipse.kapua.connector.Properties;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.call.message.DeviceMessage;
@@ -52,8 +53,8 @@ public class MessageConverter {
      */
     public static CamelKapuaMessage<?> convertToKapuaMessage(ConnectorDescriptor connectorDescriptor, MessageType messageType, BytesMessage jmsMessage, KapuaId connectionId, String clientId)
             throws JMSException, KapuaException {
-        String jmsTopic = jmsMessage.getStringProperty(MessageConstants.PROPERTY_ORIGINAL_TOPIC);
-        Date queuedOn = new Date(jmsMessage.getLongProperty(MessageConstants.PROPERTY_ENQUEUED_TIMESTAMP));
+        String jmsTopic = jmsMessage.getStringProperty(Properties.PROPERTY_ORIGINAL_TOPIC);
+        Date queuedOn = new Date(jmsMessage.getLongProperty(Properties.PROPERTY_ENQUEUED_TIMESTAMP));
         return convertToKapuaMessage(connectorDescriptor, connectorDescriptor.getDeviceClass(messageType), connectorDescriptor.getKapuaClass(messageType), jmsMessage, jmsTopic, queuedOn, connectionId,
                 clientId);
     }

@@ -65,7 +65,6 @@ Vagrant.configure(2) do |config|
     sudo rm -rf lib/geronimo-jms_1.1_spec-1.1.1.jar
     sudo rm -rf lib/geronimo-jta_1.0.1B_spec*
     sudo rm -rf lib/optional/activeio-core-*
-    sudo rm -rf lib/optional/activemq-amqp-*
     sudo rm -rf lib/optional/activemq-jdbc-store*
     sudo rm -rf lib/optional/activemq-leveldb-store*
     sudo rm -rf lib/optional/activemq-log4j-appender*

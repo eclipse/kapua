@@ -57,6 +57,18 @@ public abstract class AbstractConnector<M, P> extends AbstractVerticle {
     }
 
     /**
+     * Default protected constructor
+     * @param Vertx instance
+     * @param converter message instance
+     * @param processor processor instance
+     */
+    protected AbstractConnector(Vertx vertx, Converter<M, P> converter, Processor<P> processor) {
+        this.converter = converter;
+        this.processor = processor;
+        this.vertx = vertx;
+    }
+
+    /**
      * Constructor with no message converter
      * @param Vertx instance
      * @param processor processor instance
@@ -85,7 +97,14 @@ public abstract class AbstractConnector<M, P> extends AbstractVerticle {
      * @return
      * @throws KapuaConverterException
      */
-    protected abstract MessageContext<M> convert(MessageContext<?> message) throws KapuaConverterException;
+    protected abstract MessageContext<M> convert(MessageContext<?> message) throws KapuaException;
+
+    /**
+     * Tells if the destination should or should not be processed by the chain
+     * @param message
+     * @return
+     */
+    protected abstract boolean isProcessDestination(MessageContext<M> message);
 
     public boolean isConnected() {
         return connected;
@@ -129,33 +148,37 @@ public abstract class AbstractConnector<M, P> extends AbstractVerticle {
     }
 
     @SuppressWarnings("unchecked")
-    //TODO choose the exception type!!!
-    protected void handleMessage(MessageContext<?> message, Handler<AsyncResult<Void>> result) throws Exception {
+    protected void handleMessage(MessageContext<?> message, Handler<AsyncResult<Void>> result) throws KapuaException {
         MessageContext<M> msg = convert(message);
-        Future<Void> composerFuture = Future.future();
-        composerFuture.compose(mapper -> {
-            Future<Void> internalFuture = Future.future();
-            try {
-                MessageContext<P> convertedMessage = null;
-                if (converter != null) {
-                    convertedMessage = converter.convert(msg);
-                } else {
-                    convertedMessage = (MessageContext<P>) msg;
+        if (!isProcessDestination(msg)) {
+            result.handle(Future.succeededFuture());
+        }
+        else {
+            Future<Void> composerFuture = Future.future();
+            composerFuture.compose(mapper -> {
+                Future<Void> internalFuture = Future.future();
+                try {
+                    MessageContext<P> convertedMessage = null;
+                    if (converter != null) {
+                        convertedMessage = converter.convert(msg);
+                    } else {
+                        convertedMessage = (MessageContext<P>) msg;
+                    }
+                    processor.process(convertedMessage, internalFuture);
+                } catch (Exception e) {
+                    internalFuture.fail(e);
                 }
-                processor.process(convertedMessage, internalFuture);
-            } catch (KapuaException e) {
-                internalFuture.fail(e);
-            }
-            return internalFuture;
-        })
-        .setHandler(ar -> {
-            if (ar.succeeded()) {
-                result.handle(Future.succeededFuture());
-            } else {
-                result.handle(Future.failedFuture(ar.cause()));
-            }
-        });
-        composerFuture.complete();
+                return internalFuture;
+            })
+            .setHandler(ar -> {
+                if (ar.succeeded()) {
+                    result.handle(Future.succeededFuture());
+                } else {
+                    result.handle(Future.failedFuture(ar.cause()));
+                }
+            });
+            composerFuture.complete();
+        }
     }
 
     @SuppressWarnings("unchecked")

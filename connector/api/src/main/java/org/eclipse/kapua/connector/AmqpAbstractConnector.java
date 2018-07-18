@@ -19,6 +19,7 @@ import org.apache.qpid.proton.amqp.messaging.Data;
 import org.apache.qpid.proton.amqp.messaging.Section;
 import org.apache.qpid.proton.message.Message;
 import org.eclipse.kapua.KapuaErrorCodes;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.converter.Converter;
 import org.eclipse.kapua.converter.KapuaConverterException;
 import org.eclipse.kapua.processor.Processor;
@@ -70,21 +71,20 @@ public abstract class AmqpAbstractConnector<M, P> extends AbstractConnector<M, P
      */
     protected abstract void disconnect(final Future<Void> disconnectFuture);
 
-    protected abstract Map<String, Object> getMessageParameters(Message message) throws KapuaConverterException;
+    protected abstract Map<String, Object> getMessageParameters(Message message) throws KapuaException;
 
-    protected byte[] extractBytePayload(Section body) throws KapuaConverterException {
-        logger.info("Received message with body: {}", body);
+    protected byte[] extractBytePayload(Section body) throws KapuaException {
+        logger.debug("Received message with body: {}", body);
         if (body instanceof Data) {
             Binary data = ((Data) body).getValue();
-            logger.info("Received DATA message");
+            logger.debug("Received DATA message");
             return data.getArray();
         } else if (body instanceof AmqpValue) {
             String content = (String) ((AmqpValue) body).getValue();
-            logger.info("Received message with content: {}", content);
+            logger.debug("Received message with content: {}", content);
             return content.getBytes();
         } else {
             logger.warn("Recevide message with unknown message type! ({})", body != null ? body.getClass() : "NULL");
-            // TODO use custom exception
             throw new KapuaConverterException(KapuaErrorCodes.INTERNAL_ERROR);
         }
     }

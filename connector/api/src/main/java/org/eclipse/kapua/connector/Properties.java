@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,17 +9,21 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.broker.core.message;
+package org.eclipse.kapua.connector;
 
 /**
- * Kapua message constants (metrics name and header keys)
+ * Platform header and metric properties
  *
- * @since 1.0
  */
-public class MessageConstants {
+public class Properties {
 
-    private MessageConstants() {
+    private Properties() {
     }
+
+    public static final String CONNECTION_ID = new String("connection-id");
+    public static final String MESSAGE_DESTINATION = new String("message-destination");
+    public static final String MESSAGE_QOS = new String("message-qos");
+    public static final String MESSAGE_TYPE = new String("message-type");
 
     // used by login update info asynch
     public static final String METRIC_USERNAME = "username";

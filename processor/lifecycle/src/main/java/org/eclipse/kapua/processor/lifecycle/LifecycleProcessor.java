@@ -34,7 +34,6 @@ public class LifecycleProcessor implements Processor<TransportMessage>, HealthCh
 
     private LifecycleListener lifecycleListener;
 
-    //TODO keep messages types as enum or switch to String?
     enum LifecycleTypes {
         APPS,
         BIRTH,
@@ -62,7 +61,16 @@ public class LifecycleProcessor implements Processor<TransportMessage>, HealthCh
     public void process(MessageContext<TransportMessage> message, Handler<AsyncResult<Void>> result) throws KapuaProcessorException {
         List<String> destination = message.getMessage().getChannel().getSemanticParts();
         if (destination!=null && destination.size()>1) {
-            LifecycleTypes token = LifecycleTypes.valueOf(destination.get(1));
+            String messageType = destination.get(1);
+            LifecycleTypes token = null;
+            try {
+                token = LifecycleTypes.valueOf(messageType);
+            }
+            catch (IllegalArgumentException | NullPointerException e) {
+                logger.debug("Invalid message type ({})", messageType);
+                result.handle(Future.failedFuture(INVALID_TOPIC));
+                return;
+            }
             switch (token) {
             case APPS:
                 lifecycleListener.processAppsMessage(message);

@@ -18,6 +18,7 @@ import org.apache.activemq.command.ActiveMQTopic;
 import org.apache.camel.Message;
 import org.eclipse.kapua.broker.core.listener.CamelConstants;
 import org.eclipse.kapua.broker.core.plugin.KapuaSecurityBrokerFilter;
+import org.eclipse.kapua.connector.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +42,7 @@ public class CamelUtil {
      * @throws JMSException
      */
     public static String getTopic(org.apache.camel.Message message) throws JMSException {
-        String topicOrig = message.getHeader(MessageConstants.PROPERTY_ORIGINAL_TOPIC, String.class);
+        String topicOrig = message.getHeader(Properties.PROPERTY_ORIGINAL_TOPIC, String.class);
         if (topicOrig != null) {
             return topicOrig;
         } else {

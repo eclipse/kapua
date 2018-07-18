@@ -17,9 +17,9 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.apache.shiro.util.ThreadContext;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.listener.AbstractListener;
-import org.eclipse.kapua.broker.core.message.MessageConstants;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
+import org.eclipse.kapua.connector.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,11 +45,11 @@ public class KapuaCamelFilter extends AbstractListener {
      */
     public void bindSession(Exchange exchange, Object value) throws KapuaException {
         ThreadContext.unbindSubject();
-        if (!exchange.getIn().getHeader(MessageConstants.HEADER_KAPUA_BROKER_CONTEXT, boolean.class)) {
+        if (!exchange.getIn().getHeader(Properties.HEADER_KAPUA_BROKER_CONTEXT, boolean.class)) {
             try {
                 // FIX #164
                 KapuaSecurityUtils
-                        .setSession((KapuaSession) SerializationUtils.deserialize(Base64.getDecoder().decode(exchange.getIn().getHeader(MessageConstants.HEADER_KAPUA_SESSION, String.class))));
+                        .setSession((KapuaSession) SerializationUtils.deserialize(Base64.getDecoder().decode(exchange.getIn().getHeader(Properties.HEADER_KAPUA_SESSION, String.class))));
             } catch (IllegalArgumentException | SerializationException e) {
                 // continue without session
                 logger.debug("Cannot restore Kapua session: {}", e.getMessage(), e);
@@ -77,10 +77,10 @@ public class KapuaCamelFilter extends AbstractListener {
     public void bridgeError(Exchange exchange, Object value) {
         // TODO is the in message null check needed?
         if (exchange.getIn() != null && exchange.getIn().getExchange().getException() != null) {
-            exchange.getIn().setHeader(MessageConstants.HEADER_KAPUA_PROCESSING_EXCEPTION,
+            exchange.getIn().setHeader(Properties.HEADER_KAPUA_PROCESSING_EXCEPTION,
                     Base64.getEncoder().encodeToString(SerializationUtils.serialize(exchange.getIn().getExchange().getException())));
         } else if (exchange.getException() != null) {
-            exchange.getIn().setHeader(MessageConstants.HEADER_KAPUA_PROCESSING_EXCEPTION,
+            exchange.getIn().setHeader(Properties.HEADER_KAPUA_PROCESSING_EXCEPTION,
                     Base64.getEncoder().encodeToString(SerializationUtils.serialize(exchange.getException())));
         } else {
             logger.debug("Cannot serialize exception since it is null!");

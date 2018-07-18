@@ -17,6 +17,7 @@ import javax.jms.Topic;
 
 import org.apache.activemq.command.ActiveMQMessage;
 import org.eclipse.kapua.broker.core.plugin.KapuaSecurityBrokerFilter;
+import org.eclipse.kapua.connector.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +45,7 @@ public class JmsUtil {
         if (jmsMessage.getDestination().isTopic()) {
             jmsTopic = ((Topic) jmsMessage.getJMSDestination()).getTopicName().substring(KapuaSecurityBrokerFilter.VT_TOPIC_PREFIX.length());
         } else if (jmsMessage.getDestination().isQueue()) {
-            jmsTopic = jmsMessage.getStringProperty(MessageConstants.PROPERTY_ORIGINAL_TOPIC);
+            jmsTopic = jmsMessage.getStringProperty(Properties.PROPERTY_ORIGINAL_TOPIC);
         } else {
             logger.warn("jmsMessage destination is not a Topic or Queue: {}", jmsMessage.getDestination());
         }

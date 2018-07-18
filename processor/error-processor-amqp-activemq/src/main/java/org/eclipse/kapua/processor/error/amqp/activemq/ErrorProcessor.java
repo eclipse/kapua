@@ -53,8 +53,7 @@ public class ErrorProcessor implements Processor<Message>, HealthCheckable {
 
     @Override
     public void stop(Future<Void> stopFuture) {
-        // nothing to do
-        stopFuture.complete();
+        sender.disconnect(stopFuture);
     }
 
     @Override

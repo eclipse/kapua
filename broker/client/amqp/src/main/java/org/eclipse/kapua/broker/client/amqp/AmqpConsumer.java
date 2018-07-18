@@ -15,7 +15,6 @@ import org.eclipse.kapua.broker.client.amqp.ClientOptions.AmqpClientOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.proton.ProtonConnection;
 import io.vertx.proton.ProtonMessageHandler;
@@ -26,32 +25,51 @@ public class AmqpConsumer extends AbstractAmqpClient {
 
     private static final Logger logger = LoggerFactory.getLogger(AmqpConsumer.class);
     private ProtonMessageHandler messageHandler;
+    private ProtonReceiver receiver;
 
     public AmqpConsumer(Vertx vertx, ClientOptions clientOptions, ProtonMessageHandler messageHandler) {
         super(vertx, clientOptions);
         this.messageHandler = messageHandler;
     }
 
-    protected void registerAction(ProtonConnection connection, Future<Object> future) {
+    protected void registerAction(ProtonConnection connection) {
         try {
             String destination = clientOptions.getString(AmqpClientOptions.DESTINATION);
-            logger.info("Register consumer for destination {}...", destination);
+            logger.info("Register consumer for destination {}... (client: {})", destination, client);
 
             if (connection.isDisconnected()) {
-                future.fail("Cannot register consumer since the connection is not opened!");
+                logger.warn("Cannot register consumer since the connection is not opened!");
+                notifyConnectionLost();
             }
             else {
                 // The client ID is set implicitly into the queue subscribed
-                ProtonReceiver receiver = connection.createReceiver(destination);
+                receiver = connection.createReceiver(destination);
                 receiver.setAutoAccept((boolean)clientOptions.get(AmqpClientOptions.AUTO_ACCEPT));
                 receiver.setQoS((ProtonQoS)clientOptions.get(AmqpClientOptions.QOS));
-                receiver.handler(messageHandler).open();
-                logger.info("Register consumer for queue {}... DONE", destination);
-                future.complete();
+                Integer prefetch = clientOptions.getInt(AmqpClientOptions.PREFETCH_MESSAGES, 1);
+                receiver.setPrefetch(prefetch);
+                logger.info("Setting prefetch to {}", prefetch);
+                receiver.handler(messageHandler);
+                receiver.openHandler(ar -> {
+                    if(ar.succeeded()) {
+                        logger.info("Succeeded establishing consumer link! (client: {})", client);
+                        setConnected(true);
+                    }
+                    else {
+                        logger.warn("Cannot establish link! (client: {})", ar.cause(), client);
+                        notifyConnectionLost();
+                    }
+                });
+                receiver.closeHandler(recv -> {
+                    logger.warn("Receiver is closed! attempting to restore it... (client: {})", client);
+                    notifyConnectionLost();
+                });
+                receiver.open();
+                logger.info("Register consumer for queue {}... DONE (client: {})", destination, client);
             }
         }
         catch(Exception e) {
-            future.fail(e);
+            notifyConnectionLost();
         }
     }
 

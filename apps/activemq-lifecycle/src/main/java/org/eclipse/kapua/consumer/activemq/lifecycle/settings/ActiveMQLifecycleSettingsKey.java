@@ -39,19 +39,27 @@ public enum ActiveMQLifecycleSettingsKey implements SettingKey {
     /**
      * Telemetry message client id
      */
-    TELEMETRY_CLIENT_ID("activemq_lifecycle.connection.telemetry_client_id"),
+    TELEMETRY_CLIENT_ID("activemq_lifecycle.telemetry.client_id"),
     /**
      * Telemetry message destination to subscribe
      */
-    TELEMETRY_DESTINATION("activemq_lifecycle.connection.telemetry_destination"),
+    TELEMETRY_DESTINATION("activemq_lifecycle.telemetry.destination"),
+    /**
+     * Consumer prefetch messages
+     */
+    TELEMETRY_PREFETCH_MESSAGES("activemq_lifecycle.telemetry.prefetch_messages"),
     /**
      * Message error connection client id
      */
-    ERROR_CLIENT_ID("activemq_lifecycle.connection.error_client_id"),
+    ERROR_CLIENT_ID("activemq_lifecycle.error.client_id"),
     /**
      * Error message destination to subscribe/produce
      */
-    ERROR_DESTINATION("activemq_lifecycle.connection.error_destination"),
+    ERROR_DESTINATION("activemq_lifecycle.error.destination"),
+    /**
+     * Consumer prefetch messages
+     */
+    ERROR_PREFETCH_MESSAGES("activemq_lifecycle.error.prefetch_messages"),
     /**
      * Wait between reconnection attempts (milliseconds)
      */

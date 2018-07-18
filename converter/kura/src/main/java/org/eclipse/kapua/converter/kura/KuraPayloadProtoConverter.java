@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.eclipse.kapua.commons.util.GZipUtil;
 import org.eclipse.kapua.connector.MessageContext;
+import org.eclipse.kapua.connector.Properties;
 import org.eclipse.kapua.converter.Converter;
 import org.eclipse.kapua.converter.ConverterErrorCodes;
 import org.eclipse.kapua.converter.KapuaConverterException;
@@ -59,7 +60,7 @@ public class KuraPayloadProtoConverter implements Converter<byte[], TransportMes
         TransportMessage transportMessage = new TransportMessageImpl();
 
         // topic and everything related: topic, scope id, device id, client id, channel
-        String transportTopic = (String) message.getProperty(Converter.MESSAGE_DESTINATION);
+        String transportTopic = (String) message.getProperty(Properties.MESSAGE_DESTINATION);
         if (Strings.isNullOrEmpty(transportTopic)) {
             new KapuaConverterException(ConverterErrorCodes.CONVERTION_NO_TOPIC);
         }
@@ -68,9 +69,9 @@ public class KuraPayloadProtoConverter implements Converter<byte[], TransportMes
         processTransportTopic(transportMessage, transportTopic);
 
         // Qos
-        Object qos = message.getProperty(Converter.MESSAGE_QOS);
+        Object qos = message.getProperty(Properties.MESSAGE_QOS);
         if (qos != null && qos instanceof TransportQos) {
-            TransportQos transporQos = (TransportQos) message.getProperty(Converter.MESSAGE_QOS);
+            TransportQos transporQos = (TransportQos) message.getProperty(Properties.MESSAGE_QOS);
             transportMessage.setQos(transporQos);
         }
 
