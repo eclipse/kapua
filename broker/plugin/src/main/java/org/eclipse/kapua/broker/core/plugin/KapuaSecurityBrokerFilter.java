@@ -41,7 +41,6 @@ import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.broker.core.PluginJAXBContextProvider;
-import org.eclipse.kapua.broker.core.message.MessageConstants;
 import org.eclipse.kapua.broker.core.plugin.authentication.Authenticator;
 import org.eclipse.kapua.broker.core.plugin.authentication.DefaultAuthenticator;
 import org.eclipse.kapua.broker.core.plugin.metric.LoginMetric;
@@ -56,6 +55,7 @@ import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.util.ClassUtil;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.connector.Properties;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
@@ -135,7 +135,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
 
     protected static final Map<String, String> CONNECTION_MAP = new ConcurrentHashMap<>();
     private static final String CONNECTOR_NAME_VM = String.format("vm://%s", BrokerPluginSetting.getInstance().getString(BrokerPluginSettingKey.BROKER_NAME));
-    private static final String CONNECTOR_NAME_AMQP = "amqp";//TODO move to configuration
+    private static final String CONNECTOR_NAME_AMQP = BrokerPluginSetting.getInstance().getString(BrokerPluginSettingKey.BROKER_CONNECTOR_AMQP_NAME);
     private Authenticator authenticator;
 
     private AuthenticationService authenticationService = KapuaLocator.getInstance().getService(AuthenticationService.class);
@@ -250,7 +250,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                 logger.debug("Received connect message topic: '{}' - message id: '{}'", destination, messageId);
                 String messageBrokerId;
                 try {
-                    messageBrokerId = message.getStringProperty(MessageConstants.PROPERTY_BROKER_ID);
+                    messageBrokerId = message.getStringProperty(Properties.PROPERTY_BROKER_ID);
                     if (!brokerId.equals(messageBrokerId)) {
                         logger.debug("Received connect message from another broker id: '{}' topic: '{}' - message id: '{}'", messageBrokerId, destination, messageId);
                         KapuaConnectionContext kcc = null;
@@ -286,8 +286,8 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             }
 
             private KapuaConnectionContext parseMessageSession(javax.jms.Message message) throws JMSException, KapuaException {
-                Long scopeId = message.propertyExists(MessageConstants.PROPERTY_SCOPE_ID) ? message.getLongProperty(MessageConstants.PROPERTY_SCOPE_ID) : null;
-                String clientId = message.getStringProperty(MessageConstants.PROPERTY_CLIENT_ID);
+                Long scopeId = message.propertyExists(Properties.PROPERTY_SCOPE_ID) ? message.getLongProperty(Properties.PROPERTY_SCOPE_ID) : null;
+                String clientId = message.getStringProperty(Properties.PROPERTY_CLIENT_ID);
                 if (scopeId == null || scopeId <= 0 || StringUtils.isEmpty(clientId)) {
                     logger.debug("Invalid message context. Try parsing the topic.");
                     throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Invalid message context");
@@ -296,7 +296,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             }
 
             private KapuaConnectionContext parseTopicInfo(javax.jms.Message message) throws JMSException, KapuaException {
-                String originalTopic = message.getStringProperty(MessageConstants.PROPERTY_ORIGINAL_TOPIC);
+                String originalTopic = message.getStringProperty(Properties.PROPERTY_ORIGINAL_TOPIC);
                 String topic[] = originalTopic.split("\\.");
                 if (topic.length != 5) {
                     logger.error("Invalid topic format. Cannot process connect message.");
@@ -566,20 +566,20 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                 }
             }
             // FIX #164
-            messageSend.setProperty(MessageConstants.HEADER_KAPUA_CONNECTION_ID, Base64.getEncoder().encodeToString(SerializationUtils.serialize(kapuaSecurityContext.getConnectionId())));
-            messageSend.setProperty(MessageConstants.HEADER_KAPUA_CLIENT_ID, ((KapuaPrincipal) kapuaSecurityContext.getMainPrincipal()).getClientId());
-            messageSend.setProperty(MessageConstants.HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL,
+            messageSend.setProperty(Properties.HEADER_KAPUA_CONNECTION_ID, Base64.getEncoder().encodeToString(SerializationUtils.serialize(kapuaSecurityContext.getConnectionId())));
+            messageSend.setProperty(Properties.HEADER_KAPUA_CLIENT_ID, ((KapuaPrincipal) kapuaSecurityContext.getMainPrincipal()).getClientId());
+            messageSend.setProperty(Properties.HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL,
                     Base64.getEncoder().encodeToString(SerializationUtils.serialize(kapuaSecurityContext.getConnectorDescriptor())));
-            messageSend.setProperty(MessageConstants.HEADER_KAPUA_SESSION, Base64.getEncoder().encodeToString(SerializationUtils.serialize(kapuaSecurityContext.getKapuaSession())));
-            messageSend.setProperty(MessageConstants.HEADER_KAPUA_BROKER_CONTEXT, false);
+            messageSend.setProperty(Properties.HEADER_KAPUA_SESSION, Base64.getEncoder().encodeToString(SerializationUtils.serialize(kapuaSecurityContext.getKapuaSession())));
+            messageSend.setProperty(Properties.HEADER_KAPUA_BROKER_CONTEXT, false);
         } else {
-            messageSend.setProperty(MessageConstants.HEADER_KAPUA_BROKER_CONTEXT, true);
+            messageSend.setProperty(Properties.HEADER_KAPUA_BROKER_CONTEXT, true);
         }
         publishMetric.getMessageSizeAllowed().update(messageSend.getSize());
         ActiveMQDestination destination = messageSend.getDestination();
         if (destination instanceof ActiveMQTopic) {
             ActiveMQTopic destinationTopic = (ActiveMQTopic) destination;
-            messageSend.setProperty(MessageConstants.PROPERTY_ORIGINAL_TOPIC, destinationTopic.getTopicName().substring(VT_TOPIC_PREFIX.length()));
+            messageSend.setProperty(Properties.PROPERTY_ORIGINAL_TOPIC, destinationTopic.getTopicName().substring(VT_TOPIC_PREFIX.length()));
         }
         publishMetric.getAllowedMessages().inc();
         super.send(producerExchange, messageSend);

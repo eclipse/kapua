@@ -22,6 +22,7 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +37,7 @@ public class ActiveMQTest {
     private final static String TOPIC_PUB = "kapua-sys/" + CLIENT_ID + "/data/topic1";
 
     @Test
+    @Ignore
     public void test() throws MqttException, InterruptedException {
         MqttClient client = new MqttClient(SERVER_URL, CLIENT_ID);
         MqttConnectOptions options = new MqttConnectOptions();

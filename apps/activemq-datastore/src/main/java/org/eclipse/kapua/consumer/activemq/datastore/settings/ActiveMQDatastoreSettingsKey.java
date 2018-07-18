@@ -39,19 +39,27 @@ public enum ActiveMQDatastoreSettingsKey implements SettingKey {
     /**
      * Telemetry message client id
      */
-    TELEMETRY_CLIENT_ID("activemq_datastore.connection.telemetry_client_id"),
+    TELEMETRY_CLIENT_ID("activemq_datastore.telemetry.client_id"),
     /**
      * Telemetry message destination to subscribe
      */
-    TELEMETRY_DESTINATION("activemq_datastore.connection.telemetry_destination"),
+    TELEMETRY_DESTINATION("activemq_datastore.telemetry.destination"),
+    /**
+     * Consumer prefetch messages
+     */
+    TELEMETRY_PREFETCH_MESSAGES("activemq_datastore.telemetry.prefetch_messages"),
     /**
      * Message error connection client id
      */
-    ERROR_CLIENT_ID("activemq_datastore.connection.error_client_id"),
+    ERROR_CLIENT_ID("activemq_datastore.error.client_id"),
     /**
      * Error message destination to subscribe/produce
      */
-    ERROR_DESTINATION("activemq_datastore.connection.error_destination"),
+    ERROR_DESTINATION("activemq_datastore.error.destination"),
+    /**
+     * Consumer prefetch messages
+     */
+    ERROR_PREFETCH_MESSAGES("activemq_datastore.error.prefetch_messages"),
     /**
      * Wait between reconnection attempts (milliseconds)
      */

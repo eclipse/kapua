@@ -39,11 +39,15 @@ public enum ActiveMQErrorSettingsKey implements SettingKey {
     /**
      * Message client id
      */
-    CLIENT_ID("activemq_error.connection.client_id"),
+    CLIENT_ID("activemq_error.client_id"),
     /**
      * Error message destination to subscribe
      */
-    DESTINATION("activemq_error.connection.destination"),
+    DESTINATION("activemq_error.destination"),
+    /**
+     * Consumer prefetch messages
+     */
+    PREFETCH_MESSAGES("activemq_error.prefetch_messages"),
     /**
      * Wait between reconnection attempts (milliseconds)
      */

@@ -64,6 +64,7 @@ public class DatastoreProcessor implements Processor<TransportMessage>, HealthCh
     public void process(MessageContext<TransportMessage> message, Handler<AsyncResult<Void>> result) throws KapuaException {
         logger.debug("Datastore service... converting received message: {}", message);
         TransportMessage tm = message.getMessage();
+        final String scopeName = tm.getScopeName();
         KapuaDataMessage kapuaDataMessage = new KapuaDataMessageImpl();
 
         //channel
@@ -87,9 +88,9 @@ public class DatastoreProcessor implements Processor<TransportMessage>, HealthCh
         vertx.executeBlocking(fut -> {
             try {
                 KapuaSecurityUtils.doPrivileged(() -> {
-                    Account account = accountService.findByName(tm.getScopeName());
+                    Account account = accountService.findByName(scopeName);
                     if (account==null) {
-                        fut.fail(String.format("Cannot find account %s", tm.getScopeName()));
+                        throw KapuaException.internalError(String.format("Cannot find account %s", scopeName));
                     }
                     kapuaDataMessage.setScopeId(account.getId());
                     logger.debug("Datastore service... converting message... DONE storing message...");

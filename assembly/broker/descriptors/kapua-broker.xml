@@ -51,7 +51,6 @@
                 <exclude>lib/slf4j*</exclude> <!-- pull in version 1.7.24 -->
 
                 <exclude>lib/optional/activeio-core-*</exclude>
-                <exclude>lib/optional/activemq-amqp-*</exclude>
                 <exclude>lib/optional/activemq-jdbc-store*</exclude>
                 <exclude>lib/optional/activemq-leveldb-store*</exclude>
                 <exclude>lib/optional/activemq-log4j-appender*</exclude>
