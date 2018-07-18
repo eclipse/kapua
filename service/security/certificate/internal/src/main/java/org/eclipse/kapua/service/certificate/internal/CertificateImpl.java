@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -197,7 +197,7 @@ public class CertificateImpl extends AbstractKapuaUpdatableEntity implements Cer
     public void setKeyUsageSettings(Set<KeyUsageSetting> keyUsageSettings) {
         this.keyUsageSettings = new HashSet<>();
 
-        keyUsageSettings.stream().forEach((k) -> this.keyUsageSettings.add(KeyUsageSettingImpl.parse(k)));
+        keyUsageSettings.forEach(k -> this.keyUsageSettings.add(KeyUsageSettingImpl.parse(k)));
     }
 
     @Override
@@ -223,7 +223,7 @@ public class CertificateImpl extends AbstractKapuaUpdatableEntity implements Cer
     public void setCertificateUsages(Set<CertificateUsage> certificateUsages) {
         this.certificateUsages = new HashSet<>();
 
-        certificateUsages.stream().forEach((k) -> this.certificateUsages.add(CertificateUsageImpl.parse(k)));
+        certificateUsages.forEach(k -> this.certificateUsages.add(CertificateUsageImpl.parse(k)));
     }
 
     @Override
@@ -238,9 +238,11 @@ public class CertificateImpl extends AbstractKapuaUpdatableEntity implements Cer
 
     @Override
     public Boolean getForwardable() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public void setForwardable(Boolean forwardable) { }
+    public void setForwardable(Boolean forwardable) {
+        throw new UnsupportedOperationException();
+    }
 }
