@@ -12,21 +12,23 @@
 package org.eclipse.kapua.consumer.activemq.datastore;
 
 import java.util.Optional;
-
 import javax.inject.Inject;
 
 import org.eclipse.kapua.broker.client.amqp.ClientOptions;
 import org.eclipse.kapua.broker.client.amqp.ClientOptions.AmqpClientOptions;
 import org.eclipse.kapua.commons.core.vertx.AbstractMainVerticle;
-import org.eclipse.kapua.commons.core.vertx.HttpRestServer;
 import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+import org.eclipse.kapua.commons.core.vertx.HttpRestServer;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.connector.MessageContext;
 import org.eclipse.kapua.connector.activemq.AmqpTransportActiveMQConnector;
 import org.eclipse.kapua.consumer.activemq.datastore.settings.ActiveMQDatastoreSettings;
 import org.eclipse.kapua.consumer.activemq.datastore.settings.ActiveMQDatastoreSettingsKey;
+import org.eclipse.kapua.converter.Converter;
 import org.eclipse.kapua.converter.kura.KuraPayloadProtoConverter;
+import org.eclipse.kapua.message.transport.TransportMessageType;
 import org.eclipse.kapua.processor.datastore.DatastoreProcessor;
 import org.eclipse.kapua.processor.error.amqp.activemq.ErrorProcessor;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
@@ -42,6 +44,7 @@ import io.vertx.proton.ProtonQoS;
 public class MainVerticle extends AbstractMainVerticle {
 
     protected final static Logger logger = LoggerFactory.getLogger(MainVerticle.class);
+
     private final static String HEALTH_NAME_CONNECTOR = "ActiveMQ-connector";
     private final static String HEALTH_NAME_DATASTORE = "Datastore-processor";
     private final static String HEALTH_NAME_ERROR = "Error-processor";
@@ -105,7 +108,14 @@ public class MainVerticle extends AbstractMainVerticle {
         logger.info("Instantiating Datastore Consumer... initializing ErrorProcessor");
         errorProcessor = new ErrorProcessor(vertx, errorOptions);
         logger.info("Instantiating Datastore Consumer... instantiating AmqpActiveMQConnector");
-        connector = new AmqpTransportActiveMQConnector(vertx, connectorOptions, converter, processor, errorProcessor);
+        connector = new AmqpTransportActiveMQConnector(vertx, connectorOptions, converter, processor, errorProcessor) {
+
+            @Override
+            protected boolean isProcessDestination(MessageContext<byte[]> message) {
+                return TransportMessageType.TELEMETRY.equals(message.getProperties().get(Converter.MESSAGE_TYPE));
+            }
+
+        };
         logger.info("Instantiating Datastore Consumer... DONE");
         vertx.deployVerticle(connector, ar -> {
             if (ar.succeeded()) {

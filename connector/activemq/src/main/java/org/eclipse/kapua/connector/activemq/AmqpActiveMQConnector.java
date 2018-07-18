@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.connector.activemq;
 
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,12 +40,13 @@ import io.vertx.proton.ProtonHelper;
  * AMQP ActiveMQ connector implementation.<br>
  * This connector doesn't do any message processing in the incoming message so it's useful for handling the process of messages in error.
  */
-public class AmqpActiveMQConnector extends AmqpAbstractConnector<Message, Message> implements HealthCheckable {
+public abstract class AmqpActiveMQConnector extends AmqpAbstractConnector<Message, Message> implements HealthCheckable {
 
     protected final static Logger logger = LoggerFactory.getLogger(AmqpActiveMQConnector.class);
 
     private final static String ACTIVEMQ_QOS = "ActiveMQ.MQTT.QoS";
-    private final static String CLASSIFIER = SystemSetting.getInstance().getMessageClassifier();
+    private final static String TOPIC_SEPARATOR = "/";
+    private final static String CLASSIFIER_TOPIC_PREFIX = SystemSetting.getInstance().getMessageClassifier() + TOPIC_SEPARATOR;
 
     private AmqpConsumer consumer;
 
@@ -130,17 +130,27 @@ public class AmqpActiveMQConnector extends AmqpAbstractConnector<Message, Messag
         mqttTopic = mqttTopic.replace(".", "/");
         // process prefix and extract message type
         // FIXME: pluggable message types and dialects
-        if (CLASSIFIER.equals(mqttTopic)) {
+        if (mqttTopic!=null && mqttTopic.startsWith(CLASSIFIER_TOPIC_PREFIX)) {
             parameters.put(Converter.MESSAGE_TYPE, TransportMessageType.CONTROL);
-            mqttTopic = mqttTopic.substring(CLASSIFIER.length());
+            mqttTopic = mqttTopic.substring(CLASSIFIER_TOPIC_PREFIX.length());
         } else {
             parameters.put(Converter.MESSAGE_TYPE, TransportMessageType.TELEMETRY);
         }
         parameters.put(Converter.MESSAGE_DESTINATION, mqttTopic);
 
         //extract connection id
-        parameters.put(Converter.CONNECTION_ID, 
-                Base64.getDecoder().decode((String)message.getApplicationProperties().getValue().get(Converter.HEADER_KAPUA_CONNECTION_ID)));
+        try {
+          //Base 64 encoded String (by the broker plugin)
+            String connectionId = (String)message.getApplicationProperties().getValue().get(Converter.HEADER_KAPUA_CONNECTION_ID);
+            if (connectionId!=null) {
+                parameters.put(Converter.CONNECTION_ID, connectionId);
+            }
+        }
+        //TODO remove ClassCast from the catched exceptions?
+        catch (ClassCastException | NullPointerException | IllegalArgumentException e) {
+            //cannot get connection id so it may be not available at publish time
+            logger.debug("Cannot get Kapua connection Id: {}", e.getMessage(), e);
+        }
 
         // extract the original QoS
         Object activeMqQos = message.getApplicationProperties().getValue().get(ACTIVEMQ_QOS);

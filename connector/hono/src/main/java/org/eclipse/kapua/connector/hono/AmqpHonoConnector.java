@@ -39,7 +39,7 @@ import io.vertx.core.Vertx;
  * Amqp Hono connector implementation
  *
  */
-public class AmqpHonoConnector extends AmqpAbstractConnector<byte[], TransportMessage> {
+public abstract class AmqpHonoConnector extends AmqpAbstractConnector<byte[], TransportMessage> {
 
     protected final static Logger logger = LoggerFactory.getLogger(AmqpHonoConnector.class);
 

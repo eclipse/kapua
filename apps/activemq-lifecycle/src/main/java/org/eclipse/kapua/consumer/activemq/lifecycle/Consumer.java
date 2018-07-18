@@ -23,9 +23,11 @@ import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.connector.MessageContext;
 import org.eclipse.kapua.connector.activemq.AmqpTransportActiveMQConnector;
 import org.eclipse.kapua.consumer.activemq.lifecycle.settings.ActiveMQLifecycleSettings;
 import org.eclipse.kapua.consumer.activemq.lifecycle.settings.ActiveMQLifecycleSettingsKey;
+import org.eclipse.kapua.converter.Converter;
 import org.eclipse.kapua.converter.kura.KuraPayloadProtoConverter;
 import org.eclipse.kapua.processor.error.amqp.activemq.ErrorProcessor;
 import org.eclipse.kapua.processor.lifecycle.LifecycleProcessor;
@@ -115,7 +117,24 @@ public class Consumer extends AbstractApplication {
         logger.info("Instantiating Lifecycle Consumer... initializing ErrorProcessor");
         errorProcessor = new ErrorProcessor(applicationContext.getVertx(), errorOptions);
         logger.info("Instantiating Lifecycle Consumer... instantiating AmqpActiveMQConnector");
-        connector = new AmqpTransportActiveMQConnector(applicationContext.getVertx(), connectorOptions, converter, processor, errorProcessor);
+        connector = new AmqpTransportActiveMQConnector(applicationContext.getVertx(), connectorOptions, converter, processor, errorProcessor) {
+
+            @Override
+            protected boolean isProcessDestination(MessageContext<byte[]> message) {
+                String topic = (String) message.getProperties().get(Converter.MESSAGE_DESTINATION);
+                if (topic!=null && (topic.endsWith("/MQTT/BIRTH") ||
+                        topic.endsWith("/MQTT/DC") ||
+                        topic.endsWith("/MQTT/LWT") ||
+                        topic.endsWith("/MQTT/MISSING"))
+                        ) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+
+        };
         logger.info("Instantiating Lifecycle Consumer... DONE");
         applicationContext.getVertx().deployVerticle(connector, ar -> {
             if (ar.succeeded()) {

@@ -14,11 +14,13 @@ package org.eclipse.kapua.consumer.activemq.error;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
+import org.apache.qpid.proton.message.Message;
 import org.eclipse.kapua.apps.api.AbstractApplication;
 import org.eclipse.kapua.apps.api.ApplicationContext;
 import org.eclipse.kapua.broker.client.amqp.ClientOptions;
 import org.eclipse.kapua.broker.client.amqp.ClientOptions.AmqpClientOptions;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.connector.MessageContext;
 import org.eclipse.kapua.connector.activemq.AmqpActiveMQConnector;
 import org.eclipse.kapua.consumer.activemq.error.settings.ActiveMQErrorSettings;
 import org.eclipse.kapua.consumer.activemq.error.settings.ActiveMQErrorSettingsKey;
@@ -76,7 +78,14 @@ public class Consumer extends AbstractApplication {
         logger.info("Instantiating ErrorLogger Consumer... initializing ErrorLogger");
         processor = new LoggerProcessor();
         logger.info("Instantiating LoggerProcessor Consumer... instantiating AmqpActiveMQConnector");
-        connector = new AmqpActiveMQConnector(applicationContext.getVertx(), connectorOptions, processor);
+        connector = new AmqpActiveMQConnector(applicationContext.getVertx(), connectorOptions, processor) {
+
+            @Override
+            protected boolean isProcessDestination(MessageContext<Message> message) {
+                return true;
+            }
+
+        };
         logger.info("Instantiating LoggerProcessor Consumer... DONE");
         applicationContext.getVertx().deployVerticle(connector, ar -> {
             if (ar.succeeded()) {

@@ -14,9 +14,13 @@ package org.eclipse.kapua.processor.lifecycle;
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Timer;
 
+import java.util.Base64;
+
+import org.apache.commons.lang3.SerializationUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsService;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.connector.MessageContext;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.transport.TransportMessage;
@@ -34,8 +38,8 @@ import org.slf4j.LoggerFactory;
  */
 public class LifecycleListener {
 
-    //TODO it's the same field in org.eclipse.kapua.broker.core.message.MessageConstants. move them to a shared place
-    public static final String HEADER_KAPUA_CONNECTION_ID = "KAPUA_CONNECTION_ID";
+    //TODO it's the same field in org.eclipse.kapua.converter.Converter. move them to a shared place
+    public static final String CONNECTION_ID = new String("connection-id");
     private static final Logger logger = LoggerFactory.getLogger(LifecycleListener.class);
 
     private static DeviceLifeCycleService deviceLifeCycleService = KapuaLocator.getInstance().getService(DeviceLifeCycleService.class);
@@ -76,9 +80,11 @@ public class LifecycleListener {
      */
     public void processBirthMessage(MessageContext<TransportMessage> message) {
         try {
-            deviceLifeCycleService.birth(getConnectionId(message),
+            KapuaSecurityUtils.doPrivileged(() -> {
+                deviceLifeCycleService.birth(getConnectionId(message),
                     LifecycleConverter.getBirthMessage(message.getMessage()));
-            metricDeviceBirthMessage.inc();
+                metricDeviceBirthMessage.inc();
+            });
         } catch (KapuaException e) {
             metricDeviceErrorMessage.inc();
             logger.error("Error while processing device birth life-cycle event", e);
@@ -92,9 +98,11 @@ public class LifecycleListener {
      */
     public void processDisconnectMessage(MessageContext<TransportMessage> message) {
         try {
-            deviceLifeCycleService.death(getConnectionId(message),
+            KapuaSecurityUtils.doPrivileged(() -> {
+                deviceLifeCycleService.death(getConnectionId(message),
                     LifecycleConverter.getDisconnectMessage(message.getMessage()));
-            metricDeviceDisconnectMessage.inc();
+                metricDeviceDisconnectMessage.inc();
+            });
         } catch (KapuaException e) {
             metricDeviceErrorMessage.inc();
             logger.error("Error while processing device disconnect life-cycle event", e);
@@ -108,9 +116,11 @@ public class LifecycleListener {
      */
     public void processAppsMessage(MessageContext<TransportMessage> message) {
         try {
-            deviceLifeCycleService.applications(getConnectionId(message),
+            KapuaSecurityUtils.doPrivileged(() -> {
+                deviceLifeCycleService.applications(getConnectionId(message),
                     LifecycleConverter.getAppsMessage(message.getMessage()));
-            metricDeviceAppsMessage.inc();
+                metricDeviceAppsMessage.inc();
+            });
         } catch (KapuaException e) {
             metricDeviceErrorMessage.inc();
             logger.error("Error while processing device apps life-cycle event", e);
@@ -124,9 +134,11 @@ public class LifecycleListener {
      */
     public void processMissingMessage(MessageContext<TransportMessage> message) {
         try {
-            deviceLifeCycleService.missing(getConnectionId(message),
+            KapuaSecurityUtils.doPrivileged(() -> {
+                deviceLifeCycleService.missing(getConnectionId(message),
                     LifecycleConverter.getMissingMessage(message.getMessage()));
-            metricDeviceMissingMessage.inc();
+                metricDeviceMissingMessage.inc();
+            });
         } catch (KapuaException e) {
             metricDeviceErrorMessage.inc();
             logger.error("Error while processing device missing life-cycle event", e);
@@ -144,6 +156,6 @@ public class LifecycleListener {
     }
 
     private KapuaId getConnectionId(MessageContext<TransportMessage> message) {
-        return (KapuaId)message.getProperties().get(HEADER_KAPUA_CONNECTION_ID);
+        return (KapuaId)SerializationUtils.deserialize(Base64.getDecoder().decode((String)message.getProperties().get(CONNECTION_ID)));
     }
 }
