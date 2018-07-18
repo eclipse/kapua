@@ -182,14 +182,13 @@ public class AccountConfigComponents extends LayoutContainer {
                     dirty = true;
                     refresh();
 
-                    refreshButton.setEnabled(true);
                     refreshProcess = false;
                     gwtSession.setFormDirty(false);
                 }
             }
         });
 
-        refreshButton.setEnabled(true);
+        refreshButton.setEnabled(false);
         toolBar.add(refreshButton);
         toolBar.add(new SeparatorToolItem());
 
