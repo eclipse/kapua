@@ -9,11 +9,13 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.core.spi;
+package org.eclipse.kapua.commons.core.vertx;
 
-import org.eclipse.kapua.commons.core.BeanContextConfig;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Handler;
+import io.vertx.core.json.JsonObject;
 
-public interface BeanContextConfigFactory {
+public interface EBRequestHandler {
 
-    public BeanContextConfig create();
+    public void handle(JsonObject request, Handler<AsyncResult<JsonObject>> response);
 }

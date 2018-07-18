@@ -17,27 +17,9 @@ import io.vertx.core.Vertx;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
-import javax.inject.Inject;
-
-import org.eclipse.kapua.commons.core.Configuration;
-
 public abstract class AbstractMainVerticle extends AbstractVerticle {
 
     private static Logger logger = LoggerFactory.getLogger(AbstractMainVerticle.class);
-
-    @Inject
-    private Configuration configuration;
-
-    @Inject
-    private Environment environment;
-
-    public Configuration getConfiguration() {
-        return this.configuration;
-    }
-
-    public Environment getEnvironment() {
-        return this.environment;
-    }
 
     @Override
     public final void init(Vertx vertx, Context context) {
@@ -49,21 +31,9 @@ public abstract class AbstractMainVerticle extends AbstractVerticle {
         logger.trace("Starting verticle...");
         super.start();
 
-        HttpRestServer httpRestServer = environment.getBeanContext().getInstance(HttpRestServer.class);
-        ((EnvironmentImpl)environment).setHttpRestService(httpRestServer);
-
         Future<Void> startFuture = Future.future();
         internalStart(startFuture);    
-        startFuture.compose( mapper -> {
-            Future<Void> fut = Future.future();
-            vertx.deployVerticle(httpRestServer, ar -> {
-                if (ar.succeeded()) {
-                    fut.complete();
-                } else {
-                    fut.fail(ar.cause());
-                }});
-            return fut;
-        }).setHandler(ar -> {
+        startFuture.setHandler(ar -> {
             if (ar.succeeded()) {
                 logger.trace("Starting verticle...DONE");
             } else {

@@ -9,11 +9,9 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.core.spi;
+package org.eclipse.kapua.commons.core.vertx;
 
-import org.eclipse.kapua.commons.core.BeanContextConfig;
+public interface EBRequestHandlerProvider {
 
-public interface BeanContextConfigFactory {
-
-    public BeanContextConfig create();
+    public void registerHandlers(EBRequestDispatcher dispatcher);
 }

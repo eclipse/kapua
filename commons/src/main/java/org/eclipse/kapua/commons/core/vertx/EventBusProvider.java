@@ -9,11 +9,11 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.core.spi;
+package org.eclipse.kapua.commons.core.vertx;
 
-import org.eclipse.kapua.commons.core.BeanContextConfig;
+import io.vertx.core.eventbus.EventBus;
 
-public interface BeanContextConfigFactory {
+public interface EventBusProvider {
 
-    public BeanContextConfig create();
+    public EventBus get();
 }

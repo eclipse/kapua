@@ -12,10 +12,11 @@
 package org.eclipse.kapua.commons.core.vertx;
 
 import org.eclipse.kapua.commons.core.BeanContextConfig;
+import org.eclipse.kapua.commons.core.spi.BeanContextConfigFactory;
 
 public interface EnvironmentSetup {
 
     public void configure(BeanContextConfig context);
 
-    public void configure(String beanContextFactoryName);
+    public void configure(BeanContextConfigFactory factory);
 }

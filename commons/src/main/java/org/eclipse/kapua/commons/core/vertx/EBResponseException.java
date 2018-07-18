@@ -11,13 +11,31 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core.vertx;
 
-import org.eclipse.kapua.commons.core.BeanContext;
+public class EBResponseException extends Exception {
 
-import com.codahale.metrics.MetricRegistry;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1005656055006273926L;
 
-public interface Environment {
+    public EBResponseException(int code) {
+        super();
+        this.code = code;
+    }
 
-    public MetricRegistry getMetricRegistry();
+    public EBResponseException(int code, String message) {
+        super(message);
+        this.code = code;
+    }
 
-    public BeanContext getBeanContext();
+    public EBResponseException(int code, String message, Throwable t) {
+        super(message, t);
+        this.code = code;
+    }
+
+    private int code;
+
+    public int getCode() {
+        return code;
+    }    
 }

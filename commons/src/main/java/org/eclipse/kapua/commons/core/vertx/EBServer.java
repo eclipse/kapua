@@ -11,9 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core.vertx;
 
-public interface HttpRestService {
+import io.vertx.core.Verticle;
 
-    public void registerRouteProvider(HttpRouteProvider provider);
+public interface EBServer extends Verticle {
 
-    public void registerHealthCheckProvider(HealthCheckProvider provider);
+    public void registerHandlerProvider(EBRequestHandlerProvider provider);
 }

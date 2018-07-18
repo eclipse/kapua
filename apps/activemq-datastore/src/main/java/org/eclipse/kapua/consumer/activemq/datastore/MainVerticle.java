@@ -13,9 +13,12 @@ package org.eclipse.kapua.consumer.activemq.datastore;
 
 import java.util.Optional;
 
+import javax.inject.Inject;
+
 import org.eclipse.kapua.broker.client.amqp.ClientOptions;
 import org.eclipse.kapua.broker.client.amqp.ClientOptions.AmqpClientOptions;
 import org.eclipse.kapua.commons.core.vertx.AbstractMainVerticle;
+import org.eclipse.kapua.commons.core.vertx.HttpRestServer;
 import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
@@ -49,6 +52,9 @@ public class MainVerticle extends AbstractMainVerticle {
     private DatastoreProcessor processor;
     private ClientOptions errorOptions;
     private ErrorProcessor errorProcessor;
+
+    @Inject
+    private HttpRestServer httpRestServer;
 
     public MainVerticle() {
         SystemSetting configSys = SystemSetting.getInstance();
@@ -109,7 +115,7 @@ public class MainVerticle extends AbstractMainVerticle {
                 future.fail(ar.cause());
             }
         });
-        getEnvironment().getHttpRestService().registerHealthCheckProvider(handler -> {
+        httpRestServer.registerHealthCheckProvider(handler -> {
             handler.register(HEALTH_NAME_CONNECTOR, hcm -> {
                 if (connector.getStatus().isOk()) {
                     hcm.complete(Status.OK());
@@ -119,7 +125,7 @@ public class MainVerticle extends AbstractMainVerticle {
                 }
             });
         });
-        getEnvironment().getHttpRestService().registerHealthCheckProvider(handler -> {
+        httpRestServer.registerHealthCheckProvider(handler -> {
             handler.register(HEALTH_NAME_DATASTORE, hcm -> {
                 if (processor.getStatus().isOk()) {
                     hcm.complete(Status.OK());
@@ -129,7 +135,7 @@ public class MainVerticle extends AbstractMainVerticle {
                 }
             });
         });
-        getEnvironment().getHttpRestService().registerHealthCheckProvider(handler -> {
+        httpRestServer.registerHealthCheckProvider(handler -> {
             handler.register(HEALTH_NAME_ERROR, hcm -> {
                 if (errorProcessor.getStatus().isOk()) {
                     hcm.complete(Status.OK());
