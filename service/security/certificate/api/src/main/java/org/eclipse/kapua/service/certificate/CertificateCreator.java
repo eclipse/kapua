@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,6 +19,8 @@ import org.eclipse.kapua.service.certificate.xml.CertificateXmlRegistry;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -31,43 +33,43 @@ import java.util.Set;
  */
 @XmlRootElement(name = "certificateCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = {
-        "certificate",
-        "status",
-        "privateKey",
-        "caId",
-        "password",
-        "certificateUsages",
-        "forwardable"
-}, factoryClass = CertificateXmlRegistry.class, factoryMethod = "newCreator")
+@XmlType(factoryClass = CertificateXmlRegistry.class, factoryMethod = "newCreator")
 public interface CertificateCreator extends KapuaNamedEntityCreator<Certificate> {
 
+    @XmlElement(name = "certificate")
     String getCertificate();
 
     void setCertificate(String certificate);
 
+    @XmlElement(name = "status")
     CertificateStatus getStatus();
 
     void setStatus(CertificateStatus status);
 
+    @XmlElement(name = "privateKey")
     String getPrivateKey();
 
     void setPrivateKey(String privateKey);
 
+    @XmlElement(name = "caId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     @ApiModelProperty(dataType = "string")
     KapuaId getCaId();
 
     void setCaId(KapuaId caId);
 
+    @XmlElement(name = "password")
     String getPassword();
 
     void setPassword(String password);
 
+    @XmlElementWrapper(name = "certificateUsages")
+    @XmlElement(name = "certificateUsage")
     <C extends CertificateUsage> Set<C> getCertificateUsages();
 
     void setCertificateUsages(Set<CertificateUsage> certificateUsages);
 
+    @XmlElement(name = "forwardable")
     Boolean getForwardable();
 
     void setForwardable(Boolean forwardable);

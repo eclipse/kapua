@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,14 +15,16 @@ import org.eclipse.kapua.model.KapuaNamedEntityPredicates;
 
 public interface CertificatePredicates extends KapuaNamedEntityPredicates {
 
-    String USAGE = "certificateUsages";
-
-    String USAGE_NAME = USAGE + ".name";
-
-    String STATUS = "status";
+    String CA_ID = "caId";
 
     String FORWARDABLE = "forwardable";
 
-    String CA_ID = "caId";
+    String SIGNATURE = "signature";
+
+    String STATUS = "status";
+
+    String USAGE = "certificateUsages";
+
+    String USAGE_NAME = USAGE + ".name";
 
 }
