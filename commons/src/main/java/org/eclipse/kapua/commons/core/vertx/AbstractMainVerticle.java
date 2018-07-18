@@ -35,20 +35,57 @@ public abstract class AbstractMainVerticle extends AbstractVerticle {
         super.init(vertx, context);
     }
 
-    // TODO define as final all the verticle methods that need not to be overridden
+    @Override
+    public final void start(Future<Void> startEvent) throws Exception {
+        logger.trace("Starting verticle...");
+        Future<Void> startSeq = Future.future();
+        super.start(startSeq);
+        startSeq.compose(mapper -> {
+            Future<Void> event = Future.future();
+            try {
+                internalStart(event);
+            } catch (Exception e) {
+                event.fail(e);
+            } 
+            return event;
+        }).setHandler(event -> {
+            if (event.succeeded()) {
+                logger.trace("Starting verticle...DONE");
+                startEvent.complete();
+            } else {
+                logger.error("Starting verticle...FAIL", event.cause());
+                startEvent.fail(event.cause());
+            }
+        });
+    }
 
     @Override
     public final void start() throws Exception {
         logger.trace("Starting verticle...");
         super.start();
+        this.internalStart();
+    }
 
-        Future<Void> startFuture = Future.future();
-        internalStart(startFuture);    
-        startFuture.setHandler(ar -> {
-            if (ar.succeeded()) {
-                logger.trace("Starting verticle...DONE");
+    @Override
+    public final void stop(Future<Void> stopEvent) throws Exception {
+        logger.trace("Stopping verticle...");
+        Future<Void> stopSeq = Future.future();
+        internalStop(stopSeq);
+        stopSeq.compose(mapper -> {
+            Future<Void> event = Future.future();
+            try {
+                super.stop(event);
+            } catch (Exception e) {
+                event.fail(e);
+            }
+            return event;
+        }).setHandler(event -> {
+            if (event.succeeded()) {
+                logger.trace("Stopping verticle...DONE");
+                stopEvent.complete();
             } else {
-                logger.error("Starting verticle...FAILED", ar.cause());
+                logger.error("Stopping verticle...FAIL", event.cause());
+                stopEvent.fail(event.cause());
             }
         });
     }
@@ -58,7 +95,6 @@ public abstract class AbstractMainVerticle extends AbstractVerticle {
         logger.trace("Stopping verticle...");
         this.internalStop();
         super.stop();
-        logger.trace("Stopping verticle...DONE");
     }
 
     protected void internalStart(Future<Void> startFuture) throws Exception {

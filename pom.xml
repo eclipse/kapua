@@ -78,7 +78,7 @@
         <log4j-to-slf4j.version>2.8.2</log4j-to-slf4j.version> <!-- same version used by elasticsearch -->
         <log4j2-mock.version>0.0.1</log4j2-mock.version>
         <qpid-jms-client.version>0.24.0</qpid-jms-client.version>
-        <qpid-proton.version>0.20.0</qpid-proton.version>
+        <qpid-proton.version>0.25.0</qpid-proton.version>
         <quartz-scheduler.version>2.2.3</quartz-scheduler.version>
         <jetty.version>9.4.6.v20170531</jetty.version>
 
@@ -1366,6 +1366,11 @@
                 <groupId>io.vertx</groupId>
                 <artifactId>vertx-proton</artifactId>
                 <version>${vertx.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.qpid</groupId>
+                <artifactId>proton-j</artifactId>
+                <version>${qpid-proton.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.vertx</groupId>

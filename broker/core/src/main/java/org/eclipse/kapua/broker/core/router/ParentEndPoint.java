@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.camel.Exchange;
-import org.eclipse.kapua.broker.core.message.MessageConstants;
+import org.eclipse.kapua.connector.Properties;
 
 @XmlRootElement(name = "endPoint")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -45,7 +45,7 @@ public class ParentEndPoint implements EndPoint {
     @XmlTransient
     public boolean matches(Exchange exchange, Object value, String previous, Map<String, Object> properties) {
         if (previous == null) {
-            String originaTopic = exchange.getIn().getHeader(MessageConstants.PROPERTY_ORIGINAL_TOPIC, String.class);
+            String originaTopic = exchange.getIn().getHeader(Properties.PROPERTY_ORIGINAL_TOPIC, String.class);
             // TODO if pattern is null it is an error so it should be correct to throw an exception or leave the NullPointerException raised by the method?!
             return pattern.matcher(originaTopic).matches();
         } else {
