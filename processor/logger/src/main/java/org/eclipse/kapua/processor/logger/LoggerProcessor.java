@@ -37,14 +37,7 @@ public class LoggerProcessor implements Processor<Message>, HealthCheckable {
     @Override
     public void process(MessageContext<Message> message, Handler<AsyncResult<Void>> result) throws KapuaProcessorException {
         //avoid null check on message fields
-        try {
-            logger.info("Message (between #): #{}#", String.valueOf(message.getMessage().getBody()));
-        }
-        catch (NullPointerException e) {
-            //TODO should switch to succeed since this is already a message that triggered errors during processing?
-            result.handle(Future.failedFuture(e));
-            logger.warn("Received malformed message!");
-        }
+        logger.info("Message (between #): #{}#", message.getMessage() != null ? String.valueOf(message.getMessage().getBody()) : "NULL");
         result.handle(Future.succeededFuture());
 
         //old code

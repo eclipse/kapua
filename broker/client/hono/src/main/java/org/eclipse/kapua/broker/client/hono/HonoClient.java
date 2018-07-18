@@ -157,8 +157,8 @@ public class HonoClient {
     }
 
     private long evaluateBackOff() {
-        //TODO change algorithm to something exponential
-        return (1 + reconnectionFaultCount.get()) * 3000;
+        Integer waitBetweenReconnect = clientOptions.getInt(HonoClientOptions.WAIT_BETWEEN_RECONNECT, null);
+        return (1 + reconnectionFaultCount.get()) * waitBetweenReconnect + (long)((double)waitBetweenReconnect * Math.random());
     }
 
     protected ClientConfigProperties getClientConfigProperties(String host, int port) {

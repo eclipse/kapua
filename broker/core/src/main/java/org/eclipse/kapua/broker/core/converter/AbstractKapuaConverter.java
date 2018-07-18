@@ -23,11 +23,11 @@ import org.eclipse.kapua.broker.core.listener.CamelConstants;
 import org.eclipse.kapua.broker.core.message.CamelKapuaMessage;
 import org.eclipse.kapua.broker.core.message.CamelUtil;
 import org.eclipse.kapua.broker.core.message.MessageConverter;
-import org.eclipse.kapua.broker.core.message.MessageConstants;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor.MessageType;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsService;
+import org.eclipse.kapua.connector.Properties;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,10 +81,10 @@ public abstract class AbstractKapuaConverter {
                 try {
                     // FIX #164
                     Date queuedOn = new Date(message.getHeader(CamelConstants.JMS_HEADER_TIMESTAMP, Long.class));
-                    KapuaId connectionId = (KapuaId) SerializationUtils.deserialize(Base64.getDecoder().decode(message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTION_ID, String.class)));
-                    String clientId = message.getHeader(MessageConstants.HEADER_KAPUA_CLIENT_ID, String.class);
+                    KapuaId connectionId = (KapuaId) SerializationUtils.deserialize(Base64.getDecoder().decode(message.getHeader(Properties.HEADER_KAPUA_CONNECTION_ID, String.class)));
+                    String clientId = message.getHeader(Properties.HEADER_KAPUA_CLIENT_ID, String.class);
                     ConnectorDescriptor connectorDescriptor = (ConnectorDescriptor) SerializationUtils
-                            .deserialize(Base64.getDecoder().decode(message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL, String.class)));
+                            .deserialize(Base64.getDecoder().decode(message.getHeader(Properties.HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL, String.class)));
                     return MessageConverter.convertToCamelKapuaMessage(connectorDescriptor, messageType, messageContent, CamelUtil.getTopic(message), queuedOn, connectionId, clientId);
                 } catch (JMSException e) {
                     metricConverterErrorMessage.inc();

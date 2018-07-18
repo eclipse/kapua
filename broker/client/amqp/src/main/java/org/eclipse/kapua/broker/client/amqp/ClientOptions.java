@@ -28,6 +28,7 @@ public class ClientOptions {
         CONNECT_TIMEOUT,
         IDLE_TIMEOUT,
         AUTO_ACCEPT,
+        PREFETCH_MESSAGES,
         QOS,
         EXIT_CODE
     }
