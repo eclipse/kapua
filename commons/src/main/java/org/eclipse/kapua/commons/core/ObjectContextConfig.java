@@ -11,23 +11,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core;
 
-import com.google.inject.Injector;
+import com.google.inject.AbstractModule;
 
-public class BeanContextImpl implements BeanContext {
-
-    private Injector injector;
-
-    public Injector getInjector() {
-        return injector;
-    }
-
-    public void setInjector(Injector injector) {
-        this.injector = injector;
-    }
+/**
+ * Provides bindings used by {@link ObjectContext} to create beans.
+ * <p>
+ * Application implementations may extend this class to provide the 
+ * actual bindings that.
+ * 
+ */
+public class ObjectContextConfig extends AbstractModule {
 
     @Override
-    public <T> T getInstance(Class<T> clazz) {
-        return injector.getInstance(clazz);
+    protected void configure() {
     }
 
 }

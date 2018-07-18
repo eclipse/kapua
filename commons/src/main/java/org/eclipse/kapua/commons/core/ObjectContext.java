@@ -11,16 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core;
 
-import java.util.List;
-
 /**
- * Configuration holds a set of key-value pairs collected from configuration 
- * sources {@link ConfigurationSource} (e.g. configuration files) provided 
- * by the application. Configuration is by default a managed object.
+ * A object context acts as a factory and provides object instances 
+ * from classes as defined in {@link ObjectContextConfig}.
  */
-public interface Configuration {
+public interface ObjectContext {
 
-    public List<String> getKeys();
-
-    public String getProperty(String key);
+    public <T> T getInstance(Class<T> clazz);
 }

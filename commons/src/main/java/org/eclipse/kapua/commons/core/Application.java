@@ -11,7 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core;
 
-
+/*
+ * Interface to be implemented by Kapua Applications.
+ */
 public interface Application {
 
     public String getName();

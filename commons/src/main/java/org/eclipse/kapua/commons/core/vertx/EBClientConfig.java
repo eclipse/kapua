@@ -9,18 +9,21 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.core;
-
-import java.util.List;
+package org.eclipse.kapua.commons.core.vertx;
 
 /**
- * Configuration holds a set of key-value pairs collected from configuration 
- * sources {@link ConfigurationSource} (e.g. configuration files) provided 
- * by the application. Configuration is by default a managed object.
+ * Holds the configuration parameters of an {@link AbstractEBClient}
+ *
  */
-public interface Configuration {
+public class EBClientConfig {
 
-    public List<String> getKeys();
+    private String address;
 
-    public String getProperty(String key);
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
 }

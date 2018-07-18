@@ -9,9 +9,22 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.core;
+package org.eclipse.kapua.commons.core.vertx;
 
-public interface BeanContext {
+/**
+ * Holds the configuration parameters of an {@link AbstractEBServer}
+ *
+ */
+public class EBServerConfig {
 
-    public <T> T getInstance(Class<T> clazz);
+    private String address;
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
 }

@@ -11,12 +11,26 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core;
 
-import com.google.inject.AbstractModule;
+import com.google.inject.Injector;
 
-public class BeanContextConfig extends AbstractModule {
+/**
+ * Guice implementation of a {@link ObjectContext}
+ */
+public class ObjectContextImpl implements ObjectContext {
+
+    private Injector injector;
+
+    public Injector getInjector() {
+        return injector;
+    }
+
+    public void setInjector(Injector injector) {
+        this.injector = injector;
+    }
 
     @Override
-    protected void configure() {
+    public <T> T getInstance(Class<T> clazz) {
+        return injector.getInstance(clazz);
     }
 
 }

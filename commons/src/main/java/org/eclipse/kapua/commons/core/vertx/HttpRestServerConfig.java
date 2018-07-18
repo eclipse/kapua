@@ -11,29 +11,37 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core.vertx;
 
-import javax.inject.Inject;
-import javax.inject.Named;
+/**
+ * Holds the configuration parameters of an {@link AbstractHttpRestServer}
+ *
+ */
+public class HttpRestServerConfig {
 
-public class HttpRestServerImpl extends AbstractHttpRestServer {
-
-    @Inject
-    @Named("vertx.metrics-root")
     private String metricsRoot;
-
-    @Inject
-    @Named("http-server.host")
     private String host;
-
-    @Inject
-    @Named("http-server.port")
     private int port;
 
-    @Override
-    public HttpRestServerConfig getConfigs() {
-        HttpRestServerConfig config = new HttpRestServerConfig();
-        config.setHost(this.host);
-        config.setMetricsRoot(this.metricsRoot);
-        config.setPort(port);
-        return config;
+    public String getMetricsRoot() {
+        return metricsRoot;
+    }
+
+    public void setMetricsRoot(String metricsRoot) {
+        this.metricsRoot = metricsRoot;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
     }
 }

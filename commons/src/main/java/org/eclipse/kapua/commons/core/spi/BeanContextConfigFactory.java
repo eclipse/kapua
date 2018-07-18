@@ -11,9 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core.spi;
 
-import org.eclipse.kapua.commons.core.BeanContextConfig;
+import org.eclipse.kapua.commons.core.ObjectContextConfig;
 
 public interface BeanContextConfigFactory {
 
-    public BeanContextConfig create();
+    public ObjectContextConfig create();
 }

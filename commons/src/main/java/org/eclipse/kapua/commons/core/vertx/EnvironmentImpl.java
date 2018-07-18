@@ -13,8 +13,8 @@ package org.eclipse.kapua.commons.core.vertx;
 
 import java.util.Objects;
 
-import org.eclipse.kapua.commons.core.BeanContext;
-import org.eclipse.kapua.commons.core.BeanContextConfig;
+import org.eclipse.kapua.commons.core.ObjectContext;
+import org.eclipse.kapua.commons.core.ObjectContextConfig;
 import org.eclipse.kapua.commons.core.Configuration;
 import org.eclipse.kapua.commons.core.spi.BeanContextConfigFactory;
 
@@ -25,8 +25,8 @@ import io.vertx.core.Vertx;
 public class EnvironmentImpl implements EnvironmentSetup, Environment {
 
     private MetricRegistry metricRegistry;
-    private BeanContextConfig beanContextConfig;
-    private BeanContext beanContext;
+    private ObjectContextConfig beanContextConfig;
+    private ObjectContext beanContext;
 
     public EnvironmentImpl(Vertx vertx, Configuration config) {
     }
@@ -41,7 +41,7 @@ public class EnvironmentImpl implements EnvironmentSetup, Environment {
     }
 
     @Override
-    public void configure(BeanContextConfig context) {
+    public void configure(ObjectContextConfig context) {
         this.beanContextConfig = context;
     }
 
@@ -52,15 +52,15 @@ public class EnvironmentImpl implements EnvironmentSetup, Environment {
     }
 
     @Override
-    public BeanContext getBeanContext() {
+    public ObjectContext getBeanContext() {
         return beanContext;
     }
 
-    public void setBeanContext(BeanContext context) {
+    public void setBeanContext(ObjectContext context) {
         beanContext = context;
     }
 
-    public BeanContextConfig getBeanContextConfig() {
+    public ObjectContextConfig getBeanContextConfig() {
         return beanContextConfig;
     }
 }

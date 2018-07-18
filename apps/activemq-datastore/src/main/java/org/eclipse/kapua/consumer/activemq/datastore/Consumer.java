@@ -11,13 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.activemq.datastore;
 
-import org.eclipse.kapua.commons.core.BeanContextConfig;
 import org.eclipse.kapua.commons.core.vertx.EnvironmentSetup;
-import org.eclipse.kapua.commons.core.vertx.HttpRestServer;
-import org.eclipse.kapua.commons.core.vertx.HttpRestServerImpl;
 import org.eclipse.kapua.commons.core.vertx.VertxApplication;
-
-import com.google.inject.Singleton;
 
 /**
  * ActiveMQ AMQP consumer with Kura payload converter and Kapua data store ingestion
@@ -44,12 +39,6 @@ public class Consumer extends VertxApplication<MainVerticle> {
     @Override
     public void initialize(EnvironmentSetup setup) throws Exception {
         super.initialize(setup);
-        setup.configure(new BeanContextConfig() {
-
-            @Override
-            protected void configure() {
-                bind(HttpRestServer.class).to(HttpRestServerImpl.class).in(Singleton.class);;
-            }
-        });
+        setup.configure(new ConsumerContextConfig());
     }
 }

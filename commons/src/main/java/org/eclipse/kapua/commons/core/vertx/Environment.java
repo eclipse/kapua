@@ -11,13 +11,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core.vertx;
 
-import org.eclipse.kapua.commons.core.BeanContext;
+import org.eclipse.kapua.commons.core.ObjectContext;
 
 import com.codahale.metrics.MetricRegistry;
 
+/**
+ * Environment give access to shared services provided by
+ * the application.
+ * <p>
+ * Environment is by default a managed bean.
+ */
 public interface Environment {
 
     public MetricRegistry getMetricRegistry();
 
-    public BeanContext getBeanContext();
+    public ObjectContext getBeanContext();
 }

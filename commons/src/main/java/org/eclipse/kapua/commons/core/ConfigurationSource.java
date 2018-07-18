@@ -13,6 +13,10 @@ package org.eclipse.kapua.commons.core;
 
 import java.util.List;
 
+/**
+ * Represents a single configuration source (e.g. a JSON or a property file).
+ *
+ */
 public interface ConfigurationSource {
 
     public List<String> getKeys();

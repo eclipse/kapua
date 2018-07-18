@@ -13,6 +13,13 @@ package org.eclipse.kapua.commons.core.vertx;
 
 import io.vertx.core.json.JsonObject;
 
+/**
+ * An event bus request used to trigger an event bus request/response
+ * interaction.
+ * <p>
+ * The action is a string in dotted notation (e.g. "service.method")
+ *
+ */
 public class EBRequest extends JsonObject {
 
     public static final String ACTION = "action";

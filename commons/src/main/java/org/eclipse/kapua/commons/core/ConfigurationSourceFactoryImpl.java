@@ -24,6 +24,13 @@ import org.eclipse.kapua.commons.core.spi.ConfigurationSourceFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 //import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper;
 
+/**
+ * Creates a {@link ConfigurationSource} from a JSON file specified by the invoker of 
+ * method .
+ * <p>
+ * Keys are obtained from the JSON by concatenating JSON keys in a dotted notation 
+ * (e.g. "comp.feature.property").
+ */
 public class ConfigurationSourceFactoryImpl implements ConfigurationSourceFactory {
 
     private static Logger logger = LoggerFactory.getLogger(ConfigurationSourceFactoryImpl.class);

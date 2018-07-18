@@ -13,6 +13,10 @@ package org.eclipse.kapua.commons.core.vertx;
 
 import io.vertx.ext.web.Router;
 
+/**
+ * Registers a route within a {@link Router}
+ *
+ */
 public interface HttpRouteProvider {
 
     public void registerRoutes(Router router);

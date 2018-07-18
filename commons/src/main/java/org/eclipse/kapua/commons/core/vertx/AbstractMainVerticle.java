@@ -17,6 +17,15 @@ import io.vertx.core.Vertx;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
+/**
+ * Base verticle class that is automatically deployed by the {@link VertxApplication} 
+ * <p>
+ * During execution of the {@link #start} method, {@link #internalStart} is
+ * invoked. During execution of the {@link #stop} method, {@link #internalStop} is
+ * invoked. Implementation classes may execute application specific logic 
+ * by inheriting and implementing these methods (e.g. deploy other verticles).
+ *
+ */
 public abstract class AbstractMainVerticle extends AbstractVerticle {
 
     private static Logger logger = LoggerFactory.getLogger(AbstractMainVerticle.class);
@@ -26,7 +35,9 @@ public abstract class AbstractMainVerticle extends AbstractVerticle {
         super.init(vertx, context);
     }
 
-    @Override
+    // TODO define as final all the verticle methods that need not to be overridden
+
+   @Override
     public final void start() throws Exception {
         logger.trace("Starting verticle...");
         super.start();

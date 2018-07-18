@@ -16,14 +16,26 @@ import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
 
+/**
+ * Base class to implement an {@link EventBus} request/response client.
+ *
+ */
 public abstract class AbstractEBClient {
 
     protected abstract EventBusProvider eventBusProvider();
 
-    public abstract String getSendAddress();
+    private EBClientConfig configs;
+
+    public EBClientConfig getConfigs() {
+        return configs;
+    }
+
+    public void setConfigs(EBClientConfig configs) {
+        this.configs = configs;
+    }
 
     public void sendRequest(EBRequest request, Handler<AsyncResult<JsonObject>> result) {
-        eventBusProvider().get().send(getSendAddress(), request, reqRes -> {
+        eventBusProvider().get().send(getConfigs().getAddress(), request, reqRes -> {
             if (reqRes.succeeded()) {
                 JsonObject response = (JsonObject) reqRes.result().body();
                 int resultCode = response.getInteger(EBResponse.STATUS_CODE);

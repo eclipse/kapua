@@ -18,6 +18,16 @@ import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.JsonObject;
 
+/**
+ * Creates an event bus consumer for a defined address and dispatches incoming 
+ * {@link EBRequest} to registered handlers.
+ * <p>
+ * Each {@link EBRequestHandler} is identified by an action that has to be unique
+ * across all the registered handlers. Responses are sent back to the sender
+ * replying to the message.
+ * 
+ *
+ */
 public class EBRequestDispatcher {
 
     private Map<String, EBRequestHandler> handlers = new HashMap<>();
@@ -34,10 +44,11 @@ public class EBRequestDispatcher {
         if (!handlers.containsKey(action)) {
             handlers.put(action, handler);
         }
-    }
+    } // TODO Handle the case when the handler is discarded
 
     private <T> void handle(Message<T> message) {
         JsonObject request = (JsonObject)message.body();
+        // TODO Validate request object
         handlers.get(request.getString(EBRequest.ACTION)).handle(request, ar -> {
             if (ar.succeeded()) {
                 EBResponse response = EBResponse.create(EBResponse.OK, ar.result());

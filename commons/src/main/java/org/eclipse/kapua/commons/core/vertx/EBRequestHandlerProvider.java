@@ -11,6 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core.vertx;
 
+/**
+ * Registers event bus request handlers within a dispatcher
+ *
+ */
 public interface EBRequestHandlerProvider {
 
     public void registerHandlers(EBRequestDispatcher dispatcher);

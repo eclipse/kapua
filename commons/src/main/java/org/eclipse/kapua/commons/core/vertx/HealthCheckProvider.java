@@ -13,6 +13,10 @@ package org.eclipse.kapua.commons.core.vertx;
 
 import io.vertx.ext.healthchecks.HealthCheckHandler;
 
+/**
+ * Registers health checks within a {@link HealthCheckHandler}
+ *
+ */
 public interface HealthCheckProvider {
 
     public void registerHealthChecks(HealthCheckHandler handler);

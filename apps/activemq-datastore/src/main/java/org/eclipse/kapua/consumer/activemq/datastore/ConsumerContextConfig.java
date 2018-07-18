@@ -11,9 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.activemq.datastore;
 
-import org.eclipse.kapua.commons.core.BeanContextConfig;
+import org.eclipse.kapua.commons.core.ObjectContextConfig;
+import org.eclipse.kapua.commons.core.vertx.HttpRestServer;
+import org.eclipse.kapua.commons.core.vertx.HttpRestServerImpl;
 
-public class ConsumerContextConfig extends BeanContextConfig {
+import com.google.inject.Singleton;
+
+public class ConsumerContextConfig extends ObjectContextConfig {
 
     public ConsumerContextConfig() {
     }
@@ -21,6 +25,7 @@ public class ConsumerContextConfig extends BeanContextConfig {
     @Override
     protected void configure() {
         super.configure();
+        bind(HttpRestServer.class).to(HttpRestServerImpl.class).in(Singleton.class);;
     }
 
 }

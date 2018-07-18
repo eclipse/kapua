@@ -20,7 +20,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.kapua.commons.core.Application;
-import org.eclipse.kapua.commons.core.BeanContextImpl;
+import org.eclipse.kapua.commons.core.ObjectContextImpl;
 import org.eclipse.kapua.commons.core.Configuration;
 import org.eclipse.kapua.commons.core.ConfigurationImpl;
 import org.eclipse.kapua.commons.core.ConfigurationSourceFactoryImpl;
@@ -40,6 +40,14 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.dropwizard.DropwizardMetricsOptions;
 
+/*
+ * Base class to implement a Vertx application.
+ * <p>
+ * It requires a {@link ObjectContextConfiguration} that is used to create 
+ * the {@link ObjectContext} and creates the {@link Configuration}.
+ * <p>
+ * It deploys the main Verticle provided by the implementor. 
+ */
 public abstract class VertxApplication<M extends AbstractMainVerticle> implements Application {
 
     static {
@@ -62,6 +70,13 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
 
     private Vertx vertx;
 
+    /**
+     * Returns the name of the application which is used later on (e.g. to retrieve 
+     * the configuration file). Implementation classes should override this method
+     * if not it  returns a default application name {@link DEFAULT_APP_NAME}.
+     * 
+     * @return the name of the application
+     */
     @Override
     public String getName() {
         return DEFAULT_APP_NAME;
@@ -69,6 +84,17 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
 
     public abstract Class<M> getMainVerticle();
 
+    /**
+     * This method is called by the implementation classes to start the application.
+     * <p>
+     * It invokes the method {@link #initialize(EnvironmentSetup)} to execute actions 
+     * that need to be performed before starting the actual execution (e.g. provide 
+     * the {@link BeanContextConfiguration)}.
+     * After, it invokes the method {@link #run(Environment, Configuration)} to start 
+     * the actual execution.
+     * 
+     * @param args command line parameters
+     */
     public void run(String[] args) {    
         EnvironmentImpl env = null;
         ConfigurationImpl config = null;
@@ -118,7 +144,7 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
 
             Injector injector = Guice.createInjector(modules);
 
-            BeanContextImpl contextImpl = new BeanContextImpl();
+            ObjectContextImpl contextImpl = new ObjectContextImpl();
             contextImpl.setInjector(injector);
             env.setBeanContext(contextImpl);
             env.setMetricRegistry(metricRegistry);
@@ -126,23 +152,41 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
             run(env, config);
         } catch (Exception e) {
             logger.error("Error occured while running application {}", e.getMessage(), e);
-            shutdown(env, config);
+            long shutdownTimeout = getDefaultShutdownTimeout();
+            if (config != null) {
+                shutdownTimeout = Long.parseLong(config.getProperty(PROP_VERTX_SHUTDOWN_TIMEOUT));
+            }
+            shutdown(shutdownTimeout);
         }
     }
 
     /**
-     * Initialize the application.<p>
-     * This is called by the {@link #run(String[]) run} method. Don't call it yourself.<p>
+     * Initialize the application.
+     * <p>
+     * This is called by the {@link #run(String[])} method. Don't call it yourself. 
+     * <p>
+     * Implementor may override this function to execute custom initialization
+     * logic. Implementor has to override this method to provide the 
+     * {@link ObjectContextConfig}.
+     * <p>
      * @param EnvironmentSetup environment for initialization.
      * @throws Exception
      */
     public void initialize(EnvironmentSetup setup) throws Exception {
-
     }
 
     /**
-     * Initialize the application.<p>
-     * This is called by the {@link #run(String[]) run} method. Don't call it yourself.<p>
+     * Run the application.
+     * <p>
+     * This is called by the {@link #run(String[])} method. Don't call it yourself.
+     * <p>
+     * An implementation class usually don't need to override this method since the
+     * default implementation deploys the main verticle which is supposed to execute
+     * the application logic.
+     * <p> 
+     * If the start of the main verticle take more time than established by a startup
+     * timeout the start is aborted and the application closes.
+     * <p>
      * @param EnvironmentSetup environment for initialization.
      * @param Environment application environment.
      * @param Configuration application configuration.
@@ -153,13 +197,17 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
     }
 
     /**
-     * Shutdown the application.<p>
-     * May be called by the {@link #run(String[]) run} method, e.g. if the application cant'
-     * startup within the established timeout.<p>
+     * Shutdown the application.
+     * <p>
+     * May be called by the {@link #run(String[])} method, e.g. if the application cant'
+     * startup within the established timeout. May be called externally as well. If 
+     * the shutdown doesn't complete within a shutdown timeout, the operation is aborted 
+     * and the application is terminated.
+     * <p>
      * @param Environment application environment.
      * @param Configuration application configuration.     
      */
-    public void shutdown(Environment environment, Configuration config) {
+    public void shutdown(long timeout) {
         if (vertx != null) {
             Future<Void> closeFuture = Future.future();
             CountDownLatch stoppedSignal = new CountDownLatch(1);
@@ -175,8 +223,7 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
             });
 
             try {
-                long shutdownTimeout = Long.parseLong(config.getProperty(PROP_VERTX_SHUTDOWN_TIMEOUT));
-                boolean touchedZero = stoppedSignal.await(shutdownTimeout, TimeUnit.MILLISECONDS);
+                boolean touchedZero = stoppedSignal.await(timeout, TimeUnit.MILLISECONDS);
                 if (closeFuture.failed() || !touchedZero) {
                     throw new Exception("Closing Vertx...FAILED", closeFuture.cause());
                 }
@@ -185,6 +232,17 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
                 System.exit(1);
             }
         }
+    }
+
+    /**
+     * 
+     */
+    public void shutdown() {
+        this.shutdown(getDefaultShutdownTimeout());
+    }
+
+    private long getDefaultShutdownTimeout() {
+        return 5000;
     }
 
     private void deployMainVerticle(Environment env, Configuration config, Class<M> clazz) throws Exception {

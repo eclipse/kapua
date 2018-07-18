@@ -11,12 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core.vertx;
 
-import org.eclipse.kapua.commons.core.BeanContextConfig;
+import org.eclipse.kapua.commons.core.ObjectContextConfig;
 import org.eclipse.kapua.commons.core.spi.BeanContextConfigFactory;
 
+/**
+ * EnvironmentSetup is used to provide initialization info.  
+ *
+ */
 public interface EnvironmentSetup {
 
-    public void configure(BeanContextConfig context);
+    public void configure(ObjectContextConfig context);
 
     public void configure(BeanContextConfigFactory factory);
 }
