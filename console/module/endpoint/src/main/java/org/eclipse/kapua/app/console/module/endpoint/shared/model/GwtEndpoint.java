@@ -13,7 +13,26 @@ package org.eclipse.kapua.app.console.module.endpoint.shared.model;
 
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtUpdatableEntityModel;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 public class GwtEndpoint extends GwtUpdatableEntityModel {
+
+    public enum GwtEndpointSecure implements IsSerializable {
+        ANY, TRUE, FALSE;
+
+        private GwtEndpointSecure() {
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <X> X get(String property) {
+        if ("secureEnum".equals(property)) {
+            return (X) (Boolean.toString(getSecure()));
+        } else {
+            return super.get(property);
+        }
+    }
 
     public String getSchema() {
         return get("schema");
@@ -45,6 +64,10 @@ public class GwtEndpoint extends GwtUpdatableEntityModel {
 
     public void setSecure(boolean secure) {
         set("secure", secure);
+    }
+
+    public GwtEndpointSecure gwtEndpointSecureEnum() {
+        return (GwtEndpointSecure) get("secureEnum");
     }
 
     @Override

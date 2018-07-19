@@ -13,6 +13,8 @@ package org.eclipse.kapua.app.console.module.endpoint.client;
 
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.google.gwt.core.client.GWT;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
@@ -23,6 +25,7 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.endpoint.client.messages.ConsoleEndpointMessages;
 import org.eclipse.kapua.app.console.module.endpoint.shared.model.GwtEndpoint;
 import org.eclipse.kapua.app.console.module.endpoint.shared.model.GwtEndpointQuery;
+import org.eclipse.kapua.app.console.module.endpoint.shared.model.GwtEndpoint.GwtEndpointSecure;
 
 public class EndpointFilterPanel extends EntityFilterPanel<GwtEndpoint> {
 
@@ -37,6 +40,7 @@ public class EndpointFilterPanel extends EntityFilterPanel<GwtEndpoint> {
     private final KapuaTextField<String> schemaField;
     private final KapuaTextField<String> dnsField;
     private final KapuaNumberField portField;
+    private final SimpleComboBox<GwtEndpoint.GwtEndpointSecure> secureCombo;
 
     public EndpointFilterPanel(AbstractEntityView<GwtEndpoint> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
@@ -102,6 +106,27 @@ public class EndpointFilterPanel extends EntityFilterPanel<GwtEndpoint> {
 
         verticalPanel.add(portField);
 
+        Label secureLabel = new Label(MSGS.filterFieldEndpointSecureLabel());
+        secureLabel.setWidth(WIDTH);
+        secureLabel.setStyleAttribute("margin", "5px");
+        verticalPanel.add(secureLabel);
+
+        secureCombo = new SimpleComboBox<GwtEndpoint.GwtEndpointSecure>();
+        secureCombo.setName("secure");
+        secureCombo.setWidth(WIDTH);
+        secureCombo.setTriggerAction(TriggerAction.ALL);
+        secureCombo.add(GwtEndpoint.GwtEndpointSecure.ANY);
+        secureCombo.add(GwtEndpoint.GwtEndpointSecure.TRUE);
+        secureCombo.add(GwtEndpoint.GwtEndpointSecure.FALSE);
+        secureCombo.setSimpleValue(GwtEndpointSecure.ANY);
+        secureCombo.setEditable(false);
+        secureCombo.setStyleAttribute("margin-top", "0px");
+        secureCombo.setStyleAttribute("margin-left", "5px");
+        secureCombo.setStyleAttribute("margin-right", "5px");
+        secureCombo.setStyleAttribute("margin-bottom", "10px");
+
+        verticalPanel.add(secureCombo);
+
     }
 
     @Override
@@ -123,6 +148,7 @@ public class EndpointFilterPanel extends EntityFilterPanel<GwtEndpoint> {
         query.setSchema(schemaField.getValue());
         query.setDns(dnsField.getValue());
         query.setPort(portField.getValue());
+        query.setSecure(secureCombo.getSimpleValue().toString());
 
         entityGrid.refresh(query);
     }

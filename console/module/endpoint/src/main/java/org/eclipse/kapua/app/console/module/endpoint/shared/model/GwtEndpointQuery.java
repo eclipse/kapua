@@ -18,6 +18,7 @@ public class GwtEndpointQuery extends GwtQuery {
     private String schema;
     private String dns;
     private Number port;
+    private String secure;
 
     public String getSchema() {
         return schema;
@@ -41,5 +42,13 @@ public class GwtEndpointQuery extends GwtQuery {
 
     public void setPort(Number port) {
         this.port = port;
+    }
+
+    public String getSecure() {
+        return secure;
+    }
+
+    public void setSecure(String secure) {
+        this.secure = secure;
     }
 }
