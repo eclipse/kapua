@@ -46,7 +46,7 @@ public class RolePermissionDeleteDialog extends EntityDeleteDialog {
                 @Override
                 public void onSuccess(Void arg0) {
                     exitStatus = true;
-                    exitMessage = MSGS.dialogDeleteConfirmation();
+                    exitMessage = MSGS.permissionDeleteDialogConfirmation();
                     rolePermissionGrid.refresh();
                     hide();
                 }
