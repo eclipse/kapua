@@ -134,7 +134,7 @@ public class EndpointFilterPanel extends EntityFilterPanel<GwtEndpoint> {
         schemaField.setValue(null);
         dnsField.setValue(null);
         portField.setValue(null);
-
+        secureCombo.setSimpleValue(GwtEndpointSecure.ANY);
         GwtEndpointQuery query = new GwtEndpointQuery();
         query.setScopeId(currentSession.getSelectedAccountId());
 
@@ -148,7 +148,13 @@ public class EndpointFilterPanel extends EntityFilterPanel<GwtEndpoint> {
         query.setSchema(schemaField.getValue());
         query.setDns(dnsField.getValue());
         query.setPort(portField.getValue());
-        query.setSecure(secureCombo.getSimpleValue().toString());
+        if (secureCombo.getSimpleValue().toString().equals(GwtEndpoint.GwtEndpointSecure.FALSE.toString())) {
+            query.setSecure(false);
+            query.setCheck(true);
+        } else if (secureCombo.getSimpleValue().toString().equals(GwtEndpoint.GwtEndpointSecure.TRUE.toString())) {
+            query.setSecure(true);
+            query.setCheck(true);
+        }
 
         entityGrid.refresh(query);
     }

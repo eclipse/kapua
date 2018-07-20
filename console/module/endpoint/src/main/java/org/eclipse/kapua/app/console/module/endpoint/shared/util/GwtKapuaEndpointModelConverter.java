@@ -17,7 +17,6 @@ import com.google.common.base.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.endpoint.shared.model.GwtEndpointQuery;
-import org.eclipse.kapua.app.console.module.endpoint.shared.model.GwtEndpoint.GwtEndpointSecure;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
@@ -60,8 +59,8 @@ public class GwtKapuaEndpointModelConverter {
             andPredicate.and(new AttributePredicateImpl<Integer>(EndpointInfoPredicates.PORT, gwtEndpointQuery.getPort().intValue(), AttributePredicate.Operator.LIKE));
         }
 
-        if (gwtEndpointQuery.getSecure() != null && !gwtEndpointQuery.getSecure().equals(GwtEndpointSecure.ANY.toString())) {
-            andPredicate.and(new AttributePredicateImpl<GwtEndpointSecure>(EndpointInfoPredicates.SECURE, convertEndpointSecure(gwtEndpointQuery.getSecure()), AttributePredicate.Operator.EQUAL));
+        if (gwtEndpointQuery.getCheck()) {
+            andPredicate.and(new AttributePredicateImpl<Boolean>(EndpointInfoPredicates.SECURE, gwtEndpointQuery.getSecure(), AttributePredicate.Operator.EQUAL));
         }
 
         // Sort order conversion
@@ -84,9 +83,5 @@ public class GwtKapuaEndpointModelConverter {
         ednpointQuery.setLimit(loadConfig.getLimit());
 
         return ednpointQuery;
-    }
-
-    private static GwtEndpointSecure convertEndpointSecure(String endpointSecure) {
-        return GwtEndpointSecure.valueOf(endpointSecure);
     }
 }
