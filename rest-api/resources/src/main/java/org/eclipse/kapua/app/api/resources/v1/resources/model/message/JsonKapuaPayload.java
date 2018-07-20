@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.api.resources.v1.resources.model.data;
+package org.eclipse.kapua.app.api.resources.v1.resources.model.message;
 
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.message.xml.XmlAdaptedMetric;

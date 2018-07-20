@@ -14,9 +14,11 @@ package org.eclipse.kapua.service.device.management.request.message.request;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestChannel;
 import org.eclipse.kapua.service.device.management.request.GenericRequestXmlRegistry;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlType(propOrder = { "resources" }, factoryClass = GenericRequestXmlRegistry.class, factoryMethod = "newRequestChannel")
+@XmlType(factoryClass = GenericRequestXmlRegistry.class, factoryMethod = "newRequestChannel")
 public interface GenericRequestChannel extends KapuaRequestChannel {
 
     /**
@@ -24,6 +26,8 @@ public interface GenericRequestChannel extends KapuaRequestChannel {
      *
      * @return resources
      */
+    @XmlElementWrapper(name = "resources")
+    @XmlElement(name = "resource")
     String[] getResources();
 
     /**

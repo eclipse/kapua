@@ -14,8 +14,10 @@ package org.eclipse.kapua.service.device.management.request.message.request;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessage;
 import org.eclipse.kapua.service.device.management.request.GenericRequestXmlRegistry;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+@XmlRootElement(name = "genericRequestMessage")
 @XmlType(factoryClass = GenericRequestXmlRegistry.class, factoryMethod = "newRequestMessage")
 public interface GenericRequestMessage extends KapuaRequestMessage<GenericRequestChannel, GenericRequestPayload> {
 

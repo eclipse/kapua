@@ -9,16 +9,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.api.resources.v1.resources.model.data;
+package org.eclipse.kapua.app.api.resources.v1.resources.model.device.management;
 
 import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.message.JsonKapuaPayload;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.message.KapuaPosition;
-import org.eclipse.kapua.message.device.data.KapuaDataChannel;
-import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestChannel;
+import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestMessage;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Date;
 import java.util.UUID;
 
-public class JsonKapuaDataMessage {
+public class JsonGenericRequestMessage {
 
     private UUID id;
 
@@ -39,26 +39,26 @@ public class JsonKapuaDataMessage {
     private Date capturedOn;
 
     private KapuaPosition position;
-    private KapuaDataChannel channel;
+    private GenericRequestChannel channel;
     private JsonKapuaPayload payload;
 
-    public JsonKapuaDataMessage() {
+    public JsonGenericRequestMessage() {
     }
 
-    public JsonKapuaDataMessage(KapuaDataMessage kapuaDataMessage) {
-        setId(kapuaDataMessage.getId());
+    public JsonGenericRequestMessage(GenericRequestMessage genericRequestMessage) {
+        setId(genericRequestMessage.getId());
 
-        setScopeId(kapuaDataMessage.getScopeId());
-        setDeviceId(kapuaDataMessage.getDeviceId());
-        setClientId(kapuaDataMessage.getClientId());
+        setScopeId(genericRequestMessage.getScopeId());
+        setDeviceId(genericRequestMessage.getDeviceId());
+        setClientId(genericRequestMessage.getClientId());
 
-        setReceivedOn(kapuaDataMessage.getReceivedOn());
-        setSentOn(kapuaDataMessage.getSentOn());
-        setCapturedOn(kapuaDataMessage.getCapturedOn());
+        setReceivedOn(genericRequestMessage.getReceivedOn());
+        setSentOn(genericRequestMessage.getSentOn());
+        setCapturedOn(genericRequestMessage.getCapturedOn());
 
-        setPosition(kapuaDataMessage.getPosition());
-        setChannel(kapuaDataMessage.getChannel());
-        setPayload(kapuaDataMessage.getPayload());
+        setPosition(genericRequestMessage.getPosition());
+        setChannel(genericRequestMessage.getChannel());
+        setPayload(genericRequestMessage.getPayload());
     }
 
     @XmlElement(name = "id")
@@ -138,11 +138,11 @@ public class JsonKapuaDataMessage {
     }
 
     @XmlElement(name = "channel")
-    public KapuaDataChannel getChannel() {
+    public GenericRequestChannel getChannel() {
         return channel;
     }
 
-    public void setChannel(KapuaDataChannel channel) {
+    public void setChannel(GenericRequestChannel channel) {
         this.channel = channel;
     }
 
