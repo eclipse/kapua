@@ -87,7 +87,7 @@ public class AccessRoleAddDialog extends EntityAddEditDialog {
             @Override
             public void onSuccess(GwtAccessRole arg0) {
                 exitStatus = true;
-                exitMessage = MSGS.dialogAddConfirmation();
+                exitMessage = MSGS.dialogAddRoleConfirmation();
                 hide();
             }
 
