@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,6 +15,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
+import org.eclipse.kapua.app.api.resources.v1.resources.marker.JsonSerializationFixed;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.data.JsonKapuaDataMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
@@ -31,9 +32,12 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Api(value = "Streams", authorizations = { @Authorization(value = "kapuaAccessToken") })
+/**
+ * @see JsonSerializationFixed
+ */
+@Api(value = "Streams", authorizations = {@Authorization(value = "kapuaAccessToken")})
 @Path("{scopeId}/streams")
-public class StreamsJson extends AbstractKapuaResource {
+public class StreamsJson extends AbstractKapuaResource implements JsonSerializationFixed {
 
     private static final Streams STREAMS = new Streams();
 
@@ -86,7 +90,7 @@ public class StreamsJson extends AbstractKapuaResource {
      */
     @POST
     @Path("messages")
-    @Consumes({ MediaType.APPLICATION_JSON })
+    @Consumes({MediaType.APPLICATION_JSON})
     @ApiOperation(nickname = "streamPublish", value = "Publishes a fire-and-forget message", notes = "Publishes a fire-and-forget message to a topic composed of [account-name] / [client-id] / [semtantic-parts]")
     public Response publish(
             @ApiParam(value = "The ScopeId of the device", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,

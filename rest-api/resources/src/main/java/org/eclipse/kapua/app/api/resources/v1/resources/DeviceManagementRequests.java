@@ -16,7 +16,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
-
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -35,7 +34,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-@Api(value = "Devices", authorizations = { @Authorization(value = "kapuaAccessToken") })
+@Api(value = "Devices", authorizations = {@Authorization(value = "kapuaAccessToken")})
 @Path("{scopeId}/devices/{deviceId}/requests")
 public class DeviceManagementRequests extends AbstractKapuaResource {
 
@@ -46,59 +45,17 @@ public class DeviceManagementRequests extends AbstractKapuaResource {
      * Sends a request message to a device.
      * This call is generally used to perform remote management of resources
      * attached to the device such sensors and registries.
-     * <p>
-     * <p>
-     * Example to send a request to the Kura Command application:
-     * <p>
-     * 
-     * <pre>
-     * {
-     *   "type": "genericRequestMessage",
-     *   "position": {
-     *     "type": "kapuaPosition"
-     *   },
-     *   "channel": {
-     *     "type": "genericRequestChannel",
-     *     "method": "EXECUTE",
-     *     "appName": "CMD",
-     *     "version": "V1",
-     *     "resources": ["command"]
-     *   },
-     *   "payload": {
-     *     "type": "genericRequestPayload",
-     *     "metrics": {
-     *       "metric": [
-     *         {
-     *           "valueType": "string",
-     *           "value": "ls",
-     *           "name": "command.command"
-     *         },
-     *         {
-     *           "valueType": "string",
-     *           "value": "-lisa",
-     *           "name": "command.argument0"
-     *         }
-     *       ]
-     *     }
-     *   }
-     * }
-     * </pre>
      *
-     * @param scopeId
-     *            The {@link ScopeId} of the {@link Device}.
-     * @param deviceId
-     *            The {@link Device} ID.
-     * @param timeout
-     *            The timeout of the request execution
-     * @param requestMessage
-     *            The input request
+     * @param scopeId        The {@link ScopeId} of the {@link Device}.
+     * @param deviceId       The {@link Device} ID.
+     * @param timeout        The timeout of the request execution
+     * @param requestMessage The input request
      * @return The response output.
-     * @throws Exception
-     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      */
     @POST
-    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Consumes({MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_XML})
     @ApiOperation(nickname = "deviceRequestSend", value = "Sends a request", notes = "Sends a request message to a device", response = DeviceCommandOutput.class)
     public GenericResponseMessage sendRequest(
             @ApiParam(value = "The ScopeId of the device", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
@@ -107,6 +64,7 @@ public class DeviceManagementRequests extends AbstractKapuaResource {
             @ApiParam(value = "The input request", required = true) GenericRequestMessage requestMessage) throws Exception {
         requestMessage.setScopeId(scopeId);
         requestMessage.setDeviceId(deviceId);
+
         return requestService.exec(requestMessage, timeout);
     }
 }
