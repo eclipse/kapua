@@ -133,9 +133,6 @@ public class DeviceAssetsPanel extends LayoutContainer {
 
     private String getUpdatedChannel(GwtDeviceAssetChannel channel, Field<?> field) {
         try {
-            if (!field.isDirty()) {
-                return null;
-            }
             switch (channel.getTypeEnum()) {
             case BOOLEAN:
                 RadioGroup radioGroup = (RadioGroup) field;
