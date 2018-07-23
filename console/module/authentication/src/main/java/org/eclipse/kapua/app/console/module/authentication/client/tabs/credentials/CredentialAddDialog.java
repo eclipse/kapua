@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authentication.client.tabs.credentials;
 
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
@@ -101,6 +104,11 @@ public class CredentialAddDialog extends EntityAddEditDialog {
                 confirmPassword.setAllowBlank(selectionChangedEvent.getSelectedItem().getValue() != GwtCredentialType.PASSWORD);
                 password.clearInvalid();
                 confirmPassword.clearInvalid();
+                if (selectionChangedEvent.getSelectedItem().getValue() != GwtCredentialType.PASSWORD) {
+                    password.clear();
+                    confirmPassword.clear();
+                    confirmPassword.disable();
+                }
             }
         });
         credentialFormPanel.add(credentialType);
@@ -121,7 +129,21 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         confirmPassword.setValidator(new ConfirmPasswordFieldValidator(confirmPassword, password));
         confirmPassword.setPassword(true);
         confirmPassword.setVisible(false);
+        confirmPassword.disable();
         credentialFormPanel.add(confirmPassword);
+
+        password.addListener(Events.KeyUp, new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                if (password.getValue() != null) {
+                    confirmPassword.enable();
+                } else {
+                    confirmPassword.disable();
+                    confirmPassword.clear();
+                }
+            }
+        });
 
         expirationDate = new KapuaDateField();
         expirationDate.setEmptyText(MSGS.dialogAddNoExpiration());
