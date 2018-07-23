@@ -26,6 +26,7 @@ public class AmqpConsumer extends AbstractAmqpClient {
 
     private static final Logger logger = LoggerFactory.getLogger(AmqpConsumer.class);
     private ProtonMessageHandler messageHandler;
+    private ProtonReceiver receiver;
 
     public AmqpConsumer(Vertx vertx, ClientOptions clientOptions, ProtonMessageHandler messageHandler) {
         super(vertx, clientOptions);
@@ -35,22 +36,42 @@ public class AmqpConsumer extends AbstractAmqpClient {
     protected void registerAction(ProtonConnection connection, Future<Object> future) {
         try {
             String destination = clientOptions.getString(AmqpClientOptions.DESTINATION);
-            logger.info("Register consumer for destination {}...", destination);
+            logger.info("Register consumer for destination {}... (client: {})", destination, client);
 
             if (connection.isDisconnected()) {
                 future.fail("Cannot register consumer since the connection is not opened!");
             }
             else {
                 // The client ID is set implicitly into the queue subscribed
-                ProtonReceiver receiver = connection.createReceiver(destination);
+                receiver = connection.createReceiver(destination);
                 receiver.setAutoAccept((boolean)clientOptions.get(AmqpClientOptions.AUTO_ACCEPT));
                 receiver.setQoS((ProtonQoS)clientOptions.get(AmqpClientOptions.QOS));
-                receiver.handler(messageHandler).open();
-                logger.info("Register consumer for queue {}... DONE", destination);
-                future.complete();
+                Integer prefetch = clientOptions.getInt(AmqpClientOptions.PREFETCH_MESSAGES, 1);
+                receiver.setPrefetch(prefetch);
+                logger.info("Setting prefetch to {}", prefetch);
+                receiver.handler(messageHandler);
+                receiver.openHandler(ar -> {
+                    if(ar.succeeded()) {
+                        logger.info("Succeeded establishing consumer link! (client: {})", client);
+                        setConnected(true);
+                        future.complete();
+                    }
+                    else {
+                        logger.warn("Cannot establish link! (client: {})", ar.cause(), client);
+                        notifyConnectionLost();
+                        future.fail(ar.cause());
+                    }
+                });
+                receiver.closeHandler(recv -> {
+                    logger.warn("Receiver is closed! attempting to restore it... (client: {})", client);
+                    notifyConnectionLost();
+                });
+                receiver.open();
+                logger.info("Register consumer for queue {}... DONE (client: {})", destination, client);
             }
         }
         catch(Exception e) {
+            notifyConnectionLost();
             future.fail(e);
         }
     }

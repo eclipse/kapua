@@ -30,6 +30,7 @@ public abstract class AbstractAmqpClient {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractAmqpClient.class);
 
+    protected boolean disconnecting;
     protected boolean connected;
     protected AtomicInteger reconnectionFaultCount = new AtomicInteger();
     protected Long reconnectTaskId;
@@ -44,6 +45,7 @@ public abstract class AbstractAmqpClient {
         this.vertx = vertx;
         this.clientOptions = clientOptions;
         this.context = vertx.getOrCreateContext();
+        client = ProtonClient.create(vertx);
     }
 
     public boolean isConnected() {
@@ -57,7 +59,7 @@ public abstract class AbstractAmqpClient {
     protected abstract void registerAction(ProtonConnection connection, Future<Object> future);
 
     public void disconnect(Future<Void> stopFuture) {
-        //TODO disable reconnection in the meanwhile
+        disconnecting = true;
         if (connection != null) {
             connection.close();
             connection = null;
@@ -70,7 +72,7 @@ public abstract class AbstractAmqpClient {
         Integer brokerPort = clientOptions.getInt(AmqpClientOptions.BROKER_PORT, null);
         Objects.requireNonNull(brokerHost);
         Objects.requireNonNull(brokerPort);
-        logger.info("Connecting to broker {}:{}...", brokerHost, brokerPort);
+        logger.info("Connecting to broker {}:{}... (client: {})", brokerHost, brokerPort, client);
         // make sure connection is already closed
         if (connection != null && !connection.isDisconnected()) {
             if (!startFuture.isComplete()) {
@@ -79,7 +81,6 @@ public abstract class AbstractAmqpClient {
             return;
         }
 
-        client = ProtonClient.create(vertx);
         ProtonClientOptions options = new ProtonClientOptions();
         Integer connectTimeout = clientOptions.getInt(AmqpClientOptions.CONNECT_TIMEOUT, null);
         Integer idleTimeout = clientOptions.getInt(AmqpClientOptions.IDLE_TIMEOUT, null);
@@ -106,49 +107,59 @@ public abstract class AbstractAmqpClient {
                 clientOptions.getString(AmqpClientOptions.PASSWORD),
                 asynchResult ->{
                     if (asynchResult.succeeded()) {
-                        logger.info("Connecting to broker {}:{}... Creating receiver... DONE", brokerHost, brokerPort);
                         connection = asynchResult.result();
-                        connection.openHandler((event) -> {
+                        logger.info("Connecting to broker {}:{}... DONE (client: {})", brokerHost, brokerPort, client);
+                        connection.openHandler(event -> {
                             if (event.succeeded()) {
                                 connection = event.result();
                                 //TODO remove execute blocking
                                 context.executeBlocking(future -> registerAction(connection, future), result -> {
                                     if (result.succeeded()) {
-                                        logger.debug("Starting connector...DONE");
-                                        setConnected(true);
+                                        logger.debug("Starting connector...DONE (client: {})", client);
                                         startFuture.complete();
                                     } else {
-                                        logger.warn("Starting connector...FAIL [message:{}]", result.cause().getMessage());
+                                        logger.warn("Starting connector...FAIL [message:{}] (client: {})", result.cause().getMessage(), client);
                                         startFuture.fail(asynchResult.cause());
-                                        setConnected(false);
                                         notifyConnectionLost();
                                     }
                                 });
                             }
                             else {
                                 startFuture.fail("Cannot establish connection!");
-                                setConnected(false);
                                 notifyConnectionLost();
                             }
                         });
+                        connection.disconnectHandler(conn -> {
+                            logger.warn("Client ({}) is closed! attempting to restore it...", client);
+                            notifyConnectionLost();
+                        });
+                        connection.closeHandler(conn -> {
+                            logger.warn("Client ({}) is closed! attempting to restore it...", client);
+                            notifyConnectionLost();
+                        });
                         connection.open();
                     } else {
-                        logger.error("Cannot register ActiveMQ connection! ", asynchResult.cause().getCause());
+                        logger.error("Cannot register ActiveMQ connection! (client: {})", asynchResult.cause().getCause(), client);
                         if (!startFuture.isComplete()) {
                             startFuture.fail(asynchResult.cause());
                         }
-                        setConnected(false);
                         notifyConnectionLost();
                     }
                 });
     }
 
     protected void notifyConnectionLost() {
-        logger.info("Notify disconnection...");
+        logger.info("Notify disconnection... (client: {})", client);
+        setConnected(false);
+        if (disconnecting) {
+            logger.info("Notify disconnection... shutdown in progress - skipping reconection! (client: {})", client);
+            return;
+        }
         if (reconnectTaskId == null) {
             if (reconnectTaskId == null) {
                 long backOff = evaluateBackOff();
-                logger.info("Notify disconnection... Start new task {}", backOff);
+                logger.info("Notify disconnection... Start new task {} (client: {})", backOff, client);
+                //TODO check if context.runOnContext is more correct
                 reconnectTaskId = vertx.setTimer(backOff, new Handler<Long>() {
 
                     @Override
@@ -157,13 +168,13 @@ public abstract class AbstractAmqpClient {
                         future.setHandler(result -> {
                             reconnectTaskId = null;
                             if (result.succeeded()) {
-                                logger.info("Establish connection retry {}... SUCCESS", reconnectionFaultCount.get());
+                                logger.info("Establish connection retry {}... SUCCESS (client: {})", reconnectionFaultCount.get(), client);
                                 reconnectionFaultCount.set(0);
                             } else {
-                                logger.info("Establish connection retry {}... FAILURE", reconnectionFaultCount.get(), result.cause());
+                                logger.info("Establish connection retry {}... FAILURE (client: {})", reconnectionFaultCount.get(), result.cause(), client);
                                 if (reconnectionFaultCount.incrementAndGet() > clientOptions.getInt(AmqpClientOptions.MAXIMUM_RECONNECTION_ATTEMPTS, -1) && 
                                         clientOptions.getInt(AmqpClientOptions.MAXIMUM_RECONNECTION_ATTEMPTS, -1)>-1) {
-                                    logger.error("Maximum reconnection attempts reached. Exiting...");
+                                    logger.error("Maximum reconnection attempts reached. Exiting... (client: {})", client);
                                     System.exit(clientOptions.getInt(AmqpClientOptions.EXIT_CODE, -1));
                                 };
                                 //schedule a new task
@@ -171,18 +182,18 @@ public abstract class AbstractAmqpClient {
                             }
                         });
                         connect(future);
-                        logger.info("Started new connection donw");
+                        logger.info("Started new connection done (client: {})", client);
                     }
                 });
             }
             else {
-                logger.info("Another reconnect operation is enqueed. No action will be taken!");
+                logger.info("Another reconnect operation is enqueed. No action will be taken! (client: {})", client);
             }
         }
         else {
-            logger.info("Another reconnect operation is enqueed. No action will be taken!");
+            logger.info("Another reconnect operation is enqueed. No action will be taken! (client: {})", client);
         }
-        logger.info("Notify disconnection... DONE");
+        logger.info("Notify disconnection... DONE client: {})", client);
     }
 
     private long evaluateBackOff() {
