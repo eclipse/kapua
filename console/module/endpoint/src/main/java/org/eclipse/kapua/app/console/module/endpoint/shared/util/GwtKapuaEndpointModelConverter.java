@@ -59,6 +59,10 @@ public class GwtKapuaEndpointModelConverter {
             andPredicate.and(new AttributePredicateImpl<Integer>(EndpointInfoPredicates.PORT, gwtEndpointQuery.getPort().intValue(), AttributePredicate.Operator.LIKE));
         }
 
+        if (gwtEndpointQuery.getCheck()) {
+            andPredicate.and(new AttributePredicateImpl<Boolean>(EndpointInfoPredicates.SECURE, gwtEndpointQuery.getSecure(), AttributePredicate.Operator.EQUAL));
+        }
+
         // Sort order conversion
         String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? EndpointInfoPredicates.DNS : loadConfig.getSortField();
 
