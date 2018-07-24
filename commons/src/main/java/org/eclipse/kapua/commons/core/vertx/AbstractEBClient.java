@@ -22,6 +22,7 @@ import io.vertx.core.json.JsonObject;
  */
 public abstract class AbstractEBClient {
 
+    // Preferable to avoid injection here
     protected abstract EventBusProvider eventBusProvider();
 
     private EBClientConfig configs;

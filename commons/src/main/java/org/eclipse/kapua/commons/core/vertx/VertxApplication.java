@@ -36,6 +36,7 @@ import com.google.inject.name.Names;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
+import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.dropwizard.DropwizardMetricsOptions;
@@ -138,6 +139,13 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
 
                 @Override
                 protected void configure() {
+                    bind(EventBusProvider.class).toInstance(new EventBusProvider() {
+
+                        @Override
+                        public EventBus get() {
+                            return vertx.eventBus();
+                        }
+                    });
                     bind(Environment.class).toInstance(finalEnv);
                     bind(Configuration.class).toInstance(finalConfig);
                     for(String key:finalConfig.getKeys()) {
