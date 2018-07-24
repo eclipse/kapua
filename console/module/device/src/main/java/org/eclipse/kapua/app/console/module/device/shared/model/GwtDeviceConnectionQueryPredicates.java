@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,6 +17,8 @@ import org.eclipse.kapua.app.console.module.api.shared.model.KapuaBaseModel;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPredicates.GwtSortAttribute;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPredicates.GwtSortOrder;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 public class GwtDeviceConnectionQueryPredicates extends KapuaBaseModel implements Serializable {
 
     private static final long serialVersionUID = 571130152596171388L;
@@ -26,11 +28,27 @@ public class GwtDeviceConnectionQueryPredicates extends KapuaBaseModel implement
         setSortOrder(GwtSortOrder.ASCENDING.name());
     }
 
+    public enum GwtDeviceConnectionUser implements IsSerializable {
+        ANY;
+
+        private GwtDeviceConnectionUser() {
+        }
+    }
+
+    public enum GwtDeviceConnectionReservedUser implements IsSerializable {
+        ANY, NONE;
+
+        private GwtDeviceConnectionReservedUser() {
+        }
+    }
+
     @Override
     @SuppressWarnings({ "unchecked" })
     public <X> X get(String property) {
         if ("statusEnum".equals(property)) {
             return (X) (GwtDeviceQueryPredicates.GwtDeviceConnectionStatus.valueOf(getConnectionStatus()));
+        } else if ("deviceConnectionUserEnum".equals(property)) { 
+            return (X) (GwtDeviceConnectionQueryPredicates.GwtDeviceConnectionUser.valueOf(getDeviceConnectionUser()));
         } else {
             return super.get(property);
         }
@@ -83,4 +101,25 @@ public class GwtDeviceConnectionQueryPredicates extends KapuaBaseModel implement
     public void setSortAttribute(String sortAttribute) {
         set("sortAttribute", sortAttribute);
     }
+
+    public String getUserId() {
+        return (String) get("userId");
+    }
+
+    public void setUserId(String userId) {
+        set("userId", userId);
+    }
+
+    public GwtDeviceConnectionUser getDeviceConnectionUserEnum() {
+        return get("deviceConnectionUserEnum");
+    }
+
+    public void setDeviceConnectionUser(String deviceConnectionUser) {
+        set("deviceConnectionUser", deviceConnectionUser);
+    }
+
+    public String getDeviceConnectionUser() {
+        return (String) get("deviceConnectionUser");
+    }
+
 }
