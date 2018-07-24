@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.module.user.shared.util;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser.GwtUserStatus;
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUserQuery;
@@ -60,6 +61,18 @@ public class GwtKapuaUserModelConverter {
         }
         if (gwtUserQuery.getUserStatus() != null && !gwtUserQuery.getUserStatus().equals(GwtUserStatus.ANY.toString())) {
             predicate.and(new AttributePredicateImpl<UserStatus>(UserPredicates.STATUS, convertUserStatus(gwtUserQuery.getUserStatus()), Operator.EQUAL));
+        }
+        if (gwtUserQuery.getPhoneNumber() != null && !gwtUserQuery.getPhoneNumber().isEmpty()) {
+            predicate.and(new AttributePredicateImpl<String>(UserPredicates.PHONE_NUMBER, gwtUserQuery.getPhoneNumber(), Operator.LIKE));
+        }
+        if (gwtUserQuery.getExpirationDate() != null) {
+            predicate.and(new AttributePredicateImpl<Date>(UserPredicates.EXPIRATIN_DATE, gwtUserQuery.getExpirationDate(), Operator.EQUAL));
+        }
+        if (gwtUserQuery.getEmail() != null && !gwtUserQuery.getEmail().isEmpty()) {
+            predicate.and(new AttributePredicateImpl<String>(UserPredicates.EMAIL, gwtUserQuery.getEmail(), Operator.LIKE));
+        }
+        if (gwtUserQuery.getDisplayName() != null && !gwtUserQuery.getDisplayName().isEmpty()) {
+            predicate.and(new AttributePredicateImpl<String>(UserPredicates.DISPLAY_NAME, gwtUserQuery.getDisplayName(), Operator.LIKE));
         }
         userQuery.setOffset(loadConfig.getOffset());
         userQuery.setLimit(loadConfig.getLimit());
