@@ -11,9 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.activemq.lifecycle;
 
+import org.eclipse.kapua.apps.api.HttpRestServerImpl;
 import org.eclipse.kapua.commons.core.ObjectContextConfig;
 import org.eclipse.kapua.commons.core.vertx.HttpRestServer;
-import org.eclipse.kapua.commons.core.vertx.HttpRestServerImpl;
 
 import com.google.inject.Singleton;
 

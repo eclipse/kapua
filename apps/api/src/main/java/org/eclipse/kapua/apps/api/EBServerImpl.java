@@ -9,31 +9,24 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.core.vertx;
+package org.eclipse.kapua.apps.api;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-public class HttpRestServerImpl extends AbstractHttpRestServer {
+import org.eclipse.kapua.commons.core.vertx.AbstractEBServer;
+import org.eclipse.kapua.commons.core.vertx.EBServerConfig;
+
+public class EBServerImpl extends AbstractEBServer {
 
     @Inject
-    @Named("vertx.metrics-root")
-    private String metricsRoot;
-
-    @Inject
-    @Named("http-server.host")
-    private String host;
-
-    @Inject
-    @Named("http-server.port")
-    private int port;
+    @Named("event-bus-server.default-address")
+    private String defaultAddress;
 
     @Override
-    public HttpRestServerConfig getConfigs() {
-        HttpRestServerConfig config = new HttpRestServerConfig();
-        config.setHost(this.host);
-        config.setMetricsRoot(this.metricsRoot);
-        config.setPort(port);
-        return config;
+    public EBServerConfig getConfigs() {
+        EBServerConfig configs = new EBServerConfig();
+        configs.setAddress(defaultAddress);
+        return configs;
     }
 }
