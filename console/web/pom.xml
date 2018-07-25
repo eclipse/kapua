@@ -83,7 +83,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-packages-internal</artifactId>
+            <artifactId>kapua-device-management-packages-internal</artifactId>
         </dependency>
 
         <dependency>
