@@ -70,6 +70,25 @@ public class GwtKapuaDeviceModelConverter {
         if (gwtDeviceConnectionQuery.getClientIP() != null && !gwtDeviceConnectionQuery.getClientIP().trim().isEmpty()) {
             predicate.and(new AttributePredicateImpl<String>(DeviceConnectionPredicates.CLIENT_IP, gwtDeviceConnectionQuery.getClientIP(), Operator.LIKE));
         }
+        if (gwtDeviceConnectionQuery.getUserName() != null && !gwtDeviceConnectionQuery.getUserName().trim().isEmpty()) {
+            predicate.and(new AttributePredicateImpl<String>(DeviceConnectionPredicates.USER_ID, gwtDeviceConnectionQuery.getUserName(), Operator.LIKE));
+        }
+        if (gwtDeviceConnectionQuery.getGwtDeviceConnectionUser() != null) {
+                predicate = predicate.and(new AttributePredicateImpl<KapuaId>(DeviceConnectionPredicates.USER_ID, KapuaEid.parseCompactId(gwtDeviceConnectionQuery.getUserId())));
+        }
+        if (gwtDeviceConnectionQuery.getGwtDeviceConnectionReservedUser() != null) {
+            switch (gwtDeviceConnectionQuery.getGwtDeviceConnectionReservedUser()) {
+            case NONE:
+                predicate = predicate.and(new AttributePredicateImpl<KapuaId>(DeviceConnectionPredicates.RESERVED_USER_ID, null, Operator.IS_NULL));
+                break;
+            default:
+                predicate = predicate.and(new AttributePredicateImpl<KapuaId>(DeviceConnectionPredicates.RESERVED_USER_ID, KapuaEid.parseCompactId(gwtDeviceConnectionQuery.getReservedUserId())));
+            }
+        }
+
+        if (gwtDeviceConnectionQuery.getProtocol() != null && !gwtDeviceConnectionQuery.getProtocol().trim().isEmpty()) {
+            predicate.and(new AttributePredicateImpl<String>(DeviceConnectionPredicates.PROTOCOL, gwtDeviceConnectionQuery.getProtocol(), Operator.LIKE));
+        }
 
         String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? DeviceConnectionPredicates.CLIENT_ID : loadConfig.getSortField();
         if (sortField.equals("connectionUserCouplingMode")) {
