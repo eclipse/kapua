@@ -52,6 +52,7 @@ import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreChannel;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
+import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreConfiguration;
 import org.eclipse.kapua.service.datastore.internal.mediator.MetricInfoField;
 import org.eclipse.kapua.service.datastore.internal.model.DataIndexBy;
@@ -1353,6 +1354,31 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
 
         MetricInfoListResult metLst = (MetricInfoListResult) stepData.get(lstKey);
         checkListOrder(metLst, getNamedMetricOrdering());
+    }
+
+    @Given("^Dataservice config enabled (.*), dataTTL (\\d+), rxByteLimit (\\d+), dataIndexBy \"(.*)\", indexWindow \"(.*)\"$")
+    public void configureDatastoreService(String enabled, int dataTTL, int rxByteLimit, String dataIndexBy, String indexWindow) throws Exception {
+        Map<String, Object> settings = new HashMap<>();
+        settings.put("enabled", enabled.equalsIgnoreCase("TRUE"));
+        settings.put("dataTTL", dataTTL);
+        settings.put("rxByteLimit", rxByteLimit);
+        settings.put("dataIndexBy", dataIndexBy);
+        String indexingWindow;
+
+        switch (indexWindow) {
+        default:
+        case DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK:
+            indexingWindow = DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK;
+            break;
+        case DatastoreUtils.INDEXING_WINDOW_OPTION_DAY:
+            indexingWindow = DatastoreUtils.INDEXING_WINDOW_OPTION_DAY;
+            break;
+        case DatastoreUtils.INDEXING_WINDOW_OPTION_HOUR:
+            indexingWindow = DatastoreUtils.INDEXING_WINDOW_OPTION_HOUR;
+            break;
+        }
+        settings.put(DatastoreUtils.INDEXING_WINDOW_OPTION, indexingWindow);
+        messageStoreService.setConfigValues(KapuaId.ONE, null, settings);
     }
 
     // Private helper functions
