@@ -36,7 +36,6 @@
         <module>management</module>
         <module>configuration</module>
         <module>packages</module>
-        <module>command</module>
         <module>request</module>
     </modules>
 

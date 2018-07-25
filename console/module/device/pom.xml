@@ -64,7 +64,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-command-api</artifactId>
+            <artifactId>kapua-device-management-command-api</artifactId>
         </dependency>
 
         <!-- External dependencies -->
