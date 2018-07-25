@@ -66,7 +66,7 @@ public class GwtKapuaUserModelConverter {
             predicate.and(new AttributePredicateImpl<String>(UserPredicates.PHONE_NUMBER, gwtUserQuery.getPhoneNumber(), Operator.LIKE));
         }
         if (gwtUserQuery.getExpirationDate() != null) {
-            predicate.and(new AttributePredicateImpl<Date>(UserPredicates.EXPIRATIN_DATE, gwtUserQuery.getExpirationDate(), Operator.EQUAL));
+            predicate.and(new AttributePredicateImpl<Date>(UserPredicates.EXPIRATION_DATE, gwtUserQuery.getExpirationDate(), Operator.EQUAL));
         }
         if (gwtUserQuery.getEmail() != null && !gwtUserQuery.getEmail().isEmpty()) {
             predicate.and(new AttributePredicateImpl<String>(UserPredicates.EMAIL, gwtUserQuery.getEmail(), Operator.LIKE));
@@ -82,7 +82,7 @@ public class GwtKapuaUserModelConverter {
         } else if (sortField.equals("modifiedByName")) {
             sortField = UserPredicates.MODIFIED_BY;
         } else if (sortField.equals("expirationDateFormatted")) {
-            sortField = UserPredicates.EXPIRATIN_DATE;
+            sortField = UserPredicates.EXPIRATION_DATE;
         } else if (sortField.equals("modifiedOnFormatted")) {
             sortField = UserPredicates.MODIFIED_ON;
         } else if (sortField.equals("createdOnFormatted")) {
