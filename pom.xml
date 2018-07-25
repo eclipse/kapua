@@ -648,12 +648,12 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-device-request-api</artifactId>
+                <artifactId>kapua-device-management-request-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-device-request-internal</artifactId>
+                <artifactId>kapua-device-management-request-internal</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

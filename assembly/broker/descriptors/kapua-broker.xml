@@ -235,10 +235,10 @@
                 <include>${pom.groupId}:kapua-device-management-configuration-internal</include>
                 <include>${pom.groupId}:kapua-device-management-packages-api</include>
                 <include>${pom.groupId}:kapua-device-management-packages-internal</include>
+                <include>${pom.groupId}:kapua-device-management-request-api</include>
+                <include>${pom.groupId}:kapua-device-management-request-internal</include>
                 <include>${pom.groupId}:kapua-device-registry-api</include>
                 <include>${pom.groupId}:kapua-device-registry-internal</include>
-                <include>${pom.groupId}:kapua-device-request-api</include>
-                <include>${pom.groupId}:kapua-device-request-internal</include>
                 <include>${pom.groupId}:kapua-foreignkeys</include>
                 <include>${pom.groupId}:kapua-guice</include>
                 <include>${pom.groupId}:kapua-liquibase</include>
