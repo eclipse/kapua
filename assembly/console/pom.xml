@@ -126,12 +126,12 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-packages-api</artifactId>
+            <artifactId>kapua-device-management-packages-api</artifactId>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-packages-internal</artifactId>
+            <artifactId>kapua-device-management-packages-internal</artifactId>
             <scope>runtime</scope>
         </dependency>
         <dependency>

@@ -233,8 +233,8 @@
                 <include>${pom.groupId}:kapua-device-management-command-internal</include>
                 <include>${pom.groupId}:kapua-device-management-configuration-api</include>
                 <include>${pom.groupId}:kapua-device-management-configuration-internal</include>
-                <include>${pom.groupId}:kapua-device-packages-api</include>
-                <include>${pom.groupId}:kapua-device-packages-internal</include>
+                <include>${pom.groupId}:kapua-device-management-packages-api</include>
+                <include>${pom.groupId}:kapua-device-management-packages-internal</include>
                 <include>${pom.groupId}:kapua-device-registry-api</include>
                 <include>${pom.groupId}:kapua-device-registry-internal</include>
                 <include>${pom.groupId}:kapua-device-request-api</include>

@@ -29,5 +29,6 @@
         <module>bundle</module>
         <module>command</module>
         <module>configuration</module>
+        <module>packages</module>
     </modules>
 </project>

@@ -31,10 +31,6 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-packages-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-management-bundle-api</artifactId>
         </dependency>
         <dependency>
@@ -44,6 +40,10 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-management-configuration-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-packages-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
