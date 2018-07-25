@@ -263,10 +263,6 @@
 
                                     <licenseMerge>Eclipse Distribution License Version 1.0|Eclipse Distribution License v. 1.0</licenseMerge>
                                     <licenseMerge>Eclipse Distribution License Version 1.0|Eclipse Distribution License (EDL), Version 1.0</licenseMerge>
-
-                                    <!-- <licenseMerge>EPL 1.0|Eclipse Public License Version 1.0</licenseMerge> <licenseMerge>EPL 1.0|Eclipse Public License - Version 1.0</licenseMerge> <licenseMerge>EPL
-                                        1.0|Eclipse Public License (EPL), Version 1.0</licenseMerge> <licenseMerge>EPL 1.0|Eclipse Public License v1.0</licenseMerge> <licenseMerge>CCDL 1.0|Common Development and Distribution License (CDDL) v1.0</licenseMerge>
-                                        <licenseMerge>CCDL 1.0|Common Development and Distribution License</licenseMerge> <licenseMerge>CCDL 1.1</licenseMerge> -->
                                 </licenseMerges>
                             </configuration>
                         </execution>
@@ -552,12 +548,12 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-device-asset-api</artifactId>
+                <artifactId>kapua-device-management-asset-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-device-asset-internal</artifactId>
+                <artifactId>kapua-device-management-asset-internal</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -592,7 +588,7 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-device-asset-job</artifactId>
+                <artifactId>kapua-device-management-asset-job</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
