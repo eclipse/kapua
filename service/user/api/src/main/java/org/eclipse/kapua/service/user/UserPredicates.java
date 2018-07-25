@@ -16,5 +16,8 @@ import org.eclipse.kapua.model.KapuaNamedEntityPredicates;
 public interface UserPredicates extends KapuaNamedEntityPredicates {
 
     String STATUS = "status";
-    String EXPIRATIN_DATE = "expirationDate";
+    String EXPIRATION_DATE = "expirationDate";
+    String PHONE_NUMBER = "phoneNumber";
+    String EMAIL = "email";
+    String DISPLAY_NAME= "displayName";
 }
