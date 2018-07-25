@@ -121,12 +121,12 @@
         <!-- dependencies added otherwise the unix assembly doesn't know the arctifact to add -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-asset-api</artifactId>
+            <artifactId>kapua-device-management-asset-api</artifactId>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-asset-internal</artifactId>
+            <artifactId>kapua-device-management-asset-internal</artifactId>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -632,7 +632,7 @@
             </plugin>
         </plugins>
     </build>
-    
+
     <profiles>
         <profile>
             <id>release</id>
