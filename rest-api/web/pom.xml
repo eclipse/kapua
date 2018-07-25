@@ -170,7 +170,15 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-management-packages-internal</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-request-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-request-internal</artifactId>
+        </dependency>
+        
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-user-api</artifactId>
@@ -256,23 +264,6 @@
             <groupId>org.elasticsearch.plugin</groupId>
             <artifactId>percolator-client</artifactId>
             <version>${elasticsearch-client-transport.version}</version>
-        </dependency>
-        <!-- log4j2 for ES -->
-        <!--<dependency>-->
-        <!--<groupId>org.apache.logging.log4j</groupId>-->
-        <!--<artifactId>log4j-api</artifactId>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-        <!--<groupId>org.apache.logging.log4j</groupId>-->
-        <!--<artifactId>log4j-to-slf4j</artifactId>-->
-        <!--</dependency>-->
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-request-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-request-internal</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>

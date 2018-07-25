@@ -34,7 +34,7 @@
 
         <module>registry</module>
         <module>management</module>
-        <module>request</module>
+        
     </modules>
 
 </project>
