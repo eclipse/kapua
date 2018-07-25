@@ -51,13 +51,13 @@ public class RestClientSteps extends Assert {
         stepData.put("port", port);
     }
 
-    @When("^REST call at \"(.*)\" and \"(.*)\"")
-    public void restCallStatusOfIndex(String resource, String resourceApndx) {
+    @When("^REST call at \"(.*)\"")
+    public void restCallStatusOfIndex(String resource) {
 
         String host = (String) stepData.get("host");
         String port = (String) stepData.get("port");
         try {
-            URL url = new URL("http://" + host + ":" + port + resource + resourceApndx);
+            URL url = new URL("http://" + host + ":" + port + resource);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             assertFalse("Wrong response.", conn.getResponseCode() != 200);
