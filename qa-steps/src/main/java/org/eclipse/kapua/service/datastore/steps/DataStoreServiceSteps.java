@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -209,6 +209,16 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
                 ((Device) stepData.get("LastDevice")).getId(),
                 ((Device) stepData.get("LastDevice")).getClientId(),
                 null, null);
+        stepData.put(msgKey, tmpMessage);
+    }
+
+    @Given("^I prepare a random message with capture date \"(.*)\" and save it as \"(.*)\"$")
+    public void prepareAndRememberARandomMessage(String captureDate, String msgKey) throws Exception {
+
+        KapuaDataMessage tmpMessage = createTestMessage(((Account) stepData.get("LastAccount")).getId(),
+                ((Device) stepData.get("LastDevice")).getId(),
+                ((Device) stepData.get("LastDevice")).getClientId(),
+                null, captureDate);
         stepData.put(msgKey, tmpMessage);
     }
 
