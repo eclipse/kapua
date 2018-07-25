@@ -144,11 +144,6 @@ public class GwtKapuaDeviceModelConverter {
         if (loadConfig != null) {
             deviceQuery.setLimit(loadConfig.getLimit());
             deviceQuery.setOffset(loadConfig.getOffset());
-
-            String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? DevicePredicates.CLIENT_ID : loadConfig.getSortField();
-            SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
-            FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
-            deviceQuery.setSortCriteria(sortCriteria);
         }
 
         GwtDeviceQueryPredicates predicates = gwtDeviceQuery.getPredicates();
@@ -201,13 +196,13 @@ public class GwtKapuaDeviceModelConverter {
         if(predicates.getTagId() != null) {
             andPred = andPred.and(new AttributePredicateImpl<KapuaId[]>(DevicePredicates.TAG_IDS, new KapuaId[] { GwtKapuaCommonsModelConverter.convertKapuaId(predicates.getTagId()) }));
         }
-
         if (predicates.getSortAttribute() != null) {
-            SortOrder sortOrder = SortOrder.ASCENDING;
-            if (predicates.getSortOrder().equals(SortOrder.DESCENDING.name())) {
-                sortOrder = SortOrder.DESCENDING;
+            String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? DevicePredicates.CLIENT_ID : loadConfig.getSortField();
+            SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
+            if (sortField.equals("lastEventOnFormatted")) {
+                sortField = DevicePredicates.LAST_EVENT_ON;
             }
-
+            deviceQuery.setSortCriteria(new FieldSortCriteria(sortField, sortOrder));
         } else {
             deviceQuery.setSortCriteria(new FieldSortCriteria(DevicePredicates.CLIENT_ID, SortOrder.ASCENDING));
         }
