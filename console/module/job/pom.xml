@@ -41,7 +41,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-bundle-job</artifactId>
+            <artifactId>kapua-device-management-bundle-job</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>

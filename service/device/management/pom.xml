@@ -25,5 +25,6 @@
 
     <modules>
         <module>asset</module>
+        <module>bundle</module>
     </modules>
 </project>
