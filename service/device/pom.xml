@@ -34,7 +34,6 @@
 
         <module>registry</module>
         <module>management</module>
-        <module>configuration</module>
         <module>packages</module>
         <module>request</module>
     </modules>

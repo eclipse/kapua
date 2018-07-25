@@ -225,14 +225,14 @@
                 <include>${pom.groupId}:kapua-device-call-api</include>
                 <include>${pom.groupId}:kapua-device-call-kura</include>
                 <include>${pom.groupId}:kapua-device-commons</include>
-                <include>${pom.groupId}:kapua-device-configuration-api</include>
-                <include>${pom.groupId}:kapua-device-configuration-internal</include>
                 <include>${pom.groupId}:kapua-device-management-asset-api</include>
                 <include>${pom.groupId}:kapua-device-management-asset-internal</include>
                 <include>${pom.groupId}:kapua-device-management-bundle-api</include>
                 <include>${pom.groupId}:kapua-device-management-bundle-internal</include>
                 <include>${pom.groupId}:kapua-device-management-command-api</include>
                 <include>${pom.groupId}:kapua-device-management-command-internal</include>
+                <include>${pom.groupId}:kapua-device-management-configuration-api</include>
+                <include>${pom.groupId}:kapua-device-management-configuration-internal</include>
                 <include>${pom.groupId}:kapua-device-packages-api</include>
                 <include>${pom.groupId}:kapua-device-packages-internal</include>
                 <include>${pom.groupId}:kapua-device-registry-api</include>

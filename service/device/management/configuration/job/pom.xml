@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-    Copyright (c) 2017 Eurotech and/or its affiliates and others
+    Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -17,12 +17,11 @@
 
     <parent>
         <groupId>org.eclipse.kapua</groupId>
-        <artifactId>kapua-device-configuration</artifactId>
+        <artifactId>kapua-device-management-configuration</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kapua-device-configuration-job</artifactId>
-    <name>${project.artifactId}</name>
+    <artifactId>kapua-device-management-configuration-job</artifactId>
 
     <dependencies>
         <dependency>
@@ -36,7 +35,7 @@
 
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-configuration-api</artifactId>
+            <artifactId>kapua-device-management-configuration-api</artifactId>
         </dependency>
     </dependencies>
 </project>
