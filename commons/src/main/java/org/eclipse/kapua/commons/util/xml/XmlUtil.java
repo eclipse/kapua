@@ -63,6 +63,10 @@ public class XmlUtil {
         jaxbContextProvider = provider;
     }
 
+    public static JAXBContextProvider getContextProvider() {
+        return jaxbContextProvider;
+    }
+
     /**
      * Marshal the object to a String
      *
