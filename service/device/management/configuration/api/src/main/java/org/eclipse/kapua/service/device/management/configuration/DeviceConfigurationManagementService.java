@@ -13,7 +13,6 @@ package org.eclipse.kapua.service.device.management.configuration;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.management.DeviceManagementService;
 
 /**
@@ -21,7 +20,7 @@ import org.eclipse.kapua.service.device.management.DeviceManagementService;
  *
  * @since 1.0
  */
-public interface DeviceConfigurationManagementService extends KapuaService, DeviceManagementService {
+public interface DeviceConfigurationManagementService extends DeviceManagementService {
 
     /**
      * Get the device configuration for the given device identifier and configuration identifier
@@ -35,9 +34,9 @@ public interface DeviceConfigurationManagementService extends KapuaService, Devi
      * @throws KapuaException
      */
     DeviceConfiguration get(KapuaId scopeId, KapuaId deviceId,
-            String configurationId,
-            String configurationComponentPid,
-            Long timeout)
+                            String configurationId,
+                            String configurationComponentPid,
+                            Long timeout)
             throws KapuaException;
 
     /**

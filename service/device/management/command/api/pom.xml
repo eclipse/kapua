@@ -23,9 +23,14 @@
     <artifactId>kapua-device-management-command-api</artifactId>
 
     <dependencies>
+        <!-- Extended service interfaces -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-api</artifactId>
         </dependency>
     </dependencies>
 </project>

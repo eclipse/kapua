@@ -31,5 +31,6 @@
         <module>configuration</module>
         <module>packages</module>
         <module>request</module>
+        <module>api</module>
     </modules>
 </project>

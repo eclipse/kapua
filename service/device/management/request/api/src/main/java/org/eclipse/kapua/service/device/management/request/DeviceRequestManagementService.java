@@ -12,12 +12,11 @@
 package org.eclipse.kapua.service.device.management.request;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.management.DeviceManagementService;
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestMessage;
 import org.eclipse.kapua.service.device.management.request.message.response.GenericResponseMessage;
 
-public interface DeviceRequestManagementService extends KapuaService, DeviceManagementService {
+public interface DeviceRequestManagementService extends DeviceManagementService {
 
     /**
      * Execute the given device request with the provided options
