@@ -32,5 +32,6 @@
         <module>packages</module>
         <module>request</module>
         <module>api</module>
+        <module>all</module>
     </modules>
 </project>
