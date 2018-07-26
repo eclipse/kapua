@@ -225,6 +225,7 @@
                 <include>${pom.groupId}:kapua-device-call-api</include>
                 <include>${pom.groupId}:kapua-device-call-kura</include>
                 <include>${pom.groupId}:kapua-device-commons</include>
+                <include>${pom.groupId}:kapua-device-management-api</include>
                 <include>${pom.groupId}:kapua-device-management-asset-api</include>
                 <include>${pom.groupId}:kapua-device-management-asset-internal</include>
                 <include>${pom.groupId}:kapua-device-management-bundle-api</include>
