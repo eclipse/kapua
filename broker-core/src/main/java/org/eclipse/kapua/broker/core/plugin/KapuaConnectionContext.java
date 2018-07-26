@@ -19,6 +19,7 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.security.cert.Certificate;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,7 @@ public class KapuaConnectionContext {
     private ConnectorDescriptor connectorDescriptor;
     private boolean[] hasPermissions;
     private String brokerIpOrHostName;
+    private Certificate[] clientCertificates;
 
     // use to track the allowed destinations for debug purpose
     private List<String> authDestinations;
@@ -64,6 +66,9 @@ public class KapuaConnectionContext {
         clientId = info.getClientId();
         clientIp = info.getClientIp();
         connectionId = info.getConnectionId().getValue();
+        if(info.getTransportContext() instanceof Certificate[]) {
+            clientCertificates = (Certificate[]) info.getTransportContext();
+        }
     }
 
     public KapuaConnectionContext(String brokerId, KapuaPrincipal kapuaPrincipal, ConnectionInfo info, String fullClientIdPattern) {
@@ -123,6 +128,10 @@ public class KapuaConnectionContext {
 
     public String getBrokerId() {
         return brokerId;
+    }
+
+    public Certificate[] getClientCertificates() {
+        return clientCertificates;
     }
 
     public String getUserName() {
