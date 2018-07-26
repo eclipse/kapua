@@ -279,11 +279,15 @@ public class GwtKapuaJobModelConverter {
     public static JobExecutionQuery convertJobExecutionQuery(PagingLoadConfig pagingLoadConfig, GwtExecutionQuery gwtExecutionQuery) {
         JobExecutionQuery query = JOB_EXECUTION_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtExecutionQuery.getScopeId()));
         query.setPredicate(new AttributePredicateImpl<KapuaId>(JobExecutionPredicates.JOB_ID, GwtKapuaCommonsModelConverter.convertKapuaId(gwtExecutionQuery.getJobId())));
-
-        if (pagingLoadConfig.getSortField() != null) {
-            query.setSortCriteria(new FieldSortCriteria(pagingLoadConfig.getSortField(), pagingLoadConfig.getSortDir() == SortDir.ASC ? SortOrder.ASCENDING : SortOrder.DESCENDING));
+        String sortField = StringUtils.isEmpty(pagingLoadConfig.getSortField()) ? JobPredicates.NAME : pagingLoadConfig.getSortField();
+        if (sortField.equals("startedOnFormatted")) {
+            sortField = JobPredicates.STARTED_ON;
+        } else if (sortField.equals("endedOnFormatted")) {
+            sortField = JobPredicates.ENDED_ON;
         }
-
+        SortOrder sortOrder = pagingLoadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
+        FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
+        query.setSortCriteria(sortCriteria);
         query.setLimit(pagingLoadConfig.getLimit());
         query.setOffset(pagingLoadConfig.getOffset());
 
