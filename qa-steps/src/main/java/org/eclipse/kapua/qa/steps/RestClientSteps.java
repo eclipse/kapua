@@ -16,6 +16,7 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.service.StepData;
+import org.eclipse.kapua.service.account.Account;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,11 +79,21 @@ public class RestClientSteps extends Assert {
         }
     }
 
-    @Then("^REST response containing \"(.*)\"")
-    public void restResponseStatusOfIndex(String checkStr) {
+    @Then("^REST response containing text \"(.*)\"$")
+    public void restResponseContaining(String checkStr) {
 
         String restResponse = (String) stepData.get("restResponse");
         assertTrue(String.format("Response %s doesn't include %s.", restResponse, checkStr),
                 restResponse.contains(checkStr));
     }
+
+    @Then("^REST response containing \"(.*)\" with prefix account \"(.*)\"")
+    public void restResponseContainingPrefixVar(String checkStr, String var) {
+
+        String restResponse = (String) stepData.get("restResponse");
+        Account account = (Account) stepData.get(var);
+        assertTrue(String.format("Response %s doesn't include %s.", restResponse, account.getId() + checkStr),
+                restResponse.contains(account.getId() + checkStr));
+    }
+
 }
