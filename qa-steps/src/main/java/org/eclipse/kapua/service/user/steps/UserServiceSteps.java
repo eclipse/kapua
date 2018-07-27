@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -170,6 +170,11 @@ public class UserServiceSteps extends BaseQATests {
     @Given("^Permissions$")
     public void givenPermissions(List<TestPermission> permissionList) throws Exception {
         createPermissions(permissionList, (ComparableUser) stepData.get("LastUser"), (Account) stepData.get("LastAccount"));
+    }
+
+    @Given("^Full permissions$")
+    public void givenFullPermissions() throws Exception {
+        createPermissions(null, (ComparableUser) stepData.get("LastUser"), (Account) stepData.get("LastAccount"));
     }
 
     @Given("^User A$")
@@ -585,15 +590,20 @@ public class UserServiceSteps extends BaseQATests {
         accessInfoCreator.setUserId(user.getUser().getId());
         accessInfoCreator.setScopeId(user.getUser().getScopeId());
         Set<Permission> permissions = new HashSet<>();
-        for (TestPermission testPermission : permissionList) {
-            Actions action = testPermission.getAction();
-            KapuaEid targetScopeId = testPermission.getTargetScopeId();
-            if (targetScopeId == null) {
-                targetScopeId = (KapuaEid) account.getId();
+        if (permissionList != null) {
+            for (TestPermission testPermission : permissionList) {
+                Actions action = testPermission.getAction();
+                KapuaEid targetScopeId = testPermission.getTargetScopeId();
+                if (targetScopeId == null) {
+                    targetScopeId = (KapuaEid) account.getId();
+                }
+                Domain domain = new UserDomain();
+                Permission permission = permissionFactory.newPermission(domain,
+                        action, targetScopeId);
+                permissions.add(permission);
             }
-            Domain domain = new UserDomain();
-            Permission permission = permissionFactory.newPermission(domain,
-                    action, targetScopeId);
+        } else {
+            Permission permission = permissionFactory.newPermission(null, null, null);
             permissions.add(permission);
         }
         accessInfoCreator.setPermissions(permissions);
