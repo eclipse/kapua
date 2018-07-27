@@ -36,7 +36,7 @@ Feature: Datastore tests
     And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
     And I refresh all database indices
     When REST call at "/_cat/indices/"
-    Then REST response containing "green open 1-2018-01"
+    Then REST response containing text "green open 1-2018-01"
     And All indices are deleted
 
   Scenario: Simple positive scenario for creating daily index
@@ -54,7 +54,7 @@ Feature: Datastore tests
     And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
     And I refresh all database indices
     When REST call at "/_cat/indices/"
-    And REST response containing "green open 1-2018-01-02"
+    And REST response containing text "green open 1-2018-01-02"
     And All indices are deleted
 
   Scenario: Simple positive scenario for creating hourly index
@@ -72,7 +72,123 @@ Feature: Datastore tests
     And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
     And I refresh all database indices
     When REST call at "/_cat/indices/"
-    And REST response containing "green open 1-2018-01-02-10"
+    And REST response containing text "green open 1-2018-01-02-10"
+    And All indices are deleted
+
+  Scenario: Creating two indexes with weekly index
+  Creation of two indexes by publishing data with different capture date. As creation date if responsible
+  for index name, this should result in two different indexes.
+
+    Given Server with host "127.0.0.1" on port "9200"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP", indexWindow "WEEK"
+    When All indices are deleted
+    And Account for "kapua-sys"
+    Given The device "test-device-1"
+    When I prepare a random message with capture date "2018-01-01T10:21:32.123Z" and save it as "RandomDataMessage"
+    And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
+    And I prepare a random message with capture date "2018-01-07T10:21:32.123Z" and save it as "RandomDataMessage"
+    And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
+    And I refresh all database indices
+    When REST call at "/_cat/indices/"
+    And REST response containing text "green open 1-2018-01"
+    And REST response containing text "green open 1-2018-02"
+    And All indices are deleted
+
+  Scenario: Creating two indexes with daily index
+  Creation of two indexes by publishing data with different capture date. As creation date if responsible
+  for index name, this should result in two different indexes.
+
+    Given Server with host "127.0.0.1" on port "9200"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP", indexWindow "DAY"
+    When All indices are deleted
+    And Account for "kapua-sys"
+    Given The device "test-device-1"
+    When I prepare a random message with capture date "2018-01-01T10:21:32.123Z" and save it as "RandomDataMessage"
+    And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
+    And I prepare a random message with capture date "2018-01-02T10:21:32.123Z" and save it as "RandomDataMessage"
+    And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
+    And I refresh all database indices
+    When REST call at "/_cat/indices/"
+    And REST response containing text "green open 1-2018-01-02"
+    And REST response containing text "green open 1-2018-01-03"
+    And All indices are deleted
+
+  Scenario: Creating two indexes with hourly index
+  Creation of two indexes by publishing data with different capture date. As creation date if responsible
+  for index name, this should result in two different indexes.
+
+    Given Server with host "127.0.0.1" on port "9200"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP", indexWindow "HOUR"
+    When All indices are deleted
+    And Account for "kapua-sys"
+    Given The device "test-device-1"
+    When I prepare a random message with capture date "2018-01-01T10:21:32.123Z" and save it as "RandomDataMessage"
+    And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
+    And I prepare a random message with capture date "2018-01-01T15:21:32.123Z" and save it as "RandomDataMessage"
+    And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
+    And I refresh all database indices
+    When REST call at "/_cat/indices/"
+    And REST response containing text "green open 1-2018-01-02-10"
+    And REST response containing text "green open 1-2018-01-02-15"
+    And All indices are deleted
+
+  Scenario: Creating index with regular user
+  Creating single
+
+    Given Server with host "127.0.0.1" on port "9200"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP", indexWindow "WEEK"
+    And I configure account service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 50    |
+    And I configure user service
+      | type    | name                       | value |
+      | boolean | infiniteChildEntities      | true  |
+      | integer | maxNumberChildEntities     | 5     |
+      | boolean | lockoutPolicy.enabled      | false |
+      | integer | lockoutPolicy.maxFailures  | 3     |
+      | integer | lockoutPolicy.resetAfter   | 300   |
+      | integer | lockoutPolicy.lockDuration | 3     |
+    Given Account
+      | name      | scopeId |
+      | account-a | 1       |
+    And I configure account service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
+    And I configure user service
+      | type    | name                       | value |
+      | boolean | infiniteChildEntities      | true  |
+      | integer | maxNumberChildEntities     | 5     |
+      | boolean | lockoutPolicy.enabled      | false |
+      | integer | lockoutPolicy.maxFailures  | 3     |
+      | integer | lockoutPolicy.resetAfter   | 300   |
+      | integer | lockoutPolicy.lockDuration | 3     |
+    And I configure the device service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities |  10   |
+    And User A
+      | name    | displayName  | email             | phoneNumber     | status  | userType |
+      | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
+    And Credentials
+      | name    | password          | enabled |
+      | kapua-a | ToManySecrets123# | true    |
+    And Full permissions
+    And All indices are deleted
+    And I logout
+    When I login as user with name "kapua-a" and password "ToManySecrets123#"
+    And Account for "account-a"
+    Given The device "test-device-1"
+    When I prepare a random message with capture date "2018-01-01T10:21:32.123Z" and save it as "RandomDataMessage"
+    And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
+    And I refresh all database indices
+    When REST call at "/_cat/indices/"
+    And REST response containing "-2018-01" with prefix account "LastAccount"
     And All indices are deleted
 
   @StopBroker
