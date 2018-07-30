@@ -103,6 +103,7 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
         reservedUserCombo.setTypeAhead(false);
         reservedUserCombo.setAllowBlank(false);
         reservedUserCombo.setFieldLabel(MSGS.connectionFormReservedUser());
+        reservedUserCombo.setToolTip(MSGS.connectionFormReservedUserTooltip());
         reservedUserCombo.setTriggerAction(TriggerAction.ALL);
         reservedUserCombo.setStore(new ListStore<GwtUser>());
         reservedUserCombo.setDisplayField("username");
