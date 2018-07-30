@@ -20,10 +20,11 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.kapua.commons.core.Application;
-import org.eclipse.kapua.commons.core.ObjectContextImpl;
 import org.eclipse.kapua.commons.core.Configuration;
 import org.eclipse.kapua.commons.core.ConfigurationImpl;
 import org.eclipse.kapua.commons.core.ConfigurationSourceFactoryImpl;
+import org.eclipse.kapua.commons.core.ObjectContextConfig;
+import org.eclipse.kapua.commons.core.ObjectContextImpl;
 import org.eclipse.kapua.commons.core.spi.ConfigurationSourceFactory;
 
 import com.codahale.metrics.MetricRegistry;
@@ -66,7 +67,6 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
     private static final String PROP_VERTX_METRICS_ROOT = "vertx.metrics-root";
     private static final String PROP_VERTX_WARNING_EXCEPTION_TIME = "vertx.warning-exception-time";
     private static final String PROP_VERTX_BLOCKED_THREAD_CHECK_INTERVAL = "vertx.blocked-thread-check-interval";
-    private static final String PROP_VERTX_SHUTDOWN_TIMEOUT = "vertx.shutdown-timeout";
     private static final String PROP_VERTX_STARTUP_TIMEOUT = "vertx.startup-timeout";
 
     private Vertx vertx;
@@ -95,82 +95,72 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
      * the actual execution.
      * 
      * @param args command line parameters
+     * @throws Exception 
      */
-    public void run(String[] args) {    
+    public void run(String[] args) throws Exception {   
         EnvironmentImpl env = null;
         ConfigurationImpl config = null;
-        try {
-            printBanner(getName() + BANNER_FILE_SUFFIX);
 
-            ConfigurationSourceFactory configSourceFactory = getConfigurationSourceFactory();
-            config = new ConfigurationImpl();
-            config.setSource(configSourceFactory.create(this.getClass().getClassLoader(), getName() + CONFIG_FILE_SUFFIX));
+        printBanner(getName() + BANNER_FILE_SUFFIX);
 
-            MetricRegistry metricRegistry = null;
-            DropwizardMetricsOptions metrOpts = new DropwizardMetricsOptions();
-            metrOpts.setEnabled(Boolean.parseBoolean(config.getProperty("vertx.metrics-enabled")));
-            String metricsRoot = config.getProperty(PROP_VERTX_METRICS_ROOT);
-            metricRegistry = SharedMetricRegistries.getOrCreate(METRIC_REGISTRY_NAME);
-            try {
-                SharedMetricRegistries.setDefault(METRIC_REGISTRY_NAME, metricRegistry);
-            }
-            catch (IllegalStateException e) {
-                logger.warn("Them metric registry is already configured... leave it as it is!");
-            }
-            metrOpts.setRegistryName(METRIC_REGISTRY_NAME);
-            metrOpts.setBaseName(metricsRoot + ".vertx");
+        ConfigurationSourceFactory configSourceFactory = getConfigurationSourceFactory();
+        config = new ConfigurationImpl();
+        config.setSource(configSourceFactory.create(this.getClass().getClassLoader(), getName() + CONFIG_FILE_SUFFIX));
 
-            VertxOptions opts = new VertxOptions();
-            opts.setWarningExceptionTime(Long.parseLong(config.getProperty(PROP_VERTX_WARNING_EXCEPTION_TIME)));
-            opts.setBlockedThreadCheckInterval(Long.parseLong(config.getProperty(PROP_VERTX_BLOCKED_THREAD_CHECK_INTERVAL)));
-            opts.setMetricsOptions(metrOpts);
-            vertx = Vertx.vertx(opts);
+        MetricRegistry metricRegistry = null;
+        DropwizardMetricsOptions metrOpts = new DropwizardMetricsOptions();
+        metrOpts.setEnabled(Boolean.parseBoolean(config.getProperty("vertx.metrics-enabled")));
+        String metricsRoot = config.getProperty(PROP_VERTX_METRICS_ROOT);
+        metricRegistry = SharedMetricRegistries.getOrCreate(METRIC_REGISTRY_NAME);
+        SharedMetricRegistries.setDefault(METRIC_REGISTRY_NAME, metricRegistry);
+        metrOpts.setRegistryName(METRIC_REGISTRY_NAME);
+        metrOpts.setBaseName(metricsRoot + ".vertx");
 
-            env = new EnvironmentImpl(vertx, config);
-            this.initialize(env);
+        VertxOptions opts = new VertxOptions();
+        opts.setWarningExceptionTime(Long.parseLong(config.getProperty(PROP_VERTX_WARNING_EXCEPTION_TIME)));
+        opts.setBlockedThreadCheckInterval(Long.parseLong(config.getProperty(PROP_VERTX_BLOCKED_THREAD_CHECK_INTERVAL)));
+        opts.setMetricsOptions(metrOpts);
+        vertx = Vertx.vertx(opts);
 
-            List<AbstractModule> modules = new ArrayList<>();
-            if (env.getBeanContextConfig() != null) {
-                modules.add(env.getBeanContextConfig());
-            }
-            final EnvironmentImpl finalEnv = env;
-            final ConfigurationImpl finalConfig = config;
-            modules.add(new AbstractModule() {
+        env = new EnvironmentImpl(vertx, config);
+        this.initialize(env);
 
-                @Override
-                protected void configure() {
-                    bind(EventBusProvider.class).toInstance(new EventBusProvider() {
-
-                        @Override
-                        public EventBus get() {
-                            return vertx.eventBus();
-                        }
-                    });
-                    bind(Environment.class).toInstance(finalEnv);
-                    bind(Configuration.class).toInstance(finalConfig);
-                    for(String key:finalConfig.getKeys()) {
-                        bind(String.class).annotatedWith(Names.named(key)).toInstance(finalConfig.getProperty(key));
-                    }
-                }
-
-            });
-
-            Injector injector = Guice.createInjector(modules);
-
-            ObjectContextImpl contextImpl = new ObjectContextImpl();
-            contextImpl.setInjector(injector);
-            env.setBeanContext(contextImpl);
-            env.setMetricRegistry(metricRegistry);
-
-            run(env, config);
-        } catch (Exception e) {
-            logger.error("Error occured while running application {}", e.getMessage(), e);
-            long shutdownTimeout = getDefaultShutdownTimeout();
-            if (config != null) {
-                shutdownTimeout = Long.parseLong(config.getProperty(PROP_VERTX_SHUTDOWN_TIMEOUT));
-            }
-            shutdown(shutdownTimeout);
+        List<AbstractModule> modules = new ArrayList<>();
+        if (env.getBeanContextConfig() != null) {
+            modules.add(env.getBeanContextConfig());
         }
+        final EnvironmentImpl finalEnv = env;
+        final ConfigurationImpl finalConfig = config;
+        modules.add(new AbstractModule() {
+
+            @Override
+            protected void configure() {
+                bind(EventBusProvider.class).toInstance(new EventBusProvider() {
+
+                    @Override
+                    public EventBus get() {
+                        // There is one event bus object per vertx instance
+                        return vertx.eventBus();
+                    }
+
+                });
+                bind(Environment.class).toInstance(finalEnv);
+                bind(Configuration.class).toInstance(finalConfig);
+                for(String key:finalConfig.getKeys()) {
+                    bind(String.class).annotatedWith(Names.named(key)).toInstance(finalConfig.getProperty(key));
+                }
+            }
+
+        });
+
+        Injector injector = Guice.createInjector(modules);
+
+        ObjectContextImpl contextImpl = new ObjectContextImpl();
+        contextImpl.setInjector(injector);
+        env.setBeanContext(contextImpl);
+        env.setMetricRegistry(metricRegistry);
+
+        this.run(env, config);
     }
 
     /**
@@ -220,7 +210,12 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
      * @param Environment application environment.
      * @param Configuration application configuration.     
      */
-    public void shutdown(long timeout) {
+    public void shutdown(long timeout) throws Exception {
+        long actualTimeout = timeout;
+        if (timeout ==-1) {
+            actualTimeout = Long.MAX_VALUE;
+        }
+
         if (vertx != null) {
             Future<Void> closeFuture = Future.future();
             CountDownLatch stoppedSignal = new CountDownLatch(1);
@@ -235,27 +230,19 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
                 stoppedSignal.countDown();
             });
 
-            try {
-                boolean touchedZero = stoppedSignal.await(timeout, TimeUnit.MILLISECONDS);
-                if (closeFuture.failed() || !touchedZero) {
-                    throw new Exception("Closing Vertx...FAILED", closeFuture.cause());
-                }
-            } catch (Exception e) {
-                logger.error("Forcing exit...", e);
-                System.exit(1);
+            boolean touchedZero = stoppedSignal.await(actualTimeout, TimeUnit.MILLISECONDS);
+            if (closeFuture.failed() || !touchedZero) {
+                throw new Exception("Closing Vertx...FAILED", closeFuture.cause());
             }
         }
     }
 
     /**
+     * @throws Exception 
      * 
      */
-    public void shutdown() {
-        this.shutdown(getDefaultShutdownTimeout());
-    }
-
-    private long getDefaultShutdownTimeout() {
-        return 5000;
+    public void shutdown() throws Exception {
+        this.shutdown(-1);
     }
 
     private void deployMainVerticle(Environment env, Configuration config, Class<M> clazz) throws Exception {
@@ -308,7 +295,7 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
             System.out.println();
 
             int c = bannerStream.read();
-            while( c > 0) {
+            while( c >= 0) {
                 System.out.print((char)c);
                 c = bannerStream.read();
             }

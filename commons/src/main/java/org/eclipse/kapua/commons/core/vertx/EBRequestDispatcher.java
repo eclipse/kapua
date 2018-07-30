@@ -43,10 +43,15 @@ public class EBRequestDispatcher {
     public void registerHandler(String action, EBRequestHandler handler) {
         if (!handlers.containsKey(action)) {
             handlers.put(action, handler);
-        }
-    } // TODO Handle the case when the handler is discarded
+        } // TODO Handle the case when the handler is discarded
+    }
 
     private <T> void handle(Message<T> message) {
+
+        if (handlers == null || handlers.size() == 0) {
+            message.reply(EBResponse.create(EBResponse.NOT_FOUND, new JsonObject().put("message", "Not found")));
+            return;
+        }
         JsonObject request = (JsonObject)message.body();
         // TODO Validate request object
         handlers.get(request.getString(EBRequest.ACTION)).handle(request, ar -> {
