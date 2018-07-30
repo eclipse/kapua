@@ -57,7 +57,7 @@ public class MainVerticle extends AbstractMainVerticle {
 
     public MainVerticle() {
         SystemSetting configSys = SystemSetting.getInstance();
-        logger.info("Checking database... '{}'", configSys.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE));
+        logger.info("Checking database... '{}'", configSys.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false));
         if(configSys.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false)) {
             logger.debug("Starting Liquibase embedded client.");
             String dbUsername = configSys.getString(SystemSettingKey.DB_USERNAME);
@@ -86,11 +86,11 @@ public class MainVerticle extends AbstractMainVerticle {
       //disable Vertx BlockedThreadChecker log
         java.util.logging.Logger.getLogger("io.vertx.core.impl.BlockedThreadChecker").setLevel(Level.OFF);
         XmlUtil.setContextProvider(new JAXBContextProvider());
-        logger.info("Instantiating ErrorLogger Consumer...");
-        logger.info("Instantiating ErrorLogger Consumer... initializing ErrorLogger");
+        logger.info("Starting ErrorLogger Consumer...");
+        logger.info("Starting ErrorLogger Consumer... Starting ErrorLogger");
         processor = new LoggerProcessor();
-        logger.info("Instantiating LoggerProcessor Consumer... instantiating AmqpActiveMQConnector");
-        connector = new AmqpActiveMQConnector(vertx, connectorOptions, processor) {
+        logger.info("Starting LoggerProcessor Consumer... Starting AmqpActiveMQConnector");
+        connector = new AmqpActiveMQConnector(vertx, connectorOptions, processor, null) {
 
             @Override
             protected boolean isProcessDestination(MessageContext<Message> message) {
@@ -126,12 +126,17 @@ public class MainVerticle extends AbstractMainVerticle {
                 }
             });
         });
-        logger.info("Instantiating LoggerProcessor Consumer... DONE");
+        logger.info("Starting LoggerProcessor Consumer... DONE");
     }
 
     @Override
     protected void internalStop(Future<Void> future) throws Exception {
-        connector.stop(future);
+        //do nothing
+        logger.info("Stopping ErrorLogger Consumer...");
+        future.complete();
+        logger.info("Stopping ErrorLogger Consumer... DONE");
+        //this stop call is no more needed since the connector is a verticle then is already stopped during the vertx.stop call
+        //connector.stop(future);
     }
 
 }

@@ -25,10 +25,10 @@ import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.core.vertx.HttpRestServer;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.connector.MessageContext;
+import org.eclipse.kapua.connector.Properties;
 import org.eclipse.kapua.connector.activemq.AmqpTransportActiveMQConnector;
 import org.eclipse.kapua.consumer.activemq.lifecycle.settings.ActiveMQLifecycleSettings;
 import org.eclipse.kapua.consumer.activemq.lifecycle.settings.ActiveMQLifecycleSettingsKey;
-import org.eclipse.kapua.converter.Converter;
 import org.eclipse.kapua.converter.kura.KuraPayloadProtoConverter;
 import org.eclipse.kapua.processor.error.amqp.activemq.ErrorProcessor;
 import org.eclipse.kapua.processor.lifecycle.LifecycleProcessor;
@@ -62,7 +62,7 @@ public class MainVerticle extends AbstractMainVerticle {
 
     public MainVerticle() {
         SystemSetting configSys = SystemSetting.getInstance();
-        logger.info("Checking database... '{}'", configSys.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE));
+        logger.info("Checking database... '{}'", configSys.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false));
         if (configSys.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false)) {
             logger.debug("Starting Liquibase embedded client.");
             String dbUsername = configSys.getString(SystemSettingKey.DB_USERNAME);
@@ -95,8 +95,8 @@ public class MainVerticle extends AbstractMainVerticle {
         errorOptions.put(AmqpClientOptions.MAXIMUM_RECONNECTION_ATTEMPTS, ActiveMQLifecycleSettings.getInstance().getInt(ActiveMQLifecycleSettingsKey.MAX_RECONNECTION_ATTEMPTS));
         errorOptions.put(AmqpClientOptions.IDLE_TIMEOUT, ActiveMQLifecycleSettings.getInstance().getInt(ActiveMQLifecycleSettingsKey.IDLE_TIMEOUT));
         errorOptions.put(AmqpClientOptions.AUTO_ACCEPT, false);
-        connectorOptions.put(AmqpClientOptions.PREFETCH_MESSAGES, ActiveMQLifecycleSettings.getInstance().getInt(ActiveMQLifecycleSettingsKey.TELEMETRY_PREFETCH_MESSAGES));
-         errorOptions.put(AmqpClientOptions.QOS, ProtonQoS.AT_LEAST_ONCE);
+        errorOptions.put(AmqpClientOptions.PREFETCH_MESSAGES, ActiveMQLifecycleSettings.getInstance().getInt(ActiveMQLifecycleSettingsKey.TELEMETRY_PREFETCH_MESSAGES));
+        errorOptions.put(AmqpClientOptions.QOS, ProtonQoS.AT_LEAST_ONCE);
     }
 
     @Override
@@ -104,19 +104,19 @@ public class MainVerticle extends AbstractMainVerticle {
         //disable Vertx BlockedThreadChecker log
         java.util.logging.Logger.getLogger("io.vertx.core.impl.BlockedThreadChecker").setLevel(Level.OFF);
         XmlUtil.setContextProvider(new JAXBContextProvider());
-        logger.info("Instantiating Lifecycle Consumer...");
-        logger.info("Instantiating Lifecycle Consumer... initializing KuraPayloadProtoConverter");
+        logger.info("Starting Lifecycle Consumer...");
+        logger.info("Starting Lifecycle Consumer... Starting KuraPayloadProtoConverter");
         converter = new KuraPayloadProtoConverter();
-        logger.info("Instantiating Lifecycle Consumer... initializing LifecycleProcessor");
+        logger.info("Starting Lifecycle Consumer... Starting LifecycleProcessor");
         processor = new LifecycleProcessor();
-        logger.info("Instantiating Lifecycle Consumer... initializing ErrorProcessor");
+        logger.info("Starting Lifecycle Consumer... Starting ErrorProcessor");
         errorProcessor = new ErrorProcessor(vertx, errorOptions);
-        logger.info("Instantiating Lifecycle Consumer... instantiating AmqpActiveMQConnector");
+        logger.info("Starting Lifecycle Consumer... Starting AmqpActiveMQConnector");
         connector = new AmqpTransportActiveMQConnector(vertx, connectorOptions, converter, processor, errorProcessor) {
 
             @Override
             protected boolean isProcessDestination(MessageContext<byte[]> message) {
-                String topic = (String) message.getProperties().get(Converter.MESSAGE_DESTINATION);
+                String topic = (String) message.getProperties().get(Properties.MESSAGE_DESTINATION);
                 if (topic!=null && (topic.endsWith("/MQTT/BIRTH") ||
                         topic.endsWith("/MQTT/DC") ||
                         topic.endsWith("/MQTT/LWT") ||
@@ -168,12 +168,17 @@ public class MainVerticle extends AbstractMainVerticle {
                 future.fail(ar.cause());
             }
         });
-        logger.info("Instantiating Lifecycle Consumer... DONE");
+        logger.info("Starting Lifecycle Consumer... DONE");
     }
 
     @Override
     protected void internalStop(Future<Void> future) throws Exception {
-        connector.stop(future);
+        //do nothing
+        logger.info("Closing Lifecycle Consumer...");
+        future.complete();
+        logger.info("Closing Lifecycle Consumer... DONE");
+        //this stop call is no more needed since the connector is a verticle then is already stopped during the vertx.stop call
+        //connector.stop(future);
     }
 
 }

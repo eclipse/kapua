@@ -18,7 +18,6 @@ import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.broker.core.CoreJAXBContextProvider;
 import org.eclipse.kapua.broker.core.listener.CamelConstants;
-import org.eclipse.kapua.broker.core.message.MessageConstants;
 import org.eclipse.kapua.broker.core.setting.BrokerCoreSetting;
 import org.eclipse.kapua.broker.core.setting.BrokerCoreSettingKey;
 import org.eclipse.kapua.commons.setting.KapuaSettingException;
@@ -80,7 +79,7 @@ public class CamelKapuaDefaultRouter {
 
     public String defaultRoute(Exchange exchange, Object value, @Header(Exchange.SLIP_ENDPOINT) String previous, @Properties Map<String, Object> properties) {
         LOG.trace("Received message on topic {} - Previous slip endpoint {} - id {}",
-                exchange.getIn().getHeader(MessageConstants.PROPERTY_ORIGINAL_TOPIC, String.class),
+                exchange.getIn().getHeader(org.eclipse.kapua.connector.Properties.PROPERTY_ORIGINAL_TOPIC, String.class),
                 previous,
                 exchange.getIn().getHeader(CamelConstants.JMS_CORRELATION_ID));
         for (EndPoint endPoint : endPointContainer.getEndPoints()) {

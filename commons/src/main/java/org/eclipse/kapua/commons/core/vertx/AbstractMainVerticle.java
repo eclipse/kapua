@@ -53,7 +53,7 @@ public abstract class AbstractMainVerticle extends AbstractVerticle {
                 logger.trace("Starting verticle...DONE");
                 startEvent.complete();
             } else {
-                logger.trace("Starting verticle...FAIL", event.cause());
+                logger.error("Starting verticle...FAIL", event.cause());
                 startEvent.fail(event.cause());
             }
         });
@@ -63,8 +63,7 @@ public abstract class AbstractMainVerticle extends AbstractVerticle {
     public final void start() throws Exception {
         logger.trace("Starting verticle...");
         super.start();
-        this.internalStart();    
-        logger.trace("Starting verticle...DONE");
+        this.internalStart();
     }
 
     @Override
@@ -85,7 +84,7 @@ public abstract class AbstractMainVerticle extends AbstractVerticle {
                 logger.trace("Stopping verticle...DONE");
                 stopEvent.complete();
             } else {
-                logger.trace("Stopping verticle...FAIL", event.cause());
+                logger.error("Stopping verticle...FAIL", event.cause());
                 stopEvent.fail(event.cause());
             }
         });
@@ -96,7 +95,6 @@ public abstract class AbstractMainVerticle extends AbstractVerticle {
         logger.trace("Stopping verticle...");
         this.internalStop();
         super.stop();
-        logger.trace("Stopping verticle...DONE");
     }
 
     protected void internalStart(Future<Void> startFuture) throws Exception {

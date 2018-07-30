@@ -34,7 +34,6 @@ public class LifecycleProcessor implements Processor<TransportMessage>, HealthCh
 
     private LifecycleListener lifecycleListener;
 
-    //TODO keep messages types as enum or switch to String?
     enum LifecycleTypes {
         APPS,
         BIRTH,

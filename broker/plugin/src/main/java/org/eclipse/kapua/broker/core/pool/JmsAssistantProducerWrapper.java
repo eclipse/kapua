@@ -18,8 +18,8 @@ import javax.jms.Topic;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.message.JmsUtil;
-import org.eclipse.kapua.broker.core.message.MessageConstants;
 import org.eclipse.kapua.broker.core.plugin.KapuaConnectionContext;
+import org.eclipse.kapua.connector.Properties;
 
 /**
  * Broker ({@link JmsProducerWrapper}) implementation.<BR>
@@ -44,11 +44,11 @@ public class JmsAssistantProducerWrapper extends JmsProducerWrapper {
         TextMessage textMessage = session.createTextMessage();
         Topic jmsTopic = session.createTopic(topic);
 
-        textMessage.setStringProperty(MessageConstants.PROPERTY_BROKER_ID, kcc.getBrokerId());
-        textMessage.setStringProperty(MessageConstants.PROPERTY_CLIENT_ID, kcc.getClientId());
-        textMessage.setLongProperty(MessageConstants.PROPERTY_SCOPE_ID, kcc.getScopeIdAsLong());
-        textMessage.setStringProperty(MessageConstants.PROPERTY_ORIGINAL_TOPIC, JmsUtil.convertMqttWildCardToJms(topic));
-        textMessage.setLongProperty(MessageConstants.PROPERTY_ENQUEUED_TIMESTAMP, System.currentTimeMillis());
+        textMessage.setStringProperty(Properties.PROPERTY_BROKER_ID, kcc.getBrokerId());
+        textMessage.setStringProperty(Properties.PROPERTY_CLIENT_ID, kcc.getClientId());
+        textMessage.setLongProperty(Properties.PROPERTY_SCOPE_ID, kcc.getScopeIdAsLong());
+        textMessage.setStringProperty(Properties.PROPERTY_ORIGINAL_TOPIC, JmsUtil.convertMqttWildCardToJms(topic));
+        textMessage.setLongProperty(Properties.PROPERTY_ENQUEUED_TIMESTAMP, System.currentTimeMillis());
         textMessage.setText(message);
         textMessage.setJMSDestination(jmsTopic);
 

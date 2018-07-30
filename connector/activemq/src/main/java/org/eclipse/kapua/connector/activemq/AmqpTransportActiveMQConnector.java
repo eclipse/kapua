@@ -15,14 +15,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.qpid.proton.message.Message;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.apps.api.HealthCheckable;
 import org.eclipse.kapua.broker.client.amqp.AmqpConsumer;
 import org.eclipse.kapua.broker.client.amqp.ClientOptions;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.connector.AmqpAbstractConnector;
 import org.eclipse.kapua.connector.MessageContext;
+import org.eclipse.kapua.connector.Properties;
 import org.eclipse.kapua.converter.Converter;
-import org.eclipse.kapua.converter.KapuaConverterException;
 import org.eclipse.kapua.message.transport.TransportMessage;
 import org.eclipse.kapua.message.transport.TransportMessageType;
 import org.eclipse.kapua.message.transport.TransportQos;
@@ -30,9 +31,7 @@ import org.eclipse.kapua.processor.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
-import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.ext.healthchecks.Status;
 import io.vertx.proton.ProtonHelper;
@@ -51,10 +50,6 @@ public abstract class AmqpTransportActiveMQConnector extends AmqpAbstractConnect
 
     private AmqpConsumer consumer;
 
-    public AmqpTransportActiveMQConnector(Vertx vertx, ClientOptions clientOptions, Processor<TransportMessage> processor) {
-        this(vertx, clientOptions, null, processor, null);
-    }
-
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public AmqpTransportActiveMQConnector(Vertx vertx, ClientOptions clientOptions, Converter<byte[], TransportMessage> converter, Processor<TransportMessage> processor, Processor<?> errorProcessor) {
         super(vertx, converter, processor, errorProcessor);
@@ -66,17 +61,20 @@ public abstract class AmqpTransportActiveMQConnector extends AmqpAbstractConnect
                         }
                         else {
                             try {
-                                errorProcessor.process(new MessageContext(message), new Handler<AsyncResult<Void>>() {
-                                    @Override
-                                    public void handle(AsyncResult<Void> event) {
-                                        if (event.succeeded()) {
-                                            ProtonHelper.accepted(delivery, true);
+                                if (errorProcessor != null) {
+                                    errorProcessor.process(new MessageContext(message), ar -> {
+                                            if (ar.succeeded()) {
+                                                ProtonHelper.accepted(delivery, true);
+                                            }
+                                            else {
+                                                ProtonHelper.released(delivery, true);
+                                            }
                                         }
-                                        else {
-                                            ProtonHelper.released(delivery, true);
-                                        }
-                                    }
-                                });
+                                    );
+                                }
+                                else {
+                                    ProtonHelper.released(delivery, true);
+                                }
                             } catch (Exception e1) {
                                 ProtonHelper.released(delivery, true);
                             }
@@ -112,7 +110,7 @@ public abstract class AmqpTransportActiveMQConnector extends AmqpAbstractConnect
     }
 
     @Override
-    protected MessageContext<byte[]> convert(MessageContext<?> message) throws KapuaConverterException {
+    protected MessageContext<byte[]> convert(MessageContext<?> message) throws KapuaException {
         //this cast is safe since this implementation is using the AMQP connector
         Message msg = (Message)message.getMessage();
         return new MessageContext<byte[]>(
@@ -126,7 +124,7 @@ public abstract class AmqpTransportActiveMQConnector extends AmqpAbstractConnect
     }
 
     @Override
-    protected Map<String, Object> getMessageParameters(Message message) throws KapuaConverterException {
+    protected Map<String, Object> getMessageParameters(Message message) throws KapuaException {
         Map<String, Object> parameters = new HashMap<>();
         // extract original MQTT topic
         //TODO restore it once the ActiveMQ issue will be fixed
@@ -136,23 +134,26 @@ public abstract class AmqpTransportActiveMQConnector extends AmqpAbstractConnect
         // process prefix and extract message type
         // FIXME: pluggable message types and dialects
         if (mqttTopic!=null && mqttTopic.startsWith(CLASSIFIER_TOPIC_PREFIX)) {
-            parameters.put(Converter.MESSAGE_TYPE, TransportMessageType.CONTROL);
+            parameters.put(Properties.MESSAGE_TYPE, TransportMessageType.CONTROL);
             mqttTopic = mqttTopic.substring(CLASSIFIER_TOPIC_PREFIX.length());
         } else {
-            parameters.put(Converter.MESSAGE_TYPE, TransportMessageType.TELEMETRY);
+            parameters.put(Properties.MESSAGE_TYPE, TransportMessageType.TELEMETRY);
         }
-        parameters.put(Converter.MESSAGE_DESTINATION, mqttTopic);
+        parameters.put(Properties.MESSAGE_DESTINATION, mqttTopic);
 
         //extract connection id
         try {
             //Base 64 encoded String (by the broker plugin)
-            String connectionId = (String)message.getApplicationProperties().getValue().get(Converter.HEADER_KAPUA_CONNECTION_ID);
+            Object tmp = message.getApplicationProperties().getValue().get(Properties.HEADER_KAPUA_CONNECTION_ID);
+            if (tmp!=null && !(tmp instanceof String)) {
+                throw KapuaException.internalError(String.format("Invalid connection id instance type. Found %s instead of String", tmp.getClass()));
+            }
+            String connectionId = (String)tmp;
             if (connectionId!=null) {
-                parameters.put(Converter.CONNECTION_ID, connectionId);
+                parameters.put(Properties.CONNECTION_ID, connectionId);
             }
         }
-        //TODO remove ClassCast from the catched exceptions?
-        catch (ClassCastException | NullPointerException | IllegalArgumentException e) {
+        catch(NullPointerException | IllegalArgumentException e) {
             //cannot get connection id so it may be not available at publish time
             logger.debug("Cannot get Kapua connection Id: {}", e.getMessage(), e);
         }
@@ -163,13 +164,13 @@ public abstract class AmqpTransportActiveMQConnector extends AmqpAbstractConnect
             int activeMqQosInt = (int) activeMqQos;
             switch (activeMqQosInt) {
             case 0:
-                parameters.put(Converter.MESSAGE_QOS, TransportQos.AT_MOST_ONCE);
+                parameters.put(Properties.MESSAGE_QOS, TransportQos.AT_MOST_ONCE);
                 break;
             case 1:
-                parameters.put(Converter.MESSAGE_QOS, TransportQos.AT_LEAST_ONCE);
+                parameters.put(Properties.MESSAGE_QOS, TransportQos.AT_LEAST_ONCE);
                 break;
             case 2:
-                parameters.put(Converter.MESSAGE_QOS, TransportQos.EXACTLY_ONCE);
+                parameters.put(Properties.MESSAGE_QOS, TransportQos.EXACTLY_ONCE);
                 break;
             }
         }

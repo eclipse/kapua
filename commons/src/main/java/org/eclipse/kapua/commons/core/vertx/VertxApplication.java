@@ -112,7 +112,12 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
         metrOpts.setEnabled(Boolean.parseBoolean(config.getProperty("vertx.metrics-enabled")));
         String metricsRoot = config.getProperty(PROP_VERTX_METRICS_ROOT);
         metricRegistry = SharedMetricRegistries.getOrCreate(METRIC_REGISTRY_NAME);
-        SharedMetricRegistries.setDefault(METRIC_REGISTRY_NAME, metricRegistry);
+        try {
+            SharedMetricRegistries.setDefault(METRIC_REGISTRY_NAME, metricRegistry);
+        }
+        catch (IllegalStateException e) {
+            logger.warn("Default metric registry already set.");
+        }
         metrOpts.setRegistryName(METRIC_REGISTRY_NAME);
         metrOpts.setBaseName(metricsRoot + ".vertx");
 

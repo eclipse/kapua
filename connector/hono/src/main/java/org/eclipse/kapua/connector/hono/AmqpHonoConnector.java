@@ -18,9 +18,11 @@ import org.apache.qpid.proton.amqp.Symbol;
 import org.apache.qpid.proton.amqp.messaging.Data;
 import org.apache.qpid.proton.message.Message;
 import org.eclipse.hono.util.MessageHelper;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.client.hono.HonoClient;
 import org.eclipse.kapua.connector.AmqpAbstractConnector;
 import org.eclipse.kapua.connector.MessageContext;
+import org.eclipse.kapua.connector.Properties;
 import org.eclipse.kapua.converter.Converter;
 import org.eclipse.kapua.converter.KapuaConverterException;
 import org.eclipse.kapua.message.transport.TransportMessage;
@@ -134,7 +136,7 @@ public abstract class AmqpHonoConnector extends AmqpAbstractConnector<byte[], Tr
     }
 
     @Override
-    protected MessageContext<byte[]> convert(MessageContext<?> message) throws KapuaConverterException {
+    protected MessageContext<byte[]> convert(MessageContext<?> message) throws KapuaException {
         //this cast is safe since this implementation is using the AMQP connector
         Message msg = (Message)message.getMessage();
         return new MessageContext<byte[]>(
@@ -155,19 +157,19 @@ public abstract class AmqpHonoConnector extends AmqpAbstractConnector<byte[], Tr
         String mqttTopic = (String)message.getApplicationProperties().getValue().get("orig_address");
         mqttTopic = mqttTopic.replace(".", "/");
         if (mqttTopic.startsWith(TELEMETRY_PREFIX)) {
-            parameters.put(Converter.MESSAGE_TYPE, TransportMessageType.TELEMETRY);
+            parameters.put(Properties.MESSAGE_TYPE, TransportMessageType.TELEMETRY);
             mqttTopic = mqttTopic.substring(TELEMETRY_PREFIX.length());
         }
         else if (mqttTopic.startsWith(CONTROL_PREFIX)) {
-            parameters.put(Converter.MESSAGE_TYPE, TransportMessageType.CONTROL);
+            parameters.put(Properties.MESSAGE_TYPE, TransportMessageType.CONTROL);
             mqttTopic = mqttTopic.substring(CONTROL_PREFIX.length());
         }
         //TODO handle alerts, ... messages types
-        parameters.put(Converter.MESSAGE_DESTINATION, mqttTopic);
+        parameters.put(Properties.MESSAGE_DESTINATION, mqttTopic);
 
         // extract the original QoS
         //TODO
-        parameters.put(Converter.MESSAGE_QOS, TransportQos.AT_MOST_ONCE);
+        parameters.put(Properties.MESSAGE_QOS, TransportQos.AT_MOST_ONCE);
         return parameters;
     }
 

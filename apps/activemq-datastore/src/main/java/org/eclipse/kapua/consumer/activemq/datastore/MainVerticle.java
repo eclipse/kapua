@@ -12,7 +12,6 @@
 package org.eclipse.kapua.consumer.activemq.datastore;
 
 import java.util.Optional;
-
 import javax.inject.Inject;
 
 import org.eclipse.kapua.broker.client.amqp.ClientOptions;
@@ -24,10 +23,10 @@ import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.connector.MessageContext;
+import org.eclipse.kapua.connector.Properties;
 import org.eclipse.kapua.connector.activemq.AmqpTransportActiveMQConnector;
 import org.eclipse.kapua.consumer.activemq.datastore.settings.ActiveMQDatastoreSettings;
 import org.eclipse.kapua.consumer.activemq.datastore.settings.ActiveMQDatastoreSettingsKey;
-import org.eclipse.kapua.converter.Converter;
 import org.eclipse.kapua.converter.kura.KuraPayloadProtoConverter;
 import org.eclipse.kapua.message.transport.TransportMessageType;
 import org.eclipse.kapua.processor.datastore.DatastoreProcessor;
@@ -62,7 +61,7 @@ public class MainVerticle extends AbstractMainVerticle {
 
     public MainVerticle() {
         SystemSetting configSys = SystemSetting.getInstance();
-        logger.info("Checking database... '{}'", configSys.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE));
+        logger.info("Checking database... '{}'", configSys.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false));
         if(configSys.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false)) {
             logger.debug("Starting Liquibase embedded client.");
             String dbUsername = configSys.getString(SystemSettingKey.DB_USERNAME);
@@ -103,23 +102,23 @@ public class MainVerticle extends AbstractMainVerticle {
     @Override
     protected void internalStart(Future<Void> future) throws Exception {
         XmlUtil.setContextProvider(new JAXBContextProvider());
-        logger.info("Instantiating Datastore Consumer...");
-        logger.info("Instantiating Datastore Consumer... initializing KuraPayloadProtoConverter");
+        logger.info("Starting Datastore Consumer...");
+        logger.info("Starting Datastore Consumer... Starting KuraPayloadProtoConverter");
         converter = new KuraPayloadProtoConverter();
-        logger.info("Instantiating Datastore Consumer... initializing DataStoreProcessor");
+        logger.info("Starting Datastore Consumer... Starting DataStoreProcessor");
         processor = new DatastoreProcessor(vertx);
-        logger.info("Instantiating Datastore Consumer... initializing ErrorProcessor");
+        logger.info("Starting Datastore Consumer... Starting ErrorProcessor");
         errorProcessor = new ErrorProcessor(vertx, errorOptions);
-        logger.info("Instantiating Datastore Consumer... instantiating AmqpActiveMQConnector");
+        logger.info("Starting Datastore Consumer... Starting AmqpActiveMQConnector");
         connector = new AmqpTransportActiveMQConnector(vertx, connectorOptions, converter, processor, errorProcessor) {
 
             @Override
             protected boolean isProcessDestination(MessageContext<byte[]> message) {
-                return TransportMessageType.TELEMETRY.equals(message.getProperties().get(Converter.MESSAGE_TYPE));
+                return TransportMessageType.TELEMETRY.equals(message.getProperties().get(Properties.MESSAGE_TYPE));
             }
 
         };
-        logger.info("Instantiating Datastore Consumer... DONE");
+        logger.info("Starting Datastore Consumer... DONE");
         vertx.deployVerticle(connector, ar -> {
             if (ar.succeeded()) {
                 future.complete();
@@ -162,7 +161,12 @@ public class MainVerticle extends AbstractMainVerticle {
 
     @Override
     protected void internalStop(Future<Void> future) throws Exception {
-        connector.stop(future);
+        //do nothing
+        logger.info("Stopping Datastore Consumer...");
+        future.complete();
+        logger.info("Stopping Datastore Consumer... DONE");
+        //this stop call is no more needed since the connector is a verticle then is already stopped during the vertx.stop call
+        //connector.stop(future);
     }
 
 }

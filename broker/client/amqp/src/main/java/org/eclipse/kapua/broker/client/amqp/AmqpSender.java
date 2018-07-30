@@ -16,7 +16,6 @@ import org.eclipse.kapua.broker.client.amqp.ClientOptions.AmqpClientOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.proton.ProtonConnection;
@@ -35,11 +34,12 @@ public class AmqpSender extends AbstractAmqpClient {
         destination = clientOptions.getString(AmqpClientOptions.DESTINATION);
     }
 
-    protected void registerAction(ProtonConnection connection, Future<Object> future) {
+    protected void registerAction(ProtonConnection connection) {
         try {
             logger.info("Register sender for destination {}... (client: {})", destination, client);
             if (connection.isDisconnected()) {
-                future.fail("Cannot register sender since the connection is not opened!");
+                logger.warn("Cannot register sender since the connection is not opened!");
+                notifyConnectionLost();
             }
             else {
                 ProtonLinkOptions senderOptions = new ProtonLinkOptions();
@@ -49,12 +49,10 @@ public class AmqpSender extends AbstractAmqpClient {
                    if (ar.succeeded()) {
                        logger.info("Register sender for destination {}... DONE (client: {})", destination, client);
                        setConnected(true);
-                       future.complete();
                    }
                    else {
                        logger.info("Register sender for destination {}... ERROR... (client: {})", destination, ar.cause(), client);
                        notifyConnectionLost();
-                       future.fail(ar.cause());
                    }
                 });
                 sender.closeHandler(snd -> {
@@ -67,7 +65,6 @@ public class AmqpSender extends AbstractAmqpClient {
         }
         catch(Exception e) {
             notifyConnectionLost();
-            future.fail(e);
         }
     }
 

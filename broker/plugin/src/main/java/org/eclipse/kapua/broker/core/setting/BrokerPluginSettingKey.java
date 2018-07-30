@@ -73,7 +73,11 @@ public enum BrokerPluginSettingKey implements SettingKey {
     /**
      * Broker name (used also for the vm connector name)
      */
-    BROKER_NAME("broker.name");
+    BROKER_NAME("broker.name"),
+    /**
+     * Broker amqp connector name
+     */
+    BROKER_CONNECTOR_AMQP_NAME("broker.connector.amqp.name");
 
     private String key;
 

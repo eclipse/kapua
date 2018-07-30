@@ -16,7 +16,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.spi.UriEndpoint;
 import org.apache.commons.lang3.SerializationUtils;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.broker.core.message.MessageConstants;
+import org.eclipse.kapua.connector.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,9 +82,9 @@ public class ErrorMessageListener extends AbstractListener {
     private void logError(Exchange exchange, Object message, String serviceName) {
         Throwable t = null;
         // looking at the property filled by the KapuaCamelFilter#bridgeError)
-        String encodedException = exchange.getIn().getHeader(MessageConstants.HEADER_KAPUA_PROCESSING_EXCEPTION, String.class);
+        String encodedException = exchange.getIn().getHeader(Properties.HEADER_KAPUA_PROCESSING_EXCEPTION, String.class);
         if (encodedException != null) {
-            t = SerializationUtils.deserialize(Base64.getDecoder().decode(exchange.getIn().getHeader(MessageConstants.HEADER_KAPUA_PROCESSING_EXCEPTION, String.class)));
+            t = SerializationUtils.deserialize(Base64.getDecoder().decode(exchange.getIn().getHeader(Properties.HEADER_KAPUA_PROCESSING_EXCEPTION, String.class)));
         } else {
             // otherwise fallback to the exchange property or the exchange exception
             t = ((Throwable) exchange.getProperty(CamelConstants.JMS_EXCHANGE_FAILURE_EXCEPTION));

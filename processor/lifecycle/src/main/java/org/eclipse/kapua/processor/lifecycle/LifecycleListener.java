@@ -22,6 +22,7 @@ import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.connector.MessageContext;
+import org.eclipse.kapua.connector.Properties;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.transport.TransportMessage;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -38,8 +39,6 @@ import org.slf4j.LoggerFactory;
  */
 public class LifecycleListener {
 
-    //TODO it's the same field in org.eclipse.kapua.converter.Converter. move them to a shared place
-    public static final String CONNECTION_ID = new String("connection-id");
     private static final Logger logger = LoggerFactory.getLogger(LifecycleListener.class);
 
     private static DeviceLifeCycleService deviceLifeCycleService = KapuaLocator.getInstance().getService(DeviceLifeCycleService.class);
@@ -156,6 +155,6 @@ public class LifecycleListener {
     }
 
     private KapuaId getConnectionId(MessageContext<TransportMessage> message) {
-        return (KapuaId)SerializationUtils.deserialize(Base64.getDecoder().decode((String)message.getProperties().get(CONNECTION_ID)));
+        return (KapuaId)SerializationUtils.deserialize(Base64.getDecoder().decode((String)message.getProperties().get(Properties.CONNECTION_ID)));
     }
 }

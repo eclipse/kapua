@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.connector;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.converter.Converter;
 import org.eclipse.kapua.converter.KapuaConverterException;
 import org.eclipse.kapua.processor.Processor;
@@ -56,6 +57,18 @@ public abstract class AbstractConnector<M, P> extends AbstractVerticle {
     }
 
     /**
+     * Default protected constructor
+     * @param Vertx instance
+     * @param converter message instance
+     * @param processor processor instance
+     */
+    protected AbstractConnector(Vertx vertx, Converter<M, P> converter, Processor<P> processor) {
+        this.converter = converter;
+        this.processor = processor;
+        this.vertx = vertx;
+    }
+
+    /**
      * Constructor with no message converter
      * @param Vertx instance
      * @param processor processor instance
@@ -84,7 +97,7 @@ public abstract class AbstractConnector<M, P> extends AbstractVerticle {
      * @return
      * @throws KapuaConverterException
      */
-    protected abstract MessageContext<M> convert(MessageContext<?> message) throws KapuaConverterException;
+    protected abstract MessageContext<M> convert(MessageContext<?> message) throws KapuaException;
 
     /**
      * Tells if the destination should or should not be processed by the chain
@@ -135,8 +148,7 @@ public abstract class AbstractConnector<M, P> extends AbstractVerticle {
     }
 
     @SuppressWarnings("unchecked")
-    //TODO choose the exception type!!!
-    protected void handleMessage(MessageContext<?> message, Handler<AsyncResult<Void>> result) throws Exception {
+    protected void handleMessage(MessageContext<?> message, Handler<AsyncResult<Void>> result) throws KapuaException {
         MessageContext<M> msg = convert(message);
         if (!isProcessDestination(msg)) {
             result.handle(Future.succeededFuture());

@@ -1,7 +1,7 @@
 {
     "vertx": {
-	    "startup-timeout": 20000,
-	    "shutdown-timeout": 20000,
+        "startup-timeout": 20000,
+        "shutdown-timeout": 20000,
         "metrics-enabled": true,
         "metrics-root": "kapuaBase",
         "warning-exception-time": 86400000,
