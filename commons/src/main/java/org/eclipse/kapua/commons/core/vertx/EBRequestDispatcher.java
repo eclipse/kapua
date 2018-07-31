@@ -14,13 +14,14 @@ package org.eclipse.kapua.commons.core.vertx;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Future;
+import io.vertx.core.Handler;
 import io.vertx.core.eventbus.EventBus;
-import io.vertx.core.eventbus.Message;
-import io.vertx.core.json.JsonObject;
 
 /**
- * Creates an event bus consumer for a defined address and dispatches incoming 
- * {@link EBRequest} to registered handlers.
+ * Creates an event bus request consumer for a defined address and dispatches 
+ * incoming {@link EBRequest} to registered handlers.
  * <p>
  * Each {@link EBRequestHandler} is identified by an action that has to be unique
  * across all the registered handlers. Responses are sent back to the sender
@@ -31,9 +32,13 @@ import io.vertx.core.json.JsonObject;
 public class EBRequestDispatcher {
 
     private Map<String, EBRequestHandler> handlers = new HashMap<>();
+    private EventBusRequestConsumer consumer;
 
     private EBRequestDispatcher(EventBus eventBus, String address) {
-        eventBus.consumer(address, this::handle);
+        EBClientConfig config = new EBClientConfig();
+        config.setAddress(address);
+        this.consumer = EventBusRequestConsumer.create(eventBus, config);
+        this.consumer.setRequestHandler(this::handle);
     }
 
     public static EBRequestDispatcher dispatcher(EventBus eventBus, String address) {
@@ -46,24 +51,21 @@ public class EBRequestDispatcher {
         } // TODO Handle the case when the handler is discarded
     }
 
-    private <T> void handle(Message<T> message) {
+    private <T> void handle(EBRequest request, Handler<AsyncResult<EBResponse>> responseEvent) {
 
         if (handlers == null || handlers.size() == 0) {
-            message.reply(EBResponse.create(EBResponse.NOT_FOUND, new JsonObject().put("message", "Not found")));
+            responseEvent.handle(Future.failedFuture(new EBResponseException(EBResponse.NOT_FOUND)));
             return;
         }
-        JsonObject request = (JsonObject)message.body();
-        // TODO Validate request object
-        handlers.get(request.getString(EBRequest.ACTION)).handle(request, ar -> {
+        handlers.get(request.getAction()).handle(request, ar -> {
             if (ar.succeeded()) {
-                EBResponse response = EBResponse.create(EBResponse.OK, ar.result());
-                message.reply(response);
+                responseEvent.handle(Future.succeededFuture(ar.result()));
             } else {
                 if (ar.cause() instanceof EBResponseException) {
-                    message.reply(EBResponse.create(EBResponse.NOT_FOUND, new JsonObject().put("message", ar.cause().getMessage())));
+                    responseEvent.handle(Future.failedFuture(ar.cause()));
                     return;
                 }
-                message.reply(EBResponse.create(EBResponse.INTERNAL_ERROR, new JsonObject().put("message", ar.cause().getMessage())));
+                responseEvent.handle(Future.failedFuture(new EBResponseException(EBResponse.INTERNAL_ERROR, ar.cause().getMessage(), ar.cause())));
             }
         });
 

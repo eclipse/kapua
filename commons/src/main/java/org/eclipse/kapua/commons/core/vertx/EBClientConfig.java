@@ -12,7 +12,8 @@
 package org.eclipse.kapua.commons.core.vertx;
 
 /**
- * Holds the configuration parameters of an {@link AbstractEBClient}
+ * Holds the configuration parameters of an {@link EventBusRequestProducer} or
+ * {@link EventBusRequestConsumer}
  *
  */
 public class EBClientConfig {
