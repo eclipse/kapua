@@ -16,7 +16,7 @@ import java.util.Objects;
 import org.eclipse.kapua.commons.core.ObjectContext;
 import org.eclipse.kapua.commons.core.ObjectContextConfig;
 import org.eclipse.kapua.commons.core.Configuration;
-import org.eclipse.kapua.commons.core.spi.BeanContextConfigFactory;
+import org.eclipse.kapua.commons.core.spi.ObjectContextConfigFactory;
 
 import com.codahale.metrics.MetricRegistry;
 
@@ -46,7 +46,7 @@ public class EnvironmentImpl implements EnvironmentSetup, Environment {
     }
 
     @Override
-    public void configure(BeanContextConfigFactory factory) {        
+    public void configure(ObjectContextConfigFactory factory) {        
         Objects.requireNonNull(factory, "Invalid factory (null)");
         this.configure(factory.create());
     }
