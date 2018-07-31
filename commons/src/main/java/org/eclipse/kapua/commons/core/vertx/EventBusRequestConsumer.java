@@ -47,23 +47,38 @@ public class EventBusRequestConsumer {
     }
 
     private <T> void handle(Message<T> message) {
-        if (!(message.body() instanceof JsonObject)) {
-            message.reply(EBResponse.create(EBResponse.INTERNAL_ERROR, new JsonObject().put("message", "Bad request")));
-        } else {
-            JsonObject body = (JsonObject)message.body();
-            EBRequest request = EBRequest.create(body.getString(EBRequest.ACTION), body.getJsonObject(EBRequest.BODY));
-            // TODO Validate request object
+        Object send = message.body();
+        EBRequest request = chekAndGetRequest(send);
+        if (request != null) {
             requestHandler.handle(request, ar -> {
                 if (ar.succeeded()) {
                     message.reply(ar.result());
                 } else {
                     if (ar.cause() instanceof EBResponseException) {
-                        message.reply(EBResponse.create(EBResponse.NOT_FOUND, new JsonObject().put("message", ar.cause().getMessage())));
+                        message.reply(EBResponse.create(EBResponse.NOT_FOUND));
                         return;
                     }
-                    message.reply(EBResponse.create(EBResponse.INTERNAL_ERROR, new JsonObject().put("message", ar.cause().getMessage())));
+                    message.reply(EBResponse.create(EBResponse.INTERNAL_ERROR));
                 }
             });
+        } else {
+            message.reply(EBResponse.create(EBResponse.BAD_REQUEST));
         }
+    }
+
+    private EBRequest chekAndGetRequest(Object candidate) {
+        if (candidate == null || !(candidate instanceof JsonObject) ) {
+            return null;
+        }
+        JsonObject request = (JsonObject) candidate;
+        if (!request.containsKey(EBRequest.ACTION)) {
+            return null;
+        }
+        String action = request.getString(EBRequest.ACTION);
+        JsonObject body = null;
+        if (request.containsKey(EBRequest.BODY)) {
+            body = request.getJsonObject(EBRequest.BODY);
+        }
+        return EBRequest.create(action, body);
     }
 }

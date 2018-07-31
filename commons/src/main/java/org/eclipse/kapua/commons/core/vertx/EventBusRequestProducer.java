@@ -42,17 +42,31 @@ public class EventBusRequestProducer {
         producer.send(request, replyEvent -> {
             if (replyEvent.succeeded()) {
                 Object reply = replyEvent.result().body();
-                if (!(reply instanceof JsonObject)) {
-                    result.handle(Future.failedFuture(new EBResponseException(EBResponse.INTERNAL_ERROR, "Internal server error")));
+                EBResponse response = checkAndGetResponse(reply);
+                if (response != null) {
+                    result.handle(Future.succeededFuture(response));
                 } else {
-                  JsonObject response = (JsonObject)reply;
-                  int resultCode = response.getInteger(EBResponse.STATUS_CODE);
-                  JsonObject body = response.getJsonObject(EBResponse.BODY);
-                  result.handle(Future.succeededFuture(EBResponse.create(resultCode, body)));
+                    result.handle(Future.failedFuture(new EBResponseException(EBResponse.INTERNAL_ERROR)));
                 }
             } else {
                 result.handle(Future.failedFuture(replyEvent.cause()));
             }
         });
+    }
+
+    private EBResponse checkAndGetResponse(Object candidate) {
+        if (candidate == null || !(candidate instanceof JsonObject)) {
+            return null;
+        }
+        JsonObject response = (JsonObject) candidate;
+        if (!response.containsKey(EBResponse.STATUS_CODE)) {
+            return null;
+        }
+        int resultCode = response.getInteger(EBResponse.STATUS_CODE);
+        JsonObject body = null;
+        if (response.containsKey(EBResponse.BODY)) {
+            body = response.getJsonObject(EBResponse.BODY);
+        }
+        return EBResponse.create(resultCode, body);
     }
 }
