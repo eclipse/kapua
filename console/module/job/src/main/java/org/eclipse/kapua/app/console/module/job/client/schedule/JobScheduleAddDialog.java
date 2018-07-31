@@ -87,6 +87,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         triggerName.setAllowBlank(false);
         triggerName.setMaxLength(255);
         triggerName.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleScheduleNameLabel());
+        triggerName.setToolTip(JOB_MSGS.dialogAddScheduleNameTooltip());
         mainPanel.add(triggerName);
 
         startsOn.setFormatValue(true);
@@ -94,6 +95,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         startsOn.setWidth(90);
         startsOn.setEmptyText(JOB_MSGS.dialogAddScheduleDatePlaceholder());
         startsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
+        startsOn.setToolTip(JOB_MSGS.dialogAddScheduleStartsOnTooltip());
         multiFieldStartsOn.add(startsOn);
 
         startsOnTime.setAllowBlank(false);
@@ -101,6 +103,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         startsOnTime.setEditable(false);
         startsOnTime.setWidth(85);
         startsOnTime.setEmptyText(JOB_MSGS.dialogAddScheduleTimePlaceholder());
+        startsOnTime.setToolTip(JOB_MSGS.dialogAddScheduleStartsOnTimeTooltip());
         multiFieldStartsOn.add(startsOnTime);
         mainPanel.add(multiFieldStartsOn);
 
@@ -108,12 +111,14 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         endsOn.setWidth(90);
         endsOn.setEmptyText(JOB_MSGS.dialogAddScheduleDatePlaceholder());
         endsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
+        endsOn.setToolTip(JOB_MSGS.dialogAddScheduleEndsOnTooltip());
         multiFieldEndsOn.add(endsOn);
 
         endsOnTime.setFormat(DateTimeFormat.getFormat("HH:mm"));
         endsOnTime.setEditable(false);
         endsOnTime.setWidth(85);
         endsOnTime.setEmptyText(JOB_MSGS.dialogAddScheduleTimePlaceholder());
+        endsOnTime.setToolTip(JOB_MSGS.dialogAddScheduleEndsOnTimeTooltip());
         multiFieldEndsOn.add(endsOnTime);
         mainPanel.add(multiFieldEndsOn);
 
@@ -121,10 +126,12 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         retryInterval.setAllowDecimals(false);
         retryInterval.setAllowNegative(false);
         retryInterval.setMaxLength(9);
+        retryInterval.setToolTip(JOB_MSGS.dialogAddScheduleRetryIntervalTooltip());
         mainPanel.add(retryInterval);
 
         cronExpression.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleCronScheduleLabel());
         cronExpression.setMaxLength(255);
+        cronExpression.setToolTip(JOB_MSGS.dialogAddScheduleCronScheduleTooltip());
         mainPanel.add(cronExpression);
 
         bodyPanel.add(mainPanel);
