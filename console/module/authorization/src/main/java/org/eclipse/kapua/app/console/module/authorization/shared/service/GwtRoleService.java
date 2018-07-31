@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,6 +12,7 @@
 package org.eclipse.kapua.app.console.module.authorization.shared.service;
 
 import com.google.gwt.user.client.rpc.RemoteService;
+import java.util.List;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
@@ -47,7 +48,7 @@ public interface GwtRoleService extends RemoteService {
      * @throws GwtKapuaException
      * 
      */
-    public ListLoadResult<GwtRole> findAll(String scopeIdStirng)
+    public List<GwtRole> findAll(String scopeIdStirng)
             throws GwtKapuaException;
 
     public PagingLoadResult<GwtRole> query(PagingLoadConfig loadConfig, GwtRoleQuery gwtRoleQuery)

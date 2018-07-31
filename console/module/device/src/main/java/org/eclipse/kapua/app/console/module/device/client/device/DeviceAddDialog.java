@@ -184,6 +184,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
             groupCombo.setDisplayField("groupName");
             groupCombo.setTemplate("<tpl for=\".\"><div role=\"listitem\" class=\"x-combo-list-item\" title={groupName}>{groupName}</div></tpl>");
             groupCombo.setValueField("id");
+            groupCombo.setEmptyText(DEVICE_MSGS.deviceFilteringPanelGroupEmptyText());
 
             gwtGroupService.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<List<GwtGroup>>() {
 

@@ -375,7 +375,7 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     }
 
     @Override
-    public ListLoadResult<GwtRole> findAll(String scopeIdString) throws GwtKapuaException {
+    public List<GwtRole> findAll(String scopeIdString) throws GwtKapuaException {
         KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
         List<GwtRole> gwtRoleList = new ArrayList<GwtRole>();
         try {
@@ -389,6 +389,6 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             KapuaExceptionHandler.handle(t);
         }
 
-        return new BaseListLoadResult<GwtRole>(gwtRoleList);
+        return gwtRoleList;
     }
 }
