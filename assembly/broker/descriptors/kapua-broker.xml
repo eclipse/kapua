@@ -222,6 +222,7 @@
                 <include>${pom.groupId}:kapua-datastore-api</include>
                 <include>${pom.groupId}:kapua-device-registry-api</include>
                 <include>${pom.groupId}:kapua-device-registry-internal</include>
+                <include>${pom.groupId}:kapua-device-management-api</include>
                 <include>${pom.groupId}:kapua-sso-jwt</include>
                 <include>${pom.groupId}:kapua-user-api</include>
                 <include>${pom.groupId}:kapua-user-internal</include>
