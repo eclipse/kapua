@@ -30,7 +30,8 @@ import org.junit.runner.RunWith;
 @CucumberProperty(key="datastore.client.class", value="org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient")
 @CucumberProperty(key="broker.ip", value="192.168.33.10")
 @CucumberProperty(key="kapua.config.url", value="")
-@CucumberProperty(key="org.eclipse.kapua.qa.datastore.extraStartupDelay", value="2")
-@CucumberProperty(key="org.eclipse.kapua.qa.broker.extraStartupDelay", value="2")
+@CucumberProperty(key="org.eclipse.kapua.qa.datastore.extraStartupDelay", value="5")
+@CucumberProperty(key="org.eclipse.kapua.qa.broker.extraStartupDelay", value="5")
+@CucumberProperty(key="datastore.index.prefix", value="")
 public class RunDatastoreNewIndexTest {
 }

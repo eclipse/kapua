@@ -36,7 +36,7 @@ Feature: Datastore tests
     And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
     And I refresh all database indices
     When REST call at "/_cat/indices/"
-    Then REST response containing text "green open 1-2018-01"
+    Then REST response containing text "1-2018-01"
     And All indices are deleted
 
   Scenario: Simple positive scenario for creating daily index
@@ -54,7 +54,7 @@ Feature: Datastore tests
     And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
     And I refresh all database indices
     When REST call at "/_cat/indices/"
-    And REST response containing text "green open 1-2018-01-02"
+    And REST response containing text "1-2018-01-02"
     And All indices are deleted
 
   Scenario: Simple positive scenario for creating hourly index
@@ -72,7 +72,7 @@ Feature: Datastore tests
     And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
     And I refresh all database indices
     When REST call at "/_cat/indices/"
-    And REST response containing text "green open 1-2018-01-02-10"
+    And REST response containing text "1-2018-01-02-10"
     And All indices are deleted
 
   Scenario: Creating two indexes with weekly index
@@ -91,8 +91,8 @@ Feature: Datastore tests
     And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
     And I refresh all database indices
     When REST call at "/_cat/indices/"
-    And REST response containing text "green open 1-2018-01"
-    And REST response containing text "green open 1-2018-02"
+    And REST response containing text "1-2018-01"
+    And REST response containing text "1-2018-02"
     And All indices are deleted
 
   Scenario: Creating two indexes with daily index
@@ -111,8 +111,8 @@ Feature: Datastore tests
     And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
     And I refresh all database indices
     When REST call at "/_cat/indices/"
-    And REST response containing text "green open 1-2018-01-02"
-    And REST response containing text "green open 1-2018-01-03"
+    And REST response containing text "1-2018-01-02"
+    And REST response containing text "1-2018-01-03"
     And All indices are deleted
 
   Scenario: Creating two indexes with hourly index
@@ -131,8 +131,8 @@ Feature: Datastore tests
     And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
     And I refresh all database indices
     When REST call at "/_cat/indices/"
-    And REST response containing text "green open 1-2018-01-02-10"
-    And REST response containing text "green open 1-2018-01-02-15"
+    And REST response containing text "1-2018-01-02-10"
+    And REST response containing text "1-2018-01-02-15"
     And All indices are deleted
 
   Scenario: Creating index with regular user
