@@ -11,21 +11,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.client.tabs.role;
 
-import com.extjs.gxt.ui.client.data.BaseListLoader;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.List;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsolePermissionMessages;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessInfo;
@@ -128,17 +127,6 @@ public class AccessRoleAddDialog extends EntityAddEditDialog {
     public void createBody() {
         FormPanel roleFormPanel = new FormPanel(FORM_LABEL_WIDTH);
 
-        RpcProxy<ListLoadResult<GwtRole>> roleUserProxy = new RpcProxy<ListLoadResult<GwtRole>>() {
-
-            @Override
-            protected void load(Object loadConfig, AsyncCallback<ListLoadResult<GwtRole>> callback) {
-                GWT_ROLE_SERVICE.findAll(currentSession.getSelectedAccountId(),
-                        callback);
-            }
-        };
-
-        BaseListLoader<ListLoadResult<GwtRole>> roleLoader = new BaseListLoader<ListLoadResult<GwtRole>>(roleUserProxy);
-        ListStore<GwtRole> roleStore = new ListStore<GwtRole>(roleLoader);
         //
         // Role
         rolesCombo = new ComboBox<GwtRole>();
@@ -147,11 +135,26 @@ public class AccessRoleAddDialog extends EntityAddEditDialog {
         rolesCombo.setAllowBlank(false);
         rolesCombo.setFieldLabel("* " + MSGS.dialogAddRoleComboName());
         rolesCombo.setTriggerAction(TriggerAction.ALL);
-        rolesCombo.setStore(roleStore);
+        rolesCombo.setStore(new ListStore<GwtRole>());
         rolesCombo.setDisplayField("name");
         rolesCombo.setTemplate("<tpl for=\".\"><div role=\"listitem\" class=\"x-combo-list-item\" title={name}>{name}</div></tpl>");
         rolesCombo.setValueField("id");
 
+        GWT_ROLE_SERVICE.findAll(currentSession.getAccountId(), new AsyncCallback<List<GwtRole>>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                exitStatus = false;
+                FailureHandler.handle(caught);
+                hide();
+            }
+
+            @Override
+            public void onSuccess(List<GwtRole> result) {
+                rolesCombo.getStore().add(result);
+                rolesCombo.setEmptyText(result.isEmpty() ? MSGS.dialogAddRoleComboEmptyTextNoRoles() : MSGS.dialogAddRoleComboEmptyText());
+            }
+        });
         roleFormPanel.add(rolesCombo);
 
         //
