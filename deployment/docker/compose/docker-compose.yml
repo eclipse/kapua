@@ -49,3 +49,18 @@ services:
       - db
       - es
       - events-broker
+  kapua-activemq-datastore:
+    image: kapua/kapua-activemq-datastore:${IMAGE_VERSION}
+    depends_on:
+      - broker
+      - es
+  kapua-activemq-error:
+    image: kapua/kapua-activemq-error:${IMAGE_VERSION}
+    depends_on:
+    - broker
+    - es
+  kapua-activemq-lifecycle:
+    image: kapua/kapua-activemq-lifecycle:${IMAGE_VERSION}
+    depends_on:
+    - broker
+    - es
