@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,18 +11,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.shiro;
 
+import org.eclipse.kapua.test.cucumber.CucumberProperty;
+import org.eclipse.kapua.test.cucumber.CucumberWithProperties;
 import org.junit.runner.RunWith;
 
 import cucumber.api.CucumberOptions;
-import cucumber.api.junit.Cucumber;
 
-@RunWith(Cucumber.class)
+@RunWith(CucumberWithProperties.class)
 @CucumberOptions(features = "classpath:features",
         glue = "org.eclipse.kapua.service.authorization.shiro",
         plugin = { "pretty",
                 "html:target/cucumber",
                 "json:target/cucumber.json" },
         monochrome = true)
-
+@CucumberProperty(key="commons.db.schema", value="kapuadb")
+@CucumberProperty(key="commons.db.schema.update", value="true")
 public class RunTest {
 }
