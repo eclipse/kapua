@@ -111,6 +111,7 @@ public class DeviceTagAddDialog extends EntityAddEditDialog {
         tagsCombo.disable();
         // tagsCombo.setEmptyText(MSGS.dialogDeviceTagAddFieldTagEmptyText());
         tagsCombo.setFieldLabel("* " + MSGS.dialogDeviceTagAddFieldTag());
+        tagsCombo.setToolTip(MSGS.deviceFormTagTooltip());
         tagsCombo.setTriggerAction(TriggerAction.ALL);
         tagsCombo.setDisplayField("tagName");
         tagsCombo.setTemplate("<tpl for=\".\"><div role=\"listitem\" class=\"x-combo-list-item\" title={tagName}>{tagName}</div></tpl>");
