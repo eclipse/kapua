@@ -215,7 +215,7 @@ public class GwtKapuaDeviceModelConverter {
         if(predicates.getTagId() != null) {
             andPred = andPred.and(new AttributePredicateImpl<KapuaId[]>(DevicePredicates.TAG_IDS, new KapuaId[] { GwtKapuaCommonsModelConverter.convertKapuaId(predicates.getTagId()) }));
         }
-        if (predicates.getSortAttribute() != null) {
+        if (predicates.getSortAttribute() != null && loadConfig != null) {
             String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? DevicePredicates.CLIENT_ID : loadConfig.getSortField();
             SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
             if (sortField.equals("lastEventOnFormatted")) {
