@@ -11,17 +11,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.activemq.lifecycle;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
-import java.util.Optional;
+//import java.util.Optional;
 import javax.inject.Inject;
 
 import org.eclipse.kapua.broker.client.amqp.ClientOptions;
 import org.eclipse.kapua.broker.client.amqp.ClientOptions.AmqpClientOptions;
 import org.eclipse.kapua.commons.core.vertx.AbstractMainVerticle;
-import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+//import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
+//import org.eclipse.kapua.commons.setting.system.SystemSetting;
+//import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.core.vertx.HttpRestServer;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.connector.MessageContext;
@@ -30,13 +32,15 @@ import org.eclipse.kapua.connector.activemq.AmqpTransportActiveMQConnector;
 import org.eclipse.kapua.consumer.activemq.lifecycle.settings.ActiveMQLifecycleSettings;
 import org.eclipse.kapua.consumer.activemq.lifecycle.settings.ActiveMQLifecycleSettingsKey;
 import org.eclipse.kapua.converter.kura.KuraPayloadProtoConverter;
+import org.eclipse.kapua.message.transport.TransportMessage;
+import org.eclipse.kapua.processor.Processor;
 import org.eclipse.kapua.processor.error.amqp.activemq.ErrorProcessor;
 import org.eclipse.kapua.processor.lifecycle.LifecycleProcessor;
-import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
+//import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.MoreObjects;
+//import com.google.common.base.MoreObjects;
 
 import io.vertx.core.Future;
 import io.vertx.ext.healthchecks.Status;
@@ -50,26 +54,31 @@ public class MainVerticle extends AbstractMainVerticle {
     private final static String HEALTH_NAME_LIFECYCLE = "Lifecycle-processor";
     private final static String HEALTH_NAME_ERROR = "Error-processor";
 
+    private final static String PROCESSOR_NAME_LIFECYCLE = "Lifecycle";
+
+    protected Map<String, Processor<TransportMessage>> processorMap;
+    protected Map<String, Processor> errorProcessorMap;
+
     private ClientOptions connectorOptions;
     private AmqpTransportActiveMQConnector connector;
     private KuraPayloadProtoConverter converter;
     private LifecycleProcessor processor;
     private ClientOptions errorOptions;
-    private ErrorProcessor errorProcessor;
+    protected ErrorProcessor errorProcessor;
 
     @Inject
     private HttpRestServer httpRestServer;
 
     public MainVerticle() {
-        SystemSetting configSys = SystemSetting.getInstance();
-        logger.info("Checking database... '{}'", configSys.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false));
-        if (configSys.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false)) {
-            logger.debug("Starting Liquibase embedded client.");
-            String dbUsername = configSys.getString(SystemSettingKey.DB_USERNAME);
-            String dbPassword = configSys.getString(SystemSettingKey.DB_PASSWORD);
-            String schema = MoreObjects.firstNonNull(configSys.getString(SystemSettingKey.DB_SCHEMA_ENV), configSys.getString(SystemSettingKey.DB_SCHEMA));
-            new KapuaLiquibaseClient(JdbcConnectionUrlResolvers.resolveJdbcUrl(), dbUsername, dbPassword, Optional.of(schema)).update();
-        }
+//        SystemSetting configSys = SystemSetting.getInstance();
+//        logger.info("Checking database... '{}'", configSys.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false));
+//        if (configSys.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false)) {
+//            logger.debug("Starting Liquibase embedded client.");
+//            String dbUsername = configSys.getString(SystemSettingKey.DB_USERNAME);
+//            String dbPassword = configSys.getString(SystemSettingKey.DB_PASSWORD);
+//            String schema = MoreObjects.firstNonNull(configSys.getString(SystemSettingKey.DB_SCHEMA_ENV), configSys.getString(SystemSettingKey.DB_SCHEMA));
+//            new KapuaLiquibaseClient(JdbcConnectionUrlResolvers.resolveJdbcUrl(), dbUsername, dbPassword, Optional.of(schema)).update();
+//        }
         connectorOptions = new ClientOptions(
                 ActiveMQLifecycleSettings.getInstance().getString(ActiveMQLifecycleSettingsKey.CONNECTION_HOST),
                 ActiveMQLifecycleSettings.getInstance().getInt(ActiveMQLifecycleSettingsKey.CONNECTION_PORT),
@@ -97,10 +106,6 @@ public class MainVerticle extends AbstractMainVerticle {
         errorOptions.put(AmqpClientOptions.AUTO_ACCEPT, false);
         errorOptions.put(AmqpClientOptions.PREFETCH_MESSAGES, ActiveMQLifecycleSettings.getInstance().getInt(ActiveMQLifecycleSettingsKey.TELEMETRY_PREFETCH_MESSAGES));
         errorOptions.put(AmqpClientOptions.QOS, ProtonQoS.AT_LEAST_ONCE);
-    }
-
-    @Override
-    protected void internalStart(Future<Void> future) throws Exception {
         //disable Vertx BlockedThreadChecker log
         java.util.logging.Logger.getLogger("io.vertx.core.impl.BlockedThreadChecker").setLevel(Level.OFF);
         XmlUtil.setContextProvider(new JAXBContextProvider());
@@ -108,11 +113,19 @@ public class MainVerticle extends AbstractMainVerticle {
         logger.info("Starting Lifecycle Consumer... Starting KuraPayloadProtoConverter");
         converter = new KuraPayloadProtoConverter();
         logger.info("Starting Lifecycle Consumer... Starting LifecycleProcessor");
-        processor = new LifecycleProcessor();
+        processor = LifecycleProcessor.getProcessorWithNoFilter();
         logger.info("Starting Lifecycle Consumer... Starting ErrorProcessor");
-        errorProcessor = new ErrorProcessor(vertx, errorOptions);
+        errorProcessor = ErrorProcessor.getProcessorWithNoFilter(vertx, errorOptions);
         logger.info("Starting Lifecycle Consumer... Starting AmqpActiveMQConnector");
-        connector = new AmqpTransportActiveMQConnector(vertx, connectorOptions, converter, processor, errorProcessor) {
+        processorMap = new HashMap<>();
+        processorMap.put(PROCESSOR_NAME_LIFECYCLE, processor);
+        errorProcessorMap = new HashMap<>();
+        errorProcessorMap.put(PROCESSOR_NAME_LIFECYCLE, errorProcessor);
+    }
+
+    @Override
+    protected void internalStart(Future<Void> future) throws Exception {
+        connector = new AmqpTransportActiveMQConnector(vertx, connectorOptions, converter, processorMap, errorProcessorMap) {
 
             @Override
             protected boolean isProcessDestination(MessageContext<byte[]> message) {

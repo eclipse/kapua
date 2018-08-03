@@ -11,15 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.activemq.datastore;
 
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
+
+//import java.util.Optional;
 import javax.inject.Inject;
 
 import org.eclipse.kapua.broker.client.amqp.ClientOptions;
 import org.eclipse.kapua.broker.client.amqp.ClientOptions.AmqpClientOptions;
 import org.eclipse.kapua.commons.core.vertx.AbstractMainVerticle;
-import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.core.vertx.HttpRestServer;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.connector.MessageContext;
@@ -28,14 +28,16 @@ import org.eclipse.kapua.connector.activemq.AmqpTransportActiveMQConnector;
 import org.eclipse.kapua.consumer.activemq.datastore.settings.ActiveMQDatastoreSettings;
 import org.eclipse.kapua.consumer.activemq.datastore.settings.ActiveMQDatastoreSettingsKey;
 import org.eclipse.kapua.converter.kura.KuraPayloadProtoConverter;
+import org.eclipse.kapua.message.transport.TransportMessage;
 import org.eclipse.kapua.message.transport.TransportMessageType;
+import org.eclipse.kapua.processor.Processor;
 import org.eclipse.kapua.processor.datastore.DatastoreProcessor;
 import org.eclipse.kapua.processor.error.amqp.activemq.ErrorProcessor;
-import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
+//import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.MoreObjects;
+//import com.google.common.base.MoreObjects;
 
 import io.vertx.core.Future;
 import io.vertx.ext.healthchecks.Status;
@@ -49,26 +51,31 @@ public class MainVerticle extends AbstractMainVerticle {
     private final static String HEALTH_NAME_DATASTORE = "Datastore-processor";
     private final static String HEALTH_NAME_ERROR = "Error-processor";
 
+    private final static String PROCESSOR_NAME_DATASTORE = "Datastore";
+
+    protected Map<String, Processor<TransportMessage>> processorMap;
+    protected Map<String, Processor> errorProcessorMap;
+
     private ClientOptions connectorOptions;
     private AmqpTransportActiveMQConnector connector;
     private KuraPayloadProtoConverter converter;
     private DatastoreProcessor processor;
     private ClientOptions errorOptions;
-    private ErrorProcessor errorProcessor;
+    protected ErrorProcessor errorProcessor;
 
     @Inject
     private HttpRestServer httpRestServer;
 
     public MainVerticle() {
-        SystemSetting configSys = SystemSetting.getInstance();
-        logger.info("Checking database... '{}'", configSys.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false));
-        if(configSys.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false)) {
-            logger.debug("Starting Liquibase embedded client.");
-            String dbUsername = configSys.getString(SystemSettingKey.DB_USERNAME);
-            String dbPassword = configSys.getString(SystemSettingKey.DB_PASSWORD);
-            String schema = MoreObjects.firstNonNull(configSys.getString(SystemSettingKey.DB_SCHEMA_ENV), configSys.getString(SystemSettingKey.DB_SCHEMA));
-            new KapuaLiquibaseClient(JdbcConnectionUrlResolvers.resolveJdbcUrl(), dbUsername, dbPassword, Optional.of(schema)).update();
-        }
+//        SystemSetting configSys = SystemSetting.getInstance();
+//        logger.info("Checking database... '{}'", configSys.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false));
+//        if(configSys.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false)) {
+//            logger.debug("Starting Liquibase embedded client.");
+//            String dbUsername = configSys.getString(SystemSettingKey.DB_USERNAME);
+//            String dbPassword = configSys.getString(SystemSettingKey.DB_PASSWORD);
+//            String schema = MoreObjects.firstNonNull(configSys.getString(SystemSettingKey.DB_SCHEMA_ENV), configSys.getString(SystemSettingKey.DB_SCHEMA));
+//            new KapuaLiquibaseClient(JdbcConnectionUrlResolvers.resolveJdbcUrl(), dbUsername, dbPassword, Optional.of(schema)).update();
+//        }
         //init options
         connectorOptions = new ClientOptions(
                 ActiveMQDatastoreSettings.getInstance().getString(ActiveMQDatastoreSettingsKey.CONNECTION_HOST),
@@ -97,20 +104,24 @@ public class MainVerticle extends AbstractMainVerticle {
         errorOptions.put(AmqpClientOptions.MAXIMUM_RECONNECTION_ATTEMPTS, ActiveMQDatastoreSettings.getInstance().getInt(ActiveMQDatastoreSettingsKey.MAX_RECONNECTION_ATTEMPTS));
         errorOptions.put(AmqpClientOptions.IDLE_TIMEOUT, ActiveMQDatastoreSettings.getInstance().getInt(ActiveMQDatastoreSettingsKey.IDLE_TIMEOUT));
         errorOptions.put(AmqpClientOptions.PREFETCH_MESSAGES, ActiveMQDatastoreSettings.getInstance().getInt(ActiveMQDatastoreSettingsKey.ERROR_PREFETCH_MESSAGES));
-    }
-
-    @Override
-    protected void internalStart(Future<Void> future) throws Exception {
         XmlUtil.setContextProvider(new JAXBContextProvider());
         logger.info("Starting Datastore Consumer...");
         logger.info("Starting Datastore Consumer... Starting KuraPayloadProtoConverter");
         converter = new KuraPayloadProtoConverter();
         logger.info("Starting Datastore Consumer... Starting DataStoreProcessor");
-        processor = new DatastoreProcessor(vertx);
+        processor = DatastoreProcessor.getProcessorWithNoFilter(vertx);//telemetry are already filtered by connector
         logger.info("Starting Datastore Consumer... Starting ErrorProcessor");
-        errorProcessor = new ErrorProcessor(vertx, errorOptions);
+        errorProcessor = ErrorProcessor.getProcessorWithNoFilter(vertx, errorOptions);
         logger.info("Starting Datastore Consumer... Starting AmqpActiveMQConnector");
-        connector = new AmqpTransportActiveMQConnector(vertx, connectorOptions, converter, processor, errorProcessor) {
+        processorMap = new HashMap<>();
+        processorMap.put(PROCESSOR_NAME_DATASTORE, processor);
+        errorProcessorMap = new HashMap<>();
+        errorProcessorMap.put(PROCESSOR_NAME_DATASTORE, errorProcessor);
+    }
+
+    @Override
+    protected void internalStart(Future<Void> future) throws Exception {
+        connector = new AmqpTransportActiveMQConnector(vertx, connectorOptions, converter, processorMap, errorProcessorMap) {
 
             @Override
             protected boolean isProcessDestination(MessageContext<byte[]> message) {

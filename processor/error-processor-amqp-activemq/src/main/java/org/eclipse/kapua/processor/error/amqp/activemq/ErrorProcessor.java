@@ -28,11 +28,20 @@ import io.vertx.core.Vertx;
 import io.vertx.ext.healthchecks.Status;
 import io.vertx.proton.ProtonHelper;
 
-public class ErrorProcessor implements Processor<Message>, HealthCheckable {
+public abstract class ErrorProcessor implements Processor<Message>, HealthCheckable {
 
     private static final Logger logger = LoggerFactory.getLogger(ErrorProcessor.class);
 
     private AmqpSender sender;
+
+    public static ErrorProcessor getProcessorWithNoFilter(Vertx vertx, ClientOptions clientOptions) {
+        return new ErrorProcessor(vertx, clientOptions) {
+            @Override
+            public boolean isProcessDestination(MessageContext<Message> message) {
+                return true;
+            }
+        };
+    }
 
     public ErrorProcessor(Vertx vertx, ClientOptions clientOptions) {
         sender = new AmqpSender(vertx, clientOptions);

@@ -43,20 +43,20 @@ public abstract class AmqpAbstractConnector<M, P> extends AbstractConnector<M, P
      * Default protected constructor
      * @param vertx instance
      * @param converter message instance
-     * @param processor processor instance
-     * @param errorProcessor error processor instance
+     * @param processorMap processor map instances
+     * @param errorProcessorMap error processor map instances
      */
-    protected AmqpAbstractConnector(Vertx vertx, Converter<M, P> converter, Processor<P> processor, @SuppressWarnings("rawtypes") Processor errorProcessor) {
-        super(vertx, converter, processor, errorProcessor);
+    protected AmqpAbstractConnector(Vertx vertx, Converter<M, P> converter, Map<String, Processor<P>> processorMap, @SuppressWarnings("rawtypes") Map<String, Processor> errorProcessorMap) {
+        super(vertx, converter, processorMap, errorProcessorMap);
     }
 
     /**
      * Constructor with no message converter
      * @param vertx instance
-     * @param processor processor instance
+     * @param processorMap processor map instances
      */
-    protected AmqpAbstractConnector(Vertx vertx, Processor<P> processor) {
-        this(vertx, null, processor, null);
+    protected AmqpAbstractConnector(Vertx vertx, Map<String, Processor<P>> processorMap) {
+        this(vertx, null, processorMap, null);
     }
 
     /**

@@ -9,11 +9,11 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.processor.logger;
+package org.eclipse.kapua.processor.datastore;
 
-import org.apache.qpid.proton.message.Message;
 import org.eclipse.kapua.apps.api.HealthCheckable;
 import org.eclipse.kapua.connector.MessageContext;
+import org.eclipse.kapua.message.transport.TransportMessage;
 import org.eclipse.kapua.processor.KapuaProcessorException;
 import org.eclipse.kapua.processor.Processor;
 import org.slf4j.Logger;
@@ -24,14 +24,14 @@ import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.ext.healthchecks.Status;
 
-public abstract class LoggerProcessor implements Processor<Message>, HealthCheckable {
+public abstract class DatastoreLoggerProcessor implements Processor<TransportMessage>, HealthCheckable {
 
-    private static final Logger logger = LoggerFactory.getLogger(LoggerProcessor.class);
+    private static final Logger logger = LoggerFactory.getLogger(DatastoreLoggerProcessor.class);
 
-    public static LoggerProcessor getProcessorWithNoFilter() {
-        return new LoggerProcessor() {
+    public static DatastoreLoggerProcessor getProcessorWithNoFilter() {
+        return new DatastoreLoggerProcessor() {
             @Override
-            public boolean isProcessDestination(MessageContext<Message> message) {
+            public boolean isProcessDestination(MessageContext<TransportMessage> message) {
                 return true;
             }
         };
@@ -44,9 +44,9 @@ public abstract class LoggerProcessor implements Processor<Message>, HealthCheck
     }
 
     @Override
-    public void process(MessageContext<Message> message, Handler<AsyncResult<Void>> result) throws KapuaProcessorException {
+    public void process(MessageContext<TransportMessage> message, Handler<AsyncResult<Void>> result) throws KapuaProcessorException {
         //avoid null check on message fields
-        logger.info("Message (between #): #{}#", message.getMessage() != null ? String.valueOf(message.getMessage().getBody()) : "NULL");
+        logger.info("Message (between #): #{}#", message.getMessage() != null ? String.valueOf(message.getMessage()) : "NULL");
         result.handle(Future.succeededFuture());
 
         //old code
@@ -79,4 +79,5 @@ public abstract class LoggerProcessor implements Processor<Message>, HealthCheck
     public boolean isHealty() {
         return true;
     }
+
 }
