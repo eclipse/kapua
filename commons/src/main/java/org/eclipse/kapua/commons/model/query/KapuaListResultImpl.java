@@ -13,7 +13,6 @@ package org.eclipse.kapua.commons.model.query;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -75,7 +74,7 @@ public class KapuaListResultImpl<E extends KapuaEntity> implements KapuaListResu
 
     @Override
     public List<E> getItems() {
-        return Collections.unmodifiableList(items);
+        return items;
     }
 
     @Override
