@@ -11,9 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.activemq.error;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
-import java.util.Optional;
+//import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -21,21 +23,22 @@ import org.apache.qpid.proton.message.Message;
 import org.eclipse.kapua.broker.client.amqp.ClientOptions;
 import org.eclipse.kapua.broker.client.amqp.ClientOptions.AmqpClientOptions;
 import org.eclipse.kapua.commons.core.vertx.AbstractMainVerticle;
-import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+//import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
+//import org.eclipse.kapua.commons.setting.system.SystemSetting;
+//import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.core.vertx.HttpRestServer;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.connector.MessageContext;
 import org.eclipse.kapua.connector.activemq.AmqpActiveMQConnector;
 import org.eclipse.kapua.consumer.activemq.error.settings.ActiveMQErrorSettings;
 import org.eclipse.kapua.consumer.activemq.error.settings.ActiveMQErrorSettingsKey;
+import org.eclipse.kapua.processor.Processor;
 import org.eclipse.kapua.processor.logger.LoggerProcessor;
-import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
+//import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.MoreObjects;
+//import com.google.common.base.MoreObjects;
 
 import io.vertx.core.Future;
 import io.vertx.ext.healthchecks.Status;
@@ -48,6 +51,10 @@ public class MainVerticle extends AbstractMainVerticle {
     private final static String HEALTH_NAME_CONNECTOR = "ActiveMQ-connector";
     private final static String HEALTH_NAME_ERROR = "Error-processor";
 
+    private final static String PROCESSOR_NAME_ERROR = "Error";
+
+    protected Map<String, Processor<Message>> processorMap;
+
     private ClientOptions connectorOptions;
     private AmqpActiveMQConnector connector;
     private LoggerProcessor processor;
@@ -56,15 +63,15 @@ public class MainVerticle extends AbstractMainVerticle {
     private HttpRestServer httpRestServer;
 
     public MainVerticle() {
-        SystemSetting configSys = SystemSetting.getInstance();
-        logger.info("Checking database... '{}'", configSys.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false));
-        if(configSys.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false)) {
-            logger.debug("Starting Liquibase embedded client.");
-            String dbUsername = configSys.getString(SystemSettingKey.DB_USERNAME);
-            String dbPassword = configSys.getString(SystemSettingKey.DB_PASSWORD);
-            String schema = MoreObjects.firstNonNull(configSys.getString(SystemSettingKey.DB_SCHEMA_ENV), configSys.getString(SystemSettingKey.DB_SCHEMA));
-            new KapuaLiquibaseClient(JdbcConnectionUrlResolvers.resolveJdbcUrl(), dbUsername, dbPassword, Optional.of(schema)).update();
-        }
+//        SystemSetting configSys = SystemSetting.getInstance();
+//        logger.info("Checking database... '{}'", configSys.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false));
+//        if(configSys.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false)) {
+//            logger.debug("Starting Liquibase embedded client.");
+//            String dbUsername = configSys.getString(SystemSettingKey.DB_USERNAME);
+//            String dbPassword = configSys.getString(SystemSettingKey.DB_PASSWORD);
+//            String schema = MoreObjects.firstNonNull(configSys.getString(SystemSettingKey.DB_SCHEMA_ENV), configSys.getString(SystemSettingKey.DB_SCHEMA));
+//            new KapuaLiquibaseClient(JdbcConnectionUrlResolvers.resolveJdbcUrl(), dbUsername, dbPassword, Optional.of(schema)).update();
+//        }
         //init options
         connectorOptions = new ClientOptions(
                 ActiveMQErrorSettings.getInstance().getString(ActiveMQErrorSettingsKey.CONNECTION_HOST),
@@ -79,18 +86,24 @@ public class MainVerticle extends AbstractMainVerticle {
         connectorOptions.put(AmqpClientOptions.CONNECT_TIMEOUT, ActiveMQErrorSettings.getInstance().getInt(ActiveMQErrorSettingsKey.CONNECT_TIMEOUT));
         connectorOptions.put(AmqpClientOptions.MAXIMUM_RECONNECTION_ATTEMPTS, ActiveMQErrorSettings.getInstance().getInt(ActiveMQErrorSettingsKey.MAX_RECONNECTION_ATTEMPTS));
         connectorOptions.put(AmqpClientOptions.IDLE_TIMEOUT, ActiveMQErrorSettings.getInstance().getInt(ActiveMQErrorSettingsKey.IDLE_TIMEOUT));
+        processorMap = new HashMap<>();
     }
 
-    @Override
-    protected void internalStart(Future<Void> future) throws Exception {
-      //disable Vertx BlockedThreadChecker log
+    protected void initializeProcessors() {
+        //disable Vertx BlockedThreadChecker log
         java.util.logging.Logger.getLogger("io.vertx.core.impl.BlockedThreadChecker").setLevel(Level.OFF);
         XmlUtil.setContextProvider(new JAXBContextProvider());
         logger.info("Starting ErrorLogger Consumer...");
         logger.info("Starting ErrorLogger Consumer... Starting ErrorLogger");
-        processor = new LoggerProcessor();
+        processor = LoggerProcessor.getProcessorWithNoFilter();
         logger.info("Starting LoggerProcessor Consumer... Starting AmqpActiveMQConnector");
-        connector = new AmqpActiveMQConnector(vertx, connectorOptions, processor, null) {
+        processorMap.put(PROCESSOR_NAME_ERROR, processor);
+    }
+
+    @Override
+    protected void internalStart(Future<Void> future) throws Exception {
+        initializeProcessors();
+        connector = new AmqpActiveMQConnector(vertx, connectorOptions, processorMap, null) {
 
             @Override
             protected boolean isProcessDestination(MessageContext<Message> message) {

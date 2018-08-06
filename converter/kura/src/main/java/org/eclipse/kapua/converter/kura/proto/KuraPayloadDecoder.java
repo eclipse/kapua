@@ -36,7 +36,6 @@ public class KuraPayloadDecoder {
     /**
      * Factory method to build an KuraPayload instance from a byte array.
      *
-     * @param bytes
      * @return
      * @throws InvalidProtocolBufferException
      * @throws IOException

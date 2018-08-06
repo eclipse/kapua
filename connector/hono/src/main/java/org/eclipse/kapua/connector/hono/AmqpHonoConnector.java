@@ -32,9 +32,7 @@ import org.eclipse.kapua.processor.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
-import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 
 /**
@@ -50,8 +48,8 @@ public abstract class AmqpHonoConnector extends AmqpAbstractConnector<byte[], Tr
 
     private HonoClient honoClient;
 
-    public AmqpHonoConnector(Vertx vertx, Converter<byte[], TransportMessage> converter, Processor<TransportMessage> processor, @SuppressWarnings("rawtypes") Processor errorHandler) {
-        super(vertx, converter, processor, errorHandler);
+    public AmqpHonoConnector(Vertx vertx, Converter<byte[], TransportMessage> converter, Map<String, Processor<TransportMessage>> processorMap, @SuppressWarnings("rawtypes") Map<String, Processor> errorHandlerMap) {
+        super(vertx, converter, processorMap, errorHandlerMap);
         honoClient = new HonoClient(vertx, this::handleTelemetryMessage);
     }
 
@@ -77,7 +75,6 @@ public abstract class AmqpHonoConnector extends AmqpAbstractConnector<byte[], Tr
         honoClient.disconnect(disconnectFuture);
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     private void handleTelemetryMessage(final Message message) {
         logTelemetryMessage(message);
         try {
@@ -88,21 +85,7 @@ public abstract class AmqpHonoConnector extends AmqpAbstractConnector<byte[], Tr
                         //TODO handle ProtonHelper.accepted
                     }
                     else {
-                        try {
-                            errorProcessor.process(new MessageContext(message), new Handler<AsyncResult<Void>>() {
-                                @Override
-                                public void handle(AsyncResult<Void> event) {
-                                    if (event.succeeded()) {
-                                        //TODO handle ProtonHelper.accepted
-                                    }
-                                    else {
-                                        //TODO handle ProtonHelper.released
-                                    }
-                                }
-                            });
-                        } catch (Exception e1) {
-                          //TODO handle ProtonHelper.released
-                        }
+                        //TODO handle ProtonHelper.released
                     }
                 });
             } catch (Exception e) {

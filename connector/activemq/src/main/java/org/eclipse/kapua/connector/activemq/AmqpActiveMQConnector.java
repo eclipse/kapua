@@ -48,8 +48,7 @@ public abstract class AmqpActiveMQConnector extends AmqpAbstractConnector<Messag
 
     private AmqpConsumer consumer;
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public AmqpActiveMQConnector(Vertx vertx, ClientOptions clientOptions, Processor<Message> processor, Processor<?> errorProcessor) {
+    public AmqpActiveMQConnector(Vertx vertx, ClientOptions clientOptions, Map<String, Processor<Message>> processor, Map<String, Processor<?>> errorProcessor) {
         super(vertx, processor);
         consumer = new AmqpConsumer(vertx, clientOptions, (delivery, message) -> {
                 try {
@@ -58,24 +57,7 @@ public abstract class AmqpActiveMQConnector extends AmqpAbstractConnector<Messag
                             ProtonHelper.accepted(delivery, true);
                         }
                         else {
-                            try {
-                                if (errorProcessor!=null) {
-                                    errorProcessor.process(new MessageContext(message), ar -> {
-                                            if (ar.succeeded()) {
-                                                ProtonHelper.accepted(delivery, true);
-                                            }
-                                            else {
-                                                ProtonHelper.released(delivery, true);
-                                            }
-                                        }
-                                    );
-                                }
-                                else {
-                                    ProtonHelper.released(delivery, true);
-                                }
-                            } catch (Exception e1) {
-                                ProtonHelper.released(delivery, true);
-                            }
+                            ProtonHelper.released(delivery, true);
                         }
                     });
                 } catch (Exception e) {

@@ -12,6 +12,7 @@
 package org.eclipse.kapua.commons.core.vertx;
 
 import io.vertx.core.Verticle;
+import io.vertx.core.eventbus.EventBus;
 
 /**
  * Defines the interface for a verticle that implements a request/response 

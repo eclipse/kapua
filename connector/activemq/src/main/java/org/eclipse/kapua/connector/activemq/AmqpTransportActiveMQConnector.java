@@ -50,9 +50,9 @@ public abstract class AmqpTransportActiveMQConnector extends AmqpAbstractConnect
 
     private AmqpConsumer consumer;
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public AmqpTransportActiveMQConnector(Vertx vertx, ClientOptions clientOptions, Converter<byte[], TransportMessage> converter, Processor<TransportMessage> processor, Processor<?> errorProcessor) {
-        super(vertx, converter, processor, errorProcessor);
+    @SuppressWarnings({ "rawtypes" })
+    public AmqpTransportActiveMQConnector(Vertx vertx, ClientOptions clientOptions, Converter<byte[], TransportMessage> converter, Map<String, Processor<TransportMessage>> processors, Map<String, Processor> errorProcessors) {
+        super(vertx, converter, processors, errorProcessors);
         consumer = new AmqpConsumer(vertx, clientOptions, (delivery, message) -> {
                 try {
                     super.handleMessage(new MessageContext<Message>(message), result -> {
@@ -60,24 +60,7 @@ public abstract class AmqpTransportActiveMQConnector extends AmqpAbstractConnect
                             ProtonHelper.accepted(delivery, true);
                         }
                         else {
-                            try {
-                                if (errorProcessor != null) {
-                                    errorProcessor.process(new MessageContext(message), ar -> {
-                                            if (ar.succeeded()) {
-                                                ProtonHelper.accepted(delivery, true);
-                                            }
-                                            else {
-                                                ProtonHelper.released(delivery, true);
-                                            }
-                                        }
-                                    );
-                                }
-                                else {
-                                    ProtonHelper.released(delivery, true);
-                                }
-                            } catch (Exception e1) {
-                                ProtonHelper.released(delivery, true);
-                            }
+                            ProtonHelper.released(delivery, true);
                         }
                     });
                 } catch (Exception e) {

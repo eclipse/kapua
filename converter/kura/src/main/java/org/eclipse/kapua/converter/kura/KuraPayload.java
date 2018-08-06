@@ -37,7 +37,7 @@ import java.util.Set;
  * determined by the user.
  * </ul>
  * 
- * @noextend This class is not intended to be subclassed by clients.
+ * This class is not intended to be subclassed by clients.
  */
 public class KuraPayload {
 
