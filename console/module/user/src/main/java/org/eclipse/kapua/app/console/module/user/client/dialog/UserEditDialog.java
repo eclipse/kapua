@@ -120,7 +120,9 @@ public class UserEditDialog extends UserAddDialog {
     private void populateEditDialog(GwtUser gwtUser) {
         infoFieldSet.remove(username);
         usernameLabel.setVisible(true);
+        username.setVisible(false);
         usernameLabel.setValue(gwtUser.getUsername());
+        usernameLabel.setToolTip(gwtUser.getUsername());
         if (password != null) {
             password.setVisible(false);
             password.setAllowBlank(true);
