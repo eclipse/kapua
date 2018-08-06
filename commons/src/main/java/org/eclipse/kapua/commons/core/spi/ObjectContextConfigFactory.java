@@ -13,7 +13,7 @@ package org.eclipse.kapua.commons.core.spi;
 
 import org.eclipse.kapua.commons.core.ObjectContextConfig;
 
-public interface BeanContextConfigFactory {
+public interface ObjectContextConfigFactory {
 
     public ObjectContextConfig create();
 }
