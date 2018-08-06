@@ -75,7 +75,7 @@ public class LifecycleListener {
     /**
      * Process a birth message.
      *
-     * @param birthMessage
+     * @param message
      */
     public void processBirthMessage(MessageContext<TransportMessage> message) {
         try {
@@ -93,7 +93,7 @@ public class LifecycleListener {
     /**
      * Process a disconnect message.
      *
-     * @param disconnectMessage
+     * @param message
      */
     public void processDisconnectMessage(MessageContext<TransportMessage> message) {
         try {
@@ -111,7 +111,7 @@ public class LifecycleListener {
     /**
      * Process an application message.
      *
-     * @param appsMessage
+     * @param message
      */
     public void processAppsMessage(MessageContext<TransportMessage> message) {
         try {
@@ -129,7 +129,7 @@ public class LifecycleListener {
     /**
      * Process a missing message.
      *
-     * @param missingMessage
+     * @param message
      */
     public void processMissingMessage(MessageContext<TransportMessage> message) {
         try {
@@ -147,7 +147,7 @@ public class LifecycleListener {
     /**
      * Process a unmatched message.
      *
-     * @param unmatchedMessage
+     * @param message
      */
     public void processUnmatchedMessage(MessageContext<TransportMessage> message) {
         logger.info("Received unmatched message from device channel: {}", message.getMessage().getChannel());

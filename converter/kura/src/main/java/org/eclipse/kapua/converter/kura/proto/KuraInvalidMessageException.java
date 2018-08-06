@@ -12,7 +12,7 @@
 package org.eclipse.kapua.converter.kura.proto;
 
 /**
- * @noextend This class is not intended to be subclassed by clients.
+ * This class is not intended to be subclassed by clients.
  */
 public class KuraInvalidMessageException extends RuntimeException {
 

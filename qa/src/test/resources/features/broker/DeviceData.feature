@@ -13,13 +13,16 @@
 Feature: Device data scenarios
 
   @StartEventBroker
-  Scenario: Start event broker for all scenarios
-
-  @StartBroker
   Scenario: Start broker for all scenarios
 
   @StartDatastore
   Scenario: Start datastore for all scenarios
+
+  @StartBroker
+  Scenario: Start event broker for all scenarios
+
+  @StartExternalConsumers
+  Scenario: Start external consumers for all scenario
 
 Scenario: Connect to the system and publish some data
 
@@ -65,6 +68,9 @@ Scenario: Connect to the system and publish some data
   When I stop the simulator
   Then Device sim-1 for account kapua-sys is not registered after 5 seconds
 
+@StopExternalConsumers
+  Scenario: Stop external consumers for all scenario
+
   @StopBroker
   Scenario: Stop broker after all scenarios
 
@@ -72,4 +78,4 @@ Scenario: Connect to the system and publish some data
   Scenario: Stop datastore after all scenarios
 
   @StopEventBroker
-  Scenario: Stop event broker for all scenarios
+  Scenario: Stop event broker after all scenarios

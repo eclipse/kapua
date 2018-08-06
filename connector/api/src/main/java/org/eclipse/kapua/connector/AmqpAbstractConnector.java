@@ -41,7 +41,7 @@ public abstract class AmqpAbstractConnector<M, P> extends AbstractConnector<M, P
 
     /**
      * Default protected constructor
-     * @param Vertx instance
+     * @param vertx instance
      * @param converter message instance
      * @param processor processor instance
      * @param errorProcessor error processor instance
@@ -52,7 +52,7 @@ public abstract class AmqpAbstractConnector<M, P> extends AbstractConnector<M, P
 
     /**
      * Constructor with no message converter
-     * @param Vertx instance
+     * @param vertx instance
      * @param processor processor instance
      */
     protected AmqpAbstractConnector(Vertx vertx, Processor<P> processor) {

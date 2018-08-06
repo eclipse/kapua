@@ -37,7 +37,7 @@ public class KapuaCamelFilter extends AbstractListener {
     }
 
     /**
-     * Bind the Kapua session retrieved from the message header (with key {@link MessageConstants#HEADER_KAPUA_SESSION}) to the current thread context.
+     * Bind the Kapua session retrieved from the message header (with key {@link Properties#HEADER_KAPUA_SESSION}) to the current thread context.
      *
      * @param exchange
      * @param value
