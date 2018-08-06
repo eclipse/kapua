@@ -196,6 +196,10 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         packageRequestMessage.setChannel(packageRequestChannel);
 
         //
+        // Create device management operation
+        createManagementOperation(scopeId, deviceId, operationId, packageRequestMessage);
+
+        //
         // Do get
         DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(packageRequestMessage, timeout);
         PackageResponseMessage responseMessage = (PackageResponseMessage) deviceApplicationCall.send();
@@ -336,6 +340,10 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         packageRequestMessage.setCapturedOn(new Date());
         packageRequestMessage.setPayload(packageRequestPayload);
         packageRequestMessage.setChannel(packageRequestChannel);
+
+        //
+        // Create device management operation
+        createManagementOperation(scopeId, deviceId, operationId, packageRequestMessage);
 
         //
         // Do exec
@@ -509,6 +517,10 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         packageRequestMessage.setCapturedOn(new Date());
         packageRequestMessage.setPayload(packageRequestPayload);
         packageRequestMessage.setChannel(packageRequestChannel);
+
+        //
+        // Create device management operation
+        createManagementOperation(scopeId, deviceId, operationId, packageRequestMessage);
 
         //
         // Do get
