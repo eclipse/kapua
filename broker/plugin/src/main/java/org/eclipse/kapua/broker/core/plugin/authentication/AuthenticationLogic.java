@@ -74,6 +74,8 @@ public abstract class AuthenticationLogic {
     protected PermissionFactory permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
     protected DeviceConnectionService deviceConnectionService = KapuaLocator.getInstance().getService(DeviceConnectionService.class);
 
+    private static final String DEVICE_CONNECTION_USER_COUPLING_DEFAULT_MODE = "deviceConnectionUserCouplingDefaultMode";
+
     /**
      * Default constructor
      *
@@ -247,7 +249,7 @@ public abstract class AuthenticationLogic {
      * @throws KapuaException
      */
     protected ConnectionUserCouplingMode loadConnectionUserCouplingModeFromConfig(KapuaId scopeId, Map<String, Object> options) throws KapuaException {
-        String tmp = (String) options.get("deviceConnectionUserCouplingDefaultMode");// TODO move to constants
+        String tmp = (String) options.get(DEVICE_CONNECTION_USER_COUPLING_DEFAULT_MODE);// TODO move to constants -- moved
         if (tmp != null) {
             ConnectionUserCouplingMode tmpConnectionUserCouplingMode = ConnectionUserCouplingMode.valueOf(tmp);
             if (tmpConnectionUserCouplingMode == null) {

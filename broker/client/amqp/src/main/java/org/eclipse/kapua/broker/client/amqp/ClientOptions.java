@@ -65,6 +65,11 @@ public class ClientOptions {
         return (tmp!=null ? tmp : defaultValue);
     }
 
+    public Long getLong(AmqpClientOptions key, Long defaultValue) {
+        Long tmp = (Long)options.get(key.name());
+        return (tmp!=null ? tmp : defaultValue);
+    }
+
     public String getString(AmqpClientOptions key) {
         return (String)options.get(key.name());
     }

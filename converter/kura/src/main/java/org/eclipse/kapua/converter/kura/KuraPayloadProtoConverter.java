@@ -142,9 +142,9 @@ public class KuraPayloadProtoConverter implements Converter<byte[], TransportMes
     /**
      * Factory method to build an KuraPayload instance from a byte array.
      *
-     * @param bytes
+     * @param message
      * @return
-     * @throws InvalidProtocolBufferException
+     * @throws KuraInvalidMessageException
      * @throws IOException
      */
     public KuraPayload buildKuraPayloadFromByteArray(byte[] message) throws KuraInvalidMessageException, IOException {

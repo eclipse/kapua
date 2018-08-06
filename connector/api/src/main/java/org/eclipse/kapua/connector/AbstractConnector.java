@@ -11,10 +11,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.connector;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.converter.Converter;
 import org.eclipse.kapua.converter.KapuaConverterException;
 import org.eclipse.kapua.processor.Processor;
+
+import io.vertx.core.CompositeFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +36,7 @@ import io.vertx.core.Vertx;
 /**
  * Abstract connector to be customized with specific server connection code.<br>
  * The incoming message will flow through the converter (if provided) and the processor
- * 
+ *
  * @param <M> Converter message type (optional)
  * @param <P> Processor message type
  */
@@ -37,62 +46,65 @@ public abstract class AbstractConnector<M, P> extends AbstractVerticle {
 
     protected Vertx vertx;
     protected Converter<M, P> converter;
-    protected Processor<P> processor;
+    protected Map<String, Processor<P>> processorMap;
     @SuppressWarnings("rawtypes")
-    protected Processor errorProcessor;
+    protected Map<String, Processor> errorProcessorMap;
     private boolean connected;
 
     /**
      * Default protected constructor
-     * @param Vertx instance
+     * @param vertx instance
      * @param converter message instance
-     * @param processor processor instance
-     * @param errorProcessor error processor instance (handles messages errors)
+     * @param processorMap processor map instances
+     * @param errorProcessorMap error processor map instances (handles messages errors)
      */
-    protected AbstractConnector(Vertx vertx, Converter<M, P> converter, Processor<P> processor, @SuppressWarnings("rawtypes") Processor errorProcessor) {
+    protected AbstractConnector(Vertx vertx, Converter<M, P> converter, Map<String, Processor<P>> processorMap, @SuppressWarnings("rawtypes") Map<String, Processor> errorProcessorMap) {
         this.converter = converter;
-        this.processor = processor;
-        this.errorProcessor = errorProcessor;
+        this.processorMap = processorMap;
         this.vertx = vertx;
+        if (errorProcessorMap != null) {
+            this.errorProcessorMap = errorProcessorMap;
+        }
+        else {
+            this.errorProcessorMap = new HashMap<>();
+        }
     }
 
     /**
      * Default protected constructor
-     * @param Vertx instance
+     * @param vertx instance
      * @param converter message instance
-     * @param processor processor instance
+     * @param processorMap processor map instances
      */
-    protected AbstractConnector(Vertx vertx, Converter<M, P> converter, Processor<P> processor) {
+    protected AbstractConnector(Vertx vertx, Converter<M, P> converter, Map<String, Processor<P>> processorMap) {
         this.converter = converter;
-        this.processor = processor;
+        this.processorMap = processorMap;
         this.vertx = vertx;
     }
 
     /**
      * Constructor with no message converter
-     * @param Vertx instance
-     * @param processor processor instance
+     * @param vertx instance
+     * @param processorMap processor map instances
      */
-    protected AbstractConnector(Vertx vertx, Processor<P> processor) {
-        this(vertx, null, processor, null);
+    protected AbstractConnector(Vertx vertx, Map<String, Processor<P>> processorMap) {
+        this(vertx, null, processorMap, null);
     }
 
     /**
      * Internal components start hook
      * @param startFuture
-     * @throws KapuaConnectorException
      */
     protected abstract void startInternal(Future<Void> startFuture);
 
     /**
      * Internal components stop hook
      * @param stopFuture
-     * @throws KapuaConnectorException
      */
     protected abstract void stopInternal(Future<Void> stopFuture);
 
     /**
-     * 
+     *
      * @param message
      * @return
      * @throws KapuaConverterException
@@ -114,24 +126,32 @@ public abstract class AbstractConnector<M, P> extends AbstractVerticle {
         this.connected = connected;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void start(Future<Void> startFuture) throws Exception {
         logger.debug("Starting connector...");
-        Future<Void> composerFuture = Future.future();
-        composerFuture.compose(mapper -> {
-            Future<Void> internalFuture = Future.future();
-            startInternal(internalFuture);
-            return internalFuture;
+        Future.succeededFuture()
+        .compose(mapper -> {
+            List<Future> futureList = new ArrayList<>();
+            for (Entry<String, Processor> entry: errorProcessorMap.entrySet()) {
+                Future<Void> internalFuture = Future.future();
+                entry.getValue().start(internalFuture);
+                futureList.add(internalFuture);
+            }
+            return CompositeFuture.join(futureList);
+        })
+        .compose(mapper -> {
+            List<Future> futureList = new ArrayList<>();
+            for (Entry<String, Processor<P>> entry: processorMap.entrySet()) {
+                Future<Void> internalFuture = Future.future();
+                entry.getValue().start(internalFuture);
+                futureList.add(internalFuture);
+            }
+            return CompositeFuture.join(futureList);
         })
         .compose(mapper -> {
             Future<Void> internalFuture = Future.future();
-            if(errorProcessor != null) {
-                errorProcessor.start(internalFuture);
-            }
-            else {
-                internalFuture.complete();
-            }
+            startInternal(internalFuture);
             return internalFuture;
         })
         .setHandler(result -> {
@@ -144,73 +164,113 @@ public abstract class AbstractConnector<M, P> extends AbstractVerticle {
                 startFuture.fail(result.cause());
             }
         });
-        processor.start(composerFuture);
     }
 
-    @SuppressWarnings("unchecked")
     protected void handleMessage(MessageContext<?> message, Handler<AsyncResult<Void>> result) throws KapuaException {
         MessageContext<M> msg = convert(message);
         if (!isProcessDestination(msg)) {
             result.handle(Future.succeededFuture());
         }
         else {
-            Future<Void> composerFuture = Future.future();
-            composerFuture.compose(mapper -> {
-                Future<Void> internalFuture = Future.future();
-                try {
-                    MessageContext<P> convertedMessage = null;
-                    if (converter != null) {
-                        convertedMessage = converter.convert(msg);
-                    } else {
-                        convertedMessage = (MessageContext<P>) msg;
-                    }
-                    processor.process(convertedMessage, internalFuture);
-                } catch (Exception e) {
-                    internalFuture.fail(e);
+            @SuppressWarnings("rawtypes")
+            List<Future> futureList = new ArrayList<>();
+            CompositeFuture compositeFuture;
+            try {
+                final MessageContext<P> convertedMessage = getConvertedMessage(msg);
+                for (Entry<String, Processor<P>> entry : processorMap.entrySet()) {
+                    futureList.add(callProcessor(convertedMessage, entry.getValue(), entry.getKey()));
                 }
-                return internalFuture;
-            })
-            .setHandler(ar -> {
+                compositeFuture = CompositeFuture.join(futureList);
+            } catch (Exception e) {
+                compositeFuture = CompositeFuture.join(Collections.singletonList(Future.failedFuture(e)));
+            }
+
+            compositeFuture.setHandler(ar -> {
                 if (ar.succeeded()) {
                     result.handle(Future.succeededFuture());
                 } else {
                     result.handle(Future.failedFuture(ar.cause()));
                 }
             });
-            composerFuture.complete();
         }
     }
 
     @SuppressWarnings("unchecked")
+    private MessageContext<P> getConvertedMessage(MessageContext<M> msg) throws KapuaConverterException {
+        if (converter != null) {
+            return converter.convert(msg);
+        } else {
+            return (MessageContext<P>) msg;
+        }
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private Future<Void> callProcessor(MessageContext<P> message, Processor<P> processor, String processorName) {
+        Future<Void> internalFuture = Future.future();
+        try {
+            processor.process(message, internalFuture);
+        } catch (KapuaException e) {
+            Processor<?> errorProcessor = errorProcessorMap.get(processorName);
+                try {
+                    if (errorProcessor != null) {
+                        errorProcessor.process(new MessageContext(message), ar -> {
+                                if (ar.succeeded()) {
+                                    internalFuture.succeeded();
+                                }
+                                else {
+                                    internalFuture.fail(ar.cause());
+                                }
+                            }
+                        );
+                    }
+                    else {
+                        internalFuture.fail(e);
+                    }
+                } catch (Exception e1) {
+                    internalFuture.fail(e1);
+                }
+        }
+        return internalFuture;
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void stop(Future<Void> stopFuture) throws Exception {
         logger.debug("Stopping connector...");
-        Future<Void> composerFuture = Future.future();
-        composerFuture.compose(mapper -> {
+        Future.succeededFuture()
+        .compose(mapper -> {
             Future<Void> internalFuture = Future.future();
-            processor.stop(internalFuture);
+            stopInternal(internalFuture);
             return internalFuture;
         })
         .compose(mapper -> {
-            Future<Void> internalFuture = Future.future();
-            if(errorProcessor != null) {
-                errorProcessor.stop(internalFuture);
+            List<Future> futureList = new ArrayList<>();
+            for (Entry<String, Processor<P>> entry: processorMap.entrySet()) {
+                Future<Void> internalFuture = Future.future();
+                entry.getValue().stop(internalFuture);
+                futureList.add(internalFuture);
             }
-            else {
-                internalFuture.complete();
+            return CompositeFuture.join(futureList);
+        })
+        .compose(mapper -> {
+            List<Future> futureList = new ArrayList<>();
+            for (Entry<String, Processor> entry: errorProcessorMap.entrySet()) {
+                Future<Void> internalFuture = Future.future();
+                entry.getValue().stop(internalFuture);
+                futureList.add(internalFuture);
             }
-            return internalFuture;
+            return CompositeFuture.join(futureList);
         })
         .setHandler(result -> {
             if (result.succeeded()) {
-                logger.debug("Stopping connector...DONE");
+                logger.debug("Starting connector...DONE");
                 stopFuture.complete();
             } else {
-                logger.warn("Stopping connector...FAIL [message:{}]", result.cause().getMessage());
+                logger.warn("Starting connector...FAIL [message:{}]", result.cause().getMessage());
+                logger.debug("\tException:", result.cause());
                 stopFuture.fail(result.cause());
             }
         });
-        stopInternal(composerFuture);
     }
 
 }

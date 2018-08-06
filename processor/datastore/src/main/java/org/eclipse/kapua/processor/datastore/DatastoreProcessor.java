@@ -25,6 +25,7 @@ import org.eclipse.kapua.message.internal.device.data.KapuaDataChannelImpl;
 import org.eclipse.kapua.message.internal.device.data.KapuaDataMessageImpl;
 import org.eclipse.kapua.message.internal.device.data.KapuaDataPayloadImpl;
 import org.eclipse.kapua.message.transport.TransportMessage;
+import org.eclipse.kapua.message.transport.TransportMessageType;
 import org.eclipse.kapua.processor.Processor;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
@@ -38,8 +39,10 @@ import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.ext.healthchecks.Status;
 
-public class DatastoreProcessor implements Processor<TransportMessage>, HealthCheckable {
+public abstract class DatastoreProcessor implements Processor<TransportMessage>, HealthCheckable {
 
+    //TODO fix me
+    public static final String MESSAGE_TYPE = new String("message-type");
     private static final Logger logger = LoggerFactory.getLogger(DatastoreProcessor.class);
 
     private Vertx vertx;
@@ -47,7 +50,16 @@ public class DatastoreProcessor implements Processor<TransportMessage>, HealthCh
     private AccountService accountService;
     private MessageStoreService messageStoreService;
 
-    public DatastoreProcessor(Vertx vertx) {
+    public static DatastoreProcessor getProcessorWithNoFilter(Vertx vertx) {
+        return new DatastoreProcessor(vertx) {
+            @Override
+            public boolean isProcessDestination(MessageContext<TransportMessage> message) {
+                return TransportMessageType.TELEMETRY.equals(message.getProperties().get(MESSAGE_TYPE));
+            }
+        };
+    }
+
+    protected DatastoreProcessor(Vertx vertx) {
         this.vertx = vertx;
     }
 

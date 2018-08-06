@@ -14,7 +14,7 @@ package org.eclipse.kapua.broker.core.router;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
-import org.eclipse.kapua.broker.core.PluginJAXBContextProvider;
+import org.eclipse.kapua.broker.core.CoreJAXBContextProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -87,7 +87,7 @@ class JaxbContextHandler {
     static {
         JAXBContext jaxbContext;
         try {
-            jaxbContext = new PluginJAXBContextProvider().getJAXBContext();
+            jaxbContext = new CoreJAXBContextProvider().getJAXBContext();
             marshaller = jaxbContext.createMarshaller();
             unmarshaller = jaxbContext.createUnmarshaller();
         } catch (KapuaException | JAXBException e) {

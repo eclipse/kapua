@@ -69,6 +69,10 @@ public enum ActiveMQDatastoreSettingsKey implements SettingKey {
      */
     CONNECT_TIMEOUT("activemq_datastore.connection.connect_timeout"),
     /**
+     * Message prefetch
+     */
+    PREFETCH_MESSAGES("activemq_datastore.prefetch_messages"),
+    /**
      * Idle timeout (seconds)
      */
     IDLE_TIMEOUT("activemq_datastore.connection.idle_timeout"),
