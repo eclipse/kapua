@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2018 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+-->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+
+        logicalFilePath="KapuaDB/changelog-device_management_registry-1.0.0.xml">
+
+    <include relativeToChangelogFile="true" file="../common-properties.xml"/>
+
+    <changeSet id="changelog-dvc-mgt-operation-input-properties-1.0.0_createTable" author="eurotech">
+        <createTable tableName="dvcm_device_management_operation_input_property">
+            <column name="operation_id" type="bigint(21) unsigned">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="property_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="property_value" type="text"/>
+        </createTable>
+
+        <sql dbms="h2">ALTER TABLE dvcm_device_management_operation_input_property ADD CHECK operation_id >= 0;</sql>
+
+        <addForeignKeyConstraint constraintName="fk_dvcm_device_management_operation_input_property_operation_id"
+                                 baseTableName="dvcm_device_management_operation_input_property"
+                                 baseColumnNames="operation_id"
+                                 referencedTableName="dvcm_device_management_operation"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+
+        <rollback>
+            <dropTable tableName="dvcm_device_management_operation_input_property"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
