@@ -65,6 +65,8 @@ public class CoreJAXBContextProvider implements JAXBContextProvider {
                     EndPointContainer.class,
                     ParentEndPoint.class,
                     SimpleEndPoint.class,
+                    EndPoint.class,
+                    EndPointAdapter.class,
 
                     // KapuaEvent
                     ServiceEvent.class,

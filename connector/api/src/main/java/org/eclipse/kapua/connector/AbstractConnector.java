@@ -44,7 +44,7 @@ public abstract class AbstractConnector<M, P> extends AbstractVerticle {
 
     /**
      * Default protected constructor
-     * @param Vertx instance
+     * @param vertx instance
      * @param converter message instance
      * @param processor processor instance
      * @param errorProcessor error processor instance (handles messages errors)
@@ -58,7 +58,7 @@ public abstract class AbstractConnector<M, P> extends AbstractVerticle {
 
     /**
      * Default protected constructor
-     * @param Vertx instance
+     * @param vertx instance
      * @param converter message instance
      * @param processor processor instance
      */
@@ -70,7 +70,7 @@ public abstract class AbstractConnector<M, P> extends AbstractVerticle {
 
     /**
      * Constructor with no message converter
-     * @param Vertx instance
+     * @param vertx instance
      * @param processor processor instance
      */
     protected AbstractConnector(Vertx vertx, Processor<P> processor) {
@@ -80,14 +80,12 @@ public abstract class AbstractConnector<M, P> extends AbstractVerticle {
     /**
      * Internal components start hook
      * @param startFuture
-     * @throws KapuaConnectorException
      */
     protected abstract void startInternal(Future<Void> startFuture);
 
     /**
      * Internal components stop hook
      * @param stopFuture
-     * @throws KapuaConnectorException
      */
     protected abstract void stopInternal(Future<Void> stopFuture);
 
