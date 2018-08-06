@@ -16,25 +16,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>kapua-device</artifactId>
+        <artifactId>kapua-device-management</artifactId>
         <groupId>org.eclipse.kapua</groupId>
-        <version>1.1.0-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <packaging>pom</packaging>
-    <artifactId>kapua-device-management</artifactId>
+    <artifactId>kapua-device-management-registry</artifactId>
 
     <modules>
-        <module>asset</module>
-        <module>bundle</module>
-        <module>command</module>
-        <module>configuration</module>
-        <module>packages</module>
-        <module>request</module>
         <module>api</module>
-
-        <module>registry</module>
-
-        <module>all</module>
+        <module>internal</module>
     </modules>
+
 </project>
