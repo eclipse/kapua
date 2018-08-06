@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core.vertx;
 
+import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.eventbus.MessageConsumer;

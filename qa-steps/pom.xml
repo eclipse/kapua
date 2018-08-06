@@ -121,7 +121,19 @@
 
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-broker-core</artifactId>
+            <artifactId>kapua-broker-plugin</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>activemq-datastore</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>activemq-lifecycle</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>activemq-error</artifactId>
         </dependency>
 
         <!-- External dependencies -->

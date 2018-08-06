@@ -89,15 +89,14 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
      * This method is called by the implementation classes to start the application.
      * <p>
      * It invokes the method {@link #initialize(EnvironmentSetup)} to execute actions 
-     * that need to be performed before starting the actual execution (e.g. provide 
-     * the {@link BeanContextConfiguration)}.
+     * that need to be performed before starting the actual execution
      * After, it invokes the method {@link #run(Environment, Configuration)} to start 
      * the actual execution.
      * 
      * @param args command line parameters
      * @throws Exception 
      */
-    public void run(String[] args) throws Exception {   
+    public void run(String[] args) throws Exception {
         EnvironmentImpl env = null;
         ConfigurationImpl config = null;
 
@@ -177,7 +176,7 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
      * logic. Implementor has to override this method to provide the 
      * {@link ObjectContextConfig}.
      * <p>
-     * @param EnvironmentSetup environment for initialization.
+     * @param setup environment for initialization.
      * @throws Exception
      */
     public void initialize(EnvironmentSetup setup) throws Exception {
@@ -195,9 +194,8 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
      * If the start of the main verticle take more time than established by a startup
      * timeout the start is aborted and the application closes.
      * <p>
-     * @param EnvironmentSetup environment for initialization.
-     * @param Environment application environment.
-     * @param Configuration application configuration.
+     * @param environment environment for initialization.
+     * @param config application configuration.
      * @throws Exception
      */
     public void run(Environment environment, Configuration config) throws Exception {
@@ -212,8 +210,7 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
      * the shutdown doesn't complete within a shutdown timeout, the operation is aborted 
      * and the application is terminated.
      * <p>
-     * @param Environment application environment.
-     * @param Configuration application configuration.     
+     * @param timeout timeout waiting for shutdown
      */
     public void shutdown(long timeout) throws Exception {
         long actualTimeout = timeout;

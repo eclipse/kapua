@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.eclipse.kapua.apps.api.HealthCheckable;
 import org.eclipse.kapua.connector.MessageContext;
+import org.eclipse.kapua.connector.Properties;
 import org.eclipse.kapua.message.transport.TransportMessage;
 import org.eclipse.kapua.processor.KapuaProcessorException;
 import org.eclipse.kapua.processor.Processor;
@@ -26,7 +27,7 @@ import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.ext.healthchecks.Status;
 
-public class LifecycleProcessor implements Processor<TransportMessage>, HealthCheckable {
+public abstract class LifecycleProcessor implements Processor<TransportMessage>, HealthCheckable {
 
     private static final Logger logger = LoggerFactory.getLogger(LifecycleProcessor.class);
 
@@ -41,7 +42,28 @@ public class LifecycleProcessor implements Processor<TransportMessage>, HealthCh
         MISSING
     }
 
-    public LifecycleProcessor() {
+    public static LifecycleProcessor getProcessorWithNoFilter() {
+        return new LifecycleProcessor() {
+            @Override
+            public boolean isProcessDestination(MessageContext<TransportMessage> message) {
+                String topic = (String) message.getProperties().get(Properties.MESSAGE_DESTINATION);
+                if (topic!=null && (topic.endsWith("/MQTT/BIRTH") ||
+                        topic.endsWith("/MQTT/DC") ||
+                        topic.endsWith("/MQTT/LWT") ||
+                        topic.endsWith("/MQTT/MISSING") ||
+                        topic.endsWith("MQTT/PROV"))
+                        ) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+
+            }
+        };
+    }
+
+    protected LifecycleProcessor() {
         lifecycleListener = new LifecycleListener();
     }
 

@@ -77,6 +77,10 @@ public enum ActiveMQLifecycleSettingsKey implements SettingKey {
      */
     MAX_RECONNECTION_ATTEMPTS("activemq_lifecycle.maximum_reconnection_attempt"),
     /**
+     * Message prefetch
+     */
+    PREFETCH_MESSAGES("activemq_lifecycle.prefetch_messages"),
+    /**
      * Exiting code when maximum reconnection attempt is reached
      */
     EXIT_CODE("activemq_lifecycle.exit_code");

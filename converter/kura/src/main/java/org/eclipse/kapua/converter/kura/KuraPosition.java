@@ -19,7 +19,7 @@ import java.util.Date;
  * remote cloud platform. Refer to the description of each of the fields for more
  * information on the model of KuraPosition.
  * 
- * @noextend This class is not intended to be subclassed by clients.
+ * This class is not intended to be subclassed by clients.
  */
 public class KuraPosition {
 

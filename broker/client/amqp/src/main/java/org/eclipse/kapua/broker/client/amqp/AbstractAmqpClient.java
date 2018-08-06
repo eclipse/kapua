@@ -66,7 +66,7 @@ public abstract class AbstractAmqpClient {
             options.setConnectTimeout(connectTimeout);
         }
         if (idleTimeout != null) {
-            //TODO check if zero disables the timeout and heartbeat
+            //TODO check if zero disables the timeout and heartbeat -- comment on TCPSSLOptions.setIdleTimeout(): zero means don't timeout. Also, looks ignored if == 0 in TransportImpl.java
             options.setIdleTimeout(idleTimeout);//no activity for t>idleTimeout will close the connection (in seconds)
             options.setHeartbeat(idleTimeout * 1000 / 2);//no activity for t>2*heartbeat will close connection (in milliseconds)
         }
@@ -92,8 +92,10 @@ public abstract class AbstractAmqpClient {
 
     public void disconnect(Future<Void> stopFuture) {
         disconnecting = true;
+        logger.info("Closing connection {} for client {}...", connection, client);
         if (connection != null) {
-            connection.close();
+            connection.disconnect();
+            logger.info("Closing connection {} for client {}... DONE", connection, client);
             connection = null;
         }
         //in any case complete with a positive result the future

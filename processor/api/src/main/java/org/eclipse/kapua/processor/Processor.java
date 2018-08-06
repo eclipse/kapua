@@ -20,6 +20,13 @@ import io.vertx.core.Handler;
 
 public interface Processor<T> {
 
+    /**
+     * Tells if the destination should or should not be processed by the processor
+     * @param message
+     * @return
+     */
+    boolean isProcessDestination(MessageContext<T> message);
+
     public void start(Future<Void> future);
 
     public void process(MessageContext<T> message, Handler<AsyncResult<Void>> result) throws KapuaException;
