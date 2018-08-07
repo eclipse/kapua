@@ -120,6 +120,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         password.setValidator(new PasswordFieldValidator(password));
         password.setPassword(true);
         password.setVisible(false);
+        password.setAutoValidate(true);
         credentialFormPanel.add(password);
 
         confirmPassword = new TextField<String>();
@@ -129,6 +130,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         confirmPassword.setValidator(new ConfirmPasswordFieldValidator(confirmPassword, password));
         confirmPassword.setPassword(true);
         confirmPassword.setVisible(false);
+        confirmPassword.setAutoValidate(true);
         confirmPassword.disable();
         credentialFormPanel.add(confirmPassword);
 
@@ -138,6 +140,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
             public void handleEvent(BaseEvent be) {
                 if (password.getValue() != null) {
                     confirmPassword.enable();
+                    confirmPassword.validate();
                 } else {
                     confirmPassword.disable();
                     confirmPassword.clear();
