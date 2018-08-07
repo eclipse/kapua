@@ -85,6 +85,13 @@ public class CredentialEditDialog extends CredentialAddDialog {
         expirationDate.setValue(selectedCredential.getExpirationDate());
         credentialStatus.setSimpleValue(selectedCredential.getCredentialStatusEnum());
         optlock.setValue(selectedCredential.getOptlock());
+        if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.API_KEY) {
+            expirationDate.setToolTip(MSGS.dialogAddFieldExpirationDateApiKeyTooltip());
+            credentialStatus.setToolTip(MSGS.dialogAddStatusApiKeyTooltip());
+        } else if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.PASSWORD) {
+            expirationDate.setToolTip(MSGS.dialogAddFieldExpirationDatePasswordTooltip());
+            credentialStatus.setToolTip(MSGS.dialogAddStatusPasswordTooltip());
+        }
     }
 
     @Override

@@ -121,6 +121,7 @@ public class UserAddDialog extends EntityAddEditDialog {
         username.setName("userName");
         username.setFieldLabel("* " + USER_MSGS.dialogAddFieldUsername());
         username.setValidator(new TextFieldValidator(username, FieldType.NAME));
+        username.setToolTip(USER_MSGS.dialogAddFieldNameTooltip());
         infoFieldSet.add(username, subFieldsetFormData);
 
         if (currentSession.hasPermission(CredentialSessionPermission.write())) {
@@ -129,6 +130,7 @@ public class UserAddDialog extends EntityAddEditDialog {
             password.setName("password");
             password.setFieldLabel("* " + USER_MSGS.dialogAddFieldPassword());
             password.setValidator(new PasswordFieldValidator(password));
+            password.setToolTip(USER_MSGS.dialogAddTooltipPassword());
             password.setPassword(true);
             password.setMaxLength(255);
             infoFieldSet.add(password, subFieldsetFormData);
@@ -138,6 +140,7 @@ public class UserAddDialog extends EntityAddEditDialog {
             confirmPassword.setName("confirmPassword");
             confirmPassword.setFieldLabel("* " + USER_MSGS.dialogAddFieldConfirmPassword());
             confirmPassword.setValidator(new ConfirmPasswordFieldValidator(confirmPassword, password));
+            confirmPassword.setToolTip(USER_MSGS.dialogAddTooltipPassword());
             confirmPassword.setPassword(true);
             confirmPassword.setMaxLength(255);
             infoFieldSet.add(confirmPassword, subFieldsetFormData);
@@ -152,6 +155,7 @@ public class UserAddDialog extends EntityAddEditDialog {
         displayName = new KapuaTextField<String>();
         displayName.setName("displayName");
         displayName.setFieldLabel(USER_MSGS.dialogAddFieldDisplayName());
+        displayName.setToolTip(USER_MSGS.dialogAddFieldDisplayNameTooltip());
         displayName.setMaxLength(255);
         infoFieldSet.add(displayName, subFieldsetFormData);
 
@@ -159,6 +163,7 @@ public class UserAddDialog extends EntityAddEditDialog {
         email.setName("userEmail");
         email.setFieldLabel(USER_MSGS.dialogAddFieldEmail());
         email.setValidator(new TextFieldValidator(email, FieldType.EMAIL));
+        email.setToolTip(USER_MSGS.dialogAddFieldEmailTooltip());
         email.setMaxLength(255);
         infoFieldSet.add(email, subFieldsetFormData);
 
@@ -166,6 +171,7 @@ public class UserAddDialog extends EntityAddEditDialog {
         phoneNumber.setName("phoneNumber");
         phoneNumber.setFieldLabel(USER_MSGS.dialogAddFieldPhoneNumber());
         phoneNumber.setValidator(new TextFieldValidator(phoneNumber, FieldType.PHONE));
+        phoneNumber.setToolTip(USER_MSGS.dialogAddFieldPhoneNumberTooltip());
         phoneNumber.setMaxLength(64);
         infoFieldSet.add(phoneNumber, subFieldsetFormData);
 
@@ -178,6 +184,7 @@ public class UserAddDialog extends EntityAddEditDialog {
         userStatus = new SimpleComboBox<GwtUserStatus>();
         userStatus.setName("comboStatus");
         userStatus.setFieldLabel(USER_MSGS.dialogAddStatus());
+        userStatus.setToolTip(USER_MSGS.dialogAddStatusTooltip());
         userStatus.setLabelSeparator(":");
         userStatus.setEditable(false);
         userStatus.setTypeAhead(true);
@@ -193,6 +200,7 @@ public class UserAddDialog extends EntityAddEditDialog {
         expirationDate.setFormatValue(true);
         expirationDate.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         expirationDate.setFieldLabel(USER_MSGS.dialogAddExpirationDate());
+        expirationDate.setToolTip(USER_MSGS.dialogAddExpirationDateTooltip());
         expirationDate.setLabelSeparator(":");
         expirationDate.setAllowBlank(true);
         expirationDate.setEmptyText(USER_MSGS.dialogAddNoExpiration());

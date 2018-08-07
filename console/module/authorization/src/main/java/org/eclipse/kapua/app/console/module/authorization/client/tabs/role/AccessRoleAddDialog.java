@@ -134,6 +134,7 @@ public class AccessRoleAddDialog extends EntityAddEditDialog {
         rolesCombo.setTypeAhead(false);
         rolesCombo.setAllowBlank(false);
         rolesCombo.setFieldLabel("* " + MSGS.dialogAddRoleComboName());
+        rolesCombo.setToolTip(MSGS.dialogAddRoleComboNameTooltip());
         rolesCombo.setTriggerAction(TriggerAction.ALL);
         rolesCombo.setStore(new ListStore<GwtRole>());
         rolesCombo.setDisplayField("name");

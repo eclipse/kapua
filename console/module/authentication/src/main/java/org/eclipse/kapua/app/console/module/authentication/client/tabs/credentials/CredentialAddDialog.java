@@ -90,6 +90,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         credentialType.setTypeAhead(false);
         credentialType.setAllowBlank(false);
         credentialType.setFieldLabel("* " + MSGS.dialogAddFieldCredentialType());
+        credentialType.setToolTip(MSGS.dialogAddFieldCredentialTypeTooltip());
         credentialType.setTriggerAction(ComboBox.TriggerAction.ALL);
         credentialType.add(GwtCredentialType.PASSWORD);
         credentialType.add(GwtCredentialType.API_KEY);
@@ -150,12 +151,14 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         expirationDate.setFieldLabel(MSGS.dialogAddFieldExpirationDate());
         expirationDate.setFormatValue(true);
         expirationDate.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
+        expirationDate.setToolTip(MSGS.dialogAddFieldExpirationDateTooltip());
         expirationDate.setMaxLength(10);
         credentialFormPanel.add(expirationDate);
 
         credentialStatus = new SimpleComboBox<GwtCredentialStatus>();
         credentialStatus.setName("comboStatus");
         credentialStatus.setFieldLabel(MSGS.dialogAddStatus());
+        credentialStatus.setToolTip(MSGS.dialogAddStatusTooltip());
         credentialStatus.setLabelSeparator(":");
         credentialStatus.setEditable(false);
         credentialStatus.setTypeAhead(true);
