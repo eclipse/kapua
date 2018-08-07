@@ -116,6 +116,7 @@ public class DeviceEditDialog extends DeviceAddDialog {
             // General info data
             clientIdField.setValue(device.getClientId());
             clientIdLabel.setText(device.getClientId());
+            clientIdLabel.setToolTip(DEVICE_MSGS.deviceFormClientIDEditDialogTooltip());
             displayNameField.setValue(device.getUnescapedDisplayName());
             statusCombo.setSimpleValue(GwtDeviceQueryPredicates.GwtDeviceStatus.valueOf(device.getGwtDeviceStatus()));
 

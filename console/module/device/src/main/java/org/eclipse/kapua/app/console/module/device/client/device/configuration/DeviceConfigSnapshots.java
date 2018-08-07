@@ -433,6 +433,7 @@ public class DeviceConfigSnapshots extends LayoutContainer {
             });
 
             fileUpload.setHeading(MSGS.upload());
+            fileUpload.setToolTip(DEVICE_MSGS.deviceSnapshotFileTooltip());
             fileUpload.show();
         }
     }

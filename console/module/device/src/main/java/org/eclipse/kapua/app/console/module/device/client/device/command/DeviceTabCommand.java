@@ -264,6 +264,7 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
         commandField.setMaxLength(1024);
         commandField.getMessages().setMaxLengthText(DEVICE_MSGS.deviceCommandMaxLengthErrorMessage());
         commandField.setFieldLabel("* " + DEVICE_MSGS.deviceCommandExecute());
+        commandField.setToolTip(DEVICE_MSGS.deviceCommandExecuteTooltip());
         commandField.setLayoutData(layout);
         fieldSet.add(commandField, formData);
 
@@ -272,6 +273,7 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
         fileUploadField.setName("file");
         fileUploadField.setLayoutData(layout);
         fileUploadField.setFieldLabel(DEVICE_MSGS.deviceCommandFile());
+        fileUploadField.setToolTip(DEVICE_MSGS.deviceCommandFileTooltip());
         fieldSet.add(fileUploadField, formData);
 
         passwordField = new TextField<String>();

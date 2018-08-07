@@ -95,6 +95,7 @@ public class PackageInstallDialog extends TabbedDialog {
             dpURIField.setName("dpUri");
             dpURIField.setAllowBlank(false);
             dpURIField.setFieldLabel("* " + DEVICE_MSGS.packageInstallDpTabUri());
+            dpURIField.setToolTip(DEVICE_MSGS.devicePackagesUrlTooltip());
             packageInfoForm.add(dpURIField, formData);
 
             dpNameField = new KapuaTextField<String>();
@@ -102,6 +103,7 @@ public class PackageInstallDialog extends TabbedDialog {
             dpNameField.setName("dpName");
             dpNameField.setAllowBlank(false);
             dpNameField.setFieldLabel("* " + DEVICE_MSGS.packageInstallDpTabName());
+            dpNameField.setToolTip(DEVICE_MSGS.devicePackageNameTooltip());
             packageInfoForm.add(dpNameField, formData);
 
             dpVersionField = new KapuaTextField<String>();
@@ -109,6 +111,7 @@ public class PackageInstallDialog extends TabbedDialog {
             dpVersionField.setName("dpVersion");
             dpVersionField.setAllowBlank(false);
             dpVersionField.setFieldLabel("* " + DEVICE_MSGS.packageInstallDpTabVersion());
+            dpVersionField.setToolTip(DEVICE_MSGS.devicePackageVersionTooltip());
             packageInfoForm.add(dpVersionField, formData);
         }
 
@@ -134,6 +137,7 @@ public class PackageInstallDialog extends TabbedDialog {
             operationRebootField = new CheckBox();
             operationRebootField.setName("reboot");
             operationRebootField.setFieldLabel(DEVICE_MSGS.packageInstallOperationTabReboot());
+            operationRebootField.setToolTip(DEVICE_MSGS.devicePackageRebootTooltip());
             operationRebootField.setBoxLabel("");
 
             operationRebootField.addListener(Events.Change, new Listener<BaseEvent>() {
@@ -153,6 +157,7 @@ public class PackageInstallDialog extends TabbedDialog {
             operationRebootDelayField = new NumberField();
             operationRebootDelayField.setName("installRebootDelay");
             operationRebootDelayField.setFieldLabel(DEVICE_MSGS.packageInstallOperationTabRebootDelay());
+            operationRebootDelayField.setToolTip(DEVICE_MSGS.devicePackageRebootDelayTooltip());
             operationRebootDelayField.setEmptyText("0");
             operationRebootDelayField.setAllowDecimals(false);
             operationRebootDelayField.setAllowNegative(false);
