@@ -21,6 +21,8 @@ public interface DeviceManagementOperationPredicates extends KapuaUpdatableEntit
 
     String DEVICE_ID = "deviceId";
 
+    String OPERATION_ID = "operationId";
+
     String APP_ID = "appId";
 
     String ACTION = "action";

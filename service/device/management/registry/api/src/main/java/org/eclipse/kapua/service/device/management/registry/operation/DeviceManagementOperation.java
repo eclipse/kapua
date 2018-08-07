@@ -48,6 +48,8 @@ public interface DeviceManagementOperation extends KapuaUpdatableEntity {
     @XmlJavaTypeAdapter(DateXmlAdapter.class)
     Date getEndedOn();
 
+    void setEndedOn(Date endedOn);
+
     @XmlElement(name = "deviceId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     @ApiModelProperty(dataType = "string")

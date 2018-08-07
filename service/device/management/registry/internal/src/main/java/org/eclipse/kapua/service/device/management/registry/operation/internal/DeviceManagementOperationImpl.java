@@ -104,6 +104,7 @@ public class DeviceManagementOperationImpl extends AbstractKapuaUpdatableEntity 
         return endedOn;
     }
 
+    @Override
     public void setEndedOn(Date endedOn) {
         this.endedOn = endedOn;
     }
