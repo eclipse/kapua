@@ -114,6 +114,7 @@ public class LoginDialog extends Dialog {
         username = new TextField<String>();
         username.setFieldLabel(CORE_MSGS.loginUsername());
         username.addKeyListener(keyListener);
+        username.setAllowBlank(false);
         username.addListener(Events.OnBlur, changeListener);
 
         add(username);
@@ -122,6 +123,7 @@ public class LoginDialog extends Dialog {
         password.setPassword(true);
         password.setFieldLabel(CORE_MSGS.loginPassword());
         password.addKeyListener(keyListener);
+        password.setAllowBlank(false);
         password.addListener(Events.OnBlur, changeListener);
 
         add(password);
@@ -268,7 +270,7 @@ public class LoginDialog extends Dialog {
 
     protected boolean hasValue(TextField<String> field) {
         return field.getValue() != null &&
-                !field.getValue().isEmpty();
+                !field.getValue().trim().isEmpty();
     }
 
     protected void validate() {
