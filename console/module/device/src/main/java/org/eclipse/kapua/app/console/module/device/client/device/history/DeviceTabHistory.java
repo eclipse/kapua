@@ -144,14 +144,11 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 if (!refreshProcess) {
-                    refreshButton.setEnabled(false);
                     refreshProcess = true;
 
                     reload();
 
                     refreshProcess = false;
-                    refreshButton.setEnabled(true);
-                    pagingToolBar.enable();
                 }
             }
         });
@@ -346,6 +343,16 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
             }
 
             toolBar.enable();
+            pagingToolBar.enable();
+            export.enable();
+            refreshButton.enable();
+        }
+
+        @Override
+        public void loaderBeforeLoad(LoadEvent le) {
+            super.loaderBeforeLoad(le);
+            export.disable();
+            refreshButton.disable();
         }
     }
 }
