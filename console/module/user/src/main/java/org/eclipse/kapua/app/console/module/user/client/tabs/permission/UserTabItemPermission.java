@@ -22,6 +22,7 @@ import org.eclipse.kapua.app.console.module.authorization.client.tabs.permission
 import org.eclipse.kapua.app.console.module.authorization.client.tabs.permission.UserTabPermissionToolbar;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.AccessInfoSessionPermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.DomainSessionPermission;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.GroupSessionPermission;
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 
 public class UserTabItemPermission extends KapuaTabItem<GwtUser> {
@@ -66,8 +67,9 @@ public class UserTabItemPermission extends KapuaTabItem<GwtUser> {
     @Override
     protected void doRefresh() {
         permissionGrid.refresh();
-        permissionGrid.getToolbar().getAddEntityButton().setEnabled(selectedEntity != null && currentSession.hasPermission(AccessInfoSessionPermission.write()) &&
-              currentSession.hasPermission(DomainSessionPermission.read()) && currentSession.hasPermission(DomainSessionPermission.write()));
+        permissionGrid.getToolbar().getAddEntityButton().setEnabled(selectedEntity != null && currentSession.hasPermission(AccessInfoSessionPermission.read())
+                && currentSession.hasPermission(AccessInfoSessionPermission.write()) && currentSession.hasPermission(DomainSessionPermission.read()) 
+                && currentSession.hasPermission(DomainSessionPermission.write()) && currentSession.hasPermission(GroupSessionPermission.read()));
         permissionGrid.getToolbar().getRefreshEntityButton().setEnabled(selectedEntity != null);
     }
 
