@@ -27,6 +27,8 @@ import org.eclipse.kapua.service.datastore.client.QueryConverter;
 import org.eclipse.kapua.service.datastore.client.SchemaKeys;
 import org.eclipse.kapua.service.datastore.client.model.BulkUpdateRequest;
 import org.eclipse.kapua.service.datastore.client.model.BulkUpdateResponse;
+import org.eclipse.kapua.service.datastore.client.model.CheckResponse;
+import org.eclipse.kapua.service.datastore.client.model.CheckResponse.ESHealthStatus;
 import org.eclipse.kapua.service.datastore.client.model.IndexRequest;
 import org.eclipse.kapua.service.datastore.client.model.IndexResponse;
 import org.eclipse.kapua.service.datastore.client.model.InsertRequest;
@@ -35,6 +37,9 @@ import org.eclipse.kapua.service.datastore.client.model.ResultList;
 import org.eclipse.kapua.service.datastore.client.model.TypeDescriptor;
 import org.eclipse.kapua.service.datastore.client.model.UpdateRequest;
 import org.eclipse.kapua.service.datastore.client.model.UpdateResponse;
+import org.elasticsearch.action.ActionFuture;
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexAction;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
@@ -54,6 +59,7 @@ import org.elasticsearch.action.search.SearchPhaseExecutionException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.cluster.health.ClusterHealthStatus;
 import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.settings.Settings;
@@ -452,6 +458,24 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
                 .setSettings(indexSettings.toString(), XContentType.JSON)
                 .execute()
                 .actionGet(getQueryTimeout());
+    }
+
+    @Override
+    public CheckResponse healthCheck() throws ClientException {
+        checkClient();
+        ClusterHealthRequest chreq = new ClusterHealthRequest();
+        ActionFuture<ClusterHealthResponse> response = esClientProvider.getClient().admin().cluster().health(chreq);
+        ClusterHealthResponse chresp = response.actionGet();
+        chresp.getStatus();
+        if (ClusterHealthStatus.GREEN.equals(chresp.getStatus())) {
+            return new CheckResponse(ESHealthStatus.GREEN);
+        }
+        else if (ClusterHealthStatus.YELLOW.equals(chresp.getStatus())) {
+            return new CheckResponse(ESHealthStatus.YELLOW);
+        }
+        else {
+            return new CheckResponse(ESHealthStatus.RED);
+        }
     }
 
     @Override

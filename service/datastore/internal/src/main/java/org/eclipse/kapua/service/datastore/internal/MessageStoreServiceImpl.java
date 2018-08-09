@@ -34,6 +34,7 @@ import org.eclipse.kapua.service.datastore.DatastoreDomains;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.client.ClientCommunicationException;
 import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
+import org.eclipse.kapua.service.datastore.client.model.CheckResponse.ESHealthStatus;
 import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreCommunicationException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreException;
@@ -216,6 +217,15 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         checkDataAccess(query.getScopeId(), Actions.delete);
         try {
             messageStoreFacade.delete(query);
+        } catch (Exception e) {
+            throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e);
+        }
+    }
+
+    @Override
+    public ESHealthStatus getStatus() throws KapuaException {
+        try {
+            return messageStoreFacade.getStatus();
         } catch (Exception e) {
             throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e);
         }
