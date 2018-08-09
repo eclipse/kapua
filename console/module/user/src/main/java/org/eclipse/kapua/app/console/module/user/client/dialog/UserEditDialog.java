@@ -122,7 +122,7 @@ public class UserEditDialog extends UserAddDialog {
         usernameLabel.setVisible(true);
         username.setVisible(false);
         usernameLabel.setValue(gwtUser.getUsername());
-        usernameLabel.setToolTip(gwtUser.getUsername());
+        usernameLabel.setToolTip(USER_MSGS.dialogAddFieldNameEditDialogTooltip());
         if (password != null) {
             password.setVisible(false);
             password.setAllowBlank(true);

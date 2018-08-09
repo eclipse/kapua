@@ -42,6 +42,7 @@ public class AccountEditDialog extends AccountAddDialog {
 
         fieldSet.remove(accountNameField);
         accountNameLabel.setVisible(true);
+        accountNameLabel.setToolTip(MSGS.accountFormParentAccountNameEditDialogTooltip());
 
         accountNameLabel.setValue(selectedAccount.getName());
         accountNameField.setValue(selectedAccount.getName());

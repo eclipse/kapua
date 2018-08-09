@@ -106,6 +106,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
         parentAccountNameLabel.setName("parentAccount");
         parentAccountNameLabel.setFieldLabel(MSGS.accountFormParentAccount());
         parentAccountNameLabel.setLabelSeparator(":");
+        parentAccountNameLabel.setToolTip(MSGS.accountFormParentAccountTooltip());
         parentAccountNameLabel.setStyleAttribute("word-wrap", "break-word");
         parentAccountNameLabel.setValue(currentSession.getSelectedAccountName());
         fieldSet.add(parentAccountNameLabel, accountFieldsetFormData);
@@ -124,10 +125,12 @@ public class AccountAddDialog extends EntityAddEditDialog {
         accountNameField.setName("accountName");
         accountNameField.setFieldLabel("* " + MSGS.accountFormName());
         accountNameField.setValidator(new TextFieldValidator(accountNameField, FieldType.SIMPLE_NAME));
+        accountNameField.setToolTip(MSGS.accountFormParentAccountNameTooltip());
         fieldSet.add(accountNameField, accountFieldsetFormData);
 
         expirationDateField.setEmptyText(MSGS.accountFormNoExpiration());
         expirationDateField.setFieldLabel(MSGS.accountFormExpirationDate());
+        expirationDateField.setToolTip(MSGS.accountFormExpirationDateTooltip());
         expirationDateField.setFormatValue(true);
         expirationDateField.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         expirationDateField.setMaxLength(10);
@@ -168,6 +171,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
         organizationName.setMaxLength(255);
         organizationName.setName("organizationName");
         organizationName.setFieldLabel("* " + MSGS.accountFormOrgName());
+        organizationName.setToolTip(MSGS.accountFormOrgNameTooltip());
         fieldSetOrg.add(organizationName, accountFieldsetFormData);
 
         //
@@ -178,6 +182,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
         organizationEmail.setName("organizationEmail");
         organizationEmail.setFieldLabel("* " + MSGS.accountFormOrgEmail());
         organizationEmail.setValidator(new TextFieldValidator(organizationEmail, FieldType.EMAIL));
+        organizationEmail.setToolTip(MSGS.accountFormOrgEmailTooltip());
         fieldSetOrg.add(organizationEmail, accountFieldsetFormData);
 
         // //////////////////////////////////////////
@@ -203,43 +208,51 @@ public class AccountAddDialog extends EntityAddEditDialog {
         organizationContactName.setName("organizationContactName");
         organizationContactName.setMaxLength(255);
         organizationContactName.setFieldLabel(MSGS.accountFormOrgContactName());
+        organizationContactName.setToolTip(MSGS.accountFormOrgContactNameTooltip());
         organizationSubFieldSet.add(organizationContactName, subFieldsetFormData);
 
         organizationPhoneNumber.setName("organizationPhoneNumber");
         organizationPhoneNumber.setMaxLength(64);
         organizationPhoneNumber.setFieldLabel(MSGS.accountFormOrgPhoneNumber());
         organizationPhoneNumber.setValidator(new TextFieldValidator(organizationPhoneNumber, FieldType.PHONE));
+        organizationPhoneNumber.setToolTip(MSGS.accountFormOrgPhoneNumberTooltip());
         organizationSubFieldSet.add(organizationPhoneNumber, subFieldsetFormData);
 
         organizationAddressLine1.setName("organizationAddressLine1");
         organizationAddressLine1.setMaxLength(255);
         organizationAddressLine1.setFieldLabel(MSGS.accountFormOrgAddress1());
+        organizationAddressLine1.setToolTip(MSGS.accountFormOrgAddress1Tooltip());
         organizationSubFieldSet.add(organizationAddressLine1, subFieldsetFormData);
 
         organizationAddressLine1.setName("organizationAddressLine2");
         organizationAddressLine1.setMaxLength(255);
         organizationAddressLine2.setFieldLabel(MSGS.accountFormOrgAddress2());
+        organizationAddressLine2.setToolTip(MSGS.accountFormOrgAddress2Tooltip());
         organizationAddressLine2.setMaxLength(255);
         organizationSubFieldSet.add(organizationAddressLine2, subFieldsetFormData);
 
         organizationZipPostCode.setName("organizationZipPostCode");
         organizationZipPostCode.setMaxLength(255);
         organizationZipPostCode.setFieldLabel(MSGS.accountFormOrgZipPostCode());
+        organizationZipPostCode.setToolTip(MSGS.accountFormOrgZipPostCodeTooltip());
         organizationSubFieldSet.add(organizationZipPostCode, subFieldsetFormData);
 
         organizationCity.setName("organizationCity");
         organizationCity.setMaxLength(255);
         organizationCity.setFieldLabel(MSGS.accountFormOrgCity());
+        organizationCity.setToolTip(MSGS.accountFormOrgCityTooltip());
         organizationSubFieldSet.add(organizationCity, subFieldsetFormData);
 
         organizationStateProvinceCounty.setName("organizationStateProvinceCounty");
         organizationStateProvinceCounty.setMaxLength(255);
         organizationStateProvinceCounty.setFieldLabel(MSGS.accountFormOrgState());
+        organizationStateProvinceCounty.setToolTip(MSGS.accountFormOrgStateTooltip());
         organizationSubFieldSet.add(organizationStateProvinceCounty, subFieldsetFormData);
 
         organizationCountry.setName("organizationCountry");
         organizationCountry.setMaxLength(255);
         organizationCountry.setFieldLabel(MSGS.accountFormOrgCountry());
+        organizationCountry.setToolTip(MSGS.accountFormOrgCountryTooltip());
         organizationSubFieldSet.add(organizationCountry, subFieldsetFormData);
 
         // add the field set and reset
