@@ -188,7 +188,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         internalDeleteByDate(indexingWindow);
     }
 
-    @Test
     public void internalDeleteByDate(String indexingWindowOption) throws InterruptedException, KapuaException, ParseException {
         KapuaLocator locator = KapuaLocator.getInstance();
         DeviceFactory deviceFactory = locator.getFactory(DeviceFactory.class);

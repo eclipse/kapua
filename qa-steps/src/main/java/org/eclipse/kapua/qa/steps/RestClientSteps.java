@@ -63,7 +63,7 @@ public class RestClientSteps extends Assert {
     }
 
     @When("^REST GET call at \"(.*)\"")
-    public void restGetCall(String resource) {
+    public void restGetCall(String resource) throws Exception {
 
         String host = (String) stepData.get("host");
         String port = (String) stepData.get("port");
@@ -86,12 +86,9 @@ public class RestClientSteps extends Assert {
             }
             conn.disconnect();
             stepData.put("restResponse", sb.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch ( IOException ioe) {
+            logger.error("Exception on REST call execution: " + resource);
+            throw ioe;
         }
     }
 

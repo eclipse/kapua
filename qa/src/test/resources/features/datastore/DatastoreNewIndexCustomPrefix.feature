@@ -34,7 +34,7 @@ Feature: Datastore tests
     When I prepare a random message with capture date "2018-01-01T10:21:32.123Z" and save it as "RandomDataMessage"
     And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
     And I refresh all database indices
-    When REST call at "/_cat/indices/"
+    When REST GET call at "/_cat/indices/"
     Then REST response containing text "green open"
     And REST response containing text "custom-prefix-1-2018-01"
     And All indices are deleted
