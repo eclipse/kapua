@@ -162,14 +162,23 @@ public class LoginDialog extends Dialog {
         getButtonBar().add(new FillToolItem());
 
         reset = new Button(CORE_MSGS.loginReset());
+        reset.addListener(Events.OnFocus, new Listener<BaseEvent>() {
+
+    @Override
+    public void handleEvent(BaseEvent be) {
+        username.clearInvalid();
+        password.clearInvalid();
+            }
+        });
+
         reset.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                username.reset();
-                password.reset();
-                validate();
-                username.focus();
+                    username.reset();
+                    password.reset();
+                    validate();
+                    username.focus(); 
             }
         });
 
