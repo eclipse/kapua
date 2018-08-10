@@ -134,6 +134,7 @@ public class AboutView extends AbstractView implements View {
         // the grid
 
         final Grid<BeanModel> grid = new Grid<BeanModel>(store, cm);
+        grid.getView().setForceFit(true);
         grid.setId("about-grid");
         grid.setAutoExpandColumn("id");
         grid.setBorders(true);
