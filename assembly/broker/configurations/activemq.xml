@@ -181,8 +181,10 @@
             <!-- don't enable the nio since with the nio (amqp+nio) during the qa tests a lot of
             org.apache.activemq.broker.TransportConnection.Transport - Transport Connection to: null failed: java.io.IOException: Frame size of 1 GB larger than max allowed 1 MB
             are shown-->
+            <!-- option: transport.transformer=jms
+            for details see http://activemq.apache.org/amqp.html#AMQP-MappingtoJMS -->
             <transportConnector name="amqp"
-                                uri="amqp://0.0.0.0:5672?maximumConnections=1000&amp;wireFormat.maxFrameSize=1048576" />
+                                uri="amqp://0.0.0.0:5672?maximumConnections=1000&amp;wireFormat.maxFrameSize=1048576&amp;transport.transformer=jms" />
         </transportConnectors>
         <!-- NOTE:
         The following template shows how to configure a network of brokers (i.e. a broker cluster).

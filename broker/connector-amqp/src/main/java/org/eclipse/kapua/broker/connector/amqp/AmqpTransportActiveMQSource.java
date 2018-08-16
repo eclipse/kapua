@@ -115,8 +115,14 @@ public class AmqpTransportActiveMQSource extends AbstractAmqpSource<byte[]> {
         // extract original MQTT topic
         //TODO restore it once the ActiveMQ issue will be fixed
         //String mqttTopic = message.getProperties().getTo(); // topic://VirtualTopic.kapua-sys.02:42:AC:11:00:02.heater.data
-        String mqttTopic = (String)message.getApplicationProperties().getValue().get("originalTopic");
-        mqttTopic = mqttTopic.replace(".", "/");
+        String mqttTopic = null;
+        if (message.getApplicationProperties()!=null) {
+            mqttTopic = (String)message.getApplicationProperties().getValue().get("originalTopic");
+            mqttTopic = mqttTopic.replace(".", "/");
+        }
+        else {
+            mqttTopic = (String)message.getProperties().getTo();
+        }
         // process prefix and extract message type
         // FIXME: pluggable message types and dialects
         if (mqttTopic!=null && mqttTopic.startsWith(CLASSIFIER_TOPIC_PREFIX)) {
@@ -145,7 +151,7 @@ public class AmqpTransportActiveMQSource extends AbstractAmqpSource<byte[]> {
         }
 
         // extract the original QoS
-        Object activeMqQos = message.getApplicationProperties().getValue().get(ACTIVEMQ_QOS);
+        Object activeMqQos = message.getApplicationProperties()!=null ? message.getApplicationProperties().getValue().get(ACTIVEMQ_QOS) : null;
         if (activeMqQos != null && activeMqQos instanceof Integer) {
             int activeMqQosInt = (int) activeMqQos;
             switch (activeMqQosInt) {
@@ -159,6 +165,9 @@ public class AmqpTransportActiveMQSource extends AbstractAmqpSource<byte[]> {
                 parameters.put(Properties.MESSAGE_QOS, TransportQos.EXACTLY_ONCE);
                 break;
             }
+        }
+        else {
+            parameters.put(Properties.MESSAGE_QOS, TransportQos.AT_LEAST_ONCE);
         }
         return parameters;
     }

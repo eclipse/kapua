@@ -25,6 +25,7 @@
 
     <modules>
         <module>amqp</module>
+        <module>amqp-proton</module>
         <module>hono</module>
     </modules>
 </project>

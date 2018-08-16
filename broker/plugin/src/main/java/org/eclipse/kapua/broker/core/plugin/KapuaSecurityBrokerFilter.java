@@ -23,6 +23,7 @@ import org.apache.activemq.broker.ProducerBrokerExchange;
 import org.apache.activemq.broker.TransportConnector;
 import org.apache.activemq.broker.region.Subscription;
 import org.apache.activemq.command.ActiveMQDestination;
+import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.activemq.command.ActiveMQTopic;
 import org.apache.activemq.command.ConnectionInfo;
 import org.apache.activemq.command.ConsumerInfo;
@@ -574,6 +575,11 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
         if (destination instanceof ActiveMQTopic) {
             ActiveMQTopic destinationTopic = (ActiveMQTopic) destination;
             messageSend.setProperty(Properties.PROPERTY_ORIGINAL_TOPIC, destinationTopic.getTopicName().substring(VT_TOPIC_PREFIX.length()));
+        }
+        else {
+            ActiveMQQueue destinationQueue = (ActiveMQQueue) destination;
+            logger.info(destinationQueue.toString());
+            messageSend.setProperty(Properties.PROPERTY_ORIGINAL_TOPIC, destinationQueue.getQueueName().substring(VT_TOPIC_PREFIX.length()));
         }
         publishMetric.getAllowedMessages().inc();
         super.send(producerExchange, messageSend);
