@@ -88,14 +88,14 @@ public abstract class AbstractAmqpSource<M> implements MessageSource<M> {
         logger.debug("Received message with body: {}", body);
         if (body instanceof Data) {
             Binary data = ((Data) body).getValue();
-            logger.debug("Received DATA message");
-            return data.getArray();
+            logger.debug("Received data message: {}", body);
+            return data != null ? data.getArray() : new byte[0];
         } else if (body instanceof AmqpValue) {
             String content = (String) ((AmqpValue) body).getValue();
             logger.debug("Received message with content: {}", content);
-            return content.getBytes();
+            return content != null ? content.getBytes() : new byte[0];
         } else {
-            logger.warn("Recevide message with unknown message type! ({})", body != null ? body.getClass() : "NULL");
+            logger.warn("Received message with unknown message type! ({})", body != null ? body.getClass() : "null");
             throw new KapuaConverterException(KapuaErrorCodes.INTERNAL_ERROR);
         }
     }
