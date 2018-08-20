@@ -35,6 +35,7 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
+import org.eclipse.kapua.service.user.UserDomains;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserAttributes;
@@ -64,7 +65,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
      * Constructor
      */
     public UserServiceImpl() {
-        super(UserService.class.getName(), USER_DOMAIN, UserEntityManagerFactory.getInstance(), UserService.class, UserFactory.class);
+        super(UserService.class.getName(), UserDomains.USER_DOMAIN, UserEntityManagerFactory.getInstance(), UserService.class, UserFactory.class);
     }
 
     @Override
@@ -92,7 +93,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(USER_DOMAIN, Actions.write, userCreator.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(UserDomains.USER_DOMAIN, Actions.write, userCreator.getScopeId()));
 
         //
         // Check duplicate name
@@ -130,7 +131,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(USER_DOMAIN, Actions.write, user.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(UserDomains.USER_DOMAIN, Actions.write, user.getScopeId()));
 
         //
         // Check existence
@@ -173,7 +174,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(USER_DOMAIN, Actions.delete, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(UserDomains.USER_DOMAIN, Actions.delete, scopeId));
 
         //
         // Check existence
@@ -210,7 +211,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(USER_DOMAIN, Actions.read, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(UserDomains.USER_DOMAIN, Actions.read, scopeId));
 
         // Do the find
         return entityManagerSession.onResult(em -> UserDAO.find(em, userId));
@@ -248,7 +249,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(USER_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(UserDomains.USER_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -265,7 +266,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(USER_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(UserDomains.USER_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do count
@@ -280,7 +281,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
     private User checkReadAccess(User user) throws KapuaException {
         if (user != null) {
-            AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(USER_DOMAIN, Actions.read, user.getScopeId()));
+            AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(UserDomains.USER_DOMAIN, Actions.read, user.getScopeId()));
         }
         return user;
     }

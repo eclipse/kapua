@@ -23,6 +23,7 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceDomains;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
@@ -71,7 +72,7 @@ public class DeviceEventServiceImpl extends AbstractKapuaService implements Devi
         ArgumentValidator.notEmptyOrNull(deviceEventCreator.getResource(), "deviceEventCreator.eventType");
 
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_EVENT_DOMAIN, Actions.write, deviceEventCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.write, deviceEventCreator.getScopeId()));
 
         // Check that device exists
         if (deviceRegistryService.find(deviceEventCreator.getScopeId(), deviceEventCreator.getDeviceId()) == null) {
@@ -103,7 +104,7 @@ public class DeviceEventServiceImpl extends AbstractKapuaService implements Devi
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_EVENT_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.read, scopeId));
 
         return entityManagerSession.onResult(em -> DeviceEventDAO.find(em, entityId));
     }
@@ -118,7 +119,7 @@ public class DeviceEventServiceImpl extends AbstractKapuaService implements Devi
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_EVENT_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.read, query.getScopeId()));
 
         return entityManagerSession.onResult(em -> DeviceEventDAO.query(em, query));
     }
@@ -133,7 +134,7 @@ public class DeviceEventServiceImpl extends AbstractKapuaService implements Devi
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_EVENT_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.read, query.getScopeId()));
 
         return entityManagerSession.onResult(em -> DeviceEventDAO.count(em, query));
     }
@@ -147,7 +148,7 @@ public class DeviceEventServiceImpl extends AbstractKapuaService implements Devi
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_EVENT_DOMAIN, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.delete, scopeId));
 
         entityManagerSession.onTransactedAction(em -> {
             if (DeviceEventDAO.find(em, deviceEventId) == null) {

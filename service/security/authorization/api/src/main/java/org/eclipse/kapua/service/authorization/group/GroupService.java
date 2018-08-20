@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.authorization.group;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.KapuaDomainService;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
@@ -26,15 +25,7 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
  */
 public interface GroupService extends KapuaEntityService<Group, GroupCreator>,
         KapuaUpdatableEntityService<Group>,
-        KapuaDomainService<GroupDomain>,
         KapuaConfigurableService {
-
-    GroupDomain GROUP_DOMAIN = new GroupDomain();
-
-    @Override
-    default GroupDomain getServiceDomain() {
-        return GROUP_DOMAIN;
-    }
 
     /**
      * Creates a new {@link Group} based on the parameters provided in the {@link GroupCreator}.<br>

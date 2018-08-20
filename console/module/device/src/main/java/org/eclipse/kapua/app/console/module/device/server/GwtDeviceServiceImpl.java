@@ -55,6 +55,7 @@ import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
+import org.eclipse.kapua.service.device.registry.DeviceDomains;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceAttributes;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
@@ -206,7 +207,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                     }
                 }
 
-                if (AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(DeviceEventService.DEVICE_EVENT_DOMAIN, Actions.read, device.getScopeId()))) {
+                if (AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.read, device.getScopeId()))) {
                     if (device.getLastEventId() != null) {
                         DeviceEvent lastEvent = deviceEventService.find(scopeId, device.getLastEventId());
 
@@ -248,7 +249,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                 pairs.add(new GwtGroupedNVPair("devJava", "devJvmVersion", device.getJvmVersion()));
 
                 // GPS infos retrieval
-                if (AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(DeviceEventService.DEVICE_EVENT_DOMAIN, Actions.read, device.getScopeId()))) {
+                if (AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.read, device.getScopeId()))) {
                     DeviceEventFactory deviceEventFactory = locator.getFactory(DeviceEventFactory.class);
                     DeviceEventQuery eventQuery = deviceEventFactory
                             .newQuery(device.getScopeId());

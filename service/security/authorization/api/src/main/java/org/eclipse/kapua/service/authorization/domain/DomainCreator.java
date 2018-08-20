@@ -29,7 +29,16 @@ import java.util.Set;
  */
 @XmlRootElement(name = "domainCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-public interface DomainCreator extends KapuaEntityCreator<Domain>, org.eclipse.kapua.model.domain.Domain {
+//public interface DomainCreator extends KapuaEntityCreator<Domain>, org.eclipse.kapua.model.domain.Domain {
+public interface DomainCreator extends KapuaEntityCreator<Domain> {
+
+    public String getName();
+
+    public String getServiceName();
+
+    public Set<Actions> getActions();
+
+    public boolean getGroupable();
 
     /**
      * Sets the {@link Domain} name.

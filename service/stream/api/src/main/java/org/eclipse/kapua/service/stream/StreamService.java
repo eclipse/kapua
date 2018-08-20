@@ -14,18 +14,10 @@ package org.eclipse.kapua.service.stream;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
-import org.eclipse.kapua.service.KapuaDomainService;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
 
-public interface StreamService extends KapuaService, KapuaDomainService<StreamDomain> {
-
-    StreamDomain STREAM_DOMAIN = new StreamDomain();
-
-    @Override
-    default StreamDomain getServiceDomain() {
-        return STREAM_DOMAIN;
-    }
+public interface StreamService extends KapuaService {
 
     KapuaResponseMessage<?, ?> publish(KapuaDataMessage message, Long timeout) throws KapuaException;
 }

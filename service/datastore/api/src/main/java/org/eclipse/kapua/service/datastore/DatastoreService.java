@@ -11,15 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore;
 
-import org.eclipse.kapua.service.KapuaDomainService;
 import org.eclipse.kapua.service.KapuaService;
 
-public interface DatastoreService extends KapuaService, KapuaDomainService<DatastoreDomain> {
-
-    DatastoreDomain DATASTORE_DOMAIN = new DatastoreDomain();
-
-    @Override
-    default DatastoreDomain getServiceDomain() {
-        return DATASTORE_DOMAIN;
-    }
+public interface DatastoreService extends KapuaService {
 }

@@ -11,16 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.scheduler;
 
-import org.eclipse.kapua.service.KapuaDomainService;
 import org.eclipse.kapua.service.KapuaService;
 
-public interface SchedulerService extends KapuaService, KapuaDomainService<SchedulerDomain> {
-
-    SchedulerDomain SCHEDULER_DOMAIN = new SchedulerDomain();
-
-    @Override
-    default SchedulerDomain getServiceDomain() {
-        return SCHEDULER_DOMAIN;
-    }
+public interface SchedulerService extends KapuaService {
 
 }

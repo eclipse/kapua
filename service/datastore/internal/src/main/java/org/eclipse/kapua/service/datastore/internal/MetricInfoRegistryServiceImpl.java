@@ -23,6 +23,7 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.datastore.DatastoreDomains;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
 import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
@@ -79,7 +80,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
      * @throws ClientUnavailableException
      */
     public MetricInfoRegistryServiceImpl() throws ClientUnavailableException {
-        super(MetricInfoRegistryService.class.getName(), DATASTORE_DOMAIN, DatastoreEntityManagerFactory.getInstance());
+        super(MetricInfoRegistryService.class.getName(), DatastoreDomains.DATASTORE_DOMAIN, DatastoreEntityManagerFactory.getInstance());
 
         KapuaLocator locator = KapuaLocator.getInstance();
         accountService = locator.getService(AccountService.class);
@@ -177,7 +178,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
 
     private void checkDataAccess(KapuaId scopeId, Actions action)
             throws KapuaException {
-        Permission permission = permissionFactory.newPermission(DATASTORE_DOMAIN, action, scopeId);
+        Permission permission = permissionFactory.newPermission(DatastoreDomains.DATASTORE_DOMAIN, action, scopeId);
         authorizationService.checkPermission(permission);
     }
 

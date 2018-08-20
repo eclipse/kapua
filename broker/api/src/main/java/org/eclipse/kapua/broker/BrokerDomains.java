@@ -9,16 +9,11 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service;
+package org.eclipse.kapua.broker;
 
-import org.eclipse.kapua.model.domain.Domain;
+public class BrokerDomains {
 
-/**
- * {@link KapuaService} extension to make a {@link KapuaEntityService} able to return its entity {@link Domain}
- *
- * @since 1.0
- */
-public interface KapuaDomainService<D extends Domain> extends KapuaService {
+    private BrokerDomains() { }
 
-    D getServiceDomain();
+    public static final BrokerDomain BROKER_DOMAIN = new BrokerDomain();
 }

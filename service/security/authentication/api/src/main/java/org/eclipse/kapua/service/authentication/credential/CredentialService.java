@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.authentication.credential;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.KapuaDomainService;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
@@ -26,15 +25,7 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
  */
 public interface CredentialService extends KapuaEntityService<Credential, CredentialCreator>,
         KapuaUpdatableEntityService<Credential>,
-        KapuaDomainService<CredentialDomain>,
         KapuaConfigurableService {
-
-    CredentialDomain CREDENTIAL_DOMAIN = new CredentialDomain();
-
-    @Override
-    default CredentialDomain getServiceDomain() {
-        return CREDENTIAL_DOMAIN;
-    }
 
     /**
      * Return the credential list result looking by user identifier (and also scope identifier)

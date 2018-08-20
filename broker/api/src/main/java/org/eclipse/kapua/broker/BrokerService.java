@@ -11,15 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker;
 
-import org.eclipse.kapua.service.KapuaDomainService;
 import org.eclipse.kapua.service.KapuaService;
 
-public interface BrokerService extends KapuaService, KapuaDomainService {
+public interface BrokerService extends KapuaService {
 
-    public static final BrokerDomain BROKER_DOMAIN = new BrokerDomain();
-
-    @Override
-    public default BrokerDomain getServiceDomain() {
-        return BROKER_DOMAIN;
-    }
 }

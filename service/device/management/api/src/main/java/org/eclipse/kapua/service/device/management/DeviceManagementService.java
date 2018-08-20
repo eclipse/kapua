@@ -11,16 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management;
 
-import org.eclipse.kapua.service.KapuaDomainService;
 import org.eclipse.kapua.service.KapuaService;
 
-public interface DeviceManagementService extends KapuaService, KapuaDomainService<DeviceManagementDomain> {
-
-    DeviceManagementDomain DEVICE_MANAGEMENT_DOMAIN = new DeviceManagementDomain();
-
-    @Override
-    default DeviceManagementDomain getServiceDomain() {
-        return DEVICE_MANAGEMENT_DOMAIN;
-    }
+public interface DeviceManagementService extends KapuaService {
 
 }
