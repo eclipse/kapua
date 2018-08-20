@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,18 +9,13 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.authentication.token;
+package org.eclipse.kapua.service.job.execution;
 
-import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
+import org.eclipse.kapua.model.KapuaUpdatableEntityAttributes;
 
-/**
- * Access Token predicates used to build query predicates.
- *
- * @since 1.0
- */
-public interface AccessTokenPredicates extends KapuaUpdatableEntityPredicates {
+public class JobExecutionAttributes extends KapuaUpdatableEntityAttributes {
 
-    String TOKEN_ID = "tokenId";
-    String USER_ID = "userId";
-
+    public static final String JOB_ID = "jobId";
+    public static final String STARTED_ON = "startedOn";
+    public static final String ENDED_ON = "endedOn";
 }

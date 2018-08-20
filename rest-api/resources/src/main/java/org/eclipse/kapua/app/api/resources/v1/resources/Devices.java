@@ -40,7 +40,7 @@ import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
-import org.eclipse.kapua.service.device.registry.DevicePredicates;
+import org.eclipse.kapua.service.device.registry.DeviceAttributes;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
@@ -95,13 +95,13 @@ public class Devices extends AbstractKapuaResource {
 
         AndPredicateImpl andPredicate = new AndPredicateImpl();
         if (tagId != null) {
-            andPredicate.and(new AttributePredicateImpl<KapuaId>(DevicePredicates.TAG_IDS, tagId));
+            andPredicate.and(new AttributePredicateImpl<KapuaId>(DeviceAttributes.TAG_IDS, tagId));
         }
         if (!Strings.isNullOrEmpty(clientId)) {
-            andPredicate.and(new AttributePredicateImpl<>(DevicePredicates.CLIENT_ID, clientId));
+            andPredicate.and(new AttributePredicateImpl<>(DeviceAttributes.CLIENT_ID, clientId));
         }
         if (connectionStatus != null) {
-            andPredicate.and(new AttributePredicateImpl<>(DevicePredicates.CONNECTION_STATUS, connectionStatus));
+            andPredicate.and(new AttributePredicateImpl<>(DeviceAttributes.CONNECTION_STATUS, connectionStatus));
         }
         query.setPredicate(andPredicate);
         query.setFetchAttributes(fetchAttributes);

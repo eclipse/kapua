@@ -26,7 +26,7 @@ import org.eclipse.kapua.service.authorization.group.GroupListResult;
 import org.eclipse.kapua.service.authorization.group.GroupQuery;
 import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupCreatorImpl;
-import org.eclipse.kapua.service.authorization.group.GroupPredicates;
+import org.eclipse.kapua.service.authorization.group.GroupAttributes;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupQueryImpl;
 import org.eclipse.kapua.test.KapuaTest;
 import org.eclipse.kapua.test.ResourceLimitsConfig;
@@ -199,7 +199,7 @@ public class GroupServiceTest extends KapuaTest {
             //
             // Query
             GroupQuery query = new GroupQueryImpl(scope);
-            query.setPredicate(new AttributePredicateImpl<String>(GroupPredicates.NAME, group.getName()));
+            query.setPredicate(new AttributePredicateImpl<String>(GroupAttributes.NAME, group.getName()));
             GroupListResult groupsFound = groupService.query(query);
             long groupsCount = groupService.count(query);
 

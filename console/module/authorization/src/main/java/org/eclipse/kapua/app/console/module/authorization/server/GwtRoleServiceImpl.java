@@ -39,7 +39,7 @@ import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.KapuaEntityPredicates;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
@@ -51,7 +51,7 @@ import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
 import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
-import org.eclipse.kapua.service.authorization.role.RolePermissionPredicates;
+import org.eclipse.kapua.service.authorization.role.RolePermissionAttributes;
 import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
 import org.eclipse.kapua.service.authorization.role.RolePermissionService;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
@@ -265,13 +265,13 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
             // Get permissions assigned to the Role
             RolePermissionQuery query = ROLE_PERMISSION_FACTORY.newQuery(scopeId);
-            query.setPredicate(new AttributePredicateImpl<KapuaId>(RolePermissionPredicates.ROLE_ID, roleId));
+            query.setPredicate(new AttributePredicateImpl<KapuaId>(RolePermissionAttributes.ROLE_ID, roleId));
             query.setLimit(loadConfig.getLimit());
             query.setOffset(loadConfig.getOffset());
 
             String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? "createdOnFormatted" : loadConfig.getSortField();
             if (sortField.equals("createdOnFormatted")) {
-                sortField = KapuaEntityPredicates.CREATED_ON;
+                sortField = KapuaEntityAttributes.CREATED_ON;
             }
 
             SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;

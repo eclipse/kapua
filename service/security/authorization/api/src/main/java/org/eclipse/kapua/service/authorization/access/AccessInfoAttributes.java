@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,16 +9,19 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.authorization.role;
+package org.eclipse.kapua.service.authorization.access;
 
-import org.eclipse.kapua.model.KapuaNamedEntityPredicates;
+import org.eclipse.kapua.model.KapuaUpdatableEntityAttributes;
 
 /**
- * Query predicate attribute name for role entity.
- * 
- * @since 1.0
- * 
+ * Query predicate attribute name for {@link AccessInfo} entity.
+ *
+ * @since 1.0.0
  */
-public interface RolePredicates extends KapuaNamedEntityPredicates {
+public class AccessInfoAttributes extends KapuaUpdatableEntityAttributes {
 
+    /**
+     * User id
+     */
+    public static final String USER_ID = "userId";
 }

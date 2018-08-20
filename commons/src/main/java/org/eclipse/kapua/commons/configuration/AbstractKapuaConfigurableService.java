@@ -22,7 +22,7 @@ import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.commons.util.ResourceUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.KapuaEntityPredicates;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTmetadata;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
@@ -261,8 +261,8 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.read, scopeId));
 
         AndPredicateImpl predicate = new AndPredicateImpl()
-                .and(new AttributePredicateImpl<>(ServiceConfigPredicates.SERVICE_ID, pid, Operator.EQUAL))
-                .and(new AttributePredicateImpl<>(KapuaEntityPredicates.SCOPE_ID, scopeId, Operator.EQUAL));
+                .and(new AttributePredicateImpl<>(ServiceConfigAttributes.SERVICE_ID, pid, Operator.EQUAL))
+                .and(new AttributePredicateImpl<>(KapuaEntityAttributes.SCOPE_ID, scopeId, Operator.EQUAL));
 
         ServiceConfigQueryImpl query = new ServiceConfigQueryImpl(scopeId);
         query.setPredicate(predicate);
@@ -292,8 +292,8 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         ServiceConfigQueryImpl query = new ServiceConfigQueryImpl(scopeId);
         query.setPredicate(
                 new AndPredicateImpl(
-                        new AttributePredicateImpl<>(ServiceConfigPredicates.SERVICE_ID, pid, Operator.EQUAL),
-                        new AttributePredicateImpl<>(KapuaEntityPredicates.SCOPE_ID, scopeId, Operator.EQUAL)
+                        new AttributePredicateImpl<>(ServiceConfigAttributes.SERVICE_ID, pid, Operator.EQUAL),
+                        new AttributePredicateImpl<>(KapuaEntityAttributes.SCOPE_ID, scopeId, Operator.EQUAL)
                 )
         );
 

@@ -36,7 +36,7 @@ import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
-import org.eclipse.kapua.service.authorization.access.AccessInfoPredicates;
+import org.eclipse.kapua.service.authorization.access.AccessInfoAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessInfoQuery;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.user.User;
@@ -90,7 +90,7 @@ public class AccessInfos extends AbstractKapuaResource {
 
         AndPredicateImpl andPredicate = new AndPredicateImpl();
         if (userId != null) {
-            andPredicate.and(new AttributePredicateImpl<>(AccessInfoPredicates.USER_ID, userId));
+            andPredicate.and(new AttributePredicateImpl<>(AccessInfoAttributes.USER_ID, userId));
         }
         query.setPredicate(andPredicate);
 

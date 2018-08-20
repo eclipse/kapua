@@ -46,7 +46,7 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionCreator;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionFactory;
 import org.eclipse.kapua.service.authorization.access.AccessRoleCreator;
 import org.eclipse.kapua.service.authorization.access.AccessRoleFactory;
-import org.eclipse.kapua.service.authorization.access.AccessRolePredicates;
+import org.eclipse.kapua.service.authorization.access.AccessRoleAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainListResult;
@@ -54,7 +54,7 @@ import org.eclipse.kapua.service.authorization.domain.DomainQuery;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupQuery;
-import org.eclipse.kapua.service.authorization.group.GroupPredicates;
+import org.eclipse.kapua.service.authorization.group.GroupAttributes;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.Role;
@@ -63,7 +63,7 @@ import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
-import org.eclipse.kapua.service.authorization.role.RolePredicates;
+import org.eclipse.kapua.service.authorization.role.RoleAttributes;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -88,13 +88,13 @@ public class GwtKapuaAuthorizationModelConverter {
         GroupQuery groupQuery = groupFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtGroupQuery.getScopeId()));
         if (gwtGroupQuery.getName() != null && !gwtGroupQuery.getName().isEmpty()) {
             groupQuery
-                    .setPredicate(new AttributePredicateImpl<String>(GroupPredicates.NAME, gwtGroupQuery.getName(), Operator.LIKE));
+                    .setPredicate(new AttributePredicateImpl<String>(GroupAttributes.NAME, gwtGroupQuery.getName(), Operator.LIKE));
         }
-        String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? GroupPredicates.NAME : loadConfig.getSortField();
+        String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? GroupAttributes.NAME : loadConfig.getSortField();
         if (sortField.equals("groupName")) {
-            sortField = GroupPredicates.NAME;
+            sortField = GroupAttributes.NAME;
         } else if (sortField.equals("createdOnFormatted")) {
-            sortField = GroupPredicates.CREATED_ON;
+            sortField = GroupAttributes.CREATED_ON;
         }
         SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
         FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
@@ -121,13 +121,13 @@ public class GwtKapuaAuthorizationModelConverter {
         // Convert query
         RoleQuery roleQuery = roleFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtRoleQuery.getScopeId()));
         if (gwtRoleQuery.getName() != null && !gwtRoleQuery.getName().trim().isEmpty()) {
-            roleQuery.setPredicate(new AttributePredicateImpl<String>(RolePredicates.NAME, gwtRoleQuery.getName(), Operator.LIKE));
+            roleQuery.setPredicate(new AttributePredicateImpl<String>(RoleAttributes.NAME, gwtRoleQuery.getName(), Operator.LIKE));
         }
-        String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? RolePredicates.NAME : loadConfig.getSortField();
+        String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? RoleAttributes.NAME : loadConfig.getSortField();
         if (sortField.equals("modifiedOnFormatted")) {
-            sortField = RolePredicates.MODIFIED_ON;
+            sortField = RoleAttributes.MODIFIED_ON;
         } else if (sortField.equals("modifiedByName")) {
-            sortField = RolePredicates.MODIFIED_BY;
+            sortField = RoleAttributes.MODIFIED_BY;
         }
         SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
         FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
@@ -147,7 +147,7 @@ public class GwtKapuaAuthorizationModelConverter {
         AccessRoleFactory accessRoleFactory = locator.getFactory(AccessRoleFactory.class);
         AccessRoleQuery accessRoleQuery = accessRoleFactory
                 .newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtRoleQuery.getScopeId()));
-        accessRoleQuery.setPredicate(new AttributePredicateImpl<KapuaId>(AccessRolePredicates.ROLE_ID,
+        accessRoleQuery.setPredicate(new AttributePredicateImpl<KapuaId>(AccessRoleAttributes.ROLE_ID,
                 KapuaEid.parseCompactId(gwtRoleQuery.getRoleId())));
         accessRoleQuery.setOffset(pagingLoadConfig.getOffset());
         accessRoleQuery.setLimit(pagingLoadConfig.getLimit());

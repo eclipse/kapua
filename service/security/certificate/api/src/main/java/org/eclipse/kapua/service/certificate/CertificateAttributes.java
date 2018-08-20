@@ -9,12 +9,22 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.job;
+package org.eclipse.kapua.service.certificate;
 
-import org.eclipse.kapua.model.KapuaNamedEntityPredicates;
+import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 
-public interface JobPredicates extends KapuaNamedEntityPredicates {
+public class CertificateAttributes extends KapuaNamedEntityAttributes {
 
-    String ENDED_ON = "endedOn";
-    String STARTED_ON = "startedOn";
+    public static final String CA_ID = "caId";
+
+    public static final String FORWARDABLE = "forwardable";
+
+    public static final String SIGNATURE = "signature";
+
+    public static final String STATUS = "status";
+
+    public static final String USAGE = "certificateUsages";
+
+    public static final String USAGE_NAME = USAGE + ".name";
+
 }

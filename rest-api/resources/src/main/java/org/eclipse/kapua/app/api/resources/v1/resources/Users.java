@@ -39,7 +39,7 @@ import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
-import org.eclipse.kapua.service.user.UserPredicates;
+import org.eclipse.kapua.service.user.UserAttributes;
 
 import com.google.common.base.Strings;
 
@@ -83,7 +83,7 @@ public class Users extends AbstractKapuaResource {
 
         AndPredicateImpl andPredicate = new AndPredicateImpl();
         if (!Strings.isNullOrEmpty(name)) {
-            andPredicate.and(new AttributePredicateImpl<>(UserPredicates.NAME, name));
+            andPredicate.and(new AttributePredicateImpl<>(UserAttributes.NAME, name));
         }
         query.setPredicate(andPredicate);
 

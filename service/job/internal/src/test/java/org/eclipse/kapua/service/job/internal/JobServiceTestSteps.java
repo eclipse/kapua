@@ -38,7 +38,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.JobCreator;
 import org.eclipse.kapua.service.job.JobFactory;
 import org.eclipse.kapua.service.job.JobJAXBContextProvider;
-import org.eclipse.kapua.service.job.JobPredicates;
+import org.eclipse.kapua.service.job.JobAttributes;
 import org.eclipse.kapua.service.job.JobQuery;
 import org.eclipse.kapua.service.job.JobService;
 import org.eclipse.kapua.service.job.common.CommonData;
@@ -391,7 +391,7 @@ public class JobServiceTestSteps extends AbstractKapuaSteps {
             throws Exception {
 
         JobQuery tmpQuery = jobFactory.newQuery(commonData.currentScopeId);
-        tmpQuery.setPredicate(new AttributePredicateImpl<>(JobPredicates.NAME, name, Operator.STARTS_WITH));
+        tmpQuery.setPredicate(new AttributePredicateImpl<>(JobAttributes.NAME, name, Operator.STARTS_WITH));
 
         try {
             commonData.primeException();
@@ -406,7 +406,7 @@ public class JobServiceTestSteps extends AbstractKapuaSteps {
             throws Exception {
 
         JobQuery tmpQuery = jobFactory.newQuery(commonData.currentScopeId);
-        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo(JobPredicates.NAME, name));
+        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo(JobAttributes.NAME, name));
 
         try {
             commonData.primeException();

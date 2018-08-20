@@ -9,32 +9,13 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.registry.event;
+package org.eclipse.kapua.commons.service.event.store.api;
 
-import org.eclipse.kapua.model.KapuaEntityPredicates;
+import org.eclipse.kapua.model.KapuaUpdatableEntityAttributes;
 
-/**
- * Device event predicates.
- * 
- * @since 1.0
- *
- */
-public interface DeviceEventPredicates extends KapuaEntityPredicates {
+public class EventStoreRecordAttributes extends KapuaUpdatableEntityAttributes {
 
-    /**
-     * Device identifier
-     */
-    String DEVICE_ID = "deviceId";
-    /**
-     * Received on
-     */
-    String RECEIVED_ON = "receivedOn";
-    /**
-     * Sent on
-     */
-    String SENT_ON = "sentOn";
-    /**
-     * Event type
-     */
-    String RESOURCE = "resource";
+    public static final String EVENT_STATUS = "status";
+    public static final String SERVICE_NAME = "service";
+
 }

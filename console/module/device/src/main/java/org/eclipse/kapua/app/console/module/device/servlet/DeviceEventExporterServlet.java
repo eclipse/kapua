@@ -31,7 +31,7 @@ import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventPredicates;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventAttributes;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.slf4j.Logger;
@@ -99,9 +99,9 @@ public class DeviceEventExporterServlet extends HttpServlet {
             // Inserting filter parameter if specified
             AndPredicateImpl andPred = new AndPredicateImpl();
 
-            andPred = andPred.and(new AttributePredicateImpl<KapuaId>(DeviceEventPredicates.DEVICE_ID, KapuaEid.parseCompactId(deviceId), Operator.EQUAL))
-                    .and(new AttributePredicateImpl<Date>(DeviceEventPredicates.RECEIVED_ON, startDate, Operator.GREATER_THAN))
-                    .and(new AttributePredicateImpl<Date>(DeviceEventPredicates.RECEIVED_ON, endDate, Operator.LESS_THAN));
+            andPred = andPred.and(new AttributePredicateImpl<KapuaId>(DeviceEventAttributes.DEVICE_ID, KapuaEid.parseCompactId(deviceId), Operator.EQUAL))
+                    .and(new AttributePredicateImpl<Date>(DeviceEventAttributes.RECEIVED_ON, startDate, Operator.GREATER_THAN))
+                    .and(new AttributePredicateImpl<Date>(DeviceEventAttributes.RECEIVED_ON, endDate, Operator.LESS_THAN));
 
             deq.setPredicate(andPred);
 

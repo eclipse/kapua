@@ -33,13 +33,13 @@ import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.JobCreator;
 import org.eclipse.kapua.service.job.JobFactory;
 import org.eclipse.kapua.service.job.JobListResult;
-import org.eclipse.kapua.service.job.JobPredicates;
+import org.eclipse.kapua.service.job.JobAttributes;
 import org.eclipse.kapua.service.job.JobQuery;
 import org.eclipse.kapua.service.job.JobService;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerPredicates;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerAttributes;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
 
@@ -84,7 +84,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         //
         // Check duplicate name
         JobQuery query = new JobQueryImpl(creator.getScopeId());
-        query.setPredicate(new AttributePredicateImpl<>(JobPredicates.NAME, creator.getName()));
+        query.setPredicate(new AttributePredicateImpl<>(JobAttributes.NAME, creator.getName()));
         if (count(query) > 0) {
             throw new KapuaDuplicateNameException(creator.getName());
         }
@@ -117,8 +117,8 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         JobQuery query = new JobQueryImpl(job.getScopeId());
         query.setPredicate(
                 new AndPredicateImpl(
-                        new AttributePredicateImpl<>(JobPredicates.NAME, job.getName()),
-                        new AttributePredicateImpl<>(JobPredicates.ENTITY_ID, job.getId(), Operator.NOT_EQUAL)
+                        new AttributePredicateImpl<>(JobAttributes.NAME, job.getName()),
+                        new AttributePredicateImpl<>(JobAttributes.ENTITY_ID, job.getId(), Operator.NOT_EQUAL)
                 )
         );
 
@@ -200,9 +200,9 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         // Find all the triggers that are associated with this job
         TriggerQuery query = triggerFactory.newQuery(scopeId);
         AndPredicateImpl andPredicate = new AndPredicateImpl()
-                .and(new AttributePredicateImpl<>(TriggerPredicates.TRIGGER_PROPERTIES_NAME, "jobId"))
-                .and(new AttributePredicateImpl<>(TriggerPredicates.TRIGGER_PROPERTIES_VALUE, jobId.toCompactId()))
-                .and(new AttributePredicateImpl<>(TriggerPredicates.TRIGGER_PROPERTIES_TYPE, KapuaId.class.getName()));
+                .and(new AttributePredicateImpl<>(TriggerAttributes.TRIGGER_PROPERTIES_NAME, "jobId"))
+                .and(new AttributePredicateImpl<>(TriggerAttributes.TRIGGER_PROPERTIES_VALUE, jobId.toCompactId()))
+                .and(new AttributePredicateImpl<>(TriggerAttributes.TRIGGER_PROPERTIES_TYPE, KapuaId.class.getName()));
         query.setPredicate(andPredicate);
 
         //

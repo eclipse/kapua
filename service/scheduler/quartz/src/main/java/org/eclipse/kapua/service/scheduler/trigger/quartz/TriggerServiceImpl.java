@@ -31,7 +31,7 @@ import org.eclipse.kapua.service.scheduler.trigger.Trigger;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerCreator;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerPredicates;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerAttributes;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerProperty;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
@@ -89,7 +89,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         //
         // Check duplicate name
         TriggerQuery query = new TriggerQueryImpl(triggerCreator.getScopeId());
-        query.setPredicate(new AttributePredicateImpl<>(TriggerPredicates.NAME, triggerCreator.getName()));
+        query.setPredicate(new AttributePredicateImpl<>(TriggerAttributes.NAME, triggerCreator.getName()));
 
         if (count(query) > 0) {
             throw new KapuaDuplicateNameException(triggerCreator.getName());
@@ -186,8 +186,8 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         TriggerQuery query = new TriggerQueryImpl(trigger.getScopeId());
         query.setPredicate(
                 new AndPredicateImpl(
-                        new AttributePredicateImpl<>(TriggerPredicates.NAME, trigger.getName()),
-                        new AttributePredicateImpl<>(TriggerPredicates.ENTITY_ID, trigger.getId(), Operator.NOT_EQUAL)
+                        new AttributePredicateImpl<>(TriggerAttributes.NAME, trigger.getName()),
+                        new AttributePredicateImpl<>(TriggerAttributes.ENTITY_ID, trigger.getId(), Operator.NOT_EQUAL)
                 )
         );
 

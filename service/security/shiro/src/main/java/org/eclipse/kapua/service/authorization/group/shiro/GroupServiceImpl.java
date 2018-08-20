@@ -31,7 +31,7 @@ import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.group.GroupCreator;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupListResult;
-import org.eclipse.kapua.service.authorization.group.GroupPredicates;
+import org.eclipse.kapua.service.authorization.group.GroupAttributes;
 import org.eclipse.kapua.service.authorization.group.GroupQuery;
 import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -79,7 +79,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
         //
         // Check duplicate name
         GroupQuery query = new GroupQueryImpl(groupCreator.getScopeId());
-        query.setPredicate(new AttributePredicateImpl<>(GroupPredicates.NAME, groupCreator.getName()));
+        query.setPredicate(new AttributePredicateImpl<>(GroupAttributes.NAME, groupCreator.getName()));
 
         if (count(query) > 0) {
             throw new KapuaDuplicateNameException(groupCreator.getName());
@@ -114,8 +114,8 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
         GroupQuery query = new GroupQueryImpl(group.getScopeId());
         query.setPredicate(
                 new AndPredicateImpl(
-                        new AttributePredicateImpl<>(GroupPredicates.NAME, group.getName()),
-                        new AttributePredicateImpl<>(GroupPredicates.ENTITY_ID, group.getId(), Operator.NOT_EQUAL)
+                        new AttributePredicateImpl<>(GroupAttributes.NAME, group.getName()),
+                        new AttributePredicateImpl<>(GroupAttributes.ENTITY_ID, group.getId(), Operator.NOT_EQUAL)
                 )
         );
 

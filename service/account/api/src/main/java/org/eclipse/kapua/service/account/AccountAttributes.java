@@ -9,13 +9,19 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.service.event.store.api;
+package org.eclipse.kapua.service.account;
 
-import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
+import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 
-public interface EventStoreRecordPredicates extends KapuaUpdatableEntityPredicates {
+public class AccountAttributes extends KapuaNamedEntityAttributes {
 
-    String EVENT_STATUS = "status";
-    String SERVICE_NAME = "service";
+    public static final String PARENT_ACCOUNT_PATH = "parentAccountPath";
 
+    public static final String CHILD_ACCOUNTS = "childAccounts";
+
+    public static final String ORGANIZATION = "organization";
+
+    public static final String ORGANIZATION_NAME = ORGANIZATION + ".name";
+
+    public static final String ORGANIZATION_EMAIL = ORGANIZATION + ".email";
 }

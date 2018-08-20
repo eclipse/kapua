@@ -23,7 +23,7 @@ import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.account.AccountFactory;
-import org.eclipse.kapua.service.account.AccountPredicates;
+import org.eclipse.kapua.service.account.AccountAttributes;
 import org.eclipse.kapua.service.account.AccountQuery;
 
 public class GwtKapuaAccountModelConverter {
@@ -37,22 +37,22 @@ public class GwtKapuaAccountModelConverter {
         AndPredicateImpl predicate = new AndPredicateImpl();
 
         if (gwtAccountQuery.getName() != null && !gwtAccountQuery.getName().trim().isEmpty()) {
-            predicate.and(new AttributePredicateImpl<String>(AccountPredicates.NAME, gwtAccountQuery.getName(), Operator.LIKE));
+            predicate.and(new AttributePredicateImpl<String>(AccountAttributes.NAME, gwtAccountQuery.getName(), Operator.LIKE));
         }
 
         if (gwtAccountQuery.getOrganizationName() != null && !gwtAccountQuery.getOrganizationName().isEmpty()) {
-            predicate.and(new AttributePredicateImpl<String>(AccountPredicates.ORGANIZATION_NAME, gwtAccountQuery.getOrganizationName(), Operator.LIKE));
+            predicate.and(new AttributePredicateImpl<String>(AccountAttributes.ORGANIZATION_NAME, gwtAccountQuery.getOrganizationName(), Operator.LIKE));
         }
 
         if (gwtAccountQuery.getOrganizationEmail() != null && !gwtAccountQuery.getOrganizationEmail().isEmpty()) {
-            predicate.and(new AttributePredicateImpl<String>(AccountPredicates.ORGANIZATION_EMAIL, gwtAccountQuery.getOrganizationEmail(), Operator.LIKE));
+            predicate.and(new AttributePredicateImpl<String>(AccountAttributes.ORGANIZATION_EMAIL, gwtAccountQuery.getOrganizationEmail(), Operator.LIKE));
         }
 
-        String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? AccountPredicates.NAME : loadConfig.getSortField();
+        String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? AccountAttributes.NAME : loadConfig.getSortField();
         if (sortField.equals("modifiedOnFormatted")) {
-            sortField = AccountPredicates.MODIFIED_ON;
+            sortField = AccountAttributes.MODIFIED_ON;
         } else if (sortField.equals("modifiedByName")) {
-            sortField = AccountPredicates.MODIFIED_BY;
+            sortField = AccountAttributes.MODIFIED_BY;
         }
         SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
         FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);

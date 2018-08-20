@@ -37,7 +37,7 @@ import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
-import org.eclipse.kapua.service.user.UserPredicates;
+import org.eclipse.kapua.service.user.UserAttributes;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserStatus;
@@ -97,7 +97,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         //
         // Check duplicate name
         UserQuery query = new UserQueryImpl(userCreator.getScopeId());
-        query.setPredicate(new AttributePredicateImpl<>(UserPredicates.NAME, userCreator.getName()));
+        query.setPredicate(new AttributePredicateImpl<>(UserAttributes.NAME, userCreator.getName()));
         if (count(query) > 0) {
             throw new KapuaDuplicateNameException(userCreator.getName());
         }

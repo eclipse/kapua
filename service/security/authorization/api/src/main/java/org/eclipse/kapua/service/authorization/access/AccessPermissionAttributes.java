@@ -11,64 +11,64 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access;
 
-import org.eclipse.kapua.model.KapuaEntityPredicates;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.service.authorization.permission.Permission;
-import org.eclipse.kapua.service.authorization.permission.PermissionPredicates;
+import org.eclipse.kapua.service.authorization.permission.PermissionAttributes;
 
 /**
  * Query predicate attribute name for {@link AccessPermission} entity.
  *
  * @since 1.0.0
  */
-public interface AccessPermissionPredicates extends KapuaEntityPredicates {
+public class AccessPermissionAttributes extends KapuaEntityAttributes {
 
     /**
      * Predicate for field {@link AccessPermission#getAccessInfoId()}
      *
      * @since 1.0.0
      */
-    String ACCESS_INFO_ID = "accessInfoId";
+    public static final String ACCESS_INFO_ID = "accessInfoId";
 
     /**
      * Predicate for field {@link AccessPermission#getPermission()}
      *
      * @since 1.0.0
      */
-    String PERMISSION = "permission";
+    public static final String PERMISSION = "permission";
 
     /**
      * Predicate for field {@link AccessPermission#getPermission()}.{@link Permission#getDomain()}
      *
      * @since 1.0.0
      */
-    String PERMISSION_DOMAIN = PERMISSION + "." + PermissionPredicates.DOMAIN;
+    public static final String PERMISSION_DOMAIN = PERMISSION + "." + PermissionAttributes.DOMAIN;
 
     /**
      * Predicate for field {@link AccessPermission#getPermission()}.{@link Permission#getAction()}
      *
      * @since 1.0.0
      */
-    String PERMISSION_ACTION = PERMISSION + "." + PermissionPredicates.ACTION;
+    public static final String PERMISSION_ACTION = PERMISSION + "." + PermissionAttributes.ACTION;
 
     /**
      * Predicate for field {@link AccessPermission#getPermission()}.{@link Permission#getTargetScopeId()}
      *
      * @since 1.0.0
      */
-    String PERMISSION_TARGET_SCOPE_ID = PERMISSION + "." + PermissionPredicates.TARGET_SCOPE_ID;
+    public static final String PERMISSION_TARGET_SCOPE_ID = PERMISSION + "." + PermissionAttributes.TARGET_SCOPE_ID;
 
     /**
      * Predicate for field {@link AccessPermission#getPermission()}.{@link Permission#getGroupId()}
      *
      * @since 1.0.0
      */
-    String PERMISSION_GROUP_ID = PERMISSION + "." + PermissionPredicates.GROUP_ID;
+    public static final String PERMISSION_GROUP_ID = PERMISSION + "." + PermissionAttributes.GROUP_ID;
 
     /**
      * Predicate for field {@link AccessPermission#getPermission()}.{@link Permission#getForwardable()}
      *
      * @since 1.0.0
      */
-    String PERMISSION_FORWARDABLE = PERMISSION + "." + PermissionPredicates.FORWARDABLE;
+    public static final String PERMISSION_FORWARDABLE = PERMISSION + "." + PermissionAttributes.FORWARDABLE;
 
 }

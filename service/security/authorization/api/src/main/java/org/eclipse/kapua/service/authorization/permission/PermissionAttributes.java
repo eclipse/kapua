@@ -11,43 +11,43 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.permission;
 
-import org.eclipse.kapua.model.KapuaPredicates;
+public class PermissionAttributes {
 
-public interface PermissionPredicates extends KapuaPredicates {
+    protected PermissionAttributes() { }
 
     /**
      * Predicate for field {@link Permission#getDomain()}
      *
      * @since 1.0.0
      */
-    String DOMAIN = "domain";
+    public static final String DOMAIN = "domain";
 
     /**
      * Predicate for field {@link Permission#getAction()}
      *
      * @since 1.0.0
      */
-    String ACTION = "action";
+    public static final String ACTION = "action";
 
     /**
      * Predicate for field {@link Permission#getTargetScopeId()}
      *
      * @since 1.0.0
      */
-    String TARGET_SCOPE_ID = "targetScopeId";
+    public static final String TARGET_SCOPE_ID = "targetScopeId";
 
     /**
      * Predicate for field {@link Permission#getGroupId()}
      *
      * @since 1.0.0
      */
-    String GROUP_ID = "groupId";
+    public static final String GROUP_ID = "groupId";
 
     /**
      * Predicate for field {@link Permission#getForwardable()}
      *
      * @since 1.0.0
      */
-    String FORWARDABLE = "forwardable";
+    public static final String FORWARDABLE = "forwardable";
 
 }

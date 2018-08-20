@@ -37,7 +37,7 @@ import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountListResult;
-import org.eclipse.kapua.service.account.AccountPredicates;
+import org.eclipse.kapua.service.account.AccountAttributes;
 import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.AccountService;
 
@@ -86,7 +86,7 @@ public class Accounts extends AbstractKapuaResource {
 
         AndPredicateImpl andPredicate = new AndPredicateImpl();
         if (!Strings.isNullOrEmpty(name)) {
-            andPredicate.and(new AttributePredicateImpl<>(AccountPredicates.NAME, name));
+            andPredicate.and(new AttributePredicateImpl<>(AccountAttributes.NAME, name));
         }
         query.setPredicate(andPredicate);
 

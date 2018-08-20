@@ -31,7 +31,7 @@ import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.tag.TagCreator;
 import org.eclipse.kapua.service.tag.TagFactory;
 import org.eclipse.kapua.service.tag.TagListResult;
-import org.eclipse.kapua.service.tag.TagPredicates;
+import org.eclipse.kapua.service.tag.TagAttributes;
 import org.eclipse.kapua.service.tag.TagQuery;
 import org.eclipse.kapua.service.tag.TagService;
 
@@ -73,7 +73,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         //
         // Check duplicate name
         TagQuery query = new TagQueryImpl(tagCreator.getScopeId());
-        query.setPredicate(new AttributePredicateImpl<>(TagPredicates.NAME, tagCreator.getName()));
+        query.setPredicate(new AttributePredicateImpl<>(TagAttributes.NAME, tagCreator.getName()));
 
         if (count(query) > 0) {
             throw new KapuaDuplicateNameException(tagCreator.getName());
@@ -108,8 +108,8 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         TagQuery query = new TagQueryImpl(tag.getScopeId());
         query.setPredicate(
                 new AndPredicateImpl(
-                        new AttributePredicateImpl<>(TagPredicates.NAME, tag.getName()),
-                        new AttributePredicateImpl<>(TagPredicates.ENTITY_ID, tag.getId(), Operator.NOT_EQUAL)
+                        new AttributePredicateImpl<>(TagAttributes.NAME, tag.getName()),
+                        new AttributePredicateImpl<>(TagAttributes.ENTITY_ID, tag.getId(), Operator.NOT_EQUAL)
                 ));
 
         if (count(query) > 0) {

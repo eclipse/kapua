@@ -44,7 +44,7 @@ import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.step.JobStep;
 import org.eclipse.kapua.service.job.step.JobStepFactory;
 import org.eclipse.kapua.service.job.step.JobStepListResult;
-import org.eclipse.kapua.service.job.step.JobStepPredicates;
+import org.eclipse.kapua.service.job.step.JobStepAttributes;
 import org.eclipse.kapua.service.job.step.JobStepQuery;
 import org.eclipse.kapua.service.job.step.JobStepService;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
@@ -133,7 +133,7 @@ public class JbatchDriver {
         String jobName = JbatchDriver.getJbatchJobName(scopeId, jobId);
         try {
             JobStepQuery jobStepQuery = JOB_STEP_FACTORY.newQuery(scopeId);
-            jobStepQuery.setPredicate(new AttributePredicateImpl<>(JobStepPredicates.JOB_ID, jobId));
+            jobStepQuery.setPredicate(new AttributePredicateImpl<>(JobStepAttributes.JOB_ID, jobId));
 
             JobStepListResult jobSteps = JOB_STEP_SERVICE.query(jobStepQuery);
             jobSteps.sort(Comparator.comparing(JobStep::getStepIndex));

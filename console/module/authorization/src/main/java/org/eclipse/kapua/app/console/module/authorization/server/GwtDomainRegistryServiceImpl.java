@@ -28,7 +28,7 @@ import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainListResult;
 import org.eclipse.kapua.service.authorization.domain.DomainQuery;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
-import org.eclipse.kapua.service.authorization.domain.shiro.DomainPredicates;
+import org.eclipse.kapua.service.authorization.domain.shiro.DomainAttributes;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,7 +66,7 @@ public class GwtDomainRegistryServiceImpl extends KapuaRemoteServiceServlet impl
             DomainRegistryService domainRegistryService = locator.getService(DomainRegistryService.class);
             DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
             DomainQuery query = domainFactory.newQuery(null);
-            query.setPredicate(new AttributePredicateImpl<String>(DomainPredicates.NAME, domainName));
+            query.setPredicate(new AttributePredicateImpl<String>(DomainAttributes.NAME, domainName));
             DomainListResult queryResult = domainRegistryService.query(query);
             if (!queryResult.isEmpty()) {
                 for (Actions action : queryResult.getFirstItem().getActions()) {
@@ -89,7 +89,7 @@ public class GwtDomainRegistryServiceImpl extends KapuaRemoteServiceServlet impl
         DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
         DomainQuery domainQuery = domainFactory.newQuery(null);
         domainQuery.setScopeId(scopeId);
-        domainQuery.setPredicate(new AttributePredicateImpl<String>(DomainPredicates.NAME, domainName));
+        domainQuery.setPredicate(new AttributePredicateImpl<String>(DomainAttributes.NAME, domainName));
         try {
             DomainListResult result = domainRegistryService.query(domainQuery);
             if (!result.isEmpty()) {

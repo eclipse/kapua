@@ -31,7 +31,7 @@ import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceDomain;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
-import org.eclipse.kapua.service.device.registry.DevicePredicates;
+import org.eclipse.kapua.service.device.registry.DeviceAttributes;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.tag.Tag;
@@ -239,7 +239,7 @@ public final class DeviceValidation {
         //
 
         DeviceQuery query = deviceFactory.newQuery(scopeId);
-        query.setPredicate(new AttributePredicateImpl<>(DevicePredicates.ENTITY_ID, entityId));
+        query.setPredicate(new AttributePredicateImpl<>(DeviceAttributes.ENTITY_ID, entityId));
 
         DeviceListResult results = null;
         try {

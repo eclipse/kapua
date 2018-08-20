@@ -72,7 +72,7 @@ import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
-import org.eclipse.kapua.service.device.registry.DevicePredicates;
+import org.eclipse.kapua.service.device.registry.DeviceAttributes;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
@@ -88,7 +88,7 @@ import org.eclipse.kapua.service.tag.TagCreator;
 import org.eclipse.kapua.service.tag.TagListResult;
 import org.eclipse.kapua.service.tag.TagService;
 import org.eclipse.kapua.service.tag.internal.TagFactoryImpl;
-import org.eclipse.kapua.service.tag.TagPredicates;
+import org.eclipse.kapua.service.tag.TagAttributes;
 import org.eclipse.kapua.service.user.steps.TestConfig;
 
 import cucumber.api.Scenario;
@@ -412,10 +412,10 @@ public class DeviceServiceSteps extends BaseQATests /*KapuaTest*/ {
         DeviceQueryImpl deviceQuery = new DeviceQueryImpl(lastAcc.getId());
 
         KapuaQuery<Tag> tagQuery = new TagFactoryImpl().newQuery(DEFAULT_SCOPE_ID);
-        tagQuery.setPredicate(new AttributePredicateImpl<String>(TagPredicates.NAME, deviceTagName, AttributePredicate.Operator.EQUAL));
+        tagQuery.setPredicate(new AttributePredicateImpl<String>(TagAttributes.NAME, deviceTagName, AttributePredicate.Operator.EQUAL));
         TagListResult tagQueryResult = tagService.query(tagQuery);
         Tag tag = tagQueryResult.getFirstItem();
-        deviceQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo(DevicePredicates.TAG_IDS, tag.getId()));
+        deviceQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo(DeviceAttributes.TAG_IDS, tag.getId()));
         DeviceListResult deviceList = (DeviceListResult) deviceRegistryService.query(deviceQuery);
 
         stepData.put("DeviceList", deviceList);

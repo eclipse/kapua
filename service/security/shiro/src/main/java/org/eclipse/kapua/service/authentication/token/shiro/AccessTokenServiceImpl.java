@@ -25,7 +25,7 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authentication.token.AccessTokenCreator;
 import org.eclipse.kapua.service.authentication.token.AccessTokenListResult;
-import org.eclipse.kapua.service.authentication.token.AccessTokenPredicates;
+import org.eclipse.kapua.service.authentication.token.AccessTokenAttributes;
 import org.eclipse.kapua.service.authentication.token.AccessTokenQuery;
 import org.eclipse.kapua.service.authentication.token.AccessTokenService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
@@ -185,7 +185,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
         //
         // Build query
         AccessTokenQuery query = new AccessTokenQueryImpl(scopeId);
-        query.setPredicate(new AttributePredicateImpl<>(AccessTokenPredicates.USER_ID, userId));
+        query.setPredicate(new AttributePredicateImpl<>(AccessTokenAttributes.USER_ID, userId));
 
         //
         // Do query
@@ -250,7 +250,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
     private void deleteAccessTokenByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException {
 
         AccessTokenQuery query = new AccessTokenQueryImpl(scopeId);
-        query.setPredicate(new AttributePredicateImpl<>(AccessTokenPredicates.USER_ID, userId));
+        query.setPredicate(new AttributePredicateImpl<>(AccessTokenAttributes.USER_ID, userId));
 
         AccessTokenListResult accessTokensToDelete = query(query);
 

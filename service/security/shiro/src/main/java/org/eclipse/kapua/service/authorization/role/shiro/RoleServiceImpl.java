@@ -36,7 +36,7 @@ import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RoleListResult;
 import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
 import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
-import org.eclipse.kapua.service.authorization.role.RolePredicates;
+import org.eclipse.kapua.service.authorization.role.RoleAttributes;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
@@ -85,7 +85,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         //
         // Check duplicate name
         RoleQuery query = new RoleQueryImpl(roleCreator.getScopeId());
-        query.setPredicate(new AttributePredicateImpl<>(RolePredicates.NAME, roleCreator.getName()));
+        query.setPredicate(new AttributePredicateImpl<>(RoleAttributes.NAME, roleCreator.getName()));
 
         if (count(query) > 0) {
             throw new KapuaDuplicateNameException(roleCreator.getName());
@@ -150,8 +150,8 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         RoleQuery query = new RoleQueryImpl(role.getScopeId());
         query.setPredicate(
                 new AndPredicateImpl(
-                        new AttributePredicateImpl<>(RolePredicates.NAME, role.getName()),
-                        new AttributePredicateImpl<>(RolePredicates.ENTITY_ID, role.getId(), Operator.NOT_EQUAL)
+                        new AttributePredicateImpl<>(RoleAttributes.NAME, role.getName()),
+                        new AttributePredicateImpl<>(RoleAttributes.ENTITY_ID, role.getId(), Operator.NOT_EQUAL)
                 )
         );
 

@@ -29,7 +29,7 @@ import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainListResult;
 import org.eclipse.kapua.service.authorization.domain.DomainQuery;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
-import org.eclipse.kapua.service.authorization.domain.shiro.DomainPredicates;
+import org.eclipse.kapua.service.authorization.domain.shiro.DomainAttributes;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -72,7 +72,7 @@ public class Domains extends AbstractKapuaResource {
 
         AndPredicateImpl andPredicate = new AndPredicateImpl();
         if (!Strings.isNullOrEmpty(name)) {
-            andPredicate.and(new AttributePredicateImpl<>(DomainPredicates.NAME, name));
+            andPredicate.and(new AttributePredicateImpl<>(DomainAttributes.NAME, name));
         }
         query.setPredicate(andPredicate);
 

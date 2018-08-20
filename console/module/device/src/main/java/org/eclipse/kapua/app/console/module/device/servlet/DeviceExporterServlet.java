@@ -31,7 +31,7 @@ import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
-import org.eclipse.kapua.service.device.registry.DevicePredicates;
+import org.eclipse.kapua.service.device.registry.DeviceAttributes;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
@@ -96,47 +96,47 @@ public class DeviceExporterServlet extends HttpServlet {
 
             String clientId = request.getParameter("clientId");
             if (clientId != null && !clientId.isEmpty()) {
-                andPred = andPred.and(new AttributePredicateImpl<String>(DevicePredicates.CLIENT_ID, clientId, Operator.STARTS_WITH));
+                andPred = andPred.and(new AttributePredicateImpl<String>(DeviceAttributes.CLIENT_ID, clientId, Operator.STARTS_WITH));
             }
 
             String displayName = request.getParameter("displayName");
             if (displayName != null && !displayName.isEmpty()) {
-                andPred = andPred.and(new AttributePredicateImpl<String>(DevicePredicates.DISPLAY_NAME, displayName, Operator.STARTS_WITH));
+                andPred = andPred.and(new AttributePredicateImpl<String>(DeviceAttributes.DISPLAY_NAME, displayName, Operator.STARTS_WITH));
             }
 
             String serialNumber = request.getParameter("serialNumber");
             if (serialNumber != null && !serialNumber.isEmpty()) {
-                andPred = andPred.and(new AttributePredicateImpl<String>(DevicePredicates.SERIAL_NUMBER, serialNumber));
+                andPred = andPred.and(new AttributePredicateImpl<String>(DeviceAttributes.SERIAL_NUMBER, serialNumber));
             }
 
             String deviceStatus = request.getParameter("deviceStatus");
             if (deviceStatus != null && !deviceStatus.isEmpty()) {
-                andPred = andPred.and(new AttributePredicateImpl<DeviceStatus>(DevicePredicates.STATUS, DeviceStatus.valueOf(deviceStatus)));
+                andPred = andPred.and(new AttributePredicateImpl<DeviceStatus>(DeviceAttributes.STATUS, DeviceStatus.valueOf(deviceStatus)));
             }
 
             String iotFrameworkVersion = request.getParameter("esfVersion");
             if (iotFrameworkVersion != null) {
-                andPred = andPred.and(new AttributePredicateImpl<String>(DevicePredicates.APPLICATION_FRAMEWORK_VERSION, iotFrameworkVersion));
+                andPred = andPred.and(new AttributePredicateImpl<String>(DeviceAttributes.APPLICATION_FRAMEWORK_VERSION, iotFrameworkVersion));
             }
 
             String applicationIdentifiers = request.getParameter("applicationIdentifiers");
             if (applicationIdentifiers != null) {
-                andPred = andPred.and(new AttributePredicateImpl<String>(DevicePredicates.APPLICATION_IDENTIFIERS, applicationIdentifiers, Operator.LIKE));
+                andPred = andPred.and(new AttributePredicateImpl<String>(DeviceAttributes.APPLICATION_IDENTIFIERS, applicationIdentifiers, Operator.LIKE));
             }
 
             String customAttribute1 = request.getParameter("customAttribute1");
             if (customAttribute1 != null) {
-                andPred = andPred.and(new AttributePredicateImpl<String>(DevicePredicates.CUSTOM_ATTRIBUTE_1, customAttribute1));
+                andPred = andPred.and(new AttributePredicateImpl<String>(DeviceAttributes.CUSTOM_ATTRIBUTE_1, customAttribute1));
             }
 
             String customAttribute2 = request.getParameter("customAttribute2");
             if (customAttribute2 != null) {
-                andPred = andPred.and(new AttributePredicateImpl<String>(DevicePredicates.CUSTOM_ATTRIBUTE_2, customAttribute2));
+                andPred = andPred.and(new AttributePredicateImpl<String>(DeviceAttributes.CUSTOM_ATTRIBUTE_2, customAttribute2));
             }
 
             String deviceConnectionStatus = request.getParameter("deviceConnectionStatus");
             if (deviceConnectionStatus != null) {
-                andPred = andPred.and(new AttributePredicateImpl<DeviceConnectionStatus>(DevicePredicates.CONNECTION_STATUS, DeviceConnectionStatus.valueOf(deviceConnectionStatus)));
+                andPred = andPred.and(new AttributePredicateImpl<DeviceConnectionStatus>(DeviceAttributes.CONNECTION_STATUS, DeviceConnectionStatus.valueOf(deviceConnectionStatus)));
             }
 
             String sortAttribute = request.getParameter("sortAttribute");
@@ -151,11 +151,11 @@ public class DeviceExporterServlet extends HttpServlet {
                 }
 
                 if (sortAttribute.compareTo("CLIENT_ID") == 0) {
-                    dq.setSortCriteria(new FieldSortCriteria(DevicePredicates.CLIENT_ID, sortOrder));
+                    dq.setSortCriteria(new FieldSortCriteria(DeviceAttributes.CLIENT_ID, sortOrder));
                 } else if (sortAttribute.compareTo("DISPLAY_NAME") == 0) {
-                    dq.setSortCriteria(new FieldSortCriteria(DevicePredicates.DISPLAY_NAME, sortOrder));
+                    dq.setSortCriteria(new FieldSortCriteria(DeviceAttributes.DISPLAY_NAME, sortOrder));
                 } else if (sortAttribute.compareTo("LAST_EVENT_ON") == 0) {
-                    dq.setSortCriteria(new FieldSortCriteria(DevicePredicates.LAST_EVENT_ON, sortOrder));
+                    dq.setSortCriteria(new FieldSortCriteria(DeviceAttributes.LAST_EVENT_ON, sortOrder));
                 }
             }
 

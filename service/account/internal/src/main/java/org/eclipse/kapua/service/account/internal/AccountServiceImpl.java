@@ -36,7 +36,7 @@ import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountListResult;
-import org.eclipse.kapua.service.account.AccountPredicates;
+import org.eclipse.kapua.service.account.AccountAttributes;
 import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
@@ -111,7 +111,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         //
         // Check duplicate name
         AccountQuery query = new AccountQueryImpl(accountCreator.getScopeId());
-        query.setPredicate(new AttributePredicateImpl<>(AccountPredicates.NAME, accountCreator.getName()));
+        query.setPredicate(new AttributePredicateImpl<>(AccountAttributes.NAME, accountCreator.getName()));
         if (count(query) > 0) {
             throw new KapuaDuplicateNameException(accountCreator.getName());
         }

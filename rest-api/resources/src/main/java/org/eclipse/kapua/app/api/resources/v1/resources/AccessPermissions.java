@@ -39,7 +39,7 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionFactory;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionQuery;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
-import org.eclipse.kapua.service.authorization.access.AccessPermissionPredicates;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionAttributes;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -84,7 +84,7 @@ public class AccessPermissions extends AbstractKapuaResource {
             @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
         AccessPermissionQuery query = accessPermissionFactory.newQuery(scopeId);
 
-        query.setPredicate(new AttributePredicateImpl<>(AccessPermissionPredicates.ACCESS_INFO_ID, accessInfoId));
+        query.setPredicate(new AttributePredicateImpl<>(AccessPermissionAttributes.ACCESS_INFO_ID, accessInfoId));
 
         query.setOffset(offset);
         query.setLimit(limit);
@@ -118,7 +118,7 @@ public class AccessPermissions extends AbstractKapuaResource {
 
         query.setScopeId(scopeId);
 
-        query.setPredicate(new AttributePredicateImpl<>(AccessPermissionPredicates.ACCESS_INFO_ID, accessInfoId));
+        query.setPredicate(new AttributePredicateImpl<>(AccessPermissionAttributes.ACCESS_INFO_ID, accessInfoId));
 
         return accessPermissionService.query(query);
     }
@@ -148,7 +148,7 @@ public class AccessPermissions extends AbstractKapuaResource {
             @ApiParam(value = "The AccessPermissionQuery to use to filter count results", required = true) AccessPermissionQuery query) throws Exception {
         query.setScopeId(scopeId);
 
-        query.setPredicate(new AttributePredicateImpl<>(AccessPermissionPredicates.ACCESS_INFO_ID, accessInfoId));
+        query.setPredicate(new AttributePredicateImpl<>(AccessPermissionAttributes.ACCESS_INFO_ID, accessInfoId));
 
         return new CountResult(accessPermissionService.count(query));
     }
@@ -207,8 +207,8 @@ public class AccessPermissions extends AbstractKapuaResource {
         AccessPermissionQuery query = accessPermissionFactory.newQuery(scopeId);
 
         AndPredicateImpl andPredicate = new AndPredicateImpl();
-        andPredicate.and(new AttributePredicateImpl<>(AccessPermissionPredicates.ACCESS_INFO_ID, accessInfoId));
-        andPredicate.and(new AttributePredicateImpl<>(AccessPermissionPredicates.ENTITY_ID, accessPermissionId));
+        andPredicate.and(new AttributePredicateImpl<>(AccessPermissionAttributes.ACCESS_INFO_ID, accessInfoId));
+        andPredicate.and(new AttributePredicateImpl<>(AccessPermissionAttributes.ENTITY_ID, accessPermissionId));
 
         query.setPredicate(andPredicate);
         query.setOffset(0);

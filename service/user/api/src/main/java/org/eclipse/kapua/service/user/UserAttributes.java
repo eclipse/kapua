@@ -9,11 +9,15 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.configuration;
+package org.eclipse.kapua.service.user;
 
-import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
+import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 
-public interface ServiceConfigPredicates extends KapuaUpdatableEntityPredicates {
+public class UserAttributes extends KapuaNamedEntityAttributes {
 
-    String SERVICE_ID = "pid";
+    public static final String STATUS = "status";
+    public static final String EXPIRATION_DATE = "expirationDate";
+    public static final String PHONE_NUMBER = "phoneNumber";
+    public static final String EMAIL = "email";
+    public static final String DISPLAY_NAME= "displayName";
 }

@@ -24,7 +24,7 @@ import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.service.endpoint.EndpointInfoFactory;
-import org.eclipse.kapua.service.endpoint.EndpointInfoPredicates;
+import org.eclipse.kapua.service.endpoint.EndpointInfoAttributes;
 import org.eclipse.kapua.service.endpoint.EndpointInfoQuery;
 
 public class GwtKapuaEndpointModelConverter {
@@ -48,28 +48,28 @@ public class GwtKapuaEndpointModelConverter {
         AndPredicateImpl andPredicate = new AndPredicateImpl();
 
         if (!Strings.isNullOrEmpty(gwtEndpointQuery.getSchema())) {
-            andPredicate.and(new AttributePredicateImpl<String>(EndpointInfoPredicates.SCHEMA, gwtEndpointQuery.getSchema(), AttributePredicate.Operator.LIKE));
+            andPredicate.and(new AttributePredicateImpl<String>(EndpointInfoAttributes.SCHEMA, gwtEndpointQuery.getSchema(), AttributePredicate.Operator.LIKE));
         }
 
         if (!Strings.isNullOrEmpty(gwtEndpointQuery.getDns())) {
-            andPredicate.and(new AttributePredicateImpl<String>(EndpointInfoPredicates.DNS, gwtEndpointQuery.getDns(), AttributePredicate.Operator.LIKE));
+            andPredicate.and(new AttributePredicateImpl<String>(EndpointInfoAttributes.DNS, gwtEndpointQuery.getDns(), AttributePredicate.Operator.LIKE));
         }
 
         if (gwtEndpointQuery.getPort() != null) {
-            andPredicate.and(new AttributePredicateImpl<Integer>(EndpointInfoPredicates.PORT, gwtEndpointQuery.getPort().intValue(), AttributePredicate.Operator.LIKE));
+            andPredicate.and(new AttributePredicateImpl<Integer>(EndpointInfoAttributes.PORT, gwtEndpointQuery.getPort().intValue(), AttributePredicate.Operator.LIKE));
         }
 
         if (gwtEndpointQuery.getCheck()) {
-            andPredicate.and(new AttributePredicateImpl<Boolean>(EndpointInfoPredicates.SECURE, gwtEndpointQuery.getSecure(), AttributePredicate.Operator.EQUAL));
+            andPredicate.and(new AttributePredicateImpl<Boolean>(EndpointInfoAttributes.SECURE, gwtEndpointQuery.getSecure(), AttributePredicate.Operator.EQUAL));
         }
 
         // Sort order conversion
-        String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? EndpointInfoPredicates.DNS : loadConfig.getSortField();
+        String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? EndpointInfoAttributes.DNS : loadConfig.getSortField();
 
         if (sortField.equals("schema")) {
-            sortField = EndpointInfoPredicates.SCHEMA;
+            sortField = EndpointInfoAttributes.SCHEMA;
         } else if (sortField.equals("createdOnFormatted")) {
-            sortField = EndpointInfoPredicates.CREATED_ON;
+            sortField = EndpointInfoAttributes.CREATED_ON;
         }
 
         SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;

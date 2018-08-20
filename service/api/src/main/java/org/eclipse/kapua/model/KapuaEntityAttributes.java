@@ -16,34 +16,36 @@ package org.eclipse.kapua.model;
  *
  * @since 1.0.0
  */
-public interface KapuaEntityPredicates extends KapuaPredicates {
+public class KapuaEntityAttributes {
+
+    protected KapuaEntityAttributes() { }
 
     /**
      * Predicate for field {@link KapuaEntity#getScopeId()}
      *
      * @since 1.0.0
      */
-    String SCOPE_ID = "scopeId";
+    public static final String SCOPE_ID = "scopeId";
 
     /**
      * Predicate for field {@link KapuaEntity#getId()}
      *
      * @since 1.0.0
      */
-    String ENTITY_ID = "id";
+    public static final String ENTITY_ID = "id";
 
     /**
      * Predicate for field {@link KapuaEntity#getCreatedOn()}
      *
      * @since 1.0.0
      */
-    String CREATED_ON = "createdOn";
+    public static final String CREATED_ON = "createdOn";
 
     /**
      * Predicate for field {@link KapuaEntity#getCreatedBy()}
      *
      * @since 1.0.0
      */
-    String CREATED_BY = "createdBy";
+    public static final String CREATED_BY = "createdBy";
 
 }

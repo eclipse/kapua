@@ -29,7 +29,7 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCreator;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionListResult;
-import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionPredicates;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionAttributes;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
@@ -132,7 +132,7 @@ public class DeviceConnectionServiceImpl extends
         //
         // Build query
         DeviceConnectionQueryImpl query = new DeviceConnectionQueryImpl(scopeId);
-        QueryPredicate predicate = new AttributePredicateImpl<>(DeviceConnectionPredicates.CLIENT_ID, clientId);
+        QueryPredicate predicate = new AttributePredicateImpl<>(DeviceConnectionAttributes.CLIENT_ID, clientId);
         query.setPredicate(predicate);
 
         //
