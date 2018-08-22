@@ -20,15 +20,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * {@link BrokerService} domain.<br>
- * Used to describe the {@link BrokerService} {@link Domain} in the {@link BrokerService}.
+ * Broker domain.<br>
+ * Used to describe the Broker {@link Domain}.
  *
  * @since 1.0.0
  */
 public class BrokerDomain extends AbstractDomain implements Domain {
 
     private String name = "broker";
-    private String serviceName = BrokerService.class.getName();
+    private String serviceName = "brokerService";
     private Set<Actions> actions = new HashSet<>(Arrays.asList(Actions.connect));
 
     @Override

@@ -27,7 +27,6 @@ import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
  * @since 1.0.0
  */
 public interface ClientInfoRegistryService extends KapuaService,
-        DatastoreService,
         KapuaConfigurableService {
 
     /**

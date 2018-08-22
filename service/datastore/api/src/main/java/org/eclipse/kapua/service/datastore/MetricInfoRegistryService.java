@@ -27,7 +27,7 @@ import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
  *
  * @since 1.0.0
  */
-public interface MetricInfoRegistryService extends KapuaService, DatastoreService, KapuaConfigurableService {
+public interface MetricInfoRegistryService extends KapuaService, KapuaConfigurableService {
 
     /**
      * Find metric information by identifier

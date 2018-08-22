@@ -13,14 +13,14 @@ package org.eclipse.kapua.service.device.management.bundle;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.device.management.DeviceManagementService;
+import org.eclipse.kapua.service.KapuaService;
 
 /**
  * Device bundle service definition.
  *
  * @since 1.0
  */
-public interface DeviceBundleManagementService extends DeviceManagementService {
+public interface DeviceBundleManagementService extends KapuaService {
 
     /**
      * Get the device bundles list for the given device identifier

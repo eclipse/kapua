@@ -27,7 +27,7 @@ import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
  *
  * @since 1.0.0
  */
-public interface MessageStoreService extends KapuaService, DatastoreService, KapuaConfigurableService {
+public interface MessageStoreService extends KapuaService, KapuaConfigurableService {
 
     /**
      * Store the message

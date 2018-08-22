@@ -23,7 +23,7 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 
 /**
- * Utility {@code abstract} {@link Class} used to provide utility methods to all implementation of {@link org.eclipse.kapua.service.device.management.DeviceManagementService}s.
+ * Utility {@code abstract} {@link Class} used to provide utility methods to all implementation of Device Management Services.
  *
  * @since 1.0.0
  */
@@ -38,12 +38,12 @@ public abstract class AbstractDeviceManagementServiceImpl {
      * Creates a {@link org.eclipse.kapua.service.device.registry.event.DeviceEvent} extracting data from the given {@link KapuaRequestMessage} and {@link KapuaResponseMessage}.
      * <p>
      * This operation is performed using {@link KapuaSecurityUtils#doPrivileged(ThrowingRunnable)} since {@link org.eclipse.kapua.service.device.registry.event.DeviceEventDomain} isn't a required
-     * permission to use any of the {@link org.eclipse.kapua.service.device.management.DeviceManagementService}s.
+     * permission to use any of the Device Management Services.
      *
      * @param scopeId         The scopeId in which to create the {@link org.eclipse.kapua.service.device.registry.event.DeviceEvent}
      * @param deviceId        The {@link org.eclipse.kapua.service.device.registry.Device} id for which the {@link org.eclipse.kapua.service.device.registry.event.DeviceEvent} is created
-     * @param requestMessage  The {@link KapuaRequestMessage} of the {@link org.eclipse.kapua.service.device.management.DeviceManagementService} operation from which to extract data.
-     * @param responseMessage The {@link KapuaResponseMessage} of the {@link org.eclipse.kapua.service.device.management.DeviceManagementService} operation from which to extract data.
+     * @param requestMessage  The {@link KapuaRequestMessage} of the DeviceManagementService operation from which to extract data.
+     * @param responseMessage The {@link KapuaResponseMessage} of the DeviceManagementService operation from which to extract data.
      * @throws KapuaException If the creation of the {@link org.eclipse.kapua.service.device.registry.event.DeviceEvent} fails for some reasons
      * @since 1.0.0
      */

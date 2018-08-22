@@ -20,15 +20,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * {@link DeviceManagementService} domain.<br>
- * Used to describe the {@link DeviceManagementService} {@link Domain} in the {@link DeviceManagementService}.
+ * Domain for all Device Management services. <br>
+ * Used to describe all the Device Management {@link Domain}s.
  *
  * @since 1.0.0
  */
 public class DeviceManagementDomain extends AbstractDomain implements Domain {
 
     private String name = "device_management";
-    private String serviceName = DeviceManagementService.class.getName();
+    private String serviceName = "deviceManagement";
     private Set<Actions> actions = new HashSet<>(Arrays.asList(Actions.execute, Actions.read, Actions.write));
 
     @Override
