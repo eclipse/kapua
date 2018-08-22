@@ -160,6 +160,10 @@ public class FailureHandler {
                 }
                 break;
 
+            case OPERATION_NOT_ALLOWED_ON_ADMIN_USER:
+                ConsoleInfo.display(CMSGS.error(), caught.getLocalizedMessage());
+                break;
+
             case WARNING:
                 isWarning = true;
                 ConsoleInfo.display(CMSGS.warning(), caught.getLocalizedMessage());
