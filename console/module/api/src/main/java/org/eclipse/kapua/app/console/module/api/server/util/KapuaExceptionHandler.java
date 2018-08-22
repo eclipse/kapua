@@ -23,6 +23,8 @@ import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurationErrorCodes;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurationException;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authorization.shiro.exception.SubjectUnauthorizedException;
@@ -112,7 +114,12 @@ public class KapuaExceptionHandler {
 
             throw new GwtKapuaException(GwtKapuaErrorCode.ENTITY_UNIQUENESS, t, errorFieldsSb.toString());
         } else if (t instanceof KapuaIllegalArgumentException) {
-            throw new GwtKapuaException(GwtKapuaErrorCode.ILLEGAL_ARGUMENT, t, ((KapuaIllegalArgumentException) t).getArgumentName(), ((KapuaIllegalArgumentException) t).getArgumentValue());
+            KapuaIllegalArgumentException kiae = (KapuaIllegalArgumentException)t;
+            if(kiae.getArgumentName().equals("name") && kiae.getArgumentValue().equals(SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME))) {
+                throw new GwtKapuaException(GwtKapuaErrorCode.OPERATION_NOT_ALLOWED_ON_ADMIN_USER, t);
+            } else {
+                throw new GwtKapuaException(GwtKapuaErrorCode.ILLEGAL_ARGUMENT, t, ((KapuaIllegalArgumentException) t).getArgumentName(), ((KapuaIllegalArgumentException) t).getArgumentValue());
+            }
         } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.BUNDLE_START_ERROR)){
             logger.warn("Bundle could not be started", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.BUNDLE_START_ERROR, t, t.getLocalizedMessage());
