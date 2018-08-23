@@ -65,7 +65,8 @@ public class Schema {
             throws ClientException {
         String dataIndexName;
         try {
-            dataIndexName = DatastoreUtils.getDataIndexName(scopeId, time);
+            String indexingWindowOption = DatastoreSettings.getInstance().getString(DatastoreSettingKey.INDEXING_WINDOW_OPTION, DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK);
+            dataIndexName = DatastoreUtils.getDataIndexName(scopeId, time, indexingWindowOption);
         } catch (KapuaException kaex) {
             throw new ClientException(DatastoreErrorCodes.CONFIGURATION_ERROR, "Error while generating index name", kaex);
         }
@@ -130,7 +131,8 @@ public class Schema {
         }
         String newIndex;
         try {
-            newIndex = DatastoreUtils.getDataIndexName(scopeId, time);
+            String indexingWindowOption = DatastoreSettings.getInstance().getString(DatastoreSettingKey.INDEXING_WINDOW_OPTION, DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK);
+            newIndex = DatastoreUtils.getDataIndexName(scopeId, time, indexingWindowOption);
         } catch (KapuaException kaex) {
             throw new ClientException(DatastoreErrorCodes.CONFIGURATION_ERROR, "Error while generating index name", kaex);
         }

@@ -77,7 +77,7 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
      * The method deletes all indices and resets the Kapua internal singleton state.
      * This is required to ensure that each unit test, as it currently expects, starts with an empty ES setup
      * </p>
-     * 
+     *
      * @throws Exception
      *             any case anything goes wrong
      */

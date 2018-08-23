@@ -26,17 +26,6 @@
             description="Message store enable.">
         </AD>
 
-        <AD id="indexingWindow"
-            name="indexingWindow"
-            type="String"
-            required="true"
-            default="WEEK"
-            description="Message retention period in days.">
-            <Option label="HOUR" value="HOUR" />
-            <Option label="DAY" value="DAY" />
-            <Option label="WEEK" value="WEEK" />
-        </AD>
-
         <AD id="dataTTL"
             name="dataTTL"
             type="Integer"
@@ -44,7 +33,7 @@
             required="true"
             default="30"
             min="0"
-            description="Message retention period, according to the selected indexingWindow." />
+            description="Message retention period, in days." />
 
         <AD id="rxByteLimit"
             name="rxByteLimit"

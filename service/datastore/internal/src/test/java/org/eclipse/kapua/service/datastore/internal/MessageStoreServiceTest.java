@@ -62,6 +62,8 @@ import org.eclipse.kapua.service.datastore.internal.schema.ChannelInfoSchema;
 import org.eclipse.kapua.service.datastore.internal.schema.ClientInfoSchema;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
 import org.eclipse.kapua.service.datastore.internal.schema.MetricInfoSchema;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
@@ -181,29 +183,22 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
     @Test
     public void deleteByDate() throws InterruptedException, KapuaException, ParseException {
-        Map<String, Object> settings = new HashMap<>();
-        settings.put("enabled", true);
-        settings.put("dataTTL", 30);
-        settings.put("rxByteLimit", 0);
-        settings.put("dataIndexBy", "DEVICE_TIMESTAMP");
-        String indexingWindow;
-
         // Delete by Week
-        indexingWindow = DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK;
-        settings.put(DatastoreUtils.INDEXING_WINDOW_OPTION, indexingWindow);
-        MESSAGE_STORE_SERVICE.setConfigValues(KapuaId.ONE, null, settings);
+        String indexingWindow = DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK;
+        System.setProperty(DatastoreSettingKey.INDEXING_WINDOW_OPTION.key(), indexingWindow);
+        DatastoreSettings.refresh();
         internalDeleteByDate(indexingWindow);
 
-        // Index by Day
+        // Delete by Day
         indexingWindow = DatastoreUtils.INDEXING_WINDOW_OPTION_DAY;
-        settings.put(DatastoreUtils.INDEXING_WINDOW_OPTION, indexingWindow);
-        MESSAGE_STORE_SERVICE.setConfigValues(KapuaId.ONE, null, settings);
+        System.setProperty(DatastoreSettingKey.INDEXING_WINDOW_OPTION.key(), indexingWindow);
+        DatastoreSettings.refresh();
         internalDeleteByDate(indexingWindow);
 
         // Delete by Hour
         indexingWindow = DatastoreUtils.INDEXING_WINDOW_OPTION_HOUR;
-        settings.put(DatastoreUtils.INDEXING_WINDOW_OPTION, indexingWindow);
-        MESSAGE_STORE_SERVICE.setConfigValues(KapuaId.ONE, null, settings);
+        System.setProperty(DatastoreSettingKey.INDEXING_WINDOW_OPTION.key(), indexingWindow);
+        DatastoreSettings.refresh();
         internalDeleteByDate(indexingWindow);
     }
 

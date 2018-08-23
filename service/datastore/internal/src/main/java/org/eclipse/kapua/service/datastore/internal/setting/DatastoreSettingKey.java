@@ -65,7 +65,11 @@ public enum DatastoreSettingKey implements SettingKey {
     /**
      * Elasticsearch index name system-wide prefix
      */
-    INDEX_PREFIX("datastore.index.prefix");
+    INDEX_PREFIX("datastore.index.prefix"),
+    /**
+     * Elasticsearch index width. Allowed values: "week", "day", "hour"
+     */
+    INDEXING_WINDOW_OPTION("datastore.index.window");
 
     private String key;
 
