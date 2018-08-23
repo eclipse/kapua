@@ -25,20 +25,14 @@ import java.util.Set;
  *
  * @since 1.0.0
  */
-public class BrokerDomain extends AbstractDomain implements Domain {
+public class BrokerDomain extends AbstractDomain {
 
     private String name = "broker";
-    private String serviceName = "brokerService";
     private Set<Actions> actions = new HashSet<>(Arrays.asList(Actions.connect));
 
     @Override
     public String getName() {
         return name;
-    }
-
-    @Override
-    public String getServiceName() {
-        return serviceName;
     }
 
     @Override

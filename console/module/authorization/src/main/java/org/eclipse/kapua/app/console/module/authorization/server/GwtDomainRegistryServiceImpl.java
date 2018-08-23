@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.server;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
@@ -22,7 +21,6 @@ import org.eclipse.kapua.app.console.module.authorization.shared.util.KapuaGwtAu
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
-import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainListResult;
@@ -79,26 +77,6 @@ public class GwtDomainRegistryServiceImpl extends KapuaRemoteServiceServlet impl
             KapuaExceptionHandler.handle(t);
         }
         return gwtActionList;
-    }
-
-    @SuppressWarnings("unused")
-    private String getServiceName(KapuaId scopeId, String domainName) throws GwtKapuaException {
-        String serviceName = null;
-        KapuaLocator locator = KapuaLocator.getInstance();
-        DomainRegistryService domainRegistryService = locator.getService(DomainRegistryService.class);
-        DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
-        DomainQuery domainQuery = domainFactory.newQuery(null);
-        domainQuery.setScopeId(scopeId);
-        domainQuery.setPredicate(new AttributePredicateImpl<String>(DomainAttributes.NAME, domainName));
-        try {
-            DomainListResult result = domainRegistryService.query(domainQuery);
-            if (!result.isEmpty()) {
-                serviceName = result.getFirstItem().getServiceName();
-            }
-        } catch (KapuaException e) {
-            KapuaExceptionHandler.handle(e);
-        }
-        return serviceName;
     }
 
 }

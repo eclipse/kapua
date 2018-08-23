@@ -26,20 +26,14 @@ import java.util.Set;
  *
  * @since 1.0.0
  */
-public class SchedulerDomain extends AbstractDomain implements Domain {
+public class SchedulerDomain extends AbstractDomain {
 
     private String name = "scheduler";
-    private String serviceName = "schedulerService";
     private Set<Actions> actions = new HashSet<>(Arrays.asList(Actions.read, Actions.delete, Actions.write, Actions.execute));
 
     @Override
     public String getName() {
         return name;
-    }
-
-    @Override
-    public String getServiceName() {
-        return serviceName;
     }
 
     @Override

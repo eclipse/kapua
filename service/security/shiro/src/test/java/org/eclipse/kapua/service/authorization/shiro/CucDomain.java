@@ -19,7 +19,6 @@ import java.util.Set;
 public class CucDomain {
 
     private String name;
-    private String serviceName;
     private String actions;
     private Set<Actions> actionSet;
 
@@ -56,14 +55,6 @@ public class CucDomain {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getServiceName() {
-        return serviceName;
-    }
-
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
     }
 
     public String getActions() {

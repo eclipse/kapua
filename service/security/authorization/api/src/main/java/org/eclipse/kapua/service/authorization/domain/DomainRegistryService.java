@@ -48,16 +48,6 @@ public interface DomainRegistryService extends KapuaEntityService<Domain, Domain
     Domain find(KapuaId scopeId, KapuaId domainId) throws KapuaException;
 
     /**
-     * Finds the {@link Domain} by the service name.
-     *
-     * @param servicename The service name to search.
-     * @return The {@link Domain} found or {@code null} if no entity was found.
-     * @throws KapuaException
-     * @since 1.0.0
-     */
-    Domain findByServiceName(String servicename) throws KapuaException;
-
-    /**
      * Returns the {@link DomainListResult} with elements matching the provided query.
      *
      * @param query The {@link DomainQuery} used to filter results.

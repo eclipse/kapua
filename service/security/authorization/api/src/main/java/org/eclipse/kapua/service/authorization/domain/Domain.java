@@ -37,7 +37,6 @@ import java.util.Set;
 @XmlRootElement(name = "domain")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = { "name",
-        "serviceName",
         "actions",
         "groupable" })
 public interface Domain extends KapuaEntity {//, org.eclipse.kapua.model.domain.Domain {
@@ -66,30 +65,6 @@ public interface Domain extends KapuaEntity {//, org.eclipse.kapua.model.domain.
      */
     @XmlElement(name = "name")
     String getName();
-
-    /**
-     * Sets the {@link KapuaService} name that use this {@link Domain}.<br>
-     * The value must represent the {@code interface} fully qualified name of the implemented {@link KapuaService}<br>
-     * Examples:
-     * <ul>
-     * <li>org.eclipse.kapua.service.authorization.DomainRegistryService</li>
-     * <li>org.eclipse.kapua.service.authorization.RoleService</li>
-     * </ul>
-     *
-     * @param serviceName The {@link KapuaService} that use this {@link Domain}.<br>
-     * @since 1.0.0
-     */
-    void setServiceName(String serviceName);
-
-    /**
-     * Gets the {@link KapuaService} name that use this {@link Domain}.<br>
-     * The value represent the {@code interface} fully qualified name of the implemented {@link KapuaService}<br>
-     *
-     * @return The {@link KapuaService} that use this {@link Domain}.<br>
-     * @since 1.0.0
-     */
-    @XmlElement(name = "serviceName")
-    String getServiceName();
 
     /**
      * Sets the set of {@link Actions} available in this {@link Domain}.<br>
@@ -143,11 +118,6 @@ public interface Domain extends KapuaEntity {//, org.eclipse.kapua.model.domain.
             @Override
             public String getName() {
                 return Domain.this.getName();
-            }
-
-            @Override
-            public String getServiceName() {
-                return Domain.this.getServiceName();
             }
 
             @Override
