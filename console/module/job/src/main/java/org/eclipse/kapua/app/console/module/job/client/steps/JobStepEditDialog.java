@@ -89,6 +89,7 @@ public class JobStepEditDialog extends JobStepAddDialog {
                     field.setValue(propertiesMap.get(field.getData(PROPERTY_NAME)));
                 }
 
+                formPanel.clearDirtyFields();
                 unmaskDialog();
             }
         });

@@ -90,6 +90,7 @@ public class RoleAddDialog extends EntityAddEditDialog {
 
     @Override
     public void createBody() {
+        submitButton.disable();
         FormPanel roleFormPanel = new FormPanel(FORM_LABEL_WIDTH);
 
         //

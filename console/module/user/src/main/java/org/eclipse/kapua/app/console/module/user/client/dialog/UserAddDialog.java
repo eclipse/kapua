@@ -12,6 +12,9 @@
 package org.eclipse.kapua.app.console.module.user.client.dialog;
 
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
@@ -77,6 +80,7 @@ public class UserAddDialog extends EntityAddEditDialog {
     @Override
     public void createBody() {
 
+        submitButton.disable();
         FormPanel userFormPanel = new FormPanel(FORM_LABEL_WIDTH);
         userFormPanel.setFrame(false);
         userFormPanel.setBorders(false);
@@ -206,6 +210,13 @@ public class UserAddDialog extends EntityAddEditDialog {
         expirationDate.setEmptyText(USER_MSGS.dialogAddNoExpiration());
         expirationDate.setValue(null);
         expirationDate.setMaxLength(10);
+        expirationDate.getDatePicker().addListener(Events.Select, new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                formPanel.fireEvent(Events.OnClick);
+            }
+        });
         statusFieldSet.add(expirationDate, subFieldsetFormData);
 
         userFormPanel.add(infoFieldSet, subFormData);

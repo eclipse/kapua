@@ -107,6 +107,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
     @Override
     public void createBody() {
         generateBody();
+        submitButton.disable();
 
         // hide fields used for edit
         clientIdLabel.hide();

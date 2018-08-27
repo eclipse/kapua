@@ -143,5 +143,6 @@ public class UserEditDialog extends UserAddDialog {
         userStatus.setSimpleValue(gwtUser.getStatusEnum());
         expirationDate.setValue(gwtUser.getExpirationDate());
         expirationDate.setMaxLength(10);
+        formPanel.clearDirtyFields();
     }
 }

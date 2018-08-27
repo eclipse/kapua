@@ -98,6 +98,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
 
     @Override
     public void createBody() {
+        submitButton.disable();
         FormPanel jobStepFormPanel = new FormPanel(FORM_LABEL_WIDTH);
 
         jobStepName.setFieldLabel("* " + JOB_MSGS.dialogAddStepJobNameLabel());

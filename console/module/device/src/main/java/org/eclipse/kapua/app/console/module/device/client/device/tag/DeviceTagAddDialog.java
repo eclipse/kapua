@@ -98,6 +98,7 @@ public class DeviceTagAddDialog extends EntityAddEditDialog {
 
     @Override
     public void createBody() {
+        submitButton.disable();
 
         FormPanel formPanel = new FormPanel(FORM_LABEL_WIDTH);
 

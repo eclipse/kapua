@@ -92,6 +92,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
 
     @Override
     public void createBody() {
+        submitButton.disable();
         FormPanel accountFormPanel = new FormPanel(FORM_LABEL_WIDTH);
 
         // //////////////////////////////////////////
@@ -138,6 +139,13 @@ public class AccountAddDialog extends EntityAddEditDialog {
         expirationDateField.setFormatValue(true);
         expirationDateField.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         expirationDateField.setMaxLength(10);
+        expirationDateField.getDatePicker().addListener(Events.Select, new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                formPanel.fireEvent(Events.OnClick);
+            }
+        });
         fieldSet.add(expirationDateField, accountFieldsetFormData);
 
         accountFormPanel.add(fieldSet);
