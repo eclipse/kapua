@@ -195,7 +195,8 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
 
                 @Override
                 public void onFailure(Throwable caught) {
-                    ConsoleInfo.display(MSGS.popupError(), JOB_MSGS.unableToValidateCronExpression(caught.getMessage()));
+                    ConsoleInfo.display(MSGS.popupError(), JOB_MSGS.unableToValidateCronExpression());
+                    cronExpression.markInvalid(VAL_MSGS.invalidCronExpression());
                 }
 
                 @Override
