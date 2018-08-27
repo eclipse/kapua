@@ -106,7 +106,7 @@ public class AccountServiceMock implements AccountService {
     }
 
     @Override
-    public KapuaTocd getConfigMetadata()
+    public KapuaTocd getConfigMetadata(KapuaId scopeId)
             throws KapuaException {
         throw KapuaException.internalError("Not implemented");
     }

@@ -81,7 +81,7 @@ public class CollisionServiceImpl extends AbstractKapuaConfigurableService imple
     }
 
     @Override
-    public KapuaTocd getConfigMetadata() throws KapuaException {
+    public KapuaTocd getConfigMetadata(KapuaId scopeId) throws KapuaException {
         // TODO Auto-generated method stub
         return null;
     }

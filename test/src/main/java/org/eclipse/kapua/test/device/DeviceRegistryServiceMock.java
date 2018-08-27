@@ -97,7 +97,7 @@ public class DeviceRegistryServiceMock implements DeviceRegistryService {
     }
 
     @Override
-    public KapuaTocd getConfigMetadata() throws KapuaException {
+    public KapuaTocd getConfigMetadata(KapuaId scopeId) throws KapuaException {
         return null;
     }
 

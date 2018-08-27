@@ -129,7 +129,7 @@ public class UserServiceMock implements UserService {
     }
 
     @Override
-    public KapuaTocd getConfigMetadata()
+    public KapuaTocd getConfigMetadata(KapuaId scopeId)
             throws KapuaException {
         // TODO Auto-generated method stub
         return null;
