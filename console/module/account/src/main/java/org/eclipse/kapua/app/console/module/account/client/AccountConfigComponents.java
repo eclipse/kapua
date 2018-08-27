@@ -42,6 +42,7 @@ import com.extjs.gxt.ui.client.widget.treepanel.TreePanelSelectionModel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
@@ -124,7 +125,7 @@ public class AccountConfigComponents extends LayoutContainer {
     };
 
     AccountConfigComponents(GwtSession currentSession,
-            AccountTabConfiguration tabConfig) {
+                            AccountTabConfiguration tabConfig) {
         this.currentSession = currentSession;
         this.tabConfig = tabConfig;
         dirty = false;
@@ -543,6 +544,7 @@ public class AccountConfigComponents extends LayoutContainer {
             if (le.exception != null) {
                 FailureHandler.handle(le.exception);
             }
+            tree.setAutoSelect(!((List) le.getData()).isEmpty());
             tree.unmask();
             refreshButton.setEnabled(true);
         }
@@ -567,7 +569,7 @@ public class AccountConfigComponents extends LayoutContainer {
         }
     }
 
-    public void removeApplyAndResetButtons(){
+    public void removeApplyAndResetButtons() {
         if (toolBar != null) {
             toolBar.remove(apply);
             toolBar.remove(reset);

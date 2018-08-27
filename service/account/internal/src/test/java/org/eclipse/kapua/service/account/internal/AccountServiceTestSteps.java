@@ -650,7 +650,7 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     @Then("^The account has metadata$")
     public void checkMetadataExistence()
             throws KapuaException {
-        KapuaTocd metaData = accountService.getConfigMetadata();
+        KapuaTocd metaData = accountService.getConfigMetadata(accountId);
 
         assertNotNull(metaData);
     }

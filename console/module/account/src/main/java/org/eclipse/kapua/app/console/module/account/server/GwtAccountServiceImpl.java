@@ -20,6 +20,7 @@ import com.google.common.collect.Sets;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.sanselan.ImageFormat;
 import org.apache.sanselan.Sanselan;
+
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountCreator;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountQuery;
@@ -61,6 +62,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
 import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RoleService;
+import org.eclipse.kapua.service.authorization.shiro.exception.SubjectUnauthorizedException;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 import org.eclipse.kapua.service.endpoint.EndpointInfo;
 import org.eclipse.kapua.service.endpoint.EndpointInfoFactory;
@@ -71,6 +73,7 @@ import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -422,7 +425,12 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             for (KapuaService service : LOCATOR.getServices()) {
                 if (service instanceof KapuaConfigurableService) {
                     KapuaConfigurableService configurableService = (KapuaConfigurableService) service;
-                    KapuaTocd tocd = configurableService.getConfigMetadata();
+                    KapuaTocd tocd;
+                    try {
+                        tocd = configurableService.getConfigMetadata(GwtKapuaCommonsModelConverter.convertKapuaId(scopeId));
+                    } catch (SubjectUnauthorizedException ex) {
+                        continue;
+                    }
                     if (tocd != null) {
                         GwtConfigComponent gwtConfig = new GwtConfigComponent();
                         gwtConfig.setId(tocd.getId());
@@ -438,9 +446,9 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
 
                         List<GwtConfigParameter> gwtParams = new ArrayList<GwtConfigParameter>();
                         gwtConfig.setParameters(gwtParams);
+                        Map<String, Object> values = configurableService.getConfigValues(kapuaScopeId);
                         for (KapuaTad ad : tocd.getAD()) {
                             if (ad != null) {
-                                Map<String, Object> values = configurableService.getConfigValues(kapuaScopeId);
                                 GwtConfigParameter gwtParam = new GwtConfigParameter();
                                 gwtParam.setId(ad.getId());
                                 gwtParam.setName(ad.getName());
@@ -479,7 +487,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                                                         strValues.add(v.toString());
                                                     }
                                                 }
-                                                gwtParam.setValues(strValues.toArray(new String[] {}));
+                                                gwtParam.setValues(strValues.toArray(new String[]{ }));
                                             }
                                         }
                                     }
@@ -494,13 +502,15 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
-        Collections.sort(gwtConfigs, new Comparator<GwtConfigComponent>() {
+        if (!gwtConfigs.isEmpty()) {
+            Collections.sort(gwtConfigs, new Comparator<GwtConfigComponent>() {
 
-            @Override
-            public int compare(GwtConfigComponent o1, GwtConfigComponent o2) {
-                return o1.getComponentName().compareTo(o2.getComponentName());
-            }
-        });
+                @Override
+                public int compare(GwtConfigComponent o1, GwtConfigComponent o2) {
+                    return o1.getComponentName().compareTo(o2.getComponentName());
+                }
+            });
+        }
         return gwtConfigs;
     }
 

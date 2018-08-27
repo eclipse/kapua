@@ -17,7 +17,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.commons.util.ResourceUtils;
@@ -230,13 +229,12 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     }
 
     @Override
-    public KapuaTocd getConfigMetadata()
+    public KapuaTocd getConfigMetadata(KapuaId scopeId)
             throws KapuaException {
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
 
-        KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.read, scopeId));
 
         try {
@@ -276,7 +274,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
             properties = result.getFirstItem().getConfigurations();
         }
 
-        KapuaTocd ocd = getConfigMetadata();
+        KapuaTocd ocd = getConfigMetadata(scopeId);
         return toValues(ocd, properties);
     }
 
@@ -288,7 +286,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.write, scopeId));
 
-        KapuaTocd ocd = getConfigMetadata();
+        KapuaTocd ocd = getConfigMetadata(scopeId);
         validateConfigurations(pid, ocd, values, scopeId, parentId);
 
         ServiceConfigQueryImpl query = new ServiceConfigQueryImpl(scopeId);

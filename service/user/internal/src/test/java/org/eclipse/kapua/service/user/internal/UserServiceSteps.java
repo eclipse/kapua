@@ -502,9 +502,10 @@ public class UserServiceSteps extends AbstractKapuaSteps {
         }
     }
 
-    @When("^I retrieve metadata$")
-    public void getMetadata() throws KapuaException {
-        metadata = userService.getConfigMetadata();
+    @When("^I retrieve metadata in scope (\\d+)$")
+    public void getMetadata(int scopeId) throws KapuaException {
+        KapuaEid scpId = new KapuaEid(BigInteger.valueOf(scopeId));
+        metadata = userService.getConfigMetadata(scpId);
     }
 
     @Then("^I have metadata$")
