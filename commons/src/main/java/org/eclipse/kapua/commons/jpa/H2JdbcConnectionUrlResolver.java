@@ -7,6 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
+ *     Red Hat
  *     Eurotech
  *******************************************************************************/
 package org.eclipse.kapua.commons.jpa;

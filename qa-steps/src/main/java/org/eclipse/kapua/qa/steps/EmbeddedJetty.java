@@ -36,7 +36,7 @@ public class EmbeddedJetty {
 
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", 8080);
         jetty = new Server(address);
-        logger.info("Starting Jetty " + jetty.toString());
+        logger.info("Starting Jetty " + jetty);
 
         // Setup JMX
         MBeanContainer mbContainer = new MBeanContainer(
@@ -70,7 +70,7 @@ public class EmbeddedJetty {
 
     @After(value = "@StopJetty")
     public void stop() throws Exception {
-        logger.info("Stopping Jetty " + jetty.toString());
+        logger.info("Stopping Jetty " + jetty);
 
         jetty.stop();
     }
