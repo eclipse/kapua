@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -49,6 +49,7 @@ import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserService;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -80,6 +81,7 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
 
             // query
             CredentialListResult credentials = CREDENTIAL_SERVICE.query(credentialQuery);
+            credentials.sort(credentialComparator);
             totalLength = (int) CREDENTIAL_SERVICE.count(credentialQuery);
 
             // If there are results
@@ -268,4 +270,12 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
             KapuaExceptionHandler.handle(t);
         }
     }
+
+    Comparator<Credential> credentialComparator = new Comparator<Credential>() {
+
+        @Override
+        public int compare(Credential credential1, Credential credential2) {
+            return credential1.getId().toString().compareTo(credential2.getId().toString());
+        }
+    };
 }
