@@ -32,5 +32,6 @@ import org.junit.runner.RunWith;
 @CucumberProperty(key="broker.ip", value="192.168.33.10")
 @CucumberProperty(key="kapua.config.url", value="")
 @CucumberProperty(key="org.eclipse.kapua.qa.broker.extraStartupDelay", value="3")
+@CucumberProperty(key="commons.settings.hotswap", value="true")
 public class RunDatastoreI9nTest {
 }
