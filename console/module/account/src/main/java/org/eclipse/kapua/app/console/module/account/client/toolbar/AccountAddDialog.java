@@ -12,6 +12,9 @@
 package org.eclipse.kapua.app.console.module.account.client.toolbar;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
@@ -84,6 +87,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
         bodyPanel.setAutoHeight(true);
         setClosable(false);
         setScrollMode(Scroll.AUTO);
+        setAutoHeight(true);
     }
 
     @Override
@@ -189,11 +193,21 @@ public class AccountAddDialog extends EntityAddEditDialog {
         // Organization Information sub field set
         // //////////////////////////////////////////
         FieldSet organizationSubFieldSet = new FieldSet();
+        Listener<BaseEvent> fieldSetListener = new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                sync(true);
+            }
+        };
+        organizationSubFieldSet.addListener(Events.Collapse, fieldSetListener);
+        organizationSubFieldSet.addListener(Events.Expand, fieldSetListener);
+
         organizationSubFieldSet.setHeading(MSGS.accountFormOrgPrimaryContact());
         organizationSubFieldSet.setBorders(false);
         organizationSubFieldSet.setCollapsible(true);
         organizationSubFieldSet.setWidth(540);
-        organizationSubFieldSet.setHeight(230);
+        organizationSubFieldSet.setAutoHeight(true);
 
         FormLayout organizationSubLayout = new FormLayout();
         organizationSubLayout.setLabelWidth(LABEL_WIDTH_FORM - 11);
