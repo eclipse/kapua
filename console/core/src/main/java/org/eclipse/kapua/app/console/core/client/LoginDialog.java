@@ -175,10 +175,10 @@ public class LoginDialog extends Dialog {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                    username.reset();
-                    password.reset();
-                    validate();
-                    username.focus(); 
+                username.reset();
+                password.reset();
+                validate();
+                username.focus(); 
             }
         });
 
