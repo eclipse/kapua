@@ -17,6 +17,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.ConfirmPasswordUpdateFieldValidator;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.PasswordUpdateFieldValidator;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
@@ -114,7 +115,7 @@ public class CredentialEditDialog extends CredentialAddDialog {
         confirmPassword.setFieldLabel(MSGS.dialogEditFieldConfirmNewPassword());
         confirmPassword.setAllowBlank(true);
         if (selectedCredential.getLockoutReset() != null && selectedCredential.getLockoutReset().after(new Date())) {
-            lockedUntil.setText(MSGS.dialogEditLockedUntil(selectedCredential.getLockoutResetFormatted()));
+            lockedUntil.setText(MSGS.dialogEditLockedUntil(DateUtils.formatDateTime(selectedCredential.getLockoutReset())));
             credentialFormPanel.add(lockedUntil);
         }
     }
