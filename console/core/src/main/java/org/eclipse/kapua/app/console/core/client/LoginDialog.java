@@ -164,10 +164,10 @@ public class LoginDialog extends Dialog {
         reset = new Button(CORE_MSGS.loginReset());
         reset.addListener(Events.OnFocus, new Listener<BaseEvent>() {
 
-    @Override
-    public void handleEvent(BaseEvent be) {
-        username.clearInvalid();
-        password.clearInvalid();
+            @Override
+            public void handleEvent(BaseEvent be) {
+                username.clearInvalid();
+                password.clearInvalid();
             }
         });
 
