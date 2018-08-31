@@ -33,5 +33,6 @@ import org.junit.runner.RunWith;
 @CucumberProperty(key="org.eclipse.kapua.qa.datastore.extraStartupDelay", value="5")
 @CucumberProperty(key="org.eclipse.kapua.qa.broker.extraStartupDelay", value="5")
 @CucumberProperty(key="datastore.index.prefix", value="custom-prefix")
+@CucumberProperty(key="commons.settings.hotswap", value="true")
 public class RunDatastoreNewIndexCustomPrefixTest {
 }
