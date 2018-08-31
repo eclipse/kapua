@@ -14,16 +14,17 @@ package org.eclipse.kapua.app.console.module.api.client.ui.widget;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.google.gwt.user.client.Element;
 
-public class KapuaDateField extends DateField{
-@Override
-public void setMaxLength(int maxLength) {
-    super.setMaxLength(maxLength);
-    if (rendered) {
-        getInputEl().setElementAttribute("maxLength", maxLength);
-    }
-}
+public class KapuaDateField extends DateField {
 
-@Override
+    @Override
+    public void setMaxLength(int maxLength) {
+        super.setMaxLength(maxLength);
+        if (rendered) {
+            getInputEl().setElementAttribute("maxLength", maxLength);
+        }
+    }
+
+    @Override
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
         getInputEl().setElementAttribute("maxLength", getMaxLength());

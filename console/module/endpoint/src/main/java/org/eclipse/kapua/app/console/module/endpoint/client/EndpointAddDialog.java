@@ -49,6 +49,7 @@ public class EndpointAddDialog extends EntityAddEditDialog {
 
     @Override
     public void createBody() {
+        submitButton.disable();
         FormPanel endpointFormPanel = new FormPanel(FORM_LABEL_WIDTH);
 
         endpointSchemaField = new KapuaTextField<String>();
@@ -77,6 +78,7 @@ public class EndpointAddDialog extends EntityAddEditDialog {
         endpointPortField.setMaxLength(5);
         endpointPortField.setMinValue(1);
         endpointPortField.setMaxValue(65535);
+        endpointPortField.setPropertyEditorType(Integer.class);
         endpointFormPanel.add(endpointPortField);
 
         endpointSercureCheckbox = new CheckBox();

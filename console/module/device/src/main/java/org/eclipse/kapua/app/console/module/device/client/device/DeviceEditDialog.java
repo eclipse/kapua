@@ -32,6 +32,7 @@ public class DeviceEditDialog extends DeviceAddDialog {
     @Override
     public void createBody() {
         generateBody();
+        submitButton.disable();
 
         // hide fields used for add
         clientIdField.hide();
@@ -149,5 +150,6 @@ public class DeviceEditDialog extends DeviceAddDialog {
             // Other data
             optlock.setValue(device.getOptlock());
         }
+        formPanel.clearDirtyFields();
     }
 }

@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.client.tabs.role;
 
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
@@ -57,7 +60,6 @@ public class AccessRoleAddDialog extends EntityAddEditDialog {
             @Override
             public void onSuccess(GwtAccessInfo result) {
                 accessInfoId = result.getId();
-                submitButton.enable();
             }
 
             @Override
@@ -140,6 +142,13 @@ public class AccessRoleAddDialog extends EntityAddEditDialog {
         rolesCombo.setDisplayField("name");
         rolesCombo.setTemplate("<tpl for=\".\"><div role=\"listitem\" class=\"x-combo-list-item\" title={name}>{name}</div></tpl>");
         rolesCombo.setValueField("id");
+        rolesCombo.addListener(Events.Select, new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                formPanel.fireEvent(Events.OnClick);
+                }
+        });
 
         GWT_ROLE_SERVICE.findAll(currentSession.getAccountId(), new AsyncCallback<List<GwtRole>>() {
 

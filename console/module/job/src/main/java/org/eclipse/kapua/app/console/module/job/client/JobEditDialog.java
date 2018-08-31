@@ -37,6 +37,7 @@ public class JobEditDialog extends JobAddDialog {
     public void createBody() {
         super.createBody();
         populateEditDialog(selectedJob);
+        submitButton.disable();
     }
 
     @Override

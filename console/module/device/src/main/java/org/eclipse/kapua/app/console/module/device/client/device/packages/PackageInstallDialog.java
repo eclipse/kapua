@@ -73,6 +73,7 @@ public class PackageInstallDialog extends TabbedDialog {
     public void createTabItems() {
         // Deployment package info tab content
         {
+            submitButton.disable();
             FormData formData = new FormData("-15");
 
             FormLayout formLayout = new FormLayout();

@@ -45,6 +45,7 @@ public class JobAddDialog extends EntityAddEditDialog {
 
     @Override
     public void createBody() {
+        submitButton.disable();
         FormPanel jobFormPanel = new FormPanel(FORM_LABEL_WIDTH);
 
         name = new KapuaTextField<String>();

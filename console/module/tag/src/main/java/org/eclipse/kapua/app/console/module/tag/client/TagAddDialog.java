@@ -44,6 +44,7 @@ public class TagAddDialog extends EntityAddEditDialog {
 
     @Override
     public void createBody() {
+        submitButton.disable();
         FormPanel tagFormPanel = new FormPanel(FORM_LABEL_WIDTH);
         tagNameField = new KapuaTextField<String>();
         tagNameField.setAllowBlank(false);

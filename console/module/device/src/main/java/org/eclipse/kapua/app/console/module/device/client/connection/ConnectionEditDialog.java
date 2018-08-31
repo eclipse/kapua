@@ -67,6 +67,7 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
 
     @Override
     public void createBody() {
+        submitButton.disable();
         FormPanel groupFormPanel = new FormPanel(FORM_LABEL_WIDTH);
         FormLayout layoutSecurityOptions = new FormLayout();
         layoutSecurityOptions.setLabelWidth(Constants.LABEL_WIDTH_DEVICE_FORM);
@@ -214,6 +215,7 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
         }
         couplingModeCombo.setSimpleValue(gwtConnectionUserCouplingMode != null ? gwtConnectionUserCouplingMode.getLabel() : "N/A");
         allowUserChangeCheckbox.setValue(gwtDeviceConnection.getAllowUserChange());
+        formPanel.clearDirtyFields();
     }
 
     private void setReservedUser() {
@@ -226,6 +228,7 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
                 reservedUserCombo.setValue(gwtUser);
             }
         }
+        formPanel.clearDirtyFields();
     }
 
 }

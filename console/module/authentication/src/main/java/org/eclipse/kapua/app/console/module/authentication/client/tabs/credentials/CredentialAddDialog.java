@@ -71,6 +71,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
     @Override
     public void createBody() {
 
+        submitButton.disable();
         credentialFormPanel = new FormPanel(FORM_LABEL_WIDTH);
 
         subject = new LabelField();
@@ -156,6 +157,14 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         expirationDate.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         expirationDate.setToolTip(MSGS.dialogAddFieldExpirationDateTooltip());
         expirationDate.setMaxLength(10);
+        expirationDate.getDatePicker().addListener(Events.Select, new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                formPanel.fireEvent(Events.OnClick);
+            }
+        });
+
         credentialFormPanel.add(expirationDate);
 
         credentialStatus = new SimpleComboBox<GwtCredentialStatus>();
@@ -179,6 +188,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         optlock.setName("optlock");
         optlock.setEditable(false);
         optlock.setVisible(false);
+        optlock.setPropertyEditorType(Integer.class);
         credentialFormPanel.add(optlock);
 
         bodyPanel.add(credentialFormPanel);
