@@ -422,6 +422,8 @@
                     <argLine>@{argLine} -Xmx1024m</argLine>
                     <systemPropertyVariables>
                         <cucumber.options>${cucumber.options}</cucumber.options>
+                        <commons.db.schema>kapuadb</commons.db.schema>
+                        <commons.settings.hotswap>true</commons.settings.hotswap>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>

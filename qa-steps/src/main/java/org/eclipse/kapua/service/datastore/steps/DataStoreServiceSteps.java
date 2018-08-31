@@ -63,7 +63,6 @@ import org.eclipse.kapua.service.datastore.internal.model.query.RangePredicateIm
 import org.eclipse.kapua.service.datastore.internal.model.query.TermPredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
 import org.eclipse.kapua.service.datastore.internal.schema.MetricInfoSchema;
-import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
@@ -149,8 +148,6 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
 
     @Before
     public void beforeScenario(Scenario scenario) throws Exception {
-
-        DatastoreSettings.refresh();
 
         // Get instance of services used in different scenarios
         KapuaLocator locator = KapuaLocator.getInstance();
