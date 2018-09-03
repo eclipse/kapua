@@ -17,7 +17,17 @@ package org.eclipse.kapua.commons.core.vertx;
  */
 public class EBServerConfig {
 
+    private String healthCheckAddress;
+
     private String address;
+
+    public String getHealthCheckAddress() {
+        return healthCheckAddress;
+    }
+
+    public void setHealthCheckAddress(String address) {
+        this.healthCheckAddress = address;
+    }
 
     public String getAddress() {
         return address;

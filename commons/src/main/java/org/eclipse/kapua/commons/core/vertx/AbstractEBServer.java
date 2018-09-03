@@ -18,31 +18,37 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import io.vertx.ext.healthchecks.HealthCheckHandler;
+import io.vertx.ext.healthchecks.HealthChecks;
 
 /**
  * Base class to implement an {@link EBServer} verticle.
  *
  */
-public class AbstractEBServer extends AbstractVerticle implements EBServer {
+public abstract class AbstractEBServer extends AbstractVerticle implements EBServer {
 
     private static Logger logger = LoggerFactory.getLogger(AbstractEBServer.class);
 
+    private static final String HEALTH_ADDRESS = "health";
+
     private EventBus eventBus;
+    private HealthChecks healthChecks;
+    private HealthCheckHandler healthCheckHandler;
+
     private EBRequestDispatcher messageDispatcher;
     private List<EBRequestHandlerProvider> handlerProviders = new ArrayList<>();
+    private List<HealthCheckProvider> healthCheckProviders = new ArrayList<>();
 
-    private EBServerConfig configs;
+    public abstract EBServerConfig getConfigs();
 
-    public EBServerConfig getConfigs() {
-        return configs;
-    }
-
-    public void setConfigs(EBServerConfig configs) {
-        this.configs = configs;
-    }
-
+    @Override
     public void registerHandlerProvider(EBRequestHandlerProvider provider) {
-        handlerProviders.add(provider);
+        this.handlerProviders.add(provider);
+    }
+
+    @Override
+    public void registerHealthCheckProvider(HealthCheckProvider provider) {
+        this.healthCheckProviders.add(provider);
     }
 
     @Override
@@ -53,6 +59,15 @@ public class AbstractEBServer extends AbstractVerticle implements EBServer {
         messageDispatcher = EBRequestDispatcher.dispatcher(eventBus, getConfigs().getAddress());
         for(EBRequestHandlerProvider provider:handlerProviders) {
             provider.registerHandlers(messageDispatcher);
+        }
+
+        healthChecks = HealthChecks.create(vertx);
+        eventBus.consumer(getConfigs().getHealthCheckAddress(), message -> healthChecks.invoke(message::reply));
+
+        healthCheckHandler = HealthCheckHandler.createWithHealthChecks(healthChecks);
+        eventBus.consumer(HEALTH_ADDRESS, message -> healthChecks.invoke(message::reply));
+        for(HealthCheckProvider provider:healthCheckProviders) {
+            provider.registerHealthChecks(healthCheckHandler);
         }
     }
 

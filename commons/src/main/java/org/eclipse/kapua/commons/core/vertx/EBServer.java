@@ -24,4 +24,6 @@ import io.vertx.core.eventbus.EventBus;
 public interface EBServer extends Verticle {
 
     public void registerHandlerProvider(EBRequestHandlerProvider provider);
+
+    public void registerHealthCheckProvider(HealthCheckProvider provider);
 }
