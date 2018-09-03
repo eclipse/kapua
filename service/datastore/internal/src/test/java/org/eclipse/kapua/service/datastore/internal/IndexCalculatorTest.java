@@ -20,6 +20,7 @@ import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.client.ClientException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -30,9 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.TimeZone;
 
 public class IndexCalculatorTest extends AbstractMessageStoreServiceTest {
@@ -105,33 +104,21 @@ public class IndexCalculatorTest extends AbstractMessageStoreServiceTest {
 
     @Test
     public void dataIndexNameByScopeIdAndTimestamp() throws KapuaException, ParseException {
-        Map<String, Object> settings = new HashMap<>();
-        settings.put("enabled", true);
-        settings.put("dataTTL", 30);
-        settings.put("rxByteLimit", 0);
-        settings.put("dataIndexBy", "DEVICE_TIMESTAMP");
 
         // Index by Week
-        settings.put(DatastoreUtils.INDEXING_WINDOW_OPTION, DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK);
-        messageStoreService.setConfigValues(KapuaId.ONE, null, settings);
-        String weekIndexName = DatastoreUtils.getDataIndexName(KapuaId.ONE, sdf.parse("02/01/2017 13:12 +0100").getTime());
+        String weekIndexName = DatastoreUtils.getDataIndexName(KapuaId.ONE, sdf.parse("02/01/2017 13:12 +0100").getTime(), DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK);
         assertEquals("1-2017-01", weekIndexName);
 
         // Index by Day
-        settings.put(DatastoreUtils.INDEXING_WINDOW_OPTION, DatastoreUtils.INDEXING_WINDOW_OPTION_DAY);
-        messageStoreService.setConfigValues(KapuaId.ONE, null, settings);
-        String dayIndexName = DatastoreUtils.getDataIndexName(KapuaId.ONE, sdf.parse("02/01/2017 13:12 +0100").getTime());
+        String dayIndexName = DatastoreUtils.getDataIndexName(KapuaId.ONE, sdf.parse("02/01/2017 13:12 +0100").getTime(), DatastoreUtils.INDEXING_WINDOW_OPTION_DAY);
         assertEquals("1-2017-01-02", dayIndexName);
 
-        // Index by Day
-        settings.put(DatastoreUtils.INDEXING_WINDOW_OPTION, DatastoreUtils.INDEXING_WINDOW_OPTION_HOUR);
-        messageStoreService.setConfigValues(KapuaId.ONE, null, settings);
-        String hourIndexName = DatastoreUtils.getDataIndexName(KapuaId.ONE, sdf.parse("02/01/2017 13:12 +0100").getTime());
+        // Index by Hour
+        String hourIndexName = DatastoreUtils.getDataIndexName(KapuaId.ONE, sdf.parse("02/01/2017 13:12 +0100").getTime(), DatastoreUtils.INDEXING_WINDOW_OPTION_HOUR);
         assertEquals("1-2017-01-02-12", hourIndexName);     // Index Hour is UTC!
 
         // Reset config for other tests; provide new tests where needed
-        settings.put(DatastoreUtils.INDEXING_WINDOW_OPTION, DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK);
-        messageStoreService.setConfigValues(KapuaId.ONE, null, settings);
+        System.setProperty(DatastoreSettingKey. INDEXING_WINDOW_OPTION.key(), DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK);
     }
 
     @Test

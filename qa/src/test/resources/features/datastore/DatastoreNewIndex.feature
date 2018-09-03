@@ -46,7 +46,8 @@ Feature: Datastore tests
 
     Given Server with host "127.0.0.1" on port "9200"
     And I login as user with name "kapua-sys" and password "kapua-password"
-    Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP", indexWindow "DAY"
+    Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP"
+    And System property "datastore.index.window" with value "day"
     When All indices are deleted
     And Account for "kapua-sys"
     Given The device "test-device-1"
@@ -64,7 +65,8 @@ Feature: Datastore tests
 
     Given Server with host "127.0.0.1" on port "9200"
     And I login as user with name "kapua-sys" and password "kapua-password"
-    Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP", indexWindow "HOUR"
+    Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP"
+    And System property "datastore.index.window" with value "hour"
     When All indices are deleted
     And Account for "kapua-sys"
     Given The device "test-device-1"
@@ -81,7 +83,8 @@ Feature: Datastore tests
 
     Given Server with host "127.0.0.1" on port "9200"
     And I login as user with name "kapua-sys" and password "kapua-password"
-    Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP", indexWindow "WEEK"
+    Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP"
+    And System property "datastore.index.window" with value "week"
     When All indices are deleted
     And Account for "kapua-sys"
     Given The device "test-device-1"
@@ -101,7 +104,8 @@ Feature: Datastore tests
 
     Given Server with host "127.0.0.1" on port "9200"
     And I login as user with name "kapua-sys" and password "kapua-password"
-    Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP", indexWindow "DAY"
+    Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP"
+    And System property "datastore.index.window" with value "day"
     When All indices are deleted
     And Account for "kapua-sys"
     Given The device "test-device-1"
@@ -121,7 +125,8 @@ Feature: Datastore tests
 
     Given Server with host "127.0.0.1" on port "9200"
     And I login as user with name "kapua-sys" and password "kapua-password"
-    Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP", indexWindow "HOUR"
+    Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP"
+    And System property "datastore.index.window" with value "hour"
     When All indices are deleted
     And Account for "kapua-sys"
     Given The device "test-device-1"
@@ -140,7 +145,8 @@ Feature: Datastore tests
 
     Given Server with host "127.0.0.1" on port "9200"
     And I login as user with name "kapua-sys" and password "kapua-password"
-    Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP", indexWindow "WEEK"
+    Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP"
+    And System property "datastore.index.window" with value "week"
     And I configure account service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |

@@ -18,7 +18,6 @@ import com.google.common.hash.Hashing;
 
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -88,10 +87,9 @@ public class DatastoreUtils {
     public static final String CLIENT_METRIC_TYPE_BOOLEAN_ACRONYM = "bln";
     public static final String CLIENT_METRIC_TYPE_BINARY_ACRONYM = "bin";
 
-    public static final String INDEXING_WINDOW_OPTION = "indexingWindow";
-    public static final String INDEXING_WINDOW_OPTION_WEEK = "WEEK";
-    public static final String INDEXING_WINDOW_OPTION_DAY = "DAY";
-    public static final String INDEXING_WINDOW_OPTION_HOUR = "HOUR";
+    public static final String INDEXING_WINDOW_OPTION_WEEK = "week";
+    public static final String INDEXING_WINDOW_OPTION_DAY = "day";
+    public static final String INDEXING_WINDOW_OPTION_HOUR = "hour";
 
     private static final DateTimeFormatter DATA_INDEX_FORMATTER_WEEK = new DateTimeFormatterBuilder()
             .parseDefaulting(WeekFields.ISO.dayOfWeek(), 1)
@@ -268,35 +266,29 @@ public class DatastoreUtils {
      * @param timestamp
      * @return
      */
-    public static String getDataIndexName(KapuaId scopeId, long timestamp) throws KapuaException {
-        try {
-            final StringBuilder sb = new StringBuilder();
-            final String prefix = DatastoreSettings.getInstance().getString(DatastoreSettingKey.INDEX_PREFIX);
-            if (StringUtils.isNotEmpty(prefix)) {
-                sb.append(prefix).append("-");
-            }
-            final String actualName = DatastoreUtils.normalizedIndexName(scopeId.toStringId());
-            sb.append(actualName).append('-');
-            String indexingWindowOption = KapuaSecurityUtils.doPrivileged(() -> MESSAGE_STORE_SERVICE.getConfigValues(scopeId)).get(INDEXING_WINDOW_OPTION).toString();
-            DateTimeFormatter formatter;
-            switch (indexingWindowOption) {
-                default:
-                case INDEXING_WINDOW_OPTION_WEEK:
-                    formatter = DATA_INDEX_FORMATTER_WEEK;
-                    break;
-                case INDEXING_WINDOW_OPTION_DAY:
-                    formatter = DATA_INDEX_FORMATTER_DAY;
-                    break;
-                case INDEXING_WINDOW_OPTION_HOUR:
-                    formatter = DATA_INDEX_FORMATTER_HOUR;
-                    break;
-            }
-            formatter.formatTo(Instant.ofEpochMilli(timestamp).atOffset(ZoneOffset.UTC), sb);
-            return sb.toString();
-        } catch (KapuaException kaex) {
-            LOG.error("Error fetching MessageStoreService configuration", kaex);
-            throw kaex;
+    public static String getDataIndexName(KapuaId scopeId, long timestamp, String indexingWindowOption) throws KapuaException {
+        final StringBuilder sb = new StringBuilder();
+        final String prefix = DatastoreSettings.getInstance().getString(DatastoreSettingKey.INDEX_PREFIX);
+        if (StringUtils.isNotEmpty(prefix)) {
+            sb.append(prefix).append("-");
         }
+        final String actualName = DatastoreUtils.normalizedIndexName(scopeId.toStringId());
+        sb.append(actualName).append('-');
+        DateTimeFormatter formatter;
+        switch (indexingWindowOption) {
+            default:
+            case INDEXING_WINDOW_OPTION_WEEK:
+                formatter = DATA_INDEX_FORMATTER_WEEK;
+                break;
+            case INDEXING_WINDOW_OPTION_DAY:
+                formatter = DATA_INDEX_FORMATTER_DAY;
+                break;
+            case INDEXING_WINDOW_OPTION_HOUR:
+                formatter = DATA_INDEX_FORMATTER_HOUR;
+                break;
+        }
+        formatter.formatTo(Instant.ofEpochMilli(timestamp).atOffset(ZoneOffset.UTC), sb);
+        return sb.toString();
     }
 
     /**
@@ -388,8 +380,8 @@ public class DatastoreUtils {
                 Instant indexEnd = indexStart.plus(indexWidth, indexUnit).minusNanos(1);
 
                 if (windowStart == null && isIndexFullyBeforeInstant(indexStart, indexEnd, windowEnd) ||
-                   (windowEnd == null && isIndexFullyAfterInstant(indexStart, indexEnd, windowStart)) ||
-                   (windowStart != null && windowEnd != null && isIndexFullyAfterInstant(indexStart, indexEnd, windowStart) && isIndexFullyBeforeInstant(indexStart, indexEnd, windowEnd))) {
+                        (windowEnd == null && isIndexFullyAfterInstant(indexStart, indexEnd, windowStart)) ||
+                        (windowStart != null && windowEnd != null && isIndexFullyAfterInstant(indexStart, indexEnd, windowStart) && isIndexFullyBeforeInstant(indexStart, indexEnd, windowEnd))) {
                     result.add(index);
                 }
             } catch (Exception ex) {
