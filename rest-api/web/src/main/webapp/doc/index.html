@@ -81,9 +81,6 @@
 						addApiKeyAuthorization();
 
 						swaggerApi.setBasePath(basePath);
-						$("h4:contains('{API_BASE_PATH}')").text(
-								$("h4:contains('{API_BASE_PATH}')").text()
-										.replace("{API_BASE_PATH}", basePath));
 					},
 					onFailure : function(data) {
 						log("Unable to Load SwaggerUI");
