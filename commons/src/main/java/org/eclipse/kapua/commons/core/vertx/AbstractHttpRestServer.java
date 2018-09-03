@@ -30,7 +30,7 @@ import io.vertx.ext.web.Router;
  * checks and one to retrieve metrics.
  *
  */
-public class AbstractHttpRestServer extends AbstractVerticle implements HttpRestServer {
+public abstract class AbstractHttpRestServer extends AbstractVerticle implements HttpRestServer {
 
     private static Logger logger = LoggerFactory.getLogger(AbstractHttpRestServer.class);
 
@@ -47,15 +47,7 @@ public class AbstractHttpRestServer extends AbstractVerticle implements HttpRest
 
     private MetricsService metricsService;
 
-    private HttpRestServerConfig configs;
-
-    public HttpRestServerConfig getConfigs() {
-        return configs;
-    }
-
-    public void setConfigs(HttpRestServerConfig configs) {
-        this.configs = configs;
-    }
+    public abstract HttpRestServerConfig getConfigs();
 
     @Override
     public void start() throws Exception {
