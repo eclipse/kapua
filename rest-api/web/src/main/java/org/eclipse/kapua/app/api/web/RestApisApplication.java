@@ -22,6 +22,8 @@ import org.eclipse.kapua.app.api.core.ListBodyWriter;
 import org.eclipse.kapua.app.api.core.MoxyJsonConfigContextResolver;
 import org.eclipse.kapua.app.api.core.SwaggerDefinition;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
+
+import io.swagger.jaxrs.config.BeanConfig;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
@@ -33,10 +35,7 @@ public class RestApisApplication extends ResourceConfig {
 
     public RestApisApplication() throws JAXBException {
         packages("org.eclipse.kapua.app.api",
-                "org.eclipse.kapua.service.account",
-                "org.eclipse.kapua.service.account.internal",
-                "org.eclipse.kapua.service.user",
-                "org.eclipse.kapua.service.user.internal");
+                 "org.eclipse.kapua.service");
 
         // Bind media type to resource extension
         HashMap<String, MediaType> mappedMediaTypes = new HashMap<>();
@@ -77,5 +76,22 @@ public class RestApisApplication extends ResourceConfig {
             public void onShutdown(Container container) {
             }
         });
+
+        initSwagger();
+    }
+
+    private void initSwagger() {
+        final String apiVersion = "1.0";
+        final String basePath = "/v1";
+        final String apiResourcePackage = "org.eclipse.kapua.app.api";
+        final String apiTitle = "Eclipse Kapua REST API";
+
+        BeanConfig beanConfig = new BeanConfig();
+        beanConfig.setVersion(apiVersion);
+        beanConfig.setBasePath(basePath);
+        beanConfig.setTitle(apiTitle);
+        beanConfig.setSchemes(new String[] { "http" });
+        beanConfig.setResourcePackage(apiResourcePackage);
+        beanConfig.setScan(true);
     }
 }

@@ -91,7 +91,7 @@ public class Domains extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "deviceQuery", value = "Queries the Domains", notes = "Queries the Domains with the given DomainQuery parameter returning all matching Domains", response = DomainListResult.class)
+    @ApiOperation(nickname = "domainQuery", value = "Queries the Domains", notes = "Queries the Domains with the given DomainQuery parameter returning all matching Domains", response = DomainListResult.class)
     @POST
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
