@@ -516,6 +516,9 @@ public class AccountConfigComponents extends LayoutContainer {
                         kapuaIcon = new KapuaIcon(IconSet.PUZZLE_PIECE);
                     }
                 }
+                else {
+                    kapuaIcon = new KapuaIcon(IconSet.PUZZLE_PIECE);
+                }
             }
 
             Label label = new Label(((GwtConfigComponent) model).getComponentName(), kapuaIcon);

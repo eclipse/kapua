@@ -212,12 +212,12 @@ public class CertificateServiceImpl implements CertificateService {
 
         @Override
         public String getName() {
-            return null;
+            return CertificateService.class.getSimpleName();
         }
 
         @Override
         public String getId() {
-            return null;
+            return CertificateService.class.getName();
         }
 
         @Override
