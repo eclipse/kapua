@@ -20,7 +20,6 @@ import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.client.ClientException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
-import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -116,9 +115,6 @@ public class IndexCalculatorTest extends AbstractMessageStoreServiceTest {
         // Index by Hour
         String hourIndexName = DatastoreUtils.getDataIndexName(KapuaId.ONE, sdf.parse("02/01/2017 13:12 +0100").getTime(), DatastoreUtils.INDEXING_WINDOW_OPTION_HOUR);
         assertEquals("1-2017-01-02-12", hourIndexName);     // Index Hour is UTC!
-
-        // Reset config for other tests; provide new tests where needed
-        System.setProperty(DatastoreSettingKey. INDEXING_WINDOW_OPTION.key(), DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK);
     }
 
     @Test

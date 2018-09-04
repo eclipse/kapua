@@ -36,8 +36,4 @@ public class DatastoreSettings extends AbstractKapuaSetting<DatastoreSettingKey>
     public static DatastoreSettings getInstance() {
         return instance;
     }
-
-    public static void refresh() {
-        instance = new DatastoreSettings();
-    }
 }
