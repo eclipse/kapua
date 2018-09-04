@@ -9,23 +9,29 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.model;
+package org.eclipse.kapua.service.device.registry.connection.option;
+
+import org.eclipse.kapua.model.KapuaUpdatableEntityAttributes;
 
 /**
- * {@link KapuaUpdatableEntity} query predicates.
- *
+ * Device connection options query predicates.
+ * 
  * @since 1.0.0
  */
-public interface KapuaUpdatableEntityPredicates extends KapuaEntityPredicates {
+public class DeviceConnectionOptionAttributes extends KapuaUpdatableEntityAttributes {
 
     /**
-     * {@link KapuaUpdatableEntity} modified on date.
+     * Credentials mode
      */
-    String MODIFIED_ON = "modifiedOn";
+    public static final String CREDENTIALS_MODE = "credentialsMode";
 
     /**
-     * {@link KapuaUpdatableEntity} modified by id.
+     * Reserved user identifier
      */
-    String MODIFIED_BY = "modifiedBy";
+    public static final String RESERVED_USER_ID = "reservedUserId";
 
+    /**
+     * Last user identifier
+     */
+    public static final String USER_ID = "userId";
 }

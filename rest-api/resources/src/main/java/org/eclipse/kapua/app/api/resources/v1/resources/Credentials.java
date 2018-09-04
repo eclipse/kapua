@@ -37,7 +37,7 @@ import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
-import org.eclipse.kapua.service.authentication.credential.CredentialPredicates;
+import org.eclipse.kapua.service.authentication.credential.CredentialAttributes;
 import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 
@@ -79,7 +79,7 @@ public class Credentials extends AbstractKapuaResource {
 
         AndPredicateImpl andPredicate = new AndPredicateImpl();
         if (userId != null) {
-            andPredicate.and(new AttributePredicateImpl<>(CredentialPredicates.USER_ID, userId));
+            andPredicate.and(new AttributePredicateImpl<>(CredentialAttributes.USER_ID, userId));
         }
         query.setPredicate(andPredicate);
 

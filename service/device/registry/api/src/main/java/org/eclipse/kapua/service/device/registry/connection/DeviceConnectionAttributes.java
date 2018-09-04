@@ -11,52 +11,52 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection;
 
-import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
+import org.eclipse.kapua.model.KapuaUpdatableEntityAttributes;
 
 /**
  * Device connection query predicates.
  * 
  * @since 1.0
  */
-public interface DeviceConnectionPredicates extends KapuaUpdatableEntityPredicates {
+public class DeviceConnectionAttributes extends KapuaUpdatableEntityAttributes {
 
     /**
      * Client identifier
      */
-    String CLIENT_ID = "clientId";
+    public static final String CLIENT_ID = "clientId";
 
     /**
      * Connection status
      */
-    String STATUS = "status";
+    public static final String STATUS = "status";
 
     /**
      * Credentials mode
      */
-    String CREDENTIALS_MODE = "credentialsMode";
+    public static final String CREDENTIALS_MODE = "credentialsMode";
 
     /**
      * Reserved user identifier
      */
-    String RESERVED_USER_ID = "reservedUserId";
+    public static final String RESERVED_USER_ID = "reservedUserId";
 
     /**
      * Last user identifier
      */
-    String USER_ID = "userId";
+    public static final String USER_ID = "userId";
 
     /**
      * Connection user coupling mode
      */
-    String USER_COUPLING_MODE = "userCouplingMode";
+    public static final String USER_COUPLING_MODE = "userCouplingMode";
 
     /**
      * Client IP
      */
-    String CLIENT_IP = "clientIp";
+    public static final String CLIENT_IP = "clientIp";
 
     /**
      * Protocol
      */
-    String PROTOCOL = "protocol";
+    public static final String PROTOCOL = "protocol";
 }

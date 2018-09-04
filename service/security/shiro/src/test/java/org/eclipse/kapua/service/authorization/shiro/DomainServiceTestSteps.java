@@ -27,7 +27,7 @@ import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainQuery;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainFactoryImpl;
-import org.eclipse.kapua.service.authorization.domain.shiro.DomainPredicates;
+import org.eclipse.kapua.service.authorization.domain.shiro.DomainAttributes;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainRegistryServiceImpl;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupService;
@@ -167,7 +167,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
     public void queryForNamedDomain(String name)
             throws KapuaException {
         DomainQuery query = domainFactory.newQuery(null);
-        query.setPredicate(new AttributePredicateImpl<>(DomainPredicates.NAME, name));
+        query.setPredicate(new AttributePredicateImpl<>(DomainAttributes.NAME, name));
         KapuaSecurityUtils.doPrivileged(() -> {
             domainData.domainList = domainRegistryService.query(query);
             return null;
@@ -180,7 +180,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
     public void queryForDomainsWithServiceName(String serviceName)
             throws KapuaException {
         DomainQuery query = domainFactory.newQuery(null);
-        query.setPredicate(new AttributePredicateImpl<>(DomainPredicates.SERVICE_NAME, serviceName));
+        query.setPredicate(new AttributePredicateImpl<>(DomainAttributes.SERVICE_NAME, serviceName));
         KapuaSecurityUtils.doPrivileged(() -> {
             domainData.domainList = domainRegistryService.query(query);
             return null;

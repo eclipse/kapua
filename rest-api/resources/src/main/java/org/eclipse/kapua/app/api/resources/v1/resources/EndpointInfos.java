@@ -28,7 +28,7 @@ import org.eclipse.kapua.service.endpoint.EndpointInfo;
 import org.eclipse.kapua.service.endpoint.EndpointInfoCreator;
 import org.eclipse.kapua.service.endpoint.EndpointInfoFactory;
 import org.eclipse.kapua.service.endpoint.EndpointInfoListResult;
-import org.eclipse.kapua.service.endpoint.EndpointInfoPredicates;
+import org.eclipse.kapua.service.endpoint.EndpointInfoAttributes;
 import org.eclipse.kapua.service.endpoint.EndpointInfoQuery;
 import org.eclipse.kapua.service.endpoint.EndpointInfoService;
 
@@ -79,7 +79,7 @@ public class EndpointInfos extends AbstractKapuaResource {
 
         AndPredicateImpl andPredicate = new AndPredicateImpl();
         if (!Strings.isNullOrEmpty(usage)) {
-            andPredicate.and(new AttributePredicateImpl<>(EndpointInfoPredicates.USAGES, endpointInfoFactory.newEndpointUsage(usage)));
+            andPredicate.and(new AttributePredicateImpl<>(EndpointInfoAttributes.USAGES, endpointInfoFactory.newEndpointUsage(usage)));
         }
         query.setPredicate(andPredicate);
 

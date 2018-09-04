@@ -9,15 +9,9 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.user;
+package org.eclipse.kapua.model;
 
-import org.eclipse.kapua.model.KapuaNamedEntityPredicates;
+public class KapuaNamedEntityAttributes extends KapuaUpdatableEntityAttributes {
 
-public interface UserPredicates extends KapuaNamedEntityPredicates {
-
-    String STATUS = "status";
-    String EXPIRATION_DATE = "expirationDate";
-    String PHONE_NUMBER = "phoneNumber";
-    String EMAIL = "email";
-    String DISPLAY_NAME= "displayName";
+    public static final String NAME = "name";
 }

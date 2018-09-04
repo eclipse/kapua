@@ -26,7 +26,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
-import org.eclipse.kapua.service.authorization.access.AccessInfoPredicates;
+import org.eclipse.kapua.service.authorization.access.AccessInfoAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessInfoQuery;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
@@ -472,7 +472,7 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
         assertNotNull(commonData.scopeId);
 
         AccessInfoQuery tmpQuery = accessInfoFactory.newQuery(commonData.scopeId);
-        tmpQuery.setPredicate(new AttributePredicateImpl<>(AccessInfoPredicates.USER_ID, accessData.user.getId()));
+        tmpQuery.setPredicate(new AttributePredicateImpl<>(AccessInfoAttributes.USER_ID, accessData.user.getId()));
         accessData.accessList = accessInfoFactory.newListResult();
 
         KapuaSecurityUtils.doPrivileged(() -> {

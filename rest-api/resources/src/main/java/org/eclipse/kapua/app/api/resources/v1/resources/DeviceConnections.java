@@ -34,7 +34,7 @@ import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionListResult;
-import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionPredicates;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionAttributes;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
@@ -84,10 +84,10 @@ public class DeviceConnections extends AbstractKapuaResource {
 
         AndPredicateImpl andPredicate = new AndPredicateImpl();
         if (!Strings.isNullOrEmpty(clientId)) {
-            andPredicate.and(new AttributePredicateImpl<>(DeviceConnectionPredicates.CLIENT_ID, clientId));
+            andPredicate.and(new AttributePredicateImpl<>(DeviceConnectionAttributes.CLIENT_ID, clientId));
         }
         if (status != null) {
-            andPredicate.and(new AttributePredicateImpl<>(DeviceConnectionPredicates.STATUS, status));
+            andPredicate.and(new AttributePredicateImpl<>(DeviceConnectionAttributes.STATUS, status));
         }
         query.setPredicate(andPredicate);
 

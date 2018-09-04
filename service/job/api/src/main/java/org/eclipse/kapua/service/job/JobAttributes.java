@@ -9,14 +9,12 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.job.targets;
+package org.eclipse.kapua.service.job;
 
-import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
+import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 
-public interface JobTargetPredicates extends KapuaUpdatableEntityPredicates {
+public class JobAttributes extends KapuaNamedEntityAttributes {
 
-    String JOB_ID = "jobId";
-    String STEP_INDEX = "stepIndex";
-    String STATUS = "status";
-
+    public static final String ENDED_ON = "endedOn";
+    public static final String STARTED_ON = "startedOn";
 }

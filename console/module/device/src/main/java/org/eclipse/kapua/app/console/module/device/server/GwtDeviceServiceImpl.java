@@ -56,7 +56,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
-import org.eclipse.kapua.service.device.registry.DevicePredicates;
+import org.eclipse.kapua.service.device.registry.DeviceAttributes;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
@@ -65,7 +65,7 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionServ
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventPredicates;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventAttributes;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.eclipse.kapua.service.tag.Tag;
@@ -253,11 +253,11 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                     DeviceEventQuery eventQuery = deviceEventFactory
                             .newQuery(device.getScopeId());
                     eventQuery.setLimit(1);
-                    eventQuery.setSortCriteria(new FieldSortCriteria(DeviceEventPredicates.RECEIVED_ON, SortOrder.DESCENDING));
+                    eventQuery.setSortCriteria(new FieldSortCriteria(DeviceEventAttributes.RECEIVED_ON, SortOrder.DESCENDING));
 
                     AndPredicateImpl andPredicate = new AndPredicateImpl();
-                    andPredicate.and(new AttributePredicateImpl<KapuaId>(DeviceEventPredicates.DEVICE_ID, device.getId()));
-                    andPredicate.and(new AttributePredicateImpl<String>(DeviceEventPredicates.RESOURCE, "BIRTH"));
+                    andPredicate.and(new AttributePredicateImpl<KapuaId>(DeviceEventAttributes.DEVICE_ID, device.getId()));
+                    andPredicate.and(new AttributePredicateImpl<String>(DeviceEventAttributes.RESOURCE, "BIRTH"));
 
                     eventQuery.setPredicate(andPredicate);
 
@@ -296,8 +296,8 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
         int totalResult = 0;
         try {
             DeviceQuery deviceQuery = GwtKapuaDeviceModelConverter.convertDeviceQuery(loadConfig, gwtDeviceQuery);
-            deviceQuery.addFetchAttributes(DevicePredicates.CONNECTION);
-            deviceQuery.addFetchAttributes(DevicePredicates.LAST_EVENT);
+            deviceQuery.addFetchAttributes(DeviceAttributes.CONNECTION);
+            deviceQuery.addFetchAttributes(DeviceAttributes.LAST_EVENT);
 
             KapuaListResult<Device> devices = deviceRegistryService.query(deviceQuery);
             totalResult = (int) deviceRegistryService.count(deviceQuery);
@@ -536,12 +536,12 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
 
             AndPredicate andPredicate = new AndPredicateImpl();
 
-            andPredicate.and(new AttributePredicateImpl<KapuaId>(DeviceEventPredicates.DEVICE_ID, KapuaEid.parseCompactId(gwtDevice.getId())));
-            andPredicate.and(new AttributePredicateImpl<Date>(DeviceEventPredicates.RECEIVED_ON, startDate, Operator.GREATER_THAN));
-            andPredicate.and(new AttributePredicateImpl<Date>(DeviceEventPredicates.RECEIVED_ON, endDate, Operator.LESS_THAN));
+            andPredicate.and(new AttributePredicateImpl<KapuaId>(DeviceEventAttributes.DEVICE_ID, KapuaEid.parseCompactId(gwtDevice.getId())));
+            andPredicate.and(new AttributePredicateImpl<Date>(DeviceEventAttributes.RECEIVED_ON, startDate, Operator.GREATER_THAN));
+            andPredicate.and(new AttributePredicateImpl<Date>(DeviceEventAttributes.RECEIVED_ON, endDate, Operator.LESS_THAN));
 
             query.setPredicate(andPredicate);
-            query.setSortCriteria(new FieldSortCriteria(DeviceEventPredicates.RECEIVED_ON, SortOrder.DESCENDING));
+            query.setSortCriteria(new FieldSortCriteria(DeviceEventAttributes.RECEIVED_ON, SortOrder.DESCENDING));
             query.setOffset(bplc.getOffset());
             query.setLimit(bplc.getLimit());
 

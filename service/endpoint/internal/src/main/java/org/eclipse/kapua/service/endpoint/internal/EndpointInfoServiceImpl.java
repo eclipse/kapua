@@ -35,7 +35,7 @@ import org.eclipse.kapua.service.endpoint.EndpointInfo;
 import org.eclipse.kapua.service.endpoint.EndpointInfoCreator;
 import org.eclipse.kapua.service.endpoint.EndpointInfoFactory;
 import org.eclipse.kapua.service.endpoint.EndpointInfoListResult;
-import org.eclipse.kapua.service.endpoint.EndpointInfoPredicates;
+import org.eclipse.kapua.service.endpoint.EndpointInfoAttributes;
 import org.eclipse.kapua.service.endpoint.EndpointInfoQuery;
 import org.eclipse.kapua.service.endpoint.EndpointInfoService;
 
@@ -256,13 +256,13 @@ public class EndpointInfoServiceImpl
     private void checkDuplicateEndpointInfo(KapuaId scopeId, KapuaId entityId, String schema, String dns, int port) throws KapuaException {
 
         AndPredicate andPredicate = new AndPredicateImpl(
-                new AttributePredicateImpl<>(EndpointInfoPredicates.SCHEMA, schema),
-                new AttributePredicateImpl<>(EndpointInfoPredicates.DNS, dns),
-                new AttributePredicateImpl<>(EndpointInfoPredicates.PORT, port)
+                new AttributePredicateImpl<>(EndpointInfoAttributes.SCHEMA, schema),
+                new AttributePredicateImpl<>(EndpointInfoAttributes.DNS, dns),
+                new AttributePredicateImpl<>(EndpointInfoAttributes.PORT, port)
         );
 
         if (entityId != null) {
-            andPredicate.and(new AttributePredicateImpl<>(EndpointInfoPredicates.ENTITY_ID, entityId, Operator.NOT_EQUAL));
+            andPredicate.and(new AttributePredicateImpl<>(EndpointInfoAttributes.ENTITY_ID, entityId, Operator.NOT_EQUAL));
         }
 
         EndpointInfoQuery query = new EndpointInfoQueryImpl(scopeId);
@@ -270,10 +270,10 @@ public class EndpointInfoServiceImpl
 
         if (count(query) > 0) {
             List<Map.Entry<String, Object>> uniquesFieldValues = new ArrayList<>();
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(EndpointInfoPredicates.SCOPE_ID, scopeId));
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(EndpointInfoPredicates.SCHEMA, schema));
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(EndpointInfoPredicates.DNS, dns));
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(EndpointInfoPredicates.PORT, port));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(EndpointInfoAttributes.SCOPE_ID, scopeId));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(EndpointInfoAttributes.SCHEMA, schema));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(EndpointInfoAttributes.DNS, dns));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(EndpointInfoAttributes.PORT, port));
 
             throw new KapuaEntityUniquenessException(EndpointInfo.TYPE, uniquesFieldValues);
         }

@@ -28,13 +28,13 @@ import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
 import org.eclipse.kapua.service.authorization.access.AccessRoleCreator;
 import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
-import org.eclipse.kapua.service.authorization.access.AccessRolePredicates;
+import org.eclipse.kapua.service.authorization.access.AccessRoleAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 import org.eclipse.kapua.service.authorization.access.AccessRoleService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleDAO;
-import org.eclipse.kapua.service.authorization.role.RolePermissionPredicates;
+import org.eclipse.kapua.service.authorization.role.RolePermissionAttributes;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
 import org.eclipse.kapua.service.authorization.shiro.exception.KapuaAuthorizationErrorCodes;
 import org.eclipse.kapua.service.authorization.shiro.exception.KapuaAuthorizationException;
@@ -88,8 +88,8 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
             AccessRoleQuery query = new AccessRoleQueryImpl(accessRoleCreator.getScopeId());
             query.setPredicate(
                     new AndPredicateImpl(
-                            new AttributePredicateImpl<>(AccessRolePredicates.ACCESS_INFO_ID, accessRoleCreator.getAccessInfoId()),
-                            new AttributePredicateImpl<>(RolePermissionPredicates.ROLE_ID, accessRoleCreator.getRoleId())
+                            new AttributePredicateImpl<>(AccessRoleAttributes.ACCESS_INFO_ID, accessRoleCreator.getAccessInfoId()),
+                            new AttributePredicateImpl<>(RolePermissionAttributes.ROLE_ID, accessRoleCreator.getRoleId())
                     )
             );
 
@@ -151,7 +151,7 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
         //
         // Build query
         AccessRoleQuery query = new AccessRoleQueryImpl(scopeId);
-        query.setPredicate(new AttributePredicateImpl<>(AccessRolePredicates.ACCESS_INFO_ID, accessInfoId));
+        query.setPredicate(new AttributePredicateImpl<>(AccessRoleAttributes.ACCESS_INFO_ID, accessInfoId));
 
         return query(query);
     }

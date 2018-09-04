@@ -27,7 +27,7 @@ import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticatio
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.certificate.Certificate;
 import org.eclipse.kapua.service.certificate.CertificateFactory;
-import org.eclipse.kapua.service.certificate.CertificatePredicates;
+import org.eclipse.kapua.service.certificate.CertificateAttributes;
 import org.eclipse.kapua.service.certificate.CertificateQuery;
 import org.eclipse.kapua.service.certificate.CertificateService;
 import org.eclipse.kapua.service.certificate.CertificateStatus;
@@ -74,11 +74,11 @@ public class AccessTokenCredentialsMatcher implements CredentialsMatcher {
                 CertificateQuery certificateQuery = CERTIFICATE_FACTORY.newQuery(null);
                 certificateQuery.setPredicate(
                         new AndPredicateImpl(
-                                new AttributePredicateImpl<>(CertificatePredicates.USAGE_NAME, "JWT"),
-                                new AttributePredicateImpl<>(CertificatePredicates.STATUS, CertificateStatus.VALID)
+                                new AttributePredicateImpl<>(CertificateAttributes.USAGE_NAME, "JWT"),
+                                new AttributePredicateImpl<>(CertificateAttributes.STATUS, CertificateStatus.VALID)
                         )
                 );
-                certificateQuery.setSortCriteria(new FieldSortCriteria(CertificatePredicates.CREATED_BY, FieldSortCriteria.SortOrder.DESCENDING));
+                certificateQuery.setSortCriteria(new FieldSortCriteria(CertificateAttributes.CREATED_BY, FieldSortCriteria.SortOrder.DESCENDING));
                 certificateQuery.setIncludeInherited(true);
                 certificateQuery.setLimit(1);
 

@@ -34,7 +34,7 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionFactory;
-import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionPredicates;
+import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionAttributes;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionQuery;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionService;
 import org.slf4j.Logger;
@@ -226,7 +226,7 @@ public abstract class AuthenticationLogic {
         DeviceConnectionOptionQuery query = deviceConnectionOptionFactory.newQuery(scopeId);
 
         AndPredicateImpl andPredicate = new AndPredicateImpl();
-        andPredicate.and(new AttributePredicateImpl<>(DeviceConnectionOptionPredicates.RESERVED_USER_ID, userId));
+        andPredicate.and(new AttributePredicateImpl<>(DeviceConnectionOptionAttributes.RESERVED_USER_ID, userId));
         query.setPredicate(andPredicate);
         query.setLimit(1);
 

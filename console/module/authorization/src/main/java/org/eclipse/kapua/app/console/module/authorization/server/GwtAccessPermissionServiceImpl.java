@@ -31,7 +31,7 @@ import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.KapuaEntityPredicates;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
@@ -41,7 +41,7 @@ import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionCreator;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionFactory;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
-import org.eclipse.kapua.service.authorization.access.AccessPermissionPredicates;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionQuery;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 import org.eclipse.kapua.service.authorization.group.Group;
@@ -136,13 +136,13 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
 
                 if (accessInfo != null) {
                     AccessPermissionQuery accessPermissionQuery = ACCESS_PERMISSION_FACTORY.newQuery(scopeId);
-                    accessPermissionQuery.setPredicate(new AttributePredicateImpl<KapuaId>(AccessPermissionPredicates.ACCESS_INFO_ID, accessInfo.getId()));
+                    accessPermissionQuery.setPredicate(new AttributePredicateImpl<KapuaId>(AccessPermissionAttributes.ACCESS_INFO_ID, accessInfo.getId()));
                     accessPermissionQuery.setLimit(loadConfig.getLimit());
                     accessPermissionQuery.setOffset(loadConfig.getOffset());
 
-                    String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? KapuaEntityPredicates.CREATED_ON : loadConfig.getSortField();
+                    String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? KapuaEntityAttributes.CREATED_ON : loadConfig.getSortField();
                     if (sortField.equals("createdOnFormatted")) {
-                        sortField = AccessPermissionPredicates.CREATED_ON;
+                        sortField = AccessPermissionAttributes.CREATED_ON;
                     }
                     SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
                     FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);

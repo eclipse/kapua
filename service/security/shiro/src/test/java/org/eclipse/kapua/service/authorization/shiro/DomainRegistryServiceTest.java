@@ -23,7 +23,7 @@ import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainListResult;
 import org.eclipse.kapua.service.authorization.domain.DomainQuery;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
-import org.eclipse.kapua.service.authorization.domain.shiro.DomainPredicates;
+import org.eclipse.kapua.service.authorization.domain.shiro.DomainAttributes;
 import org.eclipse.kapua.test.KapuaTest;
 import org.junit.Test;
 
@@ -158,7 +158,7 @@ public class DomainRegistryServiceTest extends KapuaTest {
             // Test name filtered query
             query = domainFactory.newQuery(null);
 
-            query.setPredicate(new AttributePredicateImpl<>(DomainPredicates.NAME, domain1.getName()));
+            query.setPredicate(new AttributePredicateImpl<>(DomainAttributes.NAME, domain1.getName()));
             result = domainRegistryService.query(query);
             count = domainRegistryService.count(query);
 
@@ -171,7 +171,7 @@ public class DomainRegistryServiceTest extends KapuaTest {
             // Test name filtered query
             query = domainFactory.newQuery(null);
 
-            query.setPredicate(new AttributePredicateImpl<>(DomainPredicates.SERVICE_NAME, domain2.getServiceName()));
+            query.setPredicate(new AttributePredicateImpl<>(DomainAttributes.SERVICE_NAME, domain2.getServiceName()));
             result = domainRegistryService.query(query);
             count = domainRegistryService.count(query);
 

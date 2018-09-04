@@ -39,7 +39,7 @@ import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupListResult;
 import org.eclipse.kapua.service.authorization.group.GroupQuery;
 import org.eclipse.kapua.service.authorization.group.GroupService;
-import org.eclipse.kapua.service.authorization.group.GroupPredicates;
+import org.eclipse.kapua.service.authorization.group.GroupAttributes;
 
 import com.google.common.base.Strings;
 
@@ -83,7 +83,7 @@ public class Groups extends AbstractKapuaResource {
 
         AndPredicateImpl andPredicate = new AndPredicateImpl();
         if (!Strings.isNullOrEmpty(name)) {
-            andPredicate.and(new AttributePredicateImpl<>(GroupPredicates.NAME, name));
+            andPredicate.and(new AttributePredicateImpl<>(GroupAttributes.NAME, name));
         }
         query.setPredicate(andPredicate);
 

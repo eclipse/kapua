@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,15 +9,20 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.job.step;
+package org.eclipse.kapua.service.authorization.domain.shiro;
 
-import org.eclipse.kapua.model.KapuaNamedEntityPredicates;
+import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 
-public interface JobStepPredicates extends KapuaNamedEntityPredicates {
+/**
+ * Query predicate attribute name for role entity.
+ *
+ * @since 1.0
+ */
+public class DomainAttributes extends KapuaNamedEntityAttributes {
 
-    String JOB_ID = "jobId";
-    String STEP_INDEX = "stepIndex";
-    String JOB_STEP_DEFINITION_ID = "jobStepDefinitionId";
-    String JOB_STEP_NAME = "name";
+    /**
+     * Domain service name
+     */
+    public static final String SERVICE_NAME = "serviceName";
 
 }

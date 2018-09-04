@@ -9,17 +9,25 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.tag;
+package org.eclipse.kapua.service.authorization.access;
 
-import org.eclipse.kapua.model.KapuaNamedEntityPredicates;
-import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.model.query.predicate.QueryPredicate;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 
 /**
- * {@link KapuaQuery} {@link QueryPredicate} name for {@link Tag} entity.
+ * Query predicate attribute name for {@link AccessPermission} entity.
  * 
  * @since 1.0.0
+ * 
  */
-public interface TagPredicates extends KapuaNamedEntityPredicates {
+public class AccessRoleAttributes extends KapuaEntityAttributes {
 
+    /**
+     * {@link AccessRole#setAccessInfoId(org.eclipse.kapua.model.id.KapuaId)} access info id
+     */
+    public static final String ACCESS_INFO_ID = "accessInfoId";
+
+    /**
+     * {@link AccessRole#setRoleId(org.eclipse.kapua.model.id.KapuaId)} role id
+     */
+    public static final String ROLE_ID = "roleId";
 }

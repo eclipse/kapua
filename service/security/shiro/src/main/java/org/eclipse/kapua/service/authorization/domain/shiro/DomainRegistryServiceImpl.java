@@ -116,7 +116,7 @@ public class DomainRegistryServiceImpl extends AbstractKapuaService implements D
         return entityManagerSession.onResult(em -> {
             DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
             DomainQuery query = domainFactory.newQuery(null);
-            query.setPredicate(new AttributePredicateImpl<>(DomainPredicates.SERVICE_NAME, serviceName));
+            query.setPredicate(new AttributePredicateImpl<>(DomainAttributes.SERVICE_NAME, serviceName));
 
             DomainListResult results = DomainDAO.query(em, query);
 

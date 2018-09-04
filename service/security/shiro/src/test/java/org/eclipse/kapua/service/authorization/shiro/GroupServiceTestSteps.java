@@ -29,7 +29,7 @@ import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupQuery;
 import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupFactoryImpl;
-import org.eclipse.kapua.service.authorization.group.GroupPredicates;
+import org.eclipse.kapua.service.authorization.group.GroupAttributes;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupServiceImpl;
 
 import cucumber.api.Scenario;
@@ -236,7 +236,7 @@ public class GroupServiceTestSteps extends AbstractAuthorizationServiceTest {
             throws KapuaException {
         KapuaId tmpId = new KapuaEid(BigInteger.valueOf(scope));
         GroupQuery tmpQuery = groupFactory.newQuery(tmpId);
-        tmpQuery.setPredicate(new AttributePredicateImpl<>(GroupPredicates.NAME, name));
+        tmpQuery.setPredicate(new AttributePredicateImpl<>(GroupAttributes.NAME, name));
 
         KapuaSecurityUtils.doPrivileged(() -> {
             groupData.groupList = groupService.query(tmpQuery);

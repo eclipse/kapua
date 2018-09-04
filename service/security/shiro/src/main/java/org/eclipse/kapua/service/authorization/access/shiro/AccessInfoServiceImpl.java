@@ -28,7 +28,7 @@ import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
-import org.eclipse.kapua.service.authorization.access.AccessInfoPredicates;
+import org.eclipse.kapua.service.authorization.access.AccessInfoAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessInfoQuery;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
@@ -164,7 +164,7 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(ACCESS_INFO_DOMAIN, Actions.read, scopeId));
         AccessInfoQuery query = accessInfoFactory.newQuery(scopeId);
-        query.setPredicate(new AttributePredicateImpl<>(AccessInfoPredicates.USER_ID, userId));
+        query.setPredicate(new AttributePredicateImpl<>(AccessInfoAttributes.USER_ID, userId));
         AccessInfoListResult result = entityManagerSession.onResult(em -> AccessInfoDAO.query(em, query));
         if (!result.isEmpty()) {
             return result.getFirstItem();
@@ -241,7 +241,7 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
         AccessInfoFactory accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
 
         AccessInfoQuery query = accessInfoFactory.newQuery(scopeId);
-        query.setPredicate(new AttributePredicateImpl<>(AccessInfoPredicates.USER_ID, userId));
+        query.setPredicate(new AttributePredicateImpl<>(AccessInfoAttributes.USER_ID, userId));
 
         AccessInfoListResult accessInfosToDelete = query(query);
 

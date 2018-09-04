@@ -39,7 +39,7 @@ import org.eclipse.kapua.service.tag.TagFactory;
 import org.eclipse.kapua.service.tag.TagListResult;
 import org.eclipse.kapua.service.tag.TagQuery;
 import org.eclipse.kapua.service.tag.TagService;
-import org.eclipse.kapua.service.tag.TagPredicates;
+import org.eclipse.kapua.service.tag.TagAttributes;
 
 import com.google.common.base.Strings;
 
@@ -86,7 +86,7 @@ public class Tags extends AbstractKapuaResource {
 
         AndPredicateImpl andPredicate = new AndPredicateImpl();
         if (!Strings.isNullOrEmpty(name)) {
-            andPredicate.and(new AttributePredicateImpl<>(TagPredicates.NAME, name));
+            andPredicate.and(new AttributePredicateImpl<>(TagAttributes.NAME, name));
         }
         query.setPredicate(andPredicate);
 

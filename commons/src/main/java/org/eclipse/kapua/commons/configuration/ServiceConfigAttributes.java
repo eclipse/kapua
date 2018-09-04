@@ -9,17 +9,11 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.authorization.group;
+package org.eclipse.kapua.commons.configuration;
 
-import org.eclipse.kapua.model.KapuaNamedEntityPredicates;
-import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.model.query.predicate.QueryPredicate;
+import org.eclipse.kapua.model.KapuaUpdatableEntityAttributes;
 
-/**
- * {@link KapuaQuery} {@link QueryPredicate} name for {@link Group} entity.
- *
- * @since 1.0
- */
-public interface GroupPredicates extends KapuaNamedEntityPredicates {
+public class ServiceConfigAttributes extends KapuaUpdatableEntityAttributes {
 
+    public static final String SERVICE_ID = "pid";
 }

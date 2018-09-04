@@ -29,7 +29,7 @@ import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
-import org.eclipse.kapua.model.KapuaEntityPredicates;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
@@ -43,7 +43,7 @@ import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
-import org.eclipse.kapua.service.authorization.access.AccessInfoPredicates;
+import org.eclipse.kapua.service.authorization.access.AccessInfoAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessInfoQuery;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
@@ -333,7 +333,7 @@ public class ServiceDAO {
         QueryPredicate kapuaPredicates = kapuaQuery.getPredicate();
         if (kapuaQuery.getScopeId() != null) {
 
-            AttributePredicateImpl<KapuaId> scopeId = new AttributePredicateImpl<>(KapuaEntityPredicates.SCOPE_ID, kapuaQuery.getScopeId());
+            AttributePredicateImpl<KapuaId> scopeId = new AttributePredicateImpl<>(KapuaEntityAttributes.SCOPE_ID, kapuaQuery.getScopeId());
 
             AndPredicateImpl scopedAndPredicate = new AndPredicateImpl();
             scopedAndPredicate.and(scopeId);
@@ -372,7 +372,7 @@ public class ServiceDAO {
             }
 
         } else {
-            order = cb.asc(entityRoot.get(entityType.getSingularAttribute(KapuaEntityPredicates.ENTITY_ID)));
+            order = cb.asc(entityRoot.get(entityType.getSingularAttribute(KapuaEntityAttributes.ENTITY_ID)));
         }
         criteriaSelectQuery.orderBy(order);
 
@@ -442,7 +442,7 @@ public class ServiceDAO {
 
             AndPredicateImpl scopedAndPredicate = new AndPredicateImpl();
 
-            AttributePredicateImpl<KapuaId> scopeId = new AttributePredicateImpl<>(KapuaEntityPredicates.SCOPE_ID, kapuaQuery.getScopeId());
+            AttributePredicateImpl<KapuaId> scopeId = new AttributePredicateImpl<>(KapuaEntityAttributes.SCOPE_ID, kapuaQuery.getScopeId());
             scopedAndPredicate.and(scopeId);
 
             if (kapuaQuery.getPredicate() != null) {
@@ -688,7 +688,7 @@ public class ServiceDAO {
                     KapuaId userId = kapuaSession.getUserId();
 
                     AccessInfoQuery accessInfoQuery = ACCESS_INFO_FACTORY.newQuery(kapuaSession.getScopeId());
-                    accessInfoQuery.setPredicate(new AttributePredicateImpl<>(AccessInfoPredicates.USER_ID, userId));
+                    accessInfoQuery.setPredicate(new AttributePredicateImpl<>(AccessInfoAttributes.USER_ID, userId));
                     AccessInfoListResult accessInfos = KapuaSecurityUtils.doPrivileged(() -> ACCESS_INFO_SERVICE.query(accessInfoQuery));
 
                     List<Permission> groupPermissions = new ArrayList<>();

@@ -30,7 +30,7 @@ import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
 import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
-import org.eclipse.kapua.service.authorization.role.RolePermissionPredicates;
+import org.eclipse.kapua.service.authorization.role.RolePermissionAttributes;
 import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
 import org.eclipse.kapua.service.authorization.role.RolePermissionService;
 
@@ -80,12 +80,12 @@ public class RolesPermissions extends AbstractKapuaResource {
         RolePermissionQuery query = rolePermissionFactory.newQuery(scopeId);
 
         AndPredicateImpl andPredicate = new AndPredicateImpl();
-        query.setPredicate(new AttributePredicateImpl<>(RolePermissionPredicates.ROLE_ID, roleId));
+        query.setPredicate(new AttributePredicateImpl<>(RolePermissionAttributes.ROLE_ID, roleId));
         if (!Strings.isNullOrEmpty(domain)) {
-            andPredicate.and(new AttributePredicateImpl<>(RolePermissionPredicates.PERMISSION_DOMAIN, domain));
+            andPredicate.and(new AttributePredicateImpl<>(RolePermissionAttributes.PERMISSION_DOMAIN, domain));
         }
         if (action != null) {
-            andPredicate.and(new AttributePredicateImpl<>(RolePermissionPredicates.PERMISSION_ACTION, action));
+            andPredicate.and(new AttributePredicateImpl<>(RolePermissionAttributes.PERMISSION_ACTION, action));
         }
         query.setPredicate(andPredicate);
 
@@ -117,7 +117,7 @@ public class RolesPermissions extends AbstractKapuaResource {
         query.setScopeId(scopeId);
 
         AndPredicateImpl andPredicate = new AndPredicateImpl();
-        andPredicate.and(new AttributePredicateImpl<>(RolePermissionPredicates.ROLE_ID, roleId));
+        andPredicate.and(new AttributePredicateImpl<>(RolePermissionAttributes.ROLE_ID, roleId));
         andPredicate.and(query.getPredicate());
 
         query.setPredicate(andPredicate);
@@ -145,7 +145,7 @@ public class RolesPermissions extends AbstractKapuaResource {
             @ApiParam(value = "The Role id in which to count results.") @PathParam("roleId") EntityId roleId,
             @ApiParam(value = "The RolePermissionQuery to use to filter results.", required = true) RolePermissionQuery query) throws Exception {
         query.setScopeId(scopeId);
-        query.setPredicate(new AttributePredicateImpl<>(RolePermissionPredicates.ROLE_ID, roleId));
+        query.setPredicate(new AttributePredicateImpl<>(RolePermissionAttributes.ROLE_ID, roleId));
 
         return new CountResult(rolePermissionService.count(query));
     }
@@ -196,8 +196,8 @@ public class RolesPermissions extends AbstractKapuaResource {
         RolePermissionQuery query = rolePermissionFactory.newQuery(scopeId);
 
         AndPredicateImpl andPredicate = new AndPredicateImpl();
-        andPredicate.and(new AttributePredicateImpl<>(RolePermissionPredicates.ROLE_ID, roleId));
-        andPredicate.and(new AttributePredicateImpl<>(RolePermissionPredicates.ENTITY_ID, rolePermissionId));
+        andPredicate.and(new AttributePredicateImpl<>(RolePermissionAttributes.ROLE_ID, roleId));
+        andPredicate.and(new AttributePredicateImpl<>(RolePermissionAttributes.ENTITY_ID, rolePermissionId));
 
         query.setPredicate(andPredicate);
         query.setOffset(0);

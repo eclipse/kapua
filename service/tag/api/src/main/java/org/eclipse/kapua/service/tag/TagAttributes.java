@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,22 +9,17 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.certificate;
+package org.eclipse.kapua.service.tag;
 
-import org.eclipse.kapua.model.KapuaNamedEntityPredicates;
+import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
+import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 
-public interface CertificatePredicates extends KapuaNamedEntityPredicates {
-
-    String CA_ID = "caId";
-
-    String FORWARDABLE = "forwardable";
-
-    String SIGNATURE = "signature";
-
-    String STATUS = "status";
-
-    String USAGE = "certificateUsages";
-
-    String USAGE_NAME = USAGE + ".name";
+/**
+ * {@link KapuaQuery} {@link QueryPredicate} name for {@link Tag} entity.
+ * 
+ * @since 1.0.0
+ */
+public class TagAttributes extends KapuaNamedEntityAttributes {
 
 }

@@ -9,19 +9,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.account;
+package org.eclipse.kapua.service.endpoint;
 
-import org.eclipse.kapua.model.KapuaNamedEntityPredicates;
+import org.eclipse.kapua.model.KapuaUpdatableEntityAttributes;
 
-public interface AccountPredicates extends KapuaNamedEntityPredicates {
+public class EndpointInfoAttributes extends KapuaUpdatableEntityAttributes {
 
-    String PARENT_ACCOUNT_PATH = "parentAccountPath";
+    public static final String SCHEMA = "schema";
+    public static final String DNS = "dns";
+    public static final String PORT = "port";
+    public static final String SECURE = "secure";
+    public static final String USAGES = "usages";
 
-    String CHILD_ACCOUNTS = "childAccounts";
-
-    String ORGANIZATION = "organization";
-
-    String ORGANIZATION_NAME = ORGANIZATION + ".name";
-
-    String ORGANIZATION_EMAIL = ORGANIZATION + ".email";
 }

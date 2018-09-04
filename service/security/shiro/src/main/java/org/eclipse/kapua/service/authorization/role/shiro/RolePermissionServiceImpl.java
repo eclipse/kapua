@@ -31,7 +31,7 @@ import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
 import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
-import org.eclipse.kapua.service.authorization.role.RolePermissionPredicates;
+import org.eclipse.kapua.service.authorization.role.RolePermissionAttributes;
 import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
 import org.eclipse.kapua.service.authorization.role.RolePermissionService;
 import org.eclipse.kapua.service.authorization.role.RoleService;
@@ -92,25 +92,25 @@ public class RolePermissionServiceImpl extends AbstractKapuaService implements R
         RolePermissionQuery query = new RolePermissionQueryImpl(rolePermissionCreator.getScopeId());
         query.setPredicate(
                 new AndPredicateImpl(
-                        new AttributePredicateImpl<>(RolePermissionPredicates.SCOPE_ID, rolePermissionCreator.getScopeId()),
-                        new AttributePredicateImpl<>(RolePermissionPredicates.ROLE_ID, rolePermissionCreator.getRoleId()),
-                        new AttributePredicateImpl<>(RolePermissionPredicates.PERMISSION_DOMAIN, rolePermissionCreator.getPermission().getDomain()),
-                        new AttributePredicateImpl<>(RolePermissionPredicates.PERMISSION_ACTION, rolePermissionCreator.getPermission().getAction()),
-                        new AttributePredicateImpl<>(RolePermissionPredicates.PERMISSION_TARGET_SCOPE_ID, rolePermissionCreator.getPermission().getTargetScopeId()),
-                        new AttributePredicateImpl<>(RolePermissionPredicates.PERMISSION_GROUP_ID, rolePermissionCreator.getPermission().getGroupId()),
-                        new AttributePredicateImpl<>(RolePermissionPredicates.PERMISSION_FORWARDABLE, rolePermissionCreator.getPermission().getForwardable())
+                        new AttributePredicateImpl<>(RolePermissionAttributes.SCOPE_ID, rolePermissionCreator.getScopeId()),
+                        new AttributePredicateImpl<>(RolePermissionAttributes.ROLE_ID, rolePermissionCreator.getRoleId()),
+                        new AttributePredicateImpl<>(RolePermissionAttributes.PERMISSION_DOMAIN, rolePermissionCreator.getPermission().getDomain()),
+                        new AttributePredicateImpl<>(RolePermissionAttributes.PERMISSION_ACTION, rolePermissionCreator.getPermission().getAction()),
+                        new AttributePredicateImpl<>(RolePermissionAttributes.PERMISSION_TARGET_SCOPE_ID, rolePermissionCreator.getPermission().getTargetScopeId()),
+                        new AttributePredicateImpl<>(RolePermissionAttributes.PERMISSION_GROUP_ID, rolePermissionCreator.getPermission().getGroupId()),
+                        new AttributePredicateImpl<>(RolePermissionAttributes.PERMISSION_FORWARDABLE, rolePermissionCreator.getPermission().getForwardable())
                 )
         );
         if (count(query) > 0) {
             List<Map.Entry<String, Object>> uniquesFieldValues = new ArrayList<>();
 
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionPredicates.SCOPE_ID, rolePermissionCreator.getScopeId()));
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionPredicates.ROLE_ID, rolePermissionCreator.getRoleId()));
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionPredicates.PERMISSION_DOMAIN, rolePermissionCreator.getPermission().getDomain()));
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionPredicates.PERMISSION_ACTION, rolePermissionCreator.getPermission().getAction()));
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionPredicates.PERMISSION_TARGET_SCOPE_ID, rolePermissionCreator.getPermission().getTargetScopeId()));
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionPredicates.PERMISSION_GROUP_ID, rolePermissionCreator.getPermission().getGroupId()));
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionPredicates.PERMISSION_FORWARDABLE, rolePermissionCreator.getPermission().getForwardable()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionAttributes.SCOPE_ID, rolePermissionCreator.getScopeId()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionAttributes.ROLE_ID, rolePermissionCreator.getRoleId()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionAttributes.PERMISSION_DOMAIN, rolePermissionCreator.getPermission().getDomain()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionAttributes.PERMISSION_ACTION, rolePermissionCreator.getPermission().getAction()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionAttributes.PERMISSION_TARGET_SCOPE_ID, rolePermissionCreator.getPermission().getTargetScopeId()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionAttributes.PERMISSION_GROUP_ID, rolePermissionCreator.getPermission().getGroupId()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionAttributes.PERMISSION_FORWARDABLE, rolePermissionCreator.getPermission().getForwardable()));
 
             throw new KapuaEntityUniquenessException(RolePermission.TYPE, uniquesFieldValues);
         }
@@ -163,7 +163,7 @@ public class RolePermissionServiceImpl extends AbstractKapuaService implements R
         //
         // Build query
         RolePermissionQuery query = new RolePermissionQueryImpl(scopeId);
-        query.setPredicate(new AttributePredicateImpl<>(RolePermissionPredicates.ROLE_ID, roleId));
+        query.setPredicate(new AttributePredicateImpl<>(RolePermissionAttributes.ROLE_ID, roleId));
 
         return query(query);
     }
