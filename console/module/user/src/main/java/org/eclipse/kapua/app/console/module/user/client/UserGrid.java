@@ -127,6 +127,7 @@ public class UserGrid extends EntityGrid<GwtUser> {
 
         columnConfig = new ColumnConfig("id", USER_MSGS.gridUserColumnHeaderId(), 100);
         columnConfig.setHidden(true);
+        columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("username", USER_MSGS.gridUserColumnHeaderUsername(), 400);

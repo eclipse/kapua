@@ -123,6 +123,7 @@ public class AccountChildUserGrid extends EntityGrid<GwtUser> {
 
         columnConfig = new ColumnConfig("id", MSGS.gridUserColumnHeaderId(), 100);
         columnConfig.setHidden(true);
+        columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("username", MSGS.gridUserColumnHeaderUsername(), 400);
