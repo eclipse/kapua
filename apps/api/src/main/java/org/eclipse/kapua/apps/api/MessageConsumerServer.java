@@ -28,31 +28,31 @@ import org.slf4j.LoggerFactory;
 import io.vertx.core.Future;
 
 // TODO move to common project
-public class MessageConsumer<M,P> extends AbstractEBServer {
+public class MessageConsumerServer<M,P> extends AbstractEBServer {
 
-    protected final static Logger logger = LoggerFactory.getLogger(MessageConsumer.class);
+    protected final static Logger logger = LoggerFactory.getLogger(MessageConsumerServer.class);
 
     private final static String PROCESSOR_NAME_DATASTORE = "Datastore";
 
-    protected Map<String, MessageTarget<P>> processorMap;
-    protected Map<String, MessageTarget> errorProcessorMap;
+    protected Map<String, MessageTarget<P>> targetMap;
+    protected Map<String, MessageTarget> errorTargetMap;
 
-    private MessageSource<M> consumer;
+    private MessageSource<M> messageSource;
     private Converter<M,P> converter;
-    private MessageTarget<P> processor;
-    private MessageTarget errorProcessor;
-    private AbstractMessageProcessor<M,P> connectorVerticle;
+    private MessageTarget<P> messageTarget;
+    private MessageTarget errorTarget;
+    private AbstractMessageProcessor<M,P> messageProcessor;
     private JAXBContextProvider jaxbContextProvider;
 
     public static interface Builder<M,P> {
 
-        MessageSource<M> getConsumer();
+        MessageSource<M> getMessageSource();
 
         Converter<M,P> getConverter();
 
-        MessageTarget<P> getProcessor();
+        MessageTarget<P> getMessageTarget();
 
-        MessageTarget getErrorProcessor();
+        MessageTarget getErrorTarget();
 
         String getHealthCheckEBAddress();
 
@@ -60,12 +60,12 @@ public class MessageConsumer<M,P> extends AbstractEBServer {
 
         JAXBContextProvider getJAXBContextProvider();
 
-        default MessageConsumer<M,P> build() {
-            MessageConsumer<M,P> server = new MessageConsumer<M,P>();
-            server.consumer = this.getConsumer();
+        default MessageConsumerServer<M,P> build() {
+            MessageConsumerServer<M,P> server = new MessageConsumerServer<M,P>();
+            server.messageSource = this.getMessageSource();
             server.converter = this.getConverter();
-            server.processor = this.getProcessor();
-            server.errorProcessor = this.getErrorProcessor();
+            server.messageTarget = this.getMessageTarget();
+            server.errorTarget = this.getErrorTarget();
             server.healthCheckEBAddress = this.getHealthCheckEBAddress();
             server.ebAddress = this.getEBAddress();
             return server;
@@ -76,7 +76,7 @@ public class MessageConsumer<M,P> extends AbstractEBServer {
     private String ebAddress;
     private EBServerConfig ebServerConfig;
 
-    public MessageConsumer() {
+    public MessageConsumerServer() {
 //      SystemSetting configSys = SystemSetting.getInstance();
 //      logger.info("Checking database... '{}'", configSys.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false));
 //      if(configSys.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false)) {
@@ -94,7 +94,7 @@ public class MessageConsumer<M,P> extends AbstractEBServer {
         logger.info("Starting Datastore Consumer...");
 
         initializeProcessors();
-        connectorVerticle.start(startFuture);
+        messageProcessor.start(startFuture);
     }
 
     public void stop(Future<Void> stopFuture) throws Exception {
@@ -115,10 +115,10 @@ public class MessageConsumer<M,P> extends AbstractEBServer {
 
     private void initializeProcessors() {
         XmlUtil.setContextProvider(jaxbContextProvider);
-        processorMap = new HashMap<>();
-        processorMap.put(PROCESSOR_NAME_DATASTORE, processor);
-        errorProcessorMap = new HashMap<>();
-        errorProcessorMap.put(PROCESSOR_NAME_DATASTORE, errorProcessor);
-        connectorVerticle = new AbstractMessageProcessor<>(consumer, converter, processorMap, errorProcessorMap);
+        targetMap = new HashMap<>();
+        targetMap.put(PROCESSOR_NAME_DATASTORE, messageTarget);
+        errorTargetMap = new HashMap<>();
+        errorTargetMap.put(PROCESSOR_NAME_DATASTORE, errorTarget);
+        messageProcessor = new AbstractMessageProcessor<>(messageSource, converter, targetMap, errorTargetMap);
     }
 }

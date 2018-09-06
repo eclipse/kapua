@@ -51,10 +51,10 @@ public class AmqpLifecycleConsumerServerConfigFactory implements ObjectFactory<M
     private ConnectionConfiguration connectionConfig;
 
     @Inject 
-    private SourceConfiguration consumerConfig;
+    private SourceConfiguration sourceConfig;
 
     @Inject 
-    private TargetConfiguration senderConfig;
+    private TargetConfiguration targetConfig;
 
     @Override
     public MessageConsumerServerConfig<byte[], TransportMessage> create() {
@@ -62,8 +62,8 @@ public class AmqpLifecycleConsumerServerConfigFactory implements ObjectFactory<M
         MessageConsumerServerConfig<byte[], TransportMessage> config = new MessageConsumerServerConfig<byte[], TransportMessage>();
 
         // Consumer
-        AmqpTransportActiveMQSource consumer = AmqpTransportActiveMQSource.create(vertx, new AmqpConsumer(vertx, consumerConfig.createClientOptions(connectionConfig)));
-        config.setConsumer(consumer);
+        AmqpTransportActiveMQSource consumer = AmqpTransportActiveMQSource.create(vertx, new AmqpConsumer(vertx, sourceConfig.createClientOptions(connectionConfig)));
+        config.setMessageSource(consumer);
         config.getHealthCheckProviders().add(new HealthCheckProvider() {
 
             @Override
@@ -82,7 +82,7 @@ public class AmqpLifecycleConsumerServerConfigFactory implements ObjectFactory<M
 
         // Processor
         LifecycleProcessor processor = LifecycleProcessor.getProcessorWithNoFilter();
-        config.setProcessor(processor);
+        config.setMessageTarget(processor);
         config.getHealthCheckProviders().add(new HealthCheckProvider() {
 
             @Override
@@ -99,8 +99,8 @@ public class AmqpLifecycleConsumerServerConfigFactory implements ObjectFactory<M
         });
 
         // Error processor
-        ErrorTarget errorProcessor = ErrorTarget.getProcessorWithNoFilter(vertx, new AmqpSender(vertx, senderConfig.createClientOptions(connectionConfig)));
-        config.setErrorProcessor(errorProcessor);
+        ErrorTarget errorProcessor = ErrorTarget.getProcessorWithNoFilter(vertx, new AmqpSender(vertx, targetConfig.createClientOptions(connectionConfig)));
+        config.setErrorTarget(errorProcessor);
         config.getHealthCheckProviders().add(new HealthCheckProvider() {
 
             @Override

@@ -16,7 +16,7 @@ package org.eclipse.kapua.consumer.activemq.error;
 import javax.inject.Inject;
 
 import org.apache.qpid.proton.message.Message;
-import org.eclipse.kapua.apps.api.MessageConsumer;
+import org.eclipse.kapua.apps.api.MessageConsumerServer;
 import org.eclipse.kapua.apps.api.MessageConsumerServerConfig;
 import org.eclipse.kapua.commons.core.ObjectFactory;
 import org.eclipse.kapua.commons.core.vertx.AbstractMainVerticle;
@@ -52,7 +52,7 @@ public class MainVerticle extends AbstractMainVerticle {
         Future.succeededFuture().compose(map -> {
             Future<Void> future = Future.future();
             MessageConsumerServerConfig<Message, Message> amqpConnectorServerConfig = amqpConnectorServerConfigFactory.create();
-            MessageConsumer<Message, Message> amqpConnectorServer = amqpConnectorServerConfig.build();
+            MessageConsumerServer<Message, Message> amqpConnectorServer = amqpConnectorServerConfig.build();
 
             for(HealthCheckProvider provider:amqpConnectorServerConfig.getHealthCheckProviders()) {
                 amqpConnectorServer.registerHealthCheckProvider(provider);

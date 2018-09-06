@@ -13,7 +13,7 @@ package org.eclipse.kapua.consumer.activemq.datastore;
 
 import javax.inject.Inject;
 
-import org.eclipse.kapua.apps.api.MessageConsumer;
+import org.eclipse.kapua.apps.api.MessageConsumerServer;
 import org.eclipse.kapua.apps.api.MessageConsumerServerConfig;
 import org.eclipse.kapua.commons.core.ObjectFactory;
 import org.eclipse.kapua.commons.core.vertx.AbstractMainVerticle;
@@ -47,7 +47,7 @@ public class MainVerticle extends AbstractMainVerticle {
         Future.succeededFuture().compose(map -> {
             Future<Void> future = Future.future();
             MessageConsumerServerConfig<byte[], TransportMessage> amqpConnectorServerConfig = amqpConnectorServerConfigFactory.create();
-            MessageConsumer<byte[], TransportMessage> amqpConnectorServer = amqpConnectorServerConfig.build();
+            MessageConsumerServer<byte[], TransportMessage> amqpConnectorServer = amqpConnectorServerConfig.build();
 
             for(HealthCheckProvider provider:amqpConnectorServerConfig.getHealthCheckProviders()) {
                 amqpConnectorServer.registerHealthCheckProvider(provider);

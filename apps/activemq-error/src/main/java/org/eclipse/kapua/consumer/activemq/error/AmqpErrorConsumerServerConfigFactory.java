@@ -48,7 +48,7 @@ public class AmqpErrorConsumerServerConfigFactory implements ObjectFactory<Messa
     private ConnectionConfiguration connectionConfig;
 
     @Inject 
-    private SourceConfiguration consumerConfig;
+    private SourceConfiguration sourceConfig;
 
     @Override
     public MessageConsumerServerConfig<Message, Message> create() {
@@ -56,8 +56,8 @@ public class AmqpErrorConsumerServerConfigFactory implements ObjectFactory<Messa
         MessageConsumerServerConfig<Message, Message> config = new MessageConsumerServerConfig<Message, Message>();
 
         // Consumer
-        AmqpActiveMQSource consumer = AmqpActiveMQSource.create(vertx, new AmqpConsumer(vertx, consumerConfig.createClientOptions(connectionConfig)));
-        config.setConsumer(consumer);
+        AmqpActiveMQSource consumer = AmqpActiveMQSource.create(vertx, new AmqpConsumer(vertx, sourceConfig.createClientOptions(connectionConfig)));
+        config.setMessageSource(consumer);
         config.getHealthCheckProviders().add(new HealthCheckProvider() {
 
             @Override
@@ -77,7 +77,7 @@ public class AmqpErrorConsumerServerConfigFactory implements ObjectFactory<Messa
 
         // Processor
         LoggerTarget processor = LoggerTarget.getProcessorWithNoFilter();
-        config.setProcessor(processor);
+        config.setMessageTarget(processor);
         config.getHealthCheckProviders().add(new HealthCheckProvider() {
 
             @Override
@@ -94,7 +94,7 @@ public class AmqpErrorConsumerServerConfigFactory implements ObjectFactory<Messa
         });
 
         // Error processor
-        config.setErrorProcessor(null);
+        config.setErrorTarget(null);
 
         // Other
         config.setEBAddress(ebAddress);
