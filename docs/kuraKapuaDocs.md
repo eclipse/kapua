@@ -33,24 +33,16 @@ This part of the tutorial consists of several pieces. First you need to download
 1. Open OS Shell (Terminal) and go to home directory.
 2. Download Kapua project from [Github repository](https://github.com/eclipse/kapua.git) with command `git clone https://github.com/eclipse/kapua.git`
 3. Go to Kapua folder and run command `mvn clean install -f external/pom.xml` which will build some additional resources required by Kapua.
-4. Go to Kapua folder and run command `mvn clean install -DskipTests -Pconsole` which will build the project with the Web Admin console.
-5. After build finishes run Docker containers one by one (execute in Terminal):
+4. Go to Kapua folder and run command `mvn clean install -DskipTests -Pconsole,docker` which will build the project with the Web Admin console.
+5. After build finishes run Docker deploy script in `deployment/docker`:
  
 ```
-docker run -td --name kapua-sql -p 8181:8181 -p 3306:3306 kapua/kapua-sql
-docker run -td --name kapua-elasticsearch -p 9200:9200 -p 9300:9300 elasticsearch:5.4.0 -Ecluster.name=kapua-datastore -Ediscovery.type=single-node -Etransport.host=_site_ -Etransport.ping_schedule=-1 -Etransport.tcp.connect_timeout=30s
-docker run -td --name kapua-broker --link kapua-sql:db --link kapua-elasticsearch:es --env commons.db.schema.update=true --env broker.ip=127.0.0.1 -p 1883:1883 -p 61614:61614 kapua/kapua-broker
-docker run -td --name kapua-console --link kapua-sql:db --link kapua-broker:broker --link kapua-elasticsearch:es --env commons.db.schema.update=true -p 8080:8080 kapua/kapua-console
-docker run -td --name kapua-api --link kapua-sql:db --link kapua-broker:broker --link kapua-elasticsearch:es --env commons.db.schema.update=true -p 8081:8080 kapua/kapua-api
+./docker-deploy.sh
 ```
 
-Each line above starts a Docker container for each service. 
+The docker images needed will be downloaded from Docker Hub and all the containers will be started.
 
-If the tag is not specified then the image tagged as latest will be used by default.
-
-The images will be downloaded from Docker Hub and all the containers will be started.
-
-You can check if every container is ok by typing the following command:
+You can check if every container is running properly by typing the following command:
 
   docker ps -as
 
@@ -63,10 +55,16 @@ dd9852845105        kapua/kapua-console   "/home/kapua/run-c..."   4 hours ago  
 65c8e15ab7e9        kapua/kapua-broker    "/maven/bin/active..."   4 hours ago         Up 4 hours                 8778/tcp, 0.0.0.0:1883->1883/tcp, 0.0.0.0:61614->61614/tcp, 8883/tcp   kapua-broker          94.4kB (virtual 212MB)
 b3309e145e84        elasticsearch:5.4.0   "/docker-entrypoin..."   4 hours ago         Exited (137) 4 hours ago                                                                          kapua-elasticsearch   32.8kB (virtual 352MB)
 e097f77f1758        kapua/kapua-sql       "/home/kapua/run-h2"     4 hours ago         Up 4 hours                 0.0.0.0:3306->3306/tcp, 0.0.0.0:8181->8181/tcp, 8778/tcp               kapua-sql             32.8kB (virtual 86MB)
+785efe9976cf        kapua/kapua-events-broker:latest   "/run-artemis"           About an hour ago   Up About an hour    0.0.0.0:5672->5672/tcp                                                 compose_events-broker_1   410kB (virtual 130MB)
 ```
 
+6. Kapua can be stopped by executing script: 
 
-5. Open web browser (Firefox or Chrome) and open the admin console at [http://localhost:8080/.](http://localhost:8080/)
+```
+./docker-undeploy.sh
+```
+
+7. Open web browser (Firefox or Chrome) and open the admin console at [http://localhost:8080/.](http://localhost:8080/)
 
 If everything is OK, you should now see the login prompt. Enter username and password. 
 <dl>
