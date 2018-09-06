@@ -13,6 +13,7 @@
         "secure-port" : 8443
     },
 	"event-bus-server": {
+		"health-address": "health",
 		"default-address": "kapua.requests"
 	}
 }

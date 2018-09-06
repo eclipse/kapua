@@ -946,47 +946,27 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-converter-api</artifactId>
+                <artifactId>kapua-connector-kura</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-converter-activemq</artifactId>
+                <artifactId>kapua-connector-logger</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-converter-hono</artifactId>
+                <artifactId>kapua-connector-datastore</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-converter-kura</artifactId>
+                <artifactId>kapua-connector-lifecycle</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-processor-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-processor-logger</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-processor-datastore</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-processor-lifecycle</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-processor-error-amqp-activemq</artifactId>
+                <artifactId>kapua-connector-error-amqp-activemq</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -1406,8 +1386,6 @@
         <module>transport</module>
         <module>translator</module>
         <module>connector</module>
-        <module>converter</module>
-        <module>processor</module>
 
         <module>test</module>
         <module>qa</module>

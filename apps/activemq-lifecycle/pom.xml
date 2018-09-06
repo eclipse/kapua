@@ -46,15 +46,15 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-converter-kura</artifactId>
+            <artifactId>kapua-connector-kura</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-processor-lifecycle</artifactId>
+            <artifactId>kapua-connector-lifecycle</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-processor-error-amqp-activemq</artifactId>
+            <artifactId>kapua-connector-error-amqp-activemq</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>

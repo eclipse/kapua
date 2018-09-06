@@ -25,9 +25,9 @@ public class ExternalConsumers {
 
     protected final static Logger logger = LoggerFactory.getLogger(ExternalConsumers.class);
 
-    private static org.eclipse.kapua.consumer.activemq.datastore.Consumer datastore;
-    private static org.eclipse.kapua.consumer.activemq.lifecycle.Consumer lifecycle;
-    private static org.eclipse.kapua.consumer.activemq.error.Consumer error;
+    private static org.eclipse.kapua.consumer.activemq.datastore.ConsumerApplication datastore;
+    private static org.eclipse.kapua.consumer.activemq.lifecycle.ConsumerAppplication lifecycle;
+    private static org.eclipse.kapua.consumer.activemq.error.ConsumerApplication error;
 
     private DBHelper database;
 
@@ -39,9 +39,9 @@ public class ExternalConsumers {
     @Before(value = "@StartExternalConsumers")
     public void start() throws Exception {
         database.setup();
-        datastore = new org.eclipse.kapua.consumer.activemq.datastore.Consumer();
-        lifecycle = new org.eclipse.kapua.consumer.activemq.lifecycle.Consumer();
-        error = new org.eclipse.kapua.consumer.activemq.error.Consumer();
+        datastore = new org.eclipse.kapua.consumer.activemq.datastore.ConsumerApplication();
+        lifecycle = new org.eclipse.kapua.consumer.activemq.lifecycle.ConsumerAppplication();
+        error = new org.eclipse.kapua.consumer.activemq.error.ConsumerApplication();
         logger.info("Starting datastore consumer {}", datastore);
         datastore.run(null);
         logger.info("Starting lifecycle consumer {}", lifecycle);
