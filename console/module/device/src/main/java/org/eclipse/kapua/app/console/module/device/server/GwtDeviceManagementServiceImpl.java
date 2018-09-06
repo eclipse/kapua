@@ -301,6 +301,10 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
                         } else {
                             gwtConfig.setName(ocd.getName());
                         }
+                        if(config.getProperties() != null && config.getProperties().get("service.factoryPid") != null) {
+                            String componentName = config.getId().substring(config.getId().lastIndexOf('.') + 1);
+                            gwtConfig.setName(componentName);
+                        }
                         gwtConfig.setDescription(ocd.getDescription());
                         if (ocd.getIcon() != null && !ocd.getIcon().isEmpty()) {
                             KapuaTicon icon = ocd.getIcon().get(0);
