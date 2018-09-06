@@ -13,11 +13,17 @@ package org.eclipse.kapua.connector;
 
 import org.eclipse.kapua.KapuaException;
 
-import io.vertx.core.Future;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Handler;
 
-public interface Processor {
+public interface MessageTarget<T> extends ResourceConnector {
 
-    void start(Future<Void> startFuture) throws KapuaException;
+    /**
+     * Tells if the destination should or should not be processed by the processor
+     * @param message
+     * @return
+     */
+    boolean isProcessDestination(MessageContext<T> message);
 
-    void stop(Future<Void> stopFuture) throws KapuaException;
+    public void process(MessageContext<T> message, Handler<AsyncResult<Void>> result) throws KapuaException;
 }

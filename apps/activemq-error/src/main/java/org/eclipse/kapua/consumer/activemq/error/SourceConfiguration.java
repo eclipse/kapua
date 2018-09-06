@@ -9,16 +9,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.consumer.activemq.datastore;
+package org.eclipse.kapua.consumer.activemq.error;
 
 import org.eclipse.kapua.broker.client.amqp.ClientOptions;
 import org.eclipse.kapua.broker.client.amqp.ClientOptions.AmqpClientOptions;
-import org.eclipse.kapua.consumer.activemq.datastore.settings.ActiveMQDatastoreSettings;
-import org.eclipse.kapua.consumer.activemq.datastore.settings.ActiveMQDatastoreSettingsKey;
+import org.eclipse.kapua.consumer.activemq.error.settings.ActiveMQErrorSettings;
+import org.eclipse.kapua.consumer.activemq.error.settings.ActiveMQErrorSettingsKey;
 
 import io.vertx.proton.ProtonQoS;
 
-public class SenderConfiguration {
+public class SourceConfiguration {
 
     private boolean autoAccept;
 
@@ -30,12 +30,12 @@ public class SenderConfiguration {
 
     private int prefetchMessages;
 
-    public SenderConfiguration() {
-        destination = ActiveMQDatastoreSettings.getInstance().getString(ActiveMQDatastoreSettingsKey.ERROR_DESTINATION);
-        prefetchMessages = ActiveMQDatastoreSettings.getInstance().getInt(ActiveMQDatastoreSettingsKey.ERROR_PREFETCH_MESSAGES);
-        clientId = ActiveMQDatastoreSettings.getInstance().getString(ActiveMQDatastoreSettingsKey.ERROR_CLIENT_ID);
-        qos = ProtonQoS.AT_LEAST_ONCE.name();
+    public SourceConfiguration() {
+        clientId = ActiveMQErrorSettings.getInstance().getString(ActiveMQErrorSettingsKey.CLIENT_ID);
+        destination = ActiveMQErrorSettings.getInstance().getString(ActiveMQErrorSettingsKey.DESTINATION);
+        prefetchMessages = ActiveMQErrorSettings.getInstance().getInt(ActiveMQErrorSettingsKey.PREFETCH_MESSAGES);
         autoAccept = false;
+        qos = ProtonQoS.AT_LEAST_ONCE.name();
     }
 
     public boolean isAutoAccept() {

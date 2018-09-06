@@ -9,25 +9,30 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.connector.logger;
+package org.eclipse.kapua.connector.error.amqp.activemq;
 
 import org.apache.qpid.proton.message.Message;
-import org.eclipse.kapua.connector.MessageContext;
+import org.eclipse.kapua.broker.client.amqp.AmqpSender;
 import org.eclipse.kapua.connector.KapuaProcessorException;
-import org.eclipse.kapua.connector.Processor;
+import org.eclipse.kapua.connector.MessageContext;
+import org.eclipse.kapua.connector.MessageTarget;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
+import io.vertx.core.Vertx;
+import io.vertx.proton.ProtonHelper;
 
-public abstract class LoggerProcessor implements Processor<Message> {
+public abstract class ErrorTarget implements MessageTarget<Message> {
 
-    private static final Logger logger = LoggerFactory.getLogger(LoggerProcessor.class);
+    private static final Logger logger = LoggerFactory.getLogger(ErrorTarget.class);
 
-    public static LoggerProcessor getProcessorWithNoFilter() {
-        return new LoggerProcessor() {
+    private AmqpSender sender;
+
+    public static ErrorTarget getProcessorWithNoFilter(Vertx vertx, AmqpSender sender) {
+        return new ErrorTarget(vertx, sender) {
             @Override
             public boolean isProcessDestination(MessageContext<Message> message) {
                 return true;
@@ -35,36 +40,25 @@ public abstract class LoggerProcessor implements Processor<Message> {
         };
     }
 
+    public ErrorTarget(Vertx vertx, AmqpSender sender) {
+        this.sender = sender;
+    }
+
     @Override
     public void start(Future<Void> startFuture) {
-        logger.info("Instantiate Jaxb Context... Done.");
-        startFuture.complete();
+        sender.connect(startFuture);
     }
 
     @Override
     public void process(MessageContext<Message> message, Handler<AsyncResult<Void>> result) throws KapuaProcessorException {
-        //avoid null check on message fields
-        logger.info("Message (between #): #{}#", message.getMessage() != null ? String.valueOf(message.getMessage().getBody()) : "NULL");
+        sender.send(message.getMessage(), delivery -> {
+            ProtonHelper.accepted(delivery, true);
+        });
         result.handle(Future.succeededFuture());
-
-        //old code
-//        import org.eclipse.kapua.commons.util.xml.XmlUtil;
-//        XmlUtil.setContextProvider(new LoggerProcessorJAXBContextProvider());
-//        StringWriter sw = new StringWriter();
-//        try {
-//            XmlUtil.marshalJson(message.getMessage(), sw);
-//        } catch (Exception e) {
-//            result.handle(Future.failedFuture(e));
-//            logger.error("Exception while marshalling message: {}", e.getMessage(), e);
-//        }
-//
-//        logger.info(sw.toString());
-//        result.handle(Future.succeededFuture());
     }
 
     @Override
     public void stop(Future<Void> stopFuture) {
-        // nothing to do
-        stopFuture.complete();
+        sender.disconnect(stopFuture);
     }
 }

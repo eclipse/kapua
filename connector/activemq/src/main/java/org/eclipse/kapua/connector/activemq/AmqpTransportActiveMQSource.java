@@ -18,11 +18,12 @@ import org.apache.qpid.proton.message.Message;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.client.amqp.AmqpConsumer;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.connector.AbstractAmqpConsumer;
+import org.eclipse.kapua.connector.AbstractAmqpSource;
 import org.eclipse.kapua.connector.MessageContext;
 import org.eclipse.kapua.connector.MessageFilter;
 import org.eclipse.kapua.connector.MessageHandler;
 import org.eclipse.kapua.connector.Properties;
+import org.eclipse.kapua.message.transport.TransportMessage;
 import org.eclipse.kapua.message.transport.TransportMessageType;
 import org.eclipse.kapua.message.transport.TransportQos;
 import org.slf4j.Logger;
@@ -35,11 +36,11 @@ import io.vertx.proton.ProtonHelper;
 
 /**
  * AMQP ActiveMQ connector implementation.<br>
- * This connector doesn't do any message processing in the incoming message so it's useful for handling the process of messages in error.
+ * This connector implicitly transform the incoming messages to {@link TransportMessage} with incoming message body (byte[]) as content
  */
-public class AmqpActiveMQConsumer extends AbstractAmqpConsumer<Message> {
+public class AmqpTransportActiveMQSource extends AbstractAmqpSource<byte[]> {
 
-    protected final static Logger logger = LoggerFactory.getLogger(AmqpActiveMQConsumer.class);
+    protected final static Logger logger = LoggerFactory.getLogger(AmqpTransportActiveMQSource.class);
 
     private final static String ACTIVEMQ_QOS = "ActiveMQ.MQTT.QoS";
     private final static String TOPIC_SEPARATOR = "/";
@@ -47,26 +48,27 @@ public class AmqpActiveMQConsumer extends AbstractAmqpConsumer<Message> {
 
     private AmqpConsumer consumer;
 
-    public static AmqpActiveMQConsumer create(Vertx vertx, AmqpConsumer consumer) {
-        return new AmqpActiveMQConsumer(vertx, consumer);
+    public static AmqpTransportActiveMQSource create(Vertx vertx, AmqpConsumer consumer) {
+        return new AmqpTransportActiveMQSource(vertx, consumer);
     }
 
-    private AmqpActiveMQConsumer(Vertx vertx, AmqpConsumer consumer) {
+    private AmqpTransportActiveMQSource(Vertx vertx, AmqpConsumer consumer) {
         super(vertx);
-        this.consumer = consumer;
+        this.consumer = consumer;        
         this.consumer.messageHandler(this::handleMessage);
     }
 
     @Override
     public void start(Future<Void> startFuture) {
+        // TODO move client options from contructor to init and build from JsonObject
         connect(startFuture);
     }
 
     private void handleMessage(ProtonDelivery delivery, Message message) {
         try {
-            MessageContext<Message> msg = convert(message);
+            MessageContext<byte[]> msg = convert(message);
             if (isProcessMessage(msg)) {
-                messageHandler.handle(new MessageContext<Message>(message), result -> {
+                messageHandler.handle(msg, result -> {
                     if (result.succeeded()) {
                         ProtonHelper.accepted(delivery, true);
                     }
@@ -98,9 +100,11 @@ public class AmqpActiveMQConsumer extends AbstractAmqpConsumer<Message> {
         consumer.disconnect(disconnectFuture);
     }
 
-    protected MessageContext<Message> convert(Message message) throws KapuaException {
+    protected MessageContext<byte[]> convert(Message message) throws KapuaException {
         //this cast is safe since this implementation is using the AMQP connector
-        return new MessageContext<Message>(message, getMessageParameters(message));
+        return new MessageContext<byte[]>(
+                extractBytePayload(message.getBody()),
+                getMessageParameters(message));
 
         // By default, the receiver automatically accepts (and settles) the delivery
         // when the handler returns, if no other disposition has been applied.
@@ -138,7 +142,7 @@ public class AmqpActiveMQConsumer extends AbstractAmqpConsumer<Message> {
                 parameters.put(Properties.CONNECTION_ID, connectionId);
             }
         }
-        catch (NullPointerException | IllegalArgumentException e) {
+        catch(NullPointerException | IllegalArgumentException e) {
             //cannot get connection id so it may be not available at publish time
             logger.debug("Cannot get Kapua connection Id: {}", e.getMessage(), e);
         }
@@ -162,21 +166,21 @@ public class AmqpActiveMQConsumer extends AbstractAmqpConsumer<Message> {
         return parameters;
     }
 
-    private MessageHandler<Message> messageHandler;
+    private MessageHandler<byte[]> messageHandler;
 
     @Override
-    public void messageHandler(MessageHandler<Message> handler) {
+    public void messageHandler(MessageHandler<byte[]> handler) {
         this.messageHandler = handler;
     }
 
-    MessageFilter<Message> filter;
+    MessageFilter<byte[]> filter;
 
     @Override
-    public void messageFilter(MessageFilter<Message> filter) {
+    public void messageFilter(MessageFilter<byte[]> filter) {
         this.filter = filter;
     }
 
-    protected boolean isProcessMessage(MessageContext<Message> message) {
+    protected boolean isProcessMessage(MessageContext<byte[]> message) {
         return filter.matches(message);
     }
 }

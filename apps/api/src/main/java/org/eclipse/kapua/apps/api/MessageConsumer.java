@@ -18,41 +18,41 @@ import org.eclipse.kapua.commons.core.vertx.AbstractEBServer;
 import org.eclipse.kapua.commons.core.vertx.EBServerConfig;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.connector.AbstractConnector;
-import org.eclipse.kapua.connector.Consumer;
+import org.eclipse.kapua.connector.AbstractMessageProcessor;
+import org.eclipse.kapua.connector.MessageSource;
 import org.eclipse.kapua.connector.Converter;
-import org.eclipse.kapua.connector.Processor;
+import org.eclipse.kapua.connector.MessageTarget;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.vertx.core.Future;
 
 // TODO move to common project
-public class AmqpConnectorServer<M,P> extends AbstractEBServer {
+public class MessageConsumer<M,P> extends AbstractEBServer {
 
-    protected final static Logger logger = LoggerFactory.getLogger(AmqpConnectorServer.class);
+    protected final static Logger logger = LoggerFactory.getLogger(MessageConsumer.class);
 
     private final static String PROCESSOR_NAME_DATASTORE = "Datastore";
 
-    protected Map<String, Processor<P>> processorMap;
-    protected Map<String, Processor> errorProcessorMap;
+    protected Map<String, MessageTarget<P>> processorMap;
+    protected Map<String, MessageTarget> errorProcessorMap;
 
-    private Consumer<M> consumer;
+    private MessageSource<M> consumer;
     private Converter<M,P> converter;
-    private Processor<P> processor;
-    private Processor errorProcessor;
-    private AbstractConnector<M,P> connectorVerticle;
+    private MessageTarget<P> processor;
+    private MessageTarget errorProcessor;
+    private AbstractMessageProcessor<M,P> connectorVerticle;
     private JAXBContextProvider jaxbContextProvider;
 
     public static interface Builder<M,P> {
 
-        Consumer<M> getConsumer();
+        MessageSource<M> getConsumer();
 
         Converter<M,P> getConverter();
 
-        Processor<P> getProcessor();
+        MessageTarget<P> getProcessor();
 
-        Processor getErrorProcessor();
+        MessageTarget getErrorProcessor();
 
         String getHealthCheckEBAddress();
 
@@ -60,8 +60,8 @@ public class AmqpConnectorServer<M,P> extends AbstractEBServer {
 
         JAXBContextProvider getJAXBContextProvider();
 
-        default AmqpConnectorServer<M,P> build() {
-            AmqpConnectorServer<M,P> server = new AmqpConnectorServer<M,P>();
+        default MessageConsumer<M,P> build() {
+            MessageConsumer<M,P> server = new MessageConsumer<M,P>();
             server.consumer = this.getConsumer();
             server.converter = this.getConverter();
             server.processor = this.getProcessor();
@@ -76,7 +76,7 @@ public class AmqpConnectorServer<M,P> extends AbstractEBServer {
     private String ebAddress;
     private EBServerConfig ebServerConfig;
 
-    public AmqpConnectorServer() {
+    public MessageConsumer() {
 //      SystemSetting configSys = SystemSetting.getInstance();
 //      logger.info("Checking database... '{}'", configSys.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false));
 //      if(configSys.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false)) {
@@ -119,6 +119,6 @@ public class AmqpConnectorServer<M,P> extends AbstractEBServer {
         processorMap.put(PROCESSOR_NAME_DATASTORE, processor);
         errorProcessorMap = new HashMap<>();
         errorProcessorMap.put(PROCESSOR_NAME_DATASTORE, errorProcessor);
-        connectorVerticle = new AbstractConnector<>(consumer, converter, processorMap, errorProcessorMap);
+        connectorVerticle = new AbstractMessageProcessor<>(consumer, converter, processorMap, errorProcessorMap);
     }
 }

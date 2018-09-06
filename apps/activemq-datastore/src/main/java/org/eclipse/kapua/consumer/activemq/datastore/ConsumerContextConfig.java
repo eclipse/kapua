@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.activemq.datastore;
 
-import org.eclipse.kapua.apps.api.AmqpConnectorServerConfig;
+import org.eclipse.kapua.apps.api.MessageConsumerServerConfig;
 import org.eclipse.kapua.apps.api.HttpRestServerImpl;
 import org.eclipse.kapua.apps.api.JAXBContextProviderImpl;
 import org.eclipse.kapua.commons.core.ObjectContextConfig;
@@ -32,11 +32,11 @@ public class ConsumerContextConfig extends ObjectContextConfig {
         super.configure();
         bind(MainVerticle.class);
         bind(ConnectionConfiguration.class);
-        bind(ConsumerConfiguration.class);
-        bind(SenderConfiguration.class);
+        bind(SourceConfiguration.class);
+        bind(TargetConfiguration.class);
         bind(HttpRestServer.class).to(HttpRestServerImpl.class);
         bind(JAXBContextProvider.class).to(JAXBContextProviderImpl.class);
-        bind(new TypeLiteral<ObjectFactory<AmqpConnectorServerConfig<byte[],TransportMessage>>>() {}).to(AmqpDatastoreConnectorServerConfigFactory.class);
+        bind(new TypeLiteral<ObjectFactory<MessageConsumerServerConfig<byte[],TransportMessage>>>() {}).to(AmqpDatastoreConsumerServerConfigFactory.class);
     }
 
 }

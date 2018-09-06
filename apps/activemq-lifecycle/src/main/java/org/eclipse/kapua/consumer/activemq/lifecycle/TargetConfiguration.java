@@ -18,7 +18,7 @@ import org.eclipse.kapua.consumer.activemq.lifecycle.settings.ActiveMQLifecycleS
 
 import io.vertx.proton.ProtonQoS;
 
-public class ConsumerConfiguration {
+public class TargetConfiguration {
 
     private boolean autoAccept;
 
@@ -30,12 +30,12 @@ public class ConsumerConfiguration {
 
     private int prefetchMessages;
 
-    public ConsumerConfiguration() {
-        clientId = ActiveMQLifecycleSettings.getInstance().getString(ActiveMQLifecycleSettingsKey.TELEMETRY_CLIENT_ID);
-        destination = ActiveMQLifecycleSettings.getInstance().getString(ActiveMQLifecycleSettingsKey.TELEMETRY_DESTINATION);
-        prefetchMessages = ActiveMQLifecycleSettings.getInstance().getInt(ActiveMQLifecycleSettingsKey.TELEMETRY_PREFETCH_MESSAGES);
-        autoAccept = false;
+    public TargetConfiguration() {
+        destination = ActiveMQLifecycleSettings.getInstance().getString(ActiveMQLifecycleSettingsKey.ERROR_DESTINATION);
+        prefetchMessages = ActiveMQLifecycleSettings.getInstance().getInt(ActiveMQLifecycleSettingsKey.ERROR_PREFETCH_MESSAGES);
+        clientId = ActiveMQLifecycleSettings.getInstance().getString(ActiveMQLifecycleSettingsKey.ERROR_CLIENT_ID);
         qos = ProtonQoS.AT_LEAST_ONCE.name();
+        autoAccept = false;
     }
 
     public boolean isAutoAccept() {

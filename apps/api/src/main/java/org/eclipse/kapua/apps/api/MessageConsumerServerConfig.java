@@ -16,16 +16,16 @@ import java.util.List;
 
 import org.eclipse.kapua.commons.core.vertx.HealthCheckProvider;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
-import org.eclipse.kapua.connector.Consumer;
 import org.eclipse.kapua.connector.Converter;
-import org.eclipse.kapua.connector.Processor;
+import org.eclipse.kapua.connector.MessageSource;
+import org.eclipse.kapua.connector.MessageTarget;
 
-public class AmqpConnectorServerConfig<M,P> implements AmqpConnectorServer.Builder<M, P> {
+public class MessageConsumerServerConfig<M,P> implements MessageConsumer.Builder<M, P> {
 
-    private Consumer<M> consumer;
+    private MessageSource<M> consumer;
     private Converter<M,P> converter;
-    private Processor<P> processor;
-    private Processor errorProcessor;
+    private MessageTarget<P> processor;
+    private MessageTarget errorProcessor;
     private String ebAddress;
     private String healthCheckEBAddress;
     private JAXBContextProvider jaxbContextProvider;
@@ -33,11 +33,11 @@ public class AmqpConnectorServerConfig<M,P> implements AmqpConnectorServer.Build
     private List<HealthCheckProvider> healthCheckProviders = new ArrayList<>();
 
     @Override
-    public Consumer<M> getConsumer() {
+    public MessageSource<M> getConsumer() {
         return consumer;
     }
 
-    public void setConsumer(Consumer<M> aConsumer) {
+    public void setConsumer(MessageSource<M> aConsumer) {
         consumer = aConsumer;
     }
 
@@ -51,20 +51,20 @@ public class AmqpConnectorServerConfig<M,P> implements AmqpConnectorServer.Build
     }
 
     @Override
-    public Processor<P> getProcessor() {
+    public MessageTarget<P> getProcessor() {
         return processor;
     }
 
-    public void setProcessor(Processor<P> aProcessor) {
+    public void setProcessor(MessageTarget<P> aProcessor) {
         processor = aProcessor;
     }
 
     @Override
-    public Processor getErrorProcessor() {
+    public MessageTarget getErrorProcessor() {
         return errorProcessor;
     }
 
-    public void setErrorProcessor(Processor aProcessor) {
+    public void setErrorProcessor(MessageTarget aProcessor) {
         errorProcessor = processor;
     }
 

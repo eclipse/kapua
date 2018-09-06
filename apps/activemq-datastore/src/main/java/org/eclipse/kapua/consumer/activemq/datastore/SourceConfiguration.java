@@ -18,7 +18,7 @@ import org.eclipse.kapua.consumer.activemq.datastore.settings.ActiveMQDatastoreS
 
 import io.vertx.proton.ProtonQoS;
 
-public class ConsumerConfiguration {
+public class SourceConfiguration {
 
     private boolean autoAccept;
 
@@ -30,7 +30,7 @@ public class ConsumerConfiguration {
 
     private int prefetchMessages;
 
-    public ConsumerConfiguration() {
+    public SourceConfiguration() {
         clientId = ActiveMQDatastoreSettings.getInstance().getString(ActiveMQDatastoreSettingsKey.TELEMETRY_CLIENT_ID);
         destination = ActiveMQDatastoreSettings.getInstance().getString(ActiveMQDatastoreSettingsKey.TELEMETRY_DESTINATION);
         prefetchMessages = ActiveMQDatastoreSettings.getInstance().getInt(ActiveMQDatastoreSettingsKey.TELEMETRY_PREFETCH_MESSAGES);

@@ -14,8 +14,8 @@ package org.eclipse.kapua.consumer.activemq.lifecycle;
 //import java.util.Optional;
 import javax.inject.Inject;
 
-import org.eclipse.kapua.apps.api.AmqpConnectorServer;
-import org.eclipse.kapua.apps.api.AmqpConnectorServerConfig;
+import org.eclipse.kapua.apps.api.MessageConsumer;
+import org.eclipse.kapua.apps.api.MessageConsumerServerConfig;
 import org.eclipse.kapua.commons.core.ObjectFactory;
 import org.eclipse.kapua.commons.core.vertx.AbstractMainVerticle;
 import org.eclipse.kapua.commons.core.vertx.EBHealthCheckProvider;
@@ -41,7 +41,7 @@ public class MainVerticle extends AbstractMainVerticle {
     private HttpRestServer httpRestServer;
 
     @Inject
-    private ObjectFactory<AmqpConnectorServerConfig<byte[], TransportMessage>> amqpConnectorServerConfigFactory;
+    private ObjectFactory<MessageConsumerServerConfig<byte[], TransportMessage>> amqpConnectorServerConfigFactory;
 
     @Override
     protected void internalStart(Future<Void> startFuture) throws Exception {
@@ -50,8 +50,8 @@ public class MainVerticle extends AbstractMainVerticle {
 
         Future.succeededFuture().compose(map -> {
             Future<Void> future = Future.future();
-            AmqpConnectorServerConfig<byte[], TransportMessage> amqpConnectorServerConfig = amqpConnectorServerConfigFactory.create();
-            AmqpConnectorServer<byte[], TransportMessage> amqpConnectorServer = amqpConnectorServerConfig.build();
+            MessageConsumerServerConfig<byte[], TransportMessage> amqpConnectorServerConfig = amqpConnectorServerConfigFactory.create();
+            MessageConsumer<byte[], TransportMessage> amqpConnectorServer = amqpConnectorServerConfig.build();
 
             for(HealthCheckProvider provider:amqpConnectorServerConfig.getHealthCheckProviders()) {
                 amqpConnectorServer.registerHealthCheckProvider(provider);

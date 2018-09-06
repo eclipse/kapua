@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.activemq.lifecycle;
 
-import org.eclipse.kapua.apps.api.AmqpConnectorServerConfig;
+import org.eclipse.kapua.apps.api.MessageConsumerServerConfig;
 import org.eclipse.kapua.apps.api.HttpRestServerImpl;
 import org.eclipse.kapua.apps.api.JAXBContextProviderImpl;
 import org.eclipse.kapua.commons.core.ObjectContextConfig;
@@ -33,11 +33,11 @@ public class ConsumerContextConfig extends ObjectContextConfig {
         super.configure();
         bind(MainVerticle.class);
         bind(ConnectionConfiguration.class).in(Singleton.class);
-        bind(ConsumerConfiguration.class).in(Singleton.class);
-        bind(SenderConfiguration.class).in(Singleton.class);
+        bind(SourceConfiguration.class).in(Singleton.class);
+        bind(TargetConfiguration.class).in(Singleton.class);
         bind(HttpRestServer.class).to(HttpRestServerImpl.class).in(Singleton.class);
         bind(JAXBContextProvider.class).to(JAXBContextProviderImpl.class).in(Singleton.class);
-        bind(new TypeLiteral<ObjectFactory<AmqpConnectorServerConfig<byte[],TransportMessage>>>() {}).to(AmqpLifecycleConnectorServerConfigFactory.class);
+        bind(new TypeLiteral<ObjectFactory<MessageConsumerServerConfig<byte[],TransportMessage>>>() {}).to(AmqpLifecycleConsumerServerConfigFactory.class);
     }
 
 }

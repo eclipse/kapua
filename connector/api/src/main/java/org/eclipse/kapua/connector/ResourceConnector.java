@@ -11,13 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.connector;
 
-import org.eclipse.kapua.KapuaException;
-
 import io.vertx.core.Future;
 
-public interface Processor {
+public interface ResourceConnector {
 
-    void start(Future<Void> startFuture) throws KapuaException;
+    void start(Future<Void> startFuture);
 
-    void stop(Future<Void> stopFuture) throws KapuaException;
+    void stop(Future<Void> stopFuture);
 }

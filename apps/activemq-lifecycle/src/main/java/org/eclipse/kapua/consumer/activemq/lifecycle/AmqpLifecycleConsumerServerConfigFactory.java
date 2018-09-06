@@ -9,29 +9,29 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.consumer.activemq.datastore;
+package org.eclipse.kapua.consumer.activemq.lifecycle;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.eclipse.kapua.apps.api.AmqpConnectorServerConfig;
+import org.eclipse.kapua.apps.api.MessageConsumerServerConfig;
 import org.eclipse.kapua.broker.client.amqp.AmqpConsumer;
 import org.eclipse.kapua.broker.client.amqp.AmqpSender;
 import org.eclipse.kapua.commons.core.ObjectFactory;
 import org.eclipse.kapua.commons.core.vertx.HealthCheckProvider;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
-import org.eclipse.kapua.connector.activemq.AmqpTransportActiveMQConsumer;
+import org.eclipse.kapua.connector.activemq.AmqpTransportActiveMQSource;
 import org.eclipse.kapua.connector.kura.KuraPayloadProtoConverter;
 import org.eclipse.kapua.message.transport.TransportMessage;
-import org.eclipse.kapua.connector.datastore.DatastoreProcessor;
-import org.eclipse.kapua.connector.error.amqp.activemq.ErrorProcessor;
+import org.eclipse.kapua.connector.error.amqp.activemq.ErrorTarget;
+import org.eclipse.kapua.connector.lifecycle.LifecycleProcessor;
 
 import io.vertx.core.Vertx;
 import io.vertx.ext.healthchecks.HealthCheckHandler;
 import io.vertx.ext.healthchecks.Status;
 
 
-public class AmqpDatastoreConnectorServerConfigFactory implements ObjectFactory<AmqpConnectorServerConfig<byte[], TransportMessage>> {
+public class AmqpLifecycleConsumerServerConfigFactory implements ObjectFactory<MessageConsumerServerConfig<byte[], TransportMessage>> {
 
     @Inject
     private Vertx vertx;
@@ -51,18 +51,18 @@ public class AmqpDatastoreConnectorServerConfigFactory implements ObjectFactory<
     private ConnectionConfiguration connectionConfig;
 
     @Inject 
-    private ConsumerConfiguration consumerConfig;
+    private SourceConfiguration consumerConfig;
 
     @Inject 
-    private SenderConfiguration senderConfig;
+    private TargetConfiguration senderConfig;
 
     @Override
-    public AmqpConnectorServerConfig<byte[], TransportMessage> create() {
+    public MessageConsumerServerConfig<byte[], TransportMessage> create() {
 
-        AmqpConnectorServerConfig<byte[], TransportMessage> config = new AmqpConnectorServerConfig<byte[], TransportMessage>();
+        MessageConsumerServerConfig<byte[], TransportMessage> config = new MessageConsumerServerConfig<byte[], TransportMessage>();
 
         // Consumer
-        AmqpTransportActiveMQConsumer consumer = AmqpTransportActiveMQConsumer.create(vertx, new AmqpConsumer(vertx, consumerConfig.createClientOptions(connectionConfig)));
+        AmqpTransportActiveMQSource consumer = AmqpTransportActiveMQSource.create(vertx, new AmqpConsumer(vertx, consumerConfig.createClientOptions(connectionConfig)));
         config.setConsumer(consumer);
         config.getHealthCheckProviders().add(new HealthCheckProvider() {
 
@@ -81,13 +81,13 @@ public class AmqpDatastoreConnectorServerConfigFactory implements ObjectFactory<
         config.setConverter(new KuraPayloadProtoConverter());
 
         // Processor
-        DatastoreProcessor processor = DatastoreProcessor.getProcessorWithNoFilter(vertx);
+        LifecycleProcessor processor = LifecycleProcessor.getProcessorWithNoFilter();
         config.setProcessor(processor);
         config.getHealthCheckProviders().add(new HealthCheckProvider() {
 
             @Override
             public void registerHealthChecks(HealthCheckHandler handler) {
-                handler.register("DatastoreProcessor", statusEvent -> {
+                handler.register("LifecycleProcessor", statusEvent -> {
                     // TODO define a more meaningful health check
                     if (processor != null) {
                         statusEvent.complete(Status.OK());
@@ -99,7 +99,7 @@ public class AmqpDatastoreConnectorServerConfigFactory implements ObjectFactory<
         });
 
         // Error processor
-        ErrorProcessor errorProcessor = ErrorProcessor.getProcessorWithNoFilter(vertx, new AmqpSender(vertx, senderConfig.createClientOptions(connectionConfig)));
+        ErrorTarget errorProcessor = ErrorTarget.getProcessorWithNoFilter(vertx, new AmqpSender(vertx, senderConfig.createClientOptions(connectionConfig)));
         config.setErrorProcessor(errorProcessor);
         config.getHealthCheckProviders().add(new HealthCheckProvider() {
 

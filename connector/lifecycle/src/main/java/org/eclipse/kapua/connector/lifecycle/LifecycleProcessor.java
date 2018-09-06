@@ -13,11 +13,11 @@ package org.eclipse.kapua.connector.lifecycle;
 
 import java.util.List;
 
+import org.eclipse.kapua.connector.KapuaProcessorException;
 import org.eclipse.kapua.connector.MessageContext;
+import org.eclipse.kapua.connector.MessageTarget;
 import org.eclipse.kapua.connector.Properties;
 import org.eclipse.kapua.message.transport.TransportMessage;
-import org.eclipse.kapua.connector.KapuaProcessorException;
-import org.eclipse.kapua.connector.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +25,7 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 
-public abstract class LifecycleProcessor implements Processor<TransportMessage> {
+public abstract class LifecycleProcessor implements MessageTarget<TransportMessage> {
 
     private static final Logger logger = LoggerFactory.getLogger(LifecycleProcessor.class);
 

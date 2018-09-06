@@ -11,15 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.connector;
 
-import io.vertx.core.Future;
-
-public interface Consumer<M> {
+public interface MessageSource<M> extends ResourceConnector {
 
     void messageHandler(MessageHandler<M> handler);
 
     void messageFilter(MessageFilter<M> filter);
-
-    void start(Future<Void> startFuture);
-
-    void stop(Future<Void> stopFuture);
 }

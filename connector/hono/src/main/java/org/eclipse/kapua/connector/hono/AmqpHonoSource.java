@@ -20,7 +20,7 @@ import org.apache.qpid.proton.message.Message;
 import org.eclipse.hono.util.MessageHelper;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.client.hono.HonoClient;
-import org.eclipse.kapua.connector.AbstractAmqpConsumer;
+import org.eclipse.kapua.connector.AbstractAmqpSource;
 import org.eclipse.kapua.connector.KapuaConverterException;
 import org.eclipse.kapua.connector.MessageContext;
 import org.eclipse.kapua.connector.MessageFilter;
@@ -38,16 +38,16 @@ import io.vertx.core.Vertx;
  * Amqp Hono connector implementation
  *
  */
-public class AmqpHonoConsumer extends AbstractAmqpConsumer<byte[]> {
+public class AmqpHonoSource extends AbstractAmqpSource<byte[]> {
 
-    protected final static Logger logger = LoggerFactory.getLogger(AmqpHonoConsumer.class);
+    protected final static Logger logger = LoggerFactory.getLogger(AmqpHonoSource.class);
 
     private final static String CONTROL_PREFIX = "c/";
     private final static String TELEMETRY_PREFIX = "t/";
 
     private HonoClient honoClient;
 
-    public AmqpHonoConsumer(Vertx vertx) {
+    public AmqpHonoSource(Vertx vertx) {
         super(vertx);
         honoClient = new HonoClient(vertx, this::handleTelemetryMessage);
     }

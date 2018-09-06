@@ -16,7 +16,7 @@ import java.util.UUID;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.connector.MessageContext;
-import org.eclipse.kapua.connector.Processor;
+import org.eclipse.kapua.connector.MessageTarget;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
@@ -37,19 +37,19 @@ import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 
-public abstract class DatastoreProcessor implements Processor<TransportMessage> {
+public abstract class DatastoreTarget implements MessageTarget<TransportMessage> {
 
     //TODO fix me
     public static final String MESSAGE_TYPE = new String("message-type");
-    private static final Logger logger = LoggerFactory.getLogger(DatastoreProcessor.class);
+    private static final Logger logger = LoggerFactory.getLogger(DatastoreTarget.class);
 
     private Vertx vertx;
 
     private AccountService accountService;
     private MessageStoreService messageStoreService;
 
-    public static DatastoreProcessor getProcessorWithNoFilter(Vertx vertx) {
-        return new DatastoreProcessor(vertx) {
+    public static DatastoreTarget getProcessorWithNoFilter(Vertx vertx) {
+        return new DatastoreTarget(vertx) {
             @Override
             public boolean isProcessDestination(MessageContext<TransportMessage> message) {
                 return TransportMessageType.TELEMETRY.equals(message.getProperties().get(MESSAGE_TYPE));
@@ -57,7 +57,7 @@ public abstract class DatastoreProcessor implements Processor<TransportMessage> 
         };
     }
 
-    protected DatastoreProcessor(Vertx vertx) {
+    protected DatastoreTarget(Vertx vertx) {
         this.vertx = vertx;
     }
 

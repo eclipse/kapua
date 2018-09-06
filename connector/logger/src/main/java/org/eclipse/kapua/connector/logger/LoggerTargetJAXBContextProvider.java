@@ -31,9 +31,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class LoggerProcessorJAXBContextProvider implements JAXBContextProvider {
+public class LoggerTargetJAXBContextProvider implements JAXBContextProvider {
 
-    private static final Logger logger = LoggerFactory.getLogger(LoggerProcessorJAXBContextProvider.class);
+    private static final Logger logger = LoggerFactory.getLogger(LoggerTargetJAXBContextProvider.class);
 
     private JAXBContext context;
 

@@ -32,9 +32,9 @@ import io.vertx.core.Vertx;
  * @param <M> Converter message type (optional)
  * @param <P> Processor message type
  */
-public abstract class AbstractAmqpConsumer<M> implements Consumer<M> {
+public abstract class AbstractAmqpSource<M> implements MessageSource<M> {
 
-    protected final static Logger logger = LoggerFactory.getLogger(AbstractAmqpConsumer.class);
+    protected final static Logger logger = LoggerFactory.getLogger(AbstractAmqpSource.class);
 
     protected Vertx vertx;
     private boolean connected;
@@ -46,7 +46,7 @@ public abstract class AbstractAmqpConsumer<M> implements Consumer<M> {
      * @param processorMap processor map instances
      * @param errorProcessorMap error processor map instances
      */
-    protected AbstractAmqpConsumer(Vertx vertx) {
+    protected AbstractAmqpSource(Vertx vertx) {
         this.vertx = vertx;
     }
 
