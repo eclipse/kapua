@@ -24,6 +24,7 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
+import org.eclipse.kapua.service.datastore.DatastoreDomains;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
@@ -77,7 +78,7 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
      * @throws ClientUnavailableException
      */
     public ChannelInfoRegistryServiceImpl() throws ClientUnavailableException {
-        super(ChannelInfoRegistryService.class.getName(), DATASTORE_DOMAIN, DatastoreEntityManagerFactory.getInstance());
+        super(ChannelInfoRegistryService.class.getName(), DatastoreDomains.DATASTORE_DOMAIN, DatastoreEntityManagerFactory.getInstance());
 
         KapuaLocator locator = KapuaLocator.getInstance();
         accountService = locator.getService(AccountService.class);
@@ -174,7 +175,7 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
 
     private void checkDataAccess(KapuaId scopeId, Actions action)
             throws KapuaException {
-        Permission permission = permissionFactory.newPermission(DATASTORE_DOMAIN, action, scopeId);
+        Permission permission = permissionFactory.newPermission(DatastoreDomains.DATASTORE_DOMAIN, action, scopeId);
         authorizationService.checkPermission(permission);
     }
 

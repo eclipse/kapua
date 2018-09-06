@@ -29,6 +29,7 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.tag.TagCreator;
+import org.eclipse.kapua.service.tag.TagDomains;
 import org.eclipse.kapua.service.tag.TagFactory;
 import org.eclipse.kapua.service.tag.TagListResult;
 import org.eclipse.kapua.service.tag.TagAttributes;
@@ -49,7 +50,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
 
     public TagServiceImpl() {
-        super(TagService.class.getName(), TAG_DOMAIN, TagEntityManagerFactory.getInstance(), TagService.class, TagFactory.class);
+        super(TagService.class.getName(), TagDomains.TAG_DOMAIN, TagEntityManagerFactory.getInstance(), TagService.class, TagFactory.class);
     }
 
     @Override
@@ -62,7 +63,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(TAG_DOMAIN, Actions.write, tagCreator.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(TagDomains.TAG_DOMAIN, Actions.write, tagCreator.getScopeId()));
 
         //
         // Check limit
@@ -95,7 +96,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(TAG_DOMAIN, Actions.write, tag.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(TagDomains.TAG_DOMAIN, Actions.write, tag.getScopeId()));
 
         //
         // Check existence
@@ -130,7 +131,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(TAG_DOMAIN, Actions.delete, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(TagDomains.TAG_DOMAIN, Actions.delete, scopeId));
 
         //
         // Check existence
@@ -152,7 +153,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(TAG_DOMAIN, Actions.read, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(TagDomains.TAG_DOMAIN, Actions.read, scopeId));
 
         //
         // Do find
@@ -168,7 +169,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(TAG_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(TagDomains.TAG_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -184,7 +185,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(TAG_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(TagDomains.TAG_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do count

@@ -9,16 +9,11 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service;
+package org.eclipse.kapua.service.job;
 
-import org.eclipse.kapua.model.domain.Domain;
+public class JobDomains {
 
-/**
- * {@link KapuaService} extension to make a {@link KapuaEntityService} able to return its entity {@link Domain}
- *
- * @since 1.0
- */
-public interface KapuaDomainService<D extends Domain> extends KapuaService {
+    private JobDomains() { }
 
-    D getServiceDomain();
+    public static final JobDomain JOB_DOMAIN = new JobDomain();
 }

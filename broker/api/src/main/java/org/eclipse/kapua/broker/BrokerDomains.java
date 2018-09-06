@@ -9,17 +9,11 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore;
+package org.eclipse.kapua.broker;
 
-import org.eclipse.kapua.service.KapuaDomainService;
-import org.eclipse.kapua.service.KapuaService;
+public class BrokerDomains {
 
-public interface DatastoreService extends KapuaService, KapuaDomainService<DatastoreDomain> {
+    private BrokerDomains() { }
 
-    DatastoreDomain DATASTORE_DOMAIN = new DatastoreDomain();
-
-    @Override
-    default DatastoreDomain getServiceDomain() {
-        return DATASTORE_DOMAIN;
-    }
+    public static final BrokerDomain BROKER_DOMAIN = new BrokerDomain();
 }

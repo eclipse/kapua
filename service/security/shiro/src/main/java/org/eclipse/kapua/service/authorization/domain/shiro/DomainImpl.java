@@ -43,10 +43,6 @@ public class DomainImpl extends AbstractKapuaEntity implements Domain {
     @Column(name = "name", nullable = false, updatable = false)
     private String name;
 
-    @Basic
-    @Column(name = "serviceName", nullable = false, updatable = false)
-    private String serviceName;
-
     @ElementCollection
     @CollectionTable(name = "athz_domain_actions", joinColumns = @JoinColumn(name = "domain_id", referencedColumnName = "id"))
     @Column(name = "action", nullable = false)
@@ -76,16 +72,6 @@ public class DomainImpl extends AbstractKapuaEntity implements Domain {
     @Override
     public String getName() {
         return name;
-    }
-
-    @Override
-    public String getServiceName() {
-        return serviceName;
-    }
-
-    @Override
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
     }
 
     @Override
@@ -119,12 +105,11 @@ public class DomainImpl extends AbstractKapuaEntity implements Domain {
         DomainImpl domain = (DomainImpl) o;
         return groupable == domain.groupable &&
                 Objects.equals(name, domain.name) &&
-                Objects.equals(serviceName, domain.serviceName) &&
                 Objects.equals(actions, domain.actions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, serviceName, actions, groupable);
+        return Objects.hash(name, actions, groupable);
     }
 }

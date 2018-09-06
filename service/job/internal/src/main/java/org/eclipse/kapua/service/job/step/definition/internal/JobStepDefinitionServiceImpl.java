@@ -22,6 +22,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.job.JobDomains;
 import org.eclipse.kapua.service.job.internal.JobEntityManagerFactory;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionCreator;
@@ -49,7 +50,7 @@ public class JobStepDefinitionServiceImpl
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
 
     public JobStepDefinitionServiceImpl() {
-        super(JobStepDefinitionService.class.getName(), JOB_DOMAIN, JobEntityManagerFactory.getInstance(), JobStepDefinitionService.class, JobStepDefinitionFactory.class);
+        super(JobStepDefinitionService.class.getName(), JobDomains.JOB_DOMAIN, JobEntityManagerFactory.getInstance(), JobStepDefinitionService.class, JobStepDefinitionFactory.class);
     }
 
     @Override
@@ -64,7 +65,7 @@ public class JobStepDefinitionServiceImpl
 
         //
         // Check access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.write, null));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
 
         //
         // Do create
@@ -83,7 +84,7 @@ public class JobStepDefinitionServiceImpl
 
         //
         // Check access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.write, null));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
 
         return entityManagerSession.onTransactedResult(em -> JobStepDefinitionDAO.update(em, jobStepDefinition));
     }
@@ -96,7 +97,7 @@ public class JobStepDefinitionServiceImpl
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.read, KapuaId.ANY));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
 
         //
         // Do find
@@ -111,7 +112,7 @@ public class JobStepDefinitionServiceImpl
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.read, KapuaId.ANY));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
 
         //
         // Do query
@@ -126,7 +127,7 @@ public class JobStepDefinitionServiceImpl
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.read, KapuaId.ANY));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
 
         //
         // Do query
@@ -142,7 +143,7 @@ public class JobStepDefinitionServiceImpl
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.delete, null));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, null));
 
         //
         // Do delete

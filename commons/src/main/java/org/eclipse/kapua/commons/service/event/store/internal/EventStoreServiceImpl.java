@@ -14,6 +14,7 @@ package org.eclipse.kapua.commons.service.event.store.internal;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
+import org.eclipse.kapua.commons.service.event.store.api.EventStoreDomains;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecord;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordCreator;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordListResult;
@@ -69,7 +70,7 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EVENT_STORE_DOMAIN, Actions.write, kapuaEvent.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, Actions.write, kapuaEvent.getScopeId()));
 
         //
         // Do update
@@ -97,7 +98,7 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
         //
         // Check Access
         Actions action = Actions.write;
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EVENT_STORE_DOMAIN, action, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, action, scopeId));
 
         //
         // Do delete
@@ -116,7 +117,7 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EVENT_STORE_DOMAIN, Actions.read, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, Actions.read, scopeId));
 
         //
         // Make sure kapuaEvent exists
@@ -132,7 +133,7 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EVENT_STORE_DOMAIN, Actions.read, kapuaEventId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, Actions.read, kapuaEventId));
 
         //
         // Make sure kapuaEvent exists
@@ -146,7 +147,7 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EVENT_STORE_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, Actions.read, query.getScopeId()));
 
         return entityManagerSession.onResult(em -> EventStoreDAO.query(em, query));
     }
@@ -159,7 +160,7 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EVENT_STORE_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, Actions.read, query.getScopeId()));
 
         return entityManagerSession.onResult(em -> EventStoreDAO.count(em, query));
     }

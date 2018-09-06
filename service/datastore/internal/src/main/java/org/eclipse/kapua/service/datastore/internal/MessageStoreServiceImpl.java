@@ -30,6 +30,7 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.datastore.DatastoreDomains;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.client.ClientCommunicationException;
 import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
@@ -84,7 +85,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
      * @throws ClientUnavailableException
      */
     public MessageStoreServiceImpl() throws ClientUnavailableException {
-        super(MessageStoreService.class.getName(), DATASTORE_DOMAIN, DatastoreEntityManagerFactory.getInstance());
+        super(MessageStoreService.class.getName(), DatastoreDomains.DATASTORE_DOMAIN, DatastoreEntityManagerFactory.getInstance());
         ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(this, accountService);
         messageStoreFacade = new MessageStoreFacade(configurationProvider, DatastoreMediator.getInstance());
         DatastoreMediator.getInstance().setMessageStoreFacade(messageStoreFacade);
@@ -222,7 +223,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
 
     protected void checkDataAccess(KapuaId scopeId, Actions action)
             throws KapuaException {
-        Permission permission = permissionFactory.newPermission(DATASTORE_DOMAIN, action, scopeId);
+        Permission permission = permissionFactory.newPermission(DatastoreDomains.DATASTORE_DOMAIN, action, scopeId);
         authorizationService.checkPermission(permission);
     }
 

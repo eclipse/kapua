@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.tag;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.KapuaDomainService;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
@@ -26,15 +25,7 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
  */
 public interface TagService extends KapuaEntityService<Tag, TagCreator>,
         KapuaUpdatableEntityService<Tag>,
-        KapuaDomainService<TagDomain>,
         KapuaConfigurableService {
-
-    TagDomain TAG_DOMAIN = new TagDomain();
-
-    @Override
-    default TagDomain getServiceDomain() {
-        return TAG_DOMAIN;
-    }
 
     /**
      * Creates a new {@link Tag} based on the parameters provided in the {@link TagCreator}.<br>

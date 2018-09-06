@@ -13,18 +13,9 @@ package org.eclipse.kapua.job.engine;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.KapuaDomainService;
 import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.job.JobDomain;
 
-public interface JobEngineService extends KapuaService, KapuaDomainService<JobDomain> {
-
-    JobDomain JOB_DOMAIN = new JobDomain();
-
-    @Override
-    default JobDomain getServiceDomain() {
-        return JOB_DOMAIN;
-    }
+public interface JobEngineService extends KapuaService {
 
     /**
      * Starts the {@link org.eclipse.kapua.service.job.Job}

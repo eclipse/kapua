@@ -13,7 +13,6 @@ package org.eclipse.kapua.service.authentication.token;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.KapuaDomainService;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
@@ -23,14 +22,7 @@ import org.eclipse.kapua.service.authentication.AuthenticationService;
  *
  * @since 1.0
  */
-public interface AccessTokenService extends KapuaEntityService<AccessToken, AccessTokenCreator>, KapuaUpdatableEntityService<AccessToken>, KapuaDomainService<AccessTokenDomain> {
-
-    AccessTokenDomain ACCESS_TOKEN_DOMAIN = new AccessTokenDomain();
-
-    @Override
-    default AccessTokenDomain getServiceDomain() {
-        return ACCESS_TOKEN_DOMAIN;
-    }
+public interface AccessTokenService extends KapuaEntityService<AccessToken, AccessTokenCreator>, KapuaUpdatableEntityService<AccessToken> {
 
     /**
      * Find all access token associated with the given userId.

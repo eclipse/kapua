@@ -13,7 +13,6 @@ package org.eclipse.kapua.service.authorization.domain;
 
 import org.eclipse.kapua.model.KapuaEntityCreator;
 import org.eclipse.kapua.model.domain.Actions;
-import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -29,7 +28,14 @@ import java.util.Set;
  */
 @XmlRootElement(name = "domainCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-public interface DomainCreator extends KapuaEntityCreator<Domain>, org.eclipse.kapua.model.domain.Domain {
+//public interface DomainCreator extends KapuaEntityCreator<Domain>, org.eclipse.kapua.model.domain.Domain {
+public interface DomainCreator extends KapuaEntityCreator<Domain> {
+
+    public String getName();
+
+    public Set<Actions> getActions();
+
+    public boolean getGroupable();
 
     /**
      * Sets the {@link Domain} name.
@@ -38,14 +44,6 @@ public interface DomainCreator extends KapuaEntityCreator<Domain>, org.eclipse.k
      * @since 1.0.0
      */
     void setName(String name);
-
-    /**
-     * Sets the {@link KapuaService} name that uses the {@link Domain}.
-     *
-     * @param serviceName The {@link KapuaService} name that uses the {@link Domain}.
-     * @since 1.0.0
-     */
-    void setServiceName(String serviceName);
 
     /**
      * Sets the set of {@link Actions} available in the {@link Domain}.<br>

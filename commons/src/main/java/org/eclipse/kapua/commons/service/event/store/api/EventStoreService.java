@@ -14,7 +14,6 @@ package org.eclipse.kapua.commons.service.event.store.api;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.KapuaDomainService;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 
@@ -26,15 +25,7 @@ import org.eclipse.kapua.service.KapuaUpdatableEntityService;
  * @since 1.0
  */
 public interface EventStoreService extends KapuaEntityService<EventStoreRecord, EventStoreRecordCreator>,
-        KapuaUpdatableEntityService<EventStoreRecord>,
-        KapuaDomainService<EventStoreDomain> {
-
-    public static final EventStoreDomain EVENT_STORE_DOMAIN = new EventStoreDomain();
-
-    @Override
-    public default EventStoreDomain getServiceDomain() {
-        return EVENT_STORE_DOMAIN;
-    }
+        KapuaUpdatableEntityService<EventStoreRecord> {
 
     /**
      * Finds the kapuaEvent by kapuaEvent identifiers

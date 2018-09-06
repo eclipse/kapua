@@ -29,15 +29,6 @@ public interface Domain {
     String getName();
 
     /**
-     * Gets the {@link org.eclipse.kapua.service.KapuaService} name that use this {@link Domain}.<br>
-     * The value represent the {@code interface} fully qualified name of the implemented {@link org.eclipse.kapua.service.KapuaService}<br>
-     *
-     * @return The {@link org.eclipse.kapua.service.KapuaService} that use this {@link Domain}.<br>
-     * @since 1.0.0
-     */
-    String getServiceName();
-
-    /**
      * Gets the set of {@link Actions} available in this {@link Domain}.<br>
      * The implementation must return the reference of the set and not make a clone.
      *
@@ -49,7 +40,7 @@ public interface Domain {
     /**
      * Gets whether or not this {@link Domain} is group-able or not.
      *
-     * @return {@code true} if the KapuaEntity is group-able or not, {@code false} otherwise.
+     * @return {@code true} if the KapuaEntity is group-able, {@code false} otherwise.
      * @since 1.0.0
      */
     boolean getGroupable();

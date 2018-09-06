@@ -13,7 +13,6 @@ package org.eclipse.kapua.service.device.registry.event;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.KapuaDomainService;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.device.registry.Device;
 
@@ -22,14 +21,7 @@ import org.eclipse.kapua.service.device.registry.Device;
  *
  * @since 1.0.0
  */
-public interface DeviceEventService extends KapuaEntityService<DeviceEvent, DeviceEventCreator>, KapuaDomainService<DeviceEventDomain> {
-
-    DeviceEventDomain DEVICE_EVENT_DOMAIN = new DeviceEventDomain();
-
-    @Override
-    default DeviceEventDomain getServiceDomain() {
-        return DEVICE_EVENT_DOMAIN;
-    }
+public interface DeviceEventService extends KapuaEntityService<DeviceEvent, DeviceEventCreator> {
 
     /**
      * Creates the {@link DeviceEvent}.

@@ -9,17 +9,11 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.broker;
+package org.eclipse.kapua.service.endpoint;
 
-import org.eclipse.kapua.service.KapuaDomainService;
-import org.eclipse.kapua.service.KapuaService;
+public class EndpointInfoDomains {
 
-public interface BrokerService extends KapuaService, KapuaDomainService {
+    private EndpointInfoDomains() { }
 
-    public static final BrokerDomain BROKER_DOMAIN = new BrokerDomain();
-
-    @Override
-    public default BrokerDomain getServiceDomain() {
-        return BROKER_DOMAIN;
-    }
+    public static final EndpointInfoDomain ENDPOINT_INFO_DOMAIN = new EndpointInfoDomain();
 }

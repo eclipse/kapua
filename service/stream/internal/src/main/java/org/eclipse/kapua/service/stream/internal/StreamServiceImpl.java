@@ -28,6 +28,7 @@ import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataMessage;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.eclipse.kapua.service.stream.StreamDomains;
 import org.eclipse.kapua.service.stream.StreamService;
 import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.transport.TransportClientFactory;
@@ -59,7 +60,7 @@ public class StreamServiceImpl implements StreamService {
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(STREAM_DOMAIN, Actions.write, requestMessage.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(StreamDomains.STREAM_DOMAIN, Actions.write, requestMessage.getScopeId()));
 
         //
         // Do publish

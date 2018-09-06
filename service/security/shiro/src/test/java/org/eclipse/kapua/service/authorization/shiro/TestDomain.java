@@ -29,7 +29,6 @@ public class TestDomain extends AbstractKapuaEntity implements Domain, org.eclip
     private static final long serialVersionUID = 3782336558657796495L;
 
     private String name = "test";
-    private String serviceName = "testService";
     private Set<Actions> actions = new HashSet<>(Lists.newArrayList(Actions.read, Actions.delete, Actions.write));
     private boolean groupable;
 
@@ -41,16 +40,6 @@ public class TestDomain extends AbstractKapuaEntity implements Domain, org.eclip
     @Override
     public String getName() {
         return name;
-    }
-
-    @Override
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
-    }
-
-    @Override
-    public String getServiceName() {
-        return serviceName;
     }
 
     @Override

@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.authorization.role;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.KapuaDomainService;
 import org.eclipse.kapua.service.KapuaEntityService;
 
 /**
@@ -22,14 +21,7 @@ import org.eclipse.kapua.service.KapuaEntityService;
  *
  * @since 1.0.0
  */
-public interface RolePermissionService extends KapuaEntityService<RolePermission, RolePermissionCreator>, KapuaDomainService<RoleDomain> {
-
-    RoleDomain ROLE_DOMAIN = new RoleDomain();
-
-    @Override
-    default RoleDomain getServiceDomain() {
-        return ROLE_DOMAIN;
-    }
+public interface RolePermissionService extends KapuaEntityService<RolePermission, RolePermissionCreator> {
 
     /**
      * Creates a new {@link RolePermission} based on the parameters provided in the {@link RolePermissionCreator}.<br>

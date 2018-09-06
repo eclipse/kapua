@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.certificate;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.KapuaDomainService;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaNamedEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
@@ -23,15 +22,7 @@ import java.util.List;
 
 public interface CertificateService extends KapuaEntityService<Certificate, CertificateCreator>,
         KapuaNamedEntityService<Certificate>,
-        KapuaUpdatableEntityService<Certificate>,
-        KapuaDomainService<CertificateDomain> {
-
-    CertificateDomain CERTIFICATE_DOMAIN = new CertificateDomain();
-
-    @Override
-    default CertificateDomain getServiceDomain() {
-        return CERTIFICATE_DOMAIN;
-    }
+        KapuaUpdatableEntityService<Certificate> {
 
     @Override
     Certificate create(CertificateCreator var1) throws KapuaException;

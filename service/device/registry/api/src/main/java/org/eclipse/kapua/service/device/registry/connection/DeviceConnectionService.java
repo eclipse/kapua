@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.device.registry.connection;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.KapuaDomainService;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
@@ -27,15 +26,7 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
  */
 public interface DeviceConnectionService extends KapuaEntityService<DeviceConnection, DeviceConnectionCreator>,
         KapuaUpdatableEntityService<DeviceConnection>,
-        KapuaDomainService<DeviceConnectionDomain>,
         KapuaConfigurableService {
-
-    DeviceConnectionDomain DEVICE_CONNECTION_DOMAIN = new DeviceConnectionDomain();
-
-    @Override
-    default DeviceConnectionDomain getServiceDomain() {
-        return DEVICE_CONNECTION_DOMAIN;
-    }
 
     /**
      * Find the connection by client identifier

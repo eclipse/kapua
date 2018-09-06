@@ -19,10 +19,4 @@ import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
  * @since 1.0
  */
 public class DomainAttributes extends KapuaNamedEntityAttributes {
-
-    /**
-     * Domain service name
-     */
-    public static final String SERVICE_NAME = "serviceName";
-
 }

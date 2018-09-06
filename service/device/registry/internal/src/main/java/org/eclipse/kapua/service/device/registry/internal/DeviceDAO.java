@@ -20,8 +20,8 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceAttributes;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
+import org.eclipse.kapua.service.device.registry.DeviceDomains;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
-import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 
 import java.util.List;
 
@@ -108,7 +108,7 @@ public class DeviceDAO extends ServiceDAO {
     public static DeviceListResult query(EntityManager em, KapuaQuery<Device> query)
             throws KapuaException {
 
-        handleKapuaQueryGroupPredicate(query, DeviceRegistryService.DEVICE_DOMAIN, DeviceAttributes.GROUP_ID);
+        handleKapuaQueryGroupPredicate(query, DeviceDomains.DEVICE_DOMAIN, DeviceAttributes.GROUP_ID);
 
         // This is fix up for a the Eclipse Link limitation on OneToOne that ignores Lazy Fetch on Java SE environment.
         // Link: https://www.eclipse.org/eclipselink/documentation/2.6/concepts/mappingintro002.htm#CEGCJEHD
@@ -156,7 +156,7 @@ public class DeviceDAO extends ServiceDAO {
      */
     public static long count(EntityManager em, KapuaQuery<Device> query)
             throws KapuaException {
-        handleKapuaQueryGroupPredicate(query, DeviceRegistryService.DEVICE_DOMAIN, DeviceAttributes.GROUP_ID);
+        handleKapuaQueryGroupPredicate(query, DeviceDomains.DEVICE_DOMAIN, DeviceAttributes.GROUP_ID);
 
         return ServiceDAO.count(em, Device.class, DeviceImpl.class, query);
     }

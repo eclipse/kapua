@@ -25,20 +25,14 @@ import java.util.Set;
  *
  * @since 1.0.0
  */
-public class JobDomain extends AbstractDomain implements Domain {
+public class JobDomain extends AbstractDomain {
 
     private String name = "job";
-    private String serviceName = JobService.class.getName();
     private Set<Actions> actions = new HashSet<>(Arrays.asList(Actions.read, Actions.delete, Actions.write, Actions.execute));
 
     @Override
     public String getName() {
         return name;
-    }
-
-    @Override
-    public String getServiceName() {
-        return serviceName;
     }
 
     @Override

@@ -23,8 +23,8 @@ Feature: Domain Service CRUD tests
   creator parameters.
 
     Given I create the domain
-      | name        | serviceName    | actions    |
-      | test_name_1 | test_service_1 | read,write |
+      | name        | actions    |
+      | test_name_1 | read,write |
     Then A domain was created
     And The domain matches the creator
 
@@ -34,18 +34,8 @@ Feature: Domain Service CRUD tests
 
     Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When I create the domain
-      | serviceName    | actions    |
-      | test_service_1 | read,write |
-    Then An exception was thrown
-
-  Scenario: Domain with null service name
-  It must not be possible to create a domain entry with a null service name. In
-  such case the domain service must throw an exception.
-
-    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
-    When I create the domain
-      | name        | actions    |
-      | test_name_1 | read,write |
+      | actions    |
+      | read,write |
     Then An exception was thrown
 
   Scenario: Domain with null actions
@@ -54,8 +44,8 @@ Feature: Domain Service CRUD tests
 
     Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When I create the domain
-      | name        | serviceName    |
-      | test_name_1 | test_service_1 |
+      | name        |
+      | test_name_1 |
     Then An exception was thrown
 
   Scenario: Domains with duplicate names
@@ -63,37 +53,24 @@ Feature: Domain Service CRUD tests
   new domain an exception must be thrown.
 
     Given I create the domain
-      | name        | serviceName    | actions    |
-      | test_name_1 | test_service_1 | read,write |
+      | name        | actions    |
+      | test_name_1 | read,write |
     Then A domain was created
     And The domain matches the creator
     Given I expect the exception "KapuaException" with the text "Error during Persistence Operation"
     When I create the domain
-      | name        | serviceName    | actions    |
-      | test_name_1 | test_service_1 | read,write |
+      | name        | actions    |
+      | test_name_1 | read,write |
     Then An exception was thrown
 
   Scenario: Find the last created domain entry
   It must be possible to find a dmain entry based on its unique ID.
 
     Given I create the domain
-      | name        | serviceName    | actions      |
-      | test_name_2 | test_service_2 | read,execute |
+      | name        | actions      |
+      | test_name_2 | read,execute |
     When I search for the last created domain
     Then The domain matches the creator
-
-  Scenario: Find the first domain entry for the specified service
-  It must be possible to find a domain entry based on the Service name property.
-
-    Given I create the domains
-      | name        | serviceName    | actions      |
-      | test_name_1 | test_service_1 | read,write   |
-      | test_name_2 | test_service_2 | read,execute |
-      | test_name_3 | test_service_3 | write,delete |
-    When I search for the domains for the service "test_service_2"
-    Then The domain matches the parameters
-      | name        | serviceName    | actions      |
-      | test_name_2 | test_service_2 | read,execute |
 
   Scenario: Compare domain entries
   The domain object is comparable.
@@ -105,8 +82,8 @@ Feature: Domain Service CRUD tests
   based on its ID.
 
     Given I create the domain
-      | name        | serviceName    | actions      |
-      | test_name_2 | test_service_2 | read,execute |
+      | name        | actions      |
+      | test_name_2 | read,execute |
     When I search for the last created domain
     Then The domain matches the creator
     When I delete the last created domain
@@ -127,10 +104,10 @@ Feature: Domain Service CRUD tests
     When I count the domain entries in the database
     Then This is the initial count
     Given I create the domains
-      | name        | serviceName    | actions      |
-      | test_name_1 | test_service_1 | read,write   |
-      | test_name_2 | test_service_2 | read,execute |
-      | test_name_3 | test_service_3 | write,delete |
+      | name        | actions      |
+      | test_name_1 | read,write   |
+      | test_name_2 | read,execute |
+      | test_name_3 | write,delete |
     When I count the domain entries in the database
     Then 3 more domains were created
 
@@ -138,28 +115,9 @@ Feature: Domain Service CRUD tests
   It must be possible to query domain entries based on the name property.
 
     Given I create the domains
-      | name        | serviceName    | actions      |
-      | test_name_1 | test_service_1 | read,write   |
-      | test_name_2 | test_service_2 | read,execute |
-      | test_name_3 | test_service_3 | write,delete |
+      | name        | actions      |
+      | test_name_1 | read,write   |
+      | test_name_2 | read,execute |
+      | test_name_3 | write,delete |
     When I query for domains with the name "test_name_2"
     Then I get 1 as result
-
-  Scenario: Domain entry query - service name
-  It must be possible to query domain entries based on the service name.
-  The whole list of matching entries must be returned.
-
-    Given I create the domains
-      | name        | serviceName    | actions      |
-      | test_name_1 | test_service_1 | read,write   |
-      | test_name_2 | test_service_2 | read,execute |
-      | test_name_3 | test_service_3 | write,delete |
-      | test_name_4 | test_service_3 | read,write   |
-      | test_name_5 | test_service_3 | read,execute |
-      | test_name_6 | test_service_2 | write,delete |
-    When I query for domains with the service name "test_service_2"
-    Then I get 2 as result
-    When I query for domains with the service name "test_service_3"
-    Then I get 3 as result
-    When I query for domains with the service name "test_service_x"
-    Then I get 0 as result

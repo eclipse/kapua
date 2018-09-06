@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.user;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.KapuaDomainService;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaNamedEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
@@ -30,15 +29,7 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
 public interface UserService extends KapuaEntityService<User, UserCreator>,
         KapuaUpdatableEntityService<User>,
         KapuaNamedEntityService<User>,
-        KapuaDomainService<UserDomain>,
         KapuaConfigurableService {
-
-    UserDomain USER_DOMAIN = new UserDomain();
-
-    @Override
-    default UserDomain getServiceDomain() {
-        return USER_DOMAIN;
-    }
 
     /**
      * Creates a new user under the account specified in the UserCreator.<br>

@@ -26,12 +26,11 @@ public abstract class AbstractDomain implements Domain {
         Domain domain = (Domain) o;
         return getGroupable() == domain.getGroupable() &&
                 Objects.equals(getName(), domain.getName()) &&
-                Objects.equals(getServiceName(), domain.getServiceName()) &&
                 Objects.equals(getActions(), domain.getActions());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getServiceName(), getActions(), getGroupable());
+        return Objects.hash(getName(), getActions(), getGroupable());
     }
 }

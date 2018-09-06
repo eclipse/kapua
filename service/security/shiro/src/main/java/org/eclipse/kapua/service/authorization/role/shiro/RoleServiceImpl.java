@@ -26,6 +26,7 @@ import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
+import org.eclipse.kapua.service.authorization.AuthorizationDomains;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -60,7 +61,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     private static final RolePermissionFactory ROLE_PERMISSION_FACTORY = LOCATOR.getFactory(RolePermissionFactory.class);
 
     public RoleServiceImpl() {
-        super(RoleService.class.getName(), ROLE_DOMAIN, AuthorizationEntityManagerFactory.getInstance(), RoleService.class, RoleFactory.class);
+        super(RoleService.class.getName(), AuthorizationDomains.ROLE_DOMAIN, AuthorizationEntityManagerFactory.getInstance(), RoleService.class, RoleFactory.class);
     }
 
     @Override
@@ -74,7 +75,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(ROLE_DOMAIN, Actions.write, roleCreator.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.write, roleCreator.getScopeId()));
 
         //
         // Check limits
@@ -137,7 +138,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(ROLE_DOMAIN, Actions.write, role.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.write, role.getScopeId()));
 
         //
         // Check existence
@@ -173,7 +174,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(ROLE_DOMAIN, Actions.delete, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.delete, scopeId));
 
         //
         // Check existence
@@ -195,7 +196,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(ROLE_DOMAIN, Actions.read, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, scopeId));
 
         //
         // Do find
@@ -211,7 +212,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(ROLE_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -227,7 +228,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(ROLE_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do count

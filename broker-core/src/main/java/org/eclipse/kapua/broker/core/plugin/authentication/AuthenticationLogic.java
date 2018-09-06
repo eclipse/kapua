@@ -12,7 +12,7 @@
 package org.eclipse.kapua.broker.core.plugin.authentication;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.broker.BrokerService;
+import org.eclipse.kapua.broker.BrokerDomains;
 import org.eclipse.kapua.broker.core.plugin.Acl;
 import org.eclipse.kapua.broker.core.plugin.KapuaConnectionContext;
 import org.eclipse.kapua.broker.core.plugin.metric.ClientMetric;
@@ -63,7 +63,7 @@ public abstract class AuthenticationLogic {
     protected PublishMetric publishMetric = PublishMetric.getInstance();
     protected SubscribeMetric subscribeMetric = SubscribeMetric.getInstance();
 
-    protected static final Domain BROKER_DOMAIN = BrokerService.BROKER_DOMAIN;
+    protected static final Domain BROKER_DOMAIN = BrokerDomains.BROKER_DOMAIN;
     protected static final Domain DATASTORE_DOMAIN = new DatastoreDomain();
     protected static final Domain DEVICE_MANAGEMENT_DOMAIN = new DeviceManagementDomain();
 

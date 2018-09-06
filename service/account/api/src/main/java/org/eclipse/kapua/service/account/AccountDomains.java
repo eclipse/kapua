@@ -9,18 +9,11 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management;
+package org.eclipse.kapua.service.account;
 
-import org.eclipse.kapua.service.KapuaDomainService;
-import org.eclipse.kapua.service.KapuaService;
+public class AccountDomains {
 
-public interface DeviceManagementService extends KapuaService, KapuaDomainService<DeviceManagementDomain> {
+    private AccountDomains() { }
 
-    DeviceManagementDomain DEVICE_MANAGEMENT_DOMAIN = new DeviceManagementDomain();
-
-    @Override
-    default DeviceManagementDomain getServiceDomain() {
-        return DEVICE_MANAGEMENT_DOMAIN;
-    }
-
+    public static final AccountDomain ACCOUNT_DOMAIN = new AccountDomain();
 }

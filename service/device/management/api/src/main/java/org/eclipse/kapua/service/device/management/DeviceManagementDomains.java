@@ -9,18 +9,11 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.scheduler;
+package org.eclipse.kapua.service.device.management;
 
-import org.eclipse.kapua.service.KapuaDomainService;
-import org.eclipse.kapua.service.KapuaService;
+public class DeviceManagementDomains {
 
-public interface SchedulerService extends KapuaService, KapuaDomainService<SchedulerDomain> {
+    private DeviceManagementDomains() { }
 
-    SchedulerDomain SCHEDULER_DOMAIN = new SchedulerDomain();
-
-    @Override
-    default SchedulerDomain getServiceDomain() {
-        return SCHEDULER_DOMAIN;
-    }
-
+    public static final DeviceManagementDomain DEVICE_MANAGEMENT_DOMAIN = new DeviceManagementDomain();
 }

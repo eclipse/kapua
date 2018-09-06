@@ -17,7 +17,6 @@ import org.eclipse.kapua.message.device.lifecycle.KapuaBirthMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaMissingMessage;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.KapuaDomainService;
 import org.eclipse.kapua.service.KapuaService;
 
 /**
@@ -26,14 +25,7 @@ import org.eclipse.kapua.service.KapuaService;
  *
  * @since 1.0
  */
-public interface DeviceLifeCycleService extends KapuaService, KapuaDomainService<DeviceLifecycleDomain> {
-
-    DeviceLifecycleDomain DEVICE_LIFECYCLE_DOMAIN = new DeviceLifecycleDomain();
-
-    @Override
-    default DeviceLifecycleDomain getServiceDomain() {
-        return DEVICE_LIFECYCLE_DOMAIN;
-    }
+public interface DeviceLifeCycleService extends KapuaService {
 
     /**
      * Processes a birth certificate for a device, creating or updating the device footprint with the information supplied.

@@ -423,11 +423,9 @@ public class DeviceEventServiceTestSteps extends AbstractKapuaSteps {
         Domain tmpDomain = new DomainImpl();
 
         tmpDomain.setName("test_name");
-        tmpDomain.setServiceName("test_service_name");
         tmpDomain.setActions(new HashSet<>(Lists.newArrayList(Actions.connect, Actions.execute)));
 
         assertEquals("test_name", tmpDomain.getName());
-        assertEquals("test_service_name", tmpDomain.getServiceName());
         assertEquals(2, tmpDomain.getActions().size());
         assertTrue(tmpDomain.getActions().contains(Actions.connect));
         assertTrue(tmpDomain.getActions().contains(Actions.execute));

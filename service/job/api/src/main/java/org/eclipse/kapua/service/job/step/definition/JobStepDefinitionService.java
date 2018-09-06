@@ -13,11 +13,9 @@ package org.eclipse.kapua.service.job.step.definition;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.KapuaDomainService;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
-import org.eclipse.kapua.service.job.JobDomain;
 
 /**
  * {@link JobStepDefinitionService} exposes APIs to manage JobStepDefinition objects.<br>
@@ -28,15 +26,7 @@ import org.eclipse.kapua.service.job.JobDomain;
  */
 public interface JobStepDefinitionService extends KapuaEntityService<JobStepDefinition, JobStepDefinitionCreator>,
         KapuaUpdatableEntityService<JobStepDefinition>,
-        KapuaDomainService<JobDomain>,
         KapuaConfigurableService {
-
-    JobDomain JOB_DOMAIN = new JobDomain();
-
-    @Override
-    default JobDomain getServiceDomain() {
-        return JOB_DOMAIN;
-    }
 
     /**
      * Returns the {@link JobStepDefinitionListResult} with elements matching the provided query.

@@ -37,7 +37,7 @@ import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigParameter;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
-import org.eclipse.kapua.broker.BrokerService;
+import org.eclipse.kapua.broker.BrokerDomains;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -166,7 +166,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                     ROLE_SERVICE.create(adminRoleCreator);
 
                     // Thing
-                    Permission thingPermission = PERMISSION_FACTORY.newPermission(BrokerService.BROKER_DOMAIN, Actions.connect, account.getId(), null, false);
+                    Permission thingPermission = PERMISSION_FACTORY.newPermission(BrokerDomains.BROKER_DOMAIN, Actions.connect, account.getId(), null, false);
 
                     RoleCreator thingRoleCreator = ROLE_FACTORY.newCreator(account.getId());
                     thingRoleCreator.setName("Thing");

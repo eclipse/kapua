@@ -22,6 +22,7 @@ import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
 import org.eclipse.kapua.service.device.management.request.DeviceRequestManagementService;
 import org.eclipse.kapua.service.device.management.request.GenericRequestFactory;
@@ -73,7 +74,7 @@ public class DeviceRequestManagementServiceImpl implements DeviceRequestManageme
         default:
             throw new KapuaRuntimeException(KapuaErrorCodes.OPERATION_NOT_SUPPORTED);
         }
-        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, action, requestInput.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, action, requestInput.getScopeId()));
 
         //
         // Prepare the request

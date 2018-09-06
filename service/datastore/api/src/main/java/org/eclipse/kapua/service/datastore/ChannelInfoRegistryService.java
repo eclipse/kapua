@@ -27,7 +27,6 @@ import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
  * @since 1.0.0
  */
 public interface ChannelInfoRegistryService extends KapuaService,
-        DatastoreService,
         KapuaConfigurableService {
 
     /**
