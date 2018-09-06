@@ -90,7 +90,6 @@ public class RestApisApplication extends ResourceConfig {
         beanConfig.setVersion(apiVersion);
         beanConfig.setBasePath(basePath);
         beanConfig.setTitle(apiTitle);
-        beanConfig.setSchemes(new String[] { "http" });
         beanConfig.setResourcePackage(apiResourcePackage);
         beanConfig.setScan(true);
     }
