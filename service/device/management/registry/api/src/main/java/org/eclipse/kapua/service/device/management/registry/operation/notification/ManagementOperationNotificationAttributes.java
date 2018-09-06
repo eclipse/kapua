@@ -11,15 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.registry.operation.notification;
 
-import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
+import org.eclipse.kapua.model.KapuaUpdatableEntityAttributes;
 
-public interface ManagementOperationNotificationPredicates extends KapuaUpdatableEntityPredicates {
+public class ManagementOperationNotificationAttributes extends KapuaUpdatableEntityAttributes {
 
-    String OPERATION_ID = "operationId";
+    public static final String OPERATION_ID = "operationId";
 
-    String SENT_ON = "sentOn";
+    public static final String SENT_ON = "sentOn";
 
-    String STATUS = "status";
+    public static final String STATUS = "status";
 
-    String PROGRESS = "progress";
+    public static final String PROGRESS = "progress";
 }

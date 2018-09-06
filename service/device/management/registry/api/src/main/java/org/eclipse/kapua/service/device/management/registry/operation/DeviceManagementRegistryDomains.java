@@ -11,13 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.registry.operation;
 
-import org.eclipse.kapua.model.domain.AbstractDomain;
-import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * DeviceManagementRegistryService domain.<br>
@@ -25,23 +19,10 @@ import java.util.Set;
  *
  * @since 1.0.0
  */
-public class DeviceManagementRegistryDomain extends AbstractDomain implements Domain {
+public class DeviceManagementRegistryDomains {
 
-    private String name = "device_management_registry";
-    private Set<Actions> actions = new HashSet<>(Arrays.asList(Actions.execute, Actions.read, Actions.write));
-
-    @Override
-    public String getName() {
-        return name;
+    private DeviceManagementRegistryDomains() {
     }
 
-    @Override
-    public Set<Actions> getActions() {
-        return actions;
-    }
-
-    @Override
-    public boolean getGroupable() {
-        return false;
-    }
+    public static final DeviceManagementRegistryDomain DEVICE_MANAGEMENT_REGISTRY_DOMAIN = new DeviceManagementRegistryDomain();
 }

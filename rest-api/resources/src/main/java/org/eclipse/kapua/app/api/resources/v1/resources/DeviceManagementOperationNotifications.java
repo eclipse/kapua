@@ -22,14 +22,13 @@ import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.KapuaEntityPredicates;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.management.registry.operation.OperationStatus;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotification;
+import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationAttributes;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationCreator;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationListResult;
-import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationPredicates;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationQuery;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationRegistryService;
 import org.eclipse.kapua.service.device.registry.Device;
@@ -81,7 +80,7 @@ public class DeviceManagementOperationNotifications extends AbstractKapuaResourc
 
         AndPredicateImpl andPredicate = new AndPredicateImpl();
 
-        andPredicate.and(new AttributePredicateImpl<>(ManagementOperationNotificationPredicates.OPERATION_ID, operationId));
+        andPredicate.and(new AttributePredicateImpl<>(ManagementOperationNotificationAttributes.OPERATION_ID, operationId));
 
         query.setPredicate(andPredicate);
 
@@ -114,7 +113,7 @@ public class DeviceManagementOperationNotifications extends AbstractKapuaResourc
         query.setScopeId(scopeId);
 
         AndPredicateImpl andPredicate = new AndPredicateImpl();
-        andPredicate.and(new AttributePredicateImpl<>(ManagementOperationNotificationPredicates.OPERATION_ID, operationId));
+        andPredicate.and(new AttributePredicateImpl<>(ManagementOperationNotificationAttributes.OPERATION_ID, operationId));
         query.setPredicate(andPredicate);
 
         return managementOperationNotificationRegistryService.query(query);
@@ -141,7 +140,7 @@ public class DeviceManagementOperationNotifications extends AbstractKapuaResourc
             @ApiParam(value = "The id of the Device in which to count results") @PathParam("operationId") EntityId operationId,
             @ApiParam(value = "The ManagementOperationNotificationQuery to use to filter count results", required = true) ManagementOperationNotificationQuery query) throws Exception {
         query.setScopeId(scopeId);
-        query.setPredicate(new AttributePredicateImpl<>(ManagementOperationNotificationPredicates.OPERATION_ID, operationId));
+        query.setPredicate(new AttributePredicateImpl<>(ManagementOperationNotificationAttributes.OPERATION_ID, operationId));
 
         try {
             ManagementOperationNotificationCreator managementOperationNotificationCreator = managementOperationNotificationFactory.newCreator(scopeId);
@@ -180,8 +179,8 @@ public class DeviceManagementOperationNotifications extends AbstractKapuaResourc
         ManagementOperationNotificationQuery query = managementOperationNotificationFactory.newQuery(scopeId);
 
         AndPredicateImpl andPredicate = new AndPredicateImpl();
-        andPredicate.and(new AttributePredicateImpl<>(ManagementOperationNotificationPredicates.OPERATION_ID, operationId));
-        andPredicate.and(new AttributePredicateImpl<>(KapuaEntityPredicates.ENTITY_ID, managementOperationNotificationId));
+        andPredicate.and(new AttributePredicateImpl<>(ManagementOperationNotificationAttributes.OPERATION_ID, operationId));
+        andPredicate.and(new AttributePredicateImpl<>(ManagementOperationNotificationAttributes.ENTITY_ID, managementOperationNotificationId));
 
         query.setPredicate(andPredicate);
         query.setOffset(0);

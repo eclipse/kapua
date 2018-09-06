@@ -19,17 +19,17 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.registry.manager.exception.ManagementOperationNotificationInvalidStatusException;
 import org.eclipse.kapua.service.device.management.registry.manager.exception.ManagementOperationNotificationProcessingException;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationAttributes;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationListResult;
-import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationPredicates;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationQuery;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService;
 import org.eclipse.kapua.service.device.management.registry.operation.OperationStatus;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotification;
+import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationAttributes;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationCreator;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationListResult;
-import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationPredicates;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationQuery;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationRegistryService;
 
@@ -102,7 +102,7 @@ public class DeviceManagementRegistryManager {
         DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.update(deviceManagementOperation);
 
         ManagementOperationNotificationQuery query = MANAGEMENT_OPERATION_NOTIFICATION_FACTORY.newQuery(scopeId);
-        query.setPredicate(new AttributePredicateImpl<>(ManagementOperationNotificationPredicates.OPERATION_ID, operationId));
+        query.setPredicate(new AttributePredicateImpl<>(ManagementOperationNotificationAttributes.OPERATION_ID, operationId));
 
         ManagementOperationNotificationListResult notifications = MANAGEMENT_OPERATION_NOTIFICATION_REGISTRY_SERVICE.query(query);
 
@@ -113,7 +113,7 @@ public class DeviceManagementRegistryManager {
 
     private static DeviceManagementOperation getDeviceManagementOperation(KapuaId scopeId, KapuaId operationId) throws KapuaException {
         DeviceManagementOperationQuery query = DEVICE_MANAGEMENT_OPERATION_FACTORY.newQuery(scopeId);
-        query.setPredicate(new AttributePredicateImpl<>(DeviceManagementOperationPredicates.OPERATION_ID, operationId));
+        query.setPredicate(new AttributePredicateImpl<>(DeviceManagementOperationAttributes.OPERATION_ID, operationId));
 
         DeviceManagementOperationListResult operations = DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.query(query);
         DeviceManagementOperation deviceManagementOperation = operations.getFirstItem();

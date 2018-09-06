@@ -15,13 +15,11 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
-import org.eclipse.kapua.service.device.management.registry.DeviceManagementRegistryService;
 
 public interface DeviceManagementOperationRegistryService
         extends
         KapuaEntityService<DeviceManagementOperation, DeviceManagementOperationCreator>,
-        KapuaUpdatableEntityService<DeviceManagementOperation>,
-        DeviceManagementRegistryService {
+        KapuaUpdatableEntityService<DeviceManagementOperation> {
 
     /**
      * Returns the {@link DeviceManagementOperationListResult} with elements matching the provided query.

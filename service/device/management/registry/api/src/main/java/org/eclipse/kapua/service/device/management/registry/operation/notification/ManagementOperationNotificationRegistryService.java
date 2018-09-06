@@ -14,12 +14,10 @@ package org.eclipse.kapua.service.device.management.registry.operation.notificat
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
-import org.eclipse.kapua.service.device.management.registry.DeviceManagementRegistryService;
 
 public interface ManagementOperationNotificationRegistryService
         extends
-        KapuaEntityService<ManagementOperationNotification, ManagementOperationNotificationCreator>,
-        DeviceManagementRegistryService {
+        KapuaEntityService<ManagementOperationNotification, ManagementOperationNotificationCreator> {
 
     /**
      * Returns the {@link ManagementOperationNotificationListResult} with elements matching the provided query.

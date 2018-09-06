@@ -11,23 +11,23 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.registry.operation;
 
-import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
+import org.eclipse.kapua.model.KapuaUpdatableEntityAttributes;
 
-public interface DeviceManagementOperationPredicates extends KapuaUpdatableEntityPredicates {
+public class DeviceManagementOperationAttributes extends KapuaUpdatableEntityAttributes {
 
-    String STARTED_ON = "startedOn";
+    public static final String STARTED_ON = "startedOn";
 
-    String ENDED_ON = "endedOn";
+    public static final String ENDED_ON = "endedOn";
 
-    String DEVICE_ID = "deviceId";
+    public static final String DEVICE_ID = "deviceId";
 
-    String OPERATION_ID = "operationId";
+    public static final String OPERATION_ID = "operationId";
 
-    String APP_ID = "appId";
+    public static final String APP_ID = "appId";
 
-    String ACTION = "action";
+    public static final String ACTION = "action";
 
-    String RESOURCE = "resource";
+    public static final String RESOURCE = "resource";
 
-    String STATUS = "status";
+    public static final String STATUS = "status";
 }

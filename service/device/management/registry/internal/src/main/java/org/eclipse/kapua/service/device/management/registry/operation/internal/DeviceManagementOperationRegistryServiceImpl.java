@@ -27,6 +27,7 @@ import org.eclipse.kapua.service.device.management.registry.operation.DeviceMana
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationCreator;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationListResult;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementRegistryDomains;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 
@@ -60,7 +61,7 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
 
         //
         // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.write, null));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.write, null));
 
         //
         // Check device existence
@@ -89,7 +90,7 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
 
         //
         // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.write, null));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.write, null));
 
         //
         // Check device existence
@@ -117,7 +118,7 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, scopeId));
 
         //
         // Do find
@@ -133,7 +134,7 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -149,7 +150,7 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do count
@@ -165,7 +166,7 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.delete, scopeId));
 
         //
         // Check existence

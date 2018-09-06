@@ -23,14 +23,13 @@ import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.KapuaEntityPredicates;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationAttributes;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationCreator;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationListResult;
-import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationPredicates;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationProperty;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationQuery;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService;
@@ -83,9 +82,9 @@ public class DeviceManagementOperations extends AbstractKapuaResource {
         DeviceManagementOperationQuery query = deviceManagementOperationFactory.newQuery(scopeId);
 
         AndPredicateImpl andPredicate = new AndPredicateImpl();
-        andPredicate.and(new AttributePredicateImpl<>(DeviceManagementOperationPredicates.DEVICE_ID, deviceId));
+        andPredicate.and(new AttributePredicateImpl<>(DeviceManagementOperationAttributes.DEVICE_ID, deviceId));
         if (!Strings.isNullOrEmpty(resource)) {
-            andPredicate.and(new AttributePredicateImpl<>(DeviceManagementOperationPredicates.RESOURCE, resource));
+            andPredicate.and(new AttributePredicateImpl<>(DeviceManagementOperationAttributes.RESOURCE, resource));
         }
         query.setPredicate(andPredicate);
 
@@ -117,7 +116,7 @@ public class DeviceManagementOperations extends AbstractKapuaResource {
         query.setScopeId(scopeId);
 
         AndPredicateImpl andPredicate = new AndPredicateImpl();
-        andPredicate.and(new AttributePredicateImpl<>(DeviceManagementOperationPredicates.DEVICE_ID, deviceId));
+        andPredicate.and(new AttributePredicateImpl<>(DeviceManagementOperationAttributes.DEVICE_ID, deviceId));
         query.setPredicate(andPredicate);
 
         return deviceManagementOperationRegistryService.query(query);
@@ -143,7 +142,7 @@ public class DeviceManagementOperations extends AbstractKapuaResource {
             @ApiParam(value = "The id of the Device in which to count results") @PathParam("deviceId") EntityId deviceId,
             @ApiParam(value = "The DeviceManagementOperationQuery to use to filter count results", required = true) DeviceManagementOperationQuery query) throws Exception {
         query.setScopeId(scopeId);
-        query.setPredicate(new AttributePredicateImpl<>(DeviceManagementOperationPredicates.DEVICE_ID, deviceId));
+        query.setPredicate(new AttributePredicateImpl<>(DeviceManagementOperationAttributes.DEVICE_ID, deviceId));
 
         try {
             DeviceManagementOperationProperty deviceManagementOperationProperty = deviceManagementOperationFactory.newStepProperty("asd", "string", "qwe");
@@ -187,8 +186,8 @@ public class DeviceManagementOperations extends AbstractKapuaResource {
         DeviceManagementOperationQuery query = deviceManagementOperationFactory.newQuery(scopeId);
 
         AndPredicateImpl andPredicate = new AndPredicateImpl();
-        andPredicate.and(new AttributePredicateImpl<>(DeviceManagementOperationPredicates.DEVICE_ID, deviceId));
-        andPredicate.and(new AttributePredicateImpl<>(KapuaEntityPredicates.ENTITY_ID, deviceManagementOperationId));
+        andPredicate.and(new AttributePredicateImpl<>(DeviceManagementOperationAttributes.DEVICE_ID, deviceId));
+        andPredicate.and(new AttributePredicateImpl<>(DeviceManagementOperationAttributes.ENTITY_ID, deviceManagementOperationId));
 
         query.setPredicate(andPredicate);
         query.setOffset(0);

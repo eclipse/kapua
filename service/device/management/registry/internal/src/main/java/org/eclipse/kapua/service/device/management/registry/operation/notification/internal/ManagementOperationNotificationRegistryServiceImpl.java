@@ -25,6 +25,7 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementRegistryDomains;
 import org.eclipse.kapua.service.device.management.registry.operation.internal.DeviceManagementOperationEntityManagerFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotification;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationCreator;
@@ -59,7 +60,7 @@ public class ManagementOperationNotificationRegistryServiceImpl extends Abstract
 
         //
         // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.write, null));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.write, null));
 
         //
         // Check operation existence
@@ -81,7 +82,7 @@ public class ManagementOperationNotificationRegistryServiceImpl extends Abstract
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, scopeId));
 
         //
         // Do find
@@ -97,7 +98,7 @@ public class ManagementOperationNotificationRegistryServiceImpl extends Abstract
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -113,7 +114,7 @@ public class ManagementOperationNotificationRegistryServiceImpl extends Abstract
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do count
@@ -129,7 +130,7 @@ public class ManagementOperationNotificationRegistryServiceImpl extends Abstract
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.delete, scopeId));
 
         //
         // Do delete
