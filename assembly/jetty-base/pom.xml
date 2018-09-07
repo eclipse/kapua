@@ -24,6 +24,10 @@
     <packaging>pom</packaging>
     <artifactId>kapua-assembly-jetty-base</artifactId>
 
+    <properties>
+        <jetty.version>9.4.12.v20180830</jetty.version>
+    </properties>
+
     <profiles>
         <profile>
             <id>release</id>
@@ -47,7 +51,7 @@
                                         <runCmds>
                                             <runCmd><![CDATA[
                                     cd /home/kapua && \
-                                    curl -s https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.6.v20170531/jetty-distribution-9.4.6.v20170531.tar.gz -o jetty-distribution.tar.gz && \
+                                    curl -s https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/${jetty.version}/jetty-distribution-${jetty.version}.tar.gz -o jetty-distribution.tar.gz && \
                                     mkdir -p jetty && cd jetty && \
                                     tar --strip=1 -xzf ../jetty-distribution.tar.gz && \
                                     rm ../jetty-distribution.tar.gz && \

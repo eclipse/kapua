@@ -19,7 +19,7 @@ env_vars = {
   'H2DB_VERSION'          => '1.4.192',
   'ACTIVEMQ_VERSION'      => '5.14.5',
   'ARTEMIS_VERSION'       => '2.2.0',
-  'JETTY_VERSION'         => '9.4.6.v20170531',
+  'JETTY_VERSION'         => '9.4.12.v20180830',
   'KAPUA_VERSION'         => '1.0.0-SNAPSHOT'
 }
 
