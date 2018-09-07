@@ -95,5 +95,10 @@ public enum KapuaErrorCodes implements KapuaErrorCode {
     /**
      * Max number of items is reached
      */
-    MAX_NUMBER_OF_ITEMS_REACHED
+    MAX_NUMBER_OF_ITEMS_REACHED,
+
+    /**
+     * User is already reserved by another connection
+     */
+    USER_ALREADY_RESERVED_BY_ANOTHER_CONNECTION
 }
