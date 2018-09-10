@@ -59,7 +59,7 @@ public class AccountEditDialog extends AccountAddDialog {
 
                 @Override
                 public void onFailure(Throwable caught) {
-                    caught.printStackTrace();
+                    FailureHandler.handle(caught);
                 }
             });
         }      
