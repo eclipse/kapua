@@ -151,7 +151,6 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         ArgumentValidator.notEmptyOrNull(account.getName(), "account.name");
         ArgumentValidator.notNull(account.getOrganization(), "account.organization");
         ArgumentValidator.match(account.getOrganization().getEmail(), CommonsValidationRegex.EMAIL_REGEXP, "account.organization.email");
-        Account parentAccount = null;
 
         //
         // Check Access
@@ -171,6 +170,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         }
 
         // check that expiration date is no later than parent expiration date
+        Account parentAccount = null;
         if (oldAccount.getScopeId() != null) {
             parentAccount = KapuaSecurityUtils.doPrivileged(() -> find(oldAccount.getScopeId()));
         }
