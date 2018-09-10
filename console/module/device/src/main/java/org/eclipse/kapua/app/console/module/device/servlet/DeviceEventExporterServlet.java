@@ -66,9 +66,7 @@ public class DeviceEventExporterServlet extends HttpServlet {
 
             // data exporter
             DeviceEventExporter deviceEventExporter;
-            if ("xls".equals(format)) {
-                deviceEventExporter = new DeviceEventExporterExcel(response);
-            } else if ("csv".equals(format)) {
+            if ("csv".equals(format)) {
                 deviceEventExporter = new DeviceEventExporterCsv(response);
             } else {
                 throw new IllegalArgumentException("format");

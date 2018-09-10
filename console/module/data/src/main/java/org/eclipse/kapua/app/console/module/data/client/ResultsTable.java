@@ -21,8 +21,8 @@ import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -32,7 +32,6 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
@@ -43,11 +42,10 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.ExportButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.DateRangeSelector;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.DateRangeSelectorListener;
-import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaMenuItem;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolBar;
 import org.eclipse.kapua.app.console.module.api.client.util.SwappableListStore;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
@@ -88,7 +86,7 @@ public class ResultsTable extends LayoutContainer {
     private List<GwtHeader> selectedMetrics;
     private Date startDate;
     private Date endDate;
-    private ExportButton exportButton;
+    private Button exportButton;
     private DateRangeSelector dateRangeSelector;
     private Button queryButton;
 
@@ -212,26 +210,16 @@ public class ResultsTable extends LayoutContainer {
         resultsGrid.disableTextSelection(false);
 
         resultsToolBar = new ToolBar();
-        Menu menu = new Menu();
-        menu.add(new KapuaMenuItem(MSGS.resultsTableExportToExcel(), IconSet.FILE_EXCEL_O,
-                new SelectionListener<MenuEvent>() {
+
+        exportButton = new Button(MSGS.resultsTableExportToCSV(), new KapuaIcon(IconSet.FILE_TEXT_O),
+                new SelectionListener<ButtonEvent>() {
 
                     @Override
-                    public void componentSelected(MenuEvent ce) {
-                        export("xls");
-                    }
-                }));
-        menu.add(new KapuaMenuItem(MSGS.resultsTableExportToCSV(), IconSet.FILE_TEXT_O,
-                new SelectionListener<MenuEvent>() {
-
-                    @Override
-                    public void componentSelected(MenuEvent ce) {
+                    public void componentSelected(ButtonEvent ce) {
                         export("csv");
                     }
-                }));
+                });
 
-        exportButton = new ExportButton();
-        exportButton.setMenu(menu);
         exportButton.disable();
         resultsToolBar.add(exportButton);
         resultsToolBar.add(new SeparatorToolItem());

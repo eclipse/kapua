@@ -22,6 +22,7 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.color.Color;
@@ -88,28 +89,28 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
                 KapuaIcon icon;
                 if (gwtDevice.getGwtDeviceConnectionStatusEnum() != null) {
                     switch (gwtDevice.getGwtDeviceConnectionStatusEnum()) {
-                    case CONNECTED:
-                        icon = new KapuaIcon(IconSet.PLUG);
-                        icon.setColor(Color.GREEN);
-                        icon.setTitle(CONNECTION_MSGS.connected());
-                        break;
-                    case DISCONNECTED:
-                        icon = new KapuaIcon(IconSet.PLUG);
-                        icon.setColor(Color.YELLOW);
-                        icon.setTitle(CONNECTION_MSGS.disconnected());
-                        break;
-                    case MISSING:
-                        icon = new KapuaIcon(IconSet.PLUG);
-                        icon.setColor(Color.RED);
-                        icon.setTitle(CONNECTION_MSGS.missing());
-                        break;
-                    case UNKNOWN:
-                    case ANY:
-                    default:
-                        icon = new KapuaIcon(IconSet.PLUG);
-                        icon.setColor(Color.GREY);
-                        icon.setTitle(CONNECTION_MSGS.unknown());
-                        break;
+                        case CONNECTED:
+                            icon = new KapuaIcon(IconSet.PLUG);
+                            icon.setColor(Color.GREEN);
+                            icon.setTitle(CONNECTION_MSGS.connected());
+                            break;
+                        case DISCONNECTED:
+                            icon = new KapuaIcon(IconSet.PLUG);
+                            icon.setColor(Color.YELLOW);
+                            icon.setTitle(CONNECTION_MSGS.disconnected());
+                            break;
+                        case MISSING:
+                            icon = new KapuaIcon(IconSet.PLUG);
+                            icon.setColor(Color.RED);
+                            icon.setTitle(CONNECTION_MSGS.missing());
+                            break;
+                        case UNKNOWN:
+                        case ANY:
+                        default:
+                            icon = new KapuaIcon(IconSet.PLUG);
+                            icon.setColor(Color.GREY);
+                            icon.setTitle(CONNECTION_MSGS.unknown());
+                            break;
                     }
                 } else {
                     icon = new KapuaIcon(IconSet.PLUG);

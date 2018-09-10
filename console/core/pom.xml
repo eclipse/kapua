@@ -258,11 +258,6 @@
             <version>0.4.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-        </dependency>
-
         <!-- use logback only for testing -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
