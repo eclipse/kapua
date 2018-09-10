@@ -79,6 +79,7 @@ public class JobGrid extends EntityGrid<GwtJob> {
 
         ColumnConfig columnConfig = new ColumnConfig("id", MSGS.gridJobColumnHeaderId(), 100);
         columnConfig.setHidden(true);
+        columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("jobName", MSGS.gridJobColumnHeaderName(), 400);

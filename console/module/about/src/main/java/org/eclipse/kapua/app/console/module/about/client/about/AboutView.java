@@ -121,7 +121,9 @@ public class AboutView extends AbstractView implements View {
 
         final List<ColumnConfig> columns = new LinkedList<ColumnConfig>();
         columns.add(rowExpander);
-        columns.add(new ColumnConfig("id", MSGS.columnNameId(), 200));
+        ColumnConfig column = new ColumnConfig("id", MSGS.columnNameId(), 200);
+        column.setSortable(false);
+        columns.add(column);
         columns.add(new ColumnConfig("name", MSGS.columnNameName(), 300));
         columns.add(new ColumnConfig("version", MSGS.columnNameVersion(), 200));
         columns.add(new ColumnConfig("license", MSGS.columnNameLicense(), 300));

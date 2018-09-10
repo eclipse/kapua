@@ -76,6 +76,7 @@ public class GroupGrid extends EntityGrid<GwtGroup> {
 
         ColumnConfig columnConfig = new ColumnConfig("id", MSGS.gridGroupColumnHeaderId(), 100);
         columnConfig.setHidden(true);
+        columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("groupName", MSGS.gridGroupColumnHeaderGroupName(), 200);

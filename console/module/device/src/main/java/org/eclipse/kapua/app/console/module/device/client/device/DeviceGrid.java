@@ -126,7 +126,6 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
         columnConfigs.add(column);
 
         column = new ColumnConfig("clientId", DEVICE_MSGS.deviceTableClientID(), 175);
-        column.setSortable(true);
         columnConfigs.add(column);
 
         column = new ColumnConfig("displayName", DEVICE_MSGS.deviceTableDisplayName(), 150);
