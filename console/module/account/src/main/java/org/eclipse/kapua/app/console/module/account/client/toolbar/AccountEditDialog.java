@@ -47,6 +47,23 @@ public class AccountEditDialog extends AccountAddDialog {
         accountNameLabel.setValue(selectedAccount.getName());
         accountNameField.setValue(selectedAccount.getName());
 
+        if (selectedAccount.getParentAccountId() != null) {
+            GWT_ACCOUNT_SERVICE.find(selectedAccount.getParentAccountId(), new AsyncCallback<GwtAccount>() {
+
+                @Override
+                public void onSuccess(GwtAccount result) {
+                    if (parentAccountNameLabel != null) {
+                        parentAccountNameLabel.setValue(result.getName());
+                    }
+                }
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    FailureHandler.handle(caught);
+                }
+            });
+        }      
+
         expirationDateField.setValue(selectedAccount.getExpirationDate());
         expirationDateField.setOriginalValue(selectedAccount.getExpirationDate());
 

@@ -170,7 +170,10 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         }
 
         // check that expiration date is no later than parent expiration date
-        Account parentAccount = KapuaSecurityUtils.doPrivileged(() -> find(oldAccount.getScopeId()));
+        Account parentAccount = null;
+        if (oldAccount.getScopeId() != null) {
+            parentAccount = KapuaSecurityUtils.doPrivileged(() -> find(oldAccount.getScopeId()));
+        }
         if (parentAccount != null && parentAccount.getExpirationDate() != null) {
             // if parent account never expires no check is needed
             if (account.getExpirationDate() == null || parentAccount.getExpirationDate().before(account.getExpirationDate())) {

@@ -303,6 +303,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
         gwtAccountCreator.setOrganizationZipPostCode(organizationZipPostCode.getValue());
         gwtAccountCreator.setOrganizationStateProvinceCounty(organizationStateProvinceCounty.getValue());
         gwtAccountCreator.setOrganizationCountry(organizationCountry.getValue());
+        gwtAccountCreator.setScopeId(currentSession.getSelectedAccountId());
 
         GWT_ACCOUNT_SERVICE.create(xsrfToken,
                 gwtAccountCreator,
