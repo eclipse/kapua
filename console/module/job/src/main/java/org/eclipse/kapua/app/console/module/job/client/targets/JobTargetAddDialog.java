@@ -92,6 +92,7 @@ public class JobTargetAddDialog extends EntityAddEditDialog {
         targetRadioGroup.add(selectedRadio);
 
         targetGrid = new JobTargetAddGrid(currentSession, gwtSelectedJob);
+        targetGrid.setDeselectable();
         targetGrid.disable();
         targetGrid.setHeight(255);
 
