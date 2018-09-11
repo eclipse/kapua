@@ -166,7 +166,6 @@ public class DeviceConfigComponents extends LayoutContainer {
                     dirty = true;
                     refresh();
                     refreshProcess = false;
-                    refreshButton.setEnabled(true);
                     gwtSession.setFormDirty(false);
                 }
             }
@@ -209,11 +208,6 @@ public class DeviceConfigComponents extends LayoutContainer {
         apply.setEnabled(false);
         reset.setEnabled(false);
         gwtSession.setFormDirty(false);
-        if (selectedDevice == null) {
-            refreshButton.setEnabled(false);
-        } else {
-            refreshButton.setEnabled(true);
-        }
         toolBar.add(refreshButton);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(apply);
@@ -414,11 +408,6 @@ public class DeviceConfigComponents extends LayoutContainer {
 
     public void refresh() {
         if (dirty && initialized) {
-            if (selectedDevice != null) {
-                refreshButton.setEnabled(true);
-            } else {
-                refreshButton.setEnabled(false);
-            }
             // clear the tree and disable the toolbar
             apply.setEnabled(false);
             reset.setEnabled(false);
@@ -623,11 +612,18 @@ public class DeviceConfigComponents extends LayoutContainer {
     private class DataLoadListener extends KapuaLoadListener {
 
         @Override
+        public void loaderBeforeLoad(LoadEvent le) {
+            super.loaderBeforeLoad(le);
+            refreshButton.disable();
+        }
+
+        @Override
         public void loaderLoad(LoadEvent le) {
             if (le.exception != null) {
                 FailureHandler.handle(le.exception);
             }
             tree.unmask();
+            refreshButton.enable();
         }
 
         @Override
@@ -647,6 +643,7 @@ public class DeviceConfigComponents extends LayoutContainer {
             treeStore.add(comps, false);
 
             tree.unmask();
+            refreshButton.enable();
         }
     }
 }

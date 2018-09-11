@@ -164,7 +164,6 @@ public class DeviceConfigSnapshots extends LayoutContainer {
                     dirty = true;
                     reload();
 
-                    refreshButton.setEnabled(true);
                     refreshProcess = false;
                 }
             }
@@ -200,12 +199,11 @@ public class DeviceConfigSnapshots extends LayoutContainer {
 
                     uploadSnapshot();
 
-                    uploadButton.setEnabled(true);
                     uploadProcess = false;
                 }
             }
         });
-        uploadButton.setEnabled(true);
+        uploadButton.setEnabled(false);
 
         rollbackButton = new SnapshotRollbackButton(new SelectionListener<ButtonEvent>() {
 
@@ -378,7 +376,6 @@ public class DeviceConfigSnapshots extends LayoutContainer {
                 grid.getStore().removeAll();
             } else {
                 toolBar.enable();
-                refreshButton.enable();
                 downloadButton.disable();
                 rollbackButton.disable();
                 reload();
@@ -512,6 +509,13 @@ public class DeviceConfigSnapshots extends LayoutContainer {
     private class DataLoadListener extends KapuaLoadListener {
 
         public DataLoadListener() {
+        }
+
+        @Override
+        public void loaderBeforeLoad(LoadEvent le) {
+            super.loaderBeforeLoad(le);
+            refreshButton.disable();
+            uploadButton.disable();
         }
 
         @Override
