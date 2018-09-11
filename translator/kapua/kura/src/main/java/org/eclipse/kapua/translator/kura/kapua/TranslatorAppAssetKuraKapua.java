@@ -103,8 +103,8 @@ public class TranslatorAppAssetKuraKapua extends AbstractSimpleTranslatorRespons
     protected AssetResponsePayload translatePayload(KuraResponsePayload kuraPayload) throws KapuaException {
         AssetResponsePayload assetResponsePayload = new AssetResponsePayload();
 
-        assetResponsePayload.setExceptionMessage((String) kuraPayload.getMetrics().get(KuraResponseMetrics.RESP_METRIC_EXCEPTION_MESSAGE.getValue()));
-        assetResponsePayload.setExceptionStack((String) kuraPayload.getMetrics().get(KuraResponseMetrics.RESP_METRIC_EXCEPTION_STACK.getValue()));
+        assetResponsePayload.setExceptionMessage((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_MESSAGE.getValue()));
+        assetResponsePayload.setExceptionStack((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_STACK.getValue()));
 
         if (kuraPayload.getBody() != null) {
             try {

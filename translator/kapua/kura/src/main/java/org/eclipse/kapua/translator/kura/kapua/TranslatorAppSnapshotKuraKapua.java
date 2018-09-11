@@ -101,8 +101,8 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
     protected SnapshotResponsePayload translatePayload(KuraResponsePayload kuraPayload) throws KapuaException {
         SnapshotResponsePayload snapshotResponsePayload = new SnapshotResponsePayload();
 
-        snapshotResponsePayload.setExceptionMessage((String) kuraPayload.getMetrics().get(KuraResponseMetrics.RESP_METRIC_EXCEPTION_MESSAGE.getValue()));
-        snapshotResponsePayload.setExceptionStack((String) kuraPayload.getMetrics().get(KuraResponseMetrics.RESP_METRIC_EXCEPTION_STACK.getValue()));
+        snapshotResponsePayload.setExceptionMessage((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_MESSAGE.getValue()));
+        snapshotResponsePayload.setExceptionStack((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_STACK.getValue()));
 
         DeviceManagementSetting config = DeviceManagementSetting.getInstance();
         String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);

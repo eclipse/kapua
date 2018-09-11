@@ -9,15 +9,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
+package org.eclipse.kapua.service.device.call.message.kura.app.notification;
 
-import org.eclipse.kapua.service.device.call.message.kura.KuraChannel;
+import org.eclipse.kapua.service.device.call.message.app.notification.DeviceNotifyChannel;
+import org.eclipse.kapua.service.device.call.message.kura.app.KuraAppChannel;
 import org.eclipse.kapua.service.device.call.message.lifecycle.DeviceLifecycleChannel;
 
 /**
  * {@link DeviceLifecycleChannel} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
  */
-public class KuraNotifyChannel extends KuraChannel implements DeviceLifecycleChannel {
+public class KuraNotifyChannel extends KuraAppChannel implements DeviceNotifyChannel {
 
     /**
      * Constructor

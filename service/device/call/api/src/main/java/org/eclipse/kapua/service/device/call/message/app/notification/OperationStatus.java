@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.registry.operation;
+package org.eclipse.kapua.service.device.call.message.app.notification;
 
 public enum OperationStatus {
 

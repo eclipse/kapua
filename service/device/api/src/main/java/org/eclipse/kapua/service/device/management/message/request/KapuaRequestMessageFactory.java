@@ -10,12 +10,10 @@
  *     Eurotech - initial API and implementation
  *     Red Hat Inc
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.message;
+package org.eclipse.kapua.service.device.management.message.request;
 
 import org.eclipse.kapua.model.KapuaObjectFactory;
-import org.eclipse.kapua.service.device.management.message.request.KapuaRequestChannel;
-import org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessage;
-import org.eclipse.kapua.service.device.management.message.request.KapuaRequestPayload;
+import org.eclipse.kapua.service.device.management.message.KapuaAppProperties;
 
 public interface KapuaRequestMessageFactory extends KapuaObjectFactory {
 

@@ -68,7 +68,7 @@
         <api>org.eclipse.kapua.service.device.call.DeviceCallFactory</api>
         <api>org.eclipse.kapua.service.device.call.DeviceMessageFactory</api>
 
-        <api>org.eclipse.kapua.service.device.management.message.KapuaRequestMessageFactory</api>
+        <api>org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessageFactory</api>
         <api>org.eclipse.kapua.service.device.management.request.GenericRequestFactory</api>
 
         <api>org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService</api>

@@ -16,7 +16,7 @@ import org.eclipse.kapua.model.KapuaEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
-import org.eclipse.kapua.service.device.management.registry.operation.OperationStatus;
+import org.eclipse.kapua.service.device.management.message.notification.OperationStatus;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

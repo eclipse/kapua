@@ -12,8 +12,8 @@
 package org.eclipse.kapua.service.device.management.commons.message.response;
 
 import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
-import org.eclipse.kapua.service.device.management.message.ResponseProperties;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
+import org.eclipse.kapua.service.device.management.message.response.ResponseProperties;
 
 /**
  * Kapua response message payload implementation.

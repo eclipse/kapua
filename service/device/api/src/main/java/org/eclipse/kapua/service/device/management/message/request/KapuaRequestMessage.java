@@ -12,7 +12,7 @@
 package org.eclipse.kapua.service.device.management.message.request;
 
 import org.eclipse.kapua.message.KapuaMessage;
-import org.eclipse.kapua.service.device.management.message.RequestMessageXmlRegistry;
+import org.eclipse.kapua.service.device.management.message.request.xml.RequestMessageXmlRegistry;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseChannel;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;

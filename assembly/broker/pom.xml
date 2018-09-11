@@ -116,6 +116,17 @@
         <!-- dependencies added otherwise the unix assembly doesn't know the arctifact to add -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-registry-api</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-registry-internal</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-sso-jwt</artifactId>
             <scope>runtime</scope>
         </dependency>

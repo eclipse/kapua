@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.device.management.registry.manager.exception;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.device.management.registry.operation.OperationStatus;
+import org.eclipse.kapua.service.device.management.message.notification.OperationStatus;
 
 import java.util.Date;
 

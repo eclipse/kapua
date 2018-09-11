@@ -10,20 +10,20 @@
  *     Eurotech - initial API and implementation
  *     Red Hat Inc
  *******************************************************************************/
-package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
+package org.eclipse.kapua.service.device.call.message.kura.app.notification;
 
-import org.eclipse.kapua.service.device.call.message.kura.KuraMessage;
-import org.eclipse.kapua.service.device.call.message.lifecycle.DeviceLifecycleMessage;
+import org.eclipse.kapua.service.device.call.message.app.notification.DeviceNotifyMessage;
+import org.eclipse.kapua.service.device.call.message.kura.app.KuraAppMessage;
 
 import java.util.Date;
 
 /**
- * {@link DeviceLifecycleMessage} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
+ * {@link DeviceNotifyMessage} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
  * <p>
  * The missing message is sent by the {@link org.eclipse.kapua.service.device.registry.Device} to notify the platform about a task progress.
  * </p>
  */
-public class KuraNotifyMessage extends KuraMessage<KuraNotifyChannel, KuraNotifyPayload> implements DeviceLifecycleMessage<KuraNotifyChannel, KuraNotifyPayload> {
+public class KuraNotifyMessage extends KuraAppMessage<KuraNotifyChannel, KuraNotifyPayload> implements DeviceNotifyMessage<KuraNotifyChannel, KuraNotifyPayload> {
 
     /**
      * Constructor

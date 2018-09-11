@@ -36,8 +36,8 @@ For the available managed placeholders see the CAMEL_ROUTER_PLACEHOLDER enum.
                     <endPoint>bean:kapuaLifeCycleConverter?method=convertToMissing,bean:deviceMessageListener?method=processMissingMessage</endPoint>
                 </simpleEndPoint>
                 <simpleEndPoint>
-                    <regex>${CLASSIFIER}(.*\.){2}MQTT\.NOTIFY</regex>
-                    <endPoint>bean:kapuaLifeCycleConverter?method=convertToNotify,bean:deviceMessageListener?method=processNotifyMessage</endPoint>
+                    <regex>${CLASSIFIER}(.*\.){2}DEPLOY-V2\.NOTIFY.*</regex>
+                    <endPoint>bean:deviceManagementNotificationConverter?method=convertToManagementNotification,bean:deviceManagementNotificationMessageProcessor?method=processMessage</endPoint>
                 </simpleEndPoint>
                 <endChainEndPoint>
                 </endChainEndPoint>
@@ -47,5 +47,9 @@ For the available managed placeholders see the CAMEL_ROUTER_PLACEHOLDER enum.
             <regex>.*</regex>
             <endPoint>bean:kapuaDataConverter?method=convertToData,bean:dataStorageMessageProcessor?method=processMessage</endPoint>
         </simpleEndPoint>
+        <!--<simpleEndPoint>-->
+        <!--<regex>${CLASSIFIER}(.*\.){2}MQTT\.DC {qualcosa notify}</regex>-->
+        <!--<endPoint>bean:kapuaManagementOperationConverter?method=convertToManagementOperationNotification,bean:dataStorageMessageProcessor?method=processMessage</endPoint>-->
+        <!--</simpleEndPoint>-->
     </endPoints>
 </endPoints>

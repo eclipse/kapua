@@ -23,10 +23,8 @@ import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.device.management.registry.operation.OperationStatus;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotification;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationAttributes;
-import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationCreator;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationListResult;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationQuery;
@@ -44,7 +42,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Date;
 
 @Api(value = "Devices Operations", authorizations = {@Authorization(value = "kapuaAccessToken")})
 @Path("{scopeId}/devices/{deviceId}/operations/{operationId}/notifications")
@@ -141,18 +138,6 @@ public class DeviceManagementOperationNotifications extends AbstractKapuaResourc
             @ApiParam(value = "The ManagementOperationNotificationQuery to use to filter count results", required = true) ManagementOperationNotificationQuery query) throws Exception {
         query.setScopeId(scopeId);
         query.setPredicate(new AttributePredicateImpl<>(ManagementOperationNotificationAttributes.OPERATION_ID, operationId));
-
-        try {
-            ManagementOperationNotificationCreator managementOperationNotificationCreator = managementOperationNotificationFactory.newCreator(scopeId);
-            managementOperationNotificationCreator.setOperationId(operationId);
-            managementOperationNotificationCreator.setProgress(100);
-            managementOperationNotificationCreator.setSentOn(new Date());
-            managementOperationNotificationCreator.setStatus(OperationStatus.RUNNING);
-
-            managementOperationNotificationRegistryService.create(managementOperationNotificationCreator);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         return new CountResult(managementOperationNotificationRegistryService.count(query));
     }

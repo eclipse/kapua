@@ -10,11 +10,11 @@
     Contributors:
         Eurotech - initial API and implementation
  -->
- <!-- 
- The regex can have placeholders. The replacement will be addressed by the EndPoint implementation while setting the regex.
- For the available managed placeholders see the CAMEL_ROUTER_PLACEHOLDER enum.
-  -->
- <endPoints>
+<!--
+The regex can have placeholders. The replacement will be addressed by the EndPoint implementation while setting the regex.
+For the available managed placeholders see the CAMEL_ROUTER_PLACEHOLDER enum.
+ -->
+<endPoints>
     <endPoints>
         <endPoint>
             <regex>${CLASSIFIER}.*</regex>
@@ -36,7 +36,7 @@
                     <endPoint>bean:kapuaLifeCycleConverter?method=convertToMissing,bean:deviceMessageListener?method=processMissingMessage</endPoint>
                 </simpleEndPoint>
                 <simpleEndPoint>
-                    <regex>${CLASSIFIER}(.*\.){2}MQTT\.NOTIFY</regex>
+                    <regex>${CLASSIFIER}(.*\.){2}DEPLOY-V2\.NOTIFY</regex>
                     <endPoint>bean:kapuaLifeCycleConverter?method=convertToNotify,bean:deviceMessageListener?method=processNotifyMessage</endPoint>
                 </simpleEndPoint>
                 <endChainEndPoint>
@@ -48,4 +48,4 @@
             <endPoint>bean:kapuaDataConverter?method=convertToData,bean:dataStorageMessageProcessor?method=processMessage</endPoint>
         </simpleEndPoint>
     </endPoints>
- </endPoints>
+</endPoints>

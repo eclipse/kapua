@@ -21,21 +21,21 @@ public class KuraRequestPayload extends KuraAppPayload implements DeviceRequestP
 
     @Override
     public void setRequestId(String requestId) {
-        getMetrics().put(KuraRequestMetrics.REQ_METRIC_REQUEST_ID.getValue(), requestId);
+        getMetrics().put(KuraRequestMetrics.REQUEST_ID.getValue(), requestId);
     }
 
     @Override
     public String getRequestId() {
-        return (String) getMetrics().get(KuraRequestMetrics.REQ_METRIC_REQUEST_ID.getValue());
+        return (String) getMetrics().get(KuraRequestMetrics.REQUEST_ID.getValue());
     }
 
     @Override
     public void setRequesterClientId(String requesterClientId) {
-        getMetrics().put(KuraRequestMetrics.REQ_METRIC_REQUESTER_CLIENT_ID.getValue(), requesterClientId);
+        getMetrics().put(KuraRequestMetrics.REQUESTER_CLIENT_ID.getValue(), requesterClientId);
     }
 
     @Override
     public String getRequesterClientId() {
-        return (String) getMetrics().get(KuraRequestMetrics.REQ_METRIC_REQUESTER_CLIENT_ID.getValue());
+        return (String) getMetrics().get(KuraRequestMetrics.REQUESTER_CLIENT_ID.getValue());
     }
 }

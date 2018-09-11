@@ -9,30 +9,20 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.message.device.lifecycle;
+package org.eclipse.kapua.service.device.call.message.app.notification;
 
-import org.eclipse.kapua.message.KapuaChannel;
+import org.eclipse.kapua.service.device.call.message.app.DeviceAppPayload;
 
 /**
- * Kapua notify message channel object definition.
- * 
- * @since 1.0
+ * Kapua notify message payload object definition.
  *
+ * @since 1.0
  */
-public interface KapuaNotifyChannel extends KapuaChannel {
+public interface DeviceNotifyPayload extends DeviceAppPayload {
 
-    /**
-     * Set client identifier
-     * 
-     * @return
-     */
-    public String getClientId();
+    Long getOperationId();
 
-    /**
-     * Set client identifier
-     * 
-     * @param clientId
-     */
-    public void setClientId(String clientId);
+    String getStatus();
 
+    Integer getProgress();
 }

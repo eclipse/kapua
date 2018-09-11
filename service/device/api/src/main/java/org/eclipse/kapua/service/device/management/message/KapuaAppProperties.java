@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.message;
 
+import org.eclipse.kapua.service.device.management.message.xml.KapuaAppPropertiesXmlAdapter;
+
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**

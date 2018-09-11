@@ -107,8 +107,8 @@ public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorRespo
         PackageResponsePayload responsePayload = new PackageResponsePayload();
 
         Map<String, Object> metrics = kuraResponsePayload.getMetrics();
-        responsePayload.setExceptionMessage((String) metrics.get(KuraResponseMetrics.RESP_METRIC_EXCEPTION_MESSAGE.getValue()));
-        responsePayload.setExceptionStack((String) metrics.get(KuraResponseMetrics.RESP_METRIC_EXCEPTION_STACK.getValue()));
+        responsePayload.setExceptionMessage((String) metrics.get(KuraResponseMetrics.EXCEPTION_MESSAGE.getValue()));
+        responsePayload.setExceptionStack((String) metrics.get(KuraResponseMetrics.EXCEPTION_STACK.getValue()));
 
         if (metrics.get(PackageMetrics.APP_METRIC_PACKAGE_OPERATION_ID.getValue()) != null) {
             responsePayload.setPackageDownloadOperationId(new KapuaEid(new BigInteger(metrics.get(PackageMetrics.APP_METRIC_PACKAGE_OPERATION_ID.getValue()).toString())));
@@ -150,8 +150,8 @@ public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorRespo
     }
 
     private void translate(PackageResponsePayload packageResponsePayload,
-            String charEncoding,
-            KuraDeploymentPackages kuraDeploymentPackages)
+                           String charEncoding,
+                           KuraDeploymentPackages kuraDeploymentPackages)
             throws KapuaException {
         try {
 

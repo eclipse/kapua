@@ -98,8 +98,8 @@ public class TranslatorAppBundleKuraKapua extends AbstractSimpleTranslatorRespon
     protected BundleResponsePayload translatePayload(KuraResponsePayload kuraPayload) throws KapuaException {
         BundleResponsePayload bundleResponsePayload = new BundleResponsePayload();
 
-        bundleResponsePayload.setExceptionMessage((String) kuraPayload.getMetrics().get(KuraResponseMetrics.RESP_METRIC_EXCEPTION_MESSAGE.getValue()));
-        bundleResponsePayload.setExceptionStack((String) kuraPayload.getMetrics().get(KuraResponseMetrics.RESP_METRIC_EXCEPTION_STACK.getValue()));
+        bundleResponsePayload.setExceptionMessage((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_MESSAGE.getValue()));
+        bundleResponsePayload.setExceptionStack((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_STACK.getValue()));
 
         if (kuraPayload.getBody() != null) {
             DeviceManagementSetting config = DeviceManagementSetting.getInstance();

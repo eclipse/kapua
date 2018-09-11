@@ -23,5 +23,4 @@ import java.io.Serializable;
  */
 @XmlType(factoryClass = MessageXmlRegistry.class, factoryMethod = "newPayload")
 public interface Payload extends Serializable {
-
 }

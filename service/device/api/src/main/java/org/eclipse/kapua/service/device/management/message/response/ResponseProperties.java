@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.message;
+package org.eclipse.kapua.service.device.management.message.response;
 
 /**
  * Kapua response message properties.
@@ -25,7 +25,8 @@ public enum ResponseProperties {
     /**
      * Exception stack (if present)
      */
-    RESP_PROPERTY_EXCEPTION_STACK("kapua.response.exception.stack"),;
+    RESP_PROPERTY_EXCEPTION_STACK("kapua.response.exception.stack"),
+    ;
 
     private String value;
 

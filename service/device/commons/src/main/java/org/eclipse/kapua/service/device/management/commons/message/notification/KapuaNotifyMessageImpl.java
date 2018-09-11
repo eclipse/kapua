@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,18 +9,15 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.message.internal.device.lifecycle;
+package org.eclipse.kapua.service.device.management.commons.message.notification;
 
-import org.eclipse.kapua.message.device.lifecycle.KapuaNotifyChannel;
-import org.eclipse.kapua.message.device.lifecycle.KapuaNotifyMessage;
-import org.eclipse.kapua.message.device.lifecycle.KapuaNotifyPayload;
 import org.eclipse.kapua.message.internal.KapuaMessageImpl;
+import org.eclipse.kapua.service.device.management.message.notification.KapuaNotifyChannel;
+import org.eclipse.kapua.service.device.management.message.notification.KapuaNotifyMessage;
+import org.eclipse.kapua.service.device.management.message.notification.KapuaNotifyPayload;
 
 /**
  * Kapua notify message object reference implementation.
  */
 public class KapuaNotifyMessageImpl extends KapuaMessageImpl<KapuaNotifyChannel, KapuaNotifyPayload> implements KapuaNotifyMessage {
-
-    private static final long serialVersionUID = 1L;
-
 }

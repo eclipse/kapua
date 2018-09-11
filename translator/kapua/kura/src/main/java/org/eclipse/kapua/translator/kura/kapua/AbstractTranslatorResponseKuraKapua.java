@@ -44,7 +44,7 @@ public abstract class AbstractTranslatorResponseKuraKapua<TO_C extends KapuaResp
         kapuaMessage.setCapturedOn(kuraMessage.getPayload().getTimestamp());
         kapuaMessage.setSentOn(kuraMessage.getPayload().getTimestamp());
         kapuaMessage.setReceivedOn(kuraMessage.getTimestamp());
-        kapuaMessage.setResponseCode(TranslatorKuraKapuaUtils.translate((Integer) kuraMessage.getPayload().getMetrics().get(KuraResponseMetrics.RESP_METRIC_EXIT_CODE.getValue())));
+        kapuaMessage.setResponseCode(TranslatorKuraKapuaUtils.translate((Integer) kuraMessage.getPayload().getMetrics().get(KuraResponseMetrics.EXIT_CODE.getValue())));
 
         //
         // Return Kapua Message

@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.device.management.registry.operation.notificat
 import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.device.management.registry.operation.OperationStatus;
+import org.eclipse.kapua.service.device.management.message.notification.OperationStatus;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotification;
 
 import javax.persistence.AttributeOverride;

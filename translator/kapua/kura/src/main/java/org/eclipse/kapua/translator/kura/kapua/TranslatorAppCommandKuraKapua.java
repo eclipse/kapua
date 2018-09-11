@@ -105,8 +105,8 @@ public class TranslatorAppCommandKuraKapua extends AbstractSimpleTranslatorRespo
             commandResponsePayload.setTimedout(timedout);
         }
 
-        commandResponsePayload.setExceptionMessage((String) metrics.get(KuraResponseMetrics.RESP_METRIC_EXCEPTION_MESSAGE.getValue()));
-        commandResponsePayload.setExceptionStack((String) metrics.get(KuraResponseMetrics.RESP_METRIC_EXCEPTION_STACK.getValue()));
+        commandResponsePayload.setExceptionMessage((String) metrics.get(KuraResponseMetrics.EXCEPTION_MESSAGE.getValue()));
+        commandResponsePayload.setExceptionStack((String) metrics.get(KuraResponseMetrics.EXCEPTION_STACK.getValue()));
 
         //
         // Return Kapua Payload

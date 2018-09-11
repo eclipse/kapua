@@ -43,7 +43,7 @@
 
         <api>org.eclipse.kapua.service.certificate.CertificateService</api>
         <api>org.eclipse.kapua.service.certificate.CertificateFactory</api>
-        
+
         <api>org.eclipse.kapua.service.datastore.MessageStoreService</api>
         <api>org.eclipse.kapua.service.datastore.ClientInfoRegistryService</api>
         <api>org.eclipse.kapua.service.datastore.ChannelInfoRegistryService</api>
@@ -55,6 +55,12 @@
 
         <api>org.eclipse.kapua.service.device.call.DeviceCallFactory</api>
         <api>org.eclipse.kapua.service.device.call.DeviceMessageFactory</api>
+
+        <api>org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService</api>
+        <api>org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory</api>
+
+        <api>org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationRegistryService</api>
+        <api>org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationFactory</api>
 
         <api>org.eclipse.kapua.service.device.registry.DeviceFactory</api>
         <api>org.eclipse.kapua.service.device.registry.DeviceRegistryService</api>

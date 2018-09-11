@@ -111,8 +111,8 @@ public class TranslatorAppConfigurationKuraKapua extends AbstractSimpleTranslato
     protected ConfigurationResponsePayload translatePayload(KuraResponsePayload kuraPayload) throws KapuaException {
         ConfigurationResponsePayload configurationResponsePayload = new ConfigurationResponsePayload();
 
-        configurationResponsePayload.setExceptionMessage((String) kuraPayload.getMetrics().get(KuraResponseMetrics.RESP_METRIC_EXCEPTION_MESSAGE.getValue()));
-        configurationResponsePayload.setExceptionStack((String) kuraPayload.getMetrics().get(KuraResponseMetrics.RESP_METRIC_EXCEPTION_STACK.getValue()));
+        configurationResponsePayload.setExceptionMessage((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_MESSAGE.getValue()));
+        configurationResponsePayload.setExceptionStack((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_STACK.getValue()));
 
         DeviceManagementSetting config = DeviceManagementSetting.getInstance();
         String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);

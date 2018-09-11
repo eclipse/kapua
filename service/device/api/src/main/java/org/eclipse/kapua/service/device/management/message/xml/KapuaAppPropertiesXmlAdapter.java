@@ -9,9 +9,11 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.message;
+package org.eclipse.kapua.service.device.management.message.xml;
 
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.device.management.message.KapuaAppProperties;
+import org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessageFactory;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
