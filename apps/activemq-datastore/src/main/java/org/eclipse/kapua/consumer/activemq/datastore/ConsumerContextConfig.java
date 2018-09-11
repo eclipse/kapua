@@ -11,11 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.activemq.datastore;
 
+import org.eclipse.kapua.apps.api.MessageConsumerServerConfig;
 import org.eclipse.kapua.apps.api.HttpRestServerImpl;
+import org.eclipse.kapua.apps.api.JAXBContextProviderImpl;
 import org.eclipse.kapua.commons.core.ObjectContextConfig;
+import org.eclipse.kapua.commons.core.ObjectFactory;
 import org.eclipse.kapua.commons.core.vertx.HttpRestServer;
+import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
+import org.eclipse.kapua.message.transport.TransportMessage;
 
-import com.google.inject.Singleton;
+import com.google.inject.TypeLiteral;
 
 public class ConsumerContextConfig extends ObjectContextConfig {
 
@@ -25,7 +30,13 @@ public class ConsumerContextConfig extends ObjectContextConfig {
     @Override
     protected void configure() {
         super.configure();
-        bind(HttpRestServer.class).to(HttpRestServerImpl.class).in(Singleton.class);;
+        bind(MainVerticle.class);
+        bind(ConnectionConfiguration.class);
+        bind(SourceConfiguration.class);
+        bind(TargetConfiguration.class);
+        bind(HttpRestServer.class).to(HttpRestServerImpl.class);
+        bind(JAXBContextProvider.class).to(JAXBContextProviderImpl.class);
+        bind(new TypeLiteral<ObjectFactory<MessageConsumerServerConfig<byte[],TransportMessage>>>() {}).to(AmqpDatastoreConsumerServerConfigFactory.class);
     }
 
 }

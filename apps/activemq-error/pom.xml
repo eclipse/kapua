@@ -42,7 +42,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-processor-logger</artifactId>
+            <artifactId>kapua-connector-logger</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
