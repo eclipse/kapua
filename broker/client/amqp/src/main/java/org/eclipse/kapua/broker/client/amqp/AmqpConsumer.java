@@ -27,8 +27,11 @@ public class AmqpConsumer extends AbstractAmqpClient {
     private ProtonMessageHandler messageHandler;
     private ProtonReceiver receiver;
 
-    public AmqpConsumer(Vertx vertx, ClientOptions clientOptions, ProtonMessageHandler messageHandler) {
+    public AmqpConsumer(Vertx vertx, ClientOptions clientOptions) {
         super(vertx, clientOptions);
+    }
+
+    public void messageHandler(ProtonMessageHandler messageHandler) {
         this.messageHandler = messageHandler;
     }
 

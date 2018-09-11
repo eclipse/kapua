@@ -148,7 +148,10 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
                     }
 
                 });
-                bind(Environment.class).toInstance(finalEnv);
+                bind(Vertx.class).toInstance(vertx);
+                if (finalEnv.getMetricRegistry() != null) {
+                    bind(MetricRegistry.class).toInstance(finalEnv.getMetricRegistry());
+                }
                 bind(Configuration.class).toInstance(finalConfig);
                 for(String key:finalConfig.getKeys()) {
                     bind(String.class).annotatedWith(Names.named(key)).toInstance(finalConfig.getProperty(key));
@@ -251,7 +254,8 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
         logger.trace("Deploying verticle {}...", this.getClass());
         CountDownLatch startedSignal = new CountDownLatch(1);
         Future<Void> deployFuture = Future.future();
-        vertx.deployVerticle(env.getBeanContext().getInstance(clazz), ar -> {
+        M m = env.getBeanContext().getInstance(clazz);
+        vertx.deployVerticle(m, ar -> {
             if (ar.succeeded()) {
                 deployFuture.complete();
                 logger.trace("Deploying verticle {}...DONE", this.getClass());

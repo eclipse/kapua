@@ -13,6 +13,33 @@
         "secure-port" : 8443
     },
 	"event-bus-server": {
+		"health-address": "health",
 		"default-address": "kapua.requests"
-	}
+	},
+	"activemq-amqp-connection": {
+		"host": "127.0.0.1",
+		"port": 5672,
+		"username": "username",
+		"password": "password",
+		"wait_between_reconnect": 1000,
+		"connect_timeout": 5000,
+		"idle_timeout":300
+	},
+	"amqp-telemetry-consumer": {
+		"client_id": "activemq-datastore",
+		"destination": "queue://Consumer.activemq-datastore.VirtualTopic.>",
+		"prefetch_messages": 10,
+		"qos": "AT_LEAST_ONCE",
+		"auto_accept": false
+	},
+	"amqp-error-sender": {
+		"client_id": "activemq-datastore-error",
+		"destination": "queue://datastore-error",
+		"prefetch_messages": 10,
+		"qos": "AT_LEAST_ONCE",
+		"auto_accept": false
+	},
+	"maximum_reconnection_attempt": 10,
+	"exit_code": -1,
+	"prefetch_messages": 10
 }

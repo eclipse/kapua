@@ -11,11 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.activemq.error;
 
+import org.apache.qpid.proton.message.Message;
+import org.eclipse.kapua.apps.api.MessageConsumerServerConfig;
 import org.eclipse.kapua.apps.api.HttpRestServerImpl;
+import org.eclipse.kapua.apps.api.JAXBContextProviderImpl;
 import org.eclipse.kapua.commons.core.ObjectContextConfig;
+import org.eclipse.kapua.commons.core.ObjectFactory;
 import org.eclipse.kapua.commons.core.vertx.HttpRestServer;
+import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 
 import com.google.inject.Singleton;
+import com.google.inject.TypeLiteral;
 
 public class ConsumerContextConfig extends ObjectContextConfig {
 
@@ -25,7 +31,12 @@ public class ConsumerContextConfig extends ObjectContextConfig {
     @Override
     protected void configure() {
         super.configure();
-        bind(HttpRestServer.class).to(HttpRestServerImpl.class).in(Singleton.class);;
+        bind(MainVerticle.class);
+        bind(ConnectionConfiguration.class).in(Singleton.class);
+        bind(SourceConfiguration.class).in(Singleton.class);
+        bind(HttpRestServer.class).to(HttpRestServerImpl.class).in(Singleton.class);
+        bind(JAXBContextProvider.class).to(JAXBContextProviderImpl.class).in(Singleton.class);
+        bind(new TypeLiteral<ObjectFactory<MessageConsumerServerConfig<Message, Message>>>() {}).to(AmqpErrorConsumerServerConfigFactory.class);
     }
 
 }
