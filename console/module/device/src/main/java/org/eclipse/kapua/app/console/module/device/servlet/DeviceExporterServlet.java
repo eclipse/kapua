@@ -12,6 +12,7 @@
 package org.eclipse.kapua.app.console.module.device.servlet;
 
 import java.io.IOException;
+import java.util.concurrent.Callable;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -27,10 +28,13 @@ import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
+import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceAttributes;
@@ -63,7 +67,7 @@ public class DeviceExporterServlet extends HttpServlet {
         try {
             // parameter extraction
             String format = request.getParameter("format");
-            String scopeIdString = request.getParameter("scopeId");
+            final String scopeIdString = request.getParameter("scopeId");
 
             // data exporter
             DeviceExporter deviceExporter;
@@ -77,13 +81,21 @@ public class DeviceExporterServlet extends HttpServlet {
                 throw new IllegalArgumentException("scopeIdString");
             }
 
-            deviceExporter.init(scopeIdString);
-
             //
             // get the devices and append them to the exporter
             KapuaLocator locator = KapuaLocator.getInstance();
             DeviceRegistryService drs = locator.getService(DeviceRegistryService.class);
             DeviceFactory drf = locator.getFactory(DeviceFactory.class);
+            final AccountService accountService = locator.getService(AccountService.class);
+            Account account = KapuaSecurityUtils.doPrivileged(new Callable<Account>() {
+
+                @Override
+                public Account call() throws Exception {
+                    return accountService.find(KapuaEid.parseCompactId(scopeIdString));
+                }
+            });
+
+            deviceExporter.init(scopeIdString, account.getName());
 
             int offset = 0;
 
@@ -170,6 +182,8 @@ public class DeviceExporterServlet extends HttpServlet {
             }
 
             dq.setPredicate(andPred);
+            dq.addFetchAttributes(DeviceAttributes.CONNECTION);
+            dq.addFetchAttributes(DeviceAttributes.LAST_EVENT);
 
             KapuaListResult<Device> results;
             do {

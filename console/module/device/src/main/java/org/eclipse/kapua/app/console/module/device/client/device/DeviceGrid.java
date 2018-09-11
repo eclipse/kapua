@@ -12,15 +12,19 @@
 package org.eclipse.kapua.app.console.module.device.client.device;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.event.LoadListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
@@ -71,6 +75,12 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
                         callback);
             }
         };
+    }
+
+    @Override
+    protected void onRender(Element target, int index) {
+        super.onRender(target, index);
+        entityLoader.addLoadListener(new DeviceLoadListener());
     }
 
     @Override
@@ -260,4 +270,11 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
         return toolbar;
     }
 
+    private class DeviceLoadListener extends LoadListener {
+        @Override
+        public void loaderLoad(LoadEvent le) {
+            super.loaderLoad(le);
+            toolbar.setExportEnabled(((BasePagingLoadResult)le.getData()).getTotalLength() != 0);
+        }
+    }
 }

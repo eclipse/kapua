@@ -54,7 +54,7 @@ public abstract class DeviceEventExporter {
         this.response = response;
     }
 
-    public abstract void init(String account)
+    public abstract void init(String account, String deviceName)
             throws ServletException, IOException, KapuaException;
 
     public abstract void append(KapuaListResult<DeviceEvent> messages)

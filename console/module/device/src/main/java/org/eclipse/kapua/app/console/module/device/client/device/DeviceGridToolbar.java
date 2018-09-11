@@ -34,6 +34,8 @@ public class DeviceGridToolbar extends EntityCRUDToolbar<GwtDevice> {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
+    private Button export;
+
     public DeviceGridToolbar(GwtSession currentSession) {
         super(currentSession);
     }
@@ -45,14 +47,15 @@ public class DeviceGridToolbar extends EntityCRUDToolbar<GwtDevice> {
 
     @Override
     protected void onRender(Element target, int index) {
-        addExtraButton(new Button(MSGS.exportToCSV(), new KapuaIcon(IconSet.FILE_TEXT_O),
+        export = new Button(MSGS.exportToCSV(), new KapuaIcon(IconSet.FILE_TEXT_O),
                 new SelectionListener<ButtonEvent>() {
 
                     @Override
                     public void componentSelected(ButtonEvent be) {
                         export("csv");
                     }
-                }));
+                });
+        addExtraButton(export);
         super.onRender(target, index);
         getAddEntityButton().setEnabled(currentSession.hasPermission(DeviceSessionPermission.write()));
     }
@@ -76,7 +79,7 @@ public class DeviceGridToolbar extends EntityCRUDToolbar<GwtDevice> {
     }
 
     private void export(String format) {
-        GwtDeviceQuery query = (GwtDeviceQuery)entityGrid.getFilterQuery();
+        GwtDeviceQuery query = (GwtDeviceQuery) entityGrid.getFilterQuery();
         StringBuilder sbUrl = new StringBuilder("exporter_device?format=")
                 .append(format)
                 .append("&scopeId=")
@@ -135,4 +138,7 @@ public class DeviceGridToolbar extends EntityCRUDToolbar<GwtDevice> {
         Window.open(sbUrl.toString(), "_blank", "location=no");
     }
 
+    public void setExportEnabled(boolean enabled) {
+        export.setEnabled(enabled);
+    }
 }
