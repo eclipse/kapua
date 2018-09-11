@@ -36,6 +36,7 @@ import com.opencsv.CSVWriter;
 public class DeviceExporterCsv extends DeviceExporter {
 
     private String account;
+    private String accountName;
     private DateFormat dateFormat;
     private CSVWriter writer;
 
@@ -44,9 +45,10 @@ public class DeviceExporterCsv extends DeviceExporter {
     }
 
     @Override
-    public void init(String account)
+    public void init(String account, String accountName)
             throws ServletException, IOException {
         this.account = account;
+        this.accountName = accountName;
         dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
 
         OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream(), Charset.forName("UTF-8"));
@@ -168,7 +170,7 @@ public class DeviceExporterCsv extends DeviceExporter {
             throws ServletException, IOException {
         response.setContentType("text/csv");
         response.setCharacterEncoding("UTF-8");
-        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(account, "UTF-8") + "_devices.csv");
+        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(accountName, "UTF-8") + "_devices.csv");
         response.setHeader("Cache-Control", "no-transform, max-age=0");
 
         writer.flush();
