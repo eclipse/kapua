@@ -35,9 +35,6 @@ jobs:
       script:
         - $M2_HOME/bin/mvn -v
         - $M2_HOME/bin/mvn -B -f external/pom.xml install
-    - stage: build
-      script:
-        - $M2_HOME/bin/mvn -v
         - $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -DskipTests install
     - stage: test
       script:
