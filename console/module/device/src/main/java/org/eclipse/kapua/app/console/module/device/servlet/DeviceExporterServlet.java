@@ -12,6 +12,7 @@
 package org.eclipse.kapua.app.console.module.device.servlet;
 
 import java.io.IOException;
+import java.util.concurrent.Callable;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,14 +22,19 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaUnauthenticatedException;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPredicates;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
+import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceAttributes;
@@ -61,13 +67,11 @@ public class DeviceExporterServlet extends HttpServlet {
         try {
             // parameter extraction
             String format = request.getParameter("format");
-            String scopeIdString = request.getParameter("scopeIdString");
+            final String scopeIdString = request.getParameter("scopeId");
 
             // data exporter
             DeviceExporter deviceExporter;
-            if ("xls".equals(format)) {
-                deviceExporter = new DeviceExporterExcel(response);
-            } else if ("csv".equals(format)) {
+            if ("csv".equals(format)) {
                 deviceExporter = new DeviceExporterCsv(response);
             } else {
                 throw new IllegalArgumentException("format");
@@ -77,13 +81,21 @@ public class DeviceExporterServlet extends HttpServlet {
                 throw new IllegalArgumentException("scopeIdString");
             }
 
-            deviceExporter.init(scopeIdString);
-
             //
             // get the devices and append them to the exporter
             KapuaLocator locator = KapuaLocator.getInstance();
             DeviceRegistryService drs = locator.getService(DeviceRegistryService.class);
             DeviceFactory drf = locator.getFactory(DeviceFactory.class);
+            final AccountService accountService = locator.getService(AccountService.class);
+            Account account = KapuaSecurityUtils.doPrivileged(new Callable<Account>() {
+
+                @Override
+                public Account call() throws Exception {
+                    return accountService.find(KapuaEid.parseCompactId(scopeIdString));
+                }
+            });
+
+            deviceExporter.init(scopeIdString, account.getName());
 
             int offset = 0;
 
@@ -110,33 +122,43 @@ public class DeviceExporterServlet extends HttpServlet {
             }
 
             String deviceStatus = request.getParameter("deviceStatus");
-            if (deviceStatus != null && !deviceStatus.isEmpty()) {
+            if (deviceStatus != null && !deviceStatus.equals(GwtDeviceQueryPredicates.GwtDeviceStatus.ANY.name())) {
                 andPred = andPred.and(new AttributePredicateImpl<DeviceStatus>(DeviceAttributes.STATUS, DeviceStatus.valueOf(deviceStatus)));
             }
 
-            String iotFrameworkVersion = request.getParameter("esfVersion");
-            if (iotFrameworkVersion != null) {
+            String deviceConnectionStatus = request.getParameter("deviceConnectionStatus");
+            if (deviceConnectionStatus != null && !deviceConnectionStatus.equals(GwtDeviceQueryPredicates.GwtDeviceConnectionStatus.ANY.name())) {
+                andPred = andPred.and(new AttributePredicateImpl<DeviceConnectionStatus>(DeviceAttributes.CONNECTION_STATUS, DeviceConnectionStatus.valueOf(deviceConnectionStatus)));
+            }
+
+            String iotFrameworkVersion = request.getParameter("iotFrameworkVersion");
+            if (iotFrameworkVersion != null && !iotFrameworkVersion.isEmpty()) {
                 andPred = andPred.and(new AttributePredicateImpl<String>(DeviceAttributes.APPLICATION_FRAMEWORK_VERSION, iotFrameworkVersion));
             }
 
             String applicationIdentifiers = request.getParameter("applicationIdentifiers");
-            if (applicationIdentifiers != null) {
+            if (applicationIdentifiers != null && !applicationIdentifiers.isEmpty()) {
                 andPred = andPred.and(new AttributePredicateImpl<String>(DeviceAttributes.APPLICATION_IDENTIFIERS, applicationIdentifiers, Operator.LIKE));
             }
 
             String customAttribute1 = request.getParameter("customAttribute1");
-            if (customAttribute1 != null) {
+            if (customAttribute1 != null && !customAttribute1.isEmpty()) {
                 andPred = andPred.and(new AttributePredicateImpl<String>(DeviceAttributes.CUSTOM_ATTRIBUTE_1, customAttribute1));
             }
 
             String customAttribute2 = request.getParameter("customAttribute2");
-            if (customAttribute2 != null) {
+            if (customAttribute2 != null && !customAttribute2.isEmpty()) {
                 andPred = andPred.and(new AttributePredicateImpl<String>(DeviceAttributes.CUSTOM_ATTRIBUTE_2, customAttribute2));
             }
 
-            String deviceConnectionStatus = request.getParameter("deviceConnectionStatus");
-            if (deviceConnectionStatus != null) {
-                andPred = andPred.and(new AttributePredicateImpl<DeviceConnectionStatus>(DeviceAttributes.CONNECTION_STATUS, DeviceConnectionStatus.valueOf(deviceConnectionStatus)));
+            String groupId = request.getParameter("accessGroup");
+            if (groupId != null && !groupId.isEmpty()) {
+                andPred = andPred.and(new AttributePredicateImpl<KapuaId>(DeviceAttributes.GROUP_ID, KapuaEid.parseCompactId(groupId)));
+            }
+
+            String tagId = request.getParameter("tag");
+            if (tagId != null && !tagId.isEmpty()) {
+                andPred = andPred.and(new AttributePredicateImpl<KapuaId[]>(DeviceAttributes.TAG_IDS, new KapuaId[] { KapuaEid.parseCompactId(tagId) } ));
             }
 
             String sortAttribute = request.getParameter("sortAttribute");
@@ -160,6 +182,8 @@ public class DeviceExporterServlet extends HttpServlet {
             }
 
             dq.setPredicate(andPred);
+            dq.addFetchAttributes(DeviceAttributes.CONNECTION);
+            dq.addFetchAttributes(DeviceAttributes.LAST_EVENT);
 
             KapuaListResult<Device> results;
             do {

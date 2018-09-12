@@ -112,9 +112,7 @@ public class DataExporterServlet extends HttpServlet {
             }
 
             DataExporter dataExporter;
-            if ("xls".equals(format)) {
-                dataExporter = new DataExporterExcel(response, topicOrDevice);
-            } else if ("csv".equals(format)) {
+            if ("csv".equals(format)) {
                 dataExporter = new DataExporterCsv(response, topicOrDevice);
             } else {
                 throw new IllegalArgumentException("format");

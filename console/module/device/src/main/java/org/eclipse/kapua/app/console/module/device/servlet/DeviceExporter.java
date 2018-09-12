@@ -25,8 +25,8 @@ public abstract class DeviceExporter {
     protected static final String BLANK = "";
 
     protected static final String[] DEVICE_PROPERTIES = {
-            "Id",
-            "Account",
+            "Account Id",
+            "Account Name",
             "Client ID",
             "Status",
             "Connection Status",
@@ -67,7 +67,7 @@ public abstract class DeviceExporter {
         this.response = response;
     }
 
-    public abstract void init(String account)
+    public abstract void init(String account, String accountName)
             throws ServletException, IOException;
 
     public abstract void append(KapuaListResult<Device> messages)

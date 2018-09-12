@@ -12,16 +12,21 @@
 package org.eclipse.kapua.app.console.module.device.client.device;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.event.LoadListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.color.Color;
@@ -73,6 +78,12 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
     }
 
     @Override
+    protected void onRender(Element target, int index) {
+        super.onRender(target, index);
+        entityLoader.addLoadListener(new DeviceLoadListener());
+    }
+
+    @Override
     protected List<ColumnConfig> getColumns() {
         //
         // Column Configuration
@@ -88,28 +99,28 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
                 KapuaIcon icon;
                 if (gwtDevice.getGwtDeviceConnectionStatusEnum() != null) {
                     switch (gwtDevice.getGwtDeviceConnectionStatusEnum()) {
-                    case CONNECTED:
-                        icon = new KapuaIcon(IconSet.PLUG);
-                        icon.setColor(Color.GREEN);
-                        icon.setTitle(CONNECTION_MSGS.connected());
-                        break;
-                    case DISCONNECTED:
-                        icon = new KapuaIcon(IconSet.PLUG);
-                        icon.setColor(Color.YELLOW);
-                        icon.setTitle(CONNECTION_MSGS.disconnected());
-                        break;
-                    case MISSING:
-                        icon = new KapuaIcon(IconSet.PLUG);
-                        icon.setColor(Color.RED);
-                        icon.setTitle(CONNECTION_MSGS.missing());
-                        break;
-                    case UNKNOWN:
-                    case ANY:
-                    default:
-                        icon = new KapuaIcon(IconSet.PLUG);
-                        icon.setColor(Color.GREY);
-                        icon.setTitle(CONNECTION_MSGS.unknown());
-                        break;
+                        case CONNECTED:
+                            icon = new KapuaIcon(IconSet.PLUG);
+                            icon.setColor(Color.GREEN);
+                            icon.setTitle(CONNECTION_MSGS.connected());
+                            break;
+                        case DISCONNECTED:
+                            icon = new KapuaIcon(IconSet.PLUG);
+                            icon.setColor(Color.YELLOW);
+                            icon.setTitle(CONNECTION_MSGS.disconnected());
+                            break;
+                        case MISSING:
+                            icon = new KapuaIcon(IconSet.PLUG);
+                            icon.setColor(Color.RED);
+                            icon.setTitle(CONNECTION_MSGS.missing());
+                            break;
+                        case UNKNOWN:
+                        case ANY:
+                        default:
+                            icon = new KapuaIcon(IconSet.PLUG);
+                            icon.setColor(Color.GREY);
+                            icon.setTitle(CONNECTION_MSGS.unknown());
+                            break;
                     }
                 } else {
                     icon = new KapuaIcon(IconSet.PLUG);
@@ -258,4 +269,11 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
         return toolbar;
     }
 
+    private class DeviceLoadListener extends LoadListener {
+        @Override
+        public void loaderLoad(LoadEvent le) {
+            super.loaderLoad(le);
+            toolbar.setExportEnabled(((BasePagingLoadResult)le.getData()).getTotalLength() != 0);
+        }
+    }
 }
