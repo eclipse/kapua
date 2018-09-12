@@ -20,6 +20,7 @@ import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountQuery
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaDateField;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 
@@ -35,6 +36,7 @@ public class AccountFilterPanel extends EntityFilterPanel<GwtAccount> {
     private final KapuaTextField<String> accountNameField;
     private final KapuaTextField<String> accountOrgNameField;
     private final KapuaTextField<String> accountOrgEmailField;
+    protected final KapuaDateField expirationDateField;
 
     public AccountFilterPanel(AbstractEntityView<GwtAccount> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
@@ -90,6 +92,15 @@ public class AccountFilterPanel extends EntityFilterPanel<GwtAccount> {
         accountOrgEmailField.setStyleAttribute("margin-bottom", "10px");
         fieldsPanel.add(accountOrgEmailField);
 
+        expirationDateField = new KapuaDateField();
+        expirationDateField.setName("expirationDate");
+        expirationDateField.setWidth(WIDTH);
+        expirationDateField.setStyleAttribute("margin-top", "0px");
+        expirationDateField.setStyleAttribute("margin-left", "5px");
+        expirationDateField.setStyleAttribute("margin-right", "5px");
+        expirationDateField.setStyleAttribute("margin-bottom", "10px");
+        fieldsPanel.add(expirationDateField);
+
     }
 
     @Override
@@ -97,6 +108,7 @@ public class AccountFilterPanel extends EntityFilterPanel<GwtAccount> {
         accountNameField.setValue(null);
         accountOrgEmailField.setValue(null);
         accountOrgNameField.setValue(null);
+        expirationDateField.setValue(null);
         GwtAccountQuery query = new GwtAccountQuery();
         query.setScopeId(currentSession.getSelectedAccountId());
         entityGrid.refresh(query);
@@ -109,6 +121,7 @@ public class AccountFilterPanel extends EntityFilterPanel<GwtAccount> {
         query.setName(accountNameField.getValue());
         query.setOrganizationName(accountOrgNameField.getValue());
         query.setOrganizationEmail(accountOrgEmailField.getValue());
+        query.setExpirationDate(expirationDateField.getValue());
         entityGrid.refresh(query);
     }
 

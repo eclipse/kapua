@@ -24,4 +24,6 @@ public class AccountAttributes extends KapuaNamedEntityAttributes {
     public static final String ORGANIZATION_NAME = ORGANIZATION + ".name";
 
     public static final String ORGANIZATION_EMAIL = ORGANIZATION + ".email";
+
+    public static final String EXPIRATION_DATE = "expirationDate";
 }

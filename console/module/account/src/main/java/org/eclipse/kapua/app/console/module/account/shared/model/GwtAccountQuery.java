@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.account.shared.model;
 
+import java.util.Date;
+
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 
 public class GwtAccountQuery extends GwtQuery {
@@ -23,6 +25,7 @@ public class GwtAccountQuery extends GwtQuery {
     private String name;
     private String organizationName;
     private String organizationEmail;
+    private Date expirationDate;
 
     public String getName() {
         return name;
@@ -46,5 +49,13 @@ public class GwtAccountQuery extends GwtQuery {
 
     public void setOrganizationEmail(String organizationEmail) {
         this.organizationEmail = organizationEmail;
+    }
+
+    public Date getExpirationDate() {
+        return expirationDate;
+    }
+
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
     }
 }

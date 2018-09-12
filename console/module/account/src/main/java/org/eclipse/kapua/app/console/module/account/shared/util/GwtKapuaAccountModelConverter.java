@@ -13,6 +13,9 @@ package org.eclipse.kapua.app.console.module.account.shared.util;
 
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+
+import java.util.Date;
+
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountQuery;
@@ -48,6 +51,9 @@ public class GwtKapuaAccountModelConverter {
             predicate.and(new AttributePredicateImpl<String>(AccountAttributes.ORGANIZATION_EMAIL, gwtAccountQuery.getOrganizationEmail(), Operator.LIKE));
         }
 
+        if (gwtAccountQuery.getExpirationDate() != null) {
+            predicate.and(new AttributePredicateImpl<Date>(AccountAttributes.EXPIRATION_DATE, gwtAccountQuery.getExpirationDate(), Operator.EQUAL));
+        }
         String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? AccountAttributes.NAME : loadConfig.getSortField();
         if (sortField.equals("modifiedOnFormatted")) {
             sortField = AccountAttributes.MODIFIED_ON;
