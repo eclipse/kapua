@@ -37,6 +37,8 @@ public abstract class AbstractAmqpSource<M> implements MessageSource<M> {
     protected final static Logger logger = LoggerFactory.getLogger(AbstractAmqpSource.class);
 
     protected Vertx vertx;
+    protected MessageFilter<M> filter;
+    protected MessageHandler<M> messageHandler;
     private boolean connected;
 
     /**
@@ -56,6 +58,20 @@ public abstract class AbstractAmqpSource<M> implements MessageSource<M> {
 
     protected void setConnected(boolean connected) {
         this.connected = connected;
+    }
+
+    @Override
+    public void messageFilter(MessageFilter<M> filter) {
+        this.filter = filter;
+    }
+
+    @Override
+    public void messageHandler(MessageHandler<M> handler) {
+        this.messageHandler = handler;
+    }
+
+    protected boolean isProcessMessage(MessageContext<M> message) {
+        return filter.matches(message);
     }
 
     /**

@@ -66,15 +66,15 @@ public class ConfigurationSourceFactoryImpl implements ConfigurationSourceFactor
             } else if (value instanceof String) {
                 props.setProperty(propKey, (String) value);  
             } else if (value instanceof Boolean) {
-                props.setProperty(propKey, Boolean.toString((Boolean) value));   
+                props.setProperty(propKey, Boolean.toString((Boolean) value));
             } else if (value instanceof Integer) {
-                props.setProperty(propKey, Integer.toString((int) value));   
+                props.setProperty(propKey, Integer.toString((int) value));
             } else if (value instanceof Long) {
-                props.setProperty(propKey, Long.toString((long) value));   
+                props.setProperty(propKey, Long.toString((long) value));
             } else if (value instanceof Float) {
-                props.setProperty(propKey, Float.toString((float) value));   
+                props.setProperty(propKey, Float.toString((float) value));
             } else if (value instanceof Double) {
-                props.setProperty(propKey, Double.toString((double) value));   
+                props.setProperty(propKey, Double.toString((double) value));
             } else if (value instanceof Map) {
                 toProperties((Map<String, Object>)value, propKey, props);
             } else {

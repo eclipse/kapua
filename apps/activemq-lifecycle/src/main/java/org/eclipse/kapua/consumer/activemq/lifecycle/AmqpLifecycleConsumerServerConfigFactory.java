@@ -20,6 +20,7 @@ import org.eclipse.kapua.broker.client.amqp.AmqpSender;
 import org.eclipse.kapua.commons.core.ObjectFactory;
 import org.eclipse.kapua.commons.core.vertx.HealthCheckProvider;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
+import org.eclipse.kapua.connector.Properties;
 import org.eclipse.kapua.connector.activemq.AmqpTransportActiveMQSource;
 import org.eclipse.kapua.connector.kura.KuraPayloadProtoConverter;
 import org.eclipse.kapua.message.transport.TransportMessage;
@@ -63,6 +64,21 @@ public class AmqpLifecycleConsumerServerConfigFactory implements ObjectFactory<M
 
         // Consumer
         AmqpTransportActiveMQSource consumer = AmqpTransportActiveMQSource.create(vertx, new AmqpConsumer(vertx, sourceConfig.createClientOptions(connectionConfig)));
+        consumer.messageFilter(message -> {
+            String topic = (String) message.getProperties().get(Properties.MESSAGE_DESTINATION);
+            if (topic!=null && (topic.endsWith("/MQTT/BIRTH") ||
+                    topic.endsWith("/MQTT/DC") ||
+                    topic.endsWith("/MQTT/LWT") ||
+                    topic.endsWith("/MQTT/MISSING") ||
+                    topic.endsWith("MQTT/PROV"))
+                    ) {
+                return true;
+            }
+            else {
+                return false;
+            }
+
+        });
         config.setMessageSource(consumer);
         config.getHealthCheckProviders().add(new HealthCheckProvider() {
 
@@ -81,7 +97,7 @@ public class AmqpLifecycleConsumerServerConfigFactory implements ObjectFactory<M
         config.setConverter(new KuraPayloadProtoConverter());
 
         // Processor
-        LifecycleProcessor processor = LifecycleProcessor.getProcessorWithNoFilter();
+        LifecycleProcessor processor = LifecycleProcessor.create();
         config.setMessageTarget(processor);
         config.getHealthCheckProviders().add(new HealthCheckProvider() {
 
@@ -99,7 +115,7 @@ public class AmqpLifecycleConsumerServerConfigFactory implements ObjectFactory<M
         });
 
         // Error processor
-        ErrorTarget errorProcessor = ErrorTarget.getProcessorWithNoFilter(vertx, new AmqpSender(vertx, targetConfig.createClientOptions(connectionConfig)));
+        ErrorTarget errorProcessor = ErrorTarget.getProcessor(vertx, new AmqpSender(vertx, targetConfig.createClientOptions(connectionConfig)));
         config.setErrorTarget(errorProcessor);
         config.getHealthCheckProviders().add(new HealthCheckProvider() {
 

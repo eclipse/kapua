@@ -20,8 +20,6 @@ import org.eclipse.kapua.broker.client.amqp.AmqpConsumer;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.connector.AbstractAmqpSource;
 import org.eclipse.kapua.connector.MessageContext;
-import org.eclipse.kapua.connector.MessageFilter;
-import org.eclipse.kapua.connector.MessageHandler;
 import org.eclipse.kapua.connector.Properties;
 import org.eclipse.kapua.message.transport.TransportMessage;
 import org.eclipse.kapua.message.transport.TransportMessageType;
@@ -60,7 +58,6 @@ public class AmqpTransportActiveMQSource extends AbstractAmqpSource<byte[]> {
 
     @Override
     public void start(Future<Void> startFuture) {
-        // TODO move client options from contructor to init and build from JsonObject
         connect(startFuture);
     }
 
@@ -166,21 +163,4 @@ public class AmqpTransportActiveMQSource extends AbstractAmqpSource<byte[]> {
         return parameters;
     }
 
-    private MessageHandler<byte[]> messageHandler;
-
-    @Override
-    public void messageHandler(MessageHandler<byte[]> handler) {
-        this.messageHandler = handler;
-    }
-
-    MessageFilter<byte[]> filter;
-
-    @Override
-    public void messageFilter(MessageFilter<byte[]> filter) {
-        this.filter = filter;
-    }
-
-    protected boolean isProcessMessage(MessageContext<byte[]> message) {
-        return filter.matches(message);
-    }
 }

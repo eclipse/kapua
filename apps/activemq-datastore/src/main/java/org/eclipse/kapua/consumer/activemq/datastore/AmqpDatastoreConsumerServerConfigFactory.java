@@ -20,16 +20,17 @@ import org.eclipse.kapua.broker.client.amqp.AmqpSender;
 import org.eclipse.kapua.commons.core.ObjectFactory;
 import org.eclipse.kapua.commons.core.vertx.HealthCheckProvider;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
+import org.eclipse.kapua.connector.Properties;
 import org.eclipse.kapua.connector.activemq.AmqpTransportActiveMQSource;
 import org.eclipse.kapua.connector.kura.KuraPayloadProtoConverter;
 import org.eclipse.kapua.message.transport.TransportMessage;
+import org.eclipse.kapua.message.transport.TransportMessageType;
 import org.eclipse.kapua.connector.datastore.DatastoreTarget;
 import org.eclipse.kapua.connector.error.amqp.activemq.ErrorTarget;
 
 import io.vertx.core.Vertx;
 import io.vertx.ext.healthchecks.HealthCheckHandler;
 import io.vertx.ext.healthchecks.Status;
-
 
 public class AmqpDatastoreConsumerServerConfigFactory implements ObjectFactory<MessageConsumerServerConfig<byte[], TransportMessage>> {
 
@@ -63,6 +64,15 @@ public class AmqpDatastoreConsumerServerConfigFactory implements ObjectFactory<M
 
         // Consumer
         AmqpTransportActiveMQSource consumer = AmqpTransportActiveMQSource.create(vertx, new AmqpConsumer(vertx, sourceConfig.createClientOptions(connectionConfig)));
+        consumer.messageFilter(message -> {
+            Object messageType = message.getProperties().get(Properties.MESSAGE_TYPE);
+            if (messageType!=null && messageType instanceof TransportMessageType && TransportMessageType.TELEMETRY.equals(messageType)) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        });
         config.setMessageSource(consumer);
         config.getHealthCheckProviders().add(new HealthCheckProvider() {
 
@@ -81,7 +91,7 @@ public class AmqpDatastoreConsumerServerConfigFactory implements ObjectFactory<M
         config.setConverter(new KuraPayloadProtoConverter());
 
         // Processor
-        DatastoreTarget processor = DatastoreTarget.getProcessorWithNoFilter(vertx);
+        DatastoreTarget processor = DatastoreTarget.create(vertx);
         config.setMessageTarget(processor);
         config.getHealthCheckProviders().add(new HealthCheckProvider() {
 
@@ -99,7 +109,7 @@ public class AmqpDatastoreConsumerServerConfigFactory implements ObjectFactory<M
         });
 
         // Error processor
-        ErrorTarget errorProcessor = ErrorTarget.getProcessorWithNoFilter(vertx, new AmqpSender(vertx, targetConfig.createClientOptions(connectionConfig)));
+        ErrorTarget errorProcessor = ErrorTarget.getProcessor(vertx, new AmqpSender(vertx, targetConfig.createClientOptions(connectionConfig)));
         config.setErrorTarget(errorProcessor);
         config.getHealthCheckProviders().add(new HealthCheckProvider() {
 

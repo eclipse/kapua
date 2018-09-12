@@ -16,8 +16,6 @@ import org.eclipse.kapua.broker.client.amqp.AmqpSender;
 import org.eclipse.kapua.connector.KapuaProcessorException;
 import org.eclipse.kapua.connector.MessageContext;
 import org.eclipse.kapua.connector.MessageTarget;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
@@ -25,22 +23,15 @@ import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.proton.ProtonHelper;
 
-public abstract class ErrorTarget implements MessageTarget<Message> {
-
-    private static final Logger logger = LoggerFactory.getLogger(ErrorTarget.class);
+public class ErrorTarget implements MessageTarget<Message> {
 
     private AmqpSender sender;
 
-    public static ErrorTarget getProcessorWithNoFilter(Vertx vertx, AmqpSender sender) {
-        return new ErrorTarget(vertx, sender) {
-            @Override
-            public boolean isProcessDestination(MessageContext<Message> message) {
-                return true;
-            }
-        };
+    public static ErrorTarget getProcessor(Vertx vertx, AmqpSender sender) {
+        return new ErrorTarget(vertx, sender);
     }
 
-    public ErrorTarget(Vertx vertx, AmqpSender sender) {
+    protected ErrorTarget(Vertx vertx, AmqpSender sender) {
         this.sender = sender;
     }
 

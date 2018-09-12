@@ -27,7 +27,6 @@ import io.vertx.core.Vertx;
 import io.vertx.ext.healthchecks.HealthCheckHandler;
 import io.vertx.ext.healthchecks.Status;
 
-
 public class AmqpErrorConsumerServerConfigFactory implements ObjectFactory<MessageConsumerServerConfig<Message, Message>> {
 
     @Inject
@@ -57,6 +56,9 @@ public class AmqpErrorConsumerServerConfigFactory implements ObjectFactory<Messa
 
         // Consumer
         AmqpActiveMQSource consumer = AmqpActiveMQSource.create(vertx, new AmqpConsumer(vertx, sourceConfig.createClientOptions(connectionConfig)));
+        consumer.messageFilter(message -> {
+            return true;
+        });
         config.setMessageSource(consumer);
         config.getHealthCheckProviders().add(new HealthCheckProvider() {
 
@@ -76,7 +78,7 @@ public class AmqpErrorConsumerServerConfigFactory implements ObjectFactory<Messa
         config.setConverter(null);
 
         // Processor
-        LoggerTarget processor = LoggerTarget.getProcessorWithNoFilter();
+        LoggerTarget processor = LoggerTarget.create();
         config.setMessageTarget(processor);
         config.getHealthCheckProviders().add(new HealthCheckProvider() {
 
