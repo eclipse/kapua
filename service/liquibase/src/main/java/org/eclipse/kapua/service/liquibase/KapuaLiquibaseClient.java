@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Red Hat Inc and others.
+ * Copyright (c) 2017, 2018 Red Hat Inc and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -63,6 +63,7 @@ public class KapuaLiquibaseClient {
     public void update() {
         try {
             if (Boolean.parseBoolean(System.getProperty("LIQUIBASE_ENABLED", "true")) || Boolean.parseBoolean(System.getenv("LIQUIBASE_ENABLED"))) {
+                LOG.info("Running Liquibase update with schema: " + schema.toString());
                 try (Connection connection = DriverManager.getConnection(jdbcUrl, username, password)) {
                     loadResourcesStatic(connection, schema);
                 }

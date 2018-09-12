@@ -262,18 +262,6 @@
             <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
         </dependency>
 
-        <!-- Artemis -->
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>artemis-junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>artemis-amqp-protocol</artifactId>
-            <scope>test</scope>
-        </dependency>
-
         <!-- camel -->
         <dependency>
             <groupId>org.apache.camel</groupId>

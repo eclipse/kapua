@@ -15,8 +15,10 @@ package org.eclipse.kapua.test;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.Random;
 
+import com.google.common.base.MoreObjects;
 import org.apache.commons.lang.RandomStringUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
@@ -58,10 +60,11 @@ public class KapuaTest extends Assert {
             String dbUsername = config.getString(SystemSettingKey.DB_USERNAME);
             String dbPassword = config.getString(SystemSettingKey.DB_PASSWORD);
             String jdbcUrl = JdbcConnectionUrlResolvers.resolveJdbcUrl();
+            String schema = MoreObjects.firstNonNull(config.getString(SystemSettingKey.DB_SCHEMA_ENV), config.getString(SystemSettingKey.DB_SCHEMA));
 
             connection = DriverManager.getConnection(jdbcUrl, dbUsername, dbPassword);
 
-            new KapuaLiquibaseClient(jdbcUrl, dbUsername, dbPassword).update();
+            new KapuaLiquibaseClient(jdbcUrl, dbUsername, dbPassword, Optional.ofNullable(schema)).update();
 
             //
             // Login

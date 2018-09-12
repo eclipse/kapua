@@ -159,6 +159,16 @@
             <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
         </dependency>
 
+        <!-- Artemis -->
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>artemis-junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>artemis-amqp-protocol</artifactId>
+        </dependency>
+
         <!-- misc -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -170,6 +180,32 @@
         <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch</artifactId>
+        </dependency>
+
+        <!-- Embedded Jetty Server for tests -->
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-webapp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-jmx</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>apache-jsp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>apache-jstl</artifactId>
         </dependency>
     </dependencies>
 

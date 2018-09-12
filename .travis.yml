@@ -41,43 +41,47 @@ jobs:
         - $M2_HOME/bin/mvn -B javadoc:jar
     - stage: test
       script:
-        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcommons.settings.hotswap=true -Dcucumber.options="--tags @default" -Pdev verify
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true -Dcucumber.options="--tags @default" -Pdev verify
         - bash <(curl -s https://codecov.io/bash)
     - stage: test
       script:
-        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcommons.settings.hotswap=true -Dcucumber.options="--tags @brokerAcl" verify
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true -Dcucumber.options="--tags @brokerAcl" verify
         - bash <(curl -s https://codecov.io/bash)
     - stage: test
       script:
-        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcommons.settings.hotswap=true -Dcucumber.options="--tags @tag" verify
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true -Dcucumber.options="--tags @tag" verify
         - bash <(curl -s https://codecov.io/bash)
     - stage: test
       script:
-        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcommons.settings.hotswap=true -Dcucumber.options="--tags @broker" verify
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true -Dcucumber.options="--tags @broker" verify
         - bash <(curl -s https://codecov.io/bash)
     - stage: test
       script:
-        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcommons.settings.hotswap=true -Dcucumber.options="--tags @device" verify
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true -Dcucumber.options="--tags @device" verify
         - bash <(curl -s https://codecov.io/bash)
     - stage: test
       script:
-        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcommons.settings.hotswap=true -Dcucumber.options="--tags @connection" verify
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true -Dcucumber.options="--tags @connection" verify
         - bash <(curl -s https://codecov.io/bash)
     - stage: test
       script:
-        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcommons.settings.hotswap=true -Dcucumber.options="--tags @datastore" -Dcommons.settings.hotswap=true verify
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true -Dcucumber.options="--tags @datastore" verify
         - bash <(curl -s https://codecov.io/bash)
     - stage: test
       script:
-        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcommons.settings.hotswap=true -Dcommons.settings.hotswap=true -Dcucumber.options="--tags @user" verify
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true -Dcucumber.options="--tags @user" verify
         - bash <(curl -s https://codecov.io/bash)
     - stage: test
       script:
-        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcommons.settings.hotswap=true -Dcucumber.options="--tags @security" verify
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true -Dcucumber.options="--tags @security" verify
         - bash <(curl -s https://codecov.io/bash)
     - stage: test
       script:
-        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcommons.settings.hotswap=true -Dcucumber.options="--tags @jobs" verify
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true-Dcucumber.options="--tags @jobs" verify
+        - bash <(curl -s https://codecov.io/bash)
+    - stage: test
+      script:
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dgwt.compiler.localWorkers=2 -Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true -Djetty.war.file=/home/travis/.m2/repository/org/eclipse/kapua/kapua-rest-api-web/1.0.0-SNAPSHOT/kapua-rest-api-web-1.0.0-SNAPSHOT.war -Dcucumber.options="--tags @rest" verify
         - bash <(curl -s https://codecov.io/bash)
 
 # The following upgrades Java during the build in
