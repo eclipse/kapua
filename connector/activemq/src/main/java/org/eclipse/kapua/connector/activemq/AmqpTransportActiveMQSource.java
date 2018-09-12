@@ -54,7 +54,7 @@ public class AmqpTransportActiveMQSource extends AbstractAmqpSource<byte[]> {
 
     private AmqpTransportActiveMQSource(Vertx vertx, AmqpConsumer consumer) {
         super(vertx);
-        this.consumer = consumer;        
+        this.consumer = consumer;
         this.consumer.messageHandler(this::handleMessage);
     }
 

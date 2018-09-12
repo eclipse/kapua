@@ -42,8 +42,6 @@ public class AbstractMessageProcessor<M, P> implements Processor {
     protected Converter<M, P> converter;
     protected Map<String, MessageTarget<P>> serviceTargetMap;
 
-    // TODO perche' non Processor<P> ????
-
     @SuppressWarnings("rawtypes")
     protected Map<String, MessageTarget> errorTargetMap;
 
@@ -90,7 +88,7 @@ public class AbstractMessageProcessor<M, P> implements Processor {
         this(connector, null, processorMap, null);
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({ "rawtypes" })
     public void start(Future<Void> startFuture) throws KapuaException {
         logger.debug("Starting connector...");
         Future.succeededFuture()
@@ -190,7 +188,7 @@ public class AbstractMessageProcessor<M, P> implements Processor {
         return internalFuture;
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({ "rawtypes" })
     public void stop(Future<Void> stopFuture) throws KapuaException {
         logger.debug("Stopping connector...");
         Future.succeededFuture()
