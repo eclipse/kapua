@@ -47,7 +47,7 @@ public abstract class AbstractDeviceManagementServiceImpl {
      * @since 1.0.0
      */
     protected void createDeviceEvent(KapuaId scopeId, KapuaId deviceId, KapuaRequestMessage<?, ?> requestMessage,
-            KapuaResponseMessage responseMessage) throws KapuaException {
+            KapuaResponseMessage<?,?> responseMessage) throws KapuaException {
 
         DeviceEventCreator deviceEventCreator =
                 DEVICE_EVENT_FACTORY.newCreator(

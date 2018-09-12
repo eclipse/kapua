@@ -173,7 +173,7 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
     /**
      * Initialize the application.
      * <p>
-     * This is called by the {@link #run(String[])} method. Don't call it yourself. 
+     * This is called by the {@link #run(String[])} method. Don't call it yourself.
      * <p>
      * Implementor may override this function to execute custom initialization
      * logic. Implementor has to override this method to provide the 
@@ -291,7 +291,7 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
     private void printBanner(String fileName) {
 
         try {
-            InputStream bannerStream = this.getClass().getClassLoader().getResourceAsStream(fileName);                   
+            InputStream bannerStream = this.getClass().getClassLoader().getResourceAsStream(fileName);
             if (bannerStream == null) {
                 logger.warn("Banner {} is missing", fileName);
                 return;
