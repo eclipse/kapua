@@ -11,28 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.client.device.packages;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.module.api.client.ui.tab.TabItem;
-import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.module.api.client.util.KapuaLoadListener;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
-import org.eclipse.kapua.app.console.module.device.shared.model.device.management.packages.GwtPackageDownloadOperation;
-import org.eclipse.kapua.app.console.module.device.shared.model.device.management.packages.GwtPackageOperation;
-
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.data.BaseListLoader;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoader;
 import com.extjs.gxt.ui.client.data.LoadEvent;
-import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.RpcProxy;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -44,8 +28,20 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.module.api.client.ui.tab.TabItem;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.module.api.client.util.KapuaLoadListener;
+import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
+import org.eclipse.kapua.app.console.module.device.shared.model.device.management.packages.GwtPackageDownloadOperation;
+import org.eclipse.kapua.app.console.module.device.shared.model.device.management.packages.GwtPackageOperation;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementServiceAsync;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DeviceTabPackagesInProgress extends TabItem {
 
@@ -81,6 +77,7 @@ public class DeviceTabPackagesInProgress extends TabItem {
         contentDirty = isDirty;
     }
 
+    @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
 
@@ -189,15 +186,6 @@ public class DeviceTabPackagesInProgress extends TabItem {
         grid.getView().setAutoFill(true);
         grid.getView().setEmptyText(MSGS.deviceInstallTabInProgressTableEmpty());
 
-        grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GwtPackageOperation>() {
-
-            @Override
-            public void selectionChanged(SelectionChangedEvent<GwtPackageOperation> se) {
-                ModelData selectedItem = se.getSelectedItem();
-
-            }
-        });
-
         ContentPanel rootContentPanel = new ContentPanel();
         rootContentPanel.setLayout(new FitLayout());
         rootContentPanel.setBorders(false);
@@ -225,6 +213,7 @@ public class DeviceTabPackagesInProgress extends TabItem {
 
     private class InProgressDataLoadListener extends KapuaLoadListener {
 
+        @Override
         public void loaderLoadException(LoadEvent le) {
             grid.unmask();
 
