@@ -94,6 +94,16 @@ public class DBHelper {
 
     }
 
+    public void close() {
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     @After(order = HookPriorities.DATABASE)
     public void deleteAll() throws SQLException {
 

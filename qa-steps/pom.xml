@@ -159,6 +159,16 @@
             <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
         </dependency>
 
+        <!-- Artemis -->
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>artemis-junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>artemis-amqp-protocol</artifactId>
+        </dependency>
+
         <!-- misc -->
         <dependency>
             <groupId>org.slf4j</groupId>
