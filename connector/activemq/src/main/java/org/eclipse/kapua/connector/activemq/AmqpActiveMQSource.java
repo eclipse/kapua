@@ -20,8 +20,6 @@ import org.eclipse.kapua.broker.client.amqp.AmqpConsumer;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.connector.AbstractAmqpSource;
 import org.eclipse.kapua.connector.MessageContext;
-import org.eclipse.kapua.connector.MessageFilter;
-import org.eclipse.kapua.connector.MessageHandler;
 import org.eclipse.kapua.connector.Properties;
 import org.eclipse.kapua.message.transport.TransportMessageType;
 import org.eclipse.kapua.message.transport.TransportQos;
@@ -51,7 +49,7 @@ public class AmqpActiveMQSource extends AbstractAmqpSource<Message> {
         return new AmqpActiveMQSource(vertx, consumer);
     }
 
-    private AmqpActiveMQSource(Vertx vertx, AmqpConsumer consumer) {
+    protected AmqpActiveMQSource(Vertx vertx, AmqpConsumer consumer) {
         super(vertx);
         this.consumer = consumer;
         this.consumer.messageHandler(this::handleMessage);
@@ -162,21 +160,4 @@ public class AmqpActiveMQSource extends AbstractAmqpSource<Message> {
         return parameters;
     }
 
-    private MessageHandler<Message> messageHandler;
-
-    @Override
-    public void messageHandler(MessageHandler<Message> handler) {
-        this.messageHandler = handler;
-    }
-
-    MessageFilter<Message> filter;
-
-    @Override
-    public void messageFilter(MessageFilter<Message> filter) {
-        this.filter = filter;
-    }
-
-    protected boolean isProcessMessage(MessageContext<Message> message) {
-        return filter.matches(message);
-    }
 }

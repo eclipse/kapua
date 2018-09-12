@@ -18,12 +18,6 @@ import io.vertx.core.Handler;
 
 public interface MessageTarget<T> extends ResourceConnector {
 
-    /**
-     * Tells if the destination should or should not be processed by the processor
-     * @param message
-     * @return
-     */
-    boolean isProcessDestination(MessageContext<T> message);
-
     public void process(MessageContext<T> message, Handler<AsyncResult<Void>> result) throws KapuaException;
+
 }

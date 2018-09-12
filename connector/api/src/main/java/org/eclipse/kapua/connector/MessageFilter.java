@@ -13,5 +13,11 @@ package org.eclipse.kapua.connector;
 
 public interface MessageFilter<M> {
 
+    /**
+     * Tells if the destination should or should not be processed by the processor
+     * @param message
+     * @return
+     */
     boolean matches(MessageContext<M> message);
+
 }

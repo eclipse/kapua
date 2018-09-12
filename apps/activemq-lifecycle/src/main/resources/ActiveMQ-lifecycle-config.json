@@ -9,7 +9,7 @@
     },
     "http-server" : {
         "host" : "localhost",
-        "port" : 8090,
+        "port" : 8092,
         "secure-port" : 8443
     },
 	"event-bus-server": {

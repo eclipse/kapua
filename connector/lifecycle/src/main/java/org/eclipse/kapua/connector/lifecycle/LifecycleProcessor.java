@@ -16,7 +16,6 @@ import java.util.List;
 import org.eclipse.kapua.connector.KapuaProcessorException;
 import org.eclipse.kapua.connector.MessageContext;
 import org.eclipse.kapua.connector.MessageTarget;
-import org.eclipse.kapua.connector.Properties;
 import org.eclipse.kapua.message.transport.TransportMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +24,7 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 
-public abstract class LifecycleProcessor implements MessageTarget<TransportMessage> {
+public class LifecycleProcessor implements MessageTarget<TransportMessage> {
 
     private static final Logger logger = LoggerFactory.getLogger(LifecycleProcessor.class);
 
@@ -33,32 +32,15 @@ public abstract class LifecycleProcessor implements MessageTarget<TransportMessa
 
     private LifecycleListener lifecycleListener;
 
-    enum LifecycleTypes {
+    public enum LifecycleTypes {
         APPS,
         BIRTH,
         DC,
         MISSING
     }
 
-    public static LifecycleProcessor getProcessorWithNoFilter() {
-        return new LifecycleProcessor() {
-            @Override
-            public boolean isProcessDestination(MessageContext<TransportMessage> message) {
-                String topic = (String) message.getProperties().get(Properties.MESSAGE_DESTINATION);
-                if (topic!=null && (topic.endsWith("/MQTT/BIRTH") ||
-                        topic.endsWith("/MQTT/DC") ||
-                        topic.endsWith("/MQTT/LWT") ||
-                        topic.endsWith("/MQTT/MISSING") ||
-                        topic.endsWith("MQTT/PROV"))
-                        ) {
-                    return true;
-                }
-                else {
-                    return false;
-                }
-
-            }
-        };
+    public static LifecycleProcessor create() {
+        return new LifecycleProcessor();
     }
 
     protected LifecycleProcessor() {

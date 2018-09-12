@@ -22,17 +22,15 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 
-public abstract class LoggerTarget implements MessageTarget<Message> {
+public class LoggerTarget implements MessageTarget<Message> {
 
     private static final Logger logger = LoggerFactory.getLogger(LoggerTarget.class);
 
-    public static LoggerTarget getProcessorWithNoFilter() {
-        return new LoggerTarget() {
-            @Override
-            public boolean isProcessDestination(MessageContext<Message> message) {
-                return true;
-            }
-        };
+    public static LoggerTarget create() {
+        return new LoggerTarget();
+    }
+
+    protected LoggerTarget() {
     }
 
     @Override

@@ -25,7 +25,6 @@ import org.eclipse.kapua.message.internal.device.data.KapuaDataChannelImpl;
 import org.eclipse.kapua.message.internal.device.data.KapuaDataMessageImpl;
 import org.eclipse.kapua.message.internal.device.data.KapuaDataPayloadImpl;
 import org.eclipse.kapua.message.transport.TransportMessage;
-import org.eclipse.kapua.message.transport.TransportMessageType;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
@@ -37,7 +36,7 @@ import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 
-public abstract class DatastoreTarget implements MessageTarget<TransportMessage> {
+public class DatastoreTarget implements MessageTarget<TransportMessage> {
 
     //TODO fix me
     public static final String MESSAGE_TYPE = new String("message-type");
@@ -48,13 +47,8 @@ public abstract class DatastoreTarget implements MessageTarget<TransportMessage>
     private AccountService accountService;
     private MessageStoreService messageStoreService;
 
-    public static DatastoreTarget getProcessorWithNoFilter(Vertx vertx) {
-        return new DatastoreTarget(vertx) {
-            @Override
-            public boolean isProcessDestination(MessageContext<TransportMessage> message) {
-                return TransportMessageType.TELEMETRY.equals(message.getProperties().get(MESSAGE_TYPE));
-            }
-        };
+    public static DatastoreTarget create(Vertx vertx) {
+        return new DatastoreTarget(vertx);
     }
 
     protected DatastoreTarget(Vertx vertx) {
