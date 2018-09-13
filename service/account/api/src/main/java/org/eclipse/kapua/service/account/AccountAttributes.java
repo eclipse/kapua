@@ -26,4 +26,20 @@ public class AccountAttributes extends KapuaNamedEntityAttributes {
     public static final String ORGANIZATION_EMAIL = ORGANIZATION + ".email";
 
     public static final String EXPIRATION_DATE = "expirationDate";
+
+    public static final String CONTACT_NAME = ORGANIZATION + ".personName";
+
+    public static final String PHONE_NUMBER = ORGANIZATION + ".phoneNumber";
+
+    public static final String ADDRESS_1 = ORGANIZATION + ".addressLine1";
+
+    public static final String ADDRESS_2 = ORGANIZATION + ".addressLine2";
+
+    public static final String ZIP_POST_CODE = ORGANIZATION + ".zipPostCode";
+
+    public static final String ORGANIZATION_CITY = ORGANIZATION + ".city";
+
+    public static final String STATE_PROVINCE = ORGANIZATION + ".stateProvinceCounty";
+
+    public static final String ORGANIZATION_COUNTRY = ORGANIZATION + ".country";
 }
