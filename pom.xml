@@ -423,6 +423,7 @@
                         <cucumber.options>${cucumber.options}</cucumber.options>
                         <commons.db.schema>kapuadb</commons.db.schema>
                         <commons.settings.hotswap>true</commons.settings.hotswap>
+                        <jetty.war.file>../rest-api/web/target/api.war</jetty.war.file>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
