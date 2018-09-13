@@ -126,6 +126,62 @@ public class AccountGrid extends EntityGrid<GwtAccount> {
         column.setAlignment(HorizontalAlignment.CENTER);
         configs.add(column);
 
+        column = new ColumnConfig("contactName", 120);
+        column.setHidden(true);
+        column.setHeader(ACCOUNT_MSGS.accountTableContactName());
+        column.setWidth(150);
+        column.setSortable(false);
+        configs.add(column);
+
+        column = new ColumnConfig("phoneNumber", 120);
+        column.setHidden(true);
+        column.setHeader(ACCOUNT_MSGS.accountTablePhoneNumber());
+        column.setWidth(150);
+        column.setSortable(false);
+        configs.add(column);
+
+        column = new ColumnConfig("adress1", 120);
+        column.setHidden(true);
+        column.setHeader(ACCOUNT_MSGS.accountTableAddress1());
+        column.setWidth(150);
+        column.setSortable(false);
+        configs.add(column);
+
+        column = new ColumnConfig("address2", 120);
+        column.setHidden(true);
+        column.setHeader(ACCOUNT_MSGS.accountTableAddress2());
+        column.setWidth(150);
+        column.setSortable(false);
+        configs.add(column);
+
+        column = new ColumnConfig("zipPostCode", 120);
+        column.setHidden(true);
+        column.setHeader(ACCOUNT_MSGS.accountTableZipPostCode());
+        column.setWidth(150);
+        column.setSortable(false);
+        configs.add(column);
+
+        column = new ColumnConfig("city", 120);
+        column.setHidden(true);
+        column.setHeader(ACCOUNT_MSGS.accountTableCity());
+        column.setWidth(150);
+        column.setSortable(false);
+        configs.add(column);
+
+        column = new ColumnConfig("stateProvince", 120);
+        column.setHidden(true);
+        column.setHeader(ACCOUNT_MSGS.accountTableStateProvince());
+        column.setWidth(150);
+        column.setSortable(false);
+        configs.add(column);
+
+        column = new ColumnConfig("country", 120);
+        column.setHidden(true);
+        column.setHeader(ACCOUNT_MSGS.accountTableCountry());
+        column.setWidth(150);
+        column.setSortable(false);
+        configs.add(column);
+
         return configs;
     }
 
