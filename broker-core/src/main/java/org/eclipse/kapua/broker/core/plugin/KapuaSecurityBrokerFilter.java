@@ -40,7 +40,6 @@ import org.eclipse.kapua.KapuaErrorCode;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
-import org.eclipse.kapua.broker.core.BrokerJAXBContextProvider;
 import org.eclipse.kapua.broker.core.message.MessageConstants;
 import org.eclipse.kapua.broker.core.plugin.authentication.Authenticator;
 import org.eclipse.kapua.broker.core.plugin.authentication.DefaultAuthenticator;
@@ -54,8 +53,6 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.util.ClassUtil;
-import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
@@ -112,7 +109,6 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     private static final String BROKER_IP_RESOLVER_CLASS_NAME;
     private static final String BROKER_ID_RESOLVER_CLASS_NAME;
     private static final String AUTHENTICATOR_CLASS_NAME;
-    private static final String BROKER_JAXB_CONTEXT_CLASS_NAME;
     private static final Long STEALING_LINK_INITIALIZATION_MAX_WAIT_TIME;
     private static boolean stealingLinkEnabled;
     private Future<?> stealingLinkManagerFuture;
@@ -122,7 +118,6 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
         BROKER_IP_RESOLVER_CLASS_NAME = config.getString(BrokerSettingKey.BROKER_IP_RESOLVER_CLASS_NAME);
         BROKER_ID_RESOLVER_CLASS_NAME = config.getString(BrokerSettingKey.BROKER_ID_RESOLVER_CLASS_NAME);
         AUTHENTICATOR_CLASS_NAME = config.getString(BrokerSettingKey.AUTHENTICATOR_CLASS_NAME);
-        BROKER_JAXB_CONTEXT_CLASS_NAME = config.getString(BrokerSettingKey.BROKER_JAXB_CONTEXT_CLASS_NAME);
         STEALING_LINK_INITIALIZATION_MAX_WAIT_TIME = config.getLong(BrokerSettingKey.STEALING_LINK_INITIALIZATION_MAX_WAIT_TIME);
         stealingLinkEnabled = config.getBoolean(BrokerSettingKey.BROKER_STEALING_LINK_ENABLED);
     }
@@ -160,9 +155,6 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     public void start()
             throws Exception {
         logger.info(">>> Security broker filter: calling start...");
-        logger.info(">>> Security broker filter: calling start... Initialize jaxb context");
-        JAXBContextProvider jaxbContextProvider = ClassUtil.newInstance(BROKER_JAXB_CONTEXT_CLASS_NAME, BrokerJAXBContextProvider.class);
-        XmlUtil.setContextProvider(jaxbContextProvider);
         logger.info(">>> Security broker filter: calling start... Initialize authenticator");
         authenticator = ClassUtil.newInstance(AUTHENTICATOR_CLASS_NAME, DefaultAuthenticator.class, new Class<?>[] { Map.class }, new Object[] { options });
         logger.info(">>> Security broker filter: calling start... Initialize broker ip resolver");
@@ -176,6 +168,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             registerStealingLinkManager();
         }
         super.start();
+        logger.info(">>> Security broker filter: calling start... DONE");
     }
 
     @Override
@@ -184,10 +177,11 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
         logger.info(">>> Security broker filter: calling stop...");
         // stop the stealing link manager unregister
         if (stealingLinkEnabled) {
-            logger.info(">>> Security broker filter: calling start... Unregister stealing link manager");
+            logger.info(">>> Security broker filter: calling stop... Unregister stealing link manager");
             unregisterStealingLinkManager();
         }
         super.stop();
+        logger.info(">>> Security broker filter: calling stop... DONE");
     }
 
     /**
@@ -656,6 +650,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     // ------------------------------------------------------------------
 
     protected DefaultAuthorizationMap buildAuthorization(KapuaConnectionContext kcc, List<org.eclipse.kapua.broker.core.plugin.authentication.AuthorizationEntry> authorizationEntries) {
+        @SuppressWarnings("rawtypes")
         List<DestinationMapEntry> entries = new ArrayList<>();
         for (org.eclipse.kapua.broker.core.plugin.authentication.AuthorizationEntry entry : authorizationEntries) {
             entries.add(createAuthorizationEntry(kcc, entry.getAcl(), entry.getAddress()));

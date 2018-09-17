@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,15 +14,9 @@ package org.eclipse.kapua.broker.core;
 
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Optional;
 
 import org.eclipse.kapua.broker.core.plugin.KapuaSecurityBrokerFilter;
-import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
-import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 
-import com.google.common.base.MoreObjects;
 import org.apache.activemq.broker.Broker;
 import org.apache.activemq.broker.BrokerPlugin;
 import org.apache.shiro.SecurityUtils;
@@ -53,16 +47,7 @@ public class KapuaBrokerSecurityPlugin implements BrokerPlugin {
 
     @Override
     public Broker installPlugin(final Broker broker) throws Exception {
-        logger.info("Installing Kapua broker plugin.");
-
-        SystemSetting config = SystemSetting.getInstance();
-        if(config.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false)) {
-            logger.debug("Starting Liquibase embedded client.");
-            String dbUsername = config.getString(SystemSettingKey.DB_USERNAME);
-            String dbPassword = config.getString(SystemSettingKey.DB_PASSWORD);
-            String schema = MoreObjects.firstNonNull(config.getString(SystemSettingKey.DB_SCHEMA_ENV), config.getString(SystemSettingKey.DB_SCHEMA));
-            new KapuaLiquibaseClient(JdbcConnectionUrlResolvers.resolveJdbcUrl(), dbUsername, dbPassword, Optional.of(schema)).update();
-        }
+        logger.info("Installing Kapua broker plugin...");
 
         try {
             // initialize shiro context for broker plugin from shiro ini file
