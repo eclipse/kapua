@@ -26,6 +26,24 @@
         </property>
     </bean>
 
+
+    <bean xmlns="http://www.springframework.org/schema/beans"
+        id="jaxbContextLoader"
+        class="org.eclipse.kapua.broker.core.KapuaBrokerJAXBContextLoader"
+        init-method="init"/>
+    <bean xmlns="http://www.springframework.org/schema/beans"
+        id="databaseCheckUpdate"
+        class="org.eclipse.kapua.broker.core.KapuaDatabaseCheckUpdate"
+        depends-on="jaxbContextLoader"/>
+    <bean xmlns="http://www.springframework.org/schema/beans"
+        id="applicationPlugin"
+        class="org.eclipse.kapua.broker.core.KapuaBrokerApplicationPlugin"
+        depends-on="databaseCheckUpdate"/>
+    <bean xmlns="http://www.springframework.org/schema/beans"
+        id="securityPlugin"
+        class="org.eclipse.kapua.broker.core.KapuaBrokerSecurityPlugin"
+        depends-on="applicationPlugin"/>
+
     <broker xmlns="http://activemq.apache.org/schema/core"
             brokerName="message-broker"
             id="message-broker-id"
@@ -123,12 +141,8 @@
         </persistenceAdapter>
 
         <plugins>
-            <bean xmlns="http://www.springframework.org/schema/beans"
-                  id="kapuaBrokerPlugin"
-                  class="org.eclipse.kapua.broker.core.KapuaBrokerSecurityPlugin"/>
-            <bean xmlns="http://www.springframework.org/schema/beans"
-                  id="applicationFilter"
-                  class="org.eclipse.kapua.broker.core.KapuaBrokerApplicationPlugin"/>
+            <ref xmlns="http://www.springframework.org/schema/beans" bean="applicationPlugin"/>
+            <ref xmlns="http://www.springframework.org/schema/beans" bean="securityPlugin"/>
             <discardingDLQBrokerPlugin dropAll="true"
                                        dropTemporaryTopics="true"
                                        dropTemporaryQueues="true"/>
