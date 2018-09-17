@@ -142,4 +142,69 @@ public class GwtAccount extends GwtUpdatableEntityModel implements Serializable 
     public void setExpirationDate(Date expirationDate) {
         set("expirationDate", expirationDate);
     }
+
+    public String getContactName() {
+        return (String) getUnescaped("contactName");
+    }
+
+    public void setContactName(String contactName) {
+        set("contactName", contactName);
+    }
+
+    public String getPhoneNumber() {
+        return (String) getUnescaped("phoneNumber");
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        set("phoneNumber", phoneNumber);
+    }
+
+    public String getAddress1() {
+        return (String) getUnescaped("adress1");
+    }
+
+    public void setAddress1(String adress1) {
+        set("adress1", adress1);
+    }
+
+    public String getAddress2() {
+        return (String) getUnescaped("address2");
+    }
+
+    public void setAddress2(String address2) {
+        set("address2", address2);
+    }
+
+    public String getZipPostCode() {
+        return (String) getUnescaped("zipPostCode");
+    }
+
+    public void setZipPostCode(String zipPostCode) {
+        set("zipPostCode", zipPostCode);
+    }
+
+    public String getCity() {
+        return (String) getUnescaped("city");
+    }
+
+    public void setCity(String city) {
+        set("city", city);
+    }
+
+    public String getStateProvince() {
+        return (String) getUnescaped("stateProvince");
+    }
+
+    public void setStateProvince(String stateProvince) {
+        set("stateProvince", stateProvince);
+    }
+
+    public String getCountry() {
+        return (String) getUnescaped("country");
+    }
+
+    public void setCountry(String country) {
+        set("country", country);
+    }
+
 }
