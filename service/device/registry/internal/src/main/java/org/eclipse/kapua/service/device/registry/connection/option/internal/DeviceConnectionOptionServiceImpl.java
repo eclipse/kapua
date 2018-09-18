@@ -67,7 +67,7 @@ public class DeviceConnectionOptionServiceImpl extends AbstractKapuaService impl
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.write, deviceConnectionOptions.getScopeId()));
 
         return entityManagerSession.onTransactedResult(em -> {
-            if (DeviceConnectionOptionDAO.find(em, deviceConnectionOptions.getId()) == null) {
+            if (DeviceConnectionOptionDAO.find(em, deviceConnectionOptions.getScopeId(), deviceConnectionOptions.getId()) == null) {
                 throw new KapuaEntityNotFoundException(DeviceConnectionOption.TYPE, deviceConnectionOptions.getId());
             }
 
@@ -90,7 +90,7 @@ public class DeviceConnectionOptionServiceImpl extends AbstractKapuaService impl
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, scopeId));
 
-        return entityManagerSession.onResult(em -> DeviceConnectionOptionDAO.find(em, entityId));
+        return entityManagerSession.onResult(em -> DeviceConnectionOptionDAO.find(em, scopeId, entityId));
     }
 
     @Override

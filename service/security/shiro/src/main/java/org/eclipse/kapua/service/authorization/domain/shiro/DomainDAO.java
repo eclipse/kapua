@@ -56,24 +56,13 @@ public class DomainDAO extends ServiceDAO {
      * Finds the {@link Domain} by {@link Domain} identifier
      *
      * @param em       The {@link EntityManager} that holds the transaction.
+     * @param scopeId
      * @param domainId The {@link Domain} id to search.
      * @return The found {@link Domain} or {@code null} if not found.
      * @since 1.0.0
      */
-    public static Domain find(EntityManager em, KapuaId domainId) {
-        return em.find(DomainImpl.class, domainId);
-    }
-
-    /**
-     * Deletes the {@link Domain} by {@link Domain} identifier
-     *
-     * @param em       The {@link EntityManager} that holds the transaction.
-     * @param domainId The {@link Domain} id to delete.
-     * @throws KapuaEntityNotFoundException If {@link Domain} is not found.
-     * @since 1.0.0
-     */
-    public static void delete(EntityManager em, KapuaId domainId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, DomainImpl.class, domainId);
+    public static Domain find(EntityManager em, KapuaId scopeId, KapuaId domainId) {
+        return ServiceDAO.find(em, DomainImpl.class, scopeId, domainId);
     }
 
     /**
@@ -104,5 +93,18 @@ public class DomainDAO extends ServiceDAO {
             throws KapuaException {
         domainQuery.setScopeId(null);
         return ServiceDAO.count(em, Domain.class, DomainImpl.class, domainQuery);
+    }
+
+    /**
+     * Deletes the {@link Domain} by {@link Domain} identifier
+     *
+     * @param em       The {@link EntityManager} that holds the transaction.
+     * @param scopeId
+     * @param domainId The {@link Domain} id to delete.
+     * @throws KapuaEntityNotFoundException If {@link Domain} is not found.
+     * @since 1.0.0
+     */
+    public static void delete(EntityManager em, KapuaId scopeId, KapuaId domainId) throws KapuaEntityNotFoundException {
+        ServiceDAO.delete(em, DomainImpl.class, scopeId, domainId);
     }
 }

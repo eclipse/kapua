@@ -193,7 +193,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Do  delete
-        entityManagerSession.onTransactedAction(em -> UserDAO.delete(em, userId));
+        entityManagerSession.onTransactedAction(em -> UserDAO.delete(em, scopeId, userId));
     }
 
     @Override
@@ -214,7 +214,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(UserDomains.USER_DOMAIN, Actions.read, scopeId));
 
         // Do the find
-        return entityManagerSession.onResult(em -> UserDAO.find(em, userId));
+        return entityManagerSession.onResult(em -> UserDAO.find(em, scopeId, userId));
     }
 
     @Override

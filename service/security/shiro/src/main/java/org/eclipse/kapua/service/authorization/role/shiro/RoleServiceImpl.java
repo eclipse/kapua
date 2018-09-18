@@ -184,7 +184,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> RoleDAO.delete(em, roleId));
+        entityManagerSession.onTransactedAction(em -> RoleDAO.delete(em, scopeId, roleId));
     }
 
     @Override
@@ -200,7 +200,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> RoleDAO.find(em, roleId));
+        return entityManagerSession.onResult(em -> RoleDAO.find(em, scopeId, roleId));
     }
 
     @Override

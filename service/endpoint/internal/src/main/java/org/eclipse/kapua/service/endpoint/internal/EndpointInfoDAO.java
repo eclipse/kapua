@@ -67,24 +67,13 @@ public class EndpointInfoDAO extends ServiceDAO {
      * Finds the {@link EndpointInfo} by {@link EndpointInfo} identifier
      *
      * @param em             The {@link EntityManager} that holds the transaction.
+     * @param scopeId
      * @param endpointInfoId The {@link EndpointInfo} id to search.
      * @return The found {@link EndpointInfo} or {@code null} if not found.
      * @since 1.0.0
      */
-    public static EndpointInfo find(EntityManager em, KapuaId endpointInfoId) {
-        return em.find(EndpointInfoImpl.class, endpointInfoId);
-    }
-
-    /**
-     * Deletes the {@link EndpointInfo} by {@link EndpointInfo} identifier
-     *
-     * @param em             The {@link EntityManager} that holds the transaction.
-     * @param endpointInfoId The {@link EndpointInfo} id to delete.
-     * @throws KapuaEntityNotFoundException If {@link EndpointInfo} is not found.
-     * @since 1.0.0
-     */
-    public static void delete(EntityManager em, KapuaId endpointInfoId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, EndpointInfoImpl.class, endpointInfoId);
+    public static EndpointInfo find(EntityManager em, KapuaId scopeId, KapuaId endpointInfoId) {
+        return ServiceDAO.find(em, EndpointInfoImpl.class, scopeId, endpointInfoId);
     }
 
     /**
@@ -113,5 +102,18 @@ public class EndpointInfoDAO extends ServiceDAO {
     public static long count(EntityManager em, KapuaQuery<EndpointInfo> endpointInfoQuery)
             throws KapuaException {
         return ServiceDAO.count(em, EndpointInfo.class, EndpointInfoImpl.class, endpointInfoQuery);
+    }
+
+    /**
+     * Deletes the {@link EndpointInfo} by {@link EndpointInfo} identifier
+     *
+     * @param em             The {@link EntityManager} that holds the transaction.
+     * @param scopeId
+     * @param endpointInfoId The {@link EndpointInfo} id to delete.
+     * @throws KapuaEntityNotFoundException If {@link EndpointInfo} is not found.
+     * @since 1.0.0
+     */
+    public static void delete(EntityManager em, KapuaId scopeId, KapuaId endpointInfoId) throws KapuaEntityNotFoundException {
+        ServiceDAO.delete(em, EndpointInfoImpl.class, scopeId, endpointInfoId);
     }
 }

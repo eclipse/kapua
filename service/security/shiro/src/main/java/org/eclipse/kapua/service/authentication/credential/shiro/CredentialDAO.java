@@ -26,7 +26,7 @@ import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
 import org.eclipse.kapua.service.authentication.shiro.utils.CryptAlgorithm;
 
 /**
- * Credential DAO.
+ * {@link Credential} {@link ServiceDAO}
  *
  * @since 1.0
  */
@@ -88,25 +88,15 @@ public class CredentialDAO extends ServiceDAO {
     }
 
     /**
-     * Delete the credential by credential identifier
-     *
-     * @param em
-     * @param credentialId
-     * @throws KapuaEntityNotFoundException If {@link Credential} is now found.
-     */
-    public static void delete(EntityManager em, KapuaId credentialId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, CredentialImpl.class, credentialId);
-    }
-
-    /**
      * Find the credential by credential identifier
      *
      * @param em
+     * @param scopeId
      * @param credentialId
      * @return
      */
-    public static Credential find(EntityManager em, KapuaId credentialId) {
-        return em.find(CredentialImpl.class, credentialId);
+    public static Credential find(EntityManager em, KapuaId scopeId, KapuaId credentialId) {
+        return ServiceDAO.find(em, CredentialImpl.class, scopeId, credentialId);
     }
 
     /**
@@ -135,8 +125,21 @@ public class CredentialDAO extends ServiceDAO {
         return ServiceDAO.count(em, Credential.class, CredentialImpl.class, credentialQuery);
     }
 
+    /**
+     * Delete the credential by credential identifier
+     *
+     * @param em
+     * @param scopeId
+     * @param credentialId
+     * @throws KapuaEntityNotFoundException If {@link Credential} is now found.
+     */
+    public static void delete(EntityManager em, KapuaId scopeId, KapuaId credentialId) throws KapuaEntityNotFoundException {
+        ServiceDAO.delete(em, CredentialImpl.class, scopeId, credentialId);
+    }
+
     //
     // Private methods
+
     //
     private static String cryptPassword(String credentialPlainKey) throws KapuaException {
         return AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, credentialPlainKey);

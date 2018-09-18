@@ -29,10 +29,10 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.scheduler.SchedulerDomains;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerAttributes;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerCreator;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerAttributes;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerProperty;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
@@ -221,7 +221,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         //
         // Do delete
         entityManagerSession.onTransactedAction(em -> {
-            TriggerDAO.delete(em, triggerId);
+            TriggerDAO.delete(em, scopeId, triggerId);
 
             try {
                 SchedulerFactory sf = new StdSchedulerFactory();
@@ -250,7 +250,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> TriggerDAO.find(em, triggerId));
+        return entityManagerSession.onResult(em -> TriggerDAO.find(em, scopeId, triggerId));
     }
 
     @Override

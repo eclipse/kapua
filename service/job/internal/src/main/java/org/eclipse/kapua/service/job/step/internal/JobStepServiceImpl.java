@@ -212,7 +212,7 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> JobStepDAO.find(em, jobStepId));
+        return entityManagerSession.onResult(em -> JobStepDAO.find(em, scopeId, jobStepId));
     }
 
     @Override
@@ -266,6 +266,6 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> JobStepDAO.delete(em, jobStepId));
+        entityManagerSession.onTransactedAction(em -> JobStepDAO.delete(em, scopeId, jobStepId));
     }
 }
