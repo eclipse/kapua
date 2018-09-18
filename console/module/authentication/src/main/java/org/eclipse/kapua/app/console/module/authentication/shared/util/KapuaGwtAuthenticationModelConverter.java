@@ -34,7 +34,8 @@ public class KapuaGwtAuthenticationModelConverter {
         KapuaGwtCommonsModelConverter.convertUpdatableEntity(credential, gwtCredential);
         gwtCredential.setUserId(credential.getUserId().toCompactId());
         gwtCredential.setCredentialType(credential.getCredentialType().toString());
-        gwtCredential.setCredentialKey(credential.getCredentialKey());
+        // DO NOT SET CredentialKey, otherwise it will show up when inspecting network traffic!
+        // See https://github.com/eclipse/kapua/issues/2024
         gwtCredential.setCredentialStatus(credential.getStatus().toString());
         gwtCredential.setExpirationDate(credential.getExpirationDate());
         gwtCredential.setLoginFailures(credential.getLoginFailures());
