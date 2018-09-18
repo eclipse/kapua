@@ -40,8 +40,6 @@ import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModel
 import org.eclipse.kapua.broker.BrokerDomains;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ThrowingRunnable;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
@@ -226,11 +224,12 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                 }
             });
 
-            accountPropertiesPairs.add(new GwtGroupedNVPair("entityInfo", "expirationDate", account.getExpirationDate() != null ? account.getExpirationDate() : "Never"));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("entityInfo", "accountCreatedOn", account.getCreatedOn()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("entityInfo", "accountCreatedBy", userCreatedBy != null ? userCreatedBy.getName() : null));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("entityInfo", "accountModifiedOn", account.getModifiedOn()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("entityInfo", "accountModifiedBy", userModifiedBy != null ? userModifiedBy.getName() : null));
+            final String entityInfo = "entityInfo";
+            accountPropertiesPairs.add(new GwtGroupedNVPair(entityInfo, "expirationDate", account.getExpirationDate() != null ? account.getExpirationDate() : "Never"));
+            accountPropertiesPairs.add(new GwtGroupedNVPair(entityInfo, "accountCreatedOn", account.getCreatedOn()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair(entityInfo, "accountCreatedBy", userCreatedBy != null ? userCreatedBy.getName() : null));
+            accountPropertiesPairs.add(new GwtGroupedNVPair(entityInfo, "accountModifiedOn", account.getModifiedOn()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair(entityInfo, "accountModifiedBy", userModifiedBy != null ? userModifiedBy.getName() : null));
 
             if (account.getScopeId() != null) {
                 Account parentAccount = KapuaSecurityUtils.doPrivileged(new Callable<Account>() {
@@ -255,17 +254,17 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             for (EndpointInfo ei : endpointInfos.getItems()) {
                 accountPropertiesPairs.add(new GwtGroupedNVPair("deploymentInfo", ei.getSecure() ? "deploymentNodeUriSecure" : "deploymentNodeUri", ei.toStringURI()));
             }
-
-            accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationName", account.getOrganization().getName()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationContactName", account.getOrganization().getPersonName()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationEmail", account.getOrganization().getEmail()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationPhoneNumber", account.getOrganization().getPhoneNumber()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationAddress1", account.getOrganization().getAddressLine1()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationAddress2", account.getOrganization().getAddressLine2()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationZip", account.getOrganization().getZipPostCode()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationCity", account.getOrganization().getCity()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationState", account.getOrganization().getStateProvinceCounty()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationCountry", account.getOrganization().getCountry()));
+            final String organizationInfo = "organizationInfo";
+            accountPropertiesPairs.add(new GwtGroupedNVPair(organizationInfo, "organizationName", account.getOrganization().getName()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair(organizationInfo, "organizationContactName", account.getOrganization().getPersonName()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair(organizationInfo, "organizationEmail", account.getOrganization().getEmail()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair(organizationInfo, "organizationPhoneNumber", account.getOrganization().getPhoneNumber()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair(organizationInfo, "organizationAddress1", account.getOrganization().getAddressLine1()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair(organizationInfo, "organizationAddress2", account.getOrganization().getAddressLine2()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair(organizationInfo, "organizationZip", account.getOrganization().getZipPostCode()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair(organizationInfo, "organizationCity", account.getOrganization().getCity()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair(organizationInfo, "organizationState", account.getOrganization().getStateProvinceCounty()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair(organizationInfo, "organizationCountry", account.getOrganization().getCountry()));
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
@@ -705,23 +704,6 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         }
 
         return new BasePagingLoadResult<GwtAccount>(gwtAccounts, loadConfig.getOffset(), totalLength);
-    }
-
-    @Override
-    public GwtAccount findRootAccount() throws GwtKapuaException {
-        GwtAccount gwtAccount = null;
-        try {
-            gwtAccount = KapuaSecurityUtils.doPrivileged(new Callable<GwtAccount>() {
-
-                @Override
-                public GwtAccount call() throws Exception {
-                    return findByAccountName(SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_ACCOUNT));
-                }
-            });
-        } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
-        }
-        return gwtAccount;
     }
 
 }

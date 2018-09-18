@@ -147,12 +147,4 @@ public interface GwtAccountService extends RemoteService {
     PagingLoadResult<GwtAccount> query(PagingLoadConfig loadConfig, GwtAccountQuery gwtAccountQuery)
             throws GwtKapuaException;
 
-    /**
-     * Returns the root account
-     *
-     * @return A {@link GwtAccount} pointing to the root account
-     * @throws GwtKapuaException
-     */
-    public GwtAccount findRootAccount()
-            throws GwtKapuaException;
 }
