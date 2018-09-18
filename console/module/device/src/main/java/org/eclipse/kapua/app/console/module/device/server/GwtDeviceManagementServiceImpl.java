@@ -296,7 +296,10 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
                     if (ocd != null) {
                         GwtConfigComponent gwtConfig = new GwtConfigComponent();
                         gwtConfig.setId(config.getId());
-                        if(config.getId().indexOf('.') == -1){
+                        if(config.getProperties() != null && config.getProperties().get("service.factoryPid") != null) {
+                            String componentName = config.getId().substring(config.getId().lastIndexOf('.') + 1);
+                            gwtConfig.setName(componentName);
+                        } else if(config.getId().indexOf('.') == -1) {
                             gwtConfig.setName(config.getId());
                         } else {
                             gwtConfig.setName(ocd.getName());
