@@ -22,10 +22,9 @@ import org.eclipse.kapua.service.authorization.access.AccessRoleCreator;
 import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
 
 /**
- * {@link AccessRole} DAO
+ * {@link AccessRole} {@link ServiceDAO}
  * 
  * @since 1.0
- *
  */
 public class AccessRoleDAO extends ServiceDAO {
 
@@ -51,26 +50,17 @@ public class AccessRoleDAO extends ServiceDAO {
      * Find the access info by access permission identifier
      * 
      * @param em
+     * @param scopeId
+     * @param accessRoleId
      * @return
      */
-    public static AccessRole find(EntityManager em, KapuaId accessRoleId) {
-        return em.find(AccessRoleImpl.class, accessRoleId);
-    }
-
-    /**
-     * Delete the access permission by access permission id.
-     * 
-     * @param em
-     * @throws KapuaEntityNotFoundException
-     *             If {@link AccessRole} is not found.
-     */
-    public static void delete(EntityManager em, KapuaId accessRoleId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, AccessRoleImpl.class, accessRoleId);
+    public static AccessRole find(EntityManager em, KapuaId scopeId, KapuaId accessRoleId) {
+        return ServiceDAO.find(em , AccessRoleImpl.class, scopeId, accessRoleId);
     }
 
     /**
      * Return the {@link AccessRole}s list matching the provided query
-     * 
+     *
      * @param em
      * @param accessInfoPermissionQuery
      * @return
@@ -83,7 +73,7 @@ public class AccessRoleDAO extends ServiceDAO {
 
     /**
      * Return the count of {@link AccessRole} matching the provided query
-     * 
+     *
      * @param em
      * @param accessPermissionQuery
      * @return
@@ -92,5 +82,18 @@ public class AccessRoleDAO extends ServiceDAO {
     public static long count(EntityManager em, KapuaQuery<AccessRole> accessPermissionQuery)
             throws KapuaException {
         return ServiceDAO.count(em, AccessRole.class, AccessRoleImpl.class, accessPermissionQuery);
+    }
+
+    /**
+     * Delete the access permission by access permission id.
+     *
+     * @param em
+     * @param scopeId
+     * @param accessRoleId
+     * @throws KapuaEntityNotFoundException
+     *             If {@link AccessRole} is not found.
+     */
+    public static void delete(EntityManager em, KapuaId scopeId, KapuaId accessRoleId) throws KapuaEntityNotFoundException {
+        ServiceDAO.delete(em, AccessRoleImpl.class, scopeId, accessRoleId);
     }
 }

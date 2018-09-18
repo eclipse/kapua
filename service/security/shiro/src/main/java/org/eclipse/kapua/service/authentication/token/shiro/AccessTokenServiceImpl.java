@@ -115,7 +115,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> AccessTokenDAO.find(em, accessTokenId));
+        return entityManagerSession.onResult(em -> AccessTokenDAO.find(em, scopeId, accessTokenId));
     }
 
     @Override
@@ -169,7 +169,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> AccessTokenDAO.delete(em, accessTokenId));
+        entityManagerSession.onTransactedAction(em -> AccessTokenDAO.delete(em, scopeId, accessTokenId));
     }
 
     @Override
@@ -226,7 +226,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
         //
         // Do find
         entityManagerSession.onTransactedResult(em -> {
-            AccessToken accessToken = AccessTokenDAO.find(em, accessTokenId);
+            AccessToken accessToken = AccessTokenDAO.find(em, scopeId, accessTokenId);
             accessToken.setInvalidatedOn(new Date());
 
             return AccessTokenDAO.update(em, accessToken);

@@ -90,11 +90,12 @@ public class DeviceDAO extends ServiceDAO {
      * Finds the device by device identifier
      *
      * @param em
+     * @param scopeId
      * @param deviceId
      * @return
      */
-    public static Device find(EntityManager em, KapuaId deviceId) {
-        return em.find(DeviceImpl.class, deviceId);
+    public static Device find(EntityManager em, KapuaId scopeId, KapuaId deviceId) {
+        return ServiceDAO.find(em, DeviceImpl.class, scopeId, deviceId);
     }
 
     /**
@@ -165,10 +166,11 @@ public class DeviceDAO extends ServiceDAO {
      * Deletes the device by device identifier
      *
      * @param em
+     * @param scopeId
      * @param deviceId
      * @throws KapuaEntityNotFoundException If {@link Device} is not found.
      */
-    public static void delete(EntityManager em, KapuaId deviceId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, DeviceImpl.class, deviceId);
+    public static void delete(EntityManager em, KapuaId scopeId, KapuaId deviceId) throws KapuaEntityNotFoundException {
+        ServiceDAO.delete(em, DeviceImpl.class, scopeId, deviceId);
     }
 }

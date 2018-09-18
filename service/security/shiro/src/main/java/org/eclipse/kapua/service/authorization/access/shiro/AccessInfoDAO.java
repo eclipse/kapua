@@ -23,20 +23,18 @@ import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
 
 /**
  * {@link AccessInfo} DAO
- * 
- * @since 1.0.0
  *
+ * @since 1.0.0
  */
 public class AccessInfoDAO extends ServiceDAO {
 
     /**
      * Creates and return new {@link AccessInfo}
-     * 
+     *
      * @param em
      * @param creator
      * @return
      * @throws KapuaException
-     * 
      * @since 1.0.0
      */
     public static AccessInfo create(EntityManager em, AccessInfoCreator creator)
@@ -48,32 +46,20 @@ public class AccessInfoDAO extends ServiceDAO {
 
     /**
      * Find the {@link AccessInfo} by user {@link AccessInfo} identifier
-     * 
+     *
      * @param em
+     * @param scopeId
      * @param accessInfoId
      * @return
      * @since 1.0.0
      */
-    public static AccessInfo find(EntityManager em, KapuaId accessInfoId) {
-        return em.find(AccessInfoImpl.class, accessInfoId);
-    }
-
-    /**
-     * Delete the {@link AccessInfo} by {@link AccessInfo} identifier
-     * 
-     * @param em
-     * @param accessInfoId
-     * @throws KapuaEntityNotFoundException
-     *             If {@link AccessInfo} is nott found.
-     * @since 1.0.0
-     */
-    public static void delete(EntityManager em, KapuaId accessInfoId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, AccessInfoImpl.class, accessInfoId);
+    public static AccessInfo find(EntityManager em, KapuaId scopeId, KapuaId accessInfoId) {
+        return ServiceDAO.find(em, AccessInfoImpl.class, scopeId, accessInfoId);
     }
 
     /**
      * Return the {@link AccessInfo} list matching the provided query
-     * 
+     *
      * @param em
      * @param accessInfoQuery
      * @return
@@ -87,7 +73,7 @@ public class AccessInfoDAO extends ServiceDAO {
 
     /**
      * Return the {@link AccessInfo} count matching the provided query
-     * 
+     *
      * @param em
      * @param accessInfoQuery
      * @return
@@ -97,6 +83,19 @@ public class AccessInfoDAO extends ServiceDAO {
     public static long count(EntityManager em, KapuaQuery<AccessInfo> accessInfoQuery)
             throws KapuaException {
         return ServiceDAO.count(em, AccessInfo.class, AccessInfoImpl.class, accessInfoQuery);
+    }
+
+    /**
+     * Delete the {@link AccessInfo} by {@link AccessInfo} identifier
+     *
+     * @param em
+     * @param scopeId
+     * @param accessInfoId
+     * @throws KapuaEntityNotFoundException If {@link AccessInfo} is nott found.
+     * @since 1.0.0
+     */
+    public static void delete(EntityManager em, KapuaId scopeId, KapuaId accessInfoId) throws KapuaEntityNotFoundException {
+        ServiceDAO.delete(em, AccessInfoImpl.class, scopeId, accessInfoId);
     }
 
 }

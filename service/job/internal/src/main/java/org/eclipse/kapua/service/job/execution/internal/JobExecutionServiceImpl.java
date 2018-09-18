@@ -93,7 +93,7 @@ public class JobExecutionServiceImpl
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> JobExecutionDAO.find(em, jobExecutionId));
+        return entityManagerSession.onResult(em -> JobExecutionDAO.find(em, scopeId, jobExecutionId));
     }
 
     @Override
@@ -142,11 +142,11 @@ public class JobExecutionServiceImpl
         //
         // Do delete
         entityManagerSession.onTransactedAction(em -> {
-            if (JobExecutionDAO.find(em, jobExecutionId) == null) {
+            if (JobExecutionDAO.find(em, scopeId, jobExecutionId) == null) {
                 throw new KapuaEntityNotFoundException(JobExecution.TYPE, jobExecutionId);
             }
 
-            JobExecutionDAO.delete(em, jobExecutionId);
+            JobExecutionDAO.delete(em, scopeId, jobExecutionId);
         });
 
     }

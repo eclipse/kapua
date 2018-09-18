@@ -139,7 +139,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
             }
 
             credential = CredentialDAO.create(em, credentialCreator);
-            credential = CredentialDAO.find(em, credential.getId());
+            credential = CredentialDAO.find(em, credential.getScopeId(), credential.getId());
 
             em.commit();
 
@@ -183,7 +183,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write, credential.getScopeId()));
 
         return entityManagerSession.onTransactedResult(em -> {
-            Credential currentCredential = CredentialDAO.find(em, credential.getId());
+            Credential currentCredential = CredentialDAO.find(em, credential.getScopeId(), credential.getId());
 
             if (currentCredential == null) {
                 throw new KapuaEntityNotFoundException(Credential.TYPE, credential.getId());
@@ -212,7 +212,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, scopeId));
 
-        return entityManagerSession.onResult(em -> CredentialDAO.find(em, credentialId));
+        return entityManagerSession.onResult(em -> CredentialDAO.find(em, scopeId, credentialId));
     }
 
     @Override
@@ -267,10 +267,10 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.delete, scopeId));
 
         entityManagerSession.onTransactedAction(em -> {
-            if (CredentialDAO.find(em, credentialId) == null) {
+            if (CredentialDAO.find(em, scopeId, credentialId) == null) {
                 throw new KapuaEntityNotFoundException(Credential.TYPE, credentialId);
             }
-            CredentialDAO.delete(em, credentialId);
+            CredentialDAO.delete(em, scopeId, credentialId);
         });
     }
 

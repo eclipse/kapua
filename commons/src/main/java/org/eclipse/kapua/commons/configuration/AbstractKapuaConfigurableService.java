@@ -211,7 +211,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     private ServiceConfig updateConfig(ServiceConfig serviceConfig)
             throws KapuaException {
         return entityManagerSession.onTransactedResult(em -> {
-            ServiceConfig oldServiceConfig = ServiceConfigDAO.find(em, serviceConfig.getId());
+            ServiceConfig oldServiceConfig = ServiceConfigDAO.find(em, serviceConfig.getScopeId(), serviceConfig.getId());
             if (oldServiceConfig == null) {
                 throw new KapuaEntityNotFoundException(ServiceConfig.TYPE, serviceConfig.getId());
             }

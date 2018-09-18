@@ -13,7 +13,6 @@
 package org.eclipse.kapua.service.account.internal;
 
 import org.apache.commons.lang3.StringUtils;
-
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaDuplicateNameInAnotherAccountError;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
@@ -33,11 +32,11 @@ import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.account.AccountAttributes;
 import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountDomains;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountListResult;
-import org.eclipse.kapua.service.account.AccountAttributes;
 import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
@@ -136,7 +135,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             em.persist(account);
 
             // Set the parent account path
-            String parentAccountPath = AccountDAO.find(em, accountCreator.getScopeId()).getParentAccountPath() + "/" + account.getId();
+            String parentAccountPath = AccountDAO.find(em, null, accountCreator.getScopeId()).getParentAccountPath() + "/" + account.getId();
             account.setParentAccountPath(parentAccountPath);
             return AccountDAO.update(em, account);
         });
@@ -238,7 +237,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         // Do delete
         entityManagerSession.onTransactedAction(em -> {
             // Entity needs to be loaded in the context of the same EntityManger to be able to delete it afterwards
-            Account accountx = AccountDAO.find(em, accountId);
+            Account accountx = AccountDAO.find(em, scopeId, accountId);
             if (accountx == null) {
                 throw new KapuaEntityNotFoundException(Account.TYPE, accountId);
             }
@@ -253,7 +252,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
                 throw new KapuaIllegalAccessException(action.name());
             }
 
-            AccountDAO.delete(em, accountId);
+            AccountDAO.delete(em, scopeId, accountId);
         });
     }
 
@@ -383,7 +382,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> AccountDAO.find(em, accountId));
+        return entityManagerSession.onResult(em -> AccountDAO.find(em, null, accountId));
     }
 
     private AccountListResult findChildAccountsTrusted(KapuaId accountId)

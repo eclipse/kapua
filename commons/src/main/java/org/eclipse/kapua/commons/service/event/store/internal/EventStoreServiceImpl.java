@@ -75,7 +75,7 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
         //
         // Do update
         return entityManagerSession.onTransactedResult(em -> {
-            EventStoreRecord oldKapuaEvent = EventStoreDAO.find(em, kapuaEvent.getId());
+            EventStoreRecord oldKapuaEvent = EventStoreDAO.find(em, kapuaEvent.getScopeId(), kapuaEvent.getId());
             if (oldKapuaEvent == null) {
                 throw new KapuaEntityNotFoundException(EventStoreRecord.TYPE, kapuaEvent.getId());
             }
@@ -103,7 +103,7 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
         //
         // Do delete
         entityManagerSession.onTransactedAction(em -> {
-            EventStoreDAO.delete(em, kapuaEventId);
+            EventStoreDAO.delete(em, scopeId, kapuaEventId);
         });
     }
 
@@ -179,7 +179,7 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
         // Argument Validation
         ArgumentValidator.notNull(kapuaEventId, "kapuaEventId");
 
-        return entityManagerSession.onResult(em -> EventStoreDAO.find(em, kapuaEventId));
+        return entityManagerSession.onResult(em -> EventStoreDAO.find(em, null, kapuaEventId));
     }
 
 }

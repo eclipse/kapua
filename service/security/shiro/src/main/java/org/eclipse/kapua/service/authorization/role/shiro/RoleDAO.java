@@ -64,29 +64,17 @@ public class RoleDAO extends ServiceDAO {
      * Find the role by role identifier
      * 
      * @param em
+     * @param scopeId
      * @param roleId
      * @return
      */
-    public static Role find(EntityManager em, KapuaId roleId) {
-        return em.find(RoleImpl.class, roleId);
-    }
-
-    /**
-     * Delete the role by role identifier
-     * 
-     * @param em
-     * @param roleId
-     * @throws KapuaEntityNotFoundException
-     *             If {@link Role} is not found.
-     */
-    public static void delete(EntityManager em, KapuaId roleId)
-            throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, RoleImpl.class, roleId);
+    public static Role find(EntityManager em, KapuaId scopeId, KapuaId roleId) {
+        return ServiceDAO.find(em, RoleImpl.class, scopeId, roleId);
     }
 
     /**
      * Return the role list matching the provided query
-     * 
+     *
      * @param em
      * @param roleQuery
      * @return
@@ -99,7 +87,7 @@ public class RoleDAO extends ServiceDAO {
 
     /**
      * Return the role count matching the provided query
-     * 
+     *
      * @param em
      * @param roleQuery
      * @return
@@ -108,5 +96,19 @@ public class RoleDAO extends ServiceDAO {
     public static long count(EntityManager em, KapuaQuery<Role> roleQuery)
             throws KapuaException {
         return ServiceDAO.count(em, Role.class, RoleImpl.class, roleQuery);
+    }
+
+    /**
+     * Delete the role by role identifier
+     *
+     * @param em
+     * @param scopeId
+     * @param roleId
+     * @throws KapuaEntityNotFoundException
+     *             If {@link Role} is not found.
+     */
+    public static void delete(EntityManager em, KapuaId scopeId, KapuaId roleId)
+            throws KapuaEntityNotFoundException {
+        ServiceDAO.delete(em, RoleImpl.class, scopeId, roleId);
     }
 }

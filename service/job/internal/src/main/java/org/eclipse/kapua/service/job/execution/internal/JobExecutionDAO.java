@@ -71,27 +71,20 @@ public class JobExecutionDAO {
     }
 
     /**
-     * Deletes the jobExecution by jobExecution identifier
-     * 
-     * @param em
-     * @param jobExecutionId
-     * @throws KapuaEntityNotFoundException
-     *             If the {@link JobExecution} is not found
-     */
-    public static void delete(EntityManager em, KapuaId jobExecutionId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, JobExecutionImpl.class, jobExecutionId);
-    }
-
-    /**
      * Finds the jobExecution by jobExecution identifier
+     *
+     * @param em
+     * @param scopeId
+     * @param jobExecutionId
+     * @return
      */
-    public static JobExecution find(EntityManager em, KapuaId jobExecutionId) {
-        return em.find(JobExecutionImpl.class, jobExecutionId);
+    public static JobExecution find(EntityManager em, KapuaId scopeId, KapuaId jobExecutionId) {
+        return ServiceDAO.find(em, JobExecutionImpl.class, scopeId, jobExecutionId);
     }
 
     /**
      * Finds the jobExecution by name
-     * 
+     *
      * @param em
      * @param name
      * @return
@@ -102,7 +95,7 @@ public class JobExecutionDAO {
 
     /**
      * Returns the jobExecution list matching the provided query
-     * 
+     *
      * @param em
      * @param jobExecutionQuery
      * @return
@@ -115,7 +108,7 @@ public class JobExecutionDAO {
 
     /**
      * Returns the jobExecution count matching the provided query
-     * 
+     *
      * @param em
      * @param jobExecutionQuery
      * @return
@@ -124,6 +117,19 @@ public class JobExecutionDAO {
     public static long count(EntityManager em, KapuaQuery<JobExecution> jobExecutionQuery)
             throws KapuaException {
         return ServiceDAO.count(em, JobExecution.class, JobExecutionImpl.class, jobExecutionQuery);
+    }
+
+    /**
+     * Deletes the jobExecution by jobExecution identifier
+     *
+     * @param em
+     * @param scopeId
+     * @param jobExecutionId
+     * @throws KapuaEntityNotFoundException
+     *             If the {@link JobExecution} is not found
+     */
+    public static void delete(EntityManager em, KapuaId scopeId, KapuaId jobExecutionId) throws KapuaEntityNotFoundException {
+        ServiceDAO.delete(em, JobExecutionImpl.class, scopeId, jobExecutionId);
     }
 
 }

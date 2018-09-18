@@ -26,13 +26,12 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationDomains;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
+import org.eclipse.kapua.service.authorization.access.AccessInfoAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
-import org.eclipse.kapua.service.authorization.access.AccessInfoAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessInfoQuery;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
-import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionCreator;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionFactory;
 import org.eclipse.kapua.service.authorization.access.AccessRoleCreator;
@@ -149,7 +148,7 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, scopeId));
 
-        return entityManagerSession.onResult(em -> AccessInfoDAO.find(em, accessInfoId));
+        return entityManagerSession.onResult(em -> AccessInfoDAO.find(em, scopeId, accessInfoId));
     }
 
     @Override
@@ -215,11 +214,11 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.write, scopeId));
 
         entityManagerSession.onTransactedAction(em -> {
-            if (AccessInfoDAO.find(em, accessInfoId) == null) {
-                throw new KapuaEntityNotFoundException(AccessPermission.TYPE, accessInfoId);
+            if (AccessInfoDAO.find(em, scopeId, accessInfoId) == null) {
+                throw new KapuaEntityNotFoundException(AccessInfo.TYPE, accessInfoId);
             }
 
-            AccessInfoDAO.delete(em, accessInfoId);
+            AccessInfoDAO.delete(em, scopeId, accessInfoId);
         });
     }
 

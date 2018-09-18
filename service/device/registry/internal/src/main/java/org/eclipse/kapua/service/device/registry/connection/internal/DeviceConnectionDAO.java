@@ -68,11 +68,12 @@ public class DeviceConnectionDAO extends ServiceDAO {
      * Find the device connection by device connection identifier
      *
      * @param em
+     * @param scopeId
      * @param deviceConnectionId
      * @return
      */
-    public static DeviceConnection find(EntityManager em, KapuaId deviceConnectionId) {
-        return em.find(DeviceConnectionImpl.class, deviceConnectionId);
+    public static DeviceConnection find(EntityManager em, KapuaId scopeId, KapuaId deviceConnectionId) {
+        return ServiceDAO.find(em, DeviceConnectionImpl.class, scopeId, deviceConnectionId);
     }
 
     /**
@@ -105,11 +106,12 @@ public class DeviceConnectionDAO extends ServiceDAO {
      * Delete the device connection by device connection identifier
      *
      * @param em
+     * @param scopeId
      * @param deviceConnectionId
      * @throws KapuaEntityNotFoundException If the {@link DeviceConnection} is not found.
      */
-    public static void delete(EntityManager em, KapuaId deviceConnectionId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, DeviceConnectionImpl.class, deviceConnectionId);
+    public static void delete(EntityManager em, KapuaId scopeId, KapuaId deviceConnectionId) throws KapuaEntityNotFoundException {
+        ServiceDAO.delete(em, DeviceConnectionImpl.class, scopeId, deviceConnectionId);
     }
 
 }

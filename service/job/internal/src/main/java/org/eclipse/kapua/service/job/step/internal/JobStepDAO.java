@@ -73,21 +73,15 @@ public class JobStepDAO {
     }
 
     /**
-     * Deletes the jobStep by jobStep identifier
+     * Finds the jobStep by jobStep identifier
      *
      * @param em
+     * @param scopeId
      * @param jobStepId
-     * @throws KapuaEntityNotFoundException If the {@link JobStep} is not found
+     * @return
      */
-    public static void delete(EntityManager em, KapuaId jobStepId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, JobStepImpl.class, jobStepId);
-    }
-
-    /**
-     * Finds the jobStep by jobStep identifier
-     */
-    public static JobStep find(EntityManager em, KapuaId jobStepId) {
-        return em.find(JobStepImpl.class, jobStepId);
+    public static JobStep find(EntityManager em, KapuaId scopeId, KapuaId jobStepId) {
+        return ServiceDAO.find(em, JobStepImpl.class, scopeId, jobStepId);
     }
 
     /**
@@ -127,4 +121,16 @@ public class JobStepDAO {
         return ServiceDAO.count(em, JobStep.class, JobStepImpl.class, jobStepQuery);
     }
 
+
+    /**
+     * Deletes the jobStep by jobStep identifier
+     *
+     * @param em
+     * @param scopeId
+     * @param jobStepId
+     * @throws KapuaEntityNotFoundException If the {@link JobStep} is not found
+     */
+    public static void delete(EntityManager em, KapuaId scopeId, KapuaId jobStepId) throws KapuaEntityNotFoundException {
+        ServiceDAO.delete(em, JobStepImpl.class, scopeId, jobStepId);
+    }
 }

@@ -73,27 +73,20 @@ public class TriggerDAO {
     }
 
     /**
-     * Deletes the trigger by trigger identifier
-     * 
-     * @param em
-     * @param triggerId
-     * @throws KapuaEntityNotFoundException
-     *             If the {@link Trigger} is not found
-     */
-    public static void delete(EntityManager em, KapuaId triggerId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, TriggerImpl.class, triggerId);
-    }
-
-    /**
      * Finds the trigger by trigger identifier
+     *
+     * @param em
+     * @param scopeId
+     * @param triggerId
+     * @return
      */
-    public static Trigger find(EntityManager em, KapuaId triggerId) {
-        return em.find(TriggerImpl.class, triggerId);
+    public static Trigger find(EntityManager em, KapuaId scopeId, KapuaId triggerId) {
+        return ServiceDAO.find(em, TriggerImpl.class, scopeId, triggerId);
     }
 
     /**
      * Returns the trigger list matching the provided query
-     * 
+     *
      * @param em
      * @param triggerQuery
      * @return
@@ -106,7 +99,7 @@ public class TriggerDAO {
 
     /**
      * Returns the trigger count matching the provided query
-     * 
+     *
      * @param em
      * @param triggerQuery
      * @return
@@ -115,6 +108,19 @@ public class TriggerDAO {
     public static long count(EntityManager em, KapuaQuery<Trigger> triggerQuery)
             throws KapuaException {
         return ServiceDAO.count(em, Trigger.class, TriggerImpl.class, triggerQuery);
+    }
+
+    /**
+     * Deletes the trigger by trigger identifier
+     *
+     * @param em
+     * @param scopeId
+     * @param triggerId
+     * @throws KapuaEntityNotFoundException
+     *             If the {@link Trigger} is not found
+     */
+    public static void delete(EntityManager em, KapuaId scopeId, KapuaId triggerId) throws KapuaEntityNotFoundException {
+        ServiceDAO.delete(em, TriggerImpl.class, scopeId, triggerId);
     }
 
 }

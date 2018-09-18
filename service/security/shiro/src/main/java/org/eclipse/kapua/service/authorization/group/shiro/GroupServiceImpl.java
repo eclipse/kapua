@@ -148,7 +148,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> GroupDAO.delete(em, groupId));
+        entityManagerSession.onTransactedAction(em -> GroupDAO.delete(em, scopeId, groupId));
     }
 
     @Override
@@ -164,7 +164,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> GroupDAO.find(em, groupId));
+        return entityManagerSession.onResult(em -> GroupDAO.find(em, scopeId, groupId));
     }
 
     @Override

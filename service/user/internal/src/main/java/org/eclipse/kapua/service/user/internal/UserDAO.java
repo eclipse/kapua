@@ -23,24 +23,25 @@ import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserListResult;
 
 /**
- * User DAO
+ * {@link User} {@link ServiceDAO}
+ *
+ * @since 1.0.0
  */
 public class UserDAO extends ServiceDAO {
 
     /**
-     * Creates and return new User
+     * Creates and return new {@link User}
      *
      * @param em
      * @param userCreator
      * @return
      * @throws KapuaException
+     * @since 1.0.0
      */
-    public static User create(EntityManager em, UserCreator userCreator)
-            throws KapuaException {
+    public static User create(EntityManager em, UserCreator userCreator) {
         //
         // Create User
-        UserImpl userImpl = new UserImpl(userCreator.getScopeId(),
-                userCreator.getName());
+        UserImpl userImpl = new UserImpl(userCreator.getScopeId(), userCreator.getName());
 
         userImpl.setDisplayName(userCreator.getDisplayName());
         userImpl.setEmail(userCreator.getEmail());
@@ -54,48 +55,36 @@ public class UserDAO extends ServiceDAO {
     }
 
     /**
-     * Updates the provided user
+     * Updates the provided {@link User}
      *
      * @param em
      * @param user
      * @return
      * @throws KapuaException
+     * @since 1.0.0
      */
-    public static User update(EntityManager em, User user)
-            throws KapuaException {
-        //
-        // Update user
+    public static User update(EntityManager em, User user) throws KapuaException {
         UserImpl userImpl = (UserImpl) user;
 
         return ServiceDAO.update(em, UserImpl.class, userImpl);
     }
 
     /**
-     * Deletes the user by user identifier
+     * Finds the {@link User} by {@link User} identifier
      *
      * @param em
-     * @param userId
-     * @throws KapuaEntityNotFoundException
-     *             If {@link User} is not found.
-     */
-    public static void delete(EntityManager em, KapuaId userId)
-            throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, UserImpl.class, userId);
-    }
-
-    /**
-     * Finds the user by user identifier
-     *
-     * @param em
+     * @param scopeId
      * @param userId
      * @return
+     * @since 1.0.0
+     *
      */
-    public static User find(EntityManager em, KapuaId userId) {
-        return em.find(UserImpl.class, userId);
+    public static User find(EntityManager em, KapuaId scopeId, KapuaId userId) {
+        return ServiceDAO.find(em, UserImpl.class, scopeId, userId);
     }
 
     /**
-     * Finds the user by name
+     * Finds the {@link User} by the {@link org.eclipse.kapua.service.user.UserAttributes#NAME}
      *
      * @param em
      * @param name
@@ -106,7 +95,7 @@ public class UserDAO extends ServiceDAO {
     }
 
     /**
-     * Finds the user by external id
+     * Finds the {@link User} by the {@link org.eclipse.kapua.service.user.UserAttributes} external id
      *
      * @param em
      *            the entity manager to use
@@ -142,6 +131,20 @@ public class UserDAO extends ServiceDAO {
     public static long count(EntityManager em, KapuaQuery<User> userPermissionQuery)
             throws KapuaException {
         return ServiceDAO.count(em, User.class, UserImpl.class, userPermissionQuery);
+    }
+
+    /**
+     * Deletes the user by user identifier
+     *
+     * @param em
+     * @param scopeId
+     * @param userId
+     * @throws KapuaEntityNotFoundException
+     *             If {@link User} is not found.
+     */
+    public static void delete(EntityManager em, KapuaId scopeId, KapuaId userId)
+            throws KapuaEntityNotFoundException {
+        ServiceDAO.delete(em, UserImpl.class, scopeId, userId);
     }
 
 }
