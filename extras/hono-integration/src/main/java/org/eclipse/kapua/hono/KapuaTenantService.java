@@ -24,7 +24,10 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.account.AccountCreator;
+import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountService;
 
 import java.net.HttpURLConnection;
@@ -35,11 +38,20 @@ public class KapuaTenantService extends BaseTenantService<Object> {
 
     AccountService accountService;
 
-    public KapuaTenantService() {
+    public KapuaTenantService(){
         JAXBContextProvider brokerProvider = new BrokerJAXBContextProvider();
         XmlUtil.setContextProvider(brokerProvider);
         accountService = locator.getService(AccountService.class);
 
+        // Create standard account
+        AccountFactory accountFactory = locator.getFactory(AccountFactory.class);
+        AccountCreator accountCreator = accountFactory.newCreator(KapuaId.ONE, "DEFAULT_TENANT");
+        accountCreator.setOrganizationName("Hono default Tenant");
+        accountCreator.setOrganizationEmail("tenant@example.com");
+        try{
+            Account account = accountService.create(accountCreator);
+        }catch(Exception e) {
+        }
     }
 
     @Override
