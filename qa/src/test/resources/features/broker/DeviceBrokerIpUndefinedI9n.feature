@@ -13,11 +13,11 @@
 Feature: Device Broker connection ip not set
   Device Service integration scenarios with running broker service.
 
-  @StartBroker
-  Scenario: Start broker for all scenarios
-
   @StartDatastore
   Scenario: Start datastore for all scenarios
+
+  @StartBroker
+  Scenario: Start broker for all scenarios
 
   Scenario: Send BIRTH message and then DC message while broker ip is NOT set
   Effectively this is connect and disconnect of Kura device.

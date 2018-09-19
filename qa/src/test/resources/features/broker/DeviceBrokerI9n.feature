@@ -15,14 +15,14 @@ Feature: Device Broker Integration
   Each Scenario starts with BIRTH of device and then the communication over MQTT
   between device and Kapua.
 
+  @StartDatastore
+  Scenario: Start datastore for all scenarios
+
   @StartEventBroker
   Scenario: Start broker for all scenarios
 
   @StartBroker
   Scenario: Start event broker for all scenarios
-
-  @StartDatastore
-  Scenario: Start datastore for all scenarios
 
   Scenario: Send BIRTH message and then DC message
     Effectively this is connect and disconnect of Kura device.
@@ -46,9 +46,9 @@ Feature: Device Broker Integration
   @StopBroker
   Scenario: Stop broker after all scenarios
 
-  @StopDatastore
-  Scenario: Stop datastore after all scenarios
-
   @StopEventBroker
   Scenario: Stop event broker after all scenarios
+
+  @StopDatastore
+  Scenario: Stop datastore after all scenarios
 

@@ -14,14 +14,14 @@ Feature: Device Registry Integration
     Device Registy integration test scenarios. These scenarios test higher level device service functionality
     with all services live.
 
+  @StartDatastore
+  Scenario: Start datastore for all scenarios
+
   @StartEventBroker
   Scenario: Start event broker for all scenarios
 
   @StartBroker
   Scenario: Start broker for all scenarios
-
-  @StartDatastore
-  Scenario: Start datastore for all scenarios
 
 Scenario: Birth message handling from a new device
     A birth message is received. The referenced device does not yet exist and is created on-the-fly. After the
@@ -309,8 +309,8 @@ Scenario: Creating new device, tagging it with specific Tag and then deleting th
   @StopBroker
   Scenario: Stop broker after all scenarios
 
-  @StopDatastore
-  Scenario: Stop datastore after all scenarios
-
   @StopEventBroker
   Scenario: Stop event broker for all scenarios
+
+  @StopDatastore
+  Scenario: Stop datastore after all scenarios

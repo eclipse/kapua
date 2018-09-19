@@ -17,14 +17,14 @@ Feature: Device Broker Cluster tests
     others in cluster and by this disconnecting client form other brokers.
     Tests also include connecting client with same id.
 
+    @StartDatastore
+    Scenario: Start datastore for all scenarios
+
     @StartEventBroker
     Scenario: Start broker for all scenarios
 
     @StartBroker
     Scenario: Start broker for all scenarios
-
-    @StartDatastore
-    Scenario: Start datastore for all scenarios
 
     Scenario: Positive scenario without stealing link
         Connect first client and send BIRTH message. Then connect two more
@@ -98,8 +98,8 @@ Feature: Device Broker Cluster tests
     @StopBroker
     Scenario: Stop broker after all scenarios
 
-    @StopDatastore
-    Scenario: Stop datastore after all scenario
-
     @StopEventBroker
     Scenario: Stop event broker after all scenarios
+
+    @StopDatastore
+    Scenario: Stop datastore after all scenario
