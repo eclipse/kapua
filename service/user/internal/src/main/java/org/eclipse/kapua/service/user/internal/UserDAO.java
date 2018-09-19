@@ -35,7 +35,6 @@ public class UserDAO extends ServiceDAO {
      * @param em
      * @param userCreator
      * @return
-     * @throws KapuaException
      * @since 1.0.0
      */
     public static User create(EntityManager em, UserCreator userCreator) {
@@ -77,7 +76,6 @@ public class UserDAO extends ServiceDAO {
      * @param userId
      * @return
      * @since 1.0.0
-     *
      */
     public static User find(EntityManager em, KapuaId scopeId, KapuaId userId) {
         return ServiceDAO.find(em, UserImpl.class, scopeId, userId);
@@ -97,10 +95,8 @@ public class UserDAO extends ServiceDAO {
     /**
      * Finds the {@link User} by the {@link org.eclipse.kapua.service.user.UserAttributes} external id
      *
-     * @param em
-     *            the entity manager to use
-     * @param externalId
-     *            id the external ID so search for
+     * @param em         the entity manager to use
+     * @param externalId id the external ID so search for
      * @return the user record, may be {@code null}
      */
     public static User findByExternalId(final EntityManager em, final String externalId) {
@@ -139,8 +135,7 @@ public class UserDAO extends ServiceDAO {
      * @param em
      * @param scopeId
      * @param userId
-     * @throws KapuaEntityNotFoundException
-     *             If {@link User} is not found.
+     * @throws KapuaEntityNotFoundException If {@link User} is not found.
      */
     public static void delete(EntityManager em, KapuaId scopeId, KapuaId userId)
             throws KapuaEntityNotFoundException {
