@@ -21,8 +21,30 @@
     <artifactId>hono-integration</artifactId>
 
     <properties>
-        <hono.version>0.7-M1</hono.version>
+        <hono.version>0.8-M2-SNAPSHOT</hono.version>
+        <start-class>org.eclipse.kapua.hono.KapuaApplication</start-class>
     </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.1.0.RELEASE</version>
+                <configuration>
+                <mainClass>${start-class}</mainClass>
+                <layout>JAR</layout>
+            </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
 

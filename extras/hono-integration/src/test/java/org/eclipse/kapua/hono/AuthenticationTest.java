@@ -57,12 +57,12 @@ public class AuthenticationTest extends TestBase {
 
     @Test
     public void testHonoCredentialsClient(final TestContext ctx) {
-        CredentialsClient credentialsClient = new KapuaCredentialsClient("kapua-sys");
+        CredentialsClient credentialsClient = new KapuaCredentialsClient("test-tenant");
         final Async get = ctx.async();
-        credentialsClient.get("password", "kapua-broker")
+        credentialsClient.get("password", "test-user")
                 .setHandler(ctx.asyncAssertSuccess(result -> {
                     Assert.assertNotNull(result);
-                    Assert.assertEquals("kapua-broker", result.getDeviceId());
+                    Assert.assertEquals("test-user", result.getDeviceId());
                     Assert.assertEquals(1, result.getSecrets().size());
                     get.complete();
                 }));
@@ -73,7 +73,7 @@ public class AuthenticationTest extends TestBase {
         KapuaCredentialsService credentialsService = new KapuaCredentialsService();
         credentialsService.setConfig(null);
 
-        credentialsService.get("kapua-sys", "password", "kapua-broker", new JsonObject().put("clientId", "my-device"), ctx.asyncAssertSuccess(response -> {
+        credentialsService.get("test-tenant", "password", "test-user", new JsonObject().put("client-id", "my-device"), ctx.asyncAssertSuccess(response -> {
             Assert.assertEquals(HttpURLConnection.HTTP_OK, response.getStatus());
             Assert.assertEquals("my-device", response.getPayload().getString("device-id"));
         }));

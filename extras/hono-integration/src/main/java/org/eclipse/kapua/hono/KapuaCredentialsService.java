@@ -36,6 +36,8 @@ import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 
 import java.net.HttpURLConnection;
+import java.time.Instant;
+import java.util.Date;
 
 public class KapuaCredentialsService extends BaseCredentialsService<Object> {
 
@@ -63,34 +65,59 @@ public class KapuaCredentialsService extends BaseCredentialsService<Object> {
     @Override
     public void get(String tenantId, String type, String authId, JsonObject clientContext, Handler<AsyncResult<CredentialsResult<JsonObject>>> resultHandler) {
         CredentialsObject result = null;
-
         try {
             User user = KapuaSecurityUtils.doPrivileged(() -> userService.findByName(authId));
             if (user == null) {
-                throw KapuaException.internalError("No user found for " + authId);
+                log.debug("No user found for " + authId);
+                resultHandler.handle(Future.succeededFuture(CredentialsResult.from(HttpURLConnection.HTTP_NOT_FOUND)));
+                return;
             }
 
             Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.find(user.getScopeId()));
             if (account == null) {
-                throw KapuaException.internalError("No account found for " + authId);
+                log.debug("No account found for " + authId);
+                resultHandler.handle(Future.succeededFuture(CredentialsResult.from(HttpURLConnection.HTTP_NOT_FOUND)));
+                return;
             }
 
-            String clientId = clientContext.getString("clientId");
+            String clientId = clientContext.getString("client-id");
             if (clientId == null) {
-                clientId = authId;
+                clientId = user.getEntityAttributes().getProperty(CredentialsConstants.FIELD_PAYLOAD_DEVICE_ID);
             }
 
             CredentialListResult credentials = KapuaSecurityUtils.doPrivileged(() -> credentialService.findByUserId(user.getScopeId(), user.getId()));
             Credential credential = credentials.getFirstItem();
 
             result = new CredentialsObject(clientId, authId, CredentialsConstants.SECRETS_TYPE_HASHED_PASSWORD);
-            //TODO handle secret expiry
-            final JsonObject secret = CredentialsObject.emptySecret(null, null);
+
+            //context matching verification
+           if ( clientContext.containsKey("client-id")) {
+               if ( user.getEntityAttributes().containsKey("client-id")){
+                    if (! clientId.equals(user.getEntityAttributes().getProperty("client-id"))) {
+                        log.debug("Context mismatch" + authId);
+                        resultHandler.handle(Future.succeededFuture(CredentialsResult.from(HttpURLConnection.HTTP_NOT_FOUND)));
+                        return;
+                    }
+               }else{
+                   log.debug("Context provided but no local context found");
+                   resultHandler.handle(Future.succeededFuture(CredentialsResult.from(HttpURLConnection.HTTP_NOT_FOUND)));
+                   return;
+               }
+           }
+            //TODO handle secret expiry and before moment.
+            Date expDate = credential.getExpirationDate();
+            Instant expInstant;
+            if ( expDate != null ) {
+                expInstant = expDate.toInstant();
+            } else{
+                expInstant = null;
+            }
+            final JsonObject secret = CredentialsObject.emptySecret(null, expInstant);
             secret.put(CredentialsConstants.FIELD_SECRETS_KEY, credential.getCredentialKey());
             result = result.addSecret(secret);
 
         } catch (KapuaException ke) {
-            //TODO add logging
+            log.warn(ke.getMessage());
             resultHandler.handle(Future.succeededFuture(CredentialsResult.from(HttpURLConnection.HTTP_INTERNAL_ERROR)));
             return;
         }
@@ -103,4 +130,8 @@ public class KapuaCredentialsService extends BaseCredentialsService<Object> {
         }
     }
 
+    @Override
+    public void getAll(String s, String s1, Handler<AsyncResult<CredentialsResult<JsonObject>>> handler) {
+        //TODO implement
+    }
 }

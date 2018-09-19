@@ -49,6 +49,7 @@ public class UserDAO extends ServiceDAO {
         userImpl.setExternalId(userCreator.getExternalId());
         userImpl.setStatus(userCreator.getUserStatus());
         userImpl.setExpirationDate(userCreator.getExpirationDate());
+        userImpl.setEntityAttributes(userCreator.getEntityAttributes());
 
         return ServiceDAO.create(em, userImpl);
     }

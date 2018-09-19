@@ -30,6 +30,7 @@ import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.eclipse.kapua.service.device.registry.DeviceStatus;
 import org.eclipse.kapua.service.user.UserService;
 
 import java.net.HttpURLConnection;
@@ -63,9 +64,15 @@ public class KapuaRegistrationService extends BaseRegistrationService<Object> {
 
     }
 
+    @Override
+    public void assertRegistration(String tenantId, String deviceId, Handler<AsyncResult<RegistrationResult>> resultHandler){
+         assertRegistration(tenantId, deviceId, null, resultHandler);
+    }
+
 
     @Override
     public void assertRegistration(String tenantId, String deviceId, String gatewayId, Handler<AsyncResult<RegistrationResult>> resultHandler) {
+
         try {
             Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.findByName(tenantId));
             if (account == null) {
@@ -73,7 +80,7 @@ public class KapuaRegistrationService extends BaseRegistrationService<Object> {
             }
 
             Device device = KapuaSecurityUtils.doPrivileged(() -> deviceRegistryService.findByClientId(account.getScopeId(), deviceId));
-            if (device != null) {
+            if (device != null && device.getStatus() == DeviceStatus.ENABLED) {
                 //TODO include more device data
                 JsonObject deviceData = new JsonObject();
 
