@@ -15,7 +15,7 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
-import org.eclipse.kapua.UserAlreadyReservedException;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -28,10 +28,13 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.DeviceDomains;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionAttributes;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
+import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionQueryImpl;
+import org.eclipse.kapua.service.device.registry.connection.internal.UserAlreadyReservedException;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOption;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionCreator;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionListResult;
-import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionQuery;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionService;
 import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
 
@@ -66,12 +69,18 @@ public class DeviceConnectionOptionServiceImpl extends AbstractKapuaService impl
         //
         // Check Access
         KapuaLocator locator = KapuaLocator.getInstance();
-        DeviceConnectionOptionQuery query = new DeviceConnectionOptionQueryImpl(deviceConnectionOptions.getScopeId());
+        DeviceConnectionService deviceConnectionService = locator.getService(DeviceConnectionService.class);
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.write, deviceConnectionOptions.getScopeId()));
-        query.setPredicate(new AttributePredicateImpl<>(DeviceConnectionAttributes.RESERVED_USER_ID, deviceConnectionOptions.getReservedUserId()));
-        if (count(query) > 0) {
+
+        AndPredicateImpl deviceAndPredicate = new AndPredicateImpl();
+        deviceAndPredicate.and(new AttributePredicateImpl<>(DeviceConnectionAttributes.SCOPE_ID, deviceConnectionOptions.getScopeId()));
+        deviceAndPredicate.and(new AttributePredicateImpl<>(DeviceConnectionAttributes.RESERVED_USER_ID, deviceConnectionOptions.getReservedUserId()));
+        DeviceConnectionQuery deviceConnectionQuery = new DeviceConnectionQueryImpl(deviceConnectionOptions.getScopeId());
+        deviceConnectionQuery.setPredicate(deviceAndPredicate);
+        long cnt = deviceConnectionService.count(deviceConnectionQuery);
+        if (cnt > 0) {
             throw new UserAlreadyReservedException(deviceConnectionOptions.getScopeId(), deviceConnectionOptions.getId(), deviceConnectionOptions.getReservedUserId());
         }
 

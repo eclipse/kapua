@@ -9,8 +9,10 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua;
+package org.eclipse.kapua.service.device.registry.connection.internal;
 
+import org.eclipse.kapua.ConnectionServiceErrorCodes;
+import org.eclipse.kapua.ConnectionServiceException;
 import org.eclipse.kapua.model.id.KapuaId;
 
 public class UserAlreadyReservedException extends ConnectionServiceException{
@@ -21,7 +23,7 @@ public class UserAlreadyReservedException extends ConnectionServiceException{
     private static final long serialVersionUID = 7427228255238231063L;
 
     public UserAlreadyReservedException(KapuaId scopeId, KapuaId connectionId, KapuaId userId) {
-        super(KapuaErrorCodes.USER_ALREADY_RESERVED_BY_ANOTHER_CONNECTION);
+        super(ConnectionServiceErrorCodes.USER_ALREADY_RESERVED_BY_ANOTHER_CONNECTION);
     }
 
 }

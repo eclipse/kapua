@@ -11,15 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua;
 
-public class ConnectionServiceException extends KapuaException{
+public enum ConnectionServiceErrorCodes implements KapuaErrorCode{
 
     /**
-     * 
+     * User is already reserved by another connection
      */
-    private static final long serialVersionUID = -3657002518916941124L;
-
-    public ConnectionServiceException(ConnectionServiceErrorCodes code) {
-        super(code);
-    }
+    USER_ALREADY_RESERVED_BY_ANOTHER_CONNECTION;
 
 }
