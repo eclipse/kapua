@@ -21,7 +21,7 @@
     <artifactId>hono-integration</artifactId>
 
     <properties>
-        <hono.version>0.7-M1</hono.version>
+        <hono.version>0.8-M1-SNAPSHOT</hono.version>
     </properties>
 
     <dependencies>
