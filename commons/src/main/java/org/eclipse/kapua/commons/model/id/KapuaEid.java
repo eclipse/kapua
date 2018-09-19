@@ -11,19 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.model.id;
 
+import org.eclipse.kapua.model.id.KapuaId;
+
+import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Base64;
-
-import javax.persistence.Embeddable;
-
-import org.eclipse.kapua.model.id.KapuaId;
 
 /**
  * Kapua identifier reference implementation.
  *
  * @since 1.0
- *
  */
 @Embeddable
 public class KapuaEid implements KapuaId, Serializable {
@@ -109,15 +107,15 @@ public class KapuaEid implements KapuaId, Serializable {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (!(obj instanceof KapuaId)) {
             return false;
         }
-        KapuaEid other = (KapuaEid) obj;
+        KapuaId other = (KapuaId) obj;
         if (eid == null) {
-            if (other.eid != null) {
+            if (other.getId() != null) {
                 return false;
             }
-        } else if (!eid.equals(other.eid)) {
+        } else if (!eid.equals(other.getId())) {
             return false;
         }
         return true;
