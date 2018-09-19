@@ -12,14 +12,14 @@
 @device
 Feature: Device lifecycle scenarios
 
+  @StartDatastore
+  Scenario: Start datastore for all scenarios
+
   @StartEventBroker
   Scenario: Start event broker for all scenarios
 
   @StartBroker
   Scenario: Start broker for all scenarios
-
-  @StartDatastore
-  Scenario: Start datastore for all scenarios
 
 Scenario: Starting and stopping the simulator should create a device entry and properly set its status
   This starts and stops a simulator instance and checks if the connection state
@@ -74,8 +74,8 @@ Scenario: Installing a package
   @StopBroker
   Scenario: Stop broker after all scenarios
 
-  @StopDatastore
-  Scenario: Stop datastore after all scenarios
-
   @StopEventBroker
   Scenario: Stop event broker for all scenarios
+
+  @StopDatastore
+  Scenario: Stop datastore after all scenarios
