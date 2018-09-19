@@ -16,5 +16,6 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
     <include relativeToChangelogFile="true" file="./0.3.0/changelog-asset-job-0.3.0.xml"/>
+    <include relativeToChangelogFile="true" file="./1.0.0/changelog-asset-job-1.0.0.xml"/>
 
 </databaseChangeLog>
