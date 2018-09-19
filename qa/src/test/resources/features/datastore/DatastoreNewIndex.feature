@@ -13,14 +13,14 @@
 @datastore
 Feature: Datastore tests
 
+  @StartDatastore
+  Scenario: Start datastore for all scenarios
+
   @StartEventBroker
   Scenario: Start event broker for all scenarios
 
   @StartBroker
   Scenario: Start broker for all scenarios
-
-  @StartDatastore
-  Scenario: Start datastore for all scenarios
 
   Scenario: Simple positive scenario for creating default - weekly index
   Create elasticsearch index with default setting for index creation which is weekly
@@ -200,8 +200,8 @@ Feature: Datastore tests
   @StopBroker
   Scenario: Stop broker after all scenarios
 
-  @StopDatastore
-  Scenario: Stop datastore after all scenarios
-
   @StopEventBroker
   Scenario: Stop event broker for all scenarios
+
+  @StopDatastore
+  Scenario: Stop datastore after all scenarios

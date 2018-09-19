@@ -13,14 +13,14 @@
 @datastore
 Feature: Datastore tests
 
+  @StartDatastore
+  Scenario: Start datastore for all scenarios
+
   @StartEventBroker
   Scenario: Start event broker for all scenarios
 
   @StartBroker
   Scenario: Start broker for all scenarios
-
-  @StartDatastore
-  Scenario: Start datastore for all scenarios
 
   Scenario: Create index with specific prefix
   Create elasticsearch index with specific prefix set by system property.
@@ -42,8 +42,8 @@ Feature: Datastore tests
   @StopBroker
   Scenario: Stop broker after all scenarios
 
-  @StopDatastore
-  Scenario: Stop datastore after all scenarios
-
   @StopEventBroker
   Scenario: Stop event broker for all scenarios
+
+  @StopDatastore
+  Scenario: Stop datastore after all scenarios

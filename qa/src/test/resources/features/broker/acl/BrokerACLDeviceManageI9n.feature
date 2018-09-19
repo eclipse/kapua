@@ -41,14 +41,14 @@ Feature: Broker ACL tests
   ACL_DATA_ACC_CLI = {0}.{1}.>
   ACL_CTRL_ACC_NOTIFY = $EDC.{0}.*.*.NOTIFY.{1}.>
 
+  @StartDatastore
+  Scenario: Start datastore for all scenarios
+
   @StartEventBroker
   Scenario: Start event broker for all scenarios
 
   @StartBroker
   Scenario: Start broker for all scenarios
-
-  @StartDatastore
-  Scenario: Start datastore for all scenarios
 
 #
 # Data manage
@@ -210,8 +210,8 @@ Feature: Broker ACL tests
   @StopBroker
   Scenario: Stop broker after all scenarios
 
-  @StopDatastore
-  Scenario: Stop datastore after all scenarios
-
   @StopEventBroker
   Scenario: Stop event broker for all scenarios
+
+  @StopDatastore
+  Scenario: Stop datastore after all scenarios
