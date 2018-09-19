@@ -82,14 +82,7 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
      * @throws NamingException
      */
     public JMSServiceEventBus() throws JMSException, NamingException {
-        try {
-            eventBusJMSConnectionBridge = new EventBusJMSConnectionBridge(this);
-        } catch (JMSException | NamingException e) {
-            // Since the class is instantiated by the means of the ServiceLoader,
-            // adding a log message here is helpful.
-            LOGGER.error(e.getMessage(), e);
-            throw e;
-        }
+        eventBusJMSConnectionBridge = new EventBusJMSConnectionBridge(this);
     }
 
     @Override
@@ -112,9 +105,8 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
             } else {
                 throw new ServiceEventBusException(String.format("Wrong message serializer Object type ('%s')!", messageSerializerClazz));
             }
-
             eventBusJMSConnectionBridge.start();
-        } catch (JMSException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+        } catch (JMSException | ClassNotFoundException | NamingException | InstantiationException | IllegalAccessException e) {
             throw new ServiceEventBusException(e);
         }
     }
@@ -219,8 +211,14 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
 
         private Connection jmsConnection;
         private Map<String, SenderPool> senders = new HashMap<>();
+        private ExceptionListener exceptionListener;
 
-        public EventBusJMSConnectionBridge(ExceptionListener exceptionListener) throws JMSException, NamingException {
+        public EventBusJMSConnectionBridge(ExceptionListener exceptionListener) {
+            this.exceptionListener = exceptionListener;
+        }
+
+        void start() throws JMSException, NamingException, ServiceEventBusException {
+            stop();
             String eventbusUrl = SystemSetting.getInstance().getString(SystemSettingKey.EVENT_BUS_URL);
             String eventbusUsername = SystemSetting.getInstance().getString(SystemSettingKey.EVENT_BUS_USERNAME);
             String eventbusPassword = SystemSetting.getInstance().getString(SystemSettingKey.EVENT_BUS_PASSWORD);
@@ -235,9 +233,6 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
 
             jmsConnection = jmsConnectionFactory.createConnection(eventbusUsername, eventbusPassword);
             jmsConnection.setExceptionListener(exceptionListener);
-        }
-
-        void start() throws JMSException {
             jmsConnection.start();
         }
 
