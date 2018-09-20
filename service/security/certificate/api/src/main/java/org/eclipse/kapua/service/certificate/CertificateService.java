@@ -17,12 +17,16 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaNamedEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
+import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
 import java.util.List;
 
 public interface CertificateService extends KapuaEntityService<Certificate, CertificateCreator>,
         KapuaNamedEntityService<Certificate>,
-        KapuaUpdatableEntityService<Certificate> {
+        KapuaUpdatableEntityService<Certificate>,
+        KapuaConfigurableService {
+
+    CertificateDomain CERTIFICATE_DOMAIN = new CertificateDomain();
 
     @Override
     Certificate create(CertificateCreator var1) throws KapuaException;

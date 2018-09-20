@@ -20,6 +20,9 @@ import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.KapuaFileUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.model.config.metatype.KapuaTad;
+import org.eclipse.kapua.model.config.metatype.KapuaTicon;
+import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -43,8 +46,12 @@ import org.eclipse.kapua.service.certificate.util.CertificateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
+import javax.xml.namespace.QName;
 
 @KapuaProvider
 public class CertificateServiceImpl implements CertificateService {
@@ -154,5 +161,83 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     public List<Certificate> findAncestorsCertificates(KapuaId scopeId, CertificateUsage usage) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public KapuaTocd getConfigMetadata(KapuaId scopeId) throws KapuaException {
+        return EmptyTocd.INSTANCE;
+    }
+
+    @Override
+    public Map<String, Object> getConfigValues(KapuaId scopeId) throws KapuaException {
+        return Collections.emptyMap();
+    }
+
+    @Override
+    public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
+        throw new UnsupportedOperationException();
+    }
+
+    public static class EmptyTocd implements KapuaTocd {
+
+        private static final EmptyTocd INSTANCE = new EmptyTocd();
+
+        private EmptyTocd() {}
+
+        @Override
+        public void setOtherAttributes(Map<QName, String> otherAttributes) {}
+
+        @Override
+        public void setName(String value) {}
+
+        @Override
+        public void setId(String value) {}
+
+        @Override
+        public void setIcon(List<? extends KapuaTicon> icon) {}
+
+        @Override
+        public void setDescription(String value) {}
+
+        @Override
+        public void setAny(List<Object> any) {}
+
+        @Override
+        public void setAD(List<? extends KapuaTad> icon) {}
+
+        @Override
+        public Map<QName, String> getOtherAttributes() {
+            return Collections.emptyMap();
+        }
+
+        @Override
+        public String getName() {
+            return CertificateService.class.getSimpleName();
+        }
+
+        @Override
+        public String getId() {
+            return CertificateService.class.getName();
+        }
+
+        @Override
+        public List<KapuaTicon> getIcon() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public String getDescription() {
+            return null;
+        }
+
+        @Override
+        public List<Object> getAny() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public List<KapuaTad> getAD() {
+            return Collections.emptyList();
+        }
     }
 }
