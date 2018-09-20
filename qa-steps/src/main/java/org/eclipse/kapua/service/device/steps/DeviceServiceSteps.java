@@ -11,20 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.steps;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
-import java.util.Vector;
-
-import javax.inject.Inject;
-
+import cucumber.api.Scenario;
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
+import cucumber.api.java.en.And;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -69,10 +63,10 @@ import org.eclipse.kapua.service.TestJAXBContextProvider;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceAttributes;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
-import org.eclipse.kapua.service.device.registry.DeviceAttributes;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
@@ -84,22 +78,26 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceListResultImpl;
 import org.eclipse.kapua.service.device.registry.internal.DeviceQueryImpl;
 import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService;
 import org.eclipse.kapua.service.tag.Tag;
+import org.eclipse.kapua.service.tag.TagAttributes;
 import org.eclipse.kapua.service.tag.TagCreator;
 import org.eclipse.kapua.service.tag.TagListResult;
 import org.eclipse.kapua.service.tag.TagService;
 import org.eclipse.kapua.service.tag.internal.TagFactoryImpl;
-import org.eclipse.kapua.service.tag.TagAttributes;
 import org.eclipse.kapua.service.user.steps.TestConfig;
-
-import cucumber.api.Scenario;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.And;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
-import cucumber.runtime.java.guice.ScenarioScoped;
 import org.junit.Assert;
+
+import javax.inject.Inject;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
+import java.util.Vector;
 
 // Implementation of Gherkin steps used in DeviceRegistryI9n.feature scenarios.
 @ScenarioScoped
@@ -387,9 +385,11 @@ public class DeviceServiceSteps extends BaseQATests /*KapuaTest*/ {
     @And("^I tag device with \"([^\"]*)\" tag$")
     public void iTagDeviceWithTag(String deviceTagName) throws Throwable {
 
+        Account account = (Account) stepData.get("LastAccount");
+
         Device device = (Device) stepData.get("Device");
-        // stepData.clear();
-        TagCreator tagCreator = new TagFactoryImpl().newCreator(DEFAULT_SCOPE_ID);
+
+        TagCreator tagCreator = new TagFactoryImpl().newCreator(account.getId());
         tagCreator.setName(deviceTagName);
         Tag tag = tagService.create(tagCreator);
         Set<KapuaId> tags = new HashSet<>();
@@ -411,12 +411,12 @@ public class DeviceServiceSteps extends BaseQATests /*KapuaTest*/ {
         Account lastAcc = (Account) stepData.get("LastAccount");
         DeviceQueryImpl deviceQuery = new DeviceQueryImpl(lastAcc.getId());
 
-        KapuaQuery<Tag> tagQuery = new TagFactoryImpl().newQuery(DEFAULT_SCOPE_ID);
-        tagQuery.setPredicate(new AttributePredicateImpl<String>(TagAttributes.NAME, deviceTagName, AttributePredicate.Operator.EQUAL));
+        KapuaQuery<Tag> tagQuery = new TagFactoryImpl().newQuery(lastAcc.getId());
+        tagQuery.setPredicate(new AttributePredicateImpl<>(TagAttributes.NAME, deviceTagName, AttributePredicate.Operator.EQUAL));
         TagListResult tagQueryResult = tagService.query(tagQuery);
         Tag tag = tagQueryResult.getFirstItem();
         deviceQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo(DeviceAttributes.TAG_IDS, tag.getId()));
-        DeviceListResult deviceList = (DeviceListResult) deviceRegistryService.query(deviceQuery);
+        DeviceListResult deviceList = deviceRegistryService.query(deviceQuery);
 
         stepData.put("DeviceList", deviceList);
     }
@@ -427,6 +427,7 @@ public class DeviceServiceSteps extends BaseQATests /*KapuaTest*/ {
         DeviceListResult deviceList = (DeviceListResult) stepData.get("DeviceList");
         Device device = deviceList.getFirstItem();
 
+        Assert.assertNotNull(device);
         Assert.assertEquals(deviceName, device.getClientId());
     }
 
