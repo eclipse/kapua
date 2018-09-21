@@ -24,7 +24,7 @@
     <files>
         <file>
             <source>${project.basedir}/entrypoint/run-h2</source>
-            <outputDirectory>home/kapua</outputDirectory>
+            <outputDirectory>var/opt/h2</outputDirectory>
             <fileMode>0755</fileMode>
         </file>
     </files>

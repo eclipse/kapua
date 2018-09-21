@@ -36,4 +36,4 @@ if [ -n "$KEYCLOAK_URL" -a -n "$KAPUA_URL" ]; then
 fi
 
 # Continue with startup
-exec /home/kapua/run-jetty "$@"
+exec /var/opt/jetty/run-jetty "$@"
