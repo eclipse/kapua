@@ -47,7 +47,6 @@ import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
@@ -332,59 +331,6 @@ public class AccountConfigPanel extends LayoutContainer {
                 field = paintConfigParameter(param);
             } else {
                 field = paintMultiFieldConfigParameter(param);
-            }
-            String hideFor = param.getOtherAttributes().get("hideFor");
-
-            if (hideFor != null && hideFor.equals("NON_ROOT") && !selectedAccountId.equals(currentSession.getRootAccountId())) {
-                field.hide();
-            }
-            String allowSelfEditValue = param.getOtherAttributes() != null ? param.getOtherAttributes().get("allowSelfEdit") : null;
-            boolean allowSelfEdit = allowSelfEditValue != null && allowSelfEditValue.equals("true");
-            boolean isEditingSelf = selectedAccountId == null || selectedAccountId.equals(currentSession.getSelectedAccountId());
-            if (isEditingSelf && !allowSelfEdit) {
-                field.disable();
-            }
-            final String showOnlyForActorValue = param.getOtherAttributes() != null ? param.getOtherAttributes().get("showOnlyForActor") : null;
-            final String showOnlyForTargetValue = param.getOtherAttributes() != null ? param.getOtherAttributes().get("showOnlyForTarget") : null;
-            if (showOnlyForActorValue != null || showOnlyForTargetValue != null) {
-                ACCOUNT_SERVICE.find(selectedAccountId, new AsyncCallback<GwtAccount>() {
-
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        FailureHandler.handle(caught);
-                    }
-
-                    @Override
-                    public void onSuccess(final GwtAccount targetAccount) {
-
-                        if (showOnlyForActorValue != null) {
-                            boolean onlyShownForRootActor = showOnlyForActorValue.equals("ROOT");
-                            if (onlyShownForRootActor && !currentSession.getRootAccountId().equals(currentSession.getSelectedAccountId())) {
-                                field.hide();
-                            }
-                        }
-
-                        if (showOnlyForTargetValue != null) {
-                            boolean onlyShownForRootChildrenTarget = showOnlyForTargetValue.equals("ROOT_AND_CHILDREN");
-                            boolean onlyShownForRootTarget = showOnlyForTargetValue.equals("ROOT");
-                            if (
-                                    (
-                                        onlyShownForRootChildrenTarget &&
-                                        (
-                                                !currentSession.getRootAccountId().equals(targetAccount.getId()) &&
-                                                !currentSession.getRootAccountId().equals(targetAccount.getParentAccountId())
-                                        )
-                                    ) || (
-                                        onlyShownForRootTarget &&
-                                        !currentSession.getRootAccountId().equals(targetAccount.getId())
-                                    )
-                            ) {
-                                field.hide();
-                            }
-                        }
-                    }
-                });
-
             }
             actionFieldSet.add(field, formData);
         }
