@@ -25,14 +25,14 @@
     <files>
         <file>
             <source>${project.basedir}/entrypoint/run-console</source>
-            <outputDirectory>home/kapua/</outputDirectory>
+            <outputDirectory>var/opt/jetty</outputDirectory>
             <fileMode>0777</fileMode>
         </file>
     </files>
 
     <dependencySets>
         <dependencySet>
-            <outputDirectory>var/lib/jetty/webapps/root</outputDirectory>
+            <outputDirectory>var/opt/jetty/webapps/root</outputDirectory>
             <unpack>true</unpack>
             <scope>runtime</scope>
 

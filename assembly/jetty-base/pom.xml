@@ -24,7 +24,7 @@
     <artifactId>kapua-assembly-jetty-base</artifactId>
 
     <properties>
-        <jetty.version>9.4.12.v20180830</jetty.version>
+        <jetty.url>https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.12.v20180830/jetty-distribution-9.4.12.v20180830.tar.gz</jetty.url>
     </properties>
 
     <profiles>
@@ -46,34 +46,11 @@
                                 <image>
                                     <name>${docker.account}/jetty-base</name>
                                     <build>
-                                        <from>${docker.account}/java-base</from>
-                                        <runCmds>
-                                            <runCmd><![CDATA[
-                                    cd /home/kapua && \
-                                    curl -s https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/${jetty.version}/jetty-distribution-${jetty.version}.tar.gz -o jetty-distribution.tar.gz && \
-                                    mkdir -p jetty && cd jetty && \
-                                    tar --strip=1 -xzf ../jetty-distribution.tar.gz && \
-                                    rm ../jetty-distribution.tar.gz && \
-                                    mkdir -p /var/lib/jetty/lib/ext /var/lib/jetty/start.d && \
-                                    chown kapua:kapua /var/lib/jetty && \
-                                    cd /var/lib/jetty && \
-                                    java -jar /home/kapua/jetty/start.jar --approve-all-licenses --create-startd --add-to-start=http,jsp,jstl,websocket,deploy,logging-logback,jmx,stats
-                                    ]]></runCmd>
-                                        </runCmds>
                                         <assembly>
                                             <descriptor>${project.basedir}/descriptors/jetty-base.xml</descriptor>
-                                            <basedir>/</basedir>
                                         </assembly>
-                                        <workdir>/var/lib/jetty</workdir>
-                                        <entryPoint>
-                                            <exec>
-                                                <arg>/home/kapua/run-jetty</arg>
-                                            </exec>
-                                        </entryPoint>
-                                        <ports>
-                                            <port>8080</port>
-                                            <port>8778</port>
-                                        </ports>
+                                        <dockerFile>${project.basedir}/docker/Dockerfile</dockerFile>
+                                        <filter>@</filter>
                                     </build>
                                 </image>
                             </images>

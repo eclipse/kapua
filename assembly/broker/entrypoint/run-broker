@@ -12,9 +12,9 @@
 ################################################################################
 
 # Generate X509 certificate and private key
-openssl req -x509 -newkey rsa:4096 -keyout /home/kapua/key.pem -out /home/kapua/cert.pem -days 365 -nodes -subj '/O=Eclipse Kapua/C=XX'
-openssl pkcs8 -topk8 -in /home/kapua/key.pem -out /home/kapua/key.pk8 -nocrypt
-rm /home/kapua/key.pem
+openssl req -x509 -newkey rsa:4096 -keyout /var/opt/activemq/key.pem -out /var/opt/activemq/cert.pem -days 365 -nodes -subj '/O=Eclipse Kapua/C=XX'
+openssl pkcs8 -topk8 -in /var/opt/activemq/key.pem -out /var/opt/activemq/key.pk8 -nocrypt
+rm /var/opt/activemq/key.pem
 
 # Run broker
-/maven/bin/activemq console
+/opt/activemq/bin/activemq console

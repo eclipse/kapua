@@ -24,7 +24,7 @@
 
     <dependencySets>
         <dependencySet>
-            <outputDirectory>var/lib/jetty/webapps/root/WEB-INF/lib/</outputDirectory>
+            <outputDirectory>var/opt/jetty/webapps/root/WEB-INF/lib/</outputDirectory>
             <unpack>false</unpack>
             <scope>runtime</scope>
             <useProjectArtifact>false</useProjectArtifact>
@@ -43,7 +43,7 @@
     <files>
         <file>
             <source>${project.basedir}/entrypoint/run-jetty</source>
-            <outputDirectory>home/kapua</outputDirectory>
+            <outputDirectory>var/opt/jetty/</outputDirectory>
             <fileMode>0755</fileMode>
         </file>
     </files>

@@ -13,16 +13,16 @@
 ################################################################################
 
 # Generate X509 certificate and private key
-openssl req -x509 -newkey rsa:4096 -keyout /home/kapua/key.pem -out /home/kapua/cert.pem -days 365 -nodes -subj '/O=Eclipse Kapua/C=XX'
-openssl pkcs8 -topk8 -in /home/kapua/key.pem -out /home/kapua/key.pk8 -nocrypt
-rm /home/kapua/key.pem
+openssl req -x509 -newkey rsa:4096 -keyout /var/opt/jetty/key.pem -out /var/opt/jetty/cert.pem -days 365 -nodes -subj '/O=Eclipse Kapua/C=XX'
+openssl pkcs8 -topk8 -in /var/opt/jetty/key.pem -out /var/opt/jetty/key.pk8 -nocrypt
+rm /var/opt/jetty/key.pem
 
-START_ARGS="$START_ARGS -Djetty.home=/home/kapua/jetty"
-START_ARGS="$START_ARGS -Djetty.base=/var/lib/jetty"
+START_ARGS="$START_ARGS -Djetty.home=/opt/jetty"
+START_ARGS="$START_ARGS -Djetty.base=/var/opt/jetty"
 
 # START_ARGS : Arguments to the starter JVM
 # JAVA_OPTS : Arguments to the server JVMs
 
 eval echo "START_ARGS = $START_ARGS"
 eval echo "JAVA_OPTS = $JAVA_OPTS"
-eval exec /usr/bin/java $START_ARGS -jar /home/kapua/jetty/start.jar $JAVA_OPTS "$@"
+eval exec /usr/bin/java $START_ARGS -jar /opt/jetty/start.jar $JAVA_OPTS "$@"
