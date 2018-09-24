@@ -59,7 +59,6 @@ public class DeviceTabPackagesInProgress extends TabItem {
         super(MSGS.deviceInstallTabInProgress(), null);
 
         KapuaIcon icon = new KapuaIcon(IconSet.SPINNER);
-        // icon.setColor(Color.GREEN);
         setIcon(icon);
 
         this.parentTabPanel = parentTabPanel;

@@ -24,12 +24,15 @@ import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPr
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAsset;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssetChannel;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssets;
+import org.eclipse.kapua.app.console.module.device.shared.model.device.management.registry.GwtDeviceManagementOperation;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.type.ObjectTypeConverter;
 import org.eclipse.kapua.model.type.ObjectValueConverter;
 import org.eclipse.kapua.service.device.management.asset.DeviceAsset;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationProperty;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
@@ -41,7 +44,8 @@ import java.util.List;
 
 public class KapuaGwtDeviceModelConverter {
 
-    private KapuaGwtDeviceModelConverter() { }
+    private KapuaGwtDeviceModelConverter() {
+    }
 
     public static GwtDevice convertDevice(Device device)
             throws KapuaException {
@@ -60,7 +64,7 @@ public class KapuaGwtDeviceModelConverter {
         } else {
             gwtDevice.setGroupDevice(GwtGroupDevice.ANY.name());
         }
-        gwtDevice.setGroupId(KapuaGwtCommonsModelConverter.convertKapuaId(device.getGroupId())); 
+        gwtDevice.setGroupId(KapuaGwtCommonsModelConverter.convertKapuaId(device.getGroupId()));
         gwtDevice.setFirmwareVersion(device.getFirmwareVersion());
         gwtDevice.setBiosVersion(device.getBiosVersion());
         gwtDevice.setOsVersion(device.getOsVersion());
@@ -107,6 +111,27 @@ public class KapuaGwtDeviceModelConverter {
             gwtDevice.setGwtDeviceConnectionStatus(GwtDeviceConnectionStatus.UNKNOWN.name());
         }
         return gwtDevice;
+    }
+
+    public static GwtDeviceManagementOperation convertManagementOperation(DeviceManagementOperation deviceManagementOperation) {
+        GwtDeviceManagementOperation gwtDeviceManagementOperation = new GwtDeviceManagementOperation();
+
+        KapuaGwtCommonsModelConverter.convertUpdatableEntity(deviceManagementOperation, gwtDeviceManagementOperation);
+
+        gwtDeviceManagementOperation.setStartedOn(deviceManagementOperation.getStartedOn());
+        gwtDeviceManagementOperation.setEndedOn(deviceManagementOperation.getEndedOn());
+        gwtDeviceManagementOperation.setDeviceId(KapuaGwtCommonsModelConverter.convertKapuaId(deviceManagementOperation.getDeviceId()));
+        gwtDeviceManagementOperation.setOperationId(KapuaGwtCommonsModelConverter.convertKapuaId(deviceManagementOperation.getOperationId()));
+        gwtDeviceManagementOperation.setAppId(deviceManagementOperation.getAppId());
+        gwtDeviceManagementOperation.setActionType(deviceManagementOperation.getAction().name());
+        gwtDeviceManagementOperation.setStatus(deviceManagementOperation.getStatus().name());
+
+        List<String> deviceManagementProperties = new ArrayList<String>();
+        for (DeviceManagementOperationProperty dmop : deviceManagementOperation.getInputProperties()) {
+            deviceManagementProperties.add(dmop.getPropertyValue());
+        }
+
+        return gwtDeviceManagementOperation;
     }
 
     public static GwtDeviceEvent convertDeviceEvent(DeviceEvent deviceEvent) {

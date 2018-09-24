@@ -61,10 +61,12 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
     private TabPanel tabsPanel;
     private DeviceTabPackagesInstalled installedPackageTab;
     private DeviceTabPackagesInProgress inProgressPackageTab;
+    private DeviceTabPackagesHistory historyPackageTab;
 
-    public DeviceTabPackages(GwtSession currentSession,
-                             DeviceView deviceTabs) {
+
+    public DeviceTabPackages(GwtSession currentSession, DeviceView deviceTabs) {
         super(currentSession, MSGS.tabPackages(), new KapuaIcon(IconSet.INBOX));
+
         this.deviceTabs = deviceTabs;
         setEnabled(false);
     }
@@ -82,6 +84,8 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
         if (initialized && tabsPanel.getSelectedItem() == null) {
             tabsPanel.setSelection(installedPackageTab);
         }
+
+        historyPackageTab.setEntity(gwtDevice);
 
         doRefresh();
     }
@@ -139,8 +143,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if (selectedEntity != null &&
-                        selectedEntity.isOnline()) {
+                if (selectedEntity != null && selectedEntity.isOnline()) {
                     openInstallDialog();
                 } else {
                     openDeviceOfflineAlertDialog();
@@ -152,8 +155,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if (selectedEntity != null &&
-                        selectedEntity.isOnline()) {
+                if (selectedEntity != null && selectedEntity.isOnline()) {
                     openUninstallDialog();
                 } else {
                     openDeviceOfflineAlertDialog();
@@ -206,6 +208,23 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
         });
         tabsPanel.add(inProgressPackageTab);
 
+        //
+        // History packages tab
+        historyPackageTab = new DeviceTabPackagesHistory(currentSession);
+        historyPackageTab.setBorders(false);
+        historyPackageTab.setLayout(new FitLayout());
+
+        historyPackageTab.addListener(Events.Select, new Listener<ComponentEvent>() {
+
+            @Override
+            public void handleEvent(ComponentEvent be) {
+                refresh();
+            }
+        });
+        tabsPanel.add(historyPackageTab);
+
+        //
+        // Tabs
         add(tabsPanel);
         layout(true);
         Node node0 = tabsPanel.getElement();
@@ -328,8 +347,11 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
             // Refresh the installed tab if selected
             if (tabsPanel.getSelectedItem().equals(installedPackageTab)) {
                 installedPackageTab.refresh();
-            } else {
+            }
+            if (tabsPanel.getSelectedItem().equals(inProgressPackageTab)) {
                 inProgressPackageTab.refresh();
+            } else {
+                historyPackageTab.refresh();
             }
 
             //
@@ -356,8 +378,10 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
     public void setDirty() {
         if (initialized) {
             setDirty(true);
+
             installedPackageTab.setDirty(true);
             inProgressPackageTab.setDirty(true);
+            historyPackageTab.setDirty(true);
         }
     }
 
