@@ -613,55 +613,11 @@
                                 <image>
                                     <name>${docker.account}/kapua-broker</name>
                                     <build>
-                                        <from>${docker.account}/java-base</from>
                                         <assembly>
                                             <descriptor>${project.basedir}/descriptors/kapua-broker.xml</descriptor>
                                         </assembly>
-                                        <entryPoint>
-                                            <exec>
-                                                <arg>/maven/run-broker</arg>
-                                            </exec>
-                                        </entryPoint>
-                                        <env>
-                                            <SQL_DB_PORT>\${DB_PORT_3306_TCP_PORT}</SQL_DB_PORT>
-                                            <SQL_DB_ADDR>\${DB_PORT_3306_TCP_ADDR}</SQL_DB_ADDR>
-                                            <DATASTORE_PORT>\${ES_PORT_9200_TCP_PORT}</DATASTORE_PORT>
-                                            <DATASTORE_ADDR>\${ES_PORT_9200_TCP_ADDR}</DATASTORE_ADDR>
-                                            <SERVICE_BROKER_ADDR>failover:(amqp://\${SERVICE_PORT_5672_TCP_ADDR}:\${SERVICE_PORT_5672_TCP_PORT})?jms.sendTimeout=1000</SERVICE_BROKER_ADDR>
-                                            <DATASTORE_CLIENT>org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient</DATASTORE_CLIENT>
-                                            <ACTIVEMQ_OPTS>
-                                                -Dcommons.db.schema.update=true \
-                                                -Dcommons.db.connection.host=db \
-                                                -Dcommons.db.connection.port=3306 \
-                                                -Ddatastore.elasticsearch.nodes=es \
-                                                -Ddatastore.elasticsearch.port=9200 \
-                                                -Ddatastore.client.class=\${DATASTORE_CLIENT} \
-                                                -Dcommons.eventbus.url="failover:(amqp://events-broker:5672)?jms.sendTimeout=1000" \
-                                                -Dcertificate.jwt.private.key=file:///home/kapua/key.pk8 \
-                                                -Dcertificate.jwt.certificate=file:///home/kapua/cert.pem \
-                                                -Dbroker.ip=broker
-                                            </ACTIVEMQ_OPTS>
-                                        </env>
-                                        <ports>
-                                            <port>1883</port><!-- MQTT -->
-                                            <port>8883</port><!-- MQTTS -->
-                                            <port>8778</port><!-- Jolokia -->
-                                            <port>61614</port><!-- MQTT-WS -->
-                                        </ports>
-                                        <user>kapua</user>
-                                        <runCmds>
-                                            <run><![CDATA[
-                                    chown -R kapua:kapua /maven && \
-                                    chmod -R a+rw /maven && \
-                                    find /maven -type d -exec chmod a+x {} +
-                                    ]]></run>
-                                            <runCmd>
-                                                chmod og+rwx /home/kapua
-                                            </runCmd>
-                                        </runCmds>
-                                        <volumes>
-                                            <volume>/maven/data</volume>
-                                        </volumes>
+                                        <dockerFile>${project.basedir}/docker/Dockerfile</dockerFile>
+                                        <filter>@</filter>
                                     </build>
                                 </image>
                             </images>

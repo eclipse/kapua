@@ -24,7 +24,7 @@
 
     <dependencySets>
         <dependencySet>
-            <outputDirectory>webapps/root</outputDirectory>
+            <outputDirectory>var/opt/jetty/webapps/root</outputDirectory>
             <unpack>true</unpack>
             <scope>runtime</scope>
 

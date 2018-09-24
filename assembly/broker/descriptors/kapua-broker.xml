@@ -25,7 +25,7 @@
     <files>
         <file>
             <source>${project.basedir}/entrypoint/run-broker</source>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory>var/opt/activemq</outputDirectory>
             <fileMode>0755</fileMode>
         </file>
     </files>
@@ -33,7 +33,7 @@
     <fileSets>
         <!-- Expanded ActiveMQ Runtime -->
         <fileSet>
-            <outputDirectory>.</outputDirectory>
+            <outputDirectory>opt/activemq</outputDirectory>
             <directory>${project.build.directory}/dependencies/activemq/apache-activemq-${activemq.version}</directory>
             <fileMode>0644</fileMode>
             <excludes>
@@ -112,13 +112,13 @@
 
         <fileSet>
             <directory>${project.basedir}/configurations</directory>
-            <outputDirectory>conf/</outputDirectory>
+            <outputDirectory>opt/activemq/conf/</outputDirectory>
             <fileMode>0644</fileMode>
         </fileSet>
 
         <fileSet>
             <directory>${project.build.directory}/dependencies/activemq/apache-activemq-${activemq.version}/bin/</directory>
-            <outputDirectory>bin/</outputDirectory>
+            <outputDirectory>opt/activemq/bin/</outputDirectory>
             <fileMode>0755</fileMode>
             <excludes>
                 <exclude>wrapper.jar</exclude>
@@ -132,7 +132,7 @@
 
     <dependencySets>
         <dependencySet>
-            <outputDirectory>lib/optional</outputDirectory>
+            <outputDirectory>opt/activemq/lib/optional</outputDirectory>
             <unpack>false</unpack>
             <scope>runtime</scope>
             <useProjectArtifact>false</useProjectArtifact>
@@ -145,7 +145,7 @@
         </dependencySet>
 
         <dependencySet>
-            <outputDirectory>lib/extra</outputDirectory>
+            <outputDirectory>opt/activemq/lib/extra</outputDirectory>
             <unpack>false</unpack>
             <scope>runtime</scope>
             <useProjectArtifact>false</useProjectArtifact>
@@ -267,7 +267,7 @@
         </dependencySet>
 
         <dependencySet>
-            <outputDirectory>lib/web</outputDirectory>
+            <outputDirectory>opt/activemq/lib/web</outputDirectory>
             <unpack>false</unpack>
             <scope>runtime</scope>
             <useProjectArtifact>false</useProjectArtifact>
