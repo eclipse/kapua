@@ -37,7 +37,7 @@
 
         <module>broker</module>
         <module>api</module>
-        <module>apps</module>
+        <module>processors</module>
     </modules>
 
     <profiles>

@@ -919,7 +919,7 @@
 
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-apps-api</artifactId>
+                <artifactId>kapua-processor-commons</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -984,17 +984,17 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>activemq-datastore</artifactId>
+                <artifactId>kapua-processor-datastore-broker</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>activemq-lifecycle</artifactId>
+                <artifactId>kapua-processor-lifecycle-broker</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>activemq-error</artifactId>
+                <artifactId>kapua-processor-error-broker</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -1003,11 +1003,6 @@
                 <version>${project.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.eclipse.kapua</groupId>
-                <artifactId>apps-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
             <!-- External dependencies -->
             <dependency>
                 <groupId>commons-beanutils</groupId>
@@ -1415,7 +1410,6 @@
     </dependencyManagement>
 
     <modules>
-        <module>apps</module>
         <module>build-tools</module>
 
         <module>commons</module>
@@ -1425,6 +1419,7 @@
         <module>transport</module>
         <module>translator</module>
         <module>connector</module>
+        <module>processor</module>
 
         <module>test</module>
         <module>qa</module>

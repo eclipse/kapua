@@ -296,17 +296,11 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
                 logger.warn("Banner {} is missing", fileName);
                 return;
             }
-
-            System.out.println();
-            System.out.println();
-
             int c = bannerStream.read();
             while( c >= 0) {
                 System.out.print((char)c);
                 c = bannerStream.read();
             }
-            System.out.println();
-            System.out.println();
             bannerStream.close();
         } catch (IOException e) {
             logger.warn("Failed to print banner {}...", fileName, e);
