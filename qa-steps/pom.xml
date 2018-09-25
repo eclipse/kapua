@@ -125,15 +125,15 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>activemq-datastore</artifactId>
+            <artifactId>kapua-processor-datastore-broker</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>activemq-lifecycle</artifactId>
+            <artifactId>kapua-processor-lifecycle-broker</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>activemq-error</artifactId>
+            <artifactId>kapua-processor-error-broker</artifactId>
         </dependency>
 
         <!-- External dependencies -->
