@@ -154,7 +154,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
 
         retryInterval.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleRetryIntervalLabel());
         retryInterval.setAllowDecimals(false);
-        retryInterval.setAllowNegative(false);
+        retryInterval.setMinValue(1);
         retryInterval.setMaxLength(9);
         retryInterval.setToolTip(JOB_MSGS.dialogAddScheduleRetryIntervalTooltip());
         mainPanel.add(retryInterval);
