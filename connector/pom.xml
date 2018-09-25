@@ -26,14 +26,7 @@
 
     <modules>
         <module>api</module>
-        <module>activemq</module>
-        <module>hono</module>
-        <module>commons</module>
-        <module>datastore</module>
-        <module>lifecycle</module>
-        <module>error-processor-amqp-activemq</module>
-        <module>kura</module>
-        <module>logger</module>
+        <module>provider</module>
     </modules>
 
 </project>

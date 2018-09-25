@@ -16,10 +16,10 @@ import javax.inject.Named;
 
 import org.apache.qpid.proton.message.Message;
 import org.eclipse.kapua.broker.client.amqp.AmqpConsumer;
+import org.eclipse.kapua.broker.connector.amqp.AmqpActiveMQSource;
 import org.eclipse.kapua.commons.core.ObjectFactory;
 import org.eclipse.kapua.commons.core.vertx.HealthCheckProvider;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
-import org.eclipse.kapua.connector.activemq.AmqpActiveMQSource;
 import org.eclipse.kapua.connector.logger.LoggerTarget;
 import org.eclipse.kapua.processor.commons.MessageProcessorServerConfig;
 

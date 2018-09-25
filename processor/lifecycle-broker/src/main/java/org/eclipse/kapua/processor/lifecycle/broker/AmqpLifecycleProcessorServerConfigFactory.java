@@ -16,14 +16,14 @@ import javax.inject.Named;
 
 import org.eclipse.kapua.broker.client.amqp.AmqpConsumer;
 import org.eclipse.kapua.broker.client.amqp.AmqpSender;
+import org.eclipse.kapua.broker.connector.amqp.AmqpTransportActiveMQSource;
+import org.eclipse.kapua.broker.connector.amqp.ErrorTarget;
 import org.eclipse.kapua.commons.core.ObjectFactory;
 import org.eclipse.kapua.commons.core.vertx.HealthCheckProvider;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.connector.Properties;
-import org.eclipse.kapua.connector.activemq.AmqpTransportActiveMQSource;
-import org.eclipse.kapua.connector.error.amqp.activemq.ErrorTarget;
 import org.eclipse.kapua.connector.kura.KuraPayloadProtoConverter;
-import org.eclipse.kapua.connector.lifecycle.LifecycleProcessor;
+import org.eclipse.kapua.device.registry.connector.LifecycleProcessor;
 import org.eclipse.kapua.message.transport.TransportMessage;
 import org.eclipse.kapua.processor.commons.MessageProcessorServerConfig;
 
