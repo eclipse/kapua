@@ -951,12 +951,12 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-connector-commons</artifactId>
+                <artifactId>kapua-connector-provider</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-connector-activemq</artifactId>
+                <artifactId>kapua-broker-connector-amqp</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -976,17 +976,12 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-connector-datastore</artifactId>
+                <artifactId>kapua-datastore-connector</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-connector-lifecycle</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-connector-error-amqp-activemq</artifactId>
+                <artifactId>kapua-lifecycle-connector</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
