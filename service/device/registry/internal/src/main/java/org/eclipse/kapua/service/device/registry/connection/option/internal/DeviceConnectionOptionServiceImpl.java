@@ -74,14 +74,16 @@ public class DeviceConnectionOptionServiceImpl extends AbstractKapuaService impl
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.write, deviceConnectionOptions.getScopeId()));
 
-        AndPredicateImpl deviceAndPredicate = new AndPredicateImpl();
-        deviceAndPredicate.and(new AttributePredicateImpl<>(DeviceConnectionAttributes.SCOPE_ID, deviceConnectionOptions.getScopeId()));
-        deviceAndPredicate.and(new AttributePredicateImpl<>(DeviceConnectionAttributes.RESERVED_USER_ID, deviceConnectionOptions.getReservedUserId()));
-        DeviceConnectionQuery deviceConnectionQuery = new DeviceConnectionQueryImpl(deviceConnectionOptions.getScopeId());
-        deviceConnectionQuery.setPredicate(deviceAndPredicate);
-        long cnt = deviceConnectionService.count(deviceConnectionQuery);
-        if (cnt > 0) {
+        if (deviceConnectionOptions.getReservedUserId() != null) {
+            AndPredicateImpl deviceAndPredicate = new AndPredicateImpl();
+            deviceAndPredicate.and(new AttributePredicateImpl<>(DeviceConnectionAttributes.SCOPE_ID, deviceConnectionOptions.getScopeId()));
+            deviceAndPredicate.and(new AttributePredicateImpl<>(DeviceConnectionAttributes.RESERVED_USER_ID, deviceConnectionOptions.getReservedUserId()));
+            DeviceConnectionQuery deviceConnectionQuery = new DeviceConnectionQueryImpl(deviceConnectionOptions.getScopeId());
+            deviceConnectionQuery.setPredicate(deviceAndPredicate);
+            long cnt = deviceConnectionService.count(deviceConnectionQuery);
+            if (cnt > 0) {
             throw new UserAlreadyReservedException(deviceConnectionOptions.getScopeId(), deviceConnectionOptions.getId(), deviceConnectionOptions.getReservedUserId());
+            }
         }
 
         return entityManagerSession.onTransactedResult(em -> {
